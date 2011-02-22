@@ -1,7 +1,7 @@
 SUBDIRS = html
 
 man3dir = $(mandir)/man3
-docdir_log  = $(docdir)/@PACKAGE_TARNAME@-@PACKAGE_VERSION@
+docdir  = $(prefix)/doc/@PACKAGE_TARNAME@-@PACKAGE_VERSION@
 
 EXTRA_DIST = \
 	mainPage.txt
@@ -28,17 +28,17 @@ install-data-local:
 		echo "$(INSTALL_DATA) $$i $(DESTDIR)$(man3dir)/$$inst"; \
 		$(INSTALL_DATA) $$i $(DESTDIR)$(man3dir)/$$inst; \
 	done
-	$(mkinstalldirs) $(DESTDIR)$(docdir_log)
-	cp -r html/. $(DESTDIR)$(docdir_log)
-	$(RM) -r -f $(DESTDIR)$(docdir_log)/CVS \
-		$(DESTDIR)$(docdir_log)/Makefile.am \
-		$(DESTDIR)$(docdir_log)/Makefile.in \
-		$(DESTDIR)$(docdir_log)/Makefile
+	$(mkinstalldirs) $(DESTDIR)$(docdir)
+	cp -r html/. $(DESTDIR)$(docdir)
+	$(RM) -r -f $(DESTDIR)$(docdir)/CVS \
+		$(DESTDIR)$(docdir)/Makefile.am \
+		$(DESTDIR)$(docdir)/Makefile.in \
+		$(DESTDIR)$(docdir)/Makefile
 
 uninstall-local:
 	$(RM) $(DESTDIR)$(man3dir)/log4tango.3
 	$(RM) $(DESTDIR)$(man3dir)/log4tango::*.3
-	$(RM) -r -f $(DESTDIR)$(docdir_log)
+	$(RM) -r -f $(DESTDIR)$(docdir)
 
 clean-local:
 	$(RM) -r latex
