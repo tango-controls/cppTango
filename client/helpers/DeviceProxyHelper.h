@@ -88,7 +88,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						Synchrotron SOLEIL
 //                		L'Orme des Merisiers
 //                		Saint-Aubin - BP 48 - France
@@ -111,9 +111,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.8  2010/09/21 12:08:44  taurel
-// - Added GPL header
-//
 // Revision 1.7  2008/03/31 07:22:46  jensmeyer
 // Added helper classes to Tango library.
 //

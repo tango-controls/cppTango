@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- June 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,9 +30,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.19  2010/12/08 10:10:54  taurel
-// - Commit after a merge with the bugfixes branch
-//
 // Revision 3.18.2.1  2010/11/26 07:56:12  taurel
 // - Fix date in date cmoputation in the printing stream inserter operators
 // for class DeviceAttribute and associated (history)

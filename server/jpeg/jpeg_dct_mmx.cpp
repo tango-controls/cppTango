@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,9 +32,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.9  2009/09/02 08:01:43  taurel
-// - Fix linker problem when used with gcc release < 4
-//
 // Revision 1.8  2009/09/01 14:02:07  taurel
 // - Fix a problem for old gcc release in the asm code.
 //
