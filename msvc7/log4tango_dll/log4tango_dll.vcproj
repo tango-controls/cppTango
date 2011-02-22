@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="Windows-1252"?>
+<?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="7.00"
 	Name="log4tango_dll"
 	ProjectGUID="{08E5F4A0-9CFE-439A-8202-A54C9BCD63E9}"
 	SccProjectName=""
@@ -41,14 +41,13 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				ShowProgress="0"
-				OutputFile="Y:\tango\tools\log4tango4.0.2\win32_vc7\win32_dll\lib\log4tangod.dll"
+				OutputFile="../../../../../win32/msvc7/build/bin/msvc7/debug/log4tangod.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="TRUE"
 				IgnoreAllDefaultLibraries="FALSE"
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile=".\Debug/log4tangod.pdb"
-				ImportLibrary="Y:\tango\tools\log4tango4.0.2\win32_vc7\win32_dll\lib\log4tangod.lib"/>
+				ImportLibrary="../../../../../win32/msvc7/build/lib/msvc7/shared/debug/log4tangod.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
@@ -69,13 +68,7 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -108,12 +101,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				OutputFile="Y:\tango\tools\log4tango4.0.2\win32_vc7\win32_dll\lib\log4tango.dll"
+				OutputFile="../../../../../win32/msvc7/build/bin/msvc7/release/log4tango.dll"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
 				IgnoreAllDefaultLibraries="FALSE"
 				ProgramDatabaseFile=".\Release/log4tango.pdb"
-				ImportLibrary="Y:\tango\tools\log4tango4.0.2\win32_vc7\win32_dll\lib\log4tango.lib"/>
+				ImportLibrary="../../../../../win32/msvc7/build/lib/msvc7/shared/release/log4tango.lib"/>
 			<Tool
 				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
@@ -134,17 +127,9 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
-			<Tool
 				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
-	<References>
-	</References>
 	<Files>
 		<Filter
 			Name="Source Files">
@@ -173,15 +158,6 @@
 				RelativePath="..\..\src\Level.cpp">
 			</File>
 			<File
-				RelativePath="..\..\src\Logger.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\LoggerStream.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\LoggingEvent.cpp">
-			</File>
-			<File
 				RelativePath="..\..\src\LogSeparator.cpp">
 			</File>
 			<File
@@ -189,6 +165,15 @@
 			</File>
 			<File
 				RelativePath="..\..\src\LogStreambuf.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\Logger.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\LoggerStream.cpp">
+			</File>
+			<File
+				RelativePath="..\..\src\LoggingEvent.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\MSThreads.cpp">
@@ -200,13 +185,13 @@
 				RelativePath="..\..\src\OstreamAppender.cpp">
 			</File>
 			<File
+				RelativePath="..\..\src\PThreads.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\PatternLayout.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\PortabilityImpl.cpp">
-			</File>
-			<File
-				RelativePath="..\..\src\PThreads.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\RollingFileAppender.cpp">
@@ -230,9 +215,6 @@
 				RelativePath="..\..\include\log4tango\AppenderAttachable.hh">
 			</File>
 			<File
-				RelativePath="..\..\include\log4tango\config-win32.h">
-			</File>
-			<File
 				RelativePath="..\..\include\log4tango\threading\DummyThreads.hh">
 			</File>
 			<File
@@ -254,15 +236,6 @@
 				RelativePath="..\..\include\log4tango\Level.hh">
 			</File>
 			<File
-				RelativePath="..\..\include\log4tango\Logger.hh">
-			</File>
-			<File
-				RelativePath="..\..\include\log4tango\LoggerStream.hh">
-			</File>
-			<File
-				RelativePath="..\..\include\log4tango\LoggingEvent.hh">
-			</File>
-			<File
 				RelativePath="..\..\include\log4tango\LogSeparator.hh">
 			</File>
 			<File
@@ -270,6 +243,15 @@
 			</File>
 			<File
 				RelativePath="..\..\include\log4tango\LogStreambuf.hh">
+			</File>
+			<File
+				RelativePath="..\..\include\log4tango\Logger.hh">
+			</File>
+			<File
+				RelativePath="..\..\include\log4tango\LoggerStream.hh">
+			</File>
+			<File
+				RelativePath="..\..\include\log4tango\LoggingEvent.hh">
 			</File>
 			<File
 				RelativePath="..\..\include\log4tango\threading\MSThreads.hh">
@@ -281,6 +263,9 @@
 				RelativePath="..\..\include\log4tango\OstreamAppender.hh">
 			</File>
 			<File
+				RelativePath="..\..\include\log4tango\threading\PThreads.hh">
+			</File>
+			<File
 				RelativePath="..\..\include\log4tango\PatternLayout.hh">
 			</File>
 			<File
@@ -288,9 +273,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\PortabilityImpl.hh">
-			</File>
-			<File
-				RelativePath="..\..\include\log4tango\threading\PThreads.hh">
 			</File>
 			<File
 				RelativePath="..\..\include\log4tango\RollingFileAppender.hh">
@@ -306,6 +288,9 @@
 			</File>
 			<File
 				RelativePath="..\..\include\log4tango\XmlLayout.hh">
+			</File>
+			<File
+				RelativePath="..\..\include\log4tango\config-win32.h">
 			</File>
 		</Filter>
 		<File

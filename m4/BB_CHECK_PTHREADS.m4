@@ -8,18 +8,8 @@ AC_DEFUN([BB_CHECK_PTHREADS],
       CXXFLAGS="$CXXFLAGS -D_REENTRANT"
       ;;
     solaris*)
-      if test x$GCC = x ; 
-      then 
-      	 CFLAGS="$CFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
-         CXXFLAGS="$CXXFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
-      else
-         CFLAGS="$CFLAGS -D_REENTRANT"
-         CXXFLAGS="$CXXFLAGS -D_REENTRANT"
-      fi
-      ;;
-    hpux*)
-      CFLAGS="$CFLAGS -AA -mt +inst_close"
-      CXXFLAGS="$CXXFLAGS -AA -mt +inst_close"
+      CFLAGS="$CFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
+      CXXFLAGS="$CXXFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
       ;;
     esac],
 AC_MSG_ERROR([pthreads not found]))
