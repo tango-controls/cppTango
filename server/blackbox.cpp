@@ -16,101 +16,12 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.28  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.27  2010/12/08 09:58:28  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.26  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.25  2009/12/18 14:52:37  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.24  2009/09/01 07:41:31  taurel
-// - Commit after test suite for Tango 7.1
-//
-// Revision 3.23  2009/03/27 12:21:46  taurel
-// - Now the peer address coming from omniORB is coded in IP v6 format!
-//
-// Revision 3.22  2009/03/18 12:18:41  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
-// Revision 3.21  2009/01/23 12:40:57  taurel
-// - Remove some printout statements
-//
-// Revision 3.20  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.19  2009/01/08 14:58:03  taurel
-// - The read_attribute_4 also transfer the client authentification
-//
-// Revision 3.18  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.17  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.16  2008/09/01 14:27:09  taurel
-// - Fix some bugs in locking implementation
-//
-// Revision 3.15  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.14  2008/05/20 12:44:09  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.13  2008/03/25 15:00:22  taurel
-// - Small bug preventing Visual C++ to compile
-// Revision 3.11.2.6  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
 // Revision 3.12  2008/03/14 11:53:52  taurel
 // - Add a check if the calling thread has been created by omni_thread
 // (For thread created by Python)
-// Revision 3.11.2.5  2008/02/07 15:58:12  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.11.2.4  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 3.11.2.3  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.11.2.2  2007/11/22 12:33:09  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.11.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
 //
 // Revision 3.11  2007/04/20 14:40:24  taurel
 // - Ported to Windows 64 bits x64 architecture
@@ -319,6 +230,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2000/02/04 10:58:27  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -333,13 +249,11 @@ static const char *RcsId = "$Id$\n$Name$";
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
 #include <sys/timeb.h>
-#include <ws2tcpip.h>
 #else
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
@@ -385,7 +299,6 @@ BlackBoxElt::BlackBoxElt()
 	op_type = Op_Unknown;
 	when.tv_sec = when.tv_usec = 0;
 	host_ip_str[0] = '\0';
-	client_ident = false;
 	attr_names.reserve(DEFAULT_ATTR_NB);
 }
 
@@ -449,7 +362,6 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
 	box[insert_elt].req_type = Req_Attribute;
 	box[insert_elt].attr_type = attr;
 	box[insert_elt].op_type = Op_Unknown;
-	box[insert_elt].client_ident = false;
 
 #ifdef _TG_WINDOWS_
 //
@@ -493,24 +405,19 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
 // description : 	This method insert a new element in the black box when
 //			this element is a call to the operation command_inout
 //
-// argument : in : 	- cmd : The command name
-//					- vers : The IDL device version
-//					- sour : The source parameter (DEV, CACHE...)
+// argument : in : 	- c_name : The command name
 //
 //--------------------------------------------------------------------------
 
 
 void BlackBox::insert_cmd(const char *cmd,long vers,DevSource sour)
 {
-	sync.lock();
-	
-	insert_cmd_nl(cmd,vers,sour);
-	
-	sync.unlock();
-}
 
-void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
-{
+//
+// Take mutex
+//
+
+	sync.lock();
 		
 //
 // Insert elt in the box
@@ -520,13 +427,10 @@ void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
 	box[insert_elt].attr_type = Attr_Unknown;
 	if (vers == 1)
 		box[insert_elt].op_type = Op_Command_inout;
-	else if (vers <= 3)
-		box[insert_elt].op_type = Op_Command_inout_2;
 	else
-		box[insert_elt].op_type = Op_Command_inout_4;
+		box[insert_elt].op_type = Op_Command_inout_2;
 	box[insert_elt].cmd_name = cmd;
 	box[insert_elt].source = sour;
-	box[insert_elt].client_ident = false;
 #ifdef _TG_WINDOWS_
 //
 // Note that the exact conversion between milli-sec and u-sec will be done
@@ -554,108 +458,13 @@ void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
 //
 
 	inc_indexes();
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		BlackBox::insert_cmd_cl_ident
-// 
-// description : 	This method insert a new element in the black box when
-//			this element is a call to the operation command_inout
-//
-// argument : in : 	- cmd : The command name
-//					- cl_id : The client identification data
-//					- sour : The source parameter (DEV, CACHE...)
-//
-//--------------------------------------------------------------------------
-
-
-void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long vers,DevSource sour)
-{
-	sync.lock();
-
-//
-// Add basic info in the box
-//
-		
-	insert_cmd_nl(cmd,vers,sour);
-
-//
-// Check if the command is executed due to polling
-// If true, simply return
-//
-
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
-	{
-		sync.unlock();
-		return;
-	}
-		
-//
-// Add client ident info into the client_addr instance
-// and into the box
-//
-
-	add_cl_ident(cl_id,(client_addr *)ip);
-	update_client_host((client_addr *)ip);
 	
+//
+// Release mutex
+//
+
 	sync.unlock();
 }
-
-//+-------------------------------------------------------------------------
-//
-// method : 		BlackBox::add_cl_ident
-// 
-// description : 	Add client identification data to the client address
-//					instance
-//
-// argument : in : 	- cl_ident : The client identificator
-//					- cl_addr : The client address instance
-//
-//--------------------------------------------------------------------------
-
-void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
-{
-	cl_addr->client_ident = true;			
-	Tango::LockerLanguage cl_lang = cl_ident._d();
-	cl_addr->client_lang = cl_lang;
-	if (cl_lang == Tango::CPP)
-		cl_addr->client_pid = cl_ident.cpp_clnt();
-	else
-	{
-		Tango::JavaClntIdent jci = cl_ident.java_clnt();
-		cl_addr->java_main_class = jci.MainClass;
-		cl_addr->java_ident[0] = jci.uuid[0];
-		cl_addr->java_ident[1] = jci.uuid[1];
-	}
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		BlackBox::update_client_host
-// 
-// description : 	Add client identification data to one of the BlackBox
-//					element
-//
-// argument : in : - ip : The client address instance
-//
-//--------------------------------------------------------------------------
-
-void BlackBox::update_client_host(client_addr *ip)
-{
-	long local_insert_elt = insert_elt;
-	if (local_insert_elt == 0)
-		local_insert_elt = max_elt - 1;
-	else
-		local_insert_elt--;
-
-	box[local_insert_elt].client_ident = true;
-	box[local_insert_elt].client_lang = ip->client_lang;
-	box[local_insert_elt].client_pid = ip->client_pid;
-	box[local_insert_elt].java_main_class = ip->java_main_class;
-}
-
 
 //+-------------------------------------------------------------------------
 //
@@ -669,46 +478,16 @@ void BlackBox::update_client_host(client_addr *ip)
 //
 //--------------------------------------------------------------------------
 
+
 void BlackBox::insert_op(BlackBoxElt_OpType op)
 {
+
+//
+// Take mutex
+//
+
 	sync.lock();
 	
-	insert_op_nl(op);
-	
-	sync.unlock();	
-}
-
-void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
-{
-	sync.lock();
-	
-	insert_op_nl(op);
-
-//
-// Check if the command is executed due to polling
-// If true, simply return
-//
-
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
-	{
-		sync.unlock();
-		return;
-	}
-	
-//
-// Add client ident info into the client_addr instance
-// and into the box
-//
-
-	add_cl_ident(cl_id,(client_addr *)ip);
-	update_client_host((client_addr *)ip);
-	
-	sync.unlock();	
-}
-
-void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
-{
 //
 // Insert elt in the box
 //
@@ -716,7 +495,6 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
 	box[insert_elt].op_type = op;
-	box[insert_elt].client_ident = false;
 #ifdef _TG_WINDOWS_
 //
 // Note that the exact conversion between milli-sec and u-sec will be done
@@ -744,6 +522,12 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 //
 
 	inc_indexes();
+	
+//
+// Release mutex 
+//
+
+	sync.unlock();
 }
 
 //+-------------------------------------------------------------------------
@@ -755,8 +539,6 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 //			read_attributes
 //
 // argument : in : 	- names : The attribute(s) name
-//					- vers : The device IDl version
-//					- sour : The device source parameter (CACHE, DEV,...)
 //
 //--------------------------------------------------------------------------
 
@@ -789,13 +571,8 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSo
 	case 3 :
 		box[insert_elt].op_type = Op_Read_Attr_3;
 		break;
-		
-	case 4 :
-		box[insert_elt].op_type = Op_Read_Attr_4;
-		break;
 	}
 	box[insert_elt].source = sour;
-	box[insert_elt].client_ident = false;
 	
 
 	box[insert_elt].attr_names.clear();
@@ -840,7 +617,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSo
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent &cl_id,long vers,DevSource sour)
+void BlackBox::insert_attr(const Tango::AttributeValueList &att_list, long vers)
 {
 
 //
@@ -855,17 +632,15 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
-
-	box[insert_elt].op_type = Op_Read_Attr_4;
-
-	box[insert_elt].source = sour;
-	box[insert_elt].client_ident = false;
-	
+	if (vers == 1)
+		box[insert_elt].op_type = Op_Write_Attr;
+	else
+		box[insert_elt].op_type = Op_Write_Attr_3;
 
 	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < names.length();i++)
+	for (unsigned long i = 0;i < att_list.length();i++)
 	{
-		string tmp_str(names[i]);
+		string tmp_str(att_list[i].name);
 		box[insert_elt].attr_names.push_back(tmp_str);
 	}
 	
@@ -890,32 +665,12 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 //
 
 	get_client_host();
-
+		
 //
 // manage insert and read indexes
 //
 
 	inc_indexes();
-
-//
-// Check if the command is executed due to polling
-// If true, simply return
-//
-
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
-	{
-		sync.unlock();
-		return;
-	}
-
-//
-// Add client ident info into the client_addr instance
-// and into the box
-//
-
-	add_cl_ident(cl_id,(client_addr *)ip);
-	update_client_host((client_addr *)ip);
 	
 //
 // Release mutex
@@ -924,224 +679,6 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::AttributeValueList &att_list, long vers)
-{
-	sync.lock();
-	
-	insert_attr_nl(att_list,vers);
-
-	sync.unlock();
-}
-
-void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id,long vers)
-{
-	sync.lock();
-	
-	insert_attr_nl_4(att_list);
-	
-//
-// Check if the command is executed due to polling
-// If true, simply return
-//
-
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
-	{
-		sync.unlock();
-		return;
-	}
-	
-//
-// Add client ident info into the client_addr instance
-// and into the box
-//
-
-	add_cl_ident(cl_id,(client_addr *)ip);
-	update_client_host((client_addr *)ip);
-
-	sync.unlock();
-}
-
-void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long vers)
-{	
-//
-// Insert elt in the box
-//
-
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers == 1)
-		box[insert_elt].op_type = Op_Write_Attr;
-	else if (vers < 4)
-		box[insert_elt].op_type = Op_Write_Attr_3;
-	else
-		box[insert_elt].op_type = Op_Write_Attr_4;
-
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < att_list.length();i++)
-	{
-		string tmp_str(att_list[i].name);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
-	box[insert_elt].client_ident = false;
-	
-#ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
-//
-	struct _timeb t;
-	_ftime(&t);
-	
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else	
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
-#endif
-
-//
-// get client address
-//
-
-	get_client_host();
-		
-//
-// manage insert and read indexes
-//
-
-	inc_indexes();
-}
-
-void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
-{	
-//
-// Insert elt in the box
-//
-
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	box[insert_elt].op_type = Op_Write_Attr_4;
-
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < att_list.length();i++)
-	{
-		string tmp_str(att_list[i].name);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
-	
-#ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
-//
-	struct _timeb t;
-	_ftime(&t);
-	
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else	
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
-#endif
-
-//
-// get client address
-//
-
-	get_client_host();
-		
-//
-// manage insert and read indexes
-//
-
-	inc_indexes();
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		BlackBox::insert_wr_attr
-// 
-// description : 	This method insert a new element in the black box when
-//			this element is a call to the CORBA operation 
-//			write_read_attributes
-//
-// argument : in : 	- names : The attribute(s) name
-//
-//--------------------------------------------------------------------------
-
-void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id,long vers)
-{
-	sync.lock();
-	
-	insert_attr_wr_nl(att_list,vers);
-
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
-	{
-		sync.unlock();
-		return;
-	}
-	
-//
-// Add client ident info into the client_addr instance
-// and into the box
-//
-
-	add_cl_ident(cl_id,(client_addr *)ip);
-	update_client_host((client_addr *)ip);
-
-	sync.unlock();
-}
-
-void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list, long vers)
-{	
-//
-// Insert elt in the box
-//
-
-	box[insert_elt].req_type = Req_Operation;
-	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers >= 4)
-		box[insert_elt].op_type = Op_Write_Read_Attributes_4;
-
-	box[insert_elt].attr_names.clear();
-	for (unsigned long i = 0;i < att_list.length();i++)
-	{
-		string tmp_str(att_list[i].name);
-		box[insert_elt].attr_names.push_back(tmp_str);
-	}
-	
-#ifdef _TG_WINDOWS_
-//
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
-//
-	struct _timeb t;
-	_ftime(&t);
-	
-	box[insert_elt].when.tv_usec = (long)t.millitm;
-	box[insert_elt].when.tv_sec = (unsigned long)t.time;
-#else	
-	struct timezone tz;
-	gettimeofday(&box[insert_elt].when,&tz);
-#endif
-
-//
-// get client address
-//
-
-	get_client_host();
-		
-//
-// manage insert and read indexes
-//
-
-	inc_indexes();
-}
 
 //+-------------------------------------------------------------------------
 //
@@ -1223,7 +760,24 @@ void BlackBox::build_info_as_str(long index)
 		{
 		case Op_Command_inout :
 			elt_str = elt_str + "command_inout (cmd = " + box[index].cmd_name + ") from ";
-			add_source(index);
+			switch (box[index].source)
+			{
+			case DEV : 
+				elt_str = elt_str + "device ";
+				break;
+				
+			case CACHE :
+				elt_str = elt_str + "cache ";
+				break;
+				
+			case CACHE_DEV :
+				elt_str = elt_str + "cache_device ";
+				break;
+				
+			default :
+				elt_str = elt_str + "unknown source (!) ";
+				break;
+			}
 			break;
 			
 		case Op_Ping :
@@ -1264,7 +818,24 @@ void BlackBox::build_info_as_str(long index)
 					elt_str = elt_str + ", ";
 			}
 			elt_str = elt_str + ") from ";
-			add_source(index);
+			switch (box[index].source)
+			{
+			case DEV : 
+				elt_str = elt_str + "device ";
+				break;
+				
+			case CACHE :
+				elt_str = elt_str + "cache ";
+				break;
+				
+			case CACHE_DEV :
+				elt_str = elt_str + "cache_device ";
+				break;
+				
+			default :
+				elt_str = elt_str + "unknown source (!) ";
+				break;
+			}
 			break;
 			
 		case Op_Write_Attr :
@@ -1293,7 +864,24 @@ void BlackBox::build_info_as_str(long index)
 			
 		case Op_Command_inout_2 :
 			elt_str = elt_str + "command_inout_2 (cmd = " + box[index].cmd_name + ") from ";
-			add_source(index);
+			switch (box[index].source)
+			{
+			case DEV : 
+				elt_str = elt_str + "device ";
+				break;
+				
+			case CACHE :
+				elt_str = elt_str + "cache ";
+				break;
+				
+			case CACHE_DEV :
+				elt_str = elt_str + "cache_device ";
+				break;
+				
+			default :
+				elt_str = elt_str + "unknown source (!) ";
+				break;
+			}
 			break;
 			
 		case Op_Command_list_2 :
@@ -1318,7 +906,24 @@ void BlackBox::build_info_as_str(long index)
 					elt_str = elt_str + ", ";
 			}
 			elt_str = elt_str + ") from ";
-			add_source(index);		
+			switch (box[index].source)
+			{
+			case DEV : 
+				elt_str = elt_str + "device ";
+				break;
+				
+			case CACHE :
+				elt_str = elt_str + "cache ";
+				break;
+				
+			case CACHE_DEV :
+				elt_str = elt_str + "cache_device ";
+				break;
+				
+			default :
+				elt_str = elt_str + "unknown source (!) ";
+				break;
+			}			
 			break;
 			
 		case Op_Read_Attr_3 :
@@ -1331,7 +936,24 @@ void BlackBox::build_info_as_str(long index)
 					elt_str = elt_str + ", ";
 			}
 			elt_str = elt_str + ") from ";
-			add_source(index);
+			switch (box[index].source)
+			{
+			case DEV : 
+				elt_str = elt_str + "device ";
+				break;
+				
+			case CACHE :
+				elt_str = elt_str + "cache ";
+				break;
+				
+			case CACHE_DEV :
+				elt_str = elt_str + "cache_device ";
+				break;
+				
+			default :
+				elt_str = elt_str + "unknown source (!) ";
+				break;
+			}
 			break;
 
 		case Op_Command_inout_history_2 :
@@ -1356,60 +978,6 @@ void BlackBox::build_info_as_str(long index)
 			
 		case Op_Set_Attr_Config_3 :
 			elt_str = elt_str + "set_attribute_config_3 ";
-			break;
-			
-		case Op_Read_Attr_history_4 :
-			elt_str = elt_str + "read_attribute_history_4 ";
-			break;
-
-		case Op_Command_inout_history_4 :
-			elt_str = elt_str + "command_inout_history_4 ";
-			break;
-
-		case Op_Command_inout_4 :
-			elt_str = elt_str + "command_inout_4 (cmd = " + box[index].cmd_name + ") from ";
-			add_source(index);
-			break;
-			
-		case Op_Read_Attr_4 :
-			elt_str = elt_str + "read_attributes_4 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") from ";
-			add_source(index);
-			break;
-			
-		case Op_Write_Attr_4 :
-			elt_str = elt_str + "write_attributes_4 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
-			break;
-			
-		case Op_Set_Attr_Config_4 :
-			elt_str = elt_str + "set_attribute_config_4 ";
-			break;
-			
-		case Op_Write_Read_Attributes_4 :
-			elt_str = elt_str + "write_read_attributes_4 (";
-			nb_in_vect = box[index].attr_names.size();
-			for (i = 0;i < nb_in_vect;i++)
-			{
-				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
-			}
-			elt_str = elt_str + ") ";
 			break;
 			
 		case Op_Unknown :
@@ -1459,10 +1027,7 @@ void BlackBox::build_info_as_str(long index)
 // Return in case of badly formed address
 //
 
-	bool ipv6=false;
-	if ((box[index].host_ip_str[0] != '\0') && 
-	    (box[index].host_ip_str[0] != 'p') && 
-		(box[index].host_ip_str[5] != 'u'))
+	if ((box[index].host_ip_str[0] != '\0') && (box[index].host_ip_str[0] != 'p'))
 	{
 		string omni_addr = box[index].host_ip_str;
 		string::size_type pos;
@@ -1473,32 +1038,9 @@ void BlackBox::build_info_as_str(long index)
 			return;
 		pos++;
 		string ip_str = omni_addr.substr(pos);
-		if (ip_str[0] == '[')
-			ipv6 = true;
-			
-		string full_ip_str;
-		if (ipv6 == false)
-		{
-			if ((pos = ip_str.find(':')) == string::npos)
-				return;
-			full_ip_str = ip_str.substr(0,pos);
-		}
-		else
-		{
-			if ((pos = ip_str.find(':')) == string::npos)
-				return;
-			pos++;
-			if ((pos = ip_str.find(':',pos)) == string::npos)
-				return;
-			pos++;
-			if ((pos = ip_str.find(':',pos)) == string::npos)
-				return;
-			pos++;
-			string tmp_ip = ip_str.substr(pos);
-			if ((pos = tmp_ip.find(']')) == string::npos)
-				return;
-			full_ip_str = tmp_ip.substr(0,pos);
-		}
+		if ((pos = ip_str.find(':')) == string::npos)
+			return;
+		string full_ip_str = ip_str.substr(0,pos);
 	
 		if ((pos = full_ip_str.find('.')) == string::npos)
 			return;
@@ -1516,60 +1058,48 @@ void BlackBox::build_info_as_str(long index)
 		string ip3_str = full_ip_str.substr(old_pos,pos - old_pos);
 		pos++;
 		string ip4_str = full_ip_str.substr(pos);
+	
+//
+// Convert ip address field to numbers
+//
+
+		long ip1,ip2,ip3,ip4;
+		ip1 = atol(ip1_str.c_str());
+		ip2 = atol(ip2_str.c_str());
+		ip3 = atol(ip3_str.c_str());
+		ip4 = atol(ip4_str.c_str());
 
 //
 // Finally, get host name
 //
 
-		struct sockaddr_in si;
-		si.sin_family = AF_INET;
-		si.sin_port = 0;
+        	struct hostent *ho;
+
 #ifdef _TG_WINDOWS_
-		int slen = sizeof(si);
-		WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+		struct in_addr ad;
+		ad.s_addr = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+		unsigned long ip_net = htonl(ad.s_addr);
+		ho = gethostbyaddr((char *)(&ip_net),sizeof(ip_net),AF_INET);
 #else
-		inet_pton(AF_INET,full_ip_str.c_str(),&si.sin_addr);
-#endif
-
-		char host[512];
-
-		int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
+		unsigned long ip = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+#ifdef __linux
+		unsigned long ip_net = htonl(ip);
+		ho = gethostbyaddr((char *)(&ip_net),sizeof(ip),AF_INET);
+#else
+		ho = gethostbyaddr((char *)(&ip),sizeof(ip),AF_INET);
+#endif /* __linux */
+#endif /* _TG_WINDOWS_ */
 		
-		if (res == 0)
+		if (ho != NULL)
 		{
 			elt_str = elt_str + "requested from ";
-			elt_str = elt_str + host;
+			elt_str = elt_str + ho->h_name;
 		}
 		else
 		{
 			elt_str = elt_str + "requested from ";
 			elt_str = elt_str + full_ip_str;
 		}
-
-//
-// Add client identification if available
-//
-		
-		if (box[index].client_ident == true)
-		{	
-			if (box[index].client_lang == Tango::CPP)
-			{	
-				elt_str = elt_str + " (CPP/Python client with PID ";
-				TangoSys_MemStream o;
-				o << box[index].client_pid;
-				elt_str = elt_str + o.str() + ")";
-			}
-			else
-			{
-				elt_str = elt_str + " (Java client with main class ";
-				elt_str = elt_str + box[index].java_main_class + ")";
-			}
-		}
-	}
-	else if (box[index].host_ip_str[5] == 'u')
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		elt_str = elt_str + "requested from " + tg->get_host_name();
 	}
 	else if (box[index].host_ip_str[0] == 'p')
 	{
@@ -1577,39 +1107,6 @@ void BlackBox::build_info_as_str(long index)
 	}
 	
 	return;
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		BlackBox::add_source
-// 
-// description : 	Read black box element as strings. The newest element
-//			is return in the first position
-//
-// argument : in : 	- index : The number of element to read
-//
-//--------------------------------------------------------------------------
-
-void BlackBox::add_source(long index)
-{
-	switch (box[index].source)
-	{
-	case DEV : 
-		elt_str = elt_str + "device ";
-		break;
-		
-	case CACHE :
-		elt_str = elt_str + "cache ";
-		break;
-		
-	case CACHE_DEV :
-		elt_str = elt_str + "cache_device ";
-		break;
-		
-	default :
-		elt_str = elt_str + "unknown source (!) ";
-		break;
-	}	
 }
 
 //+-------------------------------------------------------------------------
@@ -1820,256 +1317,5 @@ void BlackBox::date_ux_to_str(timeval &ux_date,char *str_date)
 #endif
 
 }
-
-//+-------------------------------------------------------------------------
-//
-// method : 		client_addr::client_addr
-// 
-// description : 	Copy ctor of the client_addr class
-//
-//--------------------------------------------------------------------------
-
-client_addr::client_addr(const client_addr &rhs)
-{
-	client_ident = rhs.client_ident;
-	client_lang = rhs.client_lang;
-	client_pid = rhs.client_pid;
-	java_main_class = rhs.java_main_class;
-	java_ident[0] = rhs.java_ident[0];
-	java_ident[1] = rhs.java_ident[1];
-	memcpy(client_ip,rhs.client_ip,IP_ADDR_BUFFER_SIZE);	
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		client_addr::operator=()
-// 
-// description : 	Assignement operator of the client_addr class
-//
-//--------------------------------------------------------------------------
-
-client_addr & client_addr::operator=(const client_addr &rhs)
-{
-	client_ident = rhs.client_ident;
-	client_lang = rhs.client_lang;
-	client_pid = rhs.client_pid;
-	java_main_class = rhs.java_main_class;
-	java_ident[0] = rhs.java_ident[0];
-	java_ident[1] = rhs.java_ident[1];
-	memcpy(client_ip,rhs.client_ip,IP_ADDR_BUFFER_SIZE);	
-	return *this;
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		client_addr::operator==()
-// 
-// description : 	Equality operator of the client_addr class
-//
-//--------------------------------------------------------------------------
-
-bool client_addr::operator==(const client_addr &rhs)
-{
-	if (client_ident != rhs.client_ident)
-		return false;
-		
-	if (client_lang != rhs.client_lang)
-		return false;
-	else
-	{
-		if (client_lang == Tango::CPP)
-		{
-			if (client_pid != rhs.client_pid)
-				return false;
-				
-			char *tmp = client_ip;
-			const char *rhs_tmp = rhs.client_ip;
-			
-			if (strlen(tmp) != strlen(rhs_tmp))
-				return false;
-				
-			if (strcmp(tmp,rhs_tmp) != 0)
-				return false;
-		}
-		else
-		{
-			if (java_ident[0] != rhs.java_ident[0])
-				return false;
-			if (java_ident[1] != rhs.java_ident[1])
-				return false;
-		}
-	}
-	
-	return true;
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		client_addr::operator!=()
-// 
-// description : 	Operator of the client_addr class
-//
-//--------------------------------------------------------------------------
-
-bool client_addr::operator!=(const client_addr &rhs)
-{
-	if (client_ident != rhs.client_ident)
-		return true;
-		
-	if (client_lang != rhs.client_lang)
-		return true;
-	else
-	{
-		if (client_lang == Tango::CPP)
-		{
-			if (client_pid != rhs.client_pid)
-				return true;
-				
-			char *tmp = client_ip;
-			const char *rhs_tmp = rhs.client_ip;
-
-			if (strlen(tmp) != strlen(rhs_tmp))
-				return true;
-				
-			if (strcmp(tmp,rhs_tmp) != 0)
-				return true;
-		}
-		else
-		{
-			if (java_ident[0] != rhs.java_ident[0])
-				return true;
-			if (java_ident[1] != rhs.java_ident[1])
-				return true;
-		}
-	}
-
-	return false;
-}
-
-//+-------------------------------------------------------------------------
-//
-// method : 		client_addr::client_ip_2_client_name()
-// 
-// description : 	Convert client host IP address to client host name
-//
-//--------------------------------------------------------------------------
-
-int client_addr::client_ip_2_client_name(string &cl_host_name) const
-{
-	int ret = 0;
-	string client_ip_str(client_ip);
-	
-	string::size_type pos;
-	if ((pos = client_ip_str.find(':')) == string::npos)
-		ret = -1;
-	else
-	{
-		pos++;
-		if ((pos = client_ip_str.find(':',pos)) == string::npos)
-			ret = -1;
-		else
-		{
-			pos++;
-			string ip_str = client_ip_str.substr(pos);
-			if ((pos = ip_str.find(':')) == string::npos)
-				ret = -1;
-			else
-			{
-				string full_ip_str = ip_str.substr(0,pos);
-
-				if ((pos = full_ip_str.find('.')) == string::npos)
-					ret = -1;
-				else
-				{
-					string ip1_str = full_ip_str.substr(0,pos);
-	
-					string::size_type old_pos;
-					pos++;
-					old_pos = pos;
-					if ((pos = full_ip_str.find('.',pos)) == string::npos)
-						ret = -1;
-					else
-					{
-						string ip2_str = full_ip_str.substr(old_pos,pos - old_pos);
-						pos++;
-						old_pos = pos;
-						if ((pos = full_ip_str.find('.',pos)) == string::npos)
-							ret = -1 ;
-						else
-						{
-							string ip3_str = full_ip_str.substr(old_pos,pos - old_pos);
-							pos++;
-							string ip4_str = full_ip_str.substr(pos);
-
-							struct sockaddr_in si;
-							si.sin_family = AF_INET;
-							si.sin_port = 0;
-#ifdef _TG_WINDOWS_
-							int slen = sizeof(si);
-							WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
-#else
-							inet_pton(AF_INET,full_ip_str.c_str(),&si.sin_addr);
-#endif
-
-							char host[512];
-
-							int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
-	
-							if (res == 0)
-							{
-								cl_host_name = host;
-								ret = 0;
-							}
-							else
-								ret = -1;
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	return ret;
-}
-
-
-//+-------------------------------------------------------------------------
-//
-// operator overloading : 	<<
-// 
-// description : 	Friend function to ease printing instance of the
-//					client_addr class
-//
-//--------------------------------------------------------------------------
-
-ostream &operator<<(ostream &o_str,const client_addr &ca)
-{
-	if (ca.client_ident == false)
-		o_str << "Client identification not available";
-	else
-	{
-		if (ca.client_lang == Tango::CPP)
-		{
-			string cl_name;
-			o_str << "CPP or Python client with PID " << ca.client_pid << " from host ";
-			if (ca.client_ip_2_client_name(cl_name) == 0)
-				o_str << cl_name;
-			else
-				o_str << ca.client_ip;
-		}
-		else
-		{
-			o_str << "JAVA client class " << ca.java_main_class << " from host ";
-			string cl_name;
-			if (ca.client_ip_2_client_name(cl_name) == 0)
-				o_str << cl_name;
-			else
-				o_str << ca.client_ip;
-		}
-	}
-
-	return o_str;
-}
-
 
 } // End of Tango namespace

@@ -14,154 +14,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.60  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 3.59  2010/12/08 15:42:14  taurel
-// - During device shutdown, do not wait for POA to effectively destroying
-// the device. Rely on the ORB
-//
-// Revision 3.58  2010/09/30 08:12:59  taurel
-// - Add a new way to write class_factory as a function instead as
-// DServer classs method
-//
-// Revision 3.57  2010/09/24 14:06:15  taurel
-// - For Python DS, do not give full device ownership to the POA.
-// Otherwise, a python DS crashes at exit.
-//
-// Revision 3.56  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.55  2010/08/30 12:28:01  taurel
-// - Commit just to make tkcvs happy. No real difference with previous release. Just a space adding/missing somewhere
-//
-// Revision 3.54  2010/08/25 11:41:27  taurel
-// - Fix some bugs preventing dynamic attributes management (in some cases)
-//
-// Revision 3.53  2010/06/23 09:14:50  taurel
-// - Increment sleeping time (up to 400mS) in case we have to wait for
-// request end before the POA destroys servant
-//
-// Revision 3.52  2010/06/23 09:03:09  taurel
-// - The admin device Restart a device command also need to be modified due to the new servant reference counting use (fast DS shutdown)
-//
-// Revision 3.51  2010/06/21 12:38:23  taurel
-// - Implement a much faster server shutdown sequence
-//
-// Revision 3.50  2010/06/18 13:57:09  taurel
-// - Add a way (using properties) to define a minimum polling period
-//
-// Revision 3.49  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.48  2010/05/26 09:15:35  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.47  2010/04/13 08:32:29  taurel
-// - The previous fix about memory leaking was a bit too strong!
-//
-// Revision 3.46  2010/04/12 12:57:38  taurel
-// - Fix a memory leak in case of server started without DB
-//
-// Revision 3.45  2010/01/20 07:53:02  taurel
-// - Commit after merge with the Release_7_1_1-bugfixes branch
-// Revision 3.44.2.2  2010/05/18 08:27:22  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 3.44.2.1  2010/01/19 10:04:06  taurel
-// - Fix bug when DS with polled devices moved from Tango 6 to Tango 7.1.1
-// (polling pool size = 0!!)
-//
-// Revision 3.44  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.43  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.42  2009/09/01 07:41:31  taurel
-// - Commit after test suite for Tango 7.1
-//
-// Revision 3.41  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.40  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-// Revision 3.39.2.2  2009/06/22 06:58:09  taurel
-// - Fix bug introduced by previous bug fix. It makes the db server crashes.
-//
-// Revision 3.39.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 3.39  2009/03/23 15:21:40  taurel
-// - Forgot to remove some commented code when debugging  on Windows Vista
-//
-// Revision 3.38  2009/03/13 09:33:29  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.37  2009/02/03 15:15:08  jensmeyer
-// Added a QuerySubDevice command to read the list of opened sub device
-// connections.
-//
-// Revision 3.36  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.35  2008/11/18 09:28:56  taurel
-// - Ported to gcc 4.3
-// - Removed some cout messages
-//
-// Revision 3.34  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.33  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.32  2008/10/02 12:24:43  taurel
-// - The user now has the possibility to install its own event loop
-//
-// Revision 3.31  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 3.30  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.29  2008/01/25 15:44:51  taurel
-// - Some changes in the Db cache
-// - A lighter system to shutdown DS in case of dynamic attribute
-//
 // Revision 3.28  2008/01/18 07:58:12  taurel
 // - Protect the unregister_server call against any kind of exception
 //
@@ -170,19 +25,9 @@ static const char *RcsId = "$Id$\n$Name$";
 // is also used as an event client.
 // Added a EventConsumer::disconnect_from_notifd method as for
 // the EventSupplier.
-// Revision 3.25.2.4  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
 //
 // Revision 3.26  2007/12/19 15:42:43  taurel
 // - Add some cleanup when quitting applis or device server (notifd objects)
-// Revision 3.25.2.3  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 3.25.2.2  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.25.2.1  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
 //
 // Revision 3.25  2007/10/26 11:31:52  taurel
 // - Simply remove some log message sin source code
@@ -200,6 +45,84 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // Revision 3.21  2006/06/28 09:21:28  taurel
 // - Remove a 1 second sleep at the beginning of the thread executing the Kill command
+//
+// Revision 3.20  2006/06/15 07:08:00  taurel
+// - Fix bug in the order devices/classes are destroyed in the admin device Init command
+//
+// Revision 3.19  2006/05/18 08:52:37  taurel
+// - Miscellaneous changes due to Python device server ported to Windows
+// - Fix some bugs discovered by Windows VC8 using the test suite
+// - Update Windows resource file include path
+// - Fix some Windows VC8 warnings
+//
+// Revision 3.18  2006/04/06 09:57:59  taurel
+// - Minor changes in error message in the create_cpp_class method
+//
+// Revision 3.17  2006/03/09 08:18:08  taurel
+// - Change the order of device server destruction. First devices then class.
+// It was the contrary....
+//
+// Revision 3.16  2006/02/17 16:51:28  jensmeyer
+// Corrections when porting to VC7 under windows
+//
+// Revision 3.15  2006/01/27 14:27:10  taurel
+// - Fix a severe incompatibility problem introduced by all the modifs done for
+// PY DS
+// - Duplicate some EventSupplier class methods (instead of using template) in order to be able to generate Tango shared library on Suse 9.3
+//
+// Revision 3.14  2006/01/20 08:22:29  taurel
+// - Added necessary changes to support Device server written in Python
+//
+// Revision 3.13  2005/06/29 08:31:17  taurel
+// - Last commit before release 5.2 ?
+//
+// Revision 3.12  2005/03/14 09:49:29  taurel
+// - Fix some bugs in filedatabase (Change in the data transferred between client and
+//   server).
+// - Fix bug in event re-connection
+// - Add event support even for device server started with the -file command line option
+//
+// Revision 3.11  2005/03/03 15:38:00  taurel
+// - Change in attribute quality factor change event. It is now fired by the Attribute
+// set_quailty() and set_value_date_quality() methods. For scannable device.
+//
+// Revision 3.10  2005/01/13 08:29:05  taurel
+// - Merge trunk with Release_5_0 from brach Release_5_branch
+//
+// Revision 3.9.2.8  2004/11/09 09:57:49  taurel
+// - Fix one memory leak and some minor changes
+// - Force database file writing when server exit
+// - Some minor changes for the -file option for WIN32
+//
+// Revision 3.9.2.7  2004/11/04 09:46:38  taurel
+// - Add a tuning method in the polling thread
+// - Some minor fixes to pass test suite
+//
+// Revision 3.9.2.6  2004/10/27 05:59:46  taurel
+// - Some minor changes to compile on all our supported platforms
+//
+// Revision 3.9.2.5  2004/10/22 11:25:50  taurel
+// Added warning alarm
+// Change attribute config. It now includes alarm and event parameters
+// Array attribute property now supported
+// subscribe_event throws exception for change event if they are not correctly configured
+// Change in the polling thread: The event heartbeat has its own work in the work list
+// Also add some event_unregister
+// Fix order in which classes are destructed
+// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
+// Change in the CORBA info call for the device type
+//
+// Revision 3.9.2.4  2004/10/05 13:55:02  maxchiandone
+// First upload for filedatabase.
+//
+// Revision 3.9.2.3  2004/09/27 09:09:07  taurel
+// - Changes to allow reading state and/or status as attributes
+//
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //-=============================================================================
 
@@ -226,7 +149,7 @@ extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
-ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
+
 
 //+----------------------------------------------------------------------------
 //
@@ -242,8 +165,9 @@ ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 //
 //-----------------------------------------------------------------------------
 
-DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState s,const char *st)
-:Device_4Impl(cl_ptr,n,d,s,st)
+DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState s,
+		 const char *st)
+:Device_3Impl(cl_ptr,n,d,s,st)
 {
 	process_name = Tango::Util::instance()->get_ds_exec_name();
 	instance_name = Tango::Util::instance()->get_ds_inst_name();
@@ -252,19 +176,8 @@ DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState
 	full_name.append(1,'/');
 	full_name.append(instance_name);
 	
-	fqdn = "tango://";
-	Tango::Util *tg = Tango::Util::instance();
-	Database *db = tg->get_database();
-	if (db != NULL)
-		fqdn = fqdn + db->get_db_host() + ':' + db->get_db_port() + "/dserver/" + full_name;
-	else
-		fqdn = "dserver/" + full_name;
-	
 	last_heartbeat = time(NULL);
 	heartbeat_started = false;
-	
-	polling_th_pool_size = DEFAULT_POLLING_THREADS_POOL_SIZE;
-	optimize_pool_usage = true;
 
 	from_constructor = true;	
 	init_device();
@@ -281,22 +194,14 @@ bool less_than (Command *a,Command *b)
 
 void DServer::init_device()
 {
+
 //
-// In case of database in file
+// In case of database 
 //
 
 	Tango::Util *tg = Tango::Util::instance();
 	if (tg->_FileDb)
-	{
 		tg->reset_filedatabase();
-		db_dev->set_dbase(tg->get_database());
-	}
-	
-//
-// Get device properties
-//
-	
-	get_dev_prop(tg);
 	
 //	
 // Destroy already registered classes
@@ -329,10 +234,7 @@ void DServer::init_device()
 // Create user TDSOM implementation
 //
 
-		if (class_factory_func_ptr == NULL)
-			class_factory();
-		else
-			class_factory_func_ptr(this);
+		class_factory();
 		class_factory_done = true;
 		
 		if (class_list.empty() == false)
@@ -476,8 +378,6 @@ void DServer::init_device()
 						AutoTangoMonitor sync(class_list[i]);
 						class_list[i]->device_factory(dev_list_nodb);
 					}
-
-					delete dev_list_nodb;
 				}
 			}
 		}
@@ -569,7 +469,7 @@ void DServer::init_device()
 	}
 	catch (Tango::DevFailed)
 	{
-
+	
 //
 // If the class_factory method have not been successfully executed, erase
 // all classes already built. If the error occurs during the command or device
@@ -604,6 +504,7 @@ void DServer::init_device()
 		}
 		throw;
 	}
+
 }
 
 //+----------------------------------------------------------------------------
@@ -620,6 +521,12 @@ DServer::~DServer()
 //	
 // Destroy already registered classes
 //
+
+	{
+		Tango::Util *tg = Tango::Util::instance();
+		if (tg->_FileDb)
+			tg->instance()->get_database()->write_filedatabase();
+	}
 
 	if (class_list.empty() == false)
 	{
@@ -650,6 +557,7 @@ DServer::~DServer()
 
 void DServer::delete_devices()
 {
+
 	if (class_list.empty() == false)
 	{
 		for (long i = class_list.size() - 1;i >= 0;i--)
@@ -667,7 +575,7 @@ void DServer::delete_devices()
 				
 //
 // Clear vectors used to memorize info used to clean db
-// in case of devices with dyn attr removed during device
+// in case of devices with dyn attr removed durind device
 // destruction
 //
 
@@ -679,7 +587,7 @@ void DServer::delete_devices()
 //
 // Delete device
 //
-
+					
 					class_list[i]->delete_dev(0,tg,r_poa);
 					
 //
@@ -692,19 +600,13 @@ void DServer::delete_devices()
 					if (tg->get_all_dyn_attr_names().size() != 0)
 						tg->clean_dyn_attr_prop();
 
-//
-// Wait for POA to destroy the object before going to the next one
-// Limit this waiting time to 200 mS
-//
-
 					vector<DeviceImpl *>::iterator it = devs.begin();
-					devs.erase(it);
+					devs.erase(it);	
 				}
 				devs.clear();
 				CORBA::release(r_poa);
-
+				
 				delete class_list[i];
-
 				class_list.pop_back();
 			}
 			else
@@ -715,6 +617,7 @@ void DServer::delete_devices()
 		}
 		class_list.clear();
 	}
+
 }
 
 //+----------------------------------------------------------------------------
@@ -820,36 +723,8 @@ Tango::DevVarStringArray *DServer::query_device()
 	for (int k = 0;k < nb_dev;k++)
 		(*ret)[k] = CORBA::string_dup(vs[k].c_str());
 		
-	return(ret);
+	return(ret);	
 }
-
-
-//+----------------------------------------------------------------------------
-//
-// method :         DServer::query_sub_device()
-// 
-// description :    command to read all the sub devices used by a device
-//                  server process
-////
-// out :            The sub device name list in a sequence of strings
-//
-//-----------------------------------------------------------------------------
-
-Tango::DevVarStringArray *DServer::query_sub_device()
-{
-	NoSyncModelTangoMonitor mon(this);
-	
-	cout4 << "In query_sub_device command" << endl;
-	
-	Tango::DevVarStringArray *ret;
-	
-	Tango::Util *tg = Tango::Util::instance();
-	ret = tg->get_sub_dev_diag().get_sub_devices();
-	
-	return(ret);
-}
-
-
 
 //+----------------------------------------------------------------------------
 //
@@ -925,20 +800,6 @@ void DServer::restart(string &d_name)
 	DeviceImpl *dev_to_del = *ite;
 	
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
-//
-
-	check_lock_owner(dev_to_del,"restart",d_name.c_str());
-	
-//
-// clean the sub-device list for this device
-//
-	Tango::Util *tg = Tango::Util::instance();
-	tg->get_sub_dev_diag().remove_sub_devices (dev_to_del->get_name());
-	tg->get_sub_dev_diag().set_associated_device(dev_to_del->get_name());
-
-//
 // Remove ourself from device list
 //
 
@@ -970,48 +831,31 @@ void DServer::restart(string &d_name)
 	dev_to_del->get_device_attr()->get_event_param(eve);
 
 //
-// Also get device locker parameters if device locked
-//
-	
-	client_addr *cl_addr = NULL;
-	client_addr *old_cl_addr;
-	time_t l_date;
-	DevLong l_ctr,l_valid;
-	
-	if (dev_to_del->is_device_locked() == true)
-	{
-		cl_addr = dev_to_del->get_locker();
-		old_cl_addr = dev_to_del->get_old_locker();
-		l_date = dev_to_del->get_locking_date();
-		l_ctr = dev_to_del->get_locking_ctr();
-		l_valid = dev_to_del->get_lock_validity();
-		dev_to_del->clean_locker_ptrs();
-	}
-
-//
 // If the device was polled, stop polling
 //
 
 	if (dev_pol.empty() == false)
 	{
-		dev_to_del->stop_polling(false);
+		dev_to_del->stop_polling();
 	}
 		
 //
 // Delete the device (deactivate it and remove it)
 //
 	
+	Tango::Util *tg = Tango::Util::instance();
 	PortableServer::POA_ptr r_poa = tg->get_poa();
-	bool py_device = dev_to_del->is_py_device();
-	if (py_device == true)
+	if (dev_to_del->get_exported_flag() == true)
+		r_poa->deactivate_object(dev_to_del->get_obj_id().in());
+	if (dev_to_del->is_py_device() == false)
+		dev_to_del->_remove_ref();
+	else
 	{
 		AutoPyLock PyLo;
 		
 		Device_3Impl *dev_to_del_3 = static_cast<Device_3Impl *>(dev_to_del);		
 		dev_to_del_3->delete_dev();
-	}
-	if (dev_to_del->get_exported_flag() == true)
-		r_poa->deactivate_object(dev_to_del->get_obj_id().in());
+	}	
 	CORBA::release(r_poa);
 		
 //
@@ -1069,57 +913,48 @@ void DServer::restart(string &d_name)
 	delete send;
 	
 //
-// Find the new device
-//
-
-	DeviceImpl *new_dev = NULL;
-
-	vector<Tango::DeviceImpl *> &d_list = dev_cl->get_device_list();
-	for (i = 0;i < d_list.size();i++)
-	{
-		if (d_list[i]->get_name() == lower_d_name)
-		{
-			new_dev = d_list[i];
-			break;
-		}
-	}
-	if (i == d_list.size())
-	{
-		cout3 << "Not able to find the new device" << endl;
-		TangoSys_OMemStream o;
-		o << "Not able to find the new device" << ends;
-		Except::throw_exception((const char *)"API_DeviceNotFound",
-			        	o.str(),
-			        	(const char *)"Dserver::restart()");			
-	}
-	
-//
 // Re-set event parameters (if needed)
 //
-	
-	for (i = 0;i < eve.size();i++)
+
+	if (eve.size() != 0)
 	{
-		Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
-		Tango::Attribute &att = m_attr->get_attr_by_ind(eve[i].attr_id);
-		if (eve[i].change == true)
-			att.set_change_event_sub();
-		if (eve[i].periodic == true)
-			att.set_periodic_event_sub();
-		if (eve[i].quality == true)
-			att.set_quality_event_sub();
-		if (eve[i].archive == true)
-			att.set_archive_event_sub();
-		if (eve[i].user == true)
-			att.set_user_event_sub();
+		vector<Tango::DeviceImpl *> &d_list = dev_cl->get_device_list();
+		DeviceImpl *new_dev = NULL;
+		for (i = 0;i < d_list.size();i++)
+		{
+			if (d_list[i]->get_name() == lower_d_name)
+			{
+				new_dev = d_list[i];
+				break;
+			}
+		}
+		if (i == d_list.size())
+		{
+			cout3 << "Not able to restart event rapidly" << endl;
+			TangoSys_OMemStream o;
+			o << "Not able to restart event rapidly" << ends;
+			Except::throw_exception((const char *)"API_DeviceNotFound",
+				        	o.str(),
+				        	(const char *)"Dserver::restart()");			
+		}
+		
+		for (i = 0;i < eve.size();i++)
+		{
+			Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
+			Tango::Attribute &att = m_attr->get_attr_by_ind(eve[i].attr_id);
+			if (eve[i].change == true)
+				att.set_change_event_sub();
+			if (eve[i].periodic == true)
+				att.set_periodic_event_sub();
+			if (eve[i].quality == true)
+				att.set_quality_event_sub();
+			if (eve[i].archive == true)
+				att.set_archive_event_sub();
+			if (eve[i].user == true)
+				att.set_user_event_sub();
+		}
 	}
 
-//
-// Re-lock device if necessary
-//
-	
-	if (cl_addr != NULL)
-		new_dev->set_locking_param(cl_addr,old_cl_addr,l_date,l_ctr,l_valid);
-		
 }
 
 //+----------------------------------------------------------------------------
@@ -1157,13 +992,6 @@ void ServRestartThread::run(void *ptr)
 
 	DServer *dev = (DServer *)ptr;
 	
-//
-// clean the sub-device list for the server
-//
-	
-	Tango::Util *tg = Tango::Util::instance();
-	tg->get_sub_dev_diag().remove_sub_devices();
-
 //
 // Change the POA manager to discarding state. This is necessary to discard all
 // request arriving while the server restart.
@@ -1212,6 +1040,7 @@ void ServRestartThread::run(void *ptr)
 
 	{
 		AutoPyLock PyLo;
+		
 		dev->init_device();
 	}
 	
@@ -1219,6 +1048,7 @@ void ServRestartThread::run(void *ptr)
 // Restart polling (if any)
 //
 
+	Tango::Util *tg = Tango::Util::instance();
 	tg->polling_configure();
 
 //
@@ -1283,7 +1113,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	try
 	{
 		ret = new Tango::DevVarStringArray(nb_prop);
-		ret->length(nb_prop);
+                ret->length(nb_prop);
 	
 		for (int i = 0;i < nb_prop;i++)
 		{
@@ -1406,12 +1236,92 @@ void *KillThread::run_undetached(void *ptr)
 	omni_thread::self()->set_value(key_py_data,new PyData());
 
 //
-// Shutdown the server
+// Mark the server as shutting down
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	tg->shutdown_server();
-	
+	tg->set_svr_shutting_down(true);
+
+//
+//  Send kill command to the polling thread
+// 
+
+	TangoMonitor &mon = tg->get_poll_monitor();
+	PollThCmd &shared_cmd = tg->get_poll_shared_cmd();
+
+	{	
+		omni_mutex_lock sync(mon);
+
+		shared_cmd.cmd_pending = true;
+		shared_cmd.cmd_code = POLL_EXIT;
+
+		mon.signal();
+
+	}
+	tg->get_polling_thread_object()->join(0);
+	tg->clr_poll_th_ptr();
+					
+//
+// Unregister server device(s) from database
+//
+
+	try
+	{
+		tg->unregister_server();
+	}
+	catch(...) {}
+
+//
+// Delete devices (except the admin one)
+//
+
+
+	{
+		AutoPyLock PyLo;
+		tg->get_dserver_device()->delete_devices();
+	}
+
+//
+// Write file database for server started with the -file option
+//
+
+	if (tg->_FileDb == true)
+	{
+		Database *db_ptr = tg->get_database();
+		delete db_ptr;
+	}
+
+// 	Stop the KeepAliveThread and the EventConsumer Thread when 
+//  	they have been started to receive events.
+
+	EventConsumer *ec = ApiUtil::instance()->get_event_consumer();
+	if (ec != NULL)
+		ec->disconnect_from_notifd();
+
+//
+// If the server has used event, disconnect from the notifd
+// structured push consumer
+//
+
+	EventSupplier *ev = tg->get_event_supplier();
+	if (ev != NULL)
+		ev->disconnect_from_notifd();
+						
+//
+// Shutdown the ORB
+//
+
+	CORBA::ORB_ptr orb = Tango::Util::instance()->get_orb();
+	orb->shutdown(true);
+
+//
+// Cleanup logging stuffs
+//
+
+#ifdef TANGO_HAS_LOG4TANGO
+  	Logging::cleanup();
+#endif
+
 	return NULL;
 }
 
@@ -1514,104 +1424,6 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 	add_class(dc);
 }
 
-//+----------------------------------------------------------------------------
-//
-// method : 		DServer::get_dev_prop()
-// 
-// description : 	Retrieve device properties
-//
-// argin: tg : Tango Util object ptr
-//
-//-----------------------------------------------------------------------------
-
-void DServer::get_dev_prop(Tango::Util *tg)
-{
-
-//
-// Try to retrieve device properties (Polling threads pool conf.)
-//
-
-	if (tg->_UseDb == true)
-	{
-		DbData db_data;
-		
-		db_data.push_back(DbDatum("polling_threads_pool_size"));
-		db_data.push_back(DbDatum("polling_threads_pool_conf"));
-
-		try
-		{		
-			db_dev->get_property(db_data);
-		}
-		catch (Tango::DevFailed &)
-		{
-			TangoSys_OMemStream o;
-			o << "Database error while trying to retrieve device properties for device " << device_name.c_str() << ends;
-
-			Except::throw_exception((const char *)"API_DatabaseAccess",
-					o.str(),
-					(const char *)"DServer::get_dev_prop");
-		}
-
-//
-// If the prop is not defined in db and if the user has defined it in the Util class,
-// takes the user definition
-//
-
-		if (db_data[0].is_empty() == false)
-			db_data[0] >> polling_th_pool_size;
-		else
-		{
-			int p_size = tg->get_polling_threads_pool_size();
-			if (p_size != 0)
-				polling_th_pool_size = p_size;
-		}
-		if (db_data[1].is_empty() == false)
-			db_data[1] >> polling_th_pool_conf;
-	}
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		DServer::check_lock_owner()
-// 
-// description : 	Check in case the device is locked if the client is the 
-//					lock owner
-//
-// argin: dev : The device
-//		  cmd_name : The DServer device command name
-//		  dev_name : The device name
-//
-//-----------------------------------------------------------------------------
-
-void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *dev_name)
-{
-	if (dev->is_device_locked() == true)
-	{
-		if (dev->valid_lock() == true)
-		{
-			client_addr *cl = get_client_ident();
-			if (cl->client_ident == true)
-			{
-				if (*cl != *(dev->get_locker()))
-				{
-					TangoSys_OMemStream o,v;
-					o << "Device " << dev_name << " is locked by another client.";
-					o << " Your request is not allowed while a device is locked." << ends;
-					v << "DServer::" << cmd_name << ends;
-					Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
-				}
-			}
-			else
-			{
-				TangoSys_OMemStream o,v;
-				o << "Device " << dev_name << " is locked by another client.";
-				o << " Your request is not allowed while a device is locked." << ends;
-				v << "DServer::" << cmd_name << ends;
-				Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
-			}
-		}
-	}
-}
 
 } // End of Tango namespace
 

@@ -11,96 +11,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.22  2010/09/30 08:12:59  taurel
-// - Add a new way to write class_factory as a function instead as
-// DServer classs method
-//
-// Revision 3.21  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.20  2010/06/18 13:57:09  taurel
-// - Add a way (using properties) to define a minimum polling period
-//
-// Revision 3.19  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.18  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.17  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.16  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-// Revision 3.15.2.2  2009/06/22 06:58:09  taurel
-// - Fix bug introduced by previous bug fix. It makes the db server crashes.
-//
-// Revision 3.15.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 3.15  2009/02/03 15:15:08  jensmeyer
-// Added a QuerySubDevice command to read the list of opened sub device
-// connections.
-//
-// Revision 3.14  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.13  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.12  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.11  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 3.10  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.9.2.3  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.9.2.2  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.9.2.1  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.9  2007/05/15 07:46:59  taurel
-// - The polling thread is not configured by a separate thread any more.
-// The Add_obj_polling command now support a delta_t to start the first polling
-//
 // Revision 3.8  2007/04/20 14:40:32  taurel
 // - Ported to Windows 64 bits x64 architecture
 //
@@ -262,6 +175,10 @@
 // Imported sources
 //
 //
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _DSERVER_H
@@ -282,17 +199,17 @@ namespace Tango
 //=============================================================================
 
 typedef Tango::DeviceClass *(*Cpp_creator_ptr)(const char *);
-typedef void (*ClassFactoryFuncPtr)(DServer *);
 
-class DServer: public Device_4Impl
+
+class DServer: public Device_3Impl
 {
 public :
-	DServer(DeviceClass *,const char *,const char *,Tango::DevState,const char *);
+	DServer(DeviceClass *,const char *,const char *,
+		Tango::DevState,const char *);
 	~DServer();
 	
 	Tango::DevVarStringArray *query_class();
 	Tango::DevVarStringArray *query_device();
-	Tango::DevVarStringArray *query_sub_device();
 	void kill();
 	void restart(string &);
 	void restart_server();
@@ -306,14 +223,8 @@ public :
 	void rem_obj_polling(const Tango::DevVarStringArray *,bool with_db_upd = true);
 	void stop_polling();
 	void start_polling();
-	void start_polling(PollingThreadInfo *);
 	void add_event_heartbeat();
 	void rem_event_heartbeat();
-	
-	void lock_device(const Tango::DevVarLongStringArray *);
-	Tango::DevLong un_lock_device(const Tango::DevVarLongStringArray *);
-	void re_lock_devices(const Tango::DevVarStringArray *);
-	Tango::DevVarLongStringArray *dev_lock_status(Tango::ConstDevString);
 	
 	void delete_devices();
 
@@ -331,42 +242,23 @@ public :
 	string &get_personal_name() {return instance_name;}
 	string &get_instance_name() {return instance_name;}
 	string &get_full_name() {return full_name;}
-	string &get_fqdn() {return fqdn;}
 	bool get_heartbeat_started() {return heartbeat_started;}
 	void set_heartbeat_started(bool val) {heartbeat_started = val;}
 		
 	vector<DeviceClass *> &get_class_list() {return class_list;}
 	virtual void init_device();
-	
-	long get_poll_th_pool_size() {return polling_th_pool_size;}
-	bool get_opt_pool_usage() {return optimize_pool_usage;}
-	vector<string> get_poll_th_conf() {return polling_th_pool_conf;}
 
-	void check_lock_owner(DeviceImpl *,const char *,const char *);
-	void check_upd_authorized(DeviceImpl *,int,PollObjType,string &);
-
-	TANGO_IMP_EXP static void register_class_factory(ClassFactoryFuncPtr f_ptr) {class_factory_func_ptr = f_ptr;}
-	void _add_class(DeviceClass *dc) {this->add_class(dc);}
-	
 	friend class EventSupplier;
 
 protected :
-	string							process_name;
-	string							instance_name;
-	string							full_name;
-	string 							fqdn;
+	string			process_name;
+	string			instance_name;
+	string			full_name;
 	
-	vector<DeviceClass *>			class_list;
+	vector<DeviceClass *>	class_list;
 	
-	time_t							last_heartbeat;
-	bool							heartbeat_started;
-	
-	long							polling_th_pool_size;
-	vector<string>					polling_th_pool_conf;
-	bool							optimize_pool_usage;
-
-	static ClassFactoryFuncPtr 		class_factory_func_ptr;
-	
+	time_t			last_heartbeat;
+	bool			heartbeat_started;
 private:
 #if ((defined _TG_WINDOWS_) && (defined TANGO_HAS_DLL) && !(defined _TANGO_LIB))
 	__declspec(dllexport) void class_factory();
@@ -375,9 +267,8 @@ private:
 #endif
 	void add_class(DeviceClass *);
 	void create_cpp_class(const char *,const char *);
-	void get_dev_prop(Tango::Util *);
 	
-	bool			from_constructor;
+	bool			from_constructor;	
 };
 
 class KillThread: public omni_thread
@@ -399,8 +290,8 @@ public:
 struct Pol
 {
 	PollObjType 	type;
-	long			upd;
-	string 			name;
+	long		upd;
+	string 		name;
 };
 
 } // End of namespace Tango

@@ -42,8 +42,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;"
+				AdditionalIncludeDirectories="..\..\..\server,..\..\..\client,..\..\resources,$(OMNI_BASE)\win32\include,$(LOG4TANGO_BASE)\win32\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -69,7 +69,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\tango.7.2.5.lib"
+				OutputFile="lib\tango.6.0.0.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -115,14 +115,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
-				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM"
+				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.7.2.5.pdb"
+				ProgramDataBaseFileName=".\lib/tangod.6.0.0.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -141,7 +141,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\tangod.7.2.5.lib"
+				OutputFile="lib\tangod.6.0.0.lib"
 				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
@@ -168,10 +168,6 @@
 			Name="Header files"
 			Filter=".h"
 			>
-			<File
-				RelativePath="..\..\..\client\accessproxy.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\..\client\apiexcept.h"
 				>
@@ -245,10 +241,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\device_4.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\deviceclass.h"
 				>
 			</File>
@@ -262,10 +254,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\dserversignal.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\encoded_attribute.h"
 				>
 			</File>
 			<File
@@ -290,26 +278,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\client\group.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_bitstream.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_const.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_lib.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_memory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\client\lockthread.h"
 				>
 			</File>
 			<File
@@ -361,15 +329,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\subdev_diag.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\idl\tango.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
@@ -409,10 +373,6 @@
 			Name="Source Files"
 			Filter=".cpp"
 			>
-			<File
-				RelativePath="..\..\..\client\accessproxy.cpp"
-				>
-			</File>
 			<File
 				RelativePath="..\..\..\client\api_util.cpp"
 				>
@@ -822,10 +782,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_cache.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\client\dbapi_class.cpp"
 				>
 				<FileConfiguration
@@ -1026,10 +982,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi_utils.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\device.cpp"
 				>
 				<FileConfiguration
@@ -1100,10 +1052,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\device_4.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\deviceclass.cpp"
@@ -1202,10 +1150,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserverlock.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\dserverlog.cpp"
 				>
 				<FileConfiguration
@@ -1278,10 +1222,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\encoded_attribute.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\event.cpp"
 				>
 				<FileConfiguration
@@ -1328,14 +1268,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\eventkeepalive.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\eventqueue.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\eventsupplier.cpp"
@@ -1432,42 +1364,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_bitstream.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_color.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_color_mmx.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_dct.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_dct_mmx.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_decoder.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_encoder.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_memory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\client\lockthread.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\logcmds.cpp"
@@ -1758,10 +1654,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\subdev_diag.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\tangoappender.cpp"
 				>
 				<FileConfiguration
@@ -1904,14 +1796,6 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\utils_polling.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\utils_shut.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\w32win.cpp"

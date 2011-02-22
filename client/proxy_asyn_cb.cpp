@@ -8,85 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- January 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
-//
 // $Log$
-// Revision 3.22  2010/09/12 12:18:23  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.21  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.20  2010/06/25 07:16:35  taurel
-// - Also protect the asynchronous DeviceProxy::read_attributes() methods
-// against multiple times the same attribute in att name list
-//
-// Revision 3.19  2009/12/18 14:51:01  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.18  2009/03/27 13:05:10  taurel
-// - Fix bug due to new Attribute format data member in AttributeValue4
-// structure
-//
-// Revision 3.17  2009/03/27 12:19:37  taurel
-// - Fix bug in read_attribute for IDL 4
-//
-// Revision 3.16  2009/03/13 09:32:27  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.15  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.14  2008/12/17 09:54:44  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.13  2008/10/06 15:02:17  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.12  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.11  2008/09/23 14:38:29  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.10  2008/06/14 11:28:07  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.9  2008/05/20 12:42:30  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.8.2.2  2008/05/20 06:14:21  taurel
-// - Last commit before merge with trunk
-//
-// Revision 3.8.2.1  2008/02/07 15:56:58  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.8  2007/04/20 14:38:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.7  2007/04/16 14:55:16  taurel
 // - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
 // - Ported to omniORB4.1
@@ -220,7 +142,8 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -237,29 +160,15 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 	CORBA::ORB::RequestSeq req_seq;
 	req_seq.length(1);
-
-	if (version >= 4)
-		req_seq[0] = ext->device_4->_request("command_inout_4");
-	else if (version >= 2)
+	
+	if (version == 2)
 		req_seq[0] = device_2->_request("command_inout_2");
 	else	
-		req_seq[0] = device->_request("command_inout");
-	
+		req_seq[0] = device->_request("command_inout");		
 	req_seq[0]->add_in_arg() <<= command;
 	req_seq[0]->add_in_arg() <<= data_in.any.in();
-
-	if (version >= 4)
-	{
-		ClntIdent ci;
-		ApiUtil *au = ApiUtil::instance();
-		ci.cpp_clnt(au->get_client_pid());
-		
+	if (version == 2)
 		req_seq[0]->add_in_arg() <<= source;
-		req_seq[0]->add_in_arg() <<= ci;
-	}
-	else if (version >= 2)
-		req_seq[0]->add_in_arg() <<= source;
-	
 	req_seq[0]->set_return_type(CORBA::_tc_any);
 	req_seq[0]->exceptions()->add(Tango::_tc_DevFailed);
 
@@ -269,9 +178,10 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::CMD_INOUT);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::CMD_INOUT);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 	
@@ -368,7 +278,8 @@ void Connection::get_asynch_replies()
 					break;
 				}
 			
-				remove_asyn_cb_request(this,req);
+				ApiUtil::instance()->get_pasyn_table()->remove_request(this,req);
+				pasyn_cb_ctr--;
 			}
 		}
 		
@@ -403,7 +314,8 @@ void Connection::get_asynch_replies()
 			break;
 		}
 		
-		remove_asyn_cb_request(this,tg_ptr->request);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(this,tg_ptr->request);
+		pasyn_cb_ctr--;
 	}	
 	
 }	
@@ -541,7 +453,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			 (to_except == false))
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -633,7 +545,6 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 
 		const Tango::AttributeValueList *received;
 		const Tango::AttributeValueList_3 *received_3;
-		const Tango::AttributeValueList_4 *received_4;
 		unsigned long nb_received;
 		
 		CORBA::Any &dii_any = req->return_value();
@@ -643,15 +554,10 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			dii_any >>= received;
 			nb_received = received->length();
 		}
-		else if (version == 3)
+		else
 		{
 			dii_any >>= received_3;
 			nb_received = received_3->length();
-		}
-		else
-		{
-			dii_any >>= received_4;
-			nb_received = received_4->length();
 		}
 		dev_attr->resize(nb_received);
 				
@@ -659,10 +565,9 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 		{
 			if (version >= 3)
 			{		
-				if (version == 3)
-					ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
-				else
-					ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
+				ApiUtil::attr_to_device(NULL,
+							&((*received_3)[i]),
+							version,&((*dev_attr)[i]));
 						
 				
 //
@@ -692,7 +597,9 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			}
 			else
 			{
-				ApiUtil::attr_to_device(&((*received)[i]),NULL,version,&((*dev_attr)[i]));
+				ApiUtil::attr_to_device(&((*received)[i]),
+							NULL,
+							version,&((*dev_attr)[i]));
 			}				
 		}
 	}
@@ -794,7 +701,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			 (to_except == false))
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -857,23 +764,14 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 
 void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 {
+	Tango::DevErrorList errors;
 	Tango::NamedDevFailedList err_3;
 
 	CORBA::NVList_ptr req_arg = req->arguments();
 	const Tango::AttributeValueList *att;
-	const Tango::AttributeValueList_4 *att_4;
 	CORBA::NamedValue_ptr nv = req_arg->item(0);
-	long nb_attr = 0;
-	if (version >= 4)
-	{
-		if ((*(nv->value()) >>= att_4) == true)
-			nb_attr = att_4->length();
-	}
-	else
-	{
-		if ((*(nv->value()) >>= att) == true)
-			nb_attr = att->length();
-	}
+	*(nv->value()) >>= att;
+	long nb_attr = att->length();
 					
 //
 // Check if the reply is an exception
@@ -906,16 +804,12 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 	
 				TangoSys_OMemStream desc;
 				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-				if (nb_attr != 0)
+				desc << "\nAttribute(s): ";
+				for (int i = 0;i < nb_attr;i++)
 				{
-					desc << "\nAttribute(s): ";
-					for (int i = 0;i < nb_attr;i++)
-					{
-						(version < 4) ? desc << (*att)[i].name : desc << (*att_4)[i].name;
-					
-						if (i != (nb_attr - 1))
-							desc << ", ";
-					}
+					desc << (*att)[i].name.in();
+					if (i != (nb_attr - 1))
+						desc << ", ";
 				}
 				desc << ends;
 
@@ -946,9 +840,9 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 // server has sent a DevFailed exception
 //
 	
-			const Tango::DevFailed *serv_ex = NULL;
+			const Tango::DevFailed *serv_ex;
 			Tango::DevFailed ex;
-			const Tango::MultiDevFailed *multi_serv_ex = NULL;
+			const Tango::MultiDevFailed *multi_serv_ex;
 			Tango::MultiDevFailed m_ex;
 			TangoSys_OMemStream desc;
 
@@ -958,8 +852,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 				ex = *serv_ex;
 				
 				desc << "Failed to execute write_attributes_asynch on device " << dev_name();
-				if (nb_attr != 0)
-					desc << "\nAttribute(s): ";
+				desc << "\nAttribute(s): ";
 				for (int i = 0;i < nb_attr;i++)
 				{
 					desc << (*att)[i].name.in();
@@ -988,56 +881,33 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 			}
 			else
 			{
-				if ((unk_ex->exception() >>= multi_serv_ex) == true)
-				{
-					m_ex = *multi_serv_ex;
-					err_3 = Tango::NamedDevFailedList(m_ex,
+				unk_ex->exception() >>= multi_serv_ex;
+				m_ex = *multi_serv_ex;
+				err_3 = Tango::NamedDevFailedList(m_ex,
 					       dev_name(),
 					       (const char *)"Connection::Cb_WriteAttr_Request()",
 					       (const char *)"API_AttributeFailed");
-				}
-				else
-				{
-					unk_ex->exception() >>= serv_ex;
-					ex = *serv_ex;
-					
-					desc << "Failed to execute write_attributes_asynch on device " << dev_name();
-					if (nb_attr != 0)
-						desc << "\nAttribute(s): ";
-					for (int i = 0;i < nb_attr;i++)
-					{
-						(version < 4) ? desc << (*att)[i].name : desc << (*att_4)[i].name;
-						
-						if (i != (nb_attr - 1))
-							desc << ", ";
-					}
-					desc << ends;
-
-					err_3.errors.length(1);
-					err_3.errors[0].severity = Tango::ERR;
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
-					string st = desc.str();
-					err_3.errors[0].desc = CORBA::string_dup(st.c_str());
-#else
-					char *ptr = desc.str();
-					err_3.errors[0].desc = CORBA::string_dup(ptr);
-					delete[] ptr;
-#endif
-					err_3.errors[0].origin = CORBA::string_dup("Connection::Cb_WriteAttr_Request()");
-					err_3.errors[0].reason = CORBA::string_dup("API_AttributeFailed");
-
-					err_3.err_list.resize(1);
-					err_3.err_list[0].err_stack = serv_ex->errors;
-					err_3.err_list[0].name = (*att)[0].name.in();				
-					err_3.err_list[0].idx_in_call = 0;				
-				}
 			}			
+	
+			long nb_err = errors.length();
+			errors.length(nb_err + 1);
+			errors[nb_err].severity = Tango::ERR;
+#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+			string st = desc.str();
+			errors[nb_err].desc = CORBA::string_dup(st.c_str());
+#else
+			char *ptr = desc.str();
+			errors[nb_err].desc = CORBA::string_dup(ptr);
+			delete[] ptr;
+#endif
+			errors[nb_err].origin = CORBA::string_dup("Connection::Cb_WriteAttr_Request()");
+			errors[nb_err].reason = CORBA::string_dup("API_AttributeFailed");	
 		}
 		else if (((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL) &&
 			 (to_except == false))
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -1047,12 +917,10 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute write_attributes_asynch on device " << dev_name();
-			if (nb_attr != 0)
-				desc << "\nAttribute(s): ";
+			desc << "\nAttribute(s): ";
 			for (int i = 0;i < nb_attr;i++)
 			{
-				(version < 4) ? desc << (*att)[i].name : desc << (*att_4)[i].name;
-
+				desc << (*att)[i].name.in();
 				if (i != (nb_attr - 1))
 					desc << ", ";
 			}
@@ -1082,16 +950,8 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 //
 		
 	vector<string> att_name;
-	if (version >= 4)
-	{
-		for (int i = 0;i < nb_attr;i++)
-			att_name.push_back((*att_4)[i].name.in());
-	}
-	else
-	{
-		for (int i = 0;i < nb_attr;i++)
-			att_name.push_back((*att)[i].name.in());
-	}		
+	for (int i = 0;i < nb_attr;i++)
+		att_name.push_back((*att)[i].name.in());
 
 	DeviceProxy *local_dev = static_cast<DeviceProxy *>(this);							
 	AttrWrittenEvent *cb_data = new AttrWrittenEvent(local_dev,att_name,err_3);
@@ -1117,6 +977,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 
 void Connection::get_asynch_replies(long call_timeout)
 {
+
 //
 // First check all replies already there
 //
@@ -1140,14 +1001,15 @@ void Connection::get_asynch_replies(long call_timeout)
 			break;
 		}
 		
-		remove_asyn_cb_request(this,tg_ptr->request);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(this,tg_ptr->request);
+		pasyn_cb_ctr--;
 	}	
 
 //
 // If they are requests already sent but without being replied yet
 //
 
-	if (get_pasyn_cb_ctr() != 0)
+	if (pasyn_cb_ctr != 0)
 	{	
 		CORBA::ORB_ptr orb = ApiUtil::instance()->get_orb();
 		CORBA::Request_ptr req;
@@ -1167,7 +1029,7 @@ void Connection::get_asynch_replies(long call_timeout)
 			to_wait.tv_nsec = 20000000;
 #endif				
 				
-			while ((nb > 0) && (get_pasyn_cb_ctr() != 0))
+			while ((nb > 0) && (pasyn_cb_ctr != 0))
 			{
 #ifdef _TG_WINDOWS_
 				Sleep(20);
@@ -1211,7 +1073,8 @@ void Connection::get_asynch_replies(long call_timeout)
 							break;
 						}
 			
-						remove_asyn_cb_request(this,req);
+						ApiUtil::instance()->get_pasyn_table()->remove_request(this,req);
+						pasyn_cb_ctr--;
 					}
 				}
 			}
@@ -1221,7 +1084,7 @@ void Connection::get_asynch_replies(long call_timeout)
 // without replies
 //
 			
-			if ((nb == 0) && (get_pasyn_cb_ctr() != 0))
+			if ((nb == 0) && (pasyn_cb_ctr != 0))
 			{	
 				TangoSys_OMemStream desc;
 				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
@@ -1238,7 +1101,7 @@ void Connection::get_asynch_replies(long call_timeout)
 // device has sent their replies
 //
 
-			while (get_pasyn_cb_ctr() != 0)
+			while (pasyn_cb_ctr != 0)
 			{					
 				orb->get_next_response(req);
 								
@@ -1273,7 +1136,8 @@ void Connection::get_asynch_replies(long call_timeout)
 						break;
 					}
 			
-					remove_asyn_cb_request(this,req);
+					ApiUtil::instance()->get_pasyn_table()->remove_request(this,req);
+					pasyn_cb_ctr--;
 				}
 			}
 		}
@@ -1303,7 +1167,8 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1312,12 +1177,6 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
                 ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
-
-//
-// Check that the caller did not give two times the same attribute
-//
-
-	same_att_name(attr_names,"DeviceProxy::read_attributes_asynch");
 	
 //
 // Create the request object
@@ -1332,19 +1191,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 	for (int i = 0;i < nb_names;i++)
 		names[i] = attr_names[i].c_str();
 
-	if (version == 4)
-	{
-		ClntIdent ci;
-		ApiUtil *au = ApiUtil::instance();
-		ci.cpp_clnt(au->get_client_pid());
-		
-		req_seq[0] = Connection::ext->device_4->_request("read_attributes_4");
-		req_seq[0]->add_in_arg() <<= names;
-		req_seq[0]->add_in_arg() <<= source;
-		req_seq[0]->add_in_arg() <<= ci;
-		req_seq[0]->set_return_type(Tango::_tc_AttributeValueList_4);
-	}
-	else if (version == 3)
+	if (version == 3)
 	{
 		req_seq[0] = Connection::ext->device_3->_request("read_attributes_3");
 		req_seq[0]->add_in_arg() <<= names;
@@ -1372,9 +1219,10 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::READ_ATTR);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::READ_ATTR);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 }
@@ -1408,7 +1256,8 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1427,45 +1276,70 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 	
 
 	Tango::AttributeValueList att;
-	Tango::AttributeValueList_4 att_4;
-
 	long nb_attr = attr_list.size();
-	if (version < 4)
-		att.length(nb_attr);
-	else
-		att_4.length(nb_attr);
+	att.length(nb_attr);
 
 	for (int i = 0;i < nb_attr;i++)
 	{
-		if (version < 4)
-			ApiUtil::device_to_attr(attr_list[i],att[i],device_name);
-		else
-			ApiUtil::device_to_attr(attr_list[i],att_4[i]);
+		att[i].name = attr_list[i].name.c_str();
+		att[i].quality = attr_list[i].quality;
+		att[i].time = attr_list[i].time;
+		att[i].dim_x = attr_list[i].dim_x;
+		att[i].dim_y = attr_list[i].dim_y;		
+
+		if (attr_list[i].LongSeq.operator->() != NULL)
+		{
+			att[i].value <<= attr_list[i].LongSeq.in();
+			continue;
+		}
+		if (attr_list[i].ShortSeq.operator->() != NULL)
+		{	
+			att[i].value <<= attr_list[i].ShortSeq.in();
+			continue;
+		}	
+		if (attr_list[i].DoubleSeq.operator->() != NULL)
+		{	
+			att[i].value <<= attr_list[i].DoubleSeq.in();
+			continue;
+		}
+		if (attr_list[i].StringSeq.operator->() != NULL)
+		{	
+			att[i].value  <<= attr_list[i].StringSeq.in();
+			continue;
+		}
+		if (attr_list[i].FloatSeq.operator->() != NULL)
+		{
+			att[i].value <<= attr_list[i].FloatSeq.in();
+			continue;
+		}
+		if (attr_list[i].BooleanSeq.operator->() != NULL)
+		{	
+			att[i].value <<= attr_list[i].BooleanSeq.in();
+			continue;
+		}	
+		if (attr_list[i].UShortSeq.operator->() != NULL)
+		{	
+			att[i].value <<= attr_list[i].UShortSeq.in();
+			continue;
+		}
+		if (attr_list[i].UCharSeq.operator->() != NULL)
+		{	
+			att[i].value  <<= attr_list[i].UCharSeq.in();
+			continue;
+		}
 	}
 
-	if (version >= 4)
-	{
-		ClntIdent ci;
-		ApiUtil *au = ApiUtil::instance();
-		ci.cpp_clnt(au->get_client_pid());
-		
-		req_seq[0] = ext->device_4->_request("write_attributes_4");
-		req_seq[0]->add_in_arg() <<= att_4;
-		req_seq[0]->add_in_arg() <<= ci;
-		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);
-	}
-	else if (version == 3)
-	{		
-		req_seq[0] = device->_request("write_attributes_3");
-		req_seq[0]->add_in_arg() <<= att;
-		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);
+	if (version < 3)
+	{			
+		req_seq[0] = device->_request("write_attributes");
+		req_seq[0]->exceptions()->add(Tango::_tc_DevFailed);
 	}
 	else
 	{
-		req_seq[0] = device->_request("write_attributes");
-		req_seq[0]->add_in_arg() <<= att;
+		req_seq[0] = device->_request("write_attributes_3");
+		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);
 	}
-	req_seq[0]->exceptions()->add(Tango::_tc_DevFailed);
+	req_seq[0]->add_in_arg() <<= att;
 	
 //
 // Send the request
@@ -1473,9 +1347,10 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 }
@@ -1510,7 +1385,8 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1529,42 +1405,58 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 	
 
 	Tango::AttributeValueList att;
-	Tango::AttributeValueList_4 att_4;
+	att.length(1);
 
-	if (version < 4)
+	att[0].name = attr.name.c_str();
+	att[0].quality = attr.quality;
+	att[0].time = attr.time;
+	att[0].dim_x = attr.dim_x;
+	att[0].dim_y = attr.dim_y;		
+
+	if (attr.LongSeq.operator->() != NULL)
 	{
-		att.length(1);
-		ApiUtil::device_to_attr(attr,att[0],device_name);
+		att[0].value <<= attr.LongSeq.in();
+	}
+	else if (attr.ShortSeq.operator->() != NULL)
+	{	
+		att[0].value <<= attr.ShortSeq.in();
+	}	
+	else if (attr.DoubleSeq.operator->() != NULL)
+	{	
+		att[0].value <<= attr.DoubleSeq.in();
+	}
+	else if (attr.StringSeq.operator->() != NULL)
+	{	
+		att[0].value  <<= attr.StringSeq.in();
+	}
+	else if (attr.FloatSeq.operator->() != NULL)
+	{	
+		att[0].value  <<= attr.FloatSeq.in();
+	}
+	else if (attr.BooleanSeq.operator->() != NULL)
+	{	
+		att[0].value  <<= attr.BooleanSeq.in();
+	}
+	else if (attr.UShortSeq.operator->() != NULL)
+	{	
+		att[0].value  <<= attr.UShortSeq.in();
+	}
+	else if (attr.UCharSeq.operator->() != NULL)
+	{	
+		att[0].value  <<= attr.UCharSeq.in();
+	}
+
+	if (version < 3)
+	{			
+		req_seq[0] = device->_request("write_attributes");
+		req_seq[0]->exceptions()->add(Tango::_tc_DevFailed);
 	}
 	else
-	{	
-		att_4.length(1);
-		ApiUtil::device_to_attr(attr,att_4[0]);
-	}
-
-	if (version >= 4)
-	{
-		ClntIdent ci;
-		ApiUtil *au = ApiUtil::instance();
-		ci.cpp_clnt(au->get_client_pid());
-		
-		req_seq[0] = ext->device_4->_request("write_attributes_4");
-		req_seq[0]->add_in_arg() <<= att_4;
-		req_seq[0]->add_in_arg() <<= ci;
-		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);
-	}
-	else if (version == 3)
 	{
 		req_seq[0] = device->_request("write_attributes_3");
-		req_seq[0]->add_in_arg() <<= att;
 		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);
 	}
-	else
-	{
-		req_seq[0] = device->_request("write_attributes");
-		req_seq[0]->add_in_arg() <<= att;
-	}
-	req_seq[0]->exceptions()->add(Tango::_tc_DevFailed);
+	req_seq[0]->add_in_arg() <<= att;
 	
 //
 // Send the request
@@ -1572,9 +1464,10 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR_SINGLE);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR_SINGLE);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 }

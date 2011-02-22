@@ -1,23 +1,3 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-
 #include <iostream>
 #include <tango.h>
 
@@ -322,7 +302,7 @@ int FileDatabase :: class_lex(string& tmp_word)
 
 
 // ****************************************************
-// Go to the next line                                */
+// Go to the next line                                      */
 // ****************************************************
 void  FileDatabase :: jump_line(ifstream& f) 
 {
@@ -333,7 +313,7 @@ void  FileDatabase :: jump_line(ifstream& f)
 
 void  FileDatabase :: jump_space(ifstream& f)
 {
-	while((CurrentChar<=32) && (CurrentChar>0))
+	while((CurrentChar<=32) && (CurrentChar>0)) 
 		read_char(f);
 }
 
@@ -452,12 +432,12 @@ string FileDatabase:: read_full_word(ifstream& f)
   		read_char(f);
   		while( CurrentChar!='"' && CurrentChar!=0 && CurrentChar!='\n')
 		{
-			ret_word += CurrentChar;
-			read_char(f);
+    			ret_word += CurrentChar;
+    			read_char(f);
   		}
   		if( CurrentChar==0 || CurrentChar=='\n')
   		{
-			cout3 << "Warning: String too long at line " << StartLine << endl;
+    			cout3 << "Warning: String too long at line " << StartLine << endl;
 			TangoSys_MemStream desc;
 			desc << "File database: String too long at line " << StartLine;
 			desc << " in file " << filename << "." << ends;
@@ -466,8 +446,6 @@ string FileDatabase:: read_full_word(ifstream& f)
 				       (const char *)"FileDatabase::read_full_word");
   		}
   		read_char(f);
-		if (ret_word.length() == 0)
-			ret_word = string(lexical_word_null);
   		return ret_word;
 	}
 
@@ -492,7 +470,7 @@ void FileDatabase:: CHECK_LEX(int lt,int le)
 {
    	if( lt!=le )
 	{
-		cout3 << "Error at line " << StartLine << endl;
+    		cout3 << "Error at line " << StartLine << endl;
 		TangoSys_MemStream desc;
 		desc << "File database: Error in file at line " << StartLine;
 		desc << " in file " << filename << "." << ends;
@@ -519,22 +497,24 @@ vector<string> FileDatabase:: parse_resource_value(ifstream& f)
 		lex=class_lex(word);
  
   	/* allow ... ,\ syntax */
-		if( lex==_TG_ASLASH )
+    		if( lex==_TG_ASLASH )
 		{
-			word=read_full_word(f);
+      			word=read_full_word(f);
 			lex=class_lex(word);
-		}
+    		}
      
-		CHECK_LEX(lex,_TG_STRING);
+    		CHECK_LEX(lex,_TG_STRING);
 
-		ret.push_back(word);
-		nbr++;
+    		ret.push_back(word);
+    		nbr++;
      
-		word=read_word(f);
-		lex=class_lex(word);   
+    		word=read_word(f);
+		lex=class_lex(word);
+     
   	}
-
+   
 	return ret;
+   
 }
 
   // ****************************************************
@@ -543,11 +523,11 @@ vector<string> FileDatabase:: parse_resource_value(ifstream& f)
   // ****************************************************
 
 
-std::string FileDatabase::parse_res_file(const std::string &file_name)
+string FileDatabase::parse_res_file(const string& file_name)
 {
-	ifstream f;
-	bool eof=false;
-	int lex;
+    	ifstream f;
+    	bool eof=false;
+    	int lex;
 
 	t_tango_class* un_class;
 	t_device* un_device;
@@ -556,42 +536,41 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 	string family;
 	string member;
 	string name;
-	string prop_name;
+    	string prop_name;
 
-	CrtLine=1;
-	NextChar=' ';
-	CurrentChar=' ';
+    	CrtLine=1;
+    	NextChar=' ';
+    	CurrentChar=' ';
 
-	cout4 << "FILEDATABASE: entering parse_res_file" << endl;
+    	cout4 << "FILEDATABASE: entering parse_res_file" << endl;
+     /* OPEN THE FILE                  */
 
-/* OPEN THE FILE                  */
-
-	f.open (file_name.c_str(), ifstream::in);
-	if ( !f.good() )
-	{
+    	f.open (file_name.c_str(), ifstream::in);
+    	if ( !f.good() )
+    	{
 		TangoSys_MemStream desc;
 		desc << "FILEDATABASE could not open file " << file_name << "." << ends;
 		ApiConnExcept::throw_exception((const char *)"API_DatabaseFileError",
 				       desc.str(),
 				       (const char *)"FileDatabase::parse_res_file");
-	}
+    	}
 
 /* CHECK BEGINING OF CONFIG FILE  */
 
-	word=read_word(f);
-	if( word == "" ) 
+     	word=read_word(f);
+     	if( word == "" ) 
 	{
 		f.close();
-		return file_name + " is empty...";
+        	return file_name + " is empty...";
 	}
-	lex=class_lex(word);
+     	lex=class_lex(word);
 	m_server.name = word;
 	
 /* PARSE                          */
 
-	while( !eof )
-	{
-		switch(lex)
+     	while( !eof )
+     	{
+       		switch(lex)
 		{
 /* Start a resource mame */
          	case _TG_STRING:
@@ -983,21 +962,14 @@ void  FileDatabase :: write_file()
 			int margin = 6 + (*it)->name.size() + 2 + (*itp)->name.size() + 2;
 			string margin_s(margin,' ');
 			vector<string>::iterator iterator_s = (*itp)->value.begin();
-			if ((*iterator_s).length() == 0)
-				(*iterator_s)[0] = ' ';
 			if (iterator_s != (*itp)->value.end())
 			{
 				//f << "\"" << (*iterator_s) << "\"";
-				if ((*iterator_s).length() == 0)
-					f << "\"\"";
-				else
-				{
-					if (iterator_s->find(' ', 0)!=string::npos)
+				if (iterator_s->find(' ', 0)!=string::npos) 
 						f << "\"" ;
 					f << (*iterator_s);
-					if (iterator_s->find(' ', 0)!=string::npos) 
+				if (iterator_s->find(' ', 0)!=string::npos) 
 						f << "\"";
-				}
 				++iterator_s;
 				for(vector<string>::iterator its = iterator_s; its != (*itp)->value.end(); ++its)
 				{
@@ -1010,7 +982,7 @@ void  FileDatabase :: write_file()
 						f << "\"";
 				}
 			}
-			f << endl;
+		f << endl;
 		}
 		f << endl;
 		f << "# CLASS " << (*it)->name << " attribute properties" << endl;
@@ -1250,8 +1222,7 @@ CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 				{
 					prop.value[j] = (*data_in)[index]; index++;
 				}
-			}
-			else 
+			} else 
 			{
 				/* it is a new property */
 				t_property* temp_property = new t_property;
@@ -1270,6 +1241,7 @@ CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 	
 	write_file();
 	return any_ptr;
+
 };
 
 CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
@@ -1365,11 +1337,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 						char num_val_str[256];
 						data_out->length(index + 1 + 1 + (*dev_it)->attribute_properties[j]->properties[l]->value.size());
 						(*data_out)[index] = CORBA::string_dup((*dev_it)->attribute_properties[j]->properties[l]->name.c_str());index++;
-#ifdef TANGO_LONG64
-						sprintf(num_val_str, "%lu", (*dev_it)->attribute_properties[j]->properties[l]->value.size());
-#else
 						sprintf(num_val_str, "%d", (*dev_it)->attribute_properties[j]->properties[l]->value.size());
-#endif
 						(*data_out)[index] = CORBA::string_dup(num_val_str); index++;
 						
 						for(unsigned int ii = 0; ii < (*dev_it)->attribute_properties[j]->properties[l]->value.size(); ii++)
@@ -1588,11 +1556,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 						seq_length = seq_length + 2 + num_val;
 						(*data_out).length(seq_length);
 						(*data_out)[index] = CORBA::string_dup((*data_in)[j]); index++;
-#ifdef TANGO_LONG64
-						sprintf(num_vals_str,"%lu",m_server.classes[i]->properties[m]->value.size());
-#else
 						sprintf(num_vals_str,"%d",m_server.classes[i]->properties[m]->value.size());
-#endif
 						(*data_out)[index] = CORBA::string_dup(num_vals_str); index++;
 						for (unsigned int n = 0; n < num_val; n++)
 						{
@@ -1679,8 +1643,7 @@ CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 					prop.value[j] = (*data_in)[index]; index++;
 					//db_data[i] >> prop.value; 
 				}
-			}
-			else 
+			} else 
 			{
 				/* it is a new property */
 				t_property* temp_property = new t_property;
@@ -1800,11 +1763,7 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 					char num_val_str[256];
 					data_out->length(index + 1 + 1 + classe_trovata.attribute_properties[j]->properties[l]->value.size());
 					(*data_out)[index] = CORBA::string_dup(classe_trovata.attribute_properties[j]->properties[l]->name.c_str());index++;
-#ifdef TANGO_LONG64
-					sprintf(num_val_str, "%lu", classe_trovata.attribute_properties[j]->properties[l]->value.size());
-#else
 					sprintf(num_val_str, "%d", classe_trovata.attribute_properties[j]->properties[l]->value.size());
-#endif
 					(*data_out)[index] = CORBA::string_dup(num_val_str); index++;
 				 //(*data_out)[index] = CORBA::string_dup(classe_trovata.attribute_properties[j]->properties[l]->name.c_str());index++;
 				 //string temp_value("");
@@ -1943,13 +1902,15 @@ CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 { 
 	CORBA::Any* any_ptr = new CORBA::Any();	
+//	Tango::DevVarStringArray* data_in  = new DevVarStringArray;
 	const Tango::DevVarStringArray* data_in;
 	Tango::DevVarStringArray* data_out  = new DevVarStringArray;
 	
 	cout4 << "FILEDATABASE: entering DbGetDeviceList" << endl;
 
 	send >>= data_in;
-	
+
+		
 	if (data_in->length() == 2) 
 	{
 		if ( equalsIgnoreCase((*data_in)[0].in(), m_server.name + "/" + m_server.instance_name))
@@ -1971,9 +1932,6 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 			
 			if (i == m_server.classes.size())
 			{
-				delete any_ptr;
-				delete data_out;
-
 				TangoSys_MemStream desc;
 				desc << "File database: Can't find class " << (*data_in)[1];
 				desc << " in file " << filename << "." << ends;
@@ -1982,21 +1940,14 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 				               			(const char *)"FileDatabase::DbGetDeviceList");
 			}
 		}
-		else
-		{
-			delete any_ptr;
-			delete data_out;
-
-			TangoSys_MemStream desc;
-			desc << "File database: Can't find device server " << (*data_in)[0];
-			desc << " in file " << filename << "." << ends;
-			ApiConnExcept::throw_exception((const char *)"API_DatabaseFileError",
-				               			desc.str(),
-				               			(const char *)"FileDatabase::DbGetDeviceList");
-		}
 	}
 
-	(*any_ptr) <<= data_out;
+	(*any_ptr) <<= data_out;	
+	//  (*any_ptr) <<= (*data_out);
+	//CORBA::Any_var* any_var = new CORBA::Any_var;
+	//(*any_var) = any_ptr;
+	
+	//return *any_var;
 	return any_ptr;
 };
 
@@ -2012,17 +1963,9 @@ CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){
 	(*data_out)[1] = CORBA::string_dup("");
 	(*data_out)[2] = CORBA::string_dup("Running since ----");
 	(*data_out)[3] = CORBA::string_dup("");
-#ifdef TANGO_LONG64
-	sprintf(temp_str,"Devices defined = %lu", m_server.devices.size());
-#else
 	sprintf(temp_str,"Devices defined = %d", m_server.devices.size());
-#endif
 	(*data_out)[4] = CORBA::string_dup(temp_str);
-#ifdef TANGO_LONG64
-	sprintf(temp_str,"Devices exported = %lu", m_server.devices.size());
-#else
 	sprintf(temp_str,"Devices exported = %d", m_server.devices.size());
-#endif
 	(*data_out)[5] = CORBA::string_dup(temp_str);
 	(*data_out)[6] = CORBA::string_dup("Device servers defined = 1");
 	(*data_out)[7] = CORBA::string_dup("Device servers exported = 1");
@@ -2233,7 +2176,7 @@ CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
 	send >>= data_in;
 	
 	data_out->length(2);
-	sprintf(num_attr_str,"%lud",data_in->length()-1);
+	sprintf(num_attr_str,"%lu",data_in->length()-1);
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]);
 	(*data_out)[1] = CORBA::string_dup(zero_str);
 	
@@ -2319,55 +2262,5 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 };
 
 
-//-----------------------------------------------------------------------------
-//
-// method :			FileDatabase::write_event_channel_ior() -
-// 
-// description : 	Method to write the event channel ior into the file
-//
-// argument : in :	dserver : The DS process name (exec/instance)
-//					ec_ior : The event channel IOR
-//
-//-----------------------------------------------------------------------------
-
-void FileDatabase::write_event_channel_ior(string &dserver,string &ior_string)
-{
-
-//
-// Do we already have this info in file?
-//
-
-	unsigned int i;
-
-	for(i = 0; i < m_server.classes.size(); i++)
-	{
-		if ( equalsIgnoreCase (NOTIFD_CHANNEL, m_server.classes[i]->name))
-		{
-
-//
-// Yes, we have it, simply replace the old IOR by the new one (as device name!)
-//
-
-			m_server.classes[i]->devices[0]->name = ior_string;
-			break;
-		}
-	}
-			
-	if (i == m_server.classes.size())
-	{
-
-//
-// Add the pseudo notifd channel class
-//
-
-		t_device *ps_dev = new t_device;
-		ps_dev->name = ior_string;
-		t_tango_class *tg_cl = new t_tango_class;
-		tg_cl->devices.push_back(ps_dev);
-		tg_cl->name = NOTIFD_CHANNEL;
-
-		m_server.classes.push_back(tg_cl);
-	}
-}
 
 } // end of namespace Tango

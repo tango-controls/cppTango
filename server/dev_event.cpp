@@ -11,50 +11,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		J.Meyer + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.11  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.10  2009/01/29 15:25:41  taurel
-// - First implementation of the Data Ready event
-//
-// Revision 3.9  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.8  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.7  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.6  2008/09/04 13:19:30  taurel
-// - Add push_event() feature for attribute of the DevEncoded data type
-//
-// Revision 3.5  2007/04/20 14:40:28  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.4  2007/04/16 14:56:36  taurel
 // - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
 // - Ported to omniORB4.1
@@ -71,6 +30,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // - Modified the DeviceImpl::push_event() method used to send user event.
 // It is now coherent with the other events type (change and archhive)
 //
+//
+//
+// copyleft :		European Synchrotron Radiation Facility
+//			BP 220, Grenoble 38043
+//			FRANCE
+//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -78,7 +43,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
-#include <eventsupplier.h>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -340,38 +304,6 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 
 	// set the attribute value
 	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_event(filt_names,filt_vals);
-}
-
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
-			     Tango::DevEncoded *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_event(filt_names,filt_vals);
-}
-
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
-			     Tango::DevString *p_str, Tango::DevUChar *p_data, long size , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_str,p_data, size, release);
 	// push the event
 	attr.fire_event(filt_names,filt_vals);
 }
@@ -670,52 +602,6 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
-			     Tango::DevEncoded *p_data,struct _timeb &t, Tango::AttrQuality qual,
-			     long x,long y ,bool release)
-#else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
-			     Tango::DevEncoded *p_data,struct timeval &t, Tango::AttrQuality qual,
-			     long x,long y ,bool release)
-#endif												
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value_date_quality (p_data, t, qual, x, y, release);
-	// push the event
-	attr.fire_event(filt_names,filt_vals);
-}
-
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
-			     Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size, struct _timeb &t, Tango::AttrQuality qual,
-			     bool release)
-#else
-void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
-			     Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size, struct timeval &t, Tango::AttrQuality qual,
-			     bool release)
-#endif												
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value_date_quality (p_str_data,p_data, size,t, qual, release);
-	// push the event
-	attr.fire_event(filt_names,filt_vals);
-}
-
 //////////////////// Push change event methods!!! //////////////////////////////////////
 
 
@@ -975,35 +861,6 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data, l
 	attr.fire_change_event();
 }
 
-void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_change_event();
-}
-
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data, long size, bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_str_data, p_data, size, release);
-	// push the event
-	attr.fire_change_event();
-}
 //+-------------------------------------------------------------------------
 //
 // method :			DeviceImpl::push_change_event
@@ -1297,52 +1154,6 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevState *p_data,
 	attr.fire_change_event();
 }
 
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data, 
-											  struct _timeb &t, Tango::AttrQuality qual,
-											  long x,long y ,bool release)
-#else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevEncoded *p_data, 
-												struct timeval &t, Tango::AttrQuality qual,
-												long x,long y ,bool release)
-#endif												
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value_date_quality (p_data, t, qual, x, y, release);
-	// push the event
-	attr.fire_change_event();
-}
-
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size, 
-											  struct _timeb &t, Tango::AttrQuality qual,
-											  bool release)
-#else
-void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_data,Tango::DevUChar *p_data,long size, 
-												struct timeval &t, Tango::AttrQuality qual,
-												bool release)
-#endif												
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value_date_quality (p_str_data,p_data, size, t, qual, release);
-	// push the event
-	attr.fire_change_event();
-}
-
 
 //////////////////// Push change archive methods!!! //////////////////////////////////////
 
@@ -1602,35 +1413,6 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data, 
 	attr.fire_archive_event();
 }
 
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data, long x, long y , bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_data, x, y, release);
-	// push the event
-	attr.fire_archive_event();
-}
-
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data, long size, bool release)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value (p_str_data,p_data, size, release);
-	// push the event
-	attr.fire_archive_event();
-}
 
 //+-------------------------------------------------------------------------
 //
@@ -1923,85 +1705,6 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevState *p_data,
 	attr.set_value_date_quality (p_data, t, qual, x, y, release);
 	// push the event
 	attr.fire_archive_event();
-}
-
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data, 
-											  struct _timeb &t, Tango::AttrQuality qual,
-											  long x,long y ,bool release)
-#else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevEncoded *p_data, 
-												struct timeval &t, Tango::AttrQuality qual,
-												long x,long y ,bool release)
-#endif
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value_date_quality (p_data, t, qual, x, y, release);
-	// push the event
-	attr.fire_archive_event();
-}
-
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data,long size,
-											  struct _timeb &t, Tango::AttrQuality qual,
-											  bool release)
-#else
-void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_data, Tango::DevUChar *p_data,long size, 
-												struct timeval &t, Tango::AttrQuality qual,
-												bool release)
-#endif
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-	
-	// search the attribute from the attribute list		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// set the attribute value
-	attr.set_value_date_quality (p_str_data, p_data, size, t, qual, release);
-	// push the event
-	attr.fire_archive_event();
-}
-
-
-
-//+-------------------------------------------------------------------------
-//
-// method :			DeviceImpl::push_data_ready_event
-// 
-// description :	Push an attribute data ready event
-//
-// argument: in :	attr_name : name of the attribute
-//					ctr : user counter (optional)
-//
-//--------------------------------------------------------------------------
-
-void DeviceImpl::push_data_ready_event (const string &attr_name, Tango::DevLong ctr)
-{
-
-	Tango::Util *tg = Tango::Util::instance();
-	EventSupplier *ev_supply = tg->get_event_supplier();
-	if (ev_supply == NULL)
-		tg->create_event_supplier();
-	
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-
-	// search the attribute from the attribute list to check that it exist		
-	Tango::MultiAttribute *attr_list = get_device_attr();
-	Tango::Attribute &attr = attr_list->get_attr_by_name (attr_name.c_str());
-
-	// push the event
-	ev_supply->push_att_data_ready_event(this,attr_name,attr.get_data_type(),ctr);
-
 }
 
 

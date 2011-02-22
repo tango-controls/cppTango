@@ -6,25 +6,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+// last changed	- 17/10/2000 
 //
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// version 	- 1.0
 //
 
 #if HAVE_CONFIG_H
@@ -276,73 +260,5 @@ void DbDevice::delete_attribute_property(DbData &db_data)
 	}
 	return;
 }
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::check_access_control() - public method to return device access right
-//
-//-----------------------------------------------------------------------------
-
-AccessControlType DbDevice::check_access_control()
-{
-	if (ext_dbase == true)
-		return dbase->check_access_control(name);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		Database *db = au->get_db_vect()[db_ind];
-		AccessControlType acc = db->check_access_control(name);
-		return acc;
-	}
-}
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::clear_access_except_errors() - public method to clear memorized
-// access control exception
-//
-//-----------------------------------------------------------------------------
-
-void DbDevice::clear_access_except_errors()
-{
-	if (ext_dbase == true)
-		dbase->clear_access_except_errors();
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->clear_access_except_errors();
-	}	
-}
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::get_property_list() - public method to get device properties list
-// from the database
-//
-//-----------------------------------------------------------------------------
-
-void DbDevice::get_property_list(const string &wildcard,vector<string> &prop_list)
-{
-	ApiUtil *au = ApiUtil::instance();
-	DbServerCache *dsc;
-	if (au->in_server() == true)
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		dsc = tg->get_db_cache();
-	}
-	else
-		dsc = NULL;
-	
-	if (ext_dbase == true)
-	{
-		dbase->get_device_property_list(name, wildcard, prop_list, dsc);
-	}
-	else
-	{
-		(au->get_db_vect())[db_ind]->get_device_property_list(name, wildcard, prop_list);
-	}
-	return;
-}
-
 
 } // End of Tango namespace

@@ -10,61 +10,9 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.14  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.13  2009/03/30 15:02:58  taurel
-// - Fix last bugs before Tango 7 ??
-//
-// Revision 3.12  2009/03/13 09:32:27  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.11  2009/02/23 14:27:53  taurel
-// - Added a DeviceProxy::get_property_list() method
-//
-// Revision 3.10  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.9  2008/10/06 15:02:16  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.8  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.7  2008/06/14 11:28:07  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.6  2008/05/20 12:42:29  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.5  2008/03/11 14:36:44  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-// Revision 3.2.2.1  2008/02/07 15:56:58  taurel
-// - First implementation of the Controlled Access done
-//
 // Revision 3.4  2008/01/25 15:45:58  taurel
 // - Some changes in the Db cache
 // - A lighter system to shutdown DS in case of dynamic attribute
@@ -80,6 +28,10 @@ static const char *RcsId = "$Id$";
 // - Add DB server cache in DS used during DS startup sequence
 // - Comment out the sleep time during DS startup sequence
 //
+//
+// copyleft :		European Synchrotron Radiation Facility
+//					BP 220, Grenoble 38043
+//					FRANCE
 //
 //-============================================================================
 
@@ -118,9 +70,10 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 	{
 		received = db->fill_server_cache(ds_name,host);
 	}
-	catch (Tango::DevFailed &)
+	catch (Tango::DevFailed &e)
 	{
 		cout3 << "Got an exception while getting cache data from database !!" << endl;
+//		Tango::Except::print_exception(e);
 		throw;
 	}
 	
@@ -423,7 +376,7 @@ const DevVarStringArray *DbServerCache::get_class_property(DevVarStringArray *in
 // 	in :	in_param : The object name followed by the wanted
 //					   property names
 //			dev_prop : Boolean set to true in case of device property.
-//					   For device property, a undefined prop is returned with
+//					   For device property, a undefined prop is retruened with
 //					   a value set to " " !
 //  out : obj : Reference to the structure which will be initialsed by this
 //				method
@@ -856,9 +809,6 @@ DbServerCache::~DbServerCache()
 	if (adm_dev_prop.props_idx != NULL)
 		delete [] adm_dev_prop.props_idx;
 	
-	if (ctrl_serv_prop.props_idx != NULL)
-		delete [] ctrl_serv_prop.props_idx;
-	
 	for (int cl_loop = 0;cl_loop < class_nb;cl_loop++)
 	{
 		if (classes_idx[cl_loop].class_prop.props_idx != NULL)
@@ -1018,194 +968,6 @@ const DevVarStringArray *DbServerCache::get_obj_property(DevVarStringArray *in_p
 	}			
 	
 	return &ret_obj_prop;
-}
-
-//-----------------------------------------------------------------------------
-//
-//  DbServerCache::get_device_property_list()
-//
-//	This method returns to the caller the device property names
-//	The returned data are the same than the one returned by
-//  the classical API
-//
-// 	in :	in_param : The device name followed by a wildcard
-//
-//	This method returns a pointer to a DevVarStringArray initilised
-//  with the device property names
-//-----------------------------------------------------------------------------
-
-
-const DevVarStringArray *DbServerCache::get_device_property_list(DevVarStringArray *in_param)
-{
-
-//
-// There is a special case for the dserver admin device
-//
-	
-	if (TG_strncasecmp((*in_param)[0],"dserver/",8) == 0)
-	{
-		ret_prop_list.length(0);	
-		get_obj_prop_list(in_param,adm_dev_prop);
-	}
-	else
-	{
-		int class_ind,dev_ind;
-		int res = find_dev_att((*in_param)[0],class_ind,dev_ind);
-		if (res == -1)
-		{
-			TangoSys_OMemStream o;
-			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
-
-			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
-										   (const char *)"DbServerCache::get_device_property_list");
-		}
-		else
-		{
-			ret_prop_list.length(0);		
-			get_obj_prop_list(in_param,classes_idx[class_ind].devs_idx[dev_ind].dev_prop);			
-		}
-	}
-	
-	return &ret_prop_list;
-}
-
-//-----------------------------------------------------------------------------
-//
-//  DbServerCache::get_obj_prop_list()
-//
-//	This method retrieves device property list for a device
-//
-// 	in :	in_param : The device name followed by a wildcard
-//			obj : The device object in the cache
-//
-//	This method returns a pointer to a DevVarStringArray initialised
-//  with the device property names
-//-----------------------------------------------------------------------------
-
-void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &obj)
-{
-
-//
-// First analyse the wildcard
-//
-
-	bool before,after,wildcard_used;
-	string before_str;
-	string after_str;
-	string wildcard((*in_param)[1]);
-
-	transform(wildcard.begin(),wildcard.end(),wildcard.begin(),::tolower);
-
-	string::size_type pos = wildcard.find('*');
-	if (pos != string::npos)
-	{
-		wildcard_used = true;
-		if (pos == 0)
-		{
-			if (wildcard.size() == 1)
-			{
-				before = false;
-				after = false;
-			}
-			else
-			{
-				before = false;
-				after = true;
-				after_str = wildcard.substr(pos + 1);
-			}
-		}
-		else
-		{
-			before = true;
-			before_str = wildcard.substr(0,pos);
-			if (pos == wildcard.size() - 1)
-				after = false;
-			else
-			{
-				after = true;
-				after_str = wildcard.substr(pos + 1);
-			}
-		}
-	}
-	else
-		wildcard_used = false;
-	
-	int ret_length = 1;
-	int obj_prop = obj.prop_nb;
-	
-	int lo;
-	string::size_type pos_after,pos_before;
-
-//
-// A loop on each prop.
-//
-
-	for (lo = 0;lo < obj_prop * 2;lo = lo + 2)
-	{		
-
-//
-// Check according to the user wildcard, if we have to returned this property name
-// Note: The property name is case independant
-//
-
-		bool store = false;
-		if (wildcard_used == true)
-		{
-			if (before == false)
-			{
-				if (after == false)
-					store = true;
-				else
-				{
-					string tmp_name((*data_list)[obj.props_idx[lo]]);
-					transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-					
-					pos_after = tmp_name.rfind(after_str);
-					if ((pos_after != string::npos) && (pos_after == (tmp_name.size() - after_str.size())))
-						store = true;
-				}
-			}
-			else
-			{
-				string tmp_name((*data_list)[obj.props_idx[lo]]);
-				transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-
-				if (after == false)
-				{
-					pos_before = tmp_name.find(before_str);
-					if ((pos_before != string::npos) && (pos_before == 0))
-						store = true;
-				}
-				else
-				{
-					pos_before = tmp_name.find(before_str);
-					pos_after = tmp_name.rfind(after_str);
-					if ((pos_before != string::npos) && (pos_before == 0) &&
-						(pos_after != string::npos) && (pos_after == (tmp_name.size() - after_str.size())))
-						store = true;
-				}
-			}
-		}
-		else
-		{
-			string tmp_name((*data_list)[obj.props_idx[lo]]);
-			transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-
-			if (tmp_name == wildcard)
-				store = true;
-		}
-
-//
-// Store the property name if decided
-//
-
-		if (store == true)
-		{
-			ret_prop_list.length(ret_length);
-			ret_prop_list[ret_length - 1] = CORBA::string_dup((*data_list)[obj.props_idx[lo]]);		
-			ret_length = ret_length + 1;
-		}
-	}
 }
 
 

@@ -13,82 +13,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.16  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.15  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-// Revision 3.14.2.1  2010/06/21 13:26:28  taurel
-// - Fix possible deadlock due to attribute mutex management.
-// This is a SourceForge bug
-//
-// Revision 3.14  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.13  2009/02/27 13:26:46  taurel
-// - Small changes for Solaris
-//
-// Revision 3.12  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.11  2008/12/19 14:27:08  taurel
-// - First changes for compatibility between IDL 3 and IDL 4
-//
-// Revision 3.10  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.9  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.8  2008/07/03 11:29:27  taurel
-// - Clean-up memory allocation in set_value() methods
-// - Continue Device_4 implementation in fire_xxx event methods
-//
-// Revision 3.7  2008/05/20 12:44:12  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.6.2.3  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.6.2.2  2007/11/20 14:40:19  taurel
-// - Add the new way to retrieve command history from polling buffer
-// implemented in Tango V7
-//
-// Revision 3.6.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
-// Revision 3.6  2007/04/20 14:41:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.5  2007/03/29 07:08:10  taurel
 // - Change some data types for 64 bits compatibility
 //
@@ -206,6 +133,12 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // Revision 2.0  2002/04/09 14:45:11  taurel
 // See Tango WEB pages for list of changes
+//
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //-============================================================================
 
@@ -328,16 +261,6 @@ void PollObj::insert_data(Tango::AttributeValueList_3 *res,
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList_4 *res,
-			  struct timeval &when,
-			  struct timeval &needed)
-{
-	omni_mutex_lock(*this);
-
-	ring.insert_data(res,when,true);
-	needed_time = needed;
-}
-
 //-------------------------------------------------------------------------
 //
 // method : 		PollObj::insert_except
@@ -422,14 +345,6 @@ Tango::AttributeValue_3 &PollObj::get_last_attr_value_3(bool lock)
 	return ring.get_last_attr_value_3();
 }
 
-Tango::AttributeValue_4 &PollObj::get_last_attr_value_4(bool lock)
-{
-	if (lock == true)
-		omni_mutex_lock(*this);
-	
-	return ring.get_last_attr_value_4();
-}
-
 //-------------------------------------------------------------------------
 //
 // method : 		PollObj::update_upd
@@ -474,20 +389,13 @@ void PollObj::get_cmd_history(long n,Tango::DevCmdHistoryList *ptr)
 	ring.get_cmd_history(n,ptr);	
 }
 
-void PollObj::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgType &loc_type)
-{
-	omni_mutex_lock(*this);
-	
-	ring.get_cmd_history(n,ptr,loc_type);	
-}
-
 //-------------------------------------------------------------------------
 //
 // method : 		PollObj::get_attr_history
 // 
 // description : 	This method get command history from the ring buffer
 //
-// argument : in :	- n : record number
+// argument : in :	- n : recodr number
 //			- ptr : Pointer to the sequence where command result
 //				should be stored
 //			- type : The attribute type
@@ -520,20 +428,5 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long attr
 		}
 	}
 }
-
-void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_type)
-{
-	omni_mutex_lock(*this);
-	
-	ring.get_attr_history(n,ptr,attr_type);
-}
-
-void PollObj::get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long attr_type)
-{
-	omni_mutex_lock(*this);
-	
-	ring.get_attr_history_43(n,ptr,attr_type);
-}
-
 
 } // End of Tango namespace

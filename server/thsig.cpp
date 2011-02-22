@@ -14,27 +14,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
+// $Revision$
+//
+// copyleft :           European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
-// $Revision$
 //
 //-=============================================================================
 
@@ -44,9 +28,9 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <dserversignal.h>
+#include <eventsupplier.h>
 
 extern omni_thread::key_t key_py_data;
-
 namespace Tango
 {
 
@@ -92,20 +76,20 @@ void *DServerSignal::ThSig::run_undetached(void *ptr)
 		// sigwait() under linux might return an errno number without initialising the
 		// signo variable. Do a ckeck here to avoid problems!!!
 	   if ( ret != 0 )
-	   {
-		   cout4 << "Signal thread awaken on error " << ret << endl;
-		   continue;
-	   }
+			{
+			cout4 << "Signal thread awaken on error " << ret << endl;
+			continue;
+			}
 			
-	   cout4 << "Signal thread awaken for signal " << signo << endl;
+		cout4 << "Signal thread awaken for signal " << signo << endl;
 
-	   if (signo == SIGHUP)
-		   continue;
+		if (signo == SIGHUP)
+			continue;
 #else
-	   WaitForSingleObject(ds->win_ev,INFINITE);		
-	   signo = ds->win_signo;
+		WaitForSingleObject(ds->win_ev,INFINITE);		
+		signo = ds->win_signo;
 		
-	   cout4 << "Signal thread awaken for signal " << signo << endl;
+		cout4 << "Signal thread awaken for signal " << signo << endl;
 #endif		
 
 //
@@ -190,7 +174,97 @@ void *DServerSignal::ThSig::run_undetached(void *ptr)
 			{
 				try
 				{
-					tg->shutdown_server();
+				
+//
+// Stopping a device server means :
+//		- Mark the server as shutting down
+//  	- Send kill command to the polling thread
+//    - Join with this polling thread
+//	   - Unregister server in database
+//	   - Delete devices (except the admin one)
+//    - Stop the KeepAliveThread and the EventConsumer Thread when 
+//      they have been started to receive events
+//	   - Force writing file database in case of 
+//	   - Shutdown the ORB
+//	   - Cleanup Logging
+//
+
+					tg->set_svr_shutting_down(true);
+					
+					// send the exit command to the polling thread
+					
+					TangoMonitor &mon = tg->get_poll_monitor();
+					PollThCmd &shared_cmd = tg->get_poll_shared_cmd();
+
+					{	
+						omni_mutex_lock sync(mon);
+
+						shared_cmd.cmd_pending = true;
+						shared_cmd.cmd_code = POLL_EXIT;
+
+						mon.signal();
+
+					}
+					// join with the polling thread
+					
+					void *dummy_ptr;
+					tg->get_polling_thread_object()->join(&dummy_ptr);
+					
+					// Unregister the server in the database 
+					tg->clr_poll_th_ptr();
+					try
+					{
+      	   				tg->unregister_server();
+					}
+					catch(...) {}
+					
+					// Delete the devices (except the admin one)
+					// Protect python data 
+					omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
+					PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
+					lock_ptr->Get();
+						
+					tg->get_dserver_device()->delete_devices();
+				
+					lock_ptr->Release();
+					
+					// 	Stop the KeepAliveThread and the EventConsumer Thread when 
+					//  	they have been started to receive events.					
+					
+					EventConsumer *ec = ApiUtil::instance()->get_event_consumer();
+					if (ec != NULL)
+						ec->disconnect_from_notifd();					
+					
+					// diconnect the server from the nofifd, when it was connected
+					
+					EventSupplier *ev = tg->get_event_supplier();
+					if (ev != NULL)
+						ev->disconnect_from_notifd();
+						
+					// close access to file database when used
+						
+					if (tg->_FileDb == true)
+					{
+						Database *db_ptr = tg->get_database();
+						delete db_ptr;
+						cout4 << "Database object deleted" << endl;
+					}
+					
+					// shutdown the ORB
+					
+					cout4 << "Going to shutdown ORB" << endl;
+					CORBA::ORB_ptr orb = tg->get_orb();
+					orb->shutdown(true);
+//					CORBA::release(orb);
+					cout4 << "ORB shutdown" << endl;
+
+#ifdef TANGO_HAS_LOG4TANGO
+					// clean-up the logging system
+					
+	  				Logging::cleanup();
+					cout4 << "Logging cleaned-up" << endl;
+#endif
+
 				}
 				catch(...)
 				{

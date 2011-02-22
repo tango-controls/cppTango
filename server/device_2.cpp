@@ -15,78 +15,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.27  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.26  2009/04/29 14:33:10  jensmeyer
-// Corrected sub device diagnostics when accessing
-// internal devices in a server.
-//
-// Revision 3.25  2009/03/18 12:18:42  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
-// Revision 3.24  2009/02/03 15:12:57  jensmeyer
-// Added hooks to store the device name as per thread data for sub device
-// diagnostics.
-//
-// Revision 3.23  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.22  2008/12/19 14:27:08  taurel
-// - First changes for compatibility between IDL 3 and IDL 4
-//
-// Revision 3.21  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.20  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.19  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.18  2008/09/23 14:59:32  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.17  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.16  2008/05/20 12:44:10  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.15.2.2  2008/02/07 15:58:13  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.15.2.1  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.15  2007/04/20 14:40:28  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.14  2007/04/16 14:56:36  taurel
 // - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
 // - Ported to omniORB4.1
@@ -310,6 +241,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 2.0  2002/04/09 14:45:09  taurel
 // See Tango WEB pages for list of changes
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -399,36 +335,9 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	
 //
 // Record operation request in black box
-// If this method is executed with the request to store info in
-// blackbox (store_in_bb == true), this means that the request arrives
-// through a Device_2 CORBA interface. Check locking feature in this
-// case. Otherwise the request has arrived through Device_4 and the check
-// is already done
 //
 
-	if (ext->store_in_bb == true)
-	{
-		blackbox_ptr->insert_cmd(in_cmd,2,source);
-		
-//
-// Do not check lock validity if State or Status is requested using command
-//
-
-		bool state_status_cmd = false;
-		if ((TG_strcasecmp(in_cmd,"state") == 0) || (TG_strcasecmp(in_cmd,"status") == 0))
-			state_status_cmd = true;
-			
-//
-// Check if the device is locked and if it is valid
-// If the lock is not valid any more, clear it
-//
-
-		if (state_status_cmd == false)
-		{
-			check_lock("command_inout2",in_cmd);
-		}
-	}
-	ext->store_in_bb = true;
+	blackbox_ptr->insert_cmd(in_cmd,2,source);
 
 //
 // If the source parameter specifies device, call the command_inout method
@@ -653,16 +562,8 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			if ((state_cmd == true) || (status_cmd == true))
 			{
 				omni_mutex_lock sync(*polled_cmd);
-				if (get_dev_idl_version() < 4)
-				{
-					Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
-					ret = attr2cmd(att_val,state_cmd,status_cmd);
-				}
-				else
-				{
-					Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
-					ret = attr2cmd(att_val,state_cmd,status_cmd);
-				}
+				Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
+				ret = attr2cmd(att_val,state_cmd,status_cmd);
 			}
 			else
 				ret = polled_cmd->get_last_cmd_result();
@@ -675,16 +576,8 @@ throw (Tango::DevFailed, CORBA::SystemException)
 				if ((state_cmd == true) || (status_cmd == true))
 				{
 					omni_mutex_lock sync(*polled_cmd);
-					if (get_dev_idl_version() < 4)
-					{
-						Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
-						ret = attr2cmd(att_val,state_cmd,status_cmd);
-					}
-					else
-					{
-						Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
-						ret = attr2cmd(att_val,state_cmd,status_cmd);					
-					}
+					Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
+					ret = attr2cmd(att_val,state_cmd,status_cmd);
 				}
 				else
 					ret = polled_cmd->get_last_cmd_result();
@@ -725,318 +618,301 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	bool polling_failed = false;
 	Tango::AttributeValueList *back = NULL;
 
-		  
-//
-//  Write the device name into the per thread data for 
-//  sub device diagnostics.
-//  Keep the old name, to put it back at the end!
-//  During device access inside the same server,
-//  the thread stays the same!
-//
-	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
-	sub.set_associated_device(get_name());
-
-// Catch all execeptions to set back the associated device after
-// execution
-	try
-	{
-
 //
 // Record operation request in black box
 //
 
-		blackbox_ptr->insert_attr(names,2,source);
-
+	blackbox_ptr->insert_attr(names,2,source);
+			
 //
 // If the source parameter specifies device, call the read_attributes method
 // implemented by the DeviceImpl class
 //
 
-		if (source == Tango::DEV)
+	if (source == Tango::DEV)
+	{
+		AutoTangoMonitor sync(this,true);
+		ext->store_in_bb = false;
+		return read_attributes(names);
+	}
+	else
+	{
+
+		TangoMonitor &p_mon = get_poll_monitor();
+		AutoTangoMonitor sync(&p_mon);
+		
+		try
 		{
-			AutoTangoMonitor sync(this,true);
-			ext->store_in_bb = false;
-			return read_attributes(names);
-		}
-		else
-		{
-
-			TangoMonitor &p_mon = get_poll_monitor();
-			AutoTangoMonitor sync(&p_mon);
-
-			try
-			{
-
+					
 //
 // Build a sequence with the names of the attribute to be read.
 // This is necessary in case of the "AllAttr" shortcut is used
 // If all attributes are wanted, build this list
 //
 
-				unsigned long i,j;
-				bool all_attr = false;
-				vector<PollObj *> &poll_list = get_poll_obj_list();
-				unsigned long nb_poll = poll_list.size();
-				unsigned long nb_names = names.length();
-				Tango::DevVarStringArray real_names(nb_names);
-				if (nb_names == 1)
+			unsigned long i,j;
+			bool all_attr = false;
+			vector<PollObj *> &poll_list = get_poll_obj_list();
+			unsigned long nb_poll = poll_list.size();
+			unsigned long nb_names = names.length();
+			Tango::DevVarStringArray real_names(nb_names);
+			if (nb_names == 1)
+			{
+				string att_name(names[0]);		
+				if (att_name == AllAttr)
 				{
-					string att_name(names[0]);		
-					if (att_name == AllAttr)
+					all_attr = true;
+					for (i = 0;i < nb_poll;i++)
 					{
-						all_attr = true;
-						for (i = 0;i < nb_poll;i++)
+						if (poll_list[i]->get_type() == Tango::POLL_ATTR)
 						{
-							if (poll_list[i]->get_type() == Tango::POLL_ATTR)
-							{
-								long  nb_in_seq = real_names.length();
-								real_names.length(nb_in_seq + 1);
-								real_names[nb_in_seq] = poll_list[i]->get_name().c_str();
-							}
+							long  nb_in_seq = real_names.length();
+							real_names.length(nb_in_seq + 1);
+							real_names[nb_in_seq] = poll_list[i]->get_name().c_str();
 						}
 					}
-					else
-					{
-						real_names = names;
-					}	
 				}
 				else
 				{
 					real_names = names;
-				}
-
+				}	
+			}
+			else
+			{
+				real_names = names;
+			}
+			
 //
 // Check that device supports the wanted attribute
 //
 
-				if (all_attr == false)
-				{
-					for (i = 0;i < real_names.length();i++)
-						dev_attr->get_attr_ind_by_name(real_names[i]);
-				}
-
+			if (all_attr == false)
+			{
+				for (i = 0;i < real_names.length();i++)
+					dev_attr->get_attr_ind_by_name(real_names[i]);
+			}
+					
 //
 // Check that all wanted attributes are polled. If some are non polled, store
 // their index in the real_names sequence in a vector
 //
 
-				vector<long> non_polled;
-				if (all_attr == false)
+			vector<long> non_polled;
+			if (all_attr == false)
+			{
+				for (i = 0;i < real_names.length();i++)
 				{
-					for (i = 0;i < real_names.length();i++)
+					for (j = 0;j < nb_poll;j++)
 					{
-						for (j = 0;j < nb_poll;j++)
-						{
 #ifdef _TG_WINDOWS_
-							if (_stricmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0)
+						if (_stricmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0)
 #else
-							if (strcasecmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0)
+						if (strcasecmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0)
 #endif
-								break;
-						}
-						if (j == nb_poll)
-						{
-							non_polled.push_back(i);
-						}
+							break;
 					}
-				}	
-
+					if (j == nb_poll)
+					{
+						non_polled.push_back(i);
+					}
+				}
+			}	
+		
 //
 // If some attributes are not polled but their polling update period is defined,
 // and the attribute is not in the device list of attr which should not be
 // polled, start to poll them
 //
 
-				bool found;
-				vector<long> poll_period;
-				if (non_polled.size() != 0)
-				{
-
+			bool found;
+			vector<long> poll_period;
+			if (non_polled.size() != 0)
+			{
+		
 //
 // Check that it is possible to start polling for the non polled attribute
 //
 
-					for (i = 0;i < non_polled.size();i++)
+				for (i = 0;i < non_polled.size();i++)
+				{
+					Attribute &att = dev_attr->get_attr_by_name(real_names[non_polled[i]]);
+					poll_period.push_back(att.get_polling_period());
+			
+					if (poll_period.back() == 0)
 					{
-						Attribute &att = dev_attr->get_attr_by_name(real_names[non_polled[i]]);
-						poll_period.push_back(att.get_polling_period());
-
-						if (poll_period.back() == 0)
+						TangoSys_OMemStream o;
+						o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
+						Except::throw_exception((const char *)"API_AttrNotPolled",
+								o.str(),
+								(const char *)"Device_2Impl::read_attributes");
+					}
+					else
+					{
+						found = false;
+						vector<string> &napa = get_non_auto_polled_attr();
+						for (j = 0;j < napa.size();j++)
+						{
+#ifdef _TG_WINDOWS_
+							if (_stricmp(napa[j].c_str(),real_names[non_polled[i]]) == 0)
+#else
+							if (strcasecmp(napa[j].c_str(),real_names[non_polled[i]]) == 0)
+#endif
+								found = true;
+						}
+				
+						if (found == true)
 						{
 							TangoSys_OMemStream o;
 							o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
 							Except::throw_exception((const char *)"API_AttrNotPolled",
 									o.str(),
-									(const char *)"Device_2Impl::read_attributes");
-						}
-						else
-						{
-							found = false;
-							vector<string> &napa = get_non_auto_polled_attr();
-							for (j = 0;j < napa.size();j++)
-							{
-#ifdef _TG_WINDOWS_
-								if (_stricmp(napa[j].c_str(),real_names[non_polled[i]]) == 0)
-#else
-								if (strcasecmp(napa[j].c_str(),real_names[non_polled[i]]) == 0)
-#endif
-									found = true;
-							}
-
-							if (found == true)
-							{
-								TangoSys_OMemStream o;
-								o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
-								Except::throw_exception((const char *)"API_AttrNotPolled",
-										o.str(),
-										(const char *)"Device_2Impl::read_attributes");				
-							}
+									(const char *)"Device_2Impl::read_attributes");				
 						}
 					}
+				}
 
 //
 // Start polling
 //			
+				
+				Tango::Util *tg = Tango::Util::instance();
+				DServer *adm_dev = tg->get_dserver_device();
 
-					Tango::Util *tg = Tango::Util::instance();
-					DServer *adm_dev = tg->get_dserver_device();
+				DevVarLongStringArray *send = new DevVarLongStringArray();
+				send->lvalue.length(1);
+				send->svalue.length(3);
+				send->svalue[0] = device_name.c_str();
+				send->svalue[1] = CORBA::string_dup("attribute");
+						
+				for (i = 0;i < non_polled.size();i++)
+				{				
+					send->lvalue[0] = poll_period[i];
+					send->svalue[2] = real_names[non_polled[i]];
+					
+					adm_dev->add_obj_polling(send,false);
+				}
 
-					DevVarLongStringArray *send = new DevVarLongStringArray();
-					send->lvalue.length(1);
-					send->svalue.length(3);
-					send->svalue[0] = device_name.c_str();
-					send->svalue[1] = CORBA::string_dup("attribute");
-
-					for (i = 0;i < non_polled.size();i++)
-					{				
-						send->lvalue[0] = poll_period[i];
-						send->svalue[2] = real_names[non_polled[i]];
-
-						adm_dev->add_obj_polling(send,false);
-					}
-
-					delete send;
-
+				delete send;
+			
 //
 // Wait for first polling
 //
 
 #ifdef _TG_WINDOWS_
-					get_poll_monitor().rel_monitor();
-					Sleep((DWORD)600);
-					get_poll_monitor().get_monitor();
+				get_poll_monitor().rel_monitor();
+				Sleep((DWORD)600);
+				get_poll_monitor().get_monitor();
 #else
-					struct timespec to_wait,inter;
-					to_wait.tv_sec = 0;
-					to_wait.tv_nsec = 600000000;
-					get_poll_monitor().rel_monitor();
-					nanosleep(&to_wait,&inter);
-					get_poll_monitor().get_monitor();
+				struct timespec to_wait,inter;
+				to_wait.tv_sec = 0;
+				to_wait.tv_nsec = 600000000;
+				get_poll_monitor().rel_monitor();
+				nanosleep(&to_wait,&inter);
+				get_poll_monitor().get_monitor();
 #endif
 
-				}
+			}
 
 //
 // Allocate memory for the AttributeValue structures
 //
 
-				unsigned long nb_attr = real_names.length();
-				try
-				{
-					back = new Tango::AttributeValueList(nb_attr);
-					back->length(nb_attr);
-				}
-				catch (bad_alloc)
-				{
-					back = NULL;
-					Except::throw_exception((const char *)"API_MemoryAllocation",
-				        		(const char *)"Can't allocate memory in server",
-				        		(const char *)"DeviceImpl_2::read_attributes");
-				}
-
+			unsigned long nb_attr = real_names.length();
+			try
+			{
+				back = new Tango::AttributeValueList(nb_attr);
+				back->length(nb_attr);
+			}
+			catch (bad_alloc)
+			{
+				back = NULL;
+				Except::throw_exception((const char *)"API_MemoryAllocation",
+				        	(const char *)"Can't allocate memory in server",
+				        	(const char *)"DeviceImpl_2::read_attributes");
+			}
+		
 //
 // For each attribute, check that some data are available in cache and that they
 // are not too old
 //
-
-				for (i = 0;i < nb_attr;i++)
-				{		
-					vector<PollObj *> &poll_list = get_poll_obj_list();
-					PollObj *polled_attr = NULL;
-					unsigned long j;
-					for (j = 0;j < poll_list.size();j++)
-					{
+	
+			for (i = 0;i < nb_attr;i++)
+			{		
+				vector<PollObj *> &poll_list = get_poll_obj_list();
+				PollObj *polled_attr = NULL;
+				unsigned long j;
+				for (j = 0;j < poll_list.size();j++)
+				{
 #ifdef _TG_WINDOWS_
-						if ((poll_list[j]->get_type() == Tango::POLL_ATTR) &&
-			    	    	    	(_stricmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0))
+					if ((poll_list[j]->get_type() == Tango::POLL_ATTR) &&
+			    	    	    (_stricmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0))
 #else
-						if ((poll_list[j]->get_type() == Tango::POLL_ATTR) &&
-			    	    	    	(strcasecmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0))
+					if ((poll_list[j]->get_type() == Tango::POLL_ATTR) &&
+			    	    	    (strcasecmp(poll_list[j]->get_name().c_str(),real_names[i]) == 0))
 #endif
-						{
-							polled_attr = poll_list[j];
-							break;
-						}
+					{
+						polled_attr = poll_list[j];
+						break;
 					}
-
+				}
+				
 //
 // Check that some data is available in cache
 //
 
-					if (polled_attr->is_ring_empty() == true)
-					{
-						delete back;
-						back = NULL;
-
-						TangoSys_OMemStream o;
-						o << "No data available in cache for attribute " << real_names[i] << ends;
-						Except::throw_exception((const char *)"API_NoDataYet",
-								o.str(),
-								(const char *)"Device_2Impl::read_attributes");
-					}
-
+				if (polled_attr->is_ring_empty() == true)
+				{
+					delete back;
+					back = NULL;
+				
+					TangoSys_OMemStream o;
+					o << "No data available in cache for attribute " << real_names[i] << ends;
+					Except::throw_exception((const char *)"API_NoDataYet",
+							o.str(),
+							(const char *)"Device_2Impl::read_attributes");
+				}
+		
 //
 // Check that data are still refreshed by the polling thread
 // Skip this test for object with external polling triggering (upd = 0)
 //
 
-					long tmp_upd = polled_attr->get_upd();
-					if (tmp_upd != 0)
-					{
-						double last = polled_attr->get_last_insert_date();
-						struct timeval now;
+				long tmp_upd = polled_attr->get_upd();
+				if (tmp_upd != 0)
+				{
+					double last = polled_attr->get_last_insert_date();
+					struct timeval now;
 #ifdef _TG_WINDOWS_
-						struct _timeb now_win;
-						_ftime(&now_win);
-						now.tv_sec = (unsigned long)now_win.time;
-						now.tv_usec = (long)now_win.millitm;
+					struct _timeb now_win;
+					_ftime(&now_win);
+					now.tv_sec = (unsigned long)now_win.time;
+					now.tv_usec = (long)now_win.millitm;
 #else
-						gettimeofday(&now,NULL);
+					gettimeofday(&now,NULL);
 #endif
-						now.tv_sec = now.tv_sec - DELTA_T;
-						double now_d = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-						double diff_d = now_d - last;
-						if (diff_d > polled_attr->get_authorized_delta())
-						{
-							delete back;
-							back = NULL;
-
-							TangoSys_OMemStream o;
-							o << "Data in cache for attribute " << real_names[i];
-							o << " not updated any more" << ends;
-							Except::throw_exception((const char *)"API_NotUpdatedAnyMore",
-									o.str(),
-									(const char *)"Device_2Impl::read_attributes");
-						}
+					now.tv_sec = now.tv_sec - DELTA_T;
+					double now_d = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
+					double diff_d = now_d - last;
+					if (diff_d > polled_attr->get_authorized_delta())
+					{
+						delete back;
+						back = NULL;
+				
+						TangoSys_OMemStream o;
+						o << "Data in cache for attribute " << real_names[i];
+						o << " not updated any more" << ends;
+						Except::throw_exception((const char *)"API_NotUpdatedAnyMore",
+								o.str(),
+								(const char *)"Device_2Impl::read_attributes");
 					}
+				}
 
 //
 // Get attribute data type
 //
 
-					Attribute &att = dev_attr->get_attr_by_name(real_names[i]);
-					long type = att.get_data_type();
+				Attribute &att = dev_attr->get_attr_by_name(real_names[i]);
+				long type = att.get_data_type();
 
 //
 // In IDL release 3, possibility to write spectrum and
@@ -1049,25 +925,25 @@ throw (Tango::DevFailed, CORBA::SystemException)
 // possible. Throw exception in these cases
 //
 
-					Tango::AttrWriteType w_type = att.get_writable();
-					Tango::AttrDataFormat format_type = att.get_data_format();
-					if ((format_type == Tango::SPECTRUM) || (format_type == Tango::IMAGE))
+				Tango::AttrWriteType w_type = att.get_writable();
+				Tango::AttrDataFormat format_type = att.get_data_format();
+				if ((format_type == Tango::SPECTRUM) || (format_type == Tango::IMAGE))
+				{
+					if (w_type != Tango::READ)
 					{
-						if (w_type != Tango::READ)
-						{
-							delete back;
-							back = NULL;
-
-							TangoSys_OMemStream o;
-							o << "Client too old to get data for attribute " << real_names[i].in();
-							o << ".\nPlease, use a client linked with Tango V5";
-							o << " and a device inheriting from Device_3Impl" << ends;
-							Except::throw_exception((const char *)"API_NotSupportedFeature",
-								o.str(),
-								(const char *)"Device_2Impl::read_attributes");
-						}
+						delete back;
+						back = NULL;
+				
+						TangoSys_OMemStream o;
+						o << "Client too old to get data for attribute " << real_names[i].in();
+						o << ".\nPlease, use a client linked with Tango V5";
+						o << " and a device inheriting from Device_3Impl" << ends;
+						Except::throw_exception((const char *)"API_NotSupportedFeature",
+							o.str(),
+							(const char *)"Device_2Impl::read_attributes");
 					}
-
+				}
+				 								
 //
 // Finally, after all these checks, get value and store it in the sequence
 // sent back to user
@@ -1079,154 +955,348 @@ throw (Tango::DevFailed, CORBA::SystemException)
 // data buffer.
 //
 
-					try
+				try
+				{
 					{
+						omni_mutex_lock sync(*polled_attr);
+
+						long vers = get_dev_idl_version();
+						if (vers >= 3)
 						{
-							omni_mutex_lock sync(*polled_attr);
-
-							long vers = get_dev_idl_version();
-							if (vers >= 4)
-							{
-								AttributeValue_4 &att_val_4 = polled_attr->get_last_attr_value_4(false);
-								if (att_val_4.quality != Tango::ATTR_INVALID)
-								{	
-									if (type == Tango::DEV_ENCODED)
-									{
-										delete back;
-										back = NULL;
-
-										TangoSys_OMemStream o;
-										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
-										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
-										Except::throw_exception((const char *)"API_NotSupportedFeature",
-												o.str(),
-												(const char *)"Device_2Impl::read_attributes");
-									}
-
-									Polled_2_Live(type,att_val_4.value,(*back)[i].value);
-
-									(*back)[i].quality= att_val_4.quality;
-									(*back)[i].time = att_val_4.time;
-									(*back)[i].dim_x = att_val_4.r_dim.dim_x;
-									(*back)[i].dim_y = att_val_4.r_dim.dim_y;						
-									(*back)[i].name = CORBA::string_dup(att_val_4.name);
-								}
-							}
-							else if (vers == 3)
-							{
-								AttributeValue_3 &att_val_3 = polled_attr->get_last_attr_value_3(false);
-								if (att_val_3.quality != Tango::ATTR_INVALID)
+							AttributeValue_3 &att_val_3 = polled_attr->get_last_attr_value_3(false);
+							if (att_val_3.quality != Tango::ATTR_INVALID)
+							{					
+								const Tango::DevVarDoubleArray *tmp_db;
+								Tango::DevVarDoubleArray *new_tmp_db;
+								const Tango::DevVarShortArray *tmp_sh;
+								Tango::DevVarShortArray *new_tmp_sh;
+								const Tango::DevVarLongArray *tmp_lg;
+								Tango::DevVarLongArray *new_tmp_lg;
+								const Tango::DevVarLong64Array *tmp_lg64;
+								Tango::DevVarLong64Array *new_tmp_lg64;
+								const Tango::DevVarStringArray *tmp_str;
+								Tango::DevVarStringArray *new_tmp_str;
+								const Tango::DevVarFloatArray *tmp_fl;
+								Tango::DevVarFloatArray *new_tmp_fl;
+								const Tango::DevVarBooleanArray *tmp_boo;
+								Tango::DevVarBooleanArray *new_tmp_boo;
+								const Tango::DevVarUShortArray *tmp_ush;
+								Tango::DevVarUShortArray *new_tmp_ush;
+								const Tango::DevVarCharArray *tmp_uch;
+								Tango::DevVarCharArray *new_tmp_uch;
+								const Tango::DevVarULongArray *tmp_ulg;
+								Tango::DevVarULongArray *new_tmp_ulg;
+								const Tango::DevVarULong64Array *tmp_ulg64;
+								Tango::DevVarULong64Array *new_tmp_ulg64;
+								const Tango::DevVarStateArray *tmp_state;
+								Tango::DevVarStateArray *new_tmp_state;
+								
+								switch (type)
 								{
-									if (type == Tango::DEV_ENCODED)
-									{
-										delete back;
-										back = NULL;
+								case Tango::DEV_SHORT :
+									att_val_3.value >>= tmp_sh;
+									new_tmp_sh = new DevVarShortArray(
+										tmp_sh->length(),
+										tmp_sh->length(),
+										const_cast<short *>(tmp_sh->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_sh;
+									break;
 
-										TangoSys_OMemStream o;
-										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
-										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
-										Except::throw_exception((const char *)"API_NotSupportedFeature",
-												o.str(),
-												(const char *)"Device_2Impl::read_attributes");
-									}
+								case Tango::DEV_DOUBLE :				
+									att_val_3.value >>= tmp_db;		
+									new_tmp_db = new DevVarDoubleArray(
+										tmp_db->length(),
+										tmp_db->length(),
+										const_cast<double *>(tmp_db->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_db;
+									break;
 
-									Polled_2_Live(type,att_val_3.value,(*back)[i].value);
+								case Tango::DEV_LONG :
+									att_val_3.value >>= tmp_lg;
+									new_tmp_lg = new DevVarLongArray(tmp_lg->length(),tmp_lg->length(),
+																const_cast<DevLong *>(tmp_lg->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_lg;
+									break;
+									
+								case Tango::DEV_LONG64 :
+									att_val_3.value >>= tmp_lg64;
+									new_tmp_lg64 = new DevVarLong64Array(tmp_lg64->length(),tmp_lg64->length(),
+																const_cast<DevLong64 *>(tmp_lg64->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_lg64;
+									break;
 
-									(*back)[i].quality= att_val_3.quality;
-									(*back)[i].time = att_val_3.time;
-									(*back)[i].dim_x = att_val_3.r_dim.dim_x;
-									(*back)[i].dim_y = att_val_3.r_dim.dim_y;						
-									(*back)[i].name = CORBA::string_dup(att_val_3.name);
+								case Tango::DEV_STRING :
+									att_val_3.value >>= tmp_str;
+									new_tmp_str = new DevVarStringArray(
+										tmp_str->length(),
+										tmp_str->length(),
+										const_cast<char **>(tmp_str->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_str;
+									break;
+									
+								case Tango::DEV_FLOAT :
+									att_val_3.value >>= tmp_fl;
+									new_tmp_fl = new DevVarFloatArray(
+										tmp_fl->length(),
+										tmp_fl->length(),
+										const_cast<float *>(tmp_fl->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_fl;
+									break;
+
+								case Tango::DEV_BOOLEAN :				
+									att_val_3.value >>= tmp_boo;		
+									new_tmp_boo = new DevVarBooleanArray(
+										tmp_boo->length(),
+										tmp_boo->length(),
+										const_cast<DevBoolean *>(tmp_boo->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_boo;
+									break;
+
+								case Tango::DEV_USHORT :
+									att_val_3.value >>= tmp_ush;
+									new_tmp_ush = new DevVarUShortArray(
+										tmp_ush->length(),
+										tmp_ush->length(),
+										const_cast<DevUShort *>(tmp_ush->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_ush;
+									break;
+
+								case Tango::DEV_UCHAR :
+									att_val_3.value >>= tmp_uch;
+									new_tmp_uch = new DevVarCharArray(
+										tmp_uch->length(),
+										tmp_uch->length(),
+										const_cast<DevUChar *>(tmp_uch->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_uch;
+									break;
+									
+								case Tango::DEV_ULONG :
+									att_val_3.value >>= tmp_ulg;
+									new_tmp_ulg = new DevVarULongArray(tmp_ulg->length(),tmp_ulg->length(),
+																const_cast<DevULong *>(tmp_ulg->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_ulg;
+									break;
+									
+								case Tango::DEV_ULONG64 :
+									att_val_3.value >>= tmp_ulg64;
+									new_tmp_ulg64 = new DevVarULong64Array(tmp_ulg64->length(),tmp_ulg64->length(),
+																const_cast<DevULong64 *>(tmp_ulg64->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_ulg64;
+									break;
+									
+								case Tango::DEV_STATE :
+									att_val_3.value >>= tmp_state;
+									new_tmp_state = new DevVarStateArray(tmp_state->length(),tmp_state->length(),
+																const_cast<DevState *>(tmp_state->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_state;
+									break;
 								}
 							}
-							else
-							{
-								AttributeValue &att_val = polled_attr->get_last_attr_value(false);
 
-								if (att_val.quality != Tango::ATTR_INVALID)
-								{	
-									if (type == Tango::DEV_ENCODED)
-									{
-										delete back;
-										back = NULL;
+							(*back)[i].quality= att_val_3.quality;
+							(*back)[i].time = att_val_3.time;
+							(*back)[i].dim_x = att_val_3.r_dim.dim_x;
+							(*back)[i].dim_y = att_val_3.r_dim.dim_y;						
+							(*back)[i].name = CORBA::string_dup(att_val_3.name);
+						}
+						else
+						{
+							AttributeValue &att_val = polled_attr->get_last_attr_value(false);
 
-										TangoSys_OMemStream o;
-										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
-										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
-										Except::throw_exception((const char *)"API_NotSupportedFeature",
-												o.str(),
-												(const char *)"Device_2Impl::read_attributes");
-									}
+							if (att_val.quality != Tango::ATTR_INVALID)
+							{					
+								const Tango::DevVarDoubleArray *tmp_db;
+								Tango::DevVarDoubleArray *new_tmp_db;
+								const Tango::DevVarShortArray *tmp_sh;
+								Tango::DevVarShortArray *new_tmp_sh;
+								const Tango::DevVarLongArray *tmp_lg;
+								Tango::DevVarLongArray *new_tmp_lg;
+								const Tango::DevVarLong64Array *tmp_lg64;
+								Tango::DevVarLong64Array *new_tmp_lg64;
+								const Tango::DevVarStringArray *tmp_str;
+								Tango::DevVarStringArray *new_tmp_str;
+								const Tango::DevVarFloatArray *tmp_fl;
+								Tango::DevVarFloatArray *new_tmp_fl;
+								const Tango::DevVarBooleanArray *tmp_boo;
+								Tango::DevVarBooleanArray *new_tmp_boo;
+								const Tango::DevVarUShortArray *tmp_ush;
+								Tango::DevVarUShortArray *new_tmp_ush;
+								const Tango::DevVarCharArray *tmp_uch;
+								Tango::DevVarCharArray *new_tmp_uch;
+								const Tango::DevVarULongArray *tmp_ulg;
+								Tango::DevVarULongArray *new_tmp_ulg;
+								const Tango::DevVarULong64Array *tmp_ulg64;
+								Tango::DevVarULong64Array *new_tmp_ulg64;
+								const Tango::DevVarStateArray *tmp_state;
+								Tango::DevVarStateArray *new_tmp_state;
+								
+								switch (type)
+								{
+								case Tango::DEV_SHORT :
+									att_val.value >>= tmp_sh;
+									new_tmp_sh = new DevVarShortArray(
+										tmp_sh->length(),
+										tmp_sh->length(),
+										const_cast<short *>(tmp_sh->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_sh;
+									break;
 
-									Polled_2_Live(type,att_val.value,(*back)[i].value);
+								case Tango::DEV_DOUBLE :				
+									att_val.value >>= tmp_db;		
+									new_tmp_db = new DevVarDoubleArray(
+										tmp_db->length(),
+										tmp_db->length(),
+										const_cast<double *>(tmp_db->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_db;
+									break;
 
-									(*back)[i].quality= att_val.quality;
-									(*back)[i].time = att_val.time;
-									(*back)[i].dim_x = att_val.dim_x;
-									(*back)[i].dim_y = att_val.dim_y;
-									(*back)[i].name = CORBA::string_dup(att_val.name);
+								case Tango::DEV_LONG :
+									att_val.value >>= tmp_lg;
+									new_tmp_lg = new DevVarLongArray(tmp_lg->length(),tmp_lg->length(),
+												const_cast<DevLong *>(tmp_lg->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_lg;
+									break;
+									
+								case Tango::DEV_LONG64 :
+									att_val.value >>= tmp_lg64;
+									new_tmp_lg64 = new DevVarLong64Array(tmp_lg64->length(),tmp_lg64->length(),
+												const_cast<DevLong64 *>(tmp_lg64->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_lg64;
+									break;
+
+								case Tango::DEV_STRING :
+									att_val.value >>= tmp_str;
+									new_tmp_str = new DevVarStringArray(
+										tmp_str->length(),
+										tmp_str->length(),
+										const_cast<char **>(tmp_str->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_str;
+									break;
+									
+								case Tango::DEV_FLOAT :
+									att_val.value >>= tmp_fl;
+									new_tmp_fl = new DevVarFloatArray(
+										tmp_fl->length(),
+										tmp_fl->length(),
+										const_cast<float *>(tmp_fl->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_fl;
+									break;
+
+								case Tango::DEV_BOOLEAN :				
+									att_val.value >>= tmp_boo;		
+									new_tmp_boo = new DevVarBooleanArray(
+										tmp_boo->length(),
+										tmp_boo->length(),
+										const_cast<DevBoolean *>(tmp_boo->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_boo;
+									break;
+
+								case Tango::DEV_USHORT :
+									att_val.value >>= tmp_ush;
+									new_tmp_ush = new DevVarUShortArray(
+										tmp_ush->length(),
+										tmp_ush->length(),
+										const_cast<DevUShort *>(tmp_ush->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_ush;
+									break;
+
+								case Tango::DEV_UCHAR :
+									att_val.value >>= tmp_uch;
+									new_tmp_uch = new DevVarCharArray(
+										tmp_uch->length(),
+										tmp_uch->length(),
+										const_cast<DevUChar *>(tmp_uch->get_buffer()),
+										false);
+									(*back)[i].value <<= new_tmp_uch;
+									break;
+									
+								case Tango::DEV_ULONG :
+									att_val.value >>= tmp_ulg;
+									new_tmp_ulg = new DevVarULongArray(tmp_ulg->length(),tmp_ulg->length(),
+												const_cast<DevULong *>(tmp_ulg->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_ulg;
+									break;
+									
+								case Tango::DEV_ULONG64 :
+									att_val.value >>= tmp_ulg64;
+									new_tmp_ulg64 = new DevVarULong64Array(tmp_ulg64->length(),tmp_ulg64->length(),
+												const_cast<DevULong64 *>(tmp_ulg64->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_ulg64;
+									break;
+									
+								case Tango::DEV_STATE :
+									att_val.value >>= tmp_state;
+									new_tmp_state = new DevVarStateArray(tmp_state->length(),tmp_state->length(),
+												const_cast<DevState *>(tmp_state->get_buffer()),false);
+									(*back)[i].value <<= new_tmp_state;
+									break;
 								}
-
 							}
+							
+							(*back)[i].quality= att_val.quality;
+							(*back)[i].time = att_val.time;
+							(*back)[i].dim_x = att_val.dim_x;
+							(*back)[i].dim_y = att_val.dim_y;
+							(*back)[i].name = CORBA::string_dup(att_val.name);
 						}
 					}
-					catch (Tango::DevFailed &)
-					{
-						delete back;
-						att_in_fault = true;
-						throw;
-					}			
 				}
+				catch (Tango::DevFailed &)
+				{
+					delete back;
+					att_in_fault = true;
+					throw;
+				}			
 			}
-			catch (Tango::DevFailed &)
-			{
-
+		}
+		catch (Tango::DevFailed &)
+		{
+		
 //
 // Re-throw exception if the source parameter is CACHE or if the source param.
 // is CACHE_DEV but one of the attribute is really in fault (not the polling)
 //
-
-				if (source == Tango::CACHE)
-					throw;
-				if (att_in_fault == true)
-					throw;
-				polling_failed = true;
-			}
+			
+			if (source == Tango::CACHE)
+				throw;
+			if (att_in_fault == true)
+				throw;
+			polling_failed = true;
 		}
+	}
 
 //
 // If the source parameter is CACHE, returned data, else called method reading
 // attribute from device
 //
 
-		if ((source == Tango::CACHE_DEV) && (polling_failed == true))
-		{
-			if (back != NULL)
-				delete back;
-
-			AutoTangoMonitor sync(this,true);
-			ext->store_in_bb = false;
-			//return read_attributes(names);
-			back = read_attributes(names);
-		}
-		else
-		{
-			cout4 << "Device_2Impl: Returning attribute(s) value from polling buffer" << endl;
-			//return back;
-		}
-	}
-	catch (...)
+	if ((source == Tango::CACHE_DEV) && (polling_failed == true))
 	{
-		// set back the device attribution for the thread
-		// and rethrow the exception.
-		sub.set_associated_device(last_associated_device);
-		throw;
+		if (back != NULL)
+			delete back;
+
+		AutoTangoMonitor sync(this,true);						
+		ext->store_in_bb = false;
+		return read_attributes(names);
 	}
-	
-	// set back the device attribution for the thread
-	sub.set_associated_device(last_associated_device);
-	
-	return back;
+	else
+	{
+		cout4 << "Device_2Impl: Returning attribute(s) value from polling buffer" << endl;
+		return back;
+	}			
 
 }
 
@@ -1655,7 +1725,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	try
 	{
 		back = new Tango::DevCmdHistoryList(n);
-		back->length(n);
+                back->length(n);
 	}	
 	catch (bad_alloc)
 	{
@@ -1688,11 +1758,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 
 		if (status_cmd == true)
 		{
-			if (vers >= 4)
-				polled_cmd->get_attr_history_43(n,back_attr,Tango::DEV_STRING);
-			else
-				polled_cmd->get_attr_history(n,back_attr,Tango::DEV_STRING);
-
+			polled_cmd->get_attr_history(n,back_attr,Tango::DEV_STRING);
 			for (int k = 0;k < n;k++)
 			{
 				(*back)[k].time = (*back_attr)[k].value.time;
@@ -1705,11 +1771,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		}
 		else
 		{
-			if (vers >= 4)
-				polled_cmd->get_attr_history_43(n,back_attr,Tango::DEV_STATE);
-			else
-				polled_cmd->get_attr_history(n,back_attr,Tango::DEV_STATE);
-
+			polled_cmd->get_attr_history(n,back_attr,Tango::DEV_STATE);
 			for (int k = 0;k < n;k++)
 			{
 				(*back)[k].time = (*back_attr)[k].value.time;
@@ -1899,23 +1961,6 @@ CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_3 &att_val,bool state,bool sta
 	return any;
 }
 
-CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_4 &att_val,bool state,bool status)
-{
-	CORBA::Any *any = new CORBA::Any();
-	if (state == true)
-	{
-		const Tango::DevState &sta = att_val.value.dev_state_att();
-		(*any) <<= sta;
-	}
-	else if (status == true)
-	{
-		Tango::DevVarStringArray &dvsa = att_val.value.string_att_value();
-		(*any) <<= dvsa[0];
-	}
-	
-	return any;
-}
-
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_2Impl::Hist_32Hist 
@@ -1947,256 +1992,5 @@ void Device_2Impl::Hist_32Hist(DevAttrHistoryList_3 *back_3,DevAttrHistoryList *
 		(*back)[i].errors = (*back_3)[i].value.err_list;
 	}
 }
-
-//+-------------------------------------------------------------------------
-//
-// method : 		Device_2Impl::Polled_2_Live
-// 
-// description : 	Move data from a polled V4 device attribute to the Any
-//					used in a V2 or V1 read_attribute request
-//
-// Args (in) :		data_type : Atrtribute data type
-//					hist_union : Reference to the Union object within the history buffer
-//					live_any : Reference to the Any object returned to the caller
-//
-//--------------------------------------------------------------------------
-
-void Device_2Impl::Polled_2_Live(long data_type,Tango::AttrValUnion &hist_union,CORBA::Any &live_any)
-{	
-	switch (hist_union._d())
-	{
-		case ATT_BOOL:
-		{
-			DevVarBooleanArray &union_seq = hist_union.bool_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-								
-		case ATT_SHORT:
-		{
-			DevVarShortArray &union_seq = hist_union.short_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_LONG:
-		{
-			DevVarLongArray &union_seq = hist_union.long_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-						
-		case ATT_LONG64:
-		{
-			DevVarLong64Array &union_seq = hist_union.long64_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-						
-		case ATT_FLOAT:
-		{
-			DevVarFloatArray &union_seq = hist_union.float_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_DOUBLE:
-		{
-			DevVarDoubleArray &union_seq = hist_union.double_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_UCHAR:
-		{
-			DevVarCharArray &union_seq = hist_union.uchar_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_USHORT:
-		{
-			DevVarUShortArray &union_seq = hist_union.ushort_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_ULONG:
-		{
-			DevVarULongArray &union_seq = hist_union.ulong_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_ULONG64:
-		{
-			DevVarULong64Array &union_seq = hist_union.ulong64_att_value();
-			live_any <<= union_seq;
-		}
-		break;			
-			
-		case ATT_STRING:
-		{
-			const DevVarStringArray &union_seq = hist_union.string_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case ATT_STATE:
-		{
-			DevVarStateArray &union_seq = hist_union.state_att_value();
-			live_any <<= union_seq;
-		}
-		break;
-			
-		case DEVICE_STATE:
-		{
-			DevState union_sta = hist_union.dev_state_att();
-			live_any <<= union_sta;
-		}
-		break;
-		
-		case ATT_ENCODED:
-		case NO_DATA:
-		break;
-	}
-}
-
-void Device_2Impl::Polled_2_Live(long data_type,CORBA::Any &hist_any,CORBA::Any &live_any)
-{
-	const Tango::DevVarDoubleArray *tmp_db;
-	Tango::DevVarDoubleArray *new_tmp_db;
-	const Tango::DevVarShortArray *tmp_sh;
-	Tango::DevVarShortArray *new_tmp_sh;
-	const Tango::DevVarLongArray *tmp_lg;
-	Tango::DevVarLongArray *new_tmp_lg;
-	const Tango::DevVarLong64Array *tmp_lg64;
-	Tango::DevVarLong64Array *new_tmp_lg64;
-	const Tango::DevVarStringArray *tmp_str;
-	Tango::DevVarStringArray *new_tmp_str;
-	const Tango::DevVarFloatArray *tmp_fl;
-	Tango::DevVarFloatArray *new_tmp_fl;
-	const Tango::DevVarBooleanArray *tmp_boo;
-	Tango::DevVarBooleanArray *new_tmp_boo;
-	const Tango::DevVarUShortArray *tmp_ush;
-	Tango::DevVarUShortArray *new_tmp_ush;
-	const Tango::DevVarCharArray *tmp_uch;
-	Tango::DevVarCharArray *new_tmp_uch;
-	const Tango::DevVarULongArray *tmp_ulg;
-	Tango::DevVarULongArray *new_tmp_ulg;
-	const Tango::DevVarULong64Array *tmp_ulg64;
-	Tango::DevVarULong64Array *new_tmp_ulg64;
-	const Tango::DevVarStateArray *tmp_state;
-	Tango::DevVarStateArray *new_tmp_state;
-
-	switch (data_type)
-	{
-	case Tango::DEV_SHORT :
-		hist_any >>= tmp_sh;
-		new_tmp_sh = new DevVarShortArray(
-		tmp_sh->length(),
-		tmp_sh->length(),
-		const_cast<short *>(tmp_sh->get_buffer()),
-		false);
-		live_any <<= new_tmp_sh;
-		break;
-
-	case Tango::DEV_DOUBLE :
-		hist_any >>= tmp_db;
-		new_tmp_db = new DevVarDoubleArray(
-		tmp_db->length(),
-		tmp_db->length(),
-		const_cast<double *>(tmp_db->get_buffer()),
-		false);
-		live_any <<= new_tmp_db;
-		break;
-
-	case Tango::DEV_LONG :
-		hist_any >>= tmp_lg;
-		new_tmp_lg = new DevVarLongArray(tmp_lg->length(),tmp_lg->length(),
-								const_cast<DevLong *>(tmp_lg->get_buffer()),false);
-		live_any <<= new_tmp_lg;
-		break;
-
-	case Tango::DEV_LONG64 :
-		hist_any >>= tmp_lg64;
-		new_tmp_lg64 = new DevVarLong64Array(tmp_lg64->length(),tmp_lg64->length(),
-								const_cast<DevLong64 *>(tmp_lg64->get_buffer()),false);
-		live_any <<= new_tmp_lg64;
-		break;
-
-	case Tango::DEV_STRING :
-		hist_any >>= tmp_str;
-		new_tmp_str = new DevVarStringArray(
-			tmp_str->length(),
-			tmp_str->length(),
-			const_cast<char **>(tmp_str->get_buffer()),
-			false);
-		live_any <<= new_tmp_str;
-		break;
-
-	case Tango::DEV_FLOAT :
-		hist_any >>= tmp_fl;
-		new_tmp_fl = new DevVarFloatArray(
-			tmp_fl->length(),
-			tmp_fl->length(),
-			const_cast<float *>(tmp_fl->get_buffer()),
-			false);
-		live_any <<= new_tmp_fl;
-		break;
-
-	case Tango::DEV_BOOLEAN :
-		hist_any >>= tmp_boo;
-		new_tmp_boo = new DevVarBooleanArray(
-			tmp_boo->length(),
-			tmp_boo->length(),
-			const_cast<DevBoolean *>(tmp_boo->get_buffer()),
-			false);
-		live_any <<= new_tmp_boo;
-		break;
-
-	case Tango::DEV_USHORT :
-		hist_any >>= tmp_ush;
-		new_tmp_ush = new DevVarUShortArray(
-			tmp_ush->length(),
-			tmp_ush->length(),
-			const_cast<DevUShort *>(tmp_ush->get_buffer()),
-			false);
-		live_any <<= new_tmp_ush;
-		break;
-
-	case Tango::DEV_UCHAR :
-		hist_any >>= tmp_uch;
-		new_tmp_uch = new DevVarCharArray(
-			tmp_uch->length(),
-		   tmp_uch->length(),
- 		   const_cast<DevUChar *>(tmp_uch->get_buffer()),
- 		   false);
- 	   live_any <<= new_tmp_uch;
- 	   break;
-
-   case Tango::DEV_ULONG :
- 	   hist_any >>= tmp_ulg;
- 	   new_tmp_ulg = new DevVarULongArray(tmp_ulg->length(),tmp_ulg->length(),
- 								   const_cast<DevULong *>(tmp_ulg->get_buffer()),false);
- 	   live_any <<= new_tmp_ulg;
- 	   break;
-
-   case Tango::DEV_ULONG64 :
- 	   hist_any >>= tmp_ulg64;
- 	   new_tmp_ulg64 = new DevVarULong64Array(tmp_ulg64->length(),tmp_ulg64->length(),
- 								   const_cast<DevULong64 *>(tmp_ulg64->get_buffer()),false);
- 	   live_any <<= new_tmp_ulg64;
- 	   break;
-
-   case Tango::DEV_STATE :
- 	   hist_any >>= tmp_state;
- 	   new_tmp_state = new DevVarStateArray(tmp_state->length(),tmp_state->length(),
- 								   const_cast<DevState *>(tmp_state->get_buffer()),false);
- 	   live_any <<= new_tmp_state;
- 	   break;
-   }
-}
-
-
+			   
 } // End of Tango namespace

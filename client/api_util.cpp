@@ -5,117 +5,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // programmer 	- Emmanuel Taurel (taurel@esrf.fr)
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Lesser Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // original 	- May 2002
 //
 // $Log$
-// Revision 3.34  2010/09/12 12:18:23  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.33  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.32  2010/09/09 13:28:03  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.31  2010/09/08 12:32:11  taurel
-// - Miscellaneous changes to implement a better timeout management
-// (now manage a user connect timeout with the env. variable TANGOconnectTimeout)
-//
-// Revision 3.30  2010/08/25 11:37:12  taurel
-// - Just some beautifulling!!
-//
-// Revision 3.29  2010/01/07 08:35:06  taurel
-// - Several change sto improve thread safety of the DeviceProxy, AttributeProxy, ApiUtul and EventConsumer classes
-// Revision 3.28.2.1  2010/06/23 14:10:23  taurel
-// - Full Tango as described in doc Appendix C is now also supported
-// for group
-//
-// Revision 3.28  2009/08/27 07:22:43  taurel
-// - Commit after anothre merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.27  2009/04/27 14:52:18  taurel
-// - No change, just to make tkcvs quiet
-//
-// Revision 3.26  2009/03/27 13:05:10  taurel
-// - Fix bug due to new Attribute format data member in AttributeValue4
-// structure
-//
-// Revision 3.25  2009/03/18 12:16:53  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
-// Revision 3.24  2009/02/26 07:47:29  taurel
-// - The attribute data format is now transferred within the AttributeValue_4 structure
-//
-// Revision 3.23  2009/01/21 12:45:14  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.22  2008/12/17 09:54:44  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.21  2008/10/13 15:02:34  taurel
-// - Set the ORB verifyObjectExistsAndType option to false when creating the ORB
-//
-// Revision 3.20  2008/10/06 15:02:17  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.19  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.18  2008/09/23 14:38:27  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.17  2008/09/04 07:35:37  taurel
-// - Fix bug in memorized attributes
-// - Changes for the new IDL 4
-//
-// Revision 3.16  2008/06/10 07:48:46  taurel
-// - Fix client threadig issue when first device proxy instance created
-// in threads which are not the main thread
-//
-// Revision 3.15  2008/05/20 12:42:29  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.14  2008/03/11 14:36:44  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-// Revision 3.12.2.5  2008/05/20 06:14:19  taurel
-// - Last commit before merge with trunk
-//
 // Revision 3.13  2008/02/29 13:24:30  taurel
 // - Add a try/catch in the get_asynch_replies() method
-// Revision 3.12.2.4  2008/01/03 16:04:23  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.12.2.3  2007/12/20 14:27:18  taurel
-// - Some more work on locking
-//
-// Revision 3.12.2.2  2007/12/19 15:53:07  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.12.2.1  2007/11/22 12:35:50  taurel
-// - First part of the device locking implementation
 //
 // Revision 3.12  2007/04/20 14:38:33  taurel
 // - Ported to Windows 64 bits x64 architecture
@@ -305,16 +199,12 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
-
-#ifdef WIN32_VC8
-#include <process.h>
-#endif
-
+                                                    
 namespace Tango
 {
 
 ApiUtil *ApiUtil::_instance = NULL;
-omni_mutex ApiUtil::inst_mutex;
+
 
 //+----------------------------------------------------------------------------
 //
@@ -324,7 +214,7 @@ omni_mutex ApiUtil::inst_mutex;
 //
 //-----------------------------------------------------------------------------
 
-ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false)
+ApiUtil::ApiUtil()
 {
 	_orb = CORBA::ORB::_nil();
 	
@@ -361,30 +251,6 @@ ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false)
 
 	auto_cb = PULL_CALLBACK;
 	cb_thread_ptr = NULL;
-	
-//
-// Get the process PID
-//
-
-#ifdef WIN32_VC8
-	ext->cl_pid = _getpid();
-#else
-	ext->cl_pid = getpid();
-#endif
-
-//
-// Check if the user has defined his own connection timeout
-//
-
-	string var;
-	if (get_env_var("TANGOconnectTimeout",var) == 0)
-	{
-		int user_to = -1;
-		istringstream iss(var);
-		iss >> user_to;
-		if (iss)
-			ext->user_connect_timeout = user_to;
-	}
 }
 
 //+----------------------------------------------------------------------------
@@ -409,16 +275,6 @@ ApiUtil::~ApiUtil()
 		cb_thread_ptr->join(0);
 	}
 
-//
-// Kill any remaining locking threads
-//
-
-	clean_locking_threads();
-	
-//
-// Release event stuff (in case it is necessary)
-//
-	
 	bool event_was_used = false;
 	if (ext != NULL)
 	{
@@ -452,10 +308,13 @@ ApiUtil::~ApiUtil()
 			{
 				_orb->destroy();
 			}
-			catch (...) {cout << "In the exception handler"<<endl;}
+			catch (...)
+			{
+			}
 		}
 		CORBA::release(_orb);
 	}
+	
 
 }
 
@@ -485,7 +344,6 @@ void ApiUtil::create_orb()
 
 	const char *options[][2] = {
 			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-			{"verifyObjectExistsAndType","0"},
 			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
 			{0,0}};
 				
@@ -503,8 +361,6 @@ void ApiUtil::create_orb()
 
 int ApiUtil::get_db_ind()
 {
-	omni_mutex_lock lo(the_mutex);
-
 	for (unsigned int i = 0;i < db_vect.size();i++)
 	{
 		if (db_vect[i]->get_from_env_var() == true)
@@ -516,15 +372,13 @@ int ApiUtil::get_db_ind()
 //
 
 	db_vect.push_back(new Database());
-
+	
 	return (db_vect.size() - 1);
 	
 }
 
 int ApiUtil::get_db_ind(string &host,int port)
 {
-	omni_mutex_lock lo(the_mutex);
-
 	for (unsigned int i = 0;i < db_vect.size();i++)
 	{
 		if (db_vect[i]->get_db_port_num() == port)
@@ -653,7 +507,7 @@ void ApiUtil::get_asynch_replies()
 //			not yet arrived. Fire callback for replies alaredy
 //			arrived
 //
-// argin(s) :		call_timeout : The timeout value in mS
+// argin(s) :		call_timeout : The timeout vaalue in mS
 //
 //-----------------------------------------------------------------------------
 
@@ -907,61 +761,10 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 void ApiUtil::create_event_consumer()
 {
 	ext->event_consumer = EventConsumer::create();
-}
 
-EventConsumer *ApiUtil::get_event_consumer()
-{	
-	return ext->event_consumer;
-}
-	
-//+----------------------------------------------------------------------------
-//
-// method : 		ApiUtil::clean_locking_threads()
-// 
-// description : 	Ask all remaining locking threads to exit
-//
-//-----------------------------------------------------------------------------
+        //cout << "ApiUtil::create_event_consumer(): start keep alive thread\n";
+        //EventConsumerKeepAliveThread *keap_alive = new EventConsumerKeepAliveThread();
 
-void ApiUtil::clean_locking_threads(bool clean)
-{
-	omni_mutex_lock oml(lock_th_map);
-	
-	if (lock_threads.empty() == false)
-	{
-		map<string,LockingThread>::iterator pos;
-		for (pos = lock_threads.begin();pos != lock_threads.end();++pos)
-		{
-			if (pos->second.shared->suicide == true)
-			{
-				delete pos->second.shared;
-				delete pos->second.mon;
-			}
-			else
-			{
-				{
-					omni_mutex_lock sync(*(pos->second.mon));
-	
-					pos->second.shared->cmd_pending = true;
-					if (clean == true)
-						pos->second.shared->cmd_code = LOCK_UNLOCK_ALL_EXIT;
-					else
-						pos->second.shared->cmd_code = LOCK_EXIT;
-		
-					pos->second.mon->signal();
-						
-					cout4 << "Cmd sent to locking thread" << endl;
-				
-					if (pos->second.shared->cmd_pending == true)
-						pos->second.mon->wait(DEFAULT_TIMEOUT);		
-				}
-				delete pos->second.shared;
-				delete pos->second.mon;
-			}
-		}
-		
-		if (clean == false)
-			lock_threads.clear();
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -1008,7 +811,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 		
 	CORBA::ULong max,len;
 
-	if (vers == 3)
+	if (vers >= 3)
 	{	
 		dev_attr->name = attr_value_3->name;
 		dev_attr->quality = attr_value_3->quality;
@@ -1031,7 +834,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 	if (dev_attr->quality != Tango::ATTR_INVALID)
 	{
 		CORBA::TypeCode_var ty;
-		if (vers == 3)
+		if (vers >= 3)
 			ty = attr_value_3->value.type();
 		else
 			ty = attr_value->value.type();
@@ -1042,13 +845,13 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 			dev_attr->d_state_filled = true;
 			return;
 		}
-
+			
 		CORBA::TypeCode_var ty_alias = ty->content_type();
-		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
+		CORBA::TypeCode_var ty_seq = ty_alias->content_type();			
 		switch (ty_seq->kind())
 		{
 			case CORBA::tk_long:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_lo;
 				else		
 					attr_value->value >>= tmp_seq_lo;
@@ -1067,7 +870,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 	
 			case CORBA::tk_longlong:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_64;
 				else		
 					attr_value->value >>= tmp_seq_64;
@@ -1086,7 +889,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 				
 			case CORBA::tk_short:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_sh;
 				else
 					attr_value->value >>= tmp_seq_sh;
@@ -1105,7 +908,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 
 			case CORBA::tk_double:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_db;
 				else
 					attr_value->value >>= tmp_seq_db;
@@ -1124,7 +927,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 	
 			case CORBA::tk_string:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_str;
 				else
 					attr_value->value >>= tmp_seq_str;
@@ -1143,7 +946,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 
 			case CORBA::tk_float:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_fl;
 				else		
 					attr_value->value >>= tmp_seq_fl;
@@ -1162,7 +965,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 			
 			case CORBA::tk_boolean:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_boo;
 				else		
 					attr_value->value >>= tmp_seq_boo;
@@ -1181,7 +984,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 
 			case CORBA::tk_ushort:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_ush;
 				else		
 					attr_value->value >>= tmp_seq_ush;
@@ -1200,7 +1003,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 			
 			case CORBA::tk_octet:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_uch;
 				else		
 					attr_value->value >>= tmp_seq_uch;
@@ -1219,7 +1022,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 				
 			case CORBA::tk_ulong:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_ulo;
 				else		
 					attr_value->value >>= tmp_seq_ulo;
@@ -1238,7 +1041,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 				
 			case CORBA::tk_ulonglong:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_u64;
 				else		
 					attr_value->value >>= tmp_seq_u64;
@@ -1257,7 +1060,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 				break;
 				
 			case CORBA::tk_enum:
-				if (vers == 3)
+				if (vers >= 3)
 					attr_value_3->value >>= tmp_seq_state;
 				else		
 					attr_value->value >>= tmp_seq_state;
@@ -1280,398 +1083,6 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 		}
 	}	
 }
-
-void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4,long vers,DeviceAttribute *dev_attr)
-{
-
-	CORBA::Long *tmp_lo;
-	CORBA::Short *tmp_sh;
-	CORBA::Double *tmp_db;
-	char **tmp_str;
-	CORBA::Float *tmp_fl;
-	CORBA::Boolean *tmp_boo;
-	CORBA::UShort *tmp_ush;
-	CORBA::Octet *tmp_uch;
-	CORBA::LongLong *tmp_lolo;
-	CORBA::ULong *tmp_ulo;
-	CORBA::ULongLong *tmp_ulolo;
-	Tango::DevState *tmp_state;
-	Tango::DevEncoded *tmp_enc;
-		
-	CORBA::ULong max,len;
-
-	dev_attr->name = attr_value_4->name;
-	dev_attr->quality = attr_value_4->quality;
-	dev_attr->data_format = attr_value_4->data_format;
-	dev_attr->time = attr_value_4->time;
-	dev_attr->dim_x = attr_value_4->r_dim.dim_x;
-	dev_attr->dim_y = attr_value_4->r_dim.dim_y;
-	dev_attr->ext->w_dim_x = attr_value_4->w_dim.dim_x;
-	dev_attr->ext->w_dim_y = attr_value_4->w_dim.dim_y;
-	dev_attr->ext->err_list = new DevErrorList(attr_value_4->err_list);		
-	
-	if (dev_attr->quality != Tango::ATTR_INVALID)
-	{
-		switch (attr_value_4->value._d())
-		{
-			case ATT_BOOL:
-			{
-				const DevVarBooleanArray &tmp_seq = attr_value_4->value.bool_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
-				}
-				else
-				{
-					tmp_boo = const_cast<CORBA::Boolean *>(tmp_seq.get_buffer());
-					dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,false);
-				}
-			}
-			break;
-			
-			case ATT_SHORT:
-			{
-				const DevVarShortArray &tmp_seq = attr_value_4->value.short_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
-				}
-				else
-				{
-					tmp_sh = const_cast<CORBA::Short *>(tmp_seq.get_buffer());
-					dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
-				}
-			}
-			break;
-			
-			case ATT_LONG:
-			{
-				const DevVarLongArray &tmp_seq = attr_value_4->value.long_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
-				}
-				else
-				{
-					tmp_lo = const_cast<CORBA::Long *>(tmp_seq.get_buffer());
-					dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
-				}
-			}
-			break;
-			
-			case ATT_LONG64:
-			{
-				const DevVarLong64Array &tmp_seq = attr_value_4->value.long64_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->ext->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
-				}
-				else
-				{
-					tmp_lolo = const_cast<CORBA::LongLong *>(tmp_seq.get_buffer());
-					dev_attr->ext->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,false);
-				}
-			}
-			break;
-			
-			case ATT_FLOAT:
-			{
-				const DevVarFloatArray &tmp_seq = attr_value_4->value.float_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
-				}
-				else
-				{
-					tmp_fl = const_cast<CORBA::Float *>(tmp_seq.get_buffer());
-					dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,false);
-				}
-			}
-			break;
-			
-			case ATT_DOUBLE:
-			{
-				const DevVarDoubleArray &tmp_seq = attr_value_4->value.double_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);	
-				}
-				else
-				{
-					tmp_db = const_cast<CORBA::Double *>(tmp_seq.get_buffer());
-					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
-				}
-			}
-			break;
-			
-			case ATT_UCHAR:
-			{
-				const DevVarCharArray &tmp_seq = attr_value_4->value.uchar_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
-				}
-				else
-				{
-					tmp_uch = const_cast<CORBA::Octet *>(tmp_seq.get_buffer());
-					dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,false);
-				}
-			}
-			break;
-			
-			case ATT_USHORT:
-			{
-				const DevVarUShortArray &tmp_seq = attr_value_4->value.ushort_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
-				}
-				else
-				{
-					tmp_ush = const_cast<CORBA::UShort *>(tmp_seq.get_buffer());
-					dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,false);
-				}
-			}
-			break;
-			
-			case ATT_ULONG:
-			{
-				const DevVarULongArray &tmp_seq = attr_value_4->value.ulong_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->ext->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
-				}
-				else
-				{
-					tmp_ulo = const_cast<CORBA::ULong *>(tmp_seq.get_buffer());
-					dev_attr->ext->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,false);
-				}
-			}
-			break;
-			
-			case ATT_ULONG64:
-			{
-				const DevVarULong64Array &tmp_seq = attr_value_4->value.ulong64_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->ext->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
-				}
-				else
-				{
-					tmp_ulolo = const_cast<CORBA::ULongLong *>(tmp_seq.get_buffer());
-					dev_attr->ext->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,false);
-				}
-			}
-			break;
-			
-			case ATT_STRING:
-			{
-				const DevVarStringArray &tmp_seq = attr_value_4->value.string_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,true);
-				}
-				else
-				{
-					tmp_str = const_cast<char **>(tmp_seq.get_buffer());
-					dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,false);
-				}
-			}
-			break;
-			
-			case ATT_STATE:
-			{
-				const DevVarStateArray &tmp_seq = attr_value_4->value.state_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->ext->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
-				}
-				else
-				{
-					tmp_state = const_cast<Tango::DevState *>(tmp_seq.get_buffer());
-					dev_attr->ext->StateSeq = new DevVarStateArray(max,len,tmp_state,false);
-				}
-			}
-			break;
-			
-			case DEVICE_STATE:
-			{
-				dev_attr->d_state = attr_value_4->value.dev_state_att();
-				dev_attr->d_state_filled = true;
-			}
-			break;
-			
-			case ATT_ENCODED:
-			{
-				const DevVarEncodedArray &tmp_seq = attr_value_4->value.encoded_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_attr->ext->EncodedSeq = new DevVarEncodedArray(max,len,tmp_enc,true);
-				}
-				else
-				{
-					tmp_enc = const_cast<Tango::DevEncoded *>(tmp_seq.get_buffer());
-					dev_attr->ext->EncodedSeq = new DevVarEncodedArray(max,len,tmp_enc,false);
-				}
-			}
-			break;
-			
-			case NO_DATA:
-			break;
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-//
-// method : 		ApiUtil::device_to_attr()
-// 
-// description : 	
-//
-// argin(s) :		none
-//
-//-----------------------------------------------------------------------------
-
-void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue_4 &att)
-{
-	att.name = dev_attr.name.c_str();
-	att.quality = dev_attr.quality;
-	att.time = dev_attr.time;
-	att.w_dim.dim_x = dev_attr.dim_x;
-	att.w_dim.dim_y = dev_attr.dim_y;
-	att.data_format = Tango::FMT_UNKNOWN;
-		
-	if (dev_attr.LongSeq.operator->() != NULL)
-		att.value.long_att_value(dev_attr.LongSeq.in());	
-	else if (dev_attr.ShortSeq.operator->() != NULL)
-		att.value.short_att_value(dev_attr.ShortSeq.in());
-	else if (dev_attr.DoubleSeq.operator->() != NULL)
-		att.value.double_att_value(dev_attr.DoubleSeq.in());
-	else if (dev_attr.StringSeq.operator->() != NULL)
-		att.value.string_att_value(dev_attr.StringSeq.in());
-	else if (dev_attr.FloatSeq.operator->() != NULL)
-		att.value.float_att_value(dev_attr.FloatSeq.in());	
-	else if (dev_attr.BooleanSeq.operator->() != NULL)
-		att.value.bool_att_value(dev_attr.BooleanSeq.in());
-	else if (dev_attr.UShortSeq.operator->() != NULL)
-		att.value.ushort_att_value(dev_attr.UShortSeq.in());
-	else if (dev_attr.UCharSeq.operator->() != NULL)
-		att.value.uchar_att_value(dev_attr.UCharSeq.in());
-	else if (dev_attr.ext->Long64Seq.operator->() != NULL)
-		att.value.long64_att_value(dev_attr.ext->Long64Seq.in());
-	else if (dev_attr.ext->ULongSeq.operator->() != NULL)
-		att.value.ulong_att_value(dev_attr.ext->ULongSeq.in());
-	else if (dev_attr.ext->ULong64Seq.operator->() != NULL)
-		att.value.ulong64_att_value(dev_attr.ext->ULong64Seq.in());
-	else if (dev_attr.ext->StateSeq.operator->() != NULL)
-		att.value.state_att_value(dev_attr.ext->StateSeq.in());
-	else if (dev_attr.ext->EncodedSeq.operator->() != NULL)
-		att.value.encoded_att_value(dev_attr.ext->EncodedSeq.in());
-}
-
-void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue &att,string &d_name)
-{
-
-	att.name = dev_attr.name.c_str();
-	att.quality = dev_attr.quality;
-	att.time = dev_attr.time;
-	att.dim_x = dev_attr.dim_x;
-	att.dim_y = dev_attr.dim_y;
-		
-	if (dev_attr.LongSeq.operator->() != NULL)
-		att.value <<= dev_attr.LongSeq.in();	
-	else if (dev_attr.ShortSeq.operator->() != NULL)	
-		att.value <<= dev_attr.ShortSeq.in();	
-	else if (dev_attr.DoubleSeq.operator->() != NULL)	
-		att.value <<= dev_attr.DoubleSeq.in();
-	else if (dev_attr.StringSeq.operator->() != NULL)
-		att.value  <<= dev_attr.StringSeq.in();
-	else if (dev_attr.FloatSeq.operator->() != NULL)
-		att.value <<= dev_attr.FloatSeq.in();	
-	else if (dev_attr.BooleanSeq.operator->() != NULL)	
-		att.value <<= dev_attr.BooleanSeq.in();	
-	else if (dev_attr.UShortSeq.operator->() != NULL)	
-		att.value <<= dev_attr.UShortSeq.in();
-	else if (dev_attr.UCharSeq.operator->() != NULL)	
-		att.value  <<= dev_attr.UCharSeq.in();
-	else if (dev_attr.ext->Long64Seq.operator->() != NULL)	
-		att.value  <<= dev_attr.ext->Long64Seq.in();
-	else if (dev_attr.ext->ULongSeq.operator->() != NULL)	
-		att.value  <<= dev_attr.ext->ULongSeq.in();
-	else if (dev_attr.ext->ULong64Seq.operator->() != NULL)	
-		att.value  <<= dev_attr.ext->ULong64Seq.in();
-	else if (dev_attr.ext->StateSeq.operator->() != NULL)
-		att.value  <<= dev_attr.ext->StateSeq.in();
-	else if (dev_attr.ext->EncodedSeq.operator->() != NULL)
-	{
-		TangoSys_OMemStream desc;
-		desc << "Device " << d_name;
-		desc << " does not support DevEncoded data type" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
-						  	desc.str(),
-						  	(const char *)"DeviceProxy::device_to_attr");
-	}
-}
-
-//-----------------------------------------------------------------------------
-//
-// method : 		ApiUtil::get_env_var()
-// 
-// description : 	
-//
-// argin(s) :		- env_var_name : The environment variable name
-//					- env_var : Reference to the string initialised with
-//								the env. variable value (if found)
-//
-// This method returns 0 if the env. variable is found and -1 otherwise
-//
-//-----------------------------------------------------------------------------
-
-int ApiUtil::get_env_var(const char *env_var_name,string &env_var)
-{
-	DummyDeviceProxy d;
-	return d.get_env_var(env_var_name,env_var);
-}
-
 
 //+-------------------------------------------------------------------------
 //
@@ -1734,9 +1145,6 @@ ostream &operator<<(ostream &o_str,AttributeInfo &p)
 	o_str << "Attribute data_format = ";
 	switch (p.data_format)
 	{
-	case Tango::FMT_UNKNOWN:
-		break;
-		
 	case Tango::SCALAR :
 		o_str << "scalar" << endl;
 		break;
@@ -1942,9 +1350,6 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	o_str << "Attribute data_format = ";
 	switch (p.data_format)
 	{
-	case Tango::FMT_UNKNOWN:
-		break;
-		
 	case Tango::SCALAR :
 		o_str << "scalar" << endl;
 		break;

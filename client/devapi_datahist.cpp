@@ -8,67 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- June 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
-//
 // $Log$
-// Revision 3.19  2010/12/08 10:10:54  taurel
-// - Commit after a merge with the bugfixes branch
-//
-// Revision 3.18.2.1  2010/11/26 07:56:12  taurel
-// - Fix date in date cmoputation in the printing stream inserter operators
-// for class DeviceAttribute and associated (history)
-//
-// Revision 3.18  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.17  2009/04/30 12:25:00  taurel
-// - Fix a bug in the printing utility (Thank's to Jens Kruger)
-//
-// Revision 3.16  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.15  2008/10/06 15:02:16  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.14  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.13  2008/09/23 14:38:28  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.12  2008/05/20 12:42:30  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.11  2008/03/11 14:36:44  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-// Revision 3.10.2.2  2007/11/20 14:39:12  taurel
-// - Add the new way to retrieve command history from polling buffer
-// implemented in Tango V7
-//
-// Revision 3.10.2.1  2007/11/16 14:10:56  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
 // Revision 3.10  2007/03/06 08:20:45  taurel
 // - Added 64 bits data types for 64 bits computer...
 //
@@ -208,7 +148,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
-#include <iomanip>
                                                      
 using namespace CORBA;
 
@@ -221,13 +160,6 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DeviceDataHistory::DeviceDataHistory():DeviceData(),ext_hist(NULL)
-{
-	fail = false;
-	err = new DevErrorList();
-	seq_ptr = NULL;
-	ref_ctr_ptr = NULL;
-}
 
 DeviceDataHistory::DeviceDataHistory(int n, int *ref,DevCmdHistoryList *ptr):ext_hist(NULL)
 {
@@ -250,8 +182,7 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory & source):DeviceDat
 	
 	seq_ptr = source.seq_ptr;
 	ref_ctr_ptr = source.ref_ctr_ptr;
-	if (ref_ctr_ptr != NULL)
-		(*ref_ctr_ptr)++;
+	(*ref_ctr_ptr)++;
 	
 	if (source.ext_hist == NULL)
 		ext_hist = NULL;
@@ -270,17 +201,14 @@ DeviceDataHistory::DeviceDataHistory(const DeviceDataHistory & source):DeviceDat
 
 DeviceDataHistory::~DeviceDataHistory()
 {
-	if (seq_ptr != NULL)
+	any._retn();
+	err._retn();
+	
+	(*ref_ctr_ptr)--;
+	if (*ref_ctr_ptr == 0)
 	{
-		any._retn();
-		err._retn();
-		
-		(*ref_ctr_ptr)--;
-		if (*ref_ctr_ptr == 0)
-		{
-			delete seq_ptr;
-			delete ref_ctr_ptr;
-		}
+		delete seq_ptr;
+		delete ref_ctr_ptr;
 	}
 	
 	if (ext_hist != NULL)
@@ -362,16 +290,10 @@ ostream &operator<<(ostream &o_str,DeviceDataHistory &dh)
 // First, print date
 //
 
-#ifdef _TG_WINDOWS_
-	time_t tmp_val = dh.time.tv_sec;
-	struct tm *tmp_time = localtime(&tmp_val);
-	char *tmp_date = asctime(tmp_time);
-#else
 	char *tmp_date = asctime(localtime((time_t *)&dh.time.tv_sec));
-#endif
 	tmp_date[strlen(tmp_date) - 1] = '\0';
 	o_str << tmp_date;
-	o_str << " (" << dh.time.tv_sec << "," << setw(6) << setfill('0') << dh.time.tv_usec << " sec) : ";
+	o_str << " (" << dh.time.tv_sec << "," << dh.time.tv_usec << " sec) : ";
 	
 //
 // Print data or error stack
@@ -424,11 +346,6 @@ ostream &operator<<(ostream &o_str,DeviceDataHistory &dh)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttributeHistory::DeviceAttributeHistory():DeviceAttribute(),ext_hist(NULL)
-{
-	fail = false;
-	ext->err_list = new DevErrorList();
-}
 
 DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq):ext_hist(NULL)
 {		
@@ -459,12 +376,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 	CORBA::UShort *tmp_ush;
 	const DevVarCharArray *tmp_seq_uch;
 	CORBA::Octet *tmp_uch;
-	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
-	const DevVarULong64Array *tmp_seq_ulolo;
-	CORBA::ULongLong *tmp_ulolo;
-	const DevVarStateArray *tmp_seq_state;
-	Tango::DevState *tmp_state;
 	
 	CORBA::ULong max,len;
 
@@ -547,28 +458,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
 			break;
 			
-		case tk_ulong:
-			seq[n].value.value >>= tmp_seq_ulo;
-			max = tmp_seq_ulo->maximum();
-			len = tmp_seq_ulo->length();
-			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
-			ext->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
-			break;
-			
-		case tk_ulonglong:
-			seq[n].value.value >>= tmp_seq_ulolo;
-			max = tmp_seq_ulolo->maximum();
-			len = tmp_seq_ulolo->length();
-			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
-			ext->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
-			break;
-			
-		case tk_enum:
-			seq[n].value.value >>= tmp_seq_state;
-			max = tmp_seq_state->maximum();
-			len = tmp_seq_state->length();
-			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
-			ext->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 		default:
 			break;
 		}
@@ -608,12 +497,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 	CORBA::UShort *tmp_ush;
 	const DevVarCharArray *tmp_seq_uch;
 	CORBA::Octet *tmp_uch;
-	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
-	const DevVarULong64Array *tmp_seq_ulolo;
-	CORBA::ULongLong *tmp_ulolo;
-	const DevVarStateArray *tmp_seq_state;
-	Tango::DevState *tmp_state;
 		
 	CORBA::ULong max,len;
 
@@ -696,28 +579,6 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
 			break;
 			
-		case tk_ulong:
-			seq[n].value.value >>= tmp_seq_ulo;
-			max = tmp_seq_ulo->maximum();
-			len = tmp_seq_ulo->length();
-			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
-			ext->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
-			break;
-			
-		case tk_ulonglong:
-			seq[n].value.value >>= tmp_seq_ulolo;
-			max = tmp_seq_ulolo->maximum();
-			len = tmp_seq_ulolo->length();
-			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
-			ext->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
-			break;
-			
-		case tk_enum:
-			seq[n].value.value >>= tmp_seq_state;
-			max = tmp_seq_state->maximum();
-			len = tmp_seq_state->length();
-			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
-			ext->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 		default:
 			break;
 		}
@@ -837,16 +698,10 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 
 	if (dah.time.tv_sec != 0)
 	{
-#ifdef _TG_WINDOWS_
-		time_t tmp_val = dah.time.tv_sec;
-		struct tm *tmp_time = localtime(&tmp_val);
-		char *tmp_date = asctime(tmp_time);
-#else
 		char *tmp_date = asctime(localtime((time_t *)&dah.time.tv_sec));
-#endif
 		tmp_date[strlen(tmp_date) - 1] = '\0';
 		o_str << tmp_date;
-		o_str << " (" << dah.time.tv_sec << "," << setw(6) << setfill('0') << dah.time.tv_usec << " sec) : ";
+		o_str << " (" << dah.time.tv_sec << "," << dah.time.tv_usec << " sec) : ";
 	}
 
 //
@@ -956,14 +811,6 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 					o_str << *(dah.UCharSeq.operator->());
 				else if (dah.ext->Long64Seq.operator->() != NULL)
 					o_str << *(dah.ext->Long64Seq.operator->());
-				else if (dah.ext->ULongSeq.operator->() != NULL)
-					o_str << *(dah.ext->ULongSeq.operator->());
-				else if (dah.ext->ULong64Seq.operator->() != NULL)
-					o_str << *(dah.ext->ULong64Seq.operator->());
-				else if (dah.ext->StateSeq.operator->() != NULL)
-					o_str << *(dah.ext->StateSeq.operator->());
-				else if (dah.ext->EncodedSeq.operator->() != NULL)
-					o_str << *(dah.ext->EncodedSeq.operator->());
 				else
 					o_str << *(dah.StringSeq.operator->());
 			}	

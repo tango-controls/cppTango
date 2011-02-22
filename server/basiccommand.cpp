@@ -13,59 +13,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.15  2009/03/13 09:33:29  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.14  2009/02/03 15:10:07  jensmeyer
-// Added cleaning of the sub device list in DevInitCmd::execute().
-//
-// Revision 3.13  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.11  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.10  2008/09/04 07:37:05  taurel
-// - Fix bug in memorized attributes
-// - Changes for the new IDL 4
-//
-// Revision 3.9  2008/05/20 12:44:09  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.8  2008/02/29 12:50:27  taurel
-// - Fix bug in Init command for the admin device
-// Revision 3.7.2.1  2008/02/07 15:58:12  taurel
-// - First implementation of the Controlled Access done
-//
 // Revision 3.7  2007/11/08 12:03:44  taurel
 // - Start implementing user interceptors
 // - Fix bug in poll thread pproperty management when removing polling object
@@ -220,6 +170,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // Revision 1.1.1.1  2000/02/04 10:58:27  taurel
 // Imported sources
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //-============================================================================
 
@@ -396,10 +351,6 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 			lock_ptr->Get();
 		}
 		
-		// clean the sub-device list for this device
-		tg->get_sub_dev_diag().remove_sub_devices (device->get_name());
-		tg->get_sub_dev_diag().set_associated_device(device->get_name());
-		
 		device->delete_device();
 		device->init_device();
 
@@ -413,20 +364,20 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 		{
 			admin_dev = tg->get_dserver_device();
 		}
-		catch (Tango::DevFailed &) {}
+		catch (Tango::DevFailed &e) {}
 
 		if (admin_dev == device)
 			tg->polling_configure();
 				
 		if (tg->is_py_ds())
 			lock_ptr->Release();
-			
+		
 //
 // Apply memorized values for memorized attributes (if any)
 // For Py DS, if some attributes are memorized, the write_attributes
 // call will take the Python lock
 //
-		
+
 		Tango::DeviceClass *dc = device->get_device_class();
 		vector<Tango::DeviceImpl *> dev_v = dc->get_device_list();
 		unsigned int loop;
@@ -436,7 +387,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 				break;
 		}
 		if (loop != dev_v.size())
-			dc->set_memorized_values(false,loop,true);
+			dc->set_memorized_values(false,loop);
 		else
 		{
 			Tango::Except::throw_exception((const char *)"API_DeviceNotFound",

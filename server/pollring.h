@@ -11,76 +11,9 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:46:01  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.10  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.9  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.8  2008/12/19 14:27:08  taurel
-// - First changes for compatibility between IDL 3 and IDL 4
-//
-// Revision 3.7  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.6  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.5  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.4  2008/05/20 12:44:12  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.3.2.3  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.3.2.2  2007/11/20 14:40:19  taurel
-// - Add the new way to retrieve command history from polling buffer
-// implemented in Tango V7
-//
-// Revision 3.3.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
-// Revision 3.3  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
 // Revision 3.2  2004/07/07 08:40:12  taurel
 //
 // - Fisrt commit after merge between Trunk and release 4 branch
@@ -181,6 +114,11 @@
 // Revision 2.0  2002/04/09 14:45:11  taurel
 // See Tango WEB pages for list of changes
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _POLLRING_H
@@ -209,17 +147,16 @@ public:
 	CORBA::Any					*cmd_result;
 	Tango::AttributeValueList	*attr_value;
 	Tango::AttributeValueList_3	*attr_value_3;
-	Tango::AttributeValueList_4	*attr_value_4;
 	Tango::DevFailed			*except;
 	struct timeval				when;
 };
 
-inline bool operator<(const RingElt &,const RingElt &)
+inline bool operator<(const RingElt &l,const RingElt &r)
 {
 	return true;
 }
 
-inline bool operator==(const RingElt &,const RingElt &)
+inline bool operator==(const RingElt &l,const RingElt &r)
 {
 	return true;
 }
@@ -243,10 +180,7 @@ public:
 	void insert_data(CORBA::Any *,struct timeval &);
 	void insert_data(Tango::AttributeValueList *,struct timeval &);
 	void insert_data(Tango::AttributeValueList_3 *,struct timeval &);
-	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,bool);
 	void insert_except(Tango::DevFailed *,struct timeval &);
-
-	void force_copy_data(Tango::AttributeValueList_4 *);
 	
 	void get_delta_t(vector<double> &,long nb);
 	struct timeval get_last_insert_date();
@@ -262,107 +196,21 @@ public:
 	CORBA::Any *get_last_cmd_result();
 	Tango::AttributeValue &get_last_attr_value();
 	Tango::AttributeValue_3 &get_last_attr_value_3();
-	Tango::AttributeValue_4 &get_last_attr_value_4();
 	long get_nb_elt() {return nb_elt;}
 	
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);
-	void get_cmd_history(long,Tango::DevCmdHistory_4 *,Tango::CmdArgType &);
-	
 	void get_attr_history(long,Tango::DevAttrHistoryList *,long);
 	void get_attr_history(long,Tango::DevAttrHistoryList_3 *,long);
-	void get_attr_history(long,Tango::DevAttrHistory_4 *,long);
-
-	void get_attr_history_43(long,Tango::DevAttrHistoryList_3 *,long);
 	
 private:
 	void inc_indexes();
 	
 	vector<RingElt>		ring;
-	long				insert_elt;
-	long				nb_elt;
-	long				max_elt;
+	long			insert_elt;
+	long			nb_elt;
+	long			max_elt;
 };
 
-
-#define ADD_ELT_DATA_TO_GLOBAL_SEQ(GLOB,ELT,IND) \
-	{\
-		unsigned int elt_data_length = ELT->length(); \
-		for (unsigned int k = 0;k < elt_data_length;k++) \
-			(*GLOB)[IND + k] = (*ELT)[k]; \
-		IND = IND + elt_data_length; \
-	}
-
-#define ADD_ELT_DATA_TO_GLOBAL_SEQ_BY_REF(GLOB,ELT,IND) \
-	{\
-		unsigned int elt_data_length = ELT.length(); \
-		for (unsigned int k = 0;k < elt_data_length;k++) \
-			GLOB[IND + k] = ELT[k]; \
-		IND = IND + elt_data_length; \
-	}
-	
-#define ADD_ELT_DATA_TO_GLOBAL_SEQ_BY_PTR_REF(GLOB,ELT,IND) \
-	{\
-		unsigned int elt_data_length = ELT.length(); \
-		for (unsigned int k = 0;k < elt_data_length;k++) \
-			(*GLOB)[IND + k] = ELT[k]; \
-		IND = IND + elt_data_length; \
-	}
-	
-#define MANAGE_DIM_ARRAY(LENGTH) \
-	if (last_dim.dim_x == LENGTH) \
-	{ \
-		ptr->dims_array[dims_length - 2].nb_elt++; \
-	} \
-	else \
-	{ \
-		last_dim.dim_x = LENGTH; \
-		last_dim.dim_y = 0; \
-		ptr->dims.length(dims_length); \
-		ptr->dims[dims_length - 1] = last_dim; \
-		ptr->dims_array.length(dims_length); \
-		ptr->dims_array[dims_length - 1].start = n - (i + 1); \
-		ptr->dims_array[dims_length - 1].nb_elt = 1; \
-		dims_length++;	\
-	}
-
-#define ADD_SIMPLE_DATA_TO_GLOBAL_SEQ(GLOB,ELT,IND) \
-	(*GLOB)[IND] = ELT; \
-	IND = IND + 1;
-		
-#define MANAGE_DIM_SIMPLE() \
-	if (last_dim.dim_x == 1) \
-	{ \
-		ptr->dims_array[dims_length - 2].nb_elt++; \
-	} \
-	else \
-	{ \
-		last_dim.dim_x = 1; \
-		last_dim.dim_y = 0; \
-		ptr->dims.length(dims_length); \
-		ptr->dims[dims_length - 1] = last_dim; \
-		ptr->dims_array.length(dims_length); \
-		ptr->dims_array[dims_length - 1].start = n - (i + 1); \
-		ptr->dims_array[dims_length - 1].nb_elt = 1; \
-		dims_length++;	\
-	}
-
-#define MANAGE_DIM_ARRAY_SEQ(LENGTH_STR,LENGTH_NUM) \
-	if ((last_dim.dim_x == LENGTH_STR)  && (last_dim.dim_y == LENGTH_NUM))\
-	{ \
-		ptr->dims_array[dims_length - 2].nb_elt++; \
-	} \
-	else \
-	{ \
-		last_dim.dim_x = LENGTH_STR; \
-		last_dim.dim_y = LENGTH_NUM; \
-		ptr->dims.length(dims_length); \
-		ptr->dims[dims_length - 1] = last_dim; \
-		ptr->dims_array.length(dims_length); \
-		ptr->dims_array[dims_length - 1].start = n - (i + 1); \
-		ptr->dims_array[dims_length - 1].nb_elt = 1; \
-		dims_length++;	\
-	}
-						
 } // End of Tango namespace
 
 #endif /* _POLLRING_ */

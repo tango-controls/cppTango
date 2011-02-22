@@ -10,53 +10,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.15  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.14  2009/04/07 15:23:36  taurel
-// - Fix some warnings when compiled using gcc 4.3 on 64 bits computer
-//
-// Revision 3.13  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.11  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.10  2007/10/16 08:23:37  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
 // Revision 3.9  2007/04/20 14:41:33  taurel
 // - Ported to Windows 64 bits x64 architecture
 //
@@ -147,6 +103,10 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 2.1  2003/02/17 14:57:42  taurel
 // Added the new Tango logging stuff (Thanks Nicolas from Soleil)
 //
+//
+// copyleft :     European Synchrotron Radiation Facility
+//                BP 220, Grenoble 38043
+//                FRANCE
 //
 //-=============================================================================
 
@@ -293,11 +253,7 @@ void Logging::init (const std::string& ds_name, // dserver name
           else if (rtf > kMaxRollingThreshold) {
             Logging::_rft = kMaxRollingThreshold;
           }
-#ifdef TANGO_LONG64
-          _VERBOSE(("\tRolling file threshold is %lu Kb\n", Logging::_rft));
-#else
-		  _VERBOSE(("\tRolling file threshold is %d Kb\n", Logging::_rft));
-#endif
+          _VERBOSE(("\tRolling file threshold is %d Kb\n", Logging::_rft));
         }
         // set logging level (if not set from cmd line)
         if (! level_set_from_cmd_line) 
@@ -397,11 +353,6 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
         Except::throw_exception((const char *)"API_DeviceNotFound",o.str(),
                                 (const char *)"Logging::add_logging_target");
       }
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"add_logging_target",(dl[j]->get_name()).c_str());
-	  }
       // for each device matching pattern...
       for (unsigned int j = 0; j < dl.size(); j++) {
         // ...add logging target
@@ -670,11 +621,6 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
               Except::throw_exception((const char *)"API_DeviceNotFound",o.str(),
                                       (const char *)"Logging::remove_logging_target");
       }
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"remove_logging_target",(dl[j]->get_name()).c_str());
-	  }
       // get target type and name from argin (syntax type::name)
       type_name = (*argin)[i++];
       std::transform(type_name.begin(), type_name.end(), type_name.begin(), ::tolower);
@@ -871,11 +817,6 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
       std::transform(pattern.begin(), pattern.end(), pattern.begin(), ::tolower);
       // get devices which name matches the pattern pattern
       dl = Util::instance()->get_device_list(pattern);
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"set_logging_level",(dl[j]->get_name()).c_str());
-	  }
       // for each device in dl
       for (unsigned int j = 0; j < dl.size(); j++) {
         // get device's logger (created if does not already exist)
