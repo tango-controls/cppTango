@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,15 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.31  2011/01/10 13:55:07  taurel
-// - For periodic and archive/periodic, take time got before the attribute
-// is read to decide if it is time to store data. This time is much
-// more stable than time got after the attribute is read. Reading attribute
-// on some device takes a long and unstabe time.
-//
-// Revision 3.30  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.29  2010/09/08 12:32:53  taurel
 // - Miscellaneous changes to implement a better timeout management
 // (now manage a user connect timeout with the env. variable TANGOconnectTimeout)
@@ -1441,8 +1432,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 						       &dummy_att3,
 						       NULL,
 						       &except,
-						       to_do.name,
-							   (struct timeval *)NULL);
+						       to_do.name);
 		else	
 			event_supplier->detect_and_push_events(to_do.dev,
 						       idl_vers,
@@ -1744,8 +1734,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 						       	       &dummy_att3,
 						       	       NULL,
 						               save_except,
-						               to_do.name,
-									   &before_cmd);
+						               to_do.name);
 			else	
 				event_supplier->detect_and_push_events(to_do.dev,
 						               idl_vers,
@@ -1761,16 +1750,14 @@ void PollThread::poll_attr(WorkItem &to_do)
 							       	       	   NULL,
 						       	               &((*argout_4)[0]),
 						                       save_except,
-						                       to_do.name,
-											   &before_cmd);
+						                       to_do.name);
 			else if (idl_vers == 3)
 				event_supplier->detect_and_push_events_3(to_do.dev,
 							       	       	   idl_vers,
 						       	               &((*argout_3)[0]),
 						       	               NULL,
 						                       save_except,
-						                       to_do.name,
-											   &before_cmd);				
+						                       to_do.name);				
 			else
 				event_supplier->detect_and_push_events(to_do.dev,
 							       	       	   idl_vers,

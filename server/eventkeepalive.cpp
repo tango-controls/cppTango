@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 7 April 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,13 +38,6 @@ static const char *RcsId = "$Id$";
 ///		$Revision$
 ///
 ///		$Log$
-///		Revision 1.12  2010/10/06 12:31:15  taurel
-///		- Fix bug in re-connection synchronous call for attribute configuration
-///		change event
-///		
-///		Revision 1.11  2010/09/29 12:04:35  taurel
-///		- It's now possible to register several callbacks for the same event
-///		
 ///		Revision 1.10  2010/09/09 13:46:00  taurel
 ///		- Add year 2010 in Copyright notice
 ///		
@@ -1026,32 +1019,14 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 												}
 												epos->second.device->set_transparency_reconnection(old_transp);
 
-												unsigned int cb_nb = epos->second.callback_list.size();
-												unsigned int cb_ctr = 0;
-												AttributeInfoEx *aie_copy = NULL;
 
 												for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 												{
-													cb_ctr++;
-													AttrConfEventData *event_data;
-													if (cb_ctr != cb_nb)
-													{
-														aie_copy = new AttributeInfoEx;
-														*aie_copy = *aie;
-														event_data = new AttrConfEventData(epos->second.device,
-													      				domain_name,
-													      				epos->second.event_name,
-													      				aie_copy,
-													      				err);
-													}
-													else
-													{
-														event_data = new AttrConfEventData(epos->second.device,
+													AttrConfEventData *event_data = new AttrConfEventData(epos->second.device,
 													      				domain_name,
 													      				epos->second.event_name,
 													      				aie,
 													      				err);
-													}
 
 													CallBack   *callback = esspos->callback;
 													EventQueue *ev_queue = esspos->ev_queue;
@@ -1067,7 +1042,8 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 														{
 															cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
 														}
-
+												
+														//event_data->attr_conf = NULL;
 														delete event_data;
 													}
 												

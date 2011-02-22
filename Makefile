@@ -91,9 +91,8 @@ endif
 
 ifdef linux
 #FLAGS = -g -D_REENTRANT -DOMNI_UNLOADABLE_STUBS $(INCLUDE_DIRS)
-#FLAGS    = -g -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
-FLAGS    = -O2 -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
-#FLAGS    = -O2 -D_REENTRANT $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
+FLAGS    = -g -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
+
 # gcc does not allow MMX optimisation with -fPIC in 64bits
 ifdef 64bits
 MMFLAG      = -mmmx -D_64BITS
@@ -101,7 +100,7 @@ MMFLAG      = -mmmx -D_64BITS
 CXXFLAGS    = $(FLAGS)
 CXXFLAGS_SL = $(FLAGS) -fPIC
 else
-MMFLAG      = -mmmx -O0
+MMFLAG      = -mmmx
 CXXFLAGS    = -DJPG_USE_ASM $(FLAGS)
 CXXFLAGS_SL = -DJPG_USE_ASM $(FLAGS) -fPIC
 endif
@@ -422,11 +421,11 @@ $(OBJS_DIR_SL)/%.so.o: $(CLIENT_SRC)/%.cpp
 
 $(OBJS_DIR_SL)/jpeg_color_mmx.so.o: $(JPG_SRC)/jpeg_color_mmx.cpp
 	@./cr_dir $(OBJS_DIR)
-	$(CC) $(CXXFLAGS_SL) $(MMFLAG) -c $(JPG_SRC)/jpeg_color_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_color_mmx.so.o
+	$(CC) $(MMFLAG) $(CXXFLAGS_SL) -c $(JPG_SRC)/jpeg_color_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_color_mmx.so.o
 
 $(OBJS_DIR_SL)/jpeg_dct_mmx.so.o: $(JPG_SRC)/jpeg_dct_mmx.cpp
 	@./cr_dir $(OBJS_DIR)
-	$(CC) $(CXXFLAGS_SL) $(MMFLAG) -c $(JPG_SRC)/jpeg_dct_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_dct_mmx.so.o
+	$(CC) $(MMFLAG) $(CXXFLAGS_SL) -c $(JPG_SRC)/jpeg_dct_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_dct_mmx.so.o
 
 					
 #-----------------------------------------------------------------
@@ -486,61 +485,45 @@ endif
 install_include:
 	@./cr_dir $(INSTALL_BASE)/include
 	@./cr_dir $(INSTALL_BASE)/include/idl
-	@./cr_dir $(INSTALL_BASE)/include/V-1
-	@./cr_dir $(INSTALL_BASE)/include/V-1/idl
-#	cp $(INSTALL_BASE)/include/*.h $(INSTALL_BASE)/include/V-1
-#	cp $(INSTALL_BASE)/include/idl/*.h $(INSTALL_BASE)/include/V-1/idl
 	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE)/include/idl; cd ../..
 	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE)/include; cd ..
 	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE)/include; cd ../..
 	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE)/include; cd ..
 
-
 install_win32:
 	@./cr_dir $(INSTALL_BASE_WIN32)/include
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8/idl
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9/idl
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8/V-1
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9/V-1
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8/V-1/idl
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9/V-1/idl
-#	cp $(INSTALL_BASE_WIN32)/include/vc8/*.h $(INSTALL_BASE_WIN32)/include/vc8/V-1
-#	cp $(INSTALL_BASE_WIN32)/include/vc9/*.h $(INSTALL_BASE_WIN32)/include/vc9/V-1
-#	cp $(INSTALL_BASE_WIN32)/include/vc8/idl/*.h $(INSTALL_BASE_WIN32)/include/vc8/V-1/idl
-#	cp $(INSTALL_BASE_WIN32)/include/vc9/idl/*.h $(INSTALL_BASE_WIN32)/include/vc9/V-1/idl
-	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8/idl; cd ../..
-	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9/idl; cd ../..
-	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8; cd ..
-	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9; cd ..
-	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8; cd ../..
-	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9; cd ../..
-	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8; cd ..
-	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9; cd ..	
-
+	@./cr_dir $(INSTALL_BASE_WIN32)/include/idl
+	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)/include/idl; cd ../..
+	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ..
+	cd client_helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ../..
+	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ..	
+	@./cr_dir $(INSTALL_BASE_WIN32)_dll/include
+	@./cr_dir $(INSTALL_BASE_WIN32)_dll/include/idl
+	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)_dll/include/idl; cd ../..
+	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)_dll/include; cd ..
+	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)_dll/include; cd ..
 	
-#	@./cr_dir $(INSTALL_BASE_WIN32)/lib
-#	cp win32/winnt_lib/tango_static/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)/lib
-#	cp win32/winnt_lib/tango_static/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).pdb $(INSTALL_BASE_WIN32)/lib
-#	cp win32/winnt_lib/tango_static/lib/tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)/lib
+	@./cr_dir $(INSTALL_BASE_WIN32)/lib
+	cp win32/winnt_lib/tango_static/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)/lib
+	cp win32/winnt_lib/tango_static/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).pdb $(INSTALL_BASE_WIN32)/lib
+	cp win32/winnt_lib/tango_static/lib/tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)/lib
 
-#	@./cr_dir $(INSTALL_BASE_WIN32)_dll/lib
-#	cp win32/winnt_lib/tango_dll/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)_dll/lib
-#	cp win32/winnt_lib/tango_dll/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).pdb $(INSTALL_BASE_WIN32)_dll/lib
-#	cp win32/winnt_lib/tango_dll/lib/tango$(MAJOR_VERS)$(MINOR_VERS)$(PATCH_VERS)d.dll $(INSTALL_BASE_WIN32)_dll/lib
-#	cp win32/winnt_lib/tango_dll/lib/tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)_dll/lib
-#	cp win32/winnt_lib/tango_dll/lib/tango$(MAJOR_VERS)$(MINOR_VERS)$(PATCH_VERS).dll $(INSTALL_BASE_WIN32)_dll/lib
+	@./cr_dir $(INSTALL_BASE_WIN32)_dll/lib
+	cp win32/winnt_lib/tango_dll/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)_dll/lib
+	cp win32/winnt_lib/tango_dll/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).pdb $(INSTALL_BASE_WIN32)_dll/lib
+	cp win32/winnt_lib/tango_dll/lib/tango$(MAJOR_VERS)$(MINOR_VERS)$(PATCH_VERS)d.dll $(INSTALL_BASE_WIN32)_dll/lib
+	cp win32/winnt_lib/tango_dll/lib/tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)_dll/lib
+	cp win32/winnt_lib/tango_dll/lib/tango$(MAJOR_VERS)$(MINOR_VERS)$(PATCH_VERS).dll $(INSTALL_BASE_WIN32)_dll/lib
 
-#	d=`pwd`
-#	cd $(INSTALL_BASE_WIN32)/lib; \
-#	rm tangod.lib; ln -s tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tangod.lib; \
-#	rm tango.lib; ln -s tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tango.lib; \
+	d=`pwd`
+	cd $(INSTALL_BASE_WIN32)/lib; \
+	rm tangod.lib; ln -s tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tangod.lib; \
+	rm tango.lib; ln -s tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tango.lib; \
 
-#	cd $(INSTALL_BASE_WIN32)_dll/lib; \
-#	rm tangod.lib; ln -s tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tangod.lib; \
-#	rm tango.lib; ln -s tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tango.lib;	\
-#	cd $d
+	cd $(INSTALL_BASE_WIN32)_dll/lib; \
+	rm tangod.lib; ln -s tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tangod.lib; \
+	rm tango.lib; ln -s tango.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib tango.lib;	\
+	cd $d
 
 	
 doc:

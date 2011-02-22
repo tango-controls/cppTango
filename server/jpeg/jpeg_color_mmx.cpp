@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,9 +32,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.7  2009/08/27 07:24:30  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
 // Revision 1.6.2.2  2009/08/26 07:16:52  taurel
 // - Fix bugs in previous change related to PIC code
 //

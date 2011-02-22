@@ -8,7 +8,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,10 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.18  2010/09/30 14:16:52  taurel
-// - Do not overwrite WAttribute written value if the user set it in its
-// write_xxx method
-//
 // Revision 1.17  2010/09/09 13:46:45  taurel
 // - Add year 2010 in Copyright notice
 //

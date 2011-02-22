@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,21 +38,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.66  2010/12/08 10:13:08  taurel
-// - Commit after a merge with the bugfixes branch
-//
-// Revision 3.65.2.2  2010/11/26 12:33:20  taurel
-// - Fix crash which happens from time to time on Windows when shutting down
-// a device server
-//
-// Revision 3.65.2.1  2010/11/21 08:41:27  taurel
-// - Fix SourceForge bug nb 3110842
-// (wrong delete in state for spectrm att with alarm defined when
-// quality factor set to ATTR_INVALID)
-//
-// Revision 3.65  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.64  2010/08/25 11:41:27  taurel
 // - Fix some bugs preventing dynamic attributes management (in some cases)
 //
@@ -767,14 +752,10 @@ DeviceImpl::~DeviceImpl()
 // Clear our ptr in the device class vector
 //
 
-	Tango::Util *tg = Tango::Util::instance();
-	if (tg->is_svr_shutting_down() != true)
-	{
-		vector<DeviceImpl *> &dev_vect = get_device_class()->get_device_list();
-		vector<DeviceImpl *>::iterator ite = find(dev_vect.begin(),dev_vect.end(),this);
-		if (ite != dev_vect.end())
-			*ite = NULL;
-	}
+	vector<DeviceImpl *> &dev_vect = get_device_class()->get_device_list();
+	vector<DeviceImpl *>::iterator ite = find(dev_vect.begin(),dev_vect.end(),this);
+	if (ite != dev_vect.end())
+		*ite = NULL;
 	
 	cout4 << "Leaving DeviceImpl destructor for device " << device_name << endl;
 }
@@ -1472,15 +1453,13 @@ Tango::DevState DeviceImpl::dev_state()
 						if ((vers >= 3) && (ext->state_from_read == true))			
 							idx = attr_list_2[j];
 						else
-							idx = attr_list[j];
-						Tango::Attribute &tmp_att = dev_attr->get_attr_by_ind(idx);
-						tmp_att.wanted_date(true);
-						if (tmp_att.get_quality() != Tango::ATTR_INVALID)					
-							tmp_att.delete_seq();
+							idx = attr_list[j];						
+						dev_attr->get_attr_by_ind(idx).delete_seq();
 					}
 					att.wanted_date(true);
 					throw;
 				}
+				att.wanted_date(true);
 			}
 		
 //
@@ -1505,11 +1484,8 @@ Tango::DevState DeviceImpl::dev_state()
 				if ((vers >= 3) && (ext->state_from_read == true))			
 					idx = attr_list_2[i];
 				else
-					idx = attr_list[i];
-				Tango::Attribute &att = dev_attr->get_attr_by_ind(idx);
-				att.wanted_date(true);
-				if (att.get_quality() != Tango::ATTR_INVALID)
-					att.delete_seq();
+					idx = attr_list[i];	
+				dev_attr->get_attr_by_ind(idx).delete_seq();
 			}
 			
 		}

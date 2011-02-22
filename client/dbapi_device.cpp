@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -292,6 +292,7 @@ AccessControlType DbDevice::check_access_control()
 		ApiUtil *au = ApiUtil::instance();
 		Database *db = au->get_db_vect()[db_ind];
 		AccessControlType acc = db->check_access_control(name);
+		db->set_access_checked(true);
 		return acc;
 	}
 }

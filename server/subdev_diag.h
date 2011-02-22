@@ -9,7 +9,7 @@
 //
 // author(s) :          J.Meyer
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,9 +32,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.3  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 1.2  2009/02/06 14:02:47  jensmeyer
 // Bug fixes.
 //

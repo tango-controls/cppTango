@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,23 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.96  2011/01/10 13:11:33  taurel
-// log			- - getnameinfo() on sun does not return FQDN......
-// log			-
-// log			- Revision 3.95  2010/12/09 07:55:35  taurel
-// log			- - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// log			- flag
-// log			-
-// log			- Revision 3.94  2010/12/08 16:32:16  taurel
-// log			- - Another fix for Windows
-// log			-
-// log			- Revision 3.92  2010/12/08 09:57:46  taurel
-// log			- - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// log			- getnameinfo()
-// log			-
-// log			- Revision 3.91  2010/09/12 12:18:23  taurel
-// log			- - Now, the test suite seems OK
-// log			-
 // log			- Revision 3.90  2010/09/09 13:44:06  taurel
 // log			- - Add year 2010 in Copyright notice
 // log			-
@@ -328,7 +311,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
 #include <process.h>
-#include <ws2tcpip.h>
 #else
 #include <sys/time.h>
 #include <netdb.h>
@@ -1051,61 +1033,6 @@ int Connection::get_env_var_from_file(string &f_name,const char *env_var,string 
 
 void Connection::get_fqdn(string &the_host)
 {
-  	struct addrinfo hints;
-
-	memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-	hints.ai_falgs	   = AI_ADDRCONFIG;
-#endif
-#else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  	hints.ai_flags     = AI_ADDRCONFIG;
-#endif
-#endif
-  	hints.ai_family    = AF_INET;
-  	hints.ai_socktype  = SOCK_STREAM;
-
-  	struct addrinfo	*info;
-	struct addrinfo *ptr;
-	char tmp_host[512];
-
-  	int result = getaddrinfo(the_host.c_str(),NULL,&hints,&info);
-
-  	if (result == 0)
-	{
-		ptr = info;
-		while (ptr != NULL)
-		{
-    		if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
-			{
-				string myhost(tmp_host);
-				string::size_type pos = myhost.find('.');
-				if (pos != string::npos)
-				{
-					string canon = myhost.substr(0,pos);
-					if (canon == the_host)
-					{
-						the_host = myhost;
-						break;
-					}
-				}
-    		}
-			ptr = ptr->ai_next;
-		}
-		freeaddrinfo(info);
-	}
-	
-#ifdef __sun
-
-//
-// Unfortunately, on solaris (at least solaris9), getnameinfo does
-// not return the fqdn....
-// Use the old way of doing
-//
-
-	string::size_type pos = the_host.find('.');
-
 	struct hostent *he;
 	he = gethostbyname(the_host.c_str());
 
@@ -1130,7 +1057,6 @@ void Connection::get_fqdn(string &the_host)
 		else
 			the_host = na;
 	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1262,9 +1188,8 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 // The ping rule is simply to send to the client correct
 // error message in case of re-connection
 //
-				
+						
 				string d_name = dev_name();
-
 				if (db->is_command_allowed(d_name,command) == false)
 				{
 					try
@@ -1932,21 +1857,6 @@ void DeviceProxy::parse_name(string &full_name)
 	string name_wo_prot;
 	string name_wo_db_mod;
 	string dev_name,object_name;
-
-//
-// Error of the string is empty
-//
-
-	if (full_name.empty() == true)
-	{
-		TangoSys_OMemStream desc;
-		desc << "The given name is an empty string!!! " << full_name << endl;
-		desc << "Device name syntax is domain/family/member" << ends;
-			
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
-						desc.str(),
-						(const char *)"DeviceProxy::parse_name()");
-	}
 	
 //
 // Device name in lower case letters
@@ -7397,58 +7307,35 @@ bool DeviceProxy::is_locked_by_me()
 				if (res == 0)
 				{
 					netcalls_mutex.lock();
-
-  					struct addrinfo hints;
-
-					memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-					hints.ai_falgs	   = AI_ADDRCONFIG;
-#endif
-#else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  					hints.ai_flags     = AI_ADDRCONFIG;
-#endif
-#endif
-  					hints.ai_family    = AF_INET;
-  					hints.ai_socktype  = SOCK_STREAM;
-
-  					struct addrinfo	*info;
-					struct addrinfo *ptr;
-					char tmp_host[128];
-
-  					int result = getaddrinfo(h_name,NULL,&hints,&info);
-
-  					if (result == 0)
+					struct hostent *my_addr = gethostbyname(h_name);
+					if (my_addr != NULL)
 					{
-						ptr = info;
-						while (ptr != NULL)
+						struct in_addr **addr_list;
+
+						addr_list = (struct in_addr **)my_addr->h_addr_list;
+						for (int i = 0;addr_list[i] != NULL;i++)
 						{
-    						if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,128,0,0,NI_NUMERICHOST) == 0)
+							char *my_ip_addr = inet_ntoa(*addr_list[i]);
+							if (::strcmp(my_ip_addr,full_ip_str.c_str()) == 0)
 							{
-								if (::strcmp(tmp_host,full_ip_str.c_str()) == 0)
-								{
-									ret = true;
-									break;
-								}
+								ret = true;
+								break;
 							}
-							ptr = ptr->ai_next;
 						}
-						freeaddrinfo(info);
 						netcalls_mutex.unlock();
 					}
 					else
 					{
 						netcalls_mutex.unlock();
 						Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
-														   (const char *)"Can't retrieve my IP address (getaddrinfo)!",
+														   (const char *)"Can't retrieve my IP address (gethostbyname)!",
 														   (const char *)"DeviceProxy::is_locked_by_me()");
 					}
 				}
 				else
 				{
 					Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
-													   (const char *)"Can't retrieve my name (getaddrinfo)!",
+													   (const char *)"Can't retrieve my name (gethostbyname)!",
 													   (const char *)"DeviceProxy::is_locked_by_me()");
 				}
 			}
@@ -7514,23 +7401,28 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
 //
 
 		if (full_ip != LOCAL_HOST)
-		{
-			struct sockaddr_in si;
-			si.sin_family = AF_INET;
-			si.sin_port = 0;
-#ifdef _TG_WINDOWS_
-			int slen = sizeof(si);
-			WSAStringToAddress((char *)full_ip.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+		{		
+			struct hostent *ho;
+#ifdef sun
+			ulong_t ad;
+		
+			ad = inet_addr(full_ip.c_str());
+			ho = gethostbyaddr((const char *)&ad,sizeof(ad),AF_INET);
 #else
-			inet_pton(AF_INET,full_ip.c_str(),&si.sin_addr);
+#ifdef _TG_WINDOWS_
+			unsigned int addr;
+			addr = inet_addr(full_ip.c_str());
+			ho = gethostbyaddr((char *)&addr,sizeof(addr),AF_INET);
+#else
+			struct in_addr ad;
+
+			inet_aton(full_ip.c_str(),&ad);
+			ho = gethostbyaddr(&ad,sizeof(ad),AF_INET);
 #endif
-
-			char host_os[512];
-
-			int res = getnameinfo((const sockaddr *)&si,sizeof(si),host_os,512,0,0,0);
+#endif
 			
-			if (res == 0)
-				lock_info.locker_host = host_os;
+			if (ho != NULL)
+				lock_info.locker_host = ho->h_name;
 			else
 				lock_info.locker_host = full_ip;
 		}

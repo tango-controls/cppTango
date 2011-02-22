@@ -12,7 +12,7 @@
 ///
 /// 		original : 7 April 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -146,7 +146,7 @@ private :
 	
 public :
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
-	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
+	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1021,8 +1021,7 @@ public :
 						  AttributeValue_4 *attr_value_4, 
 						  Attribute &attr,
 						  string &attr_name,
-						  DevFailed *except,
-						  struct timeval *);
+						  DevFailed *except);
 						  
 	template <typename T>
 	void detect_and_push_archive_event(DeviceImpl *device_impl,
@@ -1305,8 +1304,7 @@ public :
 					 	AttributeValue_4 *attr_value_4,
 					    Attribute &attr,
 					    string &attr_name,
-					    DevFailed *except,
-						struct timeval *);
+					    DevFailed *except);
 					    
 
 	template <typename T>

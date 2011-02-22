@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,28 +34,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.73  2011/01/10 13:13:32  taurel
-// - getnameinfo() on sun does not return FQDN......
-//
-// Revision 3.72  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 3.71  2010/12/09 07:56:10  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.70  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.69  2010/12/08 09:58:28  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.68  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.67  2010/09/08 08:20:44  taurel
 // = Change the way the ORB is initialised to better manage several network
 // interface host case
@@ -222,16 +200,15 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <eventsupplier.h>
 
 #ifndef _TG_WINDOWS_
-#include <unistd.h>
-#include <assert.h>
-#include <sys/time.h>
-#include <netdb.h>
+	#include <unistd.h>
+	#include <assert.h>
+	#include <sys/time.h>
+	#include <netdb.h>
 #else
-#include <sys/timeb.h>
-#include <process.h>
-#include <coutbuf.h>
-#include <ntservice.h>
-#include <ws2tcpip.h>
+	#include <sys/timeb.h>
+	#include <process.h>
+        #include <coutbuf.h>
+	#include <ntservice.h>
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
@@ -1247,24 +1224,17 @@ void Util::connect_db()
 		string &inst_name = get_ds_inst_name();
 		if (inst_name != "-?")
 		{
-			db->set_timeout_millis(DB_TIMEOUT * 4);
-			set_svr_starting(false);
+			db->set_timeout_millis(DB_TIMEOUT * 3);
 			try
 			{
 				ext->db_cache = new DbServerCache(db,get_ds_name(),get_host_name());
 			}
-			catch (Tango::DevFailed &e)
-			{
-				string base_desc(e.errors[0].desc.in());
-				if (base_desc.find("TRANSIENT_CallTimedout") != string::npos)
-					cerr << "DB timeout while trying to fill the DB server cache. Will use traditional way" << endl;
-			}
+			catch (Tango::DevFailed &) {}
 			catch (...) 
 			{
 				cerr << "Unknown exception while trying to fill database cache..." << endl;
 			}
 			db->set_timeout_millis(DB_TIMEOUT);
-			set_svr_starting(true);
 		}
 	}
 }
@@ -1321,6 +1291,51 @@ void Util::misc_init()
 	pid_str = o.str();
 	o.rdbuf()->freeze(false);
 #endif
+
+//
+// Get the FQDN host name (Fully qualified domain name)
+// If it is not returned by the system call "getname",
+// try with the gethostbyname system call
+//
+		
+	char buffer[80];
+	if (gethostname(buffer,80) == 0)
+	{
+		hostname = buffer;
+		string::size_type pos = hostname.find('.');
+
+		if (pos == string::npos)
+		{
+			struct hostent *he;
+			he = gethostbyname(buffer);
+			
+			if (he != NULL)
+			{
+				string na(he->h_name);
+				pos = na.find('.');
+				if (pos == string::npos)
+				{
+					char **p;
+					for (p = he->h_aliases;*p != 0;++p)
+					{
+						string al(*p);
+						pos = al.find('.');
+						if (pos != string::npos)
+						{
+							hostname = al;
+							break;
+						}					
+					}
+				}
+				else
+					hostname = na;
+			}
+		}
+	}
+	else
+	{
+		print_err_message("Cant retrieve server host name");
+	}
 	
 //
 // Convert Tango version number to string (for device export)
@@ -1372,10 +1387,8 @@ void Util::init_host_name()
 
 //
 // Get the FQDN host name (Fully qualified domain name)
-// If it is not returned by the system call "gethostname",
-// try with the getaddrinfo system call
-//
-// All supported OS have the getaddrinfo() call
+// If it is not returned by the system call "getname",
+// try with the gethostbyname system call
 //
 		
 	char buffer[80];
@@ -1383,63 +1396,6 @@ void Util::init_host_name()
 	{
 		hostname = buffer;
 		string::size_type pos = hostname.find('.');
-
-		if (pos == string::npos)
-		{
-  			struct addrinfo hints;
-
-			memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-			hints.ai_falgs	   = AI_ADDRCONFIG;
-#endif
-#else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  			hints.ai_flags     = AI_ADDRCONFIG;
-#endif
-#endif
-  			hints.ai_family    = AF_INET;
-  			hints.ai_socktype  = SOCK_STREAM;
-
-  			struct addrinfo	*info;
-			struct addrinfo *ptr;
-			char tmp_host[512];
-
-  			int result = getaddrinfo(buffer, NULL, &hints, &info);
-
-  			if (result == 0)
-			{
-				ptr = info;
-				while (ptr != NULL)
-				{
-    				if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
-					{
-						string myhost(tmp_host);
-						string::size_type pos = myhost.find('.');
-						if (pos != string::npos)
-						{
-							string canon = myhost.substr(0,pos);
-							if (hostname == canon)
-							{
-								hostname = myhost;
-								break;
-							}
-						}
-    				}
-					ptr = ptr->ai_next;
-				}
-				freeaddrinfo(info);
-			}
-		}
-#ifdef __sun
-
-//
-// Unfortunately, on solaris (at least solaris9), getnameinfo does
-// not return the fqdn....
-// Use the old way of doing
-//
-
-		pos = hostname.find('.');
 
 		if (pos == string::npos)
 		{
@@ -1468,7 +1424,6 @@ void Util::init_host_name()
 					hostname = na;
 			}
 		}
-#endif
 	}
 	else
 	{
