@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_ds", "win32_ds.vcproj", "{19FA8AFF-C805-4D18-8A62-DD623D383C51}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_ds_dll", "win32_ds_dll\win32_ds_dll.vcproj", "{A06580DD-0FF4-4A0F-8C45-05B4002BF5CD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_ds_win", "win32_ds_win\win32_ds_win.vcproj", "{B5E926E7-E990-427A-BBCC-E5F37687BEC6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{19FA8AFF-C805-4D18-8A62-DD623D383C51}.Debug|Win32.ActiveCfg = Debug|Win32
+		{19FA8AFF-C805-4D18-8A62-DD623D383C51}.Debug|Win32.Build.0 = Debug|Win32
+		{19FA8AFF-C805-4D18-8A62-DD623D383C51}.Release|Win32.ActiveCfg = Release|Win32
+		{19FA8AFF-C805-4D18-8A62-DD623D383C51}.Release|Win32.Build.0 = Release|Win32
+		{A06580DD-0FF4-4A0F-8C45-05B4002BF5CD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A06580DD-0FF4-4A0F-8C45-05B4002BF5CD}.Debug|Win32.Build.0 = Debug|Win32
+		{A06580DD-0FF4-4A0F-8C45-05B4002BF5CD}.Release|Win32.ActiveCfg = Release|Win32
+		{A06580DD-0FF4-4A0F-8C45-05B4002BF5CD}.Release|Win32.Build.0 = Release|Win32
+		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Debug|Win32.Build.0 = Debug|Win32
+		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Release|Win32.ActiveCfg = Release|Win32
+		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,82 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: win32_ds_dll - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1F1.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "C:\cppapi\server" /I "C:\cppapi\client" /I "F:\tango\ORB\omniORB4.0.5\win32_dll\include" /I "F:\tango\tools\log4tango4.0.2\win32_dll\include" /I "F:\tango\tools\test_system\ref\device" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "LOG4TANGO_HAS_DLL" /D "TANGO_HAS_DLL" /Fp"Debug/win32_ds_dll.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\tango\tools\test_system\ref\device\DevTest.cpp"
+"F:\tango\tools\test_system\ref\device\DevTestClass.cpp"
+"F:\tango\tools\test_system\ref\device\FileDb.cpp"
+"F:\tango\tools\test_system\ref\device\IOAddAttribute.cpp"
+"F:\tango\tools\test_system\ref\device\IOArray1.cpp"
+"F:\tango\tools\test_system\ref\device\IOArray2.cpp"
+"F:\tango\tools\test_system\ref\device\IOMisc.cpp"
+"F:\tango\tools\test_system\ref\device\IOSeqVec.cpp"
+"F:\tango\tools\test_system\ref\device\IOSetAttr.cpp"
+"F:\tango\tools\test_system\ref\device\IOStr1.cpp"
+"F:\tango\tools\test_system\ref\device\IOStr2.cpp"
+"F:\tango\tools\test_system\ref\device\IOStrArray.cpp"
+"F:\tango\tools\test_system\ref\device\IOStruct.cpp"
+"F:\tango\tools\test_system\ref\device\main.cpp"
+"F:\tango\tools\test_system\ref\device\SigThrow.cpp"
+"F:\tango\tools\test_system\ref\device\TypeCmds.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1F1.tmp" 
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1F2.tmp" with contents
+[
+tangod.lib log4tangod.lib omniORB405_rtd.lib omniDynamic405_rtd.lib omnithread30_rtd.lib COS405_rtd.lib comctl32.lib ws2_32.lib mswsock.lib mswsock.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:yes /pdb:"Debug/devTest.pdb" /debug /machine:I386 /out:"Debug/devTest.exe" /pdbtype:sept /libpath:"C:\cppapi\server\winnt_lib\tango_dll\debug" /libpath:"F:\tango\ORB\omniORB4.0.5\win32_dll\lib" /libpath:"F:\tango\tools\log4tango4.0.2\win32_dll\lib" 
+.\Debug\classfactory.obj
+.\Debug\DevTest.obj
+.\Debug\DevTestClass.obj
+.\Debug\FileDb.obj
+.\Debug\IOAddAttribute.obj
+.\Debug\IOArray1.obj
+.\Debug\IOArray2.obj
+.\Debug\IOMisc.obj
+.\Debug\IOSeqVec.obj
+.\Debug\IOSetAttr.obj
+.\Debug\IOStr1.obj
+.\Debug\IOStr2.obj
+.\Debug\IOStrArray.obj
+.\Debug\IOStruct.obj
+.\Debug\main.obj
+.\Debug\SigThrow.obj
+.\Debug\TypeCmds.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1F2.tmp"
+<h3>Output Window</h3>
+Compiling...
+DevTest.cpp
+DevTestClass.cpp
+FileDb.cpp
+IOAddAttribute.cpp
+IOArray1.cpp
+IOArray2.cpp
+IOMisc.cpp
+IOSeqVec.cpp
+IOSetAttr.cpp
+IOStr1.cpp
+IOStr2.cpp
+IOStrArray.cpp
+IOStruct.cpp
+main.cpp
+SigThrow.cpp
+TypeCmds.cpp
+F:\tango\tools\test_system\ref\device\SigThrow.cpp(55) : warning C4700: local variable 'out' used without having been initialized
+F:\tango\tools\test_system\ref\device\SigThrow.cpp(106) : warning C4700: local variable 'out' used without having been initialized
+F:\tango\tools\test_system\ref\device\SigThrow.cpp(193) : warning C4700: local variable 'out' used without having been initialized
+Linking...
+   Creating library Debug/devTest.lib and object Debug/devTest.exp
+
+
+
+<h3>Results</h3>
+devTest.exe - 0 error(s), 3 warning(s)
+</pre>
+</body>
+</html>
