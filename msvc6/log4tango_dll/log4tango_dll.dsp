@@ -53,8 +53,8 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /machine:I386 /out:"../../../../win32/msvc6/build/bin/log4tango.dll" /implib:"../../../../win32/msvc6/build/lib/shared/log4tango.lib"
-# SUBTRACT LINK32 /pdb:none
+# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /machine:I386 /out:"../../../../../win32/msvc6/build/bin/msvc6/release/log4tango.dll" /implib:"../../../../../win32/msvc6/build/lib/msvc6/shared/release/log4tango.lib"
+# SUBTRACT LINK32 /pdb:none /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "log4tango_dll - Win32 Debug"
 
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /debug /machine:I386 /out:"../../../../win32/msvc6/build/bin/log4tangod.dll" /implib:"../../../../win32/msvc6/build/lib/shared/log4tangod.lib" /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /debug /machine:I386 /out:"../../../../../win32/msvc6/build/bin/msvc6/debug/log4tangod.dll" /implib:"../../../../../win32/msvc6/build/lib/msvc6/shared/debug/log4tangod.lib" /pdbtype:sept
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -151,12 +151,10 @@ SOURCE=..\..\include\log4tango\LogSeparator.hh
 # Begin Source File
 
 SOURCE=..\..\include\log4tango\LogStream.hh
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\include\log4tango\LogStreambuf.hh
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
@@ -261,12 +259,10 @@ SOURCE=..\..\src\LogSeparator.cpp
 # Begin Source File
 
 SOURCE=..\..\src\LogStream.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\LogStreambuf.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 

@@ -17,6 +17,8 @@ liblog4tango_la_SOURCES = \
   Logger.cpp \
   LogSeparator.cpp \
   LoggerStream.cpp \
+  LogStream.cpp \
+  LogStreambuf.cpp \
   LoggingEvent.cpp \
   Level.cpp \
   NDC.cpp \

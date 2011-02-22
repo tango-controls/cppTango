@@ -1,6 +1,6 @@
 SUBDIRS = threading
 
-liblog4tangoincludedir = $(includedir)/tango/log4tango
+liblog4tangoincludedir = $(includedir)/log4tango
 
 liblog4tangoinclude_HEADERS =  \
 	Appender.hh \
