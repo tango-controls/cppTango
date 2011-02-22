@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -33,12 +33,6 @@ static const char *RcsId = "$Id$";
 // $Revision$
 //
 // $Log$
-// Revision 3.14  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.13  2009/03/30 15:02:58  taurel
-// - Fix last bugs before Tango 7 ??
-//
 // Revision 3.12  2009/03/13 09:32:27  taurel
 // - Small changes to fix Windows VC8 warnings in Warning level 3
 //

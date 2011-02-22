@@ -20,7 +20,7 @@
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -43,15 +43,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2010/08/25 11:41:27  taurel
-// - Fix some bugs preventing dynamic attributes management (in some cases)
-//
-// Revision 3.7  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.6  2008/10/06 15:00:36  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -266,7 +257,7 @@ public:
 	
 	vector<Tango::Attr *> &get_attr_list() {return attr_list;}
 	Attr &get_attr(string &attr_name);
-	void remove_attr(string &,const string &);
+	void remove_attr(string &attr_name);
 
 protected:	
 	vector<Tango::Attr *>			attr_list;	

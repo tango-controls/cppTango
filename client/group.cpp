@@ -8,7 +8,7 @@
 //
 // author(s) :          N.Leclercq
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,20 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.22  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.21  2010/09/09 13:28:04  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.20.4.1  2010/06/23 14:10:23  taurel
-// - Full Tango as described in doc Appendix C is now also supported
-// for group
-//
-// Revision 3.20  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.19  2008/10/06 15:02:16  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -115,23 +101,9 @@ GroupElements GroupElementFactory::instanciate (const std::string& p, int timeou
     dnl.push_back(p);
   }
   else {
-    string db_host,new_pattern;
- 	int db_port = 0;
-	DbDatum dbd;
-
-	parse_name(p,db_host,db_port,new_pattern);
-
-    if (db_host.size() == 0) {
-    	Database db;
+    Database db;
     //- ask the db the list of device matching pattern p
-    	dbd = db.get_device_exported(const_cast<std::string&>(p));
-    }
-	else {
-		ApiUtil *au = ApiUtil::instance();
-		int db_ind = au->get_db_ind(db_host,db_port);
-
-		dbd = ((au->get_db_vect())[db_ind])->get_device_exported(const_cast<std::string&>(new_pattern));
-	}
+    DbDatum dbd = db.get_device_exported(const_cast<std::string&>(p));
     //- extract device names from dbd
     dbd >> dnl;
 #if defined(_LOCAL_DEBUGGING)
@@ -156,86 +128,6 @@ GroupElements GroupElementFactory::instanciate (const std::string& p, int timeou
 #endif
   //- return the list to the caller
   return tel;
-}
-
-void GroupElementFactory::parse_name (const std::string& p, string &db_host,int &db_port,string &dev_pattern)
-{
-	string pattern_name_low(p);	
-	transform(pattern_name_low.begin(),pattern_name_low.end(),pattern_name_low.begin(),::tolower);
-		
-// Try to find protocol specification in device pattern and analyse it
-
-	string name_wo_prot;
-	string::size_type pos = pattern_name_low.find(PROT_SEP);
-	if (pos == string::npos)
-	{
-		if (pattern_name_low.size() > 2)
-		{
-			if ((pattern_name_low[0] == '/') && (pattern_name_low[1] == '/'))
-				name_wo_prot = pattern_name_low.substr(2);
-			else
-				name_wo_prot = pattern_name_low;
-		}
-		else
-			name_wo_prot = pattern_name_low;
-	}
-	else
-	{
-		string protocol = pattern_name_low.substr(0,pos);
-
-		if (protocol == TANGO_PROTOCOL)
-		{
-			name_wo_prot = pattern_name_low.substr(pos + 3);
-		}		
-		else
-		{		
-			TangoSys_OMemStream desc;
-			desc << protocol;
-			desc << " protocol is an unsupported protocol" << ends;
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
-						desc.str(),
-						(const char*)"GroupElementFactory::parse_name()");
-		}			
-	}
-
-// Search if host and port are specified
-
-	pos = name_wo_prot.find(PORT_SEP);
-	if (pos == string::npos)
-	{
-		TangoSys_OMemStream desc;
-		desc << "Wrong device name syntax in " << p << ends;
-			
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
-				desc.str(),
-				(const char *)"GroupElementFactory::parse_name()");
-	}
-
-	string bef_sep = name_wo_prot.substr(0,pos);
-	string::size_type tmp = bef_sep.find(HOST_SEP);
-	if (tmp != string::npos)
-	{
-		string tmp_host(bef_sep.substr(0,tmp));
-		if (tmp_host.find('.') == string::npos)
-			DeviceProxy::get_fqdn(tmp_host);
-		db_host = tmp_host;
-		string db_port_str = bef_sep.substr(tmp + 1);
-		if (db_port_str.size() == 0)
-		{
-			TangoSys_OMemStream desc;
-			desc << "Wrong device name syntax in " << p << ends;
-			
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
-					desc.str(),
-					(const char *)"GroupElementFactory::parse_name()");
-		}
-		TangoSys_MemStream s;
-		s << db_port_str << ends;
-		s >> db_port;
-		dev_pattern = name_wo_prot.substr(pos + 1);	
-	}
-	else
-		dev_pattern = name_wo_prot;	
 }
 
 //=============================================================================
@@ -600,22 +492,22 @@ GroupElement::~GroupElement()
   //- noop dtor
 }
 //-----------------------------------------------------------------------------
-void GroupElement::add (const std::string&, int)
+void GroupElement::add (const std::string& s, int timeout_ms)
 {
   //- noop default impl
 }
 //-----------------------------------------------------------------------------
-void GroupElement::add (const std::vector<std::string>& , int)
+void GroupElement::add (const std::vector<std::string>& sl, int timeout_ms)
 {
   //- noop default impl
 }
 //-----------------------------------------------------------------------------
-void GroupElement::remove (const std::string&, bool)
+void GroupElement::remove (const std::string& s, bool fwd)
 {
   //- noop default impl
 }
 //-----------------------------------------------------------------------------
-void GroupElement::remove (const std::vector<std::string>&, bool)
+void GroupElement::remove (const std::vector<std::string>& sl, bool fwd)
 {
   //- noop default impl
 }
@@ -631,27 +523,27 @@ GroupElement* GroupElement::find (const std::string& n, bool fwd)
   return name_equals(n) ? this : 0;
 } 
 //-----------------------------------------------------------------------------
-DeviceProxy* GroupElement::get_device (const std::string&) 
+DeviceProxy* GroupElement::get_device (const std::string& n) 
 {
   return 0;
 } 
 //-----------------------------------------------------------------------------
-DeviceProxy* GroupElement::get_device (long) 
+DeviceProxy* GroupElement::get_device (long idx) 
 {
   return 0;
 } 
 //-----------------------------------------------------------------------------
-DeviceProxy* GroupElement::operator[] (long) 
+DeviceProxy* GroupElement::operator[] (long idx) 
 {
   return 0;
 } 
 //-----------------------------------------------------------------------------
-Group* GroupElement::get_group (const std::string&) 
+Group* GroupElement::get_group (const std::string& n) 
 {
   return 0;
 } 
 //-----------------------------------------------------------------------------
-bool GroupElement::ping (bool)
+bool GroupElement::ping (bool fwd)
 {
   return false;
 }

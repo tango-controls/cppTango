@@ -7,7 +7,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,30 +30,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/12/09 07:55:35  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.15  2010/12/08 16:27:35  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.14  2010/12/08 09:57:46  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.13  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.12  2010/02/08 14:40:19  taurel
-// - Add a patch from Nicolas about Mac-OS port
-//
-// Revision 3.11  2009/09/22 11:04:45  taurel
-// - Environment variables in file also supported for Windows
-//
-// Revision 3.10  2009/04/20 13:25:50  taurel
-// - Fix bug in case of default constructed DeviceProxy and alias() method
-// - Add some ctors from "const char *" to make programmer's life easier
-//
 // Revision 3.9  2009/04/08 08:30:39  taurel
 // - Fix a bug in case of TangoAccessControl server started with
 // SUPER_TANGO set to 1
@@ -102,8 +78,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#else
-#include <ws2tcpip.h>
 #endif
 
 namespace Tango
@@ -149,10 +123,16 @@ void AccessProxy::real_ctor()
 //	Check if forced mode
 //
 	string super_tango;
-
+#ifndef _TG_WINDOWS_
 	int ret = get_env_var("SUPER_TANGO",super_tango);
 	if (ret == 0)
 	{
+#else
+	char *forced_str = getenv("SUPER_TANGO");
+	if (forced_str != NULL)
+	{
+		super_tango = forced_str;
+#endif
 		transform(super_tango.begin(),super_tango.end(),super_tango.begin(),::tolower);
 		if (super_tango == "true")
 			forced = true;
@@ -186,7 +166,7 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 	{
 
 //
-// If not already done, get user name.
+//	If not already done, get user name.
 // I am using the effective UID in order to allow applications using the seteuid(0) system call
 // to change the effective user id and therefore to take someone else rights
 //
@@ -246,75 +226,42 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 			int res = gethostname(h_name,80);
 			if (res == 0)
 			{
-  				struct addrinfo hints;
-
-				memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-				hints.ai_falgs	   = AI_ADDRCONFIG;
+#ifndef _TG_WINDOWS_
+				struct hostent my_addr;
+				int err;
+				char buffer[__AC_BUFFER_SIZE];
 #endif
+				struct hostent *my_addr_ptr;
+
+#ifdef sun
+				if (gethostbyname_r(h_name,&my_addr,buffer,sizeof(buffer),&err) != 0)
 #else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  				hints.ai_flags     = AI_ADDRCONFIG;
+#ifdef _TG_WINDOWS_
+				my_addr_ptr = gethostbyname(h_name);
+				if (my_addr_ptr == NULL)
+#else
+				if (gethostbyname_r(h_name,&my_addr,buffer,sizeof(buffer),&my_addr_ptr,&err) != 0)
 #endif
 #endif
-  				hints.ai_family    = AF_INET;
-  				hints.ai_socktype  = SOCK_STREAM;
-
-  				struct addrinfo	*info;
-				struct addrinfo *ptr;
-				char tmp_host[128];
-
-  				int result = getaddrinfo(h_name,NULL,&hints,&info);
-
-  				if (result == 0)
-				{
-					ptr = info;
-					string at_least;
-					bool first = true;
-					bool found = false;
-
-					while (ptr != NULL)
-					{
-    					if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,128,0,0,NI_NUMERICHOST) == 0)
-						{
-							string host_str(tmp_host);
-							if (first == true)
-							{
-								at_least = host_str;
-								first = false;
-							}
-
-							if (host_str.find("127.") == 0) {}
-							else
-							{
-								host = tmp_host;
-								found = true;
-								break;
-							}
-						}
-						else
-						{
-							cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
-							cerr << "Access right set to ACCESS_READ" << endl;
-
-							freeaddrinfo(info);
-							return ACCESS_READ;
-						}
-						ptr = ptr->ai_next;
-					}
-					freeaddrinfo(info);
-
-					if (found == false)
-						host = at_least;
-				}
-				else
 				{
 					cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
 					cerr << "Access right set to ACCESS_READ" << endl;
 
 					return ACCESS_READ;
 				}
+
+				struct in_addr **addr_list;
+
+//
+// TODO : Manage the case of host with several network address
+//
+
+#ifndef _TG_WINDOWS_
+				addr_list = (struct in_addr **)my_addr.h_addr_list;
+#else
+				addr_list = (struct in_addr **)my_addr_ptr->h_addr_list;
+#endif
+				host = inet_ntoa(*addr_list[0]);
 			}
 			else
 			{

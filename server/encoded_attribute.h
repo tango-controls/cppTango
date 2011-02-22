@@ -8,7 +8,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,22 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.8  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.7  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.6  2009/09/10 07:00:30  taurel
-// - Add some documentation fo rthe new ctor
-//
-// Revision 3.5  2009/09/08 14:22:15  taurel
-// - Manage internal buffer(s) as a cicular buffer pool
-//
-// Revision 3.4  2009/04/06 06:54:34  taurel
-// - Fix some typos
-// - Commit in Unix format
-//
 // Revision 3.3  2009/03/26 16:08:44  jlpons
 // Added decoding interface (DevEncoded format)
 //
@@ -64,14 +48,9 @@
 #ifndef _ENCODED_ATT_H
 #define _ENCODED_ATT_H
 
-#include <encoded_format.h>
-
 namespace Tango
 {
 
-class EncodedAttributeExt
-{
-};
 
 /**
  * This class provides method to deal with Tango::DevEncoded attribute format.
@@ -90,20 +69,6 @@ public:
  *
  */
 	EncodedAttribute();
-	
-/**
- * Create a new EncodedAttribute object with a user defined buffer pool.
- *
- * This constructor allows the user to define the size of the buffer pool used to
- * store the encoded images. This buffer pool is managed as a circular pool.
- * A different buffer is used each time an image is encoded. The last used buffer is then
- * passed to the attribute with the attribute::set_value() method
- *
- * @param buf_pool_size    Buffer pool size
- * @param serialization	   Set to true if the instance manage the data buffer serialization
- *
- */
-	EncodedAttribute(int buf_pool_size,bool serialization = false);
 //@}
 
 /**@name Destructor
@@ -223,46 +188,18 @@ public:
 
 //@}
 
- DevUChar  *get_data()
- {if (index==0)
-    return (DevUChar *)buffer_array[buf_elt_nb-1];
-  else
-    return (DevUChar *)buffer_array[index-1];}
-	
- long       get_size()
- {if (index==0)
-    return (long)buffSize_array[buf_elt_nb-1];
-  else
-    return (long)buffSize_array[index-1];}
-	
+ DevUChar  *get_data()   {return (DevUChar *)buffer;}
  DevString *get_format() {return &format;}
- bool get_exclusion() {return manage_exclusion;}
- omni_mutex *get_mutex()
- {if (index==0)
- 	return &(mutex_array[buf_elt_nb-1]);
-  else
-    return &(mutex_array[index-1]);}
- 
+ long       get_size()   {return (long)buffSize;}
+
 private:
 
-  unsigned char 		**buffer_array;
-  int           		*buffSize_array;
-  omni_mutex			*mutex_array;
-  char          		*format;
-  
-  int 					index;
-  int					buf_elt_nb;
-  bool					manage_exclusion;
-  
-  EncodedAttributeExt	*ext;
+  unsigned char *buffer;
+  int            buffSize;
+  char          *format;
 
 };
 
-#define INC_INDEX() \
-  index++; \
-  if (index == buf_elt_nb) \
-  	index = 0;
-	
 } // End of Tango namespace
 
 #endif // _ENCODED_ATT_H

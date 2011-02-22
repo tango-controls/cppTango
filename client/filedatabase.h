@@ -1,4 +1,4 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -41,53 +41,56 @@ namespace Tango{
 
 class t_property
 {
-public:
-	std::string 				name;
-	std::vector<std::string> 	value;
+	public:
+	std::string name;
+	std::vector<std::string> value;
 
 };
 
 
 class t_attribute_property
 {
-public:
-	std::string 				attribute_name;
-	std::vector<t_property*> 	properties;
+	public:
+	std::string attribute_name;
+	std::vector<t_property*> properties;
 };
 
 
 class t_device
 {
-public:
-	std::string 						name;
-	std::vector<t_property*> 			properties;
-	std::vector<t_attribute_property*> 	attribute_properties;
+	public:
+	std::string name;
+	std::vector<t_property*> properties;
+	std::vector<t_attribute_property*> attribute_properties;
 };
 
 class t_tango_class
 {
-public:
-	std::string 						name;
-	std::string 						description;
-	std::string 						title;
-	std::vector<t_device*> 				devices;
-	std::vector<t_property*> 			properties;
-	std::vector<t_attribute_property*> 	attribute_properties;
+	public:
+	std::string name;
+	std::string description;
+	std::string title;
+	std::vector<t_device*> devices;
+	std::vector<t_property*> properties;
+	std::vector<t_attribute_property*> attribute_properties;
+
+	
 };
 
 
 class t_server 
 {
-public:
-	std::string 					name;
-	std::string 					instance_name;
-	std::vector<t_tango_class*> 	classes;
-	std::vector<t_device*> 			devices;
+	public:
+	std::string name;
+	std::string instance_name;
+	std::vector<t_tango_class*> classes;
+	std::vector<t_device*> devices;
+	
 };
 
 template <class T> class hasName
 {
-    string 		name; 
+    string name; 
 public:
     hasName (string _name) : name(_name) {};
     bool operator () (T* obj);
@@ -95,7 +98,7 @@ public:
 
 template <class T> class hasAttributeName
 {
-    string 		attribute_name; 
+    string attribute_name; 
 public:
     hasAttributeName (string _name) : attribute_name(_name) {};
     bool operator () (T* obj);
@@ -112,15 +115,13 @@ public:
 };
 
 
-class FileDatabase
-{
+class FileDatabase {
 public:
 	FileDatabase(const std::string& file_name);
 	~FileDatabase();
 	std::string  parse_res_file(const std::string& file_name);
 	void display();
 	string get_display();
-	void write_event_channel_ior(string &,string &);
 
 
 	CORBA::Any*      DbInfo(CORBA::Any&);
@@ -166,8 +167,8 @@ public:
 	void write_file();
 
 private:
-	string 			filename;
-	t_server 		m_server;
+	string filename;
+	t_server m_server;
 
 	void read_char(std::ifstream& f);
 	int class_lex(std::string& word);
@@ -192,15 +193,15 @@ private:
 	static int MaxWordLength;
 
 
-	int 			length_buf;
-  	int 			pos_buf;
-  	int 			CrtLine;
-  	int 			StartLine;
-  	char 			CurrentChar;
-  	char 			NextChar;
+	int 		length_buf;
+  	int 		pos_buf;
+  	int 		CrtLine;
+  	int 		StartLine;
+  	char 		CurrentChar;
+  	char 		NextChar;
   
-  	bool 			DELETE_ENTRY;
-  	string 			word;
+  	bool 		DELETE_ENTRY;
+  	std::string 	word;
 
 	FileDatabaseExt	*ext;
 };

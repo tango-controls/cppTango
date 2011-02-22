@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,18 +32,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.7  2009/08/27 07:24:30  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 1.6.2.2  2009/08/26 07:16:52  taurel
-// - Fix bugs in previous change related to PIC code
-//
-// Revision 1.6.2.1  2009/08/25 14:03:10  taurel
-// - First attempt to clarify the gcc PIC problem
-//
-// Revision 1.6  2009/04/20 14:55:58  jlpons
-// Added GPL header, changed memory allocation to C++ fashion.
-//
 //=============================================================================
 
 //------------------------------------------------------------------------------
@@ -83,7 +71,6 @@
 #define ALIGN8 __attribute__ ((aligned (8)))
 #endif
 
-
 // MMX constant (YCbCr to RGB)
 ALIGN8 short  _cbgmm[]  = { -FIX14(0.34414),-FIX14(0.34414),-FIX14(0.34414),-FIX14(0.34414) };
 ALIGN8 short  _cbbmm[]  = {  FIX14(1.772)  , FIX14(1.772)  , FIX14(1.772)  , FIX14(1.772)   };
@@ -100,134 +87,6 @@ ALIGN8 short  _rcbcrmm[] = {-FIX15(0.16874),-FIX15(0.16874), FIX15(0.5)    , FIX
 ALIGN8 short  _gcbcrmm[] = {-FIX15(0.33126),-FIX15(0.33126),-FIX15(0.41869),-FIX15(0.41869)};
 ALIGN8 short  _bcbcrmm[] = { FIX15(0.5)    , FIX15(0.5)    ,-FIX15(0.08131),-FIX15(0.08131)};
 ALIGN8 short  _rcmm[]    = { 1,1,1,1 };
-
-//
-// Unfortunately with gcc, code like "psubw     mm2,_128mm" is considered like non PIC
-// and the scanelf utility complains about this. This is also a problem for distribution like
-// Debian. Why, I don't know !!
-// This is a known problem and some WEB page have been written relatedto this issue.
-// I have used the page http://www.gentoo.org/proj/en/hardened/pic-fix-guide.xml
-// Within this page, they give 3 pssobilities to remove this kind of code.
-// I have use case number 1. Case number 2 and 3 are not really usable because
-// all the registers are already used (Not in all functions but in most of them)
-// Therefore, every variable defined previously are "manually" loaded into the MMX registers
-// using the stack as temporary storage
-//
-// -FIX14(0.34414) --> 0xe9fa
-// FIX14(1.772)    --> 0x7168
-// -FIX14(0.71414) --> 0xd24c
-// FIX14(1.402)	   --> 0x59ba
-// 128             --> 0x0080
-// FIX15(0.299)    --> 0x2646
-// FIX15(0.587)    --> 0x4b23
-// FIX15(0.114)    --> 0x0e98
-// -127            --> 0xff81
-// -FIX15(0.16874) --> 0xea67
-// FIX15(0.5)      --> 0x4000
-// -FIX15(0.33126) --> 0xd599
-// -FIX15(0.41869) --> 0xca68
-// -FIX15(0.08131) --> 0xf598
-// 1               --> 0x0001
-//
-// This problem is the reason of all the following macros.
-// It's not a nice way to solve it> When we will have time, we will 
-// try to find a cleaner solution
-//
-
-#ifndef _WINDOWS
-
-#ifdef __PIC__
-
-#define sub_128_mmx_reg(REG1,REG2) \
-	"push	0x00800080	\n" \
-	"push	0x00800080	\n"	\
-	"psubw	"#REG1", QWORD PTR [esp]	\n" \
-	"psubw	"#REG2", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define add_127_mmx_reg(REG1) \
-	"push	0xff81ff81	\n" \
-	"push	0xff81ff81	\n"	\
-	"paddw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define add_1_mmx_reg(REG1) \
-	"push	0x00010001	\n" \
-	"push	0x00010001	\n"	\
-	"paddw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define mul_cxx_mmx_reg(REG1,REG2,REG3,REG4) \
-	"push	0xe9fae9fa	\n" \
-	"push	0xe9fae9fa	\n"	\
-	"pmulhw "#REG1", QWORD PTR [esp]	\n" \
-	"push	0x71687168	\n" \
-	"push	0x71687168	\n"	\
-	"pmulhw "#REG2", QWORD PTR [esp]	\n" \
-	"push	0xd24cd24c	\n" \
-	"push	0xd24cd24c	\n"	\
-	"pmulhw "#REG3", QWORD PTR [esp]	\n" \
-	"push	0x59ba59ba	\n" \
-	"push	0x59ba59ba	\n"	\
-	"pmulhw "#REG4", QWORD PTR [esp]	\n" \
-	"add	esp,32	\n"
-	
-#define mul_rgb_mmx_reg(REG1,REG2,REG3) \
-	"push	0x26462646	\n" \
-	"push	0x26462646	\n"	\
-	"pmulhw "#REG1", QWORD PTR [esp]	\n" \
-	"push	0x4b234b23	\n" \
-	"push	0x4b234b23	\n"	\
-	"pmulhw "#REG2", QWORD PTR [esp]	\n" \
-	"push	0x0e980e98	\n" \
-	"push	0x0e980e98	\n"	\
-	"pmulhw "#REG3", QWORD PTR [esp]	\n" \
-	"add	esp,24	\n"
-	
-#define mul_rgbc_mmx_reg(REG1,REG2,REG3) \
-	"push	0x40004000	\n"	\
-	"push	0xea67ea67	\n" \
-	"pmulhw "#REG1", QWORD PTR [esp]	\n" \
-	"push	0xca68ca68	\n"	\
-	"push	0xd599d599	\n" \
-	"pmulhw "#REG2", QWORD PTR [esp]	\n" \
-	"push	0xf598f598	\n"	\
-	"push	0x40004000	\n" \
-	"pmulhw "#REG3", QWORD PTR [esp]	\n" \
-	"add	esp,24	\n"
-
-#else /* __PIC__ */
-
-#define sub_128_mmx_reg(REG1,REG2) \
-    "psubw     "#REG1",_128mm      \n" \
-    "psubw     "#REG2",_128mm      \n"
-	
-#define add_127_mmx_reg(REG1) \
-    "paddw "#REG1",_offymm       \n"
-	
-#define add_1_mmx_reg(REG1) \
-    "paddw "#REG1",_rcmm         \n"
-	
-#define mul_cxx_mmx_reg(REG1,REG2,REG3,REG4) \
-    "pmulhw    "#REG1",_cbgmm      \n" \
-    "pmulhw    "#REG2",_cbbmm      \n" \
-    "pmulhw    "#REG3",_crgmm      \n" \
-    "pmulhw    "#REG4",_crrmm      \n"
-	
-#define mul_rgb_mmx_reg(REG1,REG2,REG3) \
-      "pmulhw "#REG1",_rymm        \n" \
-      "pmulhw "#REG2",_gymm        \n" \
-      "pmulhw "#REG3",_bymm        \n"
-	
-#define mul_rgbc_mmx_reg(REG1,REG2,REG3) \
-      "pmulhw "#REG1",_rcbcrmm     \n" \
-      "pmulhw "#REG2",_gcbcrmm     \n" \
-      "pmulhw "#REG3",_bcbcrmm     \n"
-	  
-#endif /* __PIC__ */
-
-		
-#endif /* _WINDOWS */
 
 //------------------------------------------------------------------------------
 // MCU16x16 YCbCr H2V2 (2x2:1:1, 6 blocks per MCU) to 32-bit RGB
@@ -456,12 +315,16 @@ __blrow_h2v2:
     "punpcklbw mm1,mm0         \n"
     "punpcklbw mm2,mm0         \n"
     "punpcklbw mm3,mm0         \n"
-	sub_128_mmx_reg(mm2,mm3)
+    "psubw     mm2,_128mm      \n"
+    "psubw     mm3,_128mm      \n"
     "psllw     mm2,2           \n"
     "psllw     mm3,2           \n"
     "movq      mm4,mm2         \n"
     "movq      mm5,mm3         \n"
-	 mul_cxx_mmx_reg(mm2,mm4,mm3,mm5)
+    "pmulhw    mm2,_cbgmm      \n"
+    "pmulhw    mm4,_cbbmm      \n"
+    "pmulhw    mm3,_crgmm      \n"
+    "pmulhw    mm5,_crrmm      \n"
     "movq      mm6,mm5         \n"
     "punpcklwd mm6,mm6         \n"
     "paddw     mm6,mm1         \n"
@@ -743,12 +606,16 @@ __blcol_h1v1:
   "punpcklbw mm1,mm0       \n"
   "punpcklbw mm2,mm0       \n"
   "punpcklbw mm3,mm0       \n"
-   sub_128_mmx_reg(mm2,mm3)
+  "psubw     mm2,_128mm    \n"
+  "psubw     mm3,_128mm    \n"
   "psllw     mm2,2         \n"
   "psllw     mm3,2         \n"
   "movq      mm4,mm2       \n"
   "movq      mm5,mm3       \n"
-   mul_cxx_mmx_reg(mm2,mm4,mm3,mm5)
+  "pmulhw    mm2,_cbgmm    \n"
+  "pmulhw    mm4,_cbbmm    \n"
+  "pmulhw    mm3,_crgmm    \n"
+  "pmulhw    mm5,_crrmm    \n"
   "paddw     mm5,mm1       \n"
   "paddw     mm2,mm1       \n"
   "paddw     mm2,mm3       \n"
@@ -777,12 +644,16 @@ __blcol_h1v1:
   "punpcklbw mm1,mm0       \n"
   "punpcklbw mm2,mm0       \n"
   "punpcklbw mm3,mm0       \n"
-   sub_128_mmx_reg(mm2,mm3)
+  "psubw     mm2,_128mm    \n"
+  "psubw     mm3,_128mm    \n"
   "psllw     mm2,2         \n"
   "psllw     mm3,2         \n"
   "movq      mm4,mm2       \n"
   "movq      mm5,mm3       \n"
-   mul_cxx_mmx_reg(mm2,mm4,mm3,mm5)
+  "pmulhw    mm2,_cbgmm    \n"
+  "pmulhw    mm4,_cbbmm    \n"
+  "pmulhw    mm3,_crgmm    \n"
+  "pmulhw    mm5,_crrmm    \n"
   "paddw     mm5,mm1       \n"
   "paddw     mm2,mm1       \n"
   "paddw     mm2,mm3       \n"
@@ -870,7 +741,8 @@ __blrow_gray8:
   "movd mm2,[rsi+4]        \n"
   "punpcklbw mm1,mm0       \n"
   "punpcklbw mm2,mm0       \n"
-   sub_128_mmx_reg(mm1,mm2)
+  "psubw mm1,_128mm        \n"
+  "psubw mm2,_128mm        \n"
   "movq [rdi]  ,mm1        \n"
   "movq [rdi+8],mm2        \n"
   "add rsi,rax             \n"
@@ -889,7 +761,8 @@ __blrow_gray8:
   "movd mm2,[esi+4]        \n"
   "punpcklbw mm1,mm0       \n"
   "punpcklbw mm2,mm0       \n"
-   sub_128_mmx_reg(mm1,mm2)
+  "psubw mm1,_128mm        \n"
+  "psubw mm2,_128mm        \n"
   "movq [edi]  ,mm1        \n"
   "movq [edi+8],mm2        \n"
   "add esi,eax             \n"
@@ -1106,10 +979,12 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "psllw   mm1,1           \n"
       "psllw   mm5,1           \n"
       "psllw   mm7,1           \n"
-	   mul_rgb_mmx_reg(mm1,mm5,mm7)
+      "pmulhw mm1,_rymm        \n"
+      "pmulhw mm5,_gymm        \n"
+      "pmulhw mm7,_bymm        \n"
       "paddw mm1,mm5           \n"
       "paddw mm1,mm7           \n"
-	   add_127_mmx_reg(mm1)
+      "paddw mm1,_offymm       \n"
 #ifdef _64BITS
       "movq [rdi],mm1          \n"
       "movd mm1,[rsi+rax]      \n"
@@ -1141,10 +1016,12 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "psllw   mm1,1           \n"
       "psllw   mm5,1           \n"
       "psllw   mm7,1           \n"
-       mul_rgb_mmx_reg(mm1,mm5,mm7)
+      "pmulhw mm1,_rymm        \n"
+      "pmulhw mm5,_gymm        \n"
+      "pmulhw mm7,_bymm        \n"
       "paddw mm1,mm5           \n"
       "paddw mm1,mm7           \n"
-	   add_127_mmx_reg(mm1)
+      "paddw mm1,_offymm       \n"
 #ifdef _64BITS
       "movq [rdi+16],mm1       \n"
       "movd mm1,[rsi]          \n"
@@ -1194,10 +1071,12 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "punpckhdq mm5,mm5       \n"
       "punpckhwd mm7,mm2       \n"
       "punpckldq mm7,mm7       \n"
-	   mul_rgbc_mmx_reg(mm1,mm5,mm7)
+      "pmulhw mm1,_rcbcrmm     \n"
+      "pmulhw mm5,_gcbcrmm     \n"
+      "pmulhw mm7,_bcbcrmm     \n"
       "paddw mm1,mm5           \n"
       "paddw mm1,mm7           \n"
-	   add_1_mmx_reg(mm1)
+      "paddw mm1,_rcmm         \n"
 #ifdef _64BITS
       "movd [rbx],mm1          \n"
       "psrlq mm1,32            \n"
@@ -1414,10 +1293,12 @@ void conv_block_RGB32H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "psllw   mm1,1           \n"
       "psllw   mm5,1           \n"
       "psllw   mm7,1           \n"
-	   mul_rgb_mmx_reg(mm1,mm5,mm7)
+      "pmulhw mm1,_rymm        \n"
+      "pmulhw mm5,_gymm        \n"
+      "pmulhw mm7,_bymm        \n"
       "paddw mm1,mm5           \n"
       "paddw mm1,mm7           \n"
-	   add_127_mmx_reg(mm1)
+      "paddw mm1,_offymm       \n"
 #ifdef _64BITS
       "movq [rdi],mm1          \n"
       "movd mm1,[rsi+rax]      \n"
@@ -1448,10 +1329,12 @@ void conv_block_RGB32H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "psllw   mm1,1           \n"
       "psllw   mm5,1           \n"
       "psllw   mm7,1           \n"
-	   mul_rgb_mmx_reg(mm1,mm5,mm7)
+      "pmulhw mm1,_rymm        \n"
+      "pmulhw mm5,_gymm        \n"
+      "pmulhw mm7,_bymm        \n"
       "paddw mm1,mm5           \n"
       "paddw mm1,mm7           \n"
-	   add_127_mmx_reg(mm1)
+      "paddw mm1,_offymm       \n"
 #ifdef _64BITS
       "movq [rdi+16],mm1       \n"
       "movd mm1,[rsi]          \n"
@@ -1499,10 +1382,12 @@ void conv_block_RGB32H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "punpckhdq mm5,mm5       \n"
       "punpckhwd mm7,mm2       \n"
       "punpckldq mm7,mm7       \n"
-	   mul_rgbc_mmx_reg(mm1,mm5,mm7)
+      "pmulhw mm1,_rcbcrmm     \n"
+      "pmulhw mm5,_gcbcrmm     \n"
+      "pmulhw mm7,_bcbcrmm     \n"
       "paddw mm1,mm5           \n"
       "paddw mm1,mm7           \n"
-	   add_1_mmx_reg(mm1)
+      "paddw mm1,_rcmm         \n"
 #ifdef _64BITS
       "movd [rbx],mm1          \n"
       "psrlq mm1,32            \n"

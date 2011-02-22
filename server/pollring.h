@@ -11,7 +11,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,19 +34,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:46:01  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.10  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.9  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.8  2008/12/19 14:27:08  taurel
 // - First changes for compatibility between IDL 3 and IDL 4
 //
@@ -214,12 +201,12 @@ public:
 	struct timeval				when;
 };
 
-inline bool operator<(const RingElt &,const RingElt &)
+inline bool operator<(const RingElt &l,const RingElt &r)
 {
 	return true;
 }
 
-inline bool operator==(const RingElt &,const RingElt &)
+inline bool operator==(const RingElt &l,const RingElt &r)
 {
 	return true;
 }
@@ -243,7 +230,7 @@ public:
 	void insert_data(CORBA::Any *,struct timeval &);
 	void insert_data(Tango::AttributeValueList *,struct timeval &);
 	void insert_data(Tango::AttributeValueList_3 *,struct timeval &);
-	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,bool);
+	void insert_data(Tango::AttributeValueList_4 *,struct timeval &);
 	void insert_except(Tango::DevFailed *,struct timeval &);
 
 	void force_copy_data(Tango::AttributeValueList_4 *);
