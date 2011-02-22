@@ -1,17 +1,13 @@
+if DOC
+SUBDIRS = config src include tests doc
+else
 SUBDIRS = config src include tests
-
-if DOC
-SUBDIRS += doc
 endif
 
-DIST_SUBDIRS = config src include tests
+DIST_SUBDIRS = config src include doc tests
 
-if DOC
-DIST_SUBDIRS += doc
-endif
 
-EXTRA_DIST = log4tango.pc.in \
-		log4tango.m4 \
+EXTRA_DIST = 	log4tango.spec.in log4tango.spec log4tango.m4 \
 		m4/AC_CREATE_PREFIX_CONFIG_H.m4 \
 		m4/BB_ENABLE_DOXYGEN.m4 \
 		m4/AC_CXX_HAVE_SSTREAM.m4 \
@@ -20,11 +16,12 @@ EXTRA_DIST = log4tango.pc.in \
 		m4/PETI_PEDANTIC_GCC.m4 \
 		m4/AC_FUNC_SNPRINTF.m4 \
 		m4/AC_C_INT64_T.m4
-		
-pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = log4tango.pc		
 
 .PHONY: check rpm docs doc-dist
+
+dist-hook:
+	perl -pi -e 's/\n/\r\n/g' `find $(distdir) -name '*.ds?'`
+	perl -pi -e 's/\n/\r\n/g' `find $(distdir) -name '*.bpg'`
 
 distclean-local:
 	$(RM) CONTENTS TAGS log4tango-config
