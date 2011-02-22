@@ -1,148 +1,91 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7,10"
+	Version="7.10"
 	Name="tango_dll"
-	ProjectGUID="{6535FE7D-DC8B-4E01-AAC0-FC9167E10A54}"
-	>
+	SccProjectName=""
+	SccLocalPath="">
 	<Platforms>
 		<Platform
-			Name="Win32"
-		/>
+			Name="Win32"/>
 	</Platforms>
-	<ToolFiles>
-	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory=".\Release"
 			IntermediateDirectory=".\Release"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Release/tango_dll.tlb"
-				HeaderFileName=""
-			/>
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
 				AdditionalIncludeDirectories="..\..\..\server,..\..\..\client,..\..\resources,$(OMNI_BASE)\win32_dll\include,$(LOG4TANGO_BASE)\win32_dll\include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB"
 				RuntimeLibrary="2"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Release/tango_dll.pch"
 				AssemblerListingLocation=".\Release/"
 				ObjectFile=".\Release/"
 				ProgramDataBaseFileName=".\Release/"
-				WarningLevel="2"
-				SuppressStartupBanner="true"
-				CompileAs="0"
-			/>
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				CompileAs="0"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
+				Name="VCLinkerTool"
+				AdditionalDependencies="log4tango.lib omniorb407_rt.lib omnidynamic407_rt.lib omnithread32_rt.lib COS407_rt.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile="lib/tango552.dll"
+				Version="5.5.2"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="$(OMNI_BASE)\win32_dll\lib,$(LOG4TANGO_BASE)\win32_dll\lib"
+				ModuleDefinitionFile="tango.def"
+				ProgramDatabaseFile=".\Release/tango552.pdb"
+				ImportLibrary="Release/tango.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
 				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Release/tango_dll.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango600 release\*.obj"
-				ExcludedFromBuild="false"
-			/>
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango552 release\*.obj"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="log4tango.lib omniorb410_rt.lib omnidynamic410_rt.lib omnithread33_rt.lib COS410_rt.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				OutputFile="lib/tango600.dll"
-				Version="6.0.0"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(OMNI_BASE)\win32_dll\lib,$(LOG4TANGO_BASE)\win32_dll\lib"
-				ModuleDefinitionFile="tango.def"
-				ProgramDatabaseFile=".\Release/tango600.pdb"
-				ImportLibrary="lib/tango.6.0.0.lib"
-				TargetMachine="1"
-			/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCManifestTool"
-			/>
+				Name="VCXMLDataGeneratorTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCWebDeploymentTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug"
 			IntermediateDirectory=".\Debug"
 			ConfigurationType="2"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
 			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			CharacterSet="2"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\Debug/tango_dll.tlb"
-				HeaderFileName=""
-			/>
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
@@ -150,69 +93,60 @@
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="0"
+				RuntimeTypeInfo="TRUE"
+				UsePrecompiledHeader="2"
 				PrecompiledHeaderFile=".\Debug/tango_dll.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.6.0.0.pdb"
-				WarningLevel="2"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
+				ProgramDataBaseFileName=".\Debug/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="4"
+				CompileAs="0"/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
+				Name="VCCustomBuildTool"/>
 			<Tool
-				Name="VCResourceCompilerTool"
+				Name="VCLinkerTool"
+				AdditionalDependencies="log4tangod.lib omniORB407_rtd.lib omniDynamic407_rtd.lib COS407_rtd.lib omnithread32_rtd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile="lib/tango552d.dll"
+				Version="5.5.2"
+				LinkIncremental="0"
+				AdditionalLibraryDirectories="$(OMNI_BASE)\win32_dll\lib,$(LOG4TANGO_BASE)\win32_dll\lib"
+				ModuleDefinitionFile="tango.def"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile=".\Debug/tango552d.pdb"
+				ImportLibrary="Debug/tangod.lib"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
 				PreprocessorDefinitions="_DEBUG"
-				Culture="1033"
-			/>
+				MkTypLibCompatible="TRUE"
+				SuppressStartupBanner="TRUE"
+				TargetEnvironment="1"
+				TypeLibraryName=".\Debug/tango_dll.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango600d debug\*.obj"
-				ExcludedFromBuild="false"
-			/>
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango552d debug\*.obj"/>
 			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="log4tangod.lib omniORB410_rtd.lib omniDynamic410_rtd.lib COS410_rtd.lib omnithread33_rtd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				ShowProgress="2"
-				OutputFile="lib/tango600d.dll"
-				Version="6.0.0"
-				LinkIncremental="2"
-				AdditionalLibraryDirectories="$(OMNI_BASE)\win32_dll\lib,$(LOG4TANGO_BASE)\win32_dll\lib"
-				ModuleDefinitionFile="tango.def"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/tango600d.pdb"
-				ImportLibrary="lib/tangod.6.0.0.lib"
-				TargetMachine="1"
-			/>
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"/>
 			<Tool
-				Name="VCALinkTool"
-			/>
+				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
-				Name="VCManifestTool"
-			/>
+				Name="VCXMLDataGeneratorTool"/>
 			<Tool
-				Name="VCXDCMakeTool"
-			/>
+				Name="VCWebDeploymentTool"/>
 			<Tool
-				Name="VCBscMakeTool"
-			/>
+				Name="VCManagedWrapperGeneratorTool"/>
 			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -220,1690 +154,1329 @@
 	<Files>
 		<Filter
 			Name="Source Files"
-			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
-			>
+			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat">
 			<File
-				RelativePath="..\..\..\client\api_util.cpp"
-				>
+				RelativePath="..\..\..\client\api_util.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\apiexcept.cpp"
-				>
+				RelativePath="..\..\..\client\apiexcept.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\asynreq.cpp"
-				>
+				RelativePath="..\..\..\client\asynreq.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\attr_proxy.cpp"
-				>
+				RelativePath="..\..\..\client\attr_proxy.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\attrdesc.cpp"
-				>
+				RelativePath="..\..\..\server\attrdesc.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\attribute.cpp"
-				>
+				RelativePath="..\..\..\server\attribute.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\attrmanip.cpp"
-				>
+				RelativePath="..\..\..\server\attrmanip.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\basiccommand.cpp"
-				>
+				RelativePath="..\..\..\server\basiccommand.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\blackbox.cpp"
-				>
+				RelativePath="..\..\..\server\blackbox.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\cbthread.cpp"
-				>
+				RelativePath="..\..\..\client\cbthread.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\class_factory.cpp"
-				>
+				RelativePath="..\..\..\server\class_factory.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\classattribute.cpp"
-				>
+				RelativePath="..\..\..\server\classattribute.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\command.cpp"
-				>
+				RelativePath="..\..\..\server\command.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\coutappender.cpp"
-				>
+				RelativePath="..\..\..\server\coutappender.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\coutbuf.cpp"
-				>
+				RelativePath="..\..\..\server\coutbuf.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_attribute.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_attribute.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_base.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_base.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_class.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_class.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_datum.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_datum.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_device.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_device.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_history.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_history.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_server.cpp"
-				>
+				RelativePath="..\..\..\client\dbapi_server.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dev_event.cpp"
-				>
+				RelativePath="..\..\..\server\dev_event.cpp">
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi_attr.cpp"
-				>
+				RelativePath="..\..\..\client\devapi_attr.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi_base.cpp"
-				>
+				RelativePath="..\..\..\client\devapi_base.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi_data.cpp"
-				>
+				RelativePath="..\..\..\client\devapi_data.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi_datahist.cpp"
-				>
+				RelativePath="..\..\..\client\devapi_datahist.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\device.cpp"
-				>
+				RelativePath="..\..\..\server\device.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\device_2.cpp"
-				>
+				RelativePath="..\..\..\server\device_2.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\device_3.cpp"
-				>
+				RelativePath="..\..\..\server\device_3.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\deviceclass.cpp"
-				>
+				RelativePath="..\..\..\server\deviceclass.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\devicelog.cpp"
-				>
+				RelativePath="..\..\..\server\devicelog.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserver.cpp"
-				>
+				RelativePath="..\..\..\server\dserver.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserverclass.cpp"
-				>
+				RelativePath="..\..\..\server\dserverclass.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserverlog.cpp"
-				>
+				RelativePath="..\..\..\server\dserverlog.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserverpoll.cpp"
-				>
+				RelativePath="..\..\..\server\dserverpoll.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserversignal.cpp"
-				>
+				RelativePath="..\..\..\server\dserversignal.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\event.cpp"
-				>
+				RelativePath="..\..\..\server\event.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventcmds.cpp"
-				>
+				RelativePath="..\..\..\server\eventcmds.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventsupplier.cpp"
-				>
+				RelativePath="..\..\..\server\eventsupplier.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\except.cpp"
-				>
+				RelativePath="..\..\..\server\except.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\filedatabase.cpp"
-				>
+				RelativePath="..\..\..\client\filedatabase.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\group.cpp"
-				>
+				RelativePath="..\..\..\client\group.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\logcmds.cpp"
-				>
+				RelativePath="..\..\..\server\logcmds.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\logging.cpp"
-				>
+				RelativePath="..\..\..\server\logging.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\logstream.cpp"
-				>
+				RelativePath="..\..\..\server\logstream.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\multiattribute.cpp"
-				>
+				RelativePath="..\..\..\server\multiattribute.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\ntservice.cpp"
-				>
+				RelativePath="..\..\..\server\ntservice.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollcmds.cpp"
-				>
+				RelativePath="..\..\..\server\pollcmds.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollobj.cpp"
-				>
+				RelativePath="..\..\..\server\pollobj.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollring.cpp"
-				>
+				RelativePath="..\..\..\server\pollring.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollthread.cpp"
-				>
+				RelativePath="..\..\..\server\pollthread.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\proxy_asyn.cpp"
-				>
+				RelativePath="..\..\..\client\proxy_asyn.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\proxy_asyn_cb.cpp"
-				>
+				RelativePath="..\..\..\client\proxy_asyn_cb.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\seqvec.cpp"
-				>
+				RelativePath="..\..\..\server\seqvec.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tangoappender.cpp"
-				>
+				RelativePath="..\..\..\server\tangoappender.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_MBCS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL;$(NOINHERIT)"
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tangoDynSK.cpp"
-				>
+				RelativePath="..\..\..\server\idl\tangoDynSK.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"
-					/>
+						PreprocessorDefinitions="WIN32;_WINDOWS;_MBCS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_DEBUG;_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;$(NoInherit)"/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;$(NOINHERIT)"
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\tangorollingfileappender.cpp">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\idl\tangoSK.cpp">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tangorollingfileappender.cpp"
-				>
+				RelativePath="..\..\..\server\thsig.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						AdditionalIncludeDirectories=""
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\utils.cpp">
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						AdditionalIncludeDirectories=""
+						PreprocessorDefinitions=""/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tangoSK.cpp"
-				>
+				RelativePath="..\..\..\server\w32win.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\thsig.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\utils.cpp"
-				>
+				RelativePath="..\..\..\server\w_attribute.cpp">
 				<FileConfiguration
-					Name="Release|Win32"
-					>
+					Name="Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
+						PreprocessorDefinitions=""/>
 				</FileConfiguration>
 				<FileConfiguration
-					Name="Debug|Win32"
-					>
+					Name="Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\w32win.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\w_attribute.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
+						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
 			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl"
-			>
+			Filter="h;hpp;hxx;hm;inl">
 			<File
-				RelativePath="..\..\..\client\apiexcept.h"
-				>
+				RelativePath="..\..\..\client\apiexcept.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\attrdesc.h"
-				>
+				RelativePath="..\..\..\server\attrdesc.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\attribute.h"
-				>
+				RelativePath="..\..\..\server\attribute.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\attrmanip.h"
-				>
+				RelativePath="..\..\..\server\attrmanip.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\auto_tango_monitor.h"
-				>
+				RelativePath="..\..\..\server\auto_tango_monitor.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\basiccommand.h"
-				>
+				RelativePath="..\..\..\server\basiccommand.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\blackbox.h"
-				>
+				RelativePath="..\..\..\server\blackbox.h">
 			</File>
 			<File
-				RelativePath="..\..\..\client\cbthread.h"
-				>
+				RelativePath="..\..\..\client\cbthread.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\classattribute.h"
-				>
+				RelativePath="..\..\..\server\classattribute.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\command.h"
-				>
+				RelativePath="..\..\..\server\command.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\coutappender.h"
-				>
+				RelativePath="..\..\..\server\coutappender.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\coutbuf.h"
-				>
+				RelativePath="..\..\..\server\coutbuf.h">
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi.h"
-				>
+				RelativePath="..\..\..\client\dbapi.h">
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi.h"
-				>
+				RelativePath="..\..\..\client\devapi.h">
 			</File>
 			<File
-				RelativePath="..\..\..\client\devasyn.h"
-				>
+				RelativePath="..\..\..\client\devasyn.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\device.h"
-				>
+				RelativePath="..\..\..\server\device.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\device_2.h"
-				>
+				RelativePath="..\..\..\server\device_2.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\device_3.h"
-				>
+				RelativePath="..\..\..\server\device_3.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\deviceclass.h"
-				>
+				RelativePath="..\..\..\server\deviceclass.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserver.h"
-				>
+				RelativePath="..\..\..\server\dserver.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserverclass.h"
-				>
+				RelativePath="..\..\..\server\dserverclass.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserversignal.h"
-				>
+				RelativePath="..\..\..\server\dserversignal.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\event.h"
-				>
+				RelativePath="..\..\..\server\event.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventcmds.h"
-				>
+				RelativePath="..\..\..\server\eventcmds.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventsupplier.h"
-				>
+				RelativePath="..\..\..\server\eventsupplier.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\except.h"
-				>
+				RelativePath="..\..\..\server\except.h">
 			</File>
 			<File
-				RelativePath="..\..\..\client\filedatabase.h"
-				>
+				RelativePath="..\..\..\client\filedatabase.h">
 			</File>
 			<File
-				RelativePath="..\..\..\client\group.h"
-				>
+				RelativePath="..\..\..\client\group.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\log4tango.h"
-				>
+				RelativePath="..\..\..\server\log4tango.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\logcmds.h"
-				>
+				RelativePath="..\..\..\server\logcmds.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\logging.h"
-				>
+				RelativePath="..\..\..\server\logging.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\logstream.h"
-				>
+				RelativePath="..\..\..\server\logstream.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\multiattribute.h"
-				>
+				RelativePath="..\..\..\server\multiattribute.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\ntservice.h"
-				>
+				RelativePath="..\..\..\server\ntservice.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollcmds.h"
-				>
+				RelativePath="..\..\..\server\pollcmds.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollext.h"
-				>
+				RelativePath="..\..\..\server\pollext.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollobj.h"
-				>
+				RelativePath="..\..\..\server\pollobj.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollring.h"
-				>
+				RelativePath="..\..\..\server\pollring.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\pollthread.h"
-				>
+				RelativePath="..\..\..\server\pollthread.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\seqvec.h"
-				>
+				RelativePath="..\..\..\server\seqvec.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
-				>
+				RelativePath="..\..\..\server\idl\tango.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
-				>
+				RelativePath="..\..\..\server\tango.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango_config.h"
-				>
+				RelativePath="..\..\..\server\tango_config.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango_const.h"
-				>
+				RelativePath="..\..\..\server\tango_const.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango_monitor.h"
-				>
+				RelativePath="..\..\..\server\tango_monitor.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\tangoappender.h"
-				>
+				RelativePath="..\..\..\server\tangoappender.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\tangorollingfileappender.h"
-				>
+				RelativePath="..\..\..\server\tangorollingfileappender.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\utils.h"
-				>
+				RelativePath="..\..\..\server\utils.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\w32win.h"
-				>
+				RelativePath="..\..\..\server\w32win.h">
 			</File>
 			<File
-				RelativePath="..\..\..\server\w_attribute.h"
-				>
+				RelativePath="..\..\..\server\w_attribute.h">
 			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
-			>
+			Filter="ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe">
 		</Filter>
 	</Files>
 	<Globals>

@@ -16,51 +16,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.10  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.9  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.8  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.7  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.6  2008/03/20 07:38:46  taurel
-// - Last commit before Release 6.1 ?
-//
-// Revision 3.5  2008/02/28 12:32:54  jensmeyer
-// For MacOSX (__darwin__) shared libraries are linked as under Windows!
-// Need to search for the user class_factory() dynamically as for Windows.
-//
-// Revision 3.4  2007/04/20 14:40:24  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.3  2006/05/18 08:52:37  taurel
 // - Miscellaneous changes due to Python device server ported to Windows
 // - Fix some bugs discovered by Windows VC8 using the test suite
@@ -185,6 +143,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2000/02/04 10:58:29  taurel
 // Imported sources
 //
+//
+// copyleft :		European Synchrotron radiation Facility
+//			BP 220, Grenoble 38043
+//			FRANCE
+//
 //-===========================================================================
 
 #if HAVE_CONFIG_H
@@ -224,20 +187,6 @@ typedef union _convertor
 	FARPROC s;
 }convertor;
 #endif
-
-
-#ifdef __darwin__
-#include <dlfcn.h>
-
-typedef void (DServer::*PTR)(void);
-typedef union _convertor
-{
-	PTR d;
-	void *s;
-}convertor;
-#endif
-
-
 
 void DServer::class_factory()
 {
@@ -291,60 +240,9 @@ void DServer::class_factory()
 		tmp = conv.d;
 		(this->*tmp)();
 	}
-
-#elif __darwin__
-	Tango::Util *tg = Tango::Util::instance();
-	string exe_name = tg->get_ds_exec_name();
-	exe_name = exe_name;
-	
-	void *mod;
-	void *proc;
-	convertor conv;
-	PTR tmp;
-
-	if (tg->is_py_ds() == false)
-	{
-		if ((mod = dlopen (exe_name.c_str(), RTLD_LAZY )) == NULL)
-		{
-			cerr << "Oups, no class defined in this server. Exiting ..." << endl;
-			exit(-1);
-		}
-	}
-	else
-	{
-		/*
-		if ((mod = GetModuleHandle(TANGO_PY_MOD_NAME)) == NULL)
-		{
-			cerr << "Oups, no class defined in this server. Exiting ..." << endl;
-			exit(-1);
-		}
-		*/
-	}
-
-//
-// Use the mangled name to find the user DServer::class_factory method
-//
-// Due to the fact that on Windows 64 bits we have both WIN32 and WIN64
-// defined, start by testing WIN64 (See tango_config.h)
-//
-
-	if ((proc = dlsym (mod,"_ZN5Tango7DServer13class_factoryEv")) == NULL)
-	{
-		cerr << "error : " << dlerror() << endl;
-		cerr << "Oups, no class defined in this server. Exiting ..." << endl;
-		exit(-1); 
-	}
-	else
-	{
-		conv.d = &DServer::stop_polling;
-		conv.s = proc;
-		
-		tmp = conv.d;
-		(this->*tmp)();
-	}	
-#else
-		cerr << "Oups, no class defined in this server. Exiting ..." << endl;
-		exit(-1);
+#else	
+	cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+	exit(-1);
 #endif
 	
 }

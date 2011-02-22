@@ -11,80 +11,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.15  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.14  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.13  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2009/01/08 14:58:03  taurel
-// - The read_attribute_4 also transfer the client authentification
-//
-// Revision 3.11  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.10  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.9  2008/09/01 14:27:10  taurel
-// - Fix some bugs in locking implementation
-//
-// Revision 3.8  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.7  2008/05/20 12:44:09  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.6.2.6  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.6.2.5  2008/02/07 15:58:13  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.6.2.4  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 3.6.2.3  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.6.2.2  2007/11/22 12:33:09  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.6.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
-// Revision 3.6  2007/04/20 14:40:24  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.5  2005/01/13 08:27:38  taurel
 // - Merge trunk with Release_5_0 from brach Release_5_branch
 //
@@ -251,6 +180,11 @@
 // Revision 1.1.1.1  2000/02/04 10:58:28  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _BLACKBOX_H
@@ -266,29 +200,15 @@
 namespace Tango
 {
 
-#define		IP_ADDR_BUFFER_SIZE		80
 CORBA::Boolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &);
 
 class client_addr: public omni_thread::value_t
 {
 public:
-	client_addr(const char *addr):client_ident(false),client_pid(0) {strcpy(client_ip,addr);}
+	client_addr(const char *addr) {strcpy(client_ip,addr);}
 	~client_addr() {};
 
-	client_addr(const client_addr &);
-	client_addr & operator=(const client_addr &);
-	bool operator==(const client_addr &);
-	bool operator!=(const client_addr &);
-
-	bool				client_ident;
-	char				client_ip[IP_ADDR_BUFFER_SIZE];
-	LockerLanguage		client_lang;
-	TangoSys_Pid		client_pid;
-	string				java_main_class;
-	DevULong64			java_ident[2];
-
-	int client_ip_2_client_name(string &) const;
-	friend ostream &operator<<(ostream &o_str,const client_addr &ca);
+	char	client_ip[80];
 };
 
 //=============================================================================
@@ -344,14 +264,7 @@ enum BlackBoxElt_OpType
 	Op_Read_Attr_history_3,
 	Op_Info_3,
 	Op_Get_Attr_Config_3,
-	Op_Set_Attr_Config_3,
-	Op_Read_Attr_history_4,
-	Op_Command_inout_history_4,
-	Op_Command_inout_4,
-	Op_Write_Attr_4,
-	Op_Read_Attr_4,
-	Op_Set_Attr_Config_4,
-	Op_Write_Read_Attributes_4
+	Op_Set_Attr_Config_3
 };
 
 class BlackBoxElt
@@ -361,26 +274,21 @@ public:
 	~BlackBoxElt();
 
 	BlackBoxElt_ReqType		req_type;
-	BlackBoxElt_AttrType	attr_type;
+	BlackBoxElt_AttrType		attr_type;
 	BlackBoxElt_OpType		op_type;
-	string					cmd_name;
+	string				cmd_name;
 	vector<string>			attr_names;
 	struct timeval			when;
-	char					host_ip_str[IP_ADDR_BUFFER_SIZE];
-	DevSource				source;
-	
-	bool					client_ident;
-	LockerLanguage			client_lang;
-	TangoSys_Pid			client_pid;
-	string					java_main_class;
+	char				host_ip_str[80];
+	DevSource			source;	
 };
 
-inline bool operator<(const BlackBoxElt &,const BlackBoxElt &)
+inline bool operator<(const BlackBoxElt &l,const BlackBoxElt &r)
 {
 	return true;
 }
 
-inline bool operator==(const BlackBoxElt &,const BlackBoxElt &)
+inline bool operator==(const BlackBoxElt &l,const BlackBoxElt &r)
 {
 	return true;
 }
@@ -403,18 +311,9 @@ public:
 	void insert_corba_attr(BlackBoxElt_AttrType);
 	void insert_cmd(const char *,long vers=1,DevSource=Tango::DEV);
 	void insert_attr(const Tango::DevVarStringArray &,long vers=1,DevSource=Tango::DEV);
-	void insert_attr(const Tango::DevVarStringArray &,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
-	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
-	void insert_wr_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
 	void insert_op(BlackBoxElt_OpType);
-	void insert_op(BlackBoxElt_OpType,const ClntIdent &);
-
-	void insert_cmd_nl(const char *,long,DevSource);	
-	void insert_cmd_cl_ident(const char *,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
-	void add_cl_ident(const ClntIdent &,client_addr *);
-	void update_client_host(client_addr *);	
-	
+		
 	Tango::DevVarStringArray *read(long);
 	
 private:
@@ -423,20 +322,15 @@ private:
 	void get_client_host();
 	void build_info_as_str(long);
 	void date_ux_to_str(struct timeval &,char *);
-	void add_source(long);
-	void insert_op_nl(BlackBoxElt_OpType);
-	void insert_attr_nl(const Tango::AttributeValueList &,long);
-	void insert_attr_nl_4(const Tango::AttributeValueList_4 &);
-	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,long);
 	
 	vector<BlackBoxElt>	box;
-	long				insert_elt;
-	long				nb_elt;
-	long				max_elt;
+	long			insert_elt;
+	long			nb_elt;
+	long			max_elt;
 	
-	omni_mutex			sync;
+	omni_mutex		sync;
 	
-	string				elt_str;
+	string			elt_str;
 };
 
 } // End of Tango namespace

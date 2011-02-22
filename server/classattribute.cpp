@@ -1,4 +1,3 @@
-
 static const char *RcsId = "$Id$\n$Name$";
 
 //+============================================================================
@@ -19,55 +18,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2010/08/25 11:41:27  taurel
-// - Fix some bugs preventing dynamic attributes management (in some cases)
-//
-// Revision 3.10  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.9  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.8  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.7  2007/10/26 11:26:54  taurel
-// - Clarifation some exception messages
-//
-// Revision 3.6  2007/10/16 08:22:51  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.5  2007/02/16 10:40:09  taurel
-// - Implementing a new types of event on the Attribute configuration
-//
 // Revision 3.4  2005/06/29 08:30:53  taurel
 // - Last commit before release 5.2 ?
 //
@@ -212,6 +165,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // Revision 1.3  2000/04/13 10:40:40  taurel
 // Added attribute support
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //-============================================================================
 
@@ -384,6 +342,7 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 	cout4 << "Entering MultiClassAttribute::init_class_attribute" << endl;
 	long i;
 
+
 	Tango::Util *tg = Tango::Util::instance();
 	CORBA::Any send;
 
@@ -410,14 +369,14 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 	
 		try
 		{
-			tg->get_database()->get_class_attribute_property(class_name,db_list,tg->get_db_cache());
+			tg->get_database()->get_class_attribute_property(class_name,db_list);
 		}
-		catch (Tango::DevFailed &e)
+		catch (Tango::DevFailed &)
 		{	
 			TangoSys_OMemStream o;
 			o << "Can't get class attribute properties for class " << class_name << ends;
 
-			Except::re_throw_exception(e,(const char *)"API_DatabaseAccess",
+			Except::throw_exception((const char *)"API_DatabaseAccess",
 				                o.str(),
 				                (const char *)"MultiClassAttribute::init_class_attribute");
 		}
@@ -542,17 +501,16 @@ Attr &MultiClassAttribute::get_attr(string &attr_name)
 //			name passed as parameter
 //
 // in :			attr_name : The attribute name
-//				cl_name : The attribute class name
 //
 //--------------------------------------------------------------------------
 
 
-void MultiClassAttribute::remove_attr(string &attr_name,const string &cl_name)
+void MultiClassAttribute::remove_attr(string &attr_name)
 {
 	vector<Tango::Attr *>::iterator ite;
 	for (ite = attr_list.begin();ite != attr_list.end();++ite)
 	{
-		if (((*ite)->get_name() == attr_name) && ((*ite)->get_cl_name() == cl_name))
+		if ((*ite)->get_name() == attr_name)
 		{
 			attr_list.erase(ite);
 			break;

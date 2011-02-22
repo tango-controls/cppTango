@@ -8,58 +8,9 @@
 //
 // author(s) :          N.Leclercq
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.18  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.17  2010/09/09 13:28:04  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.16.4.1  2010/06/23 14:10:23  taurel
-// - Full Tango as described in doc Appendix C is now also supported
-// for group
-//
-// Revision 3.16  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.15  2008/10/06 15:02:17  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.14  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.13  2008/03/04 13:55:04  nleclercq
-// Fixed a pb in Group::next_req_id
-//
-// Revision 1.1  2008/02/28 10:36:10  leclercq
-// Added 5.5.2 patches
-//
-// Revision 3.12  2007/03/29 14:30:15  tiagocoutinho
-// - Bug fix by Nicolas Leclercq regarding groups with groups
-//
 // Revision 3.11  2007/03/06 08:20:45  taurel
 // - Added 64 bits data types for 64 bits computer...
 //
@@ -527,8 +478,6 @@ class GroupElementFactory
   //- instanciatethe GroupElement which name matches the specified pattern with the specified timeout
   //- timeout = -1 => do not change the timeout
   static GroupElements instanciate (const std::string& p, int timeout = -1);
-
-  static void parse_name (const std::string& p, string &db_host,int &db_port,string &dev_pattern);
 
   //- forbidden methods
   GroupElementFactory();

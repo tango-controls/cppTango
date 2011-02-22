@@ -8,49 +8,9 @@
 //
 // author(s) :    N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.8  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.7  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.6  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.5  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.4  2007/10/16 08:23:37  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.3  2007/04/20 14:41:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.2  2004/07/07 08:40:11  taurel
 //
 // - Fisrt commit after merge between Trunk and release 4 branch
@@ -106,6 +66,10 @@
 // Added the new Tango logging stuff (Thanks Nicolas from Soleil)
 //
 //
+// copyleft :   European Synchrotron Radiation Facility
+//      BP 220, Grenoble 38043
+//      FRANCE
+//
 //-=============================================================================
 
 #ifndef _LOGGING_H_
@@ -143,8 +107,6 @@
 
 namespace Tango {
 
-class Util;
-
 #if defined (_TG_WINDOWS_) && !defined(_TANGO_LIB) && defined(TANGO_HAS_DLL)
  extern __declspec(dllimport) log4tango::Logger* _core_logger;
 #else
@@ -160,8 +122,7 @@ public:
   static void init (const std::string& ds_name, 
                     int cmd_line_level,
                     bool use_tango_db,
-                    Database &db,
-                    Util *tg);
+                    Database &db);
   /**
    * Shutdown the Tango Logging service
    **/

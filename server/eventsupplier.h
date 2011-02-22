@@ -11,26 +11,6 @@
 /// 		author(s) : A.Gotz (goetz@esrf.fr)
 ///
 /// 		original : 7 April 2003
-//
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /// 		$Revision$
 ///
@@ -70,13 +50,13 @@ namespace Tango
 
 typedef struct _NotifService
 {
-	CosNotifyChannelAdmin::SupplierAdmin_var 				SupAdm;
-	CosNotifyChannelAdmin::ProxyID 							pID;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				ProCon; 
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush; 
-	CosNotifyChannelAdmin::EventChannelFactory_var 			EveChaFac;
-	CosNotifyChannelAdmin::EventChannel_var 				EveCha;
-	string													ec_ior;
+	CosNotifyChannelAdmin::SupplierAdmin_var SupAdm;
+	CosNotifyChannelAdmin::ProxyID pID;
+	CosNotifyChannelAdmin::ProxyConsumer_var ProCon; 
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var StrProPush; 
+	CosNotifyChannelAdmin::EventChannelFactory_var EveChaFac;
+	CosNotifyChannelAdmin::EventChannel_var EveCha;
+	string	ec_ior;
 } NotifService;
 
 
@@ -84,15 +64,14 @@ class EventSupplier : public POA_CosNotifyComm::StructuredPushSupplier
 {
 public :
 
-	TANGO_IMP_EXP static EventSupplier *create(CORBA::ORB_var,string,Database*,string &,Util *);
+	TANGO_IMP_EXP static EventSupplier *create(CORBA::ORB_var,string,Database*,string &);
 	void connect();
 	void disconnect_structured_push_supplier();
-	void disconnect_from_notifd();
-	void subscription_change(const CosNotification::EventTypeSeq& added,const CosNotification::EventTypeSeq& deled);
+	void subscription_change(const CosNotification::EventTypeSeq& added,
+                                 const CosNotification::EventTypeSeq& deled);
 
 	void push_heartbeat_event();
 	string &get_event_channel_ior() {return event_channel_ior;}
-	void set_svr_port_num(string &);
 
 protected :
 
@@ -106,27 +85,28 @@ protected :
 		string &);
 		
 private :
-	static EventSupplier 									*_instance;
-	CosNotifyChannelAdmin::EventChannel_var 				eventChannel;
-	CosNotifyChannelAdmin::SupplierAdmin_var 				supplierAdmin;
-	CosNotifyChannelAdmin::ProxyID 							proxyId;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				proxyConsumer;
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	structuredProxyPushConsumer;
-	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
-	CORBA::ORB_var 											orb_;
+	static EventSupplier *_instance;
+	CosNotifyChannelAdmin::EventChannel_var eventChannel;
+	CosNotifyChannelAdmin::SupplierAdmin_var supplierAdmin;
+	CosNotifyChannelAdmin::ProxyID proxyId;
+	CosNotifyChannelAdmin::ProxyConsumer_var proxyConsumer;
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var
+            	structuredProxyPushConsumer;
+	CosNotifyChannelAdmin::EventChannelFactory_var eventChannelFactory;
+	CORBA::ORB_var orb_;
 	
 	inline int timeval_diff(TimeVal before, TimeVal after)
 	{
 		return ((after.tv_sec-before.tv_sec)*1000000 + after.tv_usec - before.tv_usec);
 	}
-	int 		heartbeat_period;
-	int 		subscription_timeout;
-	string 		event_channel_ior;
-	string 		fqdn_prefix;
-
+	int heartbeat_period;
+	int subscription_timeout;
+	string event_channel_ior;
+	
 	void get_attribute_value(AttributeValue attr_value, LastAttrValue &curr_attr_value);
 	void reconnect_notifd();
-	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,CORBA::ORB_var &,string &,Database *,string &,Util *);
+	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,
+			CORBA::ORB_var &,string &,Database *,string &);
 			
 	// Added a mutex to synchronize the access to 
 	//	detect_and_push_change_event_3	and
@@ -145,8 +125,7 @@ private :
 	omni_mutex		detect_mutex;
 	
 public :
-	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
-	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
+	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 &,DevFailed *,string &);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -268,8 +247,7 @@ public :
 
 
 	bool detect_change_3(Attribute &attr,
-				  AttributeValue_3 *curr_attr_value,
-				  AttributeValue_4 *curr_attr_value_4,
+				  AttributeValue_3 &curr_attr_value,
 				  bool archive,
 				  double &delta_change_rel,
 				  double &delta_change_abs,
@@ -877,9 +855,6 @@ public :
 						}
 					}
 					break;
-					
-				default:
-					break;
 				}
 			}
 		}	
@@ -890,8 +865,7 @@ public :
 
 
 	void detect_and_push_change_event_3(DeviceImpl *device_impl,
-						 AttributeValue_3 *attr_value,
-						 AttributeValue_4 *attr_value_4,
+						 AttributeValue_3 &attr_value,
 						 Attribute &attr,
 						 string &attr_name,
 						 DevFailed *except);
@@ -1008,7 +982,6 @@ public :
 //
 // argument : in :	device_impl : The device
 //			attr_value : The attribute value
-//			attr_value_4 : The attribute value for devic eimplementing IDL 4
 //			attr : The attribute object
 //			attr_name : The attribute name
 //			except : The exception thrown during the last
@@ -1017,12 +990,10 @@ public :
 //-----------------------------------------------------------------------------
 
 	void detect_and_push_archive_event_3(DeviceImpl *device_impl,
-						  AttributeValue_3 *attr_value,
-						  AttributeValue_4 *attr_value_4, 
+						  AttributeValue_3 &attr_value, 
 						  Attribute &attr,
 						  string &attr_name,
-						  DevFailed *except,
-						  struct timeval *);
+						  DevFailed *except);
 						  
 	template <typename T>
 	void detect_and_push_archive_event(DeviceImpl *device_impl,
@@ -1213,6 +1184,13 @@ public :
 //
 //-----------------------------------------------------------------------------
 
+	void detect_and_push_quality_change_event_3(DeviceImpl *device_impl,
+						  AttributeValue_3 &attr_value,
+						  Attribute &attr,
+						  string &attr_name,
+						  DevFailed *except);
+
+
 	template <typename T>
 	void detect_and_push_quality_change_event(DeviceImpl *device_impl,
 						  T &attr_value,
@@ -1292,7 +1270,6 @@ public :
 //
 // argument : in :	device_impl : The device
 //			attr_value : The attribute value
-//			attr_value_4 : The attribute value for device implementing IDL 4
 //			attr : The attribute object
 //			attr_name : The attribute name
 //			except : The exception thrown during the last
@@ -1301,12 +1278,10 @@ public :
 //-----------------------------------------------------------------------------
 
 	void detect_and_push_periodic_event_3(DeviceImpl *device_impl,
-					    AttributeValue_3 *attr_value,
-					 	AttributeValue_4 *attr_value_4,
+					    AttributeValue_3 &attr_value,
 					    Attribute &attr,
 					    string &attr_name,
-					    DevFailed *except,
-						struct timeval *);
+					    DevFailed *except);
 					    
 
 	template <typename T>
@@ -1426,8 +1401,7 @@ public :
 		       	vector<double> &filterable_data,
 		       	vector<string> &filterable_names_lg,
 		       	vector<long> &filterable_data_lg,
-		       	AttributeValue_3 *attr_value,
-				AttributeValue_4 *attr_value_4,
+		       	AttributeValue_3 &attr_value,
 		       	string &attr_name,
 		       	DevFailed *except);
 			
@@ -1456,7 +1430,7 @@ public :
 		domain_name = device_impl->get_name_lower() + "/" + loc_attr_name;
 
 		struct_event.header.fixed_header.event_type.domain_name = CORBA::string_dup(domain_name.c_str());
-  		struct_event.header.fixed_header.event_type.type_name = CORBA::string_dup(fqdn_prefix.c_str());
+  		struct_event.header.fixed_header.event_type.type_name = CORBA::string_dup("Tango::EventValue");
 
 		struct_event.header.variable_header.length( 0 );
 
@@ -1511,21 +1485,21 @@ public :
 			cout3 << "EventSupplier::push_event() event channel disconnected !\n";
 			fail = true;
 		}
-    	catch(const CORBA::TRANSIENT &)
-    	{
-    		cout3 << "EventSupplier::push_event() caught a CORBA::TRANSIENT ! " << endl;
+       		catch(const CORBA::TRANSIENT &)
+       		{
+       			cout3 << "EventSupplier::push_event() caught a CORBA::TRANSIENT ! " << endl;
 			fail = true;
-    	}
-    	catch(const CORBA::COMM_FAILURE &)
-    	{
-    		cout3 << "EventSupplier::push_event() caught a CORBA::COMM_FAILURE ! " << endl;
-			fail = true;
-		}
-		catch(const CORBA::SystemException &)
-		{
-    		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
+       		}
+       		catch(const CORBA::COMM_FAILURE &)
+       		{
+       			cout3 << "EventSupplier::push_event() caught a CORBA::COMM_FAILURE ! " << endl;
 			fail = true;
 		}
+    		catch(const CORBA::SystemException &)
+    		{
+       			cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
+			fail = true;
+    		}
 	
 //
 // If it was not possible to communicate with notifd,

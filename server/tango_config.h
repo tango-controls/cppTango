@@ -9,58 +9,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.19  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.18  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.17  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.16  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.15  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.14  2008/01/08 14:38:19  taurel
-// - strcasecmp() is not named like this on Windows !!
-//
-// Revision 3.13  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-//
-// Revision 3.12  2007/11/23 07:16:48  taurel
-// - Add Claudio's modif
-// Revision 3.11.2.1  2008/02/07 15:58:14  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.11  2007/04/20 14:41:34  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
 // Revision 3.10  2007/04/16 14:57:43  taurel
 // - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
 // - Ported to omniORB4.1
@@ -221,6 +172,11 @@
 // Revision 1.1.1.1  2000/02/04 10:58:29  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _TANGO_CONFIG_H
@@ -332,18 +288,6 @@
 #endif
 
 //
-// Define a common strcasecmp function
-//
-
-#ifndef _TG_WINDOWS_
-#define TG_strcasecmp ::strcasecmp
-#define TG_strncasecmp ::strncasecmp
-#else
-#define	TG_strcasecmp ::stricmp
-#define TG_strncasecmp ::strnicmp
-#endif
-
-//
 // ACTIVATE (or DEACTIVATE) THE TANGO LOGGING MECHANISM
 //
 
@@ -361,26 +305,6 @@
 
 #ifndef _TG_WINDOWS_
 	#include <omniORB4/acconfig.h>
-
-	#ifdef PACKAGE_BUGREPORT
-		#undef PACKAGE_BUGREPORT
-	#endif
-	
-	#ifdef PACKAGE_NAME
-		#undef PACKAGE_NAME
-	#endif
-	
-	#ifdef PACKAGE_STRING
-		#undef PACKAGE_STRING
-	#endif
-
-	#ifdef PACKAGE_TARNAME
-		#undef PACKAGE_TARNAME
-	#endif
-
-	#ifdef PACKAGE_VERSION
-		#undef PACKAGE_VERSION
-	#endif
 
 	#if SIZEOF_LONG == 8
 		#define TANGO_LONG64

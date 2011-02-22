@@ -11,50 +11,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.14  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.13  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.11  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.10  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
-// Revision 3.9  2007/11/23 09:47:06  taurel
-// - Fix linker problem introduced by the fix on re_throw_exception()
-//
-// Revision 3.8  2007/06/06 09:37:58  jensmeyer
-// Added null pointer check for all corba system exceptions.
-//
 // Revision 3.7  2007/04/20 14:41:33  taurel
 // - Ported to Windows 64 bits x64 architecture
 //
@@ -221,6 +180,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2000/02/04 10:58:28  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -254,7 +218,6 @@ namespace Tango
 {
 
 char Except::mess[256];
-omni_mutex Except::the_mutex;
 
 //+----------------------------------------------------------------------------
 //
@@ -788,7 +751,7 @@ bool Except::compare_exception(Tango::DevFailed &ex1, Tango::DevFailed &ex2)
 {
 	// check the length of the exception stack
 	
-	unsigned long nb_err = ex1.errors.length();
+	long nb_err = ex1.errors.length();
 	if ( nb_err != ex2.errors.length() )
 		{
 		return false;
@@ -796,7 +759,7 @@ bool Except::compare_exception(Tango::DevFailed &ex1, Tango::DevFailed &ex2)
 	
 	// check all exceptions in the stack
 	
-	for (unsigned long i=0; i<nb_err; i++)
+	for (long i=0; i<nb_err; i++)
 		{
 		// check the severity
 		if ( ex1.errors[i].severity != ex2.errors[i].severity )

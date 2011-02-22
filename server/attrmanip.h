@@ -8,44 +8,9 @@
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.6  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.5  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.4  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.3  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.2  2005/06/29 08:30:53  taurel
-// - Last commit before release 5.2 ?
-//
 // Revision 3.1  2005/05/25 06:05:40  taurel
 // - Again some minors changes before 5.2
 //
@@ -145,6 +110,12 @@
 //
 // Revision 1.1.1.1  2001/02/27 08:46:21  taurel
 // Imported sources
+//
+//
+//
+// copyleft :		European Synchrotron Radiation Facility
+//			BP 220, Grenoble 38043
+//			FRANCE
 //
 //=============================================================================
 

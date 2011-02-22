@@ -16,65 +16,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.16  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-//
-// Revision 3.15  2009/09/16 12:16:19  taurel
-// - Better management of the RDS alarm properties. They were not taken into
-// account by the set_default_properties() method
-//
-// Revision 3.14  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.13  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.12  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.11  2008/06/14 11:29:15  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.10  2008/05/20 12:44:09  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.9.2.1  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.9  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
 // Revision 3.8  2007/03/06 08:18:03  taurel
 // - Added 64 bits data types for 64 bits computer...
 //
@@ -219,6 +163,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2001/02/27 08:46:20  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -252,7 +201,6 @@ Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
 	ext->check_change_event = true;
 	ext->fire_archive_event = false;
 	ext->check_archive_event = true;
-	ext->fire_dr_event = false;
 	
 	if (name != "State")
 		check_type();
@@ -366,8 +314,6 @@ void Attr::check_type()
 		unsuported = false;
 	else if (type == Tango::DEV_STATE)
 		unsuported = false;
-	else if (type == Tango::DEV_ENCODED)
-		unsuported = false;
 
 	if (unsuported == true)
 	{
@@ -424,12 +370,6 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 
 	if (prop_list.max_alarm.empty() == false)
 		user_default_properties.push_back(AttrProperty("max_alarm",prop_list.max_alarm));
-		
-	if (prop_list.delta_val.empty() == false)
-		user_default_properties.push_back(AttrProperty("delta_val",prop_list.delta_val));
-		
-	if (prop_list.delta_t.empty() == false)
-		user_default_properties.push_back(AttrProperty("delta_t",prop_list.delta_t));
 
 }
 
@@ -457,7 +397,7 @@ void Attr::set_memorized()
 				      (const char *)"Attr::set_memorized");
 	}
 
-	if ((type == DEV_STATE) || (type == DEV_ENCODED))
+	if (type == DEV_STATE)
 	{
 		cout3 << "Attr::set_memorized() throwing exception" << endl;
 		TangoSys_OMemStream o;
@@ -510,17 +450,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
-	
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
-	}
 	max_x = x;	
 }
 
@@ -538,17 +467,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 		Except::throw_exception((const char *)"API_AttrWrongDefined",
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
-	}
-	
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
 	max_x = x;	
 }
@@ -568,17 +486,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
-	
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
-	}
 	max_x = x;	
 }
 
@@ -596,17 +503,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 		Except::throw_exception((const char *)"API_AttrWrongDefined",
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
-	}
-
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
 	max_x = x;	
 }

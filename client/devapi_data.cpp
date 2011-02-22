@@ -7,48 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // log			- $Log$
-// log			- Revision 3.16  2010/09/09 13:44:06  taurel
-// log			- - Add year 2010 in Copyright notice
-// log			-
-// log			- Revision 3.15  2009/01/21 12:45:15  taurel
-// log			- - Change CopyRights for 2009
-// log			-
-// log			- Revision 3.14  2008/10/06 15:02:16  taurel
-// log			- - Changed the licensing info from GPL to LGPL
-// log			-
-// log			- Revision 3.13  2008/10/02 16:09:25  taurel
-// log			- - Add some licensing information in each files...
-// log			-
-// log			- Revision 3.12  2008/03/25 15:47:25  taurel
-// log			- - Fix some warnings for gcc 4.2 (Thank's to F Picca from Soleil)
-// log			-
-// log			- Revision 3.11  2008/03/11 14:36:44  taurel
-// log			- - Apply patches from Frederic Picca about compilation with gcc 4.2
-// log			-
-// log			- Revision 3.10  2007/03/06 08:20:45  taurel
-// log			- - Added 64 bits data types for 64 bits computer...
-// log			-
 // log			- Revision 3.9  2006/12/28 10:30:24  taurel
 // log			- - Small changes to make gcc 4.1 happy
 // log			-
@@ -424,9 +383,6 @@ int DeviceData::get_type()
 			case CORBA::tk_string:
 				data_type = Tango::DEVVAR_STRINGARRAY;
 				break;
-				
-			default:
-				break;
 			}
 			break;
 			
@@ -443,17 +399,11 @@ int DeviceData::get_type()
 			case CORBA::tk_double:
 				data_type = Tango::DEVVAR_DOUBLESTRINGARRAY;
 				break;
-
-			default:
-				break;
 			}
 			break;
 			
 		case CORBA::tk_enum:
 			data_type = Tango::DEV_STATE;
-			break;
-			
-		default:
 			break;
 			
 		}
@@ -1961,9 +1911,6 @@ ostream &operator<<(ostream &o_str,DeviceData &dd)
 				dd.any.inout() >>= str_arr;
 				o_str << *str_arr;
 				break;
-				
-			default:
-				break;
 			}
 			break;
 			
@@ -1986,9 +1933,6 @@ ostream &operator<<(ostream &o_str,DeviceData &dd)
 				o_str << dbstr_arr->dvalue << endl;
 				o_str << dbstr_arr->svalue;
 				break;
-				
-			default:
-				break;
 			}
 			break;
 			
@@ -1996,9 +1940,6 @@ ostream &operator<<(ostream &o_str,DeviceData &dd)
 			Tango::DevState tmp_state;
 			dd.any.inout() >>= tmp_state;
 			o_str << Tango::DevStateName[tmp_state];
-			break;
-			
-		default:
 			break;
 			
 		}
