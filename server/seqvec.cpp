@@ -8,57 +8,9 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.11  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.10  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.9  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.8  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.7  2008/06/10 07:52:15  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.6  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.5.2.1  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.5  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
 // Revision 3.4  2007/03/06 08:19:03  taurel
 // - Added 64 bits data types for 64 bits computer...
 //
@@ -158,6 +110,11 @@
 // New methods re_throw_exception(). Read_attributes supports AllAttr mnemonic A new add_attribute()method in DeviceImpl class New way to define attribute properties New pattern to prevent full re-compile For multi-classes DS, it is now possible to use the Util::get_device_by_name() method in device constructor Adding << operator ovebloading Fix devie CORBA ref. number when device constructor sends an excep.
 //
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #if HAVE_CONFIG_H
@@ -180,7 +137,7 @@ namespace Tango
 //
 //			The sequence print facilities functions
 //
-// description :	These methods allow an easy way to print all sequence
+// description :	These methods allow an easy way to print all seuence
 //			element using the following syntax
 //				cout << seq << endl;
 //
@@ -331,25 +288,6 @@ ostream &operator<<(ostream &o,const DevVarStateArray &v)
 	{
 		o << "Element number [" << i << "] = " << v[i];
 		if (i < (nb_elt - 1))
-			o << '\n';
-	}
-	return o;
-}
-
-ostream &operator<<(ostream &o,const DevVarEncodedArray &v)
-{
-	long nb_elt = v.length();
-	for (long loop = 0;loop < nb_elt;loop++)
-	{
-		o << "Encoding string = " << v[loop].encoded_format << endl;
-		long nb_data_elt = v[loop].encoded_data.length();
-		for (long i = 0;i < nb_data_elt;i++)
-		{
-			o << "Data element number [" << i << "] = " << (int)v[loop].encoded_data[i];
-			if (i < (nb_data_elt - 1))
-				o << '\n';
-		}
-		if (loop < (nb_elt - 1))
 			o << '\n';
 	}
 	return o;

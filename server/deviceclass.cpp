@@ -13,83 +13,15 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 1.39  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
-// Revision 1.38  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 1.37  2010/09/24 14:06:15  taurel
-// - For Python DS, do not give full device ownership to the POA.
-// Otherwise, a python DS crashes at exit.
-//
-// Revision 1.36  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.35  2010/06/23 09:13:28  taurel
-// - Change some comments
-//
-// Revision 1.34  2010/06/21 12:38:23  taurel
-// - Implement a much faster server shutdown sequence
-//
-// Revision 1.33  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 1.32  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 1.31  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 1.30  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 1.29  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 1.28  2008/09/04 07:37:05  taurel
-// - Fix bug in memorized attributes
-// - Changes for the new IDL 4
-//
-// Revision 1.27  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 1.26  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
 // Revision 1.25  2008/01/25 15:44:51  taurel
 // - Some changes in the Db cache
 // - A lighter system to shutdown DS in case of dynamic attribute
 //
 // Revision 1.24  2007/12/12 10:17:18  taurel
 // - Db calls during DS startup has a separate timeout and some retries
-// Revision 1.23.2.1  2008/02/07 15:58:14  taurel
-// - First implementation of the Controlled Access done
 //
 // Revision 1.23  2007/11/08 12:03:44  taurel
 // - Start implementing user interceptors
@@ -184,6 +116,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Splitted device.cpp/device.h files in two sets device.cpp/device.h for the DeviceImpl
 // class and deviceclass.cpp/deviceclass.h for the DeviceClass class
 //
+//
+// copyleft :		European Synchrotron Radiation Facility
+//			BP 220, Grenoble 38043
+//			FRANCE
+//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -209,10 +146,6 @@ extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
-static void lower_cmd_name(string &cmd)
-{
-	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
-}
 
 //+----------------------------------------------------------------------------
 //
@@ -307,7 +240,6 @@ void DeviceClass::get_class_system_resource()
 		db_data.push_back(DbDatum("doc_url"));
 		db_data.push_back(DbDatum("cvs_tag"));
 		db_data.push_back(DbDatum("cvs_location"));
-		db_data.push_back(DbDatum("AllowedAccessCmd"));
 
 		try
 		{
@@ -327,16 +259,6 @@ void DeviceClass::get_class_system_resource()
 			db_data[1] >> ext->cvs_tag;
 		if (db_data[2].is_empty() == false)
 			db_data[2] >> ext->cvs_location;
-		
-//
-// Init allowed commands vector (in lowercase letters)
-//
-			
-		if (db_data[3].is_empty() == false)
-		{
-			db_data[3] >> allowed_cmds;
-			for_each(allowed_cmds.begin(),allowed_cmds.end(),lower_cmd_name);
-		}
 					
 		if (db_data[0].is_empty() == true)
 		{
@@ -364,6 +286,7 @@ void DeviceClass::get_class_system_resource()
 		}
 		else
 			db_data[0] >> doc_url;
+			
 		
 	}
 	else
@@ -387,7 +310,7 @@ void DeviceClass::get_class_system_resource()
 //
 //-----------------------------------------------------------------------------
 
-void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
+void DeviceClass::set_memorized_values(bool all,long idx)
 {
 	cout4 << "Entering DeviceClass::set_memorized_values() method" << endl;
 	
@@ -402,8 +325,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 	double db;
 	Tango::DevVarDoubleArray db_seq(1);
 	db_seq.length(1);
-
-	Tango::DevString tmp_str;
+						
 	Tango::DevVarStringArray str_seq(1);
 	str_seq.length(1);
 
@@ -467,7 +389,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			{
 
 				string &mem_value = att.get_mem_value();
-				if ((mem_value != MemNotUsed) || (from_init == true))
+				if (mem_value != MemNotUsed)
 				{
 					nb_wr++;
 					att_val.length(nb_wr);
@@ -486,142 +408,96 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 //
 
 					TangoSys_MemStream str;
-					if (from_init == false)
-						str << mem_value << ends;
+					str << mem_value << ends;
 					
 					try
 					{
 						switch (att.get_data_type())
 						{
 						case Tango::DEV_SHORT:
-							if (from_init == false)
-							{
-								if (!(str >> sh))
-									throw_mem_value(device_list[i],att);
-								att.set_write_value(sh);
-							}
-							else
-								att.get_write_value(sh);
+							if (!(str >> sh))
+								throw_mem_value(device_list[i],att);
+							att.set_write_value(sh);
 							
 							sh_seq[0] = sh;
 							att_val[nb_wr - 1].value <<= sh_seq;
 							break;
 
 						case Tango::DEV_LONG:
-							if (from_init == false)
-							{
-								if (!(str >> lg))
-									throw_mem_value(device_list[i],att);
-								att.set_write_value(lg);
-							}
-							else
-								att.get_write_value(lg);
+							if (!(str >> lg))
+								throw_mem_value(device_list[i],att);
+							att.set_write_value(lg);	
 								
 							lg_seq[0] = lg;
 							att_val[nb_wr - 1].value <<= lg_seq;
 							break;
 
 						case Tango::DEV_DOUBLE:
-							if (from_init == false)
-							{
-								if (!(str >> db))
-									throw_mem_value(device_list[i],att);
-								att.set_write_value(db);
-							}
-							else
-								att.get_write_value(db);
+							if (!(str >> db))
+								throw_mem_value(device_list[i],att);
+							att.set_write_value(db);
 							
 							db_seq[0] = db;
 							att_val[nb_wr - 1].value <<= db_seq;
 							break;
 
 						case Tango::DEV_STRING:
-							if (from_init == false)
-							{
-								att.set_write_value(mem_value);
+							att.set_write_value(mem_value);
 							
-								str_seq[0] = CORBA::string_dup(mem_value.c_str());
-							}
-							else
-							{
-								att.get_write_value(tmp_str);
-								str_seq[0] = CORBA::string_dup(tmp_str);
-							}
+							str_seq[0] = CORBA::string_dup(mem_value.c_str());
 							att_val[nb_wr - 1].value <<= str_seq;
 							break;
 
 						case Tango::DEV_FLOAT:
-							if (from_init == false)
-							{
-								if (!(str >> fl))
-									throw_mem_value(device_list[i],att);
-								att.set_write_value(fl);
-							}
-							else
-								att.get_write_value(fl);
+							if (!(str >> fl))
+								throw_mem_value(device_list[i],att);
+							att.set_write_value(fl);	
 								
 							fl_seq[0] = fl;
 							att_val[nb_wr - 1].value <<= fl_seq;
 							break;
 
 						case Tango::DEV_BOOLEAN:
-							if (from_init == false)
-							{
 #if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
-								if (!(str >> boolalpha >> boo))
-									throw_mem_value(device_list[i],att);
+							if (!(str >> boolalpha >> boo))
+								throw_mem_value(device_list[i],att);
 #else
-								transform(mem_value.begin(),mem_value.end(),mem_value.begin(),::tolower);
-								if (mem_value == "true")
-									boo = true;
-								else if (mem_value == "false")
-									boo = false;
-								else
-									throw_mem_value(device_list[i],att);
-#endif
-								att.set_write_value(boo);
-							}
+							transform(mem_value.begin(),mem_value.end(),mem_value.begin(),::tolower);
+							if (mem_value == "true")
+								boo = true;
+							else if (mem_value == "false")
+								boo = false;
 							else
-								att.get_write_value(boo);
+								throw_mem_value(device_list[i],att);
+#endif
+							att.set_write_value(boo);
 							
 							boo_seq[0] = boo;
 							att_val[nb_wr - 1].value <<= boo_seq;
 							break;
 
 						case Tango::DEV_USHORT:
-							if (from_init == false)
-							{
-								if (!(str >> ush))
-									throw_mem_value(device_list[i],att);
-								att.set_write_value(ush);
-							}
-							else
-								att.get_write_value(ush);
+							if (!(str >> ush))
+								throw_mem_value(device_list[i],att);
+							att.set_write_value(ush);	
 								
 							ush_seq[0] = ush;
 							att_val[nb_wr - 1].value <<= ush_seq;
 							break;
 
 						case Tango::DEV_UCHAR:
-							if (from_init == false)
-							{
-								if (!(str >> uch))
-									throw_mem_value(device_list[i],att);
-								att.set_write_value(uch);
-							}
-							else
-								att.get_write_value(uch);
+							if (!(str >> uch))
+								throw_mem_value(device_list[i],att);
+							att.set_write_value(uch);
 								
 							uch_seq[0] = uch;
 							att_val[nb_wr - 1].value <<= uch_seq;
 							break;
 						}
-
-//						
-// Check the initialisation flag for memorized attributes.
-// The the flag is false, do not add the element to the att_val
-// vector. This avoids a call to write the memorozied value to the attribute.
-//
+						
+					// Check the initialisation flag for memorized attributes.
+					// The the flag is false, do not add the element to the att_val
+					// vector. This avoids a call to write the memorozied value to the attribute.
 					
 					if ( att.is_memorized_init() == false )
 						{
@@ -632,9 +508,9 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						}
 					else
 						{
-//
-// Init the AttributeValue structure
-//
+						//
+						// Init the AttributeValue structure
+						//
 					
 						att_val[nb_wr - 1].name = CORBA::string_dup(att.get_name().c_str());
 						att_val[nb_wr - 1].dim_x = 1;
@@ -658,13 +534,15 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 		}
 			
 																	
+
+
 		if (nb_wr != 0)
 		{
 		
-//
-// Write attribute values. Re-throw exception if any but reset memorized flags before the
-// re-throw.
-//
+		//
+		// Write attribute values. Re-throw exception if any but reset memorized flags before the
+		// re-throw.
+		//
 			
 			try
 			{
@@ -701,9 +579,9 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 				//	       			(const char *)"API_AttributeFailed");
 			}
 						
-//
-// Reset memorized flags
-//
+			//
+			// Reset memorized flags
+			//
 
 			for (unsigned long k = 0;k < att_val.length();k++)
 			{
@@ -855,33 +733,86 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 // ask polling thread to stop polling
 //
 
-	if ((tg->get_polling_threads_info().empty() == false) && (device_list[idx]->is_polled() == true))
-	{
-		device_list[idx]->stop_polling(false);
-	}
+	if ((tg->get_polling_thread_object() != NULL) && (device_list[idx]->is_polled() == true))
+		device_list[idx]->stop_polling();
 	
 //
 // Deactivate the CORBA object
 //
 
-	bool py_dev = device_list[idx]->is_py_device();
-	bool exported_device = device_list[idx]->get_exported_flag();
-
-	if (exported_device == true)
+	if (device_list[idx]->get_exported_flag() == true)
 		r_poa->deactivate_object(device_list[idx]->get_obj_id().in());
 			
 //
-// Remove the servant.
-// For C++ device, this will be automatically done by the POA when the last executing call
-// will be over even if the device is not exported
+// Unfortunately, the deactivate_object on the POA immediately returns even if there
+// is a running call (see Henning/Vinoski page 500). Therefore, try to get the
+// object monitor which will be free only when the last running call will finish
+// Two cases have to be taken into account :
+// 1 - The running commands : The get/rel on the monitor will make the thread
+//     waiting for them
+// 2- BUT, there are also (for very demanding clients) cases where commands are
+//    registered by the ORB but the monitor owner. For this case, sleep a while
+//    to give them time to execute. But sleep how long ?
+//    By default, I choose 200 mS
+// May be there is a more CORBA way to do this.
+// Need to investigate
+//
+	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
+	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;		
+
+#ifdef _TG_WINDOWS_
+	try
+	{
+		lock_ptr->Release();
+
+		device_list[idx]->get_dev_monitor().get_monitor();	
+		device_list[idx]->get_dev_monitor().rel_monitor();
+		
+		Sleep(200);
+
+		lock_ptr->Get();
+	}
+#else
+	try
+	{
+		lock_ptr->Release();
+
+		device_list[idx]->get_dev_monitor().get_monitor();
+		device_list[idx]->get_dev_monitor().rel_monitor();
+
+		struct timespec wait_to_sleep,still_wait;
+		wait_to_sleep.tv_sec = 0;
+		wait_to_sleep.tv_nsec = 200000000;
+
+		nanosleep(&wait_to_sleep,&still_wait);
+
+		lock_ptr->Get();
+	}
+#endif /* _TG_WINDOWS_ */
+	catch (Tango::DevFailed &)
+	{
+	}
+		
+//
+// Remove the C++ servant
 //
 
-	if (py_dev == true)
+	if (device_list[idx]->is_py_device() == false)
+	{
+		if (device_list[idx]->get_exported_flag() == true)
+			device_list[idx]->_remove_ref();
+		else
+		{
+			Device_3Impl *dev_3 = static_cast<Device_3Impl *>(device_list[idx]);
+			dev_3->delete_dev();
+		}
+	}		
+	else
 	{
 		Device_3Impl *dev_3 = static_cast<Device_3Impl *>(device_list[idx]);
 		dev_3->delete_dev();
 	}
-
+	
 	cout4 << "Leaving DeviceClass delete_dev" << endl;	
 }
 
@@ -988,13 +919,10 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 			
 // 
 // Activate the CORBA object incarnated by the dev C++ object
-// Also call _remove_ref to give POA the full ownership of servant
 //
 
 		d = dev->_this();
 		dev->set_d_var(Tango::Device::_duplicate(d));
-		if (is_py_class() == false)
-			dev->_remove_ref();
 
 //
 // Store the ObjectId (The ObjectId_var type is a typedef of a string_var
@@ -1053,8 +981,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		
 		d = dev->_this();
 		dev->set_obj_id(id);		
-		dev->set_d_var(Tango::Device::_duplicate(d));
-		dev->_remove_ref();	
+		dev->set_d_var(Tango::Device::_duplicate(d));		
 	}
 			
 //
@@ -1079,20 +1006,30 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 
 //
 // Call db server
-// We are still in the server starting phase. Therefore, the db timeout is still high (13 sec the 07/01/2011)
-// with 3 retries in case of timeout
 //
+
+		bool retry = true;
+		long db_retries = DB_START_PHASE_RETRIES;
 		
-		try
+		while (retry == true)
 		{
-			tg->get_database()->export_device(exp);
-		}
-		catch (Tango::CommunicationFailed &)
-		{
-			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
-			CORBA::release(orb_ptr);
-			CORBA::string_free(s);
-			throw;
+			try
+			{
+				tg->get_database()->export_device(exp);
+				retry = false;
+			}
+			catch (Tango::CommunicationFailed &)
+			{
+				cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
+				if (tg->is_svr_starting() == true)
+				{
+					db_retries--;
+					if (db_retries == 0)
+						throw;
+				}
+				else
+					throw;
+			}
 		}
 		
 		CORBA::release(orb_ptr);
@@ -1420,33 +1357,6 @@ void DeviceClass::device_destroyer(const char *dev_name)
 {
 	string name_str(dev_name);
 	return device_destroyer(name_str);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method :		DeviceClass::is_command_allowed
-// 
-// description :	Method to check if a command is allowed even if the device 
-//					is locked by another client. It follows the definition
-//					of the Tango control access system to define what is an
-//					allowed command
-//
-// in : 	cmd : The command name
-//
-//-----------------------------------------------------------------------------
-
-bool DeviceClass::is_command_allowed(const char *cmd)
-{
-	bool ret = true;
-	
-	string tmp_cmd(cmd);
-	transform(tmp_cmd.begin(),tmp_cmd.end(),tmp_cmd.begin(),::tolower);
-
-	vector<string>::iterator pos = find(allowed_cmds.begin(),allowed_cmds.end(),tmp_cmd);
-	if (pos == allowed_cmds.end())
-		ret = false;
-	
-	return ret;
 }
 
 } // End of Tango namespace

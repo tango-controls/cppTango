@@ -2,27 +2,6 @@
 // dbapi.h -	include file for TANGO database api
 //
 // 
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-
-
 #ifndef _DBAPI_H
 #define _DBAPI_H
 
@@ -54,7 +33,6 @@ class DbDatumExt;
 class FileDatabase;
 class DbServerCache;
 class Util;
-class AccessProxy;
 
 typedef vector<DbDatum> DbData;
 typedef vector<DbDevInfo> DbDevInfos;
@@ -74,43 +52,27 @@ class DatabaseExt
 public:
 	DatabaseExt():db_tg(NULL) {};
 	
-	Tango::Util 	*db_tg;
-	omni_mutex		map_mutex;
+	Tango::Util *db_tg;
 };
 
 class Database : public Tango::Connection
 {
 private :	
-	virtual string get_corba_name(bool);
+	virtual string get_corba_name();
 	virtual string build_corba_name() {return string("nada");}
-	virtual int get_lock_ctr() {return 0;}
-	virtual void set_lock_ctr(int) {}
-		
-	bool				db_multi_svc;
-	vector<string>		multi_db_port;
-	vector<string>		multi_db_host;
-	DatabaseExt			*ext;
-	FileDatabase 		*filedb; 
-	string 				file_name;
-	int					serv_version;
+	inline string dev_name() { return string("Db device"); }
 	
-	AccessProxy			*access_proxy;
-	bool				access_checked;
-	DevErrorList		access_except_errors;
-	
-	map<string,string>	dev_class_cache;
-	string				db_device_name;
-	
-	bool				access_service_defined;
+	bool			db_multi_svc;
+	vector<string>	multi_db_port;
+	vector<string>	multi_db_host;
+	DatabaseExt		*ext;
+	FileDatabase 	*filedb; 
+	string 			file_name;
+	int				serv_version;
 	
 	DbDatum         make_string_array(string, CORBA::Any_var &);
 	vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
-	
-	void check_access();
-	inline string dev_name();
-	void get_server_release();
-	void check_access_and_get();
-	
+
 public :
 	Database(CORBA::ORB *orb=NULL);
 	Database(string &host, int port, CORBA::ORB *orb=NULL);
@@ -118,27 +80,12 @@ public :
 	
 	void write_filedatabase();
 	void reread_filedatabase();
-	void write_event_channel_ior_filedatabase(string &,string &);
 	void build_connection ();
-	void post_reconnection();
 	~Database();
 	inline Device_var &get_dbase() { return device;}
-	void check_tango_host(const char *);
-	AccessControlType check_access_control(string &);
-	bool is_control_access_checked() {return access_checked;}
-	void set_access_checked(bool val) {access_checked = val;}
+	void check_tango_host(char *);
 	
 	void set_tango_utils(Tango::Util *ptr) {ext->db_tg=ptr;}
-	
-	DevErrorList &get_access_except_errors() {return access_except_errors;}
-	void clear_access_except_errors() {access_except_errors.length(0);}
-	bool is_command_allowed(string &,string &);
-	
-	bool is_multi_tango_host() {return db_multi_svc;}
-	vector<string> &get_multi_host() {return multi_db_host;}
-	vector<string> &get_multi_port() {return multi_db_port;}
-
-	const string &get_file_name();
 
 #ifdef _TG_WINDOWS_
 	Database(CORBA::ORB *orb,string &,string &);
@@ -206,8 +153,7 @@ public :
 //
 
 	void get_property(string, DbData &,DbServerCache *dsc);
-	void get_property(string st, DbData &db) {get_property(st,db,NULL);}	
-	void get_property_forced(string, DbData &,DbServerCache *dsc = NULL);  
+	void get_property(string st, DbData &db) {get_property(st,db,NULL);}
 	void put_property(string, DbData &);  
 	void delete_property(string, DbData &);
 	vector<DbHistory> get_property_history(string &,string &);
@@ -220,7 +166,6 @@ public :
 	void delete_device_property(string, DbData &);
 	vector<DbHistory> get_device_property_history(string &,string &);
 	DbDatum get_device_property_list(string &,string &);
-	void get_device_property_list(string &,const string &,vector<string> &,DbServerCache *dsc = NULL);
 	
 	void get_device_attribute_property(string, DbData &, DbServerCache *dsc);
 	void get_device_attribute_property(string st, DbData &db) {get_device_attribute_property(st,db,NULL);}
@@ -260,22 +205,6 @@ public :
 
 };
 
-//
-// Some Database class inline methods
-//
-
-
-inline string Database::dev_name() 
-{
-	if (db_device_name.empty() == true)
-	{
-		CORBA::String_var n = device->name();
-		db_device_name = n;
-	}
-	return db_device_name;
-}
-	
-	
 //
 // Some macros to call the Db server
 // These macros will do some retries in case of
@@ -389,7 +318,6 @@ public :
 	~DbDevice();
 	void set_name(string &new_name) {name = new_name;}
 	Database *get_dbase();
-	void set_dbase(Database *db) {dbase = db;}
 //
 // methods
 //
@@ -403,9 +331,6 @@ public :
 	void get_attribute_property(DbData&);
 	void put_attribute_property(DbData&);
 	void delete_attribute_property(DbData&);
-	AccessControlType check_access_control();
-	void clear_access_except_errors();
-	void get_property_list(const string &,vector<string> &);
 };
 
 //
@@ -509,11 +434,7 @@ public :
 //
 	DbDatum();
 	DbDatum (string);
-	DbDatum (const char *);
 	~DbDatum();
-	DbDatum(const DbDatum &);
-	DbDatum &operator=(const DbDatum &);
-
 	int size() {return value_string.size();}
 	bool is_empty();
 	
@@ -726,7 +647,6 @@ public:
 	const DevVarStringArray *get_class_att_property(DevVarStringArray *);
 	const DevVarStringArray *get_dev_att_property(DevVarStringArray *);
 	const DevVarStringArray *get_obj_property(DevVarStringArray *);
-	const DevVarStringArray *get_device_property_list(DevVarStringArray *);
 	
 	const EltIdx &get_imp_dat() {return imp_adm;}
 	const EltIdx &get_imp_notifd_event() {return imp_notifd_event;}
@@ -735,7 +655,7 @@ public:
 	const PropEltIdx &get_Default_prop() {return Default_prop;}
 	const PropEltIdx &get_adm_dev_prop() {return adm_dev_prop;}
 	const PropEltIdx &get_ctrl_serv_prop() {return ctrl_serv_prop;}
-	int get_class_nb() {return class_nb;}
+	const int get_class_nb() {return class_nb;}
 	const ClassEltIdx *get_classes_elt() {return classes_idx;}
 	int get_data_nb() {return n_data;}
 	
@@ -746,7 +666,6 @@ private:
 	int find_class(DevString );
 	int find_dev_att(DevString,int &,int &);
 	int find_obj(DevString obj_name,int &);
-	void get_obj_prop_list(DevVarStringArray *,PropEltIdx &);
 	
 	CORBA::Any_var			received;
 	const DevVarStringArray *data_list;
@@ -768,7 +687,6 @@ private:
 	DevVarStringArray		ret_obj_prop;
 	DevVarStringArray		ret_dev_list;
 	DevVarStringArray		ret_obj_att_prop;
-	DevVarStringArray		ret_prop_list;
 };
 
 //

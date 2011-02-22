@@ -47,8 +47,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
-				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;"
+				AdditionalIncludeDirectories="..\..\..\server,..\..\..\client,..\..\resources,$(OMNI_BASE)\win32_dll\include,$(LOG4TANGO_BASE)\win32_dll\include"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
 				UsePrecompiledHeader="0"
@@ -71,20 +71,20 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango725 release\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango600 release\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4tango.lib omniorb414_rt.lib omnidynamic414_rt.lib omnithread34_rt.lib COS414_rt.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				OutputFile="lib/tango725.dll"
-				Version="7.2.5"
+				AdditionalDependencies="log4tango.lib omniorb410_rt.lib omnidynamic410_rt.lib omnithread33_rt.lib COS410_rt.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile="lib/tango600.dll"
+				Version="6.0.0"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\lib\x86_win32&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
+				AdditionalLibraryDirectories="$(OMNI_BASE)\win32_dll\lib,$(LOG4TANGO_BASE)\win32_dll\lib"
 				ModuleDefinitionFile="tango.def"
-				ProgramDatabaseFile=".\Release/tango725.pdb"
-				ImportLibrary="lib/tango.7.2.5.lib"
+				ProgramDatabaseFile=".\Release/tango600.pdb"
+				ImportLibrary="lib/tango.6.0.0.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -146,8 +146,8 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\include&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL;JPG_USE_ASM;_CRT_SECURE_NO_DEPRECATE"
+				AdditionalIncludeDirectories="..,..\..\..\server,..\..\..\client,..\..\resources,$(OMNI_BASE)\win32_dll\include,$(LOG4TANGO_BASE)\win32_dll\include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				RuntimeTypeInfo="true"
@@ -155,7 +155,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_dll.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.7.2.5.pdb"
+				ProgramDataBaseFileName=".\lib/tangod.6.0.0.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -172,21 +172,21 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango725d debug\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango600d debug\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4tangod.lib omniORB414_rtd.lib omniDynamic414_rtd.lib COS414_rtd.lib omnithread34_rtd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="log4tangod.lib omniORB410_rtd.lib omniDynamic410_rtd.lib COS410_rtd.lib omnithread33_rtd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
 				ShowProgress="2"
-				OutputFile="lib/tango725d.dll"
-				Version="7.2.5"
+				OutputFile="lib/tango600d.dll"
+				Version="6.0.0"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\lib\x86_win32&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
+				AdditionalLibraryDirectories="$(OMNI_BASE)\win32_dll\lib,$(LOG4TANGO_BASE)\win32_dll\lib"
 				ModuleDefinitionFile="tango.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/tango725d.pdb"
-				ImportLibrary="lib/tangod.7.2.5.lib"
+				ProgramDatabaseFile=".\Debug/tango600d.pdb"
+				ImportLibrary="lib/tangod.6.0.0.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -222,10 +222,6 @@
 			Name="Source Files"
 			Filter="cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 			>
-			<File
-				RelativePath="..\..\..\client\accessproxy.cpp"
-				>
-			</File>
 			<File
 				RelativePath="..\..\..\client\api_util.cpp"
 				>
@@ -635,10 +631,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\dbapi_cache.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\client\dbapi_class.cpp"
 				>
 				<FileConfiguration
@@ -839,10 +831,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\client\devapi_utils.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\device.cpp"
 				>
 				<FileConfiguration
@@ -913,10 +901,6 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\device_4.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\deviceclass.cpp"
@@ -1015,10 +999,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\dserverlock.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\dserverlog.cpp"
 				>
 				<FileConfiguration
@@ -1091,30 +1071,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\encoded_attribute.cpp"
-				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\..\server\event.cpp"
 				>
 				<FileConfiguration
@@ -1161,14 +1117,6 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\eventkeepalive.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\eventqueue.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\eventsupplier.cpp"
@@ -1265,42 +1213,6 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_bitstream.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_color.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_color_mmx.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_dct.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_dct_mmx.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_decoder.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_encoder.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_memory.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\client\lockthread.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\logcmds.cpp"
@@ -1591,10 +1503,6 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\subdev_diag.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\tangoappender.cpp"
 				>
 				<FileConfiguration
@@ -1637,7 +1545,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400;_CRT_SECURE_NO_DEPRECATE"
+						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
@@ -1685,7 +1593,7 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400;_CRT_SECURE_NO_DEPRECATE"
+						PreprocessorDefinitions="_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400"
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
@@ -1737,14 +1645,6 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
-			</File>
-			<File
-				RelativePath="..\..\..\server\utils_polling.cpp"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\utils_shut.cpp"
-				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\w32win.cpp"
@@ -1799,10 +1699,6 @@
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl"
 			>
-			<File
-				RelativePath="..\..\..\client\accessproxy.h"
-				>
-			</File>
 			<File
 				RelativePath="..\..\..\client\apiexcept.h"
 				>
@@ -1876,10 +1772,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\device_4.h"
-				>
-			</File>
-			<File
 				RelativePath="..\..\..\server\deviceclass.h"
 				>
 			</File>
@@ -1893,10 +1785,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\dserversignal.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\encoded_attribute.h"
 				>
 			</File>
 			<File
@@ -1921,26 +1809,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\client\group.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_bitstream.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_const.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_lib.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_memory.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\client\lockthread.h"
 				>
 			</File>
 			<File
@@ -1989,10 +1857,6 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\seqvec.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\..\server\subdev_diag.h"
 				>
 			</File>
 			<File

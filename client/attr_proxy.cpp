@@ -6,26 +6,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- July 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // version 		- $Version$
 //
 
@@ -135,7 +115,7 @@ void AttributeProxy::real_constructor (string &name)
 		if (strcmp(dfe.errors[0].reason.in(),"API_AttrNotFound") == 0)
 		{
 			TangoSys_OMemStream desc;
-			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
+			desc << "Attribute" << attr_name << " is not supported by device " << device_name << ends;
 			
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
 						desc.str(),
@@ -1243,18 +1223,6 @@ void AttributeProxy::write(DeviceAttribute& attr_value)
 
 //-----------------------------------------------------------------------------
 //
-// AttributeProxy::write_read() - write then read attribute
-//
-//-----------------------------------------------------------------------------
- 
-DeviceAttribute AttributeProxy::write_read(DeviceAttribute& attr_value) 
-{
-	attr_value.set_name(attr_name);
-	return dev_proxy->write_read_attribute(attr_value);
-}
-
-//-----------------------------------------------------------------------------
-//
 // AttributeProxy::history() - get attribute history
 //				      (only for polled attribute)
 //
@@ -1351,27 +1319,6 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	return ApiUtil::instance()->get_event_consumer()->subscribe_event(dev_proxy, 
 	                           attr_name, event, callback, filters, stateless);
 }
-
-//-----------------------------------------------------------------------------
-//
-// AttributeProxy::subscribe_event - Subscribe to an event with an event queue
-//                                   Adds the statless flag for stateless
-//                                   event subscription.
-//
-//-----------------------------------------------------------------------------
-
-int AttributeProxy::subscribe_event (EventType event, int event_queue_size, 
-                                    const vector<string> &filters, bool stateless)
-{
-	if (ApiUtil::instance()->get_event_consumer() == NULL)
-	{
-		ApiUtil::instance()->create_event_consumer();
-	}
-	
-	return ApiUtil::instance()->get_event_consumer()->subscribe_event(dev_proxy, 
-	                           attr_name, event, event_queue_size, filters, stateless);
-}
-
 
 
 } // End of Tango namespace
