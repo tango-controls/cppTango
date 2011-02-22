@@ -8,26 +8,9 @@
 //
 // author(s) :	  N.Leclercq - SOLEIL
 //
-//
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// copyleft :	    European Synchrotron Radiation Facility
+//			          BP 220, Grenoble 38043
+//			          FRANCE
 //
 //-=============================================================================
 
@@ -54,16 +37,15 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevFaile
   unsigned long num_errors = e.errors.length();
   for (unsigned long i = 0; i < num_errors; i++) {
     TangoSys_OMemStream msg;
-    msg << "[Ex:" << exception_tag << "-Err:" << i << "] "
-        << "Rsn: " << e.errors[i].reason.in() << " "
-        << "Dsc: " << e.errors[i].desc.in() << " "
-        << "Org: " << e.errors[i].origin.in();
+    msg << "[Ex: " << ++exception_tag << "-" << i << "] "
+        << "Rsn: " << e.errors[i].reason.in() << " - "
+        << "Dsc: " << e.errors[i].desc.in() << " - "
+        << "Org: " << e.errors[i].origin.in() << ends;
     ls << msg.str();
     if (i != num_errors - 1) {
       ls << endl;
     }
   }
-  exception_tag++;
 	return ls;
 }
 
@@ -213,7 +195,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	Tango::AttributeConfig conf;
 	(const_cast<Attribute &>(a)).get_properties(conf);
 	
-        ls << "Attribute name: " << conf.name.in() << endl;
+  ls << "Attribute name: " << conf.name.in() << endl;
 	ls << "Attribute data_type: ";
 	switch (conf.data_type)
 	{
@@ -232,33 +214,10 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	  case Tango::DEV_STRING :
 		  ls << "Tango::DevString" << endl;
 		  break;
-
-	  case Tango::DEV_FLOAT :
-		  ls << "Tango::DevFloat" << endl;
-		  break;
-		  
-	  case Tango::DEV_BOOLEAN :
-		  ls << "Tango::DevBoolean" << endl; 
-		  break;
-		  
-	  case Tango::DEV_USHORT :
-		  ls << "Tango::DevUShort" << endl; 
-		  break;
-		  
-	  case Tango::DEV_UCHAR :
-		  ls << "Tango::DevUChar" << endl;
-		  break;
-		  
-	  case Tango::DEV_STATE :
-	  	  ls << "Tango::DevState" << endl;
-		  break;
 	}
 	ls << "Attribute data_format: ";
 	switch (conf.data_format)
 	{
-	  case Tango::FMT_UNKNOWN:
-	  	  break;
-		  
 	  case Tango::SCALAR :
 		  ls << "scalar" << endl;
 		  break;

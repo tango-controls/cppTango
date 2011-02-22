@@ -14,155 +14,12 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.23  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.22  2009/02/03 15:15:08  jensmeyer
-// Added a QuerySubDevice command to read the list of opened sub device
-// connections.
-//
-// Revision 3.21  2009/01/29 16:23:49  taurel
-// - Commit after merge with branch Release_6_1_1-bugfixes
-//
-// Revision 3.20  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.19  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.18  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.17  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.16  2008/09/04 13:19:31  taurel
-// - Add push_event() feature for attribute of the DevEncoded data type
-//
-// Revision 3.15  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-// Revision 3.14.2.1  2009/01/29 15:17:01  taurel
-// - Add some bug fixes for server used with the -f option (database as
-// file)
-//
-// Revision 3.14  2008/03/20 07:39:24  taurel
-// - Last commit before Release 6.1 ?
-// Revision 3.12.2.3  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.13  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-// Revision 3.12.2.2  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.12.2.1  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.12  2007/04/20 14:40:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.11  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.10  2007/03/29 07:04:05  taurel
-// - Change some data types for 64 bits compatibility
-//
-// Revision 3.9  2005/08/09 15:53:34  jensmeyer
-// Changed DServerClass::instance() to return an exception
-// in the case of a not initialised object. The exit() killed the server
-// during a startup when a client send requests to early.
-//
-// Revision 3.8  2005/07/20 14:40:46  taurel
-// - Fix bug in polling thread out of sync error. Time threshold to generate
-// event heartbeat error changed from 10 to 11. Fix some comments
-//
-// Revision 3.7  2005/05/10 11:26:40  taurel
-// - Fix some deadlock than for attribute for command
-// - Uncomment the two wizard admin device commands
-//
-// Revision 3.6  2005/03/14 12:01:24  taurel
-// - Fix bug in the event system for device server started with the -file option
-//
-// Revision 3.5  2005/03/14 09:49:29  taurel
-// - Fix some bugs in filedatabase (Change in the data transferred between client and
-//   server).
-// - Fix bug in event re-connection
-// - Add event support even for device server started with the -file command line option
-//
-// Revision 3.4  2005/01/13 08:29:05  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 3.3.2.3  2004/10/27 05:59:46  taurel
-// - Some minor changes to compile on all our supported platforms
-//
-// Revision 3.3.2.2  2004/10/22 11:25:50  taurel
-// Added warning alarm
-// Change attribute config. It now includes alarm and event parameters
-// Array attribute property now supported
-// subscribe_event throws exception for change event if they are not correctly configured
-// Change in the polling thread: The event heartbeat has its own work in the work list
-// Also add some event_unregister
-// Fix order in which classes are destructed
-// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
-// Change in the CORBA info call for the device type
-//
-// Revision 3.3.2.1  2004/10/05 13:55:02  maxchiandone
-// First upload for filedatabase.
-//
-// Revision 3.3  2004/07/07 08:40:11  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.2.2.3  2004/03/09 16:36:36  taurel
-// - Added HP aCC port (thanks to Claudio from Elettra)
-// - Some last small bugs fixes
-//
-// Revision 3.2.2.2  2004/02/06 11:58:51  taurel
-// - Many changes in the event system
-//
-// Revision 3.2.2.1  2004/01/20 08:32:37  taurel
-// -First commit after merge with the event branch and work on the AttributeProxy class
-// - Fix bug in the stream "clear()" method usage when used with gcc 3.3
-//
-// Revision 3.2  2003/05/28 14:55:09  taurel
-// Add the include (conditionally) of the include files generated by autoconf
-//
 // Revision 3.1  2003/04/03 15:24:09  taurel
 // Added methods to print DeviceData, DeviceAttribute, DeviceDataHistory
 // and DeviceAttributeHistory instance
-// Revision 3.0.2.1  2003/04/10 11:07:44  andy_gotz
-// added event commands to DServer admin object
 //
 // Revision 3.0  2003/03/25 16:43:19  taurel
 // Many changes for Tango release 3.0 including
@@ -273,6 +130,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2000/02/04 10:58:27  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -284,12 +146,10 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <dserverclass.h>
 #include <pollcmds.h>
-#include <eventcmds.h>
+
 #ifdef TANGO_HAS_LOG4TANGO
 #include <logcmds.h>
 #endif
-#include <eventcmds.h>
-#include <eventsupplier.h>
 
 namespace Tango
 {
@@ -516,67 +376,6 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_a
 	return(out_any);
 }
 
-//+----------------------------------------------------------------------------
-//
-// method : 		DevQuerySubDeviceCmd::DevQuerySubDeviceCmd()
-// 
-// description : 	constructor for the DevQuerySubDevice command of the 
-//					DServer.
-//
-//-----------------------------------------------------------------------------
-
-DevQuerySubDeviceCmd::DevQuerySubDeviceCmd(const char *name,
-			       	     Tango::CmdArgType in,
-			       	     Tango::CmdArgType out,
-				     const char *out_desc):Command(name,in,out)
-{
-	set_out_type_desc(out_desc);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		DevQuerySubDeviceCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "QuerySubDevice" 
-//					command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "DevQuerySubDeviceCmd::execute(): arrived" << endl;
-
-//	
-// call DServer method which implements this command
-//
-
-	Tango::DevVarStringArray *ret = ((DServer *)device)->query_sub_device();
-
-//
-// return data to the caller
-//
-	CORBA::Any *out_any;
-	try
-	{	
-		out_any = new CORBA::Any();
-	}
-	catch (bad_alloc)
-	{
-		cout3 << "Bad allocation while in DevQuerySubDeviceCmd::execute()" << endl;
-		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"DevQuerySubDeviceCmd::execute");
-	}
-	(*out_any) <<= ret;
-	
-	cout4 << "Leaving DevQuerySubDeviceCmd::execute()" << endl;		
-	return(out_any);
-}
-
-
-
 
 //+----------------------------------------------------------------------------
 //
@@ -670,7 +469,7 @@ CORBA::Any *DevSetTraceLevelCmd::execute(DeviceImpl *device,const CORBA::Any &in
 // Get new level
 //
 
-	int new_level;
+	long new_level;
 	if ((in_any >>= new_level) == false)
 	{
 		cout3 << "DevSetTraceLevelCmd::execute() --> Wrong argument type" << endl;
@@ -745,7 +544,7 @@ CORBA::Any *DevGetTraceLevelCmd::execute(DeviceImpl *device,const CORBA::Any &in
 // Get level
 //
 
-	int level = Tango::Util::instance()->get_trace_level();
+	long level = Tango::Util::instance()->get_trace_level();
 	
 //
 // return data to the caller
@@ -887,7 +686,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(DeviceImpl *device,const CORBA::Any &i
 	{
 		delete(Tango::Util::instance()->get_trace_output_stream());
 		Tango::Util::instance()->set_trace_output_stream((ofstream *)NULL);
-#if ((defined _WINDOWS) || (defined __SUNPRO_CC) || (defined GCC_STD)
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD))
 		ostream &tmp_stream = Tango::Util::instance()->get_out();
 
 //
@@ -909,7 +708,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(DeviceImpl *device,const CORBA::Any &i
 		ofstream *ofp = new ofstream(in_file_ptr);
 		if (ofp->good())
 		{
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD)
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD))
 			cout.copyfmt(*ofp);
 			cout.clear(ofp->rdstate());
 			cout.rdbuf(ofp->rdbuf());
@@ -940,479 +739,6 @@ CORBA::Any *DevSetTraceOutputCmd::execute(DeviceImpl *device,const CORBA::Any &i
 	return ret;
 #endif 	
 }
-
-//+----------------------------------------------------------------------------
-//
-// method : 		QueryWizardClassPropertyCmd::QueryWizardClassPropertyCmd
-// 
-// description : 	constructor for the QueryWizardClassProperty command of the 
-//			DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-QueryWizardClassPropertyCmd::QueryWizardClassPropertyCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-					   const char *in_desc,
-					   const char *out_desc):Command(name,in,out)
-{
-	set_in_type_desc(in_desc);
-	set_out_type_desc(out_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		QueryWizardClassPropertyCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "QueryWizardClassProperty" 
-//			command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "QueryWizardClassPropertyCmd::execute(): arrived" << endl;
-
-//
-// Extract the input string
-//
-
-	const char *tmp_name;
-	if ((in_any >>= tmp_name) == false)
-	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
-				        (const char *)"Imcompatible command argument type, expected type is : string",
-				        (const char *)"QueryWizardClassPropertyCmd::execute");
-	}
-	string class_name(tmp_name);
-	
-//	
-// call DServer method which implements this command
-//
-
-	Tango::DevVarStringArray *ret = ((DServer *)device)->query_class_prop(class_name);
-
-//
-// return data to the caller
-//
-	CORBA::Any *out_any;
-	try
-	{	
-		out_any = new CORBA::Any();
-	}
-	catch (bad_alloc)
-	{
-		cout3 << "Bad allocation while in QueryWizardClassPropertyCmd::execute()" << endl;
-		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"QueryWizardClassPropertyCmd::execute");
-	}
-	(*out_any) <<= ret;
-	
-	cout4 << "Leaving QueryWizardClassPropertyCmd::execute()" << endl;		
-	return(out_any);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		QueryWizardDevPropertyCmd::QueryWizardDevPropertyCmd
-// 
-// description : 	constructor for the QueryWizardDevProperty command of the 
-//			DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-QueryWizardDevPropertyCmd::QueryWizardDevPropertyCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-					   const char *in_desc,
-					   const char *out_desc):Command(name,in,out)
-{
-	set_in_type_desc(in_desc);
-	set_out_type_desc(out_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		QueryWizardDevPropertyCmd::execute()
-// 
-// description : 	method to trigger the execution of the "QueryWizardDevProperty" 
-//			command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "QueryWizardDevPropertyCmd::execute(): arrived" << endl;
-
-//
-// Extract the input string
-//
-
-	const char *tmp_name;
-	if ((in_any >>= tmp_name) == false)
-	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
-				        (const char *)"Imcompatible command argument type, expected type is : string",
-				        (const char *)"QueryWizardDevPropertyCmd::execute");
-	}
-	string class_name(tmp_name);
-		
-//	
-// call DServer method which implements this command
-//
-
-	Tango::DevVarStringArray *ret = ((DServer *)device)->query_dev_prop(class_name);
-
-//
-// return data to the caller
-//
-	CORBA::Any *out_any;
-	try
-	{	
-		out_any = new CORBA::Any();
-	}
-	catch (bad_alloc)
-	{
-		cout3 << "Bad allocation while in QueryWizardDevPropertyCmd::execute()" << endl;
-		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"QueryWizardDevPropertyCmd::execute");
-	}
-	(*out_any) <<= ret;
-	
-	cout4 << "Leaving QueryWizardDevPropertyCmd::execute()" << endl;		
-	return(out_any);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		QueryEventChannelIORCmd::QueryEventChannelIORCmd
-// 
-// description : 	constructor for the QueryEventChannelIOR command of the 
-//			DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-QueryEventChannelIORCmd::QueryEventChannelIORCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-					   const char *out_desc):Command(name,in,out)
-{
-	set_out_type_desc(out_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		QueryEventChannelIORCmd::execute()
-// 
-// description : 	method to trigger the execution of the "QueryEventChannelIOR" 
-//			command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *QueryEventChannelIORCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "QueryEventChannelIORCmd::execute(): arrived" << endl;
-		
-//	
-// Get DS event channel IOR which is stored in the EventSupplier object
-//
-
-	CORBA::Any *out_any;
-	EventSupplier *event_supplier;
-	event_supplier = Util::instance()->get_event_supplier();
-	if (event_supplier == NULL)
-	{
-		cout3 << "Try to retrieve DS event channel while EventSupplier object is not yet created" << endl;
-
-		Except::throw_exception((const char *)"API_EventSupplierNotConstructed",
-				      	(const char *)"Try to retrieve DS event channel while EventSupplier object is not created",
-				      	(const char *)"QueryEventChannelIORCmd::execute");
-	}
-	else
-	{
-
-		string &ior = event_supplier->get_event_channel_ior();
-		
-//
-// return data to the caller
-//
-
-		try
-		{	
-			out_any = new CORBA::Any();
-		}
-		catch (bad_alloc)
-		{
-			cout3 << "Bad allocation while in QueryEventChannelIORCmd::execute()" << endl;
-			Except::throw_exception((const char *)"API_MemoryAllocation",
-				      		(const char *)"Can't allocate memory in server",
-				      		(const char *)"QueryEventChannelIORCmd::execute");
-		}
-		(*out_any) <<= ior.c_str();
-	}
-	
-	cout4 << "Leaving QueryEventChannelIORCmd::execute()" << endl;		
-	return(out_any);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		LockDeviceCmd::LockDeviceCmd
-// 
-// description : 	constructor for the LockDevice command of the DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-LockDeviceCmd::LockDeviceCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-			     	     	   const char *in_desc):Command(name,in,out)
-{
-	set_in_type_desc(in_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		LockDeviceCmd::execute()
-// 
-// description : 	method to trigger the execution of the "LockDevice" command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *LockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "LockDeviceCmd::execute(): arrived" << endl;
-
-//
-// Extract the input argument
-//
-
-	const Tango::DevVarLongStringArray *in_data;
-	extract(in_any,in_data);
-			
-//	
-// call DServer method which implements this command
-//
-	
-	((DServer *)device)->lock_device(in_data);
-
-//
-// return data to the caller
-//
-
-	CORBA::Any *ret = return_empty_any("LockDeviceCmd");
-	return ret;
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ReLockDevicesCmd::ReLockDeviceCmd
-// 
-// description : 	constructor for the ReLockDevices command of the DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-ReLockDevicesCmd::ReLockDevicesCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-					   const char *in_desc):Command(name,in,out)
-{
-	set_in_type_desc(in_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ReLockDevicesCmd::execute()
-// 
-// description : 	method to trigger the execution of the "ReLockDevices" command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *ReLockDevicesCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "ReLockDevicesCmd::execute(): arrived" << endl;
-
-//
-// Extract the input argument
-//
-
-	const Tango::DevVarStringArray *in_data;
-	extract(in_any,in_data);
-			
-//	
-// call DServer method which implements this command
-//
-
-	((DServer *)device)->re_lock_devices(in_data);
-
-//
-// return data to the caller
-//
-
-	CORBA::Any *ret = return_empty_any("ReLockDevicesCmd");
-	return ret;
-	
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		UnLockDeviceCmd::UnLockDeviceCmd
-// 
-// description : 	constructor for the UnLockDevice command of the DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-UnLockDeviceCmd::UnLockDeviceCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-					   		   const char *in_desc,
-					   		   const char *out_desc):Command(name,in,out)
-{
-	set_in_type_desc(in_desc);
-	set_out_type_desc(out_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		UnLockDeviceCmd::execute()
-// 
-// description : 	method to trigger the execution of the "UnLockDevice" command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "UnLockDeviceCmd::execute(): arrived" << endl;
-
-//
-// Extract the input string
-//
-
-	const Tango::DevVarLongStringArray *in_data;
-	extract(in_any,in_data);
-			
-//	
-// call DServer method which implements this command
-//
-
-	Tango::DevLong ret = ((DServer *)device)->un_lock_device(in_data);
-
-//
-// return data to the caller
-//
-
-	CORBA::Any *out_any;
-	try
-	{	
-		out_any = new CORBA::Any();
-	}
-	catch (bad_alloc)
-	{
-		cout3 << "Bad allocation while in UnLockDeviceCmd::execute()" << endl;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"UnLockDeviceCmd::execute");
-	}
-	(*out_any) <<= ret;
-	
-	cout4 << "Leaving UnLockDeviceCmd::execute()" << endl;		
-	return(out_any);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		DevLockStatusCmd::DevLockStatusCmd
-// 
-// description : 	constructor for the DevLockStatus command of the DServer.
-//
-//-----------------------------------------------------------------------------
-
-
-DevLockStatusCmd::DevLockStatusCmd(const char *name,
-			     	     	   Tango::CmdArgType in,
-			     	     	   Tango::CmdArgType out,
-					   		   const char *in_desc,
-					   		   const char *out_desc):Command(name,in,out)
-{
-	set_in_type_desc(in_desc);
-	set_out_type_desc(out_desc);
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		DevLockStatusCmd::execute()
-// 
-// description : 	method to trigger the execution of the "DevLockStatus" command
-//
-//-----------------------------------------------------------------------------
-
-CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
-
-	cout4 << "DevLockStatusCmd::execute(): arrived" << endl;
-
-//
-// Extract the input string
-//
-
-	Tango::ConstDevString in_data;
-	extract(in_any,in_data);
-			
-//	
-// call DServer method which implements this command
-//
-
-	Tango::DevVarLongStringArray *ret = ((DServer *)device)->dev_lock_status(in_data);
-
-//
-// return to the caller
-//
-
-	CORBA::Any *out_any;
-	try
-	{	
-		out_any = new CORBA::Any();
-	}
-	catch (bad_alloc)
-	{
-		cout3 << "Bad allocation while in DevLockStatusCmd::execute()" << endl;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
-				      (const char *)"Can't allocate memory in server",
-				      (const char *)"DevLockStatusCmd::execute");
-	}
-	(*out_any) <<= ret;
-	
-	cout4 << "Leaving DevLockStatusCmd::execute()" << endl;		
-	return(out_any);
-}
-
-
 
 
 DServerClass *DServerClass::_instance = NULL;
@@ -1507,11 +833,8 @@ DServerClass *DServerClass::instance()
 {
 	if (_instance == NULL)
 	{
-		cerr << "Class DServer is not initialised!" << endl;
-		Except::throw_exception((const char *)"API_DServerClassNotInitialised",
-				        (const char *)"The DServerClass is not yet initialised, please wait!",
-				        (const char *)"DServerClass::instance");	
-		//exit(-1);	
+		cerr << "Class is not initialised!" << endl;
+		exit(-1);	
 	}		
 	return _instance;
 }
@@ -1559,10 +882,6 @@ void DServerClass::command_factory()
 						     Tango::DEV_VOID,
 						     Tango::DEVVAR_STRINGARRAY,
 						     "Device server device(s) list"));
-	command_list.push_back(new DevQuerySubDeviceCmd("QuerySubDevice",
-						     Tango::DEV_VOID,
-						     Tango::DEVVAR_STRINGARRAY,
-						     "Device server sub device(s) list"));
 	command_list.push_back(new DevKillCmd("Kill",
 					      Tango::DEV_VOID,
 					      Tango::DEV_VOID));
@@ -1665,56 +984,6 @@ void DServerClass::command_factory()
 						        Tango::DEV_STRING,
 							"Device server output file"));
 #endif // TANGO_HAS_LOG4TANGO
-	command_list.push_back(new EventSubscriptionChangeCmd("EventSubscriptionChange",
-							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,
-							"list of events consumer wants to subscribe to",
-							"none"));
-							
-	command_list.push_back(new QueryWizardClassPropertyCmd("QueryWizardClassProperty",
-							Tango::DEV_STRING,
-							Tango::DEVVAR_STRINGARRAY,
-							"Class name",
-							"Class property list (name - description and default value)"));
-	
-	command_list.push_back(new QueryWizardDevPropertyCmd("QueryWizardDevProperty",
-							Tango::DEV_STRING,
-							Tango::DEVVAR_STRINGARRAY,
-							"Class name",
-							"Device property list (name - description and default value)"));
-	
-//
-// Locking device commands
-//
-
-	command_list.push_back(new LockDeviceCmd("LockDevice",
-							Tango::DEVVAR_LONGSTRINGARRAY,
-							Tango::DEV_VOID,
-							"Str[0] = Device name. Lg[0] = Lock validity"));
-							
-	command_list.push_back(new UnLockDeviceCmd("UnLockDevice",
-							Tango::DEVVAR_LONGSTRINGARRAY,
-							Tango::DEV_LONG,
-							"Str[x] = Device name(s). Lg[0] = Force flag",
-							"Device global lock counter"));
-	
-	command_list.push_back(new ReLockDevicesCmd("ReLockDevices",
-							Tango::DEVVAR_STRINGARRAY,
-							Tango::DEV_VOID,
-							"Device(s) name"));
-							
-	command_list.push_back(new DevLockStatusCmd("DevLockStatus",
-							Tango::DEV_STRING,
-							Tango::DEVVAR_LONGSTRINGARRAY,
-							"Device name",
-							"Device locking status"));	
-
-	if (Util::_FileDb == true)
-	{
-		command_list.push_back(new QueryEventChannelIORCmd("QueryEventChannelIOR",
-							Tango::DEV_VOID,
-							Tango::DEV_STRING,
-							"Device server event channel IOR"));
-	}
 }
 
 
@@ -1732,7 +1001,6 @@ void DServerClass::command_factory()
 
 void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 {
-	Tango::Util *tg = Tango::Util::instance();
 	
 	for (unsigned long i = 0;i < devlist_ptr->length();i++)
 	{
@@ -1753,22 +1021,10 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 // Export device to the outside world
 //
 
-		if ((Tango::Util::_UseDb == true) && (Tango::Util::_FileDb == false))
+		if (Tango::Util::_UseDb == true)
 			export_device(device_list.back());
 		else
 			export_device(device_list.back(),(*devlist_ptr)[i]);
-			
-//
-// After the export of the admin device, the server is marked as started
-// and the database server connection timeout is set to the classical
-// timeout value (Except for db server itself)
-//
-
-		tg->set_svr_starting(false);
-		Database *db = tg->get_database();
-		if ((db != NULL) && (Util::_FileDb == false))
-			db->set_timeout_millis(CLNT_TIMEOUT);
-			
 	}
 }
 
