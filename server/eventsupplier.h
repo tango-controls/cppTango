@@ -12,7 +12,7 @@
 ///
 /// 		original : 7 April 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -70,13 +70,13 @@ namespace Tango
 
 typedef struct _NotifService
 {
-	CosNotifyChannelAdmin::SupplierAdmin_var 				SupAdm;
-	CosNotifyChannelAdmin::ProxyID 							pID;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				ProCon; 
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush; 
-	CosNotifyChannelAdmin::EventChannelFactory_var 			EveChaFac;
-	CosNotifyChannelAdmin::EventChannel_var 				EveCha;
-	string													ec_ior;
+	CosNotifyChannelAdmin::SupplierAdmin_var SupAdm;
+	CosNotifyChannelAdmin::ProxyID pID;
+	CosNotifyChannelAdmin::ProxyConsumer_var ProCon; 
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var StrProPush; 
+	CosNotifyChannelAdmin::EventChannelFactory_var EveChaFac;
+	CosNotifyChannelAdmin::EventChannel_var EveCha;
+	string	ec_ior;
 } NotifService;
 
 
@@ -88,11 +88,11 @@ public :
 	void connect();
 	void disconnect_structured_push_supplier();
 	void disconnect_from_notifd();
-	void subscription_change(const CosNotification::EventTypeSeq& added,const CosNotification::EventTypeSeq& deled);
+	void subscription_change(const CosNotification::EventTypeSeq& added,
+                                 const CosNotification::EventTypeSeq& deled);
 
 	void push_heartbeat_event();
 	string &get_event_channel_ior() {return event_channel_ior;}
-	void set_svr_port_num(string &);
 
 protected :
 
@@ -106,23 +106,24 @@ protected :
 		string &);
 		
 private :
-	static EventSupplier 									*_instance;
-	CosNotifyChannelAdmin::EventChannel_var 				eventChannel;
-	CosNotifyChannelAdmin::SupplierAdmin_var 				supplierAdmin;
-	CosNotifyChannelAdmin::ProxyID 							proxyId;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				proxyConsumer;
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	structuredProxyPushConsumer;
-	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
-	CORBA::ORB_var 											orb_;
+	static EventSupplier *_instance;
+	CosNotifyChannelAdmin::EventChannel_var eventChannel;
+	CosNotifyChannelAdmin::SupplierAdmin_var supplierAdmin;
+	CosNotifyChannelAdmin::ProxyID proxyId;
+	CosNotifyChannelAdmin::ProxyConsumer_var proxyConsumer;
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var
+            	structuredProxyPushConsumer;
+	CosNotifyChannelAdmin::EventChannelFactory_var eventChannelFactory;
+	CORBA::ORB_var orb_;
 	
 	inline int timeval_diff(TimeVal before, TimeVal after)
 	{
 		return ((after.tv_sec-before.tv_sec)*1000000 + after.tv_usec - before.tv_usec);
 	}
-	int 		heartbeat_period;
-	int 		subscription_timeout;
-	string 		event_channel_ior;
-	string 		fqdn_prefix;
+	int heartbeat_period;
+	int subscription_timeout;
+	string event_channel_ior;
+	string fqdn_prefix;
 
 	void get_attribute_value(AttributeValue attr_value, LastAttrValue &curr_attr_value);
 	void reconnect_notifd();
@@ -146,7 +147,7 @@ private :
 	
 public :
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
-	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
+	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1021,8 +1022,7 @@ public :
 						  AttributeValue_4 *attr_value_4, 
 						  Attribute &attr,
 						  string &attr_name,
-						  DevFailed *except,
-						  struct timeval *);
+						  DevFailed *except);
 						  
 	template <typename T>
 	void detect_and_push_archive_event(DeviceImpl *device_impl,
@@ -1305,8 +1305,7 @@ public :
 					 	AttributeValue_4 *attr_value_4,
 					    Attribute &attr,
 					    string &attr_name,
-					    DevFailed *except,
-						struct timeval *);
+					    DevFailed *except);
 					    
 
 	template <typename T>

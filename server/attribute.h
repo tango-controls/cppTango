@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,37 +34,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.61  2010/09/21 07:15:40  taurel
-// - Add doc for the Attribute::set_properties() methods
-//
-// Revision 3.60  2010/09/17 08:22:05  taurel
-// - Fix memory leak in cse of scalar attribute R/W for string
-//
-// Revision 3.59  2010/09/14 07:07:19  taurel
-// - Fix a Windows warning
-//
-// Revision 3.58  2010/09/12 12:19:21  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.57  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.56  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-//
-// Revision 3.55  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.54  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.53  2009/09/18 09:18:05  taurel
-// - End of attribute serialization implementation?
-//
 // Revision 3.52  2009/09/17 08:28:06  taurel
 // - Add a mutual exclusion to protect attribute buffer
 //
@@ -436,8 +405,6 @@ public:
 	omni_mutex			attr_mutex;						// Mutex to protect the attributes shared data buffer
 	omni_mutex			*user_attr_mutex;				// Ptr for user mutex in case he manages exclusion
 	AttrSerialModel		attr_serial_model;				// Flag for attribute serialization model
-	bool				dr_event_implmented;			// Flag true if fire data ready event is implemented
-	bool				scalar_str_attr_release;		// Need memory freeing (scalar string attr, R/W att) 
 };
 
 /**
@@ -484,7 +451,7 @@ public:
 /**
  * The attribute desctructor.
  */
-	virtual ~Attribute() {try{delete ext;}catch(omni_thread_fatal &){}}
+	virtual ~Attribute() {delete ext;}
 //@}
 
 /**@name Check attribute methods
@@ -728,26 +695,6 @@ public:
  * @param conf A AttributeConfig_3 object.
  */	
 	void get_properties_3(Tango::AttributeConfig_3 &conf);
-/**
- * Set attribute properties.
- *
- * This method set the attribute properties value with the content
- * of the fileds in the AttributeConfig object
- *
- * @param conf A AttributeConfig object.
- * @param dev The device pointer.
- */	
-	void set_properties(const Tango::AttributeConfig &conf,Tango::DeviceImpl *dev);
-/**
- * Set attribute properties version 3.
- *
- * This method set the attribute properties value with the content
- * of the fileds in the AttributeConfig_3 object
- *
- * @param conf A AttributeConfig_3 object.
- * @param dev The device pointer.
- */	
-	void set_properties(const Tango::AttributeConfig_3 &conf,Tango::DeviceImpl *dev);
 /**
  * Set attribute serialization model
  *
@@ -2001,20 +1948,6 @@ public:
  * @return A boolean set to true if a archive event criteria will be checked.
  */			
 	bool is_check_archive_criteria() {return ext->check_archive_event_criteria;}
-	
-/**
- * Set a flag to indicate that the server fires data ready events
- *
- * @param implemented True when the server fires change events manually. 
- */
-	void set_data_ready_event(bool implemented) {ext->dr_event_implmented = implemented;}
-/**
- * Check if the data ready event is fired for this attribute.
- *
- * @return A boolean set to true if a fire data ready event is implemented.
- */			
-	bool is_data_ready_event() {return ext->dr_event_implmented;}	
-	
 
 /**
  * Fire a user event for the attribute value. The event is pushed to the notification
@@ -2109,6 +2042,9 @@ public:
 	
 	omni_mutex *get_attr_mutex() {return &(ext->attr_mutex);}
 	omni_mutex *get_user_attr_mutex() {return ext->user_attr_mutex;}
+	
+	void set_properties(const Tango::AttributeConfig &,Tango::DeviceImpl *);
+	void set_properties(const Tango::AttributeConfig_3 &,Tango::DeviceImpl *);
 	
 	void set_properties(const Tango::AttributeConfig &,string &);
 	void set_properties(const Tango::AttributeConfig_3 &,string &);
@@ -2366,24 +2302,14 @@ protected:
 #endif
 
 #define NEW_MEM_STREAM_2_CORBA(A,B) \
-	if (true) \
-	{ \
-		string s = B.str(); \
-		A = CORBA::string_dup(s.c_str()); \
-		B.str(""); \
-	} \
-	else \
-		(void)0
+	string s = B.str(); \
+	A = CORBA::string_dup(s.c_str()); \
+	B.str("");
 	
 #define OLD_MEM_STREAM_2_CORBA(A,B) \
-	if (true) \
-	{ \
-		char *tmp_str = B.str(); \
-		A = CORBA::string_dup(tmp_str); \
-		delete[]tmp_str; \
-	} \
-	else \
-		(void)0
+	char *tmp_str = B.str(); \
+	A = CORBA::string_dup(tmp_str); \
+	delete[]tmp_str;
 	
 //
 // Define one macro to make code more readable
@@ -2481,7 +2407,7 @@ protected:
 		F++; \
 	} \
 \
-	if ((strcmp(A,NotANumber) == 0) || (TG_strcasecmp(A,AlrmValueNotSpec) == 0)) \
+	if (strcmp(A,NotANumber) == 0) \
 	{ \
 		DbDatum max_val(H); \
 		E.push_back(max_val); \
@@ -2598,23 +2524,13 @@ protected:
 //
 
 #define GIVE_ATT_MUTEX(A,B,C) \
-	if (true) \
-	{\
-		Tango::AttributeValue_4 *tmp_ptr = &((*A)[B]); \
-		(tmp_ptr)->set_attr_mutex(C.get_attr_mutex()); \
-	} \
-	else \
-		(void)0
+	Tango::AttributeValue_4 *tmp_ptr = &((*A)[B]); \
+	((Tango::LockedAttributeValue_4 *)tmp_ptr)->set_attr_mutex(C.get_attr_mutex());
 	
 
 #define GIVE_USER_ATT_MUTEX(A,B,C) \
-	if (true) \
-	{ \
-		Tango::AttributeValue_4 *tmp_ptr = &((*A)[B]); \
-		(tmp_ptr)->set_attr_mutex(C.get_user_attr_mutex()); \
-	} \
-	else \
-		(void)0
+	Tango::AttributeValue_4 *tmp_ptr = &((*A)[B]); \
+	((Tango::LockedAttributeValue_4 *)tmp_ptr)->set_attr_mutex(C.get_user_attr_mutex());
 		
 //
 // Yet another macro !!
@@ -2627,10 +2543,8 @@ protected:
 	if (C.get_attr_serial_model() != ATTR_NO_SYNC) \
 	{ \
 		Tango::AttributeValue_4 *tmp_ptr = &((*A)[B]); \
-		(tmp_ptr)->rel_attr_mutex(); \
-	} \
-	else \
-		(void)0
+		((Tango::LockedAttributeValue_4 *)tmp_ptr)->rel_attr_mutex(); \
+	}
 		
 } // End of Tango namespace
 

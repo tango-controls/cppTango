@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :         	E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,24 +34,6 @@ static const char *RcsId = "$Id$";
 // $Revision$
 //
 // $Log$
-// Revision 3.15  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.14  2010/06/21 12:47:12  taurel
-// - Add some logging message in polling_configure method
-//
-// Revision 3.13  2010/04/27 07:36:42  taurel
-// - Merge with the bugfixes branch
-//
-// Revision 3.12  2009/11/10 12:08:28  taurel
-// - Change the default value for the UtilExt::poll_pool_size data member
-//
-// Revision 3.11  2009/11/02 08:35:47  taurel
-// - Fix warnings reported when compiling using the option -Wall
-//
-// Revision 3.10  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
 // Revision 3.9.2.1  2009/07/02 07:07:27  taurel
 // - Fix a string comparaison problem (lowercase - uppercase)
 //
@@ -107,8 +89,7 @@ namespace Tango
 
 void Util::polling_configure()
 {
-	cout4 << "Entering polling_configure()" << endl;
-	
+
 //
 // Get the polling threads pool conf from the DServer device
 //
@@ -203,6 +184,7 @@ void Util::polling_configure()
 
 			for (k = 0;k < poll_cmd_list.size();k++)
 			{
+
 				DevVarLongStringArray *send = new DevVarLongStringArray();
 				send->lvalue.length(1);
 				send->svalue.length(3);
@@ -241,6 +223,7 @@ void Util::polling_configure()
 
 			for (k = 0;k < poll_attr_list.size();k++)
 			{
+
 				DevVarLongStringArray *send = new DevVarLongStringArray();
 				send->lvalue.length(1);
 				send->svalue.length(3);
@@ -386,8 +369,6 @@ void Util::polling_configure()
 	
 	if (((dev_db_upd.empty() == false) || (ext->conf_needs_db_upd == true)) && (_UseDb == true))
 		upd_polling_prop(dev_db_upd,admin_dev);
-		
-	cout4 << "Leaving polling_configure()" << endl;
 
 }
 
@@ -793,7 +774,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 //
 // Check if the pool is full
 //
-
+	
 	if (ext->poll_ths.size() != ext->poll_pool_size)
 	{
 
@@ -837,7 +818,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 //
 // Create a new polling thread and start it
 //
-
+		
 		PollingThreadInfo *pti_ptr = new PollingThreadInfo();
 		if (smallest_upd != -1)
 			pti_ptr->smallest_upd = smallest_upd;
@@ -954,7 +935,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 //
 // Assign this device to the thread which "seems" to have the less work
 //
-
+		
 		(*lower_iter)->polled_devices.push_back(local_dev_name);
 		ext->dev_poll_th_map.insert(make_pair(local_dev_name,(*lower_iter)->thread_id));
 		if (smallest_upd != -1)
@@ -1042,7 +1023,7 @@ void Util::stop_heartbeat_thread()
 //
 // method : 		Util::get_poll_th_id_by_name()
 // 
-// description : 	Get the ID of the thread in charge of the device polling
+// description : 	Get the ID of the thread in charg of the device polling
 //
 // argin() : dev_name : The device name
 //
@@ -1122,7 +1103,7 @@ PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 //
 //-----------------------------------------------------------------------------
 
-void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
+void Util::check_pool_conf(DServer *admin_dev,long pool_size)
 {
 
 //
@@ -1261,7 +1242,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 		{
 			vector<string> polled_dev_th;
 			get_th_polled_devs(i + pool_size,polled_dev_th);
-			unsigned long loop = 0;
+			int loop = 0;
 			vector<string>::iterator it;
 			for (it = polled_dev_th.begin();it != polled_dev_th.end();++it)
 			{

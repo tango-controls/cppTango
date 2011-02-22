@@ -8,7 +8,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,12 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
 // Revision 3.7  2009/09/08 14:22:15  taurel
 // - Manage internal buffer(s) as a cicular buffer pool
 //
@@ -122,7 +116,7 @@ void EncodedAttribute::encode_jpeg_gray8(unsigned char *gray8,int width,int heig
 	
   SAFE_FREE(buffer_array[index]);
   buffSize_array[index] = 0;
-  format = (char *)JPEG_GRAY8;
+  format = (char *)"JPEG_GRAY8";
   jpeg_encode_gray8(width,height,gray8,quality,&(buffSize_array[index]),&(buffer_array[index]));
   INC_INDEX()
 }
@@ -136,7 +130,7 @@ void EncodedAttribute::encode_jpeg_rgb32(unsigned char *rgb32,int width,int heig
 	
   SAFE_FREE(buffer_array[index]);
   buffSize_array[index] = 0;
-  format = (char *)JPEG_RGB;
+  format = (char *)"JPEG_RGB";
   jpeg_encode_rgb32(width,height,rgb32,quality,&(buffSize_array[index]),&(buffer_array[index]));
   INC_INDEX()
 }
@@ -150,7 +144,7 @@ void EncodedAttribute::encode_jpeg_rgb24(unsigned char *rgb24,int width,int heig
 	
   SAFE_FREE(buffer_array[index]);
   buffSize_array[index] = 0;
-  format = (char *)JPEG_RGB;
+  format = (char *)"JPEG_RGB";
   jpeg_encode_rgb24(width,height,rgb24,quality,&(buffSize_array[index]),&(buffer_array[index]));
   INC_INDEX()
 }
@@ -170,7 +164,7 @@ void EncodedAttribute::encode_gray8(unsigned char *gray8,int width,int height) {
     buffSize_array[index] = newSize;
   }
 
-  format = (char *)GRAY8;
+  format = (char *)"GRAY8";
   
   // Store image dimension (big endian)
   unsigned char *tmp_ptr = buffer_array[index];
@@ -199,7 +193,7 @@ void EncodedAttribute::encode_gray16(unsigned short *gray16,int width,int height
     buffSize_array[index] = newSize;
   }
 
-  format = (char *)GRAY16;
+  format = (char *)"GRAY16";
   
   // Store image dimension (big endian)
   unsigned char *tmp_ptr = buffer_array[index];
@@ -236,7 +230,7 @@ void EncodedAttribute::encode_rgb24(unsigned char *rgb24,int width,int height) {
     buffSize_array[index] = newSize;
   }
 
-  format = (char *)RGB24;
+  format = (char *)"RGB24";
   
   // Store image dimension (big endian)
   unsigned char *tmp_ptr = buffer_array[index];
@@ -258,8 +252,8 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
   string local_format;
   attr->extract(local_format,rawBuff);
 
-  int isRGB  = (strcmp(local_format.c_str() ,RGB24 ) == 0);
-  int isJPEG = (strcmp(local_format.c_str() ,JPEG_RGB ) == 0);
+  int isRGB  = (strcmp(local_format.c_str() ,"RGB24" ) == 0);
+  int isJPEG = (strcmp(local_format.c_str() ,"JPEG_RGB" ) == 0);
 
   if( !isRGB && !isJPEG ) {
 
@@ -339,8 +333,8 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
   string local_format;
   attr->extract(local_format,rawBuff);
 
-  int isGrey  = (strcmp(local_format.c_str() ,GRAY8 ) == 0);
-  int isJPEG = (strcmp(local_format.c_str() ,JPEG_GRAY8 ) == 0);
+  int isGrey  = (strcmp(local_format.c_str() ,"GRAY8" ) == 0);
+  int isJPEG = (strcmp(local_format.c_str() ,"JPEG_GRAY8" ) == 0);
 
   if( !isGrey && !isJPEG ) {
 
@@ -409,7 +403,7 @@ void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *heigh
   string local_format;
   attr->extract(local_format,rawBuff);
 
-  int isGrey  = (strcmp(local_format.c_str() ,GRAY16 ) == 0);
+  int isGrey  = (strcmp(local_format.c_str() ,"GRAY16" ) == 0);
 
   if( !isGrey ) {
 

@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- February 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,26 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.28  2010/12/08 10:10:54  taurel
-// log			- - Commit after a merge with the bugfixes branch
-// log			-
-// log			- Revision 3.27.2.1  2010/11/26 07:56:12  taurel
-// log			- - Fix date in date cmoputation in the printing stream inserter operators
-// log			- for class DeviceAttribute and associated (history)
-// log			-
-// log			- Revision 3.27  2010/09/29 12:03:49  taurel
-// log			- - It's now possible to register several callbacks for the same event
-// log			-
-// log			- Revision 3.26  2010/09/09 13:44:06  taurel
-// log			- - Add year 2010 in Copyright notice
-// log			-
-// log			- Revision 3.25  2010/04/09 14:04:56  taurel
-// log			- - Added << operators for DevString and const char * to the DeviceAttribute
-// log			- class
-// log			-
-// log			- Revision 3.24  2009/08/27 07:22:43  taurel
-// log			- - Commit after anothre merge with Release_7_0_2-bugfixes branch
-// log			-
 // log			- Revision 3.23.2.1  2009/08/20 13:11:33  taurel
 // log			- - Add 2 ctors for the DeviceAttribute class
 // log			-
@@ -301,19 +281,6 @@ DeviceAttributeExt &DeviceAttributeExt::operator=(const DeviceAttributeExt &rval
 	return *this;
 }
 
-void DeviceAttributeExt::deep_copy(const DeviceAttributeExt &rval)
-{
-	err_list = rval.err_list;
-	w_dim_x = rval.w_dim_x;
-	w_dim_y = rval.w_dim_y;
-	
-	Long64Seq = rval.Long64Seq;
-	ULongSeq = rval.ULongSeq;
-	ULong64Seq = rval.ULong64Seq;
-	StateSeq = rval.StateSeq;
-	EncodedSeq = rval.EncodedSeq;
-
-}
 //-----------------------------------------------------------------------------
 //
 // DeviceAttribute::DeviceAttribute() - default constructor to create DeviceAttribute 
@@ -371,38 +338,6 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source)
 	{
 		ext = new DeviceAttributeExt();
 		*ext = *(source.ext);
-	}
-	else
-		ext = NULL;
-}
-
-void DeviceAttribute::deep_copy(const DeviceAttribute & source)
-{
-	name = source.name;
-	exceptions_flags = source.exceptions_flags;
-	dim_x = source.dim_x;
-	dim_y = source.dim_y;
-	quality = source.quality;
-	data_format = source.data_format;
-	time = source.time;
-	
-	LongSeq = source.LongSeq;	
-	ShortSeq = source.ShortSeq;	
-	DoubleSeq = source.DoubleSeq;
-	StringSeq = source.StringSeq;
-	FloatSeq = source.FloatSeq;
-	BooleanSeq = source.BooleanSeq;		
-	UShortSeq = source.UShortSeq;	
-	UCharSeq = source.UCharSeq;
-
-	d_state = source.d_state;
-	d_state_filled = source.d_state_filled;
-						
-	if (source.ext != NULL)
-	{
-		if (ext == NULL)
-			ext = new DeviceAttributeExt();
-		ext->deep_copy(*source.ext);
 	}
 	else
 		ext = NULL;
@@ -2244,35 +2179,6 @@ void DeviceAttribute::operator << (string& datum)
 	del_mem(Tango::DEV_STRING);	                                    
 }
 
-void DeviceAttribute::operator << (DevString datum)
-{
-	dim_x = 1;
-	dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-
-    DevVarStringArray *string_vararr = new(DevVarStringArray);
-    string_vararr->length(1);
-    (*string_vararr)[0] = string_dup(datum);
-    StringSeq = string_vararr;
-
-	del_mem(Tango::DEV_STRING);	                                    
-}
-
-void DeviceAttribute::operator << (const char *datum)
-{
-	dim_x = 1;
-	dim_y = 0;
-	quality = Tango::ATTR_VALID;
-	data_format = Tango::FMT_UNKNOWN;
-
-    DevVarStringArray *string_vararr = new(DevVarStringArray);
-    string_vararr->length(1);
-    (*string_vararr)[0] = string_dup(datum);
-    StringSeq = string_vararr;
-
-	del_mem(Tango::DEV_STRING);	                                    
-}
 
 //-----------------------------------------------------------------------------
 //
@@ -5955,13 +5861,7 @@ ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 
 	if (da.time.tv_sec != 0)
 	{
-#ifdef _TG_WINDOWS_
-		time_t tmp_val = da.time.tv_sec;
-		struct tm *tmp_time = localtime(&tmp_val);
-		char *tmp_date = asctime(tmp_time);
-#else
 		char *tmp_date = asctime(localtime((time_t *)&da.time.tv_sec));
-#endif
 		tmp_date[strlen(tmp_date) - 1] = '\0';
 		o_str << tmp_date;
 		o_str << " (" << da.time.tv_sec << "," << da.time.tv_usec << " sec) : ";

@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,22 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.16  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.15  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-// Revision 3.14.2.1  2010/06/21 13:26:28  taurel
-// - Fix possible deadlock due to attribute mutex management.
-// This is a SourceForge bug
-//
-// Revision 3.14  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
 // Revision 3.13  2009/02/27 13:26:46  taurel
 // - Small changes for Solaris
 //
@@ -334,7 +318,10 @@ void PollObj::insert_data(Tango::AttributeValueList_4 *res,
 {
 	omni_mutex_lock(*this);
 
-	ring.insert_data(res,when,true);
+	bool unlock = true;
+	if ((needed.tv_sec == 0) && (needed.tv_usec == 0))
+		unlock = false;	
+	ring.insert_data(res,when,unlock);
 	needed_time = needed;
 }
 
