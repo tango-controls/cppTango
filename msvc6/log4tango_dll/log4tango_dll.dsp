@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "log4tango_dll_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\include" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "LOG4TANGO_HAS_DLL" /D "LOG4TANGO_BUILD_DLL" /D "WIN32" /D "_MBCS" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /O2 /I "..\..\include" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "LOG4TANGO_HAS_DLL" /D "LOG4TANGO_BUILD_DLL" /D "WIN32" /D "_MBCS" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
@@ -53,8 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /machine:I386 /out:"../../../../win32/msvc6/build/bin/log4tango.dll" /implib:"../../../../win32/msvc6/build/lib/shared/log4tango.lib"
-# SUBTRACT LINK32 /pdb:none
+# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /machine:I386 /out:"../../../../../win32/msvc7/bin/release/log4tango.dll"
 
 !ELSEIF  "$(CFG)" == "log4tango_dll - Win32 Debug"
 
@@ -70,7 +69,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "log4tango_dll_EXPORTS" /YX /FD /GZ /c
-# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\include" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "LOG4TANGO_HAS_DLL" /D "LOG4TANGO_BUILD_DLL" /D "WIN32" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /ZI /Od /I "..\..\include" /D "_DEBUG" /D "_WINDOWS" /D "_USRDLL" /D "LOG4TANGO_HAS_DLL" /D "LOG4TANGO_BUILD_DLL" /D "WIN32" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -80,8 +79,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /debug /machine:I386 /out:"../../../../win32/msvc6/build/bin/log4tangod.dll" /implib:"../../../../win32/msvc6/build/lib/shared/log4tangod.lib" /pdbtype:sept
-# SUBTRACT LINK32 /pdb:none
+# ADD LINK32 kernel32.lib user32.lib ws2_32.lib advapi32.lib /nologo /dll /debug /machine:I386 /out:"../../../../../win32/msvc7/bin/debug/log4tango_d.dll" /pdbtype:sept
 
 !ENDIF 
 
@@ -91,7 +89,7 @@ LINK32=link.exe
 # Name "log4tango_dll - Win32 Debug"
 # Begin Group "Header Files"
 
-# PROP Default_Filter ""
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Source File
 
 SOURCE=..\..\include\log4tango\Appender.hh
@@ -122,6 +120,10 @@ SOURCE=..\..\include\log4tango\Filter.hh
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4tango\HierarchyMaintainer.hh
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4tango\Layout.hh
 # End Source File
 # Begin Source File
@@ -138,25 +140,15 @@ SOURCE=..\..\include\log4tango\Logger.hh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4tango\LoggerStream.hh
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\log4tango\LoggingEvent.hh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4tango\LogSeparator.hh
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\log4tango\LogStream.hh
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\include\log4tango\LogStreambuf.hh
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
@@ -172,6 +164,10 @@ SOURCE=..\..\include\log4tango\OstreamAppender.hh
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4tango\OstringStream.hh
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4tango\PatternLayout.hh
 # End Source File
 # Begin Source File
@@ -184,15 +180,15 @@ SOURCE=..\..\src\PortabilityImpl.hh
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4tango\threading\PThreads.hh
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\include\log4tango\RollingFileAppender.hh
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\StringUtil.hh
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4tango\SyslogAppender.hh
 # End Source File
 # Begin Source File
 
@@ -202,14 +198,10 @@ SOURCE=..\..\include\log4tango\threading\Threading.hh
 
 SOURCE=..\..\include\log4tango\TimeStamp.hh
 # End Source File
-# Begin Source File
-
-SOURCE=..\..\include\log4tango\XmlLayout.hh
-# End Source File
 # End Group
 # Begin Group "Source Files"
 
-# PROP Default_Filter ""
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 # Begin Source File
 
 SOURCE=..\..\src\Appender.cpp
@@ -217,6 +209,10 @@ SOURCE=..\..\src\Appender.cpp
 # Begin Source File
 
 SOURCE=..\..\src\AppenderAttachable.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\DllMain.cpp
 # End Source File
 # Begin Source File
 
@@ -256,17 +252,11 @@ SOURCE=..\..\src\LoggingEvent.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\LogSeparator.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\LogStream.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\LogStreambuf.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
@@ -303,10 +293,6 @@ SOURCE=..\..\src\StringUtil.cpp
 # Begin Source File
 
 SOURCE=..\..\src\TimeStamp.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\XmlLayout.cpp
 # End Source File
 # End Group
 # Begin Source File

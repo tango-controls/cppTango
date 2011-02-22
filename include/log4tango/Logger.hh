@@ -1,29 +1,8 @@
-//
-// Logger.hh
-//
-// Copyright (C) :  2000 - 2002
-//					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
-//					Bastiaan Bakker. All rights reserved.   
-//					
-//					2004,2005,2006,2007,2008,2009,2010
-//					Synchrotron SOLEIL
-//                	L'Orme des Merisiers
-//                	Saint-Aubin - BP 48 - France
-//
-// This file is part of log4tango.
-//
-// Log4ango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Log4tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * Logger.hh
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 
 #ifndef _LOG4TANGO_LOGGER_H
 #define _LOG4TANGO_LOGGER_H
@@ -171,7 +150,7 @@ public:
    * @returns The LoggerStream.
    **/
   inline LoggerStream debug_stream (void) {
-    return LoggerStream(*this, Level::DEBUG, true);
+    return get_stream(Level::DEBUG);
   }
 #else
   /**
@@ -214,7 +193,7 @@ public:
    * @returns The LoggerStream.
    **/
   inline LoggerStream info_stream (void) {
-    return LoggerStream(*this, Level::INFO, true);
+    return get_stream(Level::INFO);
   }
 #else
   /**
@@ -257,7 +236,7 @@ public:
    * @returns The LoggerStream.
    **/
   inline LoggerStream warn_stream (void) {
-    return LoggerStream(*this, Level::WARN, true);
+    return get_stream(Level::WARN);
   };
 #else
   /**
@@ -300,7 +279,7 @@ public:
    * @returns The LoggerStream.
    **/
   inline LoggerStream error_stream (void) {
-      return LoggerStream(*this, Level::ERROR, true);
+    return get_stream(Level::ERROR);
   };
 #else
   /**
@@ -343,7 +322,7 @@ public:
    * @returns The LoggerStream.
    **/
   inline LoggerStream fatal_stream (void) {
-    return LoggerStream(*this, Level::FATAL, true);
+    return get_stream(Level::FATAL);
   };
 #else
   /**
@@ -359,7 +338,6 @@ public:
   /**
    * Return a LoggerStream with given Level.
    * @param level The Level of the LoggerStream.
-   * @param filter The filter flag
    * @returns The requested LoggerStream.
    **/
   inline LoggerStream get_stream (Level::Value level, bool filter = true) {

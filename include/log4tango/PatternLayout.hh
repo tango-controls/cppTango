@@ -1,29 +1,8 @@
-//
-// PatternLayout.hh
-//
-// Copyright (C) :  2000 - 2002
-//					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
-//					Bastiaan Bakker. All rights reserved.   
-//					
-//					2004,2005,2006,2007,2008,2009,2010
-//					Synchrotron SOLEIL
-//                	L'Orme des Merisiers
-//                	Saint-Aubin - BP 48 - France
-//
-// This file is part of log4tango.
-//
-// Log4ango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Log4tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * PatternLayout.hh
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 
 #ifndef _LOG4TANGO_PATTERNLAYOUT_H
 #define _LOG4TANGO_PATTERNLAYOUT_H
@@ -69,7 +48,6 @@ public:
    * Sets the format of log lines handled by this
    * PatternLayout. By default, set to "%%m%%n".<br>
    * Format characters are as follows:<br>
-   * <ul>
    * <li><b>%%%%</b> - a single percent sign</li>
    * <li><b>%%c</b> - the logger</li>
    * <li><b>%%d</b> - the date\n
@@ -86,7 +64,6 @@ public:
    * <li><b>%%R</b> - seconds since Jan 1, 1970</li>
    * <li><b>%%u</b> - clock ticks since process start</li>
    * <li><b>%%x</b> - the NDC</li>
-   * </ul>
    * @param conversionPattern the conversion pattern
    * @exception ConfigureFailure if the pattern is invalid
    **/
