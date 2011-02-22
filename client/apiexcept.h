@@ -2,7 +2,7 @@
 // apiexcept.h - include file for TANGO device api exceptions
 //
 // 
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -349,51 +349,33 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 #define TRANSIENT_NOT_EXIST_EXCEPT(E,CLASS,NAME) \
 	if (E.minor() == omni::TRANSIENT_CallTimedout) \
 	{ \
-\
-		bool need_reconnect = false; \
-		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT); \
-		try \
-		{ \
-			device->ping(); \
-		} \
-		catch(CORBA::TRANSIENT &trans_ping) \
-		{ \
-			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed) \
-			{ \
-				need_reconnect = true; \
-			} \
-		} \
-		catch(...) {} \
-		omniORB::setClientConnectTimeout(0); \
-\
-		if (need_reconnect == false) \
-		{ \
-			TangoSys_OMemStream desc; \
-			desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
-			desc << ends; \
-			TangoSys_OMemStream ori; \
-			ori << CLASS << ":" << NAME << ends; \
-			ApiCommExcept::re_throw_exception(E, \
-						  (const char *)"API_DeviceTimedOut", \
-						  desc.str(), ori.str());\
-		}\
-	} \
-\
-	set_connection_state(CONNECTION_NOTOK); \
-	ctr++; \
-\
-	if ((ext->tr_reco == false) || \
-	   ((ctr == 2) && (ext->tr_reco == true))) \
-	{ \
-\
 		TangoSys_OMemStream desc; \
-		desc << "Failed to execute " << NAME << " on device " << dev_name(); \
+		desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
 		desc << ends; \
 		TangoSys_OMemStream ori; \
 		ori << CLASS << ":" << NAME << ends; \
 		ApiCommExcept::re_throw_exception(E, \
+						  (const char *)"API_DeviceTimedOut", \
+						  desc.str(), ori.str());\
+	} \
+	else \
+	{ \
+		connection_state = CONNECTION_NOTOK; \
+		ctr++; \
+\
+		if ((ext->tr_reco == false) || \
+		   ((ctr == 2) && (ext->tr_reco == true))) \
+		{ \
+\
+			TangoSys_OMemStream desc; \
+			desc << "Failed to execute " << NAME << " on device " << dev_name(); \
+			desc << ends; \
+			TangoSys_OMemStream ori; \
+			ori << CLASS << ":" << NAME << ends; \
+			ApiCommExcept::re_throw_exception(E, \
 						   (const char*)"API_CommunicationFailed", \
                         			   desc.str(),ori.str()); \
+		} \
 	}
 
 	
@@ -401,55 +383,38 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 	if (E.minor() == omni::TRANSIENT_CallTimedout) \
 	{ \
 \
-		bool need_reconnect = false; \
-		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT); \
-		try \
-		{ \
-			device->ping(); \
-		} \
-		catch(CORBA::TRANSIENT &trans_ping) \
-		{ \
-			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed) \
-			{ \
-				need_reconnect = true; \
-			} \
-		} \
-		catch(...) {} \
-		omniORB::setClientConnectTimeout(0); \
-\
-		if (need_reconnect == false) \
-		{ \
-			TangoSys_OMemStream desc; \
-			desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
-			desc << ", command " << command << ends; \
-			ApiCommExcept::re_throw_exception(E, \
+		TangoSys_OMemStream desc; \
+		desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
+		desc << ", command " << command << ends; \
+		ApiCommExcept::re_throw_exception(E, \
 						  (const char *)"API_DeviceTimedOut", \
 						  desc.str(), \
 						  (const char *)"Connection::command_inout()"); \
-		}\
 	} \
-\
-	set_connection_state(CONNECTION_NOTOK); \
-	if (get_lock_ctr() != 0) \
+	else \
 	{ \
-		set_lock_ctr(0); \
-		TangoSys_OMemStream desc; \
-		desc << "Device " << dev_name() << " has lost your lock(s) (server re-start?) while executing command " << command << ends; \
-		DeviceUnlockedExcept::re_throw_exception(E,(const char*)DEVICE_UNLOCKED_REASON, \
-					desc.str(), (const char*)"Connection::command_inout()"); \
-	} \
-	ctr++; \
+		connection_state = CONNECTION_NOTOK; \
+		if (get_lock_ctr() != 0) \
+		{ \
+			set_lock_ctr(0); \
+			TangoSys_OMemStream desc; \
+			desc << "Device " << dev_name() << " has lost your lock(s) (server re-start?) while executing command " << command << ends; \
+			DeviceUnlockedExcept::re_throw_exception(E,(const char*)DEVICE_UNLOCKED_REASON, \
+						desc.str(), (const char*)"Connection::command_inout()"); \
+		} \
+		ctr++; \
 \
-	if ((ext->tr_reco == false) || \
-	   ((ctr == 2) && (ext->tr_reco == true))) \
-	{ \
-		TangoSys_OMemStream desc; \
-		desc << "Failed to execute command_inout on device " << dev_name(); \
-		desc << ", command " << command << ends; \
-		ApiCommExcept::re_throw_exception(E, \
-				   (const char*)"API_CommunicationFailed", \
-                    		   desc.str(), \
-				   (const char*)"Connection::command_inout()"); \
+		if ((ext->tr_reco == false) || \
+		   ((ctr == 2) && (ext->tr_reco == true))) \
+		{ \
+			TangoSys_OMemStream desc; \
+			desc << "Failed to execute command_inout on device " << dev_name(); \
+			desc << ", command " << command << ends; \
+			ApiCommExcept::re_throw_exception(E, \
+					   (const char*)"API_CommunicationFailed", \
+                        		   desc.str(), \
+					   (const char*)"Connection::command_inout()"); \
+		} \
 	}
 	
 

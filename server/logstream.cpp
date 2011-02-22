@@ -9,7 +9,7 @@
 // author(s) :	  N.Leclercq - SOLEIL
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -57,7 +57,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevFaile
     msg << "[Ex:" << exception_tag << "-Err:" << i << "] "
         << "Rsn: " << e.errors[i].reason.in() << " "
         << "Dsc: " << e.errors[i].desc.in() << " "
-        << "Org: " << e.errors[i].origin.in();
+        << "Org: " << e.errors[i].origin.in() << ends;
     ls << msg.str();
     if (i != num_errors - 1) {
       ls << endl;

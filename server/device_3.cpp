@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,54 +38,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.55  2010/09/30 14:16:52  taurel
-// - Do not overwrite WAttribute written value if the user set it in its
-// write_xxx method
-//
-// Revision 3.54  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.53  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.52  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.51  2010/02/22 13:00:33  taurel
-// - Add a better exception message in case of major error in the
-// attribute set_value() method (for instance in case the passed pointer is
-// NULL)
-// Revision 3.50.2.1  2010/06/21 13:26:27  taurel
-// - Fix possible deadlock due to attribute mutex management.
-// This is a SourceForge bug
-//
-// Revision 3.50  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.49  2009/10/27 16:33:44  taurel
-// - Fix a bug in attribute mutex management in case the attribute
-// is_allowed() method returns false
-//
-// Revision 3.48  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.47  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.46  2009/09/17 08:28:06  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
-// Revision 3.45  2009/04/29 14:33:10  jensmeyer
-// Corrected sub device diagnostics when accessing
-// internal devices in a server.
-//
-// Revision 3.44  2009/03/30 15:03:44  taurel
-// - Fix last bugs before Tango 7 ??
-//
 // Revision 3.43  2009/03/18 12:18:42  taurel
 // - Fix warnings reported when compiled with the option -Wall
 //
@@ -612,326 +564,232 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 {
 //
 //  Write the device name into the per thread data for 
-//  sub device diagnostics.
-//  Keep the old name, to put it back at the end!
-//  During device access inside the same server,
-//  the thread stays the same!
+//  sub device diagnostics
 //
 
-	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
-	sub.set_associated_device(get_name());
+	(Tango::Util::instance())->get_sub_dev_diag().set_associated_device(get_name());
 
-//
-// Catch all execeptions to set back the associated device after
-// execution
-//
-
-	try
-	{
-	
 //
 // Retrieve index of wanted attributes in the device attribute list and clear 
 // their value set flag
 //
 
-		long nb_names = names.length();
-		vector<AttIdx> wanted_attr;
-		vector<AttIdx> wanted_w_attr;
-		bool state_wanted = false;
-		bool status_wanted = false;
-		long state_idx,status_idx;
-		long i;
+	long nb_names = names.length();
+	vector<AttIdx> wanted_attr;
+	vector<AttIdx> wanted_w_attr;
+	bool state_wanted = false;
+	bool status_wanted = false;
+	long state_idx,status_idx;
+	long i;
 
-		state_idx = status_idx = -1;
+	for (i = 0;i < nb_names;i++)
+	{
+		long j;
+		AttIdx x;
+		x.idx_in_names = i;
+		string att_name(names[i]);
+		transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
 		
-		for (i = 0;i < nb_names;i++)
+		if (att_name == "state")
 		{
-			long j;
-			AttIdx x;
-			x.idx_in_names = i;
-			string att_name(names[i]);
-			transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
-
-			if (att_name == "state")
+			x.idx_in_multi_attr = -1;
+			x.failed = false;
+			wanted_attr.push_back(x);
+			state_wanted = true;
+			state_idx = i;
+		}
+		else if (att_name == "status")
+		{
+			x.idx_in_multi_attr = -1;
+			x.failed = false;
+			wanted_attr.push_back(x);
+			status_wanted = true;
+			status_idx = i;
+		}
+		else
+		{
+			try
 			{
-				x.idx_in_multi_attr = -1;
-				x.failed = false;
-				wanted_attr.push_back(x);
-				state_wanted = true;
-				state_idx = i;
-			}
-			else if (att_name == "status")
-			{
-				x.idx_in_multi_attr = -1;
-				x.failed = false;
-				wanted_attr.push_back(x);
-				status_wanted = true;
-				status_idx = i;
-			}
-			else
-			{
-				try
+				j = dev_attr->get_attr_ind_by_name(names[i]);
+				if ((dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WRITE) ||
+				    (dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WITH_WRITE))
 				{
-					j = dev_attr->get_attr_ind_by_name(names[i]);
-					if ((dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WRITE) ||
-				    	(dev_attr->get_attr_by_ind(j).get_writable() == Tango::READ_WITH_WRITE))
+					x.idx_in_multi_attr = j;
+					x.failed = false;
+					wanted_w_attr.push_back(x);
+					wanted_attr.push_back(x);
+					Attribute &att = dev_attr->get_attr_by_ind(wanted_attr.back().idx_in_multi_attr);
+					att.set_value_flag(false);
+					att.get_when().tv_sec = 0;
+				}
+				else
+				{
+					if (dev_attr->get_attr_by_ind(j).get_writable() == Tango::WRITE)
+					{
+						x.idx_in_multi_attr = j	;
+						x.failed = false;
+						wanted_w_attr.push_back(x);
+					}
+					else
 					{
 						x.idx_in_multi_attr = j;
 						x.failed = false;
-						wanted_w_attr.push_back(x);
 						wanted_attr.push_back(x);
 						Attribute &att = dev_attr->get_attr_by_ind(wanted_attr.back().idx_in_multi_attr);
 						att.set_value_flag(false);
 						att.get_when().tv_sec = 0;
 					}
-					else
-					{
-						if (dev_attr->get_attr_by_ind(j).get_writable() == Tango::WRITE)
-						{
-							x.idx_in_multi_attr = j	;
-							x.failed = false;
-							wanted_w_attr.push_back(x);
-						}
-						else
-						{
-							x.idx_in_multi_attr = j;
-							x.failed = false;
-							wanted_attr.push_back(x);
-							Attribute &att = dev_attr->get_attr_by_ind(wanted_attr.back().idx_in_multi_attr);
-							att.set_value_flag(false);
-							att.get_when().tv_sec = 0;
-						}
-					}
 				}
-				catch (Tango::DevFailed &e)
-				{
-					long index;
-					if (second_try == false)
-						index = i;
-					else
-						index = idx[i];
+			}
+			catch (Tango::DevFailed &e)
+			{
+				long index;
+				if (second_try == false)
+					index = i;
+				else
+					index = idx[i];
 
-					if (back != NULL)
-					{
-						(*back)[index].err_list = e.errors;
-						(*back)[index].quality = Tango::ATTR_INVALID;
-						(*back)[index].name = CORBA::string_dup(names[i]);
-						clear_att_dim((*back)[index]);
-					}
-					else
-					{
-						(*back4)[index].err_list = e.errors;
-						(*back4)[index].quality = Tango::ATTR_INVALID;
-						(*back4)[index].name = CORBA::string_dup(names[i]);
-						clear_att_dim((*back4)[index]);					
-					}
+				if (back != NULL)
+				{
+					(*back)[index].err_list = e.errors;
+					(*back)[index].quality = Tango::ATTR_INVALID;
+					(*back)[index].name = CORBA::string_dup(names[i]);
+					clear_att_dim((*back)[index]);
 				}
-			}		
-		}
-		
-		long nb_wanted_attr = wanted_attr.size();
-		long nb_wanted_w_attr = wanted_w_attr.size();
+				else
+				{
+					(*back4)[index].err_list = e.errors;
+					(*back4)[index].quality = Tango::ATTR_INVALID;
+					(*back4)[index].name = CORBA::string_dup(names[i]);
+					clear_att_dim((*back4)[index]);					
+				}
+			}
+		}		
+	}
+	long nb_wanted_attr = wanted_attr.size();
+	long nb_wanted_w_attr = wanted_w_attr.size();
 
 //
 // Call the always_executed_hook
 //
 
-		always_executed_hook();
-
+	always_executed_hook();
+		
 //
 // Read the hardware for readable attribute but not for state/status
 // Warning:  If the state is one of the wanted attribute, check and
 // eventually add all the alarmed attributes index
 //
 
-		if (nb_wanted_attr != 0)
+	if (nb_wanted_attr != 0)
+	{
+		vector<long> tmp_idx;
+		for (i = 0;i < nb_wanted_attr;i++)
 		{
-			vector<long> tmp_idx;
-			for (i = 0;i < nb_wanted_attr;i++)
-			{
-				long ii = wanted_attr[i].idx_in_multi_attr;
-				if (ii != -1)
-					tmp_idx.push_back(ii);
-			}
-			if (state_wanted == true)
-			{
-				if ((device_state == Tango::ON) || (device_state == Tango::ALARM))
-					add_alarmed(tmp_idx);
-			}
-
-			if (tmp_idx.size() != 0)
-				read_attr_hardware(tmp_idx);
+			long ii = wanted_attr[i].idx_in_multi_attr;
+			if (ii != -1)
+				tmp_idx.push_back(ii);
 		}
-
+		if (state_wanted == true)
+		{
+			if ((device_state == Tango::ON) || (device_state == Tango::ALARM))
+				add_alarmed(tmp_idx);
+		}
+		
+		if (tmp_idx.size() != 0)
+			read_attr_hardware(tmp_idx);
+	}
+	
 //
 // Set attr value (for readable attribute) but not for state/status
 //
 
-		for (i = 0;i < nb_wanted_attr;i++)
+	for (i = 0;i < nb_wanted_attr;i++)
+	{
+		if (wanted_attr[i].idx_in_multi_attr != -1)
 		{
-			if (wanted_attr[i].idx_in_multi_attr != -1)
-			{
-				Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i].idx_in_multi_attr);
-				bool is_allowed_failed = false;
-				
-				try
-				{
-					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
-					if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::READ_REQ) == false)
-					{
-						is_allowed_failed = true;
-						TangoSys_OMemStream o;
-
-						o << "It is currently not allowed to read attribute ";
-						o << att.get_name() << ends;
-
-						Except::throw_exception((const char *)"API_AttrNotAllowed",
-					        			o.str(),
-					        			(const char *)"Device_3Impl::read_attributes_no_except");
-					}
-
-//
-// Take the attribute mutex before calling the user read method
-//
-
-					if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (back4 != NULL))
-					{
-						cout4 << "Locking attribute mutex for attribute " << att.get_name() << endl;
-						omni_mutex *attr_mut = att.get_attr_mutex();
-						if (attr_mut->trylock() == 0)
-						{
-							cout4 << "Mutex for attribute " << att.get_name() << " is already taken.........." << endl;
-							attr_mut->lock();
-						}
-					}
-					
-//
-// Call the user read method
-//
-
-					attr_vect[att.get_attr_idx()]->read(this,att);
-
-				}
-				catch (Tango::DevFailed &e)
-				{
-					long index;
-					if (second_try == false)
-						index = wanted_attr[i].idx_in_names;
-					else
-						index = idx[wanted_attr[i].idx_in_names];
-
-					wanted_attr[i].failed = true;
-					if (back != NULL)
-					{
-						(*back)[index].err_list = e.errors;
-						(*back)[index].quality = Tango::ATTR_INVALID;
-						(*back)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back)[index]);
-					}
-					else
-					{
-						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
-						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
-							omni_mutex *attr_mut = att.get_attr_mutex();
-							attr_mut->unlock();
-						}
-							
-						(*back4)[index].err_list = e.errors;
-						(*back4)[index].quality = Tango::ATTR_INVALID;
-						(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back4)[index]);					
-					}
-				}
-				catch (...)
-				{
-					long index;
-					if (second_try == false)
-						index = wanted_attr[i].idx_in_names;
-					else
-						index = idx[wanted_attr[i].idx_in_names];
-
-					wanted_attr[i].failed = true;
-					Tango::DevErrorList del;
-					del.length(1);
-
-					del[0].severity = Tango::ERR;
-					del[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-					del[0].reason = CORBA::string_dup("API_CorbaSysException ");
-					del[0].desc = CORBA::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
-
-					if (back != NULL)
-					{
-						(*back)[index].err_list = del;
-						(*back)[index].quality = Tango::ATTR_INVALID;
-						(*back)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back)[index]);
-					}
-					else
-					{							
-						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
-						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to a severe error which is not a DevFailed" << endl;
-							omni_mutex *attr_mut = att.get_attr_mutex();
-							attr_mut->unlock();
-						}
-						
-						(*back4)[index].err_list = del;
-						(*back4)[index].quality = Tango::ATTR_INVALID;
-						(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back4)[index]);	
-					}
-				}
-			}
-		}
-
-//
-// Set attr value for writable attribute
-//
-
-		for (i = 0;i < nb_wanted_w_attr;i++)
-		{
-			Tango::AttrWriteType w_type = dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr).get_writable();
 			try
 			{
-				if ((w_type == Tango::READ_WITH_WRITE) || (w_type == Tango::WRITE)) 
-					dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr).set_rvalue();
+				Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i].idx_in_multi_attr);
+				vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+				if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::READ_REQ) == false)
+				{
+					TangoSys_OMemStream o;
+
+					o << "It is currently not allowed to read attribute ";
+					o << att.get_name() << ends;
+
+					Except::throw_exception((const char *)"API_AttrNotAllowed",
+					        		o.str(),
+					        		(const char *)"Device_3Impl::read_attributes_no_except");
+				}
+				attr_vect[att.get_attr_idx()]->read(this,att);
+
 			}
 			catch (Tango::DevFailed &e)
 			{
 				long index;
 				if (second_try == false)
-					index = wanted_w_attr[i].idx_in_names;
+					index = wanted_attr[i].idx_in_names;
 				else
-					index = idx[wanted_w_attr[i].idx_in_names];
+					index = idx[wanted_attr[i].idx_in_names];
 
-				wanted_w_attr[i].failed = true;
+				wanted_attr[i].failed = true;
 				if (back != NULL)
 				{
-					(*back)[index].err_list = e.errors;		
+					(*back)[index].err_list = e.errors;
 					(*back)[index].quality = Tango::ATTR_INVALID;
-					(*back)[index].name = CORBA::string_dup(names[wanted_w_attr[i].idx_in_names]);
+					(*back)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
 					clear_att_dim((*back)[index]);
 				}
 				else
 				{
-					Attribute &att = dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr);
-					AttrSerialModel atsm = att.get_attr_serial_model();
-					if ((atsm != ATTR_NO_SYNC) && (w_type == Tango::READ_WITH_WRITE))
-					{
-						cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
-						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
-						attr_mut->unlock();
-					}
-					
-					(*back4)[index].err_list = e.errors;		
+					(*back4)[index].err_list = e.errors;
 					(*back4)[index].quality = Tango::ATTR_INVALID;
-					(*back4)[index].name = CORBA::string_dup(names[wanted_w_attr[i].idx_in_names]);
-					clear_att_dim((*back4)[index]);				
+					(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
+					clear_att_dim((*back4)[index]);					
 				}
 			}
 		}
+	}
+	
+//
+// Set attr value for writable attribute
+//
+
+	for (i = 0;i < nb_wanted_w_attr;i++)
+	{
+		try
+		{
+			Tango::AttrWriteType w_type = dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr).get_writable();
+			if ((w_type == Tango::READ_WITH_WRITE) || (w_type == Tango::WRITE)) 
+				dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr).set_rvalue();
+		}
+		catch (Tango::DevFailed &e)
+		{
+			long index;
+			if (second_try == false)
+				index = wanted_w_attr[i].idx_in_names;
+			else
+				index = idx[wanted_w_attr[i].idx_in_names];
+				
+			wanted_w_attr[i].failed = true;
+			if (back != NULL)
+			{
+				(*back)[index].err_list = e.errors;		
+				(*back)[index].quality = Tango::ATTR_INVALID;
+				(*back)[index].name = CORBA::string_dup(names[wanted_w_attr[i].idx_in_names]);
+				clear_att_dim((*back)[index]);
+			}
+			else
+			{
+				(*back4)[index].err_list = e.errors;		
+				(*back4)[index].quality = Tango::ATTR_INVALID;
+				(*back4)[index].name = CORBA::string_dup(names[wanted_w_attr[i].idx_in_names]);
+				clear_att_dim((*back4)[index]);				
+			}
+		}
+	}
 
 //
 // If necessary, read state and/or status
@@ -940,396 +798,352 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 // alarmed attribute error message to the state attribute error messages
 //
 
-		Tango::DevState d_state;
-		Tango::ConstDevString d_status;
-
-		if (state_wanted == true)
+	Tango::DevState d_state;
+	Tango::ConstDevString d_status;
+	
+	if (state_wanted == true)
+	{
+		if ((device_state == Tango::ON) || (device_state == Tango::ALARM))
 		{
-			if ((device_state == Tango::ON) || (device_state == Tango::ALARM))
+			long id = reading_state_necessary(wanted_attr);
+			if (id == -1)
 			{
-				long id = reading_state_necessary(wanted_attr);
-				if (id == -1)
+				try
 				{
-					try
-					{
-						alarmed_not_read(wanted_attr);
-						ext->state_from_read = true;
-						d_state = dev_state();
-						ext->state_from_read = false;
-					}
-					catch (Tango::DevFailed &e)
-					{
-						ext->state_from_read = false;
-						if (back != NULL)
-						{
-							(*back)[state_idx].err_list = e.errors;		
-							(*back)[state_idx].quality = Tango::ATTR_INVALID;
-							(*back)[state_idx].name = CORBA::string_dup(names[state_idx]);
-							clear_att_dim((*back)[state_idx]);
-						}
-						else
-						{
-							(*back4)[state_idx].err_list = e.errors;		
-							(*back4)[state_idx].quality = Tango::ATTR_INVALID;
-							(*back4)[state_idx].name = CORBA::string_dup(names[state_idx]);
-							clear_att_dim((*back4)[state_idx]);						
-						}
-					}
+					alarmed_not_read(wanted_attr);
+					ext->state_from_read = true;
+					d_state = dev_state();
+					ext->state_from_read = false;
 				}
-				else
+				catch (Tango::DevFailed &e)
 				{
+					ext->state_from_read = false;
 					if (back != NULL)
 					{
-						(*back)[state_idx].err_list = (*back)[wanted_attr[id].idx_in_names].err_list;		
+						(*back)[state_idx].err_list = e.errors;		
 						(*back)[state_idx].quality = Tango::ATTR_INVALID;
 						(*back)[state_idx].name = CORBA::string_dup(names[state_idx]);
 						clear_att_dim((*back)[state_idx]);
 					}
 					else
 					{
-						(*back4)[state_idx].err_list = (*back4)[wanted_attr[id].idx_in_names].err_list;		
+						(*back4)[state_idx].err_list = e.errors;		
 						(*back4)[state_idx].quality = Tango::ATTR_INVALID;
 						(*back4)[state_idx].name = CORBA::string_dup(names[state_idx]);
-						clear_att_dim((*back4)[state_idx]);					
+						clear_att_dim((*back4)[state_idx]);						
 					}
 				}
 			}
 			else
-				d_state = dev_state();
-		}
-
-		if (status_wanted == true)
-		{
-			try
-			{
-				d_status = dev_status();
-			}
-			catch (Tango::DevFailed &e)
 			{
 				if (back != NULL)
 				{
-					(*back)[status_idx].err_list = e.errors;		
-					(*back)[status_idx].quality = Tango::ATTR_INVALID;
-					(*back)[status_idx].name = CORBA::string_dup(names[status_idx]);
-					clear_att_dim((*back)[status_idx]);
+					(*back)[state_idx].err_list = (*back)[wanted_attr[id].idx_in_names].err_list;		
+					(*back)[state_idx].quality = Tango::ATTR_INVALID;
+					(*back)[state_idx].name = CORBA::string_dup(names[state_idx]);
+					clear_att_dim((*back)[state_idx]);
 				}
 				else
 				{
-					(*back4)[status_idx].err_list = e.errors;		
-					(*back4)[status_idx].quality = Tango::ATTR_INVALID;
-					(*back4)[status_idx].name = CORBA::string_dup(names[status_idx]);
-					clear_att_dim((*back4)[status_idx]);				
+					(*back4)[state_idx].err_list = (*back4)[wanted_attr[id].idx_in_names].err_list;		
+					(*back4)[state_idx].quality = Tango::ATTR_INVALID;
+					(*back4)[state_idx].name = CORBA::string_dup(names[state_idx]);
+					clear_att_dim((*back4)[state_idx]);					
 				}
 			}
 		}
-
+		else
+			d_state = dev_state();
+	}
+	
+	if (status_wanted == true)
+	{
+		try
+		{
+			d_status = dev_status();
+		}
+		catch (Tango::DevFailed &e)
+		{
+			if (back != NULL)
+			{
+				(*back)[status_idx].err_list = e.errors;		
+				(*back)[status_idx].quality = Tango::ATTR_INVALID;
+				(*back)[status_idx].name = CORBA::string_dup(names[status_idx]);
+				clear_att_dim((*back)[status_idx]);
+			}
+			else
+			{
+				(*back4)[status_idx].err_list = e.errors;		
+				(*back4)[status_idx].quality = Tango::ATTR_INVALID;
+				(*back4)[status_idx].name = CORBA::string_dup(names[status_idx]);
+				clear_att_dim((*back4)[status_idx]);				
+			}
+		}
+	}
+			
 //
 // Build the sequence returned to caller for readable attributes and check 
 // that all the wanted attributes set value have been updated
 //
 
-		for (i = 0;i < nb_names;i++)
+	for (i = 0;i < nb_names;i++)
+	{
+		long index;
+		if (second_try == false)
+			index = i;
+		else
+			index = idx[i];
+		
+		unsigned long nb_err;
+		if (back != NULL)
+			nb_err = (*back)[index].err_list.length();
+		else
+			nb_err = (*back4)[index].err_list.length();
+
+		if ((state_wanted == true) && (state_idx == i))
 		{
-			long index;
-			if (second_try == false)
-				index = i;
-			else
-				index = idx[i];
-
-			unsigned long nb_err;
 			if (back != NULL)
-				nb_err = (*back)[index].err_list.length();
+			{
+				if (nb_err == 0)
+					state2attr(d_state,(*back)[index]);
+			}
 			else
-				nb_err = (*back4)[index].err_list.length();
-
-			if ((state_wanted == true) && (state_idx == i))
 			{
-				if (back != NULL)
-				{
-					if (nb_err == 0)
-						state2attr(d_state,(*back)[index]);
-				}
-				else
-				{
-					if (nb_err == 0)
-						state2attr(d_state,(*back4)[index]);
-				}
-				continue;				
+				if (nb_err == 0)
+					state2attr(d_state,(*back4)[index]);
 			}
-
-			if ((status_wanted == true) && (status_idx == i))
+			continue;				
+		}
+		
+		if ((status_wanted == true) && (status_idx == i))
+		{
+			if (back != NULL)
 			{
-				if (back != NULL)
-				{
-					if (nb_err == 0)
-						status2attr(d_status,(*back)[index]);
-				}
-				else
-				{
-					if (nb_err == 0)
-						status2attr(d_status,(*back4)[index]);				
-				}
-				continue;
+				if (nb_err == 0)
+					status2attr(d_status,(*back)[index]);
 			}
-
-			if (nb_err == 0)
+			else
 			{
-				Attribute &att = dev_attr->get_attr_by_name(names[i]);
-				Tango::AttrQuality qual = att.get_quality();
-				if (qual != Tango::ATTR_INVALID) 
+				if (nb_err == 0)
+					status2attr(d_status,(*back4)[index]);				
+			}
+			continue;
+		}
+		
+		if (nb_err == 0)
+		{
+			Attribute &att = dev_attr->get_attr_by_name(names[i]);
+			Tango::AttrQuality qual = att.get_quality();
+			if (qual != Tango::ATTR_INVALID) 
+			{
+				if (att.get_value_flag() == false)
 				{
-					if (att.get_value_flag() == false)
+					TangoSys_OMemStream o;
+
+					try
 					{
-						TangoSys_OMemStream o;
+						string att_name(names[i]);
+						transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
 
-						try
+						vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR,att_name);
+						long upd = (*ite)->get_upd();
+						if (upd == 0)
 						{
-							string att_name(names[i]);
-							transform(att_name.begin(),att_name.end(),att_name.begin(),::tolower);
-
-							vector<PollObj *>::iterator ite = get_polled_obj_by_type_name(Tango::POLL_ATTR,att_name);
-							long upd = (*ite)->get_upd();
-							if (upd == 0)
-							{
-								o << "Attribute ";
-								o << att.get_name();
-								o << " value is available only by CACHE.\n";
-								o << "Attribute values are set by external polling buffer filling" << ends;
-							}
-							else
-							{
-								o << "Read value for attribute ";
-								o << att.get_name();
-								o << " has not been updated" << ends;
-							}
+							o << "Attribute ";
+							o << att.get_name();
+							o << " value is available only by CACHE.\n";
+							o << "Attribute values are set by external polling buffer filling" << ends;
 						}
-						catch (Tango::DevFailed &)
+						else
 						{
 							o << "Read value for attribute ";
 							o << att.get_name();
 							o << " has not been updated" << ends;
-						}		
+						}
+					}
+					catch (Tango::DevFailed &)
+					{
+						o << "Read value for attribute ";
+						o << att.get_name();
+						o << " has not been updated" << ends;
+					}		
 
+					if (back != NULL)
+					{
+						(*back)[index].err_list.length(1);
+						(*back)[index].err_list[0].severity = Tango::ERR;
+						(*back)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
+						(*back)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
+#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+						string s = o.str();
+						(*back)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
+#else
+						char *tmp_str = o.str();
+						(*back)[index].err_list[0].desc = CORBA::string_dup(tmp_str);
+						delete[]tmp_str;
+#endif
+						(*back)[index].quality = Tango::ATTR_INVALID;
+						(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
+						clear_att_dim((*back)[index]);
+					}
+					else
+					{
+						(*back4)[index].err_list.length(1);
+						(*back4)[index].err_list[0].severity = Tango::ERR;
+						(*back4)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
+						(*back4)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
+#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+						string s = o.str();
+						(*back4)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
+#else
+						char *tmp_str = o.str();
+						(*back4)[index].err_list[0].desc = CORBA::string_dup(tmp_str);
+						delete[]tmp_str;
+#endif
+						(*back4)[index].quality = Tango::ATTR_INVALID;
+						(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
+						clear_att_dim((*back4)[index]);						
+					}
+				}
+				else
+				{
+					try
+					{
+						Tango::AttrWriteType w_type = att.get_writable();
+						if ((w_type == Tango::READ) ||
+			    		    (w_type == Tango::READ_WRITE) ||
+			    		    (w_type == Tango::READ_WITH_WRITE))
+						{
+							if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
+								dev_attr->add_write_value(att);
+									
+							if ((att.is_alarmed().any() == true) && (qual != Tango::ATTR_INVALID))
+								att.check_alarm();
+						}
+
+//
+// Data into the network object
+//
+
+						data_into_net_object(att,back,back4,index,w_type,true);
+
+//
+// Init remaining elements
+//
+			
+						if (att.get_when().tv_sec == 0)
+							att.set_time();
 						if (back != NULL)
 						{
-							(*back)[index].err_list.length(1);
-							(*back)[index].err_list[0].severity = Tango::ERR;
-							(*back)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
-							(*back)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
-							string s = o.str();
-							(*back)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
-#else
-							char *tmp_str = o.str();
-							(*back)[index].err_list[0].desc = CORBA::string_dup(tmp_str);
-							delete[]tmp_str;
-#endif
+							(*back)[index].time = att.get_when();
+							(*back)[index].quality = att.get_quality();
+							(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
+							(*back)[index].r_dim.dim_x = att.get_x();
+							(*back)[index].r_dim.dim_y = att.get_y();
+							if ((w_type == Tango::READ_WRITE) ||
+								(w_type == Tango::READ_WITH_WRITE))
+							{
+								WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
+								(*back)[index].w_dim.dim_x = assoc_att.get_w_dim_x();
+								(*back)[index].w_dim.dim_y = assoc_att.get_w_dim_y();
+							}
+							else
+							{
+								if ( w_type == Tango::WRITE)
+								{
+									// for write only attributes read and set value are the same!
+									(*back)[index].w_dim.dim_x = att.get_x();
+									(*back)[index].w_dim.dim_y = att.get_y();
+								}
+								else
+								{
+									// Tango::Read : read only attributes
+									(*back)[index].w_dim.dim_x = 0;
+									(*back)[index].w_dim.dim_y = 0;
+								}
+							}
+						}
+						else
+						{
+							(*back4)[index].time = att.get_when();
+							(*back4)[index].quality = att.get_quality();
+							(*back4)[index].data_format = att.get_data_format();
+							(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
+							(*back4)[index].r_dim.dim_x = att.get_x();
+							(*back4)[index].r_dim.dim_y = att.get_y();
+							if ((w_type == Tango::READ_WRITE) ||
+								(w_type == Tango::READ_WITH_WRITE))
+							{
+								WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
+								(*back4)[index].w_dim.dim_x = assoc_att.get_w_dim_x();
+								(*back4)[index].w_dim.dim_y = assoc_att.get_w_dim_y();
+							}
+							else
+							{
+								if ( w_type == Tango::WRITE)
+								{
+									// for write only attributes read and set value are the same!
+									(*back4)[index].w_dim.dim_x = att.get_x();
+									(*back4)[index].w_dim.dim_y = att.get_y();
+								}
+								else
+								{
+									// Tango::Read : read only attributes
+									(*back4)[index].w_dim.dim_x = 0;
+									(*back4)[index].w_dim.dim_y = 0;
+								}
+							}							
+						}
+					}
+					catch (Tango::DevFailed &e)
+					{
+						if (back != NULL)
+						{
+							(*back)[index].err_list = e.errors;
 							(*back)[index].quality = Tango::ATTR_INVALID;
 							(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
 							clear_att_dim((*back)[index]);
 						}
 						else
 						{
-							AttrSerialModel atsm = att.get_attr_serial_model();
-							if ((i != state_idx) && (i != status_idx) && (atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
-							{
-								cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
-								omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
-								attr_mut->unlock();
-							}
-							
-							(*back4)[index].err_list.length(1);
-							(*back4)[index].err_list[0].severity = Tango::ERR;
-							(*back4)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
-							(*back4)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
-							string s = o.str();
-							(*back4)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
-#else
-							char *tmp_str = o.str();
-							(*back4)[index].err_list[0].desc = CORBA::string_dup(tmp_str);
-							delete[]tmp_str;
-#endif
+							(*back4)[index].err_list = e.errors;
 							(*back4)[index].quality = Tango::ATTR_INVALID;
 							(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
-							clear_att_dim((*back4)[index]);						
-						}
-					}
-					else
-					{
-						try
-						{
-							Tango::AttrWriteType w_type = att.get_writable();
-							if ((w_type == Tango::READ) ||
-			    		    	(w_type == Tango::READ_WRITE) ||
-			    		    	(w_type == Tango::READ_WITH_WRITE))
-							{
-								if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
-									dev_attr->add_write_value(att);
-
-								if ((att.is_alarmed().any() == true) && (qual != Tango::ATTR_INVALID))
-									att.check_alarm();
-							}
-
-//
-// Data into the network object
-//
-
-							data_into_net_object(att,back,back4,index,w_type,true);
-
-//
-// Init remaining elements
-//
-
-							if (att.get_when().tv_sec == 0)
-								att.set_time();
-							if (back != NULL)
-							{
-								(*back)[index].time = att.get_when();
-								(*back)[index].quality = att.get_quality();
-								(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
-								(*back)[index].r_dim.dim_x = att.get_x();
-								(*back)[index].r_dim.dim_y = att.get_y();
-								if ((w_type == Tango::READ_WRITE) ||
-									(w_type == Tango::READ_WITH_WRITE))
-								{
-									WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
-									(*back)[index].w_dim.dim_x = assoc_att.get_w_dim_x();
-									(*back)[index].w_dim.dim_y = assoc_att.get_w_dim_y();
-								}
-								else
-								{
-									if ( w_type == Tango::WRITE)
-									{
-										// for write only attributes read and set value are the same!
-										(*back)[index].w_dim.dim_x = att.get_x();
-										(*back)[index].w_dim.dim_y = att.get_y();
-									}
-									else
-									{
-										// Tango::Read : read only attributes
-										(*back)[index].w_dim.dim_x = 0;
-										(*back)[index].w_dim.dim_y = 0;
-									}
-								}
-							}
-							else
-							{
-								AttrSerialModel atsm = att.get_attr_serial_model();
-								if ((atsm != ATTR_NO_SYNC) && (w_type != Tango::WRITE))
-								{
-									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << endl;
-									if (atsm == ATTR_BY_KERNEL)
-										GIVE_ATT_MUTEX(back4,index,att);
-									else
-										GIVE_USER_ATT_MUTEX(back4,index,att);
-								}
-							
-								(*back4)[index].time = att.get_when();
-								(*back4)[index].quality = att.get_quality();
-								(*back4)[index].data_format = att.get_data_format();
-								(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
-								(*back4)[index].r_dim.dim_x = att.get_x();
-								(*back4)[index].r_dim.dim_y = att.get_y();
-								if ((w_type == Tango::READ_WRITE) ||
-									(w_type == Tango::READ_WITH_WRITE))
-								{
-									WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
-									(*back4)[index].w_dim.dim_x = assoc_att.get_w_dim_x();
-									(*back4)[index].w_dim.dim_y = assoc_att.get_w_dim_y();
-								}
-								else
-								{
-									if ( w_type == Tango::WRITE)
-									{
-										// for write only attributes read and set value are the same!
-										(*back4)[index].w_dim.dim_x = att.get_x();
-										(*back4)[index].w_dim.dim_y = att.get_y();
-									}
-									else
-									{
-										// Tango::Read : read only attributes
-										(*back4)[index].w_dim.dim_x = 0;
-										(*back4)[index].w_dim.dim_y = 0;
-									}
-								}							
-							}
-						}
-						catch (Tango::DevFailed &e)
-						{
-							if (back != NULL)
-							{
-								(*back)[index].err_list = e.errors;
-								(*back)[index].quality = Tango::ATTR_INVALID;
-								(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
-								clear_att_dim((*back)[index]);
-							}
-							else
-							{
-								cout4 << "Asking CORBA structure to release attribute mutex for attribute " << att.get_name() << endl;
-								if (att.get_writable() != Tango::WRITE)
-								{
-									REL_ATT_MUTEX(back4,index,att);
-								}
-								
-								(*back4)[index].err_list = e.errors;
-								(*back4)[index].quality = Tango::ATTR_INVALID;
-								(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
-								clear_att_dim((*back4)[index]);							
-							}
+							clear_att_dim((*back4)[index]);							
 						}
 					}
 				}
-				else 
+			}
+			else 
+			{
+				if (qual != Tango::ATTR_INVALID)
+					qual = Tango::ATTR_INVALID;
+				if (att.get_when().tv_sec == 0)
+					att.set_time();
+				if (back != NULL)
 				{
-					if (qual != Tango::ATTR_INVALID)
-						qual = Tango::ATTR_INVALID;
-					if (att.get_when().tv_sec == 0)
-						att.set_time();
-					if (back != NULL)
-					{
-						(*back)[index].time = att.get_when();
-						(*back)[index].quality = qual;
-						(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
-						(*back)[index].r_dim.dim_x = 0;
-						(*back)[index].r_dim.dim_y = 0;
-						(*back)[index].w_dim.dim_x = 0;
-						(*back)[index].w_dim.dim_y = 0;
-					}
-					else
-					{
-						AttrSerialModel atsm = att.get_attr_serial_model();
-						if ((atsm != ATTR_NO_SYNC) && (att.get_writable() != Tango::WRITE))
-						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
-							omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
-							attr_mut->unlock();
-						}
-						
-						(*back4)[index].time = att.get_when();
-						(*back4)[index].quality = qual;
-						(*back4)[index].data_format = att.get_data_format();
-						(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
-						(*back4)[index].r_dim.dim_x = 0;
-						(*back4)[index].r_dim.dim_y = 0;
-						(*back4)[index].w_dim.dim_x = 0;
-						(*back4)[index].w_dim.dim_y = 0;
-					}
+					(*back)[index].time = att.get_when();
+					(*back)[index].quality = qual;
+					(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
+					(*back)[index].r_dim.dim_x = 0;
+					(*back)[index].r_dim.dim_y = 0;
+					(*back)[index].w_dim.dim_x = 0;
+					(*back)[index].w_dim.dim_y = 0;
+				}
+				else
+				{
+					(*back4)[index].time = att.get_when();
+					(*back4)[index].quality = qual;
+					(*back4)[index].data_format = att.get_data_format();
+					(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
+					(*back4)[index].r_dim.dim_x = 0;
+					(*back4)[index].r_dim.dim_y = 0;
+					(*back4)[index].w_dim.dim_x = 0;
+					(*back4)[index].w_dim.dim_y = 0;					
 				}
 			}
 		}
 	}
-	
-	catch (...)
-	{
-		// set back the device attribution for the thread
-		// and rethrow the exception.
-		sub.set_associated_device(last_associated_device);
-		throw;
-	}
-	
-	// set back the device attribution for the thread
-	sub.set_associated_device(last_associated_device);
 	
 	cout4 << "Leaving Device_3Impl::read_attributes_no_except" << endl;
 }
@@ -1967,61 +1781,51 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 	unsigned long nb_failed = 0;
 	Tango::NamedDevErrorList errs;
-	  
+			
+		  
 //
 //  Write the device name into the per thread data for 
-//  sub device diagnostics.
-//  Keep the old name, to put it back at the end!
-//  During device access inside the same server,
-//  the thread stays the same!
+//  sub device diagnostics
 //
-	
-	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
-	string last_associated_device = sub.get_associated_device();
-	sub.set_associated_device(get_name());
 
-// Catch all execeptions to set back the associated device after
-// execution
-	
-	try
-	{
+	(Tango::Util::instance())->get_sub_dev_diag().set_associated_device(get_name());
 
 //
 // Retrieve index of wanted attributes in the device attribute list
 //
 
-		vector<AttIdx> updated_attr;
-		unsigned long nb_updated_attr;
+	vector<AttIdx> updated_attr;
+	unsigned long nb_updated_attr;
+	if (values_3 != NULL)
+		nb_updated_attr = values_3->length();
+	else
+		nb_updated_attr = values_4->length();
+
+	unsigned long i;
+	for (i = 0;i < nb_updated_attr;i++)
+	{
+		const char *single_att_name;
+		long single_att_dimx,single_att_dimy;
+		
 		if (values_3 != NULL)
-			nb_updated_attr = values_3->length();
-		else
-			nb_updated_attr = values_4->length();
-
-		unsigned long i;
-		for (i = 0;i < nb_updated_attr;i++)
 		{
-			const char *single_att_name;
-			long single_att_dimx,single_att_dimy;
-
-			if (values_3 != NULL)
-			{
-				single_att_name = (*values_3)[i].name;
-				single_att_dimx = (*values_3)[i].dim_x;
-				single_att_dimy = (*values_3)[i].dim_y;
-			}
-			else
-			{
-				single_att_name = (*values_4)[i].name;
-				single_att_dimx = (*values_4)[i].w_dim.dim_x;
-				single_att_dimy = (*values_4)[i].w_dim.dim_y;
-			}
-
-			try
-			{
-				AttIdx idxs;
-				idxs.idx_in_names = i;
-				idxs.idx_in_multi_attr = dev_attr->get_attr_ind_by_name(single_att_name);
-				updated_attr.push_back(idxs);
+			single_att_name = (*values_3)[i].name;
+			single_att_dimx = (*values_3)[i].dim_x;
+			single_att_dimy = (*values_3)[i].dim_y;
+		}
+		else
+		{
+			single_att_name = (*values_4)[i].name;
+			single_att_dimx = (*values_4)[i].w_dim.dim_x;
+			single_att_dimy = (*values_4)[i].w_dim.dim_y;
+		}
+		
+		try
+		{
+			AttIdx idxs;
+			idxs.idx_in_names = i;
+			idxs.idx_in_multi_attr = dev_attr->get_attr_ind_by_name(single_att_name);
+			updated_attr.push_back(idxs);
 
 //
 // Check that these attributes are writable.
@@ -2029,254 +1833,234 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // their dimensions are correct
 //
 
-				if ((dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr).get_writable() == Tango::READ) ||
-		    	    	(dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr).get_writable() == Tango::READ_WITH_WRITE))
-				{
-					TangoSys_OMemStream o;
+			if ((dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr).get_writable() == Tango::READ) ||
+		    	    (dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr).get_writable() == Tango::READ_WITH_WRITE))
+			{
+				TangoSys_OMemStream o;
+		
+				o << "Attribute ";
+				o << dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr).get_name();
+				o << " is not writable" << ends;
 
-					o << "Attribute ";
-					o << dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr).get_name();
-					o << " is not writable" << ends;
+				updated_attr.pop_back();
+				Except::throw_exception((const char *)"API_AttrNotWritable",
+					        o.str(),
+					        (const char *)"DeviceImpl::write_attributes");
+			}
+
+			Attribute &att = dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr);
+			if (att.get_data_format() != Tango::SCALAR)
+			{
+				TangoSys_OMemStream o;
+				bool err = false;			
+			
+				if (att.get_max_dim_x() < single_att_dimx)
+				{
+					err = true;		
+					o << "X ";
+				}
+
+				if (err == false)
+				{			
+					if (att.get_max_dim_y() < single_att_dimy)
+					{
+						err = true;
+						o << "Y ";
+					}
+				}
+			
+				if (err == true)
+				{		
+					o << "dimesion is greater than the max defined for attribute ";
+					o << att.get_name();
+					o << ends;
 
 					updated_attr.pop_back();
-					Except::throw_exception((const char *)"API_AttrNotWritable",
-					        	o.str(),
-					        	(const char *)"DeviceImpl::write_attributes");
+					Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+					        o.str(),
+					        (const char *)"DeviceImpl::write_attributes");
 				}
-
-				Attribute &att = dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr);
-				if (att.get_data_format() != Tango::SCALAR)
-				{
-					TangoSys_OMemStream o;
-					bool err = false;			
-
-					if (att.get_max_dim_x() < single_att_dimx)
-					{
-						err = true;		
-						o << "X ";
-					}
-
-					if (err == false)
-					{			
-						if (att.get_max_dim_y() < single_att_dimy)
-						{
-							err = true;
-							o << "Y ";
-						}
-					}
-
-					if (err == true)
-					{		
-						o << "dimesion is greater than the max defined for attribute ";
-						o << att.get_name();
-						o << ends;
-
-						updated_attr.pop_back();
-						Except::throw_exception((const char *)"API_WAttrOutsideLimit",
-					        	o.str(),
-					        	(const char *)"DeviceImpl::write_attributes");
-					}
-				}
-			}
-			catch (Tango::DevFailed &e)
-			{
-				nb_failed++;
-				errs.length(nb_failed);
-				errs[nb_failed - 1].name = CORBA::string_dup(single_att_name);
-				errs[nb_failed - 1].index_in_call = i;
-				errs[nb_failed - 1].err_list = e.errors;
 			}
 		}
+		catch (Tango::DevFailed &e)
+		{
+			nb_failed++;
+			errs.length(nb_failed);
+			errs[nb_failed - 1].name = CORBA::string_dup(single_att_name);
+			errs[nb_failed - 1].index_in_call = i;
+			errs[nb_failed - 1].err_list = e.errors;
+		}
+	}
 
 //
 // Call the always_executed_hook
 //
 
-		if (nb_failed != nb_updated_attr)
-			always_executed_hook();
-
+	if (nb_failed != nb_updated_attr)
+		always_executed_hook();
+	
 //
 // Set attribute internal value
 //
 
-		vector<AttIdx>::iterator ctr;
-		for (ctr = updated_attr.begin();ctr < updated_attr.end();++ctr)
+	vector<AttIdx>::iterator ctr;
+	for (ctr = updated_attr.begin();ctr < updated_attr.end();++ctr)
+	{
+		
+		const char *single_att_name;
+		long single_att_dimx,single_att_dimy;
+		
+		if (values_3 != NULL)
 		{
-
-			const char *single_att_name;
-			long single_att_dimx,single_att_dimy;
-
-			if (values_3 != NULL)
-			{
-				single_att_name = (*values_3)[ctr->idx_in_names].name;
-				single_att_dimx = (*values_3)[ctr->idx_in_names].dim_x;
-				single_att_dimy = (*values_3)[ctr->idx_in_names].dim_y;
-			}
+			single_att_name = (*values_3)[ctr->idx_in_names].name;
+			single_att_dimx = (*values_3)[ctr->idx_in_names].dim_x;
+			single_att_dimy = (*values_3)[ctr->idx_in_names].dim_y;
+		}
+		else
+		{
+			single_att_name = (*values_4)[ctr->idx_in_names].name;
+			single_att_dimx = (*values_4)[ctr->idx_in_names].w_dim.dim_x;
+			single_att_dimy = (*values_4)[ctr->idx_in_names].w_dim.dim_y;
+		}
+		
+		try
+		{
+			if (values_3 == NULL)
+				dev_attr->get_w_attr_by_ind(ctr->idx_in_multi_attr).check_written_value((*values_4)[ctr->idx_in_names].value,
+											(unsigned long)single_att_dimx,
+											(unsigned long)single_att_dimy);
+			else
+				dev_attr->get_w_attr_by_ind(ctr->idx_in_multi_attr).check_written_value((*values_3)[ctr->idx_in_names].value,
+								 	  		(unsigned long)single_att_dimx,
+								 	  		(unsigned long)single_att_dimy);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			nb_failed++;
+			errs.length(nb_failed);
+			errs[nb_failed - 1].name = CORBA::string_dup(single_att_name);
+			errs[nb_failed - 1].index_in_call = ctr->idx_in_names;
+			errs[nb_failed - 1].err_list = e.errors;
+			ctr = updated_attr.erase(ctr);
+			if (ctr >= updated_attr.end())
+				break;
 			else
 			{
-				single_att_name = (*values_4)[ctr->idx_in_names].name;
-				single_att_dimx = (*values_4)[ctr->idx_in_names].w_dim.dim_x;
-				single_att_dimy = (*values_4)[ctr->idx_in_names].w_dim.dim_y;
-			}
-
-			try
-			{
-				if (values_3 == NULL)
-					dev_attr->get_w_attr_by_ind(ctr->idx_in_multi_attr).check_written_value((*values_4)[ctr->idx_in_names].value,
-												(unsigned long)single_att_dimx,
-												(unsigned long)single_att_dimy);
-				else
-					dev_attr->get_w_attr_by_ind(ctr->idx_in_multi_attr).check_written_value((*values_3)[ctr->idx_in_names].value,
-								 	  			(unsigned long)single_att_dimx,
-								 	  			(unsigned long)single_att_dimy);
-			}
-			catch (Tango::DevFailed &e)
-			{
-				nb_failed++;
-				errs.length(nb_failed);
-				errs[nb_failed - 1].name = CORBA::string_dup(single_att_name);
-				errs[nb_failed - 1].index_in_call = ctr->idx_in_names;
-				errs[nb_failed - 1].err_list = e.errors;
-				ctr = updated_attr.erase(ctr);
-				if (ctr >= updated_attr.end())
+				if (ctr == updated_attr.begin())
 					break;
 				else
-				{
-					if (ctr == updated_attr.begin())
-						break;
-					else
-						--ctr;
-				}
+					--ctr;
 			}
 		}
-
+	}
+	
 //
 // Write the hardware. Call this method one attribute at a time in order to
 // correctly initialized the MultiDevFailed exception in case one of the
 // attribute failed.
 //
 
-		if (nb_failed != nb_updated_attr)
+	if (nb_failed != nb_updated_attr)
+	{
+		vector<AttIdx>::iterator ite;
+		for(ite = updated_attr.begin();ite != updated_attr.end();++ite)
 		{
-			vector<AttIdx>::iterator ite;
-			for(ite = updated_attr.begin();ite != updated_attr.end();++ite)
+			try
 			{
-				try
+				WAttribute &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
+				att.set_value_flag(false);
+				vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
+				if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::WRITE_REQ) == false)
 				{
-					WAttribute &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
-					att.set_value_flag(false);
-					att.set_user_set_write_value(false);
-					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
-					if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::WRITE_REQ) == false)
-					{
-						TangoSys_OMemStream o;
-
-						o << "It is currently not allowed to write attribute ";
-						o << att.get_name();
-						o << ". The device state is " << Tango::DevStateName[get_state()] << ends;
+					TangoSys_OMemStream o;
+		
+					o << "It is currently not allowed to write attribute ";
+					o << att.get_name();
+					o << ". The device state is " << Tango::DevStateName[get_state()] << ends;
 
 
-						Except::throw_exception((const char *)"API_AttrNotAllowed",
-					        			o.str(),
-					        			(const char *)"Device_3Impl::write_attributes");
-					}
-					attr_vect[att.get_attr_idx()]->write(this,att);
+					Except::throw_exception((const char *)"API_AttrNotAllowed",
+					        		o.str(),
+					        		(const char *)"Device_3Impl::write_attributes");
 				}
-				catch (Tango::DevFailed &e)
+				attr_vect[att.get_attr_idx()]->write(this,att);
+			}
+			catch (Tango::DevFailed &e)
+			{
+				nb_failed++;
+				errs.length(nb_failed);
+				if (values_3 != NULL)
+					errs[nb_failed - 1].name = CORBA::string_dup((*values_3)[(*ite).idx_in_names].name);
+				else
+					errs[nb_failed - 1].name = CORBA::string_dup((*values_4)[(*ite).idx_in_names].name);
+				errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
+				errs[nb_failed - 1].err_list = e.errors;
+				ite = updated_attr.erase(ite);
+				if (ite >= updated_attr.end())
+					break;
+				else
 				{
-					nb_failed++;
-					errs.length(nb_failed);
-					if (values_3 != NULL)
-						errs[nb_failed - 1].name = CORBA::string_dup((*values_3)[(*ite).idx_in_names].name);
-					else
-						errs[nb_failed - 1].name = CORBA::string_dup((*values_4)[(*ite).idx_in_names].name);
-					errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
-					errs[nb_failed - 1].err_list = e.errors;
-					ite = updated_attr.erase(ite);
-					if (ite >= updated_attr.end())
+					if (ite == updated_attr.begin())
 						break;
 					else
-					{
-						if (ite == updated_attr.begin())
-							break;
-						else
-							--ite;
-					}		
-				}
+						--ite;
+				}		
 			}
 		}
-
+	}
+		
 //
 // Copy data into Attribute object, store the memorized one in db
 // and if the attribute has a RDS alarm, set the write date
-//
-// Warning: Do not copy caller value if the user has manually set the
-// attribute written value in its write method
 //
 // WARNING: --> The DevEncoded data type is suported only as SCALAR and is not
 // memorizable. Therefore, no need to call copy_data
 //
 
-		vector<long> att_in_db;
-
-		for (i = 0;i < updated_attr.size();i++)
-		{
-			WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i].idx_in_multi_attr);
-
-			if (values_3 != NULL)
-			{
-				if (att.get_user_set_write_value() == false)
-					att.copy_data((*values_3)[updated_attr[i].idx_in_names].value);
-			}
-			else
-			{
-				if (att.get_user_set_write_value() == false)
-					att.copy_data((*values_4)[updated_attr[i].idx_in_names].value);
-			}
-
-			if (att.is_memorized() == true)
-				att_in_db.push_back(i);
-			if (att.is_alarmed().test(Attribute::rds) == true)
-				att.set_written_date();
-		}
-
-		if ((Tango::Util::_UseDb == true) && (att_in_db.size() != 0))
-		{
-			try
-			{
-				write_attributes_in_db(att_in_db,updated_attr);
-			}
-			catch (Tango::DevFailed &e)
-			{
-				errs.length(nb_failed + att_in_db.size());
-				for (i = 0;i < att_in_db.size();i++)
-				{
-					const char *single_att_name;
-
-					if (values_3 != NULL)
-						single_att_name = (*values_3)[updated_attr[att_in_db[i]].idx_in_names].name;
-					else
-						single_att_name = (*values_4)[updated_attr[att_in_db[i]].idx_in_names].name;
-
-					errs[nb_failed + i].name = CORBA::string_dup(single_att_name);
-					errs[nb_failed + i].index_in_call = updated_attr[att_in_db[i]].idx_in_names;
-					errs[nb_failed + i].err_list = e.errors;
-				}
-				nb_failed = nb_failed + att_in_db.size();
-			}
-		}
-	}
-	catch (...)
+	vector<long> att_in_db;
+	
+	for (i = 0;i < updated_attr.size();i++)
 	{
-		// set back the device attribution for the thread
-		// and rethrow the exception.
-		sub.set_associated_device(last_associated_device);
-		throw;
+		WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i].idx_in_multi_attr);
+
+		if (values_3 != NULL)
+			att.copy_data((*values_3)[updated_attr[i].idx_in_names].value);
+		else
+			att.copy_data((*values_4)[updated_attr[i].idx_in_names].value);
+		
+		if (att.is_memorized() == true)
+			att_in_db.push_back(i);
+		if (att.is_alarmed().test(Attribute::rds) == true)
+			att.set_written_date();			
+	
 	}
 	
-	// set back the device attribution for the thread
-	sub.set_associated_device(last_associated_device);
-	
+	if ((Tango::Util::_UseDb == true) && (att_in_db.size() != 0))
+	{
+		try
+		{
+			write_attributes_in_db(att_in_db,updated_attr);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			errs.length(nb_failed + att_in_db.size());
+			for (i = 0;i < att_in_db.size();i++)
+			{
+				const char *single_att_name;
+				
+				if (values_3 != NULL)
+					single_att_name = (*values_3)[updated_attr[att_in_db[i]].idx_in_names].name;
+				else
+					single_att_name = (*values_4)[updated_attr[att_in_db[i]].idx_in_names].name;
+				
+				errs[nb_failed + i].name = CORBA::string_dup(single_att_name);
+				errs[nb_failed + i].index_in_call = updated_attr[att_in_db[i]].idx_in_names;
+				errs[nb_failed + i].err_list = e.errors;
+			}
+			nb_failed = nb_failed + att_in_db.size();
+		}
+	}
+		
 //
 // Return to caller.
 //
@@ -3058,7 +2842,6 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 	vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_alarmed_attr = alarmed_list.size();
 	long nb_attr = wanted_attr.size();
-	
 	ext->alarmed_not_read.clear();
 		
 	for (int i = 0;i < nb_alarmed_attr;i++)

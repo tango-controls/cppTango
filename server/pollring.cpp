@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,35 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.27  2010/12/08 10:04:04  taurel
-// - No change. Don't know why tkcvs report changes on this file. tkdiff
-// agree with me!!
-//
-// Revision 3.26  2010/09/09 13:46:01  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.25  2009/12/08 07:55:15  taurel
-// - Get some bug fixes from a merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.24.2.1  2009/12/07 14:17:29  taurel
-// - Correctly nitialized the write part  y dimension of spectrum or image
-// attribute when retrieving the attribute history from the polling buffer
-//
-// Revision 3.24  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.23  2009/11/02 08:35:47  taurel
-// - Fix warnings reported when compiling using the option -Wall
-//
-// Revision 3.22  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.21  2009/09/17 08:28:06  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
-// Revision 3.20  2009/03/18 12:18:45  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
 // Revision 3.19  2009/03/13 09:33:29  taurel
 // - Small changes to fix Windows VC8 warnings in Warning level 3
 //
@@ -439,9 +410,9 @@ void PollRing::insert_data(Tango::AttributeValueList_3 *attr_val,struct timeval 
 	inc_indexes();
 }
 
-void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval &t,bool unlock)
+void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval &t)
 {
-
+	
 //
 // Insert data in the ring
 //
@@ -454,19 +425,6 @@ void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval 
 	ring[insert_elt].when = t;
 
 	force_copy_data(ring[insert_elt].attr_value_4);
-	
-//
-// Release attribute mutexes because the data are now copied
-//
-
-	if (unlock == true)
-	{
-		for (unsigned int loop = 0;loop < attr_val->length();loop++)
-		{
-			Tango::AttributeValue_4 *tmp_ptr = &((*attr_val)[loop]);
-			(tmp_ptr)->rel_attr_mutex();
-		}
-	}
 				
 //
 // Manage insert and read indexes
@@ -490,7 +448,7 @@ void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval 
 //						union sequence replace call
 //					3 - Transfer the data from the temporary sequence within the
 //						union sequence using again the sequence replace call
-//						in order not to trigger a real data copy
+//						in order not to trgiier a real data copy
 //
 // argument : in : 	- attr_value_4 : The exception to be stored
 //
@@ -1434,7 +1392,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_uch;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_uch,tmp_uch,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_uch->length());
+				MANAGE_DIM_ARRAY(tmp_uch->length());
 				break;
 
 			case DEV_SHORT:
@@ -1456,7 +1414,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_sh;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_sh,tmp_sh,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_sh->length());
+				MANAGE_DIM_ARRAY(tmp_sh->length());
 				break;
 
 			case DEV_LONG:
@@ -1478,7 +1436,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_lg;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_lg,tmp_lg,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_lg->length());
+				MANAGE_DIM_ARRAY(tmp_lg->length());
 				break;
 
 			case DEV_FLOAT:
@@ -1500,7 +1458,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_fl;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_fl,tmp_fl,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_fl->length());
+				MANAGE_DIM_ARRAY(tmp_fl->length());
 				break;
 
 			case DEV_DOUBLE:
@@ -1522,7 +1480,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_db;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_db,tmp_db,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_db->length());
+				MANAGE_DIM_ARRAY(tmp_db->length());
 				break;
 
 			case DEV_USHORT:
@@ -1544,7 +1502,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_ush;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_ush,tmp_ush,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_ush->length());
+				MANAGE_DIM_ARRAY(tmp_ush->length());
 				break;
 
 			case DEV_ULONG:
@@ -1566,7 +1524,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_ulg;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_ulg,tmp_ulg,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_ulg->length());
+				MANAGE_DIM_ARRAY(tmp_ulg->length());
 				break;
 
 			case DEV_STRING:
@@ -1588,7 +1546,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_str;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_str,tmp_str,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_str->length());
+				MANAGE_DIM_ARRAY(tmp_str->length());
 				break;
 
 			case DEV_BOOLEAN:
@@ -1610,7 +1568,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_boo;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_boo,tmp_boo,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_boo->length());
+				MANAGE_DIM_ARRAY(tmp_boo->length());
 				break;
 
 			case DEV_LONG64:
@@ -1632,7 +1590,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_lg64;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_lg64,tmp_lg64,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_lg64->length());
+				MANAGE_DIM_ARRAY(tmp_lg64->length());
 				break;
 
 			case DEV_ULONG64:
@@ -1654,7 +1612,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				}
 				(*ring[index].cmd_result) >>= tmp_ulg64;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ(new_tmp_ulg64,tmp_ulg64,ind_in_seq);
-				MANAGE_DIM_ARRAY((long)tmp_ulg64->length());
+				MANAGE_DIM_ARRAY(tmp_ulg64->length());
 				break;
 				
 			case DEVVAR_LONGSTRINGARRAY:
@@ -1667,7 +1625,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				(*ring[index].cmd_result) >>= tmp_lg_str;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ_BY_REF(new_tmp_lg_str->svalue,tmp_lg_str->svalue,ind_str_in_seq);
 				ADD_ELT_DATA_TO_GLOBAL_SEQ_BY_REF(new_tmp_lg_str->lvalue,tmp_lg_str->lvalue,ind_num_in_seq);
-				MANAGE_DIM_ARRAY_SEQ((long)tmp_lg_str->svalue.length(),(long)tmp_lg_str->lvalue.length());
+				MANAGE_DIM_ARRAY_SEQ(tmp_lg_str->svalue.length(),tmp_lg_str->lvalue.length());
 				break;
 				
 			case DEVVAR_DOUBLESTRINGARRAY:
@@ -1680,7 +1638,7 @@ void PollRing::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgT
 				(*ring[index].cmd_result) >>= tmp_db_str;
 				ADD_ELT_DATA_TO_GLOBAL_SEQ_BY_REF(new_tmp_db_str->svalue,tmp_db_str->svalue,ind_str_in_seq);
 				ADD_ELT_DATA_TO_GLOBAL_SEQ_BY_REF(new_tmp_db_str->dvalue,tmp_db_str->dvalue,ind_num_in_seq);
-				MANAGE_DIM_ARRAY_SEQ((long)tmp_db_str->svalue.length(),(long)tmp_db_str->dvalue.length());
+				MANAGE_DIM_ARRAY_SEQ(tmp_db_str->svalue.length(),tmp_db_str->dvalue.length());
 				break;
 				
 			default:
@@ -2230,7 +2188,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long type)
 			int r_dim_x = (*ring[index].attr_value_4)[0].r_dim.dim_x;
 			int r_dim_y = (*ring[index].attr_value_4)[0].r_dim.dim_y;
 			int w_dim_x = (*ring[index].attr_value_4)[0].w_dim.dim_x;
-			int w_dim_y = (*ring[index].attr_value_4)[0].w_dim.dim_y;
+			int w_dim_y = (*ring[index].attr_value_4)[0].w_dim.dim_x;
 
 			int data_length;
 			(r_dim_y == 0) ? data_length = r_dim_x : data_length = r_dim_x * r_dim_y;

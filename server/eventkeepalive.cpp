@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 7 April 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,36 +38,6 @@ static const char *RcsId = "$Id$";
 ///		$Revision$
 ///
 ///		$Log$
-///		Revision 1.12  2010/10/06 12:31:15  taurel
-///		- Fix bug in re-connection synchronous call for attribute configuration
-///		change event
-///		
-///		Revision 1.11  2010/09/29 12:04:35  taurel
-///		- It's now possible to register several callbacks for the same event
-///		
-///		Revision 1.10  2010/09/09 13:46:00  taurel
-///		- Add year 2010 in Copyright notice
-///		
-///		Revision 1.9  2010/05/26 09:15:36  taurel
-///		- Another commit after merge with the bug fixes branch
-///		
-///		Revision 1.8  2009/12/08 07:55:15  taurel
-///		- Get some bug fixes from a merge with the Release_7_1_1-bugfixes branch
-///		Revision 1.7.2.2  2010/05/18 08:27:23  taurel
-///		- Events from device in a DS started with a file as database are now
-///		back into operation
-///		
-///		Revision 1.7.2.1  2009/12/04 15:17:50  taurel
-///		- Fix bug in case of application shutdown when the notifd is dead.
-///		If the thread abort is required, do it immediately
-///		
-///		Revision 1.7  2009/09/22 07:55:05  jensmeyer
-///		Changed readers to writers lock in EventConsumerKeepAliveThread::run_undetached() for connection
-///		test of not yet connected events.
-///		
-///		Revision 1.6  2009/03/13 09:33:29  taurel
-///		- Small changes to fix Windows VC8 warnings in Warning level 3
-///		
 ///		Revision 1.5  2009/01/29 15:25:41  taurel
 ///		- First implementation of the Data Ready event
 ///		
@@ -148,40 +118,27 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); epos++)
 	{
-		if (epos->second.channel_name == ipos->first)
+		if ((epos->second.channel_name == ipos->first) && 
+		   (epos->second.callback != NULL || epos->second.ev_queue != NULL))
 		{
-			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
-			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
+			try
 			{
-				if (esspos->callback != NULL || esspos->ev_queue != NULL)
-				{
-					need_reconnect = true;
-					break;
-				}
+				string adm_name = ipos->second.full_adm_name;
+				event_consumer->connect_event_channel(adm_name,
+								      epos->second.device->get_device_db(),
+								      true);
+		
+				if (ipos->second.adm_device_proxy != NULL)
+					delete ipos->second.adm_device_proxy;
+				ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
+				cout3 << "Reconnected to event channel" << endl;
 			}
-
-			if (need_reconnect == true)
+			catch(...)
 			{
-				try
-				{
-					string adm_name = ipos->second.full_adm_name;
-					event_consumer->connect_event_channel(adm_name,
-									      epos->second.device->get_device_db(),
-									      true);
-			
-					if (ipos->second.adm_device_proxy != NULL)
-						delete ipos->second.adm_device_proxy;
-					ipos->second.adm_device_proxy = new DeviceProxy(ipos->second.full_adm_name);
-					cout3 << "Reconnected to event channel" << endl;
-				}
-				catch(...)
-				{
-					ret = false;
-				}
-			
-				break;
+				ret = false;
 			}
+			
+			break;
 		}
 	}
 
@@ -211,42 +168,29 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); epos++)
 	{
-		if (epos->second.channel_name == ipos->first)
+		if ((epos->second.channel_name == ipos->first) && 
+		   (epos->second.callback != NULL || epos->second.ev_queue != NULL))
 		{
-			bool need_reconnect = false;
-			vector<EventSubscribeStruct>:: iterator esspos;
-			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
+			try
 			{
-				if (esspos->callback != NULL || esspos->ev_queue != NULL)
-				{
-					need_reconnect = true;
-					break;
-				}
-			}
-
-			if (need_reconnect == true)
-			{
+				epos->second.callback_monitor->get_monitor();
+			
 				try
 				{
-					epos->second.callback_monitor->get_monitor();
-				
-					try
-					{
-						re_subscribe_event(epos,ipos);
-						epos->second.filter_ok = true;
-						cout3 << "Reconnected to event" << endl;
-					}
-					catch(...)
-					{
-						epos->second.filter_ok = false;
-					}
-				
-					epos->second.callback_monitor->rel_monitor();
+					re_subscribe_event(epos,ipos);
+					epos->second.filter_ok = true;
+					cout3 << "Reconnected to event" << endl;
 				}
-				catch (...)
+				catch(...)
 				{
-					cerr << "EventConsumerKeepAliveThread::reconnect_to_event() cannot get callback monitor for " << epos->first << endl;
+					epos->second.filter_ok = false;
 				}
+			
+				epos->second.callback_monitor->rel_monitor();
+			}
+			catch (...)
+			{
+				cerr << "EventConsumerKeepAliveThread::reconnect_to_event() cannot get callback monitor for " << epos->first << endl;
 			}
 		}
 	}
@@ -268,7 +212,6 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 
 void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &ipos)
 {
-
 //
 // Build a filter using the CORBA Notify constraint Language
 // (use attribute name in lowercase letters)
@@ -278,8 +221,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
   	CosNotifyFilter::Filter_var filter = CosNotifyFilter::Filter::_nil();
 	CosNotifyFilter::FilterID filter_id;
 
-	string channel_name = epos->second.channel_name;
-
+	string channel_name = epos->second.channel_name;	
 	try
 	{
    		ffp    = ipos->second.eventChannel->default_filter_factory();  
@@ -405,18 +347,15 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 				shared_cmd.cond.timedwait(s,n);
 			}
 			if (shared_cmd.cmd_pending == true)
-			{
 				exit_th = true;
-				return (void *)NULL;
-			}
 		}
-
+		
 //
 // Re-subscribe
 //
  
 		// lock the maps only for reading
-		event_consumer->map_modification_lock.writerIn();
+		event_consumer->map_modification_lock.readerIn();
 			
 		now = time(NULL);
 			
@@ -424,35 +363,42 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 // check the list of not yet connected events and try to subscribe
 //
 			
-		if ( !event_consumer->event_not_connected.empty() )
-		{
+		if ( event_consumer->event_not_connected.size() > 0 )
+			{
 			std::vector<EventNotConnected>::iterator vpos;
 			for (vpos = event_consumer->event_not_connected.begin(); 
 				 vpos != event_consumer->event_not_connected.end();
-				 /*vpos++*/)
-			{
-				bool inc_vpos = true;
+				 vpos++ )
+				{
+				
 				// check wether it is necessary to try to subscribe again!
 				if ( (now - vpos->last_heartbeat) >= (EVENT_HEARTBEAT_PERIOD) )
-				{
-					try
 					{
+					try
+						{
 						// try to subscribe
-
+						
+						event_consumer->map_modification_lock.readerOut();
 						event_consumer->connect_event (vpos->device,vpos->attribute,vpos->event_type, 
 																					vpos->callback,
 																					vpos->ev_queue, 
 																					vpos->filters,
 																					vpos->event_name,
 																					vpos->event_id);	
+						event_consumer->map_modification_lock.readerIn();
 							
 						// delete element from vector when subscribe worked
 						vpos = event_consumer->event_not_connected.erase(vpos);
-						inc_vpos = false;
-					}
+						if ( vpos == event_consumer->event_not_connected.end() )
+							{
+							break;
+							}
+						}
 		
 					catch (Tango::DevFailed &e) 
-					{
+						{
+						event_consumer->map_modification_lock.readerIn();
+						
 						// subscribe has not worked, try again in the next hearbeat period
 						vpos->last_heartbeat = now;
 						
@@ -474,7 +420,7 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 	    					(vpos->event_name == "quality") || 
 	    					(vpos->event_name == "archive") ||
 	    					(vpos->event_name == "user_event"))
-						{
+							{						
 							//DeviceAttribute da;
 							DeviceAttribute *da = NULL;
 							EventData *event_data = new EventData(vpos->device,
@@ -485,34 +431,34 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 							
 							// if a callback method was specified, call it!
 							if (vpos->callback != NULL )
-							{										
+								{										
 								try
-								{
+									{
 									vpos->callback->push_event(event_data);
-								}
+									}
 								catch (...)
-								{
+									{
 									cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << domain_name << endl;
-								}
+									}
 						
 								//event_data->attr_value = NULL;							
 								delete event_data;
-							}
-
-							// no callback method, the event has to be instered
+								}
+								
+							// no calback method, the event has to be instered
 							// into the event queue
 							else
-							{
+								{
 								vpos->ev_queue->insert_event(event_data);
-							}							
-						}
+								}							
+							}
 						
 //
 // For attribute configuration event
 //
 							
 						else if (vpos->event_name == CONF_TYPE_EVENT)
-						{
+							{
 							//AttributeInfoEx aie;
 							AttributeInfoEx *aie = NULL;
 							AttrConfEventData *event_data = new AttrConfEventData(vpos->device,
@@ -523,27 +469,27 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 							
 							// if a callback method was specified, call it!
 							if (vpos->callback != NULL )
-							{
+								{
 								try
-								{
+									{
 									vpos->callback->push_event(event_data);
-								}
+									}
 								catch (...)
-								{
+									{
 									cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << domain_name << endl;
-								}
+									}
 							
 								//event_data->attr_conf = NULL;
 								delete event_data;
-							}
+								}
 								
 							// no calback method, the event has to be inserted
 							// into the event queue
 							else
-							{
+								{
 								vpos->ev_queue->insert_event(event_data);
-							}					
-						}
+								}					
+							}
 						else if (vpos->event_name == DATA_READY_TYPE_EVENT)
 						{
 							DataReadyEventData *event_data = new DataReadyEventData(vpos->device,NULL,vpos->event_name,err);
@@ -567,22 +513,21 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 							else
 								vpos->ev_queue->insert_event(event_data);	
 						}
-					}
+						}
 					
 					catch (...)
-					{						
+						{
+						event_consumer->map_modification_lock.readerIn();
+						
 						// subscribe has not worked, try again in the next hearbeat period
 						vpos->last_heartbeat = now;
 						
 						cout << "During the event subscription an exception was send which is not a Tango::DevFailed exception!" << endl;	
-					}						
+						}						
+					}
 				}
-				if (inc_vpos) 
-					++vpos;
 			}
-		}
-
-		event_consumer->map_modification_lock.writerOut();
+		event_consumer->map_modification_lock.readerOut();
 		
 //		
 // Check for all other event reconnections
@@ -647,7 +592,8 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
  					bool heartbeat_skipped;
 					heartbeat_skipped = ((now - ipos->second.last_heartbeat) > (EVENT_HEARTBEAT_PERIOD + 1));
 										
-					if (heartbeat_skipped || ipos->second.heartbeat_skipped || ipos->second.notifd_failed == true )
+					if (heartbeat_skipped || ipos->second.heartbeat_skipped ||
+			   		ipos->second.notifd_failed == true )
 					{
 						ipos->second.heartbeat_skipped = true;
 
@@ -669,7 +615,7 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 							catch (Tango::DevFailed &)
 							{
 								// in case of failure, just stay connected to the actual notifd
-								info.server_host = ipos->second.notifyd_host;
+								info.server_host = ipos->second.notifyd_host;	
 							}
 
 							if ( ipos->second.notifyd_host != info.server_host )
@@ -677,11 +623,7 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 								ipos->second.notifd_failed = true;
 							}
 							else
-							{
 								CosNotifyChannelAdmin::EventChannelFactory_var ecf = ipos->second.eventChannel->MyFactory();
-								if (ipos->second.full_adm_name.find(MODIFIER_DBASE_NO) != string::npos)
-									ipos->second.notifd_failed = true;
-							}
 						}
 						catch (...)
 						{
@@ -732,36 +674,22 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 
 						for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); epos++)
 						{
-							if (epos->second.channel_name == ipos->first) 
+							if ((epos->second.channel_name == ipos->first) && 
+							   (epos->second.callback != NULL || epos->second.ev_queue != NULL))
 							{
-
-								bool need_reconnect = false;
-								vector<EventSubscribeStruct>:: iterator esspos;
-								for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
-								{
-									if (esspos->callback != NULL || esspos->ev_queue != NULL)
-									{
-										need_reconnect = true;
-										break;
-									}
-								}
-
 								// lock the callback
 								try
 								{
 									epos->second.callback_monitor->get_monitor();
 
-									if (need_reconnect == true)
+									if (epos->second.filter_ok == false)
 									{
-										if (epos->second.filter_ok == false)
+										try
 										{
-											try
-											{
-												re_subscribe_event(epos,ipos);
-												epos->second.filter_ok = true;
-											}
-											catch(...) {}
+											re_subscribe_event(epos,ipos);
+											epos->second.filter_ok = true;
 										}
+										catch(...) {}
 									}
 
 									string domain_name;
@@ -779,99 +707,96 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 										event_name = epos->first.substr(pos + 1);
 									}						
 
-									for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
-									{
-										CallBack   *callback = esspos->callback;
-										EventQueue *ev_queue = esspos->ev_queue;
+									CallBack   *callback = epos->second.callback;
+									EventQueue *ev_queue = epos->second.ev_queue;
 //
 // Push an event with error set
 //
 
-										if (event_name == CONF_TYPE_EVENT)
+									if (event_name == CONF_TYPE_EVENT)
+									{
+										AttrConfEventData *event_data = new AttrConfEventData(epos->second.device,
+										      												domain_name,
+										      												event_name,
+										      												dev_attr_conf,
+																								errors);
+										// if a callback method was specified, call it!
+										if (callback != NULL )
 										{
-											AttrConfEventData *event_data = new AttrConfEventData(epos->second.device,
-											      												domain_name,
-											      												event_name,
-											      												dev_attr_conf,
-																									errors);
-											// if a callback method was specified, call it!
-											if (callback != NULL )
+											try
 											{
-												try
-												{
-													callback->push_event(event_data);
-												}
-												catch (...)
-												{
-													cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
-												}
-												
-												delete event_data;
+												callback->push_event(event_data);
+											}
+											catch (...)
+											{
+												cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
 											}
 											
-											// no calback method, the event has to be instered
-											// into the event queue
-											else
-											{
-												ev_queue->insert_event(event_data);
-											}
-											
+											delete event_data;
 										}
-										else if (event_name == DATA_READY_TYPE_EVENT)
-										{
-											DataReadyEventData *event_data = new DataReadyEventData(epos->second.device,NULL,event_name,errors);
-											// if a callback method was specified, call it!
-											if (callback != NULL )
-											{
-												try
-												{
-													callback->push_event(event_data);
-												}
-												catch (...)
-												{
-													cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
-												}
-												
-												delete event_data;
-											}
-											
-											// no calback method, the event has to be instered
-											// into the event queue
-											else
-											{
-												ev_queue->insert_event(event_data);
-											}
-										}
+										
+										// no calback method, the event has to be instered
+										// into the event queue
 										else
 										{
-											EventData *event_data = new EventData(epos->second.device,
-											      			domain_name,
-											      			event_name,
-											      			dev_attr,
-											      			errors);
-											
-											
-											// if a callback method was specified, call it!
-											if (callback != NULL )
+											ev_queue->insert_event(event_data);
+										}
+										
+									}
+									else if (event_name == DATA_READY_TYPE_EVENT)
+									{
+										DataReadyEventData *event_data = new DataReadyEventData(epos->second.device,NULL,event_name,errors);
+										// if a callback method was specified, call it!
+										if (callback != NULL )
+										{
+											try
 											{
-												try
-												{
-													callback->push_event(event_data);
-												}
-												catch (...)
-												{
-													cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
-												}
-												
-												delete event_data;
+												callback->push_event(event_data);
+											}
+											catch (...)
+											{
+												cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
 											}
 											
-											// no calback method, the event has to be instered
-											// into the event queue
-											else
+											delete event_data;
+										}
+										
+										// no calback method, the event has to be instered
+										// into the event queue
+										else
+										{
+											ev_queue->insert_event(event_data);
+										}
+									}
+									else
+									{
+										EventData *event_data = new EventData(epos->second.device,
+										      			domain_name,
+										      			event_name,
+										      			dev_attr,
+										      			errors);
+										
+										
+										// if a callback method was specified, call it!
+										if (callback != NULL )
+										{
+											try
 											{
-												ev_queue->insert_event(event_data);
+												callback->push_event(event_data);
 											}
+											catch (...)
+											{
+												cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
+											}
+											
+											delete event_data;
+										}
+										
+										// no calback method, the event has to be instered
+										// into the event queue
+										else
+										{
+											ev_queue->insert_event(event_data);
 										}
 									}
 
@@ -938,60 +863,35 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 													err = e.errors;
 												}
 												epos->second.device->set_transparency_reconnection(old_transp);
+
+
+												EventData *event_data = new EventData(epos->second.device,
+													      			domain_name,
+													      			epos->second.event_name,
+													      			da,
+													      			err);
 												
-												// if callback methods were specified, call them!
-												unsigned int cb_nb = epos->second.callback_list.size();
-												unsigned int cb_ctr = 0;
-												DeviceAttribute *da_copy = NULL;
-
-												for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
+												// if a callback method was specified, call it!
+												if (callback != NULL )
 												{
-													cb_ctr++;
-													EventData *event_data;
-													if (cb_ctr != cb_nb)
+													try
 													{
-														da_copy = new DeviceAttribute();
-														da_copy->deep_copy(*da);
-
-														event_data = new EventData(epos->second.device,
-													      				domain_name,
-													      				epos->second.event_name,
-													      				da_copy,
-													      				err);
+														callback->push_event(event_data);
 													}
-													else
+													catch (...)
 													{
-														event_data = new EventData(epos->second.device,
-													      				domain_name,
-													      				epos->second.event_name,
-													      				da,
-													      				err);
-													}
-
-													CallBack   *callback = esspos->callback;
-													EventQueue *ev_queue = esspos->ev_queue;
-
-													if (callback != NULL )
-													{
-														try
-														{
-															callback->push_event(event_data);
-														}
-														catch (...)
-														{
-															cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
-														}
-														
-														//event_data->attr_value = NULL;
-														delete event_data;
+														cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
 													}
 													
-													// no calback method, the event has to be inserted
-													// into the event queue
-													else
-													{
-														ev_queue->insert_event(event_data);
-													}
+													//event_data->attr_value = NULL;
+													delete event_data;
+												}
+												
+												// no calback method, the event has to be instered
+												// into the event queue
+												else
+												{
+													ev_queue->insert_event(event_data);
 												}
 											}
 											
@@ -1017,7 +917,6 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 // The reconnection worked fine. The heartbeat should come back now,
 // when the notifd has not closed the connection.
 // Increase the counter to detect when the heartbeat is not coming back.
-
 													ipos->second.has_notifd_closed_the_connection++;		
 												}
 												catch (DevFailed &e)
@@ -1026,57 +925,34 @@ void *EventConsumerKeepAliveThread::run_undetached(void *arg)
 												}
 												epos->second.device->set_transparency_reconnection(old_transp);
 
-												unsigned int cb_nb = epos->second.callback_list.size();
-												unsigned int cb_ctr = 0;
-												AttributeInfoEx *aie_copy = NULL;
 
-												for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
+												AttrConfEventData *event_data = new AttrConfEventData(epos->second.device,
+													      			domain_name,
+													      			epos->second.event_name,
+													      			aie,
+													      			err);
+
+												// if a callback method was specified, call it!
+												if (callback != NULL )
 												{
-													cb_ctr++;
-													AttrConfEventData *event_data;
-													if (cb_ctr != cb_nb)
+													try
 													{
-														aie_copy = new AttributeInfoEx;
-														*aie_copy = *aie;
-														event_data = new AttrConfEventData(epos->second.device,
-													      				domain_name,
-													      				epos->second.event_name,
-													      				aie_copy,
-													      				err);
+														callback->push_event(event_data);
 													}
-													else
+													catch (...)
 													{
-														event_data = new AttrConfEventData(epos->second.device,
-													      				domain_name,
-													      				epos->second.event_name,
-													      				aie,
-													      				err);
-													}
-
-													CallBack   *callback = esspos->callback;
-													EventQueue *ev_queue = esspos->ev_queue;
-
-													// if a callback method was specified, call it!
-													if (callback != NULL )
-													{
-														try
-														{
-															callback->push_event(event_data);
-														}
-														catch (...)
-														{
-															cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
-														}
-
-														delete event_data;
+														cerr << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first << endl;
 													}
 												
-													// no calback method, the event has to be instered
-													// into the event queue
-													else
-													{
-														ev_queue->insert_event(event_data);
-													}
+													//event_data->attr_conf = NULL;
+													delete event_data;
+												}
+												
+												// no calback method, the event has to be instered
+												// into the event queue
+												else
+												{
+													ev_queue->insert_event(event_data);
 												}
 											}
 										}

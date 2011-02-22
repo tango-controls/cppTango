@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,33 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 1.36  2010/10/05 08:19:24  taurel
-// - isnan does not exist with Visual Studio 2005 (VC8)
-//
-// Revision 1.35  2010/10/04 12:17:30  taurel
-// - Fix some wrong error messages in exception (Bug 3079309)
-//
-// Revision 1.34  2010/09/30 14:41:13  jensmeyer
-// Added check for NAN values for fload and double types in check_rds_alarm().
-//
-// Revision 1.33  2010/09/30 14:16:52  taurel
-// - Do not overwrite WAttribute written value if the user set it in its
-// write_xxx method
-//
-// Revision 1.32  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.31  2010/07/16 10:51:53  taurel
-// - Now it's possible to fill the polling buffer externally for R/W attribute
-// specifying the attribute written part
-//
-// Revision 1.30  2009/09/16 12:22:36  taurel
-// - Fix bug in RDS alarm check in case of scalar attribute read due to a
-// state attribute request in a read_attributes() call
-//
-// Revision 1.29  2009/03/13 09:33:29  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
 // Revision 1.28  2009/01/21 12:49:03  taurel
 // - Change CopyRights for 2009
 //
@@ -196,7 +169,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
 #include <sys/timeb.h>
-#include <float.h>
 #else
 #include <sys/time.h>
 #endif /* _TG_WINDOWS_ */
@@ -1857,7 +1829,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			{
 				TangoSys_OMemStream o;
 
-				o << "Incompatible attribute type, expected type is : Tango::DevVarULongArray (even for single value)" << ends;
+				o << "Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value)" << ends;
 				Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
 					    	  o.str(),
 					    	  (const char *)"WAttribute::check_written_value()");
@@ -1946,7 +1918,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			{
 				TangoSys_OMemStream o;
 
-				o << "Incompatible attribute type, expected type is : Tango::DevVarULong64Array (even for single value)" << ends;
+				o << "Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value)" << ends;
 				Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
 					    	  o.str(),
 					    	  (const char *)"WAttribute::check_written_value()");
@@ -2035,7 +2007,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			{
 				TangoSys_OMemStream o;
 
-				o << "Incompatible attribute type, expected type is : Tango::DevVarStateArray (even for single value)" << ends;
+				o << "Incompatible attribute type, expected type is : Tango::DevVarCharArray (even for single value)" << ends;
 				Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
 					    	  o.str(),
 					    	  (const char *)"WAttribute::check_written_value()");
@@ -2311,8 +2283,7 @@ void WAttribute::set_write_value(Tango::DevShort val)
 	tmp_any <<= tmp_seq;
 
 	check_written_value(tmp_any,1,0);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);		
 }
 
 void WAttribute::set_write_value(Tango::DevShort *val, long x, long y)
@@ -2330,7 +2301,7 @@ void WAttribute::set_write_value(Tango::DevShort *val, long x, long y)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
+
 }
 
 void WAttribute::set_write_value(vector<Tango::DevShort> &val, long x, long y)
@@ -2342,7 +2313,6 @@ void WAttribute::set_write_value(vector<Tango::DevShort> &val, long x, long y)
 
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 // DevLong:
@@ -2358,7 +2328,6 @@ void WAttribute::set_write_value(Tango::DevLong val)
 
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevLong *val, long x, long y)
@@ -2375,8 +2344,7 @@ void WAttribute::set_write_value(Tango::DevLong *val, long x, long y)
 	CORBA::Any 	tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(vector<Tango::DevLong> &val, long x, long y)
@@ -2388,7 +2356,6 @@ void WAttribute::set_write_value(vector<Tango::DevLong> &val, long x, long y)
 
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 // DevLong64:
@@ -2403,7 +2370,6 @@ void WAttribute::set_write_value(Tango::DevLong64 val)
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevLong64 *val, long x, long y)
@@ -2421,7 +2387,6 @@ void WAttribute::set_write_value(Tango::DevLong64 *val, long x, long y)
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(vector<Tango::DevLong64> &val, long x, long y)
@@ -2432,7 +2397,6 @@ void WAttribute::set_write_value(vector<Tango::DevLong64> &val, long x, long y)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 // DevDouble:
@@ -2447,7 +2411,6 @@ void WAttribute::set_write_value(Tango::DevDouble val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevDouble *val, long x, long y)
@@ -2465,7 +2428,6 @@ void WAttribute::set_write_value(Tango::DevDouble *val, long x, long y)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(vector<Tango::DevDouble> &val, long x, long y)
@@ -2475,8 +2437,7 @@ void WAttribute::set_write_value(vector<Tango::DevDouble> &val, long x, long y)
 		
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 // DevString:
@@ -2491,7 +2452,6 @@ void WAttribute::set_write_value(Tango::DevString val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(string &val)
@@ -2504,7 +2464,6 @@ void WAttribute::set_write_value(string &val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevString *val, long x, long y)
@@ -2521,8 +2480,7 @@ void WAttribute::set_write_value(Tango::DevString *val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(vector<string> &val, long x, long y)
@@ -2533,8 +2491,7 @@ void WAttribute::set_write_value(vector<string> &val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 // DevFloat:
@@ -2549,7 +2506,6 @@ void WAttribute::set_write_value(Tango::DevFloat val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevFloat *val, long x, long y)
@@ -2565,8 +2521,7 @@ void WAttribute::set_write_value(Tango::DevFloat *val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);		
 }
 
 void WAttribute::set_write_value(vector<Tango::DevFloat> &val, long x, long y)
@@ -2576,8 +2531,7 @@ void WAttribute::set_write_value(vector<Tango::DevFloat> &val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);		
+	copy_data(tmp_any);		
 }
 
 // DevBoolean:
@@ -2592,7 +2546,6 @@ void WAttribute::set_write_value(Tango::DevBoolean val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevBoolean *val, long x, long y)
@@ -2609,8 +2562,7 @@ void WAttribute::set_write_value(Tango::DevBoolean *val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(vector<Tango::DevBoolean> &val, long x, long y)
@@ -2621,8 +2573,7 @@ void WAttribute::set_write_value(vector<Tango::DevBoolean> &val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 // DevUShort:
@@ -2636,8 +2587,7 @@ void WAttribute::set_write_value(Tango::DevUShort val)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any,1,0);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(Tango::DevUShort *val, long x, long y)
@@ -2655,7 +2605,6 @@ void WAttribute::set_write_value(Tango::DevUShort *val, long x, long y)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(vector<Tango::DevUShort> &val, long x, long y)
@@ -2665,8 +2614,7 @@ void WAttribute::set_write_value(vector<Tango::DevUShort> &val, long x, long y)
 	CORBA::Any tmp_any;		
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);
+	copy_data(tmp_any);	
 }
 
 // DevUChar:
@@ -2681,7 +2629,6 @@ void WAttribute::set_write_value(Tango::DevUChar val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevUChar *val, long x, long y)
@@ -2698,8 +2645,7 @@ void WAttribute::set_write_value(Tango::DevUChar *val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(vector<Tango::DevUChar> &val, long x, long y)
@@ -2709,8 +2655,7 @@ void WAttribute::set_write_value(vector<Tango::DevUChar> &val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 // DevULong:
@@ -2725,7 +2670,6 @@ void WAttribute::set_write_value(Tango::DevULong val)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevULong *val, long x, long y)
@@ -2743,7 +2687,6 @@ void WAttribute::set_write_value(Tango::DevULong *val, long x, long y)
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(vector<Tango::DevULong> &val, long x, long y)
@@ -2754,7 +2697,6 @@ void WAttribute::set_write_value(vector<Tango::DevULong> &val, long x, long y)
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 // DevULong64:
@@ -2769,7 +2711,6 @@ void WAttribute::set_write_value(Tango::DevULong64 val)
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevULong64 *val, long x, long y)
@@ -2786,8 +2727,7 @@ void WAttribute::set_write_value(Tango::DevULong64 *val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(vector<Tango::DevULong64> &val, long x, long y)
@@ -2797,8 +2737,7 @@ void WAttribute::set_write_value(vector<Tango::DevULong64> &val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);
+	copy_data(tmp_any);	
 }
 
 // DevState:
@@ -2813,7 +2752,6 @@ void WAttribute::set_write_value(Tango::DevState val)
 	tmp_any <<= tmp_seq;	
 	check_written_value(tmp_any,1,0);
 	copy_data(tmp_any);
-	set_user_set_write_value(true);
 }
 
 void WAttribute::set_write_value(Tango::DevState *val, long x, long y)
@@ -2830,8 +2768,7 @@ void WAttribute::set_write_value(Tango::DevState *val, long x, long y)
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);	
+	copy_data(tmp_any);	
 }
 
 void WAttribute::set_write_value(vector<Tango::DevState> &val, long x, long y)
@@ -2841,23 +2778,9 @@ void WAttribute::set_write_value(vector<Tango::DevState> &val, long x, long y)
 	CORBA::Any tmp_any;		
 	tmp_any <<= tmp_seq;
 	check_written_value(tmp_any, x, y);
-	copy_data(tmp_any);
-	set_user_set_write_value(true);
+	copy_data(tmp_any);	
 }
 
-void WAttribute::set_write_value(Tango::DevEncoded *, long x,long y)
-{
-
-//
-// Dummy method just to make compiler happy when using fill_attr_polling_buffer for DevEncoded
-// attribute
-// Should never be called
-//
-
-	Tango::Except::throw_exception((const char *)"API_NotSupportedFeature",
-								  (const char *)"This is a not supported call in case of DevEncoded attribute",
-								  (const char *)"Wattribute::set_write_value()");
-}
 
 //+-------------------------------------------------------------------------
 //
@@ -3138,7 +3061,7 @@ bool WAttribute::check_rds_alarm()
 	
 	if (time_diff >= delta_t)
 	{
-
+	
 //
 // Now check attribute value with again a switch on attribute data type
 //
@@ -3149,11 +3072,11 @@ bool WAttribute::check_rds_alarm()
 		{
 		case Tango::DEV_SHORT:
 			nb_written = short_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.sh_seq->length();
+			nb_read = value.sh_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				short delta = (data_format == Tango::SCALAR) ? short_array_val[0] - tmp_sh[0] : short_array_val[i] - (*value.sh_seq)[i];
+				short delta = short_array_val[i] - (*value.sh_seq)[i];
 				if (abs(delta) >= delta_val.sh)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3166,11 +3089,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_LONG:
 			nb_written = long_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.lg_seq->length();
+			nb_read = value.lg_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong delta = (data_format == Tango::SCALAR) ? long_array_val[0] - tmp_lo[0] : long_array_val[i] - (*value.lg_seq)[i];
+				DevLong delta = long_array_val[i] - (*value.lg_seq)[i];
 				if (abs(delta) >= delta_val.lg)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3183,11 +3106,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_LONG64:
 			nb_written = w_ext->long64_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.lg64_seq->length();
+			nb_read = value.lg64_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong64 delta = (data_format == Tango::SCALAR) ? w_ext->long64_array_val[0] - get_tmp_scalar_long64()[0] : w_ext->long64_array_val[i] - (*value.lg64_seq)[i];
+				DevLong64 delta = w_ext->long64_array_val[i] - (*value.lg64_seq)[i];
 				
 				DevLong64 abs_delta;
 				if (delta < 0)
@@ -3207,58 +3130,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_DOUBLE:
 			nb_written = double_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.db_seq->length();
+			nb_read = value.db_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				// check for NAN values
-				if ( data_format == Tango::SCALAR )
-				{
-#ifndef _TG_WINDOWS_
-					if ( isnan(double_array_val[0]) || isnan(tmp_db[0]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(isnan(double_array_val[0]) && isnan(tmp_db[0])) )
-						{
-#else
-					if ( _isnan(double_array_val[0]) || _isnan(tmp_db[0]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(_isnan(double_array_val[0]) && _isnan(tmp_db[0])) )
-						{
-#endif						
-							quality = Tango::ATTR_ALARM;
-							alarm.set(rds);
-							ret = true;
-							break;
-						}
-					}
-				}
-				else
-				{
-#ifndef _TG_WINDOWS_
-					if ( isnan(double_array_val[i]) || isnan((*value.db_seq)[i]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(isnan(double_array_val[i]) && isnan((*value.db_seq)[i])) )
-						{
-#else
-					if ( _isnan(double_array_val[i]) || _isnan((*value.db_seq)[i]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(_isnan(double_array_val[i]) && _isnan((*value.db_seq)[i])) )
-						{
-#endif
-							quality = Tango::ATTR_ALARM;
-							alarm.set(rds);
-							ret = true;
-							break;
-						}
-					}
-				}
-				
-				
-				double delta = (data_format == Tango::SCALAR) ? double_array_val[0] - tmp_db[0] : double_array_val[i] - (*value.db_seq)[i];
+				double delta = double_array_val[i] - (*value.db_seq)[i];
 				if (fabs(delta) >= delta_val.db)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3271,57 +3147,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_FLOAT:
 			nb_written = float_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.fl_seq->length();
+			nb_read = value.fl_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				// check for NAN values
-				if ( data_format == Tango::SCALAR )
-				{
-#ifndef _TG_WINDOWS_
-					if ( isnan(float_array_val[0]) || isnan(tmp_fl[0]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(isnan(float_array_val[0]) && isnan(tmp_fl[0])) )
-						{
-#else
-					if ( _isnan(float_array_val[0]) || _isnan(tmp_fl[0]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(_isnan(float_array_val[0]) && _isnan(tmp_fl[0])) )
-						{
-#endif
-							quality = Tango::ATTR_ALARM;
-							alarm.set(rds);
-							ret = true;
-							break;
-						}
-					}
-				}
-				else
-				{
-#ifndef _TG_WINDOWS_
-					if ( isnan(float_array_val[i]) || isnan((*value.fl_seq)[i]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(isnan(float_array_val[i]) && isnan((*value.fl_seq)[i])) )
-						{
-#else
-					if ( _isnan(float_array_val[i]) || _isnan((*value.fl_seq)[i]) )
-					{
-						// send an alarm if only read or set value are NAN
-						if ( !(_isnan(float_array_val[i]) && _isnan((*value.fl_seq)[i])) )
-						{
-#endif
-							quality = Tango::ATTR_ALARM;
-							alarm.set(rds);
-							ret = true;
-							break;
-						}
-					}
-				}
-				
-				float delta = (data_format == Tango::SCALAR) ? float_array_val[0] - tmp_fl[0] : float_array_val[i] - (*value.fl_seq)[i];
+				float delta = float_array_val[i] - (*value.fl_seq)[i];
 #if ((defined __SUNPRO_CC) || (defined _TG_WINDOWS_) || (defined GCC_SOLARIS))
 				double delta_d = (double)delta;
 				if (((float)fabs(delta_d)) >= delta_val.fl)
@@ -3339,11 +3169,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_USHORT:
 			nb_written = ushort_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.ush_seq->length();
+			nb_read = value.ush_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				unsigned short delta = (data_format == Tango::SCALAR) ? ushort_array_val[0] - tmp_ush[0] : ushort_array_val[i] - (*value.ush_seq)[i];
+				unsigned short delta = ushort_array_val[i] - (*value.ush_seq)[i];
 				if (abs(delta) >= delta_val.ush)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3356,11 +3186,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_UCHAR:
 			nb_written = uchar_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.cha_seq->length();
+			nb_read = value.cha_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				unsigned char delta = (data_format == Tango::SCALAR) ? uchar_array_val[0] - tmp_cha[0] : uchar_array_val[i] - (*value.cha_seq)[i];
+				unsigned char delta = uchar_array_val[i] - (*value.cha_seq)[i];
 				if (abs(delta) >= delta_val.uch)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3373,11 +3203,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_ULONG:
 			nb_written = w_ext->ulong_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.ulg_seq->length();
+			nb_read = value.ulg_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong delta = (data_format == Tango::SCALAR) ? w_ext->ulong_array_val[0] - get_tmp_scalar_ulong()[0] : w_ext->ulong_array_val[i] - (*value.ulg_seq)[i];
+				DevLong delta = w_ext->ulong_array_val[i] - (*value.ulg_seq)[i];
 				if ((unsigned int)abs(delta) >= delta_val.ulg)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3390,11 +3220,11 @@ bool WAttribute::check_rds_alarm()
 			
 		case Tango::DEV_ULONG64:
 			nb_written = w_ext->ulong64_array_val.length();
-			nb_read = (data_format == Tango::SCALAR) ? 1 : value.ulg64_seq->length();
+			nb_read = value.ulg64_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong64 delta = (data_format == Tango::SCALAR) ? w_ext->ulong64_array_val[0] - get_tmp_scalar_ulong64()[0] : w_ext->ulong64_array_val[i] - (*value.ulg64_seq)[i];
+				DevLong64 delta = w_ext->ulong64_array_val[i] - (*value.ulg64_seq)[i];
 				
 				DevULong64 abs_delta;
 				if (delta < 0)

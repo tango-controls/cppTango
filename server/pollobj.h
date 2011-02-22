@@ -11,7 +11,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,16 +34,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.10  2010/09/09 13:46:01  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.9  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.8  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.7  2008/12/19 14:27:08  taurel
 // - First changes for compatibility between IDL 3 and IDL 4
 //
@@ -269,12 +259,12 @@ protected:
 	PollRing		ring;
 };
 
-inline bool operator<(const PollObj &,const PollObj &)
+inline bool operator<(const PollObj &l,const PollObj &r)
 {
 	return true;
 }
 
-inline bool operator==(const PollObj &,const PollObj &)
+inline bool operator==(const PollObj &l,const PollObj &r)
 {
 	return true;
 }

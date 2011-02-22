@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8,00"
+	Version="8.00"
 	Name="tango_static"
 	ProjectGUID="{1514B691-6515-47BC-BDFB-9BD45C483577}"
 	>
@@ -69,7 +69,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\tango.7.2.5.lib"
+				OutputFile="lib\tango.7.0.0.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -115,14 +115,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.7.2.5.pdb"
+				ProgramDataBaseFileName=".\lib/tangod.7.0.0.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -141,7 +141,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\tangod.7.2.5.lib"
+				OutputFile="lib\tangod.7.0.0.lib"
 				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
@@ -365,11 +365,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File

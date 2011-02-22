@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,12 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.15  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.14  2008/10/06 15:01:09  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -390,24 +384,19 @@ DServerSignal::DServerSignal():TangoMonitor("signal")
 	sig_to_install = false;
 	sig_to_remove = false;
 
+#ifdef sun
+//
+// With Solaris, the SIGINT and SIGQUIT defalut actions are set to SIG_IGN for
+// all processes started in the background. Signal SIGINT is used by
+// Tango in its signal management (due to pre 2.6 kernel thread management
+// on Linux), reset the default action to default
+//
+
+	sigset(SIGINT, SIG_DFL);
+	sigset(SIGQUIT, SIG_DFL);
+#endif
+
 #ifndef _TG_WINDOWS_
-//
-// With Solaris/Linux, the SIGINT and SIGQUIT default actions are set to SIG_IGN for
-// all processes started in the background (POSIX requirement). Signal SIGINT is used by
-// Tango in its signal management, reset the default action to default
-//
-
-	struct sigaction sa;
-	
-	sa.sa_flags = 0;
-	sa.sa_handler = SIG_DFL;
-	sigemptyset(&sa.sa_mask);
-	
-	if (sigaction(SIGINT,&sa,NULL) == -1)
-		cerr << "DServerSignal::DServerSignal --> Can't reset default action for SIGINT to SIG_DFL" << endl;
-
-	if (sigaction(SIGQUIT,&sa,NULL) == -1)
-		cerr << "DServerSignal::DServerSignal --> Can't reset default action for SIGQUIT to SIG_DFL" << endl;
 	
 //
 // Block signals in thread other than the thread dedicated to signal
