@@ -1,4 +1,4 @@
-liblog4tangoincludedir = $(includedir)/tango/log4tango/threading
+liblog4tangoincludedir = $(includedir)/log4tango/threading
 
 liblog4tangoinclude_HEADERS =  \
   DummyThreads.hh \
