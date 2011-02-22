@@ -10,151 +10,9 @@ static const char *RcsId = "$Id$";
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 1.30  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.29  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 1.28  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-// Revision 1.27.2.1  2010/05/18 08:27:23  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 1.27  2009/10/27 08:25:03  taurel
-// - No real changes. Only some code beautifulling
-//
-// Revision 1.26  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 1.25  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-//
-// Revision 1.24.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 1.24  2009/04/27 11:16:34  taurel
-// - Attribute with DevState data type do not need a relative or absolute
-// change property
-//
-// Revision 1.23  2009/01/29 15:25:41  taurel
-// - First implementation of the Data Ready event
-//
-// Revision 1.22  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 1.21  2009/01/06 09:28:50  taurel
-// - Add compatibility between a server IDL V4 and clients IDL V3
-//
-// Revision 1.20  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 1.19  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 1.18  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 1.17  2008/09/23 14:59:35  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 1.16  2008/07/01 07:38:40  taurel
-// - Some more code for a proper implementation of the DevEncoded data type with the new IDL release 4
-//
-// Revision 1.15  2008/01/18 14:25:30  jensmeyer
-// Added the stateless event subscription in the EventConsumer.
-// The subscribe_event method has an option now to subscribe for
-// events in stateless way.
-//
-// Revision 1.14  2007/03/06 08:19:43  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 1.13  2007/02/16 10:40:57  taurel
-// - Implementing a new types of event on the Attribute configuration
-//
-// Revision 1.12  2006/11/10 08:25:08  taurel
-// - Fix bug if an EventSubsriptionChange command arrives in the admin
-// device while the DS is in its shutdown sequence
-//
-// Revision 1.11  2006/06/20 08:00:04  jensmeyer
-// After changing the the init value of the attribute polling period to -1 insted of 0 I detected
-// a campatibility problem with the old versions. I changed back the init value to 0 and
-// solved the problem with new methods on the Attribute object.
-//
-// Revision 1.10  2006/06/14 11:21:35  jensmeyer
-// Modifications to make the set_polling_period() for attributes work
-// with a polling period set to 0.
-//
-// Revision 1.9  2006/05/18 14:29:12  jensmeyer
-// Changed the handling of the event period for periodic and archiving events.
-// The event period is now stored as the configured value and no longer
-// multilplied by the factor DELTA_PERIODIC.
-// The calculation of the precision to fire periodic events has moved from
-// the attribbute to the push methods in the event supplier.
-//
-// For event periods < 5000 ms a precision of 2% was kept, but for
-// times < 5000 ms a fixed precision of 100 ms was added.
-// This avoids periodic events with a long event period to be fired to early.
-//
-// Revision 1.8  2006/04/28 13:17:20  taurel
-// - Attribute class: Add state and status attribute special case to the method Attribute_2_AttributeValue
-// - Device_3Impl: The monitor taken by the read_attribute_history_3 call was the Device Monitor. Replaced it by the polling list monitor
-//
-// Revision 1.7  2006/04/13 06:12:28  jensmeyer
-// Added methods to configure and fire manually change and archive events without
-// polling.
-//
-// Revision 1.6  2005/12/16 17:38:57  jensmeyer
-// Changed the error checking during an attribute subscription.
-// Also added an option to allow manual change events.
-//
-// Revision 1.5  2005/11/09 09:43:57  jensmeyer
-// Stopped automatic polling when subscribing for events!
-// Added exceptions when polling is not started for an attribute.
-//
-// Changed the default of the archiving period from 10 seconds to
-// no periodic event!
-// Added exception when trying to subscribe a not configured attribute.
-//
-// Revision 1.4  2005/06/29 08:31:18  taurel
-// - Last commit before release 5.2 ?
-//
-// Revision 1.3  2005/01/13 08:29:06  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 1.2.2.3  2004/12/09 08:33:00  taurel
-// - Fix a small memory leak in case of error
-//
 // Revision 1.2.2.2  2004/11/04 09:46:39  taurel
 // - Add a tuning method in the polling thread
 // - Some minor fixes to pass test suite
@@ -208,6 +66,11 @@ static const char *RcsId = "$Id$";
 // Revision 1.1.2.1  2003/04/10 11:07:44  andy_gotz
 // added event commands to DServer admin object
 //
+//
+// copyleft :   European Synchrotron Radiation Facility
+//              BP 220, Grenoble 38043
+//              FRANCE
+//
 //-=============================================================================
 //
 //  		This file was generated by POGO
@@ -219,7 +82,6 @@ static const char *RcsId = "$Id$";
 
 #include <tango.h>
 #include <eventcmds.h>
-#include <eventsupplier.h>
 
 namespace Tango
 {
@@ -239,10 +101,10 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,
-								Tango::CmdArgType in,
-								Tango::CmdArgType out,
-								const char *in_desc,
-								const char *out_desc)
+						       Tango::CmdArgType in,
+				       		       Tango::CmdArgType out,
+						       const char *in_desc,
+				       		       const char *out_desc)
 :Command(name,in,out,in_desc,out_desc)
 {
 }
@@ -251,7 +113,9 @@ EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,
 //	Constructor without in/out parameters description
 //
 
-EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgType out)
+EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char		*name,
+						       Tango::CmdArgType in,
+				       		       Tango::CmdArgType out)
 :Command(name,in,out)
 {
 }
@@ -299,269 +163,130 @@ bool EventSubscriptionChangeCmd::is_allowed(Tango::DeviceImpl *device, const COR
 //-----------------------------------------------------------------------------
 CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
+
 	cout4 << "EventSubscriptionChangeCmd::execute(): arrived" << endl;
 
 	const Tango::DevVarStringArray	*argin;
 	extract(in_any, argin);
 
-    if (argin->length() < 4)
-    {
+        if (argin->length() < 4)
+        {
 		TangoSys_OMemStream o;
 		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
 
 		Except::throw_exception((const char *)"DServer_Events",
-								o.str(),
-								(const char *)"EventSubscriptionChangeCmd::execute");
-	}
+					o.str(),
+					(const char *)"EventSubscriptionChangeCmd::execute");
+
+        }
  
-	string dev_name, attr_name, action, event, attr_name_lower;
+        string dev_name, attr_name, action, event;
 	dev_name = (*argin)[0];
-	attr_name = (*argin)[1];
-	action = (*argin)[2];
-	event = (*argin)[3];
+        attr_name = (*argin)[1];
+        action = (*argin)[2];
+        event = (*argin)[3];
 
-	attr_name_lower = attr_name;
-	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
-	
 	cout4 << "EventSubscriptionChangeCmd: execute(): subscribtion for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
-	Tango::Util *tg = Tango::Util::instance();
-
-//
-// If we receive this command while the DS is in its
-// shuting down sequence, do nothing
-//
-
-	if (tg->get_heartbeat_thread_object() == NULL)
-	{
-     	TangoSys_OMemStream o;
-		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
-	   
-		Except::throw_exception((const char *)"DServer_Events",
-									    o.str(),
-									   (const char *)"EventSubscriptionChangeCmd::execute");
-	}
-		
-//
-// If the EventSupplier object is not created, create it right now
-//
-
-	EventSupplier *ev;
-	if ((ev = tg->get_event_supplier()) == NULL)
-	{
-		tg->create_event_supplier();
-		ev = tg->get_event_supplier();
-	}
-
-//
-// If we are using a file as database, gives port number to event supplier
-//
-
-	if (Util::_FileDb == true && ev != NULL)
-	{
-		string &p_num = tg->get_svr_port_num();
-		ev->set_svr_port_num(p_num);
-	}
-	
-//
-// Get device reference
-//
-	
-	DeviceImpl *dev_impl;
-	try
-	{
-		dev_impl = tg->get_device_by_name((*argin)[0]);
-	}
-	catch (Tango::DevFailed &e)
-	{
-		TangoSys_OMemStream o;
-		o << "Device " << (*argin)[0] << " not found" << ends;
+        Tango::Util *tg = Tango::Util::instance();
+        DeviceImpl *dev_impl;
+        try
+        {
+                dev_impl = tg->get_device_by_name((*argin)[0]);
+        }
+        catch (Tango::DevFailed &e)
+        {
+                TangoSys_OMemStream o;
+                o << "Device " << (*argin)[0] << " not found" << ends;
  
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
-                                   (const char *)"DServer::EventSubscriptionChangeCmd:");
-	}                                                                                 
+                Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+                                           (const char *)"DServer::EventSubscriptionChangeCmd:");
+        }                                                                                 
 
 	int attr_ind = dev_impl->dev_attr->get_attr_ind_by_name(attr_name.c_str());
 	Attribute &attribute = dev_impl->dev_attr->get_attr_by_ind(attr_ind);
 
-//
-// Check if the request comes from a Tango 6 client (without client identification)
-// If true, the event has to be sent using AttributeValue_3 data structure
-//
-
-	client_addr *cl = device->get_client_ident();
-	int cl_release;
-
-	if (cl->client_ident == true)
-		cl_release = 4;
-	else
-		cl_release = 3;
-
-	
 	if (action == "subscribe")
 	{
-		if (event == "user_event")
-		{
-			cout4 << "EventSubscriptionChangeCmd::execute(): update user_event subscription\n";
-			attribute.ext->event_user_subscription = time(NULL);
-			if (cl_release == 3)
-				attribute.ext->event_user_client_3 = true;
-		}
-		else if (event == "attr_conf")
-		{
-			cout4 << "EventSubscriptionChangeCmd::execute(): update attr_conf subscription\n";
-			attribute.ext->event_attr_conf_subscription = time(NULL);
-		}
-		else if (event == "data_ready")
-		{
-			if (attribute.is_data_ready_event() == false)
-			{
-				TangoSys_OMemStream o;
-				o << "The attribute ";
-				o << attr_name;
-				o << " is not data ready event enabled" << ends;
-				
-				Except::throw_exception((const char*)"API_AttributeNotDataReadyEnabled",
-										o.str(),
-										(const char *)"EventSubscriptionChangeCmd::execute");
-			}
-			cout4 << "EventSubscriptionChangeCmd::execute(): update data_ready subscription\n";
-			attribute.ext->event_data_ready_subscription = time(NULL);
-		}
-		else
-		{	
-			
-//
-// If the polling is necessary to send events, check whether the polling is
-// started for the requested attribute.
-//
-			
-			if (attribute.is_polled() == false )			
-			{
-				TangoSys_OMemStream o;
-				o << "The polling (necessary to send events) for the attribute ";
-				o << attr_name;
-				o << " is not started" << ends;
-								
-				if ( event == "change")
-				{
-					if (attribute.is_change_event() == false)
-					{
-						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
-									o.str(),
-									(const char *)"EventSubscriptionChangeCmd::execute");
-					}
-				}
-				else
-				{
-					if ( event == "archive")
-					{
-						if (attribute.is_archive_event() == false)
-						{
-							Except::throw_exception((const char *)"API_AttributePollingNotStarted",
-										o.str(),
-										(const char *)"EventSubscriptionChangeCmd::execute");
-						}
-					}
-					else
-					{					
-						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
-									o.str(),
-									(const char *)"EventSubscriptionChangeCmd::execute");					
-					}
-				}
-			}
-			
-				
+		bool send_poll_cmd = true;
        		if (event == "change")
        		{
-				cout4 << "EventSubscriptionChangeCmd::execute(): update change subscription\n";
+			cout4 << "EventSubscriptionChangeCmd::execute(): update change subscription\n";
 
 //
 // Check if the attribute has some of the change properties defined
 //
 
-				if (attr_name_lower != "state")
+			if (attr_name != "state")
+			{
+				if ((attribute.get_data_type() != Tango::DEV_STRING) &&
+			            (attribute.get_data_type() != Tango::DEV_BOOLEAN))
 				{
-					if ((attribute.get_data_type() != Tango::DEV_STRING) &&
-			            (attribute.get_data_type() != Tango::DEV_BOOLEAN) &&
-			            (attribute.get_data_type() != Tango::DEV_ENCODED) &&
-						(attribute.get_data_type() != Tango::DEV_STATE))
+					if ((attribute.ext->rel_change[0] == INT_MAX) &&
+					    (attribute.ext->rel_change[1] == INT_MAX) &&
+					    (attribute.ext->abs_change[0] == INT_MAX) &&
+					    (attribute.ext->abs_change[1] == INT_MAX))
 					{
-						if ( attribute.is_check_change_criteria() == true )
-						{
-							if ((attribute.ext->rel_change[0] == INT_MAX) &&
-					    		(attribute.ext->rel_change[1] == INT_MAX) &&
-					    		(attribute.ext->abs_change[0] == INT_MAX) &&
-					    		(attribute.ext->abs_change[1] == INT_MAX))
-							{		
-								TangoSys_OMemStream o;
-								o << "Event properties (abs_change or rel_change) for attribute ";
-								o << attr_name;
-								o << " are not set" << ends;
+						TangoSys_OMemStream o;
+						o << "Event properties (abs_change or rel_change) for attribute ";
+						o << attr_name;
+						o << " are not set" << ends;
 
-								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
-																o.str(),
-																(const char *)"EventSubscriptionChangeCmd::execute");
-							}
-						}
+						Except::throw_exception((const char *)"API_EventPropertiesNotSet",
+							o.str(),
+							(const char *)"EventSubscriptionChangeCmd::execute");
 					}
 				}
-       			attribute.ext->event_change_subscription = time(NULL);
-				if (cl_release == 3)
-					attribute.ext->event_change_client_3 = true;
 			}
-      		else if (event == "quality")
-      		{
-				cout4 << "EventSubscriptionChangeCmd::execute(): update quality_change subscription\n";
+
+       			attribute.ext->event_change_subscription = time(NULL);
+		}
+ 
+       		else if (event == "quality")
+       		{
+			cout4 << "EventSubscriptionChangeCmd::execute(): update quality_change subscription\n";
        			attribute.ext->event_quality_subscription = time(NULL);
-      		}
-      		else if (event == "periodic")
-      		{
-				cout4 << "EventSubscriptionChangeCmd::execute(): update periodic subscription\n";
+       		}
+ 
+       		else if (event == "periodic")
+       		{
+			cout4 << "EventSubscriptionChangeCmd::execute(): update periodic subscription\n";
        			attribute.ext->event_periodic_subscription = time(NULL);
-				if (cl_release == 3)
-					attribute.ext->event_periodic_client_3 = true;
-      		}                                                  
-      		else if (event == "archive")
-      		{
-      			
-//
-// Check if the attribute has some of the archive properties defined
-//
-
-				if (attr_name_lower != "state")
-				{
-					if ((attribute.get_data_type() != Tango::DEV_STRING) &&
-			            (attribute.get_data_type() != Tango::DEV_BOOLEAN) &&
-			            (attribute.get_data_type() != Tango::DEV_ENCODED) &&
-						(attribute.get_data_type() != Tango::DEV_STATE))
-					{
-						if ( attribute.is_check_archive_criteria() == true )
-						{
-							if ((attribute.ext->archive_abs_change[0] == INT_MAX) &&
-					      		(attribute.ext->archive_abs_change[1] == INT_MAX) &&
-						   	    (attribute.ext->archive_period        == INT_MAX))
-							{
-								TangoSys_OMemStream o;
-								o << "Archive event properties (archive_abs_change or archive_rel_change or archive_period) for attribute ";
-								o << attr_name;
-								o << " are not set" << ends;
-
-								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
-															 	o.str(),
-																(const char *)"EventSubscriptionChangeCmd::execute");
-							}
-						}
-					}
-				}		
-		
-				cout4 << "EventSubscriptionChangeCmd::execute(): update archive subscription\n";
+       		}                                                  
+ 
+       		else if (event == "archive")
+       		{
+			cout4 << "EventSubscriptionChangeCmd::execute(): update archive subscription\n";
        			attribute.ext->event_archive_subscription = time(NULL);
-				if (cl_release == 3)
-					attribute.ext->event_archive_client_3 = true;
-      		}				 			
-		}		  
-	
+       		}
+		
+		else if (event == "user_event")
+		{
+			cout4 << "EventSubscriptionChangeCmd::execute(): update user_event subscription\n";
+       			attribute.ext->event_user_subscription = time(NULL);
+			send_poll_cmd = false;
+       		}		  
+		                                                
+//
+// If polling period is 0 then set a default polling period of 1 second
+// Update archive period to 10 polling period only if the property
+// "archive_period" is not defined and if attribute is already polled
+// 
+
+		if (send_poll_cmd == true)
+		{
+			if (attribute.ext->poll_period <= 0) 
+			{
+				attribute.ext->poll_period = 1000;
+			}
+			else
+			{
+				if (event == "archive")
+				{
+					if (attribute.ext->archive_period == 10 * (int)(1000.0 * DELTA_PERIODIC))
+						attribute.ext->archive_period = 10 * attribute.ext->poll_period;
+				}
+			}
+		
 //
 // Start polling for attribute in question. I suppose I should
 // check to see if the attribute is polled already. For the 
@@ -574,27 +299,40 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 // to the attribute
 //
 			
-		Tango::Util *tg = Tango::Util::instance();
-		try
-		{
-			DServer *adm_dev = tg->get_dserver_device();
+			DevVarLongStringArray *send = new DevVarLongStringArray();
+			try
+			{
+				Tango::Util *tg = Tango::Util::instance();
+				DServer *adm_dev = tg->get_dserver_device();
 
-			if (adm_dev->get_heartbeat_started() == false)
-			{				
-				adm_dev->add_event_heartbeat();
-				adm_dev->set_heartbeat_started(true);
+				if (adm_dev->get_heartbeat_started() == false)
+				{				
+					adm_dev->add_event_heartbeat();
+					adm_dev->set_heartbeat_started(true);
+				}
+
+				send->lvalue.length(1);
+				send->svalue.length(3);
+				send->svalue[0] = CORBA::string_dup(dev_name.c_str());
+				send->svalue[1] = CORBA::string_dup("attribute");
+
+				send->lvalue[0] = attribute.ext->poll_period;
+				send->svalue[2] = CORBA::string_dup(attr_name.c_str());
+
+				cout4 << "EventSubscriptionChangeCmd::execute(): start attribute " << attr_name << " polling with period " << attribute.ext->poll_period << endl;
+				adm_dev->add_obj_polling(send,false);
 			}
-		}
-		catch (...)
-		{
+			catch (...)
+			{
+				//cout << "EventSubscriptionChangeCmd::execute(): failed to start polling !\n";
+				// nada
+			}
+			delete send;			
 		}
 	}
 
-	Tango::DevLong ret = (Tango::DevLong)tg->get_tango_lib_release();
-	CORBA::Any *out_any = new CORBA::Any();	
-	(*out_any) <<= ret;	
-	return out_any;
-	
+        CORBA::Any *ret = return_empty_any("EventSubscriptionChange");
+	return ret;
 }
 
 

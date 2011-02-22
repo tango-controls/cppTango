@@ -1,24 +1,3 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-
-
 #ifndef FILEDATABASE_H
 #define FILEDATABASE_H
 
@@ -41,53 +20,56 @@ namespace Tango{
 
 class t_property
 {
-public:
-	std::string 				name;
-	std::vector<std::string> 	value;
+	public:
+	std::string name;
+	std::vector<std::string> value;
 
 };
 
 
 class t_attribute_property
 {
-public:
-	std::string 				attribute_name;
-	std::vector<t_property*> 	properties;
+	public:
+	std::string attribute_name;
+	std::vector<t_property*> properties;
 };
 
 
 class t_device
 {
-public:
-	std::string 						name;
-	std::vector<t_property*> 			properties;
-	std::vector<t_attribute_property*> 	attribute_properties;
+	public:
+	std::string name;
+	std::vector<t_property*> properties;
+	std::vector<t_attribute_property*> attribute_properties;
 };
 
 class t_tango_class
 {
-public:
-	std::string 						name;
-	std::string 						description;
-	std::string 						title;
-	std::vector<t_device*> 				devices;
-	std::vector<t_property*> 			properties;
-	std::vector<t_attribute_property*> 	attribute_properties;
+	public:
+	std::string name;
+	std::string description;
+	std::string title;
+	std::vector<t_device*> devices;
+	std::vector<t_property*> properties;
+	std::vector<t_attribute_property*> attribute_properties;
+
+	
 };
 
 
 class t_server 
 {
-public:
-	std::string 					name;
-	std::string 					instance_name;
-	std::vector<t_tango_class*> 	classes;
-	std::vector<t_device*> 			devices;
+	public:
+	std::string name;
+	std::string instance_name;
+	std::vector<t_tango_class*> classes;
+	std::vector<t_device*> devices;
+	
 };
 
 template <class T> class hasName
 {
-    string 		name; 
+    string name; 
 public:
     hasName (string _name) : name(_name) {};
     bool operator () (T* obj);
@@ -95,7 +77,7 @@ public:
 
 template <class T> class hasAttributeName
 {
-    string 		attribute_name; 
+    string attribute_name; 
 public:
     hasAttributeName (string _name) : attribute_name(_name) {};
     bool operator () (T* obj);
@@ -112,15 +94,16 @@ public:
 };
 
 
-class FileDatabase
-{
-public:
+class FileDatabase {
+
+	public:
+
+	
 	FileDatabase(const std::string& file_name);
 	~FileDatabase();
 	std::string  parse_res_file(const std::string& file_name);
 	void display();
 	string get_display();
-	void write_event_channel_ior(string &,string &);
 
 
 	CORBA::Any*      DbInfo(CORBA::Any&);
@@ -149,7 +132,6 @@ public:
 	CORBA::Any*      DbDeleteClassAttributeProperty(CORBA::Any&);
 	CORBA::Any*      DbGetDeviceList(CORBA::Any&);
 
-	CORBA::Any*      DbGetDeviceDomainList(CORBA::Any&);
 	CORBA::Any*      DbGetDeviceMemberList(CORBA::Any&);
 	CORBA::Any*      DbGetDeviceExportedList(CORBA::Any&);
 	CORBA::Any*      DbGetDeviceFamilyList(CORBA::Any&);
@@ -165,9 +147,10 @@ public:
 
 	void write_file();
 
-private:
-	string 			filename;
-	t_server 		m_server;
+	private:
+
+	string filename;
+	t_server m_server;
 
 	void read_char(std::ifstream& f);
 	int class_lex(std::string& word);
@@ -192,17 +175,17 @@ private:
 	static int MaxWordLength;
 
 
-	int 			length_buf;
-  	int 			pos_buf;
-  	int 			CrtLine;
-  	int 			StartLine;
-  	char 			CurrentChar;
-  	char 			NextChar;
+	int length_buf;
+  int pos_buf;
+  int CrtLine;
+  int StartLine;
+  char CurrentChar;
+  char NextChar;
   
-  	bool 			DELETE_ENTRY;
-  	string 			word;
+  bool DELETE_ENTRY;
+  std::string word;
 
-	FileDatabaseExt	*ext;
+	FileDatabaseExt		*ext;
 };
 
 } // end namespace Tango

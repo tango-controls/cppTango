@@ -9,87 +9,9 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.16  2009/02/03 15:17:11  jensmeyer
-// Added the storage of sub device properties on a regular basis of
-// 30 minutes to the heartbeat thread of a device server.
-//
-// Revision 3.15  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.14  2009/01/08 14:58:03  taurel
-// - The read_attribute_4 also transfer the client authentification
-//
-// Revision 3.13  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.12  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.11  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 3.10  2008/07/01 07:38:40  taurel
-// - Some more code for a proper implementation of the DevEncoded data type with the new IDL release 4
-//
-// Revision 3.9  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.8.2.1  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.8  2007/05/15 07:46:59  taurel
-// - The polling thread is not configured by a separate thread any more.
-// The Add_obj_polling command now support a delta_t to start the first polling
-//
-// Revision 3.7  2007/04/20 14:41:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.6  2007/03/29 07:09:25  taurel
-// - Change some data types for 64 bits compatibility
-//
-// Revision 3.5  2006/04/13 13:31:44  taurel
-// Several changes:
-// - A new DeviceImpl::push_event() method to push USER event with State as data
-// - Fix bug in polling thread POLL_IUPD_PERIOD. The new polling period was applied only after the following poll still done with the old polling period
-// - It is now possible to update polling period of polled objects from a polled attribute or command
-//
-// Revision 3.4  2005/06/29 08:31:19  taurel
-// - Last commit before release 5.2 ?
-//
-// Revision 3.3  2005/01/13 08:30:00  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 3.2.2.4  2004/12/06 14:39:30  taurel
-// - Polling starts in a separate thread
-// - For Windows : Polling thread cmd/attr measurement used PerformanceCounter
-// - Fix bug in pollext.h in methods to externally fill polling buffer
-//
 // Revision 3.2.2.3  2004/11/04 09:46:39  taurel
 // - Add a tuning method in the polling thread
 // - Some minor fixes to pass test suite
@@ -210,6 +132,11 @@
 // Revision 2.0  2002/04/09 14:45:11  taurel
 // See Tango WEB pages for list of changes
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _POLLTHREAD_H
@@ -220,7 +147,7 @@
 
 #include <list>
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	#include <sys/types.h>
 	#include <sys/timeb.h>
 #endif
@@ -240,24 +167,24 @@ namespace Tango
 struct PollThCmd
 {
 	bool			cmd_pending;	// The new command flag
-	bool			trigger;		// The external trigger flag
-	PollCmdCode		cmd_code;		// The command code
-	DeviceImpl		*dev;			// The device pointer (servant)
-	long			index;			// Index in the device poll_list
-	string			name;			// Object name
-	PollObjType		type;			// Object type (cmd/attr)
-	int				new_upd;		// New update period (For upd period com.)
+	bool			trigger;	// The external trigger flag
+	PollCmdCode		cmd_code;	// The command code
+	DeviceImpl		*dev;		// The device pointer (servant)
+	long			index;		// Index in the device poll_list
+	string			name;		// Object name
+	PollObjType		type;		// Object type (cmd/attr)
+	long			new_upd;	// New update period (For upd period com.)
 };
 
 
 struct WorkItem
 {
-	DeviceImpl			*dev;			// The device pointer (servant)
-	vector<PollObj *> 	*poll_list;		// The device poll list
+	DeviceImpl		*dev;		// The device pointer (servant)
+	vector<PollObj *> 	*poll_list;	// The device poll list
 	struct timeval		wake_up_date;	// The next wake up date
-	int 				update;			// The update period (mS)
-	PollObjType			type;			// Object type (command/attr)
-	string				name;			// Object name
+	long 			update;		// The update period (mS)
+	PollObjType		type;		// Object type (command/attr)
+	string			name;		// Object name
 	struct timeval		needed_time;	// Time needed to execute action
 };
 
@@ -282,62 +209,53 @@ class TangoMonitor;
 class PollThread: public omni_thread
 {
 public:
-	PollThread(PollThCmd &,TangoMonitor &,bool);
+	PollThread(PollThCmd &,TangoMonitor &);
 	
 	void *run_undetached(void *);
 	void start() {start_undetached();}
-	void execute_cmd();
-	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
 
 protected:
 	PollCmdType get_command(long);
+	void execute_cmd();
 	void one_more_poll();
 	void one_more_trigg();
-	void compute_new_date(struct timeval &,int);
+	void compute_new_date(struct timeval &,long);
 	void compute_sleep_time();
 	void time_diff(struct timeval &,struct timeval &,struct timeval &);
 	void poll_cmd(WorkItem &);
 	void poll_attr(WorkItem &);
 	void eve_heartbeat(WorkItem &);
-	void store_subdev(WorkItem &);
 	
 	void print_list();
 	void insert_in_list(WorkItem &);
 	void add_random_delay(struct timeval &);
 	void tune_list(bool,long);
-	void err_out_of_sync(WorkItem &);
 	
-	PollThCmd			&shared_cmd;
+	PollThCmd		&shared_cmd;
 	TangoMonitor		&p_mon;
 	
 	list<WorkItem>		works;
 	vector<WorkItem>	ext_trig_works;
 	
-	PollThCmd			local_cmd;
+	PollThCmd		local_cmd;
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	struct _timeb		now_win;
 	struct _timeb		after_win;
-	double				ctr_frequency;
+	double			ctr_frequency;
 #endif		
 	struct timeval		now;
 	struct timeval		after;
-	long				sleep;
-	bool				polling_stop;
+	long			sleep;
+	bool			polling_stop;
 		
 private:
-	CORBA::Any			in_any;
+	CORBA::Any		in_any;
 	DevVarStringArray	attr_names;
 	AttributeValue		dummy_att;
 	AttributeValue_3	dummy_att3;
-	AttributeValue_4 	dummy_att4;
-	long				tune_ctr;
-	bool				need_two_tuning;
-	long				auto_upd;
-	bool				send_heartbeat;
-
-	ClntIdent 			dummy_cl_id;
-	CppClntIdent 		cci;
+	long			tune_ctr;
+	bool			need_two_tuning;
 	
 public:
 	static DeviceImpl 	*dev_to_del;
@@ -347,7 +265,7 @@ public:
 
 
 //
-// Three macros
+// Two macros
 //
 
 #define T_DIFF(A,B,C) \
