@@ -1,0 +1,152 @@
+#!/bin/bash
+
+#
+# remove different echo command behaviour on different OS
+#
+if test "`echo -e xxx`" = "xxx"
+then
+    echo="echo -e"
+else
+    echo=echo
+fi
+
+if [ $# = 0 ]
+then
+	$echo "\nusage:  runtest ds_system\n"
+	$echo "ds_system can be solaris9, solaris9_CC, suse93, debian30, ubuntu904 or python"
+	exit 1
+fi
+
+#
+# test host
+#
+SOL9_HOST=kidiboo
+DEBIAN30_HOST=fumanchu
+PYTHON_HOST=controls01
+UBUNTU704_HOST=pcantares
+UBUNTU904_HOST=pcantares
+
+HOST=`hostname`
+SERV_NAME=devTest
+
+
+case $1 in
+solaris9 )
+	if [ $HOST != $SOL9_HOST ]
+	then
+		$echo "For solaris9, test should run on "$SOL9_HOST
+		exit 1
+	fi
+	DIR=solaris9_gcc
+	;;
+#
+solaris9_CC )
+	if [ $HOST != $SOL9_HOST ]
+	then
+		$echo "For solaris9, test should run on "$SOL9_HOST
+		exit 1
+	fi
+	DIR=solaris9_CC
+	;;
+#
+debian30 )
+	if [ $HOST != $DEBIAN30_HOST ]
+	then
+		$echo "For debian30, test should run on "$DEBIAN30_HOST
+		exit 1
+	fi
+	DIR=debian30
+	;;
+#
+ubuntu904 )
+	if [ $HOST != $UBUNTU904_HOST ]
+	then
+		$echo "For ubuntu 9.04, test should run on "$UBUNTU904_HOST
+		exit 1
+	fi
+	DIR=ubuntu904
+	;;
+#
+python )
+	if [ $HOST != $PYTHON_HOST ]
+	then
+		$echo "For python, test should run on "$PYTHON_HOST
+		exit 1
+	fi
+	DIR=suse93
+	;;
+#
+* )
+	$echo "\nunknown system"
+	exit 1
+	;;
+esac
+
+check_return_value () {
+if [ $1 != "0" ]
+then
+	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
+	echo "Leaving test suite, try to fix it"
+	exit
+fi
+}
+
+#
+# First, test device server startup sequence
+#
+
+$echo "\nTesting executing command asynchronously (polling way)"
+$DIR/asyn_cmd dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting reading attribute asynchronously (polling way)"
+$DIR/asyn_attr dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting reading several attributes asynchronously (polling way)"
+$DIR/asyn_attr_multi dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting writing attribute asynchronously (polling way)"
+$DIR/asyn_write_attr dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting writing several attributes asynchronously (polling way)"
+$DIR/asyn_write_attr_multi dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting mixed asynchronous and callback modes (1)"
+$DIR/asyn_cb
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting mixed asynchronous and callback modes (2)"
+$DIR/asyn_cb2
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting executing command asynchronously (callback way)"
+$DIR/asyn_cb_cmd dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting reading attribute asynchronously (callback way)"
+$DIR/asyn_attr_cb dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting writing attribute asynchronously (callback way)"
+$DIR/asyn_write_cb dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting automatic callback mode"
+$DIR/auto_asyn_cmd dev/test/10
+ret=$?
+check_return_value $ret
+#
