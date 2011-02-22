@@ -1,0 +1,227 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: tango_dll - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP194E.tmp" with contents
+[
+/nologo /MD /W3 /GR /GX /I "..\.." /I "..\..\..\client" /I "F:\tango\ORB\omniORB4.0.5\win32_dll\include" /I "F:\tango\tools\log4tango4.0.1\win32_dll\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LOG4TANGO_HAS_DLL" /D "_TANGO_LIB" /Fp"Release/tango_dll.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\cppapi\client\api_util.cpp"
+"C:\cppapi\client\apiexcept.cpp"
+"C:\cppapi\client\asynreq.cpp"
+"C:\cppapi\client\attr_proxy.cpp"
+"C:\cppapi\server\attrdesc.cpp"
+"C:\cppapi\server\attribute.cpp"
+"C:\cppapi\server\attrmanip.cpp"
+"C:\cppapi\server\basiccommand.cpp"
+"C:\cppapi\server\blackbox.cpp"
+"C:\cppapi\client\cbthread.cpp"
+"C:\cppapi\server\class_factory.cpp"
+"C:\cppapi\server\classattribute.cpp"
+"C:\cppapi\server\command.cpp"
+"C:\cppapi\server\coutappender.cpp"
+"C:\cppapi\server\coutbuf.cpp"
+"C:\cppapi\client\dbapi_attribute.cpp"
+"C:\cppapi\client\dbapi_base.cpp"
+"C:\cppapi\client\dbapi_class.cpp"
+"C:\cppapi\client\dbapi_datum.cpp"
+"C:\cppapi\client\dbapi_device.cpp"
+"C:\cppapi\client\dbapi_server.cpp"
+"C:\cppapi\client\devapi_attr.cpp"
+"C:\cppapi\client\devapi_base.cpp"
+"C:\cppapi\client\devapi_data.cpp"
+"C:\cppapi\client\devapi_datahist.cpp"
+"C:\cppapi\server\device.cpp"
+"C:\cppapi\server\device_2.cpp"
+"C:\cppapi\server\device_3.cpp"
+"C:\cppapi\server\deviceclass.cpp"
+"C:\cppapi\server\devicelog.cpp"
+"C:\cppapi\server\dserver.cpp"
+"C:\cppapi\server\dserverclass.cpp"
+"C:\cppapi\server\dserverlog.cpp"
+"C:\cppapi\server\dserverpoll.cpp"
+"C:\cppapi\server\dserversignal.cpp"
+"C:\cppapi\server\event.cpp"
+"C:\cppapi\server\eventcmds.cpp"
+"C:\cppapi\server\eventsupplier.cpp"
+"C:\cppapi\server\except.cpp"
+"C:\cppapi\client\filedatabase.cpp"
+"C:\cppapi\client\group.cpp"
+"C:\cppapi\server\logcmds.cpp"
+"C:\cppapi\server\logging.cpp"
+"C:\cppapi\server\logstream.cpp"
+"C:\cppapi\server\multiattribute.cpp"
+"C:\cppapi\server\ntservice.cpp"
+"C:\cppapi\server\pollcmds.cpp"
+"C:\cppapi\server\pollobj.cpp"
+"C:\cppapi\server\pollring.cpp"
+"C:\cppapi\server\pollthread.cpp"
+"C:\cppapi\client\proxy_asyn.cpp"
+"C:\cppapi\client\proxy_asyn_cb.cpp"
+"C:\cppapi\server\seqvec.cpp"
+"C:\cppapi\server\tangoappender.cpp"
+"C:\cppapi\server\tangorollingfileappender.cpp"
+"C:\cppapi\server\thsig.cpp"
+"C:\cppapi\server\utils.cpp"
+"C:\cppapi\server\w32win.cpp"
+"C:\cppapi\server\w_attribute.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP194E.tmp" 
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP194F.tmp" with contents
+[
+/nologo /MD /W3 /GR /GX /I "..\.." /I "..\..\..\client" /I "F:\tango\ORB\omniORB4.0.5\win32_dll\include" /I "F:\tango\tools\log4tango4.0.1\win32_dll\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "LOG4TANGO_HAS_DLL" /D "_TANGO_LIB" /D "_OMNIORB_STUB_DLL" /D "__x86__" /D "__NT__" /D __OSVERSION__=4 /D "__WIN32__" /Fp"Release/tango_dll.pch" /YX /Fo"Release/" /Fd"Release/" /FD /c 
+"C:\cppapi\server\idl\tangoDynSK.cpp"
+"C:\cppapi\server\idl\tangoSK.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP194F.tmp" 
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1950.bat" with contents
+[
+@echo off
+C:\perl\bin\perl ..\..\makedef.pl tango.def tango520 release\*.obj
+]
+Creating command line "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1950.bat"
+Compiling...
+api_util.cpp
+apiexcept.cpp
+asynreq.cpp
+attr_proxy.cpp
+attrdesc.cpp
+attribute.cpp
+attrmanip.cpp
+basiccommand.cpp
+blackbox.cpp
+cbthread.cpp
+class_factory.cpp
+classattribute.cpp
+command.cpp
+coutappender.cpp
+coutbuf.cpp
+dbapi_attribute.cpp
+dbapi_base.cpp
+dbapi_class.cpp
+dbapi_datum.cpp
+dbapi_device.cpp
+dbapi_server.cpp
+devapi_attr.cpp
+devapi_base.cpp
+devapi_data.cpp
+devapi_datahist.cpp
+device.cpp
+device_2.cpp
+device_3.cpp
+deviceclass.cpp
+devicelog.cpp
+dserver.cpp
+dserverclass.cpp
+dserverlog.cpp
+dserverpoll.cpp
+dserversignal.cpp
+C:\cppapi\server\dserversignal.cpp(207) : warning C4273: '_errno' : inconsistent dll linkage.  dllexport assumed.
+event.cpp
+eventcmds.cpp
+eventsupplier.cpp
+except.cpp
+filedatabase.cpp
+group.cpp
+logcmds.cpp
+logging.cpp
+logstream.cpp
+multiattribute.cpp
+ntservice.cpp
+pollcmds.cpp
+pollobj.cpp
+pollring.cpp
+pollthread.cpp
+proxy_asyn.cpp
+proxy_asyn_cb.cpp
+seqvec.cpp
+tangoappender.cpp
+tangorollingfileappender.cpp
+thsig.cpp
+utils.cpp
+w32win.cpp
+w_attribute.cpp
+Compiling...
+tangoDynSK.cpp
+tangoSK.cpp
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1951.tmp" with contents
+[
+log4tango.lib omniorb405_rt.lib omnidynamic405_rt.lib omnithread30_rt.lib COS405_rt.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /incremental:no /pdb:"Release/tango520.pdb" /machine:I386 /def:"tango.def" /out:"Release/tango520.dll" /implib:"Release/tango.lib" /libpath:"F:\tango\ORB\omniORB4.0.5\win32_dll\lib" /libpath:"F:\tango\tools\log4tango4.0.1\win32_dll\lib" 
+.\Release\api_util.obj
+.\Release\apiexcept.obj
+.\Release\asynreq.obj
+.\Release\attr_proxy.obj
+.\Release\attrdesc.obj
+.\Release\attribute.obj
+.\Release\attrmanip.obj
+.\Release\basiccommand.obj
+.\Release\blackbox.obj
+.\Release\cbthread.obj
+.\Release\class_factory.obj
+.\Release\classattribute.obj
+.\Release\command.obj
+.\Release\coutappender.obj
+.\Release\coutbuf.obj
+.\Release\dbapi_attribute.obj
+.\Release\dbapi_base.obj
+.\Release\dbapi_class.obj
+.\Release\dbapi_datum.obj
+.\Release\dbapi_device.obj
+.\Release\dbapi_server.obj
+.\Release\devapi_attr.obj
+.\Release\devapi_base.obj
+.\Release\devapi_data.obj
+.\Release\devapi_datahist.obj
+.\Release\device.obj
+.\Release\device_2.obj
+.\Release\device_3.obj
+.\Release\deviceclass.obj
+.\Release\devicelog.obj
+.\Release\dserver.obj
+.\Release\dserverclass.obj
+.\Release\dserverlog.obj
+.\Release\dserverpoll.obj
+.\Release\dserversignal.obj
+.\Release\event.obj
+.\Release\eventcmds.obj
+.\Release\eventsupplier.obj
+.\Release\except.obj
+.\Release\filedatabase.obj
+.\Release\group.obj
+.\Release\logcmds.obj
+.\Release\logging.obj
+.\Release\logstream.obj
+.\Release\multiattribute.obj
+.\Release\ntservice.obj
+.\Release\pollcmds.obj
+.\Release\pollobj.obj
+.\Release\pollring.obj
+.\Release\pollthread.obj
+.\Release\proxy_asyn.obj
+.\Release\proxy_asyn_cb.obj
+.\Release\seqvec.obj
+.\Release\tangoappender.obj
+.\Release\tangoDynSK.obj
+.\Release\tangorollingfileappender.obj
+.\Release\tangoSK.obj
+.\Release\thsig.obj
+.\Release\utils.obj
+.\Release\w32win.obj
+.\Release\w_attribute.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1951.tmp"
+Build def file...
+<h3>Output Window</h3>
+Linking...
+   Creating library Release/tango.lib and object Release/tango.exp
+
+
+
+<h3>Results</h3>
+tango520.dll - 0 error(s), 1 warning(s)
+</pre>
+</body>
+</html>

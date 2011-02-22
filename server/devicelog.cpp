@@ -8,63 +8,9 @@
 //
 // author(s) :	  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.14  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.13  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.11  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.10  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
-// Revision 3.9  2007/10/26 11:30:35  taurel
-// - Set admin device logging level if command line -v > 4
-//
-// Revision 3.8  2007/10/17 13:43:24  taurel
-// - Admin device default logging level set to OFF
-//
-// Revision 3.7  2006/03/27 17:00:46  jensmeyer
-// moved Makefile up
-//
-// Revision 3.6  2006/03/02 08:53:45  taurel
-// - Reset the changes made between 3.4 and 3.5 for VC7 because it makes library
-// logging messages invisible
-//
-// Revision 3.5  2006/02/17 16:54:11  jensmeyer
-// Corrections when porting to VC7 under windows
-//
-// Revision 3.4  2005/07/28 07:34:41  taurel
-// - Fix some incompatibility between 5.1 and 5.2
-//
 // Revision 3.3  2005/07/04 15:33:30  nleclercq
 // Added command line logging level 5 for TANGO core debugging
 //
@@ -95,6 +41,11 @@
 //
 // Revision 2.1  2003/02/17 14:57:40  taurel
 // Added the new Tango logging stuff (Thanks Nicolas from Soleil)
+//
+//
+// copyleft :	  European Synchrotron Radiation Facility
+//		  BP 220, Grenoble 38043
+//		  FRANCE
 //
 //-=============================================================================
 
@@ -167,9 +118,7 @@ void DeviceImpl::init_logger (void)
     // get cmd line logging level then ...
     int trace_level = tg->get_trace_level();
     // ... convert it to log4tango level
-    log4tango::Level::Value cmd_line_level = log4tango::Level::OFF;
-    if (trace_level > 4)
-    	cmd_line_level = log4tango::Level::DEBUG;
+    log4tango::Level::Value cmd_line_level;
     bool level_set_from_cmd_line = true;
     // are we initializing the dserver's logger
     log4tango::Logger* the_logger = get_logger();
@@ -227,8 +176,7 @@ void DeviceImpl::init_logger (void)
     }
     else {
       // set logger's level (from cmd line)
-		if (the_logger != Logging::get_core_logger())
-      		the_logger->set_level(cmd_line_level);
+      the_logger->set_level(cmd_line_level);
     }
     // save current logging level
     ext->saved_log_level = the_logger->get_level();
