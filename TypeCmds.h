@@ -43,17 +43,6 @@ public:
 };
 
 
-class IOLong64 : public Tango::Command
-{
-public:
-	IOLong64(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~IOLong64() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
-
 class IOFloat : public Tango::Command
 {
 public:
@@ -96,17 +85,6 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
-
-class IOULong64 : public Tango::Command
-{
-public:
-	IOULong64(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~IOULong64() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
 
 class IOString : public Tango::Command
 {

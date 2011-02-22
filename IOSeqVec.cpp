@@ -110,8 +110,7 @@ CORBA::Any *IOSeqVecLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     const Tango::DevVarLongArray *theInputArray;
     extract(in_any,theInputArray);
     
-//    vector<long> v1;
-    vector<Tango::DevLong> v1;
+    vector<long> v1;
     v1 << (*theInputArray);
     cout << "[IOSeqVecLong::execute] " << v1.size() << " elt(s) in temp vector" << endl;
     Tango::DevVarLongArray *theOutputArray = new Tango::DevVarLongArray();
@@ -263,8 +262,7 @@ CORBA::Any *IOSeqVecULong::execute(Tango::DeviceImpl *device,const CORBA::Any &i
     const Tango::DevVarULongArray *theInputArray;
     extract(in_any,theInputArray);
     
-//    vector<unsigned long> v1;
-    vector<Tango::DevULong> v1;
+    vector<unsigned long> v1;
     v1 << (*theInputArray);
     cout << "[IOSeqVecULong::execute] " << v1.size() << " elt(s) in temp vector" << endl;
     Tango::DevVarULongArray *theOutputArray = new Tango::DevVarULongArray();

@@ -182,15 +182,6 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
 
-class IOPushDevEncodedEvent : public Tango::Command {
-public:
-	IOPushDevEncodedEvent(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~IOPushDevEncodedEvent() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
 class IOSubscribeEvent : public Tango::Command {
 public:
 	IOSubscribeEvent(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
@@ -228,15 +219,6 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
 
-class IOFillPollBuffEncodedAttr : public Tango::Command {
-public:
-	IOFillPollBuffEncodedAttr(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~IOFillPollBuffEncodedAttr() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
 class IOFillPollBuffCmd : public Tango::Command {
 public:
 	IOFillPollBuffCmd(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
@@ -259,51 +241,6 @@ class GetLongSize : public Tango::Command {
 public:
 	GetLongSize(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
 	~GetLongSize() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
-class IOSetWAttrLimit : public Tango::Command {
-public:
-	IOSetWAttrLimit(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~IOSetWAttrLimit() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
-class ChangeEncodedFormat : public Tango::Command {
-public:
-	ChangeEncodedFormat(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~ChangeEncodedFormat() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
-class ChangeEncodedData : public Tango::Command {
-public:
-	ChangeEncodedData(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~ChangeEncodedData() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
-class PushDataReady : public Tango::Command {
-public:
-	PushDataReady(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~PushDataReady() {};
-	
-	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
-	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
-};
-
-class SubDeviceTst : public Tango::Command {
-public:
-	SubDeviceTst(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
-	~SubDeviceTst() {};
 	
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);

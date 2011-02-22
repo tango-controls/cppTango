@@ -171,13 +171,11 @@ CORBA::Any *IOPollArray2::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     {   
     	(dev->get_short_array())[0] = 100;
     	(dev->get_short_array())[1] = 200;
-cout << "Value are 100,200" << endl;
     }
     else
     {
         (dev->get_short_array())[0] = 300;
 	(dev->get_short_array())[1] = 400;
-cout << "Value are 300,400" << endl;
     }
         
     data_ptr = dev->get_short_array();

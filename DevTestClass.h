@@ -290,55 +290,6 @@ public:
 	{(static_cast<DevTest *>(dev))->write_Short_attr_rw(att);}
 };
 
-class Long64_attr_rwAttr: public Tango::Attr
-{
-public:
-	Long64_attr_rwAttr():Attr("Long64_attr_rw", Tango::DEV_LONG64, Tango::READ_WRITE) {};
-	~Long64_attr_rwAttr() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Long64_attr_rw(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_Long64_attr_rw(att);}
-};
-
-class ULong_attr_rwAttr: public Tango::Attr
-{
-public:
-	ULong_attr_rwAttr():Attr("ULong_attr_rw", Tango::DEV_ULONG, Tango::READ_WRITE) {};
-	~ULong_attr_rwAttr() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_ULong_attr_rw(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_ULong_attr_rw(att);}
-};
-
-class ULong64_attr_rwAttr: public Tango::Attr
-{
-public:
-	ULong64_attr_rwAttr():Attr("ULong64_attr_rw", Tango::DEV_ULONG64, Tango::READ_WRITE) {};
-	~ULong64_attr_rwAttr() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_ULong64_attr_rw(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_ULong64_attr_rw(att);}
-};
-
-class State_attr_rwAttr: public Tango::Attr
-{
-public:
-	State_attr_rwAttr():Attr("State_attr_rw", Tango::DEV_STATE, Tango::READ_WRITE) {};
-	~State_attr_rwAttr() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_State_attr_rw(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_State_attr_rw(att);}
-};
-
-
 class Short_attr_wAttr: public Tango::Attr
 {
 public:
@@ -358,30 +309,6 @@ public:
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_Short_attr_w2(att);}
 };
-
-#ifndef COMPAT
-class Encoded_attr_rwAttr: public Tango::Attr
-{
-public:
-	Encoded_attr_rwAttr():Attr("Encoded_attr", Tango::DEV_ENCODED, Tango::READ_WRITE) {};
-	~Encoded_attr_rwAttr() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Encoded_attr_rw(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_Encoded_attr_rw(att);}
-};
-
-class Encoded_attr_image: public Tango::Attr
-{
-public:
-	Encoded_attr_image():Attr("Encoded_image", Tango::DEV_ENCODED, Tango::READ) {};
-	~Encoded_attr_image() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Encoded_attr_image(att);}
-};
-#endif
 
 //  --------------------------------------------------------------------------------
 
@@ -853,17 +780,6 @@ public:
 	{(static_cast<DevTest *>(dev))->read_Event_change_tst(att);}	
 };
 
-class Event64_change_tstAttr: public Tango::SpectrumAttr
-{
-public:
-	Event64_change_tstAttr():SpectrumAttr("Event64_change_tst", Tango::DEV_LONG64,Tango::READ, 6) {};
-	~Event64_change_tstAttr() {};
-
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Event64_change_tst(att);}	
-};
-
-
 class Event_quality_tstAttr: public Tango::SpectrumAttr
 {
 public:
@@ -882,18 +798,6 @@ public:
 
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 	{(static_cast<DevTest *>(dev))->read_Poll_buff(att);}	
-};
-
-class Poll_buffRWAttr: public Tango::ImageAttr
-{
-public:
-	Poll_buffRWAttr():ImageAttr("Poll_buffRW", Tango::DEV_STRING,Tango::READ_WRITE,2,2) {};
-	~Poll_buffRWAttr() {};
-
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Poll_buffRW(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_Poll_buffRW(att);}
 };
 
 // ----------------------------------------------------------------------------
@@ -922,72 +826,6 @@ public:
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_fast_actuator(att);}
 };
-
-// ----------------------------------------------------------------------------
-
-class Long64_spec_attr_rwAttr: public Tango::SpectrumAttr
-{
-public:
-	Long64_spec_attr_rwAttr():SpectrumAttr("Long64_spec_attr_rw", Tango::DEV_LONG64,Tango::READ_WRITE, 3) {};
-	~Long64_spec_attr_rwAttr() {};
-
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Long64_spec_attr_rw(att);}	
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_Long64_spec_attr_rw(att);}
-};
-
-class ULong_spec_attr_rwAttr: public Tango::SpectrumAttr
-{
-public:
-	ULong_spec_attr_rwAttr():SpectrumAttr("ULong_spec_attr_rw", Tango::DEV_ULONG,Tango::READ_WRITE, 3) {};
-	~ULong_spec_attr_rwAttr() {};
-
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_ULong_spec_attr_rw(att);}	
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_ULong_spec_attr_rw(att);}
-};
-
-class ULong64_spec_attr_rwAttr: public Tango::SpectrumAttr
-{
-public:
-	ULong64_spec_attr_rwAttr():SpectrumAttr("ULong64_spec_attr_rw", Tango::DEV_ULONG64,Tango::READ_WRITE, 3) {};
-	~ULong64_spec_attr_rwAttr() {};
-
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_ULong64_spec_attr_rw(att);}	
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_ULong64_spec_attr_rw(att);}
-};
-
-class State_spec_attr_rwAttr: public Tango::SpectrumAttr
-{
-public:
-	State_spec_attr_rwAttr():SpectrumAttr("State_spec_attr_rw", Tango::DEV_STATE,Tango::READ_WRITE, 3) {};
-	~State_spec_attr_rwAttr() {};
-
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_State_spec_attr_rw(att);}	
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_State_spec_attr_rw(att);}
-};
-
-
-// ----------------------------------------------------------------------------
-
-class Sub_device_tstAttr: public Tango::Attr
-{
-public:
-	Sub_device_tstAttr():Attr("Sub_device_tst",Tango::DEV_BOOLEAN,Tango::READ) {};
-	~Sub_device_tstAttr() {};
-	
-	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Sub_device_tst(att);}
-};
-
-// ----------------------------------------------------------------------------
-
 
 //
 // The DevTestClass singleton definition

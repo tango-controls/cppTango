@@ -156,15 +156,10 @@ CORBA::Any *IOPollStr1::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
  
     argout = new char[40];
     num++;
-    if ((num % 3) == 0)
+    if ((num % 2) == 0)
     	strcpy(argout,"Even value from IOPollStr1");
-    else if ((num % 3)  == 1)
-    	strcpy(argout,"Odd value from IOPollStr1");
     else
-    {
-    	delete [] argout;
-    	Tango::Except::throw_exception((const char*)"qqq",(const char *)"www",(const char *)"eee");
-    }
+    	strcpy(argout,"Odd value from IOPollStr1");
     
     return insert(argout);
   }

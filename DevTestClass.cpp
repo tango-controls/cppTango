@@ -352,7 +352,7 @@ void DevTestClass::command_factory()
 					   Tango::DEV_LONG,
 					   "Void",
 					   "Constant number set to 11"));
-//	command_list.back()->set_polling_period(400);
+	command_list.back()->set_polling_period(400);
 	command_list.push_back(new IOShortSleep("IOShortSleep",
 						Tango::DEVVAR_SHORTARRAY,
 						Tango::DEV_SHORT,
@@ -418,11 +418,6 @@ void DevTestClass::command_factory()
 					      Tango::DEV_VOID,
 					      "void",
 					      "void"));
-	command_list.push_back(new IOPushDevEncodedEvent("IOPushDevEncodedEvent",
-					      Tango::DEV_VOID,
-					      Tango::DEV_VOID,
-					      "void",
-					      "void"));
 	command_list.push_back(new IOSubscribeEvent("IOSubscribeEvent",
 					      Tango::DEV_VOID,
 					      Tango::DEV_VOID,
@@ -439,11 +434,6 @@ void DevTestClass::command_factory()
 					      "void",
 					      "Number of times the CB has been executed"));
 	command_list.push_back(new IOFillPollBuffAttr("IOFillPollBuffAttr",
-					      Tango::DEV_VOID,
-					      Tango::DEV_VOID,
-					      "void",
-					      "void"));
-	command_list.push_back(new IOFillPollBuffEncodedAttr("IOFillPollBuffEncodedAttr",
 					      Tango::DEV_VOID,
 					      Tango::DEV_VOID,
 					      "void",
@@ -488,41 +478,6 @@ void DevTestClass::command_factory()
 					      Tango::DEV_SHORT,
 					      "void",
 					      "Sizeof long (32 or 64 bits)"));
-	command_list.push_back(new IOSetWAttrLimit("IOSetWAttrLimit",
-					      Tango::DEVVAR_DOUBLEARRAY,
-					      Tango::DEV_VOID,
-					      "arr[0]==0 -> min_value, arr[0]==1 -> max_value, arr[1]=limit",
-					      "void"));
-	command_list.push_back(new IOLong64("IOLong64",
-					    Tango::DEV_LONG64,
-					    Tango::DEV_LONG64,
-					    "Number",
-					    "Number * 2"));
-	command_list.push_back(new IOULong64("IOULong64",
-					    Tango::DEV_ULONG64,
-					    Tango::DEV_ULONG64,
-					    "Number",
-					    "Number * 2"));
-	command_list.push_back(new ChangeEncodedFormat("ChangeEncodedFormat",
-					    Tango::DEV_VOID,
-					    Tango::DEV_VOID,
-					    "void",
-					    "void"));
-	command_list.push_back(new ChangeEncodedData("ChangeEncodedData",
-					    Tango::DEV_VOID,
-					    Tango::DEV_VOID,
-					    "void",
-					    "void"));
-	command_list.push_back(new PushDataReady("PushDataReady",
-					    Tango::DEVVAR_LONGSTRINGARRAY,
-					    Tango::DEV_VOID,
-					    "s[0] = attribute name, l[0] = user counter",
-					    "void"));
-	command_list.push_back(new SubDeviceTst("SubDeviceTst",
-					    Tango::DEV_VOID,
-					    Tango::DEV_BOOLEAN,
-					    "void",
-					    "true = sub device connected"));
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 				
@@ -609,10 +564,9 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
 {
   att_list.push_back(new Short_attrAttr());
   att_list.push_back(new Long_attrAttr());
-  att_list.back()->set_data_ready_event(true);
   att_list.push_back(new Double_attrAttr());
   att_list.push_back(new String_attrAttr());
-//  att_list.back()->set_polling_period(250);
+  att_list.back()->set_polling_period(250);
   
   att_list.push_back(new Short_spec_attrAttr());  
   att_list.push_back(new Long_spec_attrAttr());
@@ -637,7 +591,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   def_prop.set_label("Test label");
   def_prop.set_description("Test description");
   def_prop.set_unit("Kilogramme");
-  def_prop.set_standard_unit("100");
+  def_prop.set_standard_unit("gramme");
   def_prop.set_display_unit("Et ta soeur");
   def_prop.set_format("Tres long");
   def_prop.set_min_value("0");
@@ -686,8 +640,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Short_ima_attr_rwAttr());	 
   att_list.push_back(new String_ima_attr_rwAttr());
   
-  att_list.push_back(new Event_change_tstAttr());
-  att_list.push_back(new Event64_change_tstAttr());	 
+  att_list.push_back(new Event_change_tstAttr());	 
   att_list.push_back(new Event_quality_tstAttr());
   att_list.push_back(new Long_attr_with_wAttr());
 
@@ -695,7 +648,6 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new String_attr_w2Attr());
 
   att_list.push_back(new Poll_buffAttr());
-  att_list.push_back(new Poll_buffRWAttr());
   
   att_list.push_back(new Float_attrAttr());
   att_list.push_back(new Boolean_attrAttr());
@@ -728,22 +680,6 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
 
   att_list.push_back(new slow_actuatorAttr());
   att_list.push_back(new fast_actuatorAttr());
-  
-  att_list.push_back(new Long64_attr_rwAttr());
-  att_list.push_back(new ULong_attr_rwAttr());
-  att_list.push_back(new ULong64_attr_rwAttr());
-  att_list.push_back(new State_attr_rwAttr());
-  
-  att_list.push_back(new Long64_spec_attr_rwAttr());
-  att_list.push_back(new ULong_spec_attr_rwAttr());
-  att_list.push_back(new ULong64_spec_attr_rwAttr());
-  att_list.push_back(new State_spec_attr_rwAttr());
-
-  att_list.push_back(new Sub_device_tstAttr());
-#ifndef COMPAT  
-  att_list.push_back(new Encoded_attr_rwAttr());
-  att_list.push_back(new Encoded_attr_image());
-#endif
   
 }
 

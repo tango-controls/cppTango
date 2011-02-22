@@ -504,14 +504,10 @@ CORBA::Any *IOTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 	
 	Tango::Util *tg = Tango::Util::instance();
 
-#ifndef COMPAT
-	tg->trigger_cmd_polling(device,cmd_name);
-#else
-	string name(cmd_name);
+	string name(cmd_name);	
 	tg->trigger_cmd_polling(device,name);
-#endif
 	
-    return insert();
+    	return insert();
 }
 
 
@@ -556,14 +552,10 @@ CORBA::Any *IOAttrTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &
 	
 	Tango::Util *tg = Tango::Util::instance();
 
-#ifndef COMPAT
-	tg->trigger_attr_polling(device,att_name);
-#else
-	string name(att_name);
+	string name(att_name);	
 	tg->trigger_attr_polling(device,name);
-#endif
 	
-    return insert();
+    	return insert();
 }
 
 
@@ -680,13 +672,6 @@ CORBA::Any *IOAttrThrowEx::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 			(static_cast<DevTest *>(device))->event_quality_attr_except = false;
 		else
 			(static_cast<DevTest *>(device))->event_quality_attr_except = true;
-	}
-	else if ((*in)[0] == 3)
-	{
-		if ((*in)[1] == 0)
-			(static_cast<DevTest *>(device))->event_throw_out_of_sync = false;
-		else
-			(static_cast<DevTest *>(device))->event_throw_out_of_sync = true;
 	}	
     	return insert();
 }
@@ -728,8 +713,7 @@ bool IOAddOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 CORBA::Any *IOAddOneElt::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {	
 	(static_cast<DevTest *>(device))->attr_event_size++;
-	(static_cast<DevTest *>(device))->attr_event64_size++;
-		
+	
     	return insert();
 }
 
@@ -770,8 +754,7 @@ bool IORemoveOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 CORBA::Any *IORemoveOneElt::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 	(static_cast<DevTest *>(device))->attr_event_size--;
-	(static_cast<DevTest *>(device))->attr_event64_size--;
-		
+	
     	return insert();
 }
 
@@ -812,7 +795,6 @@ bool IOIncValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 CORBA::Any *IOIncValue::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 	((static_cast<DevTest *>(device))->attr_event[2])++;
-	((static_cast<DevTest *>(device))->attr_event64[0])++;
 	
     	return insert();
 }
@@ -855,7 +837,6 @@ bool IODecValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 CORBA::Any *IODecValue::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 	((static_cast<DevTest *>(device))->attr_event[2])--;
-	((static_cast<DevTest *>(device))->attr_event64[0])--;
 	
     	return insert();
 }
@@ -958,48 +939,6 @@ CORBA::Any *IOPushEvent::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 	static_cast<DevTest *>(device)->IOPushEvent();  
 		  	
     	return insert();
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		IOPushDevEncodedEvent::IOPushDevEncodedEvent()
-// 
-// description : 	constructor for the IOPushDevEncodedEvent command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-IOPushDevEncodedEvent::IOPushDevEncodedEvent(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool IOPushDevEncodedEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allways allowed
-//
-
-		return(true);
-}
-
-
-
-CORBA::Any *IOPushDevEncodedEvent::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-	
-	static_cast<DevTest *>(device)->IOPushDevEncodedEvent();  
-		  	
-	return insert();
 }
 
 //+----------------------------------------------------------------------------
@@ -1170,45 +1109,6 @@ CORBA::Any *IOFillPollBuffAttr::execute(Tango::DeviceImpl *device,const CORBA::A
     	return insert(); 
 }
 
-//+----------------------------------------------------------------------------
-//
-// method : 		IOFillPollBuffEncodedAttr::IOFillPollBuffEncodedAttr()
-// 
-// description : 	constructor for the IOFillPollBuffEncodedAttr command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-IOFillPollBuffEncodedAttr::IOFillPollBuffEncodedAttr(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool IOFillPollBuffEncodedAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allways allowed
-//
-
-	return(true);
-}
-
-
-
-CORBA::Any *IOFillPollBuffEncodedAttr::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-	(static_cast<DevTest *>(device))->IOFillPollBuffEncodedAttr();	  	
-    	return insert(); 
-}
 
 //+----------------------------------------------------------------------------
 //
@@ -1334,275 +1234,3 @@ CORBA::Any *GetLongSize::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 #endif	  	
     	return insert(size); 
 }
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ChangeEncodedFormat::ChangeEncodedFormat()
-// 
-// description : 	constructor for the ChangeEncodedFormat command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-ChangeEncodedFormat::ChangeEncodedFormat(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool ChangeEncodedFormat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allways allowed
-//
-
-	return(true);
-}
-
-
-
-CORBA::Any *ChangeEncodedFormat::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-	static bool togle = false;
-
-#ifndef COMPAT
-	if (togle == false)
-	{
-		(static_cast<DevTest *>(device))->enc_attr.encoded_format = CORBA::string_dup("This format");
-		togle = true;
-	}
-	else
-	{
-		(static_cast<DevTest *>(device))->enc_attr.encoded_format = CORBA::string_dup("Another format");
-		togle = false;
-	}
-#endif
-  	
-	return insert(); 
-}
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		ChangeEncodedData::ChangeEncodedData()
-// 
-// description : 	constructor for the ChangeEncodedFormat command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-ChangeEncodedData::ChangeEncodedData(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool ChangeEncodedData::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allways allowed
-//
-
-	return(true);
-}
-
-
-
-CORBA::Any *ChangeEncodedData::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-#ifndef COMPAT
-	(static_cast<DevTest *>(device))->enc_attr.encoded_data[2]++;
-#endif
-	return insert(); 
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		PushDataReady::PushDataReady()
-// 
-// description : 	constructor for the PushDataReady command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-PushDataReady::PushDataReady(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool PushDataReady::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allways allowed
-//
-
-	return(true);
-}
-
-
-
-CORBA::Any *PushDataReady::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-#ifndef COMPAT
-	const Tango::DevVarLongStringArray *in;
-	extract(in_any,in);
-	
-	(static_cast<DevTest *>(device))->push_data_ready(in);
-#endif
-	return insert(); 
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		IOSetWAttrLimit::IOSetWAttrLimit()
-// 
-// description : 	constructor for the IOSetWAttrLimit command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-IOSetWAttrLimit::IOSetWAttrLimit(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool IOSetWAttrLimit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allways allowed
-//
-
-	return(true);
-}
-
-
-
-CORBA::Any *IOSetWAttrLimit::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-	const Tango::DevVarDoubleArray *in;
-	extract(in_any,in);
-	
-	(static_cast<DevTest *>(device))->IOSetWAttrLimit(in);	  	
-    	return insert(); 
-}
-
-
-//+----------------------------------------------------------------------------
-//	A thread class to test the registration of
-//	sub device connections in an external thread
-//	
-//	The thread is executed when calling
-//	the command SubDeviceTst.
-//-----------------------------------------------------------------------------
-
-class AcquisitionThread : public omni_thread 
-{
-public :
-	AcquisitionThread();
-
-private :
-	void *run_undetached(void *arg);
-};
-
-AcquisitionThread::AcquisitionThread () : omni_thread()
-{
-	start_undetached();
-}
-
-void *AcquisitionThread::run_undetached (void *arg)
-{
-	cout << "Thread : Connect device = dev/test/11" << endl;
-
-	Tango::DeviceProxy *dev = new Tango::DeviceProxy ("dev/test/11");
-
-	return NULL;
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		SubDeviceTst::SubDeviceTst()
-// 
-// description : 	constructor for the SubDeviceTst command of the 
-//					DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-SubDeviceTst::SubDeviceTst(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-bool SubDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-//
-// command allways allowed
-//
-	return(true);
-}
-
-CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-	bool connected = false;
-		
-	try
-	{
-		omni_thread *acquisition_thread = new AcquisitionThread();
-		
-		
-		Tango::DeviceProxy *remote_dev;
-		remote_dev = new Tango::DeviceProxy("dev/test/12");
-		connected = true;
-	}
-	catch (...)
-	{
-		connected = false;
-	}
-	    
-	return insert(connected);
-}
-
-
-

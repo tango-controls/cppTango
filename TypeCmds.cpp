@@ -219,63 +219,6 @@ CORBA::Any *IOLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
     }
 }
 
-
-//+----------------------------------------------------------------------------
-//
-// method : 		IOLong64::IOLong64()
-// 
-// description : 	constructor for the IOLong64 command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-IOLong64::IOLong64(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-
-bool IOLong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allowed only if the device is on
-//
-
-	if (device->get_state() == Tango::ON)
-		return(true);
-	else
-		return(false);
-}
-
-
-CORBA::Any *IOLong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
-  try {
-    Tango::DevLong theNumber;
-    extract(in_any,theNumber);
-    cout << "[IOLong64::execute] received number " << theNumber << endl;
-    DEV_DEBUG_STREAM(device) << "[IOLong64::execute] received number " << theNumber;
-    theNumber = theNumber * 2;
-    cout << "[IOLong64::execute] return number " << theNumber << endl;
-    DEV_DEBUG_STREAM(device) << "[IOLong64::execute] return number " << theNumber << endl;
-    return insert(theNumber);
-  }
-  catch (CORBA::Exception &e)
-    {
-      Tango::Except::print_exception(e);
-      throw ;
-    }
-}
-
 //+----------------------------------------------------------------------------
 //
 // method : 		IOFloat::IOFloat()
@@ -495,62 +438,6 @@ CORBA::Any *IOULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 }
 
 
-
-//+----------------------------------------------------------------------------
-//
-// method : 		IOULong64::IOULong64()
-// 
-// description : 	constructor for the IOULong64 command of the 
-//			DevTest.
-//
-// In : - name : The command name
-//	- in : The input parameter type
-//	- out : The output parameter type
-//	- in_desc : The input parameter description
-//	- out_desc : The output parameter description
-//
-//-----------------------------------------------------------------------------
-
-IOULong64::IOULong64(const char *name,Tango::CmdArgType in,
-		   Tango::CmdArgType out,const char *in_desc,
-		   const char *out_desc)
-:Tango::Command(name,in,out,in_desc,out_desc)
-{
-}
-
-
-bool IOULong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
-{
-
-//
-// command allowed only if the device is on
-//
-
-	if (device->get_state() == Tango::ON)
-		return(true);
-	else
-		return(false);
-}
-
-
-CORBA::Any *IOULong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
-  try {
-    Tango::DevULong64 theNumber;
-    extract(in_any,theNumber);
-    cout << "[IOULong64::execute] received number " << theNumber << endl;
-    theNumber = theNumber * 2;
-    cout << "[IOULong64::execute] return number " << theNumber << endl;
-    return insert(theNumber);
-  }
-  catch (CORBA::Exception &e)
-    {
-      Tango::Except::print_exception(e);
-      throw ;
-    }
-}
-
-
 //+----------------------------------------------------------------------------
 //
 // method : 		IOString::IOString()
@@ -659,7 +546,7 @@ CORBA::Any *IOCharArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
     extract(in_any,theCharArray);
     Tango::DevVarCharArray *theReturnedArray = new Tango::DevVarCharArray();
     theReturnedArray->length(theCharArray->length());
-    for (unsigned int i=0; i<theCharArray->length(); i++) {
+    for (int i=0; i<theCharArray->length(); i++) {
       cout << "[IOCharArray::execute] received char " << (*theCharArray)[i] << endl;
       (*theReturnedArray)[theCharArray->length()-i-1] = (*theCharArray)[i] ;
     }
@@ -717,7 +604,7 @@ CORBA::Any *IOShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     extract(in_any,theNumberArray);
     Tango::DevVarShortArray *theReturnedArray = new Tango::DevVarShortArray();
     theReturnedArray->length(theNumberArray->length());
-    for (unsigned int i=0; i<theNumberArray->length(); i++) {
+    for (int i=0; i<theNumberArray->length(); i++) {
       cout << "[IOShortArray::execute] received number " << (*theNumberArray)[i] << endl;
       (*theReturnedArray)[i] = (*theNumberArray)[i] * 2;
       cout << "[IOShortArray::execute] return number " << (*theReturnedArray)[i] << endl;
@@ -776,7 +663,7 @@ CORBA::Any *IOLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
     extract(in_any,theNumberArray);
     Tango::DevVarLongArray *theReturnedArray = new Tango::DevVarLongArray();
     theReturnedArray->length(theNumberArray->length());
-    for (unsigned int i=0; i<theNumberArray->length(); i++) {
+    for (int i=0; i<theNumberArray->length(); i++) {
       cout << "[IOLongArray::execute] received number " << (*theNumberArray)[i] << endl;
       (*theReturnedArray)[i] = (*theNumberArray)[i] * 2;
       cout << "[IOLongArray::execute] return number " << (*theReturnedArray)[i] << endl;
@@ -835,7 +722,7 @@ CORBA::Any *IOFloatArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     extract(in_any,theNumberArray);
     Tango::DevVarFloatArray *theReturnedArray = new Tango::DevVarFloatArray();
     theReturnedArray->length(theNumberArray->length());
-    for (unsigned int i=0; i<theNumberArray->length(); i++) {
+    for (int i=0; i<theNumberArray->length(); i++) {
       cout << "[IOFloatArray::execute] received number " << (*theNumberArray)[i] << endl;
       (*theReturnedArray)[i] = (*theNumberArray)[i] * 2;
       cout << "[IOFloatArray::execute] return number " << (*theReturnedArray)[i] << endl;
@@ -893,7 +780,7 @@ CORBA::Any *IODoubleArray::execute(Tango::DeviceImpl *device,const CORBA::Any &i
     extract(in_any,theNumberArray);
     Tango::DevVarDoubleArray *theReturnedArray = new Tango::DevVarDoubleArray();
     theReturnedArray->length(theNumberArray->length());
-    for (unsigned int i=0; i<theNumberArray->length(); i++) {
+    for (int i=0; i<theNumberArray->length(); i++) {
       cout << "[IODoubleArray::execute] received number " << (*theNumberArray)[i] << endl;
       (*theReturnedArray)[i] = (*theNumberArray)[i] * 2;
       cout << "[IODoubleArray::execute] return number " << (*theReturnedArray)[i] << endl;
@@ -952,7 +839,7 @@ CORBA::Any *IOUShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &i
     extract(in_any,theNumberArray);
     Tango::DevVarUShortArray *theReturnedArray = new Tango::DevVarUShortArray();
     theReturnedArray->length(theNumberArray->length());
-    for (unsigned int i=0; i<theNumberArray->length(); i++) {
+    for (int i=0; i<theNumberArray->length(); i++) {
       cout << "[IOUShortArray::execute] received number " << (*theNumberArray)[i] << endl;
       (*theReturnedArray)[i] = (*theNumberArray)[i] * 2;
       cout << "[IOUShortArray::execute] return number " << (*theReturnedArray)[i] << endl;
@@ -1011,7 +898,7 @@ CORBA::Any *IOULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     extract(in_any,theNumberArray);
     Tango::DevVarULongArray *theReturnedArray = new Tango::DevVarULongArray();
     theReturnedArray->length(theNumberArray->length());
-    for (unsigned int i=0; i<theNumberArray->length(); i++) {
+    for (int i=0; i<theNumberArray->length(); i++) {
       cout << "[IOULongArray::execute] received number " << (*theNumberArray)[i] << endl;
       (*theReturnedArray)[i] = (*theNumberArray)[i] * 2;
       cout << "[IOULongArray::execute] return number " << (*theReturnedArray)[i] << endl;
@@ -1069,7 +956,7 @@ CORBA::Any *IOStringArray::execute(Tango::DeviceImpl *device,const CORBA::Any &i
     extract(in_any,theStringArray);
     Tango::DevVarStringArray *theReturnedArray = new Tango::DevVarStringArray();
     theReturnedArray->length(theStringArray->length());
-    for (unsigned int i=0; i<theStringArray->length(); i++) {
+    for (int i=0; i<theStringArray->length(); i++) {
       cout << "[IOStringArray::execute] received String " << (*theStringArray)[i].in() << endl;
       (*theReturnedArray)[theStringArray->length()-i-1] = (*theStringArray)[i] ;
       cout << "[IOStringArray::execute] return String " << (*theReturnedArray)[i].in() << endl;
@@ -1127,7 +1014,7 @@ CORBA::Any *IOLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     const Tango::DevVarLongStringArray *theReceived;
     extract(in_any,theReceived);
     Tango::DevVarLongStringArray *theReturned = new Tango::DevVarLongStringArray;
-    unsigned int i;
+    int i;
 
     ((*theReturned).lvalue).length(((*theReceived).lvalue).length());
     for (i=0; i<((*theReceived).lvalue).length(); i++) {
@@ -1194,7 +1081,7 @@ CORBA::Any *IODoubleString::execute(Tango::DeviceImpl *device,const CORBA::Any &
   try {
     const Tango::DevVarDoubleStringArray *theReceived;
     Tango::DevVarDoubleStringArray *theReturned = new Tango::DevVarDoubleStringArray();
-    unsigned int i;
+    int i;
 
     extract(in_any,theReceived);
     ((*theReturned).dvalue).length(((*theReceived).dvalue).length());
