@@ -1,0 +1,246 @@
+#!/bin/bash
+
+#
+# remove different echo command behaviour on different OS
+#
+if test "`echo -e xxx`" = "xxx"
+then
+    echo="echo -e"
+else
+    echo=echo
+fi
+
+if [ $# = 0 ]
+then
+	$echo "\nusage:  runtest ds_system\n"
+	$echo "ds_system can be solaris9, solaris9_CC, debian30, redhate5_64, ubuntu904 or python"
+	exit 1
+fi
+
+#
+# test host
+#
+
+SOL9_HOST=kidiboo
+DEBIAN30_HOST=fumanchu
+REDHATE5_64_HOST=esrflinux2-1a
+PYTHON_HOST=controls01
+UBUNTU904_HOST=pcantares
+
+HOST=`hostname`
+SERV_NAME=devTest
+
+
+case $1 in
+solaris9 )
+	if [ $HOST != $SOL9_HOST ]
+	then
+		$echo "For solaris, test should run on "$SOL9_HOST
+		exit 1
+	fi
+	DIR=solaris9_gcc
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-solaris9
+	;;
+#
+solaris9_CC )
+	if [ $HOST != $SOL9_HOST ]
+	then
+		$echo "For solaris, test should run on "$SOL9_HOST
+		exit 1
+	fi
+	DIR=solaris9_CC
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-solaris9_CC
+	;;
+#
+redhate5_64 )
+	if [ $HOST != $REDHATE5_64_HOST ]
+	then
+		$echo "For redhate5_64, test should run on "$REDHATE5_64_HOST
+		exit 1
+	fi
+	DIR=redhate5_64
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-redhate5_64
+	;;
+#
+debian30 )
+	if [ $HOST != $DEBIAN30_HOST ]
+	then
+		$echo "For debian30, test should run on "$DEBIAN30_HOST
+		exit 1
+	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/debian30
+	DIR=debian30
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-debian30
+	;;
+#
+ubuntu904 )
+	if [ $HOST != $UBUNTU904_HOST ]
+	then
+		$echo "For ubuntu 9.04, test should run on "$UBUTU904_HOST
+		exit 1
+	fi
+	DIR=ubuntu904
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-ubuntu904
+	;;
+#
+python )
+	if [ $HOST != $PYTHON_HOST ]
+	then
+		$echo "For python, test should run on "$PYTHON_HOST
+		exit 1
+	fi
+	DIR=suse93
+	TEST_BASE=/home/etaurel/tg_old_test/test-linux
+	;;
+#
+* )
+	$echo "\nunknown system"
+	exit 1
+	;;
+esac
+
+check_return_value () {
+if [ $1 != "0" ]
+then
+	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
+	echo "Leaving test suite, try to fix it"
+	exit
+fi
+}
+
+#
+# First, test device server startup sequence
+#
+
+$echo "Testing miscellaneous DeviceProxy features"
+$DIR/misc_devproxy dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting insertion and extraction into DeviceData objects for all types"
+$DIR/cmd_types dev/test/10 10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting extraction from DeviceAttribute objects for all types"
+$DIR/attr_types dev/test/10 10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting attribute configuration changes"
+$DIR/att_conf
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting miscellaneous DeviceData object features"
+$DIR/misc_devdata
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting miscellaneous DeviceAttribute object features"
+$DIR/misc_devattr
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting writing attribute (with the eight data types) using DeviceAttribute"
+$DIR/write_attr dev/test/10 10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting copy constructor and assignement operator of the DeviceProxy class"
+$DIR/copy_devproxy
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting object property methods of the Database class"
+$DIR/obj_prop
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting command_history and attribute_history DeviceProxy methods"
+$TEST_BASE Poll.tst 1>/dev/null 2>&1
+sleep 7
+$DIR/read_hist dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting polling of new attribute data types"
+$DIR/poll_attr dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting all DeviceProxy polling methods"
+$DIR/poll_met
+$TEST_BASE StopPoll.tst 1>/dev/null 2>&1
+#
+$echo "\nTesting all AttributeProxy methods"
+$DIR/attr_proxy dev/test/10/Short_attr_rw
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting writing spectrum and image attributes"
+$DIR/write_attr_3 dev/test/10 10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting polled command with external triggering"
+$DIR/read_hist_ext dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting individual polling buffer depth"
+$DIR/ring_depth dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting memorized attributes"
+$DIR/mem_att dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting state and status read as attributes"
+$DIR/state_attr dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting RDS alarm"
+$DIR/rds dev/test/10
+ret=$?
+check_return_value $ret
+#
+#$echo "\nTesting Device Server Cache"
+#$DIR/ds_cache -v
+#ret=$?
+#check_return_value $ret
+#
+$echo "\nTesting Write_Read attribute"
+$DIR/w_r_attr dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting device locking feature"
+PATH=$PATH:./$DIR
+$DIR/lock dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting the sub device diagnostics"
+PATH=$PATH:./$DIR
+$DIR/sub_dev dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting resetting attribute event conf. reset (need notifd...)"
+$DIR/ConfEventBugClient
+ret=$?
+check_return_value $ret
+#
+#	Now, test asynchronous features
+#
+cd /home/taurel/tango/cppapi_tst/asyn;/home/taurel/tango/cppapi_tst/asyn/runtest $1
+#
+#
+#	Now, test events
+#
+cd /home/taurel/tango/cppapi_tst/event;/home/taurel/tango/cppapi_tst/event/runtest $1
+#cd /segfs/tango/tools/cppapi_tst/client/event;/segfs/tango/tools/cppapi_tst/client/event/runtest $1

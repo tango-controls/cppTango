@@ -1,0 +1,181 @@
+#!/bin/bash
+
+#
+# remove different echo command behaviour on different OS
+#
+if test "`echo -e xxx`" = "xxx"
+then
+    echo="echo -e"
+else
+    echo=echo
+fi
+
+if [ $# = 0 ]
+then
+	$echo "\nusage:  runtest ds_system\n"
+	$echo "ds_system can be solaris9, solaris9_CC, debian30, ubuntu904 or python"
+	exit 1
+fi
+
+#
+# test host
+#
+SOL9_HOST=kidiboo
+DEBIAN30_HOST=fumanchu
+PYTHON_HOST=controls01
+UBUNTU904_HOST=pcantares
+
+HOST=`hostname`
+SERV_NAME=devTest
+
+
+case $1 in
+solaris9 )
+	if [ $HOST != $SOL9_HOST ]
+	then
+		$echo "For solaris9, test should run on "$SOL9_HOST
+		exit 1
+	fi
+	DIR=solaris9_gcc
+	;;
+#
+solaris9_CC )
+	if [ $HOST != $SOL9_HOST ]
+	then
+		$echo "For solaris9_CC, test should run on "$SOL9_HOST
+		exit 1
+	fi
+	DIR=solaris9_CC
+	;;
+#
+debian30 )
+	if [ $HOST != $DEBIAN30_HOST ]
+	then
+		$echo "For debian30, test should run on "$DEBIAN30_HOST
+		exit 1
+	fi
+	DIR=debian30
+	;;
+#
+ubuntu904 )
+	if [ $HOST != $UBUNTU904_HOST ]
+	then
+		$echo "For ubuntu904, test should run on "$UBUNTU904_HOST
+		exit 1
+	fi
+	DIR=ubuntu904
+	;;
+#
+python )
+	if [ $HOST != $PYTHON_HOST ]
+	then
+		$echo "For python, test should run on "$PYTHON_HOST
+		exit 1
+	fi
+	DIR=suse93
+	;;
+#
+* )
+#	$echo "\nunknown system"
+#	exit 1
+	DIR=bin
+	;;
+esac
+
+check_return_value () {
+if [ $1 != "0" ]
+then
+	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
+	echo "Leaving test suite, try to fix it"
+	exit
+fi
+}
+
+#
+# First, test device server startup sequence
+#
+
+$echo "Testing periodic event"
+$DIR/per_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting change event and ApiUtil::cleanup() stuff"
+$DIR/change_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting 64bits data change event"
+$DIR/change_event64 dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting event buffers with change events"
+$DIR/change_event_buffer dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting archive_event"
+$DIR/archive_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting user_event (with DevEncoded data type)"
+$DIR/user_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting multiple callback on same events"
+$DIR/multi_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting state and status event"
+$DIR/state_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting attribute configuration event"
+$DIR/att_conf_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting event buffers with attribute configuration events"
+$DIR/att_conf_event_buffer dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting change events with quality change"
+$DIR/scan dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting attribute data ready event"
+$DIR/data_ready_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting event buffers with attribute data ready events"
+$DIR/data_ready_event_buffer dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting device locking and event usage within the same process (memory pb at process exit)"
+$DIR/event_lock
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting server_event"
+$DIR/server_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting client reconnection to notifd (help needed)"
+$DIR/reco_event dev/test/10
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting server and client reconnection to notifd (help needed)"
+$DIR/reco_svc dev/test/10
+ret=$?
+check_return_value $ret

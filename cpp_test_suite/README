@@ -1,0 +1,489 @@
+Several little test programs to test API features
+
+They need device running device server. These device server are in the
+dserver directory (Linux executable)
+
+1 -	DsNoDb : Non database device server (Must run on a suse64 computer)
+	Start it as 
+		DsNoDb a -nodb -dlist a/b/c -OAport 22222
+		
+2 - 	devTest : Classical test device server for suse72
+	Start it as
+		devTest api
+	This server creates three devices which are dev/test/10, dev/test/10
+	and dev/test/12
+	
+Start these two servers before running the test programs
+Don't forget the LD_LIBRARY_PATH setting
+
+------------------------------------------------------------------------------
+
+misc_devproxy : Test DeviceProxy miscellaneous methods
+-------------
+			- get_timeout
+			- set_timeout
+			- ping
+			- state
+			- status
+			- adm_name
+			- description
+			- name
+			- back_box
+			- info
+			- command_query
+			- command_list_query
+			- get_attribute_list
+			- attribute_query
+			- attribute_list_query
+			- get_attribute_config
+			- set_attribute_config
+
+Must be started with one device of the test device server (dev/test/10)
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+cmd_types : Test insertion and extraction into DeviceData objects for all types
+---------
+
+Must be started with one device of the test device server (dev/test/10) and a
+loop number (for purify test). Each insertion/extraction is done "loop" times
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+attr_types : Test extraction from DeviceAttribute objects for all types
+----------
+
+Must be started with one device of the test device server (dev/test/10) and a
+loop number (for purify test). Each extraction is done "loop" times
+
+WARNING !!!!!!!!!!!!
+
+Purify reports memory leak in this code. Nevertheless, running it during
+several hours at full speed does not show memory increase using proctool to
+analyse process memory
+Valgrind does not report any memory leak !!
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+misc_devdata : Test miscellaneous DeviceData object features
+------------
+			- Extraction from an empty DeviceData
+			- Extraction of wrong type from a DeviceData object
+			- Copy constructor
+			- Assignement operator
+
+Does not need any command line argument
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+misc_devattr : Test miscellaneous DeviceAttribute object features
+------------
+			- Extraction from an emmpty DeviceAttribute
+			- Extraction of wrong type from a DeviceAttribute object
+			- Copy constructor
+			- Assignement operator
+
+Does not need any command line argument
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+multiple_new : Test device name parsing and database objects managed as
+------------   singleton/tango_host
+
+
+Need four command line arguments :
+			- Device name1 (et/motor/01)
+			- Device name2 (splash:10000/et/motor/01)
+			- Device name3 (amber12:22222/a/b/c#dbase=no)
+			- Loop number (for purify test)
+			
+With the above command lines argument, the end of the program must display only
+one database host and database port (if started wuth TANGO_HOST=splash:10000)
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+write_attr : Write attribute (with the four data types) using DeviceAttribute
+----------   with classical insertion and miscellaneous constructors
+
+Must be started with one device of the test device server (dev/test/10) and a
+loop number (for purify test). Each extraction is done "loop" times
+
+WARNING !!!!!!!!!!!!
+
+Purify reports memory leak in this code. Nevertheless, running it during
+several hours at full speed does not show memory increase using proctool to
+analyse process memory
+Valgrind does not report any memory leak !!
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+copy_devproxy : Test copy constructor and assignement operator of the
+-------------   DeviceProxy class.
+
+This program mainly test the reference count of the proxy remote object.
+This is realy CORBA oriented.
+
+Does not need any command line argument
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+obj_prop : Test object property methods of the Database class 
+--------   
+
+This program mainly test the following methods :
+		Database::get_property(...)
+		Database::put_property(...)
+		Database::delete_proeprty(...)
+
+Does not need any command line argument
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+read_hist : Test command_history and attribute_history calls
+---------   
+
+To run this test, commands IOPollStr1, IOPollArray2 and IOExcept must be polled as well
+as PollLong_attr, PollString_spec_attr and attr_wrong_type (any period) 
+
+This program mainly test the following methods :
+		DeviceProxy::command_history()
+		DeviceProxy::attribute_history()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+WARNING !!!!!!!!!!!!
+
+Purify reports memory leak in this code. Nevertheless, running it during
+several hours at full speed does not show memory increase using proctool to
+analyse process memory
+Valgrind does not report any memory leak !!
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+poll_met : Test all DeviceProxy polling methods
+--------   
+
+To run this test, commands IOPollStr1, IOPollArray2 and IOExcept must be polled as well
+as PollLong_attr, PollString_spec_attr and attr_wrong_type
+Command IOExcept must be polled every 2 sec and attribute PollLong_attr must
+be polled every sec.
+
+WARNING: There are some "sleep" in this software. Don't be surprised.
+		
+Use dev/test/10 device and does not need device name as command line.
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+print_data : Test DeviceData and DeviceAttribute printing functions
+----------   
+		
+Use dev/test/10 device and does not need device name as command line.
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+print_data_hist : Test DeviceDataHistory and DeviceAttributeHistory printing functions
+---------------   
+
+To run this test, commands IOPollStr1, IOPollArray2 and IOExcept must be polled as well
+as PollLong_attr, PollString_spec_attr and attr_wrong_type
+Command IOExcept must be polled every 2 sec and attribute PollLong_attr must
+be polled every sec.
+
+Must be started with one device of the test device server (dev/test/10).		
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+syntax : Test device name and alias name parsing
+------   
+
+Use dev/test/10 device and does not need device name as command line.		
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+size : Test user classes size (for binary compatibility)
+----   
+
+Does not need command line argument. Muse be run under Linux suse72 gcc 2.95.3
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+write_attr_3 : Write spectrum and image attribute (with the four data types)
+------------   using DeviceAttribute with classical insertion and miscellaneous
+               constructors
+
+Must be started with one device of the test device server (dev/test/10) and a
+loop number (for purify test). Each extraction is done "loop" times
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+read_hist_ext : Test exoting polling mode (externally triggered and polling
+-------------   buffer externally filled)
+
+Must be started with one device of the test device server (dev/test/10)
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+attr_proxy : Test attribute proxy features
+----------  
+			- ping
+			- state
+			- status
+			- name
+			- get_config
+			- set_config
+			- read
+			- write
+			- poll
+			- get_poll_period
+			- history
+			- stop_poll
+			- read_asynch/read_reply
+			- write_asynch/write_reply
+			- property methods
+
+Must be started with one attribute of the test device server (dev/test/10/Short_attr_rw)
+
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+ring_depth : Test command/attribute polled with their own polling buffer depth
+----------  
+
+Must be started with one device of the test device server (dev/test/10)
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+state_attr : Test state and status read as attributes from device,cache
+----------   and cache_device. It also test AttributeProxy objects created
+	     for state and status
+
+Must be started with one device of the test device server (dev/test/10)
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+rds : Test the alarm an Read Different than Set. Use the Short_spec_attr_rw 
+---   attribute
+
+Must be started with one device of the test device server (dev/test/10)
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+asyn/asyn_cmd : Test executing command asynchronously (polling way)
+-------------   
+
+This program mainly test the following methods :
+		DeviceProxy::command_inout_asynch()
+		DeviceProxy::command_inout_reply()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+		
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_attr : Test reading attribute asynchronously (polling way)
+--------------   
+
+This program mainly test the following methods :
+		DeviceProxy::read_attribute_asynch()
+		DeviceProxy::read_attribute_reply()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_attr_multi : Test reading attributes asynchronously (polling way)
+--------------------   
+
+This program mainly test the following methods :
+		DeviceProxy::read_attributes_asynch()
+		DeviceProxy::read_attributes_reply()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_write_attr : Test writing attribute asynchronously (polling way)
+--------------------   
+
+This program mainly test the following methods :
+		DeviceProxy::write_attribute_asynch()
+		DeviceProxy::write_attribute_reply()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_write_attr_multi : Test writing attributes asynchronously (polling way)
+--------------------------   
+
+This program mainly test the following methods :
+		DeviceProxy::write_attributes_asynch()
+		DeviceProxy::write_attributes_reply()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_cb : Test asynchronous and callbacks
+------------   
+
+This program mainly test the following methods :
+		DeviceProxy::get_asynch_replies()
+		ApiUtil::get_asynch_replies()
+		
+It does not need command line arguments. It uses two devices which are
+dev/test/10 and dev/test/11.
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_cb2 : Test asynchronous and callbacks
+-------------   
+
+This program mainly also test the following methods :
+		DeviceProxy::get_asynch_replies()
+		ApiUtil::get_asynch_replies()
+		
+It does not need command line arguments. It uses two devices which are
+dev/test/10 and dev/test/11.
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_cb_cmd : Test executing command asynchronously (callback way)
+----------------   
+
+This program mainly test the following methods :
+		DeviceProxy::command_inout_asynch()
+		DeviceProxy::get_asynch_replies()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_attr_cb : Test reading attribute asynchronously (callback way)
+-----------------   
+
+This program mainly test the following methods :
+		DeviceProxy::read_attribute_asynch()
+		DeviceProxy::get_asynch_replies()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/asyn_write_cb : Test writing attribute asynchronously (callback way)
+------------------   
+
+This program mainly test the following methods :
+		DeviceProxy::write_attribute_asynch()
+		DeviceProxy::get_asynch_replies()
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+
+asyn/auto_asyn_cmd : Test the automatic callback mode
+------------------   
+
+This program mainly test the following methods :
+		ApiUtil::set_asynch_cb_model()
+		ApiUtil::get_asynch_cb_model()
+and callback execution using the automatic mode for command, read_attribute
+and write_attribute.
+		
+Must be started with one device of the test device server (dev/test/10).
+A -v option is implemented to display method result.
+
+
+
+------------------------------------------------------------------------------
+
+			runtest script
+			--------------
+			
+------------------------------------------------------------------------------
+
+This script automatically starts the following test programs :
+
+misc_devproxy
+cmd_types
+attr_types
+misc_devdata
+misc_devattr
+write_attr
+copy_devproxy
+obj_prop
+read_hist
+poll_met
+attr_proxy
+write_attr_3
+read_hist_ext
+ring_depth
+state_attr
+rds
+
+asyn/asyn_cmd
+asyn/asyn_attr
+asyn/asyn_attr_multi
+asyn/asyn_write_attr
+asyn/asyn_write_attr_multi
+asyn/asyn_cb
+asyn/asyn_cb2
+asyn/asyn_cb_cmd
+asyn/asyn_attr_cb
+asyn/asyn_write_cb
+asyn/auto_asyn_cmd
+
+Test to manually run
+--------------------
+
+print_data
+print_data_hist
+syntax
+size
+attr_manip : should print
+--------------------------------
+Formatted value = 8.89E+00
+Formatted value = 8.89
+--------------------------------
