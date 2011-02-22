@@ -8,14 +8,8 @@ AC_DEFUN([BB_CHECK_PTHREADS],
       CXXFLAGS="$CXXFLAGS -D_REENTRANT"
       ;;
     solaris*)
-      if test x$GCC = x ; 
-      then 
-      	 CFLAGS="$CFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
-         CXXFLAGS="$CXXFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
-      else
-         CFLAGS="$CFLAGS -D_REENTRANT"
-         CXXFLAGS="$CXXFLAGS -D_REENTRANT"
-      fi
+      CFLAGS="$CFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
+      CXXFLAGS="$CXXFLAGS -mt -D_POSIX_PTHREAD_SEMANTICS"
       ;;
     hpux*)
       CFLAGS="$CFLAGS -AA -mt +inst_close"

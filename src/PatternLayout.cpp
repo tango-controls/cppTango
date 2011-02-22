@@ -1,29 +1,8 @@
-//
-// PatternLayout.cpp
-//
-// Copyright (C) :  2000 - 2002
-//					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
-//					Bastiaan Bakker. All rights reserved.   
-//					
-//					2004,2005,2006,2007,2008,2009,2010
-//					Synchrotron SOLEIL
-//                	L'Orme des Merisiers
-//                	Saint-Aubin - BP 48 - France
-//
-// This file is part of log4tango.
-//
-// Log4ango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Log4tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * PatternLayout.cpp
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 
 #include "PortabilityImpl.hh"
 
@@ -230,7 +209,7 @@ namespace log4tango {
     FormatModifierComponent(PatternLayout::PatternComponent* component,
                             int minWidth, int maxWidth) :
         _component(component) , 
-        _minWidth(minWidth < 0 ? -minWidth : minWidth),
+        _minWidth(std::abs(minWidth)),
         _maxWidth(maxWidth),
         _alignLeft(minWidth < 0) {
   }

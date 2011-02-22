@@ -1,29 +1,8 @@
-//
-// LoggerStream.hh
-//
-// Copyright (C) :  2000 - 2002
-//					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
-//					Bastiaan Bakker. All rights reserved.   
-//					
-//					2004,2005,2006,2007,2008,2009,2010
-//					Synchrotron SOLEIL
-//                	L'Orme des Merisiers
-//                	Saint-Aubin - BP 48 - France
-//
-// This file is part of log4tango.
-//
-// Log4ango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Log4tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
+/*
+ * LoggerStream.hh
+ *
+ * See the COPYING file for the terms of usage and distribution.
+ */
 
 #ifndef _LOG4TANGO_LOGGER_STREAM_H
 #define _LOG4TANGO_LOGGER_STREAM_H
@@ -48,10 +27,6 @@ class LoggerStream;
 //----------------------------------------------------------------------------- 
 typedef LoggerStream& (*ls_terminator) (LoggerStream&);
 
-
-typedef class std::ios_base&(*StdIosFlag)(class std::ios_base&);
-
-
 //-----------------------------------------------------------------------------
 // class : LoggerStream
 //----------------------------------------------------------------------------- 
@@ -64,7 +39,6 @@ public:
    * @param logger The logger this stream will send log messages to.
    * @param level The level the log messages will get or 
    * Level::NOTSET to silently discard any streamed in messages.
-   * @param filter The filter flag
    **/
   LOG4TANGO_EXPORT LoggerStream(Logger& logger, Level::Value level, bool filter = true);
 
@@ -91,20 +65,20 @@ public:
 
   /**
    * Streams in a Initiator. Just a trick to return a ref to self.
-   * @param i The log initiator
+   * @param separator The Initiator
    * @returns A reference to itself.
    **/
-  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LogInitiator& i) {
+  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LogInitiator&) {
     return *this;
   }
   
   /**
    * Streams in a Separator.Sends the contents of the stream buffer
    * to the Logger with set level and empties the buffer.
-   * @param s The log separator
+   * @param separator The Separator
    * @returns A reference to itself.
    **/
-  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LogSeparator& s) {
+  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LogSeparator&) {
     flush();
     return *this;
   }
@@ -112,14 +86,14 @@ public:
   /**
    * Streams in a ls_manipulator. Sends the contents of the stream buffer
    * to the Logger with set level and empties the buffer.
-   * @param endoflog The log terminator
+   * @param separator The Separator
    * @returns A reference to itself.
    **/
-  inline LOG4TANGO_EXPORT LoggerStream& operator<< (ls_terminator endoflog) {
+  inline LOG4TANGO_EXPORT LoggerStream& operator<< (ls_terminator) {
     flush();
     return *this;
   }
-
+  
   /**
    * Flush the contents of the stream buffer to the Logger and
    * empties the buffer.
@@ -128,7 +102,7 @@ public:
 
   /**
    * Streams in a std stream manipulator.
-   * @param _F the manipulator function
+   * @param the manipulator function
    * @returns a reference to self.
    **/
 #ifdef WIN32
