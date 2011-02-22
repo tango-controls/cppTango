@@ -1,0 +1,317 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: tango_static - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating command line "rc.exe /l 0x409 /fo"Debug/tango_static.res" "C:\cppapi\server\winnt_lib\tango_static\tango_static.rc"" 
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1C2.tmp" with contents
+[
+/nologo /MTd /W3 /GR /GX /Zi /Od /I "..\.." /I "..\..\..\client" /I "C:\omniORB-4.0.5\include" /I "C:\log4tango\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_WINSTATIC" /D "_TANGO_LIB" /Fo"Debug/" /Fd"Debug/" /FD /c 
+"C:\cppapi\client\api_util.cpp"
+"C:\cppapi\client\apiexcept.cpp"
+"C:\cppapi\client\asynreq.cpp"
+"C:\cppapi\client\attr_proxy.cpp"
+"C:\cppapi\server\attrdesc.cpp"
+"C:\cppapi\server\attribute.cpp"
+"C:\cppapi\server\attrmanip.cpp"
+"C:\cppapi\server\basiccommand.cpp"
+"C:\cppapi\server\blackbox.cpp"
+"C:\cppapi\client\cbthread.cpp"
+"C:\cppapi\server\class_factory.cpp"
+"C:\cppapi\server\classattribute.cpp"
+"C:\cppapi\server\command.cpp"
+"C:\cppapi\server\coutappender.cpp"
+"C:\cppapi\server\coutbuf.cpp"
+"C:\cppapi\client\dbapi_attribute.cpp"
+"C:\cppapi\client\dbapi_base.cpp"
+"C:\cppapi\client\dbapi_class.cpp"
+"C:\cppapi\client\dbapi_datum.cpp"
+"C:\cppapi\client\dbapi_device.cpp"
+"C:\cppapi\client\dbapi_server.cpp"
+"C:\cppapi\client\devapi_attr.cpp"
+"C:\cppapi\client\devapi_base.cpp"
+"C:\cppapi\client\devapi_data.cpp"
+"C:\cppapi\client\devapi_datahist.cpp"
+"C:\cppapi\server\device.cpp"
+"C:\cppapi\server\device_2.cpp"
+"C:\cppapi\server\device_3.cpp"
+"C:\cppapi\server\deviceclass.cpp"
+"C:\cppapi\server\devicelog.cpp"
+"C:\cppapi\server\dserver.cpp"
+"C:\cppapi\server\dserverclass.cpp"
+"C:\cppapi\server\dserverlog.cpp"
+"C:\cppapi\server\dserverpoll.cpp"
+"C:\cppapi\server\dserversignal.cpp"
+"C:\cppapi\server\event.cpp"
+"C:\cppapi\server\eventcmds.cpp"
+"C:\cppapi\server\eventsupplier.cpp"
+"C:\cppapi\server\except.cpp"
+"C:\cppapi\client\filedatabase.cpp"
+"C:\cppapi\client\group.cpp"
+"C:\cppapi\server\logcmds.cpp"
+"C:\cppapi\server\logging.cpp"
+"C:\cppapi\server\logstream.cpp"
+"C:\cppapi\server\multiattribute.cpp"
+"C:\cppapi\server\ntservice.cpp"
+"C:\cppapi\server\pollcmds.cpp"
+"C:\cppapi\server\pollobj.cpp"
+"C:\cppapi\server\pollring.cpp"
+"C:\cppapi\server\pollthread.cpp"
+"C:\cppapi\client\proxy_asyn.cpp"
+"C:\cppapi\client\proxy_asyn_cb.cpp"
+"C:\cppapi\server\seqvec.cpp"
+"C:\cppapi\server\tangoappender.cpp"
+"C:\cppapi\server\tangorollingfileappender.cpp"
+"C:\cppapi\server\thsig.cpp"
+"C:\cppapi\server\utils.cpp"
+"C:\cppapi\server\w32win.cpp"
+"C:\cppapi\server\w_attribute.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1C2.tmp" 
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1C3.tmp" with contents
+[
+/nologo /MTd /W3 /GR /GX /Zi /Od /I "..\.." /I "..\..\..\client" /I "C:\omniORB-4.0.5\include" /I "C:\log4tango\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_WINSTATIC" /D "_TANGO_LIB" /D "__x86__" /D "__NT__" /D __OSVERSION__=4 /D "__WIN32__" /Fo"Debug/" /Fd"Debug/" /FD /c 
+"C:\cppapi\server\idl\tangoDynSK.cpp"
+"C:\cppapi\server\idl\tangoSK.cpp"
+]
+Creating command line "cl.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1C3.tmp" 
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1C4.tmp" with contents
+[
+/out:"Debug\tangod.lib" 
+.\Debug\api_util.obj
+.\Debug\apiexcept.obj
+.\Debug\asynreq.obj
+.\Debug\attr_proxy.obj
+.\Debug\attrdesc.obj
+.\Debug\attribute.obj
+.\Debug\attrmanip.obj
+.\Debug\basiccommand.obj
+.\Debug\blackbox.obj
+.\Debug\cbthread.obj
+.\Debug\class_factory.obj
+.\Debug\classattribute.obj
+.\Debug\command.obj
+.\Debug\coutappender.obj
+.\Debug\coutbuf.obj
+.\Debug\dbapi_attribute.obj
+.\Debug\dbapi_base.obj
+.\Debug\dbapi_class.obj
+.\Debug\dbapi_datum.obj
+.\Debug\dbapi_device.obj
+.\Debug\dbapi_server.obj
+.\Debug\devapi_attr.obj
+.\Debug\devapi_base.obj
+.\Debug\devapi_data.obj
+.\Debug\devapi_datahist.obj
+.\Debug\device.obj
+.\Debug\device_2.obj
+.\Debug\device_3.obj
+.\Debug\deviceclass.obj
+.\Debug\devicelog.obj
+.\Debug\dserver.obj
+.\Debug\dserverclass.obj
+.\Debug\dserverlog.obj
+.\Debug\dserverpoll.obj
+.\Debug\dserversignal.obj
+.\Debug\event.obj
+.\Debug\eventcmds.obj
+.\Debug\eventsupplier.obj
+.\Debug\except.obj
+.\Debug\filedatabase.obj
+.\Debug\group.obj
+.\Debug\logcmds.obj
+.\Debug\logging.obj
+.\Debug\logstream.obj
+.\Debug\multiattribute.obj
+.\Debug\ntservice.obj
+.\Debug\pollcmds.obj
+.\Debug\pollobj.obj
+.\Debug\pollring.obj
+.\Debug\pollthread.obj
+.\Debug\proxy_asyn.obj
+.\Debug\proxy_asyn_cb.obj
+.\Debug\seqvec.obj
+.\Debug\tangoappender.obj
+.\Debug\tangoDynSK.obj
+.\Debug\tangorollingfileappender.obj
+.\Debug\tangoSK.obj
+.\Debug\thsig.obj
+.\Debug\utils.obj
+.\Debug\w32win.obj
+.\Debug\w_attribute.obj
+.\Debug\tango_static.res
+]
+Creating command line "link.exe -lib @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1C4.tmp"
+<h3>Output Window</h3>
+Compiling resources...
+Compiling...
+api_util.cpp
+apiexcept.cpp
+asynreq.cpp
+attr_proxy.cpp
+attrdesc.cpp
+attribute.cpp
+attrmanip.cpp
+basiccommand.cpp
+blackbox.cpp
+cbthread.cpp
+class_factory.cpp
+classattribute.cpp
+command.cpp
+coutappender.cpp
+coutbuf.cpp
+dbapi_attribute.cpp
+dbapi_base.cpp
+dbapi_class.cpp
+dbapi_datum.cpp
+dbapi_device.cpp
+Generating Code...
+Compiling...
+dbapi_server.cpp
+devapi_attr.cpp
+devapi_base.cpp
+devapi_data.cpp
+devapi_datahist.cpp
+device.cpp
+device_2.cpp
+device_3.cpp
+deviceclass.cpp
+devicelog.cpp
+dserver.cpp
+dserverclass.cpp
+dserverlog.cpp
+dserverpoll.cpp
+dserversignal.cpp
+event.cpp
+eventcmds.cpp
+eventsupplier.cpp
+except.cpp
+filedatabase.cpp
+Generating Code...
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Node' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Node' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Node' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::channel_struct>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::channel_struct,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::channel_struct>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::channel_struct,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::channel_struct>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::channel_struct,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::channel_struct>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::channel_struct,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Node' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::channel_struct>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::channel_struct,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::channel_struct> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::event_callback>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::event_callback,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::event_callback>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::event_callback,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::event_callback>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::event_callback,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::iterator' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::event_callback>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::event_callback,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Node' : identifier was truncated to '255' characters in the debug information
+C:\Program Files\Microsoft Visual Studio\VC98\INCLUDE\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,Tango::event_callback>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,Tango::event_callback,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<Tango::event_callback> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+Compiling...
+group.cpp
+logcmds.cpp
+logging.cpp
+logstream.cpp
+multiattribute.cpp
+ntservice.cpp
+pollcmds.cpp
+pollobj.cpp
+pollring.cpp
+pollthread.cpp
+proxy_asyn.cpp
+proxy_asyn_cb.cpp
+seqvec.cpp
+tangoappender.cpp
+tangorollingfileappender.cpp
+thsig.cpp
+utils.cpp
+w32win.cpp
+w_attribute.cpp
+Generating Code...
+Compiling...
+tangoDynSK.cpp
+tangoSK.cpp
+Generating Code...
+Creating library...
+Microsoft (R) Library Manager Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+"/out:Debug\tangod.lib" 
+.\Debug\api_util.obj 
+.\Debug\apiexcept.obj 
+.\Debug\asynreq.obj 
+.\Debug\attr_proxy.obj 
+.\Debug\attrdesc.obj 
+.\Debug\attribute.obj 
+.\Debug\attrmanip.obj 
+.\Debug\basiccommand.obj 
+.\Debug\blackbox.obj 
+.\Debug\cbthread.obj 
+.\Debug\class_factory.obj 
+.\Debug\classattribute.obj 
+.\Debug\command.obj 
+.\Debug\coutappender.obj 
+.\Debug\coutbuf.obj 
+.\Debug\dbapi_attribute.obj 
+.\Debug\dbapi_base.obj 
+.\Debug\dbapi_class.obj 
+.\Debug\dbapi_datum.obj 
+.\Debug\dbapi_device.obj 
+.\Debug\dbapi_server.obj 
+.\Debug\devapi_attr.obj 
+.\Debug\devapi_base.obj 
+.\Debug\devapi_data.obj 
+.\Debug\devapi_datahist.obj 
+.\Debug\device.obj 
+.\Debug\device_2.obj 
+.\Debug\device_3.obj 
+.\Debug\deviceclass.obj 
+.\Debug\devicelog.obj 
+.\Debug\dserver.obj 
+.\Debug\dserverclass.obj 
+.\Debug\dserverlog.obj 
+.\Debug\dserverpoll.obj 
+.\Debug\dserversignal.obj 
+.\Debug\event.obj 
+.\Debug\eventcmds.obj 
+.\Debug\eventsupplier.obj 
+.\Debug\except.obj 
+.\Debug\filedatabase.obj 
+.\Debug\group.obj 
+.\Debug\logcmds.obj 
+.\Debug\logging.obj 
+.\Debug\logstream.obj 
+.\Debug\multiattribute.obj 
+.\Debug\ntservice.obj 
+.\Debug\pollcmds.obj 
+.\Debug\pollobj.obj 
+.\Debug\pollring.obj 
+.\Debug\pollthread.obj 
+.\Debug\proxy_asyn.obj 
+.\Debug\proxy_asyn_cb.obj 
+.\Debug\seqvec.obj 
+.\Debug\tangoappender.obj 
+.\Debug\tangoDynSK.obj 
+.\Debug\tangorollingfileappender.obj 
+.\Debug\tangoSK.obj 
+.\Debug\thsig.obj 
+.\Debug\utils.obj 
+.\Debug\w32win.obj 
+.\Debug\w_attribute.obj 
+.\Debug\tango_static.res 
+
+
+
+<h3>Results</h3>
+tangod.lib - 0 error(s), 24 warning(s)
+</pre>
+</body>
+</html>

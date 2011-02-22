@@ -11,79 +11,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.14  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.13  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.11  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.10  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
-// Revision 3.9  2007/11/23 09:47:06  taurel
-// - Fix linker problem introduced by the fix on re_throw_exception()
-//
-// Revision 3.8  2007/06/06 09:37:58  jensmeyer
-// Added null pointer check for all corba system exceptions.
-//
-// Revision 3.7  2007/04/20 14:41:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.6  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.5  2007/03/02 09:49:06  jensmeyer
-// Added the method compare_exception() to find out whether to DevFailed
-// exceptions are equal or different.
-//
-// Revision 3.4  2006/05/18 07:57:19  taurel
-// - Updated to gcc 4 (minor changes)
-// - With the change done by SourceForge on their CVS servers, previous release
-// of these files has disappeared from CVS !!
-//
-// Revision 3.4  2006/05/08 07:16:08  taurel
-// - Small changes for GCC 4
-//
-// Revision 3.3  2004/07/07 08:40:11  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
 // Revision 3.2  2003/08/21 07:23:46  taurel
 // - End of the implementation of the new way to transfer data for read and
 //   write attributes (better use of exception)
@@ -221,6 +151,11 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2000/02/04 10:58:28  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -228,11 +163,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #if __GNUC__ >= 3
-	#if __GNUC__ == 3
-		#if __GNUC_MINOR__ >= 2
-			#define GCC_STD
-		#endif
-	#else
+	#if __GNUC_MINOR__ >= 2
 		#define GCC_STD
 	#endif
 #endif
@@ -241,7 +172,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <except.h>
 #include <apiexcept.h>
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 	#include <iostream>
 	#include <sstream>
 	#include <fstream>
@@ -254,7 +185,6 @@ namespace Tango
 {
 
 char Except::mess[256];
-omni_mutex Except::the_mutex;
 
 //+----------------------------------------------------------------------------
 //
@@ -464,20 +394,12 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 	else if ((bad = CORBA::BAD_PARAM::_downcast(e)) != 0)
 	{
 		::strcpy(mess,"BAD_PARAM CORBA system exception: ");
-		const char *err_msg = bad->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);
+		::strcat(mess,bad->NP_minorString());
 	}
 	else if ((mem = CORBA::NO_MEMORY::_downcast(e)) != 0)
 	{
 		::strcpy(mess,"NO_MEMORY CORBA system exception: ");
-		const char *err_msg = mem->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);
+		::strcat(mess,mem->NP_minorString());
 	}
 	else if ((lim = CORBA::IMP_LIMIT::_downcast(e)) != 0)
 	{
@@ -488,7 +410,7 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 			::strcat(mess,"Unknown minor code: ");
 			TangoSys_MemStream st;
 			st << hex << lim->minor() << dec << ends;
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 			string s = st.str();
 			::strcat(mess,s.c_str());
 #else
@@ -508,7 +430,7 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 			TangoSys_MemStream st;
 			st << hex << comm->minor() << dec << ends;
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 			string s = st.str();
 			::strcat(mess,s.c_str());
 #else
@@ -521,101 +443,57 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 	else if ((inv = CORBA::INV_OBJREF::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"INV_OBJREF CORBA system exception: ");
-		const char *err_msg = inv->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,inv->NP_minorString());
 	}
 	else if ((perm = CORBA::NO_PERMISSION::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"NO_PERMISSION CORBA system exception: ");
-		const char *err_msg = perm->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,perm->NP_minorString());
 	}
 	else if ((inter = CORBA::INTERNAL::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"INTERNAL CORBA system exception: ");
-		const char *err_msg = inter->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,inter->NP_minorString());
 	}
 	else if ((mar = CORBA::MARSHAL::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"MARSHAL CORBA system exception: ");
-		const char *err_msg = mar->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,mar->NP_minorString());
 	}
 	else if ((ini = CORBA::INITIALIZE::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"INITIALIZE CORBA system exception: ");
-		const char *err_msg = ini->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,ini->NP_minorString());
 	}
 	else if ((impl = CORBA::NO_IMPLEMENT::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"NO_IMPLEMENT CORBA system exception: ");
-		const char *err_msg = impl->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);
+		::strcat(mess,impl->NP_minorString());
 	}
 	else if ((type = CORBA::BAD_TYPECODE::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"BAD_TYPECODE CORBA system exception: ");
-		const char *err_msg = type->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,type->NP_minorString());
 	}
 	else if ((op = CORBA::BAD_OPERATION::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"BAD_OPERATION CORBA system exception: ");
-		const char *err_msg = op->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,op->NP_minorString());
 	}
 	else if ((res = CORBA::NO_RESOURCES::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"NO_RESOURCES CORBA system exception: ");
-		const char *err_msg = res->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,res->NP_minorString());
 	}
 	else if ((resp = CORBA::NO_RESPONSE::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"NO_RESPONSE CORBA system exception: ");
-		const char *err_msg = resp->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);
+		::strcat(mess,resp->NP_minorString());
 	}
 	else if ((inv_ord = CORBA::BAD_INV_ORDER::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"BAD_INV_ORDER CORBA system exception: ");
-		const char *err_msg = inv_ord->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);
+		::strcat(mess,inv_ord->NP_minorString());
 	}
 	else if ((tra = CORBA::TRANSIENT::_downcast(e)) != NULL)
 	{
@@ -626,7 +504,7 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 			::strcat(mess,"Unknown minor code: ");
 			TangoSys_MemStream st;
 			st << hex << tra->minor() << dec << ends;
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 			string s = st.str();
 			::strcat(mess,s.c_str());
 #else
@@ -639,29 +517,17 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 	else if ((adap = CORBA::OBJ_ADAPTER::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"OBJ_ADAPTER CORBA system exception: ");
-		const char *err_msg = adap->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,adap->NP_minorString());
 	}
 	else if ((not_ex = CORBA::OBJECT_NOT_EXIST::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"OBJECT_NOT_EXIST CORBA system exception: ");
-		const char *err_msg = not_ex->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);		
+		::strcat(mess,not_ex->NP_minorString());
 	}
 	else if ((pol = CORBA::INV_POLICY::_downcast(e)) != NULL)
 	{
 		::strcpy(mess,"INV_POLICY CORBA system exception: ");
-		const char *err_msg = pol->NP_minorString();
-		if ( err_msg == NULL )
-			::strcat(mess,"ORB has returned NULL pointer !");
-		else
-			::strcat(mess,err_msg);
+		::strcat(mess,pol->NP_minorString());
 	}	
 	else
 		::strcpy(mess,"CORBA unknown system exception !!!!!!!!");
@@ -768,68 +634,6 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const string &or
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 	
 	throw Tango::DevFailed(errors);
-}
-
-//+----------------------------------------------------------------------------
-//
-// method : 		Compare two Tango DevFailed exceptions for equality
-// 
-// description : 	The two DevFailed exceptions are verified by comparing the
-// reason, origin, description and severity of all exceptions in the error stack.
-// The strings reason, origin and description are compared literally.
-//
-// in :			ex1 The first DevFailed exception
-//             ex1 The first DevFailed exception
-//
-// return:     a boolean set to true if the two exceptions are equal
-//-----------------------------------------------------------------------------
-
-bool Except::compare_exception(Tango::DevFailed &ex1, Tango::DevFailed &ex2)
-{
-	// check the length of the exception stack
-	
-	unsigned long nb_err = ex1.errors.length();
-	if ( nb_err != ex2.errors.length() )
-		{
-		return false;
-		}
-	
-	// check all exceptions in the stack
-	
-	for (unsigned long i=0; i<nb_err; i++)
-		{
-		// check the severity
-		if ( ex1.errors[i].severity != ex2.errors[i].severity )
-			{
-			return false;
-			}
-			
-		// check the origin
-		string org1 = ex1.errors[i].origin.in();
-		string org2 = ex2.errors[i].origin.in();
-		if ( org1 != org2 )
-			{
-			return false;
-			}
-			
-		// check the reason
-		string re1 = ex1.errors[i].reason.in();
-		string re2 = ex2.errors[i].reason.in();
-		if ( re1 != re2 )
-			{
-			return false;
-			}
-		
-		// check the description
-		string desc1 = ex1.errors[i].desc.in();
-		string desc2 = ex2.errors[i].desc.in();
-		if ( desc1 != desc2 )
-			{
-			return false;
-			}	
-		}
-	
-	return true;
 }
 
 } // End of Tango namespace
