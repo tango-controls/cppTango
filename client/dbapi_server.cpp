@@ -1,4 +1,4 @@
-static const char *RcsId = "$Id$\n$Name$";
+static const char *RcsId = "$Header$";
 //
 // dbdevice.cpp - C++ source code file for TANGO dbapi class DbServer
 //
@@ -6,37 +6,33 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- November 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+// last changed	- 14/11/2000 
 //
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// version 	- 1.0
 //
 
-#if HAVE_CONFIG_H
-#include <ac_config.h>
-#endif
-
+#ifdef _HPUX_SOURCE
+#include <iostream.h>
+#else
+#include <iostream>
+#endif /* _HPUX_SOURCE */
+#ifdef STRSTREAM
+#ifdef _HPUX_SOURCE
+#include <strstream.h>
+#else
+#include <strstream>
+#endif /* _HPUX_SOURCE */
+#else
+#include <sstream>
+#endif /* STRSTREAM */
 #include <tango.h>
-                                                     
+#include <dbapi.h>
+#ifdef _HPUX_SOURCE
+namespace std{}
+#endif /* _HPUX_SOURCE */                                                       
+using namespace std;
 using namespace CORBA;
-
-namespace Tango
-{
+using namespace Tango;
 
 //-----------------------------------------------------------------------------
 //
@@ -50,7 +46,7 @@ DbServer::DbServer(string server_name, Database *server_dbase)
 {
 	name = string(server_name);
 	dbase = server_dbase;
-	ext_dbase = true;
+	dbase_create = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,8 +60,11 @@ DbServer::DbServer(string server_name, Database *server_dbase)
 DbServer::DbServer(string server_name)
 {
 	name = string(server_name);
-	db_ind = ApiUtil::instance()->get_db_ind();
-	ext_dbase = false;
+//
+// TODO - maybe replace this with a singleton
+//
+	dbase = new Database();
+	dbase_create = 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -78,6 +77,11 @@ DbServer::DbServer(string server_name)
 
 DbServer::~DbServer()
 {
+	if (dbase_create)
+	{
+		delete dbase;
+	}
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -89,13 +93,8 @@ DbServer::~DbServer()
 
 void DbServer::add_server(DbDevInfos &dev_infos)
 {
-	if (ext_dbase == true)
-		dbase->add_server(name, dev_infos);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->add_server(name, dev_infos);
-	}
+	dbase->add_server(name, dev_infos);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -107,13 +106,8 @@ void DbServer::add_server(DbDevInfos &dev_infos)
 
 void DbServer::export_server(DbDevExportInfos &dev_export)
 {
-	if (ext_dbase == true)
-		dbase->export_server(dev_export);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->export_server(dev_export);
-	}
+	dbase->export_server(name, dev_export);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -125,13 +119,8 @@ void DbServer::export_server(DbDevExportInfos &dev_export)
 
 void DbServer::unexport_server()
 {
-	if (ext_dbase == true)
-		dbase->unexport_server(name);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->unexport_server(name);
-	}
+	dbase->unexport_server(name);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -143,13 +132,8 @@ void DbServer::unexport_server()
 
 void DbServer::delete_server()
 {
-	if (ext_dbase == true)
-		dbase->delete_server(name);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->delete_server(name);
-	}
+	dbase->delete_server(name);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -160,13 +144,6 @@ void DbServer::delete_server()
 
 DbServerInfo DbServer::get_server_info()
 {
-	if (ext_dbase == true)
-		return dbase->get_server_info(name);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		return (au->get_db_vect())[db_ind]->get_server_info(name);
-	}
+	return(dbase->get_server_info(name));
 }
 
-} // End of Tango namespace

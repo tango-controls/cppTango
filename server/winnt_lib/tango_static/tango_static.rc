@@ -1,0 +1,151 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+TANGO_BITMAP1           BITMAP  DISCARDABLE     "dancing.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+TANGO_MENU1 MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Console",                    ID_VIEW_CONSOLE
+    END
+    POPUP "&Debug"
+    BEGIN
+        MENUITEM "Level 0",                     ID_DEBUG_LEVEL0
+        MENUITEM "Level 1",                     ID_DEBUG_LEVEL1
+        MENUITEM "Level 2",                     ID_DEBUG_LEVEL2
+        MENUITEM "Level 3",                     ID_DEBUG_LEVEL3
+        MENUITEM "Level 4",                     ID_DEBUG_LEVEL4
+    END
+    POPUP "&Help", HELP
+    BEGIN
+        MENUITEM "&About",                      TANGO_APP_ABOUT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+TANGO_ICON1             ICON    DISCARDABLE     "tango.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+TANGO_ABOUT1 DIALOG DISCARDABLE  20, 20, 191, 126
+STYLE DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,71,98,50,14
+    ICON            TANGO_ICON1,IDC_STATIC,13,14,20,20
+    CTEXT           "TANGO device server",TANGO_ABOUT_TEXT1,48,15,96,10,
+                    SS_CENTERIMAGE
+    CTEXT           "X",TANGO_ABOUT_TEXT2,50,32,92,10
+    CTEXT           "Y",TANGO_ABOUT_TEXT3,48,43,96,9
+    CTEXT           "Z",TANGO_ABOUT_TEXT4,46,53,100,8
+    CTEXT           "European Synchrotron Radiation Facility (ESRF)",
+                    IDC_STATIC,14,86,164,10,SS_CENTERIMAGE
+    CTEXT           "Q",TANGO_ABOUT_TEXT5,41,62,111,9,SS_CENTERIMAGE
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    TANGO_ABOUT1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 184
+        VERTGUIDE, 96
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 119
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

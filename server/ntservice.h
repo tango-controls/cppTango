@@ -1,27 +1,12 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
 #ifndef _NTSERVICE_H
 #define _NTSERVICE_H
 
-#include <tango.h>
+#include <OB/Basic.h>
+#include <OB/Object.h>
+#include <OB/Logger.h>
+
+#include <string>
 
 using namespace std;
 
@@ -34,13 +19,11 @@ namespace Tango
 // used for NT native services
 //
 
-//class NTEventLogger : public OB::Logger,
-//		      public OBCORBA::RefCountLocalObject
-class NTEventLogger
+class NTEventLogger : public OB::Logger
 {
 private:
     	HANDLE eventSource_; 			// The event source
-	string service_; 			// Service name
+	CORBA::String_var service_; 			// Service name
     	DWORD eventId_; 			// The event ID
     
     	void emitMessage(int, const char*);
@@ -49,7 +32,7 @@ private:
 public:
 
     	NTEventLogger(const char*, DWORD);
-    	virtual ~NTEventLogger();
+    	~NTEventLogger();
     
     	bool install();    
     	bool uninstall();
@@ -79,7 +62,7 @@ private:
     	SERVICE_STATUS status_; 		// Status of the service
     	SERVICE_STATUS_HANDLE statusHandle_; 	// Status handle
 
-   	virtual void start(int, char**, Tango::NTEventLogger *ptr) = 0;
+    	virtual void start(int, char**, OB::Logger_ptr) = 0;
 
     	void control(DWORD);
     	void main(int argc, char** argv);

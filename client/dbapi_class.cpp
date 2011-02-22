@@ -1,4 +1,4 @@
-static const char *RcsId = "$Id$\n$Name$";
+static const char *RcsId = "$Header$";
 //
 // dbapi_class.cpp - C++ source code file for TANGO dbapi class DbClass
 //
@@ -6,37 +6,33 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+// last changed	- 17/10/2000 
 //
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// version 	- 1.0
 //
 
-#if HAVE_CONFIG_H
-#include <ac_config.h>
-#endif
-
+#ifdef _HPUX_SOURCE
+#include <iostream.h>
+#else
+#include <iostream>
+#endif /* _HPUX_SOURCE */
+#ifdef STRSTREAM
+#ifdef _HPUX_SOURCE
+#include <strstream.h>
+#else
+#include <strstream>
+#endif /* _HPUX_SOURCE */
+#else
+#include <sstream>
+#endif /* STRSTREAM */
 #include <tango.h>
-
+#include <dbapi.h>
+#ifdef _HPUX_SOURCE
+namespace std{}
+#endif /* _HPUX_SOURCE */
+using namespace std;
 using namespace CORBA;
-
-namespace Tango
-{
+using namespace Tango;
 
 //-----------------------------------------------------------------------------
 //
@@ -50,7 +46,7 @@ DbClass::DbClass(string class_name, Database *class_dbase)
 {
 	name = string(class_name);
 	dbase = class_dbase;
-	ext_dbase = true;
+	dbase_create = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -64,8 +60,11 @@ DbClass::DbClass(string class_name, Database *class_dbase)
 DbClass::DbClass(string class_name)
 {
 	name = string(class_name);
-	db_ind = ApiUtil::instance()->get_db_ind();
-	ext_dbase = false;
+//
+// TODO - replace this with a singleton
+//
+	dbase = new Database();
+	dbase_create = 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -76,6 +75,11 @@ DbClass::DbClass(string class_name)
 
 DbClass::~DbClass()
 {
+	if (dbase_create)
+	{
+		delete dbase;
+	}
+	
 }
 
 //-----------------------------------------------------------------------------
@@ -86,31 +90,8 @@ DbClass::~DbClass()
 
 void DbClass::get_property(DbData &db_data)
 {
-//
-// Try to get db server cache in case we are called during a DS
-// startup sequence
-//
-	
-	ApiUtil *au = ApiUtil::instance();
-	DbServerCache *dsc;
-	if (au->in_server() == true)
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		dsc = tg->get_db_cache();
-	}
-	else
-		dsc = NULL;
-
-//
-// Call DB (or cache)
-//
-	
-	if (ext_dbase == true)
-		dbase->get_class_property(name, db_data, dsc);
-	else
-	{
-		(au->get_db_vect())[db_ind]->get_class_property(name, db_data);
-	}
+	dbase->get_class_property(name, db_data);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -121,44 +102,8 @@ void DbClass::get_property(DbData &db_data)
 
 void DbClass::put_property(DbData &db_data)
 {
-
-//
-// Protect DS code againt a DB exception while the server is in its starting phase
-//
-
-	ApiUtil *au = ApiUtil::instance();
-	bool forget_except = false;
-	if (au->in_server() == true)
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		if (tg->is_svr_starting() == true)
-		{
-			if (db_data.size() >= 2)
-			{
-				if ((db_data[0].name == POGO_TITLE) && (db_data[1].name == POGO_DESC))
-					forget_except = true;
-			}
-		}
-	}
-
-//
-// Call DB
-//
-
-	try
-	{
-		if (ext_dbase == true)
-			dbase->put_class_property(name, db_data);
-		else
-		{
-			(au->get_db_vect())[db_ind]->put_class_property(name, db_data);
-		}
-	}
-	catch (Tango::DevFailed &)
-	{
-		if (forget_except == false)
-			throw;
-	}
+	dbase->put_class_property(name, db_data);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -169,13 +114,8 @@ void DbClass::put_property(DbData &db_data)
 
 void DbClass::delete_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->delete_class_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->delete_class_property(name, db_data);
-	}
+	dbase->delete_class_property(name, db_data);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -187,13 +127,8 @@ void DbClass::delete_property(DbData &db_data)
 
 void DbClass::get_attribute_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->get_class_attribute_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->get_class_attribute_property(name, db_data);
-	}
+	dbase->get_class_attribute_property(name, db_data);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -205,13 +140,8 @@ void DbClass::get_attribute_property(DbData &db_data)
 
 void DbClass::put_attribute_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->put_class_attribute_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->put_class_attribute_property(name, db_data);
-	}
+	dbase->put_class_attribute_property(name, db_data);
+	return;
 }
 
 //-----------------------------------------------------------------------------
@@ -223,13 +153,6 @@ void DbClass::put_attribute_property(DbData &db_data)
 
 void DbClass::delete_attribute_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->delete_class_attribute_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->delete_class_attribute_property(name, db_data);
-	}
+	dbase->delete_class_attribute_property(name, db_data);
+	return;
 }
-
-} // End of Tango namespace

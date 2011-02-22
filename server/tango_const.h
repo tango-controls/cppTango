@@ -8,172 +8,22 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.58  2011/01/24 12:19:01  taurel
-// - Adapted to release 7.2.5
+// Revision 1.3  2000/04/13 10:40:42  taurel
+// Added attribute support
 //
-// Revision 3.57  2011/01/18 14:55:48  taurel
-// - Release 7.2.4
+// Revision 1.2  2000/02/04 11:00:16  taurel
+// Just update revision number
 //
-// Revision 3.56  2011/01/10 13:53:17  taurel
-// - Tango release 7.2.3
+// Revision 1.1.1.1  2000/02/04 10:58:27  taurel
+// Imported sources
 //
-// Revision 3.55  2010/12/08 10:21:53  taurel
-// - Tango release 7.2.2
 //
-// Revision 3.54  2010/11/02 14:06:54  taurel
-// - Replace dynamic_cast with static_cast in attribute.cpp.
-// - Release number is now 7.2.1
-//
-// Revision 3.53  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.52  2010/09/07 15:32:21  taurel
-// - Fix some re-connection problems with Windows
-// - Publish all endPoints in case of multiple network interface
-//
-// Revision 3.51  2010/08/19 12:10:20  taurel
-// - Change timeout during the first _narrow() call in connect() method
-//
-// Revision 3.50  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.49.2.1  2010/05/21 09:43:39  taurel
-// - Re-use the same event channel in case of server restart when a file
-// is use as database
-//
-// Revision 3.49  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.48  2009/09/30 06:43:18  taurel
-// - Improve error detection in case of TANGO_HOST not set and not fully
-// qualified device name
-//
-// Revision 3.47  2009/09/22 11:06:01  taurel
-// - Environment variables in file also supported for Windows
-//
-// Revision 3.46  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.45  2009/09/08 14:21:22  taurel
-// - The tango rc file location can be defined by a configure option
-//
-// Revision 3.44  2009/09/01 07:41:31  taurel
-// - Commit after test suite for Tango 7.1
-//
-// Revision 3.43  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.42  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-//
-// Revision 3.41.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 3.41  2009/04/30 12:49:24  taurel
-// - Adapted to Tango 7.0.2
-//
-// Revision 3.40  2009/04/27 11:17:16  taurel
-// - Release 7.0.1
-//
-// Revision 3.39  2009/03/20 11:52:50  taurel
-// - Add tangorc files management (for env. variables)
-//
-// Revision 3.38  2009/02/03 15:17:11  jensmeyer
-// Added the storage of sub device properties on a regular basis of
-// 30 minutes to the heartbeat thread of a device server.
-//
-// Revision 3.37  2009/01/29 15:25:41  taurel
-// - First implementation of the Data Ready event
-//
-// Revision 3.36  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.35  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.34  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.33  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 3.32  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.31  2008/04/02 16:03:56  taurel
-// - Fix compatibility bug in the Database::get_device_name() method
-// Revision 3.26.2.6  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.30  2008/03/20 07:39:24  taurel
-// - Last commit before Release 6.1 ?
-// Revision 3.26.2.5  2008/02/07 15:58:14  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.29  2008/01/15 12:31:37  taurel
-// - Change db connection and re-connection timeout
-// Revision 3.26.2.4  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.26.2.3  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 3.26.2.2  2007/12/19 15:54:48  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.26.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
-// Revision 3.28  2008/01/07 07:17:21  taurel
-// - First access control system coding
-//
-// Revision 3.27  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-//
-// Revision 3.26  2007/11/08 12:03:44  taurel
-// - Start implementing user interceptors
-// - Fix bug in poll thread pproperty management when removing polling object
-// - Set a database timeout to 6 sec
-//
-// Revision 3.25  2007/10/16 08:24:14  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.24  2007/06/15 07:29:43  jensmeyer
-// Increase the tango library version number
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //=============================================================================
 
@@ -183,125 +33,29 @@
 namespace Tango
 {
 
+
+
+#define		DbErr_DeviceNotDefined  	1
+
 //
 // Some general interest define
 //
 
-#define		TgLibVers				"7.2.5"		// Please, always code this following format "X.Y.Z"
-
-#define		DevVersion				4			// IDL version number
+#define		DevVersion			1
 #define		DefaultMaxSeq			20
-#define		DefaultBlackBoxDepth	50
-#define 	DefaultPollRingDepth	10
+#define		DefaultBlackBoxDepth		25
 
 #define		InitialOutput			"Initial Output"
 #define		DSDeviceDomain  		"dserver"
-#define		DefaultDocUrl			"http://www.tango-controls.org"
-#define		EnvVariable				"TANGO_HOST"
-#define		WindowsEnvVariable		"TANGO_ROOT"
-#define		DbObjName				"database"
-#define		DescNotSet				"Uninitialised"
+#define		DefaultDocUrl			"http://www.ulla.com"
+#define		EnvVariable			"TANGO_HOST"
+#define		DbObjName			"database"
+#define		DescNotSet			"Uninitialised"
 #define		ResNotDefined			"0"
-#define		MessBoxTitle			"Tango Device Server"
-#define		StatusNotSet			"Not initialised"
-#define		TangoHostNotSet			"Undef"
+#define         MessBoxTitle			"Tango Device Server"
 
 #define		DefaultWritAttrProp		false
-#define		AllAttr 				"All attributes"
-#define		AllAttr_3 				"All attributes_3"
-
-#define		PollCommand				"command"
-#define		PollAttribute			"attribute"
-
-#define		MIN_POLL_PERIOD			20
-#define		DELTA_T					1002000000
-#define		MIN_DELTA_WORK			20000
-#define		TIME_HEARTBEAT			2000
-#define		POLL_LOOP_NB			500
-#define		ONE_SECOND				1000000
-#define		DISCARD_THRESHOLD		0.02
-
-#define		DEFAULT_TIMEOUT			3200
-#define		DEFAULT_POLL_OLD_FACTOR	4
-
-#define		TG_IMP_MINOR_TO			10
-#define		TG_IMP_MINOR_DEVFAILED	11
-#define		TG_IMP_MINOR_NON_DEVFAILED	12
-
-#define		TANGO_PY_MOD_NAME		"_PyTango.pyd"
-#define		DATABASE_CLASS			"DataBase"
-
-//
-// Event related define
-//
-
-#define 	EVENT_HEARTBEAT_PERIOD 		10
-#define 	EVENT_RESUBSCRIBE_PERIOD 	600
-#define		DEFAULT_EVENT_PERIOD		1000
-#define		DELTA_PERIODIC				0.98  // Using a delta of 2% only for times < 5000 ms
-#define     DELTA_PERIODIC_LONG			100   // For times > 5000ms only keep a delta of 100ms
-#define		HEARTBEAT					"Event heartbeat"
-
-//
-// Event when using a file as database stuff
-//
-
-#define		NOTIFD_CHANNEL				"notifd_channel"
-
-//
-// Locking feature related defines
-//
-
-#define		DEFAULT_LOCK_VALIDITY	10
-#define		DEVICE_UNLOCKED_REASON	"API_DeviceUnlocked"
-#define		MIN_LOCK_VALIDITY		2
-#define		LOCAL_HOST				"localhost"
-
-//
-// Client timeout as defined by omniORB4.0.0
-//
-
-#define		CLNT_TIMEOUT_STR		"3000"
-#define		CLNT_TIMEOUT			3000
-#define		NARROW_CLNT_TIMEOUT		100
-
-//
-// Connection and call timeout for database device
-//
-
-#define		DB_CONNECT_TIMEOUT		25000
-#define		DB_RECONNECT_TIMEOUT	20000
-#define		DB_TIMEOUT				13000
-#define		DB_START_PHASE_RETRIES	3
-
-//
-// Time to wait before trying to reconnect after
-// a connevtion failure
-//
-#define 	RECONNECTION_DELAY		1000   //ms. Only try to reconnect every second
-
-//
-// Access Control related defines
-// WARNING: these string are also used within the Db stored procedure
-// introduced in Tango V6.1. If you chang eit here, don't forget to
-// also update the stored procedure
-//
-
-#define		CONTROL_SYSTEM			"CtrlSystem"
-#define		SERVICE_PROP_NAME		"Services"
-#define		ACCESS_SERVICE			"AccessControl"
-
-//
-// Polling threads pool related defines
-//
-
-#define		DEFAULT_POLLING_THREADS_POOL_SIZE	1
-
-//
-// Max transfer size 256 MBytes (in byte). Needed by omniORB
-//
-
-#define		MAX_TRANSFER_SIZE		"268435456"
+#define		AllAttr 			"All attributes"
 
 //
 // Tango name length
@@ -310,29 +64,10 @@ namespace Tango
 #define		MaxServerNameLength		255
 
 //
-// Files used to retrieve env. variables
-//
-
-#define		USER_ENV_VAR_FILE		".tangorc"
-
-#ifndef HAVE_CONFIG_H
-#define		TANGO_RC_FILE			"/etc/tangorc"
-#endif
-#define		WINDOWS_ENV_VAR_FILE	"tangorc"
-
-//
-// A short inline function to hide the CORBA::string_dup function
-//
-
-inline char * string_dup(char *s) {return CORBA::string_dup(s);}
-inline char * string_dup(const char *s) {return CORBA::string_dup(s);}
-
-//
 // Many, many typedef
 //
 
 typedef	const char *	ConstDevString;	// Pseudo Tango type to ease POGO job
-typedef DevVarCharArray	DevVarUCharArray;
 
 class DeviceImpl;
 
@@ -766,7 +501,7 @@ typedef DevState *(DeviceImpl::*Sta_CmdMethPtr_Sta)(DevState);
 //
 
 enum CmdArgType {
-	DEV_VOID = 0,
+	DEV_VOID,
 	DEV_BOOLEAN,
 	DEV_SHORT,
 	DEV_LONG,
@@ -786,121 +521,13 @@ enum CmdArgType {
 	DEVVAR_LONGSTRINGARRAY,
 	DEVVAR_DOUBLESTRINGARRAY,
 	DEV_STATE,
-	CONST_DEV_STRING,
-	DEVVAR_BOOLEANARRAY,
-	DEV_UCHAR,
-	DEV_LONG64,
-	DEV_ULONG64,
-	DEVVAR_LONG64ARRAY,
-	DEVVAR_ULONG64ARRAY,
-	DEV_INT,
-	DEV_ENCODED
+	CONST_DEV_STRING
 };
 
 enum MessBoxType {
-        STOP = 0,
+        STOP,
         INFO
 };
-
-enum PollObjType {
-	POLL_CMD = 0,
-	POLL_ATTR,
-	EVENT_HEARTBEAT,
-	STORE_SUBDEV
-};
-
-enum PollCmdCode {
-	POLL_ADD_OBJ = 0,
-	POLL_REM_OBJ,
-	POLL_START,
-	POLL_STOP,
-	POLL_UPD_PERIOD,
-	POLL_REM_DEV,
-	POLL_EXIT,
-	POLL_REM_EXT_TRIG_OBJ,
-	POLL_ADD_HEARTBEAT,
-	POLL_REM_HEARTBEAT
-};
-
-enum SerialModel {
-	BY_DEVICE = 0,
-	BY_CLASS,
-	BY_PROCESS,
-	NO_SYNC
-};
-
-enum AttReqType {
-	READ_REQ = 0,
-	WRITE_REQ
-};
-
-enum LockCmdCode {
-	LOCK_ADD_DEV = 0,
-	LOCK_REM_DEV,
-	LOCK_UNLOCK_ALL_EXIT,
-	LOCK_EXIT
-};
-
-//
-// The polled device structure
-//
-
-typedef struct _PollDevice
-{
-	string			dev_name;
-	vector<long>	ind_list;
-}PollDevice;
-
-#ifdef TANGO_HAS_LOG4TANGO
-//
-// Logging levels
-//
-
-enum LogLevel {
-  	LOG_OFF = 0,
-  	LOG_FATAL,
-  	LOG_ERROR,
-  	LOG_WARN,
-  	LOG_INFO,
-  	LOG_DEBUG
-} ;
-
-//
-// Logging targets
-//
-
-enum LogTarget {
-  	LOG_CONSOLE = 0,
-  	LOG_FILE,
-  	LOG_DEVICE
-};
-
-//
-// Logging targets (as string)
-//
-
-#define kLogTargetConsole "console"
-#define kLogTargetFile	  "file"
-#define kLogTargetDevice  "device"
-
-//
-// Logging target [type/name] separator
-//
-
-#define kLogTargetSep "::"
-
-//
-// TANGO <rolling log files> threshold 
-//
-
-// Min RollingFileAppender threshold (~500kB)
-const size_t kMinRollingThreshold = 500;
-// Default RollingFileAppender threshold (~2MB)
-const size_t kDefaultRollingThreshold = 2 * 1024;
-// Max RollingFileAppender threshold (~20MB)
-const size_t kMaxRollingThreshold = 20 * 1024;
-
-#endif // TANGO_HAS_LOG4TANGO
 
 //
 // The command argument name
@@ -927,14 +554,7 @@ const char * const CmdArgTypeName[] = {
 	"DevVarLongStringArray",
 	"DevVarDoubleStringArray",
 	"DevState",
-	"ConstDevString",
-	"DevVarBooleanArray",
-	"DevUChar",
-	"DevLong64",
-	"DevULong64",
-	"DevVarLong64Array",
-	"DevVarULong64Array",
-	"DevInt"
+	"ConstDevString"
 };
 
 //
@@ -958,56 +578,18 @@ const char * const DevStateName[] = {
 	"UNKNOWN"
 };
 
-enum EventType {
-	CHANGE_EVENT=0,
-	QUALITY_EVENT,
-	PERIODIC_EVENT,
-	ARCHIVE_EVENT,
-	USER_EVENT,
-	ATTR_CONF_EVENT,
-	DATA_READY_EVENT
-};
-
-enum AttrSerialModel
-{
-	ATTR_NO_SYNC=0,
-	ATTR_BY_KERNEL,
-	ATTR_BY_USER
-};
-
-enum KeepAliveCmdCode {
-	EXIT_TH = 0
-};
-
-enum AccessControlType {
-	ACCESS_READ = 0,
-	ACCESS_WRITE
-};
-
 //
 // The optional attribute properties
 //
 
-#define		AlrmValueNotSpec	"Not specified"
-#define		AssocWritNotSpec	"None"
-#define		LabelNotSpec	  	"No label"
-#define		DescNotSpec			"No description"
-#define		UnitNotSpec			"No unit"
-#define		StdUnitNotSpec		"No standard unit"
-#define		DispUnitNotSpec		"No display unit"
-#define		FormatNotSpec		"%6.2f"
-
-#define		NotANumber			"NaN"
-
-#define		MemNotUsed			"Not used yet"
-#define		MemAttrPropName		"__value"
+#define		AlrmValueNotSpec	  "Not specified"
+#define		AssocWritNotSpec	  "None"
 
 typedef struct _OptAttrProp
 {
 	const char *name;
 	const char *default_value;
 }OptAttrProp;
-
 
 /*
  * List of strings used by the API as the DevError reason field.
@@ -1048,32 +630,7 @@ typedef struct _OptAttrProp
  * API_CantGetDevObjectId		 
  * API_CantActivatePOAManager
  * API_DatabaseAccess
- * API_CorbaSysException 
- * API_BadConfigurationProperty 
- * API_AttrIncorrectDataNumber
- * API_NotSupportedFeature
- * API_AttrNotAllowed
- * API_AttrWrongMemValue
- * API_WizardConfError
- * API_EventSupplierNotConstructed
- * API_CantGetClientIdent
- * API_DeviceLocked
- * API_CannotCheckAccessControl
- 
- * API_DeviceNotLocked
- * API_DeviceUnlocked
- * API_DeviceUnlockable
- * API_WrongLockingStatus
- * API_CantFindLockingThread
- * API_WrongHistoryDataBuffer
- * API_CannotCheckAccessControl 
- * API_ReadOnlyMode
- * API_CantStoreDeviceClass
- * API_CantCreateLockingThread
- * 
- * API_PollingThreadNotFound
- * API_PolledDeviceNotInPoolConf
- * API_PolledDeviceNotInPoolMap
+ * API_CorbaSysException  
  */
 
 } // End of Tango namespace

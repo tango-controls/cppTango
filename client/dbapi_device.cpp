@@ -1,4 +1,4 @@
-static const char *RcsId = "$Id$\n$Name$";
+static const char *RcsId = "$Header$";
 //
 // dbdevice.cpp - C++ source code file for TANGO dbapi class DbDevice
 //
@@ -6,38 +6,33 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+// last changed	- 17/10/2000 
 //
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// version 	- 1.0
 //
 
-#if HAVE_CONFIG_H
-#include <ac_config.h>
-#endif
-
+#ifdef _HPUX_SOURCE
+#include <iostream.h>
+#else
+#include <iostream>
+#endif /* _HPUX_SOURCE */
+#ifdef STRSTREAM
+#ifdef _HPUX_SOURCE
+#include <strstream.h>
+#else
+#include <strstream>
+#endif /* _HPUX_SOURCE */
+#else
+#include <sstream>
+#endif /* STRSTREAM */
 #include <tango.h>
-
-                                                   
+#include <dbapi.h>
+#ifdef _HPUX_SOURCE
+namespace std{}
+#endif /* _HPUX_SOURCE */                                                       
+using namespace std;
 using namespace CORBA;
-
-namespace Tango
-{
+using namespace Tango;
 
 //-----------------------------------------------------------------------------
 //
@@ -47,11 +42,11 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name, Database *dev_dbase)
+DbDevice::DbDevice(string dev_name, Database *dev_dbase)
 {
-	name = dev_name;
+	name = string(dev_name);
 	dbase = dev_dbase;
-	ext_dbase = true;
+	dbase_create = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -62,32 +57,14 @@ DbDevice::DbDevice(string &dev_name, Database *dev_dbase)
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name)
+DbDevice::DbDevice(string dev_name)
 {
-	name = dev_name;
-	db_ind = ApiUtil::instance()->get_db_ind();
-	ext_dbase = false;
-}
-
-//-----------------------------------------------------------------------------
+	name = string(dev_name);
 //
-// DbDevice::DbDevice() - constructor to create a DbDevice object for
-//			  accessing a device of this name with specifying
-//			  the TANGO database via its server host and port
+// TODO - replace this with a singleton
 //
-//-----------------------------------------------------------------------------
-
-DbDevice::DbDevice(string &dev_name,string &host,string &port_str)
-{
-	name = dev_name;
-	
-	TangoSys_MemStream s;
-	int port_num;
-	s << port_str << ends;
-	s >> port_num;
-	
-	db_ind = ApiUtil::instance()->get_db_ind(host,port_num);
-	ext_dbase = false;
+	dbase = new Database();
+	dbase_create = 1;
 }
 
 //-----------------------------------------------------------------------------
@@ -100,27 +77,12 @@ DbDevice::DbDevice(string &dev_name,string &host,string &port_str)
 
 DbDevice::~DbDevice()
 {
-}
-
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::get_dbase() - public method to return the database used by this
-//			   db device.
-//
-//-----------------------------------------------------------------------------
-
-Database *DbDevice::get_dbase()
-{
-	if (ext_dbase == true)
-		return dbase;
-	else
+	if (dbase_create)
 	{
-		ApiUtil *au = ApiUtil::instance();
-		return (au->get_db_vect())[db_ind];
+		delete dbase;
 	}
+	
 }
-
 
 //-----------------------------------------------------------------------------
 //
@@ -130,13 +92,7 @@ Database *DbDevice::get_dbase()
 
 DbDevImportInfo DbDevice::import_device()
 {
-	if (ext_dbase == true)
-		return dbase->import_device(name);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		return (au->get_db_vect())[db_ind]->import_device(name);
-	}
+	return dbase->import_device(name);
 }
 
 //-----------------------------------------------------------------------------
@@ -147,13 +103,8 @@ DbDevImportInfo DbDevice::import_device()
 
 void DbDevice::export_device(DbDevExportInfo &dev_export)
 {
-	if (ext_dbase == true)
-		dbase->export_device(dev_export);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->export_device(dev_export);
-	}
+	dbase->export_device(dev_export);
+
 	return;
 }
 
@@ -165,22 +116,7 @@ void DbDevice::export_device(DbDevExportInfo &dev_export)
 
 void DbDevice::get_property(DbData &db_data)
 {
-	ApiUtil *au = ApiUtil::instance();
-	DbServerCache *dsc;
-	if (au->in_server() == true)
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		dsc = tg->get_db_cache();
-	}
-	else
-		dsc = NULL;
-	
-	if (ext_dbase == true)
-		dbase->get_device_property(name, db_data, dsc);
-	else
-	{
-		(au->get_db_vect())[db_ind]->get_device_property(name,db_data);
-	}
+	dbase->get_device_property(name, db_data);
 	return;
 }
 
@@ -192,13 +128,7 @@ void DbDevice::get_property(DbData &db_data)
 
 void DbDevice::put_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->put_device_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->put_device_property(name,db_data);
-	}
+	dbase->put_device_property(name, db_data);
 	return;
 }
 
@@ -210,13 +140,7 @@ void DbDevice::put_property(DbData &db_data)
 
 void DbDevice::delete_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->delete_device_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->delete_device_property(name,db_data);
-	}
+	dbase->delete_device_property(name, db_data);
 	return;
 }
 
@@ -229,13 +153,7 @@ void DbDevice::delete_property(DbData &db_data)
 
 void DbDevice::get_attribute_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->get_device_attribute_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->get_device_attribute_property(name,db_data);
-	}
+	dbase->get_device_attribute_property(name, db_data);
 	return;
 }
 
@@ -248,13 +166,7 @@ void DbDevice::get_attribute_property(DbData &db_data)
 
 void DbDevice::put_attribute_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->put_device_attribute_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->put_device_attribute_property(name,db_data);
-	}
+	dbase->put_device_attribute_property(name, db_data);
 	return;
 }
 
@@ -267,82 +179,6 @@ void DbDevice::put_attribute_property(DbData &db_data)
 
 void DbDevice::delete_attribute_property(DbData &db_data)
 {
-	if (ext_dbase == true)
-		dbase->delete_device_attribute_property(name, db_data);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->delete_device_attribute_property(name,db_data);
-	}
+	dbase->delete_device_attribute_property(name, db_data);
 	return;
 }
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::check_access_control() - public method to return device access right
-//
-//-----------------------------------------------------------------------------
-
-AccessControlType DbDevice::check_access_control()
-{
-	if (ext_dbase == true)
-		return dbase->check_access_control(name);
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		Database *db = au->get_db_vect()[db_ind];
-		AccessControlType acc = db->check_access_control(name);
-		return acc;
-	}
-}
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::clear_access_except_errors() - public method to clear memorized
-// access control exception
-//
-//-----------------------------------------------------------------------------
-
-void DbDevice::clear_access_except_errors()
-{
-	if (ext_dbase == true)
-		dbase->clear_access_except_errors();
-	else
-	{
-		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->clear_access_except_errors();
-	}	
-}
-
-//-----------------------------------------------------------------------------
-//
-// DbDevice::get_property_list() - public method to get device properties list
-// from the database
-//
-//-----------------------------------------------------------------------------
-
-void DbDevice::get_property_list(const string &wildcard,vector<string> &prop_list)
-{
-	ApiUtil *au = ApiUtil::instance();
-	DbServerCache *dsc;
-	if (au->in_server() == true)
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		dsc = tg->get_db_cache();
-	}
-	else
-		dsc = NULL;
-	
-	if (ext_dbase == true)
-	{
-		dbase->get_device_property_list(name, wildcard, prop_list, dsc);
-	}
-	else
-	{
-		(au->get_db_vect())[db_ind]->get_device_property_list(name, wildcard, prop_list);
-	}
-	return;
-}
-
-
-} // End of Tango namespace
