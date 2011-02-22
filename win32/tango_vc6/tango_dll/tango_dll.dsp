@@ -59,7 +59,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Build def file...
-PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango552 release\*.obj
+PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango550 release\*.obj
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "tango_dll - Win32 Debug"
@@ -91,7 +91,7 @@ LINK32=link.exe
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Build def file...
-PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango552d debug\*.obj
+PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango550d debug\*.obj
 # End Special Build Tool
 
 !ENDIF 
