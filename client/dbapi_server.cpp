@@ -1,4 +1,4 @@
-static const char *RcsId = "$Id$\n$Name$";
+static const char *RcsId = "$Header$";
 //
 // dbdevice.cpp - C++ source code file for TANGO dbapi class DbServer
 //
@@ -6,30 +6,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- November 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+// last changed	- 14/11/2000 
 //
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// version 	- 1.0
 //
 
-#if HAVE_CONFIG_H
-#include <ac_config.h>
-#endif
 
 #include <tango.h>
                                                      
@@ -108,11 +89,11 @@ void DbServer::add_server(DbDevInfos &dev_infos)
 void DbServer::export_server(DbDevExportInfos &dev_export)
 {
 	if (ext_dbase == true)
-		dbase->export_server(dev_export);
+		dbase->export_server(name, dev_export);
 	else
 	{
 		ApiUtil *au = ApiUtil::instance();
-		(au->get_db_vect())[db_ind]->export_server(dev_export);
+		(au->get_db_vect())[db_ind]->export_server(name, dev_export);
 	}
 }
 

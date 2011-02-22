@@ -8,84 +8,9 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.6  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.5  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.4  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.3  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.2  2004/07/07 08:40:13  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.1  2003/07/03 07:40:51  taurel
-// - Change in Tango IDL file : Implement a new way to tranfer data for read_attribute and write_attribute CORBA operation
-// - Handle this new IDL release in DeviceProxy class
-// - New exception methods in DeviceAttribute class
-// - New way to get data out of DeviceAttribute object
-// - Fix bugs in DeviceProxy copy constructor and assignement operator
-// - Change some method names in DeviceDataHistory and DeviceAttributeHistory classes
-// - Change the implementation of the DeviceProxy::write_attribute() method to avoid DeviceAttribute copying
-// - Clean-up how a server is killed via a CTRL-C or a dserver device kill command
-// - Add a server_cleanup() method in the Util class
-// - Win32 : Update debug menu in the server graphical window to support logging feature
-// - Win32 : Display library CVS tag in the "Help->About" sub-window
-//
-// Revision 3.0.4.1  2003/09/30 11:49:25  taurel
-// Add some changes foreseen for release 4.1 and already implemented on
-// the trunck into this release 4.0 branch
-//
-// Revision 3.0  2003/03/25 16:48:05  taurel
-// Many changes for Tango release 3.0 including
-// - Added full logging features
-// - Added asynchronous calls
-// - Host name of clients now stored in black-box
-// - Three serialization model in DS
-// - Fix miscellaneous bugs
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and destructor methods
-// - Some internal cleanups
-// - Change the way how TangoMonitor class is implemented. It's a recursive
-//   mutex
-//
-// Revision 2.8  2002/12/16 12:07:05  taurel
-// No change in code at all but only forgot th emost important line in
-// list of updates in the previous release :
-// - Change underlying ORB from ORBacus to omniORB
-//
 // Revision 2.7  2002/12/16 10:16:50  taurel
 // - New method get_device_list() in Util class
 // - Util::get_class_list takes DServer device into account
@@ -156,6 +81,12 @@
 // Revision 1.1.1.1  2001/02/27 08:46:21  taurel
 // Imported sources
 //
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _W32WIN_H
@@ -201,12 +132,7 @@ private:
 
 LRESULT CALLBACK TangoWndProc(HWND, UINT, WPARAM, LPARAM );
 LRESULT CALLBACK AboutProc(HWND, UINT, WPARAM, LPARAM);
-void SetDebugLevel(LogLevel,HMENU,bool);
-void all_dev(Util *,LogLevel);
-int get_all_dev_log_level(Util *,LogLevel &);
-void NoDebugLevel(HMENU,bool);
-void add_cout_appender(Util *);
-void all_dev_add_cout(Util *);
+void SetDebugLevel(int,HMENU);
 
 } // End of Tango namespace
 

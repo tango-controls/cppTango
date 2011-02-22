@@ -8,62 +8,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.4  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.3  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.2  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.1  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.0  2003/03/25 16:41:53  taurel
-// Many changes for Tango release 3.0 including
-// - Added full logging features
-// - Added asynchronous calls
-// - Host name of clients now stored in black-box
-// - Three serialization model in DS
-// - Fix miscellaneous bugs
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and destructor methods
-// - Some internal cleanups
-// - Change the way how TangoMonitor class is implemented. It's a recursive
-//   mutex
-//
-// Revision 2.9  2003/03/11 17:55:50  nleclercq
-// Switch from log4cpp to log4tango
-//
-// Revision 2.8  2002/12/16 12:06:22  taurel
-// No change in code at all but only forgot th emost important line in
-// list of updates in the previous release :
-// - Change underlying ORB from ORBacus to omniORB
-//
 // Revision 2.7  2002/12/16 10:15:36  taurel
 // - New method get_device_list() in Util class
 // - Util::get_class_list takes DServer device into account
@@ -134,15 +81,19 @@
 // Revision 1.1.1.1  2001/02/27 08:46:20  taurel
 // Imported sources
 //
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _COUTBUF_H
 #define _COUTBUF_H
 
 #include <tango.h>
-#ifndef TANGO_HAS_LOG4TANGO 
-# include <streambuf>
-#endif
+#include <streambuf>
 
 namespace Tango
 {
@@ -151,46 +102,35 @@ namespace Tango
 //   Some defines
 //
 
-#define IDC_LIST      	-777
-#define MAXLISTLINES  	200
-#ifndef TANGO_HAS_LOG4TANGO
-#define bufferSize 	512
-#endif
+#define IDC_LIST        -777
+#define MAXLISTLINES    200
+#define bufferSize      512
 
-#ifndef TANGO_HAS_LOG4TANGO 
+
+
 class CoutBuf: public streambuf
-#else
-class CoutBuf
-#endif
 {
 public:
-  	CoutBuf(HINSTANCE,int,HWND,LPCSTR);
-  	virtual ~CoutBuf();
-  	HWND get_debug_window() {return DbgWin;}
-  	void clear_debug_window() {DbgWin = NULL;}
-  	void CreateWin(LPCSTR);
-
-#ifdef TANGO_HAS_LOG4TANGO
-  	int dbg_out (LPCSTR);
-#endif
-
+        CoutBuf(HINSTANCE,int,HWND,LPCSTR);
+        virtual ~CoutBuf();
+	HWND get_debug_window() {return DbgWin;}
+	void clear_debug_window() {DbgWin = NULL;}
+	void CreateWin(LPCSTR);
+       
 protected:
-#ifndef TANGO_HAS_LOG4TANGO
-  	char buffer[bufferSize];
-  	long nb_critical;
-#endif 
 
-  	HWND DbgWin;
-  	HWND parent_window;
+        char buffer[bufferSize];
+	long nb_critical;
+	HWND DbgWin;
+	HWND parent_window;
 
-#ifndef TANGO_HAS_LOG4TANGO
-  	int dbg_out(LPCSTR);
-  	virtual int_type overflow(int_type);
-  	int flushBuffer();
-  	virtual int sync();
-  	virtual streamsize xsputn(const char_type *,streamsize);
-#endif
+        int dbg_out(LPCSTR);
+        virtual int_type overflow(int_type);
+        int flushBuffer();
+        virtual int sync();
+	virtual streamsize xsputn(const char_type *,streamsize);
 };
+
 
 //
 //  Some functions for windows window management!!!

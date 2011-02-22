@@ -1,7 +1,7 @@
 			Full TANGO C++ API  README
 			==========================
 		     	      
-			taurel@esrf.fr (25/3/2003)
+			taurel@esrf.fr (9/1/2003)
 
 This directory contains the files necessary to implement the server
 C++ TANGO API. It contains the include files and source files.
@@ -33,12 +33,9 @@ tango_dll builds dll tango libs (debug and release). Nowdays, to build dll
 libraries, you need "perl" on your windows computer which is available in the
 Windows NT or XP resource kit. It is in our TODO list to remove this "perl"
 usage.
-To correctly build libraries, two environment variables called "OMNI_BASE" 
-and "LOG4TANGO_BASE" are needed.
-The environment variable OMNI_BASE should be set to the directory where 
+To correctly build libraries, an environment variable called "OMNI_BASE" is
+needed. This environment variable should be set to the directory where 
 omniORB has been installed.
-The environment variable LOG4TANGO_BASE should be set to the directory where
-log4tango has been installed.
 
 
 		

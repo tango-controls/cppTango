@@ -10,93 +10,9 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.7  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.6  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.5  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.4.2.1  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.4  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.3  2007/03/06 08:19:03  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 3.2  2006/05/18 08:51:56  taurel
-// - Miscellaneous changes due to Python device server ported to Windows
-// - Fix some bugs discovered by Windows VC8 using the test suite
-// - Update Windows resource file include path
-// - Fix some Windows VC8 warnings
-//
-// Revision 3.1  2005/01/13 08:30:00  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 3.0.6.1  2004/09/15 06:47:17  taurel
-// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
-// - It is also possible to read state and status as attributes
-// - Fix bug in Database::get_class_property() method (missing ends insertion)
-// - Fix bug in admin device DevRestart command (device name case problem)
-//
-// Revision 3.0  2003/03/25 16:44:11  taurel
-// Many changes for Tango release 3.0 including
-// - Added full logging features
-// - Added asynchronous calls
-// - Host name of clients now stored in black-box
-// - Three serialization model in DS
-// - Fix miscellaneous bugs
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and destructor methods
-// - Some internal cleanups
-// - Change the way how TangoMonitor class is implemented. It's a recursive
-//   mutex
-//
-// Revision 2.9  2003/03/11 17:55:57  nleclercq
-// Switch from log4cpp to log4tango
-//
-// Revision 2.8  2002/12/16 12:07:33  taurel
-// No change in code at all but only forgot th emost important line in
-// list of updates in the previous release :
-// - Change underlying ORB from ORBacus to omniORB
-//
 // Revision 2.7  2002/12/16 10:16:23  taurel
 // - New method get_device_list() in Util class
 // - Util::get_class_list takes DServer device into account
@@ -156,6 +72,10 @@
 // New methods re_throw_exception(). Read_attributes supports AllAttr mnemonic A new add_attribute()method in DeviceImpl class New way to define attribute properties New pattern to prevent full re-compile For multi-classes DS, it is now possible to use the Util::get_device_by_name() method in device constructor Adding << operator ovebloading Fix devie CORBA ref. number when device constructor sends an excep.
 //
 //
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _SECVEC_H
@@ -178,7 +98,7 @@ namespace Tango
 
 //=============================================================================
 //
-//			Operator for the unsigned char array types
+//			Operator for the Char array types
 //
 // description :	These two operators allow simple insertion between
 //			Tango sequence (DevVarCharArray) and C++ vectors
@@ -197,11 +117,11 @@ namespace Tango
  * @param lval The DevVarCharArray to be initialised
  * @param rval The C++ vector
  */
-inline void operator<<(DevVarCharArray &lval,const vector<unsigned char> &rval)
+inline void operator<<(DevVarCharArray &lval,const vector<char> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
@@ -211,7 +131,7 @@ inline void operator<<(DevVarCharArray &lval,const vector<unsigned char> &rval)
  * @param lval The C++ vector to be initialised
  * @param rval The DevVarCharArray
  */
-inline void operator<<(vector<unsigned char> &lval,const DevVarCharArray &rval)
+inline void operator<<(vector<char> &lval,const DevVarCharArray &rval)
 {
 	long nb_elt = rval.length();
 	if (lval.size() != 0)
@@ -238,9 +158,9 @@ inline void operator<<(vector<unsigned char> &lval,const DevVarCharArray &rval)
  */
 inline void operator<<(DevVarShortArray &lval,const vector<short> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
@@ -269,65 +189,26 @@ inline void operator<<(vector<short> &lval,const DevVarShortArray &rval)
 //=============================================================================
 
 /**
- * Init a DevVarLongArray from a C++ vector of DevLong(s).
+ * Init a DevVarLongArray from a C++ vector of long(s).
  *
  * @param lval The DevVarLongArray to be initialised
  * @param rval The C++ vector
  */
-inline void operator<<(DevVarLongArray &lval,const vector<DevLong> &rval)
+inline void operator<<(DevVarLongArray &lval,const vector<long> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
 /**
- * Init a C++ vector of DevLong from a DevVarLongArray.
+ * Init a C++ vector of long from a DevVarLongArray.
  *
  * @param lval The C++ vector to be initialised
  * @param rval The DevVarLongArray
  */
-inline void operator<<(vector<DevLong> &lval,const DevVarLongArray &rval)
-{
-	long nb_elt = rval.length();
-	if (lval.size() != 0)
-		lval.clear();
-	for (long i = 0;i < nb_elt;i++)
-		lval.push_back(rval[i]);
-}
-
-
-//=============================================================================
-//
-//			Operator for the Long Long array types
-//
-// description :	These two operators allow simple insertion between
-//			Tango sequence (DevVarLong64Array) and C++ vectors
-//
-//=============================================================================
-
-/**
- * Init a DevVarLongArray from a C++ vector of DevLong64(s).
- *
- * @param lval The DevVarLong64Array to be initialised
- * @param rval The C++ vector
- */
-inline void operator<<(DevVarLong64Array &lval,const vector<DevLong64> &rval)
-{
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
-		lval[i] = rval[i];
-}
-
-/**
- * Init a C++ vector of long from a DevVarLong64Array.
- *
- * @param lval The C++ vector to be initialised
- * @param rval The DevVarLong64Array
- */
-inline void operator<<(vector<DevLong64> &lval,const DevVarLong64Array &rval)
+inline void operator<<(vector<long> &lval,const DevVarLongArray &rval)
 {
 	long nb_elt = rval.length();
 	if (lval.size() != 0)
@@ -353,9 +234,9 @@ inline void operator<<(vector<DevLong64> &lval,const DevVarLong64Array &rval)
  */
 inline void operator<<(DevVarFloatArray &lval,const vector<float> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
@@ -392,9 +273,9 @@ inline void operator<<(vector<float> &lval,const DevVarFloatArray &rval)
  */
 inline void operator<<(DevVarDoubleArray &lval,const vector<double> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
@@ -406,46 +287,6 @@ inline void operator<<(DevVarDoubleArray &lval,const vector<double> &rval)
  */
  
 inline void operator<<(vector<double> &lval,const DevVarDoubleArray &rval)
-{
-	long nb_elt = rval.length();
-	if (lval.size() != 0)
-		lval.clear();
-	for (long i = 0;i < nb_elt;i++)
-		lval.push_back(rval[i]);
-}
-
-
-//=============================================================================
-//
-//			Operator for the Boolean array types
-//
-// description :	These two operators allow simple insertion between
-//			Tango sequence (DevVarBooleanArray) and C++ vectors
-//
-//=============================================================================
-
-/**
- * Init a DevVarBooleanArray from a C++ vector of bool(s).
- *
- * @param lval The DevVarBooleanArray to be initialised
- * @param rval The C++ vector
- */
-inline void operator<<(DevVarBooleanArray &lval,const vector<bool> &rval)
-{
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
-		lval[i] = rval[i];
-}
-
-/**
- * Init a C++ vector of long from a DevVarBooleanArray.
- *
- * @param lval The C++ vector to be initialised
- * @param rval The DevVarBooleanArray
- */
- 
-inline void operator<<(vector<bool> &lval,const DevVarBooleanArray &rval)
 {
 	long nb_elt = rval.length();
 	if (lval.size() != 0)
@@ -471,9 +312,9 @@ inline void operator<<(vector<bool> &lval,const DevVarBooleanArray &rval)
  */
 inline void operator<<(DevVarUShortArray &lval,const vector<unsigned short> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
@@ -503,17 +344,17 @@ inline void operator<<(vector<unsigned short> &lval,const DevVarUShortArray &rva
 //=============================================================================
 
 /**
- * Init a DevVarULongArray from a C++ vector of DevULong(s).
+ * Init a DevVarULongArray from a C++ vector of unsigned long(s).
  *
  * @param lval The DevVarULongArray to be initialised
  * @param rval The C++ vector
  */
  
-inline void operator<<(DevVarULongArray &lval,const vector<DevULong> &rval)
+inline void operator<<(DevVarULongArray &lval,const vector<unsigned long> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
 
@@ -523,47 +364,7 @@ inline void operator<<(DevVarULongArray &lval,const vector<DevULong> &rval)
  * @param lval The C++ vector to be initialised
  * @param rval The DevVarULongArray
  */
-inline void operator<<(vector<DevULong> &lval,const DevVarULongArray &rval)
-{
-	long nb_elt = rval.length();
-	if (lval.size() != 0)
-		lval.clear();
-	for (long i = 0;i < nb_elt;i++)
-		lval.push_back(rval[i]);
-}
-
-
-//=============================================================================
-//
-//			Operator for the Unsigned long long array types
-//
-// description :	These two operators allow simple insertion between
-//			Tango sequence (DevVarULong64Array) and C++ vectors
-//
-//=============================================================================
-
-/**
- * Init a DevVarULong64Array from a C++ vector of DevULong64(s).
- *
- * @param lval The DevVarULong64Array to be initialised
- * @param rval The C++ vector
- */
- 
-inline void operator<<(DevVarULong64Array &lval,const vector<DevULong64> &rval)
-{
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
-		lval[i] = rval[i];
-}
-
-/**
- * Init a C++ vector of long from a DevVarULong64Array.
- *
- * @param lval The C++ vector to be initialised
- * @param rval The DevVarULong64Array
- */
-inline void operator<<(vector<DevULong64> &lval,const DevVarULong64Array &rval)
+inline void operator<<(vector<unsigned long> &lval,const DevVarULongArray &rval)
 {
 	long nb_elt = rval.length();
 	if (lval.size() != 0)
@@ -589,9 +390,9 @@ inline void operator<<(vector<DevULong64> &lval,const DevVarULong64Array &rval)
  */
 inline void operator<<(DevVarStringArray &lval,const vector<string> &rval)
 {
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
+	long nb_elt = rval.size();
+	lval.length(nb_elt);
+	for (long i = 0;i < nb_elt;i++)
 		lval[i] = CORBA::string_dup(rval[i].c_str());
 }
 
@@ -614,43 +415,6 @@ inline void operator<<(vector<string> &lval,const DevVarStringArray &rval)
 	}
 }
 		
-//=============================================================================
-//
-//			Operator for the DevState array types
-//
-// description :	These two operators allow simple insertion between
-//			Tango sequence (DevVarStateArray) and C++ vectors
-//
-//=============================================================================
-
-/**
- * Init a DevVarStateArray from a C++ vector of state(s).
- *
- * @param lval The DevVarStateArray to be initialised
- * @param rval The C++ vector
- */
-inline void operator<<(DevVarStateArray &lval,const vector<DevState> &rval)
-{
-	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
-	for (unsigned long i = 0;i < nb_elt;i++)
-		lval[i] = rval[i];
-}
-
-/**
- * Init a C++ vector of long from a DevVarStateArray.
- *
- * @param lval The C++ vector to be initialised
- * @param rval The DevVarStateArray
- */
-inline void operator<<(vector<DevState> &lval,const DevVarStateArray &rval)
-{
-	long nb_elt = rval.length();
-	if (lval.size() != 0)
-		lval.clear();
-	for (long i = 0;i < nb_elt;i++)
-		lval.push_back(rval[i]);
-}
 
 //@}
 
@@ -661,7 +425,7 @@ inline void operator<<(vector<DevState> &lval,const DevVarStateArray &rval)
 // description :	These operators allow simple printing of sequences
 //
 //=============================================================================
-//#ifndef TANGO_HAS_LOG4TANGO
+
 /** @defgroup Eas Easy printing operator overloading functions
  * Overloading of the << operator between C++ ostream and some Tango types */
 //@{
@@ -693,15 +457,6 @@ ostream &operator<<(ostream &lval,const DevVarShortArray &rval);
  */
 ostream &operator<<(ostream &lval,const DevVarLongArray &rval);
 /**
- * Print a DevVarLong64Array.
- *
- * One line is printed for each sequence element.
- *
- * @param lval The C++ stream used for printing
- * @param rval The DevVarLong64Array sequence to be printed
- */
-ostream &operator<<(ostream &lval,const DevVarLong64Array &rval);
-/**
  * Print a DevVarFloatArray.
  *
  * One line is printed for each sequence element.
@@ -719,15 +474,6 @@ ostream &operator<<(ostream &lval,const DevVarFloatArray &rval);
  * @param rval The DevVarDoubleArray sequence to be printed
  */
 ostream &operator<<(ostream &lval,const DevVarDoubleArray &rval);
-/**
- * Print a DevVarBooleanArray.
- *
- * One line is printed for each sequence element.
- *
- * @param lval The C++ stream used for printing
- * @param rval The DevVarBooleanArray sequence to be printed
- */
-ostream &operator<<(ostream &lval,const DevVarBooleanArray &rval);
 /**
  * Print a DevVarUShortArray.
  *
@@ -747,15 +493,6 @@ ostream &operator<<(ostream &lval,const DevVarUShortArray &rval);
  */
 ostream &operator<<(ostream &lval,const DevVarULongArray &rval);
 /**
- * Print a DevVarULong64Array.
- *
- * One line is printed for each sequence element.
- *
- * @param lval The C++ stream used for printing
- * @param rval The DevVarULong64Array sequence to be printed
- */
-ostream &operator<<(ostream &lval,const DevVarULong64Array &rval);
-/**
  * Print a DevVarStringArray.
  *
  * One line is printed for each sequence element.
@@ -764,27 +501,7 @@ ostream &operator<<(ostream &lval,const DevVarULong64Array &rval);
  * @param rval The DevVarStringArray sequence to be printed
  */
 ostream &operator<<(ostream &lval,const DevVarStringArray &rval);
-/**
- * Print a DevVarStateArray.
- *
- * One line is printed for each sequence element.
- *
- * @param lval The C++ stream used for printing
- * @param rval The DevVarStateArray sequence to be printed
- */
-ostream &operator<<(ostream &lval,const DevVarStateArray &rval);
-/**
- * Print a DevVarEncodedArray.
- *
- * One line is printed for each sequence element.
- *
- * @param lval The C++ stream used for printing
- * @param rval The DevVarEncodedArray sequence to be printed
- */
-ostream &operator<<(ostream &lval,const DevVarEncodedArray &rval);
 //@}
-
-//#endif // TANGO_HAS_LOG4TANGO
 
 } // End of Tango namespace
 

@@ -1,4 +1,4 @@
-static const char *RcsId = "$Id$\n$Name$";
+static const char *RcsId = "$Header$";
 
 //+============================================================================
 //
@@ -16,139 +16,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.16  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-//
-// Revision 3.15  2009/09/16 12:16:19  taurel
-// - Better management of the RDS alarm properties. They were not taken into
-// account by the set_default_properties() method
-//
-// Revision 3.14  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.13  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.12  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.11  2008/06/14 11:29:15  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.10  2008/05/20 12:44:09  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.9.2.1  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.9  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.8  2007/03/06 08:18:03  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 3.7  2006/04/27 13:44:51  taurel
-// - Fix compatibility bug introduced in previous release by moving new
-// class data members in their corresponding extension classes
-//
-// Revision 3.6  2006/04/13 14:49:37  jensmeyer
-// Added methods to the Attr class to initialise the fire event configuration
-// with pogo.
-//
-// Revision 3.5  2005/11/07 12:15:00  jensmeyer
-// Corrected initialisation of memorised attributes. No longer exits when receiving an
-// exception during initialisation. Also added an option to only initialise the attribute setpoint and not writing to the attribute.
-// set_memorized_init(false) -> only applies setpoint.
-// set_memorized_init(true) -> also writes setpoint value to the attribute.
-//
-// Revision 3.4  2005/01/13 08:27:32  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 3.3.2.1  2004/09/15 06:45:44  taurel
-// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
-// - It is also possible to read state and status as attributes
-// - Fix bug in Database::get_class_property() method (missing ends insertion)
-// - Fix bug in admin device DevRestart command (device name case problem)
-//
-// Revision 3.3  2003/09/02 13:08:14  taurel
-// Add memorized attribute feature (only for SCALAR and WRITE/READ_WRITE attribute)
-//
-// Revision 3.2  2003/08/21 07:23:45  taurel
-// - End of the implementation of the new way to transfer data for read and
-//   write attributes (better use of exception)
-// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
-// - Added DeviceAttribute ctors from "const char *"
-// - Enable writing of spectrum and image attributes
-// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
-//   attribute writing
-// - Attribute date automatically set in case of attribute quality factor set to INVALID
-// - Change in the polling thread discarding element algo. to support case of polling
-//   several cmd/atts at the same polling period with cmd/attr having a long response time
-// - Take cmd/attr execution time into account in the "Data not updated since" polling
-//   status string
-// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
-//   on Windows device server
-// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
-//   to send trigger to the polling thread
-//
-// Revision 3.1  2003/05/28 14:55:06  taurel
-// Add the include (conditionally) of the include files generated by autoconf
-//
-// Revision 3.0  2003/03/25 16:41:46  taurel
-// Many changes for Tango release 3.0 including
-// - Added full logging features
-// - Added asynchronous calls
-// - Host name of clients now stored in black-box
-// - Three serialization model in DS
-// - Fix miscellaneous bugs
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and destructor methods
-// - Some internal cleanups
-// - Change the way how TangoMonitor class is implemented. It's a recursive
-//   mutex
-//
-// Revision 2.9  2003/01/09 12:03:15  taurel
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and ApiUtil::~ApiUtil() methods
-// - Replace some ORB * by ORB_ptr
-// - Use CORBA::ORB::is_nil() instead of comparing to NULL
-//
-// Revision 2.8  2002/12/16 12:06:20  taurel
-// No change in code at all but only forgot th emost important line in
-// list of updates in the previous release :
-// - Change underlying ORB from ORBacus to omniORB
-//
 // Revision 2.7  2002/12/16 10:14:41  taurel
 // - New method get_device_list() in Util class
 // - Util::get_class_list takes DServer device into account
@@ -219,11 +89,13 @@ static const char *RcsId = "$Id$\n$Name$";
 // Revision 1.1.1.1  2001/02/27 08:46:20  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-============================================================================
 
-#if HAVE_CONFIG_H
-#include <ac_config.h>
-#endif
 
 #include <tango.h>
 #include <attrdesc.h>
@@ -242,20 +114,11 @@ namespace Tango
 
 Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
            const char *assoc)
-:name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),
-      mem(false),mem_init(true)
+:name(att_name),type(att_type),writable(att_writable),assoc_name(assoc)
 {
 	format = Tango::SCALAR;
 	ext = new AttrExt();
-	
-	ext->fire_change_event = false;
-	ext->check_change_event = true;
-	ext->fire_archive_event = false;
-	ext->check_archive_event = true;
-	ext->fire_dr_event = false;
-	
-	if (name != "State")
-		check_type();
+	check_type();
 	
 	if ((writable == Tango::WRITE) && (assoc_name != AssocWritNotSpec))
 	{
@@ -288,12 +151,11 @@ Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
 
 Attr::Attr(const char *att_name,long att_type,DispLevel level,
 	   AttrWriteType att_writable, const char *assoc)
-:name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),mem(false)
+:name(att_name),type(att_type),writable(att_writable),assoc_name(assoc)
 {
 	format = Tango::SCALAR;
 	ext = new AttrExt(level);
-	if (name != "State")
-		check_type();
+	check_type();
 	
 	if ((writable == Tango::WRITE) && (assoc_name != AssocWritNotSpec))
 	{
@@ -323,7 +185,6 @@ Attr::Attr(const char *att_name,long att_type,DispLevel level,
 		assoc_name = name;
 		
 }
-
 Attr::~Attr()
 {
 	delete ext;
@@ -346,27 +207,9 @@ void Attr::check_type()
 		unsuported = false;
 	else if (type == Tango::DEV_LONG)
 		unsuported = false;
-	else if (type == Tango::DEV_LONG64)
-		unsuported = false;
 	else if (type == Tango::DEV_DOUBLE)
 		unsuported = false;
 	else if (type == Tango::DEV_STRING)
-		unsuported = false;
-	else if (type == Tango::DEV_FLOAT)
-		unsuported = false;
-	else if (type == Tango::DEV_BOOLEAN)
-		unsuported = false;
-	else if (type == Tango::DEV_USHORT)
-		unsuported = false;
-	else if (type == Tango::DEV_UCHAR)
-		unsuported = false;
-	else if (type == Tango::DEV_ULONG)
-		unsuported = false;
-	else if (type == Tango::DEV_ULONG64)
-		unsuported = false;
-	else if (type == Tango::DEV_STATE)
-		unsuported = false;
-	else if (type == Tango::DEV_ENCODED)
 		unsuported = false;
 
 	if (unsuported == true)
@@ -424,67 +267,8 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 
 	if (prop_list.max_alarm.empty() == false)
 		user_default_properties.push_back(AttrProperty("max_alarm",prop_list.max_alarm));
-		
-	if (prop_list.delta_val.empty() == false)
-		user_default_properties.push_back(AttrProperty("delta_val",prop_list.delta_val));
-		
-	if (prop_list.delta_t.empty() == false)
-		user_default_properties.push_back(AttrProperty("delta_t",prop_list.delta_t));
 
 }
-
-//+-------------------------------------------------------------------------
-//
-// method : 		Attr::set_memorized
-// 
-// description : 	This method set the attribute as memorized in database
-//			This is allowed only for scalar attribute and for
-//			writable one
-//
-//--------------------------------------------------------------------------
-
-void Attr::set_memorized()
-{
-	if (format != Tango::SCALAR)
-	{
-		cout3 << "Attr::set_memorized() throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name; 
-		o << " is not scalar and can not be memorized" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"Attr::set_memorized");
-	}
-
-	if ((type == DEV_STATE) || (type == DEV_ENCODED))
-	{
-		cout3 << "Attr::set_memorized() throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name; 
-		o << " can not be memorized" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"Attr::set_memorized");
-	}
-		
-	if ((writable == READ) || (writable == READ_WITH_WRITE))
-	{
-		cout3 << "Attr::set_memorized() throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name; 
-		o << " is not writable and therefore can not be memorized" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"Attr::set_memorized");
-	}
-	
-	mem = true;
-}
-
-
 
 //+-------------------------------------------------------------------------
 //
@@ -510,46 +294,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
-	
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
-	}
-	max_x = x;	
-}
-
-SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,long x)
-:Attr(att_name,att_type,w_type),ext(NULL)
-{
-	format = Tango::SPECTRUM;
-	if (x <= 0)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name << ": "; 
-		o << " Maximum x dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"SpectrumAttr::SpectrumAttr");
-	}
-	
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
-	}
 	max_x = x;	
 }
 
@@ -568,46 +312,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
-	
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
-	}
-	max_x = x;	
-}
-
-SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,long x,DispLevel level)
-:Attr(att_name,att_type,level,w_type),ext(NULL)
-{
-	format = Tango::SPECTRUM;
-	if (x <= 0)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name << ": "; 
-		o << " Maximum x dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"SpectrumAttr::SpectrumAttr");
-	}
-
-	if (type == DEV_ENCODED)
-	{
-		cout3 << "SpectrumAttr::SpectrumAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute: " << name << ": ";
-		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
-							(const char *)"SpectrumAttr::SpectrumAttr");
-	}
 	max_x = x;	
 }
 
@@ -622,25 +326,6 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 :SpectrumAttr(att_name,att_type,x),ext(NULL)
-{
-	format = Tango::IMAGE;
-	if (y <= 0)
-	{
-		cout3 << "ImageAttr::ImageAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name << ": "; 
-		o << " Maximum y dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"ImageAttr::ImageAttr");
-	}
-	max_y = y;	
-}
-
-ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,
-		     long x,long y)
-:SpectrumAttr(att_name,att_type,w_type,x),ext(NULL)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -676,22 +361,4 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 	max_y = y;	
 }
 
-ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,
-		     long x, long y,DispLevel level)
-:SpectrumAttr(att_name,att_type,w_type,x,level),ext(NULL)
-{
-	format = Tango::IMAGE;
-	if (y <= 0)
-	{
-		cout3 << "ImageAttr::ImageAttr throwing exception" << endl;
-		TangoSys_OMemStream o;
-		
-		o << "Attribute : " << name << ": "; 
-		o << " Maximum y dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
-				      o.str(),
-				      (const char *)"ImageAttr::ImageAttr");
-	}
-	max_y = y;	
-}
 } // End of Tango namespace
