@@ -1,5 +1,5 @@
 # Microsoft Developer Studio Project File - Name="log4tango_static" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 6.00 
+# Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
@@ -42,7 +42,7 @@ RSC=rc.exe
 # PROP Target_Dir ""
 MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "..\..\include" /D "NDEBUG" /D "_LIB" /D "WIN32" /D "_MBCS" /FR /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GR /GX /O2 /I "..\..\include" /D "NDEBUG" /D "_LIB" /D "WIN32" /D "_MBCS" /FR /YX /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -50,7 +50,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"../../../../win32/msvc6/build/lib/static/log4tango.lib" /nodefaultlib
+# ADD LIB32 /nologo /out:"../../../../../win32/msvc6/build/lib/static/release/log4tango.lib" /nodefaultlib
 
 !ELSEIF  "$(CFG)" == "log4tango_static - Win32 Debug"
 
@@ -66,7 +66,7 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 MTL=midl.exe
 # ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GR /GX /ZI /Od /I "..\..\include" /D "_DEBUG" /D "_LIB" /D "WIN32" /D "_MBCS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\..\include" /D "_DEBUG" /D "_LIB" /D "WIN32" /D "_MBCS" /FR /YX /FD /GZ /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
@@ -74,7 +74,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /nologo /out:"../../../../win32/msvc6/build/lib/static/log4tangod.lib" /nodefaultlib
+# ADD LIB32 /nologo /out:"../../../../../win32/msvc6/build/lib/static/debug/log4tangod.lib" /nodefaultlib
 
 !ENDIF 
 
@@ -144,12 +144,10 @@ SOURCE=..\..\include\log4tango\LogSeparator.hh
 # Begin Source File
 
 SOURCE=..\..\include\log4tango\LogStream.hh
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\include\log4tango\LogStreambuf.hh
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
@@ -254,12 +252,10 @@ SOURCE=..\..\src\LogSeparator.cpp
 # Begin Source File
 
 SOURCE=..\..\src\LogStream.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\LogStreambuf.cpp
-# PROP Exclude_From_Build 1
 # End Source File
 # Begin Source File
 
