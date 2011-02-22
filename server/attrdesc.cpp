@@ -16,7 +16,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -39,9 +39,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.16  2009/12/09 15:48:56  taurel
 // - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
 // - Admin device command EventSubcriptionChange fails is one of these methods has not been called

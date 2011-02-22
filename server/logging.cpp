@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -33,9 +33,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.15  2010/06/18 07:45:47  taurel
 // - In case of locked device, polling and logging related commands are
 // allowed only for the locker process

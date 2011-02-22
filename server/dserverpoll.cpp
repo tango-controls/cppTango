@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,9 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.36  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.35  2010/07/16 10:53:13  taurel
 // - Even with a minimun polling period defined, i is possible to ask for a
 // polling period of 0 (externally trigged or polling buffer externally filled in)

@@ -7,7 +7,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,10 +30,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/12/09 07:55:35  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
 // Revision 3.15  2010/12/08 16:27:35  taurel
 // - Compile with getnameinfo() and getaddrinfo() on Windows
 //
@@ -186,7 +182,7 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 	{
 
 //
-// If not already done, get user name.
+//	If not already done, get user name.
 // I am using the effective UID in order to allow applications using the seteuid(0) system call
 // to change the effective user id and therefore to take someone else rights
 //

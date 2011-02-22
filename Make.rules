@@ -11,7 +11,7 @@
 
 MAJOR_VERS = 7
 MINOR_VERS = 2
-PATCH_VERS = 6
+PATCH_VERS = 4
 
 ##############################################################################
 #
@@ -79,8 +79,8 @@ ifdef prefix
 INSTALL_BASE = $(prefix)/$(BIN_DIR)
 INSTALL_BASE_WIN32 = $(prefix)/win32
 else
-#INSTALL_BASE = /segfs/tango/tmp/install/$(BIN_DIR)
-INSTALL_BASE = /home/taurel/tango/install/$(BIN_DIR)
+INSTALL_BASE = /segfs/tango/tmp/install/$(BIN_DIR)
+#INSTALL_BASE = /home/taurel/tango/install/$(BIN_DIR)
 INSTALL_BASE_WIN32 = /segfs/tango/install/win32
 endif
 

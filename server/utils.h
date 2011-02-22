@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,9 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.58  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.57  2010/07/16 10:51:53  taurel
 // - Now it's possible to fill the polling buffer externally for R/W attribute
 // specifying the attribute written part

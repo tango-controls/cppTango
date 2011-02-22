@@ -488,8 +488,8 @@ install_include:
 	@./cr_dir $(INSTALL_BASE)/include/idl
 	@./cr_dir $(INSTALL_BASE)/include/V-1
 	@./cr_dir $(INSTALL_BASE)/include/V-1/idl
-#	cp $(INSTALL_BASE)/include/*.h $(INSTALL_BASE)/include/V-1
-#	cp $(INSTALL_BASE)/include/idl/*.h $(INSTALL_BASE)/include/V-1/idl
+	cp $(INSTALL_BASE)/include/*.h $(INSTALL_BASE)/include/V-1
+	cp $(INSTALL_BASE)/include/idl/*.h $(INSTALL_BASE)/include/V-1/idl
 	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE)/include/idl; cd ../..
 	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE)/include; cd ..
 	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE)/include; cd ../..
@@ -498,27 +498,25 @@ install_include:
 
 install_win32:
 	@./cr_dir $(INSTALL_BASE_WIN32)/include
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8/idl
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9/idl
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8/V-1
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9/V-1
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc8/V-1/idl
-	@./cr_dir $(INSTALL_BASE_WIN32)/include/vc9/V-1/idl
-#	cp $(INSTALL_BASE_WIN32)/include/vc8/*.h $(INSTALL_BASE_WIN32)/include/vc8/V-1
-#	cp $(INSTALL_BASE_WIN32)/include/vc9/*.h $(INSTALL_BASE_WIN32)/include/vc9/V-1
-#	cp $(INSTALL_BASE_WIN32)/include/vc8/idl/*.h $(INSTALL_BASE_WIN32)/include/vc8/V-1/idl
-#	cp $(INSTALL_BASE_WIN32)/include/vc9/idl/*.h $(INSTALL_BASE_WIN32)/include/vc9/V-1/idl
-	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8/idl; cd ../..
-	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9/idl; cd ../..
-	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8; cd ..
-	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9; cd ..
-	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8; cd ../..
-	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9; cd ../..
-	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc8; cd ..
-	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)/include/vc9; cd ..	
-
+	@./cr_dir $(INSTALL_BASE_WIN32)/include/idl
+	@./cr_dir $(INSTALL_BASE_WIN32)/include/V-1
+	@./cr_dir $(INSTALL_BASE_WIN32)/include/V-1/idl
+	cp $(INSTALL_BASE_WIN32)/include/*.h $(INSTALL_BASE_WIN32)/include/V-1
+	cp $(INSTALL_BASE_WIN32)/include/idl/*.h $(INSTALL_BASE_WIN32)/include/V-1/idl
+	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)/include/idl; cd ../..
+	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ..
+	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ../..
+	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ..	
+	@./cr_dir $(INSTALL_BASE_WIN32)_dll/include
+	@./cr_dir $(INSTALL_BASE_WIN32)_dll/include/idl
+	@./cr_dir $(INSTALL_BASE_WIN32)/include/V-1
+	@./cr_dir $(INSTALL_BASE_WIN32)/include/V-1/idl
+	cp $(INSTALL_BASE_WIN32)_dll/include/*.h $(INSTALL_BASE_WIN32)_dll/include/V-1
+	cp $(INSTALL_BASE_WIN32)_dll/include/idl/*.h $(INSTALL_BASE_WIN32)_dll/include/V-1/idl
+	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE_WIN32)_dll/include/idl; cd ../..
+	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE_WIN32)_dll/include; cd ..
+	cd client/helpers; cp $(HELPERS_INCLUDE) $(INSTALL_BASE_WIN32)/include; cd ../..
+	cd client; cp $(CLIENT_INCLUDE) $(INSTALL_BASE_WIN32)_dll/include; cd ..
 	
 #	@./cr_dir $(INSTALL_BASE_WIN32)/lib
 #	cp win32/winnt_lib/tango_static/lib/tangod.$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS).lib $(INSTALL_BASE_WIN32)/lib

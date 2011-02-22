@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 29 June 2004
 ///
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,13 +37,6 @@ static const char *RcsId = "$Id$";
 ///		$Revision$
 ///
 ///		$Log$
-///		Revision 1.44  2011/01/24 12:33:27  taurel
-///		- Fix end of bug with periodic and archive event (periodic part)
-///		Also removed the DELTA on sec numbers for time got for out-of-sync error
-///		
-///		Revision 1.43  2011/01/18 14:49:44  taurel
-///		- Typo for windows
-///		
 ///		Revision 1.42  2011/01/18 14:16:46  taurel
 ///		- In case of archive or periodic event and error out_of_sync, get time
 ///		in detect_and_push_archive_event (periodic as well) because the received
@@ -2323,7 +2316,6 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 #else
 		gettimeofday(&now,NULL);
 #endif
-		now.tv_sec = now.tv_sec - DELTA_T;
 	}
 
 //
@@ -2574,7 +2566,6 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 #else
 		gettimeofday(&now,NULL);
 #endif
-		now.tv_sec = now.tv_sec - DELTA_T;
 	}
 
 //
