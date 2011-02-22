@@ -13,11 +13,10 @@ $def = $ARGV[0];
 shift @ARGV;
 $lib = $ARGV[0];
 shift @ARGV;
-$dumpbin = "dumpbin /symbols /out:dump.out @ARGV";
+$dumpbin = "dumpbin /symbols @ARGV";
 
-system($dumpbin);
-open(DUMP,"dump.out")
-    || die "Can't open dumpbin output file (dump.out)";
+open(DUMP, "$dumpbin |")
+    || die "Can't run `$dumpbin': $!.\n";
 
 open(DEF, "> $def")
     || die "Can't open `$def': $!.\n";
@@ -39,6 +38,3 @@ while(<DUMP>)
 	}
     }
 }
-
-close(DUMP);
-system("del dump.out")

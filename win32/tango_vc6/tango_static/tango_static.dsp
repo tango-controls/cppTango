@@ -41,7 +41,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "..\..\..\server" /I "..\..\..\client" /I "..\..\resources" /I "$(OMNI_BASE)\win32\include" /I "$(LOG4TANGO_BASE)\win32\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_WINSTATIC" /D "_TANGO_LIB" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GR /GX /O2 /I "..\..\..\server" /I "..\..\..\client" /I "$(OMNI_BASE)\win32\include" /I "$(LOG4TANGO_BASE)\win32\include" /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_WINSTATIC" /D "_TANGO_LIB" /YX /FD /c
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
 BSC32=bscmake.exe
@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /out:"lib\tango.5.5.2.lib"
+# ADD LIB32 /out:"lib\tango.5.4.lib"
 
 !ELSEIF  "$(CFG)" == "tango_static - Win32 Debug"
 
@@ -64,7 +64,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
-# ADD CPP /nologo /MTd /W3 /GR /GX /Zi /Od /I "..\..\..\server" /I "..\..\..\client" /I "..\..\resources" /I "$(OMNI_BASE)\win32\include" /I "$(LOG4TANGO_BASE)\win32\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_WINSTATIC" /D "_TANGO_LIB" /FD /c
+# ADD CPP /nologo /MTd /W3 /GR /GX /Zi /Od /I "..\..\..\server" /I "..\..\..\client" /I "$(OMNI_BASE)\win32\include" /I "$(LOG4TANGO_BASE)\win32\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_WINSTATIC" /D "_TANGO_LIB" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409
 # ADD RSC /l 0x409
@@ -73,7 +73,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /out:"lib\tangod.5.5.2.lib"
+# ADD LIB32 /out:"lib\tangod.5.4.lib"
 
 !ENDIF 
 
@@ -371,10 +371,6 @@ SOURCE=..\..\..\client\dbapi_device.cpp
 # Begin Source File
 
 SOURCE=..\..\..\client\dbapi_server.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\server\dev_event.cpp
 # End Source File
 # Begin Source File
 

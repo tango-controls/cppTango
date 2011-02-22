@@ -9,76 +9,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.19  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.18  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.17  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.16  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.15  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.14  2008/01/08 14:38:19  taurel
-// - strcasecmp() is not named like this on Windows !!
-//
-// Revision 3.13  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-//
-// Revision 3.12  2007/11/23 07:16:48  taurel
-// - Add Claudio's modif
-// Revision 3.11.2.1  2008/02/07 15:58:14  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.11  2007/04/20 14:41:34  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.10  2007/04/16 14:57:43  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.9  2007/03/28 11:13:25  taurel
-// - Added a WIN32_VC8 define
-//
-// Revision 3.8  2006/05/18 08:51:56  taurel
-// - Miscellaneous changes due to Python device server ported to Windows
-// - Fix some bugs discovered by Windows VC8 using the test suite
-// - Update Windows resource file include path
-// - Fix some Windows VC8 warnings
-//
-// Revision 3.7  2006/03/20 15:14:36  jensmeyer
-// Added #pragma warning (disable : 4996) to suppress undesired depricated warnings!
-//
 // Revision 3.6  2005/05/25 06:05:40  taurel
 // - Again some minors changes before 5.2
 //
@@ -221,6 +154,11 @@
 // Revision 1.1.1.1  2000/02/04 10:58:29  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _TANGO_CONFIG_H
@@ -248,7 +186,7 @@
 // setting in the preprocessor definitions....
 //
 
-#if ((defined WIN32) || (defined WIN64))
+#ifdef WIN32
 	#define		__WIN32__
 	#define		__x86__
 	#ifndef _WIN32_WINNT
@@ -259,24 +197,10 @@
 #endif
 
 //
-// Define a common preprocessor macros for all Windows (32 or 64 bits)
-//
-// Please note that on Windows, this file include Windows include file.
-// The Windows Windef.h file defines a Preprocessor WIN32 on top of the
-// _WIN32 one.
-// This measn that on Windows 64 bits, we will have BOTH WIN32 and WIN64
-// defined even if on the compiler command line we define only WIN64
-//
-
-#if ((defined WIN32) || (defined WIN64))
-	#define _TG_WINDOWS_
-#endif
-
-//
 // For Windows DLL (import and export nightmare)
 // 
 
-#ifdef  _TG_WINDOWS_
+#ifdef  WIN32
 	#if ((defined _USRDLL) || (defined TANGO_HAS_DLL))
 		#if (defined _TANGO_LIB)
 			#define TANGO_IMP_EXP	__declspec(dllexport)
@@ -292,13 +216,13 @@
 #else	 
 	#define TANGO_IMP_EXP
 	#define TANGO_IMP
-#endif /* _WINDOWS_ */
+#endif /* WIN32 */
 
 //
 // Some helper define
 //
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 	#define 	TangoSys_OMemStream	ostringstream
 	#define		TangoSys_MemStream	stringstream
 	#define		TangoSys_Pid		int
@@ -312,12 +236,12 @@
 
 
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	#pragma warning(disable : 4355)
 	#pragma warning(disable : 4715)
-    	#pragma warning(disable : 4786)
+    #pragma warning(disable : 4786)
 	#if (_MSC_VER >= 1400)       // VC8+ 
-		#pragma warning(disable : 4996)    // disable all deprecation warnings
+	#pragma warning(disable : 4996)    // disable all deprecation warnings
 	#endif   // VC8+
 #endif
 
@@ -325,22 +249,10 @@
 // Define a common sleep call
 //
 
-#ifndef _TG_WINDOWS_
+#ifndef WIN32
 #define Tango_sleep(A) sleep(A);
 #else
 #define Tango_sleep(A) Sleep(A * 1000);
-#endif
-
-//
-// Define a common strcasecmp function
-//
-
-#ifndef _TG_WINDOWS_
-#define TG_strcasecmp ::strcasecmp
-#define TG_strncasecmp ::strncasecmp
-#else
-#define	TG_strcasecmp ::stricmp
-#define TG_strncasecmp ::strnicmp
 #endif
 
 //
@@ -359,28 +271,8 @@
 // Is it a 32 or 64 bits computer
 //
 
-#ifndef _TG_WINDOWS_
+#ifndef WIN32
 	#include <omniORB4/acconfig.h>
-
-	#ifdef PACKAGE_BUGREPORT
-		#undef PACKAGE_BUGREPORT
-	#endif
-	
-	#ifdef PACKAGE_NAME
-		#undef PACKAGE_NAME
-	#endif
-	
-	#ifdef PACKAGE_STRING
-		#undef PACKAGE_STRING
-	#endif
-
-	#ifdef PACKAGE_TARNAME
-		#undef PACKAGE_TARNAME
-	#endif
-
-	#ifdef PACKAGE_VERSION
-		#undef PACKAGE_VERSION
-	#endif
 
 	#if SIZEOF_LONG == 8
 		#define TANGO_LONG64

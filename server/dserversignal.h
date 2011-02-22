@@ -11,53 +11,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.7  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.6  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.5  2008/04/04 14:25:02  jensmeyer
-// Added the necessary signal definitions for FreeBSD __freebsd__
-//
-// Revision 3.4  2008/02/28 12:29:31  jensmeyer
-// Added signal definitions for MacOSX (__darwin__).
-//
-// Revision 3.3  2007/04/20 14:40:34  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.2  2006/01/20 08:22:29  taurel
-// - Added necessary changes to support Device server written in Python
-//
 // Revision 3.1  2004/07/07 08:40:11  taurel
 //
 // - Fisrt commit after merge between Trunk and release 4 branch
@@ -172,6 +128,11 @@
 // Revision 1.1.1.1  2000/02/04 10:58:28  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _DSERVERSIGNAL_H
@@ -192,8 +153,7 @@ namespace Tango
 //
 //=============================================================================
 
-#if ((defined sun) || defined (_TG_WINDOWS_) || \
-    (defined __darwin__) || (defined __freebsd__)) 
+#if ((defined sun) || defined (WIN32))
 #define		_NSIG		NSIG
 #endif
 
@@ -243,7 +203,7 @@ public :
 		
 		TangoSys_Pid my_pid;
 		bool th_data_created;
-#ifndef _TG_WINDOWS_
+#ifndef WIN32
 		pthread_t my_thread;
 #endif
 		void *run_undetached(void *);
@@ -260,7 +220,7 @@ protected :
 	bool				sig_to_remove;
 	int				inst_sig;
 	int 				rem_sig;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	static HANDLE			win_ev;
 	static int			win_signo;
 #endif
@@ -273,7 +233,7 @@ private:
 	vector<DeviceClass *>::iterator find_class(long, DeviceClass *);
 	vector<DeviceClass *>::iterator find_delayed_class(long, DeviceClass *);
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	static inline bool auto_signal(long s)
 	{
 		if ((s==SIGINT) || (s==SIGTERM) || (s==SIGABRT) || (s==SIGBREAK))
@@ -302,7 +262,7 @@ private:
 #endif
 
 
-#if (defined __linux || defined __darwin__ || defined __freebsd__)
+#if (defined __linux)
 	static inline bool auth_signal(long s)
 	{
 		if ((s==SIGUSR1) || (s==SIGUSR2))
@@ -314,7 +274,7 @@ private:
 #if ((defined sun) || (defined __hpux))
 	static inline bool auth_signal(long s) {return true;}
 #endif
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	static inline bool auth_signal(long s) {return true;}
 #endif
 	
