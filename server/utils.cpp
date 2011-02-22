@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,18 +34,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.73  2011/01/10 13:13:32  taurel
-// - getnameinfo() on sun does not return FQDN......
-//
-// Revision 3.72  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 3.71  2010/12/09 07:56:10  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
 // Revision 3.70  2010/12/08 16:28:28  taurel
 // - Compile with getnameinfo() and getaddrinfo() on Windows
 //
@@ -1247,24 +1235,17 @@ void Util::connect_db()
 		string &inst_name = get_ds_inst_name();
 		if (inst_name != "-?")
 		{
-			db->set_timeout_millis(DB_TIMEOUT * 4);
-			set_svr_starting(false);
+			db->set_timeout_millis(DB_TIMEOUT * 3);
 			try
 			{
 				ext->db_cache = new DbServerCache(db,get_ds_name(),get_host_name());
 			}
-			catch (Tango::DevFailed &e)
-			{
-				string base_desc(e.errors[0].desc.in());
-				if (base_desc.find("TRANSIENT_CallTimedout") != string::npos)
-					cerr << "DB timeout while trying to fill the DB server cache. Will use traditional way" << endl;
-			}
+			catch (Tango::DevFailed &) {}
 			catch (...) 
 			{
 				cerr << "Unknown exception while trying to fill database cache..." << endl;
 			}
 			db->set_timeout_millis(DB_TIMEOUT);
-			set_svr_starting(true);
 		}
 	}
 }
@@ -1431,44 +1412,6 @@ void Util::init_host_name()
 				freeaddrinfo(info);
 			}
 		}
-#ifdef __sun
-
-//
-// Unfortunately, on solaris (at least solaris9), getnameinfo does
-// not return the fqdn....
-// Use the old way of doing
-//
-
-		pos = hostname.find('.');
-
-		if (pos == string::npos)
-		{
-			struct hostent *he;
-			he = gethostbyname(buffer);
-			
-			if (he != NULL)
-			{
-				string na(he->h_name);
-				pos = na.find('.');
-				if (pos == string::npos)
-				{
-					char **p;
-					for (p = he->h_aliases;*p != 0;++p)
-					{
-						string al(*p);
-						pos = al.find('.');
-						if (pos != string::npos)
-						{
-							hostname = al;
-							break;
-						}					
-					}
-				}
-				else
-					hostname = na;
-			}
-		}
-#endif
 	}
 	else
 	{

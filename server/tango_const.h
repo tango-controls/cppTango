@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,18 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.58  2011/01/24 12:19:01  taurel
-// - Adapted to release 7.2.5
-//
-// Revision 3.57  2011/01/18 14:55:48  taurel
-// - Release 7.2.4
-//
-// Revision 3.56  2011/01/10 13:53:17  taurel
-// - Tango release 7.2.3
-//
-// Revision 3.55  2010/12/08 10:21:53  taurel
-// - Tango release 7.2.2
-//
 // Revision 3.54  2010/11/02 14:06:54  taurel
 // - Replace dynamic_cast with static_cast in attribute.cpp.
 // - Release number is now 7.2.1
@@ -187,7 +175,7 @@ namespace Tango
 // Some general interest define
 //
 
-#define		TgLibVers				"7.2.5"		// Please, always code this following format "X.Y.Z"
+#define		TgLibVers				"7.2.2"		// Please, always code this following format "X.Y.Z"
 
 #define		DevVersion				4			// IDL version number
 #define		DefaultMaxSeq			20

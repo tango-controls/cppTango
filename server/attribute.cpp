@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,12 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.88  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
-// Revision 3.87  2010/12/08 10:13:08  taurel
-// - Commit after a merge with the bugfixes branch
-//
 // Revision 3.86.2.1  2010/11/21 08:41:27  taurel
 // - Fix SourceForge bug nb 3110842
 // (wrong delete in state for spectrm att with alarm defined when
@@ -7547,26 +7541,12 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if ( is_check_archive_criteria() == true )
 		{
-#ifdef _TG_WINDOWS_
-        	struct _timeb           now_win;
-#endif
-        	struct timeval          now_timeval;
-
-#ifdef _TG_WINDOWS_
-			_ftime(&now_win);
-			now_timeval.tv_sec = (unsigned long)now_win.time;
-			now_timeval.tv_usec = (long)now_win.millitm * 1000;
-#else
-			gettimeofday(&now_timeval,NULL);
-#endif
-
 			event_supplier->detect_and_push_archive_event_3(ext->dev,
 						 			send_attr,
 						 			send_attr_4,
 									*this,
 									name,
-									except,
-									&now_timeval);
+									except);
 		}
 		else
 		{

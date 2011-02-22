@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,13 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.96  2011/01/10 13:11:33  taurel
-// log			- - getnameinfo() on sun does not return FQDN......
-// log			-
-// log			- Revision 3.95  2010/12/09 07:55:35  taurel
-// log			- - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// log			- flag
-// log			-
 // log			- Revision 3.94  2010/12/08 16:32:16  taurel
 // log			- - Another fix for Windows
 // log			-
@@ -1095,42 +1088,6 @@ void Connection::get_fqdn(string &the_host)
 		}
 		freeaddrinfo(info);
 	}
-	
-#ifdef __sun
-
-//
-// Unfortunately, on solaris (at least solaris9), getnameinfo does
-// not return the fqdn....
-// Use the old way of doing
-//
-
-	string::size_type pos = the_host.find('.');
-
-	struct hostent *he;
-	he = gethostbyname(the_host.c_str());
-
-	if (he != NULL)
-	{
-		string na(he->h_name);
-		string::size_type pos = na.find('.');
-		if (pos == string::npos)
-		{
-			char **p;
-			for (p = he->h_aliases;*p != 0;++p)
-			{
-				string al(*p);
-				pos = al.find('.');
-				if (pos != string::npos)
-				{
-					the_host = al;
-					break;
-				}					
-			}
-		}
-		else
-			the_host = na;
-	}
-#endif
 }
 
 //-----------------------------------------------------------------------------
@@ -1262,9 +1219,8 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 // The ping rule is simply to send to the client correct
 // error message in case of re-connection
 //
-				
+						
 				string d_name = dev_name();
-
 				if (db->is_command_allowed(d_name,command) == false)
 				{
 					try
@@ -1932,21 +1888,6 @@ void DeviceProxy::parse_name(string &full_name)
 	string name_wo_prot;
 	string name_wo_db_mod;
 	string dev_name,object_name;
-
-//
-// Error of the string is empty
-//
-
-	if (full_name.empty() == true)
-	{
-		TangoSys_OMemStream desc;
-		desc << "The given name is an empty string!!! " << full_name << endl;
-		desc << "Device name syntax is domain/family/member" << ends;
-			
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
-						desc.str(),
-						(const char *)"DeviceProxy::parse_name()");
-	}
 	
 //
 // Device name in lower case letters
@@ -7525,12 +7466,12 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
 			inet_pton(AF_INET,full_ip.c_str(),&si.sin_addr);
 #endif
 
-			char host_os[512];
+			char host[512];
 
-			int res = getnameinfo((const sockaddr *)&si,sizeof(si),host_os,512,0,0,0);
+			int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
 			
 			if (res == 0)
-				lock_info.locker_host = host_os;
+				lock_info.locker_host = host;
 			else
 				lock_info.locker_host = full_ip;
 		}

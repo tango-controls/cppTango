@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,9 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.16  2010/06/21 14:01:15  taurel
 // - Yet another merge with the Release_7_1_1-bugfixes branch
 //

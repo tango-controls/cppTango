@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 7 April 2003
 ///
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,9 +37,6 @@ static const char *RcsId = "$Id$";
 ///		$Revision$
 ///
 ///		$Log$
-///		Revision 1.70  2010/10/04 14:56:04  taurel
-///		- Fix a Solaris natif compiler warning
-///		
 ///		Revision 1.69  2010/09/29 12:04:35  taurel
 ///		- It's now possible to register several callbacks for the same event
 ///		
