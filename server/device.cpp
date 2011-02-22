@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,9 +38,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.66  2010/12/08 10:13:08  taurel
-// - Commit after a merge with the bugfixes branch
-//
 // Revision 3.65.2.2  2010/11/26 12:33:20  taurel
 // - Fix crash which happens from time to time on Windows when shutting down
 // a device server

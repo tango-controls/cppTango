@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 29 June 2004
 ///
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,24 +37,6 @@ static const char *RcsId = "$Id$";
 ///		$Revision$
 ///
 ///		$Log$
-///		Revision 1.44  2011/01/24 12:33:27  taurel
-///		- Fix end of bug with periodic and archive event (periodic part)
-///		Also removed the DELTA on sec numbers for time got for out-of-sync error
-///		
-///		Revision 1.43  2011/01/18 14:49:44  taurel
-///		- Typo for windows
-///		
-///		Revision 1.42  2011/01/18 14:16:46  taurel
-///		- In case of archive or periodic event and error out_of_sync, get time
-///		in detect_and_push_archive_event (periodic as well) because the received
-///		pointer is null
-///		
-///		Revision 1.41  2011/01/10 13:55:07  taurel
-///		- For periodic and archive/periodic, take time got before the attribute
-///		is read to decide if it is time to store data. This time is much
-///		more stable than time got after the attribute is read. Reading attribute
-///		on some device takes a long and unstabe time.
-///		
 ///		Revision 1.40  2011/01/10 13:09:02  taurel
 ///		- No retry on command to get data for cache during DS startup
 ///		- Only three reties during DbDevExport
@@ -2311,21 +2293,6 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 	else
 		the_quality = attr_value->quality;
 
-	struct timeval now;
-	if (time_bef_attr == NULL)
-	{
-#ifdef _TG_WINDOWS_
-		struct _timeb now_win;
-
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
-#endif
-		now.tv_sec = now.tv_sec - DELTA_T;
-	}
-
 //
 // get the mutex to synchronize the sending of events
 //
@@ -2335,15 +2302,12 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 //
 // Do not get time now. This metthod is executed after the attribute has been read.
 // For some device, reading one attribute could be long and even worse could have an
-// unstable reading time. If we takes time now, it will also be unstable.
-// Use the time taken in the polling thread before the attribute was read. This one is much
+// unstabe reading time. If we takes time now, it will also be unstable.
+// Use the time taken inthe polling thread befor the attribute was read. This one is much
 // more stable
 //		
 
-	if (time_bef_attr != NULL)
-		now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
-	else
-		now_ms = (double)now.tv_sec * 1000. + (double)now.tv_usec / 1000.;
+	now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
 	ms_since_last_periodic = now_ms - attr.ext->archive_last_periodic;
 
 	int arch_period;
@@ -2562,21 +2526,6 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 	string event, domain_name;
 	double now_ms, ms_since_last_periodic;
 
-	struct timeval now;
-	if (time_bef_attr == NULL)
-	{
-#ifdef _TG_WINDOWS_
-		struct _timeb now_win;
-
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
-#endif
-		now.tv_sec = now.tv_sec - DELTA_T;
-	}
-
 //
 // Do not get time now. This metthod is executed after the attribute has been read.
 // For some device, reading one attribute could be long and even worse could have an
@@ -2585,10 +2534,7 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 // more stable
 //
 
-	if (time_bef_attr != NULL)
-		now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
-	else
-		now_ms = (double)now.tv_sec * 1000. + (double)now.tv_usec / 1000.;
+	now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
 
 // get the mutex to synchronize the sending of events
 

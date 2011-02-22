@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,9 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.96  2011/01/10 13:11:33  taurel
-// log			- - getnameinfo() on sun does not return FQDN......
-// log			-
 // log			- Revision 3.95  2010/12/09 07:55:35  taurel
 // log			- - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
 // log			- flag
@@ -1262,9 +1259,8 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 // The ping rule is simply to send to the client correct
 // error message in case of re-connection
 //
-				
+						
 				string d_name = dev_name();
-
 				if (db->is_command_allowed(d_name,command) == false)
 				{
 					try
@@ -1932,21 +1928,6 @@ void DeviceProxy::parse_name(string &full_name)
 	string name_wo_prot;
 	string name_wo_db_mod;
 	string dev_name,object_name;
-
-//
-// Error of the string is empty
-//
-
-	if (full_name.empty() == true)
-	{
-		TangoSys_OMemStream desc;
-		desc << "The given name is an empty string!!! " << full_name << endl;
-		desc << "Device name syntax is domain/family/member" << ends;
-			
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
-						desc.str(),
-						(const char *)"DeviceProxy::parse_name()");
-	}
 	
 //
 // Device name in lower case letters

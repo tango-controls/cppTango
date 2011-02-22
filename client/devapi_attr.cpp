@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- February 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,9 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.28  2010/12/08 10:10:54  taurel
-// log			- - Commit after a merge with the bugfixes branch
-// log			-
 // log			- Revision 3.27.2.1  2010/11/26 07:56:12  taurel
 // log			- - Fix date in date cmoputation in the printing stream inserter operators
 // log			- for class DeviceAttribute and associated (history)

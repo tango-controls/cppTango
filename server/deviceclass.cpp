@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,9 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 1.39  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
 // Revision 1.38  2011/01/10 13:09:02  taurel
 // - No retry on command to get data for cache during DS startup
 // - Only three reties during DbDevExport

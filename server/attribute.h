@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,9 +34,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.61  2010/09/21 07:15:40  taurel
-// - Add doc for the Attribute::set_properties() methods
-//
 // Revision 3.60  2010/09/17 08:22:05  taurel
 // - Fix memory leak in cse of scalar attribute R/W for string
 //
