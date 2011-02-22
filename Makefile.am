@@ -11,7 +11,7 @@ DIST_SUBDIRS += doc
 endif
 
 EXTRA_DIST = log4tango.pc.in \
-		log4tango.m4 \
+		log4tango.spec.in log4tango.spec log4tango.m4 \
 		m4/AC_CREATE_PREFIX_CONFIG_H.m4 \
 		m4/BB_ENABLE_DOXYGEN.m4 \
 		m4/AC_CXX_HAVE_SSTREAM.m4 \

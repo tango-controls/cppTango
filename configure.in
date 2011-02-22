@@ -90,6 +90,7 @@ AC_CREATE_GENERIC_CONFIG
 
 AC_CONFIG_FILES([
 Makefile
+log4tango.spec
 log4tango.pc
 config/Makefile
 src/Makefile
