@@ -106,13 +106,16 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+
+
+
 	
 	try
 	{
@@ -151,42 +154,23 @@ int main(int argc, char **argv)
 // subscribe to a periodic and to a change event
 //
 
-		int eve_id1,eve_id2;
-		int eve_id_change1,eve_id_change2;
+		int eve_id,eve_id_change;
 		vector<string> filters;
 		
-		EventCallBack cb1;
-		cb1.cb_executed = 0;
-		cb1.cb_err = 0;
-		cb1.cb_no_err = 0;
-		cb1.old_sec = cb1.old_usec = 0;
-
-		EventCallBack cb2;
-		cb2.cb_executed = 0;
-		cb2.cb_err = 0;
-		cb2.cb_no_err = 0;
-		cb2.old_sec = cb2.old_usec = 0;
+		EventCallBack cb;
+		cb.cb_executed = 0;
+		cb.cb_err = 0;
+		cb.cb_no_err = 0;
+		cb.old_sec = cb.old_usec = 0;
 		
-		EventCallBack cb_change1;
-		cb_change1.cb_executed = 0;
-		cb_change1.cb_err = 0;
-		cb_change1.cb_no_err = 0;
-		cb_change1.old_sec = cb_change1.old_usec = 0;
-
-		EventCallBack cb_change2;
-		cb_change2.cb_executed = 0;
-		cb_change2.cb_err = 0;
-		cb_change2.cb_no_err = 0;
-		cb_change2.old_sec = cb_change2.old_usec = 0;
+		EventCallBack cb_change;
+		cb_change.cb_executed = 0;
+		cb_change.cb_err = 0;
+		cb_change.cb_no_err = 0;
+		cb_change.old_sec = cb.old_usec = 0;
 		
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
-		device->poll_attribute(att_name_change,1000);
-		
-		eve_id1 = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb1,filters);
-		eve_id2 = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb2,filters);	
-		eve_id_change1 = device->subscribe_event(att_name_change,Tango::CHANGE_EVENT,&cb_change1,filters);
-		eve_id_change2 = device->subscribe_event(att_name_change,Tango::CHANGE_EVENT,&cb_change2,filters);	
+		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);	
+		eve_id_change = device->subscribe_event(att_name_change,Tango::CHANGE_EVENT,&cb_change,filters);	
 				
 		cout << "   subscribe_event --> OK" << endl;
 		
@@ -208,23 +192,16 @@ int main(int argc, char **argv)
 		Sleep(3000);
 #endif
 			
-		coutv << "cb excuted = " << cb1.cb_executed << endl;
-		assert (cb1.cb_executed >= 2);
-		assert (cb1.cb_executed < 5);
-		assert (cb1.delta_msec > 950);
-		assert (cb1.delta_msec < 1050);
-
-		assert (cb2.cb_executed >= 2);
-		assert (cb2.cb_executed < 5);
-		assert (cb2.delta_msec > 950);
-		assert (cb2.delta_msec < 1050);
+		coutv << "cb excuted = " << cb.cb_executed << endl;
+		assert (cb.cb_executed >= 2);
+		assert (cb.cb_executed < 5);
+		assert (cb.delta_msec > 950);
+		assert (cb.delta_msec < 1050);
 				
 		cout << "   CallBack executed every 1000 mS for periodic event--> OK" << endl;
 		
-		assert (cb_change1.cb_executed != 0);
-		assert (cb_change2.cb_executed != 0);
-		
-cout << "   CallBack executed once for change event--> OK" << endl;
+		assert (cb_change.cb_executed != 0);
+		cout << "   CallBack executed once for change event--> OK" << endl;
 
 //
 // Now, kill the server
@@ -241,11 +218,8 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 
 		wait_and_dot(25);
 		
-		assert (cb1.cb_err != 0);
-		assert (cb_change1.cb_err != 0);
-
-		assert (cb2.cb_err != 0);
-		assert (cb_change2.cb_err != 0);
+		assert (cb.cb_err != 0);
+		assert (cb_change.cb_err != 0);
 		
 		cout << "\n   CallBacks executed with error --> OK" << endl;
 
@@ -253,41 +227,28 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 // Now, Restart DS
 //
 
-		int old_cb_no_err1,old_cb_no_err2;
-		int new_cb_no_err1,new_cb_no_err2;
+		int old_cb_no_err;
+		int new_cb_no_err;
 		
-		old_cb_no_err1 = cb_change1.cb_no_err;
-		old_cb_no_err2 = cb_change2.cb_no_err;
+		old_cb_no_err = cb_change.cb_no_err;
 		cout << "Restart DS and hit \"return\" key when done" << endl;
 		cout << "Process will wait for callback without error during 25 sec";
 		getline(cin,key);
 		
-		int old_cb_err1,old_cb_err_ch1;
-		int new_cb_err1,new_cb_err_ch1;
-		int old_cb_err2,old_cb_err_ch2;
-		int new_cb_err2,new_cb_err_ch2;		
+		int old_cb_err,old_cb_err_ch;
+		int new_cb_err,new_cb_err_ch;		
 
-		old_cb_err1 = cb1.cb_executed;
-		old_cb_err_ch1 = cb_change1.cb_executed;
-
-		old_cb_err2 = cb2.cb_executed;
-		old_cb_err_ch2 = cb_change2.cb_executed;
+		old_cb_err = cb.cb_executed;
+		old_cb_err_ch = cb_change.cb_executed;
 
 		wait_and_dot(25);
 		
-		new_cb_err1 = cb1.cb_executed;
-		new_cb_err_ch1 = cb_change1.cb_executed;
-		new_cb_no_err1 = cb_change1.cb_no_err;
+		new_cb_err = cb.cb_executed;
+		new_cb_err_ch = cb_change.cb_executed;
+		new_cb_no_err = cb_change.cb_no_err;
 
-		new_cb_err2 = cb2.cb_executed;
-		new_cb_err_ch2 = cb_change2.cb_executed;
-		new_cb_no_err2 = cb_change2.cb_no_err;
-
-		assert ((new_cb_err1 - old_cb_err1) > 4);
-		assert ((new_cb_no_err1 - old_cb_no_err1) >= 1);
-
-		assert ((new_cb_err2 - old_cb_err2) > 4);
-		assert ((new_cb_no_err2 - old_cb_no_err2) >= 1);
+		assert ((new_cb_err - old_cb_err) > 4);
+		assert ((new_cb_no_err - old_cb_no_err) >= 1);
 		
 		cout << "\n   CallBacks executed after reconnection to notifd --> OK" << endl;
 												
@@ -305,11 +266,8 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 
 		wait_and_dot(30);
 		
-		assert (cb1.cb_err != 0);
-		assert (cb_change1.cb_err != 0);
-
-		assert (cb2.cb_err != 0);
-		assert (cb_change2.cb_err != 0);
+		assert (cb.cb_err != 0);
+		assert (cb_change.cb_err != 0);
 		
 		cout << "\n   CallBacks executed with error --> OK" << endl;
 
@@ -330,25 +288,16 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 // Checking for error in callback
 //
 
-		old_cb_err1 = cb1.cb_err;
-		old_cb_err_ch1 = cb_change1.cb_err;
-
-		old_cb_err2 = cb2.cb_err;
-		old_cb_err_ch2 = cb_change2.cb_err;
+		old_cb_err = cb.cb_err;
+		old_cb_err_ch = cb_change.cb_err;
 
 		wait_and_dot(25);
 
-		new_cb_err1 = cb1.cb_err;
-		new_cb_err_ch1 = cb_change1.cb_err;
-
-		new_cb_err2 = cb2.cb_err;
-		new_cb_err_ch2 = cb_change2.cb_err;
+		new_cb_err = cb.cb_err;
+		new_cb_err_ch = cb_change.cb_err;
 		
-		assert ((new_cb_err1 - old_cb_err1) >= 2);
-		assert ((new_cb_err_ch1 - old_cb_err_ch1) >= 2);
-
-		assert ((new_cb_err2 - old_cb_err2) >= 2);
-		assert ((new_cb_err_ch2 - old_cb_err_ch2) >= 2);		
+		assert ((new_cb_err - old_cb_err) >= 2);
+		assert ((new_cb_err_ch - old_cb_err_ch) >= 2);		
 		
 		cout << "\n   CallBacks executed with error --> OK" << endl;
 
@@ -356,8 +305,7 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 // Now, export notifd to db
 //
 
-		old_cb_no_err1 = cb_change1.cb_no_err;
-		old_cb_no_err2 = cb_change2.cb_no_err;
+		old_cb_no_err = cb_change.cb_no_err;
 #ifdef WIN32
 		cout << "Export notifd to db (notifd2db C:\\Temp\\evfact.ior) and hit \"return\" key when done" << endl;
 #else
@@ -370,27 +318,17 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 // Checking for error in callback
 //
 
-		old_cb_err1 = cb1.cb_executed;
-		old_cb_err_ch1 = cb_change1.cb_executed;
-
-		old_cb_err2 = cb2.cb_executed;
-		old_cb_err_ch2 = cb_change2.cb_executed;
+		old_cb_err = cb.cb_executed;
+		old_cb_err_ch = cb_change.cb_executed;
 
 		wait_and_dot(20);
 		
-		new_cb_err1 = cb1.cb_executed;
-		new_cb_err_ch1 = cb_change1.cb_executed;
-		new_cb_no_err1 = cb_change1.cb_no_err;
+		new_cb_err = cb.cb_executed;
+		new_cb_err_ch = cb_change.cb_executed;
+		new_cb_no_err = cb_change.cb_no_err;
 
-		new_cb_err2 = cb2.cb_executed;
-		new_cb_err_ch2 = cb_change2.cb_executed;
-		new_cb_no_err2 = cb_change2.cb_no_err;
-
-		assert ((new_cb_err1 - old_cb_err1) > 4);
-		assert ((new_cb_no_err1 - old_cb_no_err1) >= 1);
-
-		assert ((new_cb_err2 - old_cb_err2) > 4);
-		assert ((new_cb_no_err2 - old_cb_no_err2) >= 1);
+		assert ((new_cb_err - old_cb_err) > 4);
+		assert ((new_cb_no_err - old_cb_no_err) >= 1);
 		
 		cout << "\n   CallBacks executed after reconnection to notifd --> OK" << endl;	
 		
@@ -398,17 +336,9 @@ cout << "   CallBack executed once for change event--> OK" << endl;
 // unsubscribe to the event
 //
 
-		device->unsubscribe_event(eve_id1);
-		device->unsubscribe_event(eve_id2);
-		device->unsubscribe_event(eve_id_change1);
-		device->unsubscribe_event(eve_id_change2);
+		device->unsubscribe_event(eve_id);
 		
-		cout << "   unsubscribe_event --> OK" << endl;		
-//
-// Stop polling
-//
-		device->stop_poll_attribute(att_name);
-		device->stop_poll_attribute(att_name_change);			
+		cout << "   unsubscribe_event --> OK" << endl;
 							
 	}
 	catch (Tango::DevFailed &e)

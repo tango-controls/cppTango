@@ -47,11 +47,11 @@ int main(int argc, char **argv)
 		device = new DeviceProxy("dev/test/10");
 		device2 = new DeviceProxy("dev/test/11");
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 
 	MyCallBack cb_dev1,cb_dev2;	

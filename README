@@ -481,7 +481,7 @@ Test to manually run
 print_data
 print_data_hist
 syntax
-size
+size (For Suse 82)
 attr_manip : should print
 --------------------------------
 Formatted value = 8.89E+00

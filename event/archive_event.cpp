@@ -34,8 +34,8 @@ public:
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
-	vector<DevLong> value;
-	struct timeval now_timeval;
+	vector<long> value;
+        struct timeval now_timeval;
 
 #ifdef WIN32
 	struct _timeb before_win;
@@ -83,10 +83,6 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 				cb_err++;
 		}
 	}
-	catch (Tango::DevFailed &e)
-	{
-		Tango::Except::print_exception(e);
-	}
 	catch (...)
 	{
 		coutv << "EventCallBack::push_event(): could not extract data !\n";
@@ -116,11 +112,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -149,14 +145,11 @@ int main(int argc, char **argv)
 		dba.delete_property(dbd);
 		
 		dbd.clear();
-		a << (short)2;
+		a << (short)1;
 		dbd.push_back(a);
 		DbDatum ch("archive_abs_change");
 		ch << (short)1;
 		dbd.push_back(ch);
-		DbDatum p("archive_period");
-		p << (short)10000;
-		dbd.push_back(p);		
 		dba.put_property(dbd);
 		
 		DeviceProxy adm_dev(device->adm_name().c_str());
@@ -179,24 +172,17 @@ int main(int argc, char **argv)
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
 		
-		bool po;
-		int poll_period;
-		int rest;
-		
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
-
 		eve_id = device->subscribe_event(att_name,Tango::ARCHIVE_EVENT,&cb,filters);
 
 //
 // Check that the attribute is now polled at 1000 mS
 //
 
-		po = device->is_attribute_polled(att_name);
+		bool po = device->is_attribute_polled(att_name);
 		coutv << "attribute polled : " << po << endl;
 		assert( po == true);
 		
-		poll_period = device->get_attribute_poll_period(att_name);
+		int poll_period = device->get_attribute_poll_period(att_name);
 		coutv << "att polling period : " << poll_period << endl;
 		assert( poll_period == 1000);		
 				
@@ -223,7 +209,7 @@ int main(int argc, char **argv)
 
 
 #ifndef WIN32		
-		rest = sleep(1);
+		int rest = sleep(1);
 		if (rest != 0)
 			sleep(1);
 #else
@@ -310,16 +296,17 @@ int main(int argc, char **argv)
 		device->command_inout("IOAttrThrowEx",di);
 		
 //
-// Check that callback was called with error
-// two times: one for error detection and the other one due to the
-// periodic call
+// Check that callback was called
 //
 		
 		Tango_sleep(3);
 		coutv << "Callback cb_err = " << cb.cb_err << endl;
-		assert ( (cb.cb_err == 1) || (cb.cb_err == 2));
+		assert (cb.cb_err > 2);
+		assert (cb.cb_err < 5);
+//		assert (cb.delta_msec > 900);
+		assert (cb.delta_msec < 1100);
 				
-		cout << "   CallBack executed when attribute throw exception only once --> OK" << endl;		
+		cout << "   CallBack executed when attribute throw exception every 1000 mS --> OK" << endl;		
 
 //
 // Attribute does not send exception any more
@@ -392,7 +379,7 @@ int main(int argc, char **argv)
 		device->poll_attribute(att_name,500);
 		
 //
-// subscribe to an archive event
+// subscribe to a change event
 //
 
 		cb.cb_executed = 0;
@@ -490,12 +477,11 @@ int main(int argc, char **argv)
 		assert (cb.cb_executed == 3);
 		
 		device->command_inout("IODecValue");
-		device->command_inout("IODecValue");
 		
-		Tango_sleep(2);
+		Tango_sleep(1);
 		
 		assert (cb.cb_executed == 4);
-		assert (cb.val == 28);
+		assert (cb.val == 29);
 		assert (cb.val_size == 4);
 				
 		cout << "   CallBack executed for negative relative delta --> OK" << endl;		
@@ -516,9 +502,12 @@ int main(int argc, char **argv)
 		
 		Tango_sleep(2);
 		coutv << "Callback cb_err = " << cb.cb_err << endl;
-		assert (cb.cb_err == 1);
+		assert (cb.cb_err > 3);
+		assert (cb.cb_err < 6);
+		assert (cb.delta_msec > 400);
+		assert (cb.delta_msec < 600);
 				
-		cout << "   CallBack executed when attribute throw exception only once --> OK" << endl;		
+		cout << "   CallBack executed when attribute throw exception every 500 mS --> OK" << endl;		
 
 //
 // Attribute does not send exception any more
@@ -530,14 +519,14 @@ int main(int argc, char **argv)
 		device->command_inout("IOAttrThrowEx",di);
 
 //
-// Wait for the periodic part of the event (is now set to 5 sec)
+// Wait for the periodic part of the event (default = 10 sec)
 //
 
 		Tango_sleep(1);
 		nb_cb = cb.cb_executed;
 		Tango_sleep(7);
-
-		assert (cb.cb_executed >= (nb_cb + 1));
+		
+		assert (cb.cb_executed == (nb_cb + 1));
 		cout << "   CallBack executed for the periodic part of the event (archive_period set) --> OK" << endl;
 		
 //
@@ -578,7 +567,7 @@ int main(int argc, char **argv)
 		Tango_sleep(1);
 		
 //
-// subscribe to a archive event with a filter
+// subscribe to a change event with a filter
 //
 
 		cb.cb_executed = 0;
@@ -586,8 +575,6 @@ int main(int argc, char **argv)
 		cb.old_sec = cb.old_usec = 0;
 		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");
 		
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
 		eve_id = device->subscribe_event(att_name,Tango::ARCHIVE_EVENT,&cb,filters);
 
 //
@@ -726,15 +713,17 @@ int main(int argc, char **argv)
 		
 		Tango_sleep(3);
 		coutv << "Callback cb_err = " << cb.cb_err << endl;
-		assert (cb.cb_err == 1);
+		assert (cb.cb_err > 2);
+		assert (cb.cb_err < 5);
+		assert (cb.delta_msec > 950);
+		assert (cb.delta_msec < 1050);
 				
-		cout << "   CallBack executed when attribute throw exception only once (with filter) --> OK" << endl;		
+		cout << "   CallBack executed when attribute throw exception every 1000 mS (with filter) --> OK" << endl;		
 
 //
 // Attribute does not send exception any more
 //
 
-		data_in[0] = 1;
 		data_in[1] = 0;
 		di << data_in;
 		
@@ -745,125 +734,7 @@ int main(int argc, char **argv)
 //
 
 		device->unsubscribe_event(eve_id);
-		cout << "   unsubscribe_event --> OK" << endl;
-
-//
-// Change the event parameters. This means restart the device to take
-// this into account
-//
-
-		if (device->is_attribute_polled(att_name))
-			device->stop_poll_attribute(att_name);
-		dbd.clear();
-		a << (short)3;
-		dbd.push_back(a);
-		dbd.push_back(DbDatum("archive_abs_change"));
-		dbd.push_back(DbDatum("archive_rel_change"));
-		dbd.push_back(DbDatum("archive_period"));
-		dba.delete_property(dbd);
 		
-		dbd.clear();
-		a << (short)1;
-		dbd.push_back(a);
-		dbd.push_back(ch);
-		dba.put_property(dbd);
-		
-		DeviceProxy adm_dev_3(device->adm_name().c_str());
-		di << device_name;
-		adm_dev_3.command_inout("DevRestart",di);
-		
-		delete device;
-		device = new DeviceProxy(device_name);
-		Tango_sleep(1);
-						
-//
-// subscribe to a archive event with a filter on delta_event
-//
-		
-		cb.cb_executed = 0;
-		cb.cb_err = 0;
-		cb.old_sec = cb.old_usec = 0;
-		filters.clear();
-		filters.push_back("$delta_event >= 500.0 ");
-		
-		// start the polling first!
-		device->poll_attribute(att_name,250);
-		eve_id = device->subscribe_event(att_name,Tango::ARCHIVE_EVENT,&cb,filters);
-
-//
-// Check that the attribute is still polled at 1000 mS
-//
-
-		po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
-		assert( po == true);
-		
-		poll_period = device->get_attribute_poll_period(att_name);
-		coutv << "att polling period : " << poll_period << endl;
-		assert( poll_period == 250);		
-				
-		cout << "   subscribe_event (with filter on delta_event) --> OK" << endl;
-
-//
-// Check that first point has been received
-//
-
-		assert (cb.cb_executed == 1);
-		assert (cb.val == 30);
-		assert (cb.val_size == 4);
-		cout << "   first point received (with delta_event filter) --> OK" << endl;
-
-		device->command_inout("IOIncValue");
-
-		struct timespec req;
-		req.tv_sec = 0;
-		req.tv_nsec = 100000000;
-		nanosleep(&req,NULL);
-
-//
-// Generates a positive change
-//
-			
-		device->command_inout("IOIncValue");
-		nanosleep(&req,NULL);
-		device->command_inout("IOIncValue");
-		nanosleep(&req,NULL);
-		device->command_inout("IOIncValue");
-		req.tv_nsec = 700000000;
-		nanosleep(&req,NULL);
-						
-		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert ( cb.cb_executed == 1);
-		assert (cb.val == 30);
-		assert (cb.val_size == 4);
-				
-		cout << "   Event filtered with delta_event filter set --> OK" << endl;
-
-//
-// Change once more the value and wait for the event
-		
-		device->command_inout("IOIncValue");
-
-#ifndef WIN32
-		rest = sleep(1);
-		if (rest != 0)
-			sleep(1);
-#else
-		Sleep(1000);
-#endif
-						
-		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 2);		
-		assert (cb.val == 35);
-		assert (cb.val_size == 4);
-				
-		cout << "   Event received with delta_event filter set --> OK" << endl;
-
-//
-// unsubscribe to the event
-//
-
-		device->unsubscribe_event(eve_id);		
 		cout << "   unsubscribe_event --> OK" << endl;
 				
 //

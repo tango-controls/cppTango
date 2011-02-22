@@ -37,8 +37,8 @@ int main(int argc, char **argv)
 
 // test long
 
-	DevLong l_in = 3;
-	DevLong l_out;
+	long l_in = 3;
+	long l_out;
 	din << l_in;
 	cout << "Data = " << din << endl;
 	din >> l_out;
@@ -82,8 +82,8 @@ int main(int argc, char **argv)
 
 // test unsigned long
 
-	DevULong ul_in = 1000;
-	DevULong ul_out;
+	unsigned long ul_in = 1000;
+	unsigned long ul_out;
 	din << ul_in;
 	cout << "Data = " << din << endl;
 	din >> ul_out;
@@ -134,7 +134,7 @@ int main(int argc, char **argv)
 // test DevVarLongArray
 
 	DevVarLongArray *lg_arr = new DevVarLongArray(2);
-	vector<DevLong> lg_arr_out;
+	vector<long> lg_arr_out;
 	lg_arr->length(2);
 	(*lg_arr)[0] = 111;
 	(*lg_arr)[1] = 222;
@@ -194,7 +194,7 @@ int main(int argc, char **argv)
 // test DevVarULongArray
 
 	DevVarULongArray *ul_arr = new DevVarULongArray(2);
-	vector<DevULong> ul_arr_out;
+	vector<unsigned long> ul_arr_out;
 	ul_arr->length(2);
 	(*ul_arr)[0] = 1111;
 	(*ul_arr)[1] = 2222;
@@ -226,7 +226,7 @@ int main(int argc, char **argv)
 // test DevVarLongStringArray
 
 	DevVarLongStringArray *lgstr_arr = new DevVarLongStringArray();
-	vector<DevLong> lg_lgstr;
+	vector<long> lg_lgstr;
 	vector<string> str_lgstr;
 	lgstr_arr->lvalue.length(2);
 	lgstr_arr->lvalue[0] = 1110;

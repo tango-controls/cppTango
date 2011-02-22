@@ -26,8 +26,6 @@ class EventCallBack : public Tango::CallBack
 public:
 	int cb_executed;
 	int cb_err;
-	int cb_err_out_of_sync;
-	int a_cb_err;
 	int old_sec,old_usec;
 	int delta_msec;
 };
@@ -35,7 +33,7 @@ public:
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
 	short value;
-	struct timeval now_timeval;
+        struct timeval now_timeval;
 #ifdef WIN32
 	struct _timeb before_win;
 	_ftime(&before_win);
@@ -75,12 +73,9 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		else
 		{
 			coutv << "Error send to callback" << endl;
-			a_cb_err++;
 //			Tango::Except::print_error_stack(event_data->errors);
 			if (strcmp(event_data->errors[0].reason.in(),"aaa") == 0)
 				cb_err++;
-			else if (strcmp(event_data->errors[0].reason.in(),"API_PollThreadOutOfSync") == 0)
-				cb_err_out_of_sync++;
 		}
 	}
 	catch (...)
@@ -112,20 +107,21 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+
+
 
 	
 	try
 	{
 
 		string att_name("short_attr");
-		string another_att("event_change_tst");
 				
 //
 // Test set up (stop polling and clear event_period attribute property but
@@ -134,8 +130,6 @@ int main(int argc, char **argv)
 
 		if (device->is_attribute_polled(att_name))
 			device->stop_poll_attribute(att_name);
-		if (device->is_attribute_polled(another_att))
-			device->stop_poll_attribute(another_att);
 		DbAttribute dba(att_name,device_name);
 		DbData dbd;
 		DbDatum a(att_name);
@@ -162,17 +156,11 @@ int main(int argc, char **argv)
 		EventCallBack cb;
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
-		cb.a_cb_err = 0;
-		cb.cb_err_out_of_sync = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
-		// start the polling first!
-		device->poll_attribute(att_name,500);
-		
 		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
 
 //
-// Check that the attribute is now polled at 500 mS
+// Check that the attribute is now polled at 1000 mS
 //
 
 		bool po = device->is_attribute_polled(att_name);
@@ -181,7 +169,7 @@ int main(int argc, char **argv)
 		
 		int poll_period = device->get_attribute_poll_period(att_name);
 		coutv << "att polling period : " << poll_period << endl;
-		assert( poll_period == 500);		
+		assert( poll_period == 1000);		
 				
 		cout << "   subscribe_event --> OK" << endl;
 		
@@ -196,11 +184,11 @@ int main(int argc, char **argv)
 //
 
 #ifndef WIN32
-		int rest = sleep(5);
+		int rest = sleep(4);
 		if (rest != 0)
-			sleep(5);
+			sleep(4);
 #else
-		Sleep(5000);
+		Sleep(4000);
 #endif
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
@@ -208,7 +196,6 @@ int main(int argc, char **argv)
 		assert (cb.cb_executed < 6);
 		assert (cb.delta_msec > 900);
 		assert (cb.delta_msec < 1100);
-		assert (cb.a_cb_err == 0);
 				
 		cout << "   CallBack executed every 1000 mS --> OK" << endl;
 		
@@ -358,14 +345,15 @@ int main(int argc, char **argv)
 		db_dat.push_back(dat1);
 		
 		db_att.put_property(db_dat);
+
 		
 //
 // Restart device
 //
 
-		DeviceProxy adm_dev_2(device->adm_name().c_str());
+		adm_dev = device->adm_name().c_str();
 		di << device_name;
-		adm_dev_2.command_inout("DevRestart",di);
+		adm_dev.command_inout("DevRestart",di);
 		
 		delete device;
 		device = new DeviceProxy(device_name);
@@ -413,66 +401,7 @@ int main(int argc, char **argv)
 		assert (cb.delta_msec < 700);
 		
 		cout << "   CallBack executed every 600 mS --> OK" << endl;
-
-//
-// Change polling period to 600mS
-//
-
-		device->poll_attribute(att_name,600);
-
-//
-// Poll another attribute
-//
-
-		device->poll_attribute(another_att,600);
-
-		Tango_sleep(2);
-
-//
-// Force event_change_tst to have a long reading time.
-// This will force out of sync exception on Short_attr attribute
-//
-
-		vector<short> data_in_out(2);
-		data_in_out[0] = 3;
-		data_in_out[1] = 1;
-		di << data_in_out;
 		
-		device->command_inout("IOAttrThrowEx",di);
-
-		Tango_sleep(5);
-
-		assert (cb.cb_err_out_of_sync > 2);
-
-		cout << "   Receiving out_of_sync exception --> OK" << endl;
-
-//
-// No out of sync exception any more
-//
-
-		data_in_out[1] = 0;
-		di << data_in_out;
-		
-		device->command_inout("IOAttrThrowEx",di);
-
-		Tango_sleep(1);
-
-//
-// Clear error flags and wait for some callbacks
-//
-
-		cb.a_cb_err = cb.cb_err = cb.cb_err_out_of_sync = 0;
-		cb.cb_executed = 0;
-
-		Tango_sleep(2);
-
-		assert (cb.cb_executed > 2);
-		assert (cb.a_cb_err == 0);
-		assert (cb.cb_err == 0);
-		assert (cb.cb_err_out_of_sync == 0);
-
-		cout << "   Back to periodic event after out_of_sync exception --> OK" << endl;
-	
 //
 // unsubscribe to the event
 //
@@ -486,7 +415,6 @@ int main(int argc, char **argv)
 //
 
 		device->stop_poll_attribute(att_name);
-		device->stop_poll_attribute(another_att);
 							
 	}
 	catch (Tango::DevFailed &e)

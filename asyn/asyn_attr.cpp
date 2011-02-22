@@ -32,17 +32,20 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
 	try
 	{
 	
+// Change timeout (with a useless name as a workaround for ORBacus bug)
+
+//		device->set_timeout_millis(6000);
 				
 // Read one attribute
 
@@ -79,43 +82,6 @@ int main(int argc, char **argv)
 		assert ( nb_not_arrived >= 2);
 		
 		cout << "   Asynchronous read_attribute in polling mode --> OK" << endl;
-		
-// Read one attribute of the DevEncoded data type
-// The attribute used to test DevEncoded does not have any
-// "sleep" in its code -> Do not check the nb_not_arrived data
-
-#ifndef COMPAT
-		id = device->read_attribute_asynch("encoded_attr");
-		
-// Check if attribute returned
-
-		finish = false;
-		nb_not_arrived = 0;
-		while (finish == false)
-		{
-			try
-			{
-				received = device->read_attribute_reply(id);
-				coutv << "Attribute result arrived" << endl;
-				Tango::DevEncoded enc_data;
-				*received >> enc_data;
-				assert( ::strcmp(enc_data.encoded_format,"Which format?") == 0);
-				assert( enc_data.encoded_data.length() == 4 );
-				finish = true;
-			}
-			catch (AsynReplyNotArrived )
-			{
-				finish = false;
-				coutv << "Attribute not yet read" << endl;
-				nb_not_arrived++;
-			}
-			if (finish == false)
-				Tango_sleep(1);
-		}
-		delete received;
-		
-		cout << "   Asynchronous read_attribute (DevEncoded data type) in polling mode --> OK" << endl;
-#endif
 
 // Read attribute to check polling with blocking with timeout
 

@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceData din,dout;
-		DevLong in = 3;
+		long in = 3;
 		din << in;
 		try
 		{	
@@ -116,7 +116,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		DevLong received;
+		long received;
 		dout >> received;
 		assert( received == (in * 2) );
 	}
@@ -193,7 +193,7 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceData din,dout;
-		DevULong in = 1000;
+		unsigned long in = 1000;
 		din << in;
 		try
 		{	
@@ -204,7 +204,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		DevULong received;
+		unsigned long received;
 		dout >> received;
 		assert( received == (in * 2) );
 	}
@@ -418,7 +418,7 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceData din,dout;
-		vector<DevLong> in;
+		vector<long> in;
 		in.push_back(100);
 		in.push_back(200);
 		din << in;
@@ -431,7 +431,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		vector<DevLong> received;
+		vector<long> received;
 		dout >> received;
 		assert( received[0] == (in[0] * 2) );
 		assert( received[1] == (in[1] * 2) );
@@ -714,7 +714,7 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceData din,dout;
-		vector<DevULong> in;
+		vector<unsigned long> in;
 		in.push_back(1000);
 		in.push_back(2001);
 		din << in;
@@ -727,7 +727,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		vector<DevULong> received;
+		vector<unsigned long> received;
 		dout >> received;
 		assert( received[0] == (in[0] * 2) );
 		assert( received[1] == (in[1] * 2) );
@@ -842,7 +842,7 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceData din,dout;
-		vector<DevLong> in1;
+		vector<long> in1;
 		in1.push_back(1000);
 		in1.push_back(2001);
 		in1.push_back(2002);
@@ -859,7 +859,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		vector<DevLong> received1;
+		vector<long> received1;
 		vector<string> received2;
 		dout.extract(received1,received2);
 		

@@ -26,14 +26,14 @@ int main(int argc, char **argv)
 	check_size("SpectrumAttr",sizeof(SpectrumAttr),64);	// Was 60 in V4	
 	check_size("ImageAttr",sizeof(ImageAttr),72);	// Was 68 in V4
 		
-	check_size("DeviceImpl",sizeof(DeviceImpl),296);
-	check_size("Device_2Impl",sizeof(Device_2Impl),304);
+	check_size("DeviceImpl",sizeof(DeviceImpl),88);
+	check_size("Device_2Impl",sizeof(Device_2Impl),96);
 	
-	check_size("DeviceClass",sizeof(DeviceClass),88);  	// Was 48 in V4
+	check_size("DeviceClass",sizeof(DeviceClass),76);  	// Was 48 in V4
 	check_size("Util",sizeof(Util),72);	// Was 68 in V4
 
-	check_size("Attribute",sizeof(Attribute),332);		// Was 208 in V4
-	check_size("WAttribute",sizeof(WAttribute),616);	// Was 252 in V4
+	check_size("Attribute",sizeof(Attribute),272);		// Was 208 in V4
+	check_size("WAttribute",sizeof(WAttribute),512);	// Was 252 in V4
 	check_size("MultiAttribute",sizeof(MultiAttribute),40);
 	
 	check_size("Command",sizeof(Command),32);
@@ -42,14 +42,14 @@ int main(int argc, char **argv)
 	check_size("TemplCommandOut",sizeof(TemplCommandOut<void>),64);
 	check_size("TemplCommandInOut",sizeof(TemplCommandInOut<int,int>),64);
 
-	check_size("DeviceProxy",sizeof(DeviceProxy),164);	// Was 100 in V4
+	check_size("DeviceProxy",sizeof(DeviceProxy),104);	// Was 100 in V4
 	check_size("DeviceData",sizeof(DeviceData),12);
 	check_size("DeviceDataHistory",sizeof(DeviceDataHistory),44);
-	check_size("DeviceAttribute",sizeof(DeviceAttribute),80);	// Was 52 in V4
-	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),104);   // Was 76 in V4
+	check_size("DeviceAttribute",sizeof(DeviceAttribute),76);	// Was 52 in V4
+	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),100);   // Was 76 in V4
 
-	check_size("ApiUtil",sizeof(ApiUtil),144);				
-	check_size("Database",sizeof(Database),180);    // Was 108 in V4
+	check_size("ApiUtil",sizeof(ApiUtil),68);				
+	check_size("Database",sizeof(Database),120);    // Was 108 in V4
 	check_size("DbDevice",sizeof(DbDevice),20);
 	check_size("DbClass",sizeof(DbClass),20);
 	check_size("DbServer",sizeof(DbServer),20);
@@ -60,8 +60,7 @@ int main(int argc, char **argv)
 	check_size("AttrReadEvent",sizeof(AttrReadEvent),24);
 	check_size("AttrWrittenEvent",sizeof(AttrWrittenEvent),20);
 	check_size("CallBack",sizeof(CallBack),8);
-
-	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);				
+				
 }
 
 void check_size(const char *class_name,long class_size,long std_size)

@@ -19,43 +19,43 @@ int main(int argc, char **argv)
 // First check device name syntax when creating DeviceProxy instance
 //
 	
-	val = check_proxy("kidiboo:10000/a#dbase=no");
+	val = check_proxy("corvus:10000/a#dbase=no");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b#dbase=no");
+	val = check_proxy("corvus:10000/a/b#dbase=no");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a//b#dbase=no");
+	val = check_proxy("corvus:10000/a//b#dbase=no");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b//#dbase=no");
+	val = check_proxy("corvus:10000/a/b//#dbase=no");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b/c/#dbase=no");
+	val = check_proxy("corvus:10000/a/b/c/#dbase=no");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b/c#dbase=no");
+	val = check_proxy("corvus:10000/a/b/c#dbase=no");
 	assert (val == 1);
 	
-	val = check_proxy("kidiboo:10000/a/b");
+	val = check_proxy("corvus:10000/a/b");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a//b");
+	val = check_proxy("corvus:10000/a//b");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b//");
+	val = check_proxy("corvus:10000/a/b//");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b/c/");
+	val = check_proxy("corvus:10000/a/b/c/");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/a/b/c");
+	val = check_proxy("corvus:10000/a/b/c");
 	assert (val == 1);
 
-	val = check_proxy("//kidiboo:10000/a/b/c");
+	val = check_proxy("//corvus:10000/a/b/c");
 	assert (val == 1);
 		
-	val = check_proxy("//kidiboo:10000/a/b/c#dbase=no");
+	val = check_proxy("//corvus:10000/a/b/c#dbase=no");
 	assert (val == 1);
 	
 	val = check_proxy("/a/b");
@@ -85,16 +85,16 @@ int main(int argc, char **argv)
 	val =  check_proxy("my_alias");
 	assert (val == 1);
 
-	val = check_proxy("kidiboo:10000/my_alias:");
+	val = check_proxy("corvus:10000/my_alias:");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/my_al->ias");
+	val = check_proxy("corvus:10000/my_al->ias");
 	assert (val == 0);
 	
-	val = check_proxy("kidiboo:10000/my_alias");
+	val = check_proxy("corvus:10000/my_alias");
 	assert (val == 1);
 
-	val = check_proxy("//kidiboo:10000/my_alias");
+	val = check_proxy("//corvus:10000/my_alias");
 	assert (val == 1);
 		
 //
@@ -114,9 +114,9 @@ int main(int argc, char **argv)
 	assert (prop_val == 25);
 	cout << "   Connecting to device via alias like my_alias --> OK" << endl;
 	
-	val = check_proxy("kidiboo:10000/et_alias");
+	val = check_proxy("corvus:10000/et_alias");
 	assert (val == 2);
-	DeviceProxy dev1("kidiboo:10000/et_alias");
+	DeviceProxy dev1("corvus:10000/et_alias");
 	na = dev1.name();
 	assert (na == "dev/test/10");
 	dev1.get_property(db_dat);
@@ -137,43 +137,43 @@ int main(int argc, char **argv)
 // Then, check attribute name syntax when creating AttributeProxy instance
 //
 	
-	val = attr_check_proxy("kidiboo:10000/a#dbase=no");
+	val = attr_check_proxy("corvus:10000/a#dbase=no");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b#dbase=no");
+	val = attr_check_proxy("corvus:10000/a/b#dbase=no");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a//b#dbase=no");
+	val = attr_check_proxy("corvus:10000/a//b#dbase=no");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b//#dbase=no");
+	val = attr_check_proxy("corvus:10000/a/b//#dbase=no");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b/c/#dbase=no");
+	val = attr_check_proxy("corvus:10000/a/b/c/#dbase=no");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b/c/d#dbase=no");
+	val = attr_check_proxy("corvus:10000/a/b/c/d#dbase=no");
 	assert (val == 2);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b");
+	val = attr_check_proxy("corvus:10000/a/b");
 	assert (val == 2);
 	
-	val = attr_check_proxy("kidiboo:10000/a//b");
+	val = attr_check_proxy("corvus:10000/a//b");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b//");
+	val = attr_check_proxy("corvus:10000/a/b//");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b/c/");
+	val = attr_check_proxy("corvus:10000/a/b/c/");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/a/b/c/d");
+	val = attr_check_proxy("corvus:10000/a/b/c/d");
 	assert (val == 2);
 	
-	val = attr_check_proxy("//kidiboo:10000/a/b/c/d");
+	val = attr_check_proxy("//corvus:10000/a/b/c/d");
 	assert (val == 2);
 		
-	val = attr_check_proxy("//kidiboo:10000/a/b/c/d#dbase=no");
+	val = attr_check_proxy("//corvus:10000/a/b/c/d#dbase=no");
 	assert (val == 2);
 	
 	val = attr_check_proxy("/a/b");
@@ -206,16 +206,16 @@ int main(int argc, char **argv)
 	val =  attr_check_proxy("my_alias");
 	assert (val == 2);
 
-	val = attr_check_proxy("kidiboo:10000/my_alias:");
+	val = attr_check_proxy("corvus:10000/my_alias:");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/my_al->ias");
+	val = attr_check_proxy("corvus:10000/my_al->ias");
 	assert (val == 0);
 	
-	val = attr_check_proxy("kidiboo:10000/my_alias");
+	val = attr_check_proxy("corvus:10000/my_alias");
 	assert (val == 2);
 
-	val = attr_check_proxy("//kidiboo:10000/my_alias");
+	val = attr_check_proxy("//corvus:10000/my_alias");
 	assert (val == 2);
 	
 	val = attr_check_proxy("et_alias/Short_attr");
@@ -239,10 +239,10 @@ int main(int argc, char **argv)
 	
 	cout << "   Connecting to attribute via alias like et_attr_alias --> OK" << endl;
 	
-	val = attr_check_proxy("kidiboo:10000/et_attr_alias");
+	val = attr_check_proxy("corvus:10000/et_attr_alias");
 	assert (val == 3);
 	
-	AttributeProxy att1("kidiboo:10000/et_attr_alias");
+	AttributeProxy att1("corvus:10000/et_attr_alias");
 	na_dev = att1.get_device_proxy()->name();
 	assert (na_dev == "dev/test/10");
 

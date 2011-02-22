@@ -177,11 +177,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -190,47 +190,26 @@ int main(int argc, char **argv)
 	{
 
 		string att_name("slow_actuator");
-		
+				
 //
-// Test set up (stop polling and clear abs_change and rel_change attribute
-// properties but restart device to take this into account)
-// Set the abs_change to 1
+// Test set up (stop polling)
 //
 
 		if (device->is_attribute_polled(att_name))
 			device->stop_poll_attribute(att_name);
-		{
-		DbAttribute dba(att_name,device_name);
-		DbData dbd;
-		DbDatum a(att_name);
-		a << (short)2;
-		dbd.push_back(a);
-		dbd.push_back(DbDatum("abs_change"));
-		dbd.push_back(DbDatum("rel_change"));
-		dba.delete_property(dbd);
-		
-		dbd.clear();
-		a << (short)1;
-		dbd.push_back(a);
-		DbDatum ch("abs_change");
-		ch << (short)1;
-		dbd.push_back(ch);
-		dba.put_property(dbd);
-		
-		DeviceProxy adm_dev(device->adm_name().c_str());
-		DeviceData di;
-		di << device_name;
-		adm_dev.command_inout("DevRestart",di);
-		}
-		
-		delete device;
-		device = new DeviceProxy(device_name);
-		Tango_sleep(1);
+					
+//
+// subscribe to a quality event
+//
 
-//
-// switch on the polling first!
-//
-		device->poll_attribute(att_name,250);
+		int eve_id;
+		vector<string> filters;
+		SlowCallBack cb;
+		cb.cb_executed = 0;
+		cb.cb_err = 0;
+		cb.old_sec = cb.old_usec = 0;
+		
+		eve_id = device->subscribe_event(att_name,Tango::QUALITY_EVENT,&cb,filters);
 
 //
 // Check that the attribute is now polled at 1000 mS
@@ -242,30 +221,9 @@ int main(int argc, char **argv)
 		
 		int poll_period = device->get_attribute_poll_period(att_name);
 		coutv << "att polling period : " << poll_period << endl;
-		assert( poll_period == 250);
-
-//
-// subscribe to a change event and filter only on a quality change
-//
-
-		int eve_id;
-		SlowCallBack cb;
-		cb.cb_executed = 0;
-		cb.cb_err = 0;
-		cb.old_sec = cb.old_usec = 0;
-		
-		vector<string> filters;
-		filters.push_back("$quality == 1");
-		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
-
-#ifdef _TG_WINDOWS_
-		Sleep((DWORD)250);
-#else
-		struct timespec to_wait,inter;
-		to_wait.tv_sec = 0;
-		to_wait.tv_nsec = 250000000;
-		nanosleep(&to_wait,&inter);
-#endif
+		assert( poll_period == 1000);		
+				
+		cout << "   (Slow actuator) subscribe_event --> OK" << endl;
 
 //
 // Check that first point has been received
@@ -274,6 +232,8 @@ int main(int argc, char **argv)
 		assert (cb.cb_executed == 1);
 		assert (cb.qua == ATTR_VALID);
 		cout << "   (Slow actuator) first point received --> OK" << endl;
+
+
 //
 // Write a value into the actuator
 //
@@ -348,61 +308,15 @@ int main(int argc, char **argv)
 
 		att_name = "fast_actuator";
 						
-		
 //
-// Test set up (stop polling and clear abs_change and rel_change attribute
-// properties but restart device to take this into account)
-// Set the abs_change to 1
+// Test set up (stop polling)
 //
 
 		if (device->is_attribute_polled(att_name))
 			device->stop_poll_attribute(att_name);
-		{
-		DbAttribute dba(att_name,device_name);
-		DbData dbd;
-		DbDatum a(att_name);
-		a << (short)2;
-		dbd.push_back(a);
-		dbd.push_back(DbDatum("abs_change"));
-		dbd.push_back(DbDatum("rel_change"));
-		dba.delete_property(dbd);
-		
-		dbd.clear();
-		a << (short)1;
-		dbd.push_back(a);
-		DbDatum ch("abs_change");
-		ch << (short)1;
-		dbd.push_back(ch);
-		dba.put_property(dbd);
-		
-		DeviceProxy adm_dev(device->adm_name().c_str());
-		DeviceData di;
-		di << device_name;
-		adm_dev.command_inout("DevRestart",di);
-		}
-		
-		delete device;
-		device = new DeviceProxy(device_name);
-		Tango_sleep(1);
-
+					
 //
-// switch on the polling first!
-//
-		device->poll_attribute(att_name,250);
-
-//
-// Check that the attribute is now polled at 100 mS
-//
-		po = device->is_attribute_polled(att_name);
-		coutv << "attribute polled : " << po << endl;
-		assert( po == true);
-		
-		poll_period = device->get_attribute_poll_period(att_name);
-		coutv << "att polling period : " << poll_period << endl;
-		assert( poll_period == 250);
-
-//
-// subscribe to a change event and filter only on a quality change
+// subscribe to a quality event
 //
 
 		FastCallBack fcb;
@@ -410,19 +324,21 @@ int main(int argc, char **argv)
 		fcb.cb_err = 0;
 		fcb.old_sec = cb.old_usec = 0;
 		
-		vector<string> ffilters;
-		ffilters.push_back("$quality == 1");
-		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&fcb,ffilters);
-		
-		cout << "   (Fast actuator) subscribe_event --> OK" << endl;
+		eve_id = device->subscribe_event(att_name,Tango::QUALITY_EVENT,&fcb,filters);
 
-#ifdef _TG_WINDOWS_
-		Sleep((DWORD)250);
-#else
-		to_wait.tv_sec = 0;
-		to_wait.tv_nsec = 250000000;
-		nanosleep(&to_wait,&inter);
-#endif
+//
+// Check that the attribute is now polled at 1000 mS
+//
+
+		po = device->is_attribute_polled(att_name);
+		coutv << "attribute polled : " << po << endl;
+		assert( po == true);
+		
+		poll_period = device->get_attribute_poll_period(att_name);
+		coutv << "att polling period : " << poll_period << endl;
+		assert( poll_period == 1000);		
+				
+		cout << "   (Fast actuator) subscribe_event --> OK" << endl;
 
 //
 // Check that first point has been received
@@ -442,22 +358,20 @@ int main(int argc, char **argv)
 		
 		device->write_attribute(fda);
 
-//  Only sleep a 100ms. The events should be fired immediately
-
-#ifdef _TG_WINDOWS_
-		Sleep((DWORD)250);
+#ifndef WIN32		
+		rest = sleep(2);
+		if (rest != 0)
+			sleep(2);
 #else
-		to_wait.tv_sec = 0;
-		to_wait.tv_nsec = 250000000;
-		nanosleep(&to_wait,&inter);
+		Sleep(2000);
 #endif
 
 //
 // Check that the events has been received
 //
 
-		assert (fcb.cb_executed == 3);
-		assert (fcb.qua == ATTR_VALID);
+		assert (cb.cb_executed == 3);
+		assert (cb.qua == ATTR_VALID);
 		cout << "   (Fast actuator) Two quality events received --> OK" << endl;
 												
 //
@@ -465,6 +379,7 @@ int main(int argc, char **argv)
 //
 
 		device->unsubscribe_event(eve_id);
+		
 		cout << "   (Fast actuator) Unsubscribe_event --> OK" << endl;
 		
 		device->stop_poll_attribute(att_name);

@@ -34,7 +34,7 @@ public:
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
-	struct timeval now_timeval;
+        struct timeval now_timeval;
 
 #ifdef WIN32
 	struct _timeb before_win;
@@ -91,7 +91,6 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	}
 	catch (...)
 	{
-		cb_err++;
 		coutv << "EventCallBack::push_event(): could not extract data !\n";
 	}
 
@@ -119,11 +118,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -159,8 +158,6 @@ int main(int argc, char **argv)
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
 		
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 //
@@ -186,7 +183,6 @@ int main(int argc, char **argv)
 
 		assert (cb.cb_executed == 1);
 		assert (cb.sta == Tango::ON);
-		assert (cb.cb_err == 0);
 		cout << "   first point received --> OK" << endl;
 
 		usleep(1000000);
@@ -208,7 +204,6 @@ int main(int argc, char **argv)
 		usleep(1500000);
 		
 		assert (cb.cb_executed == 3);
-		assert (cb.cb_err == 0);
 		assert (cb.sta == Tango::ON);
 		
 		cout << "   Event on state change --> OK" << endl;
@@ -218,10 +213,6 @@ int main(int argc, char **argv)
 //
 
 		device->unsubscribe_event(eve_id);
-//
-// Stop polling
-//		
-		device->stop_poll_attribute(att_name);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
 		
@@ -231,9 +222,6 @@ int main(int argc, char **argv)
 
 		cb.cb_executed = 0;		
 		att_name = "status";
-		
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 		cout << "   subscribe_event on status attribute --> OK" << endl;
 
@@ -242,7 +230,6 @@ int main(int argc, char **argv)
 //
 
 		assert (cb.cb_executed == 1);
-		assert (cb.cb_err == 0);
 		cout << "   first point received --> OK" << endl;
 
 		usleep(1000000);
@@ -267,7 +254,6 @@ int main(int argc, char **argv)
 		string::size_type pos = cb.status.find("ON");		
 		assert (cb.cb_executed == 3);
 		assert (pos != string::npos);
-		assert (cb.cb_err == 0);
 		
 		cout << "   Event on status change --> OK" << endl;
 		

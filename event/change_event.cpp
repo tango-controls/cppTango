@@ -34,8 +34,8 @@ public:
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
-	vector<DevLong> value;
-	struct timeval now_timeval;
+	vector<long> value;
+        struct timeval now_timeval;
 
 #ifdef WIN32
 	struct _timeb before_win;
@@ -68,6 +68,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		coutv << "StateEventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
+
 			*(event_data->attr_value) >> value;
 			coutv << "CallBack value size " << value.size() << endl;
 			val = value[2];
@@ -88,32 +89,6 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	}
 
 }
-
-
-class EventUnsubCallBack : public Tango::CallBack
-{
-public:
-	EventUnsubCallBack(DeviceProxy *d):cb_executed(0),dev(d),Tango::CallBack() {}
-
-	void push_event(Tango::EventData*);
-	void set_ev_id(int e) {ev_id = e;}
-	
-protected:
-	int 				cb_executed;
-	int 				ev_id;
-	Tango::DeviceProxy 	*dev;
-};
-
-void EventUnsubCallBack::push_event(Tango::EventData* event_data)
-{
-	cb_executed++;
-	if (cb_executed == 2)
-	{
-		dev->unsubscribe_event(ev_id);
-	}
-}
-
-//---------------------------------------------------------------------------------------------
 
 int main(int argc, char **argv)
 {
@@ -137,11 +112,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -195,8 +170,6 @@ int main(int argc, char **argv)
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
 		
-		// switch on the polling first!
-		device->poll_attribute(att_name,1000);
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 //
@@ -325,9 +298,12 @@ int main(int argc, char **argv)
 		
 		Tango_sleep(3);
 		coutv << "Callback cb_err = " << cb.cb_err << endl;
-		assert (cb.cb_err == 1);
+		assert (cb.cb_err > 2);
+		assert (cb.cb_err < 5);
+		assert (cb.delta_msec > 900);
+		assert (cb.delta_msec < 1100);
 				
-		cout << "   CallBack executed when attribute throw exception (only once) --> OK" << endl;		
+		cout << "   CallBack executed when attribute throw exception every 1000 mS --> OK" << endl;		
 
 //
 // Attribute does not send exception any more
@@ -337,47 +313,7 @@ int main(int argc, char **argv)
 		di << data_in;
 		
 		device->command_inout("IOAttrThrowEx",di);
-
-//
-// Check that the event is still received event after a try to subscribe with a null callback
-//
-
-		EventCallBack cb2;
-		cb2.cb_executed = 0;
-		cb2.cb_err = 0;
-		cb2.old_sec = cb2.old_usec = 0;	
-
-		bool ex = false;
-		bool already_conn = false;
-		try
-		{
-			int eve_id2 = device->subscribe_event(att_name,Tango::CHANGE_EVENT,(CallBack *)NULL,filters);
-		}
-		catch (Tango::DevFailed &e)
-		{
-//			Tango::Except::print_exception(e);
-			ex = true;
-			string de(e.errors[0].desc);
-			if (de.find("Already") != string::npos)
-				already_conn = true;
-		}
-
-		device->command_inout("IOIncValue");
-
-#ifndef WIN32
-		rest = sleep(2);
-		if (rest != 0)
-			sleep(2);
-#else
-		Sleep(2000);
-#endif
 						
-		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed == 7);
-		assert (ex == true);
-				
-		cout << "   CallBack executed after a try to subscribe to one attribute with a NULL callback --> OK" << endl;
-					
 //
 // unsubscribe to the event
 //
@@ -385,40 +321,6 @@ int main(int argc, char **argv)
 		device->unsubscribe_event(eve_id);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
-
-//
-// Subscribe to the event using the full device name
-//
-
-		string full_device_name("tango://kidiboo:10000/");
-		full_device_name = full_device_name + device_name;
-		Tango::DeviceProxy full_dp(full_device_name);
-
-		cb.cb_executed = 0;
-		int ev_id_full = full_dp.subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
-
-		assert (cb.cb_executed == 1);
-
-		cout << "   Subscription using Tango full device name --> OK" << endl;
-
-		full_dp.unsubscribe_event(ev_id_full);
-
-//
-// Subscribe to the event using the full device name with fqdn
-//
-
-		string full_device_name_fqdn("tango://kidiboo.esrf.fr:10000/");
-		full_device_name_fqdn = full_device_name_fqdn + device_name;
-		Tango::DeviceProxy full_dp_fq(full_device_name_fqdn);
-
-		cb.cb_executed = 0;
-		int ev_id_full_fq = full_dp_fq.subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
-
-		assert (cb.cb_executed == 1);
-
-		cout << "   Subscription using Tango full device name with FQDN --> OK" << endl;
-
-		full_dp_fq.unsubscribe_event(ev_id_full_fq);
 
 //sleep(1000);
 delete device;
@@ -468,7 +370,7 @@ device = new DeviceProxy(device_name);
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-	
+		
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 //
@@ -580,9 +482,12 @@ device = new DeviceProxy(device_name);
 		
 		Tango_sleep(2);
 		coutv << "Callback cb_err = " << cb.cb_err << endl;
-		assert (cb.cb_err == 1);
+		assert (cb.cb_err > 3);
+		assert (cb.cb_err < 6);
+		assert (cb.delta_msec > 450);
+		assert (cb.delta_msec < 550);
 				
-		cout << "   CallBack executed when attribute throw exception only once --> OK" << endl;		
+		cout << "   CallBack executed when attribute throw exception every 500 mS --> OK" << endl;		
 
 //
 // Attribute does not send exception any more
@@ -600,7 +505,7 @@ device = new DeviceProxy(device_name);
 		device->unsubscribe_event(eve_id);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
-	
+		
 delete device;
 Tango::ApiUtil::cleanup();
 device = new DeviceProxy(device_name);
@@ -641,8 +546,7 @@ device = new DeviceProxy(device_name);
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
 		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
+		
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 //
@@ -781,9 +685,12 @@ device = new DeviceProxy(device_name);
 		
 		Tango_sleep(3);
 		coutv << "Callback cb_err = " << cb.cb_err << endl;
-		assert (cb.cb_err == 1);
+		assert (cb.cb_err > 2);
+		assert (cb.cb_err < 5);
+		assert (cb.delta_msec > 950);
+		assert (cb.delta_msec < 1050);
 				
-		cout << "   CallBack executed when attribute throw exception only once (with filter) --> OK" << endl;		
+		cout << "   CallBack executed when attribute throw exception every 1000 mS (with filter) --> OK" << endl;		
 
 //
 // Attribute does not send exception any more
@@ -801,43 +708,7 @@ device = new DeviceProxy(device_name);
 		device->unsubscribe_event(eve_id);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
-
-//
-// Try to unsubscribe within the callback
-//
-
-		EventUnsubCallBack cb_unsub(device);
-		
-		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb_unsub,filters);
-		cb_unsub.set_ev_id(eve_id);
-
-		device->command_inout("IOIncValue");
-
-#ifndef WIN32
-		rest = sleep(2);
-		if (rest != 0)
-			sleep(2);
-#else
-		Sleep(2000);
-#endif
-
-		bool unsub = false;
-		try
-		{
-			device->unsubscribe_event(eve_id);
-		}
-		catch(Tango::DevFailed &e)
-		{
-//			Tango::Except::print_exception(e);
-			string reason(e.errors[0].reason);
-			if (reason == "API_EventNotFound")
-				unsub = true;
-		}
-
-		assert (unsub == true);
-
-		cout << "   Event unsubscription within the callback --> OK" << endl;
-			
+				
 //
 // Stop polling
 //
@@ -856,9 +727,8 @@ device = new DeviceProxy(device_name);
 	}
 
 	delete device;
-
-	Tango::ApiUtil::cleanup();
+	
+Tango::ApiUtil::cleanup();
 	
 	return 0;
-
 }

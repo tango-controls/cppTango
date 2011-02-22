@@ -2,142 +2,123 @@
 #		Makefile to generate a Tango 
 #
 
-##############################################################
+TANGO_BASE = /segfs/tango/cppapi
 
-#
-# Only these two variables TANGO_HOME and LIB_TANGO_DIR
-# should be modified to compile on several places
-# at the ESRF
-#
-
-################################################################
-
-#TANGO_HOME = /home/taurel/tango/cppapi
-TANGO_HOME = /segfs/tango/cppapi
-
-#LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
-LIB_TANGO_DIR = $(TANGO_HOME)/../tmp/install/$(BIN_DIR)/lib
-
-###################################################################
-
+ifdef _solaris
+CC = CC
+BIN_DIR = solaris7_CC
+BIN_DIR_SL = solaris7_CC_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris7_CC
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris7_CC
+endif
 
 ifdef _solaris9
-ifdef natif
-CC = /opt/SUNWspro/bin/CC
+CC = CC
 BIN_DIR = solaris9_CC
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/solaris9_CC
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/solaris9_CC
-else
-CC = c++
-BIN_DIR = solaris9_gcc
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/solaris9_gcc
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/solaris9_gcc
-endif
+BIN_DIR_SL = solaris9_CC_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris9_CC
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris9_CC
 endif
 
-ifdef _solaris10
-ifdef natif
-CC = CC
-BIN_DIR = solaris10_CC
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/solaris10_CC
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/solaris10_CC
+ifdef _solaris7_gcc
+CC = c++
+BIN_DIR = solaris7
+BIN_DIR_SL = solaris7_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris7
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris7
 endif
+
+ifdef _solaris9_gcc
+CC = c++
+BIN_DIR = solaris9
+BIN_DIR_SL = solaris9_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris9
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris9
 endif
+
 
 ifdef linux
 CC = c++
+ifdef suse82
+BIN_DIR = suse82
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/$(BIN_DIR)
+else
 ifdef debian30
 BIN_DIR = debian30
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/debian30
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/debian30
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/$(BIN_DIR)
 else
-ifdef redhate4
-BIN_DIR = redhate4
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate4
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate4
+ifdef suse72_gcc32
+BIN_DIR = suse72_gcc32
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/$(BIN_DIR)
 else
-ifdef redhate4_64
-BIN_DIR = redhate4_64
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate4_64
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate4_64
+ifdef redhat40
+BIN_DIR = redhat40
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/$(BIN_DIR)
 else
-ifdef redhate5
-BIN_DIR = redhate5
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate5
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate5
+ifdef suse90_64
+BIN_DIR = suse90_64
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/$(BIN_DIR)
 else
-ifdef redhate5_64
-BIN_DIR = redhate5_64
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate5_64
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate5_64
-else
-ifdef ubuntu904
-BIN_DIR = ubuntu904
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/ubuntu904
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/ubuntu904
-else
-ifdef ubuntu1004
-BIN_DIR = ubuntu1004
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/ubuntu1004
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/ubuntu1004
+BIN_DIR = suse72
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.0/$(BIN_DIR)
 endif
 endif
 endif
 endif
 endif
-endif
-endif
+BIN_DIR_SL = $(BIN_DIR)_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/$(BIN_DIR)
 endif
 
+
+TANGO_SVC_HOME = /segfs/tango/include
 
 INCLUDE_DIRS = -I. \
-	       -I$(TANGO_HOME)/client \
-	       -I$(TANGO_HOME)/server \
+	       -I$(TANGO_BASE)/client \
+	       -I$(TANGO_BASE)/server \
 	       -I$(OMNI_BASE)/include \
 	       -I$(LOG4TANGO_BASE)/include
-#INCLUDE_DIRS = -I. \
-#		  -I/segfs/tango/release/ubuntu704/include \
-#	      -I$(OMNI_BASE)/include \
-#	      -I$(LOG4TANGO_BASE)/include
 
-LIB_DIRS = -L $(LIB_TANGO_DIR) \
+LIB_DIRS = -L $(TANGO_BASE)/server/$(BIN_DIR) \
 	   -L $(OMNI_BASE)/lib \
 	   -L $(LOG4TANGO_BASE)/lib
-#LIB_DIRS = -L /segfs/tango/release/ubuntu704/lib \
-#	  -L $(OMNI_BASE)/lib \
-#	  -L $(LOG4TANGO_BASE)/lib
+
+ifdef _solaris
+CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
+LIB_TANGO = $(TANGO_BASE)/server/solaris7_CC/libtango.a
+LFLAGS =  $(LIB_DIRS) -g -mt $(LIB_TANGO) -llog4tango \
+	  -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
+	  -lposix4 -lsocket -lnsl -lpthread
+endif
 
 ifdef _solaris9
-ifdef natif
 CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
-LFLAGS =  -g -mt $(LIB_DIRS) $(LIB_TANGO) -llog4tango \
+LIB_TANGO = $(TANGO_BASE)/server/solaris9_CC/libtango.a
+LFLAGS =  $(LIB_DIRS) -g -mt $(LIB_TANGO) -llog4tango \
 	  -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
 	  -lposix4 -lsocket -lnsl -lpthread
-else
-CXXFLAGS = -g -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
-LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
-	-lomniORB4 -lomniDynamic4 -lomnithread \
-	-lCOS4 -lposix4 -lsocket -lnsl -lpthread
-endif
 endif
 
-ifdef _solaris10
-ifdef natif
-CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
-LFLAGS =  -g -mt $(LIB_DIRS) $(LIB_TANGO) -llog4tango \
-	  -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
+ifdef _solaris7_gcc
+CXXFLAGS = -g -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
+LIB_TANGO = $(TANGO_BASE)/server/$(BIN_DIR)/libtango.a
+LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
+	  -lomniORB4 -lomniDynamic4 -lCOS4 -lomnithread \
 	  -lposix4 -lsocket -lnsl -lpthread
 endif
+
+ifdef _solaris9_gcc
+CXXFLAGS = -g -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
+LIB_TANGO = $(TANGO_BASE)/server/$(BIN_DIR)/libtango.a
+LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
+	  -lomniORB4 -lomniDynamic4 -lCOS4 -lomnithread \
+	  -lposix4 -lsocket -lnsl -lpthread
 endif
 
 ifdef linux
 CXXFLAGS = -g -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
-#CXXFLAGS = -g -DCOMPAT -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
-LFLAGS =  -g $(LIB_DIRS)  -ltango -llog4tango \
+LIB_TANGO = $(TANGO_BASE)/server/$(BIN_DIR)/libtango.a
+LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 	  -lomniORB4 -lomniDynamic4 -lCOS4 -lomnithread -lpthread -ldl
 endif
 
@@ -150,6 +131,9 @@ endif
 all: asyn_cmd asyn_attr asyn_attr_multi asyn_write_attr asyn_write_attr_multi \
      asyn_cb asyn_cb2 asyn_cb_cmd asyn_attr_cb asyn_write_cb asyn_thread \
      auto_asyn_cmd
+#all: asyn_cmd asyn_attr asyn_write_attr  \
+#     asyn_cb asyn_cb2 asyn_cb_cmd asyn_attr_cb  asyn_thread \
+#     auto_asyn_cmd
      
 asyn_cmd:	asyn_cmd.o
 	$(CC) asyn_cmd.o -o $(BIN_DIR)/asyn_cmd $(LFLAGS)

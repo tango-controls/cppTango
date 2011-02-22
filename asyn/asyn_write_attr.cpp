@@ -32,16 +32,20 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
 	try
 	{
+	
+// Change timeout (with a useless name as a workaround for ORBacus bug)
+
+//		device->set_timeout_millis(6000);
 				
 // Write one attribute
 
@@ -50,7 +54,7 @@ int main(int argc, char **argv)
 		DeviceAttribute send;
 		
 		send.set_name("attr_asyn_write");
-		DevLong lg = 222;
+		long lg = 222;
 		send << lg;
 		
 		id = device->write_attribute_asynch(send);
@@ -79,45 +83,6 @@ int main(int argc, char **argv)
 		assert ( nb_not_arrived >= 2);
 		
 		cout << "   Asynchronous write_attribute in polling mode --> OK" << endl;
-
-#ifndef COMPAT
-		
-// Write one attribute of the DevEncoded data type
-// The attribute used to test DevEncoded does not have any
-// "sleep" in its code -> Do not check the nb_not_arrived data
-		
-		DeviceAttribute send_enc;
-		
-		send_enc.set_name("encoded_attr");
-		vector<unsigned char> v_uc(2,2);
-		string str("Why not");
-		send_enc.insert(str,v_uc);
-		
-		id = device->write_attribute_asynch(send_enc);
-		
-// Check if attribute returned
-
-		finish = false;
-		nb_not_arrived = 0;
-		while (finish == false)
-		{
-			try
-			{
-				device->write_attribute_reply(id);
-				finish = true;
-			}
-			catch (AsynReplyNotArrived )
-			{
-				finish = false;
-				coutv << "Attribute not yet written" << endl;
-				nb_not_arrived++;
-			}
-			if (finish == false)
-				Tango_sleep(1);
-		}
-		
-		cout << "   Asynchronous write_attribute (DevEncoded data type) in polling mode --> OK" << endl;
-#endif
 
 // Write attribute to check polling with blocking with timeout
 		

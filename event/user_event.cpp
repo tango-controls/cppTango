@@ -30,21 +30,9 @@ public:
 	int delta_msec;
 };
 
-class EventEncodedCallBack : public Tango::CallBack
-{
-	void push_event(Tango::EventData*);
-	
-public:
-	int cb_executed;
-	int cb_err;
-	int old_sec,old_usec;
-	int delta_msec;
-};
-
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
 	vector<long> value;
-//	Tango::DevState sta;
         struct timeval now_timeval;
 
 #ifdef WIN32
@@ -80,9 +68,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		{
 
 			*(event_data->attr_value) >> value;
-//			*(event_data->attr_value) >> sta;
 			coutv << "CallBack vector value size : " << value.size() << endl;
-//			coutv << "CallBack vector value size : " << sta << endl;
 		}
 		else
 		{
@@ -99,42 +85,6 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 
 }
 
-void EventEncodedCallBack::push_event(Tango::EventData* event_data)
-{
-	struct timeval now_timeval;
-
-#ifdef WIN32
-	struct _timeb before_win;
-	_ftime(&before_win);
-	now_timeval.tv_sec = (unsigned long)before_win.time;
-	now_timeval.tv_usec = (long)before_win.millitm * 1000;
-#else
-	gettimeofday(&now_timeval,NULL);
-#endif
-	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-
-	cb_executed++;
-	try
-	{
-		coutv << "EventEncodedCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
-		if (!event_data->err)
-		{
-			coutv << "Valid data received" << endl;
-		}
-		else
-		{
-			coutv << "Error send to callback" << endl;
-			if (strcmp(event_data->errors[0].reason.in(),"aaa") == 0)
-				cb_err++;
-		}
-	}
-	catch (...)
-	{
-		coutv << "EventEncodedCallBack::push_event(): could not extract data !\n";
-	}
-
-}
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
@@ -157,13 +107,16 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+
+
+
 	
 	try
 	{
@@ -227,50 +180,7 @@ int main(int argc, char **argv)
 
 		device->unsubscribe_event(eve_id);
 		
-		cout << "   unsubscribe_event --> OK" << endl;
-
-#ifndef COMPAT		
-//
-// subscribe to a user event for an attribute of the DevEncoded data type
-//
-
-		att_name = "encoded_attr";
-		EventEncodedCallBack enc_cb;
-		enc_cb.cb_executed = 0;
-		enc_cb.cb_err = 0;
-		enc_cb.old_sec = cb.old_usec = 0;
-		
-		eve_id = device->subscribe_event(att_name,Tango::USER_EVENT,&enc_cb,filters);	
-
-//
-// The callback should have been executed once
-//
-
-		assert (enc_cb.cb_executed == 1);
-						
-		cout << "   subscribe_event (DevEncoded data type) --> OK" << endl;
-		
-//
-// Fire the event
-//
-
-		device->command_inout("IOPushDevEncodedEvent");
-		device->command_inout("IOPushDevEncodedEvent");
-		device->command_inout("IOPushDevEncodedEvent");
-		
-		Tango_sleep(1);
-		
-		assert (enc_cb.cb_executed == 4);
-		cout << "   user_event (DevEncoded data type) --> OK" << endl;
-				
-//
-// unsubscribe to the event
-//
-
-		device->unsubscribe_event(eve_id);
-		
-		cout << "   unsubscribe_event (DevEncoded data type) --> OK" << endl;
-#endif						
+		cout << "   unsubscribe_event --> OK" << endl;							
 	}
 	catch (Tango::DevFailed &e)
 	{

@@ -30,7 +30,7 @@ void MyCallBack::attr_written(AttrWrittenEvent *att)
 	coutv << "In attr_written method for device " << att->device->dev_name() << endl;
 	for (int i = 0;i < att->attr_names.size();i++)
 		coutv << "Attribute written = " << att->attr_names[i] << endl;
-	
+		
 	nb_attr = att->attr_names.size();
 	faulty_attr_nb = att->errors.get_faulty_attr_nb();
 	
@@ -96,11 +96,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -119,7 +119,7 @@ int main(int argc, char **argv)
 		DeviceAttribute send;
 		
 		send.set_name("attr_asyn_write");
-		DevLong lg = 222;
+		long lg = 222;
 		send << lg;
 				
 		device->write_attribute_asynch(send,cb);

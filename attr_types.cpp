@@ -26,11 +26,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 	int i;
@@ -40,10 +40,6 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceAttribute da;
-#ifndef COMPAT
-		assert (da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
-		
 		try
 		{	
 			da = device->read_attribute("Short_attr");
@@ -58,10 +54,6 @@ int main(int argc, char **argv)
 		da >> sh;
 		assert ( sh == 12 );
 		assert ( data_type == Tango::DEV_SHORT );
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SCALAR );
-#endif
 	}
 	cout << "   Scalar short --> OK" << endl;
 		
@@ -70,9 +62,6 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceAttribute da;
-#ifndef COMPAT
-		assert (da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
 		try
 		{	
 			da = device->read_attribute("Long_attr");
@@ -82,15 +71,11 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		DevLong lo;
+		long lo;
 		da >> lo;
 		int data_type = da.get_type();
 		assert ( lo == 1246 );
 		assert ( data_type == Tango::DEV_LONG );
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SCALAR );
-#endif
 	}
 	cout << "   Scalar long --> OK" << endl;
 
@@ -142,15 +127,15 @@ int main(int argc, char **argv)
 		try
 		{	
 			da = device->read_attribute("Float_attr");
-			float db;
-			da >> db;
-			assert ( db == 4.5 );
 		}
 		catch (CORBA::Exception &e)
 		{
 			Except::print_exception(e);
 			exit(-1);
 		}
+		float db;
+		da >> db;
+		assert ( db == 4.5 );
 	}
 	cout << "   Scalar float --> OK" << endl;
 
@@ -213,171 +198,8 @@ int main(int argc, char **argv)
 		assert ( db == 88 );
 	}
 	cout << "   Scalar unsigned char --> OK" << endl;
-
-// Test SCALAR long 64 bits
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("Long64_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevLong64 lo;
-		da >> lo;
-		int data_type = da.get_type();
-		
-		assert ( lo == 0x800000000LL );
-		assert ( data_type == Tango::DEV_LONG64 );
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SCALAR );
-#endif
-	}
-	cout << "   Scalar long 64 bits --> OK" << endl;
-	
-// Test SCALAR unsigned long 
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("ULong_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevULong lo;
-		da >> lo;
-		int data_type = da.get_type();
-		assert ( lo == 0xC0000000L );
-		assert ( data_type == Tango::DEV_ULONG );
-	}
-	cout << "   Scalar unsigned long --> OK" << endl;
-	
-// Test SCALAR unsigned long 64 bits
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("ULong64_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevULong64 lo;
-		da >> lo;
-		int data_type = da.get_type();
-		assert ( lo == 0xC000000000000000LL );
-		assert ( data_type == Tango::DEV_ULONG64 );
-	}
-	cout << "   Scalar unsigned long 64 bits --> OK" << endl;
-	
-// Test SCALAR state
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-#ifndef COMPAT
-		assert (da.get_data_format() == Tango::FMT_UNKNOWN);
-#endif
-		try
-		{	
-			da = device->read_attribute("State_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevState lo;
-		da >> lo;
-		int data_type = da.get_type();
-		
-		assert ( lo == Tango::FAULT );
-		assert ( data_type == Tango::DEV_STATE );
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SCALAR );
-#endif
-	}
-	cout << "   Scalar state --> OK" << endl;
-
-// Test SCALAR DevEncoded
-
-#ifndef COMPAT
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("Encoded_attr");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevEncoded lo;
-		da >> lo;
-		int data_type = da.get_type();
-		
-		assert ( ::strcmp(lo.encoded_format.in(),"Which format?") == 0 );
-		assert ( data_type == Tango::DEV_ENCODED );
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SCALAR );
-#endif
-		assert ( lo.encoded_data.length() == 4 );
-		assert ( lo.encoded_data[0] == 97 );
-		assert ( lo.encoded_data[1] == 98 );
-		assert ( lo.encoded_data[2] == 99 );
-		assert ( lo.encoded_data[3] == 100 );
-	}
-	cout << "   Scalar DevEncoded --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		EncodedAttribute att;
-		int width,height;
-		unsigned char *gray8;
-		
-		try
-		{	
-			da = device->read_attribute("Encoded_image");
-			att.decode_gray8( &da, &width, &height, &gray8 );
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		
-		assert ( width == 256 );
-		assert ( height == 256 );
-		// Check a pixel (margin of 4 levels for jpeg loss)
-		assert ( gray8[128+128*256] >= 124 );
-		assert ( gray8[128+128*256] <= 132 );
-		delete gray8;
-		
-	}
-	cout << "   Scalar DevEncoded (JPEG) --> OK" << endl;
-#endif
 					
-// Thirteen in one go
+// Eight in one go
 
 	for (i = 0;i < loop;i++)
 	{
@@ -390,16 +212,7 @@ int main(int argc, char **argv)
 		names.push_back("Boolean_attr");
 		names.push_back("UShort_attr");
 		names.push_back("UChar_attr");
-		names.push_back("Long64_attr_rw");
-		names.push_back("ULong_attr_rw");
-		names.push_back("ULong64_attr_rw");
-		names.push_back("State_attr_rw");
-#ifndef COMPAT
-		names.push_back("Encoded_attr");
-
-		DevEncoded enc;
-#endif
-						
+				
 		vector<DeviceAttribute> *received;
 				
 		try
@@ -412,17 +225,13 @@ int main(int argc, char **argv)
 			exit(-1);
 		}
 		string str;
-		DevLong lo;
+		long lo;
 		short sh;
 		double db;
 		float fl;
 		bool bo;
 		unsigned short ush;
 		unsigned char uch;
-		DevLong64 lo64;
-		DevULong ulo;
-		DevULong64 ulo64;
-		DevState sta;
 		
 		(*received)[0] >> sh;
 		assert ( sh == 12 );
@@ -440,29 +249,11 @@ int main(int argc, char **argv)
 		assert ( ush == 111 );		
 		(*received)[7] >> uch;
 		assert ( uch == 88 );
-		(*received)[8] >> lo64;
-		assert ( lo64 == 0x800000000LL );
-		(*received)[9] >> ulo;
-		assert ( ulo == 0xC0000000L );
-		(*received)[10] >> ulo64;
-		assert ( ulo64 == 0xC000000000000000LL );
-		(*received)[11] >> sta;
-		assert ( sta == Tango::FAULT );
-#ifndef COMPAT
-		(*received)[12] >> enc;
-		assert ( enc.encoded_data.length() == 4 );
-		assert ( ::strcmp(enc.encoded_format.in(),"Which format?") == 0 );
-#endif
-						
+				
 		delete received;
 	}
 	
-	cout << "   Thirteen in one call --> OK" << endl;
-	
-//
-//---------------------------------------------------------------------------------------------
-//
-
+	cout << "   Eight in one call --> OK" << endl;
 	
 // Test SPECTRUM short
 
@@ -482,10 +273,6 @@ int main(int argc, char **argv)
 		bool ret = (da >> sh);
 		
 		assert (ret == true);
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SPECTRUM);
-#endif
 		assert ( sh[0] == 10 );
 		assert ( sh[1] == 20 );
 		assert ( sh[2] == 30 );
@@ -507,14 +294,10 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		vector<DevLong> lo;
+		vector<long> lo;
 		bool ret = (da >> lo);
 		
 		assert (ret == true);
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SPECTRUM);
-#endif
 		assert ( lo[0] == 0 );
 		assert ( lo[1] == 1 );
 		assert ( lo[2] == 2 );
@@ -613,10 +396,6 @@ int main(int argc, char **argv)
 		bool ret = (da >> sh);
 		
 		assert (ret == true);
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SPECTRUM );
-#endif
 		assert ( sh[0] == true );
 		assert ( sh[1] == true );
 		assert ( sh[2] == false );
@@ -674,110 +453,6 @@ int main(int argc, char **argv)
 		assert ( sh[5] == 12 );
 	}
 	cout << "   Spectrum unsigned char (C++ vector) --> OK" << endl;
-	
-// Test SPECTRUM long 64 bits
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("Long64_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		vector<DevLong64> lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( lo[0] == 1000 );
-		assert ( lo[1] == 10000 );
-		assert ( lo[2] == 100000 );
-		assert ( lo[3] == 0);
-	}
-	cout << "   Spectrum long 64 bits (C++ vector) --> OK" << endl;
-	
-// Test SPECTRUM unsigned long
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("ULong_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		vector<DevULong> lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( lo[0] == 2222 );
-		assert ( lo[1] == 22222 );
-		assert ( lo[2] == 222222 );
-		assert ( lo[3] == 0);
-	}
-	cout << "   Spectrum unsigned long (C++ vector) --> OK" << endl;
-	
-// Test SPECTRUM unsigned long 64 bits
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("ULong64_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		vector<DevULong64> lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( lo[0] == 8888 );
-		assert ( lo[1] == 88888 );
-		assert ( lo[2] == 888888 );
-		assert ( lo[3] == 0);
-	}
-	cout << "   Spectrum unsigned long 64 bits (C++ vector) --> OK" << endl;
-	
-// Test SPECTRUM state
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("State_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		vector<DevState> lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( lo[0] == Tango::ON );
-		assert ( lo[1] == Tango::OFF );
-		assert ( lo[2] == Tango::UNKNOWN );
-	}
-	cout << "   Spectrum state (C++ vector) --> OK" << endl;
-	
-//
-//-----------------------------------------------------------------------------------------
-//
-
 		
 // Test SPECTRUM short (DevVarShortArray)
 
@@ -978,168 +653,6 @@ int main(int argc, char **argv)
 	}
 	cout << "   Spectrum unsigned char (DevVarCharArray) --> OK" << endl;
 	
-// Test SPECTRUM long 64 bits
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("Long64_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevVarLong64Array *lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( (*lo)[0] == 1000 );
-		assert ( (*lo)[1] == 10000 );
-		assert ( (*lo)[2] == 100000 );
-		assert ( (*lo)[3] == 0 );
-		
-		delete lo;
-	}
-	cout << "   Spectrum long 64 bits (DevVarLong64Array) --> OK" << endl;
-	
-// Test SPECTRUM unsigned long
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("ULong_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevVarULongArray *lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( (*lo)[0] == 2222 );
-		assert ( (*lo)[1] == 22222 );
-		assert ( (*lo)[2] == 222222 );
-		assert ( (*lo)[3] == 0 );
-		
-		delete lo;
-	}
-	cout << "   Spectrum unsigned long (DevVarULongArray) --> OK" << endl;
-	
-// Test SPECTRUM unsigned long 64 bits
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("ULong64_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevVarULong64Array *lo;
-		bool ret = (da >> lo);
-		
-		assert (ret == true);
-		assert ( (*lo)[0] == 8888 );
-		assert ( (*lo)[1] == 88888 );
-		assert ( (*lo)[2] == 888888 );
-		assert ( (*lo)[3] == 0 );
-		
-		delete lo;
-	}
-	cout << "   Spectrum unsigned long 64 bits (DevVarULong64Array) --> OK" << endl;
-	
-// Test SPECTRUM state
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("State_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevVarStateArray *lo;	
-		bool ret = (da >> lo);
-		assert (ret == true);
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::SPECTRUM );
-#endif
-		assert ( (*lo)[0] == Tango::ON );
-		assert ( (*lo)[1] == Tango::OFF );
-		assert ( (*lo)[2] == Tango::UNKNOWN );
-		
-		delete lo;
-	}
-	cout << "   Spectrum state (DevVarStateArray) --> OK" << endl;
-	
-// Test IMAGE short
-
-	for (i = 0;i < loop;i++)
-	{
-		DeviceAttribute da;
-		try
-		{	
-			da = device->read_attribute("Short_ima_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevVarShortArray *lo;	
-		bool ret = (da >> lo);
-
-		assert (ret == true);
-#ifndef COMPAT
-		AttrDataFormat data_format = da.get_data_format();
-		assert ( data_format == Tango::IMAGE );
-#endif
-		
-		delete lo;
-	}
-	cout << "   Image short (DevVarShortArray) --> OK" << endl;
-
-// Test exception on attribute data format unknown
-
-	bool except = false;
-	DeviceAttribute db;
-#ifndef COMPAT	
-	db.set_exceptions(DeviceAttribute::unknown_format_flag);
-
-	try
-	{
-		AttrDataFormat df = db.get_data_format();
-	}
-	catch (Tango::DevFailed &e)
-	{
-		except = true;
-	}	
-	assert (except == true );
-
-	db.reset_exceptions(DeviceAttribute::unknown_format_flag);	
-
-	AttrDataFormat df = db.get_data_format();
-	assert ( df == Tango::FMT_UNKNOWN );
-	
-	cout << "   Exception/Error for unknown attribute data format --> OK" << endl;
-#endif
-			
 	delete device;
 	
 	return 0;

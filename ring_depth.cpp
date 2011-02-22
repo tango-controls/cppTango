@@ -29,11 +29,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	cout << '\n' << "new DeviceProxy(" << device->name() << ") returned" << '\n' << endl;
 
@@ -83,8 +83,8 @@ int main(int argc, char **argv)
 
 // Start polling 
 
-		device->poll_command("State",300);
-		device->poll_attribute("Double_attr",300);
+		device->poll_command("State",100);
+		device->poll_attribute("Double_attr",100);
 		
 		Tango_sleep(2);
 		
@@ -99,20 +99,9 @@ int main(int argc, char **argv)
 
 // Check polling status
 
-		assert (poll_sta->size() == 3);
+		assert (poll_sta->size() == 4);
 
-		int i;
-		int index;
-		for (i = 0;i < poll_sta->size();i++)
-		{
-			if ((*poll_sta)[i].find("State") != string::npos)
-			{
-				index = i;
-				break;
-			}
-		}
-
-		string poll_cmd = (*poll_sta)[index];
+		string poll_cmd = (*poll_sta)[0];
 		string::size_type pos,end;
 		pos = poll_cmd.find("depth");
 		pos = pos + 8;
@@ -120,15 +109,7 @@ int main(int argc, char **argv)
 		string dep = poll_cmd.substr(pos, end - pos);
 		assert (dep == "5");
 
-		for (i = 0;i < poll_sta->size();i++)
-		{
-			if ((*poll_sta)[i].find("Double_attr") != string::npos)
-			{
-				index = i;
-				break;
-			}
-		}
-		string poll_attr = (*poll_sta)[index];
+		string poll_attr = (*poll_sta)[3];
 		pos = poll_attr.find("depth");
 		pos = pos + 8;
 		end = poll_attr.find('\n',pos);

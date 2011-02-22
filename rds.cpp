@@ -250,16 +250,9 @@ int main(int argc, char **argv)
 
 		cout << "   Write without setting RDS --> OK" << endl;
 									
-// Remove rds property (delta_t and delta_val) and restart device
+// Remove rds property (delta_t and delta_val)
 		
 		dba.delete_property(db);
-
-		DeviceData late_dd;
-		late_dd << device_name;
-#ifdef VALGRIND
-		adm_dev.set_timeout_millis(15000);
-#endif		
-		adm_dev.command_inout("DevRestart",late_dd);
 							
 	}
 	catch (Tango::DevFailed &e)

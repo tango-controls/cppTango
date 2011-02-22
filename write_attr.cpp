@@ -26,11 +26,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
-	{
-		Except::print_exception(e);
+        catch (CORBA::Exception &e)
+        {
+              	Except::print_exception(e);
 		exit(1);
-	}
+        }
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		DeviceAttribute din,dout;
-		DevLong in = 3;
+		long in = 3;
 		din << in;
 		din.set_name("Long_attr_w");
 		try
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		DevLong received;
+		long received;
 		dout >> received;
 		assert( received == in );
 	}
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 
 	for (i = 0;i < loop;i++)
 	{
-		DevLong in = 2;
+		long in = 2;
 		string att_name("Long_attr_w");
 		DeviceAttribute din(att_name,in);
 		DeviceAttribute dout;
@@ -129,7 +129,7 @@ int main(int argc, char **argv)
 			Except::print_exception(e);
 			exit(-1);
 		}
-		DevLong received;
+		long received;
 		dout >> received;
 		assert( received == in );
 	}

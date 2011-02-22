@@ -138,9 +138,10 @@ int main(int argc, char **argv)
 
 		DeviceInfo inf;
 		inf = device->info();
+		
 		assert( inf.dev_class == "DevTest" );
 		assert( inf.server_id == "devTest/api" );
-		assert( inf.doc_url == "Doc URL = http://www.tango-controls.org" );
+		assert( inf.doc_url == "http://www.esrf.fr" );
 		assert( inf.dev_type == "TestDevice");
 		
 		cout << "   Info --> OK" << endl;
@@ -162,13 +163,13 @@ int main(int argc, char **argv)
 
 		CommandInfoList *cmd_list;
 		cmd_list = device->command_list_query();
-		cout << "cmd list size = " << cmd_list->size() << endl;
+//		cout << "cmd list size = " << cmd_list->size() << endl;
 		
-//		assert (cmd_list->size() == 88 );
-//		assert ((*cmd_list)[0].cmd_name == "FileDb" );
-//		assert ((*cmd_list)[87].cmd_name == "Status");
+		assert (cmd_list->size() == 88 );
+		assert ((*cmd_list)[0].cmd_name == "FileDb" );
+		assert ((*cmd_list)[87].cmd_name == "Status");
 
-//		cout << "   Command_list_query --> OK" << endl;
+		cout << "   Command_list_query --> OK" << endl;
 		delete cmd_list;
 		
 // Test get_attribute_list
@@ -176,13 +177,13 @@ int main(int argc, char **argv)
 		vector<string> *att_list;
 		att_list = device->get_attribute_list();
 
-		cout << "att_list size = " << att_list->size() << endl;
-//		assert ( att_list->size() == 77 );
-//		assert ( (*att_list)[0] == "Short_attr");
-//		assert ( (*att_list)[1] == "Long_attr");
-//		assert ( (*att_list)[21] == "String_attr_w");
+//		cout << "att_list size = " << att_list->size() << endl;
+		assert ( att_list->size() == 77 );
+		assert ( (*att_list)[0] == "Short_attr");
+		assert ( (*att_list)[1] == "Long_attr");
+		assert ( (*att_list)[21] == "String_attr_w");
 		
-//		cout << "   Get attribute list --> OK" << endl;
+		cout << "   Get attribute list --> OK" << endl;
 		delete att_list;
 		
 // Test attribute query
@@ -222,24 +223,24 @@ int main(int argc, char **argv)
 
 // test attribute_list_query
 
-//		AttributeInfoList *attr_confs;
-//		attr_confs = device->attribute_list_query();
+		AttributeInfoList *attr_confs;
+		attr_confs = device->attribute_list_query();
 		
-//		assert ( attr_confs->size() == 77 );
-//		assert ( (*attr_confs)[0].name == "Short_attr");
-//		assert ( (*attr_confs)[0].data_format == SCALAR);
-//		assert ( (*attr_confs)[0].data_type == DEV_SHORT);
+		assert ( attr_confs->size() == 77 );
+		assert ( (*attr_confs)[0].name == "Short_attr");
+		assert ( (*attr_confs)[0].data_format == SCALAR);
+		assert ( (*attr_confs)[0].data_type == DEV_SHORT);
 
-//		assert ( (*attr_confs)[1].name == "Long_attr");
-//		assert ( (*attr_confs)[1].data_type == DEV_LONG);
-//		assert ( (*attr_confs)[1].data_format == SCALAR);
+		assert ( (*attr_confs)[1].name == "Long_attr");
+		assert ( (*attr_confs)[1].data_type == DEV_LONG);
+		assert ( (*attr_confs)[1].data_format == SCALAR);
 
-//		assert ( (*attr_confs)[21].name == "String_attr_w");				
-//		assert ( (*attr_confs)[21].data_type == DEV_STRING);
-//		assert ( (*attr_confs)[21].data_format == SCALAR);
+		assert ( (*attr_confs)[21].name == "String_attr_w");				
+		assert ( (*attr_confs)[21].data_type == DEV_STRING);
+		assert ( (*attr_confs)[21].data_format == SCALAR);
 		
-//		cout << "   Attribute list query --> OK "  << endl;
-//		delete attr_confs;
+		cout << "   Attribute list query --> OK "  << endl;
+		delete attr_confs;
 
 // Test set_attribute_config
 
@@ -273,12 +274,11 @@ int main(int argc, char **argv)
 		
 // Test device version
 
-#ifndef COMPAT
 		int vers = device->get_idl_version();
-		assert (vers == 4);
+		assert (vers == 3);
+//		assert (vers == 2);
 		
 		cout << "   Get IDL version --> OK" << endl;
-#endif
 		
 // Test source 
 
@@ -290,29 +290,7 @@ int main(int argc, char **argv)
 		
 		device->set_source(Tango::CACHE_DEV);
 		
-		cout << "   Source parameter --> OK" << endl;
-
-// Test get property list
-
-#ifndef COMPAT
-		vector<string> props;
-		device->get_property_list("*",props);
-
-		cout << "NB prop = " << props.size() << endl;
-		for (unsigned long l = 0;l < props.size();l++)
-			cout << "prop = " << props[l] << endl;
-		assert (props.size() == 8);
-		assert (props[0] == "cmd_min_poll_period");
-		assert (props[1] == "logging_level");
-		assert (props[2] == "logging_rft");
-		assert (props[3] == "logging_target");
-		assert (props[4] == "min_poll_period");
-		assert (props[5] == "poll_old_factor");
-		assert (props[6] == "tst_property");
-		assert (props[7] == "__SubDevices");
-
-		cout << "   Get property list --> OK" << endl;
-#endif
+		cout << "   Source parameter --> OK" << endl;	
 	}
 	catch (Tango::DevFailed &e)
 	{

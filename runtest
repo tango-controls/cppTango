@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/ksh
 
 #
 # remove different echo command behaviour on different OS
@@ -13,32 +13,59 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be solaris9, solaris9_CC, debian30, redhate5_64, ubuntu904 or python"
+	$echo "ds_system can be solaris7, solaris7_CC, solaris9, solaris9_CC, suse72, suse72_gcc32, debian30, suse90_64 or suse82"
 	exit 1
 fi
 
 #
 # test host
 #
-
+SOL_HOST=corvus
 SOL9_HOST=kidiboo
+SUSE_HOST=splash
+SUSE_GCC32_HOST=splash
+SUSE82_HOST=wow
 DEBIAN30_HOST=fumanchu
-REDHATE5_64_HOST=esrflinux2-1a
-PYTHON_HOST=controls01
-UBUNTU904_HOST=pcantares
+#HP_HOST=carina
+HP_HOST=libra
+NT_HOST=libra
+SUSE90_64_HOST=schnapps
 
 HOST=`hostname`
 SERV_NAME=devTest
 
 
 case $1 in
+solaris7_CC )
+	if [ $HOST != $SOL_HOST ]
+	then
+		$echo "For solaris, test should run on "$SOL_HOST
+		exit 1
+	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/solaris7_CC
+	DIR=solaris7_CC
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-solaris7_CC
+	;;
+#
+solaris7 )
+	if [ $HOST != $SOL_HOST ]
+	then
+		$echo "For solaris, test should run on "$SOL_HOST
+		exit 1
+	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/solaris7
+	DIR=solaris7
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-solaris7
+	;;
+#
 solaris9 )
 	if [ $HOST != $SOL9_HOST ]
 	then
 		$echo "For solaris, test should run on "$SOL9_HOST
 		exit 1
 	fi
-	DIR=solaris9_gcc
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/solaris9
+	DIR=solaris9
 	TEST_BASE=/segfs/tango/tools/test_system/ref/test-solaris9
 	;;
 #
@@ -48,18 +75,53 @@ solaris9_CC )
 		$echo "For solaris, test should run on "$SOL9_HOST
 		exit 1
 	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/solaris9_CC
 	DIR=solaris9_CC
 	TEST_BASE=/segfs/tango/tools/test_system/ref/test-solaris9_CC
 	;;
 #
-redhate5_64 )
-	if [ $HOST != $REDHATE5_64_HOST ]
+suse72 )
+	if [ $HOST != $SUSE_HOST ]
 	then
-		$echo "For redhate5_64, test should run on "$REDHATE5_64_HOST
+		$echo "For suse72, test should run on "$SUSE_HOST
 		exit 1
 	fi
-	DIR=redhate5_64
-	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-redhate5_64
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/suse72
+	DIR=suse72
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux
+	;;
+#
+suse72_gcc32 )
+	if [ $HOST != $SUSE_GCC32_HOST ]
+	then
+		$echo "For suse72_gcc32, test should run on "$SUSE_GCC32_HOST
+		exit 1
+	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/suse72_gcc32
+	DIR=suse72_gcc32
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-gcc32
+	;;
+#
+suse82 )
+	if [ $HOST != $SUSE82_HOST ]
+	then
+		$echo "For suse82, test should run on "$SUSE82_HOST
+		exit 1
+	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/suse82
+	DIR=suse82
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-suse82
+	;;
+#
+suse90_64 )
+	if [ $HOST != $SUSE90_64_HOST ]
+	then
+		$echo "For suse90_64, test should run on "$SUSE90_64_HOST
+		exit 1
+	fi
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/suse90_64
+	DIR=suse90_64
+	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-suse90_64
 	;;
 #
 debian30 )
@@ -73,24 +135,14 @@ debian30 )
 	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-debian30
 	;;
 #
-ubuntu904 )
-	if [ $HOST != $UBUNTU904_HOST ]
+nt )
+	if [ $HOST != $NT_HOST ]
 	then
-		$echo "For ubuntu 9.04, test should run on "$UBUTU904_HOST
+		$echo "For nt, test should run on "$NT_HOST
 		exit 1
 	fi
-	DIR=ubuntu904
-	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-ubuntu904
-	;;
-#
-python )
-	if [ $HOST != $PYTHON_HOST ]
-	then
-		$echo "For python, test should run on "$PYTHON_HOST
-		exit 1
-	fi
-	DIR=suse93
-	TEST_BASE=/home/etaurel/tg_old_test/test-linux
+	BASE_DIR=/segfs/tango/tools/test_system/ref/device/bin/hpux10.2
+	DIR=nt
 	;;
 #
 * )
@@ -127,11 +179,6 @@ $DIR/attr_types dev/test/10 10
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting attribute configuration changes"
-$DIR/att_conf
-ret=$?
-check_return_value $ret
-#
 $echo "\nTesting miscellaneous DeviceData object features"
 $DIR/misc_devdata
 ret=$?
@@ -142,7 +189,7 @@ $DIR/misc_devattr
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting writing attribute (with the eight data types) using DeviceAttribute"
+$echo "\nTesting writing attribute (with the four data types) using DeviceAttribute"
 $DIR/write_attr dev/test/10 10
 ret=$?
 check_return_value $ret
@@ -161,11 +208,6 @@ $echo "\nTesting command_history and attribute_history DeviceProxy methods"
 $TEST_BASE Poll.tst 1>/dev/null 2>&1
 sleep 7
 $DIR/read_hist dev/test/10
-ret=$?
-check_return_value $ret
-#
-$echo "\nTesting polling of new attribute data types"
-$DIR/poll_attr dev/test/10
 ret=$?
 check_return_value $ret
 #
@@ -208,39 +250,13 @@ $DIR/rds dev/test/10
 ret=$?
 check_return_value $ret
 #
-#$echo "\nTesting Device Server Cache"
-#$DIR/ds_cache -v
-#ret=$?
-#check_return_value $ret
 #
-$echo "\nTesting Write_Read attribute"
-$DIR/w_r_attr dev/test/10
-ret=$?
-check_return_value $ret
-#
-$echo "\nTesting device locking feature"
-PATH=$PATH:./$DIR
-$DIR/lock dev/test/10
-ret=$?
-check_return_value $ret
-#
-$echo "\nTesting the sub device diagnostics"
-PATH=$PATH:./$DIR
-$DIR/sub_dev dev/test/10
-ret=$?
-check_return_value $ret
-#
-$echo "\nTesting resetting attribute event conf. reset (need notifd...)"
-$DIR/ConfEventBugClient
-ret=$?
-check_return_value $ret
 #
 #	Now, test asynchronous features
 #
-cd /home/taurel/tango/cppapi_tst/asyn;/home/taurel/tango/cppapi_tst/asyn/runtest $1
+cd /segfs/tango/tools/cppapi_tst/client/asyn;/segfs/tango/tools/cppapi_tst/client/asyn/runtest $1
 #
 #
 #	Now, test events
 #
-cd /home/taurel/tango/cppapi_tst/event;/home/taurel/tango/cppapi_tst/event/runtest $1
-#cd /segfs/tango/tools/cppapi_tst/client/event;/segfs/tango/tools/cppapi_tst/client/event/runtest $1
+cd /segfs/tango/tools/cppapi_tst/client/event;/segfs/tango/tools/cppapi_tst/client/event/runtest $1

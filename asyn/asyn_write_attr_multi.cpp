@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 		vector<DeviceAttribute> send(2);
 		
 		send[0].set_name("attr_asyn_write");
-		DevLong lg = 222;
+		long lg = 222;
 		send[0] << lg;
 		
 		send[1].set_name("Double_attr_w");

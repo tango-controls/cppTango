@@ -170,10 +170,6 @@ int main(int argc, char **argv)
 		cb_change.cb_no_err = 0;
 		cb_change.old_sec = cb.old_usec = 0;
 		
-		// start the polling first!
-		device->poll_attribute(att_name,1000);
-		device->poll_attribute(att_name_change,1000);
-		
 		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);	
 		eve_id_change = device->subscribe_event(att_name_change,Tango::CHANGE_EVENT,&cb_change,filters);	
 				
@@ -344,14 +340,9 @@ int main(int argc, char **argv)
 //
 
 		device->unsubscribe_event(eve_id);
-		device->unsubscribe_event(eve_id_change);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
-//
-// Stop polling
-//
-		device->stop_poll_attribute(att_name);
-		device->stop_poll_attribute(att_name_change);							
+							
 	}
 	catch (Tango::DevFailed &e)
 	{

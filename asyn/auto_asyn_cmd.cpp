@@ -275,7 +275,7 @@ int main(int argc, char **argv)
 		DeviceAttribute send_w;
 		
 		send_w.set_name("attr_asyn_write");
-		DevLong lg = 222;
+		long lg = 222;
 		send_w << lg;
 
 		cb.cb_executed = 0;
@@ -345,14 +345,14 @@ int main(int argc, char **argv)
 		
 // Check if attribute returned
 
-		long sleep_loop = 3;
-		while (sleep_loop > 0)
+
+		while (cb.cb_executed < 2)
 		{
 			coutv << "Not ready" << endl;
+			nb_not_arrived++;
 			Tango_sleep(1);
-			sleep_loop--;
 		}
-
+		
 		assert( cb.cb_executed == 3 );
 		
 		cout << "   All in one go (callback mode) --> OK" << endl;

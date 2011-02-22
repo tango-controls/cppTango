@@ -2,86 +2,75 @@
 #		Makefile to generate a Tango 
 #
 
-##############################################################
+TANGO_BASE = /segfs/tango/cppapi
 
-#
-# Only these two variables TANGO_HOME and LIB_TANGO_DIR
-# should be modified to compile on several places
-# at the ESRF
-#
-
-################################################################
-
-#TANGO_HOME = /home/taurel/tango/cppapi
-TANGO_HOME = /segfs/tango/cppapi_7_2_1
-
-#LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
-LIB_TANGO_DIR = $(TANGO_HOME)/../tmp/install/$(BIN_DIR)/lib
-
-###################################################################
-
+ifdef _solaris
+CC = CC
+BIN_DIR = solaris7_CC
+BIN_DIR_SL = solaris7_CC_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris7_CC
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris7_CC
+endif
 
 ifdef _solaris9
-ifdef natif
-CC = /opt/SUNWspro/bin/CC
+CC = CC
 BIN_DIR = solaris9_CC
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/solaris9_CC
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/solaris9_CC
-else
-CC = c++
-BIN_DIR = solaris9_gcc
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/solaris9_gcc
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/solaris9_gcc
-endif
+BIN_DIR_SL = solaris9_CC_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris9_CC
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris9_CC
 endif
 
-ifdef _solaris10
-ifdef natif
-CC = /opt/SUNWspro/bin/CC
-BIN_DIR = solaris9
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/solaris10_CC
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/solaris10_CC
+ifdef _solaris7_gcc
+CC = c++
+BIN_DIR = solaris7
+BIN_DIR_SL = solaris7_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris7
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris7
 endif
+
+ifdef _solaris9_gcc
+CC = c++
+BIN_DIR = solaris9
+BIN_DIR_SL = solaris9_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris9
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris9
 endif
 
 ifdef linux
 CC = c++
+ifdef suse82
+BIN_DIR = suse82
+BIN_DIR_SL = suse82_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse82
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/suse82
+else
 ifdef debian30
 BIN_DIR = debian30
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/debian30
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/debian30
+BIN_DIR_SL = debian30_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/debian30
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/debian30
 else
-ifdef redhate4
-BIN_DIR = redhate4
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate4
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate4
+ifdef suse72_gcc32
+BIN_DIR = suse72_gcc32
+#BIN_DIR_SL = suse72_gcc32_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse72_gcc32
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/suse72_gcc32
 else
-ifdef redhate4_64
-BIN_DIR = redhate4_64
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate4_64
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate4_64
+ifdef redhat40
+BIN_DIR = redhat40
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/redhat40
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/redhat40
 else
-ifdef redhate5
-BIN_DIR = redhate5
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate5
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate5
+ifdef suse90_64
+BIN_DIR = suse90_64
+BIN_DIR_SL = suse90_64_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse90_64
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/suse90_64
 else
-ifdef redhate5_64
-BIN_DIR = redhate5_64
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/redhate5_64
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/redhate5_64
-else
-ifdef ubuntu904
-BIN_DIR = ubuntu904
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/ubuntu904
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/ubuntu904
-else
-ifdef ubuntu1004
-BIN_DIR = ubuntu1004
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/ubuntu1004
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/ubuntu1004
-endif
-endif
+BIN_DIR = suse72
+BIN_DIR_SL = suse72_sl
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse72
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.0/suse72
 endif
 endif
 endif
@@ -89,54 +78,75 @@ endif
 endif
 endif
 
+
+TANGO_SVC_HOME = /segfs/tango/include
 
 INCLUDE_DIRS = -I. \
-	      -I$(TANGO_HOME)/client \
-	      -I$(TANGO_HOME)/server \
+	      -I$(TANGO_BASE)/client \
+	      -I$(TANGO_BASE)/server \
 	      -I$(OMNI_BASE)/include \
 	      -I$(LOG4TANGO_BASE)/include
-#INCLUDE_DIRS = -I. \
-#	       -I/segfs/tango/release/ubuntu904/include \
-#	      -I$(OMNI_BASE)/include \
-#	      -I$(LOG4TANGO_BASE)/include
 
-LIB_DIRS = -L $(LIB_TANGO_DIR) \
+LIB_DIRS = -L $(TANGO_BASE)/server/$(BIN_DIR) \
 	  -L $(OMNI_BASE)/lib \
 	  -L $(LOG4TANGO_BASE)/lib
-#LIB_DIRS = -L /segfs/tango/release/ubuntu904/lib \
-#	  -L $(OMNI_BASE)/lib \
-#	  -L $(LOG4TANGO_BASE)/lib
+
+
+ifdef _solaris
+CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
+LIB_TANGO = $(TANGO_BASE)/server/solaris7_CC/libtango.a
+LFLAGS =  -g -mt $(LIB_DIRS) $(LIB_TANGO) -llog4tango \
+	 -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
+	 -lposix4 -lsocket -lnsl -lpthread
+endif
 
 ifdef _solaris9
-ifdef natif
 CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
+LIB_TANGO = $(TANGO_BASE)/server/solaris9_CC/libtango.a
 LFLAGS =  -g -mt $(LIB_DIRS) $(LIB_TANGO) -llog4tango \
 	  -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
 	  -lposix4 -lsocket -lnsl -lpthread
-else
+endif
+
+ifdef _solaris7_gcc
 CXXFLAGS = -g -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
+LIB_TANGO = $(TANGO_BASE)/server/solaris7/libtango.a
 LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 	-lomniORB4 -lomniDynamic4 -lomnithread \
 	-lCOS4 -lposix4 -lsocket -lnsl -lpthread
 endif
-endif
 
-ifdef _solaris10
-ifdef natif
-CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
-LFLAGS =  -g -mt $(LIB_DIRS) $(LIB_TANGO) -llog4tango \
-	  -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
-	  -lposix4 -lsocket -lnsl -lpthread
-endif
+ifdef _solaris9_gcc
+CXXFLAGS = -g -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
+LIB_TANGO = $(TANGO_BASE)/server/solaris9/libtango.a
+LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
+	-lomniORB4 -lomniDynamic4 -lomnithread \
+	-lCOS4 -lposix4 -lsocket -lnsl -lpthread
 endif
 
 ifdef linux
 CXXFLAGS = -g -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
-#CXXFLAGS = -g -DCOMPAT -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
+ifdef suse82
+LIB_TANGO = $(TANGO_BASE)/server/suse82/libtango.a
+else
+ifdef debian30
+LIB_TANGO = $(TANGO_BASE)/server/debian30/libtango.a
+else
+ifdef suse72_gcc32
+LIB_TANGO = $(TANGO_BASE)/server/suse72_gcc32/libtango.a
+else
+ifdef redhat40
+LIB_TANGO = $(TANGO_BASE)/server/redhat40/libtango.a
+else
+ifdef suse90_64
+LIB_TANGO = $(TANGO_BASE)/server/suse90_64/libtango.a
+else
+LIB_TANGO = $(TANGO_BASE)/server/suse72/libtango.a
+endif
+endif
+endif
+endif
+endif
 LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 	-lomniORB4 -lomniDynamic4 -lomnithread \
 	-lCOS4 -lpthread -ldl
@@ -150,11 +160,11 @@ endif
 				
 all: new_devproxy multiple_new reconnect cmd_inout read_attr cmd_types \
      attr_types misc_devdata misc_devattr misc_devproxy write_attr \
-     copy_devproxy obj_prop read_hist poll_met poll_except poll_attr print_data \
+     copy_devproxy obj_prop read_hist poll_met poll_except print_data \
      print_data_hist syntax size attr_proxy read_hist_ext write_attr_3 \
-     ring_depth attr_misc state_attr rds mem_att attr_manip prop_list ds_cache sub_dev \
-     locked_device lock restart_device unlock allowed_cmd w_r_attr  acc_right sub_dev \
-	 ConfEventBugClient 
+     ring_depth attr_misc state_attr rds mem_att 64 attr_manip
+# helper
+    
 
 	
 new_devproxy:	new_devproxy.o
@@ -201,18 +211,12 @@ obj_prop:	obj_prop.o
 
 read_hist:	read_hist.o
 	$(CC) read_hist.o -o $(BIN_DIR)/read_hist $(LFLAGS)
-	
-att_conf:	att_conf.o
-	$(CC) att_conf.o -o $(BIN_DIR)/att_conf $(LFLAGS)
 
 poll_met:	poll_met.o
 	$(CC) poll_met.o -o $(BIN_DIR)/poll_met $(LFLAGS)
 
 poll_except:	poll_except.o
 	$(CC) poll_except.o -o $(BIN_DIR)/poll_except $(LFLAGS)
-	
-poll_attr:	poll_attr.o
-	$(CC) poll_attr.o -o $(BIN_DIR)/poll_attr $(LFLAGS)
 
 print_data:	print_data.o
 	$(CC) print_data.o -o $(BIN_DIR)/print_data $(LFLAGS)
@@ -261,42 +265,6 @@ attr_manip:	attr_manip.o
 
 add_rem_attr:	add_rem_attr.o
 	$(CC) add_rem_attr.o -o $(BIN_DIR)/add_rem_attr $(LFLAGS)
-	
-add_rem_dev:	add_rem_dev.o
-	$(CC) add_rem_dev.o -o $(BIN_DIR)/add_rem_dev $(LFLAGS)
 									
-prop_list:	prop_list.o
-	$(CC) prop_list.o -o $(BIN_DIR)/prop_list $(LFLAGS)
-
-ds_cache:	ds_cache.o
-	$(CC) ds_cache.o -o $(BIN_DIR)/ds_cache $(LFLAGS)
-
-lock:	lock.o
-	$(CC) lock.o -o $(BIN_DIR)/lock $(LFLAGS)
-
-locked_device:	locked_device.o
-	$(CC) locked_device.o -o $(BIN_DIR)/locked_device $(LFLAGS)
-
-restart_device:	restart_device.o
-	$(CC) restart_device.o -o $(BIN_DIR)/restart_device $(LFLAGS)
-
-unlock:	unlock.o
-	$(CC) unlock.o -o $(BIN_DIR)/unlock $(LFLAGS)
-
-allowed_cmd:	allowed_cmd.o
-	$(CC) allowed_cmd.o -o $(BIN_DIR)/allowed_cmd $(LFLAGS)
-
-w_r_attr:	w_r_attr.o
-	$(CC) w_r_attr.o -o $(BIN_DIR)/w_r_attr $(LFLAGS)
-
-acc_right:	acc_right.o
-	$(CC) acc_right.o -o $(BIN_DIR)/acc_right $(LFLAGS)
-
-sub_dev:	sub_dev.o
-	$(CC) sub_dev.o -o $(BIN_DIR)/sub_dev $(LFLAGS)
-
-ConfEventBugClient:	ConfEventBugClient.o
-	$(CC) ConfEventBugClient.o -o $(BIN_DIR)/ConfEventBugClient $(LFLAGS)
-	
 clean:
 	rm -f *.o core

@@ -171,39 +171,12 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum short (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<short> vin,vout;
-		vin.push_back(11);
-		vin.push_back(24);
-		vin.push_back(46);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("Short_spec_attr_w");
-		din << vin;
-		
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("Short_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum short by vector (WRITE attribute) --> OK" << endl;
 
 // A long spectrum 
 
 	for (i = 0;i < loop;i++)
 	{
-		vector<DevLong> vin,vout;
+		vector<long> vin,vout;
 		vin.push_back(1000);
 		vin.push_back(2222);
 		
@@ -223,31 +196,6 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum long (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<DevLong> vin,vout;
-		vin.push_back(1111);
-		vin.push_back(3333);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("Long_spec_attr_w");
-		din << vin;
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("Long_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum long by vector (WRITE attribute) --> OK" << endl;
 
 // A double spectrum 
 
@@ -273,31 +221,6 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum double (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<double> vin,vout;
-		vin.push_back(5.66);
-		vin.push_back(8.99);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("Double_spec_attr_w");
-		din << vin;
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("Double_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum double by vector (WRITE attribute) --> OK" << endl;
 
 // A string spectrum 
 
@@ -323,32 +246,6 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum string (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<string> vin,vout;
-		vin.push_back("Hello girl");
-		vin.push_back("You look nice, don't you");
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("String_spec_attr_w");
-		din << vin;
-		
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("String_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum string by vector (WRITE attribute) --> OK" << endl;
 
 // A float spectrum 
 
@@ -401,33 +298,6 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum boolean (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<bool> vin,vout;
-		vin.push_back(true);
-		vin.push_back(true);
-		vin.push_back(false);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("Boolean_spec_attr_w");
-		din << vin;
-		
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("Boolean_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum boolean by vector (WRITE attribute) --> OK" << endl;
 
 // A unsigned short spectrum 
 
@@ -452,32 +322,7 @@ int main(int argc, char **argv)
 		dout >> vout;
 		assert( vout == vin );
 	}
-	cout << "   Write spectrum unsigned short (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<unsigned short> vin,vout;
-		vin.push_back(100);
-		vin.push_back(220);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("UShort_spec_attr_w");
-		din << vin;
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("UShort_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum unsigned short by vector (WRITE attribute) --> OK" << endl;		
+	cout << "   Write spectrum unsigned short (WRITE attribute) --> OK" << endl;		
 
 // A unsigned char spectrum 
 
@@ -505,150 +350,6 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum unsigned char (WRITE attribute) --> OK" << endl;
-	
-	for (i = 0;i < loop;i++)
-	{
-		vector<unsigned char> vin,vout;
-		vin.push_back(100);
-		vin.push_back(220);
-		vin.push_back(44);
-		vin.push_back(66);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din;
-		din.set_name("UChar_spec_attr_w");
-		din << vin;
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("UChar_spec_attr_w");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout == vin );
-	}
-	cout << "   Write spectrum unsigned char by vector (WRITE attribute) --> OK" << endl;
-	
-// A long 64 bits spectrum 
-
-	for (i = 0;i < loop;i++)
-	{
-		vector<DevLong64> vin,vout;
-		vin.push_back(10000);
-		vin.push_back(22222);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din("Long64_spec_attr_rw",vin);
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("Long64_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout[0] == 1000 );
-		assert( vout[1] == 10000 );
-		assert( vout[2] == 100000 );
-		assert( vout[3] == 10000 );
-		assert( vout[4] == 22222 );
-	}
-	cout << "   Write spectrum long 64 bits (READ/WRITE attribute) --> OK" << endl;
-	
-// A unsigned long spectrum 
-
-	for (i = 0;i < loop;i++)
-	{
-		vector<DevULong> vin,vout;
-		vin.push_back(111);
-		vin.push_back(7777);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din("ULong_spec_attr_rw",vin);
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("ULong_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout[0] == 2222 );
-		assert( vout[1] == 22222 );
-		assert( vout[2] == 222222 );
-		assert( vout[3] == 111 );
-		assert( vout[4] == 7777 );
-	}
-	cout << "   Write spectrum unsigned long (READ/WRITE attribute) --> OK" << endl;
-	
-// A unsigned long 64 bits spectrum 
-
-	for (i = 0;i < loop;i++)
-	{
-		vector<DevULong64> vin,vout;
-		vin.push_back(111111);
-		vin.push_back(777777);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din("ULong64_spec_attr_rw",vin);
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("ULong64_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout[0] == 8888 );
-		assert( vout[1] == 88888 );
-		assert( vout[2] == 888888 );
-		assert( vout[3] == 111111 );
-		assert( vout[4] == 777777 );
-	}
-	cout << "   Write spectrum unsigned long 64 bits (READ/WRITE attribute) --> OK" << endl;
-	
-// A state spectrum 
-
-	for (i = 0;i < loop;i++)
-	{
-		vector<DevState> vin,vout;
-		vin.push_back(Tango::STANDBY);
-		vin.push_back(Tango::MOVING);
-		
-		DeviceAttribute dout;
-		DeviceAttribute din("State_spec_attr_rw",vin);
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("State_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		dout >> vout;
-		assert( vout[0] == Tango::ON );
-		assert( vout[1] == Tango::OFF );
-		assert( vout[2] == Tango::STANDBY );
-		assert( vout[3] == Tango::MOVING );
-	}
-	cout << "   Write spectrum state (READ/WRITE attribute) --> OK" << endl;
-	
-
 	
 /******************************************************************************
 *
@@ -1057,49 +758,7 @@ int main(int argc, char **argv)
 		assert( vout == vin );
 	}
 	cout << "   Write image unsigned short (READ_WRITE attribute) --> OK" << endl;
-
-// The user code a set_write_value in its write_xxx method
-
-	{
-		DeviceAttribute dout;
-		DeviceAttribute din("ULong_attr_rw",(DevULong)12);
-		try
-		{	
-			device->write_attribute(din);
-			dout = device->read_attribute("ULong_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		
-		DevVarULongArray *ula;
-		dout >> ula;
 	
-		assert(ula->length() == 2);
-		assert((*ula)[1] == 12);
-		
-		DeviceAttribute din2("ULong_attr_rw",(DevULong)1200);
-		try
-		{	
-			device->write_attribute(din2);
-			dout = device->read_attribute("ULong_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		
-		dout >> ula;
-		
-		assert(ula->length() == 2);
-		assert((*ula)[1] == 1111);
-	}
-	cout << "   User code a set_write_value in its write_xxx method --> OK" << endl;
-	
-		
 	delete device;
 	return 0;	
 }

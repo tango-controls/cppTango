@@ -264,7 +264,7 @@ int main(int argc, char **argv)
 
 	try
 	{
-		sta = Tango::MOVING;
+		sta = Tango::UNKNOWN;
 		d = device->read_attribute(state_name);
 		d >> sta;
 		
