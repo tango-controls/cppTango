@@ -1,0 +1,503 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: tango_dll - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "W:\TEMP\4\RSP91.tmp" with contents
+[
+/nologo /MDd /W3 /Gm /GR /GX /ZI /Od /I "..\.." /I "..\..\..\client" /I "F:\tango\orb\omniorb4.0.1\win32_dll\include" /I "F:\tango\tools\log4tango3.1.4\win32_dll\include" /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_TANGO_LIB" /D "LOG4TANGO_HAS_DLL" /Fp"Debug/tango_dll.pch" /YX /Fo"Debug/" /Fd"Debug/" /FD /GZ /c 
+"F:\tango\cppapi\client\api_util.cpp"
+"F:\tango\cppapi\client\asynreq.cpp"
+"F:\tango\cppapi\server\attrdesc.cpp"
+"F:\tango\cppapi\server\attribute.cpp"
+"F:\tango\cppapi\server\attrmanip.cpp"
+"F:\tango\cppapi\server\basiccommand.cpp"
+"F:\tango\cppapi\server\blackbox.cpp"
+"F:\tango\cppapi\client\cbthread.cpp"
+"F:\tango\cppapi\server\class_factory.cpp"
+"F:\tango\cppapi\server\classattribute.cpp"
+"F:\tango\cppapi\server\command.cpp"
+"F:\tango\cppapi\server\coutappender.cpp"
+"F:\tango\cppapi\server\coutbuf.cpp"
+"F:\tango\cppapi\client\dbapi_base.cpp"
+"F:\tango\cppapi\client\dbapi_class.cpp"
+"F:\tango\cppapi\client\dbapi_datum.cpp"
+"F:\tango\cppapi\client\dbapi_device.cpp"
+"F:\tango\cppapi\client\dbapi_server.cpp"
+"F:\tango\cppapi\client\devapi_attr.cpp"
+"F:\tango\cppapi\client\devapi_base.cpp"
+"F:\tango\cppapi\client\devapi_data.cpp"
+"F:\tango\cppapi\client\devapi_datahist.cpp"
+"F:\tango\cppapi\server\device.cpp"
+"F:\tango\cppapi\server\device_2.cpp"
+"F:\tango\cppapi\server\devicelog.cpp"
+"F:\tango\cppapi\server\dserver.cpp"
+"F:\tango\cppapi\server\dserverclass.cpp"
+"F:\tango\cppapi\server\dserverlog.cpp"
+"F:\tango\cppapi\server\dserverpoll.cpp"
+"F:\tango\cppapi\server\dserversignal.cpp"
+"F:\tango\cppapi\server\except.cpp"
+"F:\tango\cppapi\server\logcmds.cpp"
+"F:\tango\cppapi\server\logging.cpp"
+"F:\tango\cppapi\server\logstream.cpp"
+"F:\tango\cppapi\server\multiattribute.cpp"
+"F:\tango\cppapi\server\ntservice.cpp"
+"F:\tango\cppapi\server\pollcmds.cpp"
+"F:\tango\cppapi\server\pollobj.cpp"
+"F:\tango\cppapi\server\pollring.cpp"
+"F:\tango\cppapi\server\pollthread.cpp"
+"F:\tango\cppapi\client\proxy_asyn.cpp"
+"F:\tango\cppapi\client\proxy_asyn_cb.cpp"
+"F:\tango\cppapi\server\seqvec.cpp"
+"F:\tango\cppapi\server\tangoappender.cpp"
+"F:\tango\cppapi\server\tangoDynSK.cpp"
+"F:\tango\cppapi\server\tangorollingfileappender.cpp"
+"F:\tango\cppapi\server\tangoSK.cpp"
+"F:\tango\cppapi\server\thsig.cpp"
+"F:\tango\cppapi\server\utils.cpp"
+"F:\tango\cppapi\server\w32win.cpp"
+]
+Creating command line "cl.exe @W:\TEMP\4\RSP91.tmp" 
+Creating temporary file "W:\TEMP\4\RSP92.bat" with contents
+[
+@echo off
+perl ..\..\makedef.pl tango.def tango301 debug\*.obj
+]
+Creating command line "W:\TEMP\4\RSP92.bat"
+Compiling...
+api_util.cpp
+asynreq.cpp
+attrdesc.cpp
+attribute.cpp
+attrmanip.cpp
+basiccommand.cpp
+blackbox.cpp
+cbthread.cpp
+class_factory.cpp
+classattribute.cpp
+command.cpp
+coutappender.cpp
+coutbuf.cpp
+dbapi_base.cpp
+dbapi_class.cpp
+dbapi_datum.cpp
+dbapi_device.cpp
+dbapi_server.cpp
+devapi_attr.cpp
+devapi_base.cpp
+devapi_data.cpp
+devapi_datahist.cpp
+device.cpp
+device_2.cpp
+devicelog.cpp
+dserver.cpp
+dserverclass.cpp
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::iterator' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Node' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<Tango::Connection *,std::pair<Tango::Connection * const,Tango::TgRequest>,std::multimap<Tango::Connection *,Tango::TgRequest,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<Tango::Connection *>,std::allocator<Tango::TgRequest> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<logdserverlog.cpp
+4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::iterator' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Node' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,std::pair<std::basic_string<char,std::char_traits<char>,std::allocator<char> > const ,log4tango::Appender *>,std::map<std::basic_string<char,std::char_traits<char>,std::allocator<char> >,log4tango::Appender *,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Kfn,std::less<std::basic_string<char,std::char_traits<char>,std::allocator<char> > >,std::allocator<log4tango::Appender *> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::const_iterator' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::iterator' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Node' : identifier was truncated to '255' characters in the debug information
+s:\program files\microsoft visual studio\vc98\include\algorithm(232) : warning C4786: 'std::_Tree<CORBA::Request *,std::pair<CORBA::Request * const,Tango::TgRequest>,std::map<CORBA::Request *,Tango::TgRequest,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Kfn,std::less<CORBA::Request *>,std::allocator<Tango::TgRequest> >::_Redbl' : identifier was truncated to '255' characters in the debug information
+dserverpoll.cpp
+dserversignal.cpp
+F:\tango\cppapi\server\dserversignal.cpp(134) : warning C4273: '_errno' : inconsistent dll linkage.  dllexport assumed.
+except.cpp
+logcmds.cpp
+logging.cpp
+logstream.cpp
+multiattribute.cpp
+ntservice.cpp
+pollcmds.cpp
+pollobj.cpp
+pollring.cpp
+pollthread.cpp
+proxy_asyn.cpp
+proxy_asyn_cb.cpp
+seqvec.cpp
+tangoappender.cpp
+tangoDynSK.cpp
+tangorollingfileappender.cpp
+tangoSK.cpp
+thsig.cpp
+utils.cpp
+w32win.cpp
+Creating temporary file "W:\TEMP\4\RSP93.tmp" with contents
+[
+log4tango_d.lib omniorb401_rtd.lib omnidynamic401_rtd.lib omnithread30_rtd.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /dll /incremental:yes /pdb:"Debug/tango301.pdb" /map:"Debug/tango301.map" /debug /machine:I386 /def:"tango.def" /out:"Debug/tango301.dll" /implib:"Debug/tango.lib" /pdbtype:sept /libpath:"F:\tango\orb\omniorb4.0.1\win32_dll\lib" /libpath:"F:\tango\tools\log4tango3.1.4\win32_dll\lib" 
+.\Debug\api_util.obj
+.\Debug\asynreq.obj
+.\Debug\attrdesc.obj
+.\Debug\attribute.obj
+.\Debug\attrmanip.obj
+.\Debug\basiccommand.obj
+.\Debug\blackbox.obj
+.\Debug\cbthread.obj
+.\Debug\class_factory.obj
+.\Debug\classattribute.obj
+.\Debug\command.obj
+.\Debug\coutappender.obj
+.\Debug\coutbuf.obj
+.\Debug\dbapi_base.obj
+.\Debug\dbapi_class.obj
+.\Debug\dbapi_datum.obj
+.\Debug\dbapi_device.obj
+.\Debug\dbapi_server.obj
+.\Debug\devapi_attr.obj
+.\Debug\devapi_base.obj
+.\Debug\devapi_data.obj
+.\Debug\devapi_datahist.obj
+.\Debug\device.obj
+.\Debug\device_2.obj
+.\Debug\devicelog.obj
+.\Debug\dserver.obj
+.\Debug\dserverclass.obj
+.\Debug\dserverlog.obj
+.\Debug\dserverpoll.obj
+.\Debug\dserversignal.obj
+.\Debug\except.obj
+.\Debug\logcmds.obj
+.\Debug\logging.obj
+.\Debug\logstream.obj
+.\Debug\multiattribute.obj
+.\Debug\ntservice.obj
+.\Debug\pollcmds.obj
+.\Debug\pollobj.obj
+.\Debug\pollring.obj
+.\Debug\pollthread.obj
+.\Debug\proxy_asyn.obj
+.\Debug\proxy_asyn_cb.obj
+.\Debug\seqvec.obj
+.\Debug\tangoappender.obj
+.\Debug\tangoDynSK.obj
+.\Debug\tangorollingfileappender.obj
+.\Debug\tangoSK.obj
+.\Debug\thsig.obj
+.\Debug\utils.obj
+.\Debug\w32win.obj
+]
+Creating command line "link.exe @W:\TEMP\4\RSP93.tmp"
+Build def file...
+<h3>Output Window</h3>
+Linking...
+Microsoft (R) Incremental Linker Version 6.00.8447
+Copyright (C) Microsoft Corp 1992-1998. All rights reserved.
+
+log4tango_d.lib omniorb401_rtd.lib omnidynamic401_rtd.lib omnithread30_rtd.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /dll /incremental:yes "/pdb:Debug/tango301.pdb" "/map:Debug/tango301.map" /debug /machine:I386 "/def:tango.def" "/out:Debug/tango301.dll" "/implib:Debug/tango.lib" /pdbtype:sept "/libpath:F:\tango\orb\omniorb4.0.1\win32_dll\lib" "/libpath:F:\tango\tools\log4tango3.1.4\win32_dll\lib" 
+.\Debug\api_util.obj 
+.\Debug\asynreq.obj 
+.\Debug\attrdesc.obj 
+.\Debug\attribute.obj 
+.\Debug\attrmanip.obj 
+.\Debug\basiccommand.obj 
+.\Debug\blackbox.obj 
+.\Debug\cbthread.obj 
+.\Debug\class_factory.obj 
+.\Debug\classattribute.obj 
+.\Debug\command.obj 
+.\Debug\coutappender.obj 
+.\Debug\coutbuf.obj 
+.\Debug\dbapi_base.obj 
+.\Debug\dbapi_class.obj 
+.\Debug\dbapi_datum.obj 
+.\Debug\dbapi_device.obj 
+.\Debug\dbapi_server.obj 
+.\Debug\devapi_attr.obj 
+.\Debug\devapi_base.obj 
+.\Debug\devapi_data.obj 
+.\Debug\devapi_datahist.obj 
+.\Debug\device.obj 
+.\Debug\device_2.obj 
+.\Debug\devicelog.obj 
+.\Debug\dserver.obj 
+.\Debug\dserverclass.obj 
+.\Debug\dserverlog.obj 
+.\Debug\dserverpoll.obj 
+.\Debug\dserversignal.obj 
+.\Debug\except.obj 
+.\Debug\logcmds.obj 
+.\Debug\logging.obj 
+.\Debug\logstream.obj 
+.\Debug\multiattribute.obj 
+.\Debug\ntservice.obj 
+.\Debug\pollcmds.obj 
+.\Debug\pollobj.obj 
+.\Debug\pollring.obj 
+.\Debug\pollthread.obj 
+.\Debug\proxy_asyn.obj 
+.\Debug\proxy_asyn_cb.obj 
+.\Debug\seqvec.obj 
+.\Debug\tangoappender.obj 
+.\Debug\tangoDynSK.obj 
+.\Debug\tangorollingfileappender.obj 
+.\Debug\tangoSK.obj 
+.\Debug\thsig.obj 
+.\Debug\utils.obj 
+.\Debug\w32win.obj 
+   Creating library Debug/tango.lib and object Debug/tango.exp
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[30])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BO@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[30])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BO@$$CBD@Z)
+attrdesc.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[30])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BO@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[30])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BO@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[30])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BO@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[30])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BO@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+attrdesc.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[36])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CE@$$CBD@Z)
+attrdesc.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[46])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CO@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[46])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CO@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[46])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CO@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[40])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CI@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[40])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CI@$$CBD@Z)
+attrdesc.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[40])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CI@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[40])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CI@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[40])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CI@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[40])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CI@$$CBD@Z)
+attribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[28])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BM@$$CBD@Z)
+basiccommand.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[28])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BM@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[28])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BM@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[28])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BM@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+attribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABJ@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+pollcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+devicelog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+dserversignal.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+attribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+dbapi_base.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z)
+attribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[44])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CM@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[44])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CM@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[44])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CM@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[44])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CM@$$CBD@Z)
+basiccommand.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[29])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BN@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[29])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BN@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[29])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BN@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[29])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BN@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[31])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BP@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[31])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BP@$$CBD@Z)
+basiccommand.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[31])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BP@$$CBD@Z)
+devicelog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[31])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BP@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[31])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BP@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[31])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BP@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+dserversignal.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+basiccommand.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[25])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BJ@$$CBD@Z)
+logcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+pollcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+classattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+dserversignal.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[41])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CJ@$$CBD@Z)
+classattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[50])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DC@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[50])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DC@$$CBD@Z)
+classattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[51])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DD@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[51])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DD@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[21])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BF@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[21])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BF@$$CBD@Z)
+dserversignal.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+logcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+pollcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+dbapi_base.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+devicelog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[34])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CC@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+devicelog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[32])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CA@$$CBD@Z)
+pollcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+thsig.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+devicelog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+logcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[33])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CB@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[24])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BI@$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[24])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BI@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[24])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BI@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[24])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BI@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+pollring.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[23])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BH@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[27])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BL@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[27])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BL@$$CBD@Z)
+pollcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[19])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BD@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[19])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BD@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[19])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BD@$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[19])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BD@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[19])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BD@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[19])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BD@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[17])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BB@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[17])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BB@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[17])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BB@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[18])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BC@$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[18])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BC@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[18])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BC@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[20])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BE@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[20])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BE@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[15])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0P@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[15])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0P@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[15])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0P@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[15])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0P@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[15])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0P@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[15])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0P@$$CBD@Z)
+command.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[11])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0L@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[11])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0L@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[11])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0L@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[11])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0L@$$CBD@Z)
+dbapi_base.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[7])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY06$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[7])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY06$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[7])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY06$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[7])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY06$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[9])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY08$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[9])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY08$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[9])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY08$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[42])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CK@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[42])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CK@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[43])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CL@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[43])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CL@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[43])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CL@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[45])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CN@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[45])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CN@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[45])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CN@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[47])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CP@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[47])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CP@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[47])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CP@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[52])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DE@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[52])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DE@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[52])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DE@$$CBD@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[52])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DE@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[49])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DB@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[49])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DB@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+ntservice.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const * const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABQBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[57])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DJ@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[48])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DA@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[38])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CG@$$CBD@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[38])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CG@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[38])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CG@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[38])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CG@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[38])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CG@$$CBD@Z)
+logcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[38])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CG@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[37])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CF@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[37])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CF@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[37])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CF@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[37])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CF@$$CBD@Z)
+logcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[37])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CF@$$CBD@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[39])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CH@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[39])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CH@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[39])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CH@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[39])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CH@$$CBD@Z)
+dserversignal.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[39])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CH@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[39])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CH@$$CBD@Z)
+device.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[53])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DF@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[53])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DF@$$CBD@Z)
+dserverclass.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[53])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DF@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[53])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DF@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[13])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0N@$$CBD@Z)
+ntservice.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[13])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0N@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[13])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0N@$$CBD@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(enum Tango::DevSource const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABW4DevSource@Tango@@@Z)
+device_2.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[63])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DP@$$CBD@Z)
+devicelog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[2])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY01$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[2])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY01$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[2])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY01$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(unsigned long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABK@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(unsigned long const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABK@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[8])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY07$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[8])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY07$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[8])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY07$$CBD@Z)
+dserver.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[16])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BA@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[16])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BA@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[16])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BA@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[16])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BA@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[35])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CD@$$CBD@Z)
+dserverlog.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[35])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CD@$$CBD@Z)
+dserversignal.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[35])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CD@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[35])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CD@$$CBD@Z)
+pollcmds.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[35])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0CD@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[26])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BK@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[26])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BK@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[26])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BK@$$CBD@Z)
+dserverpoll.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[14])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0O@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[14])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0O@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[14])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0O@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[14])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0O@$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[5])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY04$$CBD@Z)
+logging.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[3])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY02$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(unsigned char const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABE@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[4])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY03$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(short const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABF@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(float const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABM@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(double const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABN@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(unsigned short const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABG@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[22])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BG@$$CBD@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[22])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0BG@$$CBD@Z)
+logstream.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[10])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY09$$CBD@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[54])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DG@$$CBD@Z)
+multiattribute.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[56])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0DI@$$CBD@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(struct std::_Fillobj<char> const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABU?$_Fillobj@D@std@@@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(struct std::_Smanip<int> const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABU?$_Smanip@H@std@@@Z)
+pollthread.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(char const  (&)[12])" (__imp_??6LoggerStream@log4tango@@QAEAAV01@AAY0M@$$CBD@Z)
+thsig.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(int const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABH@Z)
+utils.obj : error LNK2001: unresolved external symbol "__declspec(dllimport) public: class log4tango::LoggerStream & __thiscall log4tango::LoggerStream::operator<<(unsigned int const &)" (__imp_??6LoggerStream@log4tango@@QAEAAV01@ABI@Z)
+Debug/tango301.dll : fatal error LNK1120: 69 unresolved externals
+Error executing link.exe.
+
+
+
+<h3>Results</h3>
+tango301.dll - 246 error(s), 15 warning(s)
+</pre>
+</body>
+</html>

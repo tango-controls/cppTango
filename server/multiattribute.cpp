@@ -14,203 +14,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.28  2010/09/17 08:21:12  taurel
-// - Add optimization in MultiAttribute::get_attr_ind_by_name()
-//
-// Revision 3.27  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.26  2010/08/25 11:41:27  taurel
-// - Fix some bugs preventing dynamic attributes management (in some cases)
-//
-// Revision 3.25  2010/07/16 10:51:53  taurel
-// - Now it's possible to fill the polling buffer externally for R/W attribute
-// specifying the attribute written part
-//
-// Revision 3.24  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.23.2.1  2010/06/16 07:21:07  taurel
-// - Fix bug in state command when attribute(s) has alarm level defined
-// but their attribute quality is INVALID
-//
-// Revision 3.23  2009/10/27 16:33:44  taurel
-// - Fix a bug in attribute mutex management in case the attribute
-// is_allowed() method returns false
-//
-// Revision 3.22  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.21  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.20  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.19  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.18  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.17  2008/06/10 07:52:15  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.16  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
-// Revision 3.15  2008/01/30 10:28:47  jensmeyer
-// Corrected bug in get_w_attr_by_name method.
-// The method returned without exception also for non writabe attributes.
-//
-// Revision 3.14  2007/10/26 11:36:35  taurel
-// - Clarify some exception messages
-//
-// Revision 3.13  2007/10/16 08:23:37  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.12  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.11  2007/03/06 08:19:03  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 3.10  2007/02/08 16:21:19  taurel
-// - Fix a bug in index management in the remove_attribute() method
-//
-// Revision 3.9  2006/11/09 16:29:44  taurel
-// - Fix bug in some index management of the remove_attribute() feature
-//
-// Revision 3.8  2005/06/29 08:31:18  taurel
-// - Last commit before release 5.2 ?
-//
-// Revision 3.7  2005/01/13 09:27:53  taurel
-// Fix some bugs :
-// - R/W attribute : W value not returned when read if set by set_write_value
-// - Core dumped when retrieving attribute polling history for Device_2Impl device which
-//   has stored an exception
-// - Remove device_name in lib default attribute label property
-// - Lib default value for label not store in db any more
-// - Size of the DaData used by the Database::get_device_attribute_property() and
-//   Database::get_class_attribute_property()
-// - R/W attribute: W part not returned when read for Device_2Impl device
-// Some changes :
-// - Improvement of the -file option error management (now throw exception in case of
-//   error)
-// - Reset "string" attribute property to the default value (lib or user) when new
-//   value is an empty string
-//
-// Revision 3.5.2.6  2004/11/26 13:53:21  taurel
-// - Fix bug if exception thrown during Util class construction
-// - Change attribute label and format default values
-//
-// Revision 3.5.2.5  2004/10/27 05:59:47  taurel
-// - Some minor changes to compile on all our supported platforms
-//
-// Revision 3.5.2.4  2004/10/22 11:26:32  taurel
-// Added warning alarm
-// Change attribute config. It now includes alarm and event parameters
-// Array attribute property now supported
-// subscribe_event throws exception for change event if they are not correctly configured
-// Change in the polling thread: The event heartbeat has its own work in the work list
-// Also add some event_unregister
-// Fix order in which classes are destructed
-// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
-// Change in the CORBA info call for the device type
-//
-// Revision 3.5.2.3  2004/09/27 09:10:06  taurel
-// - Changes to allow reading state and/or status as attributes
-//
-// Revision 3.5.2.2  2004/09/15 06:47:16  taurel
-// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
-// - It is also possible to read state and status as attributes
-// - Fix bug in Database::get_class_property() method (missing ends insertion)
-// - Fix bug in admin device DevRestart command (device name case problem)
-//
-// Revision 3.5.2.1  2004/08/19 07:44:59  taurel
-// - Replace server low level database access call by Database class method call
-// - Split device monitor in 3 : 1 to protect harware access, 1 to protect cache access and one mutex for device black box
-//
-// Revision 3.5  2004/07/07 08:40:11  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.4  2003/08/22 12:52:55  taurel
-// - For device implementing release 3 of IDL (derivating from device_3impl), change
-//   the way how attributes are read or written
-// - Fix small bug in vector iterator usage in case of "erase()" method called in
-//   a for loop
-//
-// Revision 3.3  2003/08/21 07:24:37  taurel
-// - End of the implementation of the new way to transfer data for read and
-//   write attributes (better use of exception)
-// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
-// - Added DeviceAttribute ctors from "const char *"
-// - Enable writing of spectrum and image attributes
-// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
-//   attribute writing
-// - Attribute date automatically set in case of attribute quality factor set to INVALID
-// - Change in the polling thread discarding element algo. to support case of polling
-//   several cmd/atts at the same polling period with cmd/attr having a long response time
-// - Take cmd/attr execution time into account in the "Data not updated since" polling
-//   status string
-// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
-//   on Windows device server
-// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
-//   to send trigger to the polling thread
-//
-// Revision 3.2.2.4  2004/03/09 16:36:37  taurel
-// - Added HP aCC port (thanks to Claudio from Elettra)
-// - Some last small bugs fixes
-//
-// Revision 3.2.2.3  2004/03/02 07:41:56  taurel
-// - Fix compiler warnings (gcc used with -Wall)
-// - Fix bug in DbDatum insertion operator fro vectors
-// - Now support "modulo" as periodic filter
-//
-// Revision 3.2.2.2  2004/02/18 15:06:18  taurel
-// Now the DevRestart command immediately restart device event (if any). Previously, it was possible to wait up to 200 secondes before they
-// restart
-//
-// Revision 3.2.2.1  2003/09/30 11:50:43  taurel
-// Add some changes foreseen for release 4.1 and already implemented on
-// the trunck into this release 4.0 branch
-//
 // Revision 3.2  2003/05/28 14:55:10  taurel
 // Add the include (conditionally) of the include files generated by autoconf
 //
@@ -241,6 +47,98 @@ static const char *RcsId = "$Id$\n$Name$";
 // - Some internal cleanups
 // - Change the way how TangoMonitor class is implemented. It's a recursive
 //   mutex
+//
+// Revision 2.10  2003/03/11 17:55:55  nleclercq
+// Switch from log4cpp to log4tango
+//
+// Revision 2.9  2003/01/09 12:03:16  taurel
+// - Ported to gcc 3.2
+// - Added ApiUtil::cleanup() and ApiUtil::~ApiUtil() methods
+// - Replace some ORB * by ORB_ptr
+// - Use CORBA::ORB::is_nil() instead of comparing to NULL
+//
+// Revision 2.8  2002/12/16 12:07:33  taurel
+// No change in code at all but only forgot th emost important line in
+// list of updates in the previous release :
+// - Change underlying ORB from ORBacus to omniORB
+//
+// Revision 2.7  2002/12/16 10:16:22  taurel
+// - New method get_device_list() in Util class
+// - Util::get_class_list takes DServer device into account
+// - Util::get_device_by_name() takes DServer device into account
+// - Util::get_device_list_by_class() takes DServer device into account
+// - New parameter to the attribute::set_value() method to enable CORBA to free
+// memory allocated for the attribute
+//
+// Revision 2.6  2002/10/17 07:43:07  taurel
+// Fix bug in history stored by the polling thread :
+// - We need one copy of the attribute data to build an history!!! It is true
+// also for command which return data created by the DeviceImpl::create_xxx
+// methods. Chnage in pollring.cpp/pollring.h/dserverpoll.cpp/pollobj.cpp
+// and pollobj.h
+//
+// Revision 2.5  2002/10/15 11:27:20  taurel
+// Fix bugs in device.cpp file :
+// - Protect the state and status CORBA attribute with the device monitor
+// Add the "TgLibVers" string as a #define in tango_config.h
+//
+// Revision 2.4  2002/08/12 15:06:54  taurel
+// Several big fixes and changes
+//   - Remove HP-UX specific code
+//   - Fix bug in polling alogorithm which cause the thread to enter an infinite
+//     loop (pollthread.cpp)
+//   - For bug for Win32 device when trying to set attribute config
+//     (attribute.cpp)
+//
+// Revision 2.3  2002/07/02 15:22:25  taurel
+// Miscellaneous small changes/bug fixes for Tango CPP release 2.1.0
+//     - classes reference documentation now generated using doxygen instead of doc++
+//     - A little file added to the library which summarizes version number.
+//       The RCS/CVS "ident" command will now tells you that release library x.y.z is composed
+//       by C++ client classes set release a.b and C++ server classes set release c.d
+//     - Fix incorrect field setting for DevFailed exception re-thrown from a CORBA exception
+//     - It's now not possible to poll the Init command
+//     - It's now possible to define a default class doc. per control system
+//       instance (using property)
+//     - The test done to check if attribute value has been set before it is
+//       returned to caller is done only if the attribute quality is set to VALID
+//     - The JTCInitialize object is now stored in the Util
+//     - Windows specific : The tango.h file now also include winsock.h
+//
+// Revision 2.2  2002/04/30 10:50:41  taurel
+// Don't check alarm on attribute if attribute quality factor is INVALID
+//
+// Revision 2.1  2002/04/29 12:24:04  taurel
+// Fix bug in attribute::set_value method and on the check against min and max value when writing attributes
+//
+// Revision 2.0  2002/04/09 14:45:10  taurel
+// See Tango WEB pages for list of changes
+//
+// Revision 1.6  2001/10/08 09:03:13  taurel
+// See tango WEB pages for list of changes
+//
+// Revision 1.5  2001/07/04 12:27:11  taurel
+// New methods re_throw_exception(). Read_attributes supports AllAttr mnemonic A new add_attribute()method in DeviceImpl class New way to define attribute properties New pattern to prevent full re-compile For multi-classes DS, it is now possible to use the Util::get_device_by_name() method in device constructor Adding << operator ovebloading Fix devie CORBA ref. number when device constructor sends an excep.
+//
+// Revision 1.4  2001/05/04 09:28:14  taurel
+// Fix bugs in DServer::restart() method and in Util::get_device_by_name() method
+//
+// Revision 1.3  2001/03/30 08:03:45  taurel
+// Fix bugs in attributes. For linux, add signal_handler in its own thread, change the way to kill server. For all system, change DevRestart philosophy.
+//
+// Revision 1.2  2001/03/09 08:20:16  taurel
+// Fix bug in the MultiClassAttribute::init_class_attribute() method. Also remove the DbErr_DeviceNotDefined define.
+//
+// Revision 1.1.1.1  2001/02/27 08:46:21  taurel
+// Imported sources
+//
+// Revision 1.3  2000/04/13 10:40:41  taurel
+// Added attribute support
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //-============================================================================
 
@@ -273,14 +171,22 @@ static OptAttrProp Tango_OptAttrProp[] = {
 	{"max_value",AlrmValueNotSpec},
 	{"min_alarm",AlrmValueNotSpec},
 	{"max_alarm",AlrmValueNotSpec},
-	{"writable_attr_name",AssocWritNotSpec},
-	{"min_warning",AlrmValueNotSpec},
-	{"max_warning",AlrmValueNotSpec},
-	{"delta_t","0"},
-	{"delta_val",AlrmValueNotSpec}
+	{"writable_attr_name",AssocWritNotSpec}
 };
 
+//
+// A classical function which will be used as unary predicate for the find_if
+// algo. It must be used with the bind2nd adapter to be transform as unary and
+// with the ptr_fun adapter to be transform as a function object
+//
 
+static bool WantedProp_f(AttrProperty a,const char *n)
+{
+	return (a.get_name() == n);
+}
+
+
+
 //+-------------------------------------------------------------------------
 //
 // method : 		MultiAttribute::MultiAttribute
@@ -318,19 +224,22 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 	if (nb_attr != 0)
 	{
 		Tango::Util *tg = Tango::Util::instance();
-		Tango::DbData db_list;
-		
+		vector<string> db_dev_attr_prop;
 		if (tg->_UseDb == true)
 		{
+			CORBA::Any send;
+			Tango::DevVarStringArray *send_list = new Tango::DevVarStringArray(nb_attr + 1);
+			send_list->length(nb_attr + 1);
+	
+			(*send_list)[0] = CORBA::string_dup(dev_name.c_str());
 			for (i = 0;i < nb_attr;i++)
-				db_list.push_back(DbDatum(tmp_attr_list[i]->get_name()));
-		
-			try
+				(*send_list)[i + 1] = CORBA::string_dup(tmp_attr_list[i]->get_name().c_str());
+			
+			send <<= send_list;
+			CORBA::Any_var received_prop = tg->get_database()->get_dbase()->command_inout("DbGetDeviceAttributeProperty",send);
+			const Tango::DevVarStringArray *db_attr_prop_list;
+			if ((received_prop >>= db_attr_prop_list) == false)
 			{
-				tg->get_database()->get_device_attribute_property(dev_name,db_list,tg->get_db_cache());
-			}
-			catch (Tango::DevFailed &)
-			{		
 				TangoSys_OMemStream o;
 				o << "Can't get device attribute properties for device " << dev_name << ends;
 					
@@ -338,12 +247,22 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 				                	o.str(),
 				                	(const char *)"MultiAttribute::MultiAttribute");
 			}
+		
+//
+// Create a vector of strings with the values returned from db
+//
+
+			long nb_db_data = db_attr_prop_list->length();
+			nb_db_data = nb_db_data - 2;
+			for (i = 0;i < nb_db_data;i++)
+				db_dev_attr_prop.push_back(string((*db_attr_prop_list)[i + 2]));
 		}
 						
 //
 // Build property list for each attribute
 //
 
+		TangoSys_MemStream o;
 		long ind = 0;
 	
 		for (i = 0;i < nb_attr;i++)
@@ -366,27 +285,20 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 
 			if (tg->_UseDb == true)
 			{
-				long nb_prop;
-				db_list[ind] >> nb_prop;
 				ind++;
+				long nb_prop;
+				o << db_dev_attr_prop[ind] << ends;
+				o >> nb_prop;
+				ind++;
+
+				o.seekp(0);
+				o.seekg(0);
 
 				for (long j = 0;j < nb_prop;j++)
 				{
-					if (db_list[ind].size() > 1)
-					{
-						string tmp(db_list[ind].value_string[0]);
-						long nb = db_list[ind].size();
-						for (int k = 1;k < nb;k++)
-						{
-							tmp = tmp + " ";
-							tmp = tmp + db_list[ind].value_string[k];
-						}
-						dev_prop.push_back(AttrProperty(db_list[ind].name,tmp));					
-					}
-					else
-						dev_prop.push_back(AttrProperty(db_list[ind].name,
-										db_list[ind].value_string[0]));
-					ind++;
+					dev_prop.push_back(AttrProperty(db_dev_attr_prop[ind],
+									db_dev_attr_prop[ind + 1]));
+					ind = ind + 2;
 				}
 			}
 
@@ -397,7 +309,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 			vector<AttrProperty> prop_list;
 			concat(dev_prop,class_prop,prop_list);
 			add_user_default(prop_list,def_user_prop);
-			add_default(prop_list,dev_name,attr.get_name());
+			add_default(prop_list);
 		
 //
 // Create an Attribute instance
@@ -405,9 +317,9 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 
 			if ((attr.get_writable() == Tango::WRITE) ||
 			    (attr.get_writable() == Tango::READ_WRITE))
-				attr_list.push_back(new WAttribute(prop_list,attr,dev_name,i));
+				attr_list.push_back(new WAttribute(prop_list,attr,dev_name));
 			else
-				attr_list.push_back(new Attribute(prop_list,attr,dev_name,i));
+				attr_list.push_back(new Attribute(prop_list,attr,dev_name));
 		
 //
 // If it is writable, add it to the writable attribute list
@@ -425,7 +337,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 // list
 //
 
-			if (attr_list[i]->is_alarmed().any() == true)
+			if (attr_list[i]->is_alarmed() == true)
 			{
 				if (w_type != Tango::WRITE)
 					alarm_attr_list.push_back(i);
@@ -434,7 +346,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 			cout4 << *(attr_list[i]) << endl; 
 		}
 	}
-
+	
 //
 // For each attribute, check if the writable_attr_name is set and in this
 // case, check if the associated attribute exists and is writable
@@ -462,7 +374,7 @@ MultiAttribute::~MultiAttribute()
 {
 	for(unsigned long i = 0;i < attr_list.size();i++)
 		delete attr_list[i];
-
+		
 	delete ext;
 }
 
@@ -500,7 +412,7 @@ void MultiAttribute::concat(vector<AttrProperty> &dev_prop,
 //
 
 	vector<AttrProperty> tmp_result = result;
-	unsigned long nb_class_check = class_prop.size();
+	long nb_class_check = class_prop.size();
 	for (i = 0;i < nb_class_check;i++)
 	{
 		vector<AttrProperty>::iterator pos;
@@ -523,23 +435,11 @@ void MultiAttribute::concat(vector<AttrProperty> &dev_prop,
 //			are not defined
 //
 // in :			prop_list : The already defined property vector
-//			dev_name : The device name
-//			att_name : The attribute name
 //
 //--------------------------------------------------------------------------
 
-void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
-				 string &dev_name,
-				 string &att_name)
+void MultiAttribute::add_default(vector<AttrProperty> &prop_list)
 {
-
-//
-// Overwrite the label attribute property in order to be set to the
-// attribute name
-//
-
-	Tango_OptAttrProp[0].default_value = att_name.c_str();
-
 	long nb_opt_prop = sizeof(Tango_OptAttrProp)/sizeof(OptAttrProp);
 
 //
@@ -617,7 +517,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 	    (attr_list[index]->get_writable() == Tango::READ_WRITE))
 	{
 		
-/*		if (attr_list[index]->get_data_format() != Tango::SCALAR)
+		if (attr_list[index]->get_data_format() != Tango::SCALAR)
 		{
 			TangoSys_OMemStream o;
 				
@@ -627,7 +527,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			Except::throw_exception((const char *)"API_AttrOptProp",
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
-		}*/
+		}
 			
 		unsigned long j;
 		string &assoc_name = attr_list[index]->get_assoc_name();
@@ -654,7 +554,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 // Also check if the associated write attribute is a scalar one
 //
 			
-/*		if (attr_list[writable_attr_list[j]]->get_data_format() != Tango::SCALAR)
+		if (attr_list[writable_attr_list[j]]->get_data_format() != Tango::SCALAR)
 		{
 			TangoSys_OMemStream o;
 				
@@ -665,7 +565,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			Except::throw_exception((const char *)"API_AttrOptProp",
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
-		}*/
+		}
 
 //
 // Check that the two associated attributes have the same data type
@@ -708,6 +608,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 				   long index)
 {
 	cout4 << "Entering MultiAttribute::add_attribute" << endl;
+	long i;
 	
 //
 // Retrieve device class attribute list
@@ -724,27 +625,40 @@ void MultiAttribute::add_attribute(string &dev_name,
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	Tango::DbData db_list;
-	
+	vector<string> db_dev_attr_prop;
 	if (tg->_UseDb == true)
 	{
-		db_list.push_back(DbDatum(tmp_attr_list[index]->get_name()));
-		
-		try
-		{
-			tg->get_database()->get_device_attribute_property(dev_name,db_list,tg->get_db_cache());
-		}
-		catch (Tango::DevFailed &e)
+		CORBA::Any send;
+		Tango::DevVarStringArray *send_list = new Tango::DevVarStringArray(2);
+		send_list->length(2);
+	
+		(*send_list)[0] = CORBA::string_dup(dev_name.c_str());
+		(*send_list)[1] = CORBA::string_dup(tmp_attr_list[index]->get_name().c_str());
+			
+		send <<= send_list;
+		CORBA::Any_var received_prop = tg->get_database()->get_dbase()->command_inout("DbGetDeviceAttributeProperty",send);
+		const Tango::DevVarStringArray *db_attr_prop_list;
+		if ((received_prop >>= db_attr_prop_list) == false)
 		{
 			TangoSys_OMemStream o;
 			o << "Can't get device attribute properties for device " << dev_name << ends;
 					
-			Except::re_throw_exception(e,(const char *)"API_DatabaseAccess",
+			Except::throw_exception((const char *)"API_DatabaseAccess",
 				       		 o.str(),
-				        	(const char *)"MultiAttribute::add_attribute");
+				        	(const char *)"MultiAttribute::MultiAttribute");
 		}
+	
+//
+// Create a vector of strings with the values returned from db
+//
+
+		long nb_db_data = db_attr_prop_list->length();
+		nb_db_data = nb_db_data - 2;
+		for (i = 0;i < nb_db_data;i++)
+			db_dev_attr_prop.push_back(string((*db_attr_prop_list)[i + 2]));
 	}
 
+	TangoSys_MemStream o;
 	long ind = 0;
 	
 //
@@ -764,27 +678,20 @@ void MultiAttribute::add_attribute(string &dev_name,
 
 	if (tg->_UseDb == true)
 	{
-		long nb_prop;
-		db_list[ind] >> nb_prop;
 		ind++;
+		long nb_prop;
+		o << db_dev_attr_prop[ind] << ends;
+		o >> nb_prop;
+		ind++;
+
+		o.seekp(0);
+		o.seekg(0);
 
 		for (long j = 0;j < nb_prop;j++)
 		{
-			if (db_list[ind].size() > 1)
-			{
-				string tmp(db_list[ind].value_string[0]);
-				long nb = db_list[ind].size();
-				for (int k = 1;k < nb;k++)
-				{
-					tmp = tmp + " ";
-					tmp = tmp + db_list[ind].value_string[k];
-				}
-				dev_prop.push_back(AttrProperty(db_list[ind].name,tmp));
-			}
-			else
-				dev_prop.push_back(AttrProperty(db_list[ind].name,
-								db_list[ind].value_string[0]));
-			ind++;
+			dev_prop.push_back(AttrProperty(db_dev_attr_prop[ind],
+							db_dev_attr_prop[ind + 1]));
+			ind = ind + 2;
 		}
 	}
 
@@ -795,50 +702,18 @@ void MultiAttribute::add_attribute(string &dev_name,
 	vector<AttrProperty> prop_list;
 	concat(dev_prop,class_prop,prop_list);
 	add_user_default(prop_list,def_user_prop);
-	add_default(prop_list,dev_name,attr.get_name());
+	add_default(prop_list);
 		
 //
-// Create an Attribute instance and insert it in the attribute list
-// If the device implement IDL 3 (with state and status as attributes),
-// add it at the end of the list but before state and status.
+// Create an Attribute instance
 //
 
-	bool idl_3 = false;
-	vector<Attribute *>::iterator ite;
-	if ((attr_list.back())->get_name() == "Status")
-	{
-		idl_3 = true;
-		ite = attr_list.end();
-		ite = ite - 2;
-	}
-		
 	if ((attr.get_writable() == Tango::WRITE) ||
 	    (attr.get_writable() == Tango::READ_WRITE))
-	{
-		if (idl_3 == false)
-		{
-			attr_list.push_back(new WAttribute(prop_list,attr,dev_name,index));
-			index = attr_list.size() - 1;
-		}
-		else
-		{
-			attr_list.insert(ite,new WAttribute(prop_list,attr,dev_name,index));
-			index = attr_list.size() - 3;
-		}
-	}
+		attr_list.push_back(new WAttribute(prop_list,attr,dev_name));
 	else
-	{
-		if (idl_3 == false)
-		{
-			attr_list.push_back(new Attribute(prop_list,attr,dev_name,index));
-			index = attr_list.size() - 1;
-		}
-		else
-		{
-			attr_list.insert(ite,new Attribute(prop_list,attr,dev_name,index));
-			index = attr_list.size() - 3;
-		}	
-	}
+		attr_list.push_back(new Attribute(prop_list,attr,dev_name));
+	index = attr_list.size() - 1;
 		
 //
 // If it is writable, add it to the writable attribute list
@@ -856,7 +731,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 // list
 //
 
-	if (attr_list[index]->is_alarmed().any() == true)
+	if (attr_list[index]->is_alarmed() == true)
 	{
 		if (w_type != Tango::WRITE)
 			alarm_attr_list.push_back(index);
@@ -871,124 +746,6 @@ void MultiAttribute::add_attribute(string &dev_name,
 	
 	cout4 << "Leaving MultiAttribute::add_attribute" << endl;
 }
-
-
-//+-------------------------------------------------------------------------
-//
-// method : 		MultiAttribute::remove_attribute
-// 
-// description : 	Remove one  attribute object from the
-//			device attribute list
-//
-// argument : in : 	- attr_name : The attribute name
-//					- update_idx : Flag set to true if the attributes object index
-//								   used to retrieve the corresponding Attr object
-//								   has to be updated (because one Attr object
-//								   has been removed)
-//
-//--------------------------------------------------------------------------
-
-void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
-{
-	cout4 << "Entering MultiAttribute::remove_attribute" << endl;
-
-//
-// Get attribute index in vector
-//
-
-	long att_index = get_attr_ind_by_name(attr_name.c_str());
-	
-//
-// Remove the attribute from the main vector
-//
-
-	Attribute *att = attr_list[att_index];
-
-	int old_idx = att->get_attr_idx();
-	DeviceImpl *the_dev = att->get_att_device();
-	string &dev_class_name = the_dev->get_device_class()->get_name();
-
-	delete att;
-	vector<Tango::Attribute *>::iterator pos = attr_list.begin();
-	advance(pos,att_index);
-	pos = attr_list.erase(pos);
-
-//
-// Update all the index for attribute following the one which has been deleted
-// This is a 2 steps process:
-// 1 - Update index in local device
-// 2 - Update indexes in remaining device(s) belonging to the same class
-//
-
-	if (update_idx == true)
-	{	
-		for (;pos != attr_list.end();++pos)
-			(*pos)->set_attr_idx((*pos)->get_attr_idx() - 1);
-
-		Tango::Util *tg = Tango::Util::instance();
-		vector<DeviceImpl *> &dev_list = tg->get_device_list_by_class(dev_class_name);
-		
-		vector<DeviceImpl *>::iterator dev_ite;
-		for (dev_ite = dev_list.begin();dev_ite != dev_list.end();++dev_ite)
-		{
-			if (*dev_ite == the_dev)
-				continue;
-
-			vector<Attribute *> &dev_att_list = (*dev_ite)->get_device_attr()->get_attribute_list();
-			for (unsigned int loop = 0;loop < dev_att_list.size();++loop)
-			{
-				int idx = dev_att_list[loop]->get_attr_idx();
-				if (idx > old_idx)
-					dev_att_list[loop]->set_attr_idx(idx - 1);							
-			}
-		}
-	}
-
-//
-// Clear the writable attribute index vector and rebuild it
-// This is necessary because this vector containd index in
-// the main attribute list which has been modified
-//
-
-	writable_attr_list.clear();
-	for (unsigned long i = 0;i < attr_list.size();i++)
-	{
-		Tango::AttrWriteType w_type = attr_list[i]->get_writable();
-		if ((w_type == Tango::WRITE) || (w_type == Tango::READ_WRITE))
-		{
-			writable_attr_list.push_back(i);
-		}
-	}
-	
-//
-// Do the same for the alarmed attribute for the same reason
-//
-
-	alarm_attr_list.clear();
-	for (unsigned long i = 0;i < attr_list.size();i++)
-	{
-		if (attr_list[i]->is_alarmed().any() == true)
-		{
-			Tango::AttrWriteType w_type = attr_list[i]->get_writable();
-			if (w_type != Tango::WRITE)
-				alarm_attr_list.push_back(i);
-		}
-	}
-			
-//
-// Check the associated attributes
-//
-			
-	string default_dev_name("a/b/c");
-	for (unsigned long i = 0;i < attr_list.size();i++)
-	{
-		check_associated(i,default_dev_name);
-	}
-	
-		
-	cout4 << "Leaving MultiAttribute::remove_attribute" << endl;
-}
-
 
 //+-------------------------------------------------------------------------
 //
@@ -1046,14 +803,12 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 	pos = find_if(attr_list.begin(),attr_list.end(),
 		      bind2nd(WantedAttr<Attribute *,const char *,bool>(),attr_name));
 		      
-	if ( (    pos == attr_list.end() ) ||
-		  ( ((*pos)->get_writable() != Tango::WRITE) &&
-		    ((*pos)->get_writable() != Tango::READ_WRITE) ) )
+	if (pos == attr_list.end())
 	{
 		cout3 << "MultiAttribute::get_w_attr_by_name throwing exception" << endl;
 		TangoSys_OMemStream o;
 		
-		o << attr_name << " writable attribute not found" << ends;
+		o << attr_name << " attribute not found" << ends;
 		Except::throw_exception((const char *)"API_AttrNotFound",
 				      o.str(),
 				      (const char *)"MultiAttribute::get_w_attr_by_name");
@@ -1083,13 +838,12 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
 	long i;
 
 	long nb_attr = attr_list.size();
-	string st(attr_name);
-	transform(st.begin(),st.end(),st.begin(),::tolower);
-
+	string st(attr_name);	
 	for (i = 0;i < nb_attr;i++)
 	{
 		if (attr_list[i]->get_name_size() != st.size())
 			continue;
+		transform(st.begin(),st.end(),st.begin(),::tolower);
 		if (attr_list[i]->get_name_lower() == st)
 			break;
 	}
@@ -1129,18 +883,15 @@ bool MultiAttribute::check_alarm()
 	ret = false;	
 	for (i = 0;i < alarm_attr_list.size();i++)
 	{
-		Tango::AttrQuality qua = (get_attr_by_ind(alarm_attr_list[i])).get_quality();
 		if (ret == false)
 		{
+			Tango::AttrQuality qua = (get_attr_by_ind(alarm_attr_list[i])).get_quality();
 			if (qua == Tango::ATTR_ALARM)
 				ret = true;
 		}
-		if (qua != Tango::ATTR_INVALID)
-		{
-			tmp_ret = check_alarm(alarm_attr_list[i]);
-			if (tmp_ret == true)
-				ret = true;
-		}
+		tmp_ret = check_alarm(alarm_attr_list[i]);
+		if (tmp_ret == true)
+			ret = true;
 	}
 	
 	return ret;
@@ -1190,7 +941,7 @@ void MultiAttribute::read_alarm(string &status)
 // Add a message for high level alarm
 //
 			
-		else if (att.is_max_alarm() == true)
+		if (att.is_max_alarm() == true)
 		{
 			string &attr_label = att.get_label();
 			string str;
@@ -1206,143 +957,8 @@ void MultiAttribute::read_alarm(string &status)
 			}				
 			status = status + str;
 		}
-		
-//
-// Add a message for rds alarm
-//
-
-		if (att.is_rds_alarm() == true)
-		{
-			string &attr_label = att.get_label();
-			string str;
-			if (attr_label == LabelNotSpec)
-			{
-				str = "\nAlarm : Read too Different than Set (RDS) for attribute ";
-				str = str + att.get_name();
-			}
-			else
-			{
-				str = "\nAlarm : Read too Different than Set (RDS) for ";
-				str = str + attr_label;
-			}				
-			status = status + str;
-		}
-	
-//
-// Add a message for min warning
-//
-
-		if (att.is_min_warning() == true)
-		{
-			string &attr_label = att.get_label();
-			string str;
-			if (attr_label == LabelNotSpec)
-			{
-				str = "\nWarning : Value too low for attribute ";
-				str = str + att.get_name();
-			}
-			else
-			{
-				str = "\nWarning : Value too low for ";
-				str = str + attr_label;
-			}				
-			status = status + str;
-		}
-	
-//
-// Add a message for max warning
-//
-
-		else if (att.is_max_warning() == true)
-		{
-			string &attr_label = att.get_label();
-			string str;
-			if (attr_label == LabelNotSpec)
-			{
-				str = "\nWarning : Value too high for attribute ";
-				str = str + att.get_name();
-			}
-			else
-			{
-				str = "\nWarning : Value too high for ";
-				str = str + attr_label;
-			}				
-			status = status + str;
-		}
-
 	}
 }
-
-//+-------------------------------------------------------------------------
-//
-// method : 		MultiAttribute::get_event_param
-// 
-// description : 	Return event info for each attribute with events
-//			subscribed
-//
-// in :			eve : One structure in this vector for each attribute
-//			with events subscribed
-//
-//--------------------------------------------------------------------------
-
-void MultiAttribute::get_event_param(vector<EventPar> &eve)
-{
-	unsigned int i;
-	
-	for (i = 0;i < attr_list.size();i++)
-	{
-		bool once_more = false;
-		bool ch = false;
-		bool ar = false;
-		bool qu = false;
-		bool pe = false;
-		bool us = false;
-		
-		if (attr_list[i]->change_event_subscribed() == true)
-		{
-			once_more = true;
-			ch = true;
-		}
-		
-		if (attr_list[i]->quality_event_subscribed() == true)
-		{
-			once_more = true;
-			qu = true;
-		}
-		
-		if (attr_list[i]->periodic_event_subscribed() == true)
-		{
-			once_more = true;
-			pe = true;
-		}
-		
-		if (attr_list[i]->archive_event_subscribed() == true)
-		{
-			once_more = true;
-			ar = true;
-		}
-		
-		if (attr_list[i]->user_event_subscribed() == true)
-		{
-			once_more = true;
-			us = true;
-		}
-		
-		if (once_more == true)
-		{
-			EventPar ep;
-			ep.attr_id = i;
-			ep.change = ch;
-			ep.quality = qu;
-			ep.archive = ar;
-			ep.periodic = pe;
-			ep.user = us;
-			
-			eve.push_back(ep);
-		}
-	}
-}
-
 
 //+-------------------------------------------------------------------------
 //
@@ -1361,88 +977,36 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 void MultiAttribute::add_write_value(Attribute &att)
 {
 	WAttribute &assoc_att = get_w_attr_by_ind(att.get_assoc_ind());
-
-	Tango::DevVarShortArray *sh_write_val;
-	Tango::DevVarLongArray *lg_write_val;
-	Tango::DevVarLong64Array *lg64_write_val;
-	Tango::DevVarDoubleArray *db_write_val;
-	Tango::DevVarStringArray *str_write_val;
-	Tango::DevVarFloatArray *fl_write_val;
-	Tango::DevVarBooleanArray *boo_write_val;
-	Tango::DevVarUShortArray *ush_write_val;
-	Tango::DevVarCharArray *uch_write_val;
-	Tango::DevVarULongArray *ulg_write_val;
-	Tango::DevVarULong64Array *ulg64_write_val;
-	Tango::DevVarStateArray *state_write_val;
-		
+	
 	switch (att.get_data_type())
 	{
 	case Tango::DEV_SHORT :
-		sh_write_val = assoc_att.get_last_written_sh();		
+		Tango::DevShort sh_write_val;
+		assoc_att.get_write_value(sh_write_val);
+		
 		att.add_write_value(sh_write_val);
 		break;
 		
 	case Tango::DEV_LONG :
-		lg_write_val = assoc_att.get_last_written_lg();
+		Tango::DevLong lg_write_val;
+		assoc_att.get_write_value(lg_write_val);
+		
 		att.add_write_value(lg_write_val);
 		break;
 		
-	case Tango::DEV_LONG64 :
-		lg64_write_val = assoc_att.get_last_written_lg64();
-		att.add_write_value(lg64_write_val);
-		break;
-		
 	case Tango::DEV_DOUBLE :
-		db_write_val = assoc_att.get_last_written_db();		
+		Tango::DevDouble db_write_val;
+		assoc_att.get_write_value(db_write_val);
+		
 		att.add_write_value(db_write_val);
 		break;
 		
 	case Tango::DEV_STRING :
-		str_write_val = assoc_att.get_last_written_str();
+		Tango::DevString str_write_val;
+		assoc_att.get_write_value(str_write_val);
+		
 		att.add_write_value(str_write_val);
 		break;
-		
-	case Tango::DEV_FLOAT :
-		fl_write_val = assoc_att.get_last_written_fl();		
-		att.add_write_value(fl_write_val);
-		break;
-		
-	case Tango::DEV_BOOLEAN :
-		boo_write_val = assoc_att.get_last_written_boo();
-		att.add_write_value(boo_write_val);
-		break;
-		
-	case Tango::DEV_USHORT :
-		ush_write_val = assoc_att.get_last_written_ush();		
-		att.add_write_value(ush_write_val);
-		break;
-		
-	case Tango::DEV_UCHAR :
-		uch_write_val = assoc_att.get_last_written_uch();		
-		att.add_write_value(uch_write_val);
-		break;
-		
-	case Tango::DEV_ULONG :
-		ulg_write_val = assoc_att.get_last_written_ulg();
-		att.add_write_value(ulg_write_val);
-		break;
-		
-	case Tango::DEV_ULONG64 :
-		ulg64_write_val = assoc_att.get_last_written_ulg64();
-		att.add_write_value(ulg64_write_val);
-		break;
-		
-	case Tango::DEV_STATE :
-		state_write_val = assoc_att.get_last_written_state();
-		att.add_write_value(state_write_val);
-		break;
-		
-	case Tango::DEV_ENCODED :
-		{
-			DevEncoded &enc_write_val = assoc_att.get_last_written_encoded();
-			att.add_write_value(enc_write_val);
-			break;
-		}
 	}
 }
 
@@ -1473,18 +1037,17 @@ bool MultiAttribute::is_att_quality_alarmed(bool all_att)
 			bool found = false;
 			for (j = 0;j < alarm_attr_list.size();j++)
 			{
-				if (alarm_attr_list[j] == (long)i)
+				if (alarm_attr_list[j] == i)
 				{
 					found = true;
 					break;
 				}
 			}
 			if (found == true)
-				continue;
+				break;
 		}
 		
-		if ((attr_list[i]->get_quality() == Tango::ATTR_ALARM) ||
-		    (attr_list[i]->get_quality() == Tango::ATTR_WARNING))
+		if (attr_list[i]->get_quality() == Tango::ATTR_ALARM)
 		{
 			ret = true;
 			break;
@@ -1492,71 +1055,6 @@ bool MultiAttribute::is_att_quality_alarmed(bool all_att)
 	}
 	
 	return ret;
-}
-
-
-//+-------------------------------------------------------------------------
-//
-// method : 		MultiAttribute::add_alarmed_quality_factor()
-// 
-// description : 	Add to the status string name of attributes with
-//			a quality factor set to alarm
-//
-//--------------------------------------------------------------------------
-
-void MultiAttribute::add_alarmed_quality_factor(string &status)
-{
-	unsigned long i,j;
-	bool ret;
-
-	ret = false;
-		
-	for (i = 0;i < attr_list.size();i++)
-	{
-		bool found = false;
-		for (j = 0;j < alarm_attr_list.size();j++)
-		{
-			if (alarm_attr_list[j] == (long)i)
-			{
-				found = true;
-				break;
-			}
-		}
-		if (found == true)
-			continue;
-		
-		if (attr_list[i]->get_quality() == Tango::ATTR_ALARM)
-		{
-			string &attr_label = attr_list[i]->get_label();
-			string str("\nAlarm : Quality factor set to ALARM for attribute ");
-
-			if (attr_label == LabelNotSpec)
-			{
-				str = str + attr_list[i]->get_name();
-			}
-			else
-			{
-				str = str + attr_label;
-			}				
-			status = status + str;
-		}
-		else if (attr_list[i]->get_quality() == Tango::ATTR_WARNING)
-		{
-			string &attr_label = attr_list[i]->get_label();
-			string str("\nWarning : Quality factor set to WARNING for attribute ");
-
-			if (attr_label == LabelNotSpec)
-			{
-				str = str + attr_list[i]->get_name();
-			}
-			else
-			{
-				str = str + attr_label;
-			}				
-			status = status + str;
-		}
-	}
-	
 }
 
 } // End of Tango namespace
