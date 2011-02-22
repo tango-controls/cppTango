@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- August 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,9 +30,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.30  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.29  2010/06/25 07:16:34  taurel
 // - Also protect the asynchronous DeviceProxy::read_attributes() methods
 // against multiple times the same attribute in att name list

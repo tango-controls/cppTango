@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,18 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 1.39  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
-// Revision 1.38  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 1.37  2010/09/24 14:06:15  taurel
-// - For Python DS, do not give full device ownership to the POA.
-// Otherwise, a python DS crashes at exit.
-//
 // Revision 1.36  2010/09/09 13:45:22  taurel
 // - Add year 2010 in Copyright notice
 //
@@ -873,10 +861,17 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 //
 // Remove the servant.
 // For C++ device, this will be automatically done by the POA when the last executing call
-// will be over even if the device is not exported
+// will be over.
 //
 
-	if (py_dev == true)
+	if (py_dev == false)
+	{
+		if (exported_device == false)
+		{
+			delete device_list[idx];
+		}
+	}		
+	else
 	{
 		Device_3Impl *dev_3 = static_cast<Device_3Impl *>(device_list[idx]);
 		dev_3->delete_dev();
@@ -1079,20 +1074,30 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 
 //
 // Call db server
-// We are still in the server starting phase. Therefore, the db timeout is still high (13 sec the 07/01/2011)
-// with 3 retries in case of timeout
 //
+
+		bool retry = true;
+		long db_retries = DB_START_PHASE_RETRIES;
 		
-		try
+		while (retry == true)
 		{
-			tg->get_database()->export_device(exp);
-		}
-		catch (Tango::CommunicationFailed &)
-		{
-			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
-			CORBA::release(orb_ptr);
-			CORBA::string_free(s);
-			throw;
+			try
+			{
+				tg->get_database()->export_device(exp);
+				retry = false;
+			}
+			catch (Tango::CommunicationFailed &)
+			{
+				cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
+				if (tg->is_svr_starting() == true)
+				{
+					db_retries--;
+					if (db_retries == 0)
+						throw;
+				}
+				else
+					throw;
+			}
 		}
 		
 		CORBA::release(orb_ptr);
