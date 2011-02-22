@@ -10,81 +10,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :    N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.10  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.9  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.8  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.7  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.6  2007/04/20 14:41:34  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.5  2007/04/16 14:57:45  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.4  2004/07/07 08:40:12  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.3  2003/08/21 07:24:37  taurel
-// - End of the implementation of the new way to transfer data for read and
-//   write attributes (better use of exception)
-// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
-// - Added DeviceAttribute ctors from "const char *"
-// - Enable writing of spectrum and image attributes
-// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
-//   attribute writing
-// - Attribute date automatically set in case of attribute quality factor set to INVALID
-// - Change in the polling thread discarding element algo. to support case of polling
-//   several cmd/atts at the same polling period with cmd/attr having a long response time
-// - Take cmd/attr execution time into account in the "Data not updated since" polling
-//   status string
-// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
-//   on Windows device server
-// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
-//   to send trigger to the polling thread
-//
-// Revision 3.2.2.6  2004/03/09 16:36:37  taurel
-// - Added HP aCC port (thanks to Claudio from Elettra)
-// - Some last small bugs fixes
-//
 // Revision 3.2.2.5  2004/03/02 07:41:57  taurel
 // - Fix compiler warnings (gcc used with -Wall)
 // - Fix bug in DbDatum insertion operator fro vectors
@@ -171,6 +99,10 @@ static const char *RcsId = "$Id$\n$Name$";
 // Added the new Tango logging stuff (Thanks Nicolas from Soleil)
 //
 //
+// copyleft :     European Synchrotron Radiation Facility
+//                BP 220, Grenoble 38043
+//                FRANCE
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -179,7 +111,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 #include <iomanip>
 #else
 #include <iomanip.h>
@@ -250,7 +182,7 @@ namespace Tango
         double ts_ms = 1000. * event.timestamp.get_seconds();
         ts_ms += event.timestamp.get_milliseconds();
         TangoSys_OMemStream ts_ms_str;
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
         ts_ms_str << std::fixed 
                   << std::noshowpoint 
                   << std::setprecision(0)  
@@ -274,8 +206,7 @@ namespace Tango
         if (ct) {
           TangoSys_OMemStream ctstr;
           ctstr << "@" << hex << event.thread_id << " [" << ct->id() << "]"<< ends;
-
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 	   string st = ctstr.str();
           (*dvsa)[5] = CORBA::string_dup(st.c_str());          
 #else
