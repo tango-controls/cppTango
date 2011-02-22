@@ -2,7 +2,7 @@
 //
 // ReadersWritersLock.h     Author    : Tristan Richardson (tjr)
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -22,6 +22,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
+//
+// This class implements a multiple-readers, single-writer lock.  It has
+// a slight alteration from a standard such lock.  Any thread which has already
+// called writerIn() may call writerIn() or readerIn() again multiple times.
+//
+
 
 #ifndef _ReadersWritersLock_h_
 #define _ReadersWritersLock_h_
@@ -31,17 +37,17 @@
 class ReadersWritersLock {
 
 public:
-  omni_mutex mut;
-  omni_condition cond;
+  omni_mutex m;
+  omni_condition c;
   int n;	// 0 means no-one active, > 0 means n readers, < 0 means writer
 		// (-n times).
   int writerId;
 
-  ReadersWritersLock(void) : cond(&mut), n(0), writerId(0), auto_self(NULL) {}
+  ReadersWritersLock(void) : c(&m), n(0), writerId(0), auto_self(NULL) {}
 
   void readerIn(void)
   {
-    mut.lock();
+    m.lock();
 	 
 	 // In the case of usage with another threading library, omni_thread::self() might
 	 // return a NULL pointer!
@@ -56,34 +62,34 @@ public:
 	 {
       // this thread already has lock as writer, simply decrement n
       n--;
-      mut.unlock();
+      m.unlock();
       return;
      }
      while (n < 0)
-       cond.wait();
+       c.wait();
      n++;
-     mut.unlock();
+     m.unlock();
   }
 
   void readerOut(void)
   {
-    mut.lock();
+    m.lock();
     if (n < 0)
 	{
       // this thread already had lock as writer, simply increment n
       n++;
-      mut.unlock();
+      m.unlock();
       return;
     }
     n--;
     if (n == 0)
-      cond.signal();
-    mut.unlock();
+      c.signal();
+    m.unlock();
   }
 
   void writerIn(void)
   {
-    mut.lock();
+    m.lock();
 	 
 	 // In the case of usage with another threading library, omni_thread::self() might
 	 // return a NULL pointer! 
@@ -98,11 +104,11 @@ public:
 	 {
       // this thread already has lock as writer, simply decrement n
       n--;
-      mut.unlock();
+      m.unlock();
       return;
      }
      while (n != 0)
-       cond.wait();
+       c.wait();
     
 	 n--;
 	 
@@ -114,12 +120,12 @@ public:
 	 	auto_self = new omni_thread::ensure_self();
 	 writerId  = omni_thread::self()->id();
 	 	 
-     mut.unlock();
+     m.unlock();
   }
 
   void writerOut(void)
   {
-    mut.lock();
+    m.lock();
     n++;
     if (n == 0)
 	{
@@ -130,9 +136,9 @@ public:
 			auto_self = NULL;
 		}
       
-		cond.broadcast();	// might as well wake up all readers
+		c.broadcast();	// might as well wake up all readers
 	}
-    mut.unlock();
+    m.unlock();
   }
   
 private:

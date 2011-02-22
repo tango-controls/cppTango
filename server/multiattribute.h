@@ -10,7 +10,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -33,9 +33,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.11  2010/08/25 11:41:27  taurel
 // - Fix some bugs preventing dynamic attributes management (in some cases)
 //

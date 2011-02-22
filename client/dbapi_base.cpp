@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- September 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -29,16 +29,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.57  2010/12/09 12:58:43  taurel
-// - Fix another controlled access related bug (in DbDeleteDeviceProperty)
-//
-// Revision 3.56  2010/12/09 12:03:06  taurel
-// - Fix bug in control access. The db device access right were not got from
-// db if it was not he first device on which the access was checked
-//
-// Revision 3.55  2010/10/04 12:16:04  taurel
-// - Fix some double free in case of communication problems with db server
-//
 // Revision 3.54  2010/09/09 13:43:38  taurel
 // - Add year 2010 in Copyright notice
 //
@@ -1299,8 +1289,6 @@ void Database::delete_device_property(string dev, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-
-	check_access_and_get();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -4161,6 +4149,7 @@ void Database::check_access()
 
 AccessControlType Database::check_access_control(string &devname)
 {
+
 //
 // For DB device
 //
@@ -4213,14 +4202,14 @@ AccessControlType Database::check_access_control(string &devname)
 //
 // Build the local AccessProxy instance
 //
-
+			
 			access_proxy = new AccessProxy(access_devname_str);
 		}
 
 //
 // Get access rights
 //
-
+		
 		if (access_proxy != NULL)
 			local_access = access_proxy->check_access_control(devname);
 		else
@@ -4244,7 +4233,7 @@ AccessControlType Database::check_access_control(string &devname)
 		access_except_errors = e.errors;
 		local_access = ACCESS_READ;
 	}
-
+	
 	return local_access;
 }
 
@@ -4263,6 +4252,7 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 	if (access_proxy == NULL)
 	{
 		AccessControlType acc = check_access_control(devname);
+		access_checked = true;
 		
 		if (access_proxy == NULL)
 		{
@@ -4280,20 +4270,27 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 		}
 	}
 
-	if (devname == db_device_name)
+	if ( access == ACCESS_WRITE )
 	{
-		string db_class("Database");
-		ret = access_proxy->is_command_allowed(db_class,cmd);
+		ret = true;
 	}
 	else
 	{
+		if (devname == db_device_name)
+		{
+			string db_class("Database");
+			ret = access_proxy->is_command_allowed(db_class,cmd);
+		}
+		else
+		{
 
-//
-// Get device class
-//
+		//
+		// Get device class
+		//
 
-		string dev_class = get_class_for_device(devname);
-		ret = access_proxy->is_command_allowed(dev_class,cmd);
+			string dev_class = get_class_for_device(devname);
+			ret = access_proxy->is_command_allowed(dev_class,cmd);
+		}
 	}
 	
 	return ret;

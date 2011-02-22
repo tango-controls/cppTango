@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,19 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.60  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 3.59  2010/12/08 15:42:14  taurel
-// - During device shutdown, do not wait for POA to effectively destroying
-// the device. Rely on the ORB
-//
-// Revision 3.58  2010/09/30 08:12:59  taurel
-// - Add a new way to write class_factory as a function instead as
-// DServer classs method
-//
 // Revision 3.57  2010/09/24 14:06:15  taurel
 // - For Python DS, do not give full device ownership to the POA.
 // Otherwise, a python DS crashes at exit.
@@ -569,7 +556,7 @@ void DServer::init_device()
 	}
 	catch (Tango::DevFailed)
 	{
-
+	
 //
 // If the class_factory method have not been successfully executed, erase
 // all classes already built. If the error occurs during the command or device
@@ -698,6 +685,23 @@ void DServer::delete_devices()
 //
 
 					vector<DeviceImpl *>::iterator it = devs.begin();
+					int ctr = 0;
+					while (*it != NULL)
+					{ 
+						cout4 << "Waiting for POA to destroy servant, loop number " << ctr << endl;
+#ifdef _TG_WINDOWS_
+						Sleep(20);
+#else
+						struct timespec wait_to_sleep,still_wait;
+						wait_to_sleep.tv_sec = 0;
+						wait_to_sleep.tv_nsec = 20000000;
+
+						nanosleep(&wait_to_sleep,&still_wait);
+#endif
+						ctr++;
+						if (ctr == 20)
+							break;
+					}
 					devs.erase(it);
 				}
 				devs.clear();
