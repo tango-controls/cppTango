@@ -1,0 +1,40 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: win32_ds - Win32 Release--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1DC.tmp" with contents
+[
+tango.lib log4tango.lib omniORB4.lib omniDynamic4.lib omnithread.lib COS4.lib comctl32.lib ws2_32.lib mswsock.lib mswsock.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /incremental:no /pdb:"Release/devTest.pdb" /machine:I386 /out:"Release/devTest.exe" /libpath:"C:\cppapi\server\winnt_lib\tango_static\release" /libpath:"F:\tango\ORB\omniORB4.0.5\win32\lib" /libpath:"F:\tango\tools\log4tango4.0.2\win32\lib" 
+.\Release\classfactory.obj
+.\Release\DevTest.obj
+.\Release\DevTestClass.obj
+.\Release\FileDb.obj
+.\Release\IOAddAttribute.obj
+.\Release\IOArray1.obj
+.\Release\IOArray2.obj
+.\Release\IOMisc.obj
+.\Release\IOSeqVec.obj
+.\Release\IOSetAttr.obj
+.\Release\IOStr1.obj
+.\Release\IOStr2.obj
+.\Release\IOStrArray.obj
+.\Release\IOStruct.obj
+.\Release\main.obj
+.\Release\SigThrow.obj
+.\Release\TypeCmds.obj
+]
+Creating command line "link.exe @C:\DOCUME~1\taurel.GEN\LOCALS~1\Temp\RSP1DC.tmp"
+<h3>Output Window</h3>
+Linking...
+
+
+
+<h3>Results</h3>
+devTest.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
