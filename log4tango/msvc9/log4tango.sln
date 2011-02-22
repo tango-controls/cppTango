@@ -1,0 +1,38 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "log4tango_static", "log4tango_static\log4tango_static.vcproj", "{BB01FB63-D101-4CE7-80DB-3AF353016DF9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "log4tango_dll", "log4tango_dll\log4tango_dll.vcproj", "{987913D3-D3EA-4282-AF9D-00A6C3EC756B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_static", "test_static\test_static.vcproj", "{DD879332-D3D9-4C64-9C0B-D2D778A1A71B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{BB01FB63-D101-4CE7-80DB-3AF353016DF9} = {BB01FB63-D101-4CE7-80DB-3AF353016DF9}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "testDLL", "test_dll\test_dll.vcproj", "{B999B948-35C2-4C87-A64A-40B54F91FDFC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{987913D3-D3EA-4282-AF9D-00A6C3EC756B} = {987913D3-D3EA-4282-AF9D-00A6C3EC756B}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BB01FB63-D101-4CE7-80DB-3AF353016DF9}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BB01FB63-D101-4CE7-80DB-3AF353016DF9}.Release|Win32.ActiveCfg = Release|Win32
+		{BB01FB63-D101-4CE7-80DB-3AF353016DF9}.Release|Win32.Build.0 = Release|Win32
+		{987913D3-D3EA-4282-AF9D-00A6C3EC756B}.Debug|Win32.ActiveCfg = Release|Win32
+		{987913D3-D3EA-4282-AF9D-00A6C3EC756B}.Debug|Win32.Build.0 = Release|Win32
+		{987913D3-D3EA-4282-AF9D-00A6C3EC756B}.Release|Win32.ActiveCfg = Release|Win32
+		{987913D3-D3EA-4282-AF9D-00A6C3EC756B}.Release|Win32.Build.0 = Release|Win32
+		{DD879332-D3D9-4C64-9C0B-D2D778A1A71B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DD879332-D3D9-4C64-9C0B-D2D778A1A71B}.Release|Win32.ActiveCfg = Release|Win32
+		{B999B948-35C2-4C87-A64A-40B54F91FDFC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B999B948-35C2-4C87-A64A-40B54F91FDFC}.Release|Win32.ActiveCfg = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

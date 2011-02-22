@@ -1,0 +1,10 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@/tango
+
+Name: log4tango
+Description: Logging library for the tango constrol system
+Version: @VERSION@
+Libs: -L${libdir} -llog4tango
+Cflags: -I${includedir}
