@@ -1,45 +1,10 @@
-///=============================================================================	
-//
-// file :		jpeg_decoder.cpp
-//
-// description :        Simple jpeg coding/decoding library
-//                      Main decoding functions
-//                      (does not support progressive decoding)
-//
-// project :		TANGO
-//
-// author(s) :		JL Pons
-//
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//                      European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
 // 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// File:        jpeg_encoder.cpp
+// Description: Main decoding functions
+//              (does not support progressive decoding)
+// Program:     Simple jpeg coding/decoding library
+// Author:      JL Pons 2009
 //
-// $Revision$
-//
-// $Log$
-// Revision 1.4  2009/11/02 08:36:17  taurel
-// - Fix warnings reported when compiling using the option -Wall
-//
-// Revision 1.3  2009/04/20 14:55:58  jlpons
-// Added GPL header, changed memory allocation to C++ fashion.
-//
-//=============================================================================
 
 #include <math.h>
 #include <stdio.h>
@@ -702,6 +667,7 @@ int jpeg_decode(int jpegSize,unsigned char *jpegData,
   errCode = jpeg_decoder_init(&decoder);ERROR(errCode);
 
   int nbMCU   = decoder.mcuNbCol * decoder.mcuNbRow;
+  int nbBlock = nbMCU * decoder.mcuNbBlock;
   int rWidth  = decoder.mcuNbRow * decoder.mcuWidth;
   int rHeight = decoder.mcuNbCol * decoder.mcuHeight;
   int mcuSize = decoder.mcuNbBlock*64;
@@ -776,16 +742,17 @@ int jpeg_decode(int jpegSize,unsigned char *jpegData,
   // Clip and Copy frame
   int rPitch;
   int rowSize;
+  int rowSizeL = decoder.width;
 
   *width = decoder.width;
   *height = decoder.height;
   *format = decoder.outFormat;
   if( decoder.scanType==JPG_SCAN_GRAYSCALE ) {
-    *frame = new unsigned char[decoder.width*decoder.height];
+    *frame = (unsigned char *)malloc(decoder.width*decoder.height);
     rPitch = rWidth;
     rowSize  = decoder.width;
   } else {
-    *frame = new unsigned char[decoder.width*decoder.height*4];
+    *frame = (unsigned char *)malloc(decoder.width*decoder.height*4);
     rPitch = rWidth * 4;
     rowSize  = decoder.width * 4;
   }

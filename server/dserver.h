@@ -11,7 +11,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,45 +34,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.22  2010/09/30 08:12:59  taurel
-// - Add a new way to write class_factory as a function instead as
-// DServer classs method
-//
-// Revision 3.21  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.20  2010/06/18 13:57:09  taurel
-// - Add a way (using properties) to define a minimum polling period
-//
-// Revision 3.19  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.18  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.17  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.16  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-// Revision 3.15.2.2  2009/06/22 06:58:09  taurel
-// - Fix bug introduced by previous bug fix. It makes the db server crashes.
-//
-// Revision 3.15.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 3.15  2009/02/03 15:15:08  jensmeyer
-// Added a QuerySubDevice command to read the list of opened sub device
-// connections.
-//
 // Revision 3.14  2009/01/21 12:49:04  taurel
 // - Change CopyRights for 2009
 //
@@ -282,12 +243,13 @@ namespace Tango
 //=============================================================================
 
 typedef Tango::DeviceClass *(*Cpp_creator_ptr)(const char *);
-typedef void (*ClassFactoryFuncPtr)(DServer *);
+
 
 class DServer: public Device_4Impl
 {
 public :
-	DServer(DeviceClass *,const char *,const char *,Tango::DevState,const char *);
+	DServer(DeviceClass *,const char *,const char *,
+		Tango::DevState,const char *);
 	~DServer();
 	
 	Tango::DevVarStringArray *query_class();
@@ -306,7 +268,6 @@ public :
 	void rem_obj_polling(const Tango::DevVarStringArray *,bool with_db_upd = true);
 	void stop_polling();
 	void start_polling();
-	void start_polling(PollingThreadInfo *);
 	void add_event_heartbeat();
 	void rem_event_heartbeat();
 	
@@ -331,7 +292,6 @@ public :
 	string &get_personal_name() {return instance_name;}
 	string &get_instance_name() {return instance_name;}
 	string &get_full_name() {return full_name;}
-	string &get_fqdn() {return fqdn;}
 	bool get_heartbeat_started() {return heartbeat_started;}
 	void set_heartbeat_started(bool val) {heartbeat_started = val;}
 		
@@ -341,31 +301,22 @@ public :
 	long get_poll_th_pool_size() {return polling_th_pool_size;}
 	bool get_opt_pool_usage() {return optimize_pool_usage;}
 	vector<string> get_poll_th_conf() {return polling_th_pool_conf;}
-
-	void check_lock_owner(DeviceImpl *,const char *,const char *);
-	void check_upd_authorized(DeviceImpl *,int,PollObjType,string &);
-
-	TANGO_IMP_EXP static void register_class_factory(ClassFactoryFuncPtr f_ptr) {class_factory_func_ptr = f_ptr;}
-	void _add_class(DeviceClass *dc) {this->add_class(dc);}
 	
 	friend class EventSupplier;
 
 protected :
-	string							process_name;
-	string							instance_name;
-	string							full_name;
-	string 							fqdn;
+	string			process_name;
+	string			instance_name;
+	string			full_name;
 	
-	vector<DeviceClass *>			class_list;
+	vector<DeviceClass *>	class_list;
 	
-	time_t							last_heartbeat;
-	bool							heartbeat_started;
+	time_t			last_heartbeat;
+	bool			heartbeat_started;
 	
-	long							polling_th_pool_size;
-	vector<string>					polling_th_pool_conf;
-	bool							optimize_pool_usage;
-
-	static ClassFactoryFuncPtr 		class_factory_func_ptr;
+	long			polling_th_pool_size;
+	vector<string>	polling_th_pool_conf;
+	bool			optimize_pool_usage;
 	
 private:
 #if ((defined _TG_WINDOWS_) && (defined TANGO_HAS_DLL) && !(defined _TANGO_LIB))

@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,73 +34,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.73  2011/01/10 13:13:32  taurel
-// - getnameinfo() on sun does not return FQDN......
-//
-// Revision 3.72  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 3.71  2010/12/09 07:56:10  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.70  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.69  2010/12/08 09:58:28  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.68  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.67  2010/09/08 08:20:44  taurel
-// = Change the way the ORB is initialised to better manage several network
-// interface host case
-//
-// Revision 3.66  2010/09/07 15:32:21  taurel
-// - Fix some re-connection problems with Windows
-// - Publish all endPoints in case of multiple network interface
-//
-// Revision 3.65  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.64  2010/01/20 08:00:47  taurel
-// - Fix compilation problem introduced by the previous merge
-// Revision 3.61.2.3  2010/05/18 08:27:23  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 3.63  2010/01/20 07:53:02  taurel
-// - Commit after merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.62  2009/12/18 14:52:37  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-// Revision 3.61.2.2  2009/12/18 14:49:02  taurel
-// - If the DS main thread is not created using omnithread, it is also
-// necessary to call omnithread::release_dummy() before the thread exit
-//
-// Revision 3.61.2.1  2009/12/18 14:07:34  taurel
-// - Add omni_thread call in case the main DS thread is not the process
-// main thread.
-//
-// Revision 3.61  2009/10/26 13:49:54  taurel
-// - Add an exception case in the Util::get_device_list_by_class() method
-//
-// Revision 3.60  2009/09/03 15:26:32  taurel
-// - Wrongly spell _TG_WINDOWS_ !!
-//
-// Revision 3.59  2009/06/17 08:44:45  taurel
-// - Unix servers are now listenning also on a UNIX domain socket for
-// looback communication
-//
-// Revision 3.58  2009/03/18 10:23:12  taurel
-// - Fix bug for Windows in GUI mode
-//
 // Revision 3.57  2009/03/17 08:10:42  taurel
 // - Remove the endPoint specification before the ORB_init() method call
 // - Still some Windows warnings fixes
@@ -208,6 +141,264 @@ static const char *RcsId = "$Id$\n$Name$";
 // - Add DB server cache in DS used during DS startup sequence
 // - Comment out the sleep time during DS startup sequence
 //
+// Revision 3.29  2007/05/17 07:59:07  taurel
+// - The polling is not configured via a separate thread any more. The polling thread add_obj_polling method has been modified to support a parameter telling to the polling thread when it has to polled the object.
+// Add device name in monitor print message
+// Add device_destroyer method in DeviceClass class
+//
+// Revision 3.28  2007/05/15 07:46:59  taurel
+// - The polling thread is not configured by a separate thread any more.
+// The Add_obj_polling command now support a delta_t to start the first polling
+//
+// Revision 3.27  2007/04/20 14:41:34  taurel
+// - Ported to Windows 64 bits x64 architecture
+//
+// Revision 3.26  2007/04/16 14:57:45  taurel
+// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
+// - Ported to omniORB4.1
+// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
+// - Added a new filterable field in the archive event
+//
+// Revision 3.25  2007/03/29 07:11:06  taurel
+// - Change some data types for 64 bits compatibility
+//
+// Revision 3.24  2007/03/12 15:16:57  taurel
+// - Change the way to return Tango lib release
+//
+// Revision 3.23  2007/03/06 08:19:03  taurel
+// - Added 64 bits data types for 64 bits computer...
+//
+// Revision 3.22  2007/02/16 10:40:57  taurel
+// - Implementing a new types of event on the Attribute configuration
+//
+// Revision 3.21  2007/01/19 15:45:53  taurel
+// - Added the Utils::get_tango_lib_release() method
+//
+// Revision 3.20  2006/10/06 06:46:53  jensmeyer
+// Corrected omnithread initialisation in server_init in the case of a windows service.
+//
+// Revision 3.19  2006/05/25 10:21:23  taurel
+// - Create the per-thread data for main thread in server_init() method instead of server_run(). It was the reason of a seg fault when DS aborted in its startup sequence due to device init_device() method throwing exception
+//
+// Revision 3.18  2006/05/18 09:31:17  taurel
+// - Oups a bug in C++ server introduced by the port of Python DS to windows.Now, it  is fixed.
+//
+// Revision 3.17  2006/05/18 08:51:56  taurel
+// - Miscellaneous changes due to Python device server ported to Windows
+// - Fix some bugs discovered by Windows VC8 using the test suite
+// - Update Windows resource file include path
+// - Fix some Windows VC8 warnings
+//
+// Revision 3.16  2006/02/20 08:16:25  taurel
+// - Add a new method in DeviceClass to delete a device at run-time
+//
+// Revision 3.15  2006/02/17 16:49:57  jensmeyer
+// Corrections when porting to VC7 under windows
+//
+// Revision 3.14  2006/01/20 08:38:39  taurel
+// - Added necessary changes to support Device server written in Python
+//
+// Revision 3.13  2005/08/09 15:47:34  jensmeyer
+// Changed the clean-up mechanism when shutting down
+// the ORB. Destroy ORB when returning from run().
+//
+// Revision 3.12  2005/06/29 08:31:19  taurel
+// - Last commit before release 5.2 ?
+//
+// Revision 3.11  2005/05/25 06:05:40  taurel
+// - Again some minors changes before 5.2
+//
+// Revision 3.10  2005/05/10 16:10:18  taurel
+// - Fix windows VC7 warnings
+//
+// Revision 3.9  2005/04/15 11:34:07  taurel
+// - Changes to support Tango on 64 bits computer
+// - Support for Linux 2.6 kernel with NPTL (Signal management)
+//
+// Revision 3.8  2005/03/14 09:49:29  taurel
+// - Fix some bugs in filedatabase (Change in the data transferred between client and
+//   server).
+// - Fix bug in event re-connection
+// - Add event support even for device server started with the -file command line option
+//
+// Revision 3.7  2005/01/13 08:30:36  taurel
+// - Merge trunk with Release_5_0 from brach Release_5_branch
+//
+// Revision 3.6.2.11  2004/12/06 14:39:30  taurel
+// - Polling starts in a separate thread
+// - For Windows : Polling thread cmd/attr measurement used PerformanceCounter
+// - Fix bug in pollext.h in methods to externally fill polling buffer
+//
+// Revision 3.6.2.10  2004/11/26 13:53:21  taurel
+// - Fix bug if exception thrown during Util class construction
+// - Change attribute label and format default values
+//
+// Revision 3.6.2.9  2004/11/10 13:00:55  taurel
+// - Some minor changes for the WIN32 port
+//
+// Revision 3.6.2.8  2004/11/09 09:57:49  taurel
+// - Fix one memory leak and some minor changes
+// - Force database file writing when server exit
+// - Some minor changes for the -file option for WIN32
+//
+// Revision 3.6.2.7  2004/10/27 05:59:47  taurel
+// - Some minor changes to compile on all our supported platforms
+//
+// Revision 3.6.2.6  2004/10/22 11:26:33  taurel
+// Added warning alarm
+// Change attribute config. It now includes alarm and event parameters
+// Array attribute property now supported
+// subscribe_event throws exception for change event if they are not correctly configured
+// Change in the polling thread: The event heartbeat has its own work in the work list
+// Also add some event_unregister
+// Fix order in which classes are destructed
+// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
+// Change in the CORBA info call for the device type
+//
+// Revision 3.6.2.5  2004/10/14 07:54:35  maxchiandone
+// avoid starting with -nodb and -file together
+//
+// Revision 3.6.2.4  2004/10/05 13:55:03  maxchiandone
+// First upload for filedatabase.
+//
+// Revision 3.6.2.3  2004/09/15 06:47:17  taurel
+// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
+// - It is also possible to read state and status as attributes
+// - Fix bug in Database::get_class_property() method (missing ends insertion)
+// - Fix bug in admin device DevRestart command (device name case problem)
+//
+// Revision 3.6.2.2  2004/07/15 15:04:06  taurel
+// - Added the way to externally filled the polling buffer for attribute
+//   (Command will come soon)
+//
+// Revision 3.6.2.1  2004/07/08 11:02:13  taurel
+// - Add possibility to have command/attribute polling buffer depth specified
+//   individually
+//
+// Revision 3.6  2004/07/07 08:40:13  taurel
+//
+// - Fisrt commit after merge between Trunk and release 4 branch
+// - Add EventData copy ctor, asiignement operator and dtor
+// - Add Database and DeviceProxy::get_alias() method
+// - Add AttributeProxy ctor from "device_alias/attribute_name"
+// - Exception thrown when subscribing two times for exactly yhe same event
+//
+// Revision 3.5  2003/08/21 07:24:37  taurel
+// - End of the implementation of the new way to transfer data for read and
+//   write attributes (better use of exception)
+// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
+// - Added DeviceAttribute ctors from "const char *"
+// - Enable writing of spectrum and image attributes
+// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
+//   attribute writing
+// - Attribute date automatically set in case of attribute quality factor set to INVALID
+// - Change in the polling thread discarding element algo. to support case of polling
+//   several cmd/atts at the same polling period with cmd/attr having a long response time
+// - Take cmd/attr execution time into account in the "Data not updated since" polling
+//   status string
+// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
+//   on Windows device server
+// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
+//   to send trigger to the polling thread
+//
+// Revision 3.4  2003/07/03 07:40:51  taurel
+// - Change in Tango IDL file : Implement a new way to tranfer data for read_attribute and write_attribute CORBA operation
+// - Handle this new IDL release in DeviceProxy class
+// - New exception methods in DeviceAttribute class
+// - New way to get data out of DeviceAttribute object
+// - Fix bugs in DeviceProxy copy constructor and assignement operator
+// - Change some method names in DeviceDataHistory and DeviceAttributeHistory classes
+// - Change the implementation of the DeviceProxy::write_attribute() method to avoid DeviceAttribute copying
+// - Clean-up how a server is killed via a CTRL-C or a dserver device kill command
+// - Add a server_cleanup() method in the Util class
+// - Win32 : Update debug menu in the server graphical window to support logging feature
+// - Win32 : Display library CVS tag in the "Help->About" sub-window
+//
+// Revision 3.3.2.11  2004/05/17 15:33:35  taurel
+// - Add code in polling_configure() method to make the main thread known to
+//   omni threads for Windows DS used as services with polled command/attributes
+//
+// Revision 3.3.2.10  2004/03/09 16:36:37  taurel
+// - Added HP aCC port (thanks to Claudio from Elettra)
+// - Some last small bugs fixes
+//
+// Revision 3.3.2.9  2004/02/27 16:47:01  taurel
+// - Updated DeviceImpl and Util classes sizes for compatibility
+//
+// Revision 3.3.2.8  2004/02/25 16:27:44  taurel
+// Minor changes to compile library using Solaris CC compiler
+//
+// Revision 3.3.2.7  2004/02/18 15:06:18  taurel
+// Now the DevRestart command immediately restart device event (if any). Previously, it was possible to wait up to 200 secondes before they
+// restart
+//
+// Revision 3.3.2.6  2004/02/06 11:58:52  taurel
+// - Many changes in the event system
+//
+// Revision 3.3.2.5  2004/01/20 08:32:37  taurel
+// -First commit after merge with the event branch and work on the AttributeProxy class
+// - Fix bug in the stream "clear()" method usage when used with gcc 3.3
+//
+// Revision 3.3.2.4  2003/11/28 17:08:44  taurel
+// Changes to handle tango lib build as a Windows DLL and used in a device
+// server
+//
+// Revision 3.3.2.2  2003/10/03 13:34:26  taurel
+// - Fix bug for device server started without database, with device name specified on command line using mix of upper and lower cases
+// - It's now possible to send a command to the polling thread from itself
+// - Add a release lock if the insert into the polling buffer failed
+//
+// Revision 3.3.2.1  2003/09/30 11:49:25  taurel
+// Add some changes foreseen for release 4.1 and already implemented on
+// the trunck into this release 4.0 branch
+//
+// Revision 3.3  2003/05/28 14:55:10  taurel
+// Add the include (conditionally) of the include files generated by autoconf
+//
+// Revision 3.2  2003/05/16 08:46:16  taurel
+// Many changes for release 3.0.1. The most important ones are :
+// - Timeout are backs
+// - Multiple db servers (change in TANGO_HOST syntax)
+// - Added methods to print DeviceData, DeviceDataHistory, DeviceAttribute and DeviceAttributeHistory instances
+// - Attributes name stored in blackbox
+// - Remove check if a class is created without any device
+// - It's now possible to create a DeviceProxy from its alias name
+// - Command, attribute names are case insensitive
+// - Change parameters of some DeviceProxy logging methods
+// - Change parameters of DeviceProxy asynchronous replies calls
+// - New serialization model in device server (no serialization model)
+// - Win32 (2000) device server service does not exit at loggoff anymore
+// - Miscellaneous bug fixes
+//
+// Revision 3.1  2003/04/02 12:26:04  taurel
+// Miscellaneous changes to :
+//  - Modify TANGO_HOST env. variable syntax to be able to have several db servers
+//  - Asynchronous calls are now done on device_2 or device depending on the device IDL version
+//  - Timeout are bcks (omniORB 4.0.1)
+//  - Fix bug when killing a device server via the kill command of the admin device
+//    (Solaris only)
+//  - Cleanup device server code to have only one ORB and one db connection within a server
+// Revision 3.0.2.2  2003/07/17 03:46:46  andy_gotz
+// Added new events "on_valid" and "on_state_change"; factorized EventSupplier::detect_and_push_events() method;
+// Catching more exceptions when creating EventSupplier, device server will start without Notification service;
+// Added AttributeProxy and DbAttribute classes to api; created test programs in test directory
+//
+// Revision 3.0.2.1  2003/04/08 13:12:53  andy_gotz
+// first version of TANGO events
+//
+// Revision 3.0  2003/03/25 16:47:51  taurel
+// Many changes for Tango release 3.0 including
+// - Added full logging features
+// - Added asynchronous calls
+// - Host name of clients now stored in black-box
+// - Three serialization model in DS
+// - Fix miscellaneous bugs
+// - Ported to gcc 3.2
+// - Added ApiUtil::cleanup() and destructor methods
+// - Some internal cleanups
+// - Change the way how TangoMonitor class is implemented. It's a recursive
+//   mutex
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -222,16 +413,15 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <eventsupplier.h>
 
 #ifndef _TG_WINDOWS_
-#include <unistd.h>
-#include <assert.h>
-#include <sys/time.h>
-#include <netdb.h>
+	#include <unistd.h>
+	#include <assert.h>
+	#include <sys/time.h>
+	#include <netdb.h>
 #else
-#include <sys/timeb.h>
-#include <process.h>
-#include <coutbuf.h>
-#include <ntservice.h>
-#include <ws2tcpip.h>
+	#include <sys/timeb.h>
+	#include <process.h>
+        #include <coutbuf.h>
+	#include <ntservice.h>
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
@@ -399,29 +589,6 @@ void Util::effective_job(int argc,char *argv[])
 		DServerSignal::instance();
 
 //
-// Check if the user specified a endPoint on the command line or using one
-// env. variable
-//
-
-		bool endpoint_specified = false;
-		for (int i = 2;i < argc;i++)
-		{
-			if (::strcmp("-ORBendPoint",argv[i]) == 0)
-			{
-				endpoint_specified = true;
-				break;
-			}
-		}
-
-		if (endpoint_specified == false)
-		{
-			DummyDeviceProxy d;
-			string env_var;
-			if (d.get_env_var("ORBendPoint",env_var) == 0)
-				endpoint_specified = true;
-		}
-
-//
 // Initialise CORBA ORB
 //
 
@@ -431,43 +598,36 @@ void Util::effective_job(int argc,char *argv[])
 		WSAStartup(rel,&dat);
 #endif
 
-		if (endpoint_specified == true)
+		char h_name[80];
+		int res = gethostname(h_name,80);
+		if (res == 0)
 		{
 			const char *options[][2] = {
-				{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-				{"serverCallTimeOutPeriod","5000"},
-				{"maxServerThreadPoolSize","100"},
-				{"threadPerConnectionUpperLimit","55"},
-				{"threadPerConnectionLowerLimit","50"},
-				{"supportCurrent","0"},
-				{"verifyObjectExistsAndType","0"},
-				{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
-#ifndef _TG_WINDOWS_
-				{"endPoint","giop:unix:"},
-#endif
-				{0,0}
-			};
+			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
+			{"serverCallTimeOutPeriod","5000"},
+			{"maxServerThreadPoolSize","100"},
+			{"threadPerConnectionUpperLimit","55"},
+			{"threadPerConnectionLowerLimit","50"},
+			{"supportCurrent","0"},
+			{"verifyObjectExistsAndType","0"},
+			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
+			{0,0}};
 			
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
 		else
 		{
 			const char *options[][2] = {
-				{"endPointPublish","all(addr)"},
-				{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-				{"serverCallTimeOutPeriod","5000"},
-				{"maxServerThreadPoolSize","100"},
-				{"threadPerConnectionUpperLimit","55"},
-				{"threadPerConnectionLowerLimit","50"},
-				{"supportCurrent","0"},
-				{"verifyObjectExistsAndType","0"},
-				{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
-#ifndef _TG_WINDOWS_
-				{"endPoint","giop:tcp::"},
-				{"endPoint","giop:unix:"},
-#endif
-				{0,0}
-			};
+			{"endPointPublish","all(addr)"},
+			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
+			{"serverCallTimeOutPeriod","5000"},
+			{"maxServerThreadPoolSize","100"},
+			{"threadPerConnectionUpperLimit","55"},
+			{"threadPerConnectionLowerLimit","50"},
+			{"supportCurrent","0"},
+			{"verifyObjectExistsAndType","0"},
+			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
+			{0,0}};
 			
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
@@ -860,33 +1020,6 @@ void Util::check_args(int argc,char *argv[])
 #endif
 						cout4 << "File name = <" << database_file_name << ">" << endl;
 						ind++;
-
-//
-// Try to find the ORB endPoint option
-//
-
-						long arg_nb;
-						for (arg_nb = 2;arg_nb < argc;arg_nb++)
-						{
-							if (::strcmp(argv[arg_nb],"-ORBendPoint") == 0)
-							{
-								arg_nb++;
-								string endpoint = argv[arg_nb];
-								string::size_type pos;
-								if ((pos = endpoint.rfind(':')) == string::npos)
-								{
-									cerr << "Strange ORB endPoint specification" << endl;
-									print_usage(argv[0]);
-								}
-								ext->svr_port_num = endpoint.substr(++pos);
-								break;
-							}
-						}
-						if (arg_nb == argc)
-						{
-							cerr << "Missing ORB endPoint specification" << endl;
-							print_usage(argv[0]);
-						}
 					}
 					break;
 
@@ -1247,24 +1380,17 @@ void Util::connect_db()
 		string &inst_name = get_ds_inst_name();
 		if (inst_name != "-?")
 		{
-			db->set_timeout_millis(DB_TIMEOUT * 4);
-			set_svr_starting(false);
+			db->set_timeout_millis(DB_TIMEOUT * 3);
 			try
 			{
 				ext->db_cache = new DbServerCache(db,get_ds_name(),get_host_name());
 			}
-			catch (Tango::DevFailed &e)
-			{
-				string base_desc(e.errors[0].desc.in());
-				if (base_desc.find("TRANSIENT_CallTimedout") != string::npos)
-					cerr << "DB timeout while trying to fill the DB server cache. Will use traditional way" << endl;
-			}
+			catch (Tango::DevFailed &) {}
 			catch (...) 
 			{
 				cerr << "Unknown exception while trying to fill database cache..." << endl;
 			}
 			db->set_timeout_millis(DB_TIMEOUT);
-			set_svr_starting(true);
 		}
 	}
 }
@@ -1321,6 +1447,51 @@ void Util::misc_init()
 	pid_str = o.str();
 	o.rdbuf()->freeze(false);
 #endif
+
+//
+// Get the FQDN host name (Fully qualified domain name)
+// If it is not returned by the system call "getname",
+// try with the gethostbyname system call
+//
+		
+	char buffer[80];
+	if (gethostname(buffer,80) == 0)
+	{
+		hostname = buffer;
+		string::size_type pos = hostname.find('.');
+
+		if (pos == string::npos)
+		{
+			struct hostent *he;
+			he = gethostbyname(buffer);
+			
+			if (he != NULL)
+			{
+				string na(he->h_name);
+				pos = na.find('.');
+				if (pos == string::npos)
+				{
+					char **p;
+					for (p = he->h_aliases;*p != 0;++p)
+					{
+						string al(*p);
+						pos = al.find('.');
+						if (pos != string::npos)
+						{
+							hostname = al;
+							break;
+						}					
+					}
+				}
+				else
+					hostname = na;
+			}
+		}
+	}
+	else
+	{
+		print_err_message("Cant retrieve server host name");
+	}
 	
 //
 // Convert Tango version number to string (for device export)
@@ -1372,10 +1543,8 @@ void Util::init_host_name()
 
 //
 // Get the FQDN host name (Fully qualified domain name)
-// If it is not returned by the system call "gethostname",
-// try with the getaddrinfo system call
-//
-// All supported OS have the getaddrinfo() call
+// If it is not returned by the system call "getname",
+// try with the gethostbyname system call
 //
 		
 	char buffer[80];
@@ -1383,63 +1552,6 @@ void Util::init_host_name()
 	{
 		hostname = buffer;
 		string::size_type pos = hostname.find('.');
-
-		if (pos == string::npos)
-		{
-  			struct addrinfo hints;
-
-			memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-			hints.ai_falgs	   = AI_ADDRCONFIG;
-#endif
-#else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  			hints.ai_flags     = AI_ADDRCONFIG;
-#endif
-#endif
-  			hints.ai_family    = AF_INET;
-  			hints.ai_socktype  = SOCK_STREAM;
-
-  			struct addrinfo	*info;
-			struct addrinfo *ptr;
-			char tmp_host[512];
-
-  			int result = getaddrinfo(buffer, NULL, &hints, &info);
-
-  			if (result == 0)
-			{
-				ptr = info;
-				while (ptr != NULL)
-				{
-    				if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
-					{
-						string myhost(tmp_host);
-						string::size_type pos = myhost.find('.');
-						if (pos != string::npos)
-						{
-							string canon = myhost.substr(0,pos);
-							if (hostname == canon)
-							{
-								hostname = myhost;
-								break;
-							}
-						}
-    				}
-					ptr = ptr->ai_next;
-				}
-				freeaddrinfo(info);
-			}
-		}
-#ifdef __sun
-
-//
-// Unfortunately, on solaris (at least solaris9), getnameinfo does
-// not return the fqdn....
-// Use the old way of doing
-//
-
-		pos = hostname.find('.');
 
 		if (pos == string::npos)
 		{
@@ -1468,7 +1580,6 @@ void Util::init_host_name()
 					hostname = na;
 			}
 		}
-#endif
 	}
 	else
 	{
@@ -1493,20 +1604,9 @@ void Util::create_event_supplier()
 			ext->event_supplier = EventSupplier::create(orb,ds_name,db,hostname,this);
 			ext->event_supplier->connect();
 		}
-		catch (Tango::DevFailed &e)
-		{
-			ext->event_supplier = NULL;
-			if (_FileDb == true)
-			{
-				Tango::Except::print_exception(e);
-				cerr << "Can't create event supplier. Event not available" << endl;
-			}
-		}
 		catch (...)
 		{
 			ext->event_supplier = NULL;
-			if (_FileDb == true)
-				cerr << "Can't create event supplier. Event not available" << endl;
 		}
 	}
 	else
@@ -1747,24 +1847,10 @@ void Util::server_init(bool with_window)
 	if (Util::_service == true)
 	{
 		omni_thread::create_dummy();
-		ext->_dummy_thread = true;
-	}
-	
-	omni_thread *th = omni_thread::self();
-	if (th == NULL)
-	{
-		th = omni_thread::create_dummy();
-		ext->_dummy_thread = true;
-	}
-#else
-	omni_thread *th = omni_thread::self();
-	if (th == NULL)
-	{
-		th = omni_thread::create_dummy();
-		ext->_dummy_thread = true;
 	}
 #endif
-	
+
+	omni_thread *th = omni_thread::self();
 	if (is_py_ds() == false)
 	{
 		th->set_value(key_py_data,new Tango::PyData());
@@ -2037,10 +2123,7 @@ void Util::server_cleanup()
 			_constructed = false;
 		}
 	}
-#endif
-
-	if (ext->_dummy_thread == true)
-		omni_thread::release_dummy();
+#endif	
 }
 
 //+----------------------------------------------------------------------------
@@ -2057,13 +2140,6 @@ void Util::server_cleanup()
 vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 {
 
-	if (cl_list_ptr == NULL)
-	{
-		Except::throw_exception((const char *)"API_DeviceNotFound",
-				        (const char *)"It's too early to call this method. Devices are not created yet!",
-				        (const char *)"Util::get_device_list_by_class()");
-	}
-	
 //
 // Retrieve class list. Don't use the get_dserver_device() method followed by
 // the get_class_list(). In case of several classes embedded within

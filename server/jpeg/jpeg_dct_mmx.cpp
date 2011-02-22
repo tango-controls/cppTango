@@ -1,54 +1,8 @@
-///=============================================================================	
-//
-// file :		jpeg_dct_mmx.cpp
-//
-// description :        Simple jpeg coding/decoding library
-//                      Discrete Cosine Transform (8x8) MMX code
-//
-// project :		TANGO
-//
-// author(s) :		JL Pons
-//
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//                      European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
 // 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// File:        jpeg_dct_mmx.cpp
+// Description: Discrete Cosine Transform (8x8) MMX code
+// Program:     Simple jpeg coding/decoding library
 //
-// $Revision$
-//
-// $Log$
-// Revision 1.9  2009/09/02 08:01:43  taurel
-// - Fix linker problem when used with gcc release < 4
-//
-// Revision 1.8  2009/09/01 14:02:07  taurel
-// - Fix a problem for old gcc release in the asm code.
-//
-// Revision 1.7  2009/08/27 07:24:30  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 1.6.2.1  2009/08/25 14:03:10  taurel
-// - First attempt to clarify the gcc PIC problem
-//
-// Revision 1.6  2009/04/20 14:55:58  jlpons
-// Added GPL header, changed memory allocation to C++ fashion.
-//
-//=============================================================================
-
 // MMX implementation has been provided by Intel at AP-922
 
 #include "jpeg_lib.h"
@@ -68,7 +22,6 @@
 #define SHIFT_FRW_ROW  (BITS_FRW_ACC + 14)
 #define RND_FRW_ROW    (1 << (SHIFT_FRW_ROW-1))
 
-
 // MMX constants
 
 ALIGN8 short __jpmm_one_corr[] = {1,1,1,1};
@@ -79,7 +32,6 @@ ALIGN8 short __jpmm_tg_2_16[]   = {  27146,  27146,  27146,  27146 }; //tg * (2<
 ALIGN8 short __jpmm_tg_3_16[]   = { -21746, -21746, -21746, -21746 }; //tg * (2<<16) + 0.5
 ALIGN8 short __jpmm_cos_4_16[]  = { -19195, -19195, -19195, -19195 }; //cos * (2<<16) + 0.5
 ALIGN8 short __jpmm_ocos_4_16[] = {  23170,  23170,  23170,  23170 }; //cos * (2<<15) + 0.5
-	
 
 ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
 
@@ -163,145 +115,6 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
     17855, 6270, 6270, 26722,       //    w30 w28 w26 w24
     -31521, 26722, -17855, -31521   //    w31 w29 w27 w25
 };
-
-
-
-//
-// Unfortunately with gcc, code like "psubw     mm2,_128mm" is considered like non PIC
-// and the scanelf utility complains about this. This is also a problem for distribution like
-// Debian. Why, I don't know !!
-// This is a known problem and some WEB page have been written relatedto this issue.
-// I have used the page http://www.gentoo.org/proj/en/hardened/pic-fix-guide.xml
-// Within this page, they give 3 pssobilities to remove this kind of code.
-// I have use case number 1. Case number 2 and 3 are not really usable because
-// all the registers are already used (Not in all functions but in most of them)
-// Therefore, every variable defined previously are "manually" loaded into the MMX registers
-// using the stack as temporary storage
-//
-// 13036  ->  0x32ec
-// 27146  ->  0x6a0a
-// -21746 ->  0xab0e
-// -19195 ->  0xb505
-// 23170  ->  0x5a82
-//
-// This problem is the reason of all the following macros.
-// It's not a nice way to solve it> When we will have time, we will 
-// try to find a cleaner solution
-//
-
-#ifndef _WINDOWS
-
-#ifdef __PIC__ 
-
-#define  por_one_mmx_reg(REG1) \
-	"push	0x00010001	\n" \
-	"push	0x00010001	\n"	\
-	"por	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define  add_round_mmx_reg(REG1) \
-	"push	0x00010000	\n" \
-	"push	0x00010000	\n"	\
-	"paddd	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define	mov_tg_1_16_mmx_reg(REG1) \
-    "push	0x32ec32ec	\n" \
-	"push	0x32ec32ec	\n"	\
-	"movq	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define  mov_tg_2_16_mmx_reg(REG1) \
-	"push	0x6a0a6a0a	\n" \
-	"push	0x6a0a6a0a	\n"	\
-	"movq	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define	mov_tg_3_16_mmx_reg(REG1) \
-	"push	0xab0eab0e	\n" \
-	"push	0xab0eab0e	\n"	\
-	"movq	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define	mov_ocos_4_16_mmx_reg(REG1) \
-	"push	0x5a825a82	\n" \
-	"push	0x5a825a82	\n"	\
-	"movq	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-
-#define  mul_tg_1_16_mmx_reg(REG1) \
-	"push	0x32ec32ec	\n" \
-	"push	0x32ec32ec	\n"	\
-	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define  mul_tg_2_16_mmx_reg(REG1) \
-	"push	0x6a0a6a0a	\n" \
-	"push	0x6a0a6a0a	\n"	\
-	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define  mul_tg_3_16_mmx_reg(REG1) \
-	"push	0xab0eab0e	\n" \
-	"push	0xab0eab0e	\n"	\
-	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-	
-#define  mul_ocos_4_16_mmx_reg(REG1) \
-	"push	0x5a825a82	\n" \
-	"push	0x5a825a82	\n"	\
-	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-
-#if __GNUC__ > 3
-#define lea_addr_in_reg(REG1) \
-	"call	__i686.get_pc_thunk.bx	\n" \
-	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
-	"lea	"#REG1",__jpmm_row_tab_frw@GOTOFF	\n"
-#else
-#define lea_addr_in_reg(REG1) \
-	"call	__tg_get_pc	\n" \
-	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
-	"lea	"#REG1",__jpmm_row_tab_frw@GOTOFF	\n"
-#endif
-			
-#else /* __PIC__ */
-
-#define  por_one_mmx_reg(REG1) \
-    "por "#REG1", __jpmm_one_corr   \n"
-	
-#define add_round_mmx_reg(REG1) \
-    "paddd  "#REG1", __jpmm_round_frw_row \n"
-	
-#define	mov_tg_1_16_mmx_reg(REG1) \
-	"movq "#REG1", __jpmm_tg_1_16 \n"
-	
-#define mov_tg_2_16_mmx_reg(REG1) \
-    "movq "#REG1", __jpmm_tg_2_16 \n"
-	
-#define	mov_tg_3_16_mmx_reg(REG1) \
-	"movq "#REG1", __jpmm_tg_3_16 \n"
-	
-#define	mov_ocos_4_16_mmx_reg(REG1) \
-	"movq "#REG1", __jpmm_ocos_4_16 \n"
-	
-#define	mul_tg_1_16_mmx_reg(REG1) \
-	"pmulhw "#REG1", __jpmm_tg_1_16 \n"
-	
-#define mul_tg_2_16_mmx_reg(REG1) \
-    "pmulhw "#REG1", __jpmm_tg_2_16 \n"
-	
-#define	mul_tg_3_16_mmx_reg(REG1) \
-	"pmulhw "#REG1", __jpmm_tg_3_16 \n"
-	
-#define	mul_ocos_4_16_mmx_reg(REG1) \
-	"pmulhw "#REG1", __jpmm_ocos_4_16 \n"
-	
-#define lea_addr_in_reg(REG1) \
-	"lea	"#REG1",__jpmm_row_tab_frw	\n"
-	
-#endif /* __PIC__ */
-#endif /* _WINDOWS */
 
 void jpeg_fdct_mmx( short *block )
 {
@@ -677,7 +490,7 @@ void jpeg_fdct_mmx( short *block )
   "psllw mm4, 3               \n"
   "movq mm6, mm0              \n"
   "psubsw mm2, mm1            \n"
-   mov_tg_2_16_mmx_reg(mm1)
+  "movq mm1, __jpmm_tg_2_16   \n"
   "psubsw mm0, mm4            \n"
   "movq mm7, [rax + 3*16]     \n"
   "pmulhw mm1, mm0            \n"
@@ -689,9 +502,9 @@ void jpeg_fdct_mmx( short *block )
   "psubsw mm5, mm7            \n"
   "paddsw mm1, mm5            \n"
   "paddsw mm4, mm7            \n"
-   por_one_mmx_reg(mm1)
+  "por mm1, __jpmm_one_corr   \n"
   "psllw mm2, 4               \n"
-   mul_tg_2_16_mmx_reg(mm5)
+  "pmulhw mm5, __jpmm_tg_2_16 \n"
   "movq mm7, mm4              \n"
   "psubsw mm3, [rax + 5*16]   \n"
   "psubsw mm4, mm6            \n"
@@ -703,34 +516,34 @@ void jpeg_fdct_mmx( short *block )
   "movq mm6, mm2              \n"
   "movq [rcx + 4*16], mm4     \n"
   "paddsw mm2, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm2)
+  "pmulhw mm2, __jpmm_ocos_4_16 \n"
   "psubsw mm6, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm6)
+  "pmulhw mm6, __jpmm_ocos_4_16 \n"
   "psubsw mm5, mm0            \n"
-   por_one_mmx_reg(mm5)
+  "por mm5,  __jpmm_one_corr  \n"
   "psllw mm1, 3               \n"
-   por_one_mmx_reg(mm2)
+  "por mm2,  __jpmm_one_corr  \n"
   "movq mm4, mm1              \n"
   "movq mm3, [rax + 0*16]     \n"
   "paddsw mm1, mm6            \n"
   "psubsw mm3, [rax + 7*16]   \n"
   "psubsw mm4, mm6            \n"
-  mov_tg_1_16_mmx_reg(mm0)
+  "movq mm0, __jpmm_tg_1_16   \n"
   "psllw mm3, 3               \n"
-  mov_tg_3_16_mmx_reg(mm6)
+  "movq mm6, __jpmm_tg_3_16   \n"
   "pmulhw mm0, mm1            \n"
   "movq [rcx + 0*16], mm7     \n"
   "pmulhw mm6, mm4            \n"
   "movq [rcx + 6*16], mm5     \n"
   "movq mm7, mm3              \n"
-   mov_tg_3_16_mmx_reg(mm5)
+  "movq mm5, __jpmm_tg_3_16   \n"
   "psubsw mm7, mm2            \n"
   "paddsw mm3, mm2            \n"
   "pmulhw mm5, mm7            \n"
   "paddsw mm0, mm3            \n"
   "paddsw mm6, mm4            \n"
-   mul_tg_1_16_mmx_reg(mm3)
-   por_one_mmx_reg(mm0)
+  "pmulhw mm3, __jpmm_tg_1_16 \n"
+  "por mm0, __jpmm_one_corr   \n"
   "paddsw mm5, mm7            \n"
   "psubsw mm7, mm6            \n"
   "add rax, 0x08              \n"
@@ -753,7 +566,7 @@ void jpeg_fdct_mmx( short *block )
   "psllw mm4, 3               \n"
   "movq mm6, mm0              \n"
   "psubsw mm2, mm1            \n"
-   mov_tg_2_16_mmx_reg(mm1)
+  "movq mm1, __jpmm_tg_2_16   \n"
   "psubsw mm0, mm4            \n"
   "movq mm7, [rax + 3*16]     \n"
   "pmulhw mm1, mm0            \n"
@@ -765,9 +578,9 @@ void jpeg_fdct_mmx( short *block )
   "psubsw mm5, mm7            \n"
   "paddsw mm1, mm5            \n"
   "paddsw mm4, mm7            \n"
-   por_one_mmx_reg(mm1)
+  "por mm1, __jpmm_one_corr   \n"
   "psllw mm2, 4               \n"
-   mul_tg_2_16_mmx_reg(mm5)
+  "pmulhw mm5, __jpmm_tg_2_16 \n"
   "movq mm7, mm4              \n"
   "psubsw mm3, [rax + 5*16]   \n"
   "psubsw mm4, mm6            \n"
@@ -779,34 +592,34 @@ void jpeg_fdct_mmx( short *block )
   "movq mm6, mm2              \n"
   "movq [rcx + 4*16+8], mm4   \n"
   "paddsw mm2, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm2)
+  "pmulhw mm2, __jpmm_ocos_4_16 \n"
   "psubsw mm6, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm6)
+  "pmulhw mm6, __jpmm_ocos_4_16 \n"
   "psubsw mm5, mm0            \n"
-   por_one_mmx_reg(mm5)
-  "psllw mm1, 3				  \n"
-   por_one_mmx_reg(mm2)
+  "por mm5, __jpmm_one_corr   \n"
+  "psllw mm1, 3               \n"
+  "por mm2, __jpmm_one_corr   \n"
   "movq mm4, mm1              \n"
   "movq mm3, [rax + 0*16]     \n"
   "paddsw mm1, mm6            \n"
   "psubsw mm3, [rax + 7*16]   \n"
   "psubsw mm4, mm6            \n"
-   mov_tg_1_16_mmx_reg(mm0)
+  "movq mm0, __jpmm_tg_1_16   \n"
   "psllw mm3, 3               \n"
-   mov_tg_3_16_mmx_reg(mm6)
+  "movq mm6, __jpmm_tg_3_16   \n"
   "pmulhw mm0, mm1            \n"
   "movq [rcx +8], mm7         \n"
   "pmulhw mm6, mm4            \n"
   "movq [rcx + 6*16+8], mm5   \n"
   "movq mm7, mm3              \n"
-   mov_tg_3_16_mmx_reg(mm5)
+  "movq mm5, __jpmm_tg_3_16   \n"
   "psubsw mm7, mm2            \n"
   "paddsw mm3, mm2            \n"
   "pmulhw mm5, mm7            \n"
   "paddsw mm0, mm3            \n"
   "paddsw mm6, mm4            \n"
-   mul_tg_1_16_mmx_reg(mm3)
-   por_one_mmx_reg(mm0)
+  "pmulhw mm3, __jpmm_tg_1_16 \n"
+  "por mm0, __jpmm_one_corr   \n"
   "paddsw mm5, mm7            \n"
   "psubsw mm7, mm6            \n"
   "movq [rcx + 1*16+8], mm0   \n"
@@ -824,8 +637,8 @@ void jpeg_fdct_mmx( short *block )
   // Rows
   __asm__ (
   ".intel_syntax noprefix     \n"
-  "push rbx                   \n"
-   lea_addr_in_reg(rbx)  
+  "push rbx                   \n"  
+  "lea rbx,__jpmm_row_tab_frw \n"
   "mov rcx, rax               \n"
   "mov rdi, 0x08              \n"
 "lp_mmx_fdct_row1:            \n"
@@ -859,18 +672,18 @@ void jpeg_fdct_mmx( short *block )
   "punpckhdq mm6, mm6         \n"
   "movq mm7, [rbx+40]         \n"
   "pmaddwd mm1, mm5           \n"
-   add_round_mmx_reg(mm3)
+  "paddd mm3, __jpmm_round_frw_row  \n"
   "pmaddwd mm7, mm6           \n"
   "pmaddwd mm2, [rbx+24]      \n"
   "paddd mm3, mm4             \n"
   "pmaddwd mm5, [rbx+48]      \n"
   "pmaddwd mm6, [rbx+56]      \n"
   "paddd mm1, mm7             \n"
-  add_round_mmx_reg(mm0)
+  "paddd mm0, __jpmm_round_frw_row \n"
   "psrad mm3, 17              \n"
-  add_round_mmx_reg(mm1)
+  "paddd mm1, __jpmm_round_frw_row \n"
   "paddd mm0, mm2             \n"
-  add_round_mmx_reg(mm5)
+  "paddd mm5, __jpmm_round_frw_row \n"
   "psrad mm1, 17              \n"
   "paddd mm5, mm6             \n"
   "psrad mm0, 17              \n"
@@ -917,7 +730,7 @@ void jpeg_fdct_mmx( short *block )
   "psllw mm4, 3               \n"
   "movq mm6, mm0              \n"
   "psubsw mm2, mm1            \n"
-   mov_tg_2_16_mmx_reg(mm1)
+  "movq mm1, __jpmm_tg_2_16   \n"
   "psubsw mm0, mm4            \n"
   "movq mm7, [eax + 3*16]     \n"
   "pmulhw mm1, mm0            \n"
@@ -929,9 +742,9 @@ void jpeg_fdct_mmx( short *block )
   "psubsw mm5, mm7            \n"
   "paddsw mm1, mm5            \n"
   "paddsw mm4, mm7            \n"
-   por_one_mmx_reg(mm1)
+  "por mm1, __jpmm_one_corr   \n"
   "psllw mm2, 4               \n"
-   mul_tg_2_16_mmx_reg(mm5)
+  "pmulhw mm5, __jpmm_tg_2_16 \n"
   "movq mm7, mm4              \n"
   "psubsw mm3, [eax + 5*16]   \n"
   "psubsw mm4, mm6            \n"
@@ -943,34 +756,34 @@ void jpeg_fdct_mmx( short *block )
   "movq mm6, mm2              \n"
   "movq [ecx + 4*16], mm4     \n"
   "paddsw mm2, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm2)
+  "pmulhw mm2, __jpmm_ocos_4_16 \n"
   "psubsw mm6, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm6)
+  "pmulhw mm6, __jpmm_ocos_4_16 \n"
   "psubsw mm5, mm0            \n"
-   por_one_mmx_reg(mm5)
-  "psllw mm1, 3				  \n"
-   por_one_mmx_reg(mm2)
+  "por mm5,  __jpmm_one_corr  \n"
+  "psllw mm1, 3               \n"
+  "por mm2,  __jpmm_one_corr  \n"
   "movq mm4, mm1              \n"
   "movq mm3, [eax + 0*16]     \n"
   "paddsw mm1, mm6            \n"
   "psubsw mm3, [eax + 7*16]   \n"
   "psubsw mm4, mm6            \n"
-   mov_tg_1_16_mmx_reg(mm0)
+  "movq mm0, __jpmm_tg_1_16   \n"
   "psllw mm3, 3               \n"
-   mov_tg_3_16_mmx_reg(mm6)
+  "movq mm6, __jpmm_tg_3_16   \n"
   "pmulhw mm0, mm1            \n"
   "movq [ecx + 0*16], mm7     \n"
   "pmulhw mm6, mm4            \n"
   "movq [ecx + 6*16], mm5     \n"
   "movq mm7, mm3              \n"
-   mov_tg_3_16_mmx_reg(mm5)
+  "movq mm5, __jpmm_tg_3_16   \n"
   "psubsw mm7, mm2            \n"
   "paddsw mm3, mm2            \n"
   "pmulhw mm5, mm7            \n"
   "paddsw mm0, mm3            \n"
   "paddsw mm6, mm4            \n"
-   mul_tg_1_16_mmx_reg(mm3)
-   por_one_mmx_reg(mm0)
+  "pmulhw mm3, __jpmm_tg_1_16 \n"
+  "por mm0, __jpmm_one_corr   \n"
   "paddsw mm5, mm7            \n"
   "psubsw mm7, mm6            \n"
   "add eax, 0x08              \n"
@@ -993,7 +806,7 @@ void jpeg_fdct_mmx( short *block )
   "psllw mm4, 3               \n"
   "movq mm6, mm0              \n"
   "psubsw mm2, mm1            \n"
-   mov_tg_2_16_mmx_reg(mm1)
+  "movq mm1, __jpmm_tg_2_16   \n"
   "psubsw mm0, mm4            \n"
   "movq mm7, [eax + 3*16]     \n"
   "pmulhw mm1, mm0            \n"
@@ -1005,9 +818,9 @@ void jpeg_fdct_mmx( short *block )
   "psubsw mm5, mm7            \n"
   "paddsw mm1, mm5            \n"
   "paddsw mm4, mm7            \n"
-   por_one_mmx_reg(mm1)
+  "por mm1, __jpmm_one_corr   \n"
   "psllw mm2, 4               \n"
-   mul_tg_2_16_mmx_reg(mm5)
+  "pmulhw mm5, __jpmm_tg_2_16 \n"
   "movq mm7, mm4              \n"
   "psubsw mm3, [eax + 5*16]   \n"
   "psubsw mm4, mm6            \n"
@@ -1019,34 +832,34 @@ void jpeg_fdct_mmx( short *block )
   "movq mm6, mm2              \n"
   "movq [ecx + 4*16+8], mm4   \n"
   "paddsw mm2, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm2)
+  "pmulhw mm2, __jpmm_ocos_4_16 \n"
   "psubsw mm6, mm3            \n"
-   mul_ocos_4_16_mmx_reg(mm6)
+  "pmulhw mm6, __jpmm_ocos_4_16 \n"
   "psubsw mm5, mm0            \n"
-   por_one_mmx_reg(mm5)
-  "psllw mm1, 3				  \n"
-   por_one_mmx_reg(mm5)
+  "por mm5, __jpmm_one_corr   \n"
+  "psllw mm1, 3               \n"
+  "por mm2, __jpmm_one_corr   \n"
   "movq mm4, mm1              \n"
   "movq mm3, [eax + 0*16]     \n"
   "paddsw mm1, mm6            \n"
   "psubsw mm3, [eax + 7*16]   \n"
   "psubsw mm4, mm6            \n"
-   mov_tg_1_16_mmx_reg(mm0)
+  "movq mm0, __jpmm_tg_1_16   \n"
   "psllw mm3, 3               \n"
-   mov_tg_3_16_mmx_reg(mm6)
+  "movq mm6, __jpmm_tg_3_16   \n"
   "pmulhw mm0, mm1            \n"
   "movq [ecx +8], mm7         \n"
   "pmulhw mm6, mm4            \n"
   "movq [ecx + 6*16+8], mm5   \n"
   "movq mm7, mm3              \n"
-   mov_tg_3_16_mmx_reg(mm5)
+  "movq mm5, __jpmm_tg_3_16   \n"
   "psubsw mm7, mm2            \n"
   "paddsw mm3, mm2            \n"
   "pmulhw mm5, mm7            \n"
   "paddsw mm0, mm3            \n"
   "paddsw mm6, mm4            \n"
-   mul_tg_1_16_mmx_reg(mm3)
-   por_one_mmx_reg(mm0)
+  "pmulhw mm3, __jpmm_tg_1_16 \n"
+  "por mm0, __jpmm_one_corr   \n"
   "paddsw mm5, mm7            \n"
   "psubsw mm7, mm6            \n"
   "movq [ecx + 1*16+8], mm0   \n"
@@ -1061,31 +874,11 @@ void jpeg_fdct_mmx( short *block )
   : "memory","ecx","mm0","mm1","mm2","mm3","mm4","mm5","mm6","mm7"
   );
 
-#ifdef __PIC__
-#if __GNUC__ > 3
- __asm__(
- 	"push 	%ebx		\n"
-	"call	__i686.get_pc_thunk.bx	\n"
-	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
-	"lea	__jpmm_row_tab_frw@GOTOFF(%ebx),%ebx	\n"
-   );
-#else
- __asm__(
- 	"push 	%ebx		\n"
-	"call	__tg_get_pc	\n"
-	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
-	"lea	__jpmm_row_tab_frw@GOTOFF(%ebx),%ebx	\n"
-   );
-#endif 
-#endif /* __PIC__ */
-
   // Rows
   __asm__ (
   ".intel_syntax noprefix     \n"
-#ifndef __PIC__
-  "push ebx                   \n"
-  "lea	ebx,__jpmm_row_tab_frw	\n"
-#endif
+  "push ebx                   \n"  
+  "lea ebx,__jpmm_row_tab_frw \n"
   "mov edi, 0x08              \n"
   "mov ecx, eax               \n"
 "lp_mmx_fdct_row1:            \n"
@@ -1119,18 +912,18 @@ void jpeg_fdct_mmx( short *block )
   "punpckhdq mm6, mm6         \n"
   "movq mm7, [ebx+40]         \n"
   "pmaddwd mm1, mm5           \n"
-   add_round_mmx_reg(mm3)
+  "paddd mm3, __jpmm_round_frw_row  \n"
   "pmaddwd mm7, mm6           \n"
   "pmaddwd mm2, [ebx+24]      \n"
   "paddd mm3, mm4             \n"
   "pmaddwd mm5, [ebx+48]      \n"
   "pmaddwd mm6, [ebx+56]      \n"
   "paddd mm1, mm7             \n"
-  add_round_mmx_reg(mm0)
+  "paddd mm0, __jpmm_round_frw_row \n"
   "psrad mm3, 17              \n"
-  add_round_mmx_reg(mm1)
+  "paddd mm1, __jpmm_round_frw_row \n"
   "paddd mm0, mm2             \n"
-  add_round_mmx_reg(mm5)
+  "paddd mm5, __jpmm_round_frw_row \n"
   "psrad mm1, 17              \n"
   "paddd mm5, mm6             \n"
   "psrad mm0, 17              \n"
@@ -1269,48 +1062,9 @@ ALIGN8 long __jpmm_rounder[]  = {
 // Offset
 ALIGN8 short __jpmm_offset128[]  = { 128,128,128,128 };
 
-#ifndef _WINDOWS
-
-#ifdef __PIC__ 	
-#define add_off128_mmx_reg(REG1) \
-	"push	0x00800080	\n" \
-	"push	0x00800080	\n"	\
-	"paddw	"#REG1", QWORD PTR [esp]	\n" \
-	"add	esp,8	\n"
-
-#if __GNUC__ > 3
-#define lea_addr_in_regs(REG1,REG2) \
-    "push 	ebx		\n" \
-	"call	__i686.get_pc_thunk.bx	\n" \
-	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
-	"lea	"#REG1",__jpmm_row_tabs@GOTOFF	\n" \
-	"lea	"#REG2",__jpmm_rounder@GOTOFF	\n" \
-	"pop	ebx   \n"
-#else
-#define lea_addr_in_regs(REG1,REG2) \
-    "push 	ebx		\n" \
-	"call	__tg_get_pc	\n" \
-	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
-	"lea	"#REG1",__jpmm_row_tabs@GOTOFF	\n" \
-	"lea	"#REG2",__jpmm_rounder@GOTOFF	\n" \
-	"pop	ebx   \n"
-#endif
-
-
-#else /* __PIC__ */
-		
-#define add_off128_mmx_reg(REG1) \
-    "paddw  "#REG1", __jpmm_offset128 \n"
-	
-#define lea_addr_in_regs(REG1,REG2) \
-	"lea	"#REG1",__jpmm_row_tabs	\n" \
-	"lea	"#REG2",__jpmm_rounder	\n" \
-	
-#endif /* __PIC__ */
-#endif /* _WINDOWS */
-
 void jpeg_idct_mmx(short *block, unsigned char *dest)
 {
+
   short innerBuff[64];
   long  scratch[4];
 
@@ -1573,7 +1327,8 @@ __mmx_idct_cols:
   ".intel_syntax noprefix     \n"
   "push rbx                   \n"
   "mov rcx, 8                 \n"
-   lea_addr_in_regs(rax,rbx)
+  "lea rax, __jpmm_row_tabs   \n"
+  "lea rbx, __jpmm_rounder    \n"
 "__mmx_idct_rows:             \n"
   "movq mm0, [rsi]            \n"
   "movq mm1, [rsi+8]          \n"
@@ -1640,12 +1395,12 @@ __mmx_idct_cols:
   ".intel_syntax noprefix      \n"
   "mov rcx, 2                  \n"
 "__mmx_idct_cols:              \n"
-   mov_tg_3_16_mmx_reg(mm0)
+  "movq  mm0, __jpmm_tg_3_16   \n"
   "movq  mm3, [rsi+16*3]       \n"
   "movq  mm1, mm0              \n"
   "movq  mm5, [rsi+16*5]       \n"
   "pmulhw  mm0, mm3            \n"
-   mov_tg_1_16_mmx_reg(mm4)
+  "movq  mm4, __jpmm_tg_1_16   \n"
   "pmulhw  mm1, mm5            \n"
   "movq  mm7, [rsi+16*7]       \n"
   "movq  mm2, mm4              \n"
@@ -1655,7 +1410,7 @@ __mmx_idct_cols:
   "pmulhw  mm2, mm6            \n"
   "paddsw  mm1, mm3            \n"
   "psubsw  mm0, mm5            \n"
-   mov_ocos_4_16_mmx_reg(mm3)
+  "movq  mm3, __jpmm_ocos_4_16 \n"
   "paddsw  mm1, mm5            \n"
   "paddsw  mm4, mm6            \n"
   "psubsw  mm2, mm7            \n"
@@ -1665,7 +1420,7 @@ __mmx_idct_cols:
   "psubsw  mm6, mm0            \n"
   "psubsw  mm4, mm1            \n"
   "paddsw  mm2, mm0            \n"
-   mov_tg_2_16_mmx_reg(mm7)
+  "movq  mm7, __jpmm_tg_2_16   \n"
   "movq  mm1, mm4              \n"
   "movq  [rax+0], mm5          \n"
   "paddsw  mm1, mm2            \n"
@@ -1705,11 +1460,11 @@ __mmx_idct_cols:
   "psraw  mm7, 6               \n"
   "movq  mm4, mm5              \n"
   "psraw  mm0, 6               \n"
-   add_off128_mmx_reg(mm3)
+  "paddw mm3,__jpmm_offset128  \n"
   "packuswb mm3,mm0            \n"
   "movd  [rdi+1*8], mm3        \n"
   "paddsw  mm5, mm1            \n"
-   add_off128_mmx_reg(mm6)
+  "paddw mm6,__jpmm_offset128  \n"
   "packuswb mm6,mm0            \n"
   "movd  [rdi+2*8], mm6        \n"
   "psubsw  mm4, mm1            \n"
@@ -1717,26 +1472,26 @@ __mmx_idct_cols:
   "psraw  mm5, 6               \n"
   "movq  mm6, mm2              \n"
   "psraw  mm4, 6               \n"
-   add_off128_mmx_reg(mm0)
+  "paddw mm0,__jpmm_offset128  \n"
   "packuswb mm0,mm1            \n"
   "movd  [rdi+5*8], mm0        \n"
   "paddsw  mm2, mm3            \n"
-   add_off128_mmx_reg(mm7)
+  "paddw mm7,__jpmm_offset128  \n"
   "packuswb mm7,mm0            \n"
   "movd  [rdi+6*8], mm7        \n"
   "psubsw  mm6, mm3            \n"
-   add_off128_mmx_reg(mm5)
+  "paddw mm5,__jpmm_offset128  \n"
   "packuswb mm5,mm0            \n"
   "movd  [rdi+0*8], mm5        \n"
   "psraw  mm2, 6               \n"
-   add_off128_mmx_reg(mm4)
+  "paddw mm4,__jpmm_offset128  \n"
   "packuswb mm4,mm0            \n"
   "movd  [rdi+7*8], mm4        \n"
   "psraw  mm6, 6               \n"
-   add_off128_mmx_reg(mm2)
+  "paddw mm2,__jpmm_offset128  \n"
   "packuswb mm2,mm0            \n"
   "movd  [rdi+3*8], mm2        \n"
-   add_off128_mmx_reg(mm6)
+  "paddw mm6,__jpmm_offset128  \n"
   "packuswb mm6,mm0            \n"
   "movd  [rdi+4*8], mm6        \n"
   "add rdi,4                   \n"
@@ -1753,41 +1508,14 @@ __mmx_idct_cols:
 
 #else
 
-#ifdef __PIC__
-#if __GNUC__ > 3
- __asm__(
- 	"push 	%ebx		\n"
-    "push 	%ecx		\n"
-	"call	__i686.get_pc_thunk.bx	\n"
-	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
-	"lea	__jpmm_row_tabs@GOTOFF(%ebx),%eax	\n"
-	"lea	__jpmm_rounder@GOTOFF(%ebx),%ecx	\n"
-	"mov	%ecx,%ebx	\n"
-	"pop	%ecx   \n"
-   );
-#else
- __asm__(
- 	"push 	%ebx		\n"
-    "push 	%ecx		\n"
-	"call	__tg_get_pc	\n"
-	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
-	"lea	__jpmm_row_tabs@GOTOFF(%ebx),%eax	\n"
-	"lea	__jpmm_rounder@GOTOFF(%ebx),%ecx	\n"
-	"mov	%ecx,%ebx	\n"
-	"pop	%ecx   \n"
-   );
-#endif
-#endif /* __PIC__ */  
   // gcc inline assembly code (32bits)
   // Rows
   __asm__ (
   ".intel_syntax noprefix     \n"
+  "push ebx                   \n"
   "mov ecx, 8                 \n"
-#ifndef __PIC__
-  "push ebx					  \n"
-  "lea	eax,__jpmm_row_tabs	  \n"
-  "lea	ebx,__jpmm_rounder	  \n"
-#endif
+  "lea eax, __jpmm_row_tabs   \n"
+  "lea ebx, __jpmm_rounder    \n"
 "__mmx_idct_rows:             \n"
   "movq mm0, [esi]            \n"
   "movq mm1, [esi+8]          \n"
@@ -1854,12 +1582,12 @@ __mmx_idct_cols:
   ".intel_syntax noprefix      \n"
   "mov ecx, 2                  \n"
 "__mmx_idct_cols:              \n"
-   mov_tg_3_16_mmx_reg(mm0)
+  "movq  mm0, __jpmm_tg_3_16   \n"
   "movq  mm3, [esi+16*3]       \n"
   "movq  mm1, mm0              \n"
   "movq  mm5, [esi+16*5]       \n"
   "pmulhw  mm0, mm3            \n"
-   mov_tg_1_16_mmx_reg(mm4)
+  "movq  mm4, __jpmm_tg_1_16   \n"
   "pmulhw  mm1, mm5            \n"
   "movq  mm7, [esi+16*7]       \n"
   "movq  mm2, mm4              \n"
@@ -1869,7 +1597,7 @@ __mmx_idct_cols:
   "pmulhw  mm2, mm6            \n"
   "paddsw  mm1, mm3            \n"
   "psubsw  mm0, mm5            \n"
-   mov_ocos_4_16_mmx_reg(mm3)
+  "movq  mm3, __jpmm_ocos_4_16 \n"
   "paddsw  mm1, mm5            \n"
   "paddsw  mm4, mm6            \n"
   "psubsw  mm2, mm7            \n"
@@ -1879,7 +1607,7 @@ __mmx_idct_cols:
   "psubsw  mm6, mm0            \n"
   "psubsw  mm4, mm1            \n"
   "paddsw  mm2, mm0            \n"
-   mov_tg_2_16_mmx_reg(mm7)
+  "movq  mm7, __jpmm_tg_2_16   \n"
   "movq  mm1, mm4              \n"
   "movq  [eax+0], mm5          \n"
   "paddsw  mm1, mm2            \n"
@@ -1919,11 +1647,11 @@ __mmx_idct_cols:
   "psraw  mm7, 6               \n"
   "movq  mm4, mm5              \n"
   "psraw  mm0, 6               \n"
-   add_off128_mmx_reg(mm3)
+  "paddw mm3,__jpmm_offset128  \n"
   "packuswb mm3,mm0            \n"
   "movd  [edi+1*8], mm3        \n"
   "paddsw  mm5, mm1            \n"
-   add_off128_mmx_reg(mm6)
+  "paddw mm6,__jpmm_offset128  \n"
   "packuswb mm6,mm0            \n"
   "movd  [edi+2*8], mm6        \n"
   "psubsw  mm4, mm1            \n"
@@ -1931,26 +1659,26 @@ __mmx_idct_cols:
   "psraw  mm5, 6               \n"
   "movq  mm6, mm2              \n"
   "psraw  mm4, 6               \n"
-   add_off128_mmx_reg(mm0)
+  "paddw mm0,__jpmm_offset128  \n"
   "packuswb mm0,mm1            \n"
   "movd  [edi+5*8], mm0        \n"
   "paddsw  mm2, mm3            \n"
-   add_off128_mmx_reg(mm7)
+  "paddw mm7,__jpmm_offset128  \n"
   "packuswb mm7,mm0            \n"
   "movd  [edi+6*8], mm7        \n"
   "psubsw  mm6, mm3            \n"
-   add_off128_mmx_reg(mm5)
+  "paddw mm5,__jpmm_offset128  \n"
   "packuswb mm5,mm0            \n"
   "movd  [edi+0*8], mm5        \n"
   "psraw  mm2, 6               \n"
-   add_off128_mmx_reg(mm4)
+  "paddw mm4,__jpmm_offset128  \n"
   "packuswb mm4,mm0            \n"
   "movd  [edi+7*8], mm4        \n"
   "psraw  mm6, 6               \n"
-   add_off128_mmx_reg(mm2)
+  "paddw mm2,__jpmm_offset128  \n"
   "packuswb mm2,mm0            \n"
   "movd  [edi+3*8], mm2        \n"
-   add_off128_mmx_reg(mm6)
+  "paddw mm6,__jpmm_offset128  \n"
   "packuswb mm6,mm0            \n"
   "movd  [edi+4*8], mm6        \n"
   "add edi,4                   \n"
@@ -1969,15 +1697,5 @@ __mmx_idct_cols:
 #endif /* _WINDOWS */
 
 }
-
-#ifndef _WINDOWS
-#ifdef __PIC__
-__asm__(
-"__tg_get_pc:				\n"
-	"movl	(%esp),%ebx	\n"
-	"ret	\n"
-   );
-#endif /* __PIC__ */
-#endif /* WINDOWS */
 
 #endif /* JPG_USE_ASM */

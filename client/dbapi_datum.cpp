@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -27,28 +27,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Log$
-// Revision 3.14  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.13  2009/11/02 08:35:03  taurel
-// - Fix warnings reported when compiling using the option -Wall
-//
-// Revision 3.12  2009/08/27 07:22:43  taurel
-// - Commit after anothre merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.11  2009/06/17 08:52:49  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-//
-// Revision 3.10.2.1  2009/06/12 09:24:18  taurel
-// - Fix some typos in Exception reason field
-//
-// Revision 3.10  2009/04/20 13:25:50  taurel
-// - Fix bug in case of default constructed DeviceProxy and alias() method
-// - Add some ctors from "const char *" to make programmer's life easier
-//
-// Revision 3.9  2009/03/13 09:32:27  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
 // Revision 3.8  2009/01/21 12:45:15  taurel
 // - Change CopyRights for 2009
 //
@@ -232,12 +210,6 @@ namespace Tango
 DbDatum::DbDatum(string p_name):ext(NULL)
 {
 	name = p_name;
-	value_size = 0;
-	value_string.resize(0);
-}
-
-DbDatum::DbDatum(const char *p_name):name(p_name),ext(NULL)
-{
 	value_size = 0;
 	value_string.resize(0);
 }
@@ -665,7 +637,7 @@ bool DbDatum::operator >> (DevLong& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDbDatum",
+			ApiDataExcept::throw_exception((const char*)"Api_EmptyDbDbDatum",
 					     (const char*)"cannot extract long, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(long)");
 		}
@@ -945,7 +917,7 @@ bool DbDatum::operator >> (float& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDbDatum",
+			ApiDataExcept::throw_exception((const char*)"Api_EmptyDbDbDatum",
 					     (const char*)"cannot extract float, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(float)");
 		}
@@ -1022,7 +994,7 @@ bool DbDatum::operator >> (double& datum)
 	{
 		if (exceptions_flags.test(isempty_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_EmptyDbDatum",
+			ApiDataExcept::throw_exception((const char*)"Api_EmptyDbDatum",
 					     (const char*)"cannot extract double, no data in DbDatum object ",
 					     (const char*)"DbDatum::operator >>(double)");
 		}

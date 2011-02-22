@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :    N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -33,16 +33,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.7  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.6  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.5  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.4  2008/10/06 15:01:09  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -105,10 +95,10 @@ namespace Tango
 //-----------------------------------------------------------------------------
 void DServer::add_logging_target (const Tango::DevVarStringArray *argin)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::add_logging_target" << endl;
-  	Logging::add_logging_target(argin);
-  	cout4 << "Leaving DServer::add_logging_target" << endl;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::add_logging_target" << endl;
+  Logging::add_logging_target(argin);
+  cout4 << "Leaving DServer::add_logging_target" << endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -118,10 +108,10 @@ void DServer::add_logging_target (const Tango::DevVarStringArray *argin)
 //-----------------------------------------------------------------------------
 void DServer::remove_logging_target (const Tango::DevVarStringArray *argin)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::remove_logging_target" << endl;
-  	Logging::remove_logging_target(argin);
-  	cout4 << "Leaving DServer::remove_logging_target" << endl;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::remove_logging_target" << endl;
+  Logging::remove_logging_target(argin);
+  cout4 << "Leaving DServer::remove_logging_target" << endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -131,11 +121,11 @@ void DServer::remove_logging_target (const Tango::DevVarStringArray *argin)
 //-----------------------------------------------------------------------------
 Tango::DevVarStringArray* DServer::get_logging_target (const std::string& dev_name)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::get_logging_target" << endl;
-  	DevVarStringArray* res = Logging::get_logging_target(dev_name);
-  	cout4 << "Leaving DServer::get_logging_target" << endl;
-  	return res;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::get_logging_target" << endl;
+  DevVarStringArray* res = Logging::get_logging_target(dev_name);
+  cout4 << "Leaving DServer::get_logging_target" << endl;
+  return res;
 }
 
 //+----------------------------------------------------------------------------
@@ -145,10 +135,10 @@ Tango::DevVarStringArray* DServer::get_logging_target (const std::string& dev_na
 //-----------------------------------------------------------------------------
 void DServer::set_logging_level (const Tango::DevVarLongStringArray *argin)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::set_logging_level" << endl;
-  	Logging::set_logging_level(argin);
-  	cout4 << "Leaving DServer::set_logging_level" << endl;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::set_logging_level" << endl;
+  Logging::set_logging_level(argin);
+  cout4 << "Leaving DServer::set_logging_level" << endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -158,11 +148,11 @@ void DServer::set_logging_level (const Tango::DevVarLongStringArray *argin)
 //-----------------------------------------------------------------------------
 DevVarLongStringArray* DServer::get_logging_level (const DevVarStringArray *argin)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::get_logging_level" << endl;
-  	DevVarLongStringArray* res = Logging::get_logging_level(argin);
-  	cout4 << "Leaving DServer::get_logging_level" << endl;
-  	return res;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::get_logging_level" << endl;
+  DevVarLongStringArray* res = Logging::get_logging_level(argin);
+  cout4 << "Leaving DServer::get_logging_level" << endl;
+  return res;
 }
 
 //+----------------------------------------------------------------------------
@@ -172,10 +162,10 @@ DevVarLongStringArray* DServer::get_logging_level (const DevVarStringArray *argi
 //-----------------------------------------------------------------------------
 void  DServer::stop_logging (void)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::stop_logging" << endl;
-  	Logging::stop_logging();
-  	cout4 << "Leaving DServer::stop_logging" << endl;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::stop_logging" << endl;
+  Logging::stop_logging();
+  cout4 << "Leaving DServer::stop_logging" << endl;
 }
 
 //+----------------------------------------------------------------------------
@@ -185,10 +175,10 @@ void  DServer::stop_logging (void)
 //-----------------------------------------------------------------------------
 void  DServer::start_logging (void)
 {
-  	NoSyncModelTangoMonitor mon(this);
-  	cout4 << "Entering DServer::start_logging" << endl;
-  	Logging::start_logging();
-  	cout4 << "Leaving DServer::start_logging" << endl;
+  NoSyncModelTangoMonitor mon(this);
+  cout4 << "Entering DServer::start_logging" << endl;
+  Logging::start_logging();
+  cout4 << "Leaving DServer::start_logging" << endl;
 }
 
 

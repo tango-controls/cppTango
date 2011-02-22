@@ -1,45 +1,3 @@
-///=============================================================================	
-//
-// file :		jpeg_encoder.cpp
-//
-// description :        Simple jpeg coding/decoding library
-//                      Main encoding functions
-//
-// project :		TANGO
-//
-// author(s) :		JL Pons
-//
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//                      European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
-// $Revision$
-//
-// $Log$
-// Revision 1.3  2009/09/08 14:23:16  taurel
-// - No real change, just to make CVS quiet
-//
-// Revision 1.2  2009/04/20 14:55:58  jlpons
-// Added GPL header, changed memory allocation to C++ fashion.
-//
-//=============================================================================
-
 // 
 // File:        jpeg_encoder.cpp
 // Description: Main encoding functions
@@ -453,7 +411,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
   jpeg_write_DHT(bs,hTables+1,0+0x10);
   jpeg_write_DHT(bs,hTables+2,1);
   jpeg_write_DHT(bs,hTables+3,1+0x10);
-  
+
   // Luminance component (Y)
   comps[0].horzSampling = 2;
   comps[0].vertSampling = 2;
@@ -499,7 +457,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
     jpeg_rgb24_to_ycc(width,height,rWidth,rHeight,rgb,ycc);
   else
     jpeg_rgb32_to_ycc(width,height,rWidth,rHeight,rgb,ycc);
-	
+
   // Encode blocks (downsampling :2 for Cb and Cr)
   int nbMCU = rWidth/16 * rHeight/16;
   short *block = ycc;
@@ -533,7 +491,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
     block+=384;
 
   }
-  
+
   block = ycc;
   bs->init();
   for(int i=0;i<nbMCU;i++) {
@@ -561,7 +519,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
   *jpegSize = bs->get_size();
   memcpy(*jpegData,bs->get_data(),bs->get_size());
   delete bs;
-  
+
 }
 
 // --------------------------------------------------------------------------

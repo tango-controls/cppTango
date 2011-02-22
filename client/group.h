@@ -8,7 +8,7 @@
 //
 // author(s) :          N.Leclercq
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,20 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.18  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.17  2010/09/09 13:28:04  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.16.4.1  2010/06/23 14:10:23  taurel
-// - Full Tango as described in doc Appendix C is now also supported
-// for group
-//
-// Revision 3.16  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.15  2008/10/06 15:02:17  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -527,8 +513,6 @@ class GroupElementFactory
   //- instanciatethe GroupElement which name matches the specified pattern with the specified timeout
   //- timeout = -1 => do not change the timeout
   static GroupElements instanciate (const std::string& p, int timeout = -1);
-
-  static void parse_name (const std::string& p, string &db_host,int &db_port,string &dev_pattern);
 
   //- forbidden methods
   GroupElementFactory();

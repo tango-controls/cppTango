@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          J.Meyer
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,26 +34,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 1.9  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.8  2009/09/07 15:05:39  taurel
-// - Fix a small typos in printed message
-//
-// Revision 1.7  2009/04/29 14:34:09  jensmeyer
-// Added some more debug info.
-//
-// Revision 1.6  2009/04/27 06:42:49  jensmeyer
-// Corrected the check for a valid database
-// object in SubDevDiag::store_sub_devices().
-//
-// Revision 1.5  2009/04/24 13:03:51  jensmeyer
-// Added a check for NULL pointer when accessing the database
-// device via the Util class.
-//
-// Revision 1.4  2009/03/18 12:18:45  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
 // Revision 1.3  2009/03/13 09:33:29  taurel
 // - Small changes to fix Windows VC8 warnings in Warning level 3
 //
@@ -111,7 +91,7 @@ SubDevDiag::~SubDevDiag()
 
 void SubDevDiag::set_associated_device(string dev_name) 
 {
-	cout4 << "SubDevDiag::set_associated_device() entering ... ";
+	cout4 << "SubDevDiag::get_associated_device() entering ... ";
 	
 	// get thread
 	omni_thread *th = omni_thread::self();
@@ -137,7 +117,7 @@ void SubDevDiag::set_associated_device(string dev_name)
 
 string SubDevDiag::get_associated_device() 
 {
-	cout4 << "SubDevDiag::get_associated_device() entering ... " << endl;
+	cout4 << "SubDevDiag::get_associated_device() entering ... ";
 	
 	string dev_name = "";
 	
@@ -150,8 +130,6 @@ string SubDevDiag::get_associated_device()
 		if ( tmp_py_data != NULL )
 			dev_name = (static_cast<PyData *>(tmp_py_data))->device_name;
 	}
-	
-	cout4 << "SubDevDiag::get_associated_device() found : " << dev_name << endl;
 	return dev_name;
 }
 
@@ -430,23 +408,16 @@ void SubDevDiag::store_sub_devices()
 				list << ipos->second.sub_devices;    
 				db_data.push_back(list);
 
-				// Check for a valid database object.
-				// In the database server itself or any server
-				// running without a database the database object is
-				// not initialised.
-				if ( Tango::Util::_UseDb == true )
+				// cout << "Storing sub device list for " << ipos->first << endl;
+				
+				if ( ipos->first.empty() )
 				{
-					// cout << "Storing sub device list for " << ipos->first << endl;
-
-					if ( ipos->first.empty() )
-					{
-						DServer *adm_dev = tg->get_dserver_device();
-						tg->get_database()->put_device_property (adm_dev->get_name(), db_data);
-					}
-					else
-					{
-						tg->get_database()->put_device_property (ipos->first, db_data);
-					}
+					DServer *adm_dev = tg->get_dserver_device();
+					tg->get_database()->put_device_property (adm_dev->get_name(), db_data);
+				}
+				else
+				{
+					tg->get_database()->put_device_property (ipos->first, db_data);
 				}
 
 				// clear the modification flag
