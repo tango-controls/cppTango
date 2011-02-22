@@ -78,10 +78,6 @@ case $build_os in
      AC_DEFINE(__darwin__,1,If we're running on darwin/MacOsX)
 	  CXXFLAGS="$CXXFLAGS -D__darwin__"
      ;;
-	 freebsd*)
-     AC_DEFINE(__freebsd__,1,If we're running on FreeBSD)
-	  CXXFLAGS="$CXXFLAGS -D__freebsd__"
-     ;;
 esac
 
 # Create files
@@ -90,23 +86,19 @@ AC_CREATE_GENERIC_CONFIG
 
 AC_CONFIG_FILES([
 Makefile
+log4tango.spec
 log4tango.pc
 config/Makefile
+doc/Makefile
+doc/Doxyfile
+doc/html/Makefile
 src/Makefile
 include/Makefile
 include/log4tango/Makefile
 include/log4tango/threading/Makefile
 tests/Makefile
 ])
-
-if test "x$enable_doc" = xyes; then
-AC_CONFIG_FILES([
-doc/Makefile
-doc/Doxyfile
-doc/html/Makefile
-])
-fi
-
 AC_OUTPUT
 
-AC_CREATE_PREFIX_CONFIG_H(include/log4tango/config.h,$PACKAGE_TARNAME,include/config.h)
+AC_CREATE_PREFIX_CONFIG_H(include/log4tango/config.h,$PACKAGE_TARNAME, include/config.h)
+
