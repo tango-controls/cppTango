@@ -49,7 +49,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /out:"lib\tango.5.5.2.lib"
+# ADD LIB32 /out:"lib\tango.5.5.lib"
 
 !ELSEIF  "$(CFG)" == "tango_static - Win32 Debug"
 
@@ -73,7 +73,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LIB32=link.exe -lib
 # ADD BASE LIB32 /nologo
-# ADD LIB32 /out:"lib\tangod.5.5.2.lib"
+# ADD LIB32 /out:"lib\tangod.5.5.lib"
 
 !ENDIF 
 

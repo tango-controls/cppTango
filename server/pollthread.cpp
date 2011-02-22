@@ -13,112 +13,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.31  2011/01/10 13:55:07  taurel
-// - For periodic and archive/periodic, take time got before the attribute
-// is read to decide if it is time to store data. This time is much
-// more stable than time got after the attribute is read. Reading attribute
-// on some device takes a long and unstabe time.
-//
-// Revision 3.30  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.29  2010/09/08 12:32:53  taurel
-// - Miscellaneous changes to implement a better timeout management
-// (now manage a user connect timeout with the env. variable TANGOconnectTimeout)
-//
-// Revision 3.28  2010/01/20 07:53:02  taurel
-// - Commit after merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.27.2.1  2010/01/18 16:12:40  taurel
-// - Fix polling thread tuning algorithum bug in case of object with very slow polling period (> 100 sec)
-//
-// Revision 3.27  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.26  2009/02/16 09:30:37  jensmeyer
-// Modified print_list() method to handle sub device diagnostics.
-//
-// Revision 3.25  2009/02/03 15:17:11  jensmeyer
-// Added the storage of sub device properties on a regular basis of
-// 30 minutes to the heartbeat thread of a device server.
-//
-// Revision 3.24  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.23  2009/01/08 14:58:03  taurel
-// - The read_attribute_4 also transfer the client authentification
-//
-// Revision 3.22  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.21  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.20  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 3.19  2008/07/01 07:38:40  taurel
-// - Some more code for a proper implementation of the DevEncoded data type with the new IDL release 4
-//
-// Revision 3.18  2008/05/20 12:44:12  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.17.2.1  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.17  2007/05/15 07:46:59  taurel
-// - The polling thread is not configured by a separate thread any more.
-// The Add_obj_polling command now support a delta_t to start the first polling
-//
-// Revision 3.16  2007/04/20 14:41:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.15  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.14  2007/03/29 07:09:25  taurel
-// - Change some data types for 64 bits compatibility
-//
-// Revision 3.13  2007/03/02 09:44:03  jensmeyer
-// Corrected the use of detect_and_push event methods. Uses now the _3 methods
-// for idl_vers>3 everywhere.
-//
-// Revision 3.12  2006/05/18 08:51:56  taurel
-// - Miscellaneous changes due to Python device server ported to Windows
-// - Fix some bugs discovered by Windows VC8 using the test suite
-// - Update Windows resource file include path
-// - Fix some Windows VC8 warnings
-//
 // Revision 3.11  2006/04/13 13:31:44  taurel
 // Several changes:
 // - A new DeviceImpl::push_event() method to push USER event with State as data
@@ -292,6 +189,10 @@ static const char *RcsId = "$Id$\n$Name$";
 //   mutex
 //
 //
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -302,13 +203,13 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <eventsupplier.h>
 #include <math.h>
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	#include <sys/timeb.h>
 #else
 	#include <sys/time.h>
 #endif 
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 	#include <iomanip>
 #else
 	#include <iomanip.h>
@@ -330,20 +231,14 @@ PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 //
 //--------------------------------------------------------------------------
 
-PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cmd(cmd),p_mon(m),
-					    sleep(1),polling_stop(true),
+PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m): shared_cmd(cmd),p_mon(m),
+					    sleep(1),polling_stop(false),
 					    attr_names(1),tune_ctr(1),
-					    need_two_tuning(false),auto_upd(-1),send_heartbeat(heartbeat)
+					    need_two_tuning(false),auto_upd(-1)
 {
 	attr_names.length(1);
-
-	cci = 0;
-	dummy_cl_id.cpp_clnt(cci);
 	
-	if (heartbeat == true)
-		polling_stop = false;
-	
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	LARGE_INTEGER f;
 	BOOL is_ctr;
 	is_ctr = QueryPerformanceFrequency(&f);
@@ -371,36 +266,6 @@ void *PollThread::run_undetached(void *ptr)
 	bool per_thread_data_created = false;
 
 //
-// If the thread is the event heartbeat thread,
-// use it also for the storage of sub device properties.
-// Declare a work item to check the for new sub devices
-// regularly.
-// 
-	if ( send_heartbeat == true )
-	{
-		WorkItem wo;
-		
-		wo.dev = NULL;
-		wo.poll_list = NULL;
-		wo.type = STORE_SUBDEV;
-		wo.update = 30*60*1000;			// check ervery 30 minutes
-		wo.name = "Sub device property storage";
-		wo.needed_time.tv_sec  = 0;
-		wo.needed_time.tv_usec = 0;
-		
-#ifdef _TG_WINDOWS_
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
-#endif
-		now.tv_sec = now.tv_sec - DELTA_T;
-		wo.wake_up_date = now; 
-		insert_in_list(wo);
-	}
-
-//
 // The infinite loop
 //
 		
@@ -423,7 +288,7 @@ void *PollThread::run_undetached(void *ptr)
 				per_thread_data_created = true;
 			}
 				
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 			_ftime(&now_win);
 			now.tv_sec = (unsigned long)now_win.time;
 			now.tv_usec = (long)now_win.millitm * 1000;
@@ -447,7 +312,7 @@ void *PollThread::run_undetached(void *ptr)
 				break;
 			}
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 			_ftime(&after_win);
 			after.tv_sec = (unsigned long)after_win.time;
 			after.tv_usec = (long)after_win.millitm * 1000;
@@ -473,18 +338,8 @@ void *PollThread::run_undetached(void *ptr)
 		}
 		catch (omni_thread_fatal &)
 		{
-			cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
-#ifndef _TG_WINDOWS_
-			time_t t = time(NULL);
-			cerr << ctime(&t);
-#endif
-			cerr << "Trying to re-enter the main loop" << endl;
-		}
-		catch (const std::exception &ex)
-		{
-			cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << endl;
-			cerr << ex.what() << endl;
-#ifndef _TG_WINDOWS_
+			cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << endl;
+#ifndef WIN32
 			time_t t = time(NULL);
 			cerr << ctime(&t);
 #endif
@@ -606,11 +461,6 @@ void PollThread::execute_cmd()
 		if (wo.update != 0)
 		{
 			wo.wake_up_date = now;
-			if (local_cmd.new_upd != 0)
-			{
-				cout5 << "Received a delta from now of " << local_cmd.new_upd << endl;
-				T_ADD(wo.wake_up_date,local_cmd.new_upd * 1000);
-			}
 //			add_random_delay(wo.wake_up_date);
 			insert_in_list(wo);
 			unsigned long nb_works = works.size();
@@ -636,7 +486,7 @@ void PollThread::execute_cmd()
 		name_to_del = local_cmd.name;
 		type_to_del = local_cmd.type;
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		unsigned int i,nb_elt;
 		nb_elt = works.size();
 		ite = works.begin();
@@ -694,7 +544,7 @@ void PollThread::execute_cmd()
 		cout5 << "Received a Rem device command" << endl;
 		
 		dev_to_del = local_cmd.dev;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		nb_elt = works.size();
 		ite = works.begin();
 		for (i = 0;i < nb_elt;i++)
@@ -760,7 +610,7 @@ void PollThread::execute_cmd()
 			if (local_cmd.new_upd != 0)
 			{
 				WorkItem tmp_work = *ite;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 				unsigned int i,nb_elt;
 				nb_elt = works.size();
 				ite = works.begin();
@@ -795,7 +645,7 @@ void PollThread::execute_cmd()
 // triggered list
 //
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 				unsigned int i,nb_elt;
 				nb_elt = works.size();
 				ite = works.begin();
@@ -876,7 +726,7 @@ void PollThread::execute_cmd()
 		break;
 
 //
-// Add the event heartbeat every 9 seconds
+// Add the event heartbeat every 10 seconds
 //
 
 	case Tango::POLL_ADD_HEARTBEAT:
@@ -884,7 +734,7 @@ void PollThread::execute_cmd()
 		wo.dev = NULL;
 		wo.poll_list = NULL;
 		wo.type = EVENT_HEARTBEAT;
-		wo.update = 9000;
+		wo.update = 10000;
 		wo.name = "Event heartbeat";
 		wo.needed_time.tv_sec = 0;
 		wo.needed_time.tv_usec = TIME_HEARTBEAT;
@@ -1015,9 +865,6 @@ void PollThread::one_more_poll()
 		case Tango::EVENT_HEARTBEAT:
 			eve_heartbeat(tmp);
 			break;
-		case Tango::STORE_SUBDEV:
-			store_subdev(tmp);
-			break;
 		}
 	}
 
@@ -1086,6 +933,16 @@ void PollThread::one_more_trigg()
 	}
 	
 //
+// Inform requesting thread that the work is done
+//
+
+	{
+		omni_mutex_lock sync(p_mon);
+		shared_cmd.trigger = false;
+		p_mon.signal();
+	}
+	
+//
 // Do the job
 //	
 
@@ -1097,16 +954,7 @@ void PollThread::one_more_trigg()
 		else
 			poll_attr(tmp);
 	}
-
-//
-// Inform requesting thread that the work is done
-//
-
-	{
-		omni_mutex_lock sync(p_mon);
-		shared_cmd.trigger = false;
-		p_mon.signal();
-	}
+			
 }
 
 
@@ -1127,23 +975,13 @@ void PollThread::print_list()
 	ite = works.begin();
 	for (i = 0;i < nb_elt;i++)
 	{
-		if (ite->type != EVENT_HEARTBEAT )
+		if (ite->type != EVENT_HEARTBEAT)
 		{
-			if ( ite->type != STORE_SUBDEV)
-			{
-				cout4 << "Dev name = " << ite->dev->get_name()
-					<< ", obj name = " << ite->name
-					<< ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << setw(6) << setfill('0')
-					<< ite->wake_up_date.tv_usec << endl;
-			}
-			else
-			{
-				cout4 <<  ite->name
-					<< ", next wake_up at " << + ite->wake_up_date.tv_sec
-					<< "," << setw(6) << setfill('0')
-					<< ite->wake_up_date.tv_usec << endl;
-			}
+			cout4 << "Dev name = " << ite->dev->get_name()
+          		<< ", obj name = " << ite->name
+          		<< ", next wake_up at " << + ite->wake_up_date.tv_sec
+          		<< "," << setw(6) << setfill('0')
+          		<< ite->wake_up_date.tv_usec << endl;
 		}
 		else
 		{
@@ -1229,7 +1067,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 //
 
 	unsigned long needed_sum = 0;
-	unsigned long min_upd = 0;
+	unsigned long min_upd = 100000000;
 	long max_delta_needed;
 	
 	if (from_needed == true)
@@ -1240,16 +1078,8 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 			needed_sum = needed_sum + (unsigned long)needed_time_usec;
 			
 			unsigned long update_usec = (unsigned long)ite->update * 1000;
-			
-			if (ite == works.begin())
-			{
+			if (min_upd > update_usec)
 				min_upd = update_usec;
-			}
-			else
-			{
-				if (min_upd > update_usec)
-					min_upd = update_usec;
-			}
 		}
 
 //
@@ -1324,11 +1154,11 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 // description : 	This method computes the new poll date.
 //
 // argument: In :	- time : The actual date
-//					- upd : The polling update period (mS)
+//			- upd : The polling update period (mS)
 //
 //--------------------------------------------------------------------------
 
-void PollThread::compute_new_date(struct timeval &time,int upd)
+void PollThread::compute_new_date(struct timeval &time,long upd)
 {
 	double ori_d = (double)time.tv_sec + ((double)time.tv_usec / 1000000);
 	double new_d = ori_d + ((double)(upd) / 1000);
@@ -1435,16 +1265,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 		Tango::DevFailed except(errs);
 		long idl_vers = to_do.dev->get_dev_idl_version();
 			
-		if (idl_vers >= 3)
-			event_supplier->detect_and_push_events_3(to_do.dev,
-						       idl_vers,
-						       &dummy_att3,
-						       NULL,
-						       &except,
-						       to_do.name,
-							   (struct timeval *)NULL);
-		else	
-			event_supplier->detect_and_push_events(to_do.dev,
+		event_supplier->detect_and_push_events(to_do.dev,
 						       idl_vers,
 						       dummy_att,
 						       &except,
@@ -1475,7 +1296,7 @@ void PollThread::poll_cmd(WorkItem &to_do)
 	CORBA::Any *argout = NULL;
 	Tango::DevFailed *save_except = NULL;
 	struct timeval before_cmd,after_cmd,needed_time;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	struct _timeb before_win,after_win;
 	LARGE_INTEGER before,after;
 #endif
@@ -1484,7 +1305,7 @@ void PollThread::poll_cmd(WorkItem &to_do)
 	bool cmd_failed = false;
 	try
 	{
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		if (ctr_frequency != 0)
 			QueryPerformanceCounter(&before);
 		_ftime(&before_win);
@@ -1501,7 +1322,7 @@ void PollThread::poll_cmd(WorkItem &to_do)
 
 		argout = to_do.dev->command_inout(to_do.name.c_str(),in_any);
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		if (ctr_frequency != 0)
 		{
 			QueryPerformanceCounter(&after);
@@ -1530,7 +1351,7 @@ void PollThread::poll_cmd(WorkItem &to_do)
 	catch (Tango::DevFailed &e)
 	{
 		cmd_failed = true;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		if (ctr_frequency != 0)
 		{
 			QueryPerformanceCounter(&after);
@@ -1602,13 +1423,12 @@ void PollThread::poll_attr(WorkItem &to_do)
         << ", Attr name = " << to_do.name << endl;
 	
 	struct timeval before_cmd,after_cmd,needed_time;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	struct _timeb before_win,after_win;
 	LARGE_INTEGER before,after;
 #endif
 	Tango::AttributeValueList *argout = NULL;
 	Tango::AttributeValueList_3 *argout_3 = NULL;
-	Tango::AttributeValueList_4 *argout_4 = NULL;
 	Tango::DevFailed *save_except = NULL;
 	bool attr_failed = false;	
 	vector<PollObj *>::iterator ite;
@@ -1616,7 +1436,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 	long idl_vers = to_do.dev->get_dev_idl_version();
 	try
 	{
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		if (ctr_frequency != 0)
 			QueryPerformanceCounter(&before);
 		_ftime(&before_win);
@@ -1632,14 +1452,12 @@ void PollThread::poll_attr(WorkItem &to_do)
 //
 
 		attr_names[0] = to_do.name.c_str();
-		if (idl_vers >= 4)
-			argout_4 = (static_cast<Device_4Impl *>(to_do.dev))->read_attributes_4(attr_names,Tango::DEV,dummy_cl_id);
-		else if (idl_vers == 3)
+		if (idl_vers >= 3)
 			argout_3 = (static_cast<Device_3Impl *>(to_do.dev))->read_attributes_3(attr_names,Tango::DEV);
 		else		
 			argout = to_do.dev->read_attributes(attr_names);
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		if (ctr_frequency != 0)
 		{
 			QueryPerformanceCounter(&after);
@@ -1668,7 +1486,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 	catch (Tango::DevFailed &e)
 	{
 		attr_failed = true;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		if (ctr_frequency != 0)
 		{
 			QueryPerformanceCounter(&after);
@@ -1706,23 +1524,11 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 	if (idl_vers >= 3)
 	{
-		if (idl_vers == 4)
+		if ((attr_failed == false) && ((*argout_3)[0].err_list.length() != 0))
 		{
-			if ((attr_failed == false) && ((*argout_4)[0].err_list.length() != 0))
-			{
-				attr_failed = true;
-				save_except = new Tango::DevFailed((*argout_4)[0].err_list);
-				delete argout_4;
-			}
-		}
-		else
-		{
-			if ((attr_failed == false) && ((*argout_3)[0].err_list.length() != 0))
-			{
-				attr_failed = true;
-				save_except = new Tango::DevFailed((*argout_3)[0].err_list);
-				delete argout_3;
-			}
+			attr_failed = true;
+			save_except = new Tango::DevFailed((*argout_3)[0].err_list);
+			delete argout_3;
 		}
 	}
 	
@@ -1737,17 +1543,8 @@ void PollThread::poll_attr(WorkItem &to_do)
 	if (event_supplier != NULL)
 	{
 		if (attr_failed == true)
-		{		
-			if (idl_vers >= 3)
-				event_supplier->detect_and_push_events_3(to_do.dev,
-						               idl_vers,
-						       	       &dummy_att3,
-						       	       NULL,
-						               save_except,
-						               to_do.name,
-									   &before_cmd);
-			else	
-				event_supplier->detect_and_push_events(to_do.dev,
+		{			
+			event_supplier->detect_and_push_events(to_do.dev,
 						               idl_vers,
 						       	       dummy_att,
 						               save_except,
@@ -1755,25 +1552,15 @@ void PollThread::poll_attr(WorkItem &to_do)
 		}
 		else
 		{
-			if (idl_vers >= 4)
+			if (idl_vers >= 3)
 				event_supplier->detect_and_push_events_3(to_do.dev,
-							       	       	   idl_vers,
-							       	       	   NULL,
-						       	               &((*argout_4)[0]),
+							       	       idl_vers,
+						       	               (*argout_3)[0],
 						                       save_except,
-						                       to_do.name,
-											   &before_cmd);
-			else if (idl_vers == 3)
-				event_supplier->detect_and_push_events_3(to_do.dev,
-							       	       	   idl_vers,
-						       	               &((*argout_3)[0]),
-						       	               NULL,
-						                       save_except,
-						                       to_do.name,
-											   &before_cmd);				
+						                       to_do.name);
 			else
 				event_supplier->detect_and_push_events(to_do.dev,
-							       	       	   idl_vers,
+							       	       idl_vers,
 						       	               (*argout)[0],
 						                       save_except,
 						                       to_do.name);
@@ -1783,8 +1570,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 // Heartbeat - check to see if it is time to send a heartbeat event
 //
 
-		if (send_heartbeat == true)
-			event_supplier->push_heartbeat_event();
+		event_supplier->push_heartbeat_event();
 	}
 	
 			
@@ -1799,9 +1585,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 		ite = to_do.dev->get_polled_obj_by_type_name(to_do.type,to_do.name);
 		if (attr_failed == false)
 		{
-			if (idl_vers >= 4)
-				(*ite)->insert_data(argout_4,before_cmd,needed_time);
-			else if (idl_vers == 3)
+			if (idl_vers >= 3)
 				(*ite)->insert_data(argout_3,before_cmd,needed_time);						
 			else
 				(*ite)->insert_data(argout,before_cmd,needed_time);
@@ -1814,9 +1598,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 	{
 		if (attr_failed == false)
 		{
-			if (idl_vers >= 4)
-				delete argout_4;
-			else if (idl_vers == 3)
+			if (idl_vers >= 3)
 				delete argout_3;
 			else
 				delete argout;
@@ -1846,45 +1628,11 @@ void PollThread::eve_heartbeat(WorkItem &to_do)
 
 	EventSupplier *event_supplier;
 	event_supplier = Util::instance()->get_event_supplier();
-	if ((event_supplier != NULL) && (send_heartbeat == true))
+	if (event_supplier != NULL)
 	{
 		event_supplier->push_heartbeat_event();
 	}
 	
-}
-
-
-//+-------------------------------------------------------------------------
-//
-// method : 		PollThread::store_subdev
-// 
-// description : 	Store the sub device properties when
-//                  needed.
-//
-// argument : in :	- to_do : The work item
-//
-//--------------------------------------------------------------------------
-
-void PollThread::store_subdev(WorkItem &to_do)
-{
-	static bool ignore_call = true;
-	
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Store sub device property data if needed!" << endl;
-	
-	
-	if ( !ignore_call )
-	{
-		Tango::Util *tg = Tango::Util::instance();
-		tg->get_sub_dev_diag().store_sub_devices();
-	}
-	else
-	{
-		// ignore the first call to avoid storage during
-		// device server start-up.
-		ignore_call = false;
-	}
 }
 
 } // End of Tango namespace
