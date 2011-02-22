@@ -8,7 +8,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,12 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.8  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.7  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
 // Revision 3.6  2009/09/10 07:00:30  taurel
 // - Add some documentation fo rthe new ctor
 //
@@ -63,8 +57,6 @@
 
 #ifndef _ENCODED_ATT_H
 #define _ENCODED_ATT_H
-
-#include <encoded_format.h>
 
 namespace Tango
 {

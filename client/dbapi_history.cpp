@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- Feb 2007
 //
-// Copyright (C) :      2007,2008,2009,2010,2011
+// Copyright (C) :      2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -27,12 +27,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Log$
-// Revision 3.6  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.5  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.4  2008/10/06 15:02:17  taurel
 // - Changed the licensing info from GPL to LGPL
 //

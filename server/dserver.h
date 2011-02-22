@@ -11,7 +11,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,26 +34,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.22  2010/09/30 08:12:59  taurel
-// - Add a new way to write class_factory as a function instead as
-// DServer classs method
-//
-// Revision 3.21  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.20  2010/06/18 13:57:09  taurel
-// - Add a way (using properties) to define a minimum polling period
-//
-// Revision 3.19  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.18  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
 // Revision 3.17  2009/08/27 07:23:45  taurel
 // - Commit after another merge with Release_7_0_2-bugfixes branch
 //
@@ -282,12 +262,13 @@ namespace Tango
 //=============================================================================
 
 typedef Tango::DeviceClass *(*Cpp_creator_ptr)(const char *);
-typedef void (*ClassFactoryFuncPtr)(DServer *);
+
 
 class DServer: public Device_4Impl
 {
 public :
-	DServer(DeviceClass *,const char *,const char *,Tango::DevState,const char *);
+	DServer(DeviceClass *,const char *,const char *,
+		Tango::DevState,const char *);
 	~DServer();
 	
 	Tango::DevVarStringArray *query_class();
@@ -341,31 +322,23 @@ public :
 	long get_poll_th_pool_size() {return polling_th_pool_size;}
 	bool get_opt_pool_usage() {return optimize_pool_usage;}
 	vector<string> get_poll_th_conf() {return polling_th_pool_conf;}
-
-	void check_lock_owner(DeviceImpl *,const char *,const char *);
-	void check_upd_authorized(DeviceImpl *,int,PollObjType,string &);
-
-	TANGO_IMP_EXP static void register_class_factory(ClassFactoryFuncPtr f_ptr) {class_factory_func_ptr = f_ptr;}
-	void _add_class(DeviceClass *dc) {this->add_class(dc);}
 	
 	friend class EventSupplier;
 
 protected :
-	string							process_name;
-	string							instance_name;
-	string							full_name;
-	string 							fqdn;
+	string			process_name;
+	string			instance_name;
+	string			full_name;
+	string 			fqdn;
 	
-	vector<DeviceClass *>			class_list;
+	vector<DeviceClass *>	class_list;
 	
-	time_t							last_heartbeat;
-	bool							heartbeat_started;
+	time_t			last_heartbeat;
+	bool			heartbeat_started;
 	
-	long							polling_th_pool_size;
-	vector<string>					polling_th_pool_conf;
-	bool							optimize_pool_usage;
-
-	static ClassFactoryFuncPtr 		class_factory_func_ptr;
+	long			polling_th_pool_size;
+	vector<string>	polling_th_pool_conf;
+	bool			optimize_pool_usage;
 	
 private:
 #if ((defined _TG_WINDOWS_) && (defined TANGO_HAS_DLL) && !(defined _TANGO_LIB))

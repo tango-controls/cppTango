@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,19 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.20  2010/12/09 07:56:10  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.19  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.18  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.17  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.16  2008/11/18 09:28:56  taurel
 // - Ported to gcc 4.3
 // - Removed some cout messages
@@ -197,10 +184,6 @@
 	#else
 		#define GCC_STD
 	#endif
-
-	#if __GNUC_MINOR__ >= 4
-		#define GCC_HAS_AI_ADDRCONFIG
-	#endif
 #endif
 
 #if __GNUC__ == 2
@@ -220,9 +203,7 @@
 #if ((defined WIN32) || (defined WIN64))
 	#if (_MSC_VER >= 1400)       // VC8+ 
 		#define WIN32_VC8
-	#elif (_MSC_VER >= 1500)
-		#define WIN32_VC9
-	#endif   // VC8+/VC9
+	#endif   // VC8+
 #endif
 
 //

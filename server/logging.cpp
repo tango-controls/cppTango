@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -33,16 +33,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.15  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.14  2009/04/07 15:23:36  taurel
-// - Fix some warnings when compiled using gcc 4.3 on 64 bits computer
-//
 // Revision 3.13  2009/01/21 12:47:15  taurel
 // - Change CopyRights for 2009
 //
@@ -397,11 +387,6 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
         Except::throw_exception((const char *)"API_DeviceNotFound",o.str(),
                                 (const char *)"Logging::add_logging_target");
       }
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"add_logging_target",(dl[j]->get_name()).c_str());
-	  }
       // for each device matching pattern...
       for (unsigned int j = 0; j < dl.size(); j++) {
         // ...add logging target
@@ -670,11 +655,6 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
               Except::throw_exception((const char *)"API_DeviceNotFound",o.str(),
                                       (const char *)"Logging::remove_logging_target");
       }
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"remove_logging_target",(dl[j]->get_name()).c_str());
-	  }
       // get target type and name from argin (syntax type::name)
       type_name = (*argin)[i++];
       std::transform(type_name.begin(), type_name.end(), type_name.begin(), ::tolower);
@@ -871,11 +851,6 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
       std::transform(pattern.begin(), pattern.end(), pattern.begin(), ::tolower);
       // get devices which name matches the pattern pattern
       dl = Util::instance()->get_device_list(pattern);
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"set_logging_level",(dl[j]->get_name()).c_str());
-	  }
       // for each device in dl
       for (unsigned int j = 0; j < dl.size(); j++) {
         // get device's logger (created if does not already exist)

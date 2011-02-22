@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,31 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.31  2011/01/10 13:55:07  taurel
-// - For periodic and archive/periodic, take time got before the attribute
-// is read to decide if it is time to store data. This time is much
-// more stable than time got after the attribute is read. Reading attribute
-// on some device takes a long and unstabe time.
-//
-// Revision 3.30  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.29  2010/09/08 12:32:53  taurel
-// - Miscellaneous changes to implement a better timeout management
-// (now manage a user connect timeout with the env. variable TANGOconnectTimeout)
-//
-// Revision 3.28  2010/01/20 07:53:02  taurel
-// - Commit after merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.27.2.1  2010/01/18 16:12:40  taurel
-// - Fix polling thread tuning algorithum bug in case of object with very slow polling period (> 100 sec)
-//
-// Revision 3.27  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
 // Revision 3.26  2009/02/16 09:30:37  jensmeyer
 // Modified print_list() method to handle sub device diagnostics.
 //
@@ -473,17 +448,7 @@ void *PollThread::run_undetached(void *ptr)
 		}
 		catch (omni_thread_fatal &)
 		{
-			cerr << "OUPS !! A omni thread fatal exception received by a polling thread !!!!!!!!" << endl;
-#ifndef _TG_WINDOWS_
-			time_t t = time(NULL);
-			cerr << ctime(&t);
-#endif
-			cerr << "Trying to re-enter the main loop" << endl;
-		}
-		catch (const std::exception &ex)
-		{
-			cerr << "OUPS !! An unforeseen standard exception has been received by a polling thread !!!!!!" << endl;
-			cerr << ex.what() << endl;
+			cerr << "OUPS !! A omni thread fatal exception !!!!!!!!" << endl;
 #ifndef _TG_WINDOWS_
 			time_t t = time(NULL);
 			cerr << ctime(&t);
@@ -1229,7 +1194,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 //
 
 	unsigned long needed_sum = 0;
-	unsigned long min_upd = 0;
+	unsigned long min_upd = 100000000;
 	long max_delta_needed;
 	
 	if (from_needed == true)
@@ -1240,16 +1205,8 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 			needed_sum = needed_sum + (unsigned long)needed_time_usec;
 			
 			unsigned long update_usec = (unsigned long)ite->update * 1000;
-			
-			if (ite == works.begin())
-			{
+			if (min_upd > update_usec)
 				min_upd = update_usec;
-			}
-			else
-			{
-				if (min_upd > update_usec)
-					min_upd = update_usec;
-			}
 		}
 
 //
@@ -1441,8 +1398,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 						       &dummy_att3,
 						       NULL,
 						       &except,
-						       to_do.name,
-							   (struct timeval *)NULL);
+						       to_do.name);
 		else	
 			event_supplier->detect_and_push_events(to_do.dev,
 						       idl_vers,
@@ -1744,8 +1700,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 						       	       &dummy_att3,
 						       	       NULL,
 						               save_except,
-						               to_do.name,
-									   &before_cmd);
+						               to_do.name);
 			else	
 				event_supplier->detect_and_push_events(to_do.dev,
 						               idl_vers,
@@ -1761,16 +1716,14 @@ void PollThread::poll_attr(WorkItem &to_do)
 							       	       	   NULL,
 						       	               &((*argout_4)[0]),
 						                       save_except,
-						                       to_do.name,
-											   &before_cmd);
+						                       to_do.name);
 			else if (idl_vers == 3)
 				event_supplier->detect_and_push_events_3(to_do.dev,
 							       	       	   idl_vers,
 						       	               &((*argout_3)[0]),
 						       	               NULL,
 						                       save_except,
-						                       to_do.name,
-											   &before_cmd);				
+						                       to_do.name);				
 			else
 				event_supplier->detect_and_push_events(to_do.dev,
 							       	       	   idl_vers,

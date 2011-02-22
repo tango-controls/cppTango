@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 29 June 2004
 ///
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,55 +37,6 @@ static const char *RcsId = "$Id$";
 ///		$Revision$
 ///
 ///		$Log$
-///		Revision 1.44  2011/01/24 12:33:27  taurel
-///		- Fix end of bug with periodic and archive event (periodic part)
-///		Also removed the DELTA on sec numbers for time got for out-of-sync error
-///		
-///		Revision 1.43  2011/01/18 14:49:44  taurel
-///		- Typo for windows
-///		
-///		Revision 1.42  2011/01/18 14:16:46  taurel
-///		- In case of archive or periodic event and error out_of_sync, get time
-///		in detect_and_push_archive_event (periodic as well) because the received
-///		pointer is null
-///		
-///		Revision 1.41  2011/01/10 13:55:07  taurel
-///		- For periodic and archive/periodic, take time got before the attribute
-///		is read to decide if it is time to store data. This time is much
-///		more stable than time got after the attribute is read. Reading attribute
-///		on some device takes a long and unstabe time.
-///		
-///		Revision 1.40  2011/01/10 13:09:02  taurel
-///		- No retry on command to get data for cache during DS startup
-///		- Only three reties during DbDevExport
-///		- Device are deleted by omniORB even if not exported into Tango database
-///		
-///		Revision 1.39  2010/12/08 10:13:08  taurel
-///		- Commit after a merge with the bugfixes branch
-///		
-///		Revision 1.38.2.1  2010/11/25 15:52:52  taurel
-///		- Fix bug 3118520 (DS freezes on Windows)
-///		
-///		Revision 1.38  2010/11/03 13:22:29  taurel
-///		- Add a connect timeout when the server tries to contact the notifd
-///		
-///		Revision 1.37  2010/09/09 13:46:00  taurel
-///		- Add year 2010 in Copyright notice
-///		
-///		Revision 1.36  2010/05/26 09:15:36  taurel
-///		- Another commit after merge with the bug fixes branch
-///		
-///		Revision 1.35.2.2  2010/05/21 09:43:39  taurel
-///		- Re-use the same event channel in case of server restart when a file
-///		is use as database
-///		
-///		Revision 1.35.2.1  2010/05/18 08:27:23  taurel
-///		- Events from device in a DS started with a file as database are now
-///		back into operation
-///		
-///		Revision 1.35  2009/10/27 08:25:02  taurel
-///		- No real changes. Only some code beautifulling
-///		
 ///		Revision 1.34  2009/08/27 07:23:45  taurel
 ///		- Commit after another merge with Release_7_0_2-bugfixes branch
 ///		
@@ -332,10 +283,7 @@ EventSupplier *EventSupplier::create(CORBA::ORB_var _orb,
 		new EventSupplier(_orb,ns.SupAdm,ns.pID,ns.ProCon,ns.StrProPush,ns.EveChaFac,ns.EveCha,ns.ec_ior);
 		
 	_event_supplier->fqdn_prefix = "tango://";
-	if (Util::_FileDb == true)
-		_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + host_name + ':';
-	else
-		_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + db->get_db_host() + ':' + db->get_db_port() + '/' ;
+	_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + db->get_db_host() + ':' + db->get_db_port() + '/' ;
 	
 	return _event_supplier;
 }
@@ -489,9 +437,8 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 // reference so we can invoke its methods
 //
 
-		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
-		_eventChannelFactory = CosNotifyChannelAdmin::EventChannelFactory::_narrow(event_factory_obj);
-		omniORB::setClientConnectTimeout(0);
+		_eventChannelFactory =
+	    	CosNotifyChannelAdmin::EventChannelFactory::_narrow(event_factory_obj);
 
 //
 // Make sure the CORBA object was really an EventChannelFactory
@@ -507,7 +454,6 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 	}
 	catch (...)
 	{
-		omniORB::setClientConnectTimeout(0);
 
 //
 // Impossible to connect to notifd. In case there is already an entry in the db
@@ -590,21 +536,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 		}
 	}
 	else
-	{
-		try
-		{
-			Tango::DbDatum na;
-		
-			string cl_name(NOTIFD_CHANNEL);
-			na = db->get_device_name(server_name,cl_name);
-			channel_ior = na.value_string[0];
-			channel_exported = 1;
-		}
-		catch (Tango::DevFailed &)
-		{
-			channel_exported = 0;						
-		}
-	}
+		channel_exported = false;
 
 	if (channel_exported)
 	{
@@ -687,16 +619,10 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 			
 //
 // In case of DS started with -file option, store the
-// event channel within the event supplier object and in the file
+// event channel within the event supplier object
 //
 				
 				ns.ec_ior = ior_string;
-
-				try
-				{
-					db->write_event_channel_ior_filedatabase(server_name,ior_string);
-				}
-				catch (Tango::DevFailed &e) {}
 			}
 			CORBA::string_free(_ior);
 		}
@@ -718,8 +644,6 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 	else
 	{
 		cout4 << "Tango::EventSupplier::create(): _narrow worked, use this event channel\n";
-		if (Util::_FileDb == true)
-			ns.ec_ior = channel_ior;
 	}
 
 //
@@ -730,7 +654,8 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 // We'll use the channel's default Supplier admin
 //
 
-	CosNotifyChannelAdmin::SupplierAdmin_var _supplierAdmin = _eventChannel -> default_supplier_admin();
+	CosNotifyChannelAdmin::SupplierAdmin_var 
+		_supplierAdmin = _eventChannel -> default_supplier_admin();
 	if (CORBA::is_nil(_supplierAdmin))
 	{
         cerr << "Could not get CosNotifyChannelAdmin::SupplierAdmin" << endl;
@@ -1018,8 +943,7 @@ void EventSupplier::detect_and_push_events_3(DeviceImpl *device_impl,
 				    Tango::AttributeValue_3 *attr_value,
 				    Tango::AttributeValue_4 *attr_value_4,
 				    DevFailed *except,
-				    string &attr_name,
-					struct timeval *time_bef_attr)
+				    string &attr_name)
 {
 	string event, domain_name;
 	time_t now, change_subscription, periodic_subscription, archive_subscription;
@@ -1042,14 +966,14 @@ void EventSupplier::detect_and_push_events_3(DeviceImpl *device_impl,
 		
 	if (periodic_subscription < EVENT_RESUBSCRIBE_PERIOD)
 	{
-		detect_and_push_periodic_event_3(device_impl,attr_value,attr_value_4,attr,attr_name,except,time_bef_attr);
+		detect_and_push_periodic_event_3(device_impl,attr_value,attr_value_4,attr,attr_name,except);
 	}
 	else
 		attr.ext->event_periodic_client_3 = false;
 		
 	if (archive_subscription < EVENT_RESUBSCRIBE_PERIOD)
 	{
-		detect_and_push_archive_event_3(device_impl,attr_value,attr_value_4,attr,attr_name,except,time_bef_attr);
+		detect_and_push_archive_event_3(device_impl,attr_value,attr_value_4,attr,attr_name,except);
 	}
 	else
 		attr.ext->event_archive_client_3 = false;
@@ -2281,7 +2205,6 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 //			attr_name : The attribute name
 //			except : The exception thrown during the last
 //				 attribute reading. NULL if no exception
-//			time_bef_attr : Date before the attribute was read
 //
 //-----------------------------------------------------------------------------
 
@@ -2290,247 +2213,229 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 						  AttributeValue_4 *attr_value_4,
 						  Attribute &attr,
 						  string &attr_name,
-						  DevFailed *except,
-						  struct timeval *time_bef_attr)
-{						  
-	string event, domain_name;
-	double delta_change_rel = 0.0;
-	double delta_change_abs = 0.0;
-	bool is_change = false;
-	bool force_change = false;
-	bool period_change = false;
-	bool quality_change = false;
+						  DevFailed *except)
+{
+						  
+		string event, domain_name;
+		double delta_change_rel = 0.0;
+		double delta_change_abs = 0.0;
+		bool is_change = false;
+		bool force_change = false;
+		bool period_change = false;
+		bool quality_change = false;
 
-	cout3 << "EventSupplier::detect_and_push_archive_event(): called for attribute " << attr_name << endl;
+		cout3 << "EventSupplier::detect_and_push_archive_event(): called for attribute " << attr_name << endl;
 
-	double now_ms, ms_since_last_periodic;
-	Tango::AttrQuality the_quality;
-
-	if (attr_value_4 != NULL)
-		the_quality = attr_value_4->quality;
-	else
-		the_quality = attr_value->quality;
-
-	struct timeval now;
-	if (time_bef_attr == NULL)
-	{
+		double now_ms, ms_since_last_periodic;
 #ifdef _TG_WINDOWS_
-		struct _timeb now_win;
-
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
+        struct _timeb           now_win;
 #endif
-		now.tv_sec = now.tv_sec - DELTA_T;
-	}
+        struct timeval          now_timeval;
 
-//
-// get the mutex to synchronize the sending of events
-//
-
-	omni_mutex_lock l(event_mutex);
-
-//
-// Do not get time now. This metthod is executed after the attribute has been read.
-// For some device, reading one attribute could be long and even worse could have an
-// unstable reading time. If we takes time now, it will also be unstable.
-// Use the time taken in the polling thread before the attribute was read. This one is much
-// more stable
-//		
-
-	if (time_bef_attr != NULL)
-		now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
-	else
-		now_ms = (double)now.tv_sec * 1000. + (double)now.tv_usec / 1000.;
-	ms_since_last_periodic = now_ms - attr.ext->archive_last_periodic;
-
-	int arch_period;
-	TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
-	mon1.get_monitor();
-	arch_period = attr.ext->archive_period;
-	mon1.rel_monitor();
-
-//
-// Specify the precision interval for the archive period testing
-// 2% are used for periods < 5000 ms and
-// 100ms are used for periods > 5000 ms.
-//
-
-	if ( arch_period >= 5000 )
-	{
-		arch_period = arch_period - DELTA_PERIODIC_LONG;
-	}
-	else
-	{
 #ifdef _TG_WINDOWS_
-		double tmp = (double)arch_period * DELTA_PERIODIC;
-		double int_part,eve_round;
-		double frac = modf(tmp,&int_part);
-		if (frac >= 0.5)
-			eve_round = ceil(tmp);
+		_ftime(&now_win);
+		now_timeval.tv_sec = (unsigned long)now_win.time;
+		now_timeval.tv_usec = (long)now_win.millitm * 1000;
+#else
+		gettimeofday(&now_timeval,NULL);
+#endif
+
+		Tango::AttrQuality the_quality;
+
+		if (attr_value_4 != NULL)
+			the_quality = attr_value_4->quality;
 		else
-			eve_round = floor(tmp);					
+			the_quality = attr_value->quality;
+
+		// get the mutex to synchronize the sending of events
+		omni_mutex_lock l(event_mutex);
+		
+
+		now_ms = (double)now_timeval.tv_sec * 1000. + (double)now_timeval.tv_usec / 1000.;
+		ms_since_last_periodic = now_ms - attr.ext->archive_last_periodic;
+
+		int arch_period;
+		TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
+		mon1.get_monitor();
+		arch_period = attr.ext->archive_period;
+		mon1.rel_monitor();
+		
+		// Specify the precision interval for the archive period testing
+		// 2% are used for periods < 5000 ms and
+		// 100ms are used for periods > 5000 ms.
+	
+		if ( arch_period >= 5000 )
+		{
+			arch_period = arch_period - DELTA_PERIODIC_LONG;
+		}
+		else
+		{
+#ifdef _TG_WINDOWS_
+			double tmp = (double)arch_period * DELTA_PERIODIC;
+			double int_part,eve_round;
+			double frac = modf(tmp,&int_part);
+			if (frac >= 0.5)
+				eve_round = ceil(tmp);
+			else
+				eve_round = floor(tmp);					
 #else
 	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
-		double eve_round = rint((double)arch_period * DELTA_PERIODIC);
+			double eve_round = rint((double)arch_period * DELTA_PERIODIC);
 	#else
 		#if (defined GCC_SOLARIS)
-		double eve_round = rint((double)arch_period * DELTA_PERIODIC);
+			double eve_round = rint((double)arch_period * DELTA_PERIODIC);
 		#else
-		double eve_round = round((double)arch_period * DELTA_PERIODIC);
+			double eve_round = round((double)arch_period * DELTA_PERIODIC);
 		#endif
 	#endif
 #endif
 			arch_period = (int)eve_round;
 		}		
-			
+		
+		
 		if ((ms_since_last_periodic > arch_period) && (attr.ext->prev_archive_event.inited == true))
 		{
 			is_change = true;
 			period_change = true;
 		}
-	
+		
 //
 // if no attribute of this name is registered with change then
 // insert the current value
 //
 
 
-	if (!attr.ext->prev_archive_event.inited)
-	{
-		if (except != NULL)
+		if (!attr.ext->prev_archive_event.inited)
 		{
-			attr.ext->prev_archive_event.err    = true;
-			attr.ext->prev_archive_event.except = *except;
+			if (except != NULL)
+			{
+				attr.ext->prev_archive_event.err    = true;
+				attr.ext->prev_archive_event.except = *except;
+			}
+			else
+			{
+				if (attr_value_4 != NULL)
+					attr.ext->prev_archive_event.value_4 = attr_value_4->value;
+				else
+					attr.ext->prev_archive_event.value = attr_value->value;
+				attr.ext->prev_archive_event.quality = the_quality;
+				attr.ext->prev_archive_event.err = false;
+			}
+			attr.ext->archive_last_periodic = now_ms;
+			attr.ext->archive_last_event = now_ms;
+			attr.ext->prev_archive_event.inited = true;
 		}
 		else
 		{
-			if (attr_value_4 != NULL)
-				attr.ext->prev_archive_event.value_4 = attr_value_4->value;
-			else
-				attr.ext->prev_archive_event.value = attr_value->value;
-			attr.ext->prev_archive_event.quality = the_quality;
-			attr.ext->prev_archive_event.err = false;
-		}
-		attr.ext->archive_last_periodic = now_ms;
-		attr.ext->archive_last_event = now_ms;
-		attr.ext->prev_archive_event.inited = true;
-	}
-	else
-	{
 	
 //
 // determine delta_change in percent compared with previous event sent
 //
 
-		if (is_change == false)
-		{
-			is_change = detect_change_3(attr,attr_value,attr_value_4,true,
-						  delta_change_rel,
-						  delta_change_abs,except,
-						  force_change,device_impl);
+			if (is_change == false)
+			{
+				is_change = detect_change_3(attr,attr_value,attr_value_4,true,
+							  delta_change_rel,
+							  delta_change_abs,except,
+							  force_change,device_impl);
+			}
 		}
-	}
 
-//
-// check whether the data quality has changed.
-// Fire event on a quality change.
-//
+		// check whether the data quality has changed.
+		// Fire event on a quality change.
 		
-	if ( except == NULL &&
-		 attr.ext->prev_archive_event.quality != the_quality )
-	{
-		is_change = true;
-		quality_change = true;
-	}	
-
-	if (is_change)
-	{
-		vector<string> filterable_names;
-		vector<double> filterable_data;
-		vector<string> filterable_names_lg;
-		vector<long> filterable_data_lg;
-
-		domain_name = device_impl->get_name() + "/" + attr_name;
-
-		if (except != NULL)
+		if ( except == NULL &&
+		     attr.ext->prev_archive_event.quality != the_quality )
 		{
-			attr.ext->prev_archive_event.err    = true;
-			attr.ext->prev_archive_event.except = *except;
+			is_change = true;
+			quality_change = true;
 		}	
-		else
+		
+		if (is_change)
 		{
-			if (attr_value_4 != NULL)
-				attr.ext->prev_archive_event.value_4 = attr_value_4->value;
+			vector<string> filterable_names;
+			vector<double> filterable_data;
+			vector<string> filterable_names_lg;
+			vector<long> filterable_data_lg;
+
+			domain_name = device_impl->get_name() + "/" + attr_name;
+			
+			if (except != NULL)
+			{
+				attr.ext->prev_archive_event.err    = true;
+				attr.ext->prev_archive_event.except = *except;
+			}
 			else
-				attr.ext->prev_archive_event.value   = attr_value->value;
-			attr.ext->prev_archive_event.quality = the_quality;
-			attr.ext->prev_archive_event.err     = false;
-		}
+			{
+				if (attr_value_4 != NULL)
+					attr.ext->prev_archive_event.value_4 = attr_value_4->value;
+				else
+					attr.ext->prev_archive_event.value   = attr_value->value;
+				attr.ext->prev_archive_event.quality = the_quality;
+				attr.ext->prev_archive_event.err     = false;
+			}
 
 //
 // If one of the subscribed client is still using IDL 3, the attribute value has to be sent
 // using an AttributeValue_3 data type
 //
 
-		bool need_free = false;
-		if ((attr.ext->event_archive_client_3 == true) && (attr_value == NULL))
-		{
-			attr_value = new AttributeValue_3();
-			attr.AttributeValue_4_2_AttributeValue_3(attr_value_4,attr_value);
-			attr_value_4 = NULL;
-			need_free = true;
+			bool need_free = false;
+			if ((attr.ext->event_archive_client_3 == true) && (attr_value == NULL))
+			{
+				attr_value = new AttributeValue_3();
+				attr.AttributeValue_4_2_AttributeValue_3(attr_value_4,attr_value);
+				attr_value_4 = NULL;
+				need_free = true;
+			}
+			
+			filterable_names_lg.push_back("counter");
+			if (period_change == true)
+			{
+				attr.ext->archive_periodic_counter++;
+				attr.ext->archive_last_periodic = now_ms;
+				filterable_data_lg.push_back(attr.ext->archive_periodic_counter);
+			}
+			else
+			{
+				filterable_data_lg.push_back(-1);
+			}
+
+			filterable_names.push_back("delta_change_rel");
+			filterable_data.push_back(delta_change_rel);
+			filterable_names.push_back("delta_change_abs");
+			filterable_data.push_back(delta_change_abs);
+			filterable_names.push_back("forced_event");
+			if (force_change == true)
+				filterable_data.push_back((double)1.0);
+			else
+				filterable_data.push_back((double)0.0);
+			
+			filterable_names.push_back("quality");
+			if (quality_change == true)
+				filterable_data.push_back((double)1.0);
+			else
+				filterable_data.push_back((double)0.0);
+				
+			filterable_names.push_back("delta_event");
+			filterable_data.push_back(now_ms - attr.ext->archive_last_event);
+			attr.ext->archive_last_event = now_ms;
+									
+			push_event_3(device_impl,
+				   "archive",
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   attr_value,
+				   attr_value_4,
+				   attr_name,
+				   except);
+				   
+			if (need_free == true)
+				delete attr_value;
 		}
-
-		filterable_names_lg.push_back("counter");
-		if (period_change == true)
-		{
-			attr.ext->archive_periodic_counter++;
-			attr.ext->archive_last_periodic = now_ms;
-			filterable_data_lg.push_back(attr.ext->archive_periodic_counter);
-		}
-		else
-		{
-			filterable_data_lg.push_back(-1);
-		}
-
-		filterable_names.push_back("delta_change_rel");
-		filterable_data.push_back(delta_change_rel);
-		filterable_names.push_back("delta_change_abs");
-		filterable_data.push_back(delta_change_abs);
-		filterable_names.push_back("forced_event");
-		if (force_change == true)
-			filterable_data.push_back((double)1.0);
-		else
-			filterable_data.push_back((double)0.0);
-
-		filterable_names.push_back("quality");
-		if (quality_change == true)
-			filterable_data.push_back((double)1.0);
-		else
-			filterable_data.push_back((double)0.0);
-
-		filterable_names.push_back("delta_event");
-		filterable_data.push_back(now_ms - attr.ext->archive_last_event);
-		attr.ext->archive_last_event = now_ms;
-
-		push_event_3(device_impl,
-			   "archive",
-			   filterable_names,
-			   filterable_data,
-			   filterable_names_lg,
-			   filterable_data_lg,
-			   attr_value,
-			   attr_value_4,
-			   attr_name,
-			   except);
-
-		if (need_free == true)
-			delete attr_value;
 	}
-}
 
 
 //+----------------------------------------------------------------------------
@@ -2547,7 +2452,6 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 //			attr_name : The attribute name
 //			except : The exception thrown during the last
 //				 attribute reading. NULL if no exception
-//			time_bef_attr : Time before the attribute was read
 //
 //-----------------------------------------------------------------------------
 
@@ -2556,39 +2460,23 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 						AttributeValue_4 *attr_value_4,
 					    Attribute &attr,
 					    string &attr_name,
-					    DevFailed *except,
-						struct timeval *time_bef_attr)
+					    DevFailed *except)
 {
 	string event, domain_name;
 	double now_ms, ms_since_last_periodic;
-
-	struct timeval now;
-	if (time_bef_attr == NULL)
-	{
 #ifdef _TG_WINDOWS_
-		struct _timeb now_win;
-
-		_ftime(&now_win);
-		now.tv_sec = (unsigned long)now_win.time;
-		now.tv_usec = (long)now_win.millitm * 1000;
-#else
-		gettimeofday(&now,NULL);
+	struct _timeb           now_win;
 #endif
-		now.tv_sec = now.tv_sec - DELTA_T;
-	}
+	struct timeval          now_timeval;
 
-//
-// Do not get time now. This metthod is executed after the attribute has been read.
-// For some device, reading one attribute could be long and even worse could have an
-// unstabe reading time. If we takes time now, it will also be unstable.
-// Use the time taken inthe polling thread befor the attribute was read. This one is much
-// more stable
-//
-
-	if (time_bef_attr != NULL)
-		now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
-	else
-		now_ms = (double)now.tv_sec * 1000. + (double)now.tv_usec / 1000.;
+#ifdef _TG_WINDOWS_
+	_ftime(&now_win);
+	now_timeval.tv_sec = (unsigned long)now_win.time;
+	now_timeval.tv_usec = (long)now_win.millitm * 1000;
+#else
+	gettimeofday(&now_timeval,NULL);
+#endif
+	now_ms = (double)now_timeval.tv_sec * 1000. + (double)now_timeval.tv_usec / 1000.;
 
 // get the mutex to synchronize the sending of events
 
@@ -2765,22 +2653,7 @@ void EventSupplier::push_event_3(DeviceImpl *device_impl,
 		if (attr_value != NULL)
 			struct_event.remainder_of_body <<= (*attr_value);
 		else
-		{
 			struct_event.remainder_of_body <<= (*attr_value_4);
-
-//
-// Insertion in the event structure Any also copy the mutex ptr.
-// When this event structure will be deleted (at the end of this method),
-// the struct inserted into the Any will also be deleted.
-// This will unlock the mutex....
-// Clean the mutex ptr in the structure inserted in the Any t prevent this
-// bad behavior
-//
-
-			const Tango::AttributeValue_4 *tmp_ptr;
-			struct_event.remainder_of_body >>= tmp_ptr;
-			const_cast<Tango::AttributeValue_4 *>(tmp_ptr)->mut_ptr = NULL;
-		}
 	}
 	else
 		struct_event.remainder_of_body <<= except->errors;
@@ -2886,27 +2759,5 @@ void EventSupplier::disconnect_from_notifd()
 	catch(CORBA::Exception &) {}
 }
 
-//+----------------------------------------------------------------------------
-//
-// method : 		EventSupplier::set_svr_port_num()
-// 
-// description : 	In case of DS using file as database, add the server port
-//					number received as argument to the fqdn prefix
-//
-// argument : in :	port_num : The DS port number
-//
-//-----------------------------------------------------------------------------
-
-void EventSupplier::set_svr_port_num(string &port_num)
-{
-
-//
-// If the port number is not already specified in the fqdn prefix, add it
-//
-
-	unsigned int sz = _instance->fqdn_prefix.size();
-	if (_instance->fqdn_prefix[sz - 1] == ':')
-		_instance->fqdn_prefix = _instance->fqdn_prefix + port_num + "/#";
-}
 
 } /* End of Tango namespace */

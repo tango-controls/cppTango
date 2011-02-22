@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,29 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.58  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.57  2010/07/16 10:51:53  taurel
-// - Now it's possible to fill the polling buffer externally for R/W attribute
-// specifying the attribute written part
-//
-// Revision 3.56  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.55  2010/01/20 07:53:03  taurel
-// - Commit after merge with the Release_7_1_1-bugfixes branch
-// Revision 3.54.2.2  2010/05/18 08:27:23  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 3.54.2.1  2009/12/18 14:49:02  taurel
-// - If the DS main thread is not created using omnithread, it is also
-// necessary to call omnithread::release_dummy() before the thread exit
-//
-// Revision 3.54  2009/11/10 12:08:28  taurel
-// - Change the default value for the UtilExt::poll_pool_size data member
-//
 // Revision 3.53  2009/11/09 13:35:53  taurel
 // - Do not initialize an unsigned long with -1!!
 //
@@ -312,7 +289,7 @@ public:
 	UtilExt():poll_mon("utils_poll"),ser_model(BY_DEVICE),only_one("process"),
 	 	  py_interp(NULL),py_ds(false),py_dbg(false),db_cache(NULL),inter(NULL),
 		  svr_starting(true),svr_stopping(false),db_svr_version(0),poll_pool_size(ULONG_MAX),
-		  conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false)
+		  conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false)
 	{shared_data.cmd_pending=false;shared_data.trigger=false;
 	cr_py_lock = new CreatePyLock();}
 	
@@ -353,10 +330,7 @@ public:
 	bool 						(*ev_loop_func)(void);	// Ptr to user event loop
 	bool						shutdown_server;		// Flag to exit the manual event loop
 	
-	SubDevDiag					sub_dev_diag;			// Object to handle sub device diagnostics
-	bool						_dummy_thread;			// The main DS thread is not the process main thread
-
-	string						svr_port_num;			// Server port when using file as database
+	SubDevDiag					sub_dev_diag;	// Object to handle sub device diagnostics
 };
 
 /**
@@ -645,7 +619,6 @@ public:
 	int get_polling_thread_id() {return ext->heartbeat_th_id;}
 	int get_heartbeat_thread_id() {return ext->heartbeat_th_id;}
 	void stop_heartbeat_thread();
-	string &get_svr_port_num() {return ext->svr_port_num;}
 	
 	void create_event_supplier();
 	
@@ -1113,15 +1086,12 @@ public:
 //
 
 		Tango::Attribute &att = dev->get_device_attr()->get_attr_by_name(att_name.c_str());
-		Tango::WAttribute *w_att_ptr = NULL;
-		Tango::AttrWriteType w_type = att.get_writable();
-		if (w_type == Tango::READ_WRITE)
-			w_att_ptr = &(dev->get_device_attr()->get_w_attr_by_name(att_name.c_str()));
 
 //
 // Check that it is not a WRITE only attribute
 //
 
+		Tango::AttrWriteType w_type = att.get_writable();
 		if (w_type == Tango::WRITE)
 		{
 			TangoSys_OMemStream o;
@@ -1130,29 +1100,6 @@ public:
 
 			Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
 				   		(const char *)"Util::fill_attr_polling_buffer");
-		}
-
-//
-// If the attribute is not READ_WRITE, the ptr to written part should always be NULL
-//
-
-		unsigned long nb_elt = data.length();
-		if (w_type != READ_WRITE)
-		{
-			for (int i = 0;i < nb_elt;i++)
-			{
-				if ((data.get_data())[i].wr_ptr != NULL)
-				{
-					TangoSys_OMemStream o;
-					o << "The attribute " << att_name;
-					o << " for device " << dev->get_name();
-					o << " is not a READ_WRITE attribute. You can't set the attribute written part.";
-					o << "It is defined for record number " << i + 1 << ends;
-
-					Except::throw_exception((const char *)"API_NotSupportedFeature",o.str(),
-				   							(const char *)"Util::fill_attr_polling_buffer");
-				}	
-			}
 		}
 
 //
@@ -1173,31 +1120,6 @@ public:
 		}
 
 //
-// DevEncoded data type is not supported for spectrum or image attribute
-// Paranoid code? This case should never happens!
-//
-
-		if ((att.get_data_type() == DEV_ENCODED) && 
-			(att.get_data_format() != Tango::SCALAR) &&
-			(w_type == Tango::READ_WRITE))
-		{
-			for (int i = 0;i < nb_elt;i++)
-			{
-				if ((data.get_data())[i].wr_ptr != NULL)
-				{
-					TangoSys_OMemStream o;
-					o << "The attribute " << att_name;
-					o << " for device " << dev->get_name();
-					o << " is of type DEV_ENCODED. Only Scalar attribute are supported for DEV_ENCODED";
-					o << "It is defined for record number " << i + 1 << ends;
-
-					Except::throw_exception((const char *)"API_NotSupportedFeature",o.str(),
-				   							(const char *)"Util::fill_attr_polling_buffer");
-				}	
-			}
-		}
-
-//
 // Check that the device IDL is at least 3
 //
 		
@@ -1215,6 +1137,7 @@ public:
 // Check that history is not larger than polling buffer
 //
 
+		unsigned long nb_elt = data.length();
 		unsigned long nb_poll = dev->get_attr_poll_ring_depth(att_name);
 
 		if (nb_elt > nb_poll)
@@ -1361,30 +1284,8 @@ public:
 // Init remaining fields in AttributeValueList
 //
 
-					if (w_type == Tango::READ_WITH_WRITE)
+					if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
 						dev->get_device_attr()->add_write_value(att);
-					else if (w_type == Tango::READ_WRITE)
-					{
-						if ((data.get_data())[i].wr_ptr != NULL)
-						{
-							w_att_ptr->set_write_value((T *)(data.get_data())[i].wr_ptr,
-													(data.get_data())[i].wr_x,
-													(data.get_data())[i].wr_y);
-							dev->get_device_attr()->add_write_value(att);
-				
-							if ((data.get_data())[i].release == true)
-							{
-								if (att.get_data_format() == Tango::SCALAR)
-									delete (data.get_data())[i].wr_ptr;
-								else
-									delete [] (data.get_data())[i].wr_ptr;
-							}
-						}
-						else
-						{
-							dev->get_device_attr()->add_write_value(att);
-						}
-					}
 						
 //
 // Insert data into the AttributeValue object

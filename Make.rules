@@ -10,8 +10,8 @@
 ##############################################################################
 
 MAJOR_VERS = 7
-MINOR_VERS = 2
-PATCH_VERS = 6
+MINOR_VERS = 1
+PATCH_VERS = 1
 
 ##############################################################################
 #
@@ -23,16 +23,54 @@ TANGO_HOME = /segfs/tango
 
 ##############################################################################
 #
+# 		Choose your OS here
+#
+# Supported values are :
+#	solaris7 for SunOS 5.7
+#	solaris9 for SunOS 5.9
+#	suse72 for Suse72
+#	suse82 for Suse82
+#	debian30 for Debina 3.0
+#  redhate4 for Rwd Hat Enterprise 4
+#  redhate5 for Rwd Hat Enterprise 5
+#  macosx-darwin8 for MacOSX 10.4
+#	hpux for HPUX 11 (Not official)
 #
 ##############################################################################
 
+ifndef debian30
 ifndef ubuntu
 OS=$(shell /csadmin/common/scripts/get_os.share)
+endif
 endif
 
 ifdef ubuntu
 OS=ubuntu904
 endif
+
+#OS=solaris7
+#OS=solaris9
+#gcc=1
+
+#OS=redhate4
+#OS=redhate5
+#OS=debian30
+#OS=suse90
+#OS=suse82
+#OS=suse72
+
+#OS=hpux
+#OS=ubuntu704
+#OS=ubuntu810
+
+##############################################################################
+#
+#		Choose your compiler here (only when using linux suse72)
+#
+##############################################################################
+
+#suse72_gcc32=1
+#suse72_gcc29=1
 
 ##############################################################################
 #
@@ -64,9 +102,7 @@ endif
 
 # check for 64 bits!!!!
 ifdef 64bits
-ifneq ($(OS),ubuntu1004)
 BIN_DIR = $(OS)_64
-endif
 endif
 
 ##############################################################################
@@ -79,9 +115,8 @@ ifdef prefix
 INSTALL_BASE = $(prefix)/$(BIN_DIR)
 INSTALL_BASE_WIN32 = $(prefix)/win32
 else
-#INSTALL_BASE = /segfs/tango/tmp/install/$(BIN_DIR)
-INSTALL_BASE = /home/taurel/tango/install/$(BIN_DIR)
-INSTALL_BASE_WIN32 = /segfs/tango/install/win32
+INSTALL_BASE = /segfs/tango/tmp/install/$(BIN_DIR)
+INSTALL_BASE_WIN32 = /home/taurel/tango/install/win32
 endif
 
 ##############################################################################
@@ -98,7 +133,12 @@ OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.4/$(BIN_DIR)
 #
 ##############################################################################
 
+ifdef suse72_gcc29
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.0/$(BIN_DIR)
+else
+#LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango/$(BIN_DIR)
 LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.3/$(BIN_DIR)
+endif
 
 ##############################################################################
 #

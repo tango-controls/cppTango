@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- September 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -29,58 +29,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.57  2010/12/09 12:58:43  taurel
-// - Fix another controlled access related bug (in DbDeleteDeviceProperty)
-//
-// Revision 3.56  2010/12/09 12:03:06  taurel
-// - Fix bug in control access. The db device access right were not got from
-// db if it was not he first device on which the access was checked
-//
-// Revision 3.55  2010/10/04 12:16:04  taurel
-// - Fix some double free in case of communication problems with db server
-//
-// Revision 3.54  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.53  2010/09/09 08:36:19  taurel
-// - Better TANGO_HOST=localhost:xxx management
-//
-// Revision 3.52  2010/08/25 14:25:41  taurel
-// - Support localhost in TANGO_HOST env. variable. Bug 2894469
-//
-// Revision 3.51  2010/08/17 08:55:07  taurel
-// - Added a Database::get_file_name() method
-//
-// Revision 3.50  2010/05/26 09:16:21  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.49  2010/04/12 12:56:24  taurel
-// - Fix a memory leak in the new method get_server_release()
-//
-// Revision 3.48  2010/01/08 08:04:49  taurel
-// - More changes for thread safety
-//
-// Revision 3.47  2010/01/07 08:35:06  taurel
-// - Several change sto improve thread safety of the DeviceProxy, AttributeProxy, ApiUtul and EventConsumer classes
-//
-// Revision 3.46  2009/12/18 14:51:01  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-// Revision 3.45.2.3  2010/05/21 09:42:49  taurel
-// - Re-use the same event channel in case of server restart when a file
-// is use as database
-//
-// Revision 3.45.2.2  2010/05/20 12:39:26  taurel
-// - Fixed some memory leaks when using a file as database (-file option)
-//
-// Revision 3.45.2.1  2010/05/18 08:20:09  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 3.45  2009/09/22 11:04:45  taurel
-// - Environment variables in file also supported for Windows
-//
 // Revision 3.44  2009/08/27 07:22:43  taurel
 // - Commit after anothre merge with Release_7_0_2-bugfixes branch
 //
@@ -169,6 +117,242 @@ static const char *RcsId = "$Id$\n$Name$";
 // - The DbDatum::Size() method is now inline
 // - Fix bug in database re-connection timeout management
 //
+// Revision 3.19  2007/10/16 08:25:47  taurel
+// - Add management of the TC connection establishment timeout for DB access
+// - Add DB server cache in DS used during DS startup sequence
+// - Comment out the sleep time during DS startup sequence
+//
+// Revision 3.18  2007/04/30 14:05:47  jlpons
+// Added new commands to the database client interface.
+//
+// Revision 3.17  2007/04/20 14:38:33  taurel
+// - Ported to Windows 64 bits x64 architecture
+//
+// Revision 3.16  2007/03/28 07:48:51  taurel
+// - Remove some unused 64 bits management
+//
+// Revision 3.15  2006/08/11 13:51:57  taurel
+// - Added the Database::get_device_property_list() method
+//
+// Revision 3.14  2006/06/28 14:38:06  taurel
+// - Fix memory leak in Database::delete_device method
+//
+// Revision 3.13  2005/06/29 08:32:21  taurel
+// - Last commit before release 5.2 ?
+//
+// Revision 3.12  2005/05/20 15:19:23  taurel
+// - Clarify the use of delete_device_attribute_property to be coherent with
+//   Java
+//
+// Revision 3.11  2005/05/10 16:09:13  taurel
+// - Fix windows VC7 warnings
+//
+// Revision 3.10  2005/04/15 11:35:05  taurel
+// - Changes to support Tango on 64 bits computer
+// - Support for Linux 2.6 kernel with NPTL (Signal management)
+//
+// Revision 3.9  2005/03/14 09:48:12  taurel
+// - Fix some bugs in filedatabase (Change in the data transferred between client and
+//   server).
+// - Fix bug in event re-connection
+// - Add event support even for device server started with the -file command line option
+//
+// Revision 3.8  2005/01/13 09:29:26  taurel
+// Fix some bugs :
+// - R/W attribute : W value not returned when read if set by set_write_value
+// - Core dumped when retrieving attribute polling history for Device_2Impl device which
+//   has stored an exception
+// - Remove device_name in lib default attribute label property
+// - Lib default value for label not store in db any more
+// - Size of the DaData used by the Database::get_device_attribute_property() and
+//   Database::get_class_attribute_property()
+// - R/W attribute: W part not returned when read for Device_2Impl device
+// Some changes :
+// - Improvement of the -file option error management (now throw exception in case of
+//   error)
+// - Reset "string" attribute property to the default value (lib or user) when new
+//   value is an empty string
+//
+// Revision 3.6.2.6  2004/11/10 13:06:51  taurel
+// - Fix bug for WIN32 in the get_info() method
+// - Change how the Database string ctor calls the Connection ctor
+//
+// Revision 3.6.2.5  2004/11/04 09:51:29  taurel
+// - Add compatibility with old database server for the DbGetDeviceAttributeProperty
+//   and associate commands
+// - Some minor fixes to pass test suite
+//
+// Revision 3.6.2.4  2004/10/22 11:23:16  taurel
+// Added warning alarm
+// Change attribute config. It now includes alarm and event parameters
+// Array attribute property now supported
+// subscribe_event throws exception for change event if they are not correctly configured
+// Change in the polling thread: The event heartbeat has its own work in the work list
+// Also add some event_unregister
+// Fix order in which classes are destructed
+// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
+// Change in the CORBA info call for the device type
+//
+// Revision 3.6.2.3  2004/10/19 16:43:18  maxchiandone
+// implemented the re-read method.
+//
+// Revision 3.6.2.2  2004/10/05 13:58:10  maxchiandone
+// First upload for filedatabase.
+//
+// Revision 3.6.2.1  2004/09/15 06:44:43  taurel
+// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
+// - It is also possible to read state and status as attributes
+// - Fix bug in Database::get_class_property() method (missing ends insertion)
+// - Fix bug in admin device DevRestart command (device name case problem)
+//
+// Revision 3.6  2004/07/07 08:39:55  taurel
+//
+// - Fisrt commit after merge between Trunk and release 4 branch
+// - Add EventData copy ctor, asiignement operator and dtor
+// - Add Database and DeviceProxy::get_alias() method
+// - Add AttributeProxy ctor from "device_alias/attribute_name"
+// - Exception thrown when subscribing two times for exactly yhe same event
+//
+// Revision 3.5  2003/10/10 10:57:59  ounsy
+// minor bug corrections
+//
+// Revision 3.4  2003/09/02 13:09:09  taurel
+// Add memorized attribute feature (only for SCALAR and WRITE/READ_WRITE attribute)
+//
+// Revision 3.3  2003/08/21 07:22:01  taurel
+// - End of the implementation of the new way to transfer data for read and
+//   write attributes (better use of exception)
+// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
+// - Added DeviceAttribute ctors from "const char *"
+// - Enable writing of spectrum and image attributes
+// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
+//   attribute writing
+// - Attribute date automatically set in case of attribute quality factor set to INVALID
+// - Change in the polling thread discarding element algo. to support case of polling
+//   several cmd/atts at the same polling period with cmd/attr having a long response time
+// - Take cmd/attr execution time into account in the "Data not updated since" polling
+//   status string
+// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
+//   on Windows device server
+// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
+//   to send trigger to the polling thread
+//
+// Revision 3.2.2.6  2004/03/19 15:19:50  taurel
+// - Comment out the connect(this) call in DeviceProxy::unsubscribe_event() method
+// - Fix bug in db interface with stream usage (once more)
+//
+// Revision 3.2.2.5  2004/03/09 16:34:07  taurel
+// - Added port to HP aCC (Thanks to Claudio from Elettra)
+// - Some last small bug fixes
+//
+// Revision 3.2.2.4  2004/03/02 07:40:23  taurel
+// - Fix compiler warnings (gcc used with -Wall)
+// - Fix bug in DbDatum insertion operator fro vectors
+// - Now support "modulo" as periodic filter
+//
+// Revision 3.2.2.3  2004/01/20 08:30:07  taurel
+// -First commit after merge with the event branch and work on the AttributeProxy class
+// - Fix bug in the stream "clear()" method usage when used with gcc 3.3
+//
+// Revision 3.2.2.2  2003/10/16 11:58:17  taurel
+// - Fix some memory leaks in DeviceProxy::is_polled() and in
+// Database::get_device_exported() methods
+// - Add some bug fixes in Database::get_device_attribute_property(),
+// Database::put_class_attribute_property()
+//
+// Revision 3.2.2.1  2003/09/18 14:07:41  taurel
+// Fixes some bugs:
+//  - Bug fix in DeviceProxy copy constructor and assignement operator
+//  - Change the way how DeviceProxy::write_attribute() is coded
+//  - Added DeviceAttribute ctors from "const char *"
+//  - Split "str().c_str()" in two lines of code. It was the reason of some
+//    problems using Windows VC6
+//
+// Revision 3.4  2003/09/02 13:09:09  taurel
+// Add memorized attribute feature (only for SCALAR and WRITE/READ_WRITE attribute)
+//
+// Revision 3.3  2003/08/21 07:22:01  taurel
+// - End of the implementation of the new way to transfer data for read and
+//   write attributes (better use of exception)
+// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
+// - Added DeviceAttribute ctors from "const char *"
+// - Enable writing of spectrum and image attributes
+// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
+//   attribute writing
+// - Attribute date automatically set in case of attribute quality factor set to INVALID
+// - Change in the polling thread discarding element algo. to support case of polling
+//   several cmd/atts at the same polling period with cmd/attr having a long response time
+// - Take cmd/attr execution time into account in the "Data not updated since" polling
+//   status string
+// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
+//   on Windows device server
+// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
+//   to send trigger to the polling thread
+//
+// Revision 3.2  2003/05/28 14:42:55  taurel
+// Add (conditionaly) autoconf generated include file
+//
+// Revision 3.1  2003/04/02 12:22:07  taurel
+// Miscellaneous changes to :
+//  - Modify TANGO_HOST env. variable syntax to be able to have several db servers
+//  - Asynchronous calls are now done on device_2 or device depending on the device IDL version
+//  - Timeout are bcks (omniORB 4.0.1)
+//  - Fix bug when killing a device server via the kill command of the admin device
+//    (Solaris only)
+//  - Cleanup device server code to have only one ORB and one db connection within a server
+// Revision 3.0.2.1  2003/11/16 22:10:43  andy_gotz
+// New version which defines 4 types of events - change, quality, periodic and
+// archive. Code has been factorised to reduce redundancy. Minimum and maximum
+// changes are supported. Event period is taken into account. Relative and
+// absolute changes are detected. Whole sequence is taken into account when
+// determining change.
+//
+// Revision 3.0  2003/03/25 16:30:34  taurel
+// Change revision number to 3.0 before release 3.0.0 of Tango lib
+//
+// Revision 2.5  2003/03/20 08:54:53  taurel
+// Updated to support asynchronous calls
+//
+// Revision 2.4  2003/01/09 12:00:33  taurel
+// - Ported to gcc 3.2
+// - Added ApiUtil::cleanup() and ApiUtil::~ApiUtil() methods
+// - Replace some ORB * by ORB_ptr
+// - Use CORBA::ORB::is_nil() instead of comparing to NULL
+//
+// Revision 2.3  2002/12/16 11:58:36  taurel
+// - Change the underlying ORB fom ORBacus to omniORB
+// - New method get_device_list() in Util class
+// - Util::get_class_list() takes DServer device into account
+// - Util::get_device_by_name() takes DSErver device into account
+// - Util::get_device_list_by_class() takes DServer device into account
+// - New parameter to the attribute::set_value() method to ebnable CORBA to frre memory allocated for the attribute
+//
+// Revision 2.2  2002/10/14 09:32:43  taurel
+// Fix bugs in devapi_base.cpp file :
+// - In read_attribute and read_attributes method of the DeviceProxy class
+//   Do not create sequence the same way if the call is local or remote.
+// - Add reconnection in the Connection::set_timeout_millis method
+// - Add flags to the Connection::set_timeout_millis method
+// - Fix bug in the DeviceProxy constructor when device is not marked as exported
+//   in the database. The constructor was not stateless in this case.
+//
+// Revision 2.1  2002/08/12 12:43:23  taurel
+// Fix bug in DeviceProxy::write_attributes method when writing several
+// attributes in one call. (File devapi_base.cpp)
+//
+// Revision 2.0  2002/06/28 13:43:07  taurel
+// Lot of changes since last releases :
+// 	- Database object managed as a singleton per control system
+// 	- Support all tango device naming syntax (using TANGO_HOST env.
+//  	  variable, without env variable and non database device)
+// 	- No more copy during read_attribute and command_inout
+// 	- Added some missing methods
+// 	- Build an exception class hierarchy
+// 	- Added correct management of device time-out
+// 	- Support all Tango device interface release 2 features
+// 	  (data/attribute comming from polling buffer, polling related methods,
+// 	   command/attribute result history)
+//
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -223,11 +407,7 @@ Database::Database(ORB *orb_in) : Connection(orb_in),access_proxy(NULL),access_c
 	
 	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << endl;
 
-	build_connection();
-	
-	get_server_release();
-	
-	dev_name();	
+	build_connection();		
 }
 
 #ifdef _TG_WINDOWS_
@@ -262,10 +442,6 @@ Database::Database(ORB *orb_in,string &ds_exec_name,string &ds_inst_name) : Conn
 	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << endl;
 
 	build_connection();
-	
-	get_server_release();
-	
-	dev_name();
 }
 #endif
 
@@ -392,28 +568,6 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 					       		(const char *)"Database::Database");
 		}
 		db_host = tango_host_env.substr(0,separator);
-
-//
-// If localhost is used as host name, try to replace it by the real host name
-//
-
-		string db_host_lower(db_host);
-		transform(db_host_lower.begin(),db_host_lower.end(),db_host_lower.begin(),::tolower);
-		if (db_host_lower == "localhost")
-		{
-			char h_name[80];
-			int res = gethostname(h_name,80);
-			if (res == 0)
-			{
-				db_host = h_name;
-				Connection::ext->tango_host_localhost = true;
-			}
-		}
-
-//
-// Get FQDN
-//
-
 		if (db_host.find('.') == string::npos)
 			get_fqdn(db_host);
 	}
@@ -465,85 +619,16 @@ Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_i
 	from_env_var = false;
 	dbase_used = true;
 		
-	build_connection();
-	
-	get_server_release();
-	
-	dev_name();
+	build_connection();	
 }
 
 Database::Database(string &name) : Connection(true),access_proxy(NULL),access_checked(false),access_service_defined(false)
 {	
 	file_name = name;
 	filedb = new FileDatabase(file_name);
-	serv_version = 230;
-
-	check_acc = false;
+	serv_version = 0;
 	
 	ext = new DatabaseExt();
-//	dev_name();
-}
-
-//-----------------------------------------------------------------------------
-//
-// Database::check_access_and_get() - Check if the access has been retrieved
-// and get it if not.
-// Protect this code using a TangoMonitor defined in the Connection class
-//
-//-----------------------------------------------------------------------------
-
-void Database::check_access_and_get()
-{
-	bool local_access_checked;
-	{
-		ReaderLock guard(Connection::ext->con_to_mon);
-		local_access_checked = access_checked;
-	}
-	if (local_access_checked == false)
-	{
-		WriterLock guard(Connection::ext->con_to_mon);
-		if (access_checked == false)
-			check_access();
-	}
-}
-
-
-//-----------------------------------------------------------------------------
-//
-// Database::get_server_release() - Check which is the database server release
-//
-//-----------------------------------------------------------------------------
-
-void Database::get_server_release()
-{
-	try
-	{
-		DevCmdInfo *cmd_ptr = device->command_query("DbGetDeviceAttributeProperty2");
-		serv_version = 230;
-		delete cmd_ptr;
-	}
-	catch (Tango::DevFailed &e)
-	{
-		serv_version = 210;
-	}
-}
-
-//-----------------------------------------------------------------------------
-//
-// Database::get_file_name() - Get file name when the database is a file
-//
-//-----------------------------------------------------------------------------
-
-const string &Database::get_file_name()
-{
-	if (filedb == 0)
-	{			
-		Tango::Except::throw_exception ((const char *)"API_NotSupportedFeature",
-										(const char *)"The database is not a file-based database",
-										(const char *)"Database::get_file_name");
-	}
-
-	return file_name;
 }
 
 //-----------------------------------------------------------------------------
@@ -694,27 +779,11 @@ string Database::get_corba_name(bool ch_acc)
 	else
 	{
 		db_corbaloc = "corbaloc:iiop:";
-		if (Connection::ext->tango_host_localhost == true)
-			db_corbaloc = db_corbaloc+"localhost:";
-		else
-			db_corbaloc = db_corbaloc+db_host+":";
-		db_corbaloc = db_corbaloc+port+"/"+DbObjName;
+		db_corbaloc = db_corbaloc+host+":"+port;
+		db_corbaloc = db_corbaloc+"/"+DbObjName;
 	}
 		
 	return db_corbaloc;
-}
-
-//-----------------------------------------------------------------------------
-//
-// Database::post_reconnection() - do what is necessary after a db re-connection
-//
-//-----------------------------------------------------------------------------
-
-void Database::post_reconnection()
-{
-	get_server_release();
-	
-	dev_name();
 }
 
 //-----------------------------------------------------------------------------
@@ -729,7 +798,8 @@ string Database::get_info()
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	if (filedb != 0)
 		received = filedb->DbInfo(send);
@@ -774,69 +844,63 @@ DbDevImportInfo Database::import_device(string &dev)
 //
 // Import device is allways possible whatever access rights are
 //
+	
+	AccessControlType tmp_access = access;
+	access = ACCESS_WRITE;
+	
+	send <<= dev.c_str();
+	try
+	{
+		if (filedb != 0)
+		{
+			received = filedb->DbImportDevice(send);
+			received.inout() >>= dev_import_list;
+		}
+		else
+		{
+			DeviceData send_name;
+			send_name << dev;
+			CALL_DB_SERVER("DbImportDevice",send_name,received_cmd);
+			received_cmd >> dev_import_list;
+		}
+	}
+	catch (Tango::DevFailed &)
+	{
+		access = tmp_access;
+		throw;
+	}
 
 	DbDevImportInfo dev_import;
-	{
-		WriterLock guard(Connection::ext->con_to_mon);
-			
-		AccessControlType tmp_access = access;
-		access = ACCESS_WRITE;
-	
-		send <<= dev.c_str();
-		try
-		{
-			if (filedb != 0)
-			{
-				received = filedb->DbImportDevice(send);
-				received.inout() >>= dev_import_list;
-			}
-			else
-			{
-				DeviceData send_name;
-				send_name << dev;
-				CALL_DB_SERVER("DbImportDevice",send_name,received_cmd);
-				received_cmd >> dev_import_list;
-			}
-		}
-		catch (Tango::DevFailed &)
-		{
-			access = tmp_access;
-			throw;
-		}
-
-		dev_import.exported = 0;
-		dev_import.name = dev;
-		dev_import.ior = string((dev_import_list->svalue)[1]);
-		dev_import.version = string((dev_import_list->svalue)[2]);
-		dev_import.exported = dev_import_list->lvalue[0];
+	dev_import.exported = 0;
+	dev_import.name = dev;
+	dev_import.ior = string((dev_import_list->svalue)[1]);
+	dev_import.version = string((dev_import_list->svalue)[2]);
+	dev_import.exported = dev_import_list->lvalue[0];
 
 //
 // If the db server returns the device class,
 // store device class in cache if not already there
 //
 
-		if (dev_import_list->svalue.length() == 6)
+	if (dev_import_list->svalue.length() == 6)
+	{
+		map<string,string>::iterator pos = dev_class_cache.find(dev);
+		if (pos == dev_class_cache.end())
 		{
-			omni_mutex_lock guard(ext->map_mutex);
-		
-			map<string,string>::iterator pos = dev_class_cache.find(dev);
-			if (pos == dev_class_cache.end())
+			string dev_class((dev_import_list->svalue)[5]);
+			pair<map<string,string>::iterator,bool> status;
+			status = dev_class_cache.insert(make_pair(dev,dev_class));
+			if (status.second == false)
 			{
-				string dev_class((dev_import_list->svalue)[5]);
-				pair<map<string,string>::iterator,bool> status;
-				status = dev_class_cache.insert(make_pair(dev,dev_class));
-				if (status.second == false)
-				{
-					TangoSys_OMemStream o;
-					o << "Can't insert device class for device " << dev << " in device class cache" << ends;
-					Tango::Except::throw_exception((const char *)"API_CantStoreDeviceClass",o.str(),
+				TangoSys_OMemStream o;
+				o << "Can't insert device class for device " << dev << " in device class cache" << ends;
+				Tango::Except::throw_exception((const char *)"API_CantStoreDeviceClass",o.str(),
 			                               (const char *)"DeviceProxy::import_device()");
-				}
 			}
 		}
-	
-		access = tmp_access;
 	}
+	
+	access = tmp_access;
 
 	return(dev_import);
 }
@@ -852,7 +916,8 @@ void Database::export_device(DbDevExportInfo& dev_export)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *dev_export_list = new DevVarStringArray;
 	dev_export_list->length(5);
@@ -894,7 +959,8 @@ void Database::unexport_device(string dev)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= string_dup(dev.c_str());
 	if (filedb != 0)
@@ -916,7 +982,8 @@ void Database::add_device(DbDevInfo &dev_info)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 
 	DevVarStringArray *dev_info_list = new DevVarStringArray;
 	dev_info_list->length(3);
@@ -943,7 +1010,8 @@ void Database::delete_device(string dev)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= dev.c_str();
 	if (filedb != 0)
@@ -965,7 +1033,8 @@ void Database::add_server(string &server, DbDevInfos &dev_infos)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *dev_info_list = new DevVarStringArray;
 	dev_info_list->length(2*dev_infos.size()+1);
@@ -995,7 +1064,8 @@ void Database::delete_server(string &server)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= string_dup(server.c_str());
 	if (filedb != 0)
@@ -1017,7 +1087,8 @@ void Database::export_server(DbDevExportInfos& dev_export)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *dev_export_list = new DevVarStringArray;
 	dev_export_list->length(5*dev_export.size());
@@ -1062,7 +1133,8 @@ void Database::unexport_server(string &server)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= server.c_str();
 	if (filedb != 0)
@@ -1085,7 +1157,8 @@ DbServerInfo Database::get_server_info(string &server)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= server.c_str();
 	if (filedb != 0)
@@ -1117,7 +1190,8 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 	Any_var received;
 	const DevVarStringArray *property_values;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -1138,11 +1212,19 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 		Any send;
 		
 		send <<= property_names;
-	
-		if (filedb != 0)
-			received = filedb->DbGetDeviceProperty(send);
-		else
-			CALL_DB_SERVER("DbGetDeviceProperty",send,received);
+
+		try
+		{	
+			if (filedb != 0)
+				received = filedb->DbGetDeviceProperty(send);
+			else
+				CALL_DB_SERVER("DbGetDeviceProperty",send,received);
+		}
+		catch (Tango::DevFailed &)
+		{
+			delete property_names;
+			throw;
+		}
 
 		received.inout() >>= property_values;
 	}
@@ -1240,7 +1322,8 @@ void Database::put_device_property(string dev, DbData &db_data)
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
@@ -1278,10 +1361,7 @@ void Database::put_device_property(string dev, DbData &db_data)
 	send <<= property_values;
 
 	if (filedb != 0)
-	{
-		CORBA::Any_var the_any;
-		the_any = filedb->DbPutDeviceProperty(send);
-	}
+		filedb->DbPutDeviceProperty(send);
 	else
 		CALL_DB_SERVER_NO_RET("DbPutDeviceProperty",send);
 		
@@ -1299,8 +1379,6 @@ void Database::delete_device_property(string dev, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-
-	check_access_and_get();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -1333,7 +1411,8 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 	Any_var received;
 	const DevVarStringArray *property_values;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -1358,21 +1437,29 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 		if (filedb != 0)
 		{
 			received = filedb->DbGetDeviceAttributeProperty(send);
+			serv_version = 230;
 		}
 		else
 		{
 			try
 			{
-				if (serv_version >= 230)
+				if ((serv_version == 0) || (serv_version >= 230))
 				{
 					CALL_DB_SERVER("DbGetDeviceAttributeProperty2",send,received);
+					serv_version = 230;
 				}
 				else
 					CALL_DB_SERVER("DbGetDeviceAttributeProperty",send,received);
 			}
-			catch (Tango::DevFailed &)
+			catch (Tango::DevFailed &e)
 			{
-				throw;
+				if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+				{
+					CALL_DB_SERVER("DbGetDeviceAttributeProperty",send,received);
+					serv_version = 210;
+				}
+				else
+					throw;
 			}
 		}
 		received.inout() >>= property_values;
@@ -1407,10 +1494,30 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 				if (filedb != 0)
 				{
 					received = filedb->DbGetDeviceAttributeProperty(send);
+					serv_version = 230;
 				}
 				else
 				{
-					CALL_DB_SERVER("DbGetDeviceAttributeProperty2",send,received);
+					try
+					{
+						if ((serv_version == 0) || (serv_version >= 230))
+						{
+							CALL_DB_SERVER("DbGetDeviceAttributeProperty2",send,received);
+							serv_version = 230;
+						}
+						else
+							CALL_DB_SERVER("DbGetDeviceAttributeProperty",send,received);
+					}
+					catch (Tango::DevFailed &e)
+					{
+						if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+						{
+							CALL_DB_SERVER("DbGetDeviceAttributeProperty",send,received);
+							serv_version = 210;
+						}
+						else
+							throw;
+					}
 				}
 				received.inout() >>= property_values;
 			}
@@ -1525,7 +1632,8 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 	int index, n_attribs ;
 	bool retry = true;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 
 	while (retry == true)
 	{	
@@ -1534,7 +1642,7 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 		(*property_values)[0] = string_dup(dev.c_str());
 		n_attribs = 0;
 
-		if (serv_version >= 230)
+		if ((serv_version == 0) || (serv_version >= 230))
 		{
 			for (unsigned int i=0; i<db_data.size();)
 			{
@@ -1632,23 +1740,28 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 		if (filedb != 0)
 		{
 			filedb->DbPutDeviceAttributeProperty(send);
+			serv_version = 230;
 			retry = false;
 		}
 		else
 		{
 			try
 			{
-				if (serv_version >= 230)
+				if ((serv_version == 0) || (serv_version >= 230))
 				{
 					CALL_DB_SERVER_NO_RET("DbPutDeviceAttributeProperty2",send);
+					serv_version = 230;
 				}
 				else
 					CALL_DB_SERVER_NO_RET("DbPutDeviceAttributeProperty",send);
 				retry = false;
 			}
-			catch (Tango::DevFailed &)
+			catch (Tango::DevFailed &e)
 			{
-				throw;
+				if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") != 0)
+					throw;
+				else
+					serv_version = 210;
 			}
 		}
 	}
@@ -1668,7 +1781,8 @@ void Database::delete_device_attribute_property(string dev, DbData &db_data)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_values = new DevVarStringArray;
 	unsigned int nb_prop = db_data.size() - 1;
@@ -1828,7 +1942,8 @@ void Database::put_class_property(string device_class, DbData &db_data)
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
@@ -1864,10 +1979,7 @@ void Database::put_class_property(string device_class, DbData &db_data)
 	send <<= property_values;
 
 	if (filedb != 0)
-	{
-		CORBA::Any_var the_any;
-		the_any = filedb->DbPutClassProperty(send);
-	}
+		filedb->DbPutClassProperty(send);
 	else
 		CALL_DB_SERVER_NO_RET("DbPutClassProperty",send);
 		
@@ -1915,7 +2027,8 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 	Any_var received;
 	const DevVarStringArray *property_values;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -1940,23 +2053,29 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 		if (filedb != 0)
 		{
 			received = filedb->DbGetClassAttributeProperty(send);
+			serv_version = 230;
 		}
 		else
 		{
 			try
 			{
-				if (serv_version >= 230)
+				if ((serv_version == 0) || (serv_version >= 230))
 				{
 					CALL_DB_SERVER("DbGetClassAttributeProperty2",send,received);
+					serv_version = 230;
 				}
 				else
+					CALL_DB_SERVER("DbGetClassAttributeProperty",send,received);
+			}
+			catch (Tango::DevFailed &e)
+			{
+				if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
 				{
 					CALL_DB_SERVER("DbGetClassAttributeProperty",send,received);
+					serv_version = 210;
 				}
-			}
-			catch (Tango::DevFailed &)
-			{
-				throw;
+				else
+					throw;
 			}
 		}
 		received.inout() >>= property_values;
@@ -1991,10 +2110,30 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 				if (filedb != 0)
 				{
 					received = filedb->DbGetClassAttributeProperty(send);
+					serv_version = 230;
 				}
 				else
 				{
-					CALL_DB_SERVER("DbGetClassAttributeProperty2",send,received);
+					try
+					{
+						if ((serv_version == 0) || (serv_version >= 230))
+						{
+							CALL_DB_SERVER("DbGetClassAttributeProperty2",send,received);
+							serv_version = 230;
+						}
+						else
+							CALL_DB_SERVER("DbGetClassAttributeProperty",send,received);
+					}
+					catch (Tango::DevFailed &e)
+					{
+						if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+						{
+							CALL_DB_SERVER("DbGetClassAttributeProperty",send,received);
+							serv_version = 210;
+						}
+						else
+							throw;
+					}
 				}
 				received.inout() >>= property_values;
 			}
@@ -2109,7 +2248,8 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 	int index, n_attribs;
 	bool retry = true;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	while (retry == true)
 	{
@@ -2118,7 +2258,7 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 		(*property_values)[0] = string_dup(device_class.c_str());
 		n_attribs = 0;
 		
-		if (serv_version >= 230)
+		if ((serv_version == 0) || (serv_version >= 230))
 		{
 			for (unsigned int i=0; i<db_data.size(); )
 			{
@@ -2215,19 +2355,29 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 		if (filedb != 0)
 		{
 			filedb->DbPutClassAttributeProperty(send);
+			serv_version = 230;
 			retry = false;
 		}
 		else
 		{
-			if (serv_version >= 230)
+			try
 			{
-				CALL_DB_SERVER_NO_RET("DbPutClassAttributeProperty2",send);
+				if ((serv_version == 0) || (serv_version >= 230))
+				{
+					CALL_DB_SERVER_NO_RET("DbPutClassAttributeProperty2",send);
+					serv_version = 230;
+				}
+				else
+					CALL_DB_SERVER_NO_RET("DbPutClassAttributeProperty",send);
+				retry = false;
 			}
-			else
+			catch (Tango::DevFailed &e)
 			{
-				CALL_DB_SERVER_NO_RET("DbPutClassAttributeProperty",send);
+				if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") != 0)
+					throw;
+				else
+					serv_version = 210;
 			}
-			retry = false;
 		}
 	}
 		
@@ -2246,7 +2396,8 @@ void Database::delete_class_attribute_property(string device_class, DbData &db_d
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_values = new DevVarStringArray;
 	unsigned int nb_prop = db_data.size() - 1;
@@ -2283,7 +2434,8 @@ DbDatum Database::get_device_name(string &device_server, string &device_class, D
 	Any_var received;
 	const DevVarStringArray *device_names;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *device_server_class = new DevVarStringArray;
 	device_server_class->length(2);
@@ -2335,7 +2487,8 @@ DbDatum Database::get_device_exported(string &filter)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= filter.c_str();
 
@@ -2372,7 +2525,8 @@ DbDatum Database::get_device_member(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= wildcard.c_str();
 
@@ -2409,7 +2563,8 @@ DbDatum Database::get_device_family(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= wildcard.c_str();
 
@@ -2447,7 +2602,8 @@ DbDatum Database::get_device_domain(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= wildcard.c_str();
 
@@ -2480,8 +2636,6 @@ DbDatum Database::get_device_domain(string &wildcard)
 
 void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *dsc)
 {
-	WriterLock guard(Connection::ext->con_to_mon);
-	
 	AccessControlType tmp_access = access;
 	access = ACCESS_WRITE;
 	try
@@ -2497,13 +2651,9 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 	unsigned int i;
 	Any_var received;
 	const DevVarStringArray *property_values;
-
-	{
-		WriterLock guard(Connection::ext->con_to_mon);
-			
-		if ((access == ACCESS_READ) && (access_checked == false))
-			check_access();
-	}
+	
+	if ((access == ACCESS_READ) && (access_checked == false))
+		check_access();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -2523,8 +2673,17 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 		if (filedb != 0)
 			received = filedb->DbGetProperty(send);
 		else
-			CALL_DB_SERVER("DbGetProperty",send,received);
-
+		{
+			try
+			{
+				CALL_DB_SERVER("DbGetProperty",send,received);
+			}
+			catch(Tango::DevFailed &)
+			{
+				delete property_names;
+				throw;
+			}
+		}
 		received.inout() >>= property_values;
 	}
 	else
@@ -2621,7 +2780,8 @@ void Database::put_property(string obj, DbData &db_data)
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
@@ -2678,7 +2838,8 @@ void Database::delete_property(string obj, DbData &db_data)
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
@@ -2711,7 +2872,8 @@ void Database::get_device_alias(string alias,string &dev_name)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= alias.c_str();
 
@@ -2737,7 +2899,8 @@ void Database::get_alias(string dev_name,string &alias_name)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= dev_name.c_str();
 
@@ -2763,7 +2926,8 @@ void Database::get_attribute_alias(string  attr_alias, string &attr_name)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= attr_alias.c_str();
 
@@ -2884,7 +3048,8 @@ DbDatum Database::get_device_property_list(string &dev, string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *sent_names = new DevVarStringArray;
 	sent_names->length(2);
@@ -2966,7 +3131,8 @@ DbDatum Database::get_host_list()
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= "*";
 
@@ -2987,7 +3153,8 @@ DbDatum Database::get_host_list(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 
 	send <<= wildcard.c_str();
 	
@@ -3009,7 +3176,8 @@ DbDatum Database::get_server_class_list(string &servname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= servname.c_str();
 
@@ -3053,7 +3221,8 @@ DbDatum Database::get_server_name_list()
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= "*";
 
@@ -3075,7 +3244,8 @@ DbDatum Database::get_instance_name_list(string &servname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= servname.c_str();
 
@@ -3097,7 +3267,8 @@ DbDatum Database::get_server_list()
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= "*";
 
@@ -3119,7 +3290,8 @@ DbDatum Database::get_server_list(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= wildcard.c_str();
 
@@ -3141,7 +3313,8 @@ DbDatum Database::get_host_server_list(string &hostname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= hostname.c_str();
 
@@ -3168,7 +3341,8 @@ void Database::put_server_info(DbServerInfo &info)
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	DevVarStringArray *serv_info = new DevVarStringArray;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	serv_info->length(4);
 	(*serv_info)[0] = string_dup(info.name.c_str());
@@ -3213,7 +3387,8 @@ void Database::delete_server_info(string &servname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= servname.c_str();
 
@@ -3235,7 +3410,8 @@ DbDatum Database::get_device_class_list(string &servname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= servname.c_str();
 
@@ -3257,7 +3433,8 @@ DbDatum Database::get_object_list(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= wildcard.c_str();
 
@@ -3280,7 +3457,8 @@ DbDatum Database::get_object_property_list(string &objname,string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *obj_info = new DevVarStringArray;
 	
@@ -3309,7 +3487,8 @@ DbDatum Database::get_class_property_list(string &classname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= classname.c_str();
 
@@ -3330,7 +3509,8 @@ string Database::get_class_for_device(string &devname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 
 //
 // First check if the device class is not already in the device class cache
@@ -3339,35 +3519,31 @@ string Database::get_class_for_device(string &devname)
 //
 
 	string ret_str;
-
+	
+	map<string,string>::iterator pos = dev_class_cache.find(devname);
+	if (pos == dev_class_cache.end())
 	{
-		omni_mutex_lock guard(ext->map_mutex);
-			
-		map<string,string>::iterator pos = dev_class_cache.find(devname);
-		if (pos == dev_class_cache.end())
-		{
-			send <<= devname.c_str();
+		send <<= devname.c_str();
 
-			CALL_DB_SERVER("DbGetClassforDevice",send,received);
+		CALL_DB_SERVER("DbGetClassforDevice",send,received);
 		
-			const char *classname;
-			received.inout() >>= classname;
-			ret_str = classname;
+		const char *classname;
+		received.inout() >>= classname;
+		ret_str = classname;
 				
-			pair<map<string,string>::iterator,bool> status;
-			status = dev_class_cache.insert(make_pair(devname,ret_str));
-			if (status.second == false)
-			{
-				TangoSys_OMemStream o;
-				o << "Can't insert device class for device " << devname << " in device class cache" << ends;
-				Tango::Except::throw_exception((const char *)"API_CantStoreDeviceClass",o.str(),
-		                               (const char *)"DeviceProxy::get_class_for_device()");
-			}
-		}
-		else
+		pair<map<string,string>::iterator,bool> status;
+		status = dev_class_cache.insert(make_pair(devname,ret_str));
+		if (status.second == false)
 		{
-			ret_str = pos->second;
+			TangoSys_OMemStream o;
+			o << "Can't insert device class for device " << devname << " in device class cache" << ends;
+			Tango::Except::throw_exception((const char *)"API_CantStoreDeviceClass",o.str(),
+		                               (const char *)"DeviceProxy::get_class_for_device()");
 		}
+	}
+	else
+	{
+		ret_str = pos->second;
 	}	
 
 	return ret_str;	
@@ -3386,7 +3562,8 @@ DbDatum Database::get_class_inheritance_for_device(string &devname)
 	Any_var received;	
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= devname.c_str();
 
@@ -3424,7 +3601,8 @@ DbDatum Database::get_class_list(string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= wildcard.c_str();
 
@@ -3447,7 +3625,8 @@ DbDatum Database::get_class_attribute_list(string &classname,string &wildcard)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *class_info = new DevVarStringArray;
 	
@@ -3475,7 +3654,8 @@ DbDatum Database::get_device_exported_for_class(string &classname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= classname.c_str();
 
@@ -3520,7 +3700,8 @@ void Database::delete_device_alias(string &aliasname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= aliasname.c_str();
 
@@ -3566,7 +3747,8 @@ void Database::delete_attribute_alias(string &aliasname)
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	send <<= aliasname.c_str();
 
@@ -3654,7 +3836,8 @@ vector<DbHistory> Database::get_property_history(string &objname,string &propnam
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *obj_info = new DevVarStringArray;
 	
@@ -3683,7 +3866,8 @@ vector<DbHistory> Database::get_device_property_history(string &devname,string &
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *obj_info = new DevVarStringArray;
 	
@@ -3713,7 +3897,8 @@ vector<DbHistory> Database::get_device_attribute_property_history(string &devnam
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	DevVarStringArray *obj_info = new DevVarStringArray;
 	
@@ -3745,7 +3930,8 @@ vector<DbHistory> Database::get_class_property_history(string &classname,string 
 	
 	DevVarStringArray *obj_info = new DevVarStringArray;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	obj_info->length(2);
 	(*obj_info)[0] = string_dup(classname.c_str());
@@ -3774,7 +3960,8 @@ vector<DbHistory> Database::get_class_attribute_property_history(string &classna
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	DevVarStringArray *obj_info = new DevVarStringArray;
 	
-	check_access_and_get();
+	if (access_checked == false)
+		check_access();
 	
 	obj_info->length(3);
 	(*obj_info)[0] = string_dup(classname.c_str());
@@ -4019,25 +4206,20 @@ CORBA::Any *Database::import_event(string &event)
 //
 // Import device is allways possible whatever access rights are
 //
-
-	{
-		WriterLock guard(Connection::ext->con_to_mon);
-				
-		AccessControlType tmp_access = access;
-		access = ACCESS_WRITE;
+		
+	AccessControlType tmp_access = access;
+	access = ACCESS_WRITE;
 	
-		send <<= event.c_str();
+	send <<= event.c_str();
 
-		try
-		{
-			CALL_DB_SERVER("DbImportEvent",send,received);
-			access = tmp_access;
-		}
-		catch (Tango::DevFailed &)
-		{
-			access = tmp_access;
-			throw;
-		}
+	try
+	{
+		CALL_DB_SERVER("DbImportEvent",send,received);
+	}
+	catch (Tango::DevFailed &)
+	{
+		access = tmp_access;
+		throw;
 	}
 
 	return received._retn();
@@ -4069,36 +4251,31 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 //
 // Filling the cache is allways possible whatever access rights are
 //
-
-	Any_var received;
-	{
-		WriterLock guard(Connection::ext->con_to_mon);
-					
-		AccessControlType tmp_access = access;
-		access = ACCESS_WRITE;
+			
+	AccessControlType tmp_access = access;
+	access = ACCESS_WRITE;
 		
 //
 // Call the db server
 //
 	
-		Any send;
-		DevVarStringArray *sent_info = new DevVarStringArray;
+	Any send;
+	Any_var received;
+	DevVarStringArray *sent_info = new DevVarStringArray;
 	
-		sent_info->length(2);
-		(*sent_info)[0] = string_dup(ds_name.c_str());
-		(*sent_info)[1] = string_dup(loc_host.c_str());	
-		send <<= sent_info;
+	sent_info->length(2);
+	(*sent_info)[0] = string_dup(ds_name.c_str());
+	(*sent_info)[1] = string_dup(loc_host.c_str());	
+	send <<= sent_info;
 
-		try
-		{
-			CALL_DB_SERVER("DbGetDataForServerCache",send,received);
-			access = tmp_access;
-		}
-		catch (Tango::DevFailed &)
-		{
-			access = tmp_access;
-			throw;
-		}
+	try
+	{
+		CALL_DB_SERVER("DbGetDataForServerCache",send,received);
+	}
+	catch (Tango::DevFailed &)
+	{
+		access = tmp_access;
+		throw;
 	}
 	
 	return received._retn();
@@ -4140,6 +4317,9 @@ void Database::delete_all_device_attribute_property(string dev_name,DbData &db_d
 
 //-----------------------------------------------------------------------------
 //
+// Database::delete_all_device_attribute_property() - Call Db server to
+// delete all the property(ies) belonging to the specified device
+// attribute(s)
 // Database::check_access() - 
 //
 //-----------------------------------------------------------------------------
@@ -4148,7 +4328,8 @@ void Database::check_access()
 {
 	if ((check_acc == true) && (access_checked == false))
 	{
-		access = check_access_control(db_device_name);
+		string d_name = dev_name();
+		access = check_access_control(d_name);
 		access_checked = true;
 	}
 }
@@ -4161,11 +4342,12 @@ void Database::check_access()
 
 AccessControlType Database::check_access_control(string &devname)
 {
+	
 //
 // For DB device
 //
 	
-	if ((access_checked == true) && (devname == db_device_name))
+	if ((access_checked == true) && (devname == dev_name()))
 		return access;
 	
 	AccessControlType local_access = ACCESS_WRITE;
@@ -4187,7 +4369,7 @@ AccessControlType Database::check_access_control(string &devname)
 			{
 				string service_name(ACCESS_SERVICE);
 				string service_inst_name("*");
-
+				
 				DbDatum db_serv = get_services(service_name,service_inst_name);
 				vector<string> serv_dev_list;
 				db_serv >> serv_dev_list;
@@ -4213,14 +4395,14 @@ AccessControlType Database::check_access_control(string &devname)
 //
 // Build the local AccessProxy instance
 //
-
+			
 			access_proxy = new AccessProxy(access_devname_str);
 		}
 
 //
 // Get access rights
 //
-
+		
 		if (access_proxy != NULL)
 			local_access = access_proxy->check_access_control(devname);
 		else
@@ -4244,7 +4426,7 @@ AccessControlType Database::check_access_control(string &devname)
 		access_except_errors = e.errors;
 		local_access = ACCESS_READ;
 	}
-
+	
 	return local_access;
 }
 
@@ -4256,13 +4438,12 @@ AccessControlType Database::check_access_control(string &devname)
 
 bool Database::is_command_allowed(string &devname,string &cmd)
 {
-	WriterLock guard(Connection::ext->con_to_mon);
-	
 	bool ret;
 
 	if (access_proxy == NULL)
 	{
 		AccessControlType acc = check_access_control(devname);
+		access_checked = true;
 		
 		if (access_proxy == NULL)
 		{
@@ -4280,47 +4461,33 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 		}
 	}
 
-	if (devname == db_device_name)
+	if ( access == ACCESS_WRITE )
 	{
-		string db_class("Database");
-		ret = access_proxy->is_command_allowed(db_class,cmd);
+		ret = true;
 	}
 	else
 	{
+		if (devname == dev_name())
+		{
+			string db_class("Database");
+			ret = access_proxy->is_command_allowed(db_class,cmd);
+		}
+		else
+		{
 
-//
-// Get device class
-//
+		//
+		// Get device class
+		//
 
-		string dev_class = get_class_for_device(devname);
-		ret = access_proxy->is_command_allowed(dev_class,cmd);
+			string dev_class = get_class_for_device(devname);
+			ret = access_proxy->is_command_allowed(dev_class,cmd);
+		}
 	}
 	
 	return ret;
 }
 
-//-----------------------------------------------------------------------------
-//
-// method :			Database::write_event_channel_ior_filedatabase() -
-// 
-// description : 	Method to connect write the event channel ior to the file
-//					used as database
-//
-// argument : in :	dserver : The DS process name (exec/instance)
-//					ec_ior : The event channel IOR
-//
-//-----------------------------------------------------------------------------
 
-void Database::write_event_channel_ior_filedatabase(string &dserver,string &ec_ior)
-{
-	if (filedb == NULL)
-	{
-		Tango::Except::throw_exception((const char *)"API_NotSupportedFeature",
-				       		(const char *)"This call is supported only when the database is a file",
-				       		(const char *)"Database::write_event_channel_ior_filedatabase");
-	}
 
-	filedb->write_event_channel_ior(dserver,ec_ior);
-}
 
 } // End of Tango namespace

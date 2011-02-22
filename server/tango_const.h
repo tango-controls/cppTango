@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,45 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.58  2011/01/24 12:19:01  taurel
-// - Adapted to release 7.2.5
-//
-// Revision 3.57  2011/01/18 14:55:48  taurel
-// - Release 7.2.4
-//
-// Revision 3.56  2011/01/10 13:53:17  taurel
-// - Tango release 7.2.3
-//
-// Revision 3.55  2010/12/08 10:21:53  taurel
-// - Tango release 7.2.2
-//
-// Revision 3.54  2010/11/02 14:06:54  taurel
-// - Replace dynamic_cast with static_cast in attribute.cpp.
-// - Release number is now 7.2.1
-//
-// Revision 3.53  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.52  2010/09/07 15:32:21  taurel
-// - Fix some re-connection problems with Windows
-// - Publish all endPoints in case of multiple network interface
-//
-// Revision 3.51  2010/08/19 12:10:20  taurel
-// - Change timeout during the first _narrow() call in connect() method
-//
-// Revision 3.50  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.49.2.1  2010/05/21 09:43:39  taurel
-// - Re-use the same event channel in case of server restart when a file
-// is use as database
-//
-// Revision 3.49  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
 // Revision 3.48  2009/09/30 06:43:18  taurel
 // - Improve error detection in case of TANGO_HOST not set and not fully
 // qualified device name
@@ -187,7 +148,7 @@ namespace Tango
 // Some general interest define
 //
 
-#define		TgLibVers				"7.2.5"		// Please, always code this following format "X.Y.Z"
+#define		TgLibVers				"7.1.1"		// Please, always code this following format "X.Y.Z"
 
 #define		DevVersion				4			// IDL version number
 #define		DefaultMaxSeq			20
@@ -243,12 +204,6 @@ namespace Tango
 #define		HEARTBEAT					"Event heartbeat"
 
 //
-// Event when using a file as database stuff
-//
-
-#define		NOTIFD_CHANNEL				"notifd_channel"
-
-//
 // Locking feature related defines
 //
 
@@ -263,7 +218,6 @@ namespace Tango
 
 #define		CLNT_TIMEOUT_STR		"3000"
 #define		CLNT_TIMEOUT			3000
-#define		NARROW_CLNT_TIMEOUT		100
 
 //
 // Connection and call timeout for database device

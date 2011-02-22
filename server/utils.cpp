@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,63 +34,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.73  2011/01/10 13:13:32  taurel
-// - getnameinfo() on sun does not return FQDN......
-//
-// Revision 3.72  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 3.71  2010/12/09 07:56:10  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.70  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.69  2010/12/08 09:58:28  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.68  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.67  2010/09/08 08:20:44  taurel
-// = Change the way the ORB is initialised to better manage several network
-// interface host case
-//
-// Revision 3.66  2010/09/07 15:32:21  taurel
-// - Fix some re-connection problems with Windows
-// - Publish all endPoints in case of multiple network interface
-//
-// Revision 3.65  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.64  2010/01/20 08:00:47  taurel
-// - Fix compilation problem introduced by the previous merge
-// Revision 3.61.2.3  2010/05/18 08:27:23  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 3.63  2010/01/20 07:53:02  taurel
-// - Commit after merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.62  2009/12/18 14:52:37  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-// Revision 3.61.2.2  2009/12/18 14:49:02  taurel
-// - If the DS main thread is not created using omnithread, it is also
-// necessary to call omnithread::release_dummy() before the thread exit
-//
-// Revision 3.61.2.1  2009/12/18 14:07:34  taurel
-// - Add omni_thread call in case the main DS thread is not the process
-// main thread.
-//
-// Revision 3.61  2009/10/26 13:49:54  taurel
-// - Add an exception case in the Util::get_device_list_by_class() method
-//
 // Revision 3.60  2009/09/03 15:26:32  taurel
 // - Wrongly spell _TG_WINDOWS_ !!
 //
@@ -222,16 +165,15 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <eventsupplier.h>
 
 #ifndef _TG_WINDOWS_
-#include <unistd.h>
-#include <assert.h>
-#include <sys/time.h>
-#include <netdb.h>
+	#include <unistd.h>
+	#include <assert.h>
+	#include <sys/time.h>
+	#include <netdb.h>
 #else
-#include <sys/timeb.h>
-#include <process.h>
-#include <coutbuf.h>
-#include <ntservice.h>
-#include <ws2tcpip.h>
+	#include <sys/timeb.h>
+	#include <process.h>
+        #include <coutbuf.h>
+	#include <ntservice.h>
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
@@ -399,29 +341,6 @@ void Util::effective_job(int argc,char *argv[])
 		DServerSignal::instance();
 
 //
-// Check if the user specified a endPoint on the command line or using one
-// env. variable
-//
-
-		bool endpoint_specified = false;
-		for (int i = 2;i < argc;i++)
-		{
-			if (::strcmp("-ORBendPoint",argv[i]) == 0)
-			{
-				endpoint_specified = true;
-				break;
-			}
-		}
-
-		if (endpoint_specified == false)
-		{
-			DummyDeviceProxy d;
-			string env_var;
-			if (d.get_env_var("ORBendPoint",env_var) == 0)
-				endpoint_specified = true;
-		}
-
-//
 // Initialise CORBA ORB
 //
 
@@ -431,46 +350,48 @@ void Util::effective_job(int argc,char *argv[])
 		WSAStartup(rel,&dat);
 #endif
 
-		if (endpoint_specified == true)
+		char h_name[80];
+		int res = gethostname(h_name,80);
+		if (res == 0)
 		{
 			const char *options[][2] = {
-				{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-				{"serverCallTimeOutPeriod","5000"},
-				{"maxServerThreadPoolSize","100"},
-				{"threadPerConnectionUpperLimit","55"},
-				{"threadPerConnectionLowerLimit","50"},
-				{"supportCurrent","0"},
-				{"verifyObjectExistsAndType","0"},
-				{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
+			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
+			{"serverCallTimeOutPeriod","5000"},
+			{"maxServerThreadPoolSize","100"},
+			{"threadPerConnectionUpperLimit","55"},
+			{"threadPerConnectionLowerLimit","50"},
+			{"supportCurrent","0"},
+			{"verifyObjectExistsAndType","0"},
+			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
 #ifndef _TG_WINDOWS_
-				{"endPoint","giop:unix:"},
+			{"endPoint","giop:tcp::"},
+			{"endPoint","giop:unix:"},
 #endif
-				{0,0}
-			};
+			{0,0}};
 			
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
 		else
 		{
 			const char *options[][2] = {
-				{"endPointPublish","all(addr)"},
-				{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
-				{"serverCallTimeOutPeriod","5000"},
-				{"maxServerThreadPoolSize","100"},
-				{"threadPerConnectionUpperLimit","55"},
-				{"threadPerConnectionLowerLimit","50"},
-				{"supportCurrent","0"},
-				{"verifyObjectExistsAndType","0"},
-				{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
+			{"endPointPublish","all(addr)"},
+			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
+			{"serverCallTimeOutPeriod","5000"},
+			{"maxServerThreadPoolSize","100"},
+			{"threadPerConnectionUpperLimit","55"},
+			{"threadPerConnectionLowerLimit","50"},
+			{"supportCurrent","0"},
+			{"verifyObjectExistsAndType","0"},
+			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
 #ifndef _TG_WINDOWS_
-				{"endPoint","giop:tcp::"},
-				{"endPoint","giop:unix:"},
+			{"endPoint","giop:tcp::"},
+			{"endPoint","giop:unix:"},
 #endif
-				{0,0}
-			};
+			{0,0}};
 			
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
+		
 
 #ifndef TANGO_HAS_LOG4TANGO
 
@@ -860,33 +781,6 @@ void Util::check_args(int argc,char *argv[])
 #endif
 						cout4 << "File name = <" << database_file_name << ">" << endl;
 						ind++;
-
-//
-// Try to find the ORB endPoint option
-//
-
-						long arg_nb;
-						for (arg_nb = 2;arg_nb < argc;arg_nb++)
-						{
-							if (::strcmp(argv[arg_nb],"-ORBendPoint") == 0)
-							{
-								arg_nb++;
-								string endpoint = argv[arg_nb];
-								string::size_type pos;
-								if ((pos = endpoint.rfind(':')) == string::npos)
-								{
-									cerr << "Strange ORB endPoint specification" << endl;
-									print_usage(argv[0]);
-								}
-								ext->svr_port_num = endpoint.substr(++pos);
-								break;
-							}
-						}
-						if (arg_nb == argc)
-						{
-							cerr << "Missing ORB endPoint specification" << endl;
-							print_usage(argv[0]);
-						}
 					}
 					break;
 
@@ -1247,24 +1141,17 @@ void Util::connect_db()
 		string &inst_name = get_ds_inst_name();
 		if (inst_name != "-?")
 		{
-			db->set_timeout_millis(DB_TIMEOUT * 4);
-			set_svr_starting(false);
+			db->set_timeout_millis(DB_TIMEOUT * 3);
 			try
 			{
 				ext->db_cache = new DbServerCache(db,get_ds_name(),get_host_name());
 			}
-			catch (Tango::DevFailed &e)
-			{
-				string base_desc(e.errors[0].desc.in());
-				if (base_desc.find("TRANSIENT_CallTimedout") != string::npos)
-					cerr << "DB timeout while trying to fill the DB server cache. Will use traditional way" << endl;
-			}
+			catch (Tango::DevFailed &) {}
 			catch (...) 
 			{
 				cerr << "Unknown exception while trying to fill database cache..." << endl;
 			}
 			db->set_timeout_millis(DB_TIMEOUT);
-			set_svr_starting(true);
 		}
 	}
 }
@@ -1321,6 +1208,51 @@ void Util::misc_init()
 	pid_str = o.str();
 	o.rdbuf()->freeze(false);
 #endif
+
+//
+// Get the FQDN host name (Fully qualified domain name)
+// If it is not returned by the system call "getname",
+// try with the gethostbyname system call
+//
+		
+	char buffer[80];
+	if (gethostname(buffer,80) == 0)
+	{
+		hostname = buffer;
+		string::size_type pos = hostname.find('.');
+
+		if (pos == string::npos)
+		{
+			struct hostent *he;
+			he = gethostbyname(buffer);
+			
+			if (he != NULL)
+			{
+				string na(he->h_name);
+				pos = na.find('.');
+				if (pos == string::npos)
+				{
+					char **p;
+					for (p = he->h_aliases;*p != 0;++p)
+					{
+						string al(*p);
+						pos = al.find('.');
+						if (pos != string::npos)
+						{
+							hostname = al;
+							break;
+						}					
+					}
+				}
+				else
+					hostname = na;
+			}
+		}
+	}
+	else
+	{
+		print_err_message("Cant retrieve server host name");
+	}
 	
 //
 // Convert Tango version number to string (for device export)
@@ -1372,10 +1304,8 @@ void Util::init_host_name()
 
 //
 // Get the FQDN host name (Fully qualified domain name)
-// If it is not returned by the system call "gethostname",
-// try with the getaddrinfo system call
-//
-// All supported OS have the getaddrinfo() call
+// If it is not returned by the system call "getname",
+// try with the gethostbyname system call
 //
 		
 	char buffer[80];
@@ -1383,63 +1313,6 @@ void Util::init_host_name()
 	{
 		hostname = buffer;
 		string::size_type pos = hostname.find('.');
-
-		if (pos == string::npos)
-		{
-  			struct addrinfo hints;
-
-			memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-			hints.ai_falgs	   = AI_ADDRCONFIG;
-#endif
-#else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  			hints.ai_flags     = AI_ADDRCONFIG;
-#endif
-#endif
-  			hints.ai_family    = AF_INET;
-  			hints.ai_socktype  = SOCK_STREAM;
-
-  			struct addrinfo	*info;
-			struct addrinfo *ptr;
-			char tmp_host[512];
-
-  			int result = getaddrinfo(buffer, NULL, &hints, &info);
-
-  			if (result == 0)
-			{
-				ptr = info;
-				while (ptr != NULL)
-				{
-    				if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
-					{
-						string myhost(tmp_host);
-						string::size_type pos = myhost.find('.');
-						if (pos != string::npos)
-						{
-							string canon = myhost.substr(0,pos);
-							if (hostname == canon)
-							{
-								hostname = myhost;
-								break;
-							}
-						}
-    				}
-					ptr = ptr->ai_next;
-				}
-				freeaddrinfo(info);
-			}
-		}
-#ifdef __sun
-
-//
-// Unfortunately, on solaris (at least solaris9), getnameinfo does
-// not return the fqdn....
-// Use the old way of doing
-//
-
-		pos = hostname.find('.');
 
 		if (pos == string::npos)
 		{
@@ -1468,7 +1341,6 @@ void Util::init_host_name()
 					hostname = na;
 			}
 		}
-#endif
 	}
 	else
 	{
@@ -1493,20 +1365,9 @@ void Util::create_event_supplier()
 			ext->event_supplier = EventSupplier::create(orb,ds_name,db,hostname,this);
 			ext->event_supplier->connect();
 		}
-		catch (Tango::DevFailed &e)
-		{
-			ext->event_supplier = NULL;
-			if (_FileDb == true)
-			{
-				Tango::Except::print_exception(e);
-				cerr << "Can't create event supplier. Event not available" << endl;
-			}
-		}
 		catch (...)
 		{
 			ext->event_supplier = NULL;
-			if (_FileDb == true)
-				cerr << "Can't create event supplier. Event not available" << endl;
 		}
 	}
 	else
@@ -1747,24 +1608,10 @@ void Util::server_init(bool with_window)
 	if (Util::_service == true)
 	{
 		omni_thread::create_dummy();
-		ext->_dummy_thread = true;
-	}
-	
-	omni_thread *th = omni_thread::self();
-	if (th == NULL)
-	{
-		th = omni_thread::create_dummy();
-		ext->_dummy_thread = true;
-	}
-#else
-	omni_thread *th = omni_thread::self();
-	if (th == NULL)
-	{
-		th = omni_thread::create_dummy();
-		ext->_dummy_thread = true;
 	}
 #endif
-	
+
+	omni_thread *th = omni_thread::self();
 	if (is_py_ds() == false)
 	{
 		th->set_value(key_py_data,new Tango::PyData());
@@ -2037,10 +1884,7 @@ void Util::server_cleanup()
 			_constructed = false;
 		}
 	}
-#endif
-
-	if (ext->_dummy_thread == true)
-		omni_thread::release_dummy();
+#endif	
 }
 
 //+----------------------------------------------------------------------------

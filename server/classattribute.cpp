@@ -19,7 +19,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -42,15 +42,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2010/08/25 11:41:27  taurel
-// - Fix some bugs preventing dynamic attributes management (in some cases)
-//
-// Revision 3.10  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.9  2008/10/06 15:00:36  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -542,17 +533,16 @@ Attr &MultiClassAttribute::get_attr(string &attr_name)
 //			name passed as parameter
 //
 // in :			attr_name : The attribute name
-//				cl_name : The attribute class name
 //
 //--------------------------------------------------------------------------
 
 
-void MultiClassAttribute::remove_attr(string &attr_name,const string &cl_name)
+void MultiClassAttribute::remove_attr(string &attr_name)
 {
 	vector<Tango::Attr *>::iterator ite;
 	for (ite = attr_list.begin();ite != attr_list.end();++ite)
 	{
-		if (((*ite)->get_name() == attr_name) && ((*ite)->get_cl_name() == cl_name))
+		if ((*ite)->get_name() == attr_name)
 		{
 			attr_list.erase(ite);
 			break;

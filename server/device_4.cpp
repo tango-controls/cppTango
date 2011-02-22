@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,12 +38,6 @@ static const char *RcsId = "$Id$";
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
 // Revision 3.10  2009/09/17 08:28:06  taurel
 // - Add a mutual exclusion to protect attribute buffer
 //

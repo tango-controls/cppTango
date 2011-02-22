@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- August 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,24 +30,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.30  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.29  2010/06/25 07:16:34  taurel
-// - Also protect the asynchronous DeviceProxy::read_attributes() methods
-// against multiple times the same attribute in att name list
-//
-// Revision 3.28  2010/04/27 07:38:03  taurel
-// - Merge with the bugfixes branch
-//
-// Revision 3.27  2009/12/18 14:51:01  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.26  2009/09/01 14:02:50  taurel
-// - Still some HP-UX code !!
-//
 // Revision 3.25  2009/03/27 13:05:10  taurel
 // - Fix bug due to new Attribute format data member in AttributeValue4
 // structure
@@ -292,7 +274,8 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -343,8 +326,9 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 	if (faf == false)
 	{
-		id = add_asyn_request(request,TgRequest::CMD_INOUT);
+		id = ApiUtil::instance()->get_pasyn_table()->store_request(request,TgRequest::CMD_INOUT);
 		request->send_deferred();
+		pasyn_ctr++;
 	}
 	else
 	{
@@ -490,8 +474,9 @@ DeviceData Connection::command_inout_reply(long id)
 				desc << ", command " << tmp << ends;
 				CORBA::string_free(tmp);
 		
-				remove_asyn_request(id);	
-
+				ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+				pasyn_ctr--;	
+				
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
 					  (const char *)"API_DeviceTimedOut",
 					  desc.str(),
@@ -524,7 +509,8 @@ DeviceData Connection::command_inout_reply(long id)
 			desc << ", command " << tmp << ends;
 			CORBA::string_free(tmp);
 		
-			remove_asyn_request(id);
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;
 		
 			Except::re_throw_exception(ex,
 					   (const char*)"API_CommandFailed",
@@ -538,7 +524,7 @@ DeviceData Connection::command_inout_reply(long id)
 		if ((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL)
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 		
 //
 // Re-throw nearly all CORBA system exceptions
@@ -579,8 +565,8 @@ DeviceData Connection::command_inout_reply(long id)
 //
 
 					CORBA::string_free(tmp);
-
-					remove_asyn_request(id);
+					ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+					pasyn_ctr--;
 				
 					return dd_out;
 					
@@ -593,7 +579,8 @@ DeviceData Connection::command_inout_reply(long id)
 			desc << ", command " << tmp << ends;
 			CORBA::string_free(tmp);
 		
-			remove_asyn_request(id);
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;
 		
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
 						  (const char*)"API_CommunicationFailed",
@@ -608,7 +595,8 @@ DeviceData Connection::command_inout_reply(long id)
 // Remove request from request global table.
 //
 
-	remove_asyn_request(id);
+	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+	pasyn_ctr--;
 				
 	return data_out;
 }
@@ -750,7 +738,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 				desc << ", command " << tmp << ends;
 				CORBA::string_free(tmp);
 				
-				remove_asyn_request(id);
+				ApiUtil::instance()->get_pasyn_table()->remove_request(id);			
+				pasyn_ctr--;	
 					
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
 						  (const char *)"API_DeviceTimedOut",
@@ -783,9 +772,10 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			desc << ", command " << tmp << ends;
 			CORBA::string_free(tmp);
 			
-			remove_asyn_request(id);;
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;
 			
-			Except::re_throw_exception(ex,
+	               	Except::re_throw_exception(ex,
 						   (const char*)"API_CommandFailed",
                         			   desc.str(),
 						   (const char*)"Connection::command_inout_reply()");
@@ -797,7 +787,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 		if ((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL)
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -816,9 +806,10 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			desc << ", command " << tmp << ends;
 			CORBA::string_free(tmp);
 			
-			remove_asyn_request(id);
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;
 			
-			ApiCommExcept::re_throw_exception(cb_excep_mess,
+	               	ApiCommExcept::re_throw_exception(cb_excep_mess,
 						          (const char*)"API_CommunicationFailed",
                         			          desc.str(),
 						          (const char*)"Connection::command_inout_reply()");
@@ -831,8 +822,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 // Remove request from request global table.
 //
 
-	remove_asyn_request(id);
-				
+	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+	pasyn_ctr--;
 	return data_out;
 }
 
@@ -852,13 +843,15 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 {
+
 //
 // Reconnect to device in case it is needed
 //
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -867,13 +860,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
                 ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
-
-//
-// Check that the caller did not give two times the same attribute
-//
-
-	same_att_name(attr_names,"DeviceProxy::read_attributes_asynch");
-	
+			
 //
 // Create the request object
 //
@@ -889,7 +876,8 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	{
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();
-		ci.cpp_clnt(au->get_client_pid());		
+		ci.cpp_clnt(au->get_client_pid());
+		
 		request = Connection::ext->device_4->_request("read_attributes_4");
 		request->add_in_arg() <<= names;
 		request->add_in_arg() <<= source;
@@ -925,8 +913,9 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	
 	long id = 0;
 	
-	id = add_asyn_request(request,TgRequest::READ_ATTR);
+	id = ApiUtil::instance()->get_pasyn_table()->store_request(request,TgRequest::READ_ATTR);
 	request->send_deferred();
+	pasyn_ctr++;
 	
 	return id;
 }
@@ -1009,7 +998,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 // Remove request from request global table.
 //
 
-			remove_asyn_request(id);
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;	
 		
 			return a_ptr;
 		}
@@ -1088,7 +1078,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 // Remove request from request global table.
 //
 
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;	
 		
 		return dev_attr;
 	}
@@ -1169,7 +1160,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 // Remove request from request global table.
 //
 
-			remove_asyn_request(id);
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;	
 		
 			return a_ptr;
 		}
@@ -1235,7 +1227,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 // Remove request from request global table.
 //
 
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;	
 		
 		return dev_attr;
 	}
@@ -1350,7 +1343,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 // Remove request from request global table.
 //
 
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;	
 		
 		return a_ptr;
 	}
@@ -1431,8 +1425,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 // Remove request from request global table.
 //
 
-	remove_asyn_request(id);	
-						
+	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+	pasyn_ctr--;	
+		
 	return dev_attr;
 }
 
@@ -1510,7 +1505,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 				break;
 			}
 		}
-	
+		
 		if (i == nb)
 		{
 			TangoSys_OMemStream desc;
@@ -1545,7 +1540,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 // Remove request from request global table.
 //
 
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;	
 		
 		return a_ptr;
 	}
@@ -1562,7 +1558,6 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 	const Tango::AttributeValueList_4 *received_4;
 	
 	CORBA::Any &dii_any = req.request->return_value();
-
 	if (version < 3)
 		dii_any >>= received;
 	else if (version == 3)
@@ -1611,9 +1606,12 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 // Remove request from request global table.
 //
 
-	remove_asyn_request(id);
-	
+	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+	pasyn_ctr--;	
+		
 	return dev_attr;
+
+
 }
 
 //-----------------------------------------------------------------------------
@@ -1662,7 +1660,8 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 			}
 			desc << ends;
 			
-			remove_asyn_request(id);
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;	
 
 			if (type == SIMPLE)
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
@@ -1707,7 +1706,8 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 		}
 		desc << ends;
 			
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;
 
 		if (type == SIMPLE)			
 	        	Except::re_throw_exception(ex,
@@ -1727,7 +1727,7 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 	if ((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL)
 	{
 
-		set_connection_state(CONNECTION_NOTOK);
+		connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw nearly (but not all) all CORBA system exceptions
@@ -1769,7 +1769,8 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 		}
 		desc << ends;
 					
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;
 
 		if (type == SIMPLE)
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
@@ -1821,7 +1822,8 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1882,9 +1884,10 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 //
 
 	long id = 0;		
-	id = add_asyn_request(request,TgRequest::WRITE_ATTR);
+	id = ApiUtil::instance()->get_pasyn_table()->store_request(request,TgRequest::WRITE_ATTR);
 
 	request->send_deferred();
+	pasyn_ctr++;
 		
 	return id;
 }
@@ -1910,7 +1913,8 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1969,9 +1973,10 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 //
 
 	long id = 0;		
-	id = add_asyn_request(request,TgRequest::WRITE_ATTR_SINGLE);
+	id = ApiUtil::instance()->get_pasyn_table()->store_request(request,TgRequest::WRITE_ATTR_SINGLE);
 
 	request->send_deferred();
+	pasyn_ctr++;
 		
 	return id;
 }
@@ -2084,7 +2089,8 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 // Remove request from request global table.
 //
 
-	remove_asyn_request(id);	
+	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+	pasyn_ctr--;	
 }
 
 
@@ -2159,7 +2165,8 @@ void DeviceProxy::write_attributes_reply(long id)
 // Remove request from request global table.
 //
 
-	remove_asyn_request(id);
+	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+	pasyn_ctr--;
 
 }
 
@@ -2225,7 +2232,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 				desc << ends;
 			}
 			
-			remove_asyn_request(id);	
+			ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+			pasyn_ctr--;	
 
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
 							  (const char *)"API_DeviceTimedOut",
@@ -2299,7 +2307,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 		}
 		desc << ends;
 		
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;
 						
 		if (version < 3)
 		{
@@ -2340,7 +2349,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 	if ((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL)
 	{
 
-		set_connection_state(CONNECTION_NOTOK);
+		connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw nearly all CORBA system exceptions
@@ -2400,7 +2409,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 		}
 		desc << ends;
 					
-		remove_asyn_request(id);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(id);
+		pasyn_ctr--;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
 						  (const char*)"API_CommunicationFailed",
@@ -2637,7 +2647,6 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 
 void Connection::cancel_asynch_request(long id)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_as_cancelled(id);
 	pasyn_ctr--;
 }
@@ -2656,7 +2665,6 @@ void Connection::cancel_asynch_request(long id)
 
 void Connection::cancel_all_polling_asynch_request()
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_all_polling_as_cancelled();
 	pasyn_ctr = 0;
 }

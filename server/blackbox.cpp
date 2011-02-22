@@ -16,7 +16,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -39,24 +39,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.28  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.27  2010/12/08 09:58:28  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.26  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.25  2009/12/18 14:52:37  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.24  2009/09/01 07:41:31  taurel
-// - Commit after test suite for Tango 7.1
-//
 // Revision 3.23  2009/03/27 12:21:46  taurel
 // - Now the peer address coming from omniORB is coded in IP v6 format!
 //
@@ -333,13 +315,11 @@ static const char *RcsId = "$Id$\n$Name$";
 #ifdef _TG_WINDOWS_
 #include <sys/types.h>
 #include <sys/timeb.h>
-#include <ws2tcpip.h>
 #else
 #include <sys/time.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #endif /* _TG_WINDOWS_ */
 
 #include <omniORB4/omniInterceptors.h>
@@ -1516,29 +1496,42 @@ void BlackBox::build_info_as_str(long index)
 		string ip3_str = full_ip_str.substr(old_pos,pos - old_pos);
 		pos++;
 		string ip4_str = full_ip_str.substr(pos);
+	
+//
+// Convert ip address field to numbers
+//
+
+		long ip1,ip2,ip3,ip4;
+		ip1 = atol(ip1_str.c_str());
+		ip2 = atol(ip2_str.c_str());
+		ip3 = atol(ip3_str.c_str());
+		ip4 = atol(ip4_str.c_str());
 
 //
 // Finally, get host name
 //
 
-		struct sockaddr_in si;
-		si.sin_family = AF_INET;
-		si.sin_port = 0;
+        struct hostent *ho;
+
 #ifdef _TG_WINDOWS_
-		int slen = sizeof(si);
-		WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+		struct in_addr ad;
+		ad.s_addr = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+		unsigned long ip_net = htonl(ad.s_addr);
+		ho = gethostbyaddr((char *)(&ip_net),sizeof(ip_net),AF_INET);
 #else
-		inet_pton(AF_INET,full_ip_str.c_str(),&si.sin_addr);
-#endif
-
-		char host[512];
-
-		int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
+		unsigned long ip = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+#ifdef __linux
+		unsigned long ip_net = htonl(ip);
+		ho = gethostbyaddr((char *)(&ip_net),sizeof(ip),AF_INET);
+#else
+		ho = gethostbyaddr((char *)(&ip),sizeof(ip),AF_INET);
+#endif /* __linux */
+#endif /* _TG_WINDOWS_ */
 		
-		if (res == 0)
+		if (ho != NULL)
 		{
 			elt_str = elt_str + "requested from ";
-			elt_str = elt_str + host;
+			elt_str = elt_str + ho->h_name;
 		}
 		else
 		{
@@ -1927,7 +1920,7 @@ bool client_addr::operator!=(const client_addr &rhs)
 				
 			char *tmp = client_ip;
 			const char *rhs_tmp = rhs.client_ip;
-
+			
 			if (strlen(tmp) != strlen(rhs_tmp))
 				return true;
 				
@@ -1942,7 +1935,7 @@ bool client_addr::operator!=(const client_addr &rhs)
 				return true;
 		}
 	}
-
+	
 	return false;
 }
 
@@ -2001,23 +1994,40 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
 							pos++;
 							string ip4_str = full_ip_str.substr(pos);
 
-							struct sockaddr_in si;
-							si.sin_family = AF_INET;
-							si.sin_port = 0;
+//
+// Convert ip address field to numbers
+//
+
+							long ip1,ip2,ip3,ip4;
+							ip1 = atol(ip1_str.c_str());
+							ip2 = atol(ip2_str.c_str());
+							ip3 = atol(ip3_str.c_str());
+							ip4 = atol(ip4_str.c_str());
+
+//
+// Finally, get host name
+//
+
+							struct hostent *ho;
+
 #ifdef _TG_WINDOWS_
-							int slen = sizeof(si);
-							WSAStringToAddress((char *)full_ip_str.c_str(),AF_INET,NULL,(SOCKADDR *)&si,&slen);
+							struct in_addr ad;
+							ad.s_addr = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+							unsigned long ip_net = htonl(ad.s_addr);
+							ho = gethostbyaddr((char *)(&ip_net),sizeof(ip_net),AF_INET);
 #else
-							inet_pton(AF_INET,full_ip_str.c_str(),&si.sin_addr);
-#endif
-
-							char host[512];
-
-							int res = getnameinfo((const sockaddr *)&si,sizeof(si),host,512,0,0,0);
+							unsigned long ip = (ip1 << 24) + (ip2 << 16) + (ip3 << 8) + ip4;
+#ifdef __linux
+							unsigned long ip_net = htonl(ip);
+							ho = gethostbyaddr((char *)(&ip_net),sizeof(ip),AF_INET);
+#else
+							ho = gethostbyaddr((char *)(&ip),sizeof(ip),AF_INET);
+#endif /* __linux */
+#endif /* _TG_WINDOWS_ */
 	
-							if (res == 0)
+							if (ho != NULL)
 							{
-								cl_host_name = host;
+								cl_host_name = ho->h_name;
 								ret = 0;
 							}
 							else

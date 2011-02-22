@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- June 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,19 +30,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.19  2010/12/08 10:10:54  taurel
-// - Commit after a merge with the bugfixes branch
-//
-// Revision 3.18.2.1  2010/11/26 07:56:12  taurel
-// - Fix date in date cmoputation in the printing stream inserter operators
-// for class DeviceAttribute and associated (history)
-//
-// Revision 3.18  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.17  2009/04/30 12:25:00  taurel
-// - Fix a bug in the printing utility (Thank's to Jens Kruger)
-//
 // Revision 3.16  2009/01/21 12:45:15  taurel
 // - Change CopyRights for 2009
 //
@@ -362,13 +349,7 @@ ostream &operator<<(ostream &o_str,DeviceDataHistory &dh)
 // First, print date
 //
 
-#ifdef _TG_WINDOWS_
-	time_t tmp_val = dh.time.tv_sec;
-	struct tm *tmp_time = localtime(&tmp_val);
-	char *tmp_date = asctime(tmp_time);
-#else
 	char *tmp_date = asctime(localtime((time_t *)&dh.time.tv_sec));
-#endif
 	tmp_date[strlen(tmp_date) - 1] = '\0';
 	o_str << tmp_date;
 	o_str << " (" << dh.time.tv_sec << "," << setw(6) << setfill('0') << dh.time.tv_usec << " sec) : ";
@@ -837,13 +818,7 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 
 	if (dah.time.tv_sec != 0)
 	{
-#ifdef _TG_WINDOWS_
-		time_t tmp_val = dah.time.tv_sec;
-		struct tm *tmp_time = localtime(&tmp_val);
-		char *tmp_date = asctime(tmp_time);
-#else
 		char *tmp_date = asctime(localtime((time_t *)&dah.time.tv_sec));
-#endif
 		tmp_date[strlen(tmp_date) - 1] = '\0';
 		o_str << tmp_date;
 		o_str << " (" << dah.time.tv_sec << "," << setw(6) << setfill('0') << dah.time.tv_usec << " sec) : ";

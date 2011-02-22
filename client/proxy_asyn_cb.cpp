@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- January 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,25 +30,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 //
 // $Log$
-// Revision 3.22  2010/09/12 12:18:23  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.21  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.20  2010/06/25 07:16:35  taurel
-// - Also protect the asynchronous DeviceProxy::read_attributes() methods
-// against multiple times the same attribute in att name list
-//
-// Revision 3.19  2009/12/18 14:51:01  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.18  2009/03/27 13:05:10  taurel
-// - Fix bug due to new Attribute format data member in AttributeValue4
-// structure
-//
 // Revision 3.17  2009/03/27 12:19:37  taurel
 // - Fix bug in read_attribute for IDL 4
 //
@@ -220,7 +201,8 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -269,9 +251,10 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::CMD_INOUT);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::CMD_INOUT);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 	
@@ -368,7 +351,8 @@ void Connection::get_asynch_replies()
 					break;
 				}
 			
-				remove_asyn_cb_request(this,req);
+				ApiUtil::instance()->get_pasyn_table()->remove_request(this,req);
+				pasyn_cb_ctr--;
 			}
 		}
 		
@@ -403,7 +387,8 @@ void Connection::get_asynch_replies()
 			break;
 		}
 		
-		remove_asyn_cb_request(this,tg_ptr->request);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(this,tg_ptr->request);
+		pasyn_cb_ctr--;
 	}	
 	
 }	
@@ -541,7 +526,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			 (to_except == false))
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -794,7 +779,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			 (to_except == false))
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -1037,7 +1022,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 			 (to_except == false))
 		{
 
-			set_connection_state(CONNECTION_NOTOK);
+			connection_state = CONNECTION_NOTOK;
 			
 //
 // Re-throw all CORBA system exceptions
@@ -1117,6 +1102,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 
 void Connection::get_asynch_replies(long call_timeout)
 {
+
 //
 // First check all replies already there
 //
@@ -1140,14 +1126,15 @@ void Connection::get_asynch_replies(long call_timeout)
 			break;
 		}
 		
-		remove_asyn_cb_request(this,tg_ptr->request);
+		ApiUtil::instance()->get_pasyn_table()->remove_request(this,tg_ptr->request);
+		pasyn_cb_ctr--;
 	}	
 
 //
 // If they are requests already sent but without being replied yet
 //
 
-	if (get_pasyn_cb_ctr() != 0)
+	if (pasyn_cb_ctr != 0)
 	{	
 		CORBA::ORB_ptr orb = ApiUtil::instance()->get_orb();
 		CORBA::Request_ptr req;
@@ -1167,7 +1154,7 @@ void Connection::get_asynch_replies(long call_timeout)
 			to_wait.tv_nsec = 20000000;
 #endif				
 				
-			while ((nb > 0) && (get_pasyn_cb_ctr() != 0))
+			while ((nb > 0) && (pasyn_cb_ctr != 0))
 			{
 #ifdef _TG_WINDOWS_
 				Sleep(20);
@@ -1211,7 +1198,8 @@ void Connection::get_asynch_replies(long call_timeout)
 							break;
 						}
 			
-						remove_asyn_cb_request(this,req);
+						ApiUtil::instance()->get_pasyn_table()->remove_request(this,req);
+						pasyn_cb_ctr--;
 					}
 				}
 			}
@@ -1221,7 +1209,7 @@ void Connection::get_asynch_replies(long call_timeout)
 // without replies
 //
 			
-			if ((nb == 0) && (get_pasyn_cb_ctr() != 0))
+			if ((nb == 0) && (pasyn_cb_ctr != 0))
 			{	
 				TangoSys_OMemStream desc;
 				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
@@ -1238,7 +1226,7 @@ void Connection::get_asynch_replies(long call_timeout)
 // device has sent their replies
 //
 
-			while (get_pasyn_cb_ctr() != 0)
+			while (pasyn_cb_ctr != 0)
 			{					
 				orb->get_next_response(req);
 								
@@ -1273,7 +1261,8 @@ void Connection::get_asynch_replies(long call_timeout)
 						break;
 					}
 			
-					remove_asyn_cb_request(this,req);
+					ApiUtil::instance()->get_pasyn_table()->remove_request(this,req);
+					pasyn_cb_ctr--;
 				}
 			}
 		}
@@ -1303,7 +1292,8 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1312,12 +1302,6 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
                 ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
-
-//
-// Check that the caller did not give two times the same attribute
-//
-
-	same_att_name(attr_names,"DeviceProxy::read_attributes_asynch");
 	
 //
 // Create the request object
@@ -1372,9 +1356,10 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::READ_ATTR);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::READ_ATTR);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 }
@@ -1408,7 +1393,8 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1473,9 +1459,10 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 }
@@ -1510,7 +1497,8 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 
 	try
 	{
-		check_and_reconnect();
+		if (connection_state != CONNECTION_OK)
+			reconnect(dbase_used);
 	}
 	catch (Tango::ConnectionFailed &e)
 	{
@@ -1572,9 +1560,10 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 //
 
 	ApiUtil *au = ApiUtil::instance();	
-	add_asyn_cb_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR_SINGLE);
+	au->get_pasyn_table()->store_request(req_seq[0],&cb,this,TgRequest::WRITE_ATTR_SINGLE);
 	CORBA::ORB_ptr orb = au->get_orb();
 	orb->send_multiple_requests_deferred(req_seq);
+	pasyn_cb_ctr++;
 	if (au->get_asynch_cb_sub_model() == PUSH_CALLBACK)
 		au->get_pasyn_table()->signal();
 }

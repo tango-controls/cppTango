@@ -71,20 +71,20 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango725 release\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango711 release\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="log4tango.lib omniorb414_rt.lib omnidynamic414_rt.lib omnithread34_rt.lib COS414_rt.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				OutputFile="lib/tango725.dll"
-				Version="7.2.5"
+				OutputFile="lib/tango711.dll"
+				Version="7.1.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\lib\x86_win32&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
 				ModuleDefinitionFile="tango.def"
-				ProgramDatabaseFile=".\Release/tango725.pdb"
-				ImportLibrary="lib/tango.7.2.5.lib"
+				ProgramDatabaseFile=".\Release/tango711.pdb"
+				ImportLibrary="lib/tango.7.1.1.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -155,7 +155,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_dll.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.7.2.5.pdb"
+				ProgramDataBaseFileName=".\lib/tangod.7.1.1.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -172,21 +172,21 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango725d debug\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango711d debug\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="log4tangod.lib omniORB414_rtd.lib omniDynamic414_rtd.lib COS414_rtd.lib omnithread34_rtd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
 				ShowProgress="2"
-				OutputFile="lib/tango725d.dll"
-				Version="7.2.5"
+				OutputFile="lib/tango711d.dll"
+				Version="7.1.1"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\lib\x86_win32&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
 				ModuleDefinitionFile="tango.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/tango725d.pdb"
-				ImportLibrary="lib/tangod.7.2.5.lib"
+				ProgramDatabaseFile=".\Debug/tango711d.pdb"
+				ImportLibrary="lib/tangod.7.1.1.lib"
 				TargetMachine="1"
 			/>
 			<Tool
