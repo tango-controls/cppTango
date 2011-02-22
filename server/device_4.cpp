@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,15 +38,6 @@ static const char *RcsId = "$Id$";
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.10  2009/09/17 08:28:06  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
 // Revision 3.9  2009/01/21 12:49:04  taurel
 // - Change CopyRights for 2009
 //
@@ -109,6 +100,8 @@ static const char *RcsId = "$Id$";
 
 #include <tango.h>
 #include <device_4.h>
+
+#include <locked_att_value.h>
 
 namespace Tango
 {
@@ -617,7 +610,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	
 	try
 	{	
-		Tango::AttributeValue_4 *l_back = new Tango::AttributeValue_4 [nb_names];
+		Tango::LockedAttributeValue_4 *l_back = new Tango::LockedAttributeValue_4 [nb_names];
 		back = new Tango::AttributeValueList_4(nb_names,nb_names,l_back,true);
 		
 		for (unsigned long loop = 0;loop < nb_names;loop++)

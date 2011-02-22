@@ -16,7 +16,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -39,17 +39,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.16  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-//
-// Revision 3.15  2009/09/16 12:16:19  taurel
-// - Better management of the RDS alarm properties. They were not taken into
-// account by the set_default_properties() method
-//
 // Revision 3.14  2009/01/21 12:49:04  taurel
 // - Change CopyRights for 2009
 //
@@ -252,7 +241,6 @@ Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
 	ext->check_change_event = true;
 	ext->fire_archive_event = false;
 	ext->check_archive_event = true;
-	ext->fire_dr_event = false;
 	
 	if (name != "State")
 		check_type();

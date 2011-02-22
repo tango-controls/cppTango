@@ -8,7 +8,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,19 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.38  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.37  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.36  2010/06/18 13:57:09  taurel
-// - Add a way (using properties) to define a minimum polling period
-//
-// Revision 3.35  2009/01/29 15:25:41  taurel
-// - First implementation of the Data Ready event
-//
 // Revision 3.34  2009/01/21 12:49:04  taurel
 // - Change CopyRights for 2009
 //
@@ -59,6 +46,251 @@
 //
 // Revision 3.30  2008/10/03 06:51:36  taurel
 // - Add some licensing info in each files
+//
+// Revision 3.29  2008/10/02 09:09:47  taurel
+// - First implementation of multiple polling thread(s)
+//
+// Revision 3.28  2008/09/04 13:19:30  taurel
+// - Add push_event() feature for attribute of the DevEncoded data type
+//
+// Revision 3.27  2008/05/20 12:44:10  taurel
+// - Commit after merge with release 7 branch
+//
+// Revision 3.26  2008/03/20 07:38:46  taurel
+// - Last commit before Release 6.1 ?
+// Revision 3.25.2.4  2008/02/07 15:58:13  taurel
+// - First implementation of the Controlled Access done
+//
+// Revision 3.25.2.3  2008/01/03 16:05:52  taurel
+// - Some changes in locking feature implementation
+//
+// Revision 3.25.2.2  2007/12/19 15:54:47  taurel
+// - Still some work going on for the locking feature
+//
+// Revision 3.25.2.1  2007/11/22 12:33:10  taurel
+// - First part of the device locking implementation
+//
+// Revision 3.25  2007/05/17 07:59:07  taurel
+// - The polling is not configured via a separate thread any more. The polling thread add_obj_polling method has been modified to support a parameter telling to the polling thread when it has to polled the object.
+// Add device name in monitor print message
+// Add device_destroyer method in DeviceClass class
+//
+// Revision 3.24  2007/04/20 14:40:28  taurel
+// - Ported to Windows 64 bits x64 architecture
+//
+// Revision 3.23  2007/04/16 14:56:36  taurel
+// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
+// - Ported to omniORB4.1
+// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
+// - Added a new filterable field in the archive event
+//
+// Revision 3.22  2007/03/06 08:18:03  taurel
+// - Added 64 bits data types for 64 bits computer...
+//
+// Revision 3.21  2007/02/16 10:40:09  taurel
+// - Implementing a new types of event on the Attribute configuration
+//
+// Revision 3.20  2006/06/29 11:49:45  jensmeyer
+// Added init_attr_poll_ext_trig() and init_attr_poll_period() to initialise the attribute
+// polling from the code.
+//
+// Revision 3.19  2006/06/27 17:33:42  jensmeyer
+// Added init_cmd_poll_ext_trig() and init_cmd_poll_period() to write the polling configuration for commands to the database.
+// When specifying a polling of a command with Pogo now the configuration
+// get written into the database at startup time.
+//
+// Revision 3.18  2006/06/06 10:44:05  taurel
+// - Modified the DeviceImpl::push_event() method used to send user event.
+// It is now coherent with the other events type (change and archhive)
+//
+// Revision 3.17  2006/05/30 11:17:56  jensmeyer
+// Modifications on push_event functionality for MS Windows.
+// Mainly modifications for timing and time stamps.
+//
+// Revision 3.16  2006/05/23 14:51:02  jensmeyer
+// Corrected typing error.
+//
+// Revision 3.15  2006/05/23 12:05:56  jensmeyer
+// Added methods to push change and archive events.
+//
+// Revision 3.14  2006/05/18 07:57:19  taurel
+// - Updated to gcc 4 (minor changes)
+// - With the change done by SourceForge on their CVS servers, previous release
+// of these files has disappeared from CVS !!
+//
+// Revision 3.14  2006/05/08 07:16:07  taurel
+// - Small changes for GCC 4
+//
+// Revision 3.13  2006/04/27 13:47:11  taurel
+// - Merge the two DeviceImpl::push_event() methods in only one with only one method supporting also state or status attributes
+//
+// Revision 3.12  2006/04/13 13:31:44  taurel
+// Several changes:
+// - A new DeviceImpl::push_event() method to push USER event with State as data
+// - Fix bug in polling thread POLL_IUPD_PERIOD. The new polling period was applied only after the following poll still done with the old polling period
+// - It is now possible to update polling period of polled objects from a polled attribute or command
+//
+// Revision 3.11  2006/01/27 14:27:09  taurel
+// - Fix a severe incompatibility problem introduced by all the modifs done for
+// PY DS
+// - Duplicate some EventSupplier class methods (instead of using template) in order to be able to generate Tango shared library on Suse 9.3
+//
+// Revision 3.10  2006/01/20 08:22:29  taurel
+// - Added necessary changes to support Device server written in Python
+//
+// Revision 3.9  2005/07/28 07:34:41  taurel
+// - Fix some incompatibility between 5.1 and 5.2
+//
+// Revision 3.8  2005/06/29 08:31:16  taurel
+// - Last commit before release 5.2 ?
+//
+// Revision 3.7  2005/02/25 13:28:51  nleclercq
+// Added logging support in 'const' methods
+//
+// Revision 3.6  2005/01/21 19:58:30  taurel
+// - Some changes in include files for gcc 3.4.2
+//
+// Revision 3.5  2005/01/13 08:29:05  taurel
+// - Merge trunk with Release_5_0 from brach Release_5_branch
+//
+// Revision 3.4.2.6  2004/10/27 05:59:46  taurel
+// - Some minor changes to compile on all our supported platforms
+//
+// Revision 3.4.2.5  2004/10/22 11:25:00  taurel
+// Added warning alarm
+// Change attribute config. It now includes alarm and event parameters
+// Array attribute property now supported
+// subscribe_event throws exception for change event if they are not correctly configured
+// Change in the polling thread: The event heartbeat has its own work in the work list
+// Also add some event_unregister
+// Fix order in which classes are destructed
+// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
+// Change in the CORBA info call for the device type
+//
+// Revision 3.4.2.4  2004/09/27 09:09:07  taurel
+// - Changes to allow reading state and/or status as attributes
+//
+// Revision 3.4.2.3  2004/09/15 06:45:44  taurel
+// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
+// - It is also possible to read state and status as attributes
+// - Fix bug in Database::get_class_property() method (missing ends insertion)
+// - Fix bug in admin device DevRestart command (device name case problem)
+//
+// Revision 3.4.2.2  2004/08/19 07:44:03  taurel
+// - Replace server low level database access call by Database class method call
+// - Split device monitor in 3 : 1 to protect harware access, 1 to protect cache access and one mutex for device black box
+//
+// Revision 3.4.2.1  2004/07/08 11:02:12  taurel
+// - Add possibility to have command/attribute polling buffer depth specified
+//   individually
+//
+// Revision 3.4  2004/07/07 08:40:11  taurel
+//
+// - Fisrt commit after merge between Trunk and release 4 branch
+// - Add EventData copy ctor, asiignement operator and dtor
+// - Add Database and DeviceProxy::get_alias() method
+// - Add AttributeProxy ctor from "device_alias/attribute_name"
+// - Exception thrown when subscribing two times for exactly yhe same event
+//
+// Revision 3.3  2003/09/02 13:08:14  taurel
+// Add memorized attribute feature (only for SCALAR and WRITE/READ_WRITE attribute)
+//
+// Revision 3.2  2003/08/21 07:23:46  taurel
+// - End of the implementation of the new way to transfer data for read and
+//   write attributes (better use of exception)
+// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
+// - Added DeviceAttribute ctors from "const char *"
+// - Enable writing of spectrum and image attributes
+// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
+//   attribute writing
+// - Attribute date automatically set in case of attribute quality factor set to INVALID
+// - Change in the polling thread discarding element algo. to support case of polling
+//   several cmd/atts at the same polling period with cmd/attr having a long response time
+// - Take cmd/attr execution time into account in the "Data not updated since" polling
+//   status string
+// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
+//   on Windows device server
+// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
+//   to send trigger to the polling thread
+//
+// Revision 3.1.2.12  2004/06/01 15:15:25  taurel
+// - Forget a f...  ";" before the last commit....
+//
+// Revision 3.1.2.11  2004/06/01 14:45:28  taurel
+// - Change the string called device_name_lower to be the last data member
+//   of the DeviceImplExt class. It was the reason of incompatibility between
+//   release 4.1 and 4.2
+//
+// Revision 3.1.2.10  2004/05/24 08:44:05  taurel
+// - Fix bug if device name stored in db used upper case. Add a DeviceImpl::get_name_lower() method
+//
+// Revision 3.1.2.9  2004/05/19 09:23:48  taurel
+// - Change one local variable name for Solaris compilers
+//
+// Revision 3.1.2.8  2004/05/18 10:55:12  taurel
+// - Modified DeviceImpl::push_event() doc
+//
+// Revision 3.1.2.7  2004/05/17 15:31:50  taurel
+// - DeviceImpl::get_db_device() now throws exception if used in a Non Database DS
+//
+// Revision 3.1.2.6  2004/03/09 16:36:36  taurel
+// - Added HP aCC port (thanks to Claudio from Elettra)
+// - Some last small bugs fixes
+//
+// Revision 3.1.2.5  2004/02/27 16:47:00  taurel
+// - Updated DeviceImpl and Util classes sizes for compatibility
+//
+// Revision 3.1.2.4  2004/02/06 11:58:51  taurel
+// - Many changes in the event system
+//
+// Revision 3.1.2.3  2004/01/20 08:32:37  taurel
+// -First commit after merge with the event branch and work on the AttributeProxy class
+// - Fix bug in the stream "clear()" method usage when used with gcc 3.3
+//
+// Revision 3.1.2.2  2003/12/10 16:08:56  taurel
+// Last commit before merging with the event branch.
+// Revision 3.0.2.3  2003/07/17 03:46:46  andy_gotz
+// Added new events "on_valid" and "on_state_change"; factorized EventSupplier::detect_and_push_events() method;
+// Catching more exceptions when creating EventSupplier, device server will start without Notification service;
+// Added AttributeProxy and DbAttribute classes to api; created test programs in test directory
+//
+// Revision 3.1.2.1  2003/09/30 11:50:43  taurel
+// Add some changes foreseen for release 4.1 and already implemented on
+// the trunck into this release 4.0 branch
+//
+// Revision 3.1  2003/05/16 08:46:15  taurel
+// Many changes for release 3.0.1. The most important ones are :
+// - Timeout are backs
+// - Multiple db servers (change in TANGO_HOST syntax)
+// - Added methods to print DeviceData, DeviceDataHistory, DeviceAttribute and DeviceAttributeHistory instances
+// - Attributes name stored in blackbox
+// - Remove check if a class is created without any device
+// - It's now possible to create a DeviceProxy from its alias name
+// - Command, attribute names are case insensitive
+// - Change parameters of some DeviceProxy logging methods
+// - Change parameters of DeviceProxy asynchronous replies calls
+// - New serialization model in device server (no serialization model)
+// - Win32 (2000) device server service does not exit at loggoff anymore
+// - Miscellaneous bug fixes
+// Revision 3.0.2.2  2003/04/13 22:12:14  andy_gotz
+// added heartbeat; polling starts automatically on subscription
+//
+// Revision 3.0.2.1  2003/04/10 11:07:44  andy_gotz
+// added event commands to DServer admin object
+//
+// Revision 3.0  2003/03/25 16:41:55  taurel
+// Many changes for Tango release 3.0 including
+// - Added full logging features
+// - Added asynchronous calls
+// - Host name of clients now stored in black-box
+// - Three serialization model in DS
+// - Fix miscellaneous bugs
+// - Ported to gcc 3.2
+// - Added ApiUtil::cleanup() and destructor methods
+// - Some internal cleanups
+// - Change the way how TangoMonitor class is implemented. It's a recursive
+//   mutex
+//
 //
 //=============================================================================
 
@@ -119,7 +351,7 @@ public:
 			only_one(d_name),store_in_bb(true),poll_mon("cache"),
 			att_conf_mon("att_config"),state_from_read(false),
 			py_device(false),device_locked(false),locker_client(NULL),
-			old_locker_client(NULL),lock_ctr(0),min_poll_period(0) {};
+			old_locker_client(NULL),lock_ctr(0) {};
 #endif
 	~DeviceImplExt();
 	
@@ -164,9 +396,6 @@ public:
 	string				lock_status;
 	DevLong				lock_ctr;
 
-	long				min_poll_period;
-	vector<string>		cmd_min_poll_period;
-	vector<string>		attr_min_poll_period;
 };
 
 /**
@@ -891,7 +1120,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void read_attr_hardware(vector<long> &) {};
+	virtual void read_attr_hardware(vector<long> &attr_list) {};
 /**
  * Set the attribute read value.
  *
@@ -904,7 +1133,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void read_attr(Attribute &) {};
+	virtual void read_attr(Attribute &attr) {};
 /**
  * Write the hardware for attributes.
  *
@@ -921,7 +1150,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void write_attr_hardware(vector<long> &) {};			
+	virtual void write_attr_hardware(vector<long> &attr_list) {};			
 /**
  * Get device state.
  *
@@ -3456,10 +3685,6 @@ public:
 
 	void data_into_net_object(Attribute &,AttributeValueList_3 *,AttributeValueList_4 *,long,AttrWriteType,bool);
 	void polled_data_into_net_object(AttributeValueList_3 *,AttributeValueList_4 *,long,long,long,PollObj *,const DevVarStringArray &);
-
-	int get_min_poll_period() {return ext->min_poll_period;}
-	vector<string> &get_cmd_min_poll_period() {return ext->cmd_min_poll_period;}
-	vector<string> &get_attr_min_poll_period() {return ext->attr_min_poll_period;}
 			
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)

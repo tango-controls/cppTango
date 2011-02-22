@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -33,25 +33,6 @@ static const char *RcsId = "$Id$";
 // $Revision$
 //
 // $Log$
-// Revision 1.30  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.29  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 1.28  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-// Revision 1.27.2.1  2010/05/18 08:27:23  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 1.27  2009/10/27 08:25:03  taurel
-// - No real changes. Only some code beautifulling
-//
-// Revision 1.26  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
 // Revision 1.25  2009/06/17 08:52:08  taurel
 // - Commit after a merge with branch Release_7_0_2-bugfixes
 //
@@ -219,7 +200,6 @@ static const char *RcsId = "$Id$";
 
 #include <tango.h>
 #include <eventcmds.h>
-#include <eventsupplier.h>
 
 namespace Tango
 {
@@ -299,6 +279,7 @@ bool EventSubscriptionChangeCmd::is_allowed(Tango::DeviceImpl *device, const COR
 //-----------------------------------------------------------------------------
 CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
+
 	cout4 << "EventSubscriptionChangeCmd::execute(): arrived" << endl;
 
 	const Tango::DevVarStringArray	*argin;
@@ -345,21 +326,9 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 // If the EventSupplier object is not created, create it right now
 //
 
-	EventSupplier *ev;
-	if ((ev = tg->get_event_supplier()) == NULL)
+	if (tg->get_event_supplier() == NULL)
 	{
 		tg->create_event_supplier();
-		ev = tg->get_event_supplier();
-	}
-
-//
-// If we are using a file as database, gives port number to event supplier
-//
-
-	if (Util::_FileDb == true && ev != NULL)
-	{
-		string &p_num = tg->get_svr_port_num();
-		ev->set_svr_port_num(p_num);
 	}
 	
 //
@@ -413,17 +382,6 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 		}
 		else if (event == "data_ready")
 		{
-			if (attribute.is_data_ready_event() == false)
-			{
-				TangoSys_OMemStream o;
-				o << "The attribute ";
-				o << attr_name;
-				o << " is not data ready event enabled" << ends;
-				
-				Except::throw_exception((const char*)"API_AttributeNotDataReadyEnabled",
-										o.str(),
-										(const char *)"EventSubscriptionChangeCmd::execute");
-			}
 			cout4 << "EventSubscriptionChangeCmd::execute(): update data_ready subscription\n";
 			attribute.ext->event_data_ready_subscription = time(NULL);
 		}

@@ -1,26 +1,32 @@
 // -*- Mode: C++; -*-
-//
+//                          Package   : omniNames
 // ReadersWritersLock.h     Author    : Tristan Richardson (tjr)
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+//    Copyright (C) 1997-1999 AT&T Laboratories Cambridge
 //
-// This file is part of Tango.
+//  This file is part of omniNames.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-// 
-// You should have received a copy of the GNU General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+//  omniNames is free software; you can redistribute it and/or modify
+//  it under the terms of the GNU Lesser General Public License as published by
+//  the Free Software Foundation; either version 2 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU Lesser General Public License for more details.
+//
+//  You should have received a copy of the GNU Lesser General Public License
+//  along with this program; if not, write to the Free Software
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,
+//  USA.
+//
+
+//
+// This class implements a multiple-readers, single-writer lock.  It has
+// a slight alteration from a standard such lock.  Any thread which has already
+// called writerIn() may call writerIn() or readerIn() again multiple times.
+//
 
 
 #ifndef _ReadersWritersLock_h_
@@ -31,78 +37,70 @@
 class ReadersWritersLock {
 
 public:
-  omni_mutex mut;
-  omni_condition cond;
+  omni_mutex m;
+  omni_condition c;
   int n;	// 0 means no-one active, > 0 means n readers, < 0 means writer
 		// (-n times).
   int writerId;
 
-  ReadersWritersLock(void) : cond(&mut), n(0), writerId(0), auto_self(NULL) {}
+  ReadersWritersLock(void) : c(&m), n(0), writerId(0) {}
 
-  void readerIn(void)
-  {
-    mut.lock();
+  void readerIn(void) {
+    m.lock();
 	 
 	 // In the case of usage with another threading library, omni_thread::self() might
 	 // return a NULL pointer!
-	 int threadId = 0;
-	 omni_thread *th = omni_thread::self(); 
-	 if ( th != NULL )
-	 {
-		threadId = th->id();
-	 }
+	 int threadId = 0;	 
+	 if ( omni_thread::self() != NULL )
+		{
+		threadId = omni_thread::self()->id();
+		}
 	 	 
-     if ((n < 0) && (writerId == threadId))
-	 {
+    if ((n < 0) && (writerId == threadId)) {
       // this thread already has lock as writer, simply decrement n
       n--;
-      mut.unlock();
+      m.unlock();
       return;
-     }
-     while (n < 0)
-       cond.wait();
-     n++;
-     mut.unlock();
+    }
+    while (n < 0)
+      c.wait();
+    n++;
+    m.unlock();
   }
 
-  void readerOut(void)
-  {
-    mut.lock();
-    if (n < 0)
-	{
+  void readerOut(void) {
+    m.lock();
+    if (n < 0) {
       // this thread already had lock as writer, simply increment n
       n++;
-      mut.unlock();
+      m.unlock();
       return;
     }
     n--;
     if (n == 0)
-      cond.signal();
-    mut.unlock();
+      c.signal();
+    m.unlock();
   }
 
-  void writerIn(void)
-  {
-    mut.lock();
+  void writerIn(void) {
+    m.lock();
 	 
 	 // In the case of usage with another threading library, omni_thread::self() might
 	 // return a NULL pointer! 
-	 int threadId = 0;
-	 omni_thread *th = omni_thread::self(); 
-	 if ( th != NULL )
-	 {
-		threadId = th->id();
-	 }			 
+	 int threadId = 0;	 
+	 if ( omni_thread::self() != NULL )
+		{
+		threadId = omni_thread::self()->id();
+		}			 
 			 
-     if ((n < 0) && (writerId == threadId))
-	 {
+    if ((n < 0) && (writerId == threadId)) {
       // this thread already has lock as writer, simply decrement n
       n--;
-      mut.unlock();
+      m.unlock();
       return;
-     }
-     while (n != 0)
-       cond.wait();
+    }
+    while (n != 0)
+      c.wait();
     
 	 n--;
 	 
@@ -110,37 +108,31 @@ public:
 	 // Make sure we get a correct thread ID
 	 // With the class ensure_self it should return always a thread ID.
 	 // Create the ensure_self object only for the thread which takes the writer lock!
-	 if (th == NULL)
-	 	auto_self = new omni_thread::ensure_self();
+	 auto_self = new omni_thread::ensure_self();
 	 writerId  = omni_thread::self()->id();
 	 	 
-     mut.unlock();
+    m.unlock();
   }
 
-  void writerOut(void)
-  {
-    mut.lock();
+  void writerOut(void) {
+    m.lock();
     n++;
     if (n == 0)
-	{
+	 	{
 		// delete the dummy thread when it was created.
-		if (auto_self != NULL)
-		{
-			delete auto_self;
-			auto_self = NULL;
-		}
+		delete auto_self;
       
-		cond.broadcast();	// might as well wake up all readers
-	}
-    mut.unlock();
+		c.broadcast();	// might as well wake up all readers
+		}
+    m.unlock();
   }
-  
+
 private:
-	// in the case of usage with another threading library, omni_thread::self() might
-	// return a NULL pointer!
+	 // in the case of usage with another threading library, omni_thread::self() might
+	 // return a NULL pointer!
     // To avoid this problem we use the class ensure_self to get a dummy thread ID!
-	//
-	// The class ensure_self should be created on the stack. If created in
+	 //
+	 // The class ensure_self should be created on the stack. If created in
     // a thread without an associated omni_thread, it creates a dummy
     // thread which is released when the ensure_self object is deleted.
 

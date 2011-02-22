@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :         	E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -34,18 +34,6 @@ static const char *RcsId = "$Id$";
 // $Revision$
 //
 // $Log$
-// Revision 3.8  2010/09/12 12:19:21  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.7  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.6  2010/06/21 12:38:23  taurel
-// - Implement a much faster server shutdown sequence
-//
-// Revision 3.5  2009/02/27 13:26:46  taurel
-// - Small changes for Solaris
-//
 // Revision 3.4  2009/01/21 12:49:03  taurel
 // - Change CopyRights for 2009
 //
@@ -128,7 +116,7 @@ void Util::shutdown_server()
 	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
 	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;
 	lock_ptr->Get();
-	
+		
 	get_dserver_device()->delete_devices();
 
 	lock_ptr->Release();
@@ -138,17 +126,11 @@ void Util::shutdown_server()
 //  they have been started to receive events.					
 //
 	
-	ApiUtil *au = ApiUtil::instance();
-	if (au->is_event_consumer_created() == true)
-	{
-		EventConsumer *ec = ApiUtil::instance()->get_event_consumer();
-		if (ec != NULL)
-			ec->disconnect_from_notifd();
-	}					
-
-//						
-// disconnect the server from the notifd, when it was connected
-//
+	EventConsumer *ec = ApiUtil::instance()->get_event_consumer();
+	if (ec != NULL)
+		ec->disconnect_from_notifd();					
+						
+// disconnect the server from the nofifd, when it was connected
 						
 	EventSupplier *ev = get_event_supplier();
 	if (ev != NULL)
@@ -161,7 +143,6 @@ void Util::shutdown_server()
 	if (_FileDb == true)
 	{
 		Database *db_ptr = get_database();
-		db_ptr->write_filedatabase();
 		delete db_ptr;
 		cout4 << "Database object deleted" << endl;
 	}

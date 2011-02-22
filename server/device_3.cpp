@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,44 +38,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.55  2010/09/30 14:16:52  taurel
-// - Do not overwrite WAttribute written value if the user set it in its
-// write_xxx method
-//
-// Revision 3.54  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.53  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.52  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.51  2010/02/22 13:00:33  taurel
-// - Add a better exception message in case of major error in the
-// attribute set_value() method (for instance in case the passed pointer is
-// NULL)
-// Revision 3.50.2.1  2010/06/21 13:26:27  taurel
-// - Fix possible deadlock due to attribute mutex management.
-// This is a SourceForge bug
-//
-// Revision 3.50  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.49  2009/10/27 16:33:44  taurel
-// - Fix a bug in attribute mutex management in case the attribute
-// is_allowed() method returns false
-//
-// Revision 3.48  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.47  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
 // Revision 3.46  2009/09/17 08:28:06  taurel
 // - Add a mutual exclusion to protect attribute buffer
 //
@@ -335,6 +297,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <new>
 
 #include <eventsupplier.h>
+#include <locked_att_value.h>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -773,14 +736,11 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			if (wanted_attr[i].idx_in_multi_attr != -1)
 			{
 				Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i].idx_in_multi_attr);
-				bool is_allowed_failed = false;
-				
 				try
 				{
 					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
 					if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::READ_REQ) == false)
 					{
-						is_allowed_failed = true;
 						TangoSys_OMemStream o;
 
 						o << "It is currently not allowed to read attribute ";
@@ -794,16 +754,12 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //
 // Take the attribute mutex before calling the user read method
 //
-
+					
 					if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (back4 != NULL))
 					{
 						cout4 << "Locking attribute mutex for attribute " << att.get_name() << endl;
 						omni_mutex *attr_mut = att.get_attr_mutex();
-						if (attr_mut->trylock() == 0)
-						{
-							cout4 << "Mutex for attribute " << att.get_name() << " is already taken.........." << endl;
-							attr_mut->lock();
-						}
+						attr_mut->lock();
 					}
 					
 //
@@ -831,7 +787,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					}
 					else
 					{
-						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
+						if (att.get_attr_serial_model() == ATTR_BY_KERNEL)
 						{
 							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to error" << endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
@@ -842,45 +798,6 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						(*back4)[index].quality = Tango::ATTR_INVALID;
 						(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
 						clear_att_dim((*back4)[index]);					
-					}
-				}
-				catch (...)
-				{
-					long index;
-					if (second_try == false)
-						index = wanted_attr[i].idx_in_names;
-					else
-						index = idx[wanted_attr[i].idx_in_names];
-
-					wanted_attr[i].failed = true;
-					Tango::DevErrorList del;
-					del.length(1);
-
-					del[0].severity = Tango::ERR;
-					del[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-					del[0].reason = CORBA::string_dup("API_CorbaSysException ");
-					del[0].desc = CORBA::string_dup("Unforseen exception when trying to read attribute. It was even not a Tango DevFailed exception");
-
-					if (back != NULL)
-					{
-						(*back)[index].err_list = del;
-						(*back)[index].quality = Tango::ATTR_INVALID;
-						(*back)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back)[index]);
-					}
-					else
-					{							
-						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
-						{
-							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to a severe error which is not a DevFailed" << endl;
-							omni_mutex *attr_mut = att.get_attr_mutex();
-							attr_mut->unlock();
-						}
-						
-						(*back4)[index].err_list = del;
-						(*back4)[index].quality = Tango::ATTR_INVALID;
-						(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back4)[index]);	
 					}
 				}
 			}
@@ -1220,9 +1137,13 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								{
 									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << endl;
 									if (atsm == ATTR_BY_KERNEL)
+									{
 										GIVE_ATT_MUTEX(back4,index,att);
+									}
 									else
+									{
 										GIVE_USER_ATT_MUTEX(back4,index,att);
+									}
 								}
 							
 								(*back4)[index].time = att.get_when();
@@ -1975,14 +1896,12 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 //  During device access inside the same server,
 //  the thread stays the same!
 //
-	
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
 	string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 // Catch all execeptions to set back the associated device after
 // execution
-	
 	try
 	{
 
@@ -2165,7 +2084,6 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 				{
 					WAttribute &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
 					att.set_value_flag(false);
-					att.set_user_set_write_value(false);
 					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
 					if (attr_vect[att.get_attr_idx()]->is_allowed(this,Tango::WRITE_REQ) == false)
 					{
@@ -2210,9 +2128,6 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 // Copy data into Attribute object, store the memorized one in db
 // and if the attribute has a RDS alarm, set the write date
 //
-// Warning: Do not copy caller value if the user has manually set the
-// attribute written value in its write method
-//
 // WARNING: --> The DevEncoded data type is suported only as SCALAR and is not
 // memorizable. Therefore, no need to call copy_data
 //
@@ -2224,20 +2139,15 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 			WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[i].idx_in_multi_attr);
 
 			if (values_3 != NULL)
-			{
-				if (att.get_user_set_write_value() == false)
-					att.copy_data((*values_3)[updated_attr[i].idx_in_names].value);
-			}
+				att.copy_data((*values_3)[updated_attr[i].idx_in_names].value);
 			else
-			{
-				if (att.get_user_set_write_value() == false)
-					att.copy_data((*values_4)[updated_attr[i].idx_in_names].value);
-			}
+				att.copy_data((*values_4)[updated_attr[i].idx_in_names].value);
 
 			if (att.is_memorized() == true)
 				att_in_db.push_back(i);
 			if (att.is_alarmed().test(Attribute::rds) == true)
-				att.set_written_date();
+				att.set_written_date();			
+
 		}
 
 		if ((Tango::Util::_UseDb == true) && (att_in_db.size() != 0))

@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$";
 //
 // original 		- November 2007
 //
-// Copyright (C) :      2007,2008,2009,2010,2011
+// Copyright (C) :      2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,13 +28,6 @@ static const char *RcsId = "$Id$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.9  2010/09/09 13:44:06  taurel
-// log			- - Add year 2010 in Copyright notice
-// log			-
-// log			- Revision 3.8  2009/04/07 15:22:50  taurel
-// log			- - Add some equality operators
-// log			- - Fix some warnings when compiled using gcc 4.3 on 64 bits computer
-// log			-
 // log			- Revision 3.7  2009/03/18 12:16:56  taurel
 // log			- - Fix warnings reported when compiled with the option -Wall
 // log			-
