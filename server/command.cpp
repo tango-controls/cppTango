@@ -14,56 +14,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.12  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.10  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.9  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.8  2007/04/20 14:40:25  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.7  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.6  2007/03/06 08:18:03  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 3.5  2005/05/04 11:50:30  taurel
-// - Changes for 32<-->64 bits data exchange
-//
 // Revision 3.4  2005/04/15 11:34:07  taurel
 // - Changes to support Tango on 64 bits computer
 // - Support for Linux 2.6 kernel with NPTL (Signal management)
@@ -203,6 +156,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // Revision 1.1.1.1  2000/02/04 10:58:29  taurel
 // Imported sources
+//
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
 //
 //-============================================================================
 
@@ -360,13 +318,16 @@ void Command::extract(const CORBA::Any &in,Tango::DevShort &data)
 void Command::extract(const CORBA::Any &in,Tango::DevLong &data)
 {
 	if ((in >>= data) == false)
-		throw_bad_type("DevLong");
-}
-
-void Command::extract(const CORBA::Any &in,Tango::DevLong64 &data)
-{
-	if ((in >>= data) == false)
-		throw_bad_type("DevLong64");
+	{
+#ifdef TANGO_LONG64
+		int tmp_data;
+		if ((in >>= tmp_data) == false)
+			throw_bad_type("DevLong");
+		data = tmp_data;
+#else
+		throw_bad_type("DevLong. Data coming from 64 bits computer!");
+#endif
+	}
 }
 
 void Command::extract(const CORBA::Any &in,Tango::DevFloat &data)
@@ -390,13 +351,16 @@ void Command::extract(const CORBA::Any &in,Tango::DevUShort &data)
 void Command::extract(const CORBA::Any &in,Tango::DevULong &data)
 {
 	if ((in >>= data) == false)
-		throw_bad_type("DevULong");
-}
-
-void Command::extract(const CORBA::Any &in,Tango::DevULong64 &data)
-{
-	if ((in >>= data) == false)
-		throw_bad_type("DevULong64");
+	{
+#ifdef TANGO_LONG64
+		unsigned int tmp_data;
+		if ((in >>= tmp_data) == false)
+			throw_bad_type("DevULong");
+		data = tmp_data;
+#else
+		throw_bad_type("DevULong. Data coming from 64 bits computer.");
+#endif
+	}
 }
 
 void Command::extract(const CORBA::Any &in,Tango::DevString &data)
@@ -425,14 +389,65 @@ void Command::extract(const CORBA::Any &in,const Tango::DevVarShortArray *&data)
 
 void Command::extract(const CORBA::Any &in,const Tango::DevVarLongArray *&data)
 {
+	CORBA::TypeCode_var ty;
+	ty = in.type();
+
+	if (ty->equal(Tango::_tc_DevVarLongArray) == false)
+	{
+		if (ty->kind() != CORBA::tk_alias)
+			throw_bad_type("DevVarLongArray");
+
+		CORBA::TypeCode_var ty_alias = ty->content_type();
+		if (ty_alias->kind() != CORBA::tk_sequence)
+			throw_bad_type("DevVarLongArray");
+
+		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
+		CORBA::TCKind ki = ty_seq->kind();
+
+		if (ki == CORBA::tk_longlong)		
+		{
+#ifdef TANGO_LONG32
+			throw_bad_type("DevVarLongArray. Data coming from 64 bits computer!");
+#endif
+		}
+		else if (ki == CORBA::tk_long)
+		{
+#ifdef TANGO_LONG64
+
+//
+// Data sent by a 32 bits computer to a 64 bits computer
+// Extract data into a temporary DevVarLong32Array struct.
+// Take its long part and copy data (yes...) as
+// int ptr into another healp allocated DevVarLongStringArray struct
+//
+
+			Tango::DevVarLong32Array *tmp_ptr;
+			if ((in >>= tmp_ptr) == false)
+				throw_bad_type("DevVarLongArray");
+				
+			static Tango::DevVarLongArray *tmp;
+			if (tmp != NULL)
+				delete tmp;
+			tmp = new Tango::DevVarLongArray;
+			
+			unsigned int nb_data = tmp_ptr->length();
+			tmp->length(nb_data);
+			const int *in_ptr = reinterpret_cast<const int *>(tmp_ptr->get_buffer());
+			for (unsigned int l = 0;l < nb_data;l++)
+			{
+				(*tmp)[l] = in_ptr[l];
+			}
+			
+			data = tmp;
+			return;
+#endif
+		}
+		else
+			throw_bad_type("DevVarLongArray");
+	}
+
 	if ((in >>= data) == false)
 		throw_bad_type("DevVarLongArray");
-}
-
-void Command::extract(const CORBA::Any &in,const Tango::DevVarLong64Array *&data)
-{
-	if ((in >>= data) == false)
-		throw_bad_type("DevVarLong64Array");
 }
 
 void Command::extract(const CORBA::Any &in,const Tango::DevVarFloatArray *&data)
@@ -455,14 +470,65 @@ void Command::extract(const CORBA::Any &in,const Tango::DevVarUShortArray *&data
 
 void Command::extract(const CORBA::Any &in,const Tango::DevVarULongArray *&data)
 {
+	CORBA::TypeCode_var ty;
+	ty = in.type();
+
+	if (ty->equal(Tango::_tc_DevVarULongArray) == false)
+	{
+		if (ty->kind() != CORBA::tk_alias)
+			throw_bad_type("DevVarULongArray");
+
+		CORBA::TypeCode_var ty_alias = ty->content_type();
+		if (ty_alias->kind() != CORBA::tk_sequence)
+			throw_bad_type("DevVarULongArray");
+
+		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
+		CORBA::TCKind ki = ty_seq->kind();
+
+		if (ki == CORBA::tk_ulonglong)		
+		{
+#ifdef TANGO_LONG32
+			throw_bad_type("DevVarULongArray. Data coming from 64 bits computer!");
+#endif
+		}
+		else if (ki == CORBA::tk_ulong)
+		{
+#ifdef TANGO_LONG64
+
+//
+// Data sent by a 32 bits computer to a 64 bits computer
+// Extract data into a temporary DevVarLongStringArray struct.
+// Take its long part and copy data (yes...) as
+// int ptr into another healp allocated DevVarLongStringArray struct
+//
+
+			Tango::DevVarULong32Array *tmp_ptr;
+			if ((in >>= tmp_ptr) == false)
+				throw_bad_type("DevVarULongArray");
+				
+			static Tango::DevVarULongArray *tmp;
+			if (tmp != NULL)
+				delete tmp;
+			tmp = new Tango::DevVarULongArray;
+			
+			unsigned int nb_data = tmp_ptr->length();
+			tmp->length(nb_data);
+			const unsigned int *in_ptr = reinterpret_cast<const unsigned int *>(tmp_ptr->get_buffer());
+			for (unsigned int l = 0;l < nb_data;l++)
+			{
+				(*tmp)[l] = in_ptr[l];
+			}
+			
+			data = tmp;
+			return;
+#endif
+		}
+		else
+			throw_bad_type("DevVarULongArray");
+	}
+	
 	if ((in >>= data) == false)
 		throw_bad_type("DevVarULongArray");
-}
-
-void Command::extract(const CORBA::Any &in,const Tango::DevVarULong64Array *&data)
-{
-	if ((in >>= data) == false)
-		throw_bad_type("DevVarULong64Array");
 }
 
 void Command::extract(const CORBA::Any &in,const Tango::DevVarStringArray *&data)
@@ -473,8 +539,73 @@ void Command::extract(const CORBA::Any &in,const Tango::DevVarStringArray *&data
 
 void Command::extract(const CORBA::Any &in,const Tango::DevVarLongStringArray *&data)
 {
+	CORBA::TypeCode_var ty;
+	ty = in.type();
+
+	if (ty->equal(Tango::_tc_DevVarLongStringArray) == false)
+	{
+		if (ty->kind() != CORBA::tk_struct)
+			throw_bad_type("DevVarLongStringArray");
+
+		CORBA::TypeCode_var ty_memb = ty->member_type(0);
+		CORBA::TypeCode_var ty_alias = ty_memb->content_type();
+		if (ty_alias->kind() != CORBA::tk_sequence)
+			throw_bad_type("DevVarLongStringArray");
+
+		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
+		CORBA::TCKind ki = ty_seq->kind();
+
+		if (ki == CORBA::tk_longlong)		
+		{
+#ifdef TANGO_LONG32
+			throw_bad_type("DevVarLongStringArray. Data coming from 64 bits computer!");
+#endif
+		}
+		else if (ki == CORBA::tk_long)
+		{
+#ifdef TANGO_LONG64
+
+//
+// Data sent by a 32 bits computer to a 64 bits computer
+// Extract data into a temporary DevVarLongStringArray struct.
+// Take its long part and copy data (yes...) as
+// int ptr into another healp allocated DevVarLongStringArray struct
+//
+
+			Tango::DevVarLongStringArray *tmp_ptr;
+			if ((in >>= tmp_ptr) == false)
+				throw_bad_type("DevVarLongStringArray");
+				
+			static Tango::DevVarLongStringArray *tmp;
+			if (tmp != NULL)
+				delete tmp;
+			tmp = new Tango::DevVarLongStringArray;
+			
+			tmp->svalue = tmp_ptr->svalue;
+			unsigned int nb_data = tmp_ptr->lvalue.length();
+			tmp->lvalue.length(nb_data);
+			const int *in_ptr = reinterpret_cast<const int *>(tmp_ptr->lvalue.get_buffer());
+			for (unsigned int l = 0;l < nb_data;l++)
+			{
+				tmp->lvalue[l] = in_ptr[l];
+			}
+			
+			data = tmp;
+			return;
+#endif
+		}
+		else
+			throw_bad_type("DevVarLongStringArray");
+	}
+
 	if ((in >>= data) == false)
 		throw_bad_type("DevVarLongStringArray");
+}
+
+void Command::extract(const CORBA::Any &in,const Tango::DevVarLong32StringArray *&data)
+{
+	if ((in >>= data) == false)
+		throw_bad_type("DevVarLong32StringArray");
 }
 
 void Command::extract(const CORBA::Any &in,const Tango::DevVarDoubleStringArray *&data)
@@ -547,15 +678,6 @@ CORBA::Any *Command::insert(Tango::DevLong data)
 	return out_any;
 }
 
-CORBA::Any *Command::insert(Tango::DevLong64 data)
-{
-	CORBA::Any *out_any;
-	alloc_any(out_any);
-	
-	(*out_any) <<= data;	
-	return out_any;
-}
-
 CORBA::Any *Command::insert(Tango::DevFloat data)
 {
 	CORBA::Any *out_any;
@@ -584,15 +706,6 @@ CORBA::Any *Command::insert(Tango::DevUShort data)
 }
 	
 CORBA::Any *Command::insert(Tango::DevULong data)
-{
-	CORBA::Any *out_any;
-	alloc_any(out_any);
-	
-	(*out_any) <<= data;	
-	return out_any;
-}
-
-CORBA::Any *Command::insert(Tango::DevULong64 data)
 {
 	CORBA::Any *out_any;
 	alloc_any(out_any);
@@ -635,9 +748,7 @@ CORBA::Any *Command::insert(Tango::DevVarCharArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;	
-
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -655,9 +766,7 @@ CORBA::Any *Command::insert(Tango::DevVarShortArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -675,29 +784,7 @@ CORBA::Any *Command::insert(Tango::DevVarLongArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
-	return out_any;
-}
-
-CORBA::Any *Command::insert(Tango::DevVarLong64Array &data)
-{
-	CORBA::Any *out_any;
-	alloc_any(out_any);
-	
-	(*out_any) <<= data;		
-	return out_any;
-}
-
-CORBA::Any *Command::insert(Tango::DevVarLong64Array *data)
-{
-	CORBA::Any *out_any;
-	alloc_any(out_any);
-	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -715,9 +802,7 @@ CORBA::Any *Command::insert(Tango::DevVarFloatArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -735,9 +820,7 @@ CORBA::Any *Command::insert(Tango::DevVarDoubleArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -755,9 +838,7 @@ CORBA::Any *Command::insert(Tango::DevVarUShortArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -775,29 +856,7 @@ CORBA::Any *Command::insert(Tango::DevVarULongArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
-	return out_any;
-}
-
-CORBA::Any *Command::insert(Tango::DevVarULong64Array &data)
-{
-	CORBA::Any *out_any;
-	alloc_any(out_any);
-	
-	(*out_any) <<= data;		
-	return out_any;
-}
-
-CORBA::Any *Command::insert(Tango::DevVarULong64Array *data)
-{
-	CORBA::Any *out_any;
-	alloc_any(out_any);
-	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -815,9 +874,7 @@ CORBA::Any *Command::insert(Tango::DevVarStringArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -835,9 +892,25 @@ CORBA::Any *Command::insert(Tango::DevVarLongStringArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
+	(*out_any) <<= data;	
+	return out_any;
+}
+
+CORBA::Any *Command::insert(Tango::DevVarLong32StringArray &data)
+{
+	CORBA::Any *out_any;
+	alloc_any(out_any);
 	
+	(*out_any) <<= data;	
+	return out_any;
+}
+
+CORBA::Any *Command::insert(Tango::DevVarLong32StringArray *data)
+{
+	CORBA::Any *out_any;
+	alloc_any(out_any);
+	
+	(*out_any) <<= data;	
 	return out_any;
 }
 
@@ -846,9 +919,7 @@ CORBA::Any *Command::insert(Tango::DevVarDoubleStringArray *data)
 	CORBA::Any *out_any;
 	alloc_any(out_any);
 	
-	(*out_any) <<= (*data);
-	delete data;
-
+	(*out_any) <<= data;		
 	return out_any;
 }
 
@@ -1138,11 +1209,6 @@ void TemplCommand::set_type(const type_info &data_type,Tango::CmdArgType &type)
 		cout4 << "Command : " << name << ", Type is a long" << endl;
 		type = Tango::DEV_LONG;
 	}
-	else if (data_type == typeid(Tango::DevLong64))
-	{
-		cout4 << "Command : " << name << ", Type is a long64" << endl;
-		type = Tango::DEV_LONG64;
-	}
 	else if (data_type == typeid(Tango::DevFloat))
 	{
 		cout4 << "Command : " << name << ", Type is a float" << endl;
@@ -1162,11 +1228,6 @@ void TemplCommand::set_type(const type_info &data_type,Tango::CmdArgType &type)
 	{
 		cout4 << "Command : " << name << ", Type is an unsigned long" << endl;
 		type = Tango::DEV_ULONG;
-	}
-	else if (data_type == typeid(Tango::DevULong64))
-	{
-		cout4 << "Command : " << name << ", Type is an unsigned long64" << endl;
-		type = Tango::DEV_ULONG64;
 	}
 	else if (data_type == typeid(Tango::DevString))
 	{
@@ -1193,13 +1254,6 @@ void TemplCommand::set_type(const type_info &data_type,Tango::CmdArgType &type)
 	{
 		cout4 << "Command : " << name << ", Type is a long array" << endl;
 		type = Tango::DEVVAR_LONGARRAY;
-	}
-	else if ((data_type == typeid(Tango::DevVarLong64Array)) ||
-		 (data_type == typeid(const Tango::DevVarLong64Array *)) ||
-		 (data_type == typeid(Tango::DevVarLong64Array *)))
-	{
-		cout4 << "Command : " << name << ", Type is a long64 array" << endl;
-		type = Tango::DEVVAR_LONG64ARRAY;
 	}
 	else if ((data_type == typeid(Tango::DevVarFloatArray)) ||
 		 (data_type == typeid(const Tango::DevVarFloatArray *)) ||
@@ -1228,13 +1282,6 @@ void TemplCommand::set_type(const type_info &data_type,Tango::CmdArgType &type)
 	{
 		cout4 << "Command : " << name << ", Type is a undigned long array" << endl;
 		type = Tango::DEVVAR_ULONGARRAY;
-	}
-	else if ((data_type == typeid(Tango::DevVarULong64Array)) ||
-		 (data_type == typeid(const Tango::DevVarULong64Array *)) ||
-		 (data_type == typeid(Tango::DevVarULong64Array *)))
-	{
-		cout4 << "Command : " << name << ", Type is a unsigned long64 array" << endl;
-		type = Tango::DEVVAR_ULONG64ARRAY;
 	}
 	else if ((data_type == typeid(Tango::DevVarStringArray)) ||
 		 (data_type == typeid(const Tango::DevVarStringArray *)) ||
@@ -1292,7 +1339,7 @@ void TemplCommand::set_type(const type_info &data_type,Tango::CmdArgType &type)
 
 bool TemplCommand::is_allowed(DeviceImpl *dev_ptr,const CORBA::Any &in_any)
 {
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 	if (allowed_ptr == NULL)
 #else
 	if (allowed_ptr == (ALLO_PTR)NULL)

@@ -8,83 +8,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.20  2010/12/09 07:56:10  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.19  2010/12/08 16:28:28  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.18  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.17  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.16  2008/11/18 09:28:56  taurel
-// - Ported to gcc 4.3
-// - Removed some cout messages
-//
-// Revision 3.15  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.14  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.13  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.12.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
-// Revision 3.12  2007/04/20 14:41:34  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.11  2007/04/16 14:57:42  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.10  2007/03/06 08:19:03  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 3.9  2006/05/18 07:40:11  taurel
-// - Updated to gcc 4
-// - Added a define for Windows VC8 (WIN32_VC8)
-// - With the change done by SourceForge on their CVS servers, release 3.9 has
-// this file has disappeared from CVS !!!
-//
-// Revision 3.9  2006/05/08 07:16:40  taurel
-// - Small changes for GCC 4
-//
-// Revision 3.8  2005/05/20 15:16:15  taurel
-// - Some changes to support gcc on Solaris
-//
 // Revision 3.7  2005/04/15 11:34:07  taurel
 // - Changes to support Tango on 64 bits computer
 // - Support for Linux 2.6 kernel with NPTL (Signal management)
@@ -179,6 +105,11 @@
 // - Change the way how TangoMonitor class is implemented. It's a recursive
 //   mutex
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _TANGO_H
@@ -190,16 +121,8 @@
 //
 
 #if __GNUC__ >= 3
-	#if __GNUC__ == 3
-		#if __GNUC_MINOR__ >= 2
-			#define GCC_STD
-		#endif
-	#else
+	#if __GNUC_MINOR__ >= 2
 		#define GCC_STD
-	#endif
-
-	#if __GNUC_MINOR__ >= 4
-		#define GCC_HAS_AI_ADDRCONFIG
 	#endif
 #endif
 
@@ -211,18 +134,6 @@
 	#ifdef GCC_STD
 		#define GCC_SOLARIS
 	#endif
-#endif
-
-//
-// Check Win32 VC release
-//
-
-#if ((defined WIN32) || (defined WIN64))
-	#if (_MSC_VER >= 1400)       // VC8+ 
-		#define WIN32_VC8
-	#elif (_MSC_VER >= 1500)
-		#define WIN32_VC9
-	#endif   // VC8+/VC9
 #endif
 
 //
@@ -242,20 +153,18 @@
 //
 // Include IDL generated files which includes CORBA include files
 //
-// Please note that on Windows, this file include Windows include file.
-// The Windows Windef.h file defines a Preprocessor WIN32 on top of the
-// _WIN32 one.
-// This measn that on Windows 64 bits, we will have BOTH WIN32 and WIN64
-// defined even if on the compiler command line we define only WIN64
-//
 
+#ifdef TANGO_LONG64
+#include <idl_64/tango.h>
+#else
 #include <idl/tango.h>
+#endif
 
 //
 // Some Windows specific include (necessary when used with MFC)
 //
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 	#if (_WIN32_WINNT >= 0x0400)
 		#include <winsock2.h>
 		#include <mswsock.h>
@@ -268,7 +177,7 @@
 // Include stream header files
 //
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD) || (defined __HP_aCC))
 	#include <iostream>
 	#include <sstream>
 	#include <fstream>
@@ -322,7 +231,6 @@
 	#include <auto_tango_monitor.h>
 	#include <device_2.h>
 	#include <device_3.h>
-	#include <device_4.h>
 	#include <command.h>
 	#include <dserver.h>
 #endif
@@ -330,20 +238,9 @@
 #include <event.h>
 
 //
-// minor is also defined (Linux) in sysmacros.h. We want the compiler to
-// use the SystemException::minor() method !!
-//
-
-#ifdef minor
-# undef minor
-#endif
-
-//
 // Default std namespace
 //
 
 using namespace std;
-
-
 	
 #endif /* TANGO_H */
