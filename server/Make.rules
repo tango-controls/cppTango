@@ -1,0 +1,117 @@
+#
+#		Rules for Tango lib generation
+#
+
+
+##############################################################################
+#
+#		PLEASE, Update library version here (for versionning support)
+#
+##############################################################################
+
+MAJOR_VERS = 4
+MINOR_VERS = 1
+
+##############################################################################
+#
+# 		The base directory
+#
+##############################################################################
+
+TANGO_HOME = /segfs/tango
+
+##############################################################################
+#
+# 		Choose your OS here
+#
+# Supported values are :
+#	_solaris for SunOS 5.7
+#	_solaris9 for SunOS 5.9
+#	linux for Suse72
+#	suse82 for Suse82
+#	debian30 for Debina 3.0
+#	hpux for HPUX 11 (Not official)
+#
+##############################################################################
+
+#_solaris=1
+_solaris9=1
+#linux=1
+#debian30=1
+#suse82=1
+#hpux=1
+
+##############################################################################
+#
+#		Choose your compiler here (only when using linux suse72)
+#
+##############################################################################
+
+#gcc32=1
+
+##############################################################################
+#
+# 		The directory where generated libs will be placed
+#		They will automatically be created if they do not
+#		already exist.
+#
+##############################################################################
+ifdef _solaris
+BIN_DIR = solaris7_CC
+endif
+
+ifdef _solaris9
+BIN_DIR = solaris9_CC
+endif
+
+ifdef linux
+ifdef gcc32
+BIN_DIR = suse72_gcc32
+else
+BIN_DIR = suse72
+endif
+endif
+
+ifdef suse82
+BIN_DIR = suse82
+endif
+
+ifdef debian30
+BIN_DIR = debian30
+endif
+
+ifdef hpux
+BIN_DIR = hpux
+endif
+
+##############################################################################
+#
+# 		OmniORB base directory
+#
+##############################################################################
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.0.3_patch/$(BIN_DIR)
+
+
+##############################################################################
+#
+# 		Log4tango base directory
+#
+##############################################################################
+
+ifdef linux
+ifdef suse82
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango4.0.1/$(BIN_DIR)
+else
+ifdef debian30
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango4.0.1/$(BIN_DIR)
+else
+ifndef gcc32
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango4.0.0/$(BIN_DIR)
+else
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango4.0.1/$(BIN_DIR)
+endif
+endif
+endif
+else
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango4.0.1/$(BIN_DIR)
+endif

@@ -14,72 +14,7 @@ static const char *Vers = "$Revision$";
 //
 // $Revision$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Log$
-// Revision 3.9  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.7  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.6  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.5  2006/05/18 08:51:56  taurel
-// - Miscellaneous changes due to Python device server ported to Windows
-// - Fix some bugs discovered by Windows VC8 using the test suite
-// - Update Windows resource file include path
-// - Fix some Windows VC8 warnings
-//
-// Revision 3.4  2004/07/07 08:40:13  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.3  2004/06/15 12:38:23  taurel
-// - Last commit before merge with release 4 branch
-//
-// Revision 3.2  2003/07/03 07:40:51  taurel
-// - Change in Tango IDL file : Implement a new way to tranfer data for read_attribute and write_attribute CORBA operation
-// - Handle this new IDL release in DeviceProxy class
-// - New exception methods in DeviceAttribute class
-// - New way to get data out of DeviceAttribute object
-// - Fix bugs in DeviceProxy copy constructor and assignement operator
-// - Change some method names in DeviceDataHistory and DeviceAttributeHistory classes
-// - Change the implementation of the DeviceProxy::write_attribute() method to avoid DeviceAttribute copying
-// - Clean-up how a server is killed via a CTRL-C or a dserver device kill command
-// - Add a server_cleanup() method in the Util class
-// - Win32 : Update debug menu in the server graphical window to support logging feature
-// - Win32 : Display library CVS tag in the "Help->About" sub-window
-//
-// Revision 3.1.2.2  2003/12/10 16:08:56  taurel
-// Last commit before merging with the event branch.
-//
 // Revision 3.1.2.1  2003/09/30 11:49:25  taurel
 // Add some changes foreseen for release 4.1 and already implemented on
 // the trunck into this release 4.0 branch
@@ -182,6 +117,10 @@ static const char *Vers = "$Revision$";
 // Imported sources
 //
 //
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -189,7 +128,7 @@ static const char *Vers = "$Revision$";
 #endif
 
 #include <w32win.h>
-#include <resource.h>
+#include <winnt_lib/tango_static/resource.h>
 
 namespace Tango
 {
@@ -305,8 +244,8 @@ void W32Win::InitInstance(HINSTANCE hInstance, int nCmdShow)
 // Set window size
 //
 
-	SetWindowPos(hWnd,HWND_TOP,0,0,(int)(calc.right*X_FACTOR),
-		     (int)(calc.bottom*Y_FACTOR),SWP_NOMOVE | SWP_NOZORDER);
+	SetWindowPos(hWnd,HWND_TOP,0,0,calc.right*X_FACTOR,
+		     calc.bottom*Y_FACTOR,SWP_NOMOVE | SWP_NOZORDER);
 
 //	SetBkMode(mem_dc,TRANSPARENT);
 	SetBkMode(mem_dc,(int)1);
@@ -513,8 +452,8 @@ LRESULT CALLBACK TangoWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 
 		re.top = Main_Win_height;
 		re.left = 0;
-		re.right = (int)(Main_Win_width * X_FACTOR);
-		re.bottom = (int)(Main_Win_height * Y_FACTOR);
+		re.right = Main_Win_width * X_FACTOR;
+		re.bottom = Main_Win_height * Y_FACTOR;
 		SetTextColor(hdc,RGB(0,0,255));
 		calc_hei = DrawText(hdc,tg->get_main_window_text().c_str(),-1,&re,
 				    DT_CALCRECT | DT_CENTER);
@@ -522,12 +461,12 @@ LRESULT CALLBACK TangoWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		{
 			too_large = true;
 			re.top = Main_Win_height;
-			re.bottom = (int)(Main_Win_height * Y_FACTOR);
+			re.bottom = Main_Win_height * Y_FACTOR;
 		}
 		else
 		{
-			re.top = (int)(Main_Win_height + (Main_Win_height * ((Y_FACTOR - 1) / 2)) - (calc_hei / 2));
-			re.bottom = (int)(Main_Win_height + (Main_Win_height * ((Y_FACTOR - 1) / 2)) + (calc_hei / 2));
+			re.top = Main_Win_height + (Main_Win_height * ((Y_FACTOR - 1) / 2)) - (calc_hei / 2);
+			re.bottom = Main_Win_height + (Main_Win_height * ((Y_FACTOR - 1) / 2)) + (calc_hei / 2);
 		}
 		re.left = 0;
 		re.right = Main_Win_width * X_FACTOR;
@@ -548,7 +487,6 @@ LRESULT CALLBACK TangoWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 		break;
 		
 	case WM_DESTROY:
-//		tg->get_dserver_device()->DServer::~DServer();
 		PostQuitMessage(0);
 		break;
 		
@@ -738,7 +676,7 @@ void all_dev(Util *tg,LogLevel level)
 	vector<DeviceImpl *> dev_list;
 	
 	dev_list = tg->get_device_list("*");
-	for (unsigned int i = 0;i < dev_list.size();i++)
+	for (int i = 0;i < dev_list.size();i++)
 	{
 		string dev_name = dev_list[i]->get_name();
 		if (dev_name.size() > 7)
@@ -839,7 +777,7 @@ void all_dev_add_cout(Util *tg)
 	Tango::DevVarStringArray *log_target;
 	
 	dev_list = tg->get_device_list("*");
-	for (unsigned int i = 0;i < dev_list.size();i++)
+	for (int i = 0;i < dev_list.size();i++)
 	{
 		string dev_name = dev_list[i]->get_name();
 		if (dev_name.size() > 7)

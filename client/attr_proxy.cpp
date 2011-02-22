@@ -6,26 +6,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- July 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // version 		- $Version$
 //
 
@@ -35,11 +15,11 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 #include <sys/timeb.h>
 #else
 #include <sys/time.h>
-#endif /* _TG_WINDOWS_ */
+#endif /* WIN32 */
 
 #include <time.h>
 #include <signal.h>
@@ -99,9 +79,7 @@ void AttributeProxy::real_constructor (string &name)
 		}
 		else
 		{
-			string noenv_dev_name(db_host);
-			noenv_dev_name = noenv_dev_name + ":" + db_port + "/" + device_name;
-			dev_proxy = new DeviceProxy(noenv_dev_name);
+			dev_proxy = new DeviceProxy(device_name);
 			db_attr = new DbAttribute(attr_name,device_name,db_host,db_port);
 		}
 	}
@@ -129,13 +107,10 @@ void AttributeProxy::real_constructor (string &name)
 	catch (Tango::CommunicationFailed &) {}
 	catch (Tango::DevFailed &dfe)
 	{
-		delete db_attr;
-		delete dev_proxy;
-		
 		if (strcmp(dfe.errors[0].reason.in(),"API_AttrNotFound") == 0)
 		{
 			TangoSys_OMemStream desc;
-			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
+			desc << "Attribute" << attr_name << " is not supported by device " << device_name << ends;
 			
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
 						desc.str(),
@@ -144,100 +119,6 @@ void AttributeProxy::real_constructor (string &name)
 	}
 	
 }
-
-
-void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,string &att_name)
-{
-
-//
-// First copy DeviceProxy object
-//
-
-	dev_proxy = new DeviceProxy();
-	*dev_proxy = *dev_ptr;
-
-//
-// Init local data members from device proxy object
-//
-	
-	dbase_used = dev_proxy->dbase_used;
-	from_env_var = dev_proxy->from_env_var;
-	host = dev_proxy->host;
-	port = dev_proxy->port;
-	port_num = dev_proxy->port_num;
-	db_host = dev_proxy->db_host;
-	db_port = dev_proxy->db_port;
-	db_port_num = dev_proxy->db_port_num;
-	
-	attr_name = att_name;
-
-//
-// Now AttributeProxy members
-//
-	
-	device_name = dev_proxy->device_name;
-			
-	if (dbase_used == true)
-	{
-		if (from_env_var == true)
-		{	
-			ApiUtil *ui = ApiUtil::instance();
-			if (ui->in_server() == true)
-			{
-				db_attr = new DbAttribute(attr_name,device_name,Tango::Util::instance()->get_database());
-			}
-			else
-			{
-				db_attr = new DbAttribute(attr_name,device_name);
-			}
-		}
-		else
-		{
-			db_attr = new DbAttribute(attr_name,device_name,db_host,db_port);
-		}
-	}
-	
-	ext = new AttributeProxyExt();
-	
-//
-// Check that the device support this attribute
-//
-
-	try
-	{
-		dev_proxy->get_attribute_config(attr_name);
-	}
-	catch (Tango::ConnectionFailed &) {}
-	catch (Tango::CommunicationFailed &) {}
-	catch (Tango::DevFailed &dfe)
-	{
-		delete db_attr;
-		delete ext;
-		delete dev_proxy;
-		
-		if (strcmp(dfe.errors[0].reason.in(),"API_AttrNotFound") == 0)
-		{
-			TangoSys_OMemStream desc;
-			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
-			
-			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedAttribute",
-						desc.str(),
-						(const char*)"AttributeProxy::ctor_from_dp()");
-		}
-	}
-}
-
-AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,const char *att_name):ext(NULL)
-{
-	string att_na(att_name);
-	ctor_from_dp(dev_ptr,att_na);
-}
-
-AttributeProxy::AttributeProxy (const DeviceProxy *dev_ptr,string &att_name):ext(NULL)
-{
-	ctor_from_dp(dev_ptr,att_name);
-}
-
 
 //-----------------------------------------------------------------------------
 //
@@ -278,10 +159,8 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev)
 			}
 			else
 			{
-				string noenv_dev_name(db_host);
-				noenv_dev_name = noenv_dev_name + ":" + db_port + "/" + device_name;
-				dev_proxy = new DeviceProxy(noenv_dev_name);
 				db_attr = new DbAttribute(attr_name,device_name);
+				dev_proxy = new DeviceProxy(device_name);
 			}
 		}
 		else
@@ -349,10 +228,8 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 		}
 		else
 		{
-			string noenv_dev_name(db_host);
-			noenv_dev_name = noenv_dev_name + ":" + db_port + "/" + device_name;
-			dev_proxy = new DeviceProxy(noenv_dev_name);
 			db_attr = new DbAttribute(attr_name,device_name,db_host,db_port);
+			dev_proxy = new DeviceProxy(device_name);
 		}
 	}
 
@@ -395,15 +272,7 @@ void AttributeProxy::parse_name(string &full_name)
 	string::size_type pos = full_name.find(PROT_SEP);
 	if (pos == string::npos)
 	{
-		if (full_name.size() > 2)
-		{
-			if ((full_name[0] == '/') && (full_name[1] == '/'))
-				name_wo_prot = full_name.substr(2);
-			else
-				name_wo_prot = full_name;
-		}
-		else
-			name_wo_prot = full_name;
+		name_wo_prot = full_name;
 	}
 	else
 	{
@@ -588,7 +457,7 @@ void AttributeProxy::parse_name(string &full_name)
 	} 
 	while (pos != string::npos);
 
-	if ((n_sep > 1) && (n_sep != 3))
+	if (n_sep != 0 && n_sep != 3)
 	{
 		cerr << "Wrong attribute name syntax (domain/family/member/attr_name) in " << cased_name << endl;
 
@@ -741,7 +610,6 @@ void AttributeProxy::parse_name(string &full_name)
 		device_name = db_attr_name.substr(0,device_name_end_pos - 1);
 	}
 
-	
 //
 // attribute name has four fields, separate them into device and attribute names
 // but keep attr_name as a case sentitive name
@@ -750,29 +618,6 @@ void AttributeProxy::parse_name(string &full_name)
 	else
 	{
 		device_name = device_name.substr(0,device_name_end_pos - 1);
-
-		if (n_sep == 1)
-		{
-			if (db_host == NOT_USED)
-			{
-//
-// We are in the following case "device alias/attribute name"
-// but the no dbase option was used. This is an error.
-// We can't have alias without db
-//
-				ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
-					(const char*)"Can't use device or attribute alias without database",
-					(const char*)"AttributeProxy::parse_name()");
-
-			}
-			
-			if (from_env_var == false)
-			{
-				pos = name_wo_db_mod.rfind(DEVICE_SEP);
-				device_name = name_wo_db_mod.substr(0,pos);
-			}
-		}
-		
 		
 		pos = cased_name.rfind(DEVICE_SEP);
 		string::size_type pos_mod = cased_name.rfind(MODIFIER);
@@ -834,30 +679,6 @@ DevState AttributeProxy::state()
 string AttributeProxy::status()
 {
 	return(dev_proxy->status());
-}
-
-//-----------------------------------------------------------------------------
-//
-// AttributeProxy::set_transparency_reconnection() - Set transparency
-// reconnection on the underlying device
-//
-//-----------------------------------------------------------------------------
-
-void AttributeProxy::set_transparency_reconnection(bool val)
-{
-	dev_proxy->set_transparency_reconnection(val);
-}
-
-//-----------------------------------------------------------------------------
-//
-// AttributeProxy::get_transparency_reconnection() - Get underlying device 
-// transparency reconnection flag
-//
-//-----------------------------------------------------------------------------
-
-bool AttributeProxy::get_transparency_reconnection()
-{
-	return dev_proxy->get_transparency_reconnection();
 }
 
 //-----------------------------------------------------------------------------
@@ -1078,6 +899,7 @@ void AttributeProxy::delete_property(string &property_name)
 		DbData db_data;
 
 		DbDatum att(attr_name);
+		att << (short)1;
 		db_data.push_back(att);
 		db_data.push_back(DbDatum(property_name));
 
@@ -1111,6 +933,7 @@ void AttributeProxy::delete_property(vector<string> &property_names)
 		DbData db_data;
 
 		DbDatum att(attr_name);
+		att << (short)property_names.size();
 		db_data.push_back(att);
 		for (unsigned int i=0; i<property_names.size(); i++)
 		{
@@ -1147,6 +970,7 @@ void AttributeProxy::delete_property(DbData &user_data)
 		DbData db_data;
 
 		DbDatum att(attr_name);
+		att << (short)user_data.size();
 		db_data.push_back(att);
 		for (unsigned int i=0; i<user_data.size(); i++)
 		{
@@ -1165,7 +989,7 @@ void AttributeProxy::delete_property(DbData &user_data)
 //
 //-----------------------------------------------------------------------------
  
-AttributeInfoEx AttributeProxy::get_config() 
+AttributeInfo AttributeProxy::get_config() 
 {
 	return (dev_proxy->get_attribute_config(attr_name));
 }
@@ -1197,26 +1021,7 @@ void AttributeProxy::set_config(AttributeInfo &dev_attr_info)
 	}
 }
 
-void AttributeProxy::set_config(AttributeInfoEx &dev_attr_info) 
-{
-	AttributeInfoListEx attr_info_list;
 
-	attr_info_list.push_back(dev_attr_info);
-	try 
-	{
-		dev_proxy->set_attribute_config(attr_info_list);
-
-	}
-        catch (CORBA::SystemException &ce)
-        {
-		TangoSys_OMemStream desc;
-		desc << "Failed to execute set_attribute_config on device " << device_name << ends;
-		ApiCommExcept::re_throw_exception(ce,
-					      (const char*)"API_CommunicationFailed",
-                        		      desc.str(),
-					      (const char*)"AttributeProxy::set_attribute_config()");
-	}
-}
 //-----------------------------------------------------------------------------
 //
 // AttributeProxy::read() - read attribute 
@@ -1239,18 +1044,6 @@ void AttributeProxy::write(DeviceAttribute& attr_value)
 {
 	attr_value.set_name(attr_name);
 	dev_proxy->write_attribute(attr_value);
-}
-
-//-----------------------------------------------------------------------------
-//
-// AttributeProxy::write_read() - write then read attribute
-//
-//-----------------------------------------------------------------------------
- 
-DeviceAttribute AttributeProxy::write_read(DeviceAttribute& attr_value) 
-{
-	attr_value.set_name(attr_name);
-	return dev_proxy->write_read_attribute(attr_value);
 }
 
 //-----------------------------------------------------------------------------
@@ -1314,64 +1107,24 @@ void AttributeProxy::stop_poll()
 	dev_proxy->stop_poll_attribute(attr_name);
 }
 
-
 //-----------------------------------------------------------------------------
 //
 // AttributeProxy::subscribe_event - Subscribe to an event
-//												 Old interface for compatibility
 //
 //-----------------------------------------------------------------------------
 
-int AttributeProxy::subscribe_event (EventType event, CallBack *callback, 
-                                    const vector<string> &filters)
-{
-	return subscribe_event (event, callback, filters, false);
-}
-
-
-//-----------------------------------------------------------------------------
-//
-// AttributeProxy::subscribe_event - Subscribe to an event
-//                                   Adds the statless flag for stateless
-//                                   event subscription.
-//
-//-----------------------------------------------------------------------------
-
-int AttributeProxy::subscribe_event (EventType event, CallBack *callback, 
-                                    const vector<string> &filters, bool stateless)
+int AttributeProxy::subscribe_event (EventType event, CallBack *callback, const vector<string> &filters)
 {
   	if (ApiUtil::instance()->get_event_consumer() == NULL)
 	{
 		ApiUtil::instance()->create_event_consumer();
 	}
 
-	//ApiUtil::instance()->get_event_consumer()->connect(dev_proxy);
+	ApiUtil::instance()->get_event_consumer()->connect(dev_proxy);
 
 	
-	return ApiUtil::instance()->get_event_consumer()->subscribe_event(dev_proxy, 
-	                           attr_name, event, callback, filters, stateless);
+	return ApiUtil::instance()->get_event_consumer()->subscribe_event(dev_proxy, attr_name, event, callback, filters);
 }
-
-//-----------------------------------------------------------------------------
-//
-// AttributeProxy::subscribe_event - Subscribe to an event with an event queue
-//                                   Adds the statless flag for stateless
-//                                   event subscription.
-//
-//-----------------------------------------------------------------------------
-
-int AttributeProxy::subscribe_event (EventType event, int event_queue_size, 
-                                    const vector<string> &filters, bool stateless)
-{
-	if (ApiUtil::instance()->get_event_consumer() == NULL)
-	{
-		ApiUtil::instance()->create_event_consumer();
-	}
-	
-	return ApiUtil::instance()->get_event_consumer()->subscribe_event(dev_proxy, 
-	                           attr_name, event, event_queue_size, filters, stateless);
-}
-
 
 
 } // End of Tango namespace

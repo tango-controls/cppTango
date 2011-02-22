@@ -10,82 +10,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.16  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.15  2010/06/18 07:45:47  taurel
-// - In case of locked device, polling and logging related commands are
-// allowed only for the locker process
-//
-// Revision 3.14  2009/04/07 15:23:36  taurel
-// - Fix some warnings when compiled using gcc 4.3 on 64 bits computer
-//
-// Revision 3.13  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.12  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.11  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.10  2007/10/16 08:23:37  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.9  2007/04/20 14:41:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.8  2005/07/04 15:33:30  nleclercq
-// Added command line logging level 5 for TANGO core debugging
-//
-// Revision 3.7  2005/02/25 13:28:51  nleclercq
-// Added logging support in 'const' methods
-//
-// Revision 3.6  2005/01/13 08:29:59  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 3.5.2.1  2004/10/27 05:59:47  taurel
-// - Some minor changes to compile on all our supported platforms
-//
-// Revision 3.5  2004/07/07 08:40:11  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.4  2003/06/30 08:25:26  nleclercq
-// Fixed small bug in log stream
-//
-// Revision 3.3.2.4  2004/03/11 13:14:40  taurel
-// - Some small changes for HP aCC compiler
-//
 // Revision 3.3.2.3  2004/03/02 07:41:56  taurel
 // - Fix compiler warnings (gcc used with -Wall)
 // - Fix bug in DbDatum insertion operator fro vectors
@@ -148,6 +75,10 @@ static const char *RcsId = "$Id$\n$Name$";
 // Added the new Tango logging stuff (Thanks Nicolas from Soleil)
 //
 //
+// copyleft :     European Synchrotron Radiation Facility
+//                BP 220, Grenoble 38043
+//                FRANCE
+//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -161,14 +92,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //-----------------------------------------------------------------------------
 // HEADERS
 //-----------------------------------------------------------------------------
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 # include <direct.h> 
 #else
 # include <sys/types.h>
 # include <sys/stat.h>
-
-# include <sys/time.h>
-# include <time.h>
 #endif
 #include <coutappender.h>
 #include <tangoappender.h>
@@ -178,15 +106,10 @@ namespace Tango
 {
 
 //-----------------------------------------------------------------------------
-// TANGO KERNEL CMD LINE DEBUGGING LEVEL 
-//-----------------------------------------------------------------------------
-#define kTANGO_CORE_CMD_LINE_LEVEL 5
-
-//-----------------------------------------------------------------------------
 // LOCAL LOG MACRO (CAN'T USE LOGGING STUFFS DURING LOGGING STUFFS INIT STAGE!)
 //-----------------------------------------------------------------------------
 #define _VERBOSE(_MSG_) \
-  if (Logging::_cmd_line_level >= kTANGO_CORE_CMD_LINE_LEVEL) \
+  if (Logging::_cmd_line_level >= 4) \
     ::printf _MSG_;
     
 //-----------------------------------------------------------------------------
@@ -213,13 +136,12 @@ int Logging::_cmd_line_level = 0;
 void Logging::init (const std::string& ds_name, // dserver name
                     int cmd_line_level,         // cmd. line verbose level
                     bool use_db,                // true if using the TANGO-db
-                    Database &db,               // Db object or null
-                    Util *tg)					// Tango::Util object
+                    Database &db)               // Db object or null
 {
   // logging path env. var. name
   const char*  kTangoLogPathVar = "TANGO_LOG_PATH";
   // default logging path
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
   const char* kDefaultTangoLogPath = "c:/tango";
 #else
   const char* kDefaultTangoLogPath = "/tmp/tango";
@@ -245,24 +167,25 @@ void Logging::init (const std::string& ds_name, // dserver name
     // instanciate the logger
     log4tango::Logger* logger = new log4tango::Logger(dserver_dev_name);
     // is logging level set from cmd line?
-    bool level_set_from_cmd_line = (cmd_line_level >= kTANGO_CORE_CMD_LINE_LEVEL) 
-                                 ? true 
-                                 : false;
+    int level_set_from_cmd_line = cmd_line_level ? 1 : 0;
     _VERBOSE(("\tcmd line logging level is %d\n", cmd_line_level));
     // set logger's effective level
+    log4tango::Level::Value level = log4tango::Level::WARN;
     if (level_set_from_cmd_line) {
-      logger->set_level(log4tango::Level::DEBUG);
-    }
-    else {
-      logger->set_level(log4tango::Level::ERROR);
+      if (cmd_line_level <= 2) {
+        //-v1..2 -> mapped to INFO
+        level = log4tango::Level::INFO;
+      } else {
+        //-v3..5 -> mapped to DEBUG
+        level = log4tango::Level::DEBUG;
+      }
+      logger->set_level(level);
     }
     // core-logger's targets
     std::vector<std::string> targets;
-    if (use_db == true) 
-    {
+    if (use_db == true) {
       // get logging properties from database
-      try 
-      {
+      try {
         DbData db_data;
         // the logging path property (overwrites env.var.)
         db_data.push_back(DbDatum("logging_path"));
@@ -273,7 +196,7 @@ void Logging::init (const std::string& ds_name, // dserver name
         // the core-logger's logging target list
         db_data.push_back(DbDatum("logging_target"));
         // get properties from TANGO-db
-        db.get_device_property(dserver_dev_name, db_data,tg->get_db_cache());
+        db.get_device_property(dserver_dev_name, db_data);
         // set logging path 
         string level_str("WARN");
         if (db_data[0].is_empty() == false) {
@@ -293,26 +216,23 @@ void Logging::init (const std::string& ds_name, // dserver name
           else if (rtf > kMaxRollingThreshold) {
             Logging::_rft = kMaxRollingThreshold;
           }
-#ifdef TANGO_LONG64
-          _VERBOSE(("\tRolling file threshold is %lu Kb\n", Logging::_rft));
-#else
-		  _VERBOSE(("\tRolling file threshold is %d Kb\n", Logging::_rft));
-#endif
+          _VERBOSE(("\tRolling file threshold is %d Kb\n", Logging::_rft));
         }
         // set logging level (if not set from cmd line)
-        if (! level_set_from_cmd_line) 
-        {
+        if (level_set_from_cmd_line == 0) {
           string level_str("WARN");
-          if (db_data[2].is_empty() == false)
-            db_data[2] >> level_str;
+          if (db_data[2].is_empty() == false) {
+                  db_data[2] >> level_str;
+          }
           _VERBOSE(("\tproperty::level is %s\n", level_str.c_str()));
-          log4tango::Level::Value level = Logging::tango_to_log4tango_level(level_str, false);
+          level = Logging::tango_to_log4tango_level(level_str, false);
           _VERBOSE(("\teffective property::level is %s\n", log4tango::Level::get_name(level).c_str()));
           logger->set_level(level);
         }
         // get logging targets
-        if (db_data[3].is_empty() == false)
+        if (db_data[3].is_empty() == false) {
           db_data[3] >> targets;
+        }
       } catch (...) {
         _VERBOSE(("\texception caught while handling logging properties\n"));
         // ignore any exception
@@ -397,11 +317,6 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
         Except::throw_exception((const char *)"API_DeviceNotFound",o.str(),
                                 (const char *)"Logging::add_logging_target");
       }
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"add_logging_target",(dl[j]->get_name()).c_str());
-	  }
       // for each device matching pattern...
       for (unsigned int j = 0; j < dl.size(); j++) {
         // ...add logging target
@@ -650,6 +565,8 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
     std::string tg_type_str;
     // target name or pattern
     std::string tg_name;
+    // get the Util instance
+    Tango::Util *tg = Tango::Util::instance();
     // the "remove all targets of type <tg_type_str>" flag
     int remove_all_targets;
     // the device list
@@ -670,11 +587,6 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
               Except::throw_exception((const char *)"API_DeviceNotFound",o.str(),
                                       (const char *)"Logging::remove_logging_target");
       }
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"remove_logging_target",(dl[j]->get_name()).c_str());
-	  }
       // get target type and name from argin (syntax type::name)
       type_name = (*argin)[i++];
       std::transform(type_name.begin(), type_name.end(), type_name.begin(), ::tolower);
@@ -871,11 +783,6 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
       std::transform(pattern.begin(), pattern.end(), pattern.begin(), ::tolower);
       // get devices which name matches the pattern pattern
       dl = Util::instance()->get_device_list(pattern);
-	  // Check that none of the concerned device(s) is locked by another client
-	  DServer *adm_dev = Util::instance()->get_dserver_device();
-	  for (unsigned int j = 0; j < dl.size(); j++) {
-		adm_dev->check_lock_owner(dl[j],"set_logging_level",(dl[j]->get_name()).c_str());
-	  }
       // for each device in dl
       for (unsigned int j = 0; j < dl.size(); j++) {
         // get device's logger (created if does not already exist)
@@ -1225,7 +1132,7 @@ int Logging::get_target_type_and_name (const std::string& input,
 //-----------------------------------------------------------------------------
 int Logging::create_log_dir (const std::string& full_path)
 {
-  //-_VERBOSE(("\tEntering Logging::create_log_dir (input %s)\n", full_path.c_str()));
+  _VERBOSE(("\tEntering Logging::create_log_dir (input %s)\n", full_path.c_str()));
   std::string::size_type pos = full_path.rfind('/');
   if (pos != std::string::npos) {
     std::string sub_path;
@@ -1234,12 +1141,12 @@ int Logging::create_log_dir (const std::string& full_path)
         Logging::create_log_dir(sub_path); 
     }   
   }
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
   int res = ::mkdir(full_path.c_str());
 #else
   int res = ::mkdir(full_path.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);    
 #endif
-  //-_VERBOSE(("\tLeaving Logging::create_log_dir (::mkdir returned %d)\n", res));
+  _VERBOSE(("\tLeaving Logging::create_log_dir (::mkdir returned %d)\n", res));
   return res;
 }
 
