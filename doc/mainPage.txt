@@ -1,0 +1,4 @@
+/**
+@mainpage
+This is the <A HREF="http://www.doxygen.org/">Doxygen</A> generated API documentation of Log4Tango.   
+**/

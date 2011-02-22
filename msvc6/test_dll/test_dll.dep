@@ -1,0 +1,23 @@
+# Microsoft Developer Studio Generated Dependency File, included by test_dll.mak
+
+..\..\tests\test_log4tango.cpp : \
+  "..\..\include\log4tango\Appender.hh"\
+  "..\..\include\log4tango\AppenderAttachable.hh"\
+  "..\..\include\log4tango\config-win32.h"\
+  "..\..\include\log4tango\Export.hh"\
+  "..\..\include\log4tango\Layout.hh"\
+  "..\..\include\log4tango\LayoutAppender.hh"\
+  "..\..\include\log4tango\Level.hh"\
+  "..\..\include\log4tango\Logger.hh"\
+  "..\..\include\log4tango\LoggerStream.hh"\
+  "..\..\include\log4tango\LoggingEvent.hh"\
+  "..\..\include\log4tango\NDC.hh"\
+  "..\..\include\log4tango\OstreamAppender.hh"\
+  "..\..\include\log4tango\PatternLayout.hh"\
+  "..\..\include\log4tango\Portability.hh"\
+  "..\..\include\log4tango\threading\DummyThreads.hh"\
+  "..\..\include\log4tango\threading\MSThreads.hh"\
+  "..\..\include\log4tango\threading\PThreads.hh"\
+  "..\..\include\log4tango\threading\Threading.hh"\
+  "..\..\include\log4tango\TimeStamp.hh"\
+  

@@ -1,0 +1,17 @@
+Log4Tango is a light and custom version of log4tango for Tango.
+See doc/html/index.html for details.
+
+The log4tango library port from the LOG4J Java library was 
+initiated by Bastiaan Bakker.
+
+Log for C++ (short name: log4tango), a C++ library for flexible logging.
+Copyright (C) 2000-2002 LifeLine Networks bv
+Copyright (C) 2000-2002 Bastiaan Bakker
+Portions Copyright others.
+
+This library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public.
+See COPYING for details.
+
+
+

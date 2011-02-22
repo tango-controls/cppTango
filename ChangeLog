@@ -1,0 +1,1113 @@
+This file describes the changes to the Log for C++ library. See the CVS repository for more detailed descriptions.
+
+2002-10-29 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.4b
+	
+	* include/log4cp/config-win32.h, src/PortabilityImpl.hh: added 
+	workarounds for abs() and strftime() and localtime() not being
+	defined in std:: on MSVC6. See bug report #630334.
+	
+2002-10-28 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.4.
+	
+	* tests/testPattern.cpp: added missing 'std::'.
+
+	* src/StringUtil.hh, src/StringUtil.cpp: fixed signed-vs-unsigned
+	comparison warning. Let both trim() implementations return
+	unsigned int.
+	
+2002-10-27 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/OstringStream.hh, src/OstringStream.cpp: removed
+	* src/StringUtil.hh, src/StringUtil.cpp: added vform() method.
+	* PortabilityImpl.cpp: added. 
+
+	* include/log4tango/Appender.hh, include/log4tango/HierachyMaintainer.hh,
+	include/log4tango/Log4cppCleanup.hh, src/Appender.cpp, 
+	src/HierrachyMaintainer.cpp, src/log4tangoCleanup.cpp:
+	removed Log4cppCleanup, it was kinda broken anyway.
+
+	* msvc6/log4tango/log4tango.dsp, msvc6/log4tangoDLL/log4tangoDLL.dsp,
+	bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.bpr, 
+	bcb5/log4tango/log4tango.mak: added BasicConfigurator.
+
+	* src/PatternLayout.cpp: define static constant strings in 
+	TimeStampComponent outside class declaration.
+	
+2002-10-26 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.3.
+	
+	* include/log4tango/config-win32.h, src/PortabilityImpl.hh,
+	src/Makefile.am: worked around header definition bug in MSVC by
+	aliasing cstdlib/cstring functions in 'std::'. See #628211.
+
+	* src/NDC.cpp: added parentheses to return statement in _get() as
+	suggested by Derrick Hastings to fix #415160.
+
+	* include/log4tango/PattenLayout.hh, src/PatternLayout.cpp: added
+	default conversion patterns.
+
+	* msvc6/log4tangoDLL/Makefile.in: removed.
+
+2002-10-19 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/PatternLayout.hh, src/PatternLayout.cpp: 
+	replaced PatternLayout implementation: it now preparses the message
+	format for quicker layouting and implements format specifiers, 
+	e.g. '%-5p'.
+	* tests/testPattern.cpp: added tests for format specifiers and more.
+
+2002-10-10 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/threading/MSThreads.hh: added #include<string>
+
+2002-10-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* log4tango.spec.in: don't require log4tango for log4tango-doc.
+
+	* doc/Makefile.am: fix install location.	
+
+	* Makefile.am: use 'rpmbuild' instead of 'rpm'. 
+
+2002-10-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* release as 0.3.2
+
+	* doc/html/index.html: added notes for 0.3.2 and 0.3.2rc5
+	
+	* configure.in, msvc6/Makefile.am, msvc6/testDLL/Makefile.am,
+	msvc6/testMain/Makefile.am, msvc6/testNTEventLog/Makefile.am,
+	msvc6/testPattern/Makefile.am: added missing makefiles.
+
+2002-09-26 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/StringUtil.hh: fix compilation problem on Sun CC 5.3 
+	(bug #614903).
+	
+2002-09-18 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/RemoteSyslogAppender.cpp: fixed log facility in _append(), as
+	reported by Derek Atkins.
+
+	* src/PropertyConfiguratorImpl.cpp, src/SimpleConfigurator.cpp:
+	multiply syslog facility value by 8.
+
+2002-09-17 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* log4tango.spec.in: fix relocatability of log4tango-devel by patching
+	lib/liblog4tango.la and bin/log4tango-config in %post. Unfortunately
+	this results in 'rpm --verify' reporting these files as modified. 
+	
+2002-09-15 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* release as 0.3.25rc5
+	
+	* include/threading/DummyThreads.hh, include/threading/MSThreads.hh,
+	include/threading/OmniThreads.hh, include/threading/Pthreads.hh,
+	src/DummyThreads.cpp, src/MSThreads.cpp, src/OmniThreads.cpp, 
+	src/Pthreads.cpp: moved bodies of getThreadId() to .cpp files.
+
+	* src/Makefile.am, msvc6/log4tango/log4tango.dsp,
+	msvc6/log4tangoDLL/log4tangoDLL.dsp, bcb5/log4tango/log4tango.mak,
+	bcb5/log4tango/log4tango.bpr, bcb5/log4tango/log4tango.bpf: added *Threads.cpp
+	files	
+
+	* configure.in, include/log4tango/Appender.hh, 
+	include/log4tango/AppenderSkeleton.hh, m4/BB_CHECK_PTHREADS.m4,
+	m4/PETI_PEDANTIC_GCC.m4, src/FileAppender.cpp, src/Level.cpp,
+ 	src/Properties.cpp, src/PropertyConfiguratorImpl.hh, 
+	src/RemoteSyslogAppender.cpp,src/StringUtil.hh, tests/Clock.cpp,
+	tests/Clock.hh, tests/testConfig.cpp, tests/testPropertyConfig.cpp,
+	tests/testbench.cpp:
+	Merged patch #605143, contributed by Harald Wellman: support for
+	compilation in QNX Neutrino.
+	
+2002-09-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/PropertyConfiguratorImpl.cpp, tests/testConfig.log4tango.properties:
+	Merged patch #604991, contributed by Richard Brodie: support for 
+	setting additivity via properties file using
+	'log4j.addivity.<loggername>=[true|false]'.
+	
+2002-08-16 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/threading/Makefile.am: added MSThreads.hh
+	
+2002-08-16 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.2rc3
+	
+	* src/SimpleConfigurator.cpp, src/PropertyConfiguratorImpl.cpp:
+	put #ifdef WIN32 around #include of NTEventLogAppender and 
+	Win32DebugAppender.
+
+	* include/log4tango/threading/PThreads.hh: use reinterpret_cast<>.
+
+	* tests/testProperties.cpp: add std::.
+	
+2002-08-14 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.2rc2
+
+	* Makefile.am, include/log4tango/Makefile.am, tests/Makefile.am:
+	added distclean-local targets.
+
+	* doc/Doxyfile.in: predefine 'WIN32' as suggested by David Resnick.
+	* include/log4tango/NTEventLogAppender.hh,
+	include/log4tango/Win32DebugAppender.hh: added warnings about platform
+	dependency.
+	
+2002-08-13 David Resnick <dresnick@mobilespear.com>
+    * include/log4tango/PatternLayout.hh: documentation fixes.
+    
+2002-08-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* msvc6/log4tangoDLL/log4tangoDLL.rc: update version and product info.
+
+	* include/log4tango/Portability.hh: added comments.
+
+	* src/Category.cpp: added lock to getAllAppenders().
+
+	* doc/html/index.html: more documentation updates.
+
+	* tests/testCategory.cpp, tests/testConfig.cpp, tests/testDLL.cpp,
+	tests/testFilter.cpp, tests/testPropConfig.cpp, 
+	tests/testbench.cpp: Replaced #include "log4tango/X" with 
+	#include <log4tango/X>
+
+	* tests/testProperties.cpp, tests/testPropertyConfig.cpp: added.
+
+	* configure.in, doc/Makefile.am, doc/html/Makefile.am: added doc/html
+	to automake.
+	
+2002-08-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/RollingFileAppender.hh: correct constness of 
+	constructor parameters, as pointed out by James Emery.
+
+2002-08-06 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.ac, configure.in: renamed configure.ac back to 
+	configure.in due to bug in libtoolize 1.4.2
+
+	* NEWS, README, INSTALL, doc/html/index.html: converted most 
+	documentation to HTML.
+
+	* m4/CREATE_GENERIC_CONFIG.m4: fix log4tango-config creation (use
+	PACKAGE_TARNAME instead of PACKAGE).
+	
+2002-08-06 David Resnick <dresnick@mobilespear.com>
+    * msvc6/log4tangoDLL/log4tangoDLL.rc: Cleanup.
+    * msvc6/log4tangoDLL/resource.h deleted: Unnecessary.
+
+2002-08-05 David Resnick <dresnick@mobilespear.com>
+    * msvc6/log4tangoDLL/log4tangoDLL.rc, msvc6/log4tangoDLL/resource.h:
+    Version property sheet added to DLL.
+
+2002-08-04 David Resnick <dresnick@mobilespear.com>
+	* src/PropertyConfiguratorImpl.cpp: added RollingFileAppender,
+	NTEventLogAppender. Threshold attrib added for appenders. Invalid
+	level in configureCategory prints message of invalid_argument
+	exception.
+	* src/Level.cpp: surrounding quotes added around invalid level
+	in thrown invalid_argument exception.
+	* tests/testPropConfig.cpp, tests/log4tango.property, 
+	msvc6\testPropConfig\testPropConfig.dsp: test for PropertyConfigurator
+	added.
+	
+2002-08-02 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* doc/Makefile.am, doc/Doxyfile.in, doc/html/index.html,
+	doc/html/default.css: added new index page and move Doxygen generated
+	docs to api subdirectory.
+
+2002-08-01 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/threading/PThreads.hh: added POSIX threads support
+	file contributed by Emiliano Martin.
+	* include/log4tango/threading/Makefile.am,
+	include/log4tango/threading/Threading.hh: add PThreads.hh
+	* configure.ac: added test for POSIX threads
+	* m4/BB_CHECK_PTHREADS.m4: added. Crude initial pthreads check. Need
+	to nick a good macro somewhere else :-)
+	* m4/BB_CHECK_OMNITHREADS.m4: added 'thread safity' defines, needed
+	at least for STL.
+	* THANKS: added Emiliano.
+	
+2002-07-30 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/TimeStatemp.hh: added some doxygen comments
+
+	* m4/AC_CREATE_PREFIX_CONFIG_H.m4: removed a debug print statement.
+
+	* src/PropertyConfgiruratorImpl.cpp: added 'append' property for 
+	FileAppender.
+
+	* src/LoggingEvent.cpp: fill in the thread Id. 
+
+2002-07-22 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in, configure.ac: renamed configure.in to configure.ac.
+
+	* configure.ac, log4tango.spec.in, doc/Doxyfile.in, doc/Makefile.am,
+	m4/AC_CREATE_PREFIX_CONFIG_H.m4, m4/AC_CXX_HAVE_SSTREAM.m4, 
+	m4/AC_CXX_NAMESPACES.m4, m4/BB_CHECK_OMNITHREADS.m4:
+	updated AC macros and variables to autoconf 2.50.
+
+	* src/Level.cpp: put names[] in anonymous namespace instead of 
+	declaring it static. This should solve Solaris 8 dynamic library
+	problem (see patch #583905).
+
+2002-07-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/PatternLayout.cpp: use std::string::size_type instead of int.
+	* src/PropertyConfiguratorImpl.cpp: use map.lower_bound() to determine 
+	begin and end for appender and logger properties.
+	
+2002-07-10 David Resnick <dresnick@mobilespear.com>
+	* src/PatternLayout.cpp, include/log4tango/PatternLayout.hh, 
+	tests/testPattern.cpp, msvc6/testPattern/testPattern.dsp: added support 
+	for formatting date and testing that new support.
+	
+	* tests/testDLL.cpp, msvc6/testDLL/testDLL.dsp: added project that
+	tests log4tango DLL (on win32 platform), including export of container
+	object.
+	
+	* msvc6/log4tango/log4tango.dsp, msvc6/log4tangoDLL/log4tangoDLL.dsp: fixed so
+	that PropertyConfigurator and attendant files are compiled in MSVC6.
+
+2002-07-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/StringUtil.hh, src/StringUtil.cpp: added a more generic split()
+	method taking an output_iterator instead of a vector to store the 
+	result.
+
+	* src/PropertyConfiguratorImpl.hh, src/PropertyConfiguratorImpl.cpp:
+	renamed addAppenders() to configureCategory(). 
+	fixed configureCategory(): had a nested loop for priorities and 
+	appenders.
+	replaced find(property, '.') with StringUtil::split() in several
+	places.
+
+	* src/PropertyConfiguratorImpl.cpp: fixed configureCategory() fix.
+	
+2002-07-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/StringUtil.hh, src/StringUtil.cpp: added split() method.
+
+	* src/PropertyConfiguratorImpl.hh, src/PropertyConfiguratorImpl.hh:
+	changed the way configuration is done: first instantatiate all
+	Appenders defined in the config, then add them to Categories where
+	necessary. Multiple Appenders per Category are now supported. 
+	Currently doConfigure() leaks all Appenders, as they will be not be
+	owned by any Categories. This will be fixed in the future by having
+	the LoggerRepository maintain ownership of all Categories, Appenders,
+	etc.
+
+2002-07-04 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/BasicConfigurator.hh, src/BasicConfigurator.cpp:
+	added.
+
+	* src/Properties.hh, src/Properties.cpp: added Log4j style variable
+	substitution: ${NAME} will be substituted with environment variable
+	NAME or if not found with property NAME. '${${}' denotes a literal
+	'${' sequence. 
+	
+2002-07-03 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/SyslogAppender.cpp (SysLogAppender()): accept '-1' for facility and portNumber, 
+	implying the 'default value'.
+
+	* src/ConfiguratorSkeleton.cpp: changed property names to JavaBeans/log4j style. 
+	Use the appender name as name (duh) instead of the 'name' property.
+	Don't set a layout if none have been specified. 
+	Use std::string::size_type where applicable.
+	Made some exception messages clearer.
+	Compacted the code a bit.	
+
+	* src/Properties.hh, src/Properties.cpp: added, moved
+	PropertyConfigurator::parseConfig() to load().
+	* src/PropertyConfiguratorImpl.hh, src/PropertyConfiguratorImpl.cpp:
+	added. This class is a merge of PropertyConfigurator and 
+	ConfiguratorSkeleton. ConfiguratorSkeleton is not generic enough to 
+	be exposed in the API.
+	* include/log4tango/PropertyConfigurator.hh,
+	src/PropertyConfigurator.cpp: leave only 2 static configure() methods,
+	like SimpleConfigurator. The actual implementation is now in 
+	PropertyConfiguratorImpl.
+	* include/log4tango/ConfiguratorSkeleton.hh,
+	src/ConfiguratorSkeleton.cpp: removed.
+
+	* src/StringUtil.hh, src/StringUtil.cpp: added, contains 
+	ConfiguratorSkeleton::trim().
+
+	* src/RollingFileAppender.cpp: fix signed/unsigned comparison warning.
+
+	* m4/PETI_PEDANTIC_GCC.m4: remove -pedantic flag for g++ 2.96 to 
+	get rid of those iritating warnings about std IOstreams code.
+
+	* src/TimeStamp.cpp: replaced #include <string.h> with <cstring>.
+
+	* src/PropertyConfiguratorImpl.cpp: use getString(), etc. to get
+	properties.
+
+	* include/log4tango/Category.hh, include/log4tango/FixedContextCategory.hh,
+	include/log4tango/CategoryStream.hh: fixed documentation buglets.
+	
+2002-07-02 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/HierarchyMaintainer.hh, include/log4tango/Category.hh,
+	src/HierarchyMaintainer.cpp, src/Category.cpp:
+	Changed return type of getCurrentCategories() to std:vector<Category>.
+	vector<> is more efficient than set<> and works around MSVC++ DLL 
+	export brain damage, see Microsoft Q168958.
+
+	* include/log4tango/Configurator.hh, include/log4tango/ConfiguratorSkeleton.hh, 
+	include/log4tango/SimpleConfigurator.hh, include/log4tango/PropertyConfigurator.hh,
+	src/Configurator.cpp, src/ConfiguratorSkeleton.cpp, src/SimpleConfigurator.cpp,
+	src/PropertyConfigurator.cpp: integrated PropertyConfigurator contributed by
+	Alan Anderson <alan@rushmore.com>.
+
+	* msvc6/log4tango/log4tango.dsp, bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.bpr,
+	 bcb5/log4tango/log4tango.mak: added PropertyConfigurator files.
+	
+2002-06-19 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/Makefile.am: added NTEventlog.cpp and DllMain.cpp to sources.
+	* src/DllMan.cpp: enclosed in #ifdef LOG4TANGO_SUPPLY_DLLMAIN
+	* include/log4tango/config-win32.h: #define LOG4TANGO_SUPPLY_DLLMAIN
+	* include/log4tango/Makefile.am: added NTEventLog.hh
+	* msvc6/Makefile.am: added NTEventLogCategories.
+	
+2002-06-18 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/NDC.cpp: fix top level context falling off, if depth > 2.
+	(reported by Hong Yang <yanghong2009@yahoo.com>)
+	* tests/testNDC.cpp: push 3 contexts to test for bug above.
+	
+2002-06-17 Aaron Ingram <ai8@yahoo.com>
+	* Fixed default port for syslog in SimpleConfigurator.cpp
+	* Added a sample configuration file: log4tango.cfg 
+
+2002-06-17 David Resnick <dresnick@mobilespear.com>
+    * Merge of MS Threads & DLL Build support patch by Aaron Ingram <ai8@yahoo.com>
+    with these changes:
+    * src/main.cpp renamed to src/DllMain.cpp
+    * Run-time library used for log4tangoDLL changed to
+    Multithreaded DLL (fixed need for #pragma warning(disable:4275))
+    * pragma directives moved from various headers to 
+    include/log4tango/Portability.hh.
+    * include/log4tango/threading/MSThreads.hh: reset(): TlsSetValue
+    uses parameter value instead of deleted one.
+    
+    * include/log4tango/NTEventLogAppender.hh,
+    src/NTEventLogAppender.cpp, msvc/NTEventLogAppender.mc,
+    tests/testNTEventLog.cpp: added NTEventLogAppender.
+    
+    * msvc/testMain/testMain.dsp, msvc/testNTEventLog/testNTEventLog.dsp 
+    added.
+    
+2002-06-03  Cedric Le Goater  <legoater@free.fr>
+	* Makefile.am: added log4tango.m4 installation
+	* log4tango.m4: added aclocal support
+	* tests/Clock.cpp: fixed rdtscl() support on linux
+
+2002-05-22 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/config-win32.h: fix compilation in Visual .NET.
+	
+2002-05-12 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/RollingFileAppender.cpp: explicitly remove oldest file in 
+	rollOver() because win98 cannot rename() to existing files. 
+	(Paulo Pizarro)
+
+	* Makefile.am: convert *.bpg files to CRLF in dist.(Paulo Pizarro)
+
+	* bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.bpr, 
+	bcb5/log4tango/log4tango.mak, include/log4tango/Makefile.am,
+	msvc6/log4tango/log4tango.dsp, src/Makefile.am, 
+	include/log4tango/Win32DebugAppender.hh,
+	src/Win32DebugAppender.cpp: added Win32DebugAppender contributed by
+	Alan Anderson.
+
+2002-04-21 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/config-win32.h: added mode_t typedef.
+
+	* m4/AC_C_INT64_T.m4: added #define of HAVE_STDINT_H.
+	* src/PatternLaout.cpp: #include <stdint.h> only if available.
+
+2002-04-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* tests/Clock.cpp: test for i386 architecture on linux (patch #541608)
+
+2002-04-04 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.1
+
+	* src/Category.cpp: fix previous fix for bug #527467.
+
+	* m4/PETI_PEDANTIC_GCC.m4: add -Wno-unused to g++ options.
+
+	* configure.in: increment version to 0.3.1.
+
+	* msvc6/log4tango/log4tango.dsp: Added RollingFileAppender and threading
+	files.
+	* bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.bpr,
+	bcb5/log4tango/log4tango.mak: Added RollingFileAppender
+	
+2002-03-31 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Portability.hh: Disable exception specifier
+	warnings (issue #536668)
+
+2002-03-27 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* m4/AC_C_INT64_T.m4: #include <stdint.h> and remove $GCC check.
+	* src/PatternLayout.cpp: #include <stdint.h>
+
+	* configure.in, include/log4tango/Portability.hh: back out strcasecmp() 
+	stuff.
+	
+2002-03-22 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/FileAppender.hh, src/FileAppender.cpp:
+	added 'append' and 'mode' options. 
+
+	* include/log4tango/RollingFileAppender.hh, include/log4tango/Makefile.am,
+	src/RollingFileAppender.cpp, src/SimpleConfigurator.cpp,
+	src/Makefile.am: added RollingFileAppender contributed by
+	Paulo Pizarro <paulo.pizarro@digitro.com.br>
+	
+2002-03-20 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/SimpleConfigurator.hh, src/SimpleConfigurator.cpp:
+	added configure(std::istream&) method. (feature request #527760)
+
+	* src/Log4cppCleanup.cpp: set variable to NULL after delete. 
+	(feature request #527393)
+
+	* include/log4cp/Category.hh, include/log4tango/FixedContextCategory.hh,
+	src/Category.hh, src/Category.cpp: added getAllAppenders() method.
+	(feature request #527381)
+
+	* src/Category.cpp: removeAllAppenders(): fix invalidated iterator
+	usage. (bug #527467)
+	
+2002-03-17 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* tests/testbench.cpp: added missing 'std::' specifiers. (bug #530332)
+
+	* src/SyslogAppender.cpp: fix format string bug. (bug #527475)
+
+2002-02-18 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.3.0
+	
+	* INSTALL: added some platform specific build instructions.
+
+	* tests/Clock.hh: replaced "long long" with int64_t.
+
+	* src/OstringStream.cpp: fix typo.
+
+	* src/Appender.cpp: added missing Mutex.
+
+	* include/log4tango/threading/OmniThreads.hh: added Doxygen comments.
+
+	* NEWS: release 0.3.0.
+	
+	* configure.in: upped release to 0.3.0 and LT version to 4.0.0
+	
+2002-02-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in: integrated check of omnithreads.
+	* m4/BB_CHECK_OMNITHREADS.m4: added
+
+	* include/log4tango/threading/DummyThreads.hh: scoped lock is now
+	an integer.
+
+	* include/log4tango/Category.hh, 
+	include/log4tango/FixedContextCategory.hh,
+	include/log4tango/HierarchyMaintainer.hh,
+	include/log4tango/NDC.hh,
+	src/Category.cpp, src/FixedContextCategory.cpp,
+	src/HierarchyMaintainer.cpp, src/NDC.cpp:
+	added threadsafety provisions.
+
+	* include/log4tango/*.hh: replaced #include"" with #include<>
+	* src/*.cpp: replaced #include"" with #include<>
+
+	* include/log4tango/Appender.hh, src/Appender.cpp:
+	added Mutex for _allAppender map.
+
+2002-02-08 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/threading/Threading.hh,
+	include/log4tango/threading/OmniThreads.hh,
+	include/log4tango/threading/DummyThreads.hh,
+	include/log4tango/threading/BoostThreads.hh,
+	include/log4tango/threading/Makefile.am: added
+	
+2002-02-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/AppenderSkeleton.cpp: doAppend(): correct comparison of 
+	_threshold against event level (bug #513481).
+
+	* tests/Clock.cpp: add missing 'std::'.
+
+2002-01-27 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.2.7
+	
+	* configure.in: upped version to 0.2.7.
+	
+	* testbench.cpp: added more measurements, using crude cut&paste 
+	of code.
+
+	* NEWS: set release date for 0.2.7, added bug #506907 fixed.
+
+	* bcb5/testPattern/Makefile.am: set EXTRA_DIST.
+	
+2002-01-25 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in: added bcb5/testConfig/Makefile to AC_OUTPUT
+
+	* include/log4tango/FixedContextCategory.hh: removed superfluous class
+	qualification for ownsAppender().
+	
+2002-01-25 Uwe Jäger <jaeger@varial.de>
+	* src/SimpleConfigurator.cpp: Replaced STDOUT_FILENO and STDERR_FILENO
+	with fileno(stdout) and fileno(stderr) which seems to be more portable.
+
+	* tests/testConfig.cpp: Replace ?-:-operator with if/else because of
+	compiler problems; retabbed file.
+
+	* bcb5/Makefile.am, bcb5/bcb5.bpg, bcb5/bcb5.mak: Added testConfig
+
+	* bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.bpr, 
+	bcb5/log4tango/log4tango.mak: Added new files.
+
+	* bcb5/testConfig/Makefile.am, bcb5/testConfig/testConfig.bpf,
+	bcb5/testConfig/testConfig.bpr, bcb5/testConfig/testConfig.mak: Added
+	testConfig.
+
+	* bcb5/testCategory/testCategory.bpr, 
+	bcb5/testFixedContextCategory/testFixedContextCategory.bpr,
+	bcb5/testNDC/testNDC.bpr, bcb5/testPattern/testPattern.bpr
+	bcb5/testPattern/testPattern.mak, bcb5/testmain/testmain.bpr: Adjusted
+	makefiles/project files for BCB.
+
+2002-01-23 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/SimpleConfigurator.cpp: try to fix bug #506907 (MSVC++ 
+	compile failure) with ::dup(fileno(stdout))
+
+	* configure.in: upped version to 0.2.7rc2
+	
+2002-01-21 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/Category.cpp: fix ownsAppender() methods.
+
+	* tests/testCategory.cpp: rename appender 'default' to 'default2'.
+
+	* configure.in: upped version to 0.2.7rc1 and LT_VERSION to 3:1:2
+
+	* src/SimpleConfigurator.cpp, tests/testFixedContextCategory.cpp,
+	tests/testPattern.cpp, tests/testbench.cpp, tests/testmain.cpp:
+	replaced setAppender() with addAppender().
+
+	* include/log4tango/Category.hh: update doxygen comments.
+
+	* include/log4tango/FixedContextCategory.hh, 
+	src/FixedContextCategory.cpp: sync methods for multiple Appender
+	support.
+
+	* NEWS: added summary for 0.2.7 release
+	
+2002-01-20 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Category.hh, src/Category.cpp, 
+	tests/testCategory.cpp: merged in support for multiple Appenders,
+	contributed by Brendan B. Boerner.
+	* THANKS: Added Brendan.
+
+2002-01-17 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/HierarchyMaintainer.hh, src/HierarchyMaintainer.cpp:
+	added getExistingInstance(std::string). 
+	* include/log4tango/Category.hh, src/Category.cpp: 
+	added exists(std::string).
+
+	* include/log4tango/RollingFileAppender.hh,
+	include/log4tango/Makefile.am,
+	src/RollingFileAppender.cpp, src/MakeFile.am: removed 
+	RollingFileAppender, to be replaced with DailyRollingFileAppender.
+	
+2002-01-16 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Category.hh, src/Category.cpp: fix bug #504314:
+	added missing log methods for level 'fatal'.
+
+	* src/SimpleConfigurator.cpp: added 'stdout' and 'stderr' appenders.
+	
+2002-01-10 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in: added check for strcasecmp() and stricmp().
+	* include/log4tango/config-win32.h: have stricmp() but not strcasecmp().
+	* include/log4tango/Portability.hh: use stricmp() if strcasecmp() is
+	not available.
+
+	* include/log4tango/RemoteSyslogAppender.hh: added SyslogFacility type.
+
+2002-01-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/SimpleConfigurator.cpp: skip all whitespace before PatternLayout 
+	pattern, not just one.
+
+	* include/log4tango/RollingFileAppender.cpp,
+	include/log4tango/Makefile.am,
+	src/RollingFileAppender.cpp, src/MakeFile.am: 
+	added RollingFileAppender contributed by Alex Tapaccos.
+	
+2002-01-08 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/SimpleConfigurator.cpp: skip space before PatternLayout 
+	pattern (Bug #500766).
+
+	* src/SimpleConfigurator.cpp: fix screwy fix for Bug #500766,
+	now using Alex' method. (Obsoletes Patch #500832).
+
+2002-01-04 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/config-openvms.h: #include <inttypes.h> for int64_t.
+
+	* src/PatternLayout.cpp(doFormat): removed superfluous return
+	statement.
+
+	* include/log4tango/config-win32.h: fix int64_t for Borland compiler.
+
+	* include/log4tango/SyslogAppender.hh,
+	include/log4tango/RemoteSyslogAppender.hh,
+	src/SyslogAppender.cpp, src/RemoteSyslogAppender.cpp:
+	inherit from LayoutApppender instead of AppenderSkeleton 
+	(Bug #499524).
+	
+2002-01-03 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Filter.hh: decide() is NOT abstract.
+
+	* tests/testFilter.cpp: added
+	* tests/Makefile.am: added testFilter.cpp to tests.
+	
+2001-12-21 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.2.6b
+	
+	* configure.in: upped release to 0.2.6b
+	
+	* src/Level.cpp: getLevelValue(): fix bug in numerical input 
+	handling.
+
+	* tests/Makefile.am: added very simple test for Level.
+	* tests/testLevel.cpp: added.
+	
+2001-12-13 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/OstringStream.cpp: use portable_vsnprintf(), not
+	portable_snprintf().
+	
+2001-12-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.2.6
+
+	* TODO: Mark PatternLayout and SimpleConfigurator as done.
+
+	* NEWS: release 0.2.6
+	
+	* Makefile.am: exclude CVS subdir from doc-dist tar ball.
+	
+	* include/log4tango/config-win32.h: #define int64_t as __int64, 
+	#define LOG4TANGO_MISSING_INT64_OSTREAM_OP
+
+	* src/PatternLatout.cpp: workaround missing << operator for int64_t
+	on MSVC.
+	
+	* src/TimeStamp.cpp: fix ref typo for timeb struct.
+
+	* include/log4tango/config-win32.h: #define LOG4TANGO_USE_CLEANUP.
+
+2001-11-30 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* tests/testbench.cpp: use TimeStamp instead of ::time()
+
+	* include/log4tango/Makefile.am: added config-openvms.h to headers.
+
+	* include/log4tango/Appender.hh, include/log4tango/HierarchyMaintainer.hh,
+	include/log4tango/Log4cpCleanup.hh, src/Appender.cpp,
+	src/HierarchyMaintainer.cpp, src/Log4cppCleanup.cpp: conditionally
+	use Log4cppCleanup, depending on #define LOG4TANGO_USE_CLEANUP. The new 
+	default is NOT to use it, because it causes segfaults on some 
+	platforms (e.g. Solaris).
+
+2001-11-29 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Portability.hh: use config-openvms.h based on 
+	__OPENVMS__ flag.
+
+	* src/snprintf.c: replaced static_cast with C-style cast: this file
+	should remain C only.
+
+	* configure.in, Makefile.am: added openvms subdirectory.
+	* openvms/Makefile.am: added empty Makefile template.
+
+	* THANKS: added Tony Cheung.
+
+	* src/Makefile.am: added snprintf.c to noinst_HEADERS.
+
+	* include/log4tango/TimeStamp.hh: moved class description to the 
+	correct location.
+		
+2001-11-28 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/snprintf.c: added portable snprintf 2.2 from 
+	http://www.ijs.si/software/snprintf/
+
+	* src/OstringStream.cpp: replace alternative snprintf with one in
+	snprintf.c.
+
+	* src/snprintf.c: add static cast from void* to const char*.
+
+	* include/log4tango/config-openvms.h: added.
+	
+2001-11-26 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/TimeStamp.hh, include/log4tango/Makefile.am,
+	src/TimeStamp.cpp, src/Makefile.am: added micro second
+	precise time stamp.
+	* configure.in: added test for 'ftime()' function.
+	* include/log4tango/LoggingEvent.hh, include/log4tango/PatternLayout.hh,
+	src/LoggingEvent.cpp, src/BasicLayout.cpp, src/PatternLayout.cpp:
+	Use new TimeStamp class.
+
+	* tests/testPattern.cpp: included '%r' in test pattern.
+
+	* src/SimpleConfigurator.cpp: added support for RemoteSyslogAppender.
+
+	* bcb5/log4tango/log4tango.bpr, bcb5/log4tango/log4tango.bpf: Added TimeStamp
+	class.
+
+	* msvc6/log4tango/log4tango.dsp: Added TimeStamp, PatternLayout and 
+	SimpleConfigurator classes.
+
+	* include/log4tango/RemoteSyslogAppender.hh: replaced #defines with
+	enum.
+
+	* include/log4tango/config-win32.h: sync with #defines in 
+	include/log4tango/config.h.
+
+	* tests/Makefile.am: made log4tango.init check_DATA.
+
+	* tests/testConfig.cpp: read $srcdir for location of log4tango.init in
+	order to fix distcheck target.
+	
+2001-11-23 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* tests/testConfig.cpp, tests/log4tango.init: added test for
+	SimpleConfigurator.
+
+	* include/log4tango/Makefile.am, src/Makefile.am, tests/Makefile.am:
+	integrated SimpleConfigurator in autoconf.
+
+	* src/SimpleConfigurator.cpp: added support for comments in config
+	file (starting with a '#'). added support for SyslogAppender. use 
+	Level::getLevelValue() to convert priorities.
+	
+2001-11-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* m4/CREATE_GENERIC_CONFIG.m4: escape $*
+	
+	* tests/testFixedContextCategory.cpp: Use contructor for 
+	FixedContextCategory instead of assignment.
+	
+2001-11-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* m4/CREATE_GENERIC_CONFIG.m4: fix /bin/sh incompatibility on Solaris.
+
+	* include/log4tango/Category.hh: Added private copy constructor and
+	assignment operator (pointed out by Shane Baker).
+
+2001-11-01 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/Category.cpp: in setAppender(Appender*) allow NULL Appender.
+	* include/log4tango/Category.hh: in setAppender(Appender*) document 
+	allowing NULL Appender parameter.
+	
+2001-10-24 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in:
+	Added bcb5/testPattern/Makefile to AC_OUTPUT.
+
+	* include/log4tango/Level.hh, src/Level.cpp:
+	Added getLevelValue() method.
+
+	* src/PatternLatout.cpp:
+	Added support for sstream predating c++ stream libraries.
+	
+2001-10-05 Uwe Jäger <jaeger@varial.de>
+	* bcb5/Makefile.am, bcb5/bcb5.bpg, bcb5/bcb5.mak:
+	Added testPattern.
+
+	* bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.mak:
+	Added PatternLayout and SimpleConfigurator.
+
+	* bcb5/testPattern/testPattern.bpf, bcb5/testPattern/testPattern.bpr, bcb5/testPattern/testPattern.mak:
+	Added project file and makefile for pattern test.
+
+	* include/log4tango/config-win32.h: 
+	Added support for PatternLayout.
+
+	* include/log4tango/SimpleConfigurator.hh, src/SimpleConfigurator.cpp:
+	Make it compile with Borland C++.
+	
+	* src/PatternLayout.cpp, src/RemoteSyslogAppender.cpp, tests/testPattern.cpp:
+	Port to Borland C++.
+
+2001-10-04 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* src/SimpleConfigurator.cpp, include/log4tango/SimpleConfigurator.hh:
+	Added simple configurator class contributed by Glenn Scott. Not
+	usable yet.
+	
+	* src/Level.cpp: fix conversion from LevelLevel to LevelName.
+	
+	* include/log4tango/Makefile.am, src/Makefile.am, tests/Makefile.am:
+	Added PatternLayout files 
+	* configure.in, Makefile.am, m4/C_C_INT64_T: Added check for int64_t.
+	* configure.in: Added check for gettimeofday.
+	* src/PatternLayout.cpp: use LOG4TANGO_HAVE_TIMEOFDAY and 
+	LOG4TANGO_HAVE_INT64_T
+
+	* include/log4tango/LoggingEvent.hh: made strings real member variables.
+
+2001-09-18 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/PatternLayout.hh, src/PatternLayout.cpp,
+	tests/testPattern.cpp: 
+	Added PatternLayout contributed by Glenn Scott. Is not in autoconf
+	setup yet.
+	
+2001-09-17 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in:
+	Added checks for -lsocket and -lnsl
+	
+	* m4/AC_FUNC_SNPRINTF.m4:
+	Relax snprintf() check: full C99 compliancy is not needed.
+	
+	* include/log4tango/Level.hh:
+	Fix workaround for #define DEBUG
+
+	* config/Makefile.am: 
+	Added newline to keep broken tar utilities happy
+
+	* include/log4tango/FixedContextCategory.hh:
+	Added default value for context parameter in constructor.
+
+	* include/log4tango/LayoutAppender.hh:
+	Made BasicLayout the DefaultLayoutType
+
+	* configure.in:
+	Set requirement for Autoconf 2.50
+	Bumped version to 0.2.6
+	Incremented LT_VERSION to 2:0:1
+
+	* Makefile.am:
+	Fix EXTRA_DIST m4 inclusion.
+	
+	* bcb5/log4tango/log4tango.bpf, bcb5/log4tango/log4tango.bpr, 
+	bcb5/log4tango/log4tango.mak:
+	Added RemoteSyslogAppender.
+	
+2001-08-23 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Level.hh:
+	Added workaround for #define DEBUG in EDK.h on Win32.
+
+2001-07-17 Walter Stroebel <walter.stroebel@lifeline.nl>
+	* include/log4tango/RemoteSyslogAppender.hh,
+	src/RemoteSyslogAppender:
+	Added.
+	
+2001-07-16 Uwe Jäger <jaeger@varial.de>
+	* bcb5/log4tango.bpf, bcb5/log4tango.bpr:
+	Adjusted project files to compile CategoryStream.cpp.
+	* bcb5/bcb5.mak, bcb5/log4tango/log4tango.mak, 
+	bcb5/log4tango/testCategory/testCategory.mak,
+	bcb5/log4tango/testFixedContextCategory/testFixedContextCategory.mak,
+	bcb5/log4tango/testmain/testmain.mak,
+	bcb5/log4tango/testNDC/testNDC.mak:
+	Added makefiles for Borland make to build without IDE.
+
+2001-06-17 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Category.hh, include/log4tango/CategoryStream.hh,
+	include/log4tango/Makefile.am, 
+	src/Category.cpp, src/CategoryStream.cpp, src/Makefile.am:
+	Put CategoryStream class into its own files.
+	
+
+2001-06-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* m4/AC_CREATE_PREFIX_CONFIG_H.m4: fix to overwrite 
+	include/log4tango/config.h instead of append to it.
+	* include/log4tango/Makefile.am: remove config.h from dist.
+	
+2001-06-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Release as 0.2.5
+
+	* NEWS: inclusion of Borland C++ Builder support.
+
+	* Makefile.am: only include *.m4 files in m4/ in dist.
+	* Makefile.am: fix typos in debian and doc-dir targets.
+	
+2001-06-07 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/LayoutAppender.hh: set SimpleLayout as 
+	DefaultLayoutType.
+	* src/LayoutAppender.cpp (LayoutAppender, setLayout): use 
+	DefaultLayoutType to construct new Layouts.
+	* src/LayoutAppender.cpp (setLayout): check whether old Layout and
+	new Layout are the same object.
+
+	* src/Category.cpp (setAppender): check whether old and new Appender
+	are the same object.
+	* src/Filter.cpp (setChainedFilter): check whether old and new Filter
+	are the same object.
+
+	* include/log4tango/Config.hh, include/log4tango/Portability.hh,
+	include/log4tango/OstringStream.hh, include/log4tango/Makefile.am, 
+	src/Appender.cpp, src/AppenderSkeleton.cpp, src/BasicLayout.cpp,
+	src/Category.cpp, src/FileAppender.cpp, src/Filter.cpp, 
+	src/FixedContextCategory.cpp, src/HierarchyMaintainer.cpp, 
+	src/IdsaAppender.cpp, src/LayoutAppender.cpp, src/Log4cppCleanup.cpp,
+	src/LoggingEvent.cpp, src/Log4cppCleanup.cpp, src/LoggingEvent.cpp,
+	src/NDC.cpp, src/OstreamAppender.cpp, src/OstringStream.cpp,
+	src/Level.cpp, src/SimpleLayout.cpp, src/StringQueueAppender.cpp,
+	src/SyslogAppender.cpp, msvc6/log4tango/log4tango.dsp,
+	tests/testmain.cpp: renamed Config.hh to Portability.hh
+
+	* m4/AC_AS_DIRNAME.m4, m4/AC_AS_MKDIR_P.m4, m4/AC_ECHO_MKFILE.m4:
+	removed
+	* m4/AC_CREATE_PREFIX_CONFIG_H.m4: replaced AC_ECHO_MKFILE with
+	AS_DIRNAME. This means autoconf >= 2.4 required.
+
+	* configure.in, include/log4tango/config-win32.h: upped version number
+	to 0.2.5.
+	* configure.in: upped LT_VERSION to 1:0:0.
+
+2001-06-06 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/AppenderSkeleton.hh, include/log4tango/BasicLayout.hh,
+	include/log4tango/HierarchyMaintainer.hh, 
+	include/log4tango/IdsaAppender.hh, include/log4tango/Log4cppCleanup.hh,
+	include/log4tango/LoggingEvent.hh, include/log4tango/OstreamAppender.hh,
+	include/log4tango/OstringStream.hh, include/log4tango/Level.hh,
+	include/log4tango/SimpleLayout.hh, include/log4tango/SyslogAppender.hh:
+	Documentation updates.
+
+2001-06-06 Uwe Jäger <jaeger@varial.de>
+	* include/log4tango/config-win32.h: LOG4TANGO_HAVE_SNPRINTF, WIN32,
+	LOG4TANGO_FIX_ERROR_COLLISION are defined for win32
+	* tests/testmain.cpp: added #ifdef's to make it compile with Borland
+	C++ Builder
+
+2001-06-05 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* include/log4tango/Config.hh, include/log4tango/config-win32.h: Added
+	* include/log4tango/Makefile.am: added Export.hh and config-win32.h to
+	liblog4tangoinclude_HEADERS.
+	* include/log4tango/Config-win32.hh: removed
+
+2001-06-04 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Makefile.am: removed config.h copy from dist-hook
+
+	* m4/AC_CREATE_GENERIC_CONFIG.m4: added
+	* log4tango-config.in: removed (obsoleted by AC_CREATE_GENERIC_CONFIG)
+	* Configure.in: added AC_CREATE_GENERIC_CONFIG, removed 
+	log4tango-config from AC_OUTPUT
+	
+2001-06-03 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* configure.in: added AC_CREATE_PREFIX_CONFIG_H for creation of 
+	include/log4tango/config.h (which has been removed from 
+	AM_CONFIG_HEADER)
+	* Config.hh.in: removed
+	* Config.hh: copied from Config.hh.in. include <log4tango/config.h> 
+	and remove LOG4TANGO_* defines.
+	* include/log4tango/Makefile.am: added config.h, removed Config.hh.in
+	* Appender.cpp, AppenderSkeleton.cpp, BasicLayout.cpp, Category.cpp,
+	FileAppender.cpp, Filter.cpp, FixedContextCategory.cpp,
+	HierarchyMaintainer.cpp, IdsaAppender.cpp, LayoutAppender.cpp,
+	Log4cppCleanup.cpp, LoggingEvent.cpp, NDC.cpp, OstreamAppender.cpp,
+	OstringStream.cpp, Level.cpp, SimpleLayout.cpp,
+	StringQueueAppender.cpp,SyslogAppender.cpp: added inclusion of
+	<log4tango/Config.hh>, prefixed autoconf #ifdefs with LOG4TANGO_
+	* AC_AS_DIRNAME.m4, AC_AS_MKDIR_P.m4, AC_CREATE_PREFIX_CONFIG_H.m4,
+	AC_ECHO_MKFILE.m4: added
+
+2001-06-01 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Level.hh: #define ERROR workaround try 3, put fix inside 
+	LOG4TANGO_FIX_ERROR_COLLISION switch.
+	* tests/testErrorCollision.cpp, tests/Makefile.am: added test for
+	#define ERROR workaround.
+	
+2001-05-29 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Level.hh: #define ERROR workaround try 2.
+	* Merge of Borland support patch by Uwe Jäger <jaeger@varial.de>.
+	
+2001-05-28 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Level.hh: included workaround for #define ERROR rudeness in 
+	  windows.h on Win32.
+	
+2001-05-23 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* log4tango.spec.in: run ldconfig after install or uninstall. Upped 
+	  release# to 3.
+	* Makefile.am: in rpm target corrected top_srcdir variable name.
+
+2001-05-19 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	* Fixed distcheck target.
+	* Fixed check target. It runs testNDC, testCategory and 
+	  testFixedContextCategory as tests.
+	* Added subdir m4 with (common) autoconf macros.
+	* Started adding throw() specifiers to methods.
+	
+2001-04-21 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Rereleased as 0.2.4b
+	MSVC++: Stripped '\r' characters from .dsp and .dsw files.
+	MSVC++: Added StringQueueAppender and FixedContextCategory to 
+	log4tango.dsp.
+	
+2001-04-20 Steve Ostlind <s.ostlind@pentasafe.com>
+	MSVC++: build log4tango library with multithreaded DLL.
+	
+2001-04-19 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Now also added the files in debian and msvc6 to EXTRA_DIST, so they 
+	finally get into the dist tar ball. Sigh.
+	
+2001-04-18 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Released as 0.2.4
+	Added debian and msvc6 subdirs to autoconf configuration: they were
+	missing from the dist target.
+	
+2001-04-17 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Made Category subclassable. 
+	Added FixedContextCategory class.
+	
+2001-04-12 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Merged Marcel Harkema's patch for Debian package support.
+
+2001-04-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Added StringQueueAppender class.
+	Separated API docs from devel RPM, into a doc RPM.
+	
+2001-04-10 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Rerelease as 0.2.3b
+	Fixed bugs:
+	#415056 Win32: log4tango project file broken
+	#415059 Win32: problem with 'using namespace std'
+	
+2001-04-09 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Release 0.2.3
+	Fixed and resolved Bugs:
+	#411711 missing Clock.hh
+	#411902 invalid AppenderMap iterator
+	#412008 memory leak in OstringStream::str()
+	#412232 _append problem
+	#414958 printf style logging kaputt
+	
+2001-04-06 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Added class Filter, with which Appenders can filter out LoggingEvents
+	Added class AppenderSkeleton, base class for Appender implementations
+	Modified the Layout interface: it now returns a std::string instead of
+	a char*.
+
+2001-03-?? Cedric Le Goater <cedric@legoater.com>
+	Cleanup of Hints and StreamUtil to OstringStream.
+	
+2001-03-11 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Added LayoutAppender. Changed Layout ownership for Appenders: they
+	now own their Appender.
+
+2001-03-07 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Moved to new iostreams.
+	
+2001-03-04 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Release 0.2.2
+	Added doc-dist make target
+	Added testCategory to tests
+	
+2001-02-25 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Merged in Win32 / MSVC++6.0 support patches from Lynn Owen 
+	<opl@agoby.com>
+
+2001-02-15 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Release 0.2.1
+	Changed license to the GNU Lesser General Public License (LGPL).
+	
+2001-01-25 Cedric Le Goater <cedric@legoater.com>
+	Added EMER, ALERT, CRIT and NOTICE shortcuts methods to Category.
+	
+2000-12-22 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Merged more patches from Cedric Le Goater, including an RPMS spec
+	file and a testbench.
+	
+2000-12-18 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Added IdsaAppender contributed by Marc Welz. 
+	Merged Tru64 support patches from Cedric Le Goater.
+	
+2000-12-10 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Release 0.2.0
+	Integrated autoconf setup contributed by Cedric Le Goater.
+	Fixed compilation problem in NDC on platforms with g++-2 library 
+	(instead of g++-3). (Reported by Louis Bayle <lbayle@fairesuivre.fr>.)
+	Added CategoryStream.
+	
+2000-12-07 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Release 0.1	
+	Added Doxygen generated API documentation. Most of it has been 
+	copied verbatim from LOG4J.
+	Added NDC (Nested Diagnostic Context) class.
+	Added OstreamAppender.
+	Added SyslogAppender.
+	Fixed bug in HierarchyMaintainer: getInstance should NOT set 
+	the Appender of a newly instantiated Category.                
+                
+2000-12-03 Bastiaan Bakker <bastiaan.bakker@lifeline.nl>
+	Release 0.0 
+	First CVS import at SourceForge. 

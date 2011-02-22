@@ -1,0 +1,112 @@
+AC_INIT(log4tango, 4.0.3, nicolas.leclercq@synchrotron-soleil.fr)
+AC_CONFIG_AUX_DIR(config)
+AC_CONFIG_MACRO_DIR([m4])
+AM_INIT_AUTOMAKE
+AM_MAINTAINER_MODE()
+
+# autoconf 2.50 or higher to rebuild aclocal.m4, because the
+# AC_CREATE_PREFIX_CONFIG_H macro needs the AS_DIRNAME macro.
+AC_PREREQ(2.50)
+
+#
+# +1 : ? : +1  == new interface that does not break old one
+# +1 : ? : 0   == new interface that breaks old one
+#  ? : ? : 0   == no new interfaces, but breaks apps
+#  ? :+1 : ?   == just some internal changes, nothing breaks but might work 
+#                 better
+# CURRENT : REVISION : AGE
+LT_VERSION=4:3:0
+
+AC_SUBST(LT_VERSION)
+
+AM_CONFIG_HEADER(include/config.h)
+
+# Checks for programs
+# ----------------------------------------------------------------------------
+AC_CANONICAL_HOST
+
+dnl Change ld and ar if we're using sunpro compiler
+dnl Might as well disable static compiling on solaris
+dnl since it doesn't work with sunpro at the moment.    
+RSSH_CHECK_SUNPRO_CC
+if test "x$rssh_cv_check_sunpro_cc" = "xyes"; then
+   AR="$CXX -xar"
+   AR_FLAGS="-o"
+   LD="$CXX -pta -G"
+   AC_DISABLE_STATIC
+fi  
+
+AC_PROG_LIBTOOL
+AC_PROG_INSTALL
+AC_PROG_MAKE_SET
+
+AC_PROG_CXX([g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC QCC])
+
+AC_PROG_CXXCPP
+AC_LANG(C++)
+
+PETI_PEDANTIC_GCC
+
+# Checks header files
+# ----------------------------------------------------------------------------
+AC_CHECK_HEADERS([unistd.h])
+AC_CHECK_HEADERS([io.h])
+
+# Check for pthreads
+# ----------------------------------------------------------------------------
+BB_CHECK_PTHREADS
+
+# Checks local idioms
+# ----------------------------------------------------------------------------
+AC_C_INT64_T
+AC_CXX_HAVE_SSTREAM
+AC_FUNC_SNPRINTF
+
+# Misc. func tests
+# ----------------------------------------------------------------------------
+AC_CHECK_FUNCS([gettimeofday])
+AC_CHECK_FUNCS([ftime])
+
+# Check for doxygen
+# ----------------------------------------------------------------------------
+BB_ENABLE_DOXYGEN
+
+# To build on MacOSX define __darwin__
+# ----------------------------------------------------------------------------
+case $build_os in
+     darwin*)
+     AC_DEFINE(__darwin__,1,If we're running on darwin/MacOsX)
+	  CXXFLAGS="$CXXFLAGS -D__darwin__"
+     ;;
+	 freebsd*)
+     AC_DEFINE(__freebsd__,1,If we're running on FreeBSD)
+	  CXXFLAGS="$CXXFLAGS -D__freebsd__"
+     ;;
+esac
+
+# Create files
+# ----------------------------------------------------------------------------
+AC_CREATE_GENERIC_CONFIG
+
+AC_CONFIG_FILES([
+Makefile
+log4tango.pc
+config/Makefile
+src/Makefile
+include/Makefile
+include/log4tango/Makefile
+include/log4tango/threading/Makefile
+tests/Makefile
+])
+
+if test "x$enable_doc" = xyes; then
+AC_CONFIG_FILES([
+doc/Makefile
+doc/Doxyfile
+doc/html/Makefile
+])
+fi
+
+AC_OUTPUT
+
+AC_CREATE_PREFIX_CONFIG_H(include/log4tango/config.h,$PACKAGE_TARNAME,include/config.h)
