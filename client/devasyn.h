@@ -2,7 +2,7 @@
 // devsyn.h - include file for TANGO api device asynchronous calls 
 //
 // 
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -213,6 +213,7 @@ public:
 	void store_request(CORBA::Request_ptr,CallBack *,Connection *,TgRequest::ReqType);
 
 	void remove_request(long);
+	bool remove_cancelled_request(long);
 	void remove_request(Connection *,CORBA::Request_ptr);
 	
 	size_t get_request_nb() {omni_mutex_lock(*this);return asyn_poll_req_table.size();}
@@ -238,7 +239,6 @@ protected:
 	
 private:
 	omni_condition				cond;
-	bool remove_cancelled_request(long);
 };
 
 //-------------------------------------------------------------------------

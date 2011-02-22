@@ -8,7 +8,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,21 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.7  2009/09/08 14:22:15  taurel
-// - Manage internal buffer(s) as a cicular buffer pool
-//
-// Revision 3.6  2009/09/02 08:00:54  taurel
-// - Fix Solaris CC warning
-//
-// Revision 3.5  2009/04/20 14:55:58  jlpons
-// Added GPL header, changed memory allocation to C++ fashion.
-//
 // Revision 3.4  2009/04/06 06:54:34  taurel
 // - Fix some typos
 // - Commit in Unix format
@@ -71,88 +56,53 @@ using namespace Tango;
 
 // ----------------------------------------------------------------------------
 
-EncodedAttribute::EncodedAttribute():manage_exclusion(false),ext(NULL) {
+EncodedAttribute::EncodedAttribute() {
 
-  buffer_array = (unsigned char **)calloc(1,sizeof(unsigned char *));
-  buffer_array[0] = NULL;
-  buffSize_array = (int *)calloc(1,sizeof(int));
-  buffSize_array[0] = 0;
+  buffer = NULL;
   format = NULL;
-  mutex_array = NULL;
-  index = 0;
-  buf_elt_nb = 1;
-}
+  buffSize = 0;
 
-EncodedAttribute::EncodedAttribute(int si,bool excl):manage_exclusion(excl),ext(NULL) {
-
-  buffer_array = (unsigned char **)calloc(si,sizeof(unsigned char *));
-  buffSize_array = (int *)calloc(si,sizeof(int));
-  for (int i = 0;i < si;i++)
-  {
-     buffer_array[i] = NULL;
-	 buffSize_array[i] = 0;
-  }
-  format = NULL;
-  index = 0;
-  buf_elt_nb = si;
-  
-  if (manage_exclusion == true)
-  	mutex_array = new omni_mutex[si];
 }
 
 // ----------------------------------------------------------------------------
 
 EncodedAttribute::~EncodedAttribute() {
 
-  for (int i = 0;i < buf_elt_nb;i++)
-  	SAFE_FREE(buffer_array[i]);
-  SAFE_FREE(buffer_array);
-  SAFE_FREE(buffSize_array);
+  SAFE_FREE(buffer);
 
-  if (mutex_array != NULL)
-    delete [] mutex_array;
 }
 
 // ----------------------------------------------------------------------------
 
 void EncodedAttribute::encode_jpeg_gray8(unsigned char *gray8,int width,int height,double quality) {
 
-  if (manage_exclusion == true)
-  	mutex_array[index].lock();
-	
-  SAFE_FREE(buffer_array[index]);
-  buffSize_array[index] = 0;
-  format = (char *)JPEG_GRAY8;
-  jpeg_encode_gray8(width,height,gray8,quality,&(buffSize_array[index]),&(buffer_array[index]));
-  INC_INDEX()
+  SAFE_FREE(buffer);
+  buffSize = 0;
+  format = (char *)"JPEG_GRAY8";
+  jpeg_encode_gray8(width,height,gray8,quality,&buffSize,&buffer);
+
 }
 
 // ----------------------------------------------------------------------------
 
 void EncodedAttribute::encode_jpeg_rgb32(unsigned char *rgb32,int width,int height,double quality) {
 
-  if (manage_exclusion == true)
-  	mutex_array[index].lock();
-	
-  SAFE_FREE(buffer_array[index]);
-  buffSize_array[index] = 0;
-  format = (char *)JPEG_RGB;
-  jpeg_encode_rgb32(width,height,rgb32,quality,&(buffSize_array[index]),&(buffer_array[index]));
-  INC_INDEX()
+  SAFE_FREE(buffer);
+  buffSize = 0;
+  format = (char *)"JPEG_RGB";
+  jpeg_encode_rgb32(width,height,rgb32,quality,&buffSize,&buffer);
+
 }
 
 // ----------------------------------------------------------------------------
 
 void EncodedAttribute::encode_jpeg_rgb24(unsigned char *rgb24,int width,int height,double quality) {
 
-  if (manage_exclusion == true)
-  	mutex_array[index].lock();
-	
-  SAFE_FREE(buffer_array[index]);
-  buffSize_array[index] = 0;
-  format = (char *)JPEG_RGB;
-  jpeg_encode_rgb24(width,height,rgb24,quality,&(buffSize_array[index]),&(buffer_array[index]));
-  INC_INDEX()
+  SAFE_FREE(buffer);
+  buffSize = 0;
+  format = (char *)"JPEG_RGB";
+  jpeg_encode_rgb24(width,height,rgb24,quality,&buffSize,&buffer);
+
 }
 
 // ----------------------------------------------------------------------------
@@ -160,28 +110,23 @@ void EncodedAttribute::encode_jpeg_rgb24(unsigned char *rgb24,int width,int heig
 void EncodedAttribute::encode_gray8(unsigned char *gray8,int width,int height) {
 
   int newSize = width*height + 4;
-  
-  if (manage_exclusion == true)
-  	mutex_array[index].lock();
-	
-  if( newSize!=buffSize_array[index] ) {
-    SAFE_FREE(buffer_array[index]);
-    buffer_array[index] = (unsigned char *)malloc(newSize);
-    buffSize_array[index] = newSize;
+  if( newSize!=buffSize ) {
+    SAFE_FREE(buffer);
+    buffer = (unsigned char *)malloc(newSize);
+    buffSize = newSize;
   }
 
-  format = (char *)GRAY8;
+  format = (char *)"GRAY8";
   
   // Store image dimension (big endian)
-  unsigned char *tmp_ptr = buffer_array[index];
-  tmp_ptr[0] = (unsigned char)( (width>>8) & 0xFF );
-  tmp_ptr[1] = (unsigned char)( width & 0xFF );
-  tmp_ptr[2] = (unsigned char)( (height>>8) & 0xFF );
-  tmp_ptr[3] = (unsigned char)( height & 0xFF );
+  buffer[0] = (unsigned char)( (width>>8) & 0xFF );
+  buffer[1] = (unsigned char)( width & 0xFF );
+  buffer[2] = (unsigned char)( (height>>8) & 0xFF );
+  buffer[3] = (unsigned char)( height & 0xFF );
 
   // Copy image
-  memcpy(tmp_ptr+4,gray8,newSize-4);
-  INC_INDEX()
+  memcpy(buffer+4,gray8,newSize-4);
+
 }
 
 // ----------------------------------------------------------------------------
@@ -189,24 +134,19 @@ void EncodedAttribute::encode_gray8(unsigned char *gray8,int width,int height) {
 void EncodedAttribute::encode_gray16(unsigned short *gray16,int width,int height) {
 
   int newSize = width*height*2 + 4;
-  
-  if (manage_exclusion == true)
-  	mutex_array[index].lock();
-	
-  if( newSize!=buffSize_array[index] ) {
-    SAFE_FREE(buffer_array[index]);
-    buffer_array[index] = (unsigned char *)malloc(newSize);
-    buffSize_array[index] = newSize;
+  if( newSize!=buffSize ) {
+    SAFE_FREE(buffer);
+    buffer = (unsigned char *)malloc(newSize);
+    buffSize = newSize;
   }
 
-  format = (char *)GRAY16;
+  format = (char *)"GRAY16";
   
   // Store image dimension (big endian)
-  unsigned char *tmp_ptr = buffer_array[index];
-  tmp_ptr[0] = (unsigned char)( (width>>8) & 0xFF );
-  tmp_ptr[1] = (unsigned char)( width & 0xFF );
-  tmp_ptr[2] = (unsigned char)( (height>>8) & 0xFF );
-  tmp_ptr[3] = (unsigned char)( height & 0xFF );
+  buffer[0] = (unsigned char)( (width>>8) & 0xFF );
+  buffer[1] = (unsigned char)( width & 0xFF );
+  buffer[2] = (unsigned char)( (height>>8) & 0xFF );
+  buffer[3] = (unsigned char)( height & 0xFF );
 
   // Store image (big endian)
   int srcIdx = 0;
@@ -214,11 +154,11 @@ void EncodedAttribute::encode_gray16(unsigned short *gray16,int width,int height
   for(int j=0;j<height;j++) {
     for(int i=0;i<width;i++) {
       unsigned short s = gray16[srcIdx++];
-      tmp_ptr[dstIdx++] = (unsigned char)(s >> 8);
-      tmp_ptr[dstIdx++] = (unsigned char)(s & 0xFF);
+      buffer[dstIdx++] = (unsigned char)(s >> 8);
+      buffer[dstIdx++] = (unsigned char)(s & 0xFF);
     }
   }
-  INC_INDEX()
+
 }
 
 // ----------------------------------------------------------------------------
@@ -226,27 +166,22 @@ void EncodedAttribute::encode_gray16(unsigned short *gray16,int width,int height
 void EncodedAttribute::encode_rgb24(unsigned char *rgb24,int width,int height) {
 
   int newSize = width*height*3 + 4;
-  
-  if (manage_exclusion == true)
-  	mutex_array[index].lock();
-	
-  if( newSize!=buffSize_array[index] ) {
-    SAFE_FREE(buffer_array[index]);
-    buffer_array[index] = (unsigned char *)malloc(newSize);
-    buffSize_array[index] = newSize;
+  if( newSize!=buffSize ) {
+    SAFE_FREE(buffer);
+    buffer = (unsigned char *)malloc(newSize);
+    buffSize = newSize;
   }
 
-  format = (char *)RGB24;
+  format = (char *)"RGB24";
   
   // Store image dimension (big endian)
-  unsigned char *tmp_ptr = buffer_array[index];
-  tmp_ptr[0] = (unsigned char)( (width>>8) & 0xFF );
-  tmp_ptr[1] = (unsigned char)( width & 0xFF );
-  tmp_ptr[2] = (unsigned char)( (height>>8) & 0xFF );
-  tmp_ptr[3] = (unsigned char)( height & 0xFF );
+  buffer[0] = (unsigned char)( (width>>8) & 0xFF );
+  buffer[1] = (unsigned char)( width & 0xFF );
+  buffer[2] = (unsigned char)( (height>>8) & 0xFF );
+  buffer[3] = (unsigned char)( height & 0xFF );
 
   // Copy image
-  memcpy(tmp_ptr+4,rgb24,newSize-4);
+  memcpy(buffer+4,rgb24,newSize-4);
 
 }
 
@@ -255,11 +190,11 @@ void EncodedAttribute::encode_rgb24(unsigned char *rgb24,int width,int height) {
 void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height,unsigned char **rgb32) {
 
   vector<unsigned char> rawBuff;
-  string local_format;
-  attr->extract(local_format,rawBuff);
+  string format;
+  attr->extract(format,rawBuff);
 
-  int isRGB  = (strcmp(local_format.c_str() ,RGB24 ) == 0);
-  int isJPEG = (strcmp(local_format.c_str() ,JPEG_RGB ) == 0);
+  int isRGB  = (strcmp(format.c_str() ,"RGB24" ) == 0);
+  int isJPEG = (strcmp(format.c_str() ,"JPEG_RGB" ) == 0);
 
   if( !isRGB && !isJPEG ) {
 
@@ -336,11 +271,11 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height,unsigned char **gray8) {
 
   vector<unsigned char> rawBuff;
-  string local_format;
-  attr->extract(local_format,rawBuff);
+  string format;
+  attr->extract(format,rawBuff);
 
-  int isGrey  = (strcmp(local_format.c_str() ,GRAY8 ) == 0);
-  int isJPEG = (strcmp(local_format.c_str() ,JPEG_GRAY8 ) == 0);
+  int isGrey  = (strcmp(format.c_str() ,"GRAY8" ) == 0);
+  int isJPEG = (strcmp(format.c_str() ,"JPEG_GRAY8" ) == 0);
 
   if( !isGrey && !isJPEG ) {
 
@@ -406,10 +341,10 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *height,unsigned short **gray16) {
 
   vector<unsigned char> rawBuff;
-  string local_format;
-  attr->extract(local_format,rawBuff);
+  string format;
+  attr->extract(format,rawBuff);
 
-  int isGrey  = (strcmp(local_format.c_str() ,GRAY16 ) == 0);
+  int isGrey  = (strcmp(format.c_str() ,"GRAY16" ) == 0);
 
   if( !isGrey ) {
 

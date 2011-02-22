@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,33 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 1.39  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
-// Revision 1.38  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 1.37  2010/09/24 14:06:15  taurel
-// - For Python DS, do not give full device ownership to the POA.
-// Otherwise, a python DS crashes at exit.
-//
-// Revision 1.36  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.35  2010/06/23 09:13:28  taurel
-// - Change some comments
-//
-// Revision 1.34  2010/06/21 12:38:23  taurel
-// - Implement a much faster server shutdown sequence
-//
-// Revision 1.33  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 1.32  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
 // Revision 1.31  2008/10/06 15:00:36  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -616,12 +589,10 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 							att_val[nb_wr - 1].value <<= uch_seq;
 							break;
 						}
-
-//						
+						
 // Check the initialisation flag for memorized attributes.
 // The the flag is false, do not add the element to the att_val
 // vector. This avoids a call to write the memorozied value to the attribute.
-//
 					
 					if ( att.is_memorized_init() == false )
 						{
@@ -864,24 +835,79 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 // Deactivate the CORBA object
 //
 
-	bool py_dev = device_list[idx]->is_py_device();
-	bool exported_device = device_list[idx]->get_exported_flag();
-
-	if (exported_device == true)
+	if (device_list[idx]->get_exported_flag() == true)
 		r_poa->deactivate_object(device_list[idx]->get_obj_id().in());
 			
 //
-// Remove the servant.
-// For C++ device, this will be automatically done by the POA when the last executing call
-// will be over even if the device is not exported
+// Unfortunately, the deactivate_object on the POA immediately returns even if there
+// is a running call (see Henning/Vinoski page 500). Therefore, try to get the
+// object monitor which will be free only when the last running call will finish
+// Two cases have to be taken into account :
+// 1 - The running commands : The get/rel on the monitor will make the thread
+//     waiting for them
+// 2- BUT, there are also (for very demanding clients) cases where commands are
+//    registered by the ORB but the monitor owner. For this case, sleep a while
+//    to give them time to execute. But sleep how long ?
+//    By default, I choose 200 mS
+// May be there is a more CORBA way to do this.
+// Need to investigate
+//
+	omni_thread::value_t *tmp_py_data = omni_thread::self()->get_value(key_py_data);
+	PyLock *lock_ptr = (static_cast<PyData *>(tmp_py_data))->PerTh_py_lock;		
+
+#ifdef _TG_WINDOWS_
+	try
+	{
+		lock_ptr->Release();
+
+		device_list[idx]->get_dev_monitor().get_monitor();	
+		device_list[idx]->get_dev_monitor().rel_monitor();
+		
+		Sleep(200);
+
+		lock_ptr->Get();
+	}
+#else
+	try
+	{
+		lock_ptr->Release();
+
+		device_list[idx]->get_dev_monitor().get_monitor();
+		device_list[idx]->get_dev_monitor().rel_monitor();
+
+		struct timespec wait_to_sleep,still_wait;
+		wait_to_sleep.tv_sec = 0;
+		wait_to_sleep.tv_nsec = 200000000;
+
+		nanosleep(&wait_to_sleep,&still_wait);
+
+		lock_ptr->Get();
+	}
+#endif /* _TG_WINDOWS_ */
+	catch (Tango::DevFailed &)
+	{
+	}
+		
+//
+// Remove the C++ servant
 //
 
-	if (py_dev == true)
+	if (device_list[idx]->is_py_device() == false)
+	{
+		if (device_list[idx]->get_exported_flag() == true)
+			device_list[idx]->_remove_ref();
+		else
+		{
+			Device_3Impl *dev_3 = static_cast<Device_3Impl *>(device_list[idx]);
+			dev_3->delete_dev();
+		}
+	}		
+	else
 	{
 		Device_3Impl *dev_3 = static_cast<Device_3Impl *>(device_list[idx]);
 		dev_3->delete_dev();
 	}
-
+	
 	cout4 << "Leaving DeviceClass delete_dev" << endl;	
 }
 
@@ -988,13 +1014,10 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 			
 // 
 // Activate the CORBA object incarnated by the dev C++ object
-// Also call _remove_ref to give POA the full ownership of servant
 //
 
 		d = dev->_this();
 		dev->set_d_var(Tango::Device::_duplicate(d));
-		if (is_py_class() == false)
-			dev->_remove_ref();
 
 //
 // Store the ObjectId (The ObjectId_var type is a typedef of a string_var
@@ -1053,8 +1076,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		
 		d = dev->_this();
 		dev->set_obj_id(id);		
-		dev->set_d_var(Tango::Device::_duplicate(d));
-		dev->_remove_ref();	
+		dev->set_d_var(Tango::Device::_duplicate(d));		
 	}
 			
 //
@@ -1079,20 +1101,30 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 
 //
 // Call db server
-// We are still in the server starting phase. Therefore, the db timeout is still high (13 sec the 07/01/2011)
-// with 3 retries in case of timeout
 //
+
+		bool retry = true;
+		long db_retries = DB_START_PHASE_RETRIES;
 		
-		try
+		while (retry == true)
 		{
-			tg->get_database()->export_device(exp);
-		}
-		catch (Tango::CommunicationFailed &)
-		{
-			cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
-			CORBA::release(orb_ptr);
-			CORBA::string_free(s);
-			throw;
+			try
+			{
+				tg->get_database()->export_device(exp);
+				retry = false;
+			}
+			catch (Tango::CommunicationFailed &)
+			{
+				cerr << "CommunicationFailed while exporting device " << dev->get_name() << endl;
+				if (tg->is_svr_starting() == true)
+				{
+					db_retries--;
+					if (db_retries == 0)
+						throw;
+				}
+				else
+					throw;
+			}
 		}
 		
 		CORBA::release(orb_ptr);

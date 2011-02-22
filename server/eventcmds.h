@@ -9,7 +9,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,12 +32,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 1.6  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.5  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
 // Revision 1.4  2008/10/06 15:01:09  taurel
 // - Changed the licensing info from GPL to LGPL
 //

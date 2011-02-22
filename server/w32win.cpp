@@ -14,7 +14,7 @@ static const char *Vers = "$Revision$";
 //
 // $Revision$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -35,12 +35,6 @@ static const char *Vers = "$Revision$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.7  2008/10/06 15:01:36  taurel
 // - Changed the licensing info from GPL to LGPL
 //

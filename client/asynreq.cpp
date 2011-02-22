@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- January 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,17 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Log$
-// Revision 3.10  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.9  2009/12/18 14:51:01  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.8  2009/03/18 12:16:56  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
 // Revision 3.7  2009/02/19 09:23:28  taurel
 // - Some changes in DeviceProxy::cancel_asynch_request() method
 //
@@ -107,7 +96,6 @@ long AsynReq::store_request(CORBA::Request_ptr req,TgRequest::ReqType type)
 // If they are some cancelled requests, remove them
 //
 
-	omni_mutex_lock sync(*this);
 	if (cancelled_request.empty() == false)
 	{
 		vector<long>::iterator ite;
@@ -141,6 +129,7 @@ long AsynReq::store_request(CORBA::Request_ptr req,TgRequest::ReqType type)
 
 	TgRequest tmp_req(req,type);
 	
+	omni_mutex_lock sync(*this);
 	asyn_poll_req_table.insert(map<long,TgRequest>::value_type(req_id,tmp_req));
 	
 	return req_id;
@@ -295,7 +284,6 @@ void AsynReq::mark_as_arrived(CORBA::Request_ptr req)
 {
 	multimap<Connection *,TgRequest>::iterator pos;
 
-	omni_mutex_lock sync(*this);
 	for (pos = cb_dev_table.begin();pos != cb_dev_table.end();++pos)
 	{
 		if (pos->second.request == req)
@@ -359,6 +347,7 @@ bool AsynReq::remove_cancelled_request(long req_id)
 {
 	map<long,TgRequest>::iterator pos;
 
+	omni_mutex_lock sync(*this);	
 	pos = asyn_poll_req_table.find(req_id);
 
 	bool ret = true;

@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,42 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 3.28  2010/09/17 08:21:12  taurel
-// - Add optimization in MultiAttribute::get_attr_ind_by_name()
-//
-// Revision 3.27  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.26  2010/08/25 11:41:27  taurel
-// - Fix some bugs preventing dynamic attributes management (in some cases)
-//
-// Revision 3.25  2010/07/16 10:51:53  taurel
-// - Now it's possible to fill the polling buffer externally for R/W attribute
-// specifying the attribute written part
-//
-// Revision 3.24  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.23.2.1  2010/06/16 07:21:07  taurel
-// - Fix bug in state command when attribute(s) has alarm level defined
-// but their attribute quality is INVALID
-//
-// Revision 3.23  2009/10/27 16:33:44  taurel
-// - Fix a bug in attribute mutex management in case the attribute
-// is_allowed() method returns false
-//
-// Revision 3.22  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.21  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.20  2009/01/21 12:47:15  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.19  2008/10/06 15:01:36  taurel
 // - Changed the licensing info from GPL to LGPL
 //
@@ -241,6 +205,93 @@ static const char *RcsId = "$Id$\n$Name$";
 // - Some internal cleanups
 // - Change the way how TangoMonitor class is implemented. It's a recursive
 //   mutex
+//
+// Revision 2.10  2003/03/11 17:55:55  nleclercq
+// Switch from log4cpp to log4tango
+//
+// Revision 2.9  2003/01/09 12:03:16  taurel
+// - Ported to gcc 3.2
+// - Added ApiUtil::cleanup() and ApiUtil::~ApiUtil() methods
+// - Replace some ORB * by ORB_ptr
+// - Use CORBA::ORB::is_nil() instead of comparing to NULL
+//
+// Revision 2.8  2002/12/16 12:07:33  taurel
+// No change in code at all but only forgot th emost important line in
+// list of updates in the previous release :
+// - Change underlying ORB from ORBacus to omniORB
+//
+// Revision 2.7  2002/12/16 10:16:22  taurel
+// - New method get_device_list() in Util class
+// - Util::get_class_list takes DServer device into account
+// - Util::get_device_by_name() takes DServer device into account
+// - Util::get_device_list_by_class() takes DServer device into account
+// - New parameter to the attribute::set_value() method to enable CORBA to free
+// memory allocated for the attribute
+//
+// Revision 2.6  2002/10/17 07:43:07  taurel
+// Fix bug in history stored by the polling thread :
+// - We need one copy of the attribute data to build an history!!! It is true
+// also for command which return data created by the DeviceImpl::create_xxx
+// methods. Chnage in pollring.cpp/pollring.h/dserverpoll.cpp/pollobj.cpp
+// and pollobj.h
+//
+// Revision 2.5  2002/10/15 11:27:20  taurel
+// Fix bugs in device.cpp file :
+// - Protect the state and status CORBA attribute with the device monitor
+// Add the "TgLibVers" string as a #define in tango_config.h
+//
+// Revision 2.4  2002/08/12 15:06:54  taurel
+// Several big fixes and changes
+//   - Remove HP-UX specific code
+//   - Fix bug in polling alogorithm which cause the thread to enter an infinite
+//     loop (pollthread.cpp)
+//   - For bug for Win32 device when trying to set attribute config
+//     (attribute.cpp)
+//
+// Revision 2.3  2002/07/02 15:22:25  taurel
+// Miscellaneous small changes/bug fixes for Tango CPP release 2.1.0
+//     - classes reference documentation now generated using doxygen instead of doc++
+//     - A little file added to the library which summarizes version number.
+//       The RCS/CVS "ident" command will now tells you that release library x.y.z is composed
+//       by C++ client classes set release a.b and C++ server classes set release c.d
+//     - Fix incorrect field setting for DevFailed exception re-thrown from a CORBA exception
+//     - It's now not possible to poll the Init command
+//     - It's now possible to define a default class doc. per control system
+//       instance (using property)
+//     - The test done to check if attribute value has been set before it is
+//       returned to caller is done only if the attribute quality is set to VALID
+//     - The JTCInitialize object is now stored in the Util
+//     - Windows specific : The tango.h file now also include winsock.h
+//
+// Revision 2.2  2002/04/30 10:50:41  taurel
+// Don't check alarm on attribute if attribute quality factor is INVALID
+//
+// Revision 2.1  2002/04/29 12:24:04  taurel
+// Fix bug in attribute::set_value method and on the check against min and max value when writing attributes
+//
+// Revision 2.0  2002/04/09 14:45:10  taurel
+// See Tango WEB pages for list of changes
+//
+// Revision 1.6  2001/10/08 09:03:13  taurel
+// See tango WEB pages for list of changes
+//
+// Revision 1.5  2001/07/04 12:27:11  taurel
+// New methods re_throw_exception(). Read_attributes supports AllAttr mnemonic A new add_attribute()method in DeviceImpl class New way to define attribute properties New pattern to prevent full re-compile For multi-classes DS, it is now possible to use the Util::get_device_by_name() method in device constructor Adding << operator ovebloading Fix devie CORBA ref. number when device constructor sends an excep.
+//
+// Revision 1.4  2001/05/04 09:28:14  taurel
+// Fix bugs in DServer::restart() method and in Util::get_device_by_name() method
+//
+// Revision 1.3  2001/03/30 08:03:45  taurel
+// Fix bugs in attributes. For linux, add signal_handler in its own thread, change the way to kill server. For all system, change DevRestart philosophy.
+//
+// Revision 1.2  2001/03/09 08:20:16  taurel
+// Fix bug in the MultiClassAttribute::init_class_attribute() method. Also remove the DbErr_DeviceNotDefined define.
+//
+// Revision 1.1.1.1  2001/02/27 08:46:21  taurel
+// Imported sources
+//
+// Revision 1.3  2000/04/13 10:40:41  taurel
+// Added attribute support
 //
 //-============================================================================
 
@@ -462,7 +513,7 @@ MultiAttribute::~MultiAttribute()
 {
 	for(unsigned long i = 0;i < attr_list.size();i++)
 		delete attr_list[i];
-
+		
 	delete ext;
 }
 
@@ -881,14 +932,11 @@ void MultiAttribute::add_attribute(string &dev_name,
 //			device attribute list
 //
 // argument : in : 	- attr_name : The attribute name
-//					- update_idx : Flag set to true if the attributes object index
-//								   used to retrieve the corresponding Attr object
-//								   has to be updated (because one Attr object
-//								   has been removed)
+//			- dev_class_ptr : Pointer to the DeviceClass object
 //
 //--------------------------------------------------------------------------
 
-void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
+void MultiAttribute::remove_attribute(string &attr_name)
 {
 	cout4 << "Entering MultiAttribute::remove_attribute" << endl;
 
@@ -903,11 +951,6 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 //
 
 	Attribute *att = attr_list[att_index];
-
-	int old_idx = att->get_attr_idx();
-	DeviceImpl *the_dev = att->get_att_device();
-	string &dev_class_name = the_dev->get_device_class()->get_name();
-
 	delete att;
 	vector<Tango::Attribute *>::iterator pos = attr_list.begin();
 	advance(pos,att_index);
@@ -915,34 +958,10 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 
 //
 // Update all the index for attribute following the one which has been deleted
-// This is a 2 steps process:
-// 1 - Update index in local device
-// 2 - Update indexes in remaining device(s) belonging to the same class
 //
-
-	if (update_idx == true)
-	{	
-		for (;pos != attr_list.end();++pos)
-			(*pos)->set_attr_idx((*pos)->get_attr_idx() - 1);
-
-		Tango::Util *tg = Tango::Util::instance();
-		vector<DeviceImpl *> &dev_list = tg->get_device_list_by_class(dev_class_name);
-		
-		vector<DeviceImpl *>::iterator dev_ite;
-		for (dev_ite = dev_list.begin();dev_ite != dev_list.end();++dev_ite)
-		{
-			if (*dev_ite == the_dev)
-				continue;
-
-			vector<Attribute *> &dev_att_list = (*dev_ite)->get_device_attr()->get_attribute_list();
-			for (unsigned int loop = 0;loop < dev_att_list.size();++loop)
-			{
-				int idx = dev_att_list[loop]->get_attr_idx();
-				if (idx > old_idx)
-					dev_att_list[loop]->set_attr_idx(idx - 1);							
-			}
-		}
-	}
+	
+	for (;pos != attr_list.end();++pos)
+		(*pos)->set_attr_idx((*pos)->get_attr_idx() - 1);
 
 //
 // Clear the writable attribute index vector and rebuild it
@@ -954,7 +973,8 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 	for (unsigned long i = 0;i < attr_list.size();i++)
 	{
 		Tango::AttrWriteType w_type = attr_list[i]->get_writable();
-		if ((w_type == Tango::WRITE) || (w_type == Tango::READ_WRITE))
+		if ((w_type == Tango::WRITE) ||
+    		    (w_type == Tango::READ_WRITE))
 		{
 			writable_attr_list.push_back(i);
 		}
@@ -1083,13 +1103,12 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
 	long i;
 
 	long nb_attr = attr_list.size();
-	string st(attr_name);
-	transform(st.begin(),st.end(),st.begin(),::tolower);
-
+	string st(attr_name);	
 	for (i = 0;i < nb_attr;i++)
 	{
 		if (attr_list[i]->get_name_size() != st.size())
 			continue;
+		transform(st.begin(),st.end(),st.begin(),::tolower);
 		if (attr_list[i]->get_name_lower() == st)
 			break;
 	}
@@ -1129,18 +1148,15 @@ bool MultiAttribute::check_alarm()
 	ret = false;	
 	for (i = 0;i < alarm_attr_list.size();i++)
 	{
-		Tango::AttrQuality qua = (get_attr_by_ind(alarm_attr_list[i])).get_quality();
 		if (ret == false)
 		{
+			Tango::AttrQuality qua = (get_attr_by_ind(alarm_attr_list[i])).get_quality();
 			if (qua == Tango::ATTR_ALARM)
 				ret = true;
 		}
-		if (qua != Tango::ATTR_INVALID)
-		{
-			tmp_ret = check_alarm(alarm_attr_list[i]);
-			if (tmp_ret == true)
-				ret = true;
-		}
+		tmp_ret = check_alarm(alarm_attr_list[i]);
+		if (tmp_ret == true)
+			ret = true;
 	}
 	
 	return ret;

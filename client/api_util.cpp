@@ -5,7 +5,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // programmer 	- Emmanuel Taurel (taurel@esrf.fr)
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,35 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // original 	- May 2002
 //
 // $Log$
-// Revision 3.34  2010/09/12 12:18:23  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.33  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.32  2010/09/09 13:28:03  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.31  2010/09/08 12:32:11  taurel
-// - Miscellaneous changes to implement a better timeout management
-// (now manage a user connect timeout with the env. variable TANGOconnectTimeout)
-//
-// Revision 3.30  2010/08/25 11:37:12  taurel
-// - Just some beautifulling!!
-//
-// Revision 3.29  2010/01/07 08:35:06  taurel
-// - Several change sto improve thread safety of the DeviceProxy, AttributeProxy, ApiUtul and EventConsumer classes
-// Revision 3.28.2.1  2010/06/23 14:10:23  taurel
-// - Full Tango as described in doc Appendix C is now also supported
-// for group
-//
-// Revision 3.28  2009/08/27 07:22:43  taurel
-// - Commit after anothre merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.27  2009/04/27 14:52:18  taurel
-// - No change, just to make tkcvs quiet
-//
 // Revision 3.26  2009/03/27 13:05:10  taurel
 // - Fix bug due to new Attribute format data member in AttributeValue4
 // structure
@@ -316,6 +287,15 @@ namespace Tango
 ApiUtil *ApiUtil::_instance = NULL;
 omni_mutex ApiUtil::inst_mutex;
 
+ApiUtil *ApiUtil::instance()
+{
+	omni_mutex_lock lo(inst_mutex);
+	
+	if (_instance == NULL)
+		_instance = new ApiUtil();
+	return _instance;
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ApiUtil::ApiUtil()
@@ -371,20 +351,6 @@ ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false)
 #else
 	ext->cl_pid = getpid();
 #endif
-
-//
-// Check if the user has defined his own connection timeout
-//
-
-	string var;
-	if (get_env_var("TANGOconnectTimeout",var) == 0)
-	{
-		int user_to = -1;
-		istringstream iss(var);
-		iss >> user_to;
-		if (iss)
-			ext->user_connect_timeout = user_to;
-	}
 }
 
 //+----------------------------------------------------------------------------
@@ -452,10 +418,11 @@ ApiUtil::~ApiUtil()
 			{
 				_orb->destroy();
 			}
-			catch (...) {cout << "In the exception handler"<<endl;}
+			catch (...) {}
 		}
 		CORBA::release(_orb);
 	}
+	
 
 }
 
@@ -909,11 +876,6 @@ void ApiUtil::create_event_consumer()
 	ext->event_consumer = EventConsumer::create();
 }
 
-EventConsumer *ApiUtil::get_event_consumer()
-{	
-	return ext->event_consumer;
-}
-	
 //+----------------------------------------------------------------------------
 //
 // method : 		ApiUtil::clean_locking_threads()
@@ -1651,27 +1613,6 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue &att
 						  	(const char *)"DeviceProxy::device_to_attr");
 	}
 }
-
-//-----------------------------------------------------------------------------
-//
-// method : 		ApiUtil::get_env_var()
-// 
-// description : 	
-//
-// argin(s) :		- env_var_name : The environment variable name
-//					- env_var : Reference to the string initialised with
-//								the env. variable value (if found)
-//
-// This method returns 0 if the env. variable is found and -1 otherwise
-//
-//-----------------------------------------------------------------------------
-
-int ApiUtil::get_env_var(const char *env_var_name,string &env_var)
-{
-	DummyDeviceProxy d;
-	return d.get_env_var(env_var_name,env_var);
-}
-
 
 //+-------------------------------------------------------------------------
 //

@@ -8,7 +8,7 @@
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,12 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.6  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.5  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.4  2008/10/06 15:00:36  taurel
 // - Changed the licensing info from GPL to LGPL
 //

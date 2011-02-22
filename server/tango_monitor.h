@@ -8,7 +8,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -31,20 +31,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.11  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.10  2010/01/07 08:35:51  taurel
-// - Several change sto improve thread safety of the DeviceProxy, AttributeProxy, ApiUtul and EventConsumer classes
-//
-// Revision 3.9  2009/12/18 14:52:37  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-//
-// Revision 3.8  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
 // Revision 3.7  2008/12/17 09:50:59  taurel
 // - First implementation of attributes sent on the wire using IDL Union
 // instead of IDL Any
@@ -112,8 +98,15 @@ public :
 	
 	void signal() {cond.signal();}
 	
-	int get_locking_thread_id();	
-	long get_locking_ctr();
+	int get_locking_thread_id()
+	{
+	if (locking_thread != NULL)
+		return locking_thread->id();
+	else
+		return 0;
+	}
+	
+	long get_locking_ctr() {return locked_ctr;}
 			
 private :
 	long 			_timeout;
@@ -124,27 +117,6 @@ private :
 };
 
 
-//+-------------------------------------------------------------------------
-//
-// methods : 		TangoMonitor::get_locking_thread_id
-//					TangoMonitor::get_locking_ctr
-//
-//--------------------------------------------------------------------------
-
-
-inline int TangoMonitor::get_locking_thread_id()
-{
-	if (locking_thread != NULL)
-		return locking_thread->id();
-	else
-		return 0;
-}
-
-inline long TangoMonitor::get_locking_ctr()
-{
-	omni_mutex_lock guard(*this);
-	return locked_ctr;
-}
 
 //+-------------------------------------------------------------------------
 //
