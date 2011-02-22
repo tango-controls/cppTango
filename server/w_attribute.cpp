@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -37,9 +37,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // $Revision$
 //
 // $Log$
-// Revision 1.36  2010/10/05 08:19:24  taurel
-// - isnan does not exist with Visual Studio 2005 (VC8)
-//
 // Revision 1.35  2010/10/04 12:17:30  taurel
 // - Fix some wrong error messages in exception (Bug 3079309)
 //

@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- February 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,16 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // log			- $Log$
-// log			- Revision 3.28  2010/12/08 10:10:54  taurel
-// log			- - Commit after a merge with the bugfixes branch
-// log			-
-// log			- Revision 3.27.2.1  2010/11/26 07:56:12  taurel
-// log			- - Fix date in date cmoputation in the printing stream inserter operators
-// log			- for class DeviceAttribute and associated (history)
-// log			-
-// log			- Revision 3.27  2010/09/29 12:03:49  taurel
-// log			- - It's now possible to register several callbacks for the same event
-// log			-
 // log			- Revision 3.26  2010/09/09 13:44:06  taurel
 // log			- - Add year 2010 in Copyright notice
 // log			-
@@ -5955,13 +5945,7 @@ ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 
 	if (da.time.tv_sec != 0)
 	{
-#ifdef _TG_WINDOWS_
-		time_t tmp_val = da.time.tv_sec;
-		struct tm *tmp_time = localtime(&tmp_val);
-		char *tmp_date = asctime(tmp_time);
-#else
 		char *tmp_date = asctime(localtime((time_t *)&da.time.tv_sec));
-#endif
 		tmp_date[strlen(tmp_date) - 1] = '\0';
 		o_str << tmp_date;
 		o_str << " (" << da.time.tv_sec << "," << da.time.tv_usec << " sec) : ";

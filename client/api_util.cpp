@@ -5,7 +5,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // programmer 	- Emmanuel Taurel (taurel@esrf.fr)
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,9 +28,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // original 	- May 2002
 //
 // $Log$
-// Revision 3.34  2010/09/12 12:18:23  taurel
-// - Now, the test suite seems OK
-//
 // Revision 3.33  2010/09/09 13:43:38  taurel
 // - Add year 2010 in Copyright notice
 //

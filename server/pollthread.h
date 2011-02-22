@@ -9,7 +9,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,9 +32,6 @@
 // $Revision$
 //
 // $Log$
-// Revision 3.17  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
 // Revision 3.16  2009/02/03 15:17:11  jensmeyer
 // Added the storage of sub device properties on a regular basis of
 // 30 minutes to the heartbeat thread of a device server.
