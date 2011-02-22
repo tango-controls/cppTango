@@ -15,63 +15,9 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-//
 // $Revision$
 //
 // $Log$
-// Revision 3.9  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.8  2009/02/03 15:15:08  jensmeyer
-// Added a QuerySubDevice command to read the list of opened sub device
-// connections.
-//
-// Revision 3.7  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.6  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.5  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.4  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.3.2.3  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.3.2.2  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.3.2.1  2007/11/22 12:33:11  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.3  2005/03/14 09:49:29  taurel
-// - Fix some bugs in filedatabase (Change in the data transferred between client and
-//   server).
-// - Fix bug in event re-connection
-// - Add event support even for device server started with the -file command line option
-//
 // Revision 3.2  2005/01/13 08:29:05  taurel
 // - Merge trunk with Release_5_0 from brach Release_5_branch
 //
@@ -196,6 +142,11 @@
 // Revision 1.1.1.1  2000/02/04 10:58:28  taurel
 // Imported sources
 //
+//
+// copyleft :           European Synchrotron Radiation Facility
+//                      BP 220, Grenoble 38043
+//                      FRANCE
+//
 //=============================================================================
 
 #ifndef _DSERVERCLASS_H
@@ -303,32 +254,6 @@ public:
 			  const char *desc);
 			  
 	~DevQueryDeviceCmd() {};
-	
-	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
-};
-
-
-//=============================================================================
-//
-//			The DevQuerySubDeviceCmd class
-//
-// description :	Class to implement the DevQuerySubDevice command. This 
-//			command does not take any input argument and returns a 
-//			list of all the sub devices connections opened inside the device
-//			server process
-//
-//=============================================================================
-
- 
-class DevQuerySubDeviceCmd : public Command
-{
-public:
-
-	DevQuerySubDeviceCmd(const char *cmd_name,
-			  Tango::CmdArgType in,Tango::CmdArgType out,
-			  const char *desc);
-			  
-	~DevQuerySubDeviceCmd() {};
 	
 	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
 };
@@ -529,101 +454,6 @@ public:
 			 const char *desc);
 			 
 	~QueryEventChannelIORCmd() {};
-	
-	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
-};
-
-//=============================================================================
-//
-//			The LockDeviceCmd class
-//
-// description :	Class to implement the LockDevice command.
-//			This command takes one input argument which is
-//			the device names and return an
-//			integer which is the client locking thread period
-//
-//=============================================================================
-
-class LockDeviceCmd : public Command
-{
-public:
-
-	LockDeviceCmd(const char *cmd_name,
-			  Tango::CmdArgType in,Tango::CmdArgType out,
-			  const char *in_desc);
-			  
-	~LockDeviceCmd() {};
-	
-	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
-};
-
-//=============================================================================
-//
-//			The ReLockDevicesCmd class
-//
-// description :	Class to implement the ReLockDevices command.
-//			This command takes one input argument which is
-//			the vector with device names to be re-locked
-//
-//=============================================================================
-
-class ReLockDevicesCmd : public Command
-{
-public:
-
-	ReLockDevicesCmd(const char *cmd_name,
-			  Tango::CmdArgType in,Tango::CmdArgType out,
-			  const char *in_desc);
-			  
-	~ReLockDevicesCmd() {};
-	
-	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
-};
-
-//=============================================================================
-//
-//			The UnLockDeviceCmd class
-//
-// description :	Class to implement the UnLockDevice command.
-//			This command takes one input argument which is
-//			the device name to be unlocked
-//
-//=============================================================================
-
- 
-class UnLockDeviceCmd : public Command
-{
-public:
-
-	UnLockDeviceCmd(const char *cmd_name,
-			  Tango::CmdArgType in,Tango::CmdArgType out,
-			  const char *in_desc,const char *out_desc);
-			  
-	~UnLockDeviceCmd() {};
-	
-	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
-};
-
-//=============================================================================
-//
-//			The DevLockStatusCmd class
-//
-// description :	Class to implement the DevLockStatus command.
-//			This command takes one input argument which is
-//			the device name for which you want to retrieve locking status
-//
-//=============================================================================
-
- 
-class DevLockStatusCmd : public Command
-{
-public:
-
-	DevLockStatusCmd(const char *cmd_name,
-			  Tango::CmdArgType in,Tango::CmdArgType out,
-			  const char *in_desc,const char *out_desc);
-			  
-	~DevLockStatusCmd() {};
 	
 	virtual CORBA::Any *execute(DeviceImpl *device, const CORBA::Any &in_any);
 };

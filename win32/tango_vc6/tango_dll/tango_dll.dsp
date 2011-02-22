@@ -54,12 +54,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 log4tango.lib omniorb405_rt.lib omnidynamic405_rt.lib omnithread30_rt.lib COS405_rt.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /version:5.5 /dll /machine:I386 /def:"tango.def" /out:"lib/tango552.dll" /implib:"Release/tango.lib" /libpath:"$(OMNI_BASE)\win32_dll\lib" /libpath:"$(LOG4TANGO_BASE)\win32_dll\lib"
+# ADD LINK32 log4tango.lib omniorb405_rt.lib omnidynamic405_rt.lib omnithread30_rt.lib COS405_rt.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /version:5.5 /dll /machine:I386 /def:"tango.def" /out:"lib/tango550.dll" /implib:"Release/tango.lib" /libpath:"$(OMNI_BASE)\win32_dll\lib" /libpath:"$(LOG4TANGO_BASE)\win32_dll\lib"
 # SUBTRACT LINK32 /pdb:none /map
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Build def file...
-PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango552 release\*.obj
+PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango550 release\*.obj
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "tango_dll - Win32 Debug"
@@ -86,12 +86,12 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 log4tangod.lib omniORB405_rtd.lib omniDynamic405_rtd.lib COS405_rtd.lib omnithread30_rtd.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /version:5.5 /dll /debug /machine:I386 /def:"tango.def" /out:"lib/tango552d.dll" /implib:"Debug/tangod.lib" /pdbtype:sept /libpath:"$(OMNI_BASE)\win32_dll\lib" /libpath:"$(LOG4TANGO_BASE)\win32_dll\lib"
+# ADD LINK32 log4tangod.lib omniORB405_rtd.lib omniDynamic405_rtd.lib COS405_rtd.lib omnithread30_rtd.lib ws2_32.lib mswsock.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /version:5.5 /dll /debug /machine:I386 /def:"tango.def" /out:"lib/tango550d.dll" /implib:"Debug/tangod.lib" /pdbtype:sept /libpath:"$(OMNI_BASE)\win32_dll\lib" /libpath:"$(LOG4TANGO_BASE)\win32_dll\lib"
 # SUBTRACT LINK32 /pdb:none
 # Begin Special Build Tool
 SOURCE="$(InputPath)"
 PreLink_Desc=Build def file...
-PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango552d debug\*.obj
+PreLink_Cmds=C:\perl\bin\perl ..\..\makedef.pl tango.def tango550d debug\*.obj
 # End Special Build Tool
 
 !ENDIF 
@@ -186,10 +186,6 @@ SOURCE=..\..\..\client\dbapi_device.cpp
 # Begin Source File
 
 SOURCE=..\..\..\client\dbapi_server.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\..\server\dev_event.cpp
 # End Source File
 # Begin Source File
 

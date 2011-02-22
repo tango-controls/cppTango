@@ -11,26 +11,6 @@
 /// 		author(s) : A.Gotz (goetz@esrf.fr)
 ///
 /// 		original : 7 April 2003
-//
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
-//
-// This file is part of Tango.
-//
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
-// (at your option) any later version.
-// 
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
-// 
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 ///
 /// 		$Revision$
 ///
@@ -45,7 +25,7 @@
 
 #include <except.h>
 
-#if defined (_TG_WINDOWS_) && defined (_USRDLL) && !defined(_TANGO_LIB)
+#if defined (WIN32) && defined (_USRDLL) && !defined(_TANGO_LIB)
 #define USE_stub_in_nt_dll
 #endif
 
@@ -53,13 +33,13 @@
 #include <COS/CosNotifyChannelAdmin.hh>
 #include <COS/CosNotifyComm.hh>
 
-#if defined (_TG_WINDOWS_) && defined (_USRDLL) && !defined(_TANGO_LIB)
+#if defined (WIN32) && defined (_USRDLL) && !defined(_TANGO_LIB)
 #undef USE_stub_in_nt_dll
 #endif
 
 
 #include <omnithread.h>
-#ifndef _TG_WINDOWS_
+#ifndef WIN32
 #include <sys/time.h>
 #endif
 #include <math.h>
@@ -70,29 +50,29 @@ namespace Tango
 
 typedef struct _NotifService
 {
-	CosNotifyChannelAdmin::SupplierAdmin_var 				SupAdm;
-	CosNotifyChannelAdmin::ProxyID 							pID;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				ProCon; 
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush; 
-	CosNotifyChannelAdmin::EventChannelFactory_var 			EveChaFac;
-	CosNotifyChannelAdmin::EventChannel_var 				EveCha;
-	string													ec_ior;
+	CosNotifyChannelAdmin::SupplierAdmin_var SupAdm;
+	CosNotifyChannelAdmin::ProxyID pID;
+	CosNotifyChannelAdmin::ProxyConsumer_var ProCon; 
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var StrProPush; 
+	CosNotifyChannelAdmin::EventChannelFactory_var EveChaFac;
+	CosNotifyChannelAdmin::EventChannel_var EveCha;
+	string	ec_ior;
 } NotifService;
 
 
-class EventSupplier : public POA_CosNotifyComm::StructuredPushSupplier
+class EventSupplier : public POA_CosNotifyComm::StructuredPushSupplier ,
+	              public PortableServer::RefCountServantBase
 {
 public :
 
-	TANGO_IMP_EXP static EventSupplier *create(CORBA::ORB_var,string,Database*,string &,Util *);
+	TANGO_IMP_EXP static EventSupplier *create(CORBA::ORB_var,string,Database*,string &);
 	void connect();
 	void disconnect_structured_push_supplier();
-	void disconnect_from_notifd();
-	void subscription_change(const CosNotification::EventTypeSeq& added,const CosNotification::EventTypeSeq& deled);
+	void subscription_change(const CosNotification::EventTypeSeq& added,
+                                 const CosNotification::EventTypeSeq& deled);
 
 	void push_heartbeat_event();
 	string &get_event_channel_ior() {return event_channel_ior;}
-	void set_svr_port_num(string &);
 
 protected :
 
@@ -106,27 +86,28 @@ protected :
 		string &);
 		
 private :
-	static EventSupplier 									*_instance;
-	CosNotifyChannelAdmin::EventChannel_var 				eventChannel;
-	CosNotifyChannelAdmin::SupplierAdmin_var 				supplierAdmin;
-	CosNotifyChannelAdmin::ProxyID 							proxyId;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				proxyConsumer;
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	structuredProxyPushConsumer;
-	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
-	CORBA::ORB_var 											orb_;
+	static EventSupplier *_instance;
+	CosNotifyChannelAdmin::EventChannel_var eventChannel;
+	CosNotifyChannelAdmin::SupplierAdmin_var supplierAdmin;
+	CosNotifyChannelAdmin::ProxyID proxyId;
+	CosNotifyChannelAdmin::ProxyConsumer_var proxyConsumer;
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var
+            	structuredProxyPushConsumer;
+	CosNotifyChannelAdmin::EventChannelFactory_var eventChannelFactory;
+	CORBA::ORB_var orb_;
 	
 	inline int timeval_diff(TimeVal before, TimeVal after)
 	{
 		return ((after.tv_sec-before.tv_sec)*1000000 + after.tv_usec - before.tv_usec);
 	}
-	int 		heartbeat_period;
-	int 		subscription_timeout;
-	string 		event_channel_ior;
-	string 		fqdn_prefix;
-
+	int heartbeat_period;
+	int subscription_timeout;
+	string event_channel_ior;
+	
 	void get_attribute_value(AttributeValue attr_value, LastAttrValue &curr_attr_value);
 	void reconnect_notifd();
-	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,CORBA::ORB_var &,string &,Database *,string &,Util *);
+	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,
+			CORBA::ORB_var &,string &,Database *,string &);
 			
 	// Added a mutex to synchronize the access to 
 	//	detect_and_push_change_event_3	and
@@ -145,8 +126,8 @@ private :
 	omni_mutex		detect_mutex;
 	
 public :
-	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
-	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
+	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 &,DevFailed *,string &);
+
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -179,7 +160,7 @@ public :
 				    string &attr_name)
 	{
 		string event, domain_name;
-		time_t now, change_subscription, periodic_subscription, archive_subscription;
+		int now, change_subscription, periodic_subscription, archive_subscription;
 
 		cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << endl;
 
@@ -187,6 +168,7 @@ public :
 
 		now = time(NULL);
 		change_subscription = now - attr.ext->event_change_subscription;
+		//quality_subscription = now - attr.ext->event_quality_subscription;
 		periodic_subscription = now - attr.ext->event_periodic_subscription;
 		archive_subscription = now - attr.ext->event_archive_subscription;
 
@@ -195,6 +177,10 @@ public :
 		{
 			detect_and_push_change_event(device_impl,attr_value,attr,attr_name,except);
 		}
+		//if (quality_subscription < EVENT_RESUBSCRIBE_PERIOD)
+		//{
+		//	detect_and_push_quality_change_event(device_impl,attr_value,attr,attr_name,except);
+		//}
 		if (periodic_subscription < EVENT_RESUBSCRIBE_PERIOD)
 		{
 			detect_and_push_periodic_event(device_impl,attr_value,attr,attr_name,except);
@@ -203,43 +189,6 @@ public :
 		{
 			detect_and_push_archive_event(device_impl,attr_value,attr,attr_name,except);
 		}
-	}
-	
-	
-	template <typename T>
-	void push_att_conf_events(DeviceImpl *device_impl,
-				    T &attr_conf,
-				    DevFailed *except,
-				    string &attr_name)
-	{
-		string event, domain_name;
-		time_t now, att_conf_subscription;
-
-		cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << endl;
-
-		Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
-
-		now = time(NULL);
-		att_conf_subscription = now - attr.ext->event_attr_conf_subscription;
-
-		cout3 << "EventSupplier::push_att_conf_events(): last subscription " << att_conf_subscription << endl;
-		
-		vector<string> filterable_names;
-		vector<double> filterable_data;
-		vector<string> filterable_names_lg;
-		vector<long> filterable_data_lg;
-		
-		string ev_type(CONF_TYPE_EVENT);
-
-		push_event(device_impl,
-			   ev_type,
-			   filterable_names,
-			   filterable_data,
-			   filterable_names_lg,
-			   filterable_data_lg,
-		       attr_conf,
-			   attr_name,
-			   except);
 	}
 
 
@@ -268,8 +217,7 @@ public :
 
 
 	bool detect_change_3(Attribute &attr,
-				  AttributeValue_3 *curr_attr_value,
-				  AttributeValue_4 *curr_attr_value_4,
+				  AttributeValue_3 &curr_attr_value,
 				  bool archive,
 				  double &delta_change_rel,
 				  double &delta_change_abs,
@@ -342,7 +290,9 @@ public :
 			}
 		}
 
-		const DevVarLong64Array *curr_seq_64, *prev_seq_64;	
+#ifdef TANGO_LONG64
+		const DevVarLongLongArray *curr_seq_lolo, *prev_seq_lolo;
+#endif		
 		const DevVarLongArray *curr_seq_lo, *prev_seq_lo;
 		const DevVarShortArray *curr_seq_sh, *prev_seq_sh;
 		const DevVarDoubleArray *curr_seq_db, *prev_seq_db;
@@ -351,9 +301,8 @@ public :
 		const DevVarBooleanArray *curr_seq_bo, *prev_seq_bo;
 		const DevVarUShortArray *curr_seq_ush, *prev_seq_ush;
 		const DevVarCharArray *curr_seq_uch, *prev_seq_uch;
-		const DevVarULongArray *curr_seq_ulo, *prev_seq_ulo;
-		const DevVarULong64Array *curr_seq_u64, *prev_seq_u64;
-		const DevVarStateArray *curr_seq_state, *prev_seq_state;		
+		DevState curr_sta, prev_sta;
+		
 		
 		double rel_change[2], abs_change[2];
 		unsigned int i;
@@ -393,493 +342,399 @@ public :
 		{	
 			if (enable_check == true)
 			{
-				CORBA::TypeCode_var ty_alias = ty->content_type();
-				CORBA::TypeCode_var ty_seq = ty_alias->content_type();					
-				switch (ty_seq->kind())
+				if (ty->kind() == CORBA::tk_enum)
 				{
-				case CORBA::tk_long:		
-					curr_attr_value.value >>= curr_seq_lo;
+					curr_attr_value.value >>= curr_sta;
 					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_lo;
+						attr.ext->prev_archive_event.value >>= prev_sta;
 					else
-						attr.ext->prev_change_event.value >>= prev_seq_lo;
-					curr_seq_nb = curr_seq_lo->length();
-					prev_seq_nb = prev_seq_lo->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_lo->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
-						{
-							if ((*prev_seq_lo)[i] != 0)
-							{
-								delta_change_rel = ((*curr_seq_lo)[i] - (*prev_seq_lo)[i])*100/(*prev_seq_lo)[i];
-							}
-							else
-							{
-								delta_change_rel = 100;
-								if ((*curr_seq_lo)[i] == (*prev_seq_lo)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (*curr_seq_lo)[i] - (*prev_seq_lo)[i];
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
+						attr.ext->prev_change_event.value >>= prev_sta;
 
-				case CORBA::tk_longlong:
-					curr_attr_value.value >>= curr_seq_64;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_64;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_64;
-					curr_seq_nb = curr_seq_64->length();
-					prev_seq_nb = prev_seq_64->length();
-					if (curr_seq_nb != prev_seq_nb)
+					if (curr_sta != prev_sta)
 					{
-						force_change = true;
-						return true;
+						delta_change_rel = delta_change_abs = 100.;
+						is_change = true;
+						return(is_change);
 					}
-					for (i=0; i<curr_seq_64->length(); i++)
+				}
+				else
+				{
+				
+					CORBA::TypeCode_var ty_alias = ty->content_type();
+					CORBA::TypeCode_var ty_seq = ty_alias->content_type();					
+					switch (ty_seq->kind())
 					{
-						if (rel_change[0] != INT_MAX)
+					case CORBA::tk_long:		
+						curr_attr_value.value >>= curr_seq_lo;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_lo;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_lo;
+						curr_seq_nb = curr_seq_lo->length();
+						prev_seq_nb = prev_seq_lo->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							if ((*prev_seq_64)[i] != 0)
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_lo->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
 							{
-								delta_change_rel = (double)(((*curr_seq_64)[i] - (*prev_seq_64)[i])*100/(*prev_seq_64)[i]);
+								if ((*prev_seq_lo)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_lo)[i] - (*prev_seq_lo)[i])*100/(*prev_seq_lo)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_lo)[i] == (*prev_seq_lo)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
-							else
+							if (abs_change[0] != INT_MAX)
 							{
-								delta_change_rel = 100;
-								if ((*curr_seq_64)[i] == (*prev_seq_64)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
+								delta_change_abs = (*curr_seq_lo)[i] - (*prev_seq_lo)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
 						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (double)((*curr_seq_64)[i] - (*prev_seq_64)[i]);
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
-					
-				case CORBA::tk_short:
-					curr_attr_value.value >>= curr_seq_sh;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_sh;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_sh;
-					curr_seq_nb = curr_seq_sh->length();
-					prev_seq_nb = prev_seq_sh->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_sh->length(); i++)
-					{	
-						if (rel_change[0] != INT_MAX)
-						{
-							if ((*prev_seq_sh)[i] != 0)
-							{
-								delta_change_rel = ((*curr_seq_sh)[i] - (*prev_seq_sh)[i])*100/(*prev_seq_sh)[i];
-							}
-							else
-							{
-								delta_change_rel = 100;
-								if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (*curr_seq_sh)[i] - (*prev_seq_sh)[i];
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
+						break;
 
-				case CORBA::tk_double:
-					curr_attr_value.value >>= curr_seq_db;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_db;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_db;
-					curr_seq_nb = curr_seq_db->length();
-					prev_seq_nb = prev_seq_db->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_db->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
+					case CORBA::tk_longlong:
+#ifdef TANGO_LONG64
+						curr_attr_value.value >>= curr_seq_lolo;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_lolo;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_lolo;
+						curr_seq_nb = curr_seq_lolo->length();
+						prev_seq_nb = prev_seq_lolo->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							if ((*prev_seq_db)[i] != 0)
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_lolo->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
 							{
-								delta_change_rel = ((*curr_seq_db)[i] - (*prev_seq_db)[i])*100/(*prev_seq_db)[i];
+								if ((*prev_seq_lolo)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_lolo)[i] - (*prev_seq_lolo)[i])*100/(*prev_seq_lolo)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_lolo)[i] == (*prev_seq_lolo)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
-							else
+							if (abs_change[0] != INT_MAX)
 							{
-								delta_change_rel = 100;
-								if ((*curr_seq_db)[i] == (*prev_seq_db)[i]) delta_change_rel = 0;
-							}
-							
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
+								delta_change_abs = (*curr_seq_lolo)[i] - (*prev_seq_lolo)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
 						}
-						if (abs_change[0] != INT_MAX)
+#endif
+						break;
+						
+					case CORBA::tk_short:
+						curr_attr_value.value >>= curr_seq_sh;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_sh;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_sh;
+						curr_seq_nb = curr_seq_sh->length();
+						prev_seq_nb = prev_seq_sh->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							delta_change_abs = (*curr_seq_db)[i] - (*prev_seq_db)[i];
-							
-							// Correct for rounding errors !
-							double max_change = delta_change_abs + (abs_change[1] * 1e-10);
-							double min_change = delta_change_abs + (abs_change[0] * 1e-10);
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_sh->length(); i++)
+						{	
+							if (rel_change[0] != INT_MAX)
+							{
+								if ((*prev_seq_sh)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_sh)[i] - (*prev_seq_sh)[i])*100/(*prev_seq_sh)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+							if (abs_change[0] != INT_MAX)
+							{
+								delta_change_abs = (*curr_seq_sh)[i] - (*prev_seq_sh)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+						}
+						break;
 
-							//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							if (min_change <= abs_change[0] || max_change >= abs_change[1])
+					case CORBA::tk_double:
+						curr_attr_value.value >>= curr_seq_db;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_db;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_db;
+						curr_seq_nb = curr_seq_db->length();
+						prev_seq_nb = prev_seq_db->length();
+						if (curr_seq_nb != prev_seq_nb)
+						{
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_db->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
 							{
-								is_change = true;
-								return(is_change);
+								if ((*prev_seq_db)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_db)[i] - (*prev_seq_db)[i])*100/(*prev_seq_db)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_db)[i] == (*prev_seq_db)[i]) delta_change_rel = 0;
+								}
+								
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+							if (abs_change[0] != INT_MAX)
+							{
+								delta_change_abs = (*curr_seq_db)[i] - (*prev_seq_db)[i];
+								
+								// Correct for rounding errors !
+								double max_change = delta_change_abs + (abs_change[1] * 1e-10);
+								double min_change = delta_change_abs + (abs_change[0] * 1e-10);
+								
+								//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								if (min_change <= abs_change[0] || max_change >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
 						}
-					}
-					break;
+						break;
 
-				case CORBA::tk_string:
-					curr_attr_value.value >>= curr_seq_str;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_str;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_str;
-					curr_seq_nb = curr_seq_str->length();
-					prev_seq_nb = prev_seq_str->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_str->length(); i++)
-					{
-						if (strcmp((*curr_seq_str)[i],(*prev_seq_str)[i]) != 0)
+					case CORBA::tk_string:
+						curr_attr_value.value >>= curr_seq_str;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_str;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_str;
+						curr_seq_nb = curr_seq_str->length();
+						prev_seq_nb = prev_seq_str->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							delta_change_rel = delta_change_abs = 100.;
-							is_change = true;
-							return(is_change);
+							force_change = true;
+							return true;
 						}
-					}
-					break;
+						for (i=0; i<curr_seq_str->length(); i++)
+						{
+							if (strcmp((*curr_seq_str)[i],(*prev_seq_str)[i]) != 0)
+							{
+								delta_change_rel = delta_change_abs = 100.;
+								is_change = true;
+								return(is_change);
+							}
+						}
+						break;
 
-				case CORBA::tk_float:
-					curr_attr_value.value >>= curr_seq_fl;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_fl;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_fl;
-					curr_seq_nb = curr_seq_fl->length();
-					prev_seq_nb = prev_seq_fl->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_fl->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
+					case CORBA::tk_float:
+						curr_attr_value.value >>= curr_seq_fl;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_fl;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_fl;
+						curr_seq_nb = curr_seq_fl->length();
+						prev_seq_nb = prev_seq_fl->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							if ((*prev_seq_fl)[i] != 0)
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_fl->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
 							{
-								delta_change_rel = ((*curr_seq_fl)[i] - (*prev_seq_fl)[i])*100/(*prev_seq_fl)[i];
+								if ((*prev_seq_fl)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_fl)[i] - (*prev_seq_fl)[i])*100/(*prev_seq_fl)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_fl)[i] == (*prev_seq_fl)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
-							else
+							if (abs_change[0] != INT_MAX)
 							{
-								delta_change_rel = 100;
-								if ((*curr_seq_fl)[i] == (*prev_seq_fl)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
+								delta_change_abs = (*curr_seq_fl)[i] - (*prev_seq_fl)[i];
+								
+								// Correct for rounding errors !
+								double max_change = delta_change_abs + (abs_change[1] * 1e-10);
+								double min_change = delta_change_abs + (abs_change[0] * 1e-10);
+																
+								//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								if (min_change <= abs_change[0] || max_change >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
 						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (*curr_seq_fl)[i] - (*prev_seq_fl)[i];
-							
-							// Correct for rounding errors !
-							double max_change = delta_change_abs + (abs_change[1] * 1e-10);
-							double min_change = delta_change_abs + (abs_change[0] * 1e-10);
-															
-							//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							if (min_change <= abs_change[0] || max_change >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
+						break;
 
-				case CORBA::tk_ushort:
-					curr_attr_value.value >>= curr_seq_ush;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_ush;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_ush;
-					curr_seq_nb = curr_seq_ush->length();
-					prev_seq_nb = prev_seq_ush->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_ush->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
+					case CORBA::tk_ushort:
+						curr_attr_value.value >>= curr_seq_ush;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_ush;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_ush;
+						curr_seq_nb = curr_seq_ush->length();
+						prev_seq_nb = prev_seq_ush->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							if ((*prev_seq_ush)[i] != 0)
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_ush->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
 							{
-								delta_change_rel = ((*curr_seq_ush)[i] - (*prev_seq_ush)[i])*100/(*prev_seq_ush)[i];
+								if ((*prev_seq_ush)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_ush)[i] - (*prev_seq_ush)[i])*100/(*prev_seq_ush)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_ush)[i] == (*prev_seq_ush)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
-							else
+							if (abs_change[0] != INT_MAX)
 							{
-								delta_change_rel = 100;
-								if ((*curr_seq_ush)[i] == (*prev_seq_ush)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
+								delta_change_abs = (*curr_seq_ush)[i] - (*prev_seq_ush)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
 						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (*curr_seq_ush)[i] - (*prev_seq_ush)[i];
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
+						break;
 
-				case CORBA::tk_boolean:
-					curr_attr_value.value >>= curr_seq_bo;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_bo;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_bo;
-					curr_seq_nb = curr_seq_bo->length();
-					prev_seq_nb = prev_seq_bo->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_bo->length(); i++)
-					{
-						if ((*curr_seq_bo)[i] != (*prev_seq_bo)[i])
+					case CORBA::tk_boolean:
+						curr_attr_value.value >>= curr_seq_bo;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_bo;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_bo;
+						curr_seq_nb = curr_seq_bo->length();
+						prev_seq_nb = prev_seq_bo->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							delta_change_rel = delta_change_abs = 100.;
-							is_change = true;
-							return(is_change);
+							force_change = true;
+							return true;
 						}
-					}
-					break;
+						for (i=0; i<curr_seq_bo->length(); i++)
+						{
+							if ((*curr_seq_bo)[i] != (*prev_seq_bo)[i])
+							{
+								delta_change_rel = delta_change_abs = 100.;
+								is_change = true;
+								return(is_change);
+							}
+						}
+						break;
 
-				case CORBA::tk_octet:
-					curr_attr_value.value >>= curr_seq_uch;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_uch;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_uch;
-					curr_seq_nb = curr_seq_uch->length();
-					prev_seq_nb = prev_seq_uch->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_uch->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
+					case CORBA::tk_octet:
+						curr_attr_value.value >>= curr_seq_uch;
+						if (archive == true)
+							attr.ext->prev_archive_event.value >>= prev_seq_uch;
+						else
+							attr.ext->prev_change_event.value >>= prev_seq_uch;
+						curr_seq_nb = curr_seq_uch->length();
+						prev_seq_nb = prev_seq_uch->length();
+						if (curr_seq_nb != prev_seq_nb)
 						{
-							if ((*prev_seq_uch)[i] != 0)
+							force_change = true;
+							return true;
+						}
+						for (i=0; i<curr_seq_uch->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
 							{
-								delta_change_rel = ((*curr_seq_uch)[i] - (*prev_seq_uch)[i])*100/(*prev_seq_uch)[i];
+								if ((*prev_seq_uch)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_uch)[i] - (*prev_seq_uch)[i])*100/(*prev_seq_uch)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_uch)[i] == (*prev_seq_uch)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
-							else
+							if (abs_change[0] != INT_MAX)
 							{
-								delta_change_rel = 100;
-								if ((*curr_seq_uch)[i] == (*prev_seq_uch)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
+								delta_change_abs = (*curr_seq_uch)[i] - (*prev_seq_uch)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
 							}
 						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (*curr_seq_uch)[i] - (*prev_seq_uch)[i];
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
+						break;
 					}
-					break;
-					
-				case CORBA::tk_ulong:		
-					curr_attr_value.value >>= curr_seq_ulo;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_ulo;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_ulo;
-					curr_seq_nb = curr_seq_ulo->length();
-					prev_seq_nb = prev_seq_ulo->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_ulo->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
-						{
-							if ((*prev_seq_ulo)[i] != 0)
-							{
-								delta_change_rel = ((*curr_seq_ulo)[i] - (*prev_seq_ulo)[i])*100/(*prev_seq_ulo)[i];
-							}
-							else
-							{
-								delta_change_rel = 100;
-								if ((*curr_seq_ulo)[i] == (*prev_seq_ulo)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (*curr_seq_ulo)[i] - (*prev_seq_ulo)[i];
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
-					
-				case CORBA::tk_ulonglong:
-					curr_attr_value.value >>= curr_seq_u64;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_u64;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_u64;
-					curr_seq_nb = curr_seq_u64->length();
-					prev_seq_nb = prev_seq_u64->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_u64->length(); i++)
-					{
-						if (rel_change[0] != INT_MAX)
-						{
-							if ((*prev_seq_u64)[i] != 0)
-							{
-								delta_change_rel = (double)(((*curr_seq_u64)[i] - (*prev_seq_u64)[i])*100/(*prev_seq_u64)[i]);
-							}
-							else
-							{
-								delta_change_rel = 100;
-								if ((*curr_seq_u64)[i] == (*prev_seq_u64)[i]) delta_change_rel = 0;
-							}
-							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-						if (abs_change[0] != INT_MAX)
-						{
-							delta_change_abs = (double)((*curr_seq_u64)[i] - (*prev_seq_u64)[i]);
-							if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-							{
-								is_change = true;
-								return(is_change);
-							}
-						}
-					}
-					break;
-					
-				case CORBA::tk_enum:
-					curr_attr_value.value >>= curr_seq_state;
-					if (archive == true)
-						attr.ext->prev_archive_event.value >>= prev_seq_state;
-					else
-						attr.ext->prev_change_event.value >>= prev_seq_state;
-					curr_seq_nb = curr_seq_state->length();
-					prev_seq_nb = prev_seq_state->length();
-					if (curr_seq_nb != prev_seq_nb)
-					{
-						force_change = true;
-						return true;
-					}
-					for (i=0; i<curr_seq_state->length(); i++)
-					{
-						if ((*curr_seq_state)[i] != (*prev_seq_state)[i])
-						{
-							delta_change_rel = delta_change_abs = 100.;
-							is_change = true;
-							return(is_change);
-						}
-					}
-					break;
-					
-				default:
-					break;
 				}
 			}
 		}	
@@ -890,8 +745,7 @@ public :
 
 
 	void detect_and_push_change_event_3(DeviceImpl *device_impl,
-						 AttributeValue_3 *attr_value,
-						 AttributeValue_4 *attr_value_4,
+						 AttributeValue_3 &attr_value,
 						 Attribute &attr,
 						 string &attr_name,
 						 DevFailed *except);
@@ -1008,7 +862,6 @@ public :
 //
 // argument : in :	device_impl : The device
 //			attr_value : The attribute value
-//			attr_value_4 : The attribute value for devic eimplementing IDL 4
 //			attr : The attribute object
 //			attr_name : The attribute name
 //			except : The exception thrown during the last
@@ -1017,12 +870,10 @@ public :
 //-----------------------------------------------------------------------------
 
 	void detect_and_push_archive_event_3(DeviceImpl *device_impl,
-						  AttributeValue_3 *attr_value,
-						  AttributeValue_4 *attr_value_4, 
+						  AttributeValue_3 &attr_value, 
 						  Attribute &attr,
 						  string &attr_name,
-						  DevFailed *except,
-						  struct timeval *);
+						  DevFailed *except);
 						  
 	template <typename T>
 	void detect_and_push_archive_event(DeviceImpl *device_impl,
@@ -1042,12 +893,12 @@ public :
 		cout3 << "EventSupplier::detect_and_push_archive_event(): called for attribute " << attr_name << endl;
 
 		double now_ms, ms_since_last_periodic;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
         	struct _timeb           now_win;
 #endif
         	struct timeval          now_timeval;
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		_ftime(&now_win);
 		now_timeval.tv_sec = (unsigned long)now_win.time;
 		now_timeval.tv_usec = (long)now_win.millitm * 1000;
@@ -1077,7 +928,7 @@ public :
 			}
 		else
 			{
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 			double tmp = (double)arch_period * DELTA_PERIODIC;
 			double int_part,eve_round;
 			double frac = modf(tmp,&int_part);
@@ -1086,7 +937,7 @@ public :
 			else
 					eve_round = floor(tmp);					
 #else
-	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
+	#if ((defined __SUNPRO_CC) || (!defined GCC_STD) || (defined __HP_aCC))
 			double eve_round = rint((double)arch_period * DELTA_PERIODIC);
 	#else
 		#if (defined GCC_SOLARIS)
@@ -1213,6 +1064,13 @@ public :
 //
 //-----------------------------------------------------------------------------
 
+	void detect_and_push_quality_change_event_3(DeviceImpl *device_impl,
+						  AttributeValue_3 &attr_value,
+						  Attribute &attr,
+						  string &attr_name,
+						  DevFailed *except);
+
+
 	template <typename T>
 	void detect_and_push_quality_change_event(DeviceImpl *device_impl,
 						  T &attr_value,
@@ -1292,7 +1150,6 @@ public :
 //
 // argument : in :	device_impl : The device
 //			attr_value : The attribute value
-//			attr_value_4 : The attribute value for device implementing IDL 4
 //			attr : The attribute object
 //			attr_name : The attribute name
 //			except : The exception thrown during the last
@@ -1301,12 +1158,10 @@ public :
 //-----------------------------------------------------------------------------
 
 	void detect_and_push_periodic_event_3(DeviceImpl *device_impl,
-					    AttributeValue_3 *attr_value,
-					 	AttributeValue_4 *attr_value_4,
+					    AttributeValue_3 &attr_value,
 					    Attribute &attr,
 					    string &attr_name,
-					    DevFailed *except,
-						struct timeval *);
+					    DevFailed *except);
 					    
 
 	template <typename T>
@@ -1318,12 +1173,12 @@ public :
 	{
 		string event, domain_name;
 		double now_ms, ms_since_last_periodic;
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
         	struct _timeb           now_win;
 #endif
         	struct timeval          now_timeval;
 
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 		_ftime(&now_win);
 		now_timeval.tv_sec = (unsigned long)now_win.time;
 		now_timeval.tv_usec = (long)now_win.millitm * 1000;
@@ -1352,7 +1207,7 @@ public :
 			}
 		else
 			{
-#ifdef _TG_WINDOWS_
+#ifdef WIN32
 			double tmp = (double)eve_period * DELTA_PERIODIC;
 			double int_part,eve_round;
 			double frac = modf(tmp,&int_part);
@@ -1361,7 +1216,7 @@ public :
 			else
 					eve_round = floor(tmp);					
 #else
-	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
+	#if ((defined __SUNPRO_CC) || (!defined GCC_STD) || (defined __HP_aCC))
 			double eve_round = rint((double)eve_period * DELTA_PERIODIC);
 	#else
 		#if (defined GCC_SOLARIS)
@@ -1421,21 +1276,20 @@ public :
 //-----------------------------------------------------------------------------
 
 	void push_event_3(DeviceImpl *device_impl,
-				string event_type,
-				vector<string> &filterable_names,
+			string event_type,
+			vector<string> &filterable_names,
 		       	vector<double> &filterable_data,
 		       	vector<string> &filterable_names_lg,
 		       	vector<long> &filterable_data_lg,
-		       	AttributeValue_3 *attr_value,
-				AttributeValue_4 *attr_value_4,
+		       	AttributeValue_3 &attr_value,
 		       	string &attr_name,
 		       	DevFailed *except);
 			
 
 	template <typename T>
 	void push_event(DeviceImpl *device_impl,
-				string event_type,
-				vector<string> &filterable_names,
+			string event_type,
+			vector<string> &filterable_names,
 		       	vector<double> &filterable_data,
 		       	vector<string> &filterable_names_lg,
 		       	vector<long> &filterable_data_lg,
@@ -1456,7 +1310,7 @@ public :
 		domain_name = device_impl->get_name_lower() + "/" + loc_attr_name;
 
 		struct_event.header.fixed_header.event_type.domain_name = CORBA::string_dup(domain_name.c_str());
-  		struct_event.header.fixed_header.event_type.type_name = CORBA::string_dup(fqdn_prefix.c_str());
+  		struct_event.header.fixed_header.event_type.type_name = CORBA::string_dup("Tango::EventValue");
 
 		struct_event.header.variable_header.length( 0 );
 
@@ -1511,21 +1365,21 @@ public :
 			cout3 << "EventSupplier::push_event() event channel disconnected !\n";
 			fail = true;
 		}
-    	catch(const CORBA::TRANSIENT &)
-    	{
-    		cout3 << "EventSupplier::push_event() caught a CORBA::TRANSIENT ! " << endl;
+       		catch(const CORBA::TRANSIENT &)
+       		{
+       			cout3 << "EventSupplier::push_event() caught a CORBA::TRANSIENT ! " << endl;
 			fail = true;
-    	}
-    	catch(const CORBA::COMM_FAILURE &)
-    	{
-    		cout3 << "EventSupplier::push_event() caught a CORBA::COMM_FAILURE ! " << endl;
-			fail = true;
-		}
-		catch(const CORBA::SystemException &)
-		{
-    		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
+       		}
+       		catch(const CORBA::COMM_FAILURE &)
+       		{
+       			cout3 << "EventSupplier::push_event() caught a CORBA::COMM_FAILURE ! " << endl;
 			fail = true;
 		}
+    		catch(const CORBA::SystemException &)
+    		{
+       			cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
+			fail = true;
+    		}
 	
 //
 // If it was not possible to communicate with notifd,
@@ -1549,4 +1403,176 @@ public :
 
 
 #endif // _EVENT_SUPPLIER_API_H
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
