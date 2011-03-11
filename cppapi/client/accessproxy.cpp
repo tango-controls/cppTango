@@ -285,12 +285,16 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 								first = false;
 							}
 
+//
+// Filter out local address and IP v6
+//
+
 							if (host_str.find("127.") == 0) {}
+							else if (host_str.find(":") != string::npos) {}
 							else
 							{
 								host_ips.push_back(tmp_host);
 								found = true;
-								break;
 							}
 						}
 						else
