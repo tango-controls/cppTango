@@ -179,7 +179,6 @@ void AccessProxy::real_ctor()
 
 AccessControlType AccessProxy::check_access_control(string &devname)
 {
-cout << "entering AccessProxy::check_access_control()" << endl;
 	if (forced)
 		return ACCESS_WRITE;
 
@@ -280,20 +279,19 @@ cout << "entering AccessProxy::check_access_control()" << endl;
     					if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,128,0,0,NI_NUMERICHOST) == 0)
 						{
 							string host_str(tmp_host);
-cout << "host_str = " << host_str << endl;
 							if (first == true)
 							{
 								at_least = host_str;
 								first = false;
 							}
 
-/*							if (host_str.find("127.") == 0) {}
+							if (host_str.find("127.") == 0) {}
 							else
-							{*/
+							{
 								host_ips.push_back(tmp_host);
 								found = true;
-//								break;
-//							}
+								break;
+							}
 						}
 						else
 						{
@@ -338,11 +336,8 @@ cout << "host_str = " << host_str << endl;
 		dvsa[1] = CORBA::string_dup(devname.c_str());
 		for (unsigned int i = 0;i < host_ips.size();i++)
 			dvsa[2 + i] = CORBA::string_dup(host_ips[i].c_str());
-for (unsigned int loop = 0;loop < dvsa.length();loop++)
-	cout << "Sent data = " << dvsa[loop] << endl;
 		din << dvsa;
 
-cout << "Calling GetAccessForMultiIP" << endl;
 		dout = command_inout("GetAccessForMultiIP",din);
 
 		string right;
