@@ -4623,6 +4623,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 
 	int ctr = 0;
 	Tango::DevSource local_source;
+	bool already_deleted = false;
 		
 	while (ctr < 2)
 	{
@@ -4649,7 +4650,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
 		catch (Tango::ConnectionFailed &e)
 		{
-			delete dev_attr;
+			if (already_deleted == false)
+				delete dev_attr;
 			
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
@@ -4667,7 +4669,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
 		catch (Tango::DevFailed &e)
 		{
-			delete dev_attr;
+			if (already_deleted == false)
+				delete dev_attr;
 			
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
@@ -4686,7 +4689,10 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		catch (CORBA::TRANSIENT &trans)
 		{
 			if ((trans.minor() == omni::TRANSIENT_CallTimedout) || (ctr == 1))
+			{
 				delete dev_attr;
+				already_deleted = true;
+			}
 			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attributes");
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
