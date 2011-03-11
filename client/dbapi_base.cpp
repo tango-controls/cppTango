@@ -4212,8 +4212,27 @@ AccessControlType Database::check_access_control(string &devname)
 			
 //
 // Build the local AccessProxy instance
+// If the database has been built for a device defined with a FQDN,
+// don't forget to add db_host and db_port on the TAC device name
+// but only if FQDN infos are not laredy defined in the service
+// device name
 //
 
+			if (from_env_var == false)
+			{
+				int num = 0;
+#ifdef __SUNPRO_CC
+				count(access_devname_str.begin(),access_devname_str.end(),'/',num);
+#else
+				num = count(access_devname_str.begin(),access_devname_str.end(),'/');
+#endif
+				if (num == 2)
+				{
+					string fqdn("tango://");
+					fqdn = fqdn + db_host + ":" + db_port + "/";
+					access_devname_str.insert(0,fqdn);
+				}
+			}
 			access_proxy = new AccessProxy(access_devname_str);
 		}
 
