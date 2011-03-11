@@ -45,7 +45,7 @@ public:
 
 protected:
 	string							user;
-	string							host;
+	vector<string>					host_ips;
 	bool							forced;
 	map<string,vector<string> > 	allowed_cmd_table;
 
