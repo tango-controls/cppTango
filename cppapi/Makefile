@@ -58,6 +58,7 @@ CLIENT_SRC = client
 SERVER_SRC = server
 IDL_SRC    = server/idl
 JPG_SRC    = server/jpeg
+JPG_SRC_MMX	=	server/jpeg_mmx
 
 OBJS_DIR = 	objs/$(BIN_DIR)
 OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
@@ -90,9 +91,9 @@ endif
 
 
 ifdef linux
-FLAGS = -g -D_REENTRANT -DOMNI_UNLOADABLE_STUBS $(INCLUDE_DIRS)
+#FLAGS = -g -D_REENTRANT -DOMNI_UNLOADABLE_STUBS $(INCLUDE_DIRS)
 #FLAGS    = -g -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
-#FLAGS    = -O2 -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
+FLAGS    = -O2 -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
 #FLAGS    = -O2 -D_REENTRANT $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
 # gcc does not allow MMX optimisation with -fPIC in 64bits
 ifdef 64bits
@@ -394,13 +395,13 @@ $(OBJS_DIR)/%.o: $(CLIENT_SRC)/%.cpp
 	@./cr_dir $(OBJS_DIR)
 	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 
-$(OBJS_DIR)/jpeg_color_mmx.o: $(JPG_SRC)/jpeg_color_mmx.cpp
+$(OBJS_DIR)/jpeg_color_mmx.o: $(JPG_SRC_MMX)/jpeg_color_mmx.cpp
 	@./cr_dir $(OBJS_DIR)
-	$(CC) $(CXXFLAGS) $(MMFLAG) -c $(JPG_SRC)/jpeg_color_mmx.cpp -o $(OBJS_DIR)/jpeg_color_mmx.o
+	$(CC) $(CXXFLAGS) $(MMFLAG) -c $(JPG_SRC_MMX)/jpeg_color_mmx.cpp -o $(OBJS_DIR)/jpeg_color_mmx.o
 
-$(OBJS_DIR)/jpeg_dct_mmx.o: $(JPG_SRC)/jpeg_dct_mmx.cpp
+$(OBJS_DIR)/jpeg_dct_mmx.o: $(JPG_SRC_MMX)/jpeg_dct_mmx.cpp
 	@./cr_dir $(OBJS_DIR)
-	$(CC) $(CXXFLAGS) $(MMFLAG) -c $(JPG_SRC)/jpeg_dct_mmx.cpp -o $(OBJS_DIR)/jpeg_dct_mmx.o
+	$(CC) $(CXXFLAGS) $(MMFLAG) -c $(JPG_SRC_MMX)/jpeg_dct_mmx.cpp -o $(OBJS_DIR)/jpeg_dct_mmx.o
 
 #-----------------------------------------------------------------
 
@@ -420,13 +421,13 @@ $(OBJS_DIR_SL)/%.so.o: $(CLIENT_SRC)/%.cpp
 	@./cr_dir $(OBJS_DIR_SL)
 	$(CC) $(CXXFLAGS_SL) -c $< -o $(OBJS_DIR_SL)/$*.so.o
 
-$(OBJS_DIR_SL)/jpeg_color_mmx.so.o: $(JPG_SRC)/jpeg_color_mmx.cpp
+$(OBJS_DIR_SL)/jpeg_color_mmx.so.o: $(JPG_SRC_MMX)/jpeg_color_mmx.cpp
 	@./cr_dir $(OBJS_DIR)
-	$(CC) $(CXXFLAGS_SL) $(MMFLAG) -c $(JPG_SRC)/jpeg_color_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_color_mmx.so.o
+	$(CC) $(CXXFLAGS_SL) $(MMFLAG) -c $(JPG_SRC_MMX)/jpeg_color_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_color_mmx.so.o
 
-$(OBJS_DIR_SL)/jpeg_dct_mmx.so.o: $(JPG_SRC)/jpeg_dct_mmx.cpp
+$(OBJS_DIR_SL)/jpeg_dct_mmx.so.o: $(JPG_SRC_MMX)/jpeg_dct_mmx.cpp
 	@./cr_dir $(OBJS_DIR)
-	$(CC) $(CXXFLAGS_SL) $(MMFLAG) -c $(JPG_SRC)/jpeg_dct_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_dct_mmx.so.o
+	$(CC) $(CXXFLAGS_SL) $(MMFLAG) -c $(JPG_SRC_MMX)/jpeg_dct_mmx.cpp -o $(OBJS_DIR_SL)/jpeg_dct_mmx.so.o
 
 					
 #-----------------------------------------------------------------
