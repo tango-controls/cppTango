@@ -182,8 +182,13 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 	if (forced)
 		return ACCESS_WRITE;
 
-	try
+	bool multi_ip = true;
+	bool two_tries = false;
+
+	while (two_tries == false)
 	{
+		try
+		{
 
 //
 // If not already done, get user name.
@@ -191,176 +196,197 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 // to change the effective user id and therefore to take someone else rights
 //
 
-		if (user.empty() == true)
-		{
+			if (user.empty() == true)
+			{
 #ifndef _TG_WINDOWS_
-			uid_t user_id = geteuid();
+				uid_t user_id = geteuid();
 
-			struct passwd pw;
-			struct passwd *pw_ptr;
-			char buffer[__AC_BUFFER_SIZE];
+				struct passwd pw;
+				struct passwd *pw_ptr;
+				char buffer[__AC_BUFFER_SIZE];
 
-			if (getpwuid_r(user_id,&pw,buffer,sizeof(buffer),&pw_ptr) != 0)
-			{
-				cerr << "AccessProxy::check_access_control: Can't get the user UID !" << endl;
-				cerr << "Access right set to ACCESS_READ" << endl;
+				if (getpwuid_r(user_id,&pw,buffer,sizeof(buffer),&pw_ptr) != 0)
+				{
+					cerr << "AccessProxy::check_access_control: Can't get the user UID !" << endl;
+					cerr << "Access right set to ACCESS_READ" << endl;
 
-				return ACCESS_READ;
-			}
+					return ACCESS_READ;
+				}
 
-			if (pw_ptr == NULL)
-			{
-				cerr << "AccessProxy::check_access_control: Can't get the user UID !" << endl;
-				cerr << "Access right set to ACCESS_READ" << endl;
+				if (pw_ptr == NULL)
+				{
+					cerr << "AccessProxy::check_access_control: Can't get the user UID !" << endl;
+					cerr << "Access right set to ACCESS_READ" << endl;
 
-				return ACCESS_READ;
-			}
+					return ACCESS_READ;
+				}
 
-			user = pw.pw_name;
-			transform(user.begin(),user.end(),user.begin(),::tolower);
+				user = pw.pw_name;
+				transform(user.begin(),user.end(),user.begin(),::tolower);
 #else
-			BOOL ret;
-			TCHAR buffer[128];
-			DWORD nb = 128;
+				BOOL ret;
+				TCHAR buffer[128];
+				DWORD nb = 128;
 
-			ret = GetUserName(buffer,&nb);
-			if (ret == 0)
-			{
-				cerr << "AccessProxy::check_access_control: Can't get the user name !" << endl;
-				cerr << "Access right set to ACCESS_READ" << endl;
+				ret = GetUserName(buffer,&nb);
+				if (ret == 0)
+				{
+					cerr << "AccessProxy::check_access_control: Can't get the user name !" << endl;
+					cerr << "Access right set to ACCESS_READ" << endl;
 
-				return ACCESS_READ;
-			}
-			user = buffer;
-			transform(user.begin(),user.end(),user.begin(),::tolower);
+					return ACCESS_READ;
+				}
+				user = buffer;
+				transform(user.begin(),user.end(),user.begin(),::tolower);
 #endif
-		}
+			}
 
 //
 //	If not already done, get host address
 //
 
-		if (host_ips.empty() == true)
-		{
-			char h_name[80];
-			int res = gethostname(h_name,80);
-			if (res == 0)
+			if (host_ips.empty() == true)
 			{
-  				struct addrinfo hints;
+				char h_name[80];
+				int res = gethostname(h_name,80);
+				if (res == 0)
+				{
+	  				struct addrinfo hints;
 
-				memset(&hints,0,sizeof(struct addrinfo));
+					memset(&hints,0,sizeof(struct addrinfo));
 #ifdef _TG_WINDOWS_
 #ifdef WIN32_VC9
-				hints.ai_falgs	   = AI_ADDRCONFIG;
+					hints.ai_falgs	   = AI_ADDRCONFIG;
 #endif
 #else
 #ifdef GCC_HAS_AI_ADDRCONFIG
-  				hints.ai_flags     = AI_ADDRCONFIG;
+  					hints.ai_flags     = AI_ADDRCONFIG;
 #endif
 #endif
-  				hints.ai_family    = AF_INET;
-  				hints.ai_socktype  = SOCK_STREAM;
+  					hints.ai_family    = AF_INET;
+	  				hints.ai_socktype  = SOCK_STREAM;
 
-  				struct addrinfo	*info;
-				struct addrinfo *ptr;
-				char tmp_host[128];
+	  				struct addrinfo	*info;
+					struct addrinfo *ptr;
+					char tmp_host[128];
 
-  				int result = getaddrinfo(h_name,NULL,&hints,&info);
+	  				int result = getaddrinfo(h_name,NULL,&hints,&info);
 
-  				if (result == 0)
-				{
-					ptr = info;
-					string at_least;
-					bool first = true;
-					bool found = false;
-
-					while (ptr != NULL)
+	  				if (result == 0)
 					{
-    					if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,128,0,0,NI_NUMERICHOST) == 0)
+						ptr = info;
+						string at_least;
+						bool first = true;
+						bool found = false;
+
+						while (ptr != NULL)
 						{
-							string host_str(tmp_host);
-							if (first == true)
+	    					if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,128,0,0,NI_NUMERICHOST) == 0)
 							{
-								at_least = host_str;
-								first = false;
-							}
+								string host_str(tmp_host);
+								if (first == true)
+								{
+									at_least = host_str;
+									first = false;
+								}
 
 //
 // Filter out local address and IP v6
 //
 
-							if (host_str.find("127.") == 0) {}
-							else if (host_str.find(":") != string::npos) {}
+								if (host_str.find("127.") == 0) {}
+								else if (host_str.find(":") != string::npos) {}
+								else
+								{
+									host_ips.push_back(tmp_host);
+									found = true;
+								}
+							}
 							else
 							{
-								host_ips.push_back(tmp_host);
-								found = true;
+								cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
+								cerr << "Access right set to ACCESS_READ" << endl;
+
+								freeaddrinfo(info);
+								return ACCESS_READ;
 							}
+							ptr = ptr->ai_next;
 						}
-						else
-						{
-							cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
-							cerr << "Access right set to ACCESS_READ" << endl;
+						freeaddrinfo(info);
 
-							freeaddrinfo(info);
-							return ACCESS_READ;
-						}
-						ptr = ptr->ai_next;
+						if (found == false)
+							host_ips.push_back(at_least);
 					}
-					freeaddrinfo(info);
+					else
+					{
+						cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
+						cerr << "Access right set to ACCESS_READ" << endl;
 
-					if (found == false)
-						host_ips.push_back(at_least);
+						return ACCESS_READ;
+					}
 				}
 				else
 				{
-					cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
+					cerr << "AccessProxy::check_access_control: Can't get my host name !" << endl;
 					cerr << "Access right set to ACCESS_READ" << endl;
 
 					return ACCESS_READ;
 				}
 			}
-			else
-			{
-				cerr << "AccessProxy::check_access_control: Can't get my host name !" << endl;
-				cerr << "Access right set to ACCESS_READ" << endl;
-
-				return ACCESS_READ;
-			}
-		}
 
 //
 //	Check for user and host rights on specified device
 //
 
-		DeviceData din,dout;
-		DevVarStringArray dvsa;
-		dvsa.length(2 + host_ips.size());
-		dvsa[0] = CORBA::string_dup(user.c_str());
-		dvsa[1] = CORBA::string_dup(devname.c_str());
-		for (unsigned int i = 0;i < host_ips.size();i++)
-			dvsa[2 + i] = CORBA::string_dup(host_ips[i].c_str());
-		din << dvsa;
+			DeviceData din,dout;
+			DevVarStringArray dvsa;
 
-		dout = command_inout("GetAccessForMultiIP",din);
+			if (multi_ip == true)
+			{
+				dvsa.length(2 + host_ips.size());
+				dvsa[0] = CORBA::string_dup(user.c_str());
+				dvsa[1] = CORBA::string_dup(devname.c_str());
+				for (unsigned int i = 0;i < host_ips.size();i++)
+					dvsa[2 + i] = CORBA::string_dup(host_ips[i].c_str());
+				din << dvsa;
 
-		string right;
-		dout >> right;
-		if (right == "write")
-			return ACCESS_WRITE;
-		else
-			return ACCESS_READ;
-	}
-	catch (Tango::DevFailed &e)
-	{
-		if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
-		{
-			Except::re_throw_exception(e,(const char *)"API_CannotCheckAccessControl",
-										(const char *)"Cannot import Access Control device !",
-										(const char *)"AccessProxy::check_access_control()");
+				dout = command_inout("GetAccessForMultiIp",din);
+			}
+			else
+			{
+				two_tries = true;
+
+				dvsa.length(3);
+				dvsa[0] = CORBA::string_dup(user.c_str());
+				dvsa[1] = CORBA::string_dup(host_ips[0].c_str());
+				dvsa[2] = CORBA::string_dup(devname.c_str());
+
+				din << dvsa;
+
+				dout = command_inout("GetAccess",din);
+			}
+			string right;
+			dout >> right;
+			if (right == "write")
+				return ACCESS_WRITE;
+			else
+				return ACCESS_READ;
 		}
-		else
-			throw;
+		catch (Tango::DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+			{
+				multi_ip = false;
+			}
+			else if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+			{
+				Except::re_throw_exception(e,(const char *)"API_CannotCheckAccessControl",
+											(const char *)"Cannot import Access Control device !",
+											(const char *)"AccessProxy::check_access_control()");
+			}
+			else
+				throw;
+		}
 	}
 
 	return ACCESS_READ;
