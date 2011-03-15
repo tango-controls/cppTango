@@ -42,7 +42,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				AdditionalIncludeDirectories="C:\tango_src\cppapi\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -115,7 +115,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				AdditionalIncludeDirectories="C:\tango_src\cppapi\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
@@ -365,11 +365,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
@@ -1442,7 +1442,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_color_mmx.cpp"
+				RelativePath="..\..\..\server\jpeg_mmx\jpeg_color_mmx.cpp"
 				>
 			</File>
 			<File
@@ -1450,7 +1450,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\jpeg\jpeg_dct_mmx.cpp"
+				RelativePath="..\..\..\server\jpeg_mmx\jpeg_dct_mmx.cpp"
 				>
 			</File>
 			<File
