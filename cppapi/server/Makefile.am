@@ -95,6 +95,7 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  dserverclass.h	\
 		  		  dserversignal.h	\
 				  encoded_attribute.h \
+				  encoded_format.h	\
 		  		  event.h			\
 		  		  eventcmds.h		\
 		  		  eventsupplier.h	\
