@@ -87,3 +87,6 @@
 
 /* If we're running on darwin/MacOsX */
 #undef __darwin__
+
+/* If we're running on FreeBSD */
+#undef __freebsd__
