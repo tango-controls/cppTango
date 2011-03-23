@@ -159,6 +159,7 @@ SVC_OBJS = 	main.o \
 all: DevTest
 
 DevTest:	$(SVC_OBJS)
+	@./cr_dir $(BIN_TANGO_DIR)
 	$(CC) $(SVC_OBJS) -o $(BIN_TANGO_DIR)/devTest $(LFLAGS) 
 
  
