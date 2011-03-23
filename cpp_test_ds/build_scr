@@ -32,7 +32,7 @@ done
 if [ $LibType = "shared" ]
 then
 	LIBTYPE="shared"
-endif
+fi
 
 
 MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIBTYPE all"
