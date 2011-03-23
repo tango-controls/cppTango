@@ -31,7 +31,7 @@ done
 
 if [ $LibType = "shared" ]
 then
-	LIBTYPE="shared"
+	LIBTYPE="shared=1"
 fi
 
 
