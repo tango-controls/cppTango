@@ -1,0 +1,42 @@
+#!/bin/bash
+
+#INSTALL_DIR=/segfs/tango/tmp/ci
+INSTALL_DIR=/tmp/ci
+
+for i in $NODE_LABELS
+do
+	echo $i
+	if [ $i = "ubuntu10.04" ]
+	then
+		echo "Ubuntu 10.04 OS"
+		OS_SPEC="linux=1 ubuntu=1"
+		MAKE_PATH="make"
+	fi
+	
+	if [ $i = "solaris10" ]
+	then
+		echo "Solaris 10 OS"
+		OS_SPEC="_solaris=1"
+		MAKE_PATH="/usr/local/bin/make"
+	fi
+	
+	if [ $i = "redhate5" ]
+	then
+		echo "redhate 5 OS"
+		OS_SPEC="linux=1"
+		MAKE_PATH="make"
+	fi
+done
+
+
+if [ $LibType = "shared" ]
+then
+	LIBTYPE=shared
+endif
+
+
+MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIBTYPE all"
+
+cd cpp_test_ds
+echo $MAKE_CMD
+$MAKE_CMD
