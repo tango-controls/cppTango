@@ -46,7 +46,11 @@ endif
 ifdef prefix
 TANGO_HOME = $(prefix)/$(BIN_DIR)
 LIB_TANGO_DIR = $(TANGO_HOME)/lib
-BIN_TANGO_DIR = $(TANGO_HOME)/bin
+ifdef shared
+BIN_TANGO_DIR = $(TANGO_HOME)/bin/shared
+else
+BIN_TANGO_DIR = $(TANGO_HOME)/bin/archive
+endif
 else
 TANGO_HOME = /home/taurel/tango/cppapi
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
