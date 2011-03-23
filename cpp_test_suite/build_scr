@@ -2,6 +2,8 @@
 
 #INSTALL_DIR=/segfs/tango/tmp/ci
 INSTALL_DIR=/tmp/ci
+DS_NAME=devTest
+DS_INST_NAME=api
 
 for i in $NODE_LABELS
 do
@@ -10,6 +12,7 @@ do
 	then
 		echo "Ubuntu 10.04 OS"
 		OS_SPEC="linux=1 ubuntu=1"
+		BIN_DIR="ubuntu1004"
 		MAKE_PATH="make"
 	fi
 	
@@ -17,6 +20,7 @@ do
 	then
 		echo "Solaris 10 OS"
 		OS_SPEC="_solaris=1"
+		BIN_DIR="solaris10_CC"
 		MAKE_PATH="/usr/local/bin/make"
 	fi
 	
@@ -24,6 +28,7 @@ do
 	then
 		echo "redhate 5 OS"
 		OS_SPEC="linux=1"
+		BIN_DIR="redhate5"
 		MAKE_PATH="make"
 	fi
 done
@@ -39,3 +44,26 @@ $MAKE_CMD
 cd ../event
 echo $MAKE_CMD
 $MAKE_CMD
+
+#
+# Now Start the first device server
+#
+
+export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:$LD_LIBRARY_PATH
+$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME >/dev/null 1>&2 &
+
+#
+# Wait before starting test
+#
+
+sleep 2
+ps -ef | grep devTest
+
+#
+# Start test
+#
+
+#
+# kill the server
+#
+
