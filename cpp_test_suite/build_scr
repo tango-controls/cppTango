@@ -72,10 +72,12 @@ ps -ef | grep devTest
 # Start test
 #
 
-RET=0
 ./runtest jenkins $INSTALL_DIR
-if [ $* != "0" ]
-	RET=-1
+RET=$?
+if [ $RET = "0" ]
+then
+	echo "Calling another test suite"
+fi 
 
 #
 # kill the servers
