@@ -45,14 +45,15 @@ $MAKE_CMD
 cd ../event
 echo $MAKE_CMD
 $MAKE_CMD
+cd ..
 
 #
 # Now Start the first device server
 #
 
 TANGO_LIB=$INSTALL_DIR/$BIN_DIR/lib/debug
-LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango4.0.3/$BIN_DIR
-ORB_LIB=/segfs/tango/ORB/omniORB4.1.4/$BIN_DIR
+LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango4.0.3/$BIN_DIR/lib
+ORB_LIB=/segfs/tango/ORB/omniORB4.1.4/$BIN_DIR/lib
 
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$LD_LIBRARY_PATH
 export TANGO_HOST=kidiboo:10000
@@ -71,8 +72,13 @@ ps -ef | grep devTest
 # Start test
 #
 
+RET=0
+./runtest jenkins $INSTALL_DIR
+if [ $* != "0" ]
+	RET=-1
+
 #
-# kill the server
+# kill the servers
 #
 
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
@@ -82,3 +88,4 @@ do
 	kill $pid
 done
 
+exit $RET

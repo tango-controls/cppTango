@@ -13,7 +13,7 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be solaris9, solaris9_CC, debian30, redhate5_64, ubuntu904 or python"
+	$echo "ds_system can be solaris9, solaris9_CC, debian30, redhate5_64, ubuntu904, python or jenkins"
 	exit 1
 fi
 
@@ -93,6 +93,31 @@ python )
 	TEST_BASE=/home/etaurel/tg_old_test/test-linux
 	;;
 #
+jenkins )
+	BASE_DIR=$2
+	for i in $NODE_LABELS
+	do
+		echo $i
+		if [ $i = "ubuntu10.04" ]
+		then
+			echo "Ubuntu 10.04 OS"
+			DIR="$BASE_DIR/ubuntu1004/bin"
+		fi
+	
+		if [ $i = "solaris10" ]
+		then
+			echo "Solaris 10 OS"
+			DIR="$BASE_DIR/solaris10_CC/bin"
+		fi
+	
+		if [ $i = "redhate5" ]
+		then
+			echo "redhate 5 OS"
+			DIR="$BASE_DIR/redhate5/bin"
+		fi
+	done
+	;;
+#
 * )
 	$echo "\nunknown system"
 	exit 1
@@ -104,7 +129,7 @@ if [ $1 != "0" ]
 then
 	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
 	echo "Leaving test suite, try to fix it"
-	exit
+	exit -1
 fi
 }
 
@@ -121,6 +146,9 @@ $echo "\nTesting insertion and extraction into DeviceData objects for all types"
 $DIR/cmd_types dev/test/10 10
 ret=$?
 check_return_value $ret
+
+exit 0
+
 #
 $echo "\nTesting extraction from DeviceAttribute objects for all types"
 $DIR/attr_types dev/test/10 10
