@@ -95,7 +95,8 @@ int main(int argc, char **argv)
 		short received;
 		dout >> received;
 		int data_type = dout.get_type();
-		assert( received == (in * 2) );
+//		assert( received == (in * 2) );
+assert( received == (in * 3) );
 		assert(data_type == Tango::DEV_SHORT );
 	}
 	cout << "   Short --> OK" << endl;
