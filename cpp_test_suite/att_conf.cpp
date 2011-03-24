@@ -27,7 +27,7 @@ const bool pedantic_test = false;
 
 void setValues( Tango::AttributeInfoEx & ai, const bool doReset );
 int	compare( Tango::AttributeInfoEx & ai_act, Tango::AttributeInfoEx & ai_expected );
-int reset_to_default(Tango::AttributeInfoEx &,string &);
+void reset_to_default(Tango::AttributeInfoEx &,string &);
 
 int main()
 {
@@ -251,7 +251,7 @@ int	compare( Tango::AttributeInfoEx & ai_act, Tango::AttributeInfoEx & ai_expect
 	return rc;
 }
 
-int reset_to_default(Tango::AttributeInfoEx &ai,string &att_name)
+void reset_to_default(Tango::AttributeInfoEx &ai,string &att_name)
 {
 	ai.description = "No description";
 	ai.label = att_name.c_str();
@@ -260,8 +260,6 @@ int reset_to_default(Tango::AttributeInfoEx &ai,string &att_name)
 	ai.display_unit = "No display unit";
 	ai.format = "%6.2f";
 	ai.events.per_event.period = "1000";
-
-	return 0;
 }
 
 // eof
