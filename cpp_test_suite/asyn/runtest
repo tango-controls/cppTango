@@ -13,58 +13,29 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be solaris9, solaris9_CC, suse93, debian30, ubuntu904 or python"
+	$echo "ds_system can be ubuntu904, python or jenkins"
 	exit 1
 fi
 
 #
 # test host
 #
-SOL9_HOST=kidiboo
-DEBIAN30_HOST=fumanchu
-PYTHON_HOST=controls01
-UBUNTU704_HOST=pcantares
+
 UBUNTU904_HOST=pcantares
+PYTHON_HOST=controls01
 
 HOST=`hostname`
 SERV_NAME=devTest
 
 
 case $1 in
-solaris9 )
-	if [ $HOST != $SOL9_HOST ]
-	then
-		$echo "For solaris9, test should run on "$SOL9_HOST
-		exit 1
-	fi
-	DIR=solaris9_gcc
-	;;
-#
-solaris9_CC )
-	if [ $HOST != $SOL9_HOST ]
-	then
-		$echo "For solaris9, test should run on "$SOL9_HOST
-		exit 1
-	fi
-	DIR=solaris9_CC
-	;;
-#
-debian30 )
-	if [ $HOST != $DEBIAN30_HOST ]
-	then
-		$echo "For debian30, test should run on "$DEBIAN30_HOST
-		exit 1
-	fi
-	DIR=debian30
-	;;
-#
 ubuntu904 )
 	if [ $HOST != $UBUNTU904_HOST ]
 	then
 		$echo "For ubuntu 9.04, test should run on "$UBUNTU904_HOST
 		exit 1
 	fi
-	DIR=ubuntu904
+	DIR=bin/ubuntu904
 	;;
 #
 python )
@@ -74,6 +45,31 @@ python )
 		exit 1
 	fi
 	DIR=suse93
+	;;
+#
+jenkins )
+	BASE_DIR=$2
+	for i in $NODE_LABELS
+	do
+		echo $i
+		if [ $i = "ubuntu10.04" ]
+		then
+			echo "Ubuntu 10.04 OS"
+			DIR="$BASE_DIR/ubuntu1004/bin"
+		fi
+	
+		if [ $i = "solaris10" ]
+		then
+			echo "Solaris 10 OS"
+			DIR="$BASE_DIR/solaris10_CC/bin"
+		fi
+	
+		if [ $i = "redhate5" ]
+		then
+			echo "redhate 5 OS"
+			DIR="$BASE_DIR/redhate5/bin"
+		fi
+	done
 	;;
 #
 * )

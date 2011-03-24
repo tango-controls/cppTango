@@ -1,24 +1,9 @@
+##############################################################
 #
-#		Makefile to generate a Tango 
+#		Makefile to generate Tango test suite
 #
-
 ##############################################################
 
-#
-# Only these two variables TANGO_HOME and LIB_TANGO_DIR
-# should be modified to compile on several places
-# at the ESRF
-#
-
-################################################################
-
-#TANGO_HOME = /home/taurel/tango/cppapi
-#TANGO_HOME = /segfs/tango/cppapi_7_2_1
-
-#LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
-#LIB_TANGO_DIR = $(TANGO_HOME)/../tmp/install/$(BIN_DIR)/lib
-
-###################################################################
 
 #
 # Get BIN DIR
@@ -30,6 +15,7 @@ endif
 
 ifdef ubuntu
 OS=ubuntu1004
+#OS=ubuntu904
 endif
 
 BIN_DIR = $(OS)
@@ -49,8 +35,9 @@ TANGO_HOME = $(prefix)/$(BIN_DIR)
 LIB_TANGO_DIR = $(TANGO_HOME)/lib
 BIN_TANGO_DIR = $(TANGO_HOME)/bin
 else
-TANGO_HOME = /home/taurel/tango/cppapi
+TANGO_HOME = /home/taurel/tango/cppapi_develop
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
+BIN_TANGO_DIR = bin/$(BIN_DIR)
 endif
 
 ##############################################################################
@@ -136,7 +123,7 @@ all: new_devproxy multiple_new reconnect cmd_inout read_attr cmd_types \
      print_data_hist syntax size attr_proxy read_hist_ext write_attr_3 \
      ring_depth attr_misc state_attr rds mem_att attr_manip prop_list ds_cache sub_dev \
      locked_device lock restart_device unlock allowed_cmd w_r_attr  acc_right sub_dev \
-	 ConfEventBugClient 
+	 ConfEventBugClient att_conf Poll StopPoll
 
 	
 new_devproxy:	new_devproxy.o
@@ -280,6 +267,12 @@ sub_dev:	sub_dev.o
 
 ConfEventBugClient:	ConfEventBugClient.o
 	$(CC) ConfEventBugClient.o -o $(BIN_TANGO_DIR)/ConfEventBugClient $(LFLAGS)
+
+Poll:	Poll.o
+	$(CC) Poll.o -o $(BIN_TANGO_DIR)/Poll $(LFLAGS)
+
+StopPoll:	StopPoll.o
+	$(CC) StopPoll.o -o $(BIN_TANGO_DIR)/StopPoll $(LFLAGS)
 	
 clean:
 	rm -f *.o core
