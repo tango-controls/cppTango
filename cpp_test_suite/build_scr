@@ -41,6 +41,7 @@ echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
 if [ ret != "0" ]
+then
 	exit -1
 fi
 
@@ -49,6 +50,7 @@ echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
 if [ ret != "0" ]
+then
 	exit -1
 fi
 
@@ -57,6 +59,7 @@ echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
 if [ ret != "0" ]
+then
 	exit -1
 fi
 cd ..
