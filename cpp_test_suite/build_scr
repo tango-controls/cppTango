@@ -56,7 +56,7 @@ ORB_LIB=/segfs/tango/ORB/omniORB4.1.4/$BIN_DIR
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$LD_LIBRARY_PATH
 export TANGO_HOST=kidiboo:10000
 
-$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME >/dev/null 1>&2 &
+$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 
 #
 # Wait before starting test
