@@ -4,6 +4,7 @@
 INSTALL_DIR=/tmp/ci
 DS_NAME=devTest
 DS_INST_NAME=api
+DS_INST_NAME_2=api2
 
 for i in $NODE_LABELS
 do
@@ -57,6 +58,7 @@ export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$LD_LIBRARY_PATH
 export TANGO_HOST=kidiboo:10000
 
 $INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 
 #
 # Wait before starting test
@@ -72,4 +74,11 @@ ps -ef | grep devTest
 #
 # kill the server
 #
+
+PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
+for pid in PIDS
+do
+	echo "Killing process with PID $pid"
+	kill $pid
+done
 
