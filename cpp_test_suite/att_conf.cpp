@@ -260,6 +260,8 @@ int reset_to_default(Tango::AttributeInfoEx &ai,string &att_name)
 	ai.display_unit = "No display unit";
 	ai.format = "%6.2f";
 	ai.events.per_event.period = "1000";
+
+	return 0;
 }
 
 // eof
