@@ -1,8 +1,11 @@
 // -*- Mode: C++; -*-
 //
 // ReadersWritersLock.h     Author    : Tristan Richardson (tjr)
+//										Jens Meyer
+//										Emmanuel Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      1997-1999 AT&T Laboratories Cambridge 
+//						2004,2005,2006,2007,2008,2009,2010,2011
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
