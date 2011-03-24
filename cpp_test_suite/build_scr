@@ -39,12 +39,26 @@ MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC all"
 cd cpp_test_suite
 echo $MAKE_CMD
 $MAKE_CMD
+RET=$?
+if [ ret != "0" ]
+	exit -1
+fi
+
 cd asyn
 echo $MAKE_CMD
 $MAKE_CMD
+RET=$?
+if [ ret != "0" ]
+	exit -1
+fi
+
 cd ../event
 echo $MAKE_CMD
 $MAKE_CMD
+RET=$?
+if [ ret != "0" ]
+	exit -1
+fi
 cd ..
 
 #

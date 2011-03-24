@@ -214,13 +214,17 @@ ret=$?
 check_return_value $ret
 #
 $echo "\nTesting device locking feature"
-PATH=$PATH:./$DIR
+if [ $1 = "jenkins" ]
+then
+	PATH=$PATH:$DIR
+else
+	PATH=$PATH:./$DIR
+fi
 $DIR/lock dev/test/10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting the sub device diagnostics"
-PATH=$PATH:./$DIR
 $DIR/sub_dev dev/test/10
 ret=$?
 check_return_value $ret
