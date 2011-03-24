@@ -76,7 +76,7 @@ ps -ef | grep devTest
 #
 
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
-for pid in PIDS
+for pid in $PIDS
 do
 	echo "Killing process with PID $pid"
 	kill $pid
