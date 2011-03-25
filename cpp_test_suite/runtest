@@ -74,6 +74,7 @@ jenkins )
 			DEV2="test/ubuntu1004/11"
 			DEV3="test/ubuntu1004/12"
 			DEV1_ALIAS="ubuntu1004_alias"
+			INST_NAME=ubuntu1004
 		fi
 	
 		if [ $i = "solaris10" ]
@@ -84,6 +85,7 @@ jenkins )
 			DEV2="test/solaris10/11"
 			DEV3="test/solaris10/12"
 			DEV1_ALIAS="solaris10_alias"
+			INST_NAME=solaris10
 		fi
 	
 		if [ $i = "redhate5" ]
@@ -114,7 +116,7 @@ fi
 #
 
 $echo "Testing miscellaneous DeviceProxy features"
-$DIR/misc_devproxy $DEV1
+$DIR/misc_devproxy $DEV1 $SERV_NAME/$INST_NAME
 ret=$?
 check_return_value $ret
 #

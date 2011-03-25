@@ -17,13 +17,16 @@ int main(int argc, char **argv)
 {
 	DeviceProxy *device;
 	
-	if (argc != 2)
+	if (argc != 3)
 	{
-		cout << "usage: " << argv[0] << " <device>" << endl;
+		cout << "usage: " << argv[0] << " <device> <full ds name>" << endl;
 		exit(-1);
 	}
 
 	string device_name = argv[1];
+	string ds_name = argv[2];
+	string admin_device("dserver/");
+	admin_device = admin_device + ds_name;
 
 	try 
 	{
@@ -88,7 +91,7 @@ int main(int argc, char **argv)
 		string str_adm;
 		str_adm = device->adm_name();
 
-		assert ( str_adm == "dserver/devTest/api");
+		assert ( str_adm == admin_device);
 		cout << "   Adm_name --> OK" << endl;
 
 // Test description
@@ -139,7 +142,7 @@ int main(int argc, char **argv)
 		DeviceInfo inf;
 		inf = device->info();
 		assert( inf.dev_class == "DevTest" );
-		assert( inf.server_id == "devTest/api" );
+		assert( inf.server_id == ds_name );
 		assert( inf.doc_url == "Doc URL = http://www.tango-controls.org" );
 		assert( inf.dev_type == "TestDevice");
 		

@@ -24,7 +24,7 @@ do
 		BIN_DIR="solaris10_CC"
 		MAKE_PATH="/usr/local/bin/make"
 		DS_INST_NAME=solaris10
-		DS_INST_NAME=solaris10_2
+		DS_INST_NAME_2=solaris10_2
 	fi
 	
 	if [ $i = "redhate5" ]

@@ -32,9 +32,9 @@ bool verbose = false;
 
 int main(int argc, char **argv)
 {	
-	if ((argc < 5) || (argc > 6))
+	if ((argc < 6) || (argc > 7))
 	{
-		cout << "usage: acc_right user host device1 device2 [-v] " << endl;
+		cout << "usage: acc_right user host device1 device2 admin_device [-v] " << endl;
 		exit(-1);
 	}
 
@@ -42,10 +42,11 @@ int main(int argc, char **argv)
 	string host = argv[2];
 	string device = argv[3];
 	string another_device(argv[4]);
+	string admin_device(argv[5]);
 	
-	if (argc == 6)
+	if (argc == 7)
 	{
-		if (strcmp(argv[5],"-v") == 0)
+		if (strcmp(argv[6],"-v") == 0)
 			verbose = true;
 	}	
 
@@ -326,7 +327,7 @@ int main(int argc, char **argv)
 
 		coutv << "Access before killing the DS --> OK" << endl;
 
-		DeviceProxy *ds_admin = new DeviceProxy("dserver/devtest/api");
+		DeviceProxy *ds_admin = new DeviceProxy(admin_device);
 		ds_admin->command_inout("Kill");
 
 		sleep(1);
@@ -359,7 +360,7 @@ int main(int argc, char **argv)
 
 		coutv << "Access before killing the DS --> OK" << endl;
 
-		DeviceProxy *ds_admin = new DeviceProxy("dserver/devtest/api");
+		DeviceProxy *ds_admin = new DeviceProxy(admin_device);
 		ds_admin->command_inout("Kill");
 
 		sleep(1);
