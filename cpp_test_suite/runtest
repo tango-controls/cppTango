@@ -252,7 +252,7 @@ check_return_value $ret
 #ret=$?
 #check_return_value $ret
 #
-if [ inst_name = "ubuntu1004" ]
+if [ $INST_NAME = "ubuntu1004" ]
 then
 	$echo "\nCheck user classes size"
 	$DIR/size
