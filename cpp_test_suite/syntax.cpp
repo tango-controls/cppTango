@@ -15,15 +15,16 @@ int main(int argc, char **argv)
 {
 	long val;
 
-	if (argc < 4)
+	if (argc < 5)
 	{
-		cout << "usage: syntax <device1> <device2> <device1_alias>" << endl;
+		cout << "usage: syntax <device1> <device2> <device1_alias> <attr_alias>" << endl;
 		exit(-1);
 	}
 
 	string device1_name = argv[1];
 	string device2_name = argv[2];
 	string device1_alias = argv[3];
+	string attr_alias = argv[4];
 
 //
 // First check device name syntax when creating DeviceProxy instance
@@ -248,19 +249,22 @@ int main(int argc, char **argv)
 // Finally, connect to an attribute via its alias
 //
 
-	val = attr_check_proxy("et_attr_alias");
+	val = attr_check_proxy(attr_alias.c_str());
 	assert (val == 3);
 	
-	AttributeProxy att("et_attr_alias");
+	AttributeProxy att(attr_alias);
 	na_dev = att.get_device_proxy()->name();
 	assert (na_dev == device1_name);
 	
 	cout << "   Connecting to attribute via alias like et_attr_alias --> OK" << endl;
+
+	tmp_name = "Kidiboo:10000/";
+	tmp_name = tmp_name + attr_alias;
 	
-	val = attr_check_proxy("kidiboo:10000/et_attr_alias");
+	val = attr_check_proxy(tmp_name.c_str());
 	assert (val == 3);
 	
-	AttributeProxy att1("kidiboo:10000/et_attr_alias");
+	AttributeProxy att1(tmp_name);
 	na_dev = att1.get_device_proxy()->name();
 	assert (na_dev == device1_name);
 
@@ -282,7 +286,7 @@ int main(int argc, char **argv)
 	catch (Tango::DevFailed &e)
 	{
 		string rea(e.errors[0].reason.in());
-		assert(rea == "DB_AlaiasNotDefined");
+		assert(rea == "DB_AliasNotDefined");
 	}
 		
 	cout << "   Get device alias from its name --> OK" << endl;

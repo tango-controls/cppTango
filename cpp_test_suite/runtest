@@ -74,6 +74,7 @@ jenkins )
 			DEV2="test/ubuntu1004/11"
 			DEV3="test/ubuntu1004/12"
 			DEV1_ALIAS="ubuntu1004_alias"
+			ATTR_ALIAS="ubuntu1004_attr_alias"
 			INST_NAME=ubuntu1004
 		fi
 	
@@ -85,6 +86,7 @@ jenkins )
 			DEV2="test/solaris10/11"
 			DEV3="test/solaris10/12"
 			DEV1_ALIAS="solaris10_alias"
+			ATTR_ALIAS="solaris10_attr_alias"
 			INST_NAME=solaris10
 		fi
 	
@@ -241,7 +243,7 @@ ret=$?
 check_return_value $ret
 #
 $echo "\nTesting miscellaneous device name syntax"
-$DIR/syntax $DEV1 $DEV2 $DEV1_ALIAS
+$DIR/syntax $DEV1 $DEV2 $DEV1_ALIAS $ATTR_ALIAS
 ret=$?
 check_return_value $ret
 #
