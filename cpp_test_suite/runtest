@@ -247,15 +247,18 @@ $DIR/syntax $DEV1 $DEV2 $DEV1_ALIAS $ATTR_ALIAS
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting printing operators"
-$DIR/print_data $DEV1
-ret=$?
-check_return_value $ret
+#$echo "\nTesting printing operators"
+#$DIR/print_data $DEV1
+#ret=$?
+#check_return_value $ret
 #
-$echo "\nCheck user classes size"
-$DIR/size
-ret=$?
-check_return_value $ret
+if [ inst_name = "ubuntu1004" ]
+then
+	$echo "\nCheck user classes size"
+	$DIR/size
+	ret=$?
+	check_return_value $ret
+fi
 #
 $echo "\nTesting resetting attribute event conf. reset (need notifd...)"
 $DIR/ConfEventBugClient $DEV3
