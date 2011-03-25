@@ -83,7 +83,7 @@ if [ $1 != "0" ]
 then
 	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
 	echo "Leaving test suite, try to fix it"
-	exit
+	exit -1
 fi
 }
 
