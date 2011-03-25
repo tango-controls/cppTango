@@ -29,13 +29,19 @@ void setValues( Tango::AttributeInfoEx & ai, const bool doReset );
 int	compare( Tango::AttributeInfoEx & ai_act, Tango::AttributeInfoEx & ai_expected );
 void reset_to_default(Tango::AttributeInfoEx &,string &);
 
-int main()
+int main(int argc, char **argv)
 {
+	if (argc != 2)
+	{
+		cout << "usage: att_conf <device>" << endl;
+		exit(-1);
+	}
+
 	int				res		= 0;
 	int 				rc 		= 0;
 	//string 			dnUrl		= "tango://taco24:10000/sys/tg_test/1";
-	string 				dnUrl		= "dev/test/10";
-	string				devnm		= "dev/test/10";
+	string 				dnUrl		= argv[1];
+	string				devnm		= argv[1];
 	string 				an		= "Double_attr";
 	Tango::DeviceProxy  		*dev		= NULL;
 	Tango::DeviceProxy  		*adm_dev	= NULL;

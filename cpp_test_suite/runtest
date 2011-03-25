@@ -37,7 +37,6 @@ redhate5_64 )
 		exit 1
 	fi
 	DIR=bin/redhate5_64
-	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-redhate5_64
 	;;
 #
 ubuntu904 )
@@ -47,7 +46,10 @@ ubuntu904 )
 		exit 1
 	fi
 	DIR=bin/ubuntu904
-	TEST_BASE=/segfs/tango/tools/test_system/ref/test-linux-ubuntu904
+	DEV1="dev/test/10"
+	DEV2="dev/test/11"
+	DEV3="dev/test/12"
+	DEV1_ALIAS="et_alias"
 	;;
 #
 python )
@@ -57,7 +59,6 @@ python )
 		exit 1
 	fi
 	DIR=suse93
-	TEST_BASE=/home/etaurel/tg_old_test/test-linux
 	;;
 #
 jenkins )
@@ -69,12 +70,20 @@ jenkins )
 		then
 			echo "Ubuntu 10.04 OS"
 			DIR="$BASE_DIR/ubuntu1004/bin"
+			DEV1="test/ubuntu1004/10"
+			DEV2="test/ubuntu1004/11"
+			DEV3="test/ubuntu1004/12"
+			DEV1_ALIAS="ubuntu1004_alias"
 		fi
 	
 		if [ $i = "solaris10" ]
 		then
 			echo "Solaris 10 OS"
 			DIR="$BASE_DIR/solaris10_CC/bin"
+			DEV1="test/solaris10/10"
+			DEV2="test/solaris10/11"
+			DEV3="test/solaris10/12"
+			DEV1_ALIAS="solaris10_alias"
 		fi
 	
 		if [ $i = "redhate5" ]
@@ -105,23 +114,23 @@ fi
 #
 
 $echo "Testing miscellaneous DeviceProxy features"
-$DIR/misc_devproxy dev/test/10
+$DIR/misc_devproxy $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting insertion and extraction into DeviceData objects for all types"
-$DIR/cmd_types dev/test/10 10
+$DIR/cmd_types $DEV1 10
 ret=$?
 check_return_value $ret
 
 #
 $echo "\nTesting extraction from DeviceAttribute objects for all types"
-$DIR/attr_types dev/test/10 10
+$DIR/attr_types $DEV1 10
 ret=$?
 check_return_value $ret
 #
 #$echo "\nTesting attribute configuration changes"
-#$DIR/att_conf
+#$DIR/att_conf $DEV1
 #ret=$?
 #check_return_value $ret
 #
@@ -136,12 +145,12 @@ ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing attribute (with the eight data types) using DeviceAttribute"
-$DIR/write_attr dev/test/10 10
+$DIR/write_attr $DEV1 10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting copy constructor and assignement operator of the DeviceProxy class"
-$DIR/copy_devproxy
+$DIR/copy_devproxy $DEV1 $DEV2 $DEV3
 ret=$?
 check_return_value $ret
 #
@@ -151,55 +160,55 @@ ret=$?
 check_return_value $ret
 #
 $echo "\nTesting command_history and attribute_history DeviceProxy methods"
-$DIR/Poll dev/test/10
+$DIR/Poll $DEV1
 ret=$?
 check_return_value $ret
 sleep 7
-$DIR/read_hist dev/test/10
+$DIR/read_hist $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting polling of new attribute data types"
-$DIR/poll_attr dev/test/10
+$DIR/poll_attr $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting all DeviceProxy polling methods"
-$DIR/poll_met
-$DIR/StopPoll dev/test/10
+$DIR/poll_met $DEV1 $DEV2 $DEV1_ALIAS
+$DIR/StopPoll $DEV1
 #
 $echo "\nTesting all AttributeProxy methods"
-$DIR/attr_proxy dev/test/10/Short_attr_rw
+$DIR/attr_proxy $DEV1/Short_attr_rw
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing spectrum and image attributes"
-$DIR/write_attr_3 dev/test/10 10
+$DIR/write_attr_3 $DEV1 10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting polled command with external triggering"
-$DIR/read_hist_ext dev/test/10
+$DIR/read_hist_ext $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting individual polling buffer depth"
-$DIR/ring_depth dev/test/10
+$DIR/ring_depth $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting memorized attributes"
-$DIR/mem_att dev/test/10
+$DIR/mem_att $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting state and status read as attributes"
-$DIR/state_attr dev/test/10
+$DIR/state_attr $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting RDS alarm"
-$DIR/rds dev/test/10
+$DIR/rds $DEV1
 ret=$?
 check_return_value $ret
 #
@@ -209,7 +218,7 @@ check_return_value $ret
 #check_return_value $ret
 #
 $echo "\nTesting Write_Read attribute"
-$DIR/w_r_attr dev/test/10
+$DIR/w_r_attr $DEV1
 ret=$?
 check_return_value $ret
 #
@@ -220,17 +229,32 @@ then
 else
 	PATH=$PATH:./$DIR
 fi
-$DIR/lock dev/test/10
+$DIR/lock $DEV1 $DEV2
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting the sub device diagnostics"
-$DIR/sub_dev dev/test/10
+$DIR/sub_dev $DEV1 $DEV2 $DEV3
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting miscellaneous device name syntax"
+$DIR/syntax $DEV1 $DEV2 $DEV1_ALIAS
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting printing operators"
+$DIR/print_data $DEV1
+ret=$?
+check_return_value $ret
+#
+$echo "\nCheck user classes size"
+$DIR/size
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting resetting attribute event conf. reset (need notifd...)"
-$DIR/ConfEventBugClient
+$DIR/ConfEventBugClient $DEV3
 ret=$?
 check_return_value $ret
 #

@@ -36,6 +36,10 @@ ubuntu904 )
 		exit 1
 	fi
 	DIR=bin/ubuntu904
+	DEV1="dev/test/10"
+	DEV2="dev/test/11"
+	DEV3="dev/test/12"
+	DEV1_ALIAS="et_alias"
 	;;
 #
 python )
@@ -56,12 +60,20 @@ jenkins )
 		then
 			echo "Ubuntu 10.04 OS"
 			DIR="$BASE_DIR/ubuntu1004/bin"
+			DEV1="test/ubuntu1004/10"
+			DEV2="test/ubuntu1004/11"
+			DEV3="test/ubuntu1004/12"
+			DEV1_ALIAS="ubuntu1004_alias"
 		fi
 	
 		if [ $i = "solaris10" ]
 		then
 			echo "Solaris 10 OS"
 			DIR="$BASE_DIR/solaris10_CC/bin"
+			DEV1="test/solaris10/10"
+			DEV2="test/solaris10/11"
+			DEV3="test/solaris10/12"
+			DEV1_ALIAS="solaris10_alias"
 		fi
 	
 		if [ $i = "redhate5" ]
@@ -92,57 +104,57 @@ fi
 #
 
 $echo "\nTesting executing command asynchronously (polling way)"
-$DIR/asyn_cmd dev/test/10
+$DIR/asyn_cmd $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting reading attribute asynchronously (polling way)"
-$DIR/asyn_attr dev/test/10
+$DIR/asyn_attr $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting reading several attributes asynchronously (polling way)"
-$DIR/asyn_attr_multi dev/test/10
+$DIR/asyn_attr_multi $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing attribute asynchronously (polling way)"
-$DIR/asyn_write_attr dev/test/10
+$DIR/asyn_write_attr $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing several attributes asynchronously (polling way)"
-$DIR/asyn_write_attr_multi dev/test/10
+$DIR/asyn_write_attr_multi $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting mixed asynchronous and callback modes (1)"
-$DIR/asyn_cb
+$DIR/asyn_cb $DEV1 $DEV2
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting mixed asynchronous and callback modes (2)"
-$DIR/asyn_cb2
+$DIR/asyn_cb2 $DEV1 $DEV2
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting executing command asynchronously (callback way)"
-$DIR/asyn_cb_cmd dev/test/10
+$DIR/asyn_cb_cmd $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting reading attribute asynchronously (callback way)"
-$DIR/asyn_attr_cb dev/test/10
+$DIR/asyn_attr_cb $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing attribute asynchronously (callback way)"
-$DIR/asyn_write_cb dev/test/10
+$DIR/asyn_write_cb $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting automatic callback mode"
-$DIR/auto_asyn_cmd dev/test/10
+$DIR/auto_asyn_cmd $DEV1
 ret=$?
 check_return_value $ret
 #

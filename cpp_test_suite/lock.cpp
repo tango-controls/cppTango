@@ -17,17 +17,18 @@ int main(int argc, char **argv)
 {
 	DeviceProxy *device;
 	
-	if ((argc == 1) || (argc > 3))
+	if ((argc < 3) || (argc > 4))
 	{
-		cout << "usage: %s device [-v] " << endl;
+		cout << "usage: lock <device1> <device2> [-v] " << endl;
 		exit(-1);
 	}
 
 	string device_name = argv[1];
+	string device2_name = argv[2];
 	
-	if (argc == 3)
+	if (argc == 4)
 	{
-		if (strcmp(argv[2],"-v") == 0)
+		if (strcmp(argv[3],"-v") == 0)
 			verbose = true;
 	}	
 
@@ -323,7 +324,7 @@ int main(int argc, char **argv)
 
 // Check that the locking thread is doing periodic re-lock
 
-		DeviceProxy *device2 = new DeviceProxy("dev/test/11");
+		DeviceProxy *device2 = new DeviceProxy(device2_name);
 		device2->lock(6);
 
 		sleep(7);

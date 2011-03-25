@@ -11,7 +11,15 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-		
+
+	if (argc != 2)
+	{
+		cout << "usage: print_data <device>" << endl;
+		exit(-1);
+	}
+
+	string device_name = argv[1];
+
 // Test boolean
 
 	DeviceData din;
@@ -290,7 +298,7 @@ int main(int argc, char **argv)
 	da << s_attr;
 	cout << da << endl;
 	
-	DeviceProxy dev("dev/test/10");
+	DeviceProxy dev(device_name);
 	
 	da = dev.read_attribute("Long_attr");
 	cout << da  << endl;

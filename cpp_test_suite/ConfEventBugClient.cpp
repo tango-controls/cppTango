@@ -51,7 +51,7 @@ void ConfigChangedEventCallback::push_event( Tango::AttrConfEventData* ed )
 }
 
 
-main()
+main(int argc, char **argv)
 {
 	int rc = 0;
 	Tango::AttributeInfoEx ai;
@@ -59,7 +59,13 @@ main()
 	Tango::DeviceProxy *dev;
 	ConfigChangedEventCallback * configChangedEventCallback = new ConfigChangedEventCallback();
 
-	string dn("dev/test/12");
+	if (argc != 2)
+	{
+		cout << "usage: ConfEventBugClient <device>" << endl;
+		exit(-1);
+	}
+
+	string dn(argv[1]);
 	string an( "double_attr" );
 	string resetValue = "Not specified";
 //		string resetValue = "NaN";

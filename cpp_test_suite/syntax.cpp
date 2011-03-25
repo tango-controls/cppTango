@@ -15,6 +15,16 @@ int main(int argc, char **argv)
 {
 	long val;
 
+	if (argc < 4)
+	{
+		cout << "usage: syntax <device1> <device2> <device1_alias>" << endl;
+		exit(-1);
+	}
+
+	string device1_name = argv[1];
+	string device2_name = argv[2];
+	string device1_alias = argv[3];
+
 //
 // First check device name syntax when creating DeviceProxy instance
 //
@@ -101,11 +111,11 @@ int main(int argc, char **argv)
 // Finally, connect to a device via its alias
 //
 
-	val = check_proxy("et_alias");
+	val = check_proxy(device1_alias.c_str());
 	assert (val == 2);
-	DeviceProxy dev("et_alias");
+	DeviceProxy dev(device1_alias);
 	string na = dev.name();
-	assert (na == "dev/test/10");
+	assert (na == device1_name);
 	DbData db_dat;
 	db_dat.push_back(DbDatum("tst_property"));
 	dev.get_property(db_dat);
@@ -113,12 +123,15 @@ int main(int argc, char **argv)
 	db_dat[0] >> prop_val;
 	assert (prop_val == 25);
 	cout << "   Connecting to device via alias like my_alias --> OK" << endl;
+
+	string tmp_name("kidiboo:10000/");
+	tmp_name = tmp_name + device1_alias;
 	
-	val = check_proxy("kidiboo:10000/et_alias");
+	val = check_proxy(tmp_name.c_str());
 	assert (val == 2);
-	DeviceProxy dev1("kidiboo:10000/et_alias");
+	DeviceProxy dev1(tmp_name);
 	na = dev1.name();
-	assert (na == "dev/test/10");
+	assert (na == device1_name);
 	dev1.get_property(db_dat);
 	long prop_val_1;
 	db_dat[0] >> prop_val_1;
@@ -129,7 +142,7 @@ int main(int argc, char **argv)
 // Connect to device via its classical name
 //
 
-	val = check_proxy("dev/test/10");
+	val = check_proxy(device1_name.c_str());
 	assert (val == 2);
 	cout << "   Connecting to device via it classical name --> OK" << endl;
 
@@ -194,7 +207,9 @@ int main(int argc, char **argv)
 	val = attr_check_proxy("a/b/c/d");
 	assert (val == 2);
 
-	val = attr_check_proxy("dev/test/10/aaaa");
+	string att_name = device1_name;
+	att_name = att_name + "/aaaa";
+	val = attr_check_proxy(att_name.c_str());
 	assert (val == 1);
 		
 	val = attr_check_proxy("my_alias:");
@@ -217,12 +232,15 @@ int main(int argc, char **argv)
 
 	val = attr_check_proxy("//kidiboo:10000/my_alias");
 	assert (val == 2);
+
+	tmp_name = device1_alias;
+	tmp_name = tmp_name + "/Short_attr";
 	
-	val = attr_check_proxy("et_alias/Short_attr");
+	val = attr_check_proxy(tmp_name.c_str());
 	assert (val == 3);
-	AttributeProxy att2("et_alias/Short_attr");
+	AttributeProxy att2(tmp_name);
 	string na_dev = att2.get_device_proxy()->name();
-	assert (na_dev == "dev/test/10");
+	assert (na_dev == device1_name);
 	
 	cout << "   Connecting to attribute via device_alias/attribute_name --> OK" << endl;
 			
@@ -235,7 +253,7 @@ int main(int argc, char **argv)
 	
 	AttributeProxy att("et_attr_alias");
 	na_dev = att.get_device_proxy()->name();
-	assert (na_dev == "dev/test/10");
+	assert (na_dev == device1_name);
 	
 	cout << "   Connecting to attribute via alias like et_attr_alias --> OK" << endl;
 	
@@ -244,7 +262,7 @@ int main(int argc, char **argv)
 	
 	AttributeProxy att1("kidiboo:10000/et_attr_alias");
 	na_dev = att1.get_device_proxy()->name();
-	assert (na_dev == "dev/test/10");
+	assert (na_dev == device1_name);
 
 	cout << "   Connecting to attribute via alias like host:port/et_attr_alias --> OK" << endl;
 
@@ -252,13 +270,13 @@ int main(int argc, char **argv)
 // Check one of the alias call
 //
 
-	DeviceProxy dev_al("dev/test/10");
+	DeviceProxy dev_al(device1_name);
 	string al = dev_al.alias();
-	assert (al == "et_alias");
+	assert (al == device1_alias);
 	
 	try
 	{	
-		DeviceProxy dev2("dev/test/11");
+		DeviceProxy dev2(device2_name);
 		al = dev2.alias();
 	}
 	catch (Tango::DevFailed &e)

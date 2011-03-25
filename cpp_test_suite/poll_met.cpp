@@ -17,9 +17,16 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	DeviceProxy *device,*device1;
-	
-	string device_name("dev/test/10");
-	string alias_name("et_alias");
+
+	if (argc != 4)
+	{
+		cout << "usage: poll_met <device1> <device2> <device1_alias>" << endl;
+		exit(-1);
+	}
+
+	string device_name = argv[1];
+	string device2_name = argv[2];
+	string alias_name = argv[3];
 	bool print = false;
 	
 	if (argc == 2)
@@ -84,7 +91,7 @@ int main(int argc, char **argv)
 
 		delete poll_str;
 		
-		device1 = new DeviceProxy("dev/test/11");
+		device1 = new DeviceProxy(device2_name);
 		poll_str = device1->polling_status();
 
 		if (print == true)

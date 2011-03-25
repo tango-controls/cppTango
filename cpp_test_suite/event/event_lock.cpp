@@ -41,7 +41,7 @@ void EventCallback::push_event( Tango::EventData *ed )
 }
 
 
-main()
+main(int argc,char *argv[])
 {
     Tango::DeviceProxy * dev;
     int eventID;
@@ -50,7 +50,13 @@ main()
 	eventCallback->cb_executed = 0;
 	eventCallback->cb_err = 0;
 
-    string devName( "dev/test/10" );
+	if (argc != 2)
+	{
+		cout << "usage: event_lock <device>" << endl;
+		exit(-1);
+	}
+
+    string devName(argv[1]);
 	string att_name ("event_change_tst");
 
     try

@@ -17,28 +17,30 @@ int main(int argc, char **argv)
 	DeviceProxy *device;
 	DeviceProxy *admin;
 	
-	if ((argc == 1) || (argc > 3))
+	if ((argc < 4) || (argc > 5))
 	{
-		cout << "usage: %s device [-v] " << endl;
+		cout << "usage: sub_dev <device1> <device2> <device3> [-v] " << endl;
 		exit(-1);
 	}
 
-	string device_name = argv[1];
+	string device1_name = argv[1];
+	string device2_name = argv[2];
+	string device3_name = argv[3];
 	
-	if (argc == 3)
+	if (argc == 5)
 	{
-		if (strcmp(argv[2],"-v") == 0)
+		if (strcmp(argv[5],"-v") == 0)
 			verbose = true;
 	}	
 
 	try 
 	{
 		// be sure that the device name are lower case letters
-		std::transform(device_name.begin(), device_name.end(), 
-                       device_name.begin(), ::tolower);
+		std::transform(device1_name.begin(), device1_name.end(), 
+                       device1_name.begin(), ::tolower);
 		
 		// connect to device
-		device = new DeviceProxy(device_name);
+		device = new DeviceProxy(device1_name);
 		
 		// Connect to admin device
 		string adm_name = device->adm_name();
@@ -89,7 +91,7 @@ int main(int argc, char **argv)
 			vector<string> sub_dev_list;
 			dd >> sub_dev_list;
 
-			string result = device_name + " dev/test/11";
+			string result = device1_name + " " + device2_name;
 			assert( sub_dev_list.size() == 1);
 			assert( sub_dev_list[0]     == result);
 
@@ -118,11 +120,11 @@ int main(int argc, char **argv)
 
 			assert( sub_dev_list.size() == 3);
 			
-			string result = "dev/test/11";
+			string result = device2_name;
 			assert( sub_dev_list[0]     == result);
-			result = device_name + " dev/test/11";
+			result = device1_name + " " + device2_name;
 			assert( sub_dev_list[1]     == result);
-			result = device_name + " dev/test/12";
+			result = device1_name + " " + device3_name;
 			assert( sub_dev_list[2]     == result);
 
 			cout << "  Add sub devices in command method and external thread --> OK" << endl;

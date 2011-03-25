@@ -29,11 +29,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	cout << '\n' << "new DeviceProxy(" << device->name() << ") returned" << '\n' << endl;
 
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
 		string name;
 		name = device->name();
 	
-		assert ( name == "dev/test/10");
+		assert ( name == device_name);
 		cout << "   Name --> OK" << endl;
 
 // Test blackbox

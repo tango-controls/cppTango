@@ -32,19 +32,20 @@ bool verbose = false;
 
 int main(int argc, char **argv)
 {	
-	if ((argc < 4) || (argc > 5))
+	if ((argc < 5) || (argc > 6))
 	{
-		cout << "usage: acc_right user host device [-v] " << endl;
+		cout << "usage: acc_right user host device1 device2 [-v] " << endl;
 		exit(-1);
 	}
 
 	string user = argv[1];
 	string host = argv[2];
 	string device = argv[3];
+	string another_device(argv[4]);
 	
-	if (argc == 5)
+	if (argc == 6)
 	{
-		if (strcmp(argv[4],"-v") == 0)
+		if (strcmp(argv[5],"-v") == 0)
 			verbose = true;
 	}	
 
@@ -201,7 +202,7 @@ int main(int argc, char **argv)
 	set_user_device_right(acc_device,user.c_str(),"*/*/*","write");
 
 
-	string another_dev("dev/test/11");
+	string another_dev(another_device);
 
 	check_device_access(device,false,false);
 	check_device_access(another_dev,true,false);

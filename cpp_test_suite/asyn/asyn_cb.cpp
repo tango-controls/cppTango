@@ -35,17 +35,26 @@ void MyCallBack::cmd_ended(CmdDoneEvent *cmd)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device,*device2;
-	
-	if (argc == 2)
+
+	if ((argc < 3) || (argc > 4))
 	{
-		if (strcmp(argv[1],"-v") == 0)
+		cout << "usage: asyn_cb <device1> <device2> [-v]" << endl;
+		exit(-1);
+	}
+
+	string device1_name = argv[1];
+	string device2_name = argv[2];
+	
+	if (argc == 4)
+	{
+		if (strcmp(argv[3],"-v") == 0)
 			verbose = true;
 	}
 
 	try 
 	{
-		device = new DeviceProxy("dev/test/10");
-		device2 = new DeviceProxy("dev/test/11");
+		device = new DeviceProxy(device1_name);
+		device2 = new DeviceProxy(device2_name);
 	}
 	catch (CORBA::Exception &e)
 	{
