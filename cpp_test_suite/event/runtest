@@ -179,12 +179,12 @@ $DIR/server_event $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting client reconnection to notifd (help needed)"
-$DIR/reco_event $DEV1
-ret=$?
-check_return_value $ret
+#$echo "\nTesting client reconnection to notifd (help needed)"
+#$DIR/reco_event $DEV1
+#ret=$?
+#check_return_value $ret
 #
-$echo "\nTesting server and client reconnection to notifd (help needed)"
-$DIR/reco_svc $DEV1
-ret=$?
-check_return_value $ret
+#$echo "\nTesting server and client reconnection to notifd (help needed)"
+#$DIR/reco_svc $DEV1
+#ret=$?
+#check_return_value $ret
