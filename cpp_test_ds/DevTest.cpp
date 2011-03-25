@@ -314,8 +314,13 @@ void DevTest::IOSubscribeEvent()
 	
 	vector<string> filters;
 
-	if (remote_dev == NULL)	
-		remote_dev = new Tango::DeviceProxy("dev/test/20");
+	if (remote_dev == NULL)
+	{
+		Tango::Util *tg = Tango::Util::instance();
+		string remote_dev_name("test/");
+		remote_dev_name = remote_dev_name + tg->get_ds_inst_name() + "/20";
+		remote_dev = new Tango::DeviceProxy(remote_dev_name);
+	}
 	string att_name("short_attr");
 	cb.cb_executed = 0;
 	
