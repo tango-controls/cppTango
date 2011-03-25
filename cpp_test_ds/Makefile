@@ -1,23 +1,8 @@
-#
-#		Makefile to generate a Tango server
-#
-
 ##############################################################
-
 #
-# Only these two variables TANGO_HOME and LIB_TANGO_DIR
-# should be modified to compile on several places
-# at the ESRF
+#		Makefile to generate the Tango test server
 #
-
-################################################################
-
-#TANGO_HOME = /home/taurel/tango/cppapi
-#TANGO_HOME = /segfs/tango/cppapi
-
-#LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
-#LIB_TANGO_DIR = $(TANGO_HOME)/../tmp/install/$(BIN_DIR)/lib
-
+##############################################################
 
 #
 # Get BIN DIR
@@ -29,6 +14,7 @@ endif
 
 ifdef ubuntu
 OS=ubuntu1004
+#OS=ubuntu904
 endif
 
 BIN_DIR = $(OS)
@@ -52,8 +38,9 @@ else
 BIN_TANGO_DIR = $(TANGO_HOME)/bin/archive
 endif
 else
-TANGO_HOME = /home/taurel/tango/cppapi
+TANGO_HOME = /home/taurel/tango/cppapi_develop
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
+BIN_TANGO_DIR = bin/$(BIN_DIR)
 endif
 
 ##############################################################################

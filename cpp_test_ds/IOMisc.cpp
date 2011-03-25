@@ -1546,9 +1546,14 @@ AcquisitionThread::AcquisitionThread () : omni_thread()
 
 void *AcquisitionThread::run_undetached (void *arg)
 {
-	cout << "Thread : Connect device = dev/test/11" << endl;
+	Tango::Util *tg = Tango::Util::instance();
+	string &inst_name = tg->get_ds_inst_name();
+  	string sub_dev("test/");
+	sub_dev = sub_dev + inst_name + "/11";
 
-	Tango::DeviceProxy *dev = new Tango::DeviceProxy ("dev/test/11");
+	cout << "Thread : Connect device = " << sub_dev << endl;
+
+	Tango::DeviceProxy *dev = new Tango::DeviceProxy (sub_dev);
 
 	return NULL;
 }
@@ -1591,9 +1596,13 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 	{
 		omni_thread *acquisition_thread = new AcquisitionThread();
 		
+		Tango::Util *tg = Tango::Util::instance();
+		string &inst_name = tg->get_ds_inst_name();
+  		string sub_dev("test/");
+		sub_dev = sub_dev + inst_name + "/12";
 		
 		Tango::DeviceProxy *remote_dev;
-		remote_dev = new Tango::DeviceProxy("dev/test/12");
+		remote_dev = new Tango::DeviceProxy(sub_dev);
 		connected = true;
 	}
 	catch (...)

@@ -1582,11 +1582,16 @@ void DevTest::read_State_spec_attr_rw(Tango::Attribute &att)
 void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name Sub_device_tst" << endl;
-      	
+  
+		Tango::Util *tg = Tango::Util::instance();
+		string &inst_name = tg->get_ds_inst_name();
+  		string sub_dev("test/");
+		sub_dev = sub_dev + inst_name + "/11";
+  	
 		try
 		{
 			Tango::DeviceProxy *remote_dev;
-			remote_dev = new Tango::DeviceProxy("dev/test/11");
+			remote_dev = new Tango::DeviceProxy(sub_dev);
 			attr_sub_device_tst = true;
 		}
 		catch (...)
