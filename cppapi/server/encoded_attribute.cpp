@@ -292,7 +292,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
         data[dstIdx++] = rawBuff[srcIdx++]; // R
         data[dstIdx++] = rawBuff[srcIdx++]; // G
         data[dstIdx++] = rawBuff[srcIdx++]; // B
-        dstIdx++;
+        data[dstIdx++] = 0;
       }
     }
 
