@@ -2,8 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="win32_ds"
+	Name="win32_ds_static"
 	ProjectGUID="{19FA8AFF-C805-4D18-8A62-DD623D383C51}"
+	RootNamespace="win32_ds_static"
 	TargetFrameworkVersion="0"
 	>
 	<Platforms>
@@ -44,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\tango_src\cppapi_7_0\server;C:\tango_src\cppapi_7_0\client;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;;C:\tango_src\cppapi_tst_ds"
+				AdditionalIncludeDirectories="C:\tango_src\cppapi_7_2_6\server;C:\tango_src\cppapi_7_2_6\client;C:\tango_src\cpp_test_ds;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WINSTATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -75,7 +76,7 @@
 				OutputFile="Debug/devTest.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="C:\tango_src\cppapi_7_0\win32\tango_vc9\tango_static\lib;&quot;$(OMNI_BASE)\win32\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib&quot;"
+				AdditionalLibraryDirectories="C:\tango_src\cppapi_7_2_6\win32\tango_vc9\tango_static\lib;&quot;$(OMNI_BASE)\win32\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/devTest.pdb"
 				SubSystem="1"
