@@ -3,6 +3,10 @@
 #INSTALL_DIR=/segfs/tango/tmp/ci
 INSTALL_DIR=/tmp/ci
 
+#
+# Set some variables according to OS
+#
+
 for i in $NODE_LABELS
 do
 	echo $i
@@ -19,6 +23,13 @@ do
 		OS_SPEC="_solaris=1"
 		MAKE_PATH="/usr/local/bin/make"
 	fi
+
+	if [ $i = "Windows_VC9" ]
+	then
+		echo "Windows VC9"
+		OS_SPEC="Windows"
+		MAKE_PATH="devenv"
+	fi
 	
 	if [ $i = "redhate5" ]
 	then
@@ -28,15 +39,77 @@ do
 	fi
 done
 
+#
+# Set library type
+#
 
-if [ $LibType = "shared" ]
+if [ $OS_SPEC = "Windows" ]
 then
-	LIBTYPE="shared=1"
+	if [ $LIBTYPE = "shared" ]
+	then
+		PROJ_NAME="win32_ds_dll"
+		OUTFILE="devenv_ds_dll"
+	else
+		PROJ_NAME="win32_ds_static"
+		OUTFILE="devenv_ds_static"
+	fi
+else
+	if [ $LIBTYPE = "shared" ]
+	then
+		LIB_TYPE="shared=1"
+	fi
 fi
 
+#
+# Build make command
+#
 
-MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIBTYPE all"
+if [ $OS_SPEC = "Windows" ]
+then
+	MAKE_CMD="$MAKE_PATH /build debug /project $PROJ_NAME /out $OUTFILE WIN32_DS.sln"
+	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
+	echo $PATH
+	cd cpp_test_ds/win32_ds_vs9
+	/bin/rm -f $OUTFILE
+else
+	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIB_TYPE all"
+	cd cpp_test_ds
+fi
 
-cd cpp_test_ds
+#
+# Build DS
+#
 echo $MAKE_CMD
 $MAKE_CMD
+RET=$?
+
+#
+# For windows, in the archive build, also build DS running with its own window
+#
+
+if [ $OS_SPEC = "Windows" ]
+then
+	if [ $LIBTYPE = "archive" ]
+	then
+		/bin/cat $OUTFILE
+
+		PROJ_NAME="win32_ds_win"
+		OUTFILE="devenv_ds_win"
+		MAKE_CMD="$MAKE_PATH /build debug /project $PROJ_NAME /out $OUTFILE WIN32_DS.sln"
+		/bin/rm -f $OUTFILE
+
+		echo $MAKE_CMD
+		$MAKE_CMD
+		RET=$?
+	fi
+fi
+
+if [ $OS_SPEC = "Windows" ]
+then
+	/bin/cat $OUTFILE
+fi
+
+if [ $RET != 0 ]
+then
+	exit -1
+fi
