@@ -1360,10 +1360,14 @@ void DevTest::read_Event_change_tst(Tango::Attribute &att)
       	{
 			if (event_throw_out_of_sync == true)
 			{
+#ifdef WIN32
+				Sleep(400);
+#else
 				struct timespec sleep_time;
 				sleep_time.tv_sec = 0;
 				sleep_time.tv_nsec = 400000000;
 				nanosleep(&sleep_time,NULL);
+#endif
 			}
       		att.set_value(attr_event,attr_event_size);
       	}
