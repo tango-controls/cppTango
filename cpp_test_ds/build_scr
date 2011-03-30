@@ -13,6 +13,7 @@ do
 	if [ $i = "ubuntu10.04" ]
 	then
 		echo "Ubuntu 10.04 OS"
+		OS_TYPE="linux"
 		OS_SPEC="linux=1 ubuntu=1"
 		MAKE_PATH="make"
 	fi
@@ -20,6 +21,7 @@ do
 	if [ $i = "solaris10" ]
 	then
 		echo "Solaris 10 OS"
+		OS_TYPE="solaris"
 		OS_SPEC="_solaris=1"
 		MAKE_PATH="/usr/local/bin/make"
 	fi
@@ -27,6 +29,7 @@ do
 	if [ $i = "Windows_VC9" ]
 	then
 		echo "Windows VC9"
+		OS_TYPE="Windows"
 		OS_SPEC="Windows"
 		MAKE_PATH="devenv"
 	fi
@@ -34,6 +37,7 @@ do
 	if [ $i = "redhate5" ]
 	then
 		echo "redhate 5 OS"
+		OS_TYPE="linux"
 		OS_SPEC="linux=1"
 		MAKE_PATH="make"
 	fi
@@ -43,7 +47,7 @@ done
 # Set library type
 #
 
-if [ $OS_SPEC = "Windows" ]
+if [ $OS_TYPE = "Windows" ]
 then
 	if [ $LIBTYPE = "shared" ]
 	then
@@ -64,7 +68,7 @@ fi
 # Build make command
 #
 
-if [ $OS_SPEC = "Windows" ]
+if [ $OS_TYPE = "Windows" ]
 then
 	MAKE_CMD="$MAKE_PATH /build debug /project $PROJ_NAME /out $OUTFILE WIN32_DS.sln"
 	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
@@ -87,7 +91,7 @@ RET=$?
 # For windows, in the archive build, also build DS running with its own window
 #
 
-if [ $OS_SPEC = "Windows" ]
+if [ $OS_TYPE = "Windows" ]
 then
 	if [ $LIBTYPE = "archive" ]
 	then
@@ -104,7 +108,7 @@ then
 	fi
 fi
 
-if [ $OS_SPEC = "Windows" ]
+if [ $OS_TYPE = "Windows" ]
 then
 	/bin/cat $OUTFILE
 fi
