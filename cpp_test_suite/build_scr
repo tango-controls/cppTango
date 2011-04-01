@@ -92,6 +92,7 @@ RET=$?
 if [ $OS_TYPE = "Windows" ]
 then
 	cat $OUTFILE
+	cd ../../..
 fi
 
 if [ $RET != 0 ]
@@ -152,8 +153,13 @@ ps -ef | grep devTest
 # Start test
 #
 
-#./runtest jenkins $INSTALL_DIR
-#RET=$?
+if [ $OS_TYPE = "Windows" ]
+then
+	INSTALL_DIR=WIN_CYGWIN_INSTALL_DIR
+fi
+
+./runtest jenkins $INSTALL_DIR
+RET=$?
 
 #
 # kill the servers
