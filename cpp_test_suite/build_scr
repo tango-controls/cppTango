@@ -1,8 +1,13 @@
 #!/bin/bash
 
-#INSTALL_DIR=/segfs/tango/tmp/ci
-INSTALL_DIR=/tmp/ci
+UX_INSTALL_DIR=/tmp/ci
+WIN_INSTALL_DIR="C:\tango_src\ci"
+
 DS_NAME=devTest
+
+#
+# Set some variables according to OS
+#
 
 for i in $NODE_LABELS
 do
@@ -10,61 +15,106 @@ do
 	if [ $i = "ubuntu10.04" ]
 	then
 		echo "Ubuntu 10.04 OS"
+		OS_TYPE="linux"
 		OS_SPEC="linux=1 ubuntu=1"
 		BIN_DIR="ubuntu1004"
 		MAKE_PATH="make"
 		DS_INST_NAME=ubuntu1004
 		DS_INST_NAME_2=ubuntu1004_2
+		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 	
 	if [ $i = "solaris10" ]
 	then
 		echo "Solaris 10 OS"
+		OS_TYPE="solaris"
 		OS_SPEC="_solaris=1"
 		BIN_DIR="solaris10_CC"
 		MAKE_PATH="/usr/local/bin/make"
 		DS_INST_NAME=solaris10
 		DS_INST_NAME_2=solaris10_2
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
+
+	if [ $i = "Windows_VC9" ]
+	then
+		echo "Windows VC9"
+		OS_TYPE="Windows"
+		OS_SPEC="Windows"
+		MAKE_PATH="devenv"
+		INSTALL_DIR=$WIN_INSTALL_DIR
+		OUTFILE="devenv_suite"
 	fi
 	
 	if [ $i = "redhate5" ]
 	then
 		echo "redhate 5 OS"
+		OS_TYPE="linux"
 		OS_SPEC="linux=1"
 		BIN_DIR="redhate5"
 		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 done
 
-MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC all"
+#
+# Build make command
+#
 
-cd cpp_test_suite
+if [ $OS_TYPE = "Windows" ]
+then
+	MAKE_CMD="$MAKE_PATH test_suite.sln /build Release /out $OUTFILE "
+	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
+	PATH=$PATH:/bin
+	echo $PATH
+	export PREFIX=$INSTALL_DIR
+	cd cpp_test_suite/win32/vc9/test_suite
+	rm -f $OUTFILE
+else
+	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC all"
+	cd cpp_test_suite
+fi
+
+#
+# Run make
+# Only one solution in Windows but 3 make in 3 directories for non-windows OS
+#
+
 echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
+
+if [ $OS_TYPE = "Windows" ]
+then
+	cat $OUTFILE
+fi
+
 if [ $RET != 0 ]
 then
 	exit -1
 fi
 
-cd asyn
-echo $MAKE_CMD
-$MAKE_CMD
-RET=$?
-if [ $RET != 0 ]
+if [ $OS_TYPE != "Windows" ]
 then
-	exit -1
-fi
+	cd asyn
+	echo $MAKE_CMD
+	$MAKE_CMD
+	RET=$?
+	if [ $RET != 0 ]
+	then
+		exit -1
+	fi
 
-cd ../event
-echo $MAKE_CMD
-$MAKE_CMD
-RET=$?
-if [ $RET != 0 ]
-then
-	exit -1
+	cd ../event
+	echo $MAKE_CMD
+	$MAKE_CMD
+	RET=$?
+	if [ $RET != 0 ]
+	then
+		exit -1
+	fi
+	cd ..
 fi
-cd ..
 
 #
 # Now Start the first device server
