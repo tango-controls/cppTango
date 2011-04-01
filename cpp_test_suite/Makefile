@@ -122,7 +122,7 @@ all: new_devproxy multiple_new reconnect cmd_inout read_attr cmd_types \
      copy_devproxy obj_prop read_hist poll_met poll_except poll_attr print_data \
      print_data_hist syntax size attr_proxy read_hist_ext write_attr_3 \
      ring_depth attr_misc state_attr rds mem_att attr_manip prop_list ds_cache sub_dev \
-     locked_device lock restart_device unlock allowed_cmd w_r_attr  acc_right sub_dev \
+     locked_device lock restart_device unlock allowed_cmd w_r_attr  acc_right \
 	 ConfEventBugClient att_conf Poll StopPoll
 
 	
