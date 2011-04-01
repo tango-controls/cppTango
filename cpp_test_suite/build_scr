@@ -2,6 +2,7 @@
 
 UX_INSTALL_DIR=/tmp/ci
 WIN_INSTALL_DIR="C:\tango_src\ci"
+WIN_CYGWIN_INSTALL_DIR="/cygdrive/c/tango_src/ci"
 
 DS_NAME=devTest
 
@@ -42,7 +43,10 @@ do
 		OS_TYPE="Windows"
 		OS_SPEC="Windows"
 		MAKE_PATH="devenv"
+		DS_INST_NAME=win32_vc9
+		DS_INST_NAME_2=win32_vc9_2
 		INSTALL_DIR=$WIN_INSTALL_DIR
+		BIN_DIR="win32"
 		OUTFILE="devenv_suite"
 	fi
 	
@@ -68,7 +72,8 @@ then
 	PATH=$PATH:/bin
 	echo $PATH
 	export PREFIX=$INSTALL_DIR
-	cd cpp_test_suite/win32/vc9/test_suite
+#	cd cpp_test_suite/win32/vc9/test_suite
+	cd /cygdrive/c/tango_src/cpp_test_suite/win32/vc9/test_suite
 	rm -f $OUTFILE
 else
 	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC all"
@@ -91,6 +96,7 @@ fi
 
 if [ $RET != 0 ]
 then
+	echo "Build fail!!!"
 	exit -1
 fi
 
@@ -127,28 +133,34 @@ ORB_LIB=/segfs/tango/ORB/omniORB4.1.4/$BIN_DIR/lib
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$LD_LIBRARY_PATH
 export TANGO_HOST=kidiboo:10000
 
-$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
-$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+if [ $OS_TYPE = "Windows" ]
+	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
+	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
+then
+	$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+	$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+fi
 
 #
 # Wait before starting test
 #
 
-sleep 2
+sleep 4
 ps -ef | grep devTest
 
 #
 # Start test
 #
 
-./runtest jenkins $INSTALL_DIR
-RET=$?
+#./runtest jenkins $INSTALL_DIR
+#RET=$?
 
 #
 # kill the servers
 #
 
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
+echo "PIDS = $PIDS"
 for pid in $PIDS
 do
 	echo "Killing process with PID $pid"
