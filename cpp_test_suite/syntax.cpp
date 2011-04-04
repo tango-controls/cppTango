@@ -251,11 +251,11 @@ int main(int argc, char **argv)
 
 	val = attr_check_proxy(attr_alias.c_str());
 	assert (val == 3);
-	
+
 	AttributeProxy att(attr_alias);
 	na_dev = att.get_device_proxy()->name();
 	assert (na_dev == device1_name);
-	
+
 	cout << "   Connecting to attribute via alias like et_attr_alias --> OK" << endl;
 
 	tmp_name = "Kidiboo:10000/";

@@ -4,7 +4,6 @@
 
 #include <tango.h>
 #include <assert.h>
-#include <wait.h>
 
 #define	coutv	if (verbose == true) cout
 
@@ -327,7 +326,7 @@ int main(int argc, char **argv)
 		DeviceProxy *device2 = new DeviceProxy(device2_name);
 		device2->lock(6);
 
-		sleep(7);
+		Tango_sleep(7);
 		bool_ret = device->is_locked_by_me();
 		assert ( bool_ret == true);
 		device->unlock();
@@ -389,7 +388,7 @@ int main(int argc, char **argv)
 
 		admin->command_inout("RestartServer");
 
-		sleep(2);
+		Tango_sleep(2);
 		bool_ret = device->is_locked_by_me();
 		assert (bool_ret == false);
 
@@ -443,7 +442,7 @@ int main(int argc, char **argv)
 		ApiUtil *au = ApiUtil::instance();
 		au->clean_locking_threads(false);
 
-		sleep(5);
+		Tango_sleep(5);
 
 		bool_ret = device->is_locked_by_me();
 		assert (bool_ret == false);

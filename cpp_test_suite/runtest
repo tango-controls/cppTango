@@ -239,16 +239,19 @@ $DIR/w_r_attr $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting device locking feature"
 if [ $1 = "jenkins" ]
 then
 	PATH=$PATH:$DIR
 else
 	PATH=$PATH:./$DIR
 fi
-$DIR/lock $DEV1 $DEV2
-ret=$?
-check_return_value $ret
+if [ $INST_NAME != "win32_vc9" ]
+then
+	$echo "\nTesting device locking feature"
+	$DIR/lock $DEV1 $DEV2
+	ret=$?
+	check_return_value $ret
+fi
 #
 $echo "\nTesting the sub device diagnostics"
 $DIR/sub_dev $DEV1 $DEV2 $DEV3

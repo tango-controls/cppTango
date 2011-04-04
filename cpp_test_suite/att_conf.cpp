@@ -69,7 +69,11 @@ int main(int argc, char **argv)
 		ail.clear();
         ail.push_back( ai_expected );
         dev->set_attribute_config( ail );
+#ifdef WIN32
+		Sleep(1000);
+#else
 		sleep(1);
+#endif
 		ai_act = dev->attribute_query( an );
 		res = compare( ai_act, ai_expected );
 		if( res != 0 )
@@ -93,7 +97,11 @@ int main(int argc, char **argv)
 		ail.clear();
         ail.push_back( ai_expected );
         dev->set_attribute_config( ail );
+#ifdef WIN32
+		Sleep(1000);
+#else
 		sleep(1);
+#endif
 		ai_act = dev->attribute_query( an );
 		reset_to_default(ai_expected,an);
 		res = compare( ai_act, ai_expected );
@@ -122,7 +130,7 @@ int main(int argc, char **argv)
 //		cout << "         make a DevRestart" << endl;
 		ddIn << devnm;
 		ddOut = adm_dev->command_inout( "DevRestart", ddIn );
-		sleep( 5 );
+		Tango_sleep( 5 );
 
 		ai_act = dev->attribute_query( an );
 		res = compare( ai_act, ai_expected );
@@ -151,7 +159,11 @@ int main(int argc, char **argv)
 //		cout << "         make a DevRestart" << endl;
 		ddIn << devnm;
 		ddOut = adm_dev->command_inout( "DevRestart", ddIn );
+#ifdef WIN32
+		Sleep(5000);
+#else
 		sleep( 5 );
+#endif
 
 		ai_act = dev->attribute_query( an );
 		reset_to_default(ai_expected,an);

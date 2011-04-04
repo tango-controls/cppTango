@@ -21,6 +21,7 @@
 /// NO ERROR CHECKS
 
 #include "tango.h"
+#include <assert.h>
 
 using namespace std;
 
@@ -51,7 +52,7 @@ void ConfigChangedEventCallback::push_event( Tango::AttrConfEventData* ed )
 }
 
 
-main(int argc, char **argv)
+int main(int argc, char **argv)
 {
 	int rc = 0;
 	Tango::AttributeInfoEx ai;
@@ -93,7 +94,7 @@ main(int argc, char **argv)
 	dev -> subscribe_event( an, Tango::ATTR_CONF_EVENT, configChangedEventCallback, filters );
 //        cout << "[main]: subscribe_event() done." << endl << endl;
 
-	sleep( 1 );
+	Tango_sleep( 1 );
 //        cout << "[main]: current setting according configuration changed event: abs_chang=" <<  abs_change_according_last_event << endl;
 //        cout << "[main]: current setting according configuration changed event: rel_chang=" <<  rel_change_according_last_event << endl;
 
@@ -106,7 +107,7 @@ main(int argc, char **argv)
 	dev->set_attribute_config( ail );
 
 //        cout << "[main]: clearing setting for rel/abs_change.  Wait for a config changed event ..." << endl;
-	sleep( 1 );
+	Tango_sleep( 1 );
 
 	// bug demonstration:
 //	cout << "[main]: doing a query for configuration from server: dev->attribute_query() ..." << endl;

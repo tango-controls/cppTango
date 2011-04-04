@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-	catch (CORBA::Exception &e)
+	catch (CORBA::Exception &)
 	{
 //		Except::print_exception(e);
 		exit(-1);
@@ -54,7 +54,7 @@ int main(int argc, char **argv)
 		device->command_inout("State");
 		device->command_inout("Status");
 	}
-	catch (Tango::DevFailed &e)
+	catch (Tango::DevFailed &)
 	{
 		return 3;
 	}
