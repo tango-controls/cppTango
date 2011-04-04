@@ -155,7 +155,7 @@ ps -ef | grep devTest
 
 if [ $OS_TYPE = "Windows" ]
 then
-	INSTALL_DIR=WIN_CYGWIN_INSTALL_DIR
+	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
 fi
 
 ./runtest jenkins $INSTALL_DIR
