@@ -5,7 +5,6 @@
 #include <tango.h>
 #include <assert.h>
 
-#include <sys/time.h>
 #include <time.h>
 
 typedef enum
@@ -63,7 +62,7 @@ int main(int argc, char **argv)
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
-	int i;
+	unsigned int i;
 	vector<DeviceDataHistory> *d_hist;
 	
 	try

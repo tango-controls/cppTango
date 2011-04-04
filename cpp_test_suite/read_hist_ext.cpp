@@ -46,7 +46,7 @@ int main(int argc, char **argv)
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
-	int i;
+	unsigned int i;
 	vector<DeviceDataHistory> *d_hist;
 	vector<DeviceAttributeHistory> *a_hist;
 	

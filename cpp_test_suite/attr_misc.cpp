@@ -170,9 +170,9 @@ int main(int argc, char **argv)
 	}
 
 	vector<float> in;
-	in.push_back(3.6);
-	in.push_back(3.3);
-	in.push_back(3.7);
+	in.push_back((float)3.6);
+	in.push_back((float)3.3);
+	in.push_back((float)3.7);
 	DeviceAttribute din(att_name,in);
 
 	bool failed = false;
@@ -191,7 +191,7 @@ int main(int argc, char **argv)
 	assert (failed == true);
 	assert (reason == "API_WAttrOutsideLimit");
 	
-	in[2] = 17.6;
+	in[2] = (float)17.6;
 	failed = false;
 	din << in;
 	

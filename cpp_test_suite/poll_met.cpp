@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 		poll_str = device->polling_status();
 
 		long nb_polled = BASIC_NB_POLL;
-		for (int i = 0;i < poll_str->size();i++)
+		for (unsigned int i = 0;i < poll_str->size();i++)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
@@ -82,7 +82,7 @@ int main(int argc, char **argv)
 		{
 			cout << poll_str->size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < poll_str->size();i++)
+			for (unsigned int i = 0;i < poll_str->size();i++)
 				cout << "Polling status = " << (*poll_str)[i] << endl;
 			cout << endl;
 		}
@@ -98,7 +98,7 @@ int main(int argc, char **argv)
 		{
 			cout << poll_str->size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < poll_str->size();i++)
+			for (unsigned int i = 0;i < poll_str->size();i++)
 				cout << "Polling status = " << (*poll_str)[i] << endl;
 			cout << endl;
 		}
@@ -120,7 +120,7 @@ int main(int argc, char **argv)
 		d_received >> v_str;
 
 		nb_polled = BASIC_NB_POLL;				
-		for (int i = 0;i < v_str.size();i++)
+		for (unsigned int i = 0;i < v_str.size();i++)
 		{
 			if (v_str[i].find("String_attr") != string::npos)
 			{
@@ -139,7 +139,7 @@ int main(int argc, char **argv)
 		{
 			cout << v_str.size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < v_str.size();i++)
+			for (unsigned int i = 0;i < v_str.size();i++)
 				cout << "Polling status = " << v_str[i] << endl;
 			cout << endl;
 		}
@@ -208,13 +208,13 @@ int main(int argc, char **argv)
 		{
 			cout << poll_str->size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < poll_str->size();i++)
+			for (unsigned int i = 0;i < poll_str->size();i++)
 				cout << "Polling status = " << (*poll_str)[i] << endl;
 			cout << endl;
 		}
 
 		nb_polled = BASIC_NB_POLL + 1;
-		for (int i = 0;i < poll_str->size();i++)
+		for (unsigned int i = 0;i < poll_str->size();i++)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
@@ -245,7 +245,7 @@ int main(int argc, char **argv)
 		{
 			device->poll_command("IOExcept",300);
 		}
-		catch (Tango::DevFailed &e)
+		catch (Tango::DevFailed &)
 		{
 			except = true;
 		}
@@ -260,7 +260,7 @@ int main(int argc, char **argv)
 		{
 			device->poll_command("IOExcept",100);
 		}
-		catch (Tango::DevFailed &e)
+		catch (Tango::DevFailed &)
 		{
 			except = true;
 		}
@@ -272,7 +272,7 @@ int main(int argc, char **argv)
 		{
 			device->poll_command("IOExcept",500);
 		}
-		catch (Tango::DevFailed &e)
+		catch (Tango::DevFailed e)
 		{
 			except = true;
 		}
@@ -290,7 +290,7 @@ int main(int argc, char **argv)
 		{
 			device->poll_command("IOExcept",2000);
 		}
-		catch (Tango::DevFailed &e)
+		catch (Tango::DevFailed &)
 		{
 			except = true;
 		}
@@ -321,13 +321,13 @@ int main(int argc, char **argv)
 		{
 			cout << poll_str->size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < poll_str->size();i++)
+			for (unsigned int i = 0;i < poll_str->size();i++)
 				cout << "Polling status = " << (*poll_str)[i] << endl;
 			cout << endl;
 		}
 
 		nb_polled = BASIC_NB_POLL;
-		for (int i = 0;i < poll_str->size();i++)
+		for (unsigned int i = 0;i < poll_str->size();i++)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
@@ -386,13 +386,13 @@ int main(int argc, char **argv)
 		{
 			cout << poll_str->size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < poll_str->size();i++)
+			for (unsigned int i = 0;i < poll_str->size();i++)
 				cout << "Polling status = " << (*poll_str)[i] << endl;
 			cout << endl;
 		}
 
 		nb_polled = BASIC_NB_POLL + 1;
-		for (int i = 0;i < poll_str->size();i++)
+		for (unsigned int i = 0;i < poll_str->size();i++)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
@@ -426,13 +426,13 @@ int main(int argc, char **argv)
 		{
 			cout << poll_str->size() << " object(s) polled for device" << endl;
 			cout << endl;
-			for (int i = 0;i < poll_str->size();i++)
+			for (unsigned int i = 0;i < poll_str->size();i++)
 				cout << "Polling status = " << (*poll_str)[i] << endl;
 			cout << endl;
 		}
 
 		nb_polled = BASIC_NB_POLL;
-		for (int i = 0;i < poll_str->size();i++)
+		for (unsigned int i = 0;i < poll_str->size();i++)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{

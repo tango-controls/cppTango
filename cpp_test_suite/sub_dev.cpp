@@ -72,7 +72,11 @@ int main(int argc, char **argv)
 
 		assert ( except == false );
 		cout << "  Server restart to clean sub device lists --> OK" << endl;
+#ifdef WIN32
+		Sleep(3000);
+#else
 		sleep(3);
+#endif
 
 // read attribute to have a sub device in the list
 
@@ -108,7 +112,11 @@ int main(int argc, char **argv)
 			assert (cmd_value == true);
 			
 			// let the external thread some time to do its work!
+#ifdef WIN32
+			Sleep(1000);
+#else
 			sleep(1);
+#endif
 		}
 		
 // check the list of sub devices on the administration device

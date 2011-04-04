@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 	check_size("AttrWrittenEvent",sizeof(AttrWrittenEvent),20);
 	check_size("CallBack",sizeof(CallBack),8);
 
-	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);				
+	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);		
 }
 
 void check_size(const char *class_name,long class_size,long std_size)

@@ -110,7 +110,7 @@ int main(int argc, char **argv)
 		da = device->read_attribute(att_name);
 		da >> vs;
 		
-		int i;
+		unsigned int i;
 		for (i = 0;i < vs.size();i++)
 			coutv << "Attribute vector " << i << " = " << vs[i] << endl;
 

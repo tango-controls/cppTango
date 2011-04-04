@@ -101,7 +101,7 @@ int main(int argc, char **argv)
 
 		assert (poll_sta->size() == 3);
 
-		int i;
+		unsigned int i;
 		int index;
 		for (i = 0;i < poll_sta->size();i++)
 		{
