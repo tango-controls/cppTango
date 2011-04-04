@@ -91,6 +91,9 @@ int main(int argc, char **argv)
 		string str_adm;
 		str_adm = device->adm_name();
 
+		transform(str_adm.begin(),str_adm.end(),str_adm.begin(),::tolower);
+		transform(admin_device.begin(),admin_device.end(),admin_device.begin(),::tolower);
+
 		assert ( str_adm == admin_device);
 		cout << "   Adm_name --> OK" << endl;
 

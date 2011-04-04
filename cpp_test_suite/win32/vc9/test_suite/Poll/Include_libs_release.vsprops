@@ -7,7 +7,7 @@
 	<Tool
 		Name="VCCLCompilerTool"
 		AdditionalIncludeDirectories="&quot;$(PREFIX)/win32/include&quot;;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
-		PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WINSTATIC"
+		PreprocessorDefinitions="WIN32;_CONSOLE;_WINSTATIC"
 	/>
 	<Tool
 		Name="VCLinkerTool"
