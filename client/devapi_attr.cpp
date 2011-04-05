@@ -2770,12 +2770,12 @@ bool DeviceAttribute::operator >> (vector<string>& datum)
 	{
 		if (StringSeq->length() != 0)
 		{
-                	datum.resize(StringSeq->length());
+        	datum.resize(StringSeq->length());
 
-                	for (unsigned int i=0; i<StringSeq->length(); i++)
-                	{
-                        	datum[i] = StringSeq[i];
-               	 	}
+        	for (unsigned int i=0; i<StringSeq->length(); i++)
+        	{
+                datum[i] = StringSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -2838,12 +2838,12 @@ bool DeviceAttribute::operator >> (vector<short>& datum)
 	{
 		if (ShortSeq->length() != 0)
 		{
-                	datum.resize(ShortSeq->length());
+			datum.resize(ShortSeq->length());
 
-                	for (unsigned int i=0; i<ShortSeq->length(); i++)
-                	{
-                        	datum[i] = ShortSeq[i];
-               	 	}
+			for (unsigned int i=0; i<ShortSeq->length(); i++)
+			{
+				datum[i] = ShortSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -2905,12 +2905,12 @@ bool DeviceAttribute::operator >> (vector<DevLong>& datum)
 	{
 		if (LongSeq->length() != 0)
 		{
-                	datum.resize(LongSeq->length());
+			datum.resize(LongSeq->length());
 
-                	for (unsigned int i=0; i<LongSeq->length(); i++)
-                	{
-                        	datum[i] = LongSeq[i];
-               	 	}
+			for (unsigned int i=0; i<LongSeq->length(); i++)
+			{
+				datum[i] = LongSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -2973,12 +2973,12 @@ bool DeviceAttribute::operator >> (vector<DevLong64>& datum)
 	{
 		if (ext->Long64Seq->length() != 0)
 		{
-                	datum.resize(ext->Long64Seq->length());
+			datum.resize(ext->Long64Seq->length());
 
-                	for (unsigned int i=0; i<ext->Long64Seq->length(); i++)
-                	{
-                        	datum[i] = ext->Long64Seq[i];
-               	 	}
+			for (unsigned int i=0; i<ext->Long64Seq->length(); i++)
+			{
+				datum[i] = ext->Long64Seq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3040,12 +3040,12 @@ bool DeviceAttribute::operator >> (vector<double>& datum)
 	{
 		if (DoubleSeq->length() != 0)
 		{
-                	datum.resize(DoubleSeq->length());
+			datum.resize(DoubleSeq->length());
 
-                	for (unsigned int i=0; i<DoubleSeq->length(); i++)
-                	{
-                        	datum[i] = DoubleSeq[i];
-               	 	}
+			for (unsigned int i=0; i<DoubleSeq->length(); i++)
+			{
+				datum[i] = DoubleSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3108,12 +3108,12 @@ bool DeviceAttribute::operator >> (vector<float>& datum)
 	{
 		if (FloatSeq->length() != 0)
 		{
-                	datum.resize(FloatSeq->length());
+			datum.resize(FloatSeq->length());
 
-                	for (unsigned int i=0; i<FloatSeq->length(); i++)
-                	{
-                        	datum[i] = FloatSeq[i];
-               	 	}
+			for (unsigned int i=0; i<FloatSeq->length(); i++)
+			{
+				datum[i] = FloatSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3176,12 +3176,12 @@ bool DeviceAttribute::operator >> (vector<bool>& datum)
 	{
 		if (BooleanSeq->length() != 0)
 		{
-                	datum.resize(BooleanSeq->length());
+			datum.resize(BooleanSeq->length());
 
-                	for (unsigned int i=0; i<BooleanSeq->length(); i++)
-                	{
-                        	datum[i] = BooleanSeq[i];
-               	 	}
+			for (unsigned int i=0; i<BooleanSeq->length(); i++)
+			{
+				datum[i] = BooleanSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3244,12 +3244,12 @@ bool DeviceAttribute::operator >> (vector<unsigned short>& datum)
 	{
 		if (UShortSeq->length() != 0)
 		{
-                	datum.resize(UShortSeq->length());
+			datum.resize(UShortSeq->length());
 
-                	for (unsigned int i=0; i<UShortSeq->length(); i++)
-                	{
-                        	datum[i] = UShortSeq[i];
-               	 	}
+			for (unsigned int i=0; i<UShortSeq->length(); i++)
+			{
+				datum[i] = UShortSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3311,12 +3311,12 @@ bool DeviceAttribute::operator >> (vector<unsigned char>& datum)
 	{
 		if (UCharSeq->length() != 0)
 		{
-                	datum.resize(UCharSeq->length());
+			datum.resize(UCharSeq->length());
 
-                	for (unsigned int i=0; i<UCharSeq->length(); i++)
-                	{
-                        	datum[i] = UCharSeq[i];
-               	 	}
+			for (unsigned int i=0; i<UCharSeq->length(); i++)
+			{
+				datum[i] = UCharSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3378,12 +3378,12 @@ bool DeviceAttribute::operator >> (vector<DevULong>& datum)
 	{
 		if (ext->ULongSeq->length() != 0)
 		{
-                	datum.resize(ext->ULongSeq->length());
+			datum.resize(ext->ULongSeq->length());
 
-                	for (unsigned int i=0; i<ext->ULongSeq->length(); i++)
-                	{
-                        	datum[i] = ext->ULongSeq[i];
-               	 	}
+			for (unsigned int i=0; i<ext->ULongSeq->length(); i++)
+			{
+				datum[i] = ext->ULongSeq[i];
+			}
 		}			
 		else
 			ret = false;
@@ -3445,12 +3445,12 @@ bool DeviceAttribute::operator >> (vector<DevULong64>& datum)
 	{
 		if (ext->ULong64Seq->length() != 0)
 		{
-                	datum.resize(ext->ULong64Seq->length());
+			datum.resize(ext->ULong64Seq->length());
 
-                	for (unsigned int i=0; i<ext->ULong64Seq->length(); i++)
-                	{
-                        	datum[i] = ext->ULong64Seq[i];
-               	 	}
+			for (unsigned int i=0; i<ext->ULong64Seq->length(); i++)
+			{
+				datum[i] = ext->ULong64Seq[i];
+			}
 		}			
 		else
 			ret = false;
