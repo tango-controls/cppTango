@@ -227,7 +227,7 @@ Database::Database(ORB *orb_in) : Connection(orb_in),access_proxy(NULL),access_c
 	
 	get_server_release();
 	
-	dev_name();	
+	dev_name();
 }
 
 #ifdef _TG_WINDOWS_
@@ -4301,8 +4301,21 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 
 	if (devname == db_device_name)
 	{
-		string db_class("Database");
-		ret = access_proxy->is_command_allowed(db_class,cmd);
+
+//
+// In case of Database object, the first command uses the default access right (READ)
+// Therefore, this is_command_allowed method is called and the access are checked by the
+// check_access_control() call upper in this method. If the access is WRITE, force 
+// true for the retrun value of this method
+//
+
+		if (access == ACCESS_READ)
+		{
+			string db_class("Database");
+			ret = access_proxy->is_command_allowed(db_class,cmd);
+		}
+		else
+			ret = true;
 	}
 	else
 	{
