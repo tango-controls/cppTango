@@ -187,7 +187,7 @@ namespace Tango
 // Some general interest define
 //
 
-#define		TgLibVers				"7.2.6"		// Please, always code this following format "X.Y.Z"
+#define		TgLibVers				"7.2.7"		// Please, always code this following format "X.Y.Z"
 
 #define		DevVersion				4			// IDL version number
 #define		DefaultMaxSeq			20
