@@ -36,154 +36,6 @@ static const char *RcsId = "$Id$";
 ///
 ///		$Revision$
 ///
-///		$Log$
-///		Revision 1.70  2010/10/04 14:56:04  taurel
-///		- Fix a Solaris natif compiler warning
-///		
-///		Revision 1.69  2010/09/29 12:04:35  taurel
-///		- It's now possible to register several callbacks for the same event
-///		
-///		Revision 1.68  2010/09/09 13:45:22  taurel
-///		- Add year 2010 in Copyright notice
-///		
-///		Revision 1.67  2010/09/07 15:33:12  taurel
-///		- Add a print to be used in case of
-///		
-///		Revision 1.66  2010/08/25 11:39:47  taurel
-///		- Just some beautifulling!!
-///		
-///		Revision 1.65  2010/06/21 14:01:15  taurel
-///		- Yet another merge with the Release_7_1_1-bugfixes branch
-///		
-///		Revision 1.64  2010/06/21 12:38:23  taurel
-///		- Implement a much faster server shutdown sequence
-///		Revision 1.60.2.3  2010/06/13 11:39:30  taurel
-///		- Fix incoherency in error received by the user callback in case of
-///		CHANGE event. The "err" flag was not set in the first event sent to the
-///		user callback (during subscription).
-///		This is bug 3015443
-///		
-///		Revision 1.63  2010/05/26 09:15:35  taurel
-///		- Another commit after merge with the bug fixes branch
-///		
-///		Revision 1.62  2010/04/27 07:36:42  taurel
-///		- Merge with the bugfixes branch
-///		Revision 1.60.2.2  2010/05/18 08:27:22  taurel
-///		- Events from device in a DS started with a file as database are now
-///		back into operation
-///		
-///		Revision 1.60.2.1  2010/04/27 07:10:09  taurel
-///		- Fix bug in case of event sent by the notifd while another thread is
-///		executing the unregister_structured_push_supplier() call in the
-///		unsubscribe_event() API call. This generated a dead lock on the monitor
-///		used to protect event maps.
-///		
-///		Revision 1.60  2009/11/02 08:35:47  taurel
-///		- Fix warnings reported when compiling using the option -Wall
-///		
-///		Revision 1.59  2009/10/27 08:23:47  taurel
-///		- Fully Qualified attribute name passed to the event callback
-///		
-///		Revision 1.58  2009/10/23 14:36:27  taurel
-///		- Tango 7.1.1
-///		- Fix bugs 2880372 and 2881841
-///		- Now support event in case of Tango system with multi db server
-///		- The polling threads start with polling inactive
-///		
-///		Revision 1.57  2009/10/01 15:13:07  taurel
-///		- Fix a bug in case of unsubscribe on event from channel on which several
-///		events were registered.(Not proper clean up of the device_channel_map map)
-///		
-///		Revision 1.56  2009/09/30 06:43:18  taurel
-///		- Improve error detection in case of TANGO_HOST not set and not fully
-///		qualified device name
-///		
-///		Revision 1.55  2009/09/29 15:55:15  taurel
-///		- Fix bug in case of subscribe_event using fully qualified Tango device
-///		name while the TANGO_HOST env. variable is not set
-///		
-///		Revision 1.54  2009/08/27 07:23:45  taurel
-///		- Commit after another merge with Release_7_0_2-bugfixes branch
-///		
-///		Revision 1.53  2009/06/17 08:52:08  taurel
-///		- Commit after a merge with branch Release_7_0_2-bugfixes
-///		Revision 1.52.2.9  2009/08/20 07:10:49  taurel
-///		- It is now possible to unsubscribe in the event callback!
-///		
-///		Revision 1.52.2.8  2009/08/17 14:13:33  taurel
-///		- Fix SourceForge bug 2821898 for the EventData class.
-///		Thank's to Tiago's patch
-///		
-///		Revision 1.52.2.7  2009/07/16 06:34:49  taurel
-///		- Fix bug in AttrConfEventData copy ctor and assignement operator
-///		
-///		Revision 1.52.2.6  2009/07/15 08:14:34  taurel
-///		- Don't forget to set the lock exit installed flag when the EventConsumer object is created !!
-///		
-///		Revision 1.52.2.5  2009/06/25 11:57:55  taurel
-///		- Fix bug in case of multiple subscribe on the same event just before
-///		the exception is thrown. A bad lock management
-///		
-///		Revision 1.52.2.4  2009/06/22 14:48:52  taurel
-///		- Fix bug for state change coming from a device 4 server
-///		
-///		Revision 1.52.2.3  2009/06/17 07:35:44  taurel
-///		- Add support for event coming from server with the prefix to build
-///		the fqdn contains database host with its full qualified domain
-///		name
-///		
-///		Revision 1.52.2.2  2009/06/15 10:57:09  taurel
-///		- Fix a bug in the bug fix !
-///		
-///		Revision 1.52.2.1  2009/06/12 08:28:51  taurel
-///		- Fix bug when using events in multi Tango host environment.
-///		The TANGO_HOST is now transferred within the even tin the fixed
-///		header event_type field.
-///		The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-///		This allows the client to know if the tango host info will be transmitted within the event
-///		
-///		Revision 1.52  2009/03/30 15:03:44  taurel
-///		- Fix last bugs before Tango 7 ??
-///		
-///		Revision 1.51  2009/03/20 11:53:28  taurel
-///		- Fix some compiler warnings
-///		
-///		Revision 1.50  2009/03/18 12:18:43  taurel
-///		- Fix warnings reported when compiled with the option -Wall
-///		
-///		Revision 1.49  2009/03/13 09:33:29  taurel
-///		- Small changes to fix Windows VC8 warnings in Warning level 3
-///		
-///		Revision 1.48  2009/01/29 15:25:41  taurel
-///		- First implementation of the Data Ready event
-///		
-///		Revision 1.47  2009/01/21 12:49:03  taurel
-///		- Change CopyRights for 2009
-///		
-///		Revision 1.46  2008/12/17 09:50:59  taurel
-///		- First implementation of attributes sent on the wire using IDL Union
-///		instead of IDL Any
-///		
-///		Revision 1.45  2008/10/06 15:01:09  taurel
-///		- Changed the licensing info from GPL to LGPL
-///		
-///		Revision 1.44  2008/10/03 06:52:31  taurel
-///		- Add some licensing info in each files
-///		
-///		Revision 1.43  2008/10/01 12:02:01  jensmeyer
-///		Changed method name event_queue_is_empty() to is_event_queue_empty()
-///		
-///		Revision 1.42  2008/09/23 14:59:33  taurel
-///		- Commit after the end of DevEncoded data type implementation
-///		- The new test suite is also now running fine
-///		
-///		Revision 1.41  2008/09/15 13:19:39  jensmeyer
-///		Deleted some debugging printouts.
-///		
-///		Revision 1.40  2008/09/15 12:31:09  jensmeyer
-///		Added an eventqueue reading method to call the usual callback method
-///		when reading event data from the queue.
-///
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -307,7 +159,7 @@ EventConsumer::EventConsumer(ApiUtil *ptr) : omni_thread((void *)ptr)
 
 //
 // Build and store the fqdn prefix for devices in the TANGO_HOST
-// environment variable
+// environment variable (in lower case letters)
 //
 
 	try
@@ -325,6 +177,9 @@ EventConsumer::EventConsumer(ApiUtil *ptr) : omni_thread((void *)ptr)
 				env_var_fqdn_prefix.push_back(prefix);
 			}
 		}
+
+		for (size_t loop = 0;loop < env_var_fqdn_prefix.size();++loop)
+			transform(env_var_fqdn_prefix[loop].begin(),env_var_fqdn_prefix[loop].end(),env_var_fqdn_prefix[loop].begin(),::tolower);
 	}
 	catch (Tango::DevFailed)
 	{
@@ -772,6 +627,7 @@ void EventConsumer::connect_event_channel(string &channel_name,Database *db,bool
 	}
 	else
 	{
+
 		new_event_channel_struct.eventChannel = eventChannel;
 		new_event_channel_struct.structuredProxyPushSupplier = structuredProxyPushSupplier;
 		new_event_channel_struct.last_heartbeat = time(NULL);
@@ -1473,7 +1329,12 @@ void EventConsumer::push_structured_event(const CosNotification::StructuredEvent
 		
 		// only reading from the maps
 		map_modification_lock.readerIn();
-		
+
+cout << "fq_dev_name = " << fq_dev_name << endl;
+std::map<std::string,EventChannelStruct>::iterator tmp_pos;	
+for (tmp_pos = channel_map.begin();tmp_pos != channel_map.end();++tmp_pos)
+cout << "Map key = " << tmp_pos->first << endl;
+
 		std::map<std::string,EventChannelStruct>::iterator ipos;
 		ipos = channel_map.find(fq_dev_name);
 

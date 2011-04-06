@@ -35,215 +35,6 @@ static const char *RcsId = "$Id$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 ///
 ///		$Revision$
-///
-///		$Log$
-///		Revision 1.44  2011/01/24 12:33:27  taurel
-///		- Fix end of bug with periodic and archive event (periodic part)
-///		Also removed the DELTA on sec numbers for time got for out-of-sync error
-///		
-///		Revision 1.43  2011/01/18 14:49:44  taurel
-///		- Typo for windows
-///		
-///		Revision 1.42  2011/01/18 14:16:46  taurel
-///		- In case of archive or periodic event and error out_of_sync, get time
-///		in detect_and_push_archive_event (periodic as well) because the received
-///		pointer is null
-///		
-///		Revision 1.41  2011/01/10 13:55:07  taurel
-///		- For periodic and archive/periodic, take time got before the attribute
-///		is read to decide if it is time to store data. This time is much
-///		more stable than time got after the attribute is read. Reading attribute
-///		on some device takes a long and unstabe time.
-///		
-///		Revision 1.40  2011/01/10 13:09:02  taurel
-///		- No retry on command to get data for cache during DS startup
-///		- Only three reties during DbDevExport
-///		- Device are deleted by omniORB even if not exported into Tango database
-///		
-///		Revision 1.39  2010/12/08 10:13:08  taurel
-///		- Commit after a merge with the bugfixes branch
-///		
-///		Revision 1.38.2.1  2010/11/25 15:52:52  taurel
-///		- Fix bug 3118520 (DS freezes on Windows)
-///		
-///		Revision 1.38  2010/11/03 13:22:29  taurel
-///		- Add a connect timeout when the server tries to contact the notifd
-///		
-///		Revision 1.37  2010/09/09 13:46:00  taurel
-///		- Add year 2010 in Copyright notice
-///		
-///		Revision 1.36  2010/05/26 09:15:36  taurel
-///		- Another commit after merge with the bug fixes branch
-///		
-///		Revision 1.35.2.2  2010/05/21 09:43:39  taurel
-///		- Re-use the same event channel in case of server restart when a file
-///		is use as database
-///		
-///		Revision 1.35.2.1  2010/05/18 08:27:23  taurel
-///		- Events from device in a DS started with a file as database are now
-///		back into operation
-///		
-///		Revision 1.35  2009/10/27 08:25:02  taurel
-///		- No real changes. Only some code beautifulling
-///		
-///		Revision 1.34  2009/08/27 07:23:45  taurel
-///		- Commit after another merge with Release_7_0_2-bugfixes branch
-///		
-///		Revision 1.33  2009/06/17 08:52:08  taurel
-///		- Commit after a merge with branch Release_7_0_2-bugfixes
-///		Revision 1.32.2.2  2009/06/26 06:46:06  taurel
-///		- No change, simply commit to test the "commit" mailing list
-///		
-///		Revision 1.32.2.1  2009/06/12 08:28:51  taurel
-///		- Fix bug when using events in multi Tango host environment.
-///		The TANGO_HOST is now transferred within the even tin the fixed
-///		header event_type field.
-///		The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-///		This allows the client to know if the tango host info will be transmitted within the event
-///		
-///		Revision 1.32  2009/03/13 09:33:29  taurel
-///		- Small changes to fix Windows VC8 warnings in Warning level 3
-///		
-///		Revision 1.31  2009/01/29 16:23:49  taurel
-///		- Commit after merge with branch Release_6_1_1-bugfixes
-///		
-///		Revision 1.30  2009/01/29 15:25:41  taurel
-///		- First implementation of the Data Ready event
-///		
-///		Revision 1.29  2009/01/21 12:49:03  taurel
-///		- Change CopyRights for 2009
-///		
-///		Revision 1.28  2009/01/08 09:52:06  taurel
-///		- Fix bugs for server implementing only IDL3
-///		
-///		Revision 1.27  2009/01/06 09:28:50  taurel
-///		- Add compatibility between a server IDL V4 and clients IDL V3
-///		
-///		Revision 1.26  2008/12/17 09:50:59  taurel
-///		- First implementation of attributes sent on the wire using IDL Union
-///		instead of IDL Any
-///		
-///		Revision 1.25  2008/10/06 15:01:09  taurel
-///		- Changed the licensing info from GPL to LGPL
-///		
-///		Revision 1.24  2008/10/03 06:52:31  taurel
-///		- Add some licensing info in each files
-///		
-///		Revision 1.23  2008/09/23 14:59:35  taurel
-///		- Commit after the end of DevEncoded data type implementation
-///		- The new test suite is also now running fine
-///		
-///		Revision 1.22  2008/07/01 07:38:40  taurel
-///		- Some more code for a proper implementation of the DevEncoded data type with the new IDL release 4
-///		Revision 1.21.2.2  2009/01/29 15:17:01  taurel
-///		- Add some bug fixes for server used with the -f option (database as
-///		file)
-///		
-///		Revision 1.21.2.1  2008/07/17 12:25:50  taurel
-///		- Unexport event channel from db only during device server startup sequence
-///		- Add re-try in case of pb during event channel export to db
-///		- Clean-up old supplier proxy at DS startup (in case of previous core dump)
-///		
-///		Revision 1.21  2008/03/11 14:38:25  taurel
-///		- Apply patches from Frederic Picca about compilation with gcc 4.2
-///		
-///		Revision 1.20  2008/01/15 12:32:43  taurel
-///		- Simply remove some print
-///		
-///		Revision 1.19  2007/12/19 15:42:43  taurel
-///		- Add some cleanup when quitting applis or device server (notifd objects)
-///		
-///		Revision 1.18  2007/12/12 10:17:18  taurel
-///		- Db calls during DS startup has a separate timeout and some retries
-///		
-///		Revision 1.17  2007/11/08 12:03:44  taurel
-///		- Start implementing user interceptors
-///		- Fix bug in poll thread pproperty management when removing polling object
-///		- Set a database timeout to 6 sec
-///		
-///		Revision 1.16  2007/10/16 08:23:37  taurel
-///		- Add management of the TC connection establishment timeout for DB access
-///		- Add DB server cache in DS used during DS startup sequence
-///		- Comment out the sleep time during DS startup sequence
-///		
-///		Revision 1.15  2007/04/20 14:41:33  taurel
-///		- Ported to Windows 64 bits x64 architecture
-///		
-///		Revision 1.14  2007/04/16 14:57:42  taurel
-///		- Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-///		- Ported to omniORB4.1
-///		- Increased the MAX_TRANSFER_SIZE to 256 MBytes
-///		- Added a new filterable field in the archive event
-///		
-///		Revision 1.13  2007/03/29 07:06:55  taurel
-///		- Change some data types for 64 bits compatibility
-///		
-///		Revision 1.12  2007/03/06 08:19:43  taurel
-///		- Added 64 bits data types for 64 bits computer...
-///		
-///		Revision 1.11  2007/03/02 09:47:18  jensmeyer
-///		Added quality change to archive event.
-///		Changed the forcing of events in the cases of exception or invalid data.
-///		Now an event is only send once with the same exception and only once
-///		as long as the data quality stays invalid.
-///		
-///		Revision 1.10  2007/02/16 10:40:57  taurel
-///		- Implementing a new types of event on the Attribute configuration
-///		
-///		Revision 1.9  2006/05/18 14:29:12  jensmeyer
-///		Changed the handling of the event period for periodic and archiving events.
-///		The event period is now stored as the configured value and no longer
-///		multilplied by the factor DELTA_PERIODIC.
-///		The calculation of the precision to fire periodic events has moved from
-///		the attribbute to the push methods in the event supplier.
-///		
-///		For event periods < 5000 ms a precision of 2% was kept, but for
-///		times < 5000 ms a fixed precision of 100 ms was added.
-///		This avoids periodic events with a long event period to be fired to early.
-///		
-///		Revision 1.8  2006/04/13 06:14:05  jensmeyer
-///		Added mutex variables to protect event related methods for accesses
-///		from different threads.
-///		
-///		Revision 1.7  2006/02/17 16:55:21  jensmeyer
-///		Corrections when porting to VC7 under windows
-///		
-///		Revision 1.6  2006/01/27 14:27:10  taurel
-///		- Fix a severe incompatibility problem introduced by all the modifs done for
-///		PY DS
-///		- Duplicate some EventSupplier class methods (instead of using template) in order to be able to generate Tango shared library on Suse 9.3
-///		
-///		Revision 1.5  2005/06/29 08:31:18  taurel
-///		- Last commit before release 5.2 ?
-///		
-///		Revision 1.4  2005/03/14 12:01:24  taurel
-///		- Fix bug in the event system for device server started with the -file option
-///		
-///		Revision 1.3  2005/03/14 09:49:29  taurel
-///		- Fix some bugs in filedatabase (Change in the data transferred between client and
-///		  server).
-///		- Fix bug in event re-connection
-///		- Add event support even for device server started with the -file command line option
-///		
-///		Revision 1.2  2005/01/13 08:29:06  taurel
-///		- Merge trunk with Release_5_0 from brach Release_5_branch
-///		
-///		Revision 1.1.2.2  2004/10/22 11:25:51  taurel
-///		Added warning alarm
-///		Change attribute config. It now includes alarm and event parameters
-///		Array attribute property now supported
-///		subscribe_event throws exception for change event if they are not correctly configured
-///		Change in the polling thread: The event heartbeat has its own work in the work list
-///		Also add some event_unregister
-///		Fix order in which classes are destructed
-///		Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
-///		Change in the CORBA info call for the device type
-///		
-///		Revision 1.1.2.1  2004/10/05 13:55:02  maxchiandone
-///		First upload for filedatabase.
-///		
-///		Revision 1.1  2004/07/07 07:59:20  taurel
-///		Added some files
 ///		
 ///
 ////////////////////////////////////////////////////////////////////////////////
@@ -272,10 +63,10 @@ EventSupplier *EventSupplier::_instance = NULL;
 
 					   					   
 /************************************************************************/
-/*		       							*/		
-/* 			EventSupplier class 				*/
-/*			-------------------				*/
-/*		       							*/
+/*		       															*/		
+/* 			EventSupplier class 										*/
+/*			-------------------											*/
+/*		       															*/
 /************************************************************************/
 
 
@@ -336,7 +127,8 @@ EventSupplier *EventSupplier::create(CORBA::ORB_var _orb,
 		_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + host_name + ':';
 	else
 		_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + db->get_db_host() + ':' + db->get_db_port() + '/' ;
-	
+	transform(_event_supplier->fqdn_prefix.begin(),_event_supplier->fqdn_prefix.end(),_event_supplier->fqdn_prefix.begin(),::tolower);	
+
 	return _event_supplier;
 }
 
