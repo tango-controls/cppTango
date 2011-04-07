@@ -146,10 +146,10 @@ $DIR/attr_types $DEV1 10
 ret=$?
 check_return_value $ret
 #
-#$echo "\nTesting attribute configuration changes"
-#$DIR/att_conf $DEV1
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting attribute configuration changes"
+$DIR/att_conf $DEV1
+ret=$?
+check_return_value $ret
 #
 $echo "\nTesting miscellaneous DeviceData object features"
 $DIR/misc_devdata
