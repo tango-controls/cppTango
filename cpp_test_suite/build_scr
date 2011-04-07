@@ -72,8 +72,8 @@ then
 	PATH=$PATH:/bin
 	echo $PATH
 	export PREFIX=$INSTALL_DIR
-#	cd cpp_test_suite/win32/vc9/test_suite
-	cd /cygdrive/c/tango_src/cpp_test_suite/win32/vc9/test_suite
+	cd cpp_test_suite/win32/vc9/test_suite
+#	cd /cygdrive/c/tango_src/cpp_test_suite/win32/vc9/test_suite
 	rm -f $OUTFILE
 else
 	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC all"
