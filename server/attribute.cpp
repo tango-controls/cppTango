@@ -36,155 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 3.88  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
-// Revision 3.87  2010/12/08 10:13:08  taurel
-// - Commit after a merge with the bugfixes branch
-//
-// Revision 3.86.2.1  2010/11/21 08:41:27  taurel
-// - Fix SourceForge bug nb 3110842
-// (wrong delete in state for spectrm att with alarm defined when
-// quality factor set to ATTR_INVALID)
-//
-// Revision 3.86  2010/11/02 14:06:54  taurel
-// - Replace dynamic_cast with static_cast in attribute.cpp.
-// - Release number is now 7.2.1
-//
-// Revision 3.85  2010/10/22 13:20:14  taurel
-// - First bug in Tango 7.2 ! Crash when reading R/W scalar string attribute
-// without requiring Tango to free memory
-//
-// Revision 3.84  2010/09/17 08:22:05  taurel
-// - Fix memory leak in cse of scalar attribute R/W for string
-//
-// Revision 3.83  2010/09/09 13:44:46  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.82  2010/07/16 10:51:53  taurel
-// - Now it's possible to fill the polling buffer externally for R/W attribute
-// specifying the attribute written part
-//
-// Revision 3.81  2010/06/21 14:01:13  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.78.2.1  2010/02/23 15:56:51  taurel
-// - Fix bug 2954995 (attribute quality INVALID)
-//
-// Revision 3.78  2009/10/27 08:22:27  taurel
-// - Attribute default value for periodic event period is back to 1 sec
-//
-// Revision 3.77  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.76  2009/09/18 09:18:05  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.75  2009/09/17 08:28:05  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
-// Revision 3.74  2009/09/16 12:24:45  taurel
-// - Fix bug in alarm checking in case of scalar attribute read due to a
-// state attribute request in a read_attributes() call
-//
-// Revision 3.73  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.72.2.4  2009/08/25 14:02:00  taurel
-// - Clarify an error message
-//
-// Revision 3.72.2.3  2009/07/17 08:45:58  taurel
-// - Forgot to copy the previous bug fix to all push_xxx_event() methods
-//
-// Revision 3.72.2.2  2009/07/17 08:27:36  taurel
-// - Fix bug (valgring complains about it) in push_xxx_event() methods
-// for the status attribute
-//
-// Revision 3.72.2.1  2009/06/22 06:39:56  taurel
-// - Fix bug when pushing event with attribute quality factor set to INVALID
-//
-// Revision 3.72  2009/04/30 15:09:55  taurel
-// - Some code managing only IDL 3 was still there !
-//
-// Revision 3.71  2009/03/30 15:03:44  taurel
-// - Fix last bugs before Tango 7 ??
-//
-// Revision 3.70  2009/03/19 17:50:21  jlpons
-// Added management of DevEncoded format
-//
-// Revision 3.69  2009/03/18 12:18:40  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
-// Revision 3.68  2009/03/13 09:33:29  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.67  2009/02/04 10:23:47  taurel
-// - Fix double free when firing a change event for an attribute with
-// an INVALID quality factor (set by set_value_date_quality)
-//
-// Revision 3.66  2009/01/29 16:23:49  taurel
-// - Commit after merge with branch Release_6_1_1-bugfixes
-//
-// Revision 3.65  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.64  2009/01/15 13:57:10  taurel
-// - Fix bugs found by Jens
-//
-// Revision 3.63  2009/01/06 09:28:50  taurel
-// - Add compatibility between a server IDL V4 and clients IDL V3
-//
-// Revision 3.62  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.61  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.60  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.59  2008/09/23 14:59:31  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.58  2008/07/03 12:40:05  taurel
-// - Clean memory in case of String in the set_value() method when the
-// release flag is set to true
-//
-// Revision 3.57  2008/07/03 11:29:27  taurel
-// - Clean-up memory allocation in set_value() methods
-// - Continue Device_4 implementation in fire_xxx event methods
-//
-// Revision 3.56  2008/07/01 07:38:39  taurel
-// - Some more code for a proper implementation of the DevEncoded data type with the new IDL release 4
-//
-// Revision 3.55  2008/06/14 11:29:15  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.54  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.53  2008/05/20 12:44:09  taurel
-// - Commit after merge with release 7 branch
-// Revision 3.52.2.1  2009/01/29 15:17:01  taurel
-// - Add some bug fixes for server used with the -f option (database as
-// file)
-//
-// Revision 3.52  2008/03/26 16:52:59  taurel
-// - Remove a buggy test when setting the attribute config (linked to RDS delta_t
-// and delta_val)
-//
-// Revision 3.51  2008/03/25 15:48:44  taurel
-// - Fix some warnings for gcc 4.2 (Thank's to F Picca from Soleil)
-//
-// Revision 3.50  2008/03/25 15:34:25  taurel
-// - Add 2 Attribute::set_properties() methods
-//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -370,7 +221,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list)
 
         TangoSys_MemStream str;
 		double rel_change_min=INT_MAX, rel_change_max=INT_MAX;
-               str << rel_change_str << ends;
+		str << rel_change_str << ends;
 		str >> rel_change_min;
 		str >> rel_change_max;
 
@@ -401,16 +252,15 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list)
         str << abs_change_str << ends;
 		str >> abs_change_min;
 		str >> abs_change_max;
-        if (abs_change_min != INT_MAX) 
+		if (fabs(abs_change_min) > 0 && abs_change_min != INT_MAX) 
 		{
 			ext->abs_change[0] = -fabs(abs_change_min);
 			ext->abs_change[1] = fabs(abs_change_min);
         }                                 
-        if (abs_change_max != INT_MAX) 
+		if (abs_change_max > 0 && abs_change_max != INT_MAX) 
 		{
-			ext->abs_change[0] = abs_change_min;
-			ext->abs_change[1] = abs_change_max;
-        }                                 
+			ext->abs_change[1] = fabs(abs_change_max);
+        }                                  
 		cout1 << "Attribute::Attribute(): rel_change = " << ext->rel_change[0] << " " << ext->rel_change[1] << endl;
 		str.seekp(0); 
 		str.seekg(0);
@@ -1558,7 +1408,7 @@ void Attribute::get_properties_3(Tango::AttributeConfig_3 &conf)
 		}
 		else
 		{
-			str << fabs(ext->abs_change[0]) << "," << ext->abs_change[1];			
+			str << fabs(ext->abs_change[0]) << "," << ext->abs_change[1];	
 			MEM_STREAM_2_CORBA(conf.event_prop.ch_event.abs_change,str);
 		}
 	}
