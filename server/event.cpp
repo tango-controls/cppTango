@@ -1330,11 +1330,6 @@ void EventConsumer::push_structured_event(const CosNotification::StructuredEvent
 		// only reading from the maps
 		map_modification_lock.readerIn();
 
-cout << "fq_dev_name = " << fq_dev_name << endl;
-std::map<std::string,EventChannelStruct>::iterator tmp_pos;	
-for (tmp_pos = channel_map.begin();tmp_pos != channel_map.end();++tmp_pos)
-cout << "Map key = " << tmp_pos->first << endl;
-
 		std::map<std::string,EventChannelStruct>::iterator ipos;
 		ipos = channel_map.find(fq_dev_name);
 
