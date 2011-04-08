@@ -44,7 +44,8 @@
 /* define if the compiler has int64_t */
 #ifndef LOG4TANGO_HAVE_INT64_T 
 #define LOG4TANGO_HAVE_INT64_T
-#define int64_t __int64  
+//#define int64_t __int64 
+typedef __int64 int64_t;
 
 #if defined(_MSC_VER) && _MSC_VER < 1300
 # define LOG4TANGO_MISSING_INT64_OSTREAM_OP   
@@ -143,7 +144,10 @@
 #endif
 
 /* define mode_t. Move to Portability.hh if more platforms need it */
+namespace log4tango
+{
 typedef unsigned short mode_t;
+}
 
 /* _INCLUDE_LOG4TANGO_CONFIG_WIN32_H */
 #endif
