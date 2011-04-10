@@ -13,7 +13,7 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be redhate5_64, ubuntu904, python or jenkins"
+	$echo "ds_system can be redhate5_64, ubuntu904, python or \"jenkins <dir>\""
 	exit 1
 fi
 
@@ -62,6 +62,11 @@ python )
 	;;
 #
 jenkins )
+	if [ $# != 2 ]
+	then
+		echo "Mising base directory"
+		exit -1
+	fi
 	BASE_DIR=$2
 	for i in $NODE_LABELS
 	do
@@ -263,10 +268,10 @@ $DIR/syntax $DEV1 $DEV2 $DEV1_ALIAS $ATTR_ALIAS
 ret=$?
 check_return_value $ret
 #
-#$echo "\nTesting printing operators"
-#$DIR/print_data $DEV1
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting printing operators"
+$DIR/print_data $DEV1
+ret=$?
+check_return_value $ret
 #
 if [ $INST_NAME = "ubuntu1004" ]
 then

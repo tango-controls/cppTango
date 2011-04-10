@@ -302,9 +302,11 @@ int main(int argc, char **argv)
 	
 	da = dev.read_attribute("Long_attr");
 	cout << da  << endl;
-	long la;
+	Tango::DevLong la;
 	da >> la;
 	assert (la == 1246);
+
+	cout << "	DeviceAttribute --> OK" << endl;
 	
 	
 	return 0;
