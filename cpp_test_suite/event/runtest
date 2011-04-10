@@ -91,10 +91,24 @@ jenkins )
 			DEV1_ALIAS="win32_vc9_alias"
 		fi
 
-		if [ $i = "redhate5" ]
+		if [ $i = "centos5" ]
 		then
-			echo "redhate 5 OS"
-			DIR="$BASE_DIR/redhate5/bin"
+			echo "CentOS 5 OS"
+			DIR="$BASE_DIR/centos5/bin"
+			DEV1="test/centos5/10"
+			DEV2="test/centos5/11"
+			DEV3="test/centos5/12"
+			DEV1_ALIAS="centos5_alias"
+		fi
+
+		if [ $i = "redhate4" ]
+		then
+			echo "Red Hat 4 OS"
+			DIR="$BASE_DIR/redhate4/bin"
+			DEV1="test/redhate4/10"
+			DEV2="test/redhate4/11"
+			DEV3="test/redhate4/12"
+			DEV1_ALIAS="redhate4_alias"
 		fi
 	done
 	;;
