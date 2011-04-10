@@ -1846,7 +1846,7 @@ ostream &operator<<(ostream &o_str,DeviceData &dd)
 			break;
 			
 		case CORBA::tk_long:
-			long l_tmp;
+			Tango::DevLong l_tmp;
 			dd.any >>= l_tmp;
 			o_str << l_tmp;
 			break;
@@ -1880,7 +1880,7 @@ ostream &operator<<(ostream &o_str,DeviceData &dd)
 			break;
 			
 		case CORBA::tk_ulong:
-			unsigned long ul_tmp;
+			Tango::DevULong ul_tmp;
 			dd.any >>= ul_tmp;
 			o_str << ul_tmp;
 			break;
