@@ -234,10 +234,10 @@ $DIR/rds $DEV1
 ret=$?
 check_return_value $ret
 #
-#$echo "\nTesting Device Server Cache"
-#$DIR/ds_cache -v
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting Device Server Cache"
+$DIR/ds_cache
+ret=$?
+check_return_value $ret
 #
 $echo "\nTesting Write_Read attribute"
 $DIR/w_r_attr $DEV1

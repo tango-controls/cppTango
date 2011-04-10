@@ -13,7 +13,7 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be ubuntu904, python or jenkins"
+	$echo "ds_system can be ubuntu904, python or \"jenkins <dir>\""
 	exit 1
 fi
 
@@ -52,6 +52,11 @@ python )
 	;;
 #
 jenkins )
+	if [ $# != 2 ]
+	then
+		echo "Mising base directory"
+		exit -1
+	fi
 	BASE_DIR=$2
 	for i in $NODE_LABELS
 	do
@@ -74,6 +79,16 @@ jenkins )
 			DEV2="test/solaris10/11"
 			DEV3="test/solaris10/12"
 			DEV1_ALIAS="solaris10_alias"
+		fi
+
+		if [ $i = "Windows_VC9" ]
+		then
+			echo "Windows VC9"
+			DIR="$BASE_DIR/win32/bin"
+			DEV1="test/win32_vc9/10"
+			DEV2="test/win32_vc9/11"
+			DEV3="test/win32_vc9/12"
+			DEV1_ALIAS="win32_vc9_alias"
 		fi
 	
 		if [ $i = "redhate5" ]
