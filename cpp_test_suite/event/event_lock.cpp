@@ -41,7 +41,7 @@ void EventCallback::push_event( Tango::EventData *ed )
 }
 
 
-main(int argc,char *argv[])
+int main(int argc,char *argv[])
 {
     Tango::DeviceProxy * dev;
     int eventID;
@@ -73,7 +73,7 @@ main(int argc,char *argv[])
         while( cnt < 3 )
         {
             dev->command_inout("IOIncValue");
-            sleep( 2 );
+            Tango_sleep( 2 );
             cnt++;
         }
 

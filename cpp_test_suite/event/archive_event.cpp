@@ -815,22 +815,34 @@ int main(int argc, char **argv)
 
 		device->command_inout("IOIncValue");
 
+#ifdef WIN32
+		Sleep(100);
+#else
 		struct timespec req;
 		req.tv_sec = 0;
 		req.tv_nsec = 100000000;
 		nanosleep(&req,NULL);
+#endif
 
 //
 // Generates a positive change
 //
-			
+
 		device->command_inout("IOIncValue");
+#ifdef WIN32
+		Sleep(100);
+		device->command_inout("IOIncValue");
+		Sleep(100);
+		device->command_inout("IOIncValue");
+		Sleep(700);
+#else
 		nanosleep(&req,NULL);
 		device->command_inout("IOIncValue");
 		nanosleep(&req,NULL);
 		device->command_inout("IOIncValue");
 		req.tv_nsec = 700000000;
 		nanosleep(&req,NULL);
+#endif
 						
 		coutv << "cb excuted = " << cb.cb_executed << endl;
 		assert ( cb.cb_executed == 1);

@@ -189,7 +189,8 @@ int main(int argc, char **argv)
 		assert (cb.cb_err == 0);
 		cout << "   first point received --> OK" << endl;
 
-		usleep(1000000);
+		Tango_sleep(1);
+
 //
 // Change the device state and check that an event has been received
 //
@@ -199,13 +200,13 @@ int main(int argc, char **argv)
 		dd << d_state;
 		device->command_inout("IOState",dd);
 		
-		usleep(1000000);
+		Tango_sleep(1);
 		
 		d_state = Tango::ON;
 		dd << d_state;
 		device->command_inout("IOState",dd);
 		
-		usleep(1500000);
+		Tango_sleep(1.5);
 		
 		assert (cb.cb_executed == 3);
 		assert (cb.cb_err == 0);
@@ -245,7 +246,7 @@ int main(int argc, char **argv)
 		assert (cb.cb_err == 0);
 		cout << "   first point received --> OK" << endl;
 
-		usleep(1000000);
+		Tango_sleep(1);
 
 //
 // Change the device state and check that an event has been received
@@ -256,13 +257,13 @@ int main(int argc, char **argv)
 		dd << d_state;
 		device->command_inout("IOState",dd);
 		
-		usleep(1000000);
+		Tango_sleep(1);
 		
 		d_state = Tango::ON;
 		dd << d_state;
 		device->command_inout("IOState",dd);
 		
-		usleep(1500000);
+		Tango_sleep(1.5);
 
 		string::size_type pos = cb.status.find("ON");		
 		assert (cb.cb_executed == 3);

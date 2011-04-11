@@ -4,8 +4,10 @@
 
 #include <tango.h>
 #include <assert.h>
-#include <sys/time.h>
+
+#ifndef WIN32
 #include <unistd.h>
+#endif
 
 #define	coutv	if (verbose == true) cout
 
@@ -60,7 +62,7 @@ int main(int argc, char **argv)
 // Wait for event to be executed
 //
 
-		sleep(3);
+		Tango_sleep(3);
 		
 		DeviceData da;
 		da = device->command_inout("IOGetCbExecuted");
@@ -81,7 +83,7 @@ int main(int argc, char **argv)
 		da = device->command_inout("IOGetCbExecuted");
 		da >> cb;
 		
-		sleep(2);
+		Tango_sleep(2);
 		da = device->command_inout("IOGetCbExecuted");
 		long cb2;
 		da >> cb2;
