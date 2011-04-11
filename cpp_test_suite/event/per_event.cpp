@@ -464,7 +464,7 @@ int main(int argc, char **argv)
 		cb.a_cb_err = cb.cb_err = cb.cb_err_out_of_sync = 0;
 		cb.cb_executed = 0;
 
-		Tango_sleep(2);
+		Tango_sleep(3);
 
 		assert (cb.cb_executed > 2);
 		assert (cb.a_cb_err == 0);
