@@ -21,7 +21,7 @@ fi
 # test host
 #
 
-PYTHON_HOST=controls01
+PYTHON_HOST=controls02
 UBUNTU904_HOST=pcantares
 
 HOST=`hostname`
