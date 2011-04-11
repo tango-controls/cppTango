@@ -50,6 +50,8 @@ ubuntu904 )
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"
 	DEV1_ALIAS="et_alias"
+	ATTR_ALIAS="et_attr_alias"
+	INST_NAME=api
 	;;
 #
 python )

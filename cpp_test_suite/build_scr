@@ -50,13 +50,27 @@ do
 		OUTFILE="devenv_suite"
 	fi
 	
-	if [ $i = "redhate5" ]
+	if [ $i = "centos5" ]
 	then
-		echo "redhate 5 OS"
+		echo "Centos 5 OS"
 		OS_TYPE="linux"
 		OS_SPEC="linux=1"
-		BIN_DIR="redhate5"
+		BIN_DIR="centos5"
 		MAKE_PATH="make"
+		DS_INST_NAME=centos5
+		DS_INST_NAME_2=centos5_2
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
+
+	if [ $i = "redhate4" ]
+	then
+		echo "Red Hat 4 OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		BIN_DIR="redhate4"
+		MAKE_PATH="make"
+		DS_INST_NAME=redhate4
+		DS_INST_NAME_2=redhate4_2
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 done
