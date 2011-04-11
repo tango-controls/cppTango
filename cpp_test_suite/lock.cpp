@@ -4,7 +4,7 @@
 
 #include <tango.h>
 #include <assert.h>
-//#include <wait.h>
+#include <wait.h>
 
 #define	coutv	if (verbose == true) cout
 
