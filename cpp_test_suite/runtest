@@ -292,7 +292,7 @@ $DIR/print_data $DEV1
 ret=$?
 check_return_value $ret
 #
-if [ $INST_NAME = "ubuntu1004" ]
+if [ $INST_NAME = "redhate4" ]
 then
 	$echo "\nCheck user classes size"
 	$DIR/size
