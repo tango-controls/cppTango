@@ -37,9 +37,18 @@ do
 		INSTALL_DIR=$WIN_INSTALL_DIR
 	fi
 	
-	if [ $i = "redhate5" ]
+	if [ $i = "centos5" ]
 	then
-		echo "redhate 5 OS"
+		echo "Centos 5 OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
+
+	if [ $i = "redhate4" ]
+	then
+		echo "Red Hat 4 (32 bits) OS"
 		OS_TYPE="linux"
 		OS_SPEC="linux=1"
 		MAKE_PATH="make"
