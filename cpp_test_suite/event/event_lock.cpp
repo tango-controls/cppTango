@@ -68,6 +68,8 @@ int main(int argc,char *argv[])
         eventID = dev -> subscribe_event( att_name, Tango::CHANGE_EVENT, eventCallback, filters );
 
         dev->lock();
+
+		cout << "Device locked and subscribed to one change event --> OK" << endl;
     
         int cnt = 0;
         while( cnt < 3 )
@@ -78,6 +80,7 @@ int main(int argc,char *argv[])
         }
 
         dev->unlock();
+		cout << "Device unlocked --> OK" << endl;
     }
     catch( Tango::DevFailed &ex )
     {
