@@ -14,8 +14,8 @@ OS=$(shell /csadmin/common/scripts/get_os.share)
 endif
 
 ifdef ubuntu
-OS=ubuntu1004
-#OS=ubuntu904
+#OS=ubuntu1004
+OS=ubuntu904
 endif
 
 BIN_DIR = $(OS)
@@ -54,7 +54,8 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/$(BIN_DIR)
+#LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango_trunk/$(BIN_DIR)
 
 
 ifdef _solaris
