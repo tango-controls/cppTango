@@ -35,42 +35,6 @@ static const char *RcsId = "$Id$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 3.8  2010/09/09 13:44:06  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.7  2009/03/13 09:32:27  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.6  2009/03/02 15:55:51  taurel
-// - Ported to Windows
-//
-// Revision 3.5  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.4  2008/10/06 15:02:17  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.3  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.2  2008/09/04 07:35:38  taurel
-// - Fix bug in memorized attributes
-// - Changes for the new IDL 4
-//
-// Revision 3.1  2008/05/20 12:42:30  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 1.1.2.3  2008/01/03 16:04:23  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 1.1.2.2  2007/12/20 14:27:18  taurel
-// - Some more work on locking
-//
-// Revision 1.1.2.1  2007/12/19 15:53:08  taurel
-// - Still some work going on for the locking feature
-//
-//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -296,7 +260,8 @@ void LockThread::execute_cmd()
 			{
 				locked_devices.erase(pos);
 			}
-			update_th_period();
+			if (locked_devices.empty() == false)
+				update_th_period();
 		}
 		break;
 
