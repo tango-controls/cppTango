@@ -8,6 +8,10 @@
 using namespace Tango;
 using namespace std;
 
+void stop_poll_att_no_except(DeviceProxy *,const char *);
+void stop_poll_cmd_no_except(DeviceProxy *,const char *);
+
+
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
@@ -31,31 +35,56 @@ int main(int argc, char **argv)
 	}
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+	
+	stop_poll_cmd_no_except(device,"IOPollStr1");
+	stop_poll_cmd_no_except(device,"IOPollArray2");
+	stop_poll_cmd_no_except(device,"IOExcept");
+	stop_poll_cmd_no_except(device,"State");
+	stop_poll_cmd_no_except(device,"Status");
+	
+	stop_poll_att_no_except(device,"PollLong_attr");
+	stop_poll_att_no_except(device,"PollString_spec_attr");
+	stop_poll_att_no_except(device,"attr_wrong_type");
+	
+	stop_poll_att_no_except(device,"Long64_attr_rw");
+	stop_poll_att_no_except(device,"ULong_spec_attr_rw");
+	stop_poll_att_no_except(device,"ULong64_attr_rw");
+	stop_poll_att_no_except(device,"State_spec_attr_rw");
+	stop_poll_att_no_except(device,"Encoded_attr");
 
+	stop_poll_att_no_except(device,"event_change_tst");
+	stop_poll_att_no_except(device,"event64_change_tst");
+	stop_poll_att_no_except(device,"short_attr");
+	stop_poll_att_no_except(device,"slow_actuator");
+	stop_poll_att_no_except(device,"fast_actuator");
+		
+	delete device;	
+}
+
+void stop_poll_att_no_except(DeviceProxy *dev,const char *att_name)
+{
 	try
-	{	
-		device->stop_poll_command("IOPollStr1");
-		device->stop_poll_command("IOPollArray2");
-		device->stop_poll_command("IOExcept");
-		device->stop_poll_command("State");
-		device->stop_poll_command("Status");
-		
-		device->stop_poll_attribute("PollLong_attr");
-		device->stop_poll_attribute("PollString_spec_attr");
-		device->stop_poll_attribute("attr_wrong_type");
-		
-		device->stop_poll_attribute("Long64_attr_rw");
-		device->stop_poll_attribute("ULong_spec_attr_rw");
-		device->stop_poll_attribute("ULong64_attr_rw");
-		device->stop_poll_attribute("State_spec_attr_rw");
-		device->stop_poll_attribute("Encoded_attr");
+	{
+		dev->stop_poll_attribute(att_name);
 	}
+	catch(Tango::DevFailed &) {}
 	catch (CORBA::Exception &e)
 	{
 		Except::print_exception(e);
 		exit(-1);
 	}
-		
-	delete device;	
+}
 
+void stop_poll_cmd_no_except(DeviceProxy *dev,const char *cmd_name)
+{
+	try
+	{
+		dev->stop_poll_command(cmd_name);
+	}
+	catch(Tango::DevFailed &) {}
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
+		exit(-1);
+	}
 }
