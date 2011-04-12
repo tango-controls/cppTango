@@ -160,7 +160,7 @@ fi
 # Wait before starting test
 #
 
-sleep 4
+sleep 7
 ps -ef | grep devTest
 
 #
