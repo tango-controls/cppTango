@@ -152,7 +152,15 @@ fi
 }
 
 #
-# First, test device server startup sequence
+# First, print used libs
+#
+if [ $INST_NAME != "win32_vc9"]
+then
+	ldd $DIR/misc_devproxy
+fi
+
+#
+# Run test suite
 #
 
 $echo "Testing miscellaneous DeviceProxy features"
