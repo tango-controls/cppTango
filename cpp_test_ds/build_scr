@@ -1,6 +1,6 @@
 #!/bin/bash
 
-UX_INSTALL_DIR="/tmp/ci"
+UX_INSTALL_DIR="/segfs/tango/tmp/ci"
 WIN_INSTALL_DIR="C:\tango_src\ci"
 
 #
