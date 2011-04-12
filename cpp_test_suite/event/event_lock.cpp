@@ -69,7 +69,7 @@ int main(int argc,char *argv[])
 
         dev->lock();
 
-		cout << "Device locked and subscribed to one change event --> OK" << endl;
+		cout << "   Device locked and subscribed to one change event --> OK" << endl;
     
         int cnt = 0;
         while( cnt < 3 )
@@ -80,17 +80,21 @@ int main(int argc,char *argv[])
         }
 
         dev->unlock();
-		cout << "Device unlocked --> OK" << endl;
+		cout << "   Device unlocked --> OK" << endl;
+
+    	if( eventID != NODATA )
+        	dev->unsubscribe_event( eventID );
+
+		dev->stop_poll_attribute(att_name);
     }
     catch( Tango::DevFailed &ex )
     {
         Tango::Except::print_exception( ex );
     }
-
-    if( eventID != NODATA )
-        dev->unsubscribe_event( eventID );
-
-	dev->stop_poll_attribute(att_name);
+	catch(...)
+	{
+		cout << "Unknown exception....." << endl;
+	}
 
     delete dev;
 
