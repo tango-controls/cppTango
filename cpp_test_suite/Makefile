@@ -14,8 +14,8 @@ OS=$(shell /csadmin/common/scripts/get_os.share)
 endif
 
 ifdef ubuntu
-#OS=ubuntu1004
-OS=ubuntu904
+OS=ubuntu1004
+#OS=ubuntu904
 endif
 
 BIN_DIR = $(OS)
