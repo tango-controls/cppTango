@@ -4,6 +4,18 @@ UX_INSTALL_DIR="/tmp/ci"
 WIN_INSTALL_DIR="C:\tango_src\ci"
 
 #
+# Is clean required ?
+#
+
+if [ $# = 1 ]
+then
+	if [ $1 = "clean" ]
+	then
+		CLEAN="clean"
+	fi
+fi
+
+#
 # Set some variables according to OS
 #
 
@@ -83,14 +95,20 @@ fi
 
 if [ $OS_TYPE = "Windows" ]
 then
-	MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME /build Debug  /projectconfig Debug /out $OUTFILE "
+	if [ -z $CLEAN ]
+	then
+		BUILD="/build"
+	else
+		BUILD="/rebuild"
+	fi
+	MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME $BUILD Debug  /projectconfig Debug /out $OUTFILE "
 	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
 	echo $PATH
 	export PREFIX=$INSTALL_DIR
 	cd cpp_test_ds/win32_ds_vs9
 	/bin/rm -f $OUTFILE
 else
-	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIB_TYPE all"
+	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIB_TYPE $CLEAN all"
 	cd cpp_test_ds
 fi
 
