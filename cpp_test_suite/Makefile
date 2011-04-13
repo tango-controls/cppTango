@@ -76,7 +76,7 @@ endif
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/include \
-			   -I$(LOG4TANGO_BASE)/include \
+			   -I$(LOG4TANGO_BASE)/include/tango \
 			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \

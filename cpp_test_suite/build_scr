@@ -7,6 +7,18 @@ WIN_CYGWIN_INSTALL_DIR="/cygdrive/c/tango_src/ci"
 DS_NAME=devTest
 
 #
+# Is clean required ?
+#
+
+if [ $# = 1 ]
+then
+	if [ $1 = "clean" ]
+	then
+		CLEAN="clean"
+	fi
+fi
+
+#
 # Set some variables according to OS
 #
 
@@ -81,7 +93,13 @@ done
 
 if [ $OS_TYPE = "Windows" ]
 then
-	MAKE_CMD="$MAKE_PATH test_suite.sln /build Release /out $OUTFILE "
+	if [ -z $CLEAN ]
+	then
+		BUILD="/build"
+	else
+		BUILD="/rebuild"
+	fi
+	MAKE_CMD="$MAKE_PATH test_suite.sln $BUILD Release /out $OUTFILE "
 	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
 	PATH=$PATH:/bin
 	echo $PATH
@@ -90,7 +108,7 @@ then
 #	cd /cygdrive/c/tango_src/cpp_test_suite/win32/vc9/test_suite
 	rm -f $OUTFILE
 else
-	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC all"
+	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $CLEAN all"
 	cd cpp_test_suite
 fi
 

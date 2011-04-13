@@ -154,7 +154,7 @@ fi
 #
 # First, print used libs
 #
-if [ $INST_NAME != "win32_vc9"]
+if [ $INST_NAME != "win32_vc9" ]
 then
 	ldd $DIR/misc_devproxy
 fi
