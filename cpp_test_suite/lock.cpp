@@ -4,7 +4,13 @@
 
 #include <tango.h>
 #include <assert.h>
+
+#ifdef WIN32
+#include <process.h>
+#define WEXITSTATUS(w) w
+#else
 #include <wait.h>
+#endif
 
 #define	coutv	if (verbose == true) cout
 
@@ -132,7 +138,11 @@ int main(int argc, char **argv)
 		coutv << "Passed 15" << endl;
 		assert ( bool_ret == true );
 		assert ( the_locker.ll == Tango::CPP );
+#ifdef WIN32
+		assert ( the_locker.li.LockerPid == _getpid() );
+#else
 		assert ( the_locker.li.LockerPid == getpid() );
+#endif
 		char h_name[80];
 		gethostname(h_name,80);
 		string my_host(h_name);
