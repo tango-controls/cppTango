@@ -371,7 +371,7 @@ int main(int argc, char **argv)
 		// Check a pixel (margin of 4 levels for jpeg loss)
 		assert ( gray8[128+128*256] >= 124 );
 		assert ( gray8[128+128*256] <= 132 );
-		delete gray8;
+		delete [] gray8;
 		
 	}
 	cout << "   Scalar DevEncoded (JPEG) --> OK" << endl;
