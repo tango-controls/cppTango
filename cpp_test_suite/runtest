@@ -278,13 +278,11 @@ then
 else
 	PATH=$PATH:./$DIR
 fi
-if [ $INST_NAME != "win32_vc9" ]
-then
-	$echo "\nTesting device locking feature"
-	$DIR/lock $DEV1 $DEV2
-	ret=$?
-	check_return_value $ret
-fi
+$echo "\nTesting device locking feature"
+$DIR/lock $DEV1 $DEV2
+ret=$?
+check_return_value $ret
+
 #
 $echo "\nTesting the sub device diagnostics"
 $DIR/sub_dev $DEV1 $DEV2 $DEV3
