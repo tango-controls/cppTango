@@ -41,10 +41,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="C:\tango_src\cppapi_7_2_6\server;C:\tango_src\cppapi_7_2_6\client;&quot;$(LOG4TANGO_BASE)\win32\include&quot;;&quot;$(OMNI_BASE)\win32\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -60,7 +61,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies="omniORB4d.lib omniDynamic4d.lib COS4d.lib omnithreadd.lib tangod.lib log4tangod.lib comctl32.lib ws2_32.lib mswsock.lib"
 				LinkIncremental="2"
+				AdditionalLibraryDirectories="C:\tango_src\cppapi_7_2_6\win32\tango_vc9\tango_static\lib;&quot;$(LOG4TANGO_BASE)\win32\lib&quot;;&quot;$(OMNI_BASE)\win32\lib&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
@@ -115,7 +118,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				PreprocessorDefinitions="WIN32;_CONSOLE"
+				AdditionalIncludeDirectories=""
+				PreprocessorDefinitions="WIN32;_CONSOLE;"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -134,6 +138,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
+				AdditionalLibraryDirectories="C:\tango_src\cppapi_7_2_6\win32\tango_vc9\tango_static\lib"
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
