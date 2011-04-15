@@ -376,7 +376,7 @@ DevRestartServerCmd::DevRestartServerCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevRestartServerCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevRestartServerCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevRestartServerCmd::execute(): arrived" << endl;
@@ -422,7 +422,7 @@ DevQueryClassCmd::DevQueryClassCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevQueryClassCmd::execute(): arrived" << endl;
@@ -483,7 +483,7 @@ DevQueryDeviceCmd::DevQueryDeviceCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevQueryDeviceCmd::execute(): arrived" << endl;
@@ -542,7 +542,7 @@ DevQuerySubDeviceCmd::DevQuerySubDeviceCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevQuerySubDeviceCmd::execute(): arrived" << endl;
@@ -602,7 +602,7 @@ DevKillCmd::DevKillCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevKillCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevKillCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevKillCmd::execute(): arrived" << endl;
@@ -648,7 +648,7 @@ DevSetTraceLevelCmd::DevSetTraceLevelCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevSetTraceLevelCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevSetTraceLevelCmd::execute(): arrived" << endl;
@@ -721,7 +721,7 @@ DevGetTraceLevelCmd::DevGetTraceLevelCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevGetTraceLevelCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevGetTraceLevelCmd::execute(): arrived" << endl;
@@ -786,7 +786,7 @@ DevGetTraceOutputCmd::DevGetTraceOutputCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevGetTraceOutputCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevGetTraceOutputCmd::execute(): arrived" << endl;
@@ -850,7 +850,7 @@ DevSetTraceOutputCmd::DevSetTraceOutputCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *DevSetTraceOutputCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "DevSetTraceOutputCmd::execute(): arrived" << endl;
@@ -1122,7 +1122,7 @@ QueryEventChannelIORCmd::QueryEventChannelIORCmd(const char *name,
 //
 //-----------------------------------------------------------------------------
 
-CORBA::Any *QueryEventChannelIORCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
+CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
 {	
 
 	cout4 << "QueryEventChannelIORCmd::execute(): arrived" << endl;

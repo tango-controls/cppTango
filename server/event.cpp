@@ -285,8 +285,8 @@ void EventConsumer::disconnect_structured_push_consumer()
 	cout3 << "calling Tango::EventConsumer::disconnect_structured_push_consumer() \n";
 }
 
-void EventConsumer::offer_change(const CosNotification::EventTypeSeq& added,
-                                 const CosNotification::EventTypeSeq& deled)
+void EventConsumer::offer_change(TANGO_UNUSED(const CosNotification::EventTypeSeq& added),
+                                 TANGO_UNUSED(const CosNotification::EventTypeSeq& deled))
 {
 	cout3 << "calling Tango::EventConsumer::subscription_change() \n";
 }
@@ -1010,7 +1010,7 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 	}	
 }
 
-void EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,long vers,DeviceAttribute *dev_attr)
+void EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,DeviceAttribute *dev_attr)
 {
 
 	CORBA::Long *tmp_lo;
@@ -1506,7 +1506,7 @@ void EventConsumer::push_structured_event(const CosNotification::StructuredEvent
 						dev_attr = new (DeviceAttribute);
 						event.remainder_of_body >>= attr_value_4;
 						vers = 4;
-						attr_to_device(attr_value_4,vers,dev_attr);
+						attr_to_device(attr_value_4,dev_attr);
 					}
 					else if (::strcmp(tmp_ptr,"AttributeValue_3") == 0)
 					{
@@ -2551,7 +2551,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 }
 
 
-void DelayedEventUnsubThread::run(void *ptr)
+void DelayedEventUnsubThread::run(TANGO_UNUSED(void *ptr))
 {
 	try
 	{

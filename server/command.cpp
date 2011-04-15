@@ -1318,7 +1318,7 @@ bool TemplCommand::is_allowed(DeviceImpl *dev_ptr,const CORBA::Any &in_any)
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *TemplCommand::execute(DeviceImpl *dev_ptr,const CORBA::Any &in_any)
+CORBA::Any *TemplCommand::execute(DeviceImpl *dev_ptr,TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 //

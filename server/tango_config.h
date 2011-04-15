@@ -356,6 +356,20 @@
 #define TANGO_HAS_CORE_LOGGER
 
 //
+// Define a macro for unused parameter warning
+//
+
+#ifdef _TG_WINDOWS_
+#define TANGO_UNUSED(var) var
+#else
+	#ifdef __GNUC__
+		#define TANGO_UNUSED(var) var __attribute__ ((unused))
+	#else
+		#define TANGO_UNUSED(var) var
+	#endif
+#endif
+
+//
 // Is it a 32 or 64 bits computer
 //
 

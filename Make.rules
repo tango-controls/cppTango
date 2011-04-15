@@ -98,7 +98,7 @@ OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.4/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.3/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 
 ##############################################################################
 #

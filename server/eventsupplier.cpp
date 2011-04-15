@@ -153,8 +153,8 @@ void EventSupplier::disconnect_structured_push_supplier()
 	cout4 << "calling Tango::EventSupplier::disconnect_structured_push_supplier() \n";
 }
 
-void EventSupplier::subscription_change(const CosNotification::EventTypeSeq& added,
-                                 const CosNotification::EventTypeSeq& deled)
+void EventSupplier::subscription_change(TANGO_UNUSED(const CosNotification::EventTypeSeq& added),
+                                 TANGO_UNUSED(const CosNotification::EventTypeSeq& deled))
 {
 	cout4 << "calling Tango::EventSupplier::subscription_change() \n";
 }
@@ -486,7 +486,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 
 				try
 				{
-					db->write_event_channel_ior_filedatabase(server_name,ior_string);
+					db->write_event_channel_ior_filedatabase(ior_string);
 				}
 				catch (Tango::DevFailed &e) {}
 			}
@@ -806,7 +806,6 @@ void EventSupplier::reconnect_notifd()
 //--------------------------------------------------------------------------
 
 void EventSupplier::detect_and_push_events_3(DeviceImpl *device_impl,
-				    long idl_vers,
 				    Tango::AttributeValue_3 *attr_value,
 				    Tango::AttributeValue_4 *attr_value_4,
 				    DevFailed *except,

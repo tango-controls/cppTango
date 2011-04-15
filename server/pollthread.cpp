@@ -365,7 +365,7 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 
 
 						  
-void *PollThread::run_undetached(void *ptr)
+void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 {
 	PollCmdType received;
 	bool per_thread_data_created = false;
@@ -1013,10 +1013,10 @@ void PollThread::one_more_poll()
 			break;
 			
 		case Tango::EVENT_HEARTBEAT:
-			eve_heartbeat(tmp);
+			eve_heartbeat();
 			break;
 		case Tango::STORE_SUBDEV:
-			store_subdev(tmp);
+			store_subdev();
 			break;
 		}
 	}
@@ -1437,7 +1437,6 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 			
 		if (idl_vers >= 3)
 			event_supplier->detect_and_push_events_3(to_do.dev,
-						       idl_vers,
 						       &dummy_att3,
 						       NULL,
 						       &except,
@@ -1445,7 +1444,6 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 							   (struct timeval *)NULL);
 		else	
 			event_supplier->detect_and_push_events(to_do.dev,
-						       idl_vers,
 						       dummy_att,
 						       &except,
 						       to_do.name);
@@ -1740,7 +1738,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 		{		
 			if (idl_vers >= 3)
 				event_supplier->detect_and_push_events_3(to_do.dev,
-						               idl_vers,
 						       	       &dummy_att3,
 						       	       NULL,
 						               save_except,
@@ -1748,7 +1745,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 									   &before_cmd);
 			else	
 				event_supplier->detect_and_push_events(to_do.dev,
-						               idl_vers,
 						       	       dummy_att,
 						               save_except,
 						               to_do.name);
@@ -1757,7 +1753,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 		{
 			if (idl_vers >= 4)
 				event_supplier->detect_and_push_events_3(to_do.dev,
-							       	       	   idl_vers,
 							       	       	   NULL,
 						       	               &((*argout_4)[0]),
 						                       save_except,
@@ -1765,7 +1760,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 											   &before_cmd);
 			else if (idl_vers == 3)
 				event_supplier->detect_and_push_events_3(to_do.dev,
-							       	       	   idl_vers,
 						       	               &((*argout_3)[0]),
 						       	               NULL,
 						                       save_except,
@@ -1773,7 +1767,6 @@ void PollThread::poll_attr(WorkItem &to_do)
 											   &before_cmd);				
 			else
 				event_supplier->detect_and_push_events(to_do.dev,
-							       	       	   idl_vers,
 						       	               (*argout)[0],
 						                       save_except,
 						                       to_do.name);
@@ -1838,7 +1831,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 //
 //--------------------------------------------------------------------------
 
-void PollThread::eve_heartbeat(WorkItem &to_do)
+void PollThread::eve_heartbeat()
 {
 	cout5 << "----------> Time = " << now.tv_sec << ","
 	      << setw(6) << setfill('0') << now.tv_usec
@@ -1865,7 +1858,7 @@ void PollThread::eve_heartbeat(WorkItem &to_do)
 //
 //--------------------------------------------------------------------------
 
-void PollThread::store_subdev(WorkItem &to_do)
+void PollThread::store_subdev()
 {
 	static bool ignore_call = true;
 	

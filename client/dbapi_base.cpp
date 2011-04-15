@@ -675,7 +675,7 @@ void Database::build_connection()
 //
 //-----------------------------------------------------------------------------
 
-string Database::get_corba_name(bool ch_acc)
+string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
 {
 	string db_corbaloc;
 	if (db_multi_svc == true)
@@ -4338,12 +4338,11 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 // description : 	Method to connect write the event channel ior to the file
 //					used as database
 //
-// argument : in :	dserver : The DS process name (exec/instance)
-//					ec_ior : The event channel IOR
+// argument : in :	ec_ior : The event channel IOR
 //
 //-----------------------------------------------------------------------------
 
-void Database::write_event_channel_ior_filedatabase(string &dserver,string &ec_ior)
+void Database::write_event_channel_ior_filedatabase(string &ec_ior)
 {
 	if (filedb == NULL)
 	{
@@ -4352,7 +4351,7 @@ void Database::write_event_channel_ior_filedatabase(string &dserver,string &ec_i
 				       		(const char *)"Database::write_event_channel_ior_filedatabase");
 	}
 
-	filedb->write_event_channel_ior(dserver,ec_ior);
+	filedb->write_event_channel_ior(ec_ior);
 }
 
 } // End of Tango namespace

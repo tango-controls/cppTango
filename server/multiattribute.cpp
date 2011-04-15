@@ -529,7 +529,7 @@ void MultiAttribute::concat(vector<AttrProperty> &dev_prop,
 //--------------------------------------------------------------------------
 
 void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
-				 string &dev_name,
+				 TANGO_UNUSED(string &dev_name),
 				 string &att_name)
 {
 

@@ -360,7 +360,7 @@ StopLogging::StopLogging(const char *name,
 //			the StopLogging command of the DServerClass
 //
 //--------------------------------------------------------------------------
-CORBA::Any *StopLogging::execute (DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *StopLogging::execute (DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout4 << "StopLogging::execute(): arrived " << endl;
 
@@ -399,7 +399,7 @@ StartLogging::StartLogging (const char *name,
 //			the StartLogging command of the DServerClass
 //
 //--------------------------------------------------------------------------
-CORBA::Any *StartLogging::execute (DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *StartLogging::execute (DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 	cout4 << "StartLogging::execute(): arrived " << endl;
 

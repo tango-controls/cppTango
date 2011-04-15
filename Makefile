@@ -68,7 +68,7 @@ INCLUDE_DIRS = -I$(CLIENT_SRC) \
 	       -I$(SERVER_SRC)	\
 	       -I$(JPG_SRC) \
 	       -I$(OMNI_BASE)/include \
-	       -I$(LOG4TANGO_BASE)/include
+	       -I$(LOG4TANGO_BASE)/include/tango
 
 # -----------------------------------------------------------------
 #
@@ -82,19 +82,29 @@ ifdef gcc
 CXXFLAGS = -O2 -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS 
 CXXFLAGS_SL = $(CXXFLAGS) -fPIC
 else
-CXXFLAGS = -mt -D_POSIX_PTHREAD_SEMANTICS -D_TANGO_LIB \
+BASE_CXXFLAGS = -mt -D_POSIX_PTHREAD_SEMANTICS -D_TANGO_LIB \
 	   	  -DOMNI_UNLOADABLE_STUBS \
 	        -xregs=no%appl $(INCLUDE_DIRS)
-CXXFLAGS_SL = $(CXXFLAGS) -KPIC
+BASE_CXXFLAGS_SL = $(BASE_CXXFLAGS) -KPIC
+ifdef debug
+CXXFLAGS = $(BASE_CXXFLAGS) -g
+CXXFLAGS_SL = $(BASE_CXXFLAGS_SL) -g
+else
+CXXFLAGS = $(BASE_CXXFLAGS)
+CXXFLAGS_SL = $(BASE_CXXFLAGS_SL)
 endif
 endif
-
+endif
 
 ifdef linux
-FLAGS = -g -D_REENTRANT -DOMNI_UNLOADABLE_STUBS $(INCLUDE_DIRS)
+ifdef debug
+FLAGS = -g -Wall -Wextra -D_REENTRANT -DOMNI_UNLOADABLE_STUBS $(INCLUDE_DIRS)
 #FLAGS    = -g -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
-#FLAGS    = -O2 -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
+else
+FLAGS    = -O2 -D_REENTRANT -D_TANGO_LIB $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
 #FLAGS    = -O2 -D_REENTRANT $(INCLUDE_DIRS) -DOMNI_UNLOADABLE_STUBS
+endif
+
 # gcc does not allow MMX optimisation with -fPIC in 64bits
 ifdef 64bits
 MMFLAG      = -mmmx -D_64BITS
@@ -106,7 +116,6 @@ MMFLAG      = -mmmx -O0
 CXXFLAGS    = -DJPG_USE_ASM $(FLAGS)
 CXXFLAGS_SL = -DJPG_USE_ASM $(FLAGS) -fPIC
 endif
-
 endif
 
 ifdef macosx-darwin8

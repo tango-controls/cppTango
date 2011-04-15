@@ -2325,12 +2325,11 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 // 
 // description : 	Method to write the event channel ior into the file
 //
-// argument : in :	dserver : The DS process name (exec/instance)
-//					ec_ior : The event channel IOR
+// argument : in : ior_string : The event channel IOR
 //
 //-----------------------------------------------------------------------------
 
-void FileDatabase::write_event_channel_ior(string &dserver,string &ior_string)
+void FileDatabase::write_event_channel_ior(string &ior_string)
 {
 
 //
