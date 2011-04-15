@@ -53,8 +53,7 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/$(BIN_DIR)
 #
 ##############################################################################
 
-#LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/$(BIN_DIR)
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango_trunk/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 
 ifdef _solaris
 CC = /opt/SUNWspro/bin/CC

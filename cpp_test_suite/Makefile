@@ -14,8 +14,8 @@ OS=$(shell /csadmin/common/scripts/get_os.share)
 endif
 
 ifdef ubuntu
-OS=ubuntu1004
-#OS=ubuntu904
+#OS=ubuntu1004
+OS=ubuntu904
 endif
 
 BIN_DIR = $(OS)
@@ -36,7 +36,7 @@ LIB_TANGO_DIR = $(TANGO_HOME)/lib
 BIN_TANGO_DIR = $(TANGO_HOME)/bin
 else
 TANGO_HOME = /home/taurel/tango/cppapi_develop
-LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib
+LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib/debug
 BIN_TANGO_DIR = bin/$(BIN_DIR)
 endif
 
@@ -54,8 +54,7 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.4/$(BIN_DIR)
 #
 ##############################################################################
 
-#LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.3/$(BIN_DIR)
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango_trunk/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 
 
 ifdef _solaris
@@ -86,7 +85,7 @@ else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/server \
 			   -I$(TANGO_HOME)/client \
-			   -I$(LOG4TANGO_BASE)/include \
+			   -I$(LOG4TANGO_BASE)/include/tango \
 			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
