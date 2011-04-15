@@ -4,6 +4,7 @@
 
 #include <tango.h>
 #include <assert.h>
+#include <math.h>
 
 
 using namespace Tango;
@@ -539,6 +540,74 @@ int main(int argc, char **argv)
 	assert (idx_att_in_fault[1] == 3);
 	
 	cout << "   write_attributes() method with several attributes and exception --> OK" << endl;
+
+// Check that NaN and INF are refused
+
+
+	bool except = false;
+	DeviceAttribute din_nan;
+	double in_nan = NAN;
+	din_nan << in_nan;
+	din_nan.set_name("Double_attr_w");
+	try
+	{	
+		device->write_attribute(din_nan);
+	}
+	catch (Tango::DevFailed &e)
+	{
+//		Except::print_exception(e);
+		except = true;
+	}
+
+	assert( except == true );
+
+	except=false;
+	in_nan=INFINITY;
+	din_nan << in_nan;
+	try
+	{	
+		device->write_attribute(din_nan);
+	}
+	catch (Tango::DevFailed &e)
+	{
+//		Except::print_exception(e);
+		except = true;
+	}
+
+	assert( except == true );
+
+	except = false;
+	in_nan = NAN;
+	din_nan << in_nan;
+	din_nan.set_name("Float_attr_w");
+	try
+	{	
+		device->write_attribute(din_nan);
+	}
+	catch (Tango::DevFailed &e)
+	{
+//		Except::print_exception(e);
+		except = true;
+	}
+
+	assert( except == true );
+
+	except=false;
+	in_nan=INFINITY;
+	din_nan << in_nan;
+	try
+	{	
+		device->write_attribute(din_nan);
+	}
+	catch (Tango::DevFailed &e)
+	{
+//		Except::print_exception(e);
+		except = true;
+	}
+
+	assert( except == true );
+
+	cout << "   NaN and INF refused for double/float attributes --> OK" << endl;
 	
 	delete device;
 	return 0;	

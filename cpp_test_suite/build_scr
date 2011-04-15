@@ -160,7 +160,7 @@ fi
 #
 
 TANGO_LIB=$INSTALL_DIR/$BIN_DIR/lib/debug
-LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango_trunk/$BIN_DIR/lib
+LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib
 ORB_LIB=/segfs/tango/ORB/omniORB4.1.4/$BIN_DIR/lib
 
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$LD_LIBRARY_PATH
