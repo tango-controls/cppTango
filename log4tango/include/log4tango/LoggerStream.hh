@@ -94,7 +94,7 @@ public:
    * @param i The log initiator
    * @returns A reference to itself.
    **/
-  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LogInitiator& i) {
+  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LOG4TANGO_UNUSED(LogInitiator& i)) {
     return *this;
   }
   
@@ -104,7 +104,7 @@ public:
    * @param s The log separator
    * @returns A reference to itself.
    **/
-  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LogSeparator& s) {
+  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LOG4TANGO_UNUSED(LogSeparator& s)) {
     flush();
     return *this;
   }
@@ -115,7 +115,7 @@ public:
    * @param endoflog The log terminator
    * @returns A reference to itself.
    **/
-  inline LOG4TANGO_EXPORT LoggerStream& operator<< (ls_terminator endoflog) {
+  inline LOG4TANGO_EXPORT LoggerStream& operator<< (LOG4TANGO_UNUSED(ls_terminator endoflog)) {
     flush();
     return *this;
   }
