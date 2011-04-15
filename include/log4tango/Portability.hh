@@ -40,6 +40,14 @@
 # pragma warning( disable : 4786 ) // 255 char debug symbol limit
 # pragma warning( disable : 4290 ) // throw specifier not implemented
 # pragma warning( disable : 4251 ) // "class XXX should be exported"
+
+#define LOG4TANGO_UNUSED(var) var
+#else
+	#ifdef __GNUC__
+		#define LOG4TANGO_UNUSED(var) var __attribute__ ((unused))
+	#else
+		#define LOG4TANGO_UNUSED(var) var
+	#endif
 #endif
 
 #ifndef LOG4TANGO_HAVE_SSTREAM
