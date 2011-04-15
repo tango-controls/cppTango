@@ -735,7 +735,26 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 				
 //
 // Check the incoming value
+// First check for NaN, INF
 //
+
+		for (i = 0;i < nb_data;i++)
+		{
+#ifdef _TG_WINDOWS_
+			if (_finite((*db_ptr)[i]) == 0)
+#else
+			if (isfinite((*db_ptr)[i]) == 0)
+#endif
+			{
+				TangoSys_OMemStream o;
+
+				o << "Set value for attribute " << name;
+				o << " is a NaN or INF value (at least element " << i << ")" << ends;
+				Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+					      o.str(),
+					      (const char *)"WAttribute::check_written_value()");
+			}
+		}
 
 		if (check_min_value == true)
 		{
@@ -878,7 +897,26 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 				
 //
 // Check the incoming value
+// First check for NaN, INF
 //
+
+		for (i = 0;i < nb_data;i++)
+		{
+#ifdef _TG_WINDOWS_
+			if (_finite((*fl_ptr)[i]) == 0)
+#else
+			if (isfinite((*fl_ptr)[i]) == 0)
+#endif
+			{
+				TangoSys_OMemStream o;
+
+				o << "Set value for attribute " << name;
+				o << " is a NaN or INF value (at least element " << i << ")" << ends;
+				Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+					      o.str(),
+					      (const char *)"WAttribute::check_written_value()");
+			}
+		}
 
 		if (check_min_value == true)
 		{
@@ -1473,7 +1511,26 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 				
 //
 // Check the incoming value
+// First check for NaN, INF
 //
+
+			for (i = 0;i < nb_data;i++)
+			{
+#ifdef _TG_WINDOWS_
+				if (_finite(db_seq[i]) == 0)
+#else
+				if (isfinite(db_seq[i]) == 0)
+#endif
+				{
+					TangoSys_OMemStream o;
+
+					o << "Set value for attribute " << name;
+					o << " is a NaN or INF value (at least element " << i << ")" << ends;
+					Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+						      o.str(),
+						      (const char *)"WAttribute::check_written_value()");
+				}
+			}
 
 			if (check_min_value == true)
 			{
@@ -1618,7 +1675,26 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 				
 //
 // Check the incoming value
+// First check for NaN, INF
 //
+
+			for (i = 0;i < nb_data;i++)
+			{
+#ifdef _TG_WINDOWS_
+				if (_finite(fl_seq[i]) == 0)
+#else
+				if (isfinite(fl_seq[i]) == 0)
+#endif
+				{
+					TangoSys_OMemStream o;
+
+					o << "Set value for attribute " << name;
+					o << " is a NaN or INF value (at least element " << i << ")" << ends;
+					Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+						      o.str(),
+						      (const char *)"WAttribute::check_written_value()");
+				}
+			}
 
 			if (check_min_value == true)
 			{
@@ -2845,7 +2921,7 @@ void WAttribute::set_write_value(vector<Tango::DevState> &val, long x, long y)
 	set_user_set_write_value(true);
 }
 
-void WAttribute::set_write_value(Tango::DevEncoded *, long x,long y)
+void WAttribute::set_write_value(Tango::DevEncoded *, TANGO_UNUSED(long x),TANGO_UNUSED(long y))
 {
 
 //

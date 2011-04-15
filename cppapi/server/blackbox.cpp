@@ -840,7 +840,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSo
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent &cl_id,long vers,DevSource sour)
+void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent &cl_id,TANGO_UNUSED(long vers),DevSource sour)
 {
 
 //
@@ -933,7 +933,7 @@ void BlackBox::insert_attr(const Tango::AttributeValueList &att_list, long vers)
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id,long vers)
+void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id,TANGO_UNUSED(long vers))
 {
 	sync.lock();
 	

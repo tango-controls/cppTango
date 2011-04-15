@@ -359,7 +359,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 //
 //-----------------------------------------------------------------------------
 
-void *EventConsumerKeepAliveThread::run_undetached(void *arg) 
+void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg)) 
 {	
 	int time_to_sleep;
 	time_t now;

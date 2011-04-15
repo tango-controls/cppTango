@@ -50,7 +50,7 @@ extern omni_thread::key_t key_py_data;
 namespace Tango
 {
 
-void *DServerSignal::ThSig::run_undetached(void *ptr)
+void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
 {
 
 #ifndef _TG_WINDOWS_

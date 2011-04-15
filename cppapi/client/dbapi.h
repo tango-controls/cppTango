@@ -118,7 +118,7 @@ public :
 	
 	void write_filedatabase();
 	void reread_filedatabase();
-	void write_event_channel_ior_filedatabase(string &,string &);
+	void write_event_channel_ior_filedatabase(string &);
 	void build_connection ();
 	void post_reconnection();
 	~Database();

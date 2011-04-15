@@ -169,7 +169,7 @@ PolledDeviceCmd::PolledDeviceCmd(const char *name,
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *PolledDeviceCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *PolledDeviceCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	cout4 << "PolledDevice::execute(): arrived " << endl;
@@ -433,7 +433,7 @@ StopPollingCmd::StopPollingCmd(const char *name,
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *StopPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *StopPollingCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	cout4 << "StopPolling::execute(): arrived " << endl;
@@ -476,7 +476,7 @@ StartPollingCmd::StartPollingCmd(const char *name,
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *StartPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *StartPollingCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	cout4 << "StartPolling::execute(): arrived " << endl;

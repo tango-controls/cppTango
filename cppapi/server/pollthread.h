@@ -298,8 +298,8 @@ protected:
 	void time_diff(struct timeval &,struct timeval &,struct timeval &);
 	void poll_cmd(WorkItem &);
 	void poll_attr(WorkItem &);
-	void eve_heartbeat(WorkItem &);
-	void store_subdev(WorkItem &);
+	void eve_heartbeat();
+	void store_subdev();
 	
 	void print_list();
 	void insert_in_list(WorkItem &);

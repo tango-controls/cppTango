@@ -88,7 +88,7 @@ shared_cmd(cmd),p_mon(m),admin_proxy(adm)
 //
 //--------------------------------------------------------------------------
 					  
-void LockThread::run(void *ptr)
+void LockThread::run(TANGO_UNUSED(void *ptr))
 {
 	LockCmdType received;
 

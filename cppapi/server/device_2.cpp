@@ -1961,7 +1961,7 @@ void Device_2Impl::Hist_32Hist(DevAttrHistoryList_3 *back_3,DevAttrHistoryList *
 //
 //--------------------------------------------------------------------------
 
-void Device_2Impl::Polled_2_Live(long data_type,Tango::AttrValUnion &hist_union,CORBA::Any &live_any)
+void Device_2Impl::Polled_2_Live(TANGO_UNUSED(long data_type),Tango::AttrValUnion &hist_union,CORBA::Any &live_any)
 {	
 	switch (hist_union._d())
 	{

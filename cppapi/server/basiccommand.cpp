@@ -257,7 +257,7 @@ DevStatusCmd::DevStatusCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgTy
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	cout4 << "DevStatus::execute(): arrived " << endl;
@@ -314,7 +314,7 @@ DevStateCmd::DevStateCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgTyp
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *DevStateCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	cout4 << "DevState::execute(): arrived" << endl;
@@ -370,7 +370,7 @@ DevInitCmd::DevInitCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgType 
 //
 //--------------------------------------------------------------------------
 
-CORBA::Any *DevInitCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
+CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
 
 	cout4 << "Init::execute(): arrived" << endl;

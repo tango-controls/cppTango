@@ -1735,7 +1735,7 @@ void Util::server_already_running()
 //
 //-----------------------------------------------------------------------------
 
-void Util::server_init(bool with_window)
+void Util::server_init(TANGO_UNUSED(bool with_window))
 {
 //
 // Even if we are not in a Python DS, we have to create the per-thread
@@ -2478,7 +2478,7 @@ void Util::unregister_server()
 //
 //-----------------------------------------------------------------------------
 
-void Util::print_err_message(const char *err_mess,Tango::MessBoxType type)
+void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxType type))
 {
 #ifdef _TG_WINDOWS_
         if (_win == true)

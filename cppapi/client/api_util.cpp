@@ -1281,7 +1281,7 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 	}	
 }
 
-void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4,long vers,DeviceAttribute *dev_attr)
+void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4,TANGO_UNUSED(long vers),DeviceAttribute *dev_attr)
 {
 
 	CORBA::Long *tmp_lo;

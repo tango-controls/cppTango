@@ -146,7 +146,7 @@ private :
 	
 public :
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
-	void detect_and_push_events_3(DeviceImpl *,long,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
+	void detect_and_push_events_3(DeviceImpl *,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -173,7 +173,6 @@ public :
 				    
 	template <typename T>
 	void detect_and_push_events(DeviceImpl *device_impl,
-				    long idl_vers,
 				    T &attr_value,
 				    DevFailed *except,
 				    string &attr_name)

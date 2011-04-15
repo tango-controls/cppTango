@@ -451,7 +451,7 @@ protected :
 					   const vector<string> &filters, bool stateless = false);	
 	friend class EventConsumerKeepAliveThread;
 	void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
-	void attr_to_device(const AttributeValue_4 *,long,DeviceAttribute *);
+	void attr_to_device(const AttributeValue_4 *,DeviceAttribute *);
 	void conf_to_info(AttributeConfig_2 &,AttributeInfoEx **);
 
 	EventConsumer(ApiUtil *ptr);

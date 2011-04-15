@@ -620,13 +620,13 @@ void GroupElement::remove (const std::vector<std::string>&, bool)
   //- noop default impl
 }
 //-----------------------------------------------------------------------------
-bool GroupElement::contains (const std::string& n, bool fwd)
+bool GroupElement::contains (const std::string& n, TANGO_UNUSED(bool fwd))
 {
   std::string::size_type pos = n.find('*',0);
   return (pos == std::string::npos) ? name_equals(n) : name_matches(n);
 } 
 //-----------------------------------------------------------------------------
-GroupElement* GroupElement::find (const std::string& n, bool fwd) 
+GroupElement* GroupElement::find (const std::string& n, TANGO_UNUSED(bool fwd)) 
 {
   return name_equals(n) ? this : 0;
 } 
@@ -1579,7 +1579,7 @@ void GroupDeviceElement::disconnect (void)
   }
 }
 //-----------------------------------------------------------------------------
-bool GroupDeviceElement::ping (bool fwd)
+bool GroupDeviceElement::ping (TANGO_UNUSED(bool fwd))
 {
   bool result = true;
   try 
@@ -1593,7 +1593,7 @@ bool GroupDeviceElement::ping (bool fwd)
   return result;
 } 
 //-----------------------------------------------------------------------------
-long GroupDeviceElement::command_inout_asynch (const std::string& c, bool fgt, bool fwd, long id)
+long GroupDeviceElement::command_inout_asynch (const std::string& c, bool fgt, TANGO_UNUSED(bool fwd), long id)
 {
   if (is_enabled() == false)
   {
@@ -1638,7 +1638,7 @@ long GroupDeviceElement::command_inout_asynch (const std::string& c, bool fgt, b
   return id;
 }
 //-----------------------------------------------------------------------------
-long GroupDeviceElement::command_inout_asynch (const std::string& c, const DeviceData& d, bool fgt, bool fwd, long id)
+long GroupDeviceElement::command_inout_asynch (const std::string& c, const DeviceData& d, bool fgt, TANGO_UNUSED(bool fwd), long id)
 {
   if (is_enabled() == false)
   {
@@ -1751,7 +1751,7 @@ GroupCmdReplyList GroupDeviceElement::command_inout_reply (long id, long tmo)
   return rl;
 }
 //-----------------------------------------------------------------------------
-long GroupDeviceElement::read_attribute_asynch (const std::string& a, bool fwd, long id)
+long GroupDeviceElement::read_attribute_asynch (const std::string& a, TANGO_UNUSED(bool fwd), long id)
 {
   if (is_enabled() == false)
   {
@@ -1875,7 +1875,7 @@ GroupAttrReplyList GroupDeviceElement::read_attribute_reply (long id, long tmo)
   return rl;
 }
 //-----------------------------------------------------------------------------
-long GroupDeviceElement::read_attributes_asynch (const std::vector<std::string>& al, bool fwd, long id)
+long GroupDeviceElement::read_attributes_asynch (const std::vector<std::string>& al, TANGO_UNUSED(bool fwd), long id)
 {
   if (is_enabled() == false)
   {
@@ -2018,7 +2018,7 @@ GroupAttrReplyList GroupDeviceElement::read_attributes_reply (long id, long tmo)
   return rl;
 }
 //-----------------------------------------------------------------------------
-long GroupDeviceElement::write_attribute_asynch (const DeviceAttribute& d, bool fwd, long id)
+long GroupDeviceElement::write_attribute_asynch (const DeviceAttribute& d, TANGO_UNUSED(bool fwd), long id)
 {
   if (is_enabled() == false)
   {
@@ -2116,7 +2116,7 @@ GroupReplyList GroupDeviceElement::write_attribute_reply (long id, long tmo)
   return rl;
 }
 //-----------------------------------------------------------------------------
-void GroupDeviceElement::dump (int indent_level)
+void GroupDeviceElement::dump (TANGO_UNUSED(int indent_level))
 {
 #if defined(_LOCAL_DEBUGGING)
   for (int i = 0; i < indent_level ; i++) {
@@ -2144,7 +2144,7 @@ bool GroupDeviceElement::is_group (void)
   return false;
 }
 //-----------------------------------------------------------------------------
-long GroupDeviceElement::get_size (bool fwd)
+long GroupDeviceElement::get_size (TANGO_UNUSED(bool fwd))
 {
   return 1;
 }

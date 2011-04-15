@@ -120,7 +120,7 @@ public:
 	std::string  parse_res_file(const std::string& file_name);
 	void display();
 	string get_display();
-	void write_event_channel_ior(string &,string &);
+	void write_event_channel_ior(string &);
 
 
 	CORBA::Any*      DbInfo(CORBA::Any&);

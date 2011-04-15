@@ -273,7 +273,7 @@ EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,Tango::C
 // returns :	boolean - true == is allowed , false == not allowed
 //
 //-----------------------------------------------------------------------------
-bool EventSubscriptionChangeCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+bool EventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
 {
 		//	End of Generated Code
 
