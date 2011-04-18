@@ -167,9 +167,10 @@ export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$LD_LIBRARY_PATH
 export TANGO_HOST=kidiboo:10000
 
 if [ $OS_TYPE = "Windows" ]
+then
 	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
 	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
-then
+else
 	echo "Shared libs used by device server"
 	ldd $INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME
 	$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
