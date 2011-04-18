@@ -554,7 +554,7 @@ int main(int argc, char **argv)
 
 	bool except = false;
 	DeviceAttribute din_nan;
-#ifdef WIN32
+#if ((defined WIN32) || (defined __SUNPRO_CC))
 	double in_nan = std::numeric_limits<double>::quiet_NaN();
 #else
 	double in_nan = NAN;
@@ -595,7 +595,7 @@ int main(int argc, char **argv)
 #endif /* SUNPRO */
 
 	except = false;
-#ifdef WIN32
+#if ((defined WIN32) || (defined __SUNPRO_CC))
 	float in_nan_fl = std::numeric_limits<float>::quiet_NaN();
 #else
 	float in_nan_fl = NAN;
