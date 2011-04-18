@@ -743,7 +743,11 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 #ifdef _TG_WINDOWS_
 			if (_finite((*db_ptr)[i]) == 0)
 #else
+	#ifdef __SUNPRO_CC
+			if (isnan((*db_ptr)[i]) != 0)
+	#else
 			if (isfinite((*db_ptr)[i]) == 0)
+	#endif
 #endif
 			{
 				TangoSys_OMemStream o;
@@ -754,11 +758,8 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      o.str(),
 					      (const char *)"WAttribute::check_written_value()");
 			}
-		}
 
-		if (check_min_value == true)
-		{
-			for (i = 0;i < nb_data;i++)
+			if (check_min_value == true)
 			{
 				if ((*db_ptr)[i] < min_value.db)
 				{
@@ -771,10 +772,8 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 						      (const char *)"WAttribute::check_written_value()");
 				}
 			}
-		}
-		if (check_max_value == true)
-		{
-			for (i = 0;i < nb_data;i++)
+
+			if (check_max_value == true)
 			{
 				if ((*db_ptr)[i] > max_value.db)
 				{
@@ -905,7 +904,12 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 #ifdef _TG_WINDOWS_
 			if (_finite((*fl_ptr)[i]) == 0)
 #else
+#else
+	#ifdef __SUNPRO_CC
+			if (isnan((*fl_ptr)[i]) != 0)
+	#else
 			if (isfinite((*fl_ptr)[i]) == 0)
+	#endif
 #endif
 			{
 				TangoSys_OMemStream o;
@@ -916,11 +920,8 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      o.str(),
 					      (const char *)"WAttribute::check_written_value()");
 			}
-		}
 
-		if (check_min_value == true)
-		{
-			for (i = 0;i < nb_data;i++)
+			if (check_min_value == true)
 			{
 				if ((*fl_ptr)[i] < min_value.fl)
 				{
@@ -933,10 +934,8 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 						      (const char *)"WAttribute::check_written_value()");
 				}
 			}
-		}
-		if (check_max_value == true)
-		{
-			for (i = 0;i < nb_data;i++)
+
+			if (check_max_value == true)
 			{
 				if ((*fl_ptr)[i] > max_value.fl)
 				{
@@ -1519,7 +1518,11 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 #ifdef _TG_WINDOWS_
 				if (_finite(db_seq[i]) == 0)
 #else
+	#ifdef __SUNPRO_CC
+				if (isnan(db_seq[i]) != 0)
+	#else
 				if (isfinite(db_seq[i]) == 0)
+	#endif
 #endif
 				{
 					TangoSys_OMemStream o;
@@ -1530,11 +1533,8 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 						      o.str(),
 						      (const char *)"WAttribute::check_written_value()");
 				}
-			}
 
-			if (check_min_value == true)
-			{
-				for (i = 0;i < nb_data;i++)
+				if (check_min_value == true)
 				{
 					if (db_seq[i] < min_value.db)
 					{
@@ -1547,10 +1547,8 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 						    	  (const char *)"WAttribute::check_written_value()");
 					}
 				}
-			}
-			if (check_max_value == true)
-			{
-				for (i = 0;i < nb_data;i++)
+
+				if (check_max_value == true)
 				{
 					if (db_seq[i] > max_value.db)
 					{
@@ -1683,7 +1681,11 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 #ifdef _TG_WINDOWS_
 				if (_finite(fl_seq[i]) == 0)
 #else
+	#ifdef __SUNPRO_CC
+				if (isnan(fl_seq[i]) != 0)
+	#else
 				if (isfinite(fl_seq[i]) == 0)
+	#endif
 #endif
 				{
 					TangoSys_OMemStream o;
@@ -1694,11 +1696,8 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 						      o.str(),
 						      (const char *)"WAttribute::check_written_value()");
 				}
-			}
 
-			if (check_min_value == true)
-			{
-				for (i = 0;i < nb_data;i++)
+				if (check_min_value == true)
 				{
 					if (fl_seq[i] < min_value.fl)
 					{
@@ -1711,10 +1710,8 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 						    	  (const char *)"WAttribute::check_written_value()");
 					}
 				}
-			}
-			if (check_max_value == true)
-			{
-				for (i = 0;i < nb_data;i++)
+
+				if (check_max_value == true)
 				{
 					if (fl_seq[i] > max_value.fl)
 					{
