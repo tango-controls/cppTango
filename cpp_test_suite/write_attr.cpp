@@ -546,7 +546,10 @@ int main(int argc, char **argv)
 	
 	cout << "   write_attributes() method with several attributes and exception --> OK" << endl;
 
+//
 // Check that NaN and INF are refused
+// If someone could tell me how to use isfinite using Solaris CC !!!!!!
+//
 
 
 	bool except = false;
@@ -570,6 +573,7 @@ int main(int argc, char **argv)
 
 	assert( except == true );
 
+#ifndef __SUNPRO_CC
 	except=false;
 #ifdef WIN32
 	in_nan = std::numeric_limits<double>::infinity();
@@ -588,6 +592,7 @@ int main(int argc, char **argv)
 	}
 
 	assert( except == true );
+#endif /* SUNPRO */
 
 	except = false;
 #ifdef WIN32
@@ -609,6 +614,7 @@ int main(int argc, char **argv)
 
 	assert( except == true );
 
+#ifndef __SUNPRO_CC
 	except=false;
 #ifdef WIN32
 	in_nan_fl = std::numeric_limits<float>::infinity();
@@ -627,6 +633,7 @@ int main(int argc, char **argv)
 	}
 
 	assert( except == true );
+#endif /* SUNPRO_CC */
 
 	cout << "   NaN and INF refused for double/float attributes --> OK" << endl;
 	
