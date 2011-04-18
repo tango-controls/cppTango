@@ -904,7 +904,6 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 #ifdef _TG_WINDOWS_
 			if (_finite((*fl_ptr)[i]) == 0)
 #else
-#else
 	#ifdef __SUNPRO_CC
 			if (isnan((*fl_ptr)[i]) != 0)
 	#else
