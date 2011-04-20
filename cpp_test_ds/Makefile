@@ -82,7 +82,7 @@ ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/include \
 			   -I$(LOG4TANGO_BASE)/include/tango \
-			   -I. 
+			   -I.
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR)/debug \
@@ -91,8 +91,8 @@ else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/server \
 			   -I$(TANGO_HOME)/client \
-			   -I$(LOG4TANGO_BASE)/include \
-			   -I. 
+			   -I$(LOG4TANGO_BASE)/include/tango \
+			   -I.
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
@@ -121,7 +121,7 @@ ifdef linux
 CXXFLAGS =  -g -D_REENTRANT $(INCLUDE_DIRS)
 LFLAGS =  -g $(LIB_DIRS) $(LIB_TANGO) \
 	-llog4tango -lomniORB4  -lomniDynamic4 \
-	-lCOS4 -lomnithread -lpthread -ldl 
+	-lCOS4 -lomnithread -lpthread -ldl
 endif
 
 
@@ -154,9 +154,9 @@ all: DevTest
 
 DevTest:	$(SVC_OBJS)
 	@./cr_dir $(BIN_TANGO_DIR)
-	$(CC) $(SVC_OBJS) -o $(BIN_TANGO_DIR)/devTest $(LFLAGS) 
+	$(CC) $(SVC_OBJS) -o $(BIN_TANGO_DIR)/devTest $(LFLAGS)
 
- 
+
 clean:
 	rm -f *.o core
 
