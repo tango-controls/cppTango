@@ -4,8 +4,8 @@
 //+----------------------------------------------------------------------------
 //
 // method : 		IODServDevice::IODServDevice()
-// 
-// description : 	constructor for the IODServDevice command of the 
+//
+// description : 	constructor for the IODServDevice command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -38,14 +38,14 @@ bool IODServDevice::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 }
 
 CORBA::Any *IODServDevice::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     cout << "[IODServDevice::execute]" << endl;
 
     Tango::DeviceImpl *dev;
     Tango::Util *tg = Tango::Util::instance();
     dev = tg->get_dserver_device();
-    
+
     CORBA::String_var d_name = dev->name();
     return insert(static_cast<const char *>(d_name));
   }
@@ -60,8 +60,8 @@ CORBA::Any *IODServDevice::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 //+----------------------------------------------------------------------------
 //
 // method : 		IODevByName::IODevByName()
-// 
-// description : 	constructor for the IODevByName command of the 
+//
+// description : 	constructor for the IODevByName command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -94,7 +94,7 @@ bool IODevByName::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 CORBA::Any *IODevByName::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevString dev_name;
     extract(in_any,dev_name);
@@ -103,7 +103,7 @@ CORBA::Any *IODevByName::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
     Tango::DeviceImpl *dev;
     Tango::Util *tg = Tango::Util::instance();
     dev = tg->get_device_by_name(dev_name);
-    
+
     CORBA::String_var d_name = dev->name();
     return insert(static_cast<const char *>(d_name));
   }
@@ -118,8 +118,8 @@ CORBA::Any *IODevByName::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		IODevListByClass::IODevListByClass()
-// 
-// description : 	constructor for the IODevListByClass command of the 
+//
+// description : 	constructor for the IODevListByClass command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -153,7 +153,7 @@ bool IODevListByClass::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &i
 
 
 CORBA::Any *IODevListByClass::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevString class_name;
     extract(in_any,class_name);
@@ -162,14 +162,14 @@ CORBA::Any *IODevListByClass::execute(Tango::DeviceImpl *device,const CORBA::Any
     vector<Tango::DeviceImpl *> d_list;
     Tango::Util *tg = Tango::Util::instance();
     d_list = tg->get_device_list_by_class(class_name);
-    
+
     CORBA::String_var d_name = d_list[0]->name();
     char *t = strrchr(d_name.inout(),'/');
     if (t != NULL)
     {
     	*t='\0';
     }
-    
+
     return insert(static_cast<const char *>(d_name));
   }
   catch (CORBA::Exception &e)
@@ -183,8 +183,8 @@ CORBA::Any *IODevListByClass::execute(Tango::DeviceImpl *device,const CORBA::Any
 //+----------------------------------------------------------------------------
 //
 // method : 		IOSleep::IOSleep()
-// 
-// description : 	constructor for the IOSleep command of the 
+//
+// description : 	constructor for the IOSleep command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -218,7 +218,7 @@ bool IOSleep::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOSleep::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevUShort sleeping_Time;
 
@@ -242,8 +242,8 @@ CORBA::Any *IOSleep::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOState::IOState()
-// 
-// description : 	constructor for the IOState command of the 
+//
+// description : 	constructor for the IOState command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -274,7 +274,7 @@ bool IOState::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOState::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevState theState;
     extract(in_any,theState);
@@ -293,8 +293,8 @@ CORBA::Any *IOState::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOStartPoll::IOStartPoll()
-// 
-// description : 	constructor for the IOState command of the 
+//
+// description : 	constructor for the IOState command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -326,7 +326,7 @@ bool IOStartPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 CORBA::Any *IOStartPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	long theNumber = 11;	
+	long theNumber = 11;
     	return insert(theNumber);
 }
 
@@ -334,8 +334,8 @@ CORBA::Any *IOStartPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		IOShortSleep::IOShortSleep()
-// 
-// description : 	constructor for the IOState command of the 
+//
+// description : 	constructor for the IOState command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -371,7 +371,7 @@ CORBA::Any *IOShortSleep::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 	extract(in_any,in_array);
 
 	Tango_sleep((*in_array)[1]);
-	short ret = (*in_array)[0] * 2;		
+	short ret = (*in_array)[0] * 2;
     	return insert(ret);
 }
 
@@ -379,8 +379,8 @@ CORBA::Any *IOShortSleep::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //+----------------------------------------------------------------------------
 //
 // method : 		IOSleepExcept::IOSleepExcept()
-// 
-// description : 	constructor for the IOState command of the 
+//
+// description : 	constructor for the IOState command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -420,15 +420,15 @@ CORBA::Any *IOSleepExcept::execute(Tango::DeviceImpl *device,const CORBA::Any &i
   	Tango::Except::throw_exception((const char *)"aaa",
   			         	(const char *)"This is a test ",
 			         	(const char *)"IOSleepExcept::execute()");
-				 
+
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOExit::IOExit()
-// 
-// description : 	constructor for the IOState command of the 
+//
+// description : 	constructor for the IOState command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -459,15 +459,15 @@ bool IOExit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 CORBA::Any *IOExit::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 	exit(0);
-	
+
 	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOTrigPoll::IOTrigPoll()
-// 
-// description : 	constructor for the IOTrigPoll command of the 
+//
+// description : 	constructor for the IOTrigPoll command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -501,7 +501,7 @@ CORBA::Any *IOTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 {
 	Tango::DevString cmd_name;
 	extract(in_any,cmd_name);
-	
+
 	Tango::Util *tg = Tango::Util::instance();
 
 #ifndef COMPAT
@@ -510,7 +510,7 @@ CORBA::Any *IOTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 	string name(cmd_name);
 	tg->trigger_cmd_polling(device,name);
 #endif
-	
+
     return insert();
 }
 
@@ -518,8 +518,8 @@ CORBA::Any *IOTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 //+----------------------------------------------------------------------------
 //
 // method : 		IOAttrTrigPoll::IOAttrTrigPoll()
-// 
-// description : 	constructor for the IOAttrTrigPoll command of the 
+//
+// description : 	constructor for the IOAttrTrigPoll command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -553,7 +553,7 @@ CORBA::Any *IOAttrTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &
 {
 	Tango::DevString att_name;
 	extract(in_any,att_name);
-	
+
 	Tango::Util *tg = Tango::Util::instance();
 
 #ifndef COMPAT
@@ -562,7 +562,7 @@ CORBA::Any *IOAttrTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &
 	string name(att_name);
 	tg->trigger_attr_polling(device,name);
 #endif
-	
+
     return insert();
 }
 
@@ -570,8 +570,8 @@ CORBA::Any *IOAttrTrigPoll::execute(Tango::DeviceImpl *device,const CORBA::Any &
 //+----------------------------------------------------------------------------
 //
 // method : 		IOInitWAttr::IOInitWAttr()
-// 
-// description : 	constructor for the IOInitWAttr command of the 
+//
+// description : 	constructor for the IOInitWAttr command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -607,16 +607,16 @@ CORBA::Any *IOInitWAttr::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 
 	Tango::WAttribute &w_sh_attr = device->get_device_attr()->get_w_attr_by_name("Short_attr_w");
 	w_sh_attr.set_write_value((Tango::DevShort)10);
-	
+
 	Tango::WAttribute &w_lg_attr = device->get_device_attr()->get_w_attr_by_name("Long_attr_w");
 	w_lg_attr.set_write_value((Tango::DevLong)100);
-	
+
 	Tango::WAttribute &w_db_attr = device->get_device_attr()->get_w_attr_by_name("Double_attr_w");
 	w_db_attr.set_write_value((Tango::DevDouble)1.1);
-	
+
 	Tango::WAttribute &w_st_attr = device->get_device_attr()->get_w_attr_by_name("String_attr_w");
 	w_st_attr.set_write_value((Tango::DevString)"Init");
-		
+
     	return insert();
 }
 
@@ -624,8 +624,8 @@ CORBA::Any *IOInitWAttr::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		IOAttrThrowEx::IOAttrThrowEx()
-// 
-// description : 	constructor for the IOAttrThrowEx command of the 
+//
+// description : 	constructor for the IOAttrThrowEx command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -659,7 +659,7 @@ CORBA::Any *IOAttrThrowEx::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 {
 	const Tango::DevVarShortArray *in;
 	extract(in_any,in);
-	
+
 	if ((*in)[0] == 0)
 	{
 		if ((*in)[1] == 0)
@@ -687,15 +687,15 @@ CORBA::Any *IOAttrThrowEx::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 			(static_cast<DevTest *>(device))->event_throw_out_of_sync = false;
 		else
 			(static_cast<DevTest *>(device))->event_throw_out_of_sync = true;
-	}	
+	}
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOAddOneElt::IOAddOneElt()
-// 
-// description : 	constructor for the IOAddOneElt command of the 
+//
+// description : 	constructor for the IOAddOneElt command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -726,18 +726,18 @@ bool IOAddOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 CORBA::Any *IOAddOneElt::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 	(static_cast<DevTest *>(device))->attr_event_size++;
 	(static_cast<DevTest *>(device))->attr_event64_size++;
-		
+
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IORemoveOneElt::IORemoveOneElt()
-// 
-// description : 	constructor for the IORemoveOneElt command of the 
+//
+// description : 	constructor for the IORemoveOneElt command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -771,15 +771,15 @@ CORBA::Any *IORemoveOneElt::execute(Tango::DeviceImpl *device,const CORBA::Any &
 {
 	(static_cast<DevTest *>(device))->attr_event_size--;
 	(static_cast<DevTest *>(device))->attr_event64_size--;
-		
+
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOIncValue::IOIncValue()
-// 
-// description : 	constructor for the IOIncValue command of the 
+//
+// description : 	constructor for the IOIncValue command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -813,7 +813,7 @@ CORBA::Any *IOIncValue::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 {
 	((static_cast<DevTest *>(device))->attr_event[2])++;
 	((static_cast<DevTest *>(device))->attr_event64[0])++;
-	
+
     	return insert();
 }
 
@@ -821,8 +821,8 @@ CORBA::Any *IOIncValue::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 //+----------------------------------------------------------------------------
 //
 // method : 		IODecValue::IODecValue()
-// 
-// description : 	constructor for the IODecValue command of the 
+//
+// description : 	constructor for the IODecValue command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -856,15 +856,15 @@ CORBA::Any *IODecValue::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 {
 	((static_cast<DevTest *>(device))->attr_event[2])--;
 	((static_cast<DevTest *>(device))->attr_event64[0])--;
-	
+
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOChangeQuality::IOChangeQuality()
-// 
-// description : 	constructor for the IOChangeQuality command of the 
+//
+// description : 	constructor for the IOChangeQuality command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -898,7 +898,7 @@ CORBA::Any *IOChangeQuality::execute(Tango::DeviceImpl *device,const CORBA::Any 
 {
     	Tango::DevShort theShort;
     	extract(in_any,theShort);
-	
+
 	switch (theShort)
 	{
 	case 0 : (static_cast<DevTest *>(device))->attr_event_qua = Tango::ATTR_VALID;
@@ -912,8 +912,8 @@ CORBA::Any *IOChangeQuality::execute(Tango::DeviceImpl *device,const CORBA::Any 
 
 	case 3 : (static_cast<DevTest *>(device))->attr_event_qua = Tango::ATTR_CHANGING;
 		  break;
-	}		  
-		  	
+	}
+
     	return insert();
 }
 
@@ -921,8 +921,8 @@ CORBA::Any *IOChangeQuality::execute(Tango::DeviceImpl *device,const CORBA::Any 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOPushEvent::IOPushEvent()
-// 
-// description : 	constructor for the IOPushEvent command of the 
+//
+// description : 	constructor for the IOPushEvent command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -954,17 +954,17 @@ bool IOPushEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 CORBA::Any *IOPushEvent::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	
-	static_cast<DevTest *>(device)->IOPushEvent();  
-		  	
+
+	static_cast<DevTest *>(device)->IOPushEvent();
+
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOPushDevEncodedEvent::IOPushDevEncodedEvent()
-// 
-// description : 	constructor for the IOPushDevEncodedEvent command of the 
+//
+// description : 	constructor for the IOPushDevEncodedEvent command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -996,17 +996,17 @@ bool IOPushDevEncodedEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::A
 
 CORBA::Any *IOPushDevEncodedEvent::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	
-	static_cast<DevTest *>(device)->IOPushDevEncodedEvent();  
-		  	
+
+	static_cast<DevTest *>(device)->IOPushDevEncodedEvent();
+
 	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOSubscribeEvent::IOSubscribeEvent()
-// 
-// description : 	constructor for the IOSubscribeEvent command of the 
+//
+// description : 	constructor for the IOSubscribeEvent command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1038,17 +1038,17 @@ bool IOSubscribeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &i
 
 CORBA::Any *IOSubscribeEvent::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	
-	static_cast<DevTest *>(device)->IOSubscribeEvent();  
-		  	
+
+	static_cast<DevTest *>(device)->IOSubscribeEvent();
+
     	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOUnSubscribeEvent::IOUnSubscribeEvent()
-// 
-// description : 	constructor for the IOUnSubscribeEvent command of the 
+//
+// description : 	constructor for the IOUnSubscribeEvent command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1080,9 +1080,9 @@ bool IOUnSubscribeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any 
 
 CORBA::Any *IOUnSubscribeEvent::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	
-	static_cast<DevTest *>(device)->IOUnSubscribeEvent();  
-		  	
+
+	static_cast<DevTest *>(device)->IOUnSubscribeEvent();
+
     	return insert();
 }
 
@@ -1090,8 +1090,8 @@ CORBA::Any *IOUnSubscribeEvent::execute(Tango::DeviceImpl *device,const CORBA::A
 //+----------------------------------------------------------------------------
 //
 // method : 		IOGetCbExecuted::IOGetCbExecuted()
-// 
-// description : 	constructor for the IOGetCbExecuted command of the 
+//
+// description : 	constructor for the IOGetCbExecuted command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1125,16 +1125,16 @@ CORBA::Any *IOGetCbExecuted::execute(Tango::DeviceImpl *device,const CORBA::Any 
 {
     	cout << "[IOGetCbExecuted::execute] received number " << endl;
 
-	long exec = (static_cast<DevTest *>(device))->cb.cb_executed;	  	
-    	return insert(exec); 
+	long exec = (static_cast<DevTest *>(device))->cb.cb_executed;
+    	return insert(exec);
 }
 
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOFillPollBuffAttr::IOFillPollBuffAttr()
-// 
-// description : 	constructor for the IOFillPollBuffAttr command of the 
+//
+// description : 	constructor for the IOFillPollBuffAttr command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1166,15 +1166,15 @@ bool IOFillPollBuffAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any 
 
 CORBA::Any *IOFillPollBuffAttr::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	(static_cast<DevTest *>(device))->IOFillPollBuffAttr();	  	
-    	return insert(); 
+	(static_cast<DevTest *>(device))->IOFillPollBuffAttr();
+    	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOFillPollBuffEncodedAttr::IOFillPollBuffEncodedAttr()
-// 
-// description : 	constructor for the IOFillPollBuffEncodedAttr command of the 
+//
+// description : 	constructor for the IOFillPollBuffEncodedAttr command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1206,15 +1206,15 @@ bool IOFillPollBuffEncodedAttr::is_allowed(Tango::DeviceImpl *device, const CORB
 
 CORBA::Any *IOFillPollBuffEncodedAttr::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	(static_cast<DevTest *>(device))->IOFillPollBuffEncodedAttr();	  	
-    	return insert(); 
+	(static_cast<DevTest *>(device))->IOFillPollBuffEncodedAttr();
+    	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOFillPollBuffCmd::IOFillPollBuffCmd()
-// 
-// description : 	constructor for the IOFillPollBuffCmd command of the 
+//
+// description : 	constructor for the IOFillPollBuffCmd command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1246,15 +1246,15 @@ bool IOFillPollBuffCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &
 
 CORBA::Any *IOFillPollBuffCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	(static_cast<DevTest *>(device))->IOFillPollBuffCmd();	  	
-    	return insert(); 
+	(static_cast<DevTest *>(device))->IOFillPollBuffCmd();
+    	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		FileDbCmd::FileDbCmd()
-// 
-// description : 	constructor for the FileDbCmd command of the 
+//
+// description : 	constructor for the FileDbCmd command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1286,15 +1286,15 @@ bool FileDbCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 CORBA::Any *FileDbCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-	(static_cast<DevTest *>(device))->FileDb();	  	
-    	return insert(); 
+	(static_cast<DevTest *>(device))->FileDb();
+    	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		GetLongSize::GetLongSize()
-// 
-// description : 	constructor for the GetLongSize command of the 
+//
+// description : 	constructor for the GetLongSize command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1331,16 +1331,16 @@ CORBA::Any *GetLongSize::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 	size = 64;
 #else
 	size = 32;
-#endif	  	
-    	return insert(size); 
+#endif
+    	return insert(size);
 }
 
 
 //+----------------------------------------------------------------------------
 //
 // method : 		ChangeEncodedFormat::ChangeEncodedFormat()
-// 
-// description : 	constructor for the ChangeEncodedFormat command of the 
+//
+// description : 	constructor for the ChangeEncodedFormat command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1386,16 +1386,16 @@ CORBA::Any *ChangeEncodedFormat::execute(Tango::DeviceImpl *device,const CORBA::
 		togle = false;
 	}
 #endif
-  	
-	return insert(); 
+
+	return insert();
 }
 
 
 //+----------------------------------------------------------------------------
 //
 // method : 		ChangeEncodedData::ChangeEncodedData()
-// 
-// description : 	constructor for the ChangeEncodedFormat command of the 
+//
+// description : 	constructor for the ChangeEncodedFormat command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1430,14 +1430,14 @@ CORBA::Any *ChangeEncodedData::execute(Tango::DeviceImpl *device,const CORBA::An
 #ifndef COMPAT
 	(static_cast<DevTest *>(device))->enc_attr.encoded_data[2]++;
 #endif
-	return insert(); 
+	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		PushDataReady::PushDataReady()
-// 
-// description : 	constructor for the PushDataReady command of the 
+//
+// description : 	constructor for the PushDataReady command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1472,17 +1472,17 @@ CORBA::Any *PushDataReady::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 #ifndef COMPAT
 	const Tango::DevVarLongStringArray *in;
 	extract(in_any,in);
-	
+
 	(static_cast<DevTest *>(device))->push_data_ready(in);
 #endif
-	return insert(); 
+	return insert();
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		IOSetWAttrLimit::IOSetWAttrLimit()
-// 
-// description : 	constructor for the IOSetWAttrLimit command of the 
+//
+// description : 	constructor for the IOSetWAttrLimit command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1516,21 +1516,21 @@ CORBA::Any *IOSetWAttrLimit::execute(Tango::DeviceImpl *device,const CORBA::Any 
 {
 	const Tango::DevVarDoubleArray *in;
 	extract(in_any,in);
-	
-	(static_cast<DevTest *>(device))->IOSetWAttrLimit(in);	  	
-    	return insert(); 
+
+	(static_cast<DevTest *>(device))->IOSetWAttrLimit(in);
+    	return insert();
 }
 
 
 //+----------------------------------------------------------------------------
 //	A thread class to test the registration of
 //	sub device connections in an external thread
-//	
+//
 //	The thread is executed when calling
 //	the command SubDeviceTst.
 //-----------------------------------------------------------------------------
 
-class AcquisitionThread : public omni_thread 
+class AcquisitionThread : public omni_thread
 {
 public :
 	AcquisitionThread();
@@ -1548,10 +1548,17 @@ void *AcquisitionThread::run_undetached (void *arg)
 {
 	Tango::Util *tg = Tango::Util::instance();
 	string &inst_name = tg->get_ds_inst_name();
-  	string sub_dev("test/");
-	sub_dev = sub_dev + inst_name + "/11";
+    string sub_dev;
+    if  (inst_name == "api")
+        sub_dev = "dev/test";
+    else
+    {
+        sub_dev = "test/";
+        sub_dev = sub_dev + inst_name;
+    }
+    sub_dev = sub_dev + "/11";
 
-	cout << "Thread : Connect device = " << sub_dev << endl;
+    cout << "Thread : Connect device = " << sub_dev << endl;
 
 	Tango::DeviceProxy *dev = new Tango::DeviceProxy (sub_dev);
 
@@ -1561,8 +1568,8 @@ void *AcquisitionThread::run_undetached (void *arg)
 //+----------------------------------------------------------------------------
 //
 // method : 		SubDeviceTst::SubDeviceTst()
-// 
-// description : 	constructor for the SubDeviceTst command of the 
+//
+// description : 	constructor for the SubDeviceTst command of the
 //					DevTest.
 //
 // In : - name : The command name
@@ -1591,16 +1598,23 @@ bool SubDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 	bool connected = false;
-		
+
 	try
 	{
 		omni_thread *acquisition_thread = new AcquisitionThread();
-		
+
 		Tango::Util *tg = Tango::Util::instance();
 		string &inst_name = tg->get_ds_inst_name();
-  		string sub_dev("test/");
-		sub_dev = sub_dev + inst_name + "/12";
-		
+		string sub_dev;
+		if  (inst_name == "api")
+            sub_dev = "dev/test";
+        else
+        {
+            sub_dev = "test/";
+            sub_dev = sub_dev + inst_name;
+		}
+		sub_dev = sub_dev + "/12";
+
 		Tango::DeviceProxy *remote_dev;
 		remote_dev = new Tango::DeviceProxy(sub_dev);
 		connected = true;
@@ -1609,7 +1623,7 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 	{
 		connected = false;
 	}
-	    
+
 	return insert(connected);
 }
 

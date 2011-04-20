@@ -23,7 +23,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 #endif
 	cout << "date : tv_sec = " << now_timeval.tv_sec;
 	cout << ", tv_usec = " << now_timeval.tv_usec << endl;
-	
+
 	int delta_s = now_timeval.tv_sec - old_sec;
 	if (delta_s == 0)
 		delta_msec = (now_timeval.tv_usec - old_usec) / 1000;
@@ -35,7 +35,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	}
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
-	
+
 	cout << "delta_msec = " << delta_msec << endl;
 
 	cb_executed++;
@@ -67,11 +67,11 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::DevTest()
-// 
+//
 // description : 	constructor for testing use of TANGO
 //
 // in : - cl : Pointer to the DeviceClass object
-//      - s : Device name 
+//      - s : Device name
 //
 //-----------------------------------------------------------------------------
 
@@ -126,7 +126,7 @@ void DevTest::init_device()
 	cout << "DevTest::DevTest() create  " << device_name << endl;
 	DEBUG_STREAM << "Creating " << device_name << endl;
 
-	set_state(Tango::ON);	
+	set_state(Tango::ON);
 	attr_long = 1246;
 	attr_short_rw = 66;
 	attr_long64_rw = 0x800000000LL;
@@ -135,14 +135,14 @@ void DevTest::init_device()
 	attr_state_rw = Tango::FAULT;
 	PollLong_attr_num = 0;
 	PollString_spec_attr_num = 0;
-	
+
 	Short_attr_except = false;
 	event_change_attr_except = false;
 	event_quality_attr_except = false;
 	event_throw_out_of_sync = false;
-	
+
 	attr_sub_device_tst = false;
-	
+
 	attr_event_size = 4;
 	attr_event[0] = 10;
 	attr_event[1] = 20;
@@ -154,12 +154,12 @@ void DevTest::init_device()
 	attr_event[7] = 80;
 	attr_event[8] = 90;
 	attr_event[9] = 100;
-	
+
 	attr_event64_size = 2;
 	attr_event64[0] = 0x800000000LL;
 	attr_event64[1] = 44;
 	attr_event64[2] = 55;
-	
+
 	attr_qua_event[0] = 1.2;
 	attr_qua_event[1] = 2.4;
 	attr_event_qua = Tango::ATTR_VALID;
@@ -168,7 +168,7 @@ void DevTest::init_device()
 
 	slow_actua_write.tv_sec = 0;
 	slow_actua = 0;
-	
+
 	attr_spec_long64_rw[0] = 1000;
 	attr_spec_long64_rw[1] = 10000;
 	attr_spec_long64_rw[2] = 100000;
@@ -181,7 +181,7 @@ void DevTest::init_device()
 	attr_spec_state_rw[0] = Tango::ON;
 	attr_spec_state_rw[1] = Tango::OFF;
 
-#ifndef COMPAT	
+#ifndef COMPAT
   	enc_attr.encoded_format = CORBA::string_dup("Which format?");
 /*  	enc_attr.encoded_data.length(200 * 1024 * 1024);
   	for (int i = 0;i < (200 * 1024 * 1024);i++)
@@ -204,7 +204,7 @@ void DevTest::init_device()
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::always_executed_hook()
-// 
+//
 // description : 	method always executed before any command is executed
 //
 //-----------------------------------------------------------------------------
@@ -213,13 +213,13 @@ void DevTest::always_executed_hook()
 {
 
 	cout2 << "In always_executed_hook method" << endl;
-	
+
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::state_cmd()
-// 
+//
 // description : 	command to read the device state
 //
 // out :		device state
@@ -241,7 +241,7 @@ Tango::ConstDevString DevTest::dev_status()
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::xxx
-// 
+//
 // description : 	Methods for template style command implementation
 //
 //-----------------------------------------------------------------------------
@@ -259,59 +259,59 @@ bool DevTest::templ_state(const CORBA::Any &)
 }
 
 void DevTest::IOTempl()
-{	
+{
     	cout << "[DevTest::IOTempl]" << endl;
 }
 
 Tango::DevVarLongArray *DevTest::IOTemplOut()
-{	
+{
 	cout << "[DevTest::IOTemplOut]" << endl;
 
     	Tango::DevVarLongArray *argout;
     	argout = new Tango::DevVarLongArray();
-    
+
     	argout->length(4);
     	(*argout)[0] = 10;
     	(*argout)[1] = 20;
     	(*argout)[2] = 30;
     	(*argout)[3] = 40;
- 
+
     	return argout;
 }
 
 void DevTest::IOTemplIn(Tango::DevLong received)
-{	  
+{
     	cout << "[DevTest::IOTemplIn] received " << received << endl;
 }
 
 void DevTest::IOPushEvent()
-{	  
+{
     	cout << "[DevTest::IOPushEvent] received " << endl;
-	
+
 	vector<string> f_names;
 	vector<double> f_val;
-	
+
 	push_event("event_change_tst",f_names,f_val,attr_event,attr_event_size);
-	
+
 }
 
 void DevTest::IOPushDevEncodedEvent()
-{	  
+{
 	cout << "[DevTest::IOPushDevEncodedEvent] received " << endl;
 
-#ifndef COMPAT	
+#ifndef COMPAT
 	vector<string> f_names;
 	vector<double> f_val;
-	
+
 	push_event("encoded_attr",f_names,f_val,&enc_attr);
-#endif	
+#endif
 }
 
 
 void DevTest::IOSubscribeEvent()
-{	  
+{
     	cout << "[DevTest::IOSubscribeEvent] received " << endl;
-	
+
 	vector<string> filters;
 
 	if (remote_dev == NULL)
@@ -323,31 +323,31 @@ void DevTest::IOSubscribeEvent()
 	}
 	string att_name("short_attr");
 	cb.cb_executed = 0;
-	
+
 	// start the polling first!
-	remote_dev->poll_attribute(att_name,1000);		
+	remote_dev->poll_attribute(att_name,1000);
 	eve_id = remote_dev->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
-	
+
 }
 
 void DevTest::IOUnSubscribeEvent()
-{	  
+{
     	cout << "[DevTest::IOUnSubscribeEvent] received " << endl;
-	
+
 	if (eve_id != 0)
 	{
 		remote_dev->unsubscribe_event(eve_id);
-		
+
 		string att_name("short_attr");
-		remote_dev->stop_poll_attribute(att_name);		
+		remote_dev->stop_poll_attribute(att_name);
 	}
-	
+
 }
 
 void DevTest::IOFillPollBuffAttr()
-{	  
+{
     cout << "[DevTest::IOFillPollBuffAttr] received " << endl;
-	
+
 	Tango::AttrHistoryStack<Tango::DevString> ahs;
 	ahs.length(3);
 	Tango::Util *tg = Tango::Util::instance();
@@ -362,7 +362,7 @@ void DevTest::IOFillPollBuffAttr()
       	array_1[0] = Tango::string_dup("One_1");
       	array_1[1] = Tango::string_dup("Two_1");
       	array_1[2] = Tango::string_dup("Three_1");
-      	array_1[3] = Tango::string_dup("Four_1"); 
+      	array_1[3] = Tango::string_dup("Four_1");
 	main_array[0] = array_1;
 
 	Tango::DevString *array_2 = new Tango::DevString [4];
@@ -371,7 +371,7 @@ void DevTest::IOFillPollBuffAttr()
 	array_2[2] = CORBA::string_dup("Three_2");
 	array_2[3] = CORBA::string_dup("Four_2");
 	main_array[1] = array_2;
-	
+
 	Tango::DevString *array_3 = new Tango::DevString [4];
 	array_3[0] = CORBA::string_dup("One_3");
 	array_3[1] = CORBA::string_dup("Two_3");
@@ -386,7 +386,7 @@ void DevTest::IOFillPollBuffAttr()
 		Tango::TimedAttrData<Tango::DevString> tad(main_array[k],2,2,Tango::ATTR_VALID,true,when);
 		ahs.push(tad);
 	}
-	
+
 	tg->fill_attr_polling_buffer(this,att_name,ahs);
 
 	ahs.clear();
@@ -441,10 +441,10 @@ void DevTest::IOFillPollBuffAttr()
 }
 
 void DevTest::IOFillPollBuffEncodedAttr()
-{	  
+{
     cout << "[DevTest::IOFillPollBuffEncodedAttr] received " << endl;
 
-#ifndef COMPAT	
+#ifndef COMPAT
 	Tango::AttrHistoryStack<Tango::DevEncoded> ahs;
 	ahs.length(3);
 	string att_name("Encoded_attr");
@@ -479,7 +479,7 @@ void DevTest::IOFillPollBuffEncodedAttr()
 	when = time(NULL);
 	Tango::TimedAttrData<Tango::DevEncoded> tad2(&the_enc2,when);
 	ahs.push(tad2);
-	
+
 	tg->fill_attr_polling_buffer(this,att_name,ahs);
 	cout << "Attribute (DevEncoded data type) polling buffer filled" << endl;
 #endif
@@ -487,9 +487,9 @@ void DevTest::IOFillPollBuffEncodedAttr()
 
 
 void DevTest::IOFillPollBuffCmd()
-{	  
+{
     	cout << "[DevTest::IOFillPollBuffCmd] received " << endl;
-	
+
 	Tango::CmdHistoryStack<Tango::DevVarLongArray> chs;
 	chs.length(3);
 	Tango::Util *tg = Tango::Util::instance();
@@ -504,7 +504,7 @@ void DevTest::IOFillPollBuffCmd()
 		dvla_array[j][1] = 11 + j;
 		dvla_array[j][2] = 12 + j;
 	}
-	
+
 	chs.clear();
 	time_t when = time(NULL);
 	for (int k =  0;k < 3;k++)
@@ -514,21 +514,21 @@ void DevTest::IOFillPollBuffCmd()
 	}
 	tg->fill_cmd_polling_buffer(this,cmd_name,chs);
 	cout << "Command Polling buffer filled" << endl;
-	
+
 }
 
 
 Tango::DevVarDoubleArray *DevTest::IOTemplInOut(Tango::DevDouble db)
-{	
+{
 	cout << "[DevTest::IOTemplInOut] received " << db << endl;
 
     	Tango::DevVarDoubleArray *argout;
     	argout = new Tango::DevVarDoubleArray();
-    
+
     	argout->length(2);
     	(*argout)[0] = db;
     	(*argout)[1] = db * 2;
- 
+
     	return argout;
 }
 
@@ -558,7 +558,7 @@ void DevTest::push_data_ready(const Tango::DevVarLongStringArray *in)
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::signal_handler()
-// 
+//
 // description : 	command to read the device state
 //
 // out :		device state
@@ -569,7 +569,7 @@ void DevTest::signal_handler(long signo)
 {
 	cout << "[Device signal handler] received signal number " << signo;
 	cout << " for device " << device_name << endl;
-	
+
 	DEBUG_STREAM << "[Device signal handler] received signal number "
 		     << signo
 	 	     << " for device "
@@ -581,7 +581,7 @@ void DevTest::signal_handler(long signo)
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::write_xxx
-// 
+//
 // description : 	Write attribute methods
 //
 //-----------------------------------------------------------------------------
@@ -589,7 +589,7 @@ void DevTest::signal_handler(long signo)
 void DevTest::write_Short_attr_w(Tango::WAttribute &att)
 {
 //	cout << "In write_Short_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevShort sh;
 	att.get_write_value(sh);
 //	cout << "Attribute value = " << sh << endl;
@@ -598,7 +598,7 @@ void DevTest::write_Short_attr_w(Tango::WAttribute &att)
 void DevTest::write_Short_attr_w2(Tango::WAttribute &att)
 {
 	cout << "In write_Short_attr_w2 for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevShort sh;
 	att.get_write_value(sh);
 	cout << "Attribute value = " << sh << endl;
@@ -607,16 +607,16 @@ void DevTest::write_Short_attr_w2(Tango::WAttribute &att)
 void DevTest::write_Long_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Long_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevLong lg;
 	att.get_write_value(lg);
-	cout << "Attribute value = " << lg << endl;	
+	cout << "Attribute value = " << lg << endl;
 }
 
 void DevTest::write_Double_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Double_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevDouble db;
 	att.get_write_value(db);
 	cout << "Attribute value = " << db << endl;
@@ -625,7 +625,7 @@ void DevTest::write_Double_attr_w(Tango::WAttribute &att)
 void DevTest::write_String_attr_w(Tango::WAttribute &att)
 {
 //	cout << "In write_String_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevString str;
 	att.get_write_value(str);
 //	cout << "Attribute value = " << str << endl;
@@ -634,7 +634,7 @@ void DevTest::write_String_attr_w(Tango::WAttribute &att)
 void DevTest::write_String_attr_w2(Tango::WAttribute &att)
 {
 	cout << "In write_String_attr_w2 for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevString str;
 	att.get_write_value(str);
 	cout << "Attribute value = " << str << endl;
@@ -644,7 +644,7 @@ void DevTest::write_String_attr_w2(Tango::WAttribute &att)
 void DevTest::write_attr_asyn_write(Tango::WAttribute &att)
 {
 	cout << "In write_attr_asyn_write for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevLong lg;
 	att.get_write_value(lg);
 	cout << "Attribute value = " << lg << endl;
@@ -654,7 +654,7 @@ void DevTest::write_attr_asyn_write(Tango::WAttribute &att)
 void DevTest::write_attr_asyn_write_to(Tango::WAttribute &att)
 {
 	cout << "In write_attr_asyn_write_to for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevLong lg;
 	att.get_write_value(lg);
 	cout << "Attribute value = " << lg << endl;
@@ -671,13 +671,13 @@ void DevTest::write_attr_asyn_write_except(Tango::WAttribute &att)
 	Tango_sleep(2);
 	Tango::Except::throw_exception((const char *)"aaa",
 					(const char *)"This is a test",
-					(const char *)"DevTest::write_attr_hardware");	
+					(const char *)"DevTest::write_attr_hardware");
 }
 
 void DevTest::write_String_spec_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_String_spec_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::ConstDevString *ptr;
 	att.get_write_value(ptr);
 	long nb_str = att.get_write_value_length();
@@ -689,13 +689,13 @@ void DevTest::write_String_spec_attr_w(Tango::WAttribute &att)
 void DevTest::write_Short_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_Short_attr_rw for attribute " << att.get_name() << endl;
-	att.get_write_value(attr_short_rw);	
+	att.get_write_value(attr_short_rw);
 }
 
 void DevTest::write_Long64_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_Long64_attr_rw for attribute " << att.get_name() << endl;
-	att.get_write_value(attr_long64_rw);	
+	att.get_write_value(attr_long64_rw);
 }
 
 void DevTest::write_ULong_attr_rw(Tango::WAttribute &att)
@@ -703,7 +703,7 @@ void DevTest::write_ULong_attr_rw(Tango::WAttribute &att)
 	cout << "In write_ULong_attr_rw for attribute " << att.get_name() << endl;
 	att.get_write_value(attr_ulong_rw);
 cout << "received value = " << attr_ulong_rw << endl;
-	
+
 	if (attr_ulong_rw > 1000)
 		att.set_write_value((Tango::DevULong)1111);
 }
@@ -712,19 +712,19 @@ void DevTest::write_ULong64_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_ULong64_attr_rw for attribute " << att.get_name() << endl;
 	att.get_write_value(attr_ulong64_rw);
-cout << "Received value = " << attr_ulong64_rw << endl;	
+cout << "Received value = " << attr_ulong64_rw << endl;
 }
 
 void DevTest::write_State_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_State_attr_rw for attribute " << att.get_name() << endl;
-	att.get_write_value(attr_state_rw);	
+	att.get_write_value(attr_state_rw);
 }
 
 void DevTest::write_Float_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Float_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevFloat fl;
 	att.get_write_value(fl);
 	cout << "Attribute value = " << fl << endl;
@@ -733,7 +733,7 @@ void DevTest::write_Float_attr_w(Tango::WAttribute &att)
 void DevTest::write_Boolean_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Boolean_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevBoolean bo;
 	att.get_write_value(bo);
 	cout << "Attribute value = " << bo << endl;
@@ -742,7 +742,7 @@ void DevTest::write_Boolean_attr_w(Tango::WAttribute &att)
 void DevTest::write_UShort_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_UShort_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevUShort ush;
 	att.get_write_value(ush);
 	cout << "Attribute value = " << ush << endl;
@@ -751,7 +751,7 @@ void DevTest::write_UShort_attr_w(Tango::WAttribute &att)
 void DevTest::write_UChar_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_UChar_attr_w for attribute " << att.get_name() << endl;
-	
+
 	Tango::DevUChar uch;
 	att.get_write_value(uch);
 	cout << "Attribute value = " << uch << endl;
@@ -760,7 +760,7 @@ void DevTest::write_UChar_attr_w(Tango::WAttribute &att)
 void DevTest::write_Float_spec_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Float_spec_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevFloat *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
@@ -772,7 +772,7 @@ void DevTest::write_Float_spec_attr_w(Tango::WAttribute &att)
 void DevTest::write_Boolean_spec_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Boolean_spec_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevBoolean *bo;
 	att.get_write_value(bo);
 	long nb_bo = att.get_write_value_length();
@@ -784,7 +784,7 @@ void DevTest::write_Boolean_spec_attr_w(Tango::WAttribute &att)
 void DevTest::write_UShort_spec_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_UShort_spec_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevUShort *ush;
 	att.get_write_value(ush);
 	long nb_ush = att.get_write_value_length();
@@ -796,7 +796,7 @@ void DevTest::write_UShort_spec_attr_w(Tango::WAttribute &att)
 void DevTest::write_UChar_spec_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_UChar_spec_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevUChar *uch;
 	att.get_write_value(uch);
 	long nb_uch = att.get_write_value_length();
@@ -808,7 +808,7 @@ void DevTest::write_UChar_spec_attr_w(Tango::WAttribute &att)
 void DevTest::write_Float_ima_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_Float_ima_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevFloat *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
@@ -820,7 +820,7 @@ void DevTest::write_Float_ima_attr_w(Tango::WAttribute &att)
 void DevTest::write_UShort_ima_attr_w(Tango::WAttribute &att)
 {
 	cout << "In write_UShort_ima_attr_w for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevUShort *ush;
 	att.get_write_value(ush);
 	long nb_ush = att.get_write_value_length();
@@ -832,7 +832,7 @@ void DevTest::write_UShort_ima_attr_w(Tango::WAttribute &att)
 void DevTest::write_Float_spec_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_Float_spec_attr_rw for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevFloat *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
@@ -844,7 +844,7 @@ void DevTest::write_Float_spec_attr_rw(Tango::WAttribute &att)
 void DevTest::write_Long_spec_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_Long_spec_attr_rw for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevLong *fl;
 	att.get_write_value(fl);
 	long nb_fl = att.get_write_value_length();
@@ -856,7 +856,7 @@ void DevTest::write_Long_spec_attr_rw(Tango::WAttribute &att)
 void DevTest::write_UChar_spec_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_UShort_spec_attr_rw for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevUChar *uch;
 	att.get_write_value(uch);
 	long nb_uch = att.get_write_value_length();
@@ -868,7 +868,7 @@ void DevTest::write_UChar_spec_attr_rw(Tango::WAttribute &att)
 void DevTest::write_Boolean_ima_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_Boolean_ima_attr_rw for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevBoolean *bo;
 	att.get_write_value(bo);
 	long nb_bo = att.get_write_value_length();
@@ -880,7 +880,7 @@ void DevTest::write_Boolean_ima_attr_rw(Tango::WAttribute &att)
 void DevTest::write_UShort_ima_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_UShort_ima_attr_rw for attribute " << att.get_name() << endl;
-	
+
 	const Tango::DevUShort *ush;
 	att.get_write_value(ush);
 	long nb_ush = att.get_write_value_length();
@@ -893,7 +893,7 @@ void DevTest::write_UShort_ima_attr_rw(Tango::WAttribute &att)
 void DevTest::write_slow_actuator(Tango::WAttribute &att)
 {
 	cout << "In write_slow_actuator for attribute " << att.get_name() << endl;
-	
+
 	att.get_write_value(slow_actua);
 #ifdef WIN32
 	struct _timeb before_win;
@@ -911,11 +911,11 @@ void DevTest::write_fast_actuator(Tango::WAttribute &att)
 	cout << "In write_fast_actuator for attribute " << att.get_name() << endl;
 
 	att.get_write_value(fast_actua);
-	
+
 	att.set_value(&fast_actua);
 	att.set_quality(Tango::ATTR_CHANGING, true);
 	att.set_value(&fast_actua);
-	att.set_quality(Tango::ATTR_VALID, true);		
+	att.set_quality(Tango::ATTR_VALID, true);
 }
 
 
@@ -925,7 +925,7 @@ void DevTest::write_Long64_spec_attr_rw(Tango::WAttribute &att)
 	const Tango::DevLong64 *lg64;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(lg64);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;	
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
 }
 
 void DevTest::write_ULong_spec_attr_rw(Tango::WAttribute &att)
@@ -934,7 +934,7 @@ void DevTest::write_ULong_spec_attr_rw(Tango::WAttribute &att)
 	const Tango::DevULong *ulg;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(ulg);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;	
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
 }
 
 void DevTest::write_ULong64_spec_attr_rw(Tango::WAttribute &att)
@@ -943,7 +943,7 @@ void DevTest::write_ULong64_spec_attr_rw(Tango::WAttribute &att)
 	const Tango::DevULong64 *ulg64;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(ulg64);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;	
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
 }
 
 void DevTest::write_State_spec_attr_rw(Tango::WAttribute &att)
@@ -952,7 +952,7 @@ void DevTest::write_State_spec_attr_rw(Tango::WAttribute &att)
 	const Tango::DevState *sta;
 	long nb_data = att.get_write_value_length();
 	att.get_write_value(sta);
-	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;	
+	cout << "Received " << nb_data << " for attribute " << att.get_name() << endl;
 }
 
 void DevTest::write_Encoded_attr_rw(Tango::WAttribute &att)
@@ -976,7 +976,7 @@ void DevTest::write_Poll_buffRW(Tango::WAttribute &att)
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::read_xxx
-// 
+//
 // description : 	Read attribute methods
 //
 //-----------------------------------------------------------------------------
@@ -1013,11 +1013,11 @@ void DevTest::read_Double_attr(Tango::Attribute &att)
 void DevTest::read_String_attr(Tango::Attribute &att)
 {
   	static Tango::DevString s = NULL;
-	
+
       	cout << "[DevTest::read_attr] attribute name String_attr" << endl;
       	if (s == NULL)
 		s = CORBA::string_dup("test_string");
-      
+
       	att.set_value(&s);
 }
 
@@ -1030,7 +1030,7 @@ void DevTest::read_Short_spec_attr(Tango::Attribute &att)
       	attr_short_array[1] = 20;
       	attr_short_array[2] = 30;
       	attr_short_array[3] = 40;
-      
+
       	att.set_value(attr_short_array, 4);
 }
 
@@ -1047,7 +1047,7 @@ void DevTest::read_Long_spec_attr(Tango::Attribute &att)
       	attr_long_array[7] = 7;
       	attr_long_array[8] = 8;
       	attr_long_array[9] = 9;
-      
+
       	att.set_value(attr_long_array, 10);
 }
 
@@ -1056,7 +1056,7 @@ void DevTest::read_Double_spec_attr(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name Double_spec_attr" << endl;
       	attr_db_array[0] = 1.11;
       	attr_db_array[1] = 2.22;
-      
+
       	att.set_value(attr_db_array, 2);
 }
 
@@ -1065,7 +1065,7 @@ void DevTest::read_String_spec_attr(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name String_spec_attr" << endl;
       	attr_str_array[0] = (char *)"Hello world";
       	attr_str_array[1] = (char *)"Hello universe";
-      
+
       	att.set_value(attr_str_array, 2);
 }
 
@@ -1078,7 +1078,7 @@ void DevTest::read_Short_ima_attr(Tango::Attribute &att)
       	attr_short_array_1[1] = 60;
       	attr_short_array_1[2] = 80;
       	attr_short_array_1[3] = 100;
-      
+
       	att.set_value(attr_short_array_1,2,2);
 }
 
@@ -1090,8 +1090,8 @@ void DevTest::read_Long_ima_attr(Tango::Attribute &att)
       	attr_long_array[2] = 2;
       	attr_long_array[3] = 3;
       	attr_long_array[4] = 4;
-      	attr_long_array[5] = 5; 
-          
+      	attr_long_array[5] = 5;
+
       	att.set_value(attr_long_array,3,2);
 }
 
@@ -1100,7 +1100,7 @@ void DevTest::read_Double_ima_attr(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name Double_ima_attr" << endl;
       	attr_db_array[0] = 5.55;
       	attr_db_array[1] = 6.66;
-      
+
       	att.set_value(attr_db_array,2,1);
 }
 
@@ -1109,7 +1109,7 @@ void DevTest::read_String_ima_attr(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name String_ima_attr" << endl;
       	attr_str_array[0] = (char *)"Hello milky way";
       	attr_str_array[1] = (char *)"Hello moon";
-      
+
       	att.set_value(attr_str_array,1,2);
 }
 
@@ -1248,9 +1248,9 @@ void DevTest::read_PollString_spec_attr(Tango::Attribute &att)
       	{
       		Tango::Except::throw_exception((const char *)"xxx",(const char *)"yyy",(const char *)"zzz");
       	}
-      
+
 //      	att.set_value(attr_str_array, 2);
-}	
+}
 
 void DevTest::read_attr_dq_sh(Tango::Attribute &att)
 {
@@ -1310,16 +1310,16 @@ void DevTest::read_Short_spec_attr_rw(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name Short_spec_attr_rw" << endl;
       	short_spec_attr[0] = 8;
       	short_spec_attr[1] = 9;
-      
+
       	att.set_value(short_spec_attr, 2);
 }
-	
+
 void DevTest::read_String_spec_attr_rw(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name String_spec_attr_rw" << endl;
       	string_spec_attr[0] = "Thank's god";
       	string_spec_attr[1] = "It's friday";
-            
+
       	att.set_value(const_cast<char **>(string_spec_attr), 2);
 }
 
@@ -1329,10 +1329,10 @@ void DevTest::read_Long_spec_attr_rw(Tango::Attribute &att)
       	long_spec_attr[0] = 88;
       	long_spec_attr[1] = 99;
       	long_spec_attr[2] = 111;
-      
+
       	att.set_value(long_spec_attr, 3);
 }
-	
+
 void DevTest::read_Short_ima_attr_rw(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name Short_ima_attr_rw" << endl;
@@ -1340,7 +1340,7 @@ void DevTest::read_Short_ima_attr_rw(Tango::Attribute &att)
       	short_ima_attr[1] = 7;
       	short_ima_attr[2] = 8;
       	short_ima_attr[3] = 9;
-            
+
       	att.set_value(short_ima_attr, 2,2);
 }
 
@@ -1349,9 +1349,9 @@ void DevTest::read_String_ima_attr_rw(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name String_ima_attr_rw" << endl;
       	string_ima_attr[0] = "Alors la, pour une surprise";
       	string_ima_attr[1] = "c'est une surprise";
-            
+
       	att.set_value(const_cast<char **>(string_ima_attr), 2,1);
-}	
+}
 
 void DevTest::read_Event_change_tst(Tango::Attribute &att)
 {
@@ -1446,7 +1446,7 @@ void DevTest::read_UChar_attr(Tango::Attribute &att)
 {
     	cout << "[DevTest::read_attr] attribute name UChar_attr" << endl;
     	attr_uchar = 88;
-    	att.set_value(&attr_uchar);	
+    	att.set_value(&attr_uchar);
 }
 
 void DevTest::read_Float_spec_attr(Tango::Attribute &att)
@@ -1486,7 +1486,7 @@ void DevTest::read_UChar_spec_attr(Tango::Attribute &att)
     	attr_spec_uchar[3] = 34;
     	attr_spec_uchar[4] = 200;
     	attr_spec_uchar[5] = 12;
-    	att.set_value(attr_spec_uchar,6);	
+    	att.set_value(attr_spec_uchar,6);
 }
 
 void DevTest::read_Float_spec_attr_rw(Tango::Attribute &att)
@@ -1494,7 +1494,7 @@ void DevTest::read_Float_spec_attr_rw(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name Float_spec_attr_rw" << endl;
       	attr_spec_float[0] = 5.5;
       	attr_spec_float[1] = 11.5;
-      
+
       	att.set_value(attr_spec_float, 2);
 }
 
@@ -1504,7 +1504,7 @@ void DevTest::read_UChar_spec_attr_rw(Tango::Attribute &att)
       	attr_spec_uchar[0] = 22;
       	attr_spec_uchar[1] = 44;
       	attr_spec_uchar[2] = 66;
-      
+
       	att.set_value(attr_spec_uchar, 3);
 }
 
@@ -1513,7 +1513,7 @@ void DevTest::read_Boolean_ima_attr_rw(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name Boolean_ima_attr_rw" << endl;
       	attr_spec_boolean[0] = true;
       	attr_spec_boolean[1] = false;
-      
+
       	att.set_value(attr_spec_boolean, 2,1);
 }
 
@@ -1522,7 +1522,7 @@ void DevTest::read_UShort_ima_attr_rw(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name UShort_ima_attr_rw" << endl;
       	attr_spec_ushort[0] = 2;
       	attr_spec_ushort[1] = 3;
-      
+
       	att.set_value(attr_spec_ushort, 2,1);
 }
 
@@ -1531,7 +1531,7 @@ void DevTest::read_slow_actuator(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name slow_actuator" << endl;
 	slow_actua++;
 	att.set_value(&slow_actua);
-	
+
 	struct timeval now;
 #ifdef WIN32
 	struct _timeb before_win;
@@ -1591,12 +1591,19 @@ void DevTest::read_State_spec_attr_rw(Tango::Attribute &att)
 void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name Sub_device_tst" << endl;
-  
+
 		Tango::Util *tg = Tango::Util::instance();
 		string &inst_name = tg->get_ds_inst_name();
-  		string sub_dev("test/");
-		sub_dev = sub_dev + inst_name + "/11";
-  	
+		string sub_dev;
+		if  (inst_name == "api")
+            sub_dev = "dev/test";
+        else
+        {
+            sub_dev = "test/";
+            sub_dev = sub_dev + inst_name;
+		}
+		sub_dev = sub_dev + "/11";
+
 		try
 		{
 			Tango::DeviceProxy *remote_dev;
@@ -1607,7 +1614,7 @@ void DevTest::read_Sub_device_tst(Tango::Attribute &att)
 		{
 			attr_sub_device_tst = false;
 		}
-		
+
 		att.set_value(&attr_sub_device_tst);
 }
 
@@ -1633,12 +1640,12 @@ void DevTest::read_Encoded_attr_rw(Tango::Attribute &att)
 
 /*		enc_attr_ptr = new Tango::DevEncoded;
 		enc_attr_ptr->encoded_format = CORBA::string_dup("Which format?");
-		enc_attr_ptr->encoded_data.length(4); 
+		enc_attr_ptr->encoded_data.length(4);
   		enc_attr_ptr->encoded_data[0] = (unsigned char)97;
   		enc_attr_ptr->encoded_data[1] = (unsigned char)98;
   		enc_attr_ptr->encoded_data[2] = (unsigned char)99;
   		enc_attr_ptr->encoded_data[3] = (unsigned char)100;
-    	
+
       	att.set_value(enc_attr_ptr,1,0,true);*/
 
 /*		char *str_ptr = new char[80];
@@ -1652,7 +1659,7 @@ void DevTest::read_Encoded_attr_rw(Tango::Attribute &att)
 
 		att.set_value(&str_ptr,data_ptr,4,true);*/
 
-/*		att.set_value(&enc_format,&(enc_data[0]),2);	*/	
+/*		att.set_value(&enc_format,&(enc_data[0]),2);	*/
 #endif
 }
 
