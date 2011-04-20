@@ -29,7 +29,7 @@ int main(int argc, char **argv)
 	
 	if (argc == 5)
 	{
-		if (strcmp(argv[5],"-v") == 0)
+		if (strcmp(argv[4],"-v") == 0)
 			verbose = true;
 	}	
 
