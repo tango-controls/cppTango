@@ -86,7 +86,7 @@ else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/server \
 			   -I$(TANGO_HOME)/client \
-			   -I$(LOG4TANGO_BASE)/include \
+			   -I$(LOG4TANGO_BASE)/include/tango \
 			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
