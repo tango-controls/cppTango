@@ -12,6 +12,7 @@ using namespace std;
 int main(int argc, char **argv)
 {
 	Database *dbase = new Database();
+	cout << '\n' << "new Database returned" << '\n' << endl;
 
 	try
 	{
