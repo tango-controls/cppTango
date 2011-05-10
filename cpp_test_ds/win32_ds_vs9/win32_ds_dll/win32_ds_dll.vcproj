@@ -163,7 +163,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="tangod.lib log4tangod.lib omniORB414_rtd.lib omniDynamic414_rtd.lib omnithread34_rtd.lib COS414_rtd.lib comctl32.lib ws2_32.lib mswsock.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="tangod.lib log4tangod.lib omniORB415_rtd.lib omniDynamic415_rtd.lib omnithread34_rtd.lib COS415_rtd.lib comctl32.lib ws2_32.lib mswsock.lib odbc32.lib odbccp32.lib"
 				OutputFile="$(PREFIX)\win32\bin\shared\devTest.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
