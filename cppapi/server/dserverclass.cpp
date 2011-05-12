@@ -4,7 +4,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // file :               DServerClass.cpp
 //
-// description :        C++ source for the DServerClass and for the 
+// description :        C++ source for the DServerClass and for the
 //			command class defined for this class. The singleton
 //			class derived from DeviceClass. It implements the
 //			command list and all properties and methods required
@@ -25,12 +25,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -296,8 +296,8 @@ namespace Tango
 
 //+-------------------------------------------------------------------------
 //
-// method : 		DevRestartCmd::DevRestartCmd 
-// 
+// method : 		DevRestartCmd::DevRestartCmd
+//
 // description : 	constructors for Command class Restart
 //
 //--------------------------------------------------------------------------
@@ -313,8 +313,8 @@ DevRestartCmd::DevRestartCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		DevRestartCmd::execute 
-// 
+// method : 		DevRestartCmd::execute
+//
 // description : 	restart a device
 //
 //--------------------------------------------------------------------------
@@ -337,8 +337,8 @@ CORBA::Any *DevRestartCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 	}
 	string d_name(tmp_name);
 	cout4 << "Received string = " << d_name << endl;
-		
-//	
+
+//
 // call DServer method which implements this command
 //
 
@@ -355,8 +355,8 @@ CORBA::Any *DevRestartCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		DevRestartServerCmd::DevRestartServerCmd()
-// 
-// description : 	constructor for the DevRestartServerCmd command of the 
+//
+// description : 	constructor for the DevRestartServerCmd command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -370,18 +370,18 @@ DevRestartServerCmd::DevRestartServerCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevRestartServerCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the DevRestartServer 
+//
+// description : 	method to trigger the execution of the DevRestartServer
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevRestartServerCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevRestartServerCmd::execute(): arrived" << endl;
 
-//	
+//
 // call DServer method which implements this command
 //
 
@@ -399,8 +399,8 @@ CORBA::Any *DevRestartServerCmd::execute(DeviceImpl *device,TANGO_UNUSED(const C
 //+----------------------------------------------------------------------------
 //
 // method : 		DevQueryClassCmd::DevQueryClassCmd()
-// 
-// description : 	constructor for the DevQueryClass command of the 
+//
+// description : 	constructor for the DevQueryClass command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -416,18 +416,18 @@ DevQueryClassCmd::DevQueryClassCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevQueryClassCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "QueryClass" 
+//
+// description : 	method to trigger the execution of the "QueryClass"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevQueryClassCmd::execute(): arrived" << endl;
 
-//	
+//
 // call DServer method which implements this command
 //
 
@@ -439,7 +439,7 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -451,8 +451,8 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 				      (const char *)"DevQueryClassCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving DevQueryClassCmd::execute()" << endl;	
+
+	cout4 << "Leaving DevQueryClassCmd::execute()" << endl;
 	return(out_any);
 }
 
@@ -460,8 +460,8 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 //+----------------------------------------------------------------------------
 //
 // method : 		DevQueryDeviceCmd::DevQueryDeviceCmd()
-// 
-// description : 	constructor for the DevQueryDevice command of the 
+//
+// description : 	constructor for the DevQueryDevice command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -477,18 +477,18 @@ DevQueryDeviceCmd::DevQueryDeviceCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevQueryDeviceCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "QueryDevice" 
+//
+// description : 	method to trigger the execution of the "QueryDevice"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevQueryDeviceCmd::execute(): arrived" << endl;
 
-//	
+//
 // call DServer method which implements this command
 //
 
@@ -499,7 +499,7 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 //
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -511,16 +511,16 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 				      (const char *)"DevQueryDeviceCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving DevQueryDeviceCmd::execute()" << endl;		
+
+	cout4 << "Leaving DevQueryDeviceCmd::execute()" << endl;
 	return(out_any);
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		DevQuerySubDeviceCmd::DevQuerySubDeviceCmd()
-// 
-// description : 	constructor for the DevQuerySubDevice command of the 
+//
+// description : 	constructor for the DevQuerySubDevice command of the
 //					DServer.
 //
 //-----------------------------------------------------------------------------
@@ -536,18 +536,18 @@ DevQuerySubDeviceCmd::DevQuerySubDeviceCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevQuerySubDeviceCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "QuerySubDevice" 
+//
+// description : 	method to trigger the execution of the "QuerySubDevice"
 //					command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevQuerySubDeviceCmd::execute(): arrived" << endl;
 
-//	
+//
 // call DServer method which implements this command
 //
 
@@ -558,7 +558,7 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 //
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -570,8 +570,8 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 				      (const char *)"DevQuerySubDeviceCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving DevQuerySubDeviceCmd::execute()" << endl;		
+
+	cout4 << "Leaving DevQuerySubDeviceCmd::execute()" << endl;
 	return(out_any);
 }
 
@@ -581,8 +581,8 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 //+----------------------------------------------------------------------------
 //
 // method : 		DevKillCmd::DevKillCmd()
-// 
-// description : 	constructor for the DevKill command of the 
+//
+// description : 	constructor for the DevKill command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -596,18 +596,18 @@ DevKillCmd::DevKillCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevKillCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "Kill" 
+//
+// description : 	method to trigger the execution of the "Kill"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevKillCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevKillCmd::execute(): arrived" << endl;
 
-//	
+//
 // call DServer method which implements this command
 //
 
@@ -625,8 +625,8 @@ CORBA::Any *DevKillCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORBA::Any
 //+----------------------------------------------------------------------------
 //
 // method : 		DevSetTraceLevelCmd::DevSetTraceLevelCmd()
-// 
-// description : 	constructor for the DevSetTraceLevel command of the 
+//
+// description : 	constructor for the DevSetTraceLevel command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -642,14 +642,14 @@ DevSetTraceLevelCmd::DevSetTraceLevelCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevSetTraceLevelCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "SetTraceLevel" 
+//
+// description : 	method to trigger the execution of the "SetTraceLevel"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevSetTraceLevelCmd::execute(): arrived" << endl;
 
@@ -665,7 +665,7 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	return ret;
 
 #else // TANGO_HAS_LOG4TANGO
-	
+
 //
 // Get new level
 //
@@ -684,7 +684,7 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 //
 
 	Tango::Util::instance()->set_trace_level(new_level);
-	
+
 //
 // Return to the caller
 //
@@ -698,8 +698,8 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 //+----------------------------------------------------------------------------
 //
 // method : 		DevGetTraceLevelCmd::DevGetTraceLevelCmd()
-// 
-// description : 	constructor for the DevGetTraceLevel command of the 
+//
+// description : 	constructor for the DevGetTraceLevel command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -715,14 +715,14 @@ DevGetTraceLevelCmd::DevGetTraceLevelCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevGetTraceLevelCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "DevGetTraceLevel" 
+//
+// description : 	method to trigger the execution of the "DevGetTraceLevel"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevGetTraceLevelCmd::execute(): arrived" << endl;
 
@@ -739,22 +739,22 @@ CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	CORBA::Any *ret = return_empty_any("DevGetTraceLevelCmd");
 	return ret;
 
-#else // TANGO_HAS_LOG4TANGO 
-	
+#else // TANGO_HAS_LOG4TANGO
+
 //
 // Get level
 //
 
 	int level = Tango::Util::instance()->get_trace_level();
-	
+
 //
 // return data to the caller
 //
-	
+
 	CORBA::Any *out_any = new CORBA::Any();
 	(*out_any) <<= level;
-	
-	cout4 << "Leaving DevGetTraceLevelCmd::execute()" << endl;	
+
+	cout4 << "Leaving DevGetTraceLevelCmd::execute()" << endl;
 	return(out_any);
 #endif
 }
@@ -763,8 +763,8 @@ CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 //+----------------------------------------------------------------------------
 //
 // method : 		DevGetTraceOutputCmd::DevGetTraceOutputCmd()
-// 
-// description : 	constructor for the DevGetTraceoutput command of the 
+//
+// description : 	constructor for the DevGetTraceoutput command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -780,14 +780,14 @@ DevGetTraceOutputCmd::DevGetTraceOutputCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevGetTraceOutputCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "DevGetTraceOutput" 
+//
+// description : 	method to trigger the execution of the "DevGetTraceOutput"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevGetTraceOutputCmd::execute(): arrived" << endl;
 
@@ -803,21 +803,21 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	return ret;
 
 #else
-	
+
 //
 // Get Trace output
 //
 
 	string st = Tango::Util::instance()->get_trace_output();
-	
+
 //
 // return data to the caller
 //
-	
+
 	CORBA::Any *out_any = new CORBA::Any();
 	(*out_any) <<= st.c_str();
-	
-	cout4 << "Leaving DevGetTraceOutputCmd::execute()" << endl;	
+
+	cout4 << "Leaving DevGetTraceOutputCmd::execute()" << endl;
 	return(out_any);
 #endif
 }
@@ -825,8 +825,8 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 //+----------------------------------------------------------------------------
 //
 // method : 		DevSetTraceOutputCmd::DevSetTraceOutputCmd()
-// 
-// description : 	constructor for the DevSetTraceoutput command of the 
+//
+// description : 	constructor for the DevSetTraceoutput command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -844,14 +844,14 @@ DevSetTraceOutputCmd::DevSetTraceOutputCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevSetTraceOutputCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "Kill" 
+//
+// description : 	method to trigger the execution of the "Kill"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "DevSetTraceOutputCmd::execute(): arrived" << endl;
 
@@ -887,15 +887,15 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	{
 		delete(Tango::Util::instance()->get_trace_output_stream());
 		Tango::Util::instance()->set_trace_output_stream((ofstream *)NULL);
-#if ((defined _WINDOWS) || (defined __SUNPRO_CC) || (defined GCC_STD)
+#if ((defined _WINDOWS) || (defined __SUNPRO_CC) || (defined GCC_STD))
 		ostream &tmp_stream = Tango::Util::instance()->get_out();
 
 //
 // For windows, the stdc++ library also implements the new IOstreams where the
-// xx_with_assign classes do not exist. To copy stream, I have used the advice 
+// xx_with_assign classes do not exist. To copy stream, I have used the advice
 // from the C++ report of June 1997
 //
-		
+
 		cout.copyfmt(tmp_stream);
 		cout.clear(tmp_stream.rdstate());
 		cout.rdbuf(tmp_stream.rdbuf());
@@ -905,7 +905,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 		Tango::Util::instance()->set_trace_output(in_file);
 	}
 	else
-	{	
+	{
 		ofstream *ofp = new ofstream(in_file_ptr);
 		if (ofp->good())
 		{
@@ -924,28 +924,28 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 		{
 			cout3 << "Cannot open ofstream" << endl;
 			TangoSys_OMemStream o;
-		
+
 			o << "Impossible to open file " << in_file << ends;
 			Except::throw_exception((const char *)"API_CannotOpenFile",
 					      o.str(),
 					      (const char *)"DevSetTraceoutput::execute");
 		}
 	}
-			
+
 //
 // return to the caller
 //
-	
+
 	CORBA::Any *ret = return_empty_any("DevSetTraceOutputCmd");
 	return ret;
-#endif 	
+#endif
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		QueryWizardClassPropertyCmd::QueryWizardClassPropertyCmd
-// 
-// description : 	constructor for the QueryWizardClassProperty command of the 
+//
+// description : 	constructor for the QueryWizardClassProperty command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -965,14 +965,14 @@ QueryWizardClassPropertyCmd::QueryWizardClassPropertyCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		QueryWizardClassPropertyCmd::execute(string &s)
-// 
-// description : 	method to trigger the execution of the "QueryWizardClassProperty" 
+//
+// description : 	method to trigger the execution of the "QueryWizardClassProperty"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout4 << "QueryWizardClassPropertyCmd::execute(): arrived" << endl;
 
@@ -988,8 +988,8 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 				        (const char *)"QueryWizardClassPropertyCmd::execute");
 	}
 	string class_name(tmp_name);
-	
-//	
+
+//
 // call DServer method which implements this command
 //
 
@@ -1000,7 +1000,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 //
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -1012,8 +1012,8 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 				      (const char *)"QueryWizardClassPropertyCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving QueryWizardClassPropertyCmd::execute()" << endl;		
+
+	cout4 << "Leaving QueryWizardClassPropertyCmd::execute()" << endl;
 	return(out_any);
 }
 
@@ -1021,8 +1021,8 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 //+----------------------------------------------------------------------------
 //
 // method : 		QueryWizardDevPropertyCmd::QueryWizardDevPropertyCmd
-// 
-// description : 	constructor for the QueryWizardDevProperty command of the 
+//
+// description : 	constructor for the QueryWizardDevProperty command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -1042,14 +1042,14 @@ QueryWizardDevPropertyCmd::QueryWizardDevPropertyCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		QueryWizardDevPropertyCmd::execute()
-// 
-// description : 	method to trigger the execution of the "QueryWizardDevProperty" 
+//
+// description : 	method to trigger the execution of the "QueryWizardDevProperty"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout4 << "QueryWizardDevPropertyCmd::execute(): arrived" << endl;
 
@@ -1065,8 +1065,8 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 				        (const char *)"QueryWizardDevPropertyCmd::execute");
 	}
 	string class_name(tmp_name);
-		
-//	
+
+//
 // call DServer method which implements this command
 //
 
@@ -1077,7 +1077,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 //
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -1089,16 +1089,16 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 				      (const char *)"QueryWizardDevPropertyCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving QueryWizardDevPropertyCmd::execute()" << endl;		
+
+	cout4 << "Leaving QueryWizardDevPropertyCmd::execute()" << endl;
 	return(out_any);
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		QueryEventChannelIORCmd::QueryEventChannelIORCmd
-// 
-// description : 	constructor for the QueryEventChannelIOR command of the 
+//
+// description : 	constructor for the QueryEventChannelIOR command of the
 //			DServer.
 //
 //-----------------------------------------------------------------------------
@@ -1116,18 +1116,18 @@ QueryEventChannelIORCmd::QueryEventChannelIORCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		QueryEventChannelIORCmd::execute()
-// 
-// description : 	method to trigger the execution of the "QueryEventChannelIOR" 
+//
+// description : 	method to trigger the execution of the "QueryEventChannelIOR"
 //			command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_UNUSED(const CORBA::Any &in_any))
-{	
+{
 
 	cout4 << "QueryEventChannelIORCmd::execute(): arrived" << endl;
-		
-//	
+
+//
 // Get DS event channel IOR which is stored in the EventSupplier object
 //
 
@@ -1146,13 +1146,13 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 	{
 
 		string &ior = event_supplier->get_event_channel_ior();
-		
+
 //
 // return data to the caller
 //
 
 		try
-		{	
+		{
 			out_any = new CORBA::Any();
 		}
 		catch (bad_alloc)
@@ -1164,8 +1164,8 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 		}
 		(*out_any) <<= ior.c_str();
 	}
-	
-	cout4 << "Leaving QueryEventChannelIORCmd::execute()" << endl;		
+
+	cout4 << "Leaving QueryEventChannelIORCmd::execute()" << endl;
 	return(out_any);
 }
 
@@ -1173,7 +1173,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 //+----------------------------------------------------------------------------
 //
 // method : 		LockDeviceCmd::LockDeviceCmd
-// 
+//
 // description : 	constructor for the LockDevice command of the DServer.
 //
 //-----------------------------------------------------------------------------
@@ -1191,13 +1191,13 @@ LockDeviceCmd::LockDeviceCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		LockDeviceCmd::execute()
-// 
+//
 // description : 	method to trigger the execution of the "LockDevice" command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *LockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout4 << "LockDeviceCmd::execute(): arrived" << endl;
 
@@ -1207,11 +1207,11 @@ CORBA::Any *LockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 
 	const Tango::DevVarLongStringArray *in_data;
 	extract(in_any,in_data);
-			
-//	
+
+//
 // call DServer method which implements this command
 //
-	
+
 	((DServer *)device)->lock_device(in_data);
 
 //
@@ -1226,7 +1226,7 @@ CORBA::Any *LockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		ReLockDevicesCmd::ReLockDeviceCmd
-// 
+//
 // description : 	constructor for the ReLockDevices command of the DServer.
 //
 //-----------------------------------------------------------------------------
@@ -1244,13 +1244,13 @@ ReLockDevicesCmd::ReLockDevicesCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		ReLockDevicesCmd::execute()
-// 
+//
 // description : 	method to trigger the execution of the "ReLockDevices" command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *ReLockDevicesCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout4 << "ReLockDevicesCmd::execute(): arrived" << endl;
 
@@ -1260,8 +1260,8 @@ CORBA::Any *ReLockDevicesCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 
 	const Tango::DevVarStringArray *in_data;
 	extract(in_any,in_data);
-			
-//	
+
+//
 // call DServer method which implements this command
 //
 
@@ -1273,13 +1273,13 @@ CORBA::Any *ReLockDevicesCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 
 	CORBA::Any *ret = return_empty_any("ReLockDevicesCmd");
 	return ret;
-	
+
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		UnLockDeviceCmd::UnLockDeviceCmd
-// 
+//
 // description : 	constructor for the UnLockDevice command of the DServer.
 //
 //-----------------------------------------------------------------------------
@@ -1299,13 +1299,13 @@ UnLockDeviceCmd::UnLockDeviceCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		UnLockDeviceCmd::execute()
-// 
+//
 // description : 	method to trigger the execution of the "UnLockDevice" command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout4 << "UnLockDeviceCmd::execute(): arrived" << endl;
 
@@ -1315,8 +1315,8 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 
 	const Tango::DevVarLongStringArray *in_data;
 	extract(in_any,in_data);
-			
-//	
+
+//
 // call DServer method which implements this command
 //
 
@@ -1328,7 +1328,7 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -1339,15 +1339,15 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 				      (const char *)"UnLockDeviceCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving UnLockDeviceCmd::execute()" << endl;		
+
+	cout4 << "Leaving UnLockDeviceCmd::execute()" << endl;
 	return(out_any);
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		DevLockStatusCmd::DevLockStatusCmd
-// 
+//
 // description : 	constructor for the DevLockStatus command of the DServer.
 //
 //-----------------------------------------------------------------------------
@@ -1367,13 +1367,13 @@ DevLockStatusCmd::DevLockStatusCmd(const char *name,
 //+----------------------------------------------------------------------------
 //
 // method : 		DevLockStatusCmd::execute()
-// 
+//
 // description : 	method to trigger the execution of the "DevLockStatus" command
 //
 //-----------------------------------------------------------------------------
 
 CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout4 << "DevLockStatusCmd::execute(): arrived" << endl;
 
@@ -1383,8 +1383,8 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 
 	Tango::ConstDevString in_data;
 	extract(in_any,in_data);
-			
-//	
+
+//
 // call DServer method which implements this command
 //
 
@@ -1396,7 +1396,7 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 
 	CORBA::Any *out_any;
 	try
-	{	
+	{
 		out_any = new CORBA::Any();
 	}
 	catch (bad_alloc)
@@ -1407,8 +1407,8 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 				      (const char *)"DevLockStatusCmd::execute");
 	}
 	(*out_any) <<= ret;
-	
-	cout4 << "Leaving DevLockStatusCmd::execute()" << endl;		
+
+	cout4 << "Leaving DevLockStatusCmd::execute()" << endl;
 	return(out_any);
 }
 
@@ -1420,7 +1420,7 @@ DServerClass *DServerClass::_instance = NULL;
 //+----------------------------------------------------------------------------
 //
 // method : 		DServerClass::DServerClass()
-// 
+//
 // description : 	constructor for the DServerClass class
 //			The constructor add specific class commands to the
 //			command list, create a device of the DServer class
@@ -1443,7 +1443,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 {
 	try
 	{
-	
+
 //
 // Add class command(s) to the command_list
 //
@@ -1455,7 +1455,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 //
 
 		sort(get_command_list().begin(),get_command_list().end(),less_than_dserver);
-		
+
 //
 // Create device name from device server name
 //
@@ -1465,24 +1465,24 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 		dev_name.append(Tango::Util::instance()->get_ds_exec_name());
 		dev_name.append(1,'/');
 		dev_name.append(Tango::Util::instance()->get_ds_inst_name());
-		
+
 		Tango::DevVarStringArray dev_list(1);
                 dev_list.length(1);
-		dev_list[0] = dev_name.c_str();		
-				
+		dev_list[0] = dev_name.c_str();
+
 //
 // Create the device server device
 //
 
 		device_factory(&dev_list);
-				
+
 	}
 	catch (bad_alloc)
 	{
 		for (unsigned long i = 0;i < command_list.size();i++)
 			delete command_list[i];
 		command_list.clear();
-		
+
 		if (device_list.empty() == false)
 		{
 			for (unsigned long i = 0;i < device_list.size();i++)
@@ -1497,7 +1497,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 //+----------------------------------------------------------------------------
 //
 // method : 		DServerClass::Instance
-// 
+//
 // description : 	Create the object if not already done. Otherwise, just
 //			return a pointer to the object
 //
@@ -1510,9 +1510,9 @@ DServerClass *DServerClass::instance()
 		cerr << "Class DServer is not initialised!" << endl;
 		Except::throw_exception((const char *)"API_DServerClassNotInitialised",
 				        (const char *)"The DServerClass is not yet initialised, please wait!",
-				        (const char *)"DServerClass::instance");	
-		//exit(-1);	
-	}		
+				        (const char *)"DServerClass::instance");
+		//exit(-1);
+	}
 	return _instance;
 }
 
@@ -1528,16 +1528,16 @@ DServerClass *DServerClass::init()
 		catch (bad_alloc)
 		{
 			throw;
-		}		
-	}		
+		}
+	}
 	return _instance;
 }
 
 //+----------------------------------------------------------------------------
 //
 // method : 		DServerClass::command_factory
-// 
-// description : 	Create the command object(s) and store them in the 
+//
+// description : 	Create the command object(s) and store them in the
 //			command list
 //
 //-----------------------------------------------------------------------------
@@ -1566,7 +1566,7 @@ void DServerClass::command_factory()
 	command_list.push_back(new DevKillCmd("Kill",
 					      Tango::DEV_VOID,
 					      Tango::DEV_VOID));
-							
+
 //
 // Now, commands related to polling
 //
@@ -1584,28 +1584,28 @@ void DServerClass::command_factory()
 	msg = msg + (" Str[0]=Device name");
 	msg = msg + (". Str[1]=Object type");
 	msg = msg + (". Str[2]=Object name");
-	
+
 	command_list.push_back(new AddObjPollingCmd("AddObjPolling",
 						    Tango::DEVVAR_LONGSTRINGARRAY,
 						    Tango::DEV_VOID,
 						    msg));
-						    
+
 	command_list.push_back(new UpdObjPollingPeriodCmd("UpdObjPollingPeriod",
 							  Tango::DEVVAR_LONGSTRINGARRAY,
 							  Tango::DEV_VOID,
 							  msg));
 
 	msg = "Str[0]=Device name. Str[1]=Object type. Str[2]=Object name";
-								  
+
 	command_list.push_back(new RemObjPollingCmd("RemObjPolling",
 						    Tango::DEVVAR_STRINGARRAY,
 						    Tango::DEV_VOID,
 						    msg));
-						    
+
 	command_list.push_back(new StopPollingCmd("StopPolling",
 						  Tango::DEV_VOID,
 						  Tango::DEV_VOID));
-						  
+
 	command_list.push_back(new StartPollingCmd("StartPolling",
 						   Tango::DEV_VOID,
 						   Tango::DEV_VOID));
@@ -1669,19 +1669,19 @@ void DServerClass::command_factory()
 							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,
 							"list of events consumer wants to subscribe to",
 							"none"));
-							
+
 	command_list.push_back(new QueryWizardClassPropertyCmd("QueryWizardClassProperty",
 							Tango::DEV_STRING,
 							Tango::DEVVAR_STRINGARRAY,
 							"Class name",
 							"Class property list (name - description and default value)"));
-	
+
 	command_list.push_back(new QueryWizardDevPropertyCmd("QueryWizardDevProperty",
 							Tango::DEV_STRING,
 							Tango::DEVVAR_STRINGARRAY,
 							"Class name",
 							"Device property list (name - description and default value)"));
-	
+
 //
 // Locking device commands
 //
@@ -1690,23 +1690,23 @@ void DServerClass::command_factory()
 							Tango::DEVVAR_LONGSTRINGARRAY,
 							Tango::DEV_VOID,
 							"Str[0] = Device name. Lg[0] = Lock validity"));
-							
+
 	command_list.push_back(new UnLockDeviceCmd("UnLockDevice",
 							Tango::DEVVAR_LONGSTRINGARRAY,
 							Tango::DEV_LONG,
 							"Str[x] = Device name(s). Lg[0] = Force flag",
 							"Device global lock counter"));
-	
+
 	command_list.push_back(new ReLockDevicesCmd("ReLockDevices",
 							Tango::DEVVAR_STRINGARRAY,
 							Tango::DEV_VOID,
 							"Device(s) name"));
-							
+
 	command_list.push_back(new DevLockStatusCmd("DevLockStatus",
 							Tango::DEV_STRING,
 							Tango::DEVVAR_LONGSTRINGARRAY,
 							"Device name",
-							"Device locking status"));	
+							"Device locking status"));
 
 	if (Util::_FileDb == true)
 	{
@@ -1721,8 +1721,8 @@ void DServerClass::command_factory()
 //+----------------------------------------------------------------------------
 //
 // method : 		DServerClass::device_factory
-// 
-// description : 	Create the device object(s) and store them in the 
+//
+// description : 	Create the device object(s) and store them in the
 //			device list
 //
 // in :			Tango::DevVarStringArray *devlist_ptr :
@@ -1733,11 +1733,11 @@ void DServerClass::command_factory()
 void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 {
 	Tango::Util *tg = Tango::Util::instance();
-	
+
 	for (unsigned long i = 0;i < devlist_ptr->length();i++)
 	{
 		cout4 << "Device name : " << (*devlist_ptr)[i].in() << endl;
-						
+
 //
 // Create device and add it into the device list
 //
@@ -1747,7 +1747,7 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 						  "A device server device !!",
 						  Tango::ON,
 						  "The device is ON"));
-							 
+
 
 //
 // Export device to the outside world
@@ -1757,7 +1757,7 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 			export_device(device_list.back());
 		else
 			export_device(device_list.back(),(*devlist_ptr)[i]);
-			
+
 //
 // After the export of the admin device, the server is marked as started
 // and the database server connection timeout is set to the classical
@@ -1768,7 +1768,7 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 		Database *db = tg->get_database();
 		if ((db != NULL) && (Util::_FileDb == false))
 			db->set_timeout_millis(CLNT_TIMEOUT);
-			
+
 	}
 }
 
