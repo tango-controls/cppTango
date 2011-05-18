@@ -924,11 +924,13 @@ int main(int argc, char **argv)
 		}
 		const DevVarLongStringArray *received;
 		dout >> received;
+		int data_type = dout.get_type();
 		
 		assert( received->lvalue[0] == (in.lvalue[0] * 2) );
 		assert( received->lvalue[1] == (in.lvalue[1] * 2) );
 		assert( !strcmp(received->svalue[0],in.svalue[0]) );
 		assert( !strcmp(received->svalue[1],in.svalue[1]) );
+		assert( data_type == Tango::DEVVAR_LONGSTRINGARRAY );
 	}
 	cout << "   DevVarLongStringArray (by pointer and reference) --> OK" << endl;
 		
@@ -1033,6 +1035,103 @@ int main(int argc, char **argv)
 		assert( !strcmp(received->svalue[2],in.svalue[2]) );
 	}
 	cout << "   DevVarDoubleStringArray (by pointer and reference) --> OK" << endl;
+
+// test DevEncoded
+
+	for (i = 0;i < loop;i++)
+	{
+		DeviceData din,dout;
+		DevEncoded in;
+		in.encoded_data.length(2);
+		in.encoded_data[0] = 11;
+		in.encoded_data[1] = 22;
+		in.encoded_format = CORBA::string_dup("Sent");
+		din << in;
+		try
+		{	
+			dout = device->command_inout("IOEncoded",din);
+		}
+		catch (CORBA::Exception &e)
+		{
+			Except::print_exception(e);
+			exit(-1);
+		}
+		const DevEncoded *received;
+		dout >> received;
+		int data_type = dout.get_type();
+
+		assert( received->encoded_data.length() == 2 );		
+		assert( received->encoded_data[0] == (11 * 2) );
+		assert( received->encoded_data[1] == (22 * 2) );
+		assert( !strcmp(received->encoded_format,"Returned string") );
+		assert( data_type == Tango::DEV_ENCODED );
+	}
+
+	for (i = 0;i < loop;i++)
+	{
+		DeviceData din,dout;
+		string in_str("Sent");
+		vector<unsigned char> in_data;
+
+		in_data.push_back((unsigned char)15);
+		in_data.push_back((unsigned char)25);
+
+		din.insert(in_str,in_data);
+		try
+		{	
+			dout = device->command_inout("IOEncoded",din);
+		}
+		catch (CORBA::Exception &e)
+		{
+			Except::print_exception(e);
+			exit(-1);
+		}
+		DevEncoded received;
+		dout >> received;
+		int data_type = dout.get_type();
+
+		assert( received.encoded_data.length() == 2 );		
+		assert( received.encoded_data[0] == (15 * 2) );
+		assert( received.encoded_data[1] == (25 * 2) );
+		assert( !strcmp(received.encoded_format,"Returned string") );
+		assert( data_type == Tango::DEV_ENCODED );
+	}
+
+	for (i = 0;i < loop;i++)
+	{
+		DeviceData din,dout;
+		string in_str("Sent");
+		DevVarCharArray in_data;
+
+		in_data.length(4);
+		in_data[0] = ((unsigned char)15);
+		in_data[1] = ((unsigned char)25);
+		in_data[2] = ((unsigned char)35);
+		in_data[3] = ((unsigned char)45);
+
+		din.insert("Sent",&in_data);
+		try
+		{	
+			dout = device->command_inout("IOEncoded",din);
+		}
+		catch (CORBA::Exception &e)
+		{
+			Except::print_exception(e);
+			exit(-1);
+		}
+		DevEncoded received;
+		dout >> received;
+		int data_type = dout.get_type();
+
+		assert( received.encoded_data.length() == 4 );		
+		assert( received.encoded_data[0] == (15 * 2) );
+		assert( received.encoded_data[1] == (25 * 2) );
+		assert( received.encoded_data[2] == (35 * 2) );
+		assert( received.encoded_data[3] == (45 * 2) );
+		assert( !strcmp(received.encoded_format,"Returned string") );
+		assert( data_type == Tango::DEV_ENCODED );
+	}	
+	cout << "   DevEncoded (by pointer and reference) --> OK" << endl;
 	
 	delete device;
 	

@@ -307,10 +307,85 @@ int main(int argc, char **argv)
 		
 		cout << "   Read command history (Status) --> OK" << endl;
 
+// Test command_history (DevEncoded)
+
+		d_hist = device->command_history("OEncoded",hist_depth);
+
+		if (d_hist->size() < 4)
+		{
+			cout << "Not enought data in polling buffer, restart later" << endl;
+			exit(-1);
+		}
+		
+		unsigned char first_val_enc;		
+		for (i = 0;i < d_hist->size();i++)
+		{
+			DevEncoded the_enc;
+			(*d_hist)[i] >> the_enc;
+			
+			if (print == true)
+			{
+				cout << "Command failed = " << (*d_hist)[i].has_failed() << endl;
+				cout << "Encoded_format = " << the_enc.encoded_format << endl;
+				for (unsigned int ii = 0;ii < the_enc.encoded_data.length();++ii)
+					cout << "Encoded_data = " << (int)the_enc.encoded_data[ii] << endl;
+				TimeVal &t = (*d_hist)[i].get_date();
+				cout << "Date : " << t.tv_sec << " sec, " << t.tv_usec << " usec" << endl;
+				cout << "Error stack depth = " << (*d_hist)[i].get_err_stack().length() << endl;
+				cout << endl;
+			}
+							
+			assert( (*d_hist)[i].has_failed() == false);
+			assert( (*d_hist)[i].get_err_stack().length() == 0);
+
+			if (i == 0)
+				first_val_enc = the_enc.encoded_data[0];
+
+			if ((i % 2) == 0)
+			{
+				if (first_val_enc == 11)
+				{
+					assert (!strcmp(the_enc.encoded_format,"Odd - OEncoded format"));
+					assert (the_enc.encoded_data.length() == 2);
+					assert (the_enc.encoded_data[0] == 11);
+					assert (the_enc.encoded_data[1] == 21);
+				}
+				else
+				{
+					assert (!strcmp(the_enc.encoded_format,"Even - OEncoded format"));
+					assert (the_enc.encoded_data[0] == 10);
+					assert (the_enc.encoded_data[1] == 20);
+					assert (the_enc.encoded_data[2] == 30);
+					assert (the_enc.encoded_data[3] == 40);
+				}
+			}
+			else
+			{
+				if (first_val_enc == 11)
+				{
+					assert (!strcmp(the_enc.encoded_format,"Even - OEncoded format"));
+					assert (the_enc.encoded_data[0] == 10);
+					assert (the_enc.encoded_data[1] == 20);
+					assert (the_enc.encoded_data[2] == 30);
+					assert (the_enc.encoded_data[3] == 40);
+				}
+				else
+				{
+					assert (!strcmp(the_enc.encoded_format,"Odd - OEncoded format"));
+					assert (the_enc.encoded_data.length() == 2);
+					assert (the_enc.encoded_data[0] == 11);
+					assert (the_enc.encoded_data[1] == 21);
+				}
+			}
+		}
+		delete d_hist;	
+				
+		cout << "   Read command history (DevEncoded) --> OK" << endl;
+
 // Test attribute_history (for long)
 
 		vector<DeviceAttributeHistory> *a_hist;
-hist_depth = 10;
+		hist_depth = 10;
 		a_hist = device->attribute_history("PollLong_attr",hist_depth);
 
 		DevLong first_val;		

@@ -6,7 +6,7 @@
 #include <assert.h>
 
 #ifndef COMPAT
-#define		BASIC_NB_POLL		15
+#define		BASIC_NB_POLL		16
 #else
 #define		BASIC_NB_POLL		14
 #endif

@@ -39,6 +39,7 @@ int main(int argc, char **argv)
 	stop_poll_cmd_no_except(device,"IOPollStr1");
 	stop_poll_cmd_no_except(device,"IOPollArray2");
 	stop_poll_cmd_no_except(device,"IOExcept");
+	stop_poll_cmd_no_except(device,"OEncoded");
 	stop_poll_cmd_no_except(device,"State");
 	stop_poll_cmd_no_except(device,"Status");
 	

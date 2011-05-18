@@ -288,6 +288,23 @@ int main(int argc, char **argv)
 	
 	cout << "   DevState --> OK" << endl;
 		
+// test DevEncoded
+
+	DevEncoded de;
+	de.encoded_format = CORBA::string_dup("the string");
+	de.encoded_data.length(2);
+	de.encoded_data[0] = 11;
+	de.encoded_data[1] = 22;
+	din << de;
+	cout << "DevEncoded = " << din << endl;
+	DevEncoded dout;
+	din >> dout;
+	assert (!strcmp(dout.encoded_format,"the string"));
+	assert (dout.encoded_data.length() == 2);
+	assert (dout.encoded_data[0] == 11);
+	assert (dout.encoded_data[1] == 22);
+
+	cout << "   DevEncoded --> OK" << endl;
 	
 // Attribute
 
