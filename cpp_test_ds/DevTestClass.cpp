@@ -25,7 +25,7 @@ DevTestClass *DevTestClass::_instance = NULL;
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTestClass::DevTestClass()
-// 
+//
 // description : 	constructor for the DevTestClass
 //
 // in : - s : The class name
@@ -38,7 +38,7 @@ DevTestClass::DevTestClass(string &s):Tango::DeviceClass(s)
 	cout2 << "Entering DevTestClass constructor" << endl;
 
 	set_type("TestDevice");
-		
+
 	cout2 << "Leaving DevTestClass constructor" << endl;
 
 }
@@ -46,7 +46,7 @@ DevTestClass::DevTestClass(string &s):Tango::DeviceClass(s)
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTestClass::instance
-// 
+//
 // description : 	Create the object if not already done. Otherwise, just
 //			return a pointer to the object
 //
@@ -66,8 +66,8 @@ DevTestClass *DevTestClass::init(const char *name)
 		catch (bad_alloc)
 		{
 			throw;
-		}		
-	}		
+		}
+	}
 	return _instance;
 }
 
@@ -84,8 +84,8 @@ DevTestClass *DevTestClass::instance()
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTestClass::command_factory
-// 
-// description : 	Create the command object(s) and store them in the 
+//
+// description : 	Create the command object(s) and store them in the
 //			command list
 //
 //-----------------------------------------------------------------------------
@@ -346,7 +346,7 @@ void DevTestClass::command_factory()
 					   Tango::DEVVAR_STRINGARRAY,
 					   Tango::DEVVAR_STRINGARRAY,
 					   "Input string array",
-					   "Output string array"));					   					   					   					   					   					   					   
+					   "Output string array"));
 	command_list.push_back(new IOStartPoll("IOStartPoll",
 					   Tango::DEV_VOID,
 					   Tango::DEV_LONG,
@@ -523,32 +523,42 @@ void DevTestClass::command_factory()
 					    Tango::DEV_BOOLEAN,
 					    "void",
 					    "true = sub device connected"));
+	command_list.push_back(new IOEncoded("IOEncoded",
+					    Tango::DEV_ENCODED,
+					    Tango::DEV_ENCODED,
+					    "DevEncoded structure",
+					    "DevEncoded structure"));
+	command_list.push_back(new OEncoded("OEncoded",
+					    Tango::DEV_VOID,
+					    Tango::DEV_ENCODED,
+					    "void",
+					    "DevEncoded structure to test polling/history"));
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
-				
+
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTemplState",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl),
 			       static_cast<Tango::StateMethPtr>(&DevTest::templ_state)));
-			       
+
 	command_list.push_back(new Tango::TemplCommandIn<Tango::DevLong>((const char *)"IOTemplIn",
 				static_cast<Tango::CmdMethPtr_Lg>(&DevTest::IOTemplIn)));
-				
+
 	command_list.push_back(new Tango::TemplCommandIn<Tango::DevLong>((const char *)"IOTemplInState",
-			       static_cast<Tango::CmdMethPtr_Lg>(&DevTest::IOTemplIn),				
+			       static_cast<Tango::CmdMethPtr_Lg>(&DevTest::IOTemplIn),
 			       static_cast<Tango::StateMethPtr>(&DevTest::templ_state)));
-			       					   
+
 	command_list.push_back(new Tango::TemplCommandOut<Tango::DevVarLongArray *>((const char *)"IOTemplOut",
 				static_cast<Tango::LgA_CmdMethPtr>(&DevTest::IOTemplOut)));
-				
+
 	command_list.push_back(new Tango::TemplCommandOut<Tango::DevVarLongArray *>((const char *)"IOTemplOutState",
-			       static_cast<Tango::LgA_CmdMethPtr>(&DevTest::IOTemplOut),				
+			       static_cast<Tango::LgA_CmdMethPtr>(&DevTest::IOTemplOut),
 			       static_cast<Tango::StateMethPtr>(&DevTest::templ_state)));
-			       
+
 	command_list.push_back(new Tango::TemplCommandInOut<Tango::DevDouble,Tango::DevVarDoubleArray *>((const char *)"IOTemplInOut",
 				static_cast<Tango::DbA_CmdMethPtr_Db>(&DevTest::IOTemplInOut)));
-				
+
 	command_list.push_back(new Tango::TemplCommandInOut<Tango::DevDouble,Tango::DevVarDoubleArray *>((const char *)"IOTemplInOutState",
-			       static_cast<Tango::DbA_CmdMethPtr_Db>(&DevTest::IOTemplInOut),				
+			       static_cast<Tango::DbA_CmdMethPtr_Db>(&DevTest::IOTemplInOut),
 			       static_cast<Tango::StateMethPtr>(&DevTest::templ_state)));
 }
 
@@ -556,8 +566,8 @@ void DevTestClass::command_factory()
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTestClass::device_factory
-// 
-// description : 	Create the device object(s) and store them in the 
+//
+// description : 	Create the device object(s) and store them in the
 //			device list
 //
 // in :			Tango_DevVarStringArray *devlist_ptr :
@@ -574,7 +584,7 @@ void DevTestClass::device_factory(const Tango::DevVarStringArray *devlist_ptr) {
 
     device_list.push_back(new DevTest(this,
 				      (*devlist_ptr)[i]));
-						 
+
     //
     // Export device to the outside world
     //
@@ -593,10 +603,10 @@ void DevTestClass::device_name_factory(vector<string> &list_name)
 
 void DevTestClass::signal_handler(long signo)
 {
-	
+
 //
 // With logging, we must attach a log message to a device
-// 
+//
 
 	cout1 << "[Class signal handler] received signal number "
 	      << signo
@@ -613,18 +623,18 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Double_attrAttr());
   att_list.push_back(new String_attrAttr());
 //  att_list.back()->set_polling_period(250);
-  
-  att_list.push_back(new Short_spec_attrAttr());  
+
+  att_list.push_back(new Short_spec_attrAttr());
   att_list.push_back(new Long_spec_attrAttr());
-  att_list.push_back(new Double_spec_attrAttr());	 
+  att_list.push_back(new Double_spec_attrAttr());
   att_list.push_back(new String_spec_attrAttr());
-  	
-  att_list.push_back(new Short_ima_attrAttr());    
+
+  att_list.push_back(new Short_ima_attrAttr());
   att_list.push_back(new Long_ima_attrAttr());
-  att_list.push_back(new Double_ima_attrAttr());  
+  att_list.push_back(new Double_ima_attrAttr());
   att_list.push_back(new String_ima_attrAttr());
-  
-  att_list.push_back(new attr_no_dataAttr()); 
+
+  att_list.push_back(new attr_no_dataAttr());
   att_list.push_back(new attr_wrong_typeAttr());
   att_list.push_back(new attr_wrong_sizeAttr());
   att_list.push_back(new attr_no_alarmAttr());
@@ -632,7 +642,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Short_attr_with_wAttr());
   att_list.push_back(new Short_attr_rwAttr());
   att_list.push_back(new Short_attr_wAttr());
-    
+
   Tango::UserDefaultAttrProp def_prop;
   def_prop.set_label("Test label");
   def_prop.set_description("Test description");
@@ -646,48 +656,48 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   def_prop.set_max_alarm("99999");
 //  Tango::Attr *at = new Tango::Attr("Long_attr_w", Tango::DEV_LONG, Tango::WRITE);
   Tango::Attr *at = new Long_attr_wAttr();
-  at->set_default_properties(def_prop);	
-  att_list.push_back(at); 
-  
+  at->set_default_properties(def_prop);
+  att_list.push_back(at);
+
   att_list.push_back(new Double_attr_wAttr());
   att_list.push_back(new String_attr_wAttr());
-  
+
   att_list.push_back(new attr_asynAttr());
   att_list.push_back(new attr_asyn_toAttr());
   att_list.push_back(new attr_asyn_exceptAttr());
   att_list.push_back(new attr_asyn_writeAttr());
   att_list.push_back(new attr_asyn_write_toAttr());
   att_list.push_back(new attr_asyn_write_exceptAttr());
-  
+
   att_list.push_back(new PollLong_attrAttr());
   att_list.push_back(new PollString_spec_attrAttr());
-  
+
   att_list.push_back(new attr_dq_shAttr());
   att_list.push_back(new attr_dq_loAttr());
   att_list.push_back(new attr_dq_dbAttr());
   att_list.push_back(new attr_dq_strAttr());
-  
+
   Tango::UserDefaultAttrProp def_prop_1;
   def_prop_1.set_max_value("100");
 //  Tango::SpectrumAttr *sat = new Tango::SpectrumAttr("Short_spec_attr_w", Tango::DEV_SHORT,Tango::WRITE, 4);
   Tango::SpectrumAttr *sat = new Short_spec_attr_wAttr();
-  sat->set_default_properties(def_prop_1);	
+  sat->set_default_properties(def_prop_1);
   att_list.push_back(sat);
 
   att_list.push_back(new Long_spec_attr_wAttr());
   att_list.push_back(new Double_spec_attr_wAttr());
   att_list.push_back(new String_spec_attr_wAttr());
-  att_list.push_back(new Short_ima_attr_wAttr());   
-  att_list.push_back(new String_ima_attr_wAttr());  
+  att_list.push_back(new Short_ima_attr_wAttr());
+  att_list.push_back(new String_ima_attr_wAttr());
 
-  att_list.push_back(new Short_spec_attr_rwAttr());  
-  att_list.push_back(new String_spec_attr_rwAttr());  
-  att_list.push_back(new Long_spec_attr_rwAttr());  
-  att_list.push_back(new Short_ima_attr_rwAttr());	 
+  att_list.push_back(new Short_spec_attr_rwAttr());
+  att_list.push_back(new String_spec_attr_rwAttr());
+  att_list.push_back(new Long_spec_attr_rwAttr());
+  att_list.push_back(new Short_ima_attr_rwAttr());
   att_list.push_back(new String_ima_attr_rwAttr());
-  
+
   att_list.push_back(new Event_change_tstAttr());
-  att_list.push_back(new Event64_change_tstAttr());	 
+  att_list.push_back(new Event64_change_tstAttr());
   att_list.push_back(new Event_quality_tstAttr());
   att_list.push_back(new Long_attr_with_wAttr());
 
@@ -696,55 +706,55 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
 
   att_list.push_back(new Poll_buffAttr());
   att_list.push_back(new Poll_buffRWAttr());
-  
+
   att_list.push_back(new Float_attrAttr());
   att_list.push_back(new Boolean_attrAttr());
   att_list.push_back(new UShort_attrAttr());
   att_list.push_back(new UChar_attrAttr());
-  
+
   att_list.push_back(new Float_spec_attrAttr());
   att_list.push_back(new Boolean_spec_attrAttr());
   att_list.push_back(new UShort_spec_attrAttr());
   att_list.push_back(new UChar_spec_attrAttr());
-  
+
   att_list.push_back(new Float_attr_wAttr());
   att_list.push_back(new Boolean_attr_wAttr());
   att_list.push_back(new UShort_attr_wAttr());
   att_list.push_back(new UChar_attr_wAttr());
-  
+
   att_list.push_back(new Float_spec_attr_wAttr());
   att_list.push_back(new Boolean_spec_attr_wAttr());
   att_list.push_back(new UShort_spec_attr_wAttr());
   att_list.push_back(new UChar_spec_attr_wAttr());
-  
+
   att_list.push_back(new Float_ima_attr_wAttr());
   att_list.push_back(new UShort_ima_attr_wAttr());
-  
+
   att_list.push_back(new Float_spec_attr_rwAttr());
   att_list.push_back(new UChar_spec_attr_rwAttr());
-  
+
   att_list.push_back(new Boolean_ima_attr_rwAttr());
   att_list.push_back(new UShort_ima_attr_rwAttr());
 
   att_list.push_back(new slow_actuatorAttr());
   att_list.push_back(new fast_actuatorAttr());
-  
+
   att_list.push_back(new Long64_attr_rwAttr());
   att_list.push_back(new ULong_attr_rwAttr());
   att_list.push_back(new ULong64_attr_rwAttr());
   att_list.push_back(new State_attr_rwAttr());
-  
+
   att_list.push_back(new Long64_spec_attr_rwAttr());
   att_list.push_back(new ULong_spec_attr_rwAttr());
   att_list.push_back(new ULong64_spec_attr_rwAttr());
   att_list.push_back(new State_spec_attr_rwAttr());
 
   att_list.push_back(new Sub_device_tstAttr());
-#ifndef COMPAT  
+#ifndef COMPAT
   att_list.push_back(new Encoded_attr_rwAttr());
   att_list.push_back(new Encoded_attr_image());
 #endif
-  
+
 }
 
 

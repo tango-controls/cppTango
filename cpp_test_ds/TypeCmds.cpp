@@ -7,8 +7,8 @@
 //+----------------------------------------------------------------------------
 //
 // method : 		IOVoid::IOVoid()
-// 
-// description : 	constructor for the IOVoid command of the 
+//
+// description : 	constructor for the IOVoid command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -42,7 +42,7 @@ bool IOVoid::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOVoid::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     cout << "[IOVoid::execute] " << endl;
     return insert();
@@ -58,8 +58,8 @@ CORBA::Any *IOVoid::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOBool::IOBool()
-// 
-// description : 	constructor for the IOBool command of the 
+//
+// description : 	constructor for the IOBool command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -93,7 +93,7 @@ bool IOBool::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOBool::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevBoolean theNumber;
     extract(in_any,theNumber);
@@ -113,8 +113,8 @@ CORBA::Any *IOBool::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOShort::IOShort()
-// 
-// description : 	constructor for the IOShort command of the 
+//
+// description : 	constructor for the IOShort command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -147,7 +147,7 @@ bool IOShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevShort theNumber;
     extract(in_any,theNumber);
@@ -166,8 +166,8 @@ CORBA::Any *IOShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOLong::IOLong()
-// 
-// description : 	constructor for the IOLong command of the 
+//
+// description : 	constructor for the IOLong command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -201,7 +201,7 @@ bool IOLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevLong theNumber;
     extract(in_any,theNumber);
@@ -223,8 +223,8 @@ CORBA::Any *IOLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOLong64::IOLong64()
-// 
-// description : 	constructor for the IOLong64 command of the 
+//
+// description : 	constructor for the IOLong64 command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -258,7 +258,7 @@ bool IOLong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOLong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevLong theNumber;
     extract(in_any,theNumber);
@@ -279,8 +279,8 @@ CORBA::Any *IOLong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 //+----------------------------------------------------------------------------
 //
 // method : 		IOFloat::IOFloat()
-// 
-// description : 	constructor for the IOFloat command of the 
+//
+// description : 	constructor for the IOFloat command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -314,7 +314,7 @@ bool IOFloat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOFloat::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevFloat theNumber;
     extract(in_any,theNumber);
@@ -334,8 +334,8 @@ CORBA::Any *IOFloat::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IODouble::IODouble()
-// 
-// description : 	constructor for the IODouble command of the 
+//
+// description : 	constructor for the IODouble command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -369,7 +369,7 @@ bool IODouble::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IODouble::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevDouble theNumber;
     extract(in_any,theNumber);
@@ -389,8 +389,8 @@ CORBA::Any *IODouble::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 //+----------------------------------------------------------------------------
 //
 // method : 		IOUShort::IOUShort()
-// 
-// description : 	constructor for the IOUShort command of the 
+//
+// description : 	constructor for the IOUShort command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -424,7 +424,7 @@ bool IOUShort::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOUShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevUShort theNumber;
     extract(in_any,theNumber);
@@ -443,8 +443,8 @@ CORBA::Any *IOUShort::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 //+----------------------------------------------------------------------------
 //
 // method : 		IOULong::IOULong()
-// 
-// description : 	constructor for the IOULong command of the 
+//
+// description : 	constructor for the IOULong command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -478,7 +478,7 @@ bool IOULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevULong theNumber;
     extract(in_any,theNumber);
@@ -499,8 +499,8 @@ CORBA::Any *IOULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		IOULong64::IOULong64()
-// 
-// description : 	constructor for the IOULong64 command of the 
+//
+// description : 	constructor for the IOULong64 command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -534,7 +534,7 @@ bool IOULong64::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOULong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevULong64 theNumber;
     extract(in_any,theNumber);
@@ -554,8 +554,8 @@ CORBA::Any *IOULong64::execute(Tango::DeviceImpl *device,const CORBA::Any &in_an
 //+----------------------------------------------------------------------------
 //
 // method : 		IOString::IOString()
-// 
-// description : 	constructor for the IOString command of the 
+//
+// description : 	constructor for the IOString command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -588,7 +588,7 @@ bool IOString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *IOString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
 
 	cout2 << "[IOString::execute] arrived" << endl;
 	try {
@@ -599,14 +599,14 @@ CORBA::Any *IOString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 	  string firstWord = theWord;
 	  string::reverse_iterator currentChar(firstWord.rbegin());
 	  string::reverse_iterator endChar(firstWord.rend());
-	  
+
 	  cout << "[IOString::execute] firstWord = " << firstWord << endl;
-	  
+
 	  for ( ; currentChar != endChar; currentChar++) {
 	    cout << "[IOString::execute]  currentChar = " << *currentChar <<endl;
 	    palindrome += *currentChar;
 	  }
-	  cout << "[IOString::execute] palindrome = " << palindrome << endl; 
+	  cout << "[IOString::execute] palindrome = " << palindrome << endl;
 	  return insert(palindrome.c_str());
 	}
 	catch (CORBA::Exception &e)
@@ -619,8 +619,8 @@ CORBA::Any *IOString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 //+----------------------------------------------------------------------------
 //
 // method : 		IOCharArray::IOCharArray()
-// 
-// description : 	constructor for the IOCharArray command of the 
+//
+// description : 	constructor for the IOCharArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -652,7 +652,7 @@ bool IOCharArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 }
 
 CORBA::Any *IOCharArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     cout << "[IOCharArray::execute] entering "  << endl;
     const Tango::DevVarCharArray *theCharArray;
@@ -676,8 +676,8 @@ CORBA::Any *IOCharArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		IOShortArray::IOShortArray()
-// 
-// description : 	constructor for the IOShortArray command of the 
+//
+// description : 	constructor for the IOShortArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -711,7 +711,7 @@ bool IOShortArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 
 
 CORBA::Any *IOShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarShortArray *theNumberArray;
     extract(in_any,theNumberArray);
@@ -735,8 +735,8 @@ CORBA::Any *IOShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //+----------------------------------------------------------------------------
 //
 // method : 		IOLongArray::IOLongArray()
-// 
-// description : 	constructor for the IOLongArray command of the 
+//
+// description : 	constructor for the IOLongArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -770,7 +770,7 @@ bool IOLongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 CORBA::Any *IOLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarLongArray *theNumberArray;
     extract(in_any,theNumberArray);
@@ -794,8 +794,8 @@ CORBA::Any *IOLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		IOFloatArray::IOFloatArray()
-// 
-// description : 	constructor for the IOFloatArray command of the 
+//
+// description : 	constructor for the IOFloatArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -829,7 +829,7 @@ bool IOFloatArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 
 
 CORBA::Any *IOFloatArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarFloatArray *theNumberArray;
     extract(in_any,theNumberArray);
@@ -852,8 +852,8 @@ CORBA::Any *IOFloatArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //+----------------------------------------------------------------------------
 //
 // method : 		IODoubleArray::IODoubleArray()
-// 
-// description : 	constructor for the IODoubleArray command of the 
+//
+// description : 	constructor for the IODoubleArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -887,7 +887,7 @@ bool IODoubleArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 
 
 CORBA::Any *IODoubleArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarDoubleArray *theNumberArray;
     extract(in_any,theNumberArray);
@@ -911,8 +911,8 @@ CORBA::Any *IODoubleArray::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 //+----------------------------------------------------------------------------
 //
 // method : 		IOUShortArray::IOUShortArray()
-// 
-// description : 	constructor for the IOUShortArray command of the 
+//
+// description : 	constructor for the IOUShortArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -946,7 +946,7 @@ bool IOUShortArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 
 
 CORBA::Any *IOUShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarUShortArray *theNumberArray;
     extract(in_any,theNumberArray);
@@ -970,8 +970,8 @@ CORBA::Any *IOUShortArray::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 //+----------------------------------------------------------------------------
 //
 // method : 		IOULongArray::IOULongArray()
-// 
-// description : 	constructor for the IOULongArray command of the 
+//
+// description : 	constructor for the IOULongArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1005,7 +1005,7 @@ bool IOULongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 
 
 CORBA::Any *IOULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarULongArray *theNumberArray;
     extract(in_any,theNumberArray);
@@ -1029,8 +1029,8 @@ CORBA::Any *IOULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //+----------------------------------------------------------------------------
 //
 // method : 		IOStringArray::IOStringArray()
-// 
-// description : 	constructor for the IOStringArray command of the 
+//
+// description : 	constructor for the IOStringArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1063,7 +1063,7 @@ bool IOStringArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 
 
 CORBA::Any *IOStringArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarStringArray *theStringArray;
     extract(in_any,theStringArray);
@@ -1087,8 +1087,8 @@ CORBA::Any *IOStringArray::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 //+----------------------------------------------------------------------------
 //
 // method : 		IOLongString::IOLongString()
-// 
-// description : 	constructor for the IOLongString command of the 
+//
+// description : 	constructor for the IOLongString command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1122,7 +1122,7 @@ bool IOLongString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 
 
 CORBA::Any *IOLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarLongStringArray *theReceived;
     extract(in_any,theReceived);
@@ -1154,8 +1154,8 @@ CORBA::Any *IOLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //+----------------------------------------------------------------------------
 //
 // method : 		IODoubleString::IODoubleString()
-// 
-// description : 	constructor for the IODoubleString command of the 
+//
+// description : 	constructor for the IODoubleString command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1190,7 +1190,7 @@ bool IODoubleString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 
 
 CORBA::Any *IODoubleString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     const Tango::DevVarDoubleStringArray *theReceived;
     Tango::DevVarDoubleStringArray *theReturned = new Tango::DevVarDoubleStringArray();
@@ -1222,8 +1222,8 @@ CORBA::Any *IODoubleString::execute(Tango::DeviceImpl *device,const CORBA::Any &
 //+----------------------------------------------------------------------------
 //
 // method : 		OLong::OLong()
-// 
-// description : 	constructor for the OLong command of the 
+//
+// description : 	constructor for the OLong command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1257,7 +1257,7 @@ bool OLong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *OLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     long theNumber = 22;
     cout << "[OLong::execute] return number " << theNumber << endl;
@@ -1275,8 +1275,8 @@ CORBA::Any *OLong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		OULong::OULong()
-// 
-// description : 	constructor for the OULong command of the 
+//
+// description : 	constructor for the OULong command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1310,7 +1310,7 @@ bool OULong::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *OULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     unsigned long theNumber = 333;
     cout << "[OULong::execute] return number " << theNumber << endl;
@@ -1327,8 +1327,8 @@ CORBA::Any *OULong::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 //+----------------------------------------------------------------------------
 //
 // method : 		OLongArray::OLongArray()
-// 
-// description : 	constructor for the OLongArray command of the 
+//
+// description : 	constructor for the OLongArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1362,7 +1362,7 @@ bool OLongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 
 
 CORBA::Any *OLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevVarLongArray *theReturnedArray = new Tango::DevVarLongArray();
     theReturnedArray->length(4);
@@ -1383,8 +1383,8 @@ CORBA::Any *OLongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
 //+----------------------------------------------------------------------------
 //
 // method : 		OULongArray::OULongArray()
-// 
-// description : 	constructor for the OULongArray command of the 
+//
+// description : 	constructor for the OULongArray command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1418,7 +1418,7 @@ bool OULongArray::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 CORBA::Any *OULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevVarULongArray *theReturnedArray = new Tango::DevVarULongArray();
     theReturnedArray->length(3);
@@ -1439,8 +1439,8 @@ CORBA::Any *OULongArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
 //+----------------------------------------------------------------------------
 //
 // method : 		OLongString::OLongString()
-// 
-// description : 	constructor for the IOLongString command of the 
+//
+// description : 	constructor for the IOLongString command of the
 //			DevTest.
 //
 // In : - name : The command name
@@ -1474,7 +1474,7 @@ bool OLongString::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 
 
 CORBA::Any *OLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{	
+{
   try {
     Tango::DevVarLongStringArray *theReturned = new Tango::DevVarLongStringArray();
     int i;
@@ -1488,6 +1488,135 @@ CORBA::Any *OLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in_
     for (i=0; i<1; i++) {
       (*theReturned).svalue[i] = Tango::string_dup("Hola todos");
       cout << "[OLongString::execute] return string " << (*theReturned).svalue[i].in() << endl;
+    }
+    return insert(theReturned);
+  }
+  catch (CORBA::Exception &e)
+    {
+      Tango::Except::print_exception(e);
+      throw ;
+    }
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		IOUShortArray::IOEncoded()
+//
+// description : 	constructor for the IOEncoded command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+IOEncoded::IOEncoded(const char *name,Tango::CmdArgType in,
+		   Tango::CmdArgType out,const char *in_desc,
+		   const char *out_desc)
+:Tango::Command(name,in,out,in_desc,out_desc)
+{
+}
+
+
+bool IOEncoded::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+
+CORBA::Any *IOEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+  try {
+    const Tango::DevEncoded *the_enc;
+    extract(in_any,the_enc);
+    Tango::DevEncoded *theReturned_enc = new Tango::DevEncoded();
+    theReturned_enc->encoded_data.length(the_enc->encoded_data.length());
+    cout << "[IOEncoded::execute] received string " << the_enc->encoded_format << endl;
+    for (unsigned int i=0; i<the_enc->encoded_data.length(); i++) {
+      cout << "[IOEncoded::execute] received number " << (int)the_enc->encoded_data[i] << endl;
+      theReturned_enc->encoded_data[i] = the_enc->encoded_data[i] * 2;
+      cout << "[IOEncoded::execute] returned number " << (int)theReturned_enc->encoded_data[i] << endl;
+    }
+    theReturned_enc->encoded_format = CORBA::string_dup("Returned string");
+    return insert(theReturned_enc);
+  }
+  catch (CORBA::Exception &e)
+    {
+      Tango::Except::print_exception(e);
+      throw ;
+    }
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		OEncoded::OEncoded()
+//
+// description : 	constructor for the OEncoded command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+OEncoded::OEncoded(const char *name,Tango::CmdArgType in,
+		   Tango::CmdArgType out,const char *in_desc,
+		   const char *out_desc)
+:Tango::Command(name,in,out,in_desc,out_desc)
+{
+    encoded_cmd_ctr = 0;
+}
+
+
+bool OEncoded::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+
+CORBA::Any *OEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+  try {
+    Tango::DevEncoded *theReturned = new Tango::DevEncoded();
+
+    encoded_cmd_ctr++;
+    if ((encoded_cmd_ctr % 2) == 0)
+    {
+        theReturned->encoded_format = CORBA::string_dup("Odd - OEncoded format");
+        theReturned->encoded_data.length(2);
+        theReturned->encoded_data[0] = 11;
+        theReturned->encoded_data[1] = 21;
+    }
+    else
+    {
+        theReturned->encoded_format = CORBA::string_dup("Even - OEncoded format");
+        theReturned->encoded_data.length(4);
+        theReturned->encoded_data[0] = 10;
+        theReturned->encoded_data[1] = 20;
+        theReturned->encoded_data[2] = 30;
+        theReturned->encoded_data[3] = 40;
     }
     return insert(theReturned);
   }
