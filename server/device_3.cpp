@@ -26,303 +26,16 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
-//
-// $Log$
-// Revision 3.55  2010/09/30 14:16:52  taurel
-// - Do not overwrite WAttribute written value if the user set it in its
-// write_xxx method
-//
-// Revision 3.54  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.53  2010/09/09 13:29:09  taurel
-// - Commit after the last merge with the bugfixes branch
-// - Fix some warning when compiled -W -Wall
-//
-// Revision 3.52  2010/06/21 14:01:15  taurel
-// - Yet another merge with the Release_7_1_1-bugfixes branch
-//
-// Revision 3.51  2010/02/22 13:00:33  taurel
-// - Add a better exception message in case of major error in the
-// attribute set_value() method (for instance in case the passed pointer is
-// NULL)
-// Revision 3.50.2.1  2010/06/21 13:26:27  taurel
-// - Fix possible deadlock due to attribute mutex management.
-// This is a SourceForge bug
-//
-// Revision 3.50  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.49  2009/10/27 16:33:44  taurel
-// - Fix a bug in attribute mutex management in case the attribute
-// is_allowed() method returns false
-//
-// Revision 3.48  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.47  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.46  2009/09/17 08:28:06  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
-// Revision 3.45  2009/04/29 14:33:10  jensmeyer
-// Corrected sub device diagnostics when accessing
-// internal devices in a server.
-//
-// Revision 3.44  2009/03/30 15:03:44  taurel
-// - Fix last bugs before Tango 7 ??
-//
-// Revision 3.43  2009/03/18 12:18:42  taurel
-// - Fix warnings reported when compiled with the option -Wall
-//
-// Revision 3.42  2009/02/26 07:48:22  taurel
-// - The attribute data format is now transferred within the AttributeValue_4 structure
-//
-// Revision 3.41  2009/02/03 15:12:57  jensmeyer
-// Added hooks to store the device name as per thread data for sub device
-// diagnostics.
-//
-// Revision 3.40  2009/01/29 16:23:49  taurel
-// - Commit after merge with branch Release_6_1_1-bugfixes
-//
-// Revision 3.39  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.38  2009/01/06 09:28:50  taurel
-// - Add compatibility between a server IDL V4 and clients IDL V3
-//
-// Revision 3.37  2008/12/19 14:27:08  taurel
-// - First changes for compatibility between IDL 3 and IDL 4
-//
-// Revision 3.36  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.35  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.34  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.33  2008/09/04 07:37:05  taurel
-// - Fix bug in memorized attributes
-// - Changes for the new IDL 4
-//
-// Revision 3.32  2008/06/14 11:29:15  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.31  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.30  2008/05/20 12:44:10  taurel
-// - Commit after merge with release 7 branch
-// Revision 3.29.2.1  2008/11/19 12:42:58  jensmeyer
-// Just corrected some message texts.
-//
-// Revision 3.29  2008/03/20 07:38:46  taurel
-// - Last commit before Release 6.1 ?
-// Revision 3.26.2.3  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.28  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-// Revision 3.26.2.2  2008/02/07 15:58:13  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.27  2008/02/06 15:51:55  jensmeyer
-// Changed the settings of the set value dimensions for WRITE attributes.
-// Now read and set dimensions are the same for write only attributes.
-// Revision 3.26.2.1  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 3.26  2007/10/16 08:22:51  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.25  2007/06/05 15:52:29  taurel
-// - Clarify one error message
-//
-// Revision 3.24  2007/04/20 14:40:28  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.23  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.22  2007/03/06 08:18:03  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 3.21  2007/02/16 10:40:09  taurel
-// - Implementing a new types of event on the Attribute configuration
-//
-// Revision 3.20  2007/02/08 16:32:56  taurel
-// - Remove an old already commented line
-//
-// Revision 3.19  2007/01/19 10:25:00  taurel
-// - Change a logging message to be more precise
-//
-// Revision 3.18  2006/06/20 08:00:04  jensmeyer
-// After changing the the init value of the attribute polling period to -1 insted of 0 I detected
-// a campatibility problem with the old versions. I changed back the init value to 0 and
-// solved the problem with new methods on the Attribute object.
-//
-// Revision 3.17  2006/06/14 11:21:35  jensmeyer
-// Modifications to make the set_polling_period() for attributes work
-// with a polling period set to 0.
-//
-// Revision 3.16  2006/05/30 11:17:56  jensmeyer
-// Modifications on push_event functionality for MS Windows.
-// Mainly modifications for timing and time stamps.
-//
-// Revision 3.15  2006/05/18 08:52:37  taurel
-// - Miscellaneous changes due to Python device server ported to Windows
-// - Fix some bugs discovered by Windows VC8 using the test suite
-// - Update Windows resource file include path
-// - Fix some Windows VC8 warnings
-//
-// Revision 3.14  2006/04/28 13:17:20  taurel
-// - Attribute class: Add state and status attribute special case to the method Attribute_2_AttributeValue
-// - Device_3Impl: The monitor taken by the read_attribute_history_3 call was the Device Monitor. Replaced it by the polling list monitor
-//
-// Revision 3.13  2006/01/27 14:27:09  taurel
-// - Fix a severe incompatibility problem introduced by all the modifs done for
-// PY DS
-// - Duplicate some EventSupplier class methods (instead of using template) in order to be able to generate Tango shared library on Suse 9.3
-//
-// Revision 3.12  2006/01/20 08:25:54  taurel
-// - Added necessary changes to support Device server written in Python
-//
-// Revision 3.11  2005/11/02 12:54:13  jensmeyer
-// Avoid calling status2attr() during attribute reading when an error was detected.
-// Avoids segmentation fault in status2attr().
-//
-// Revision 3.10  2005/05/09 15:34:10  taurel
-// - Fix deadlock when read_attribute_no_cache try to start attribute polling
-// - Signal management for Sun
-//
-// Revision 3.9  2005/03/14 09:49:29  taurel
-// - Fix some bugs in filedatabase (Change in the data transferred between client and
-//   server).
-// - Fix bug in event re-connection
-// - Add event support even for device server started with the -file command line option
-//
-// Revision 3.8  2005/03/03 15:36:17  taurel
-// - Change in attribute quality factor change event. It is now fired by the Attribute
-// set_quailty() and set_value_date_quality() methods. For scannable device.
-//
-// Revision 3.7  2005/01/13 09:27:53  taurel
-// Fix some bugs :
-// - R/W attribute : W value not returned when read if set by set_write_value
-// - Core dumped when retrieving attribute polling history for Device_2Impl device which
-//   has stored an exception
-// - Remove device_name in lib default attribute label property
-// - Lib default value for label not store in db any more
-// - Size of the DaData used by the Database::get_device_attribute_property() and
-//   Database::get_class_attribute_property()
-// - R/W attribute: W part not returned when read for Device_2Impl device
-// Some changes :
-// - Improvement of the -file option error management (now throw exception in case of
-//   error)
-// - Reset "string" attribute property to the default value (lib or user) when new
-//   value is an empty string
-//
-// Revision 3.5.2.8  2004/11/26 13:53:20  taurel
-// - Fix bug if exception thrown during Util class construction
-// - Change attribute label and format default values
-//
-// Revision 3.5.2.7  2004/11/04 09:46:38  taurel
-// - Add a tuning method in the polling thread
-// - Some minor fixes to pass test suite
-//
-// Revision 3.5.2.6  2004/10/27 05:59:46  taurel
-// - Some minor changes to compile on all our supported platforms
-//
-// Revision 3.5.2.5  2004/10/22 11:25:50  taurel
-// Added warning alarm
-// Change attribute config. It now includes alarm and event parameters
-// Array attribute property now supported
-// subscribe_event throws exception for change event if they are not correctly configured
-// Change in the polling thread: The event heartbeat has its own work in the work list
-// Also add some event_unregister
-// Fix order in which classes are destructed
-// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
-// Change in the CORBA info call for the device type
-//
-// Revision 3.5.2.4  2004/09/27 09:09:07  taurel
-// - Changes to allow reading state and/or status as attributes
-//
-// Revision 3.5.2.3  2004/09/15 06:45:45  taurel
-// - Added four new types for attributes (boolean, float, unsigned short and unsigned char)
-// - It is also possible to read state and status as attributes
-// - Fix bug in Database::get_class_property() method (missing ends insertion)
-// - Fix bug in admin device DevRestart command (device name case problem)
-//
-// Revision 3.5.2.2  2004/08/19 07:44:04  taurel
-// - Replace server low level database access call by Database class method call
-// - Split device monitor in 3 : 1 to protect harware access, 1 to protect cache access and one mutex for device black box
-//
-// Revision 3.5.2.1  2004/07/15 15:04:06  taurel
-// - Added the way to externally filled the polling buffer for attribute
-//   (Command will come soon)
-//
-// Revision 3.5  2004/07/07 08:40:11  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.4  2004/06/15 12:38:22  taurel
-// - Last commit before merge with release 4 branch
-//
-// Revision 3.3  2003/09/02 13:08:14  taurel
-// Add memorized attribute feature (only for SCALAR and WRITE/READ_WRITE attribute)
-//
-// Revision 3.2  2003/08/22 12:52:54  taurel
-// - For device implementing release 3 of IDL (derivating from device_3impl), change
-//   the way how attributes are read or written
-// - Fix small bug in vector iterator usage in case of "erase()" method called in
-//   a for loop
-//
-// Revision 3.1  2003/08/21 07:37:04  taurel
-// - End of the implementation of the new way to transfer data for read and
-//   write attributes (better use of exception)
-// - Added Attribute::set_date() and Attribute::set_value_date_quality() methods
-// - Added DeviceAttribute ctors from "const char *"
-// - Enable writing of spectrum and image attributes
-// - Many new DeviceAttribute ctors/inserters to enable easy image and spectrums
-//   attribute writing
-// - Attribute date automatically set in case of attribute quality factor set to INVALID
-// - Change in the polling thread discarding element algo. to support case of polling
-//   several cmd/atts at the same polling period with cmd/attr having a long response time
-// - Take cmd/attr execution time into account in the "Data not updated since" polling
-//   status string
-// - Split "str().c_str()" code in two lines of code. It was the reason of some problem
-//   on Windows device server
-// - Add the possibility to set a cmd/attr polling as "externally triggered". Add method
-//   to send trigger to the polling thread
-//
-// Revision 3.0  2003/07/03 07:42:38  taurel
-// - New IDL interface (Device3)
 //
 //-============================================================================
 
@@ -348,10 +61,10 @@ namespace Tango
 
 //+-------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::Device_3Impl 
-// 
-// description : 	constructors for the device_impl class from the 
-//			class object pointer, the device name, 
+// method : 		Device_3Impl::Device_3Impl
+//
+// description : 	constructors for the device_impl class from the
+//			class object pointer, the device name,
 //			the description field, the state and the status.
 //			Device_3Impl inherits from DeviceImpl. These constructors
 //			simply call the correct DeviceImpl class
@@ -364,10 +77,10 @@ Device_2Impl(device_class,dev_name)
 {
 	ext->idl_version = 3;
 	add_state_status_attrs();
-	
+
 	ext_3 = new Device_3ImplExt();
 }
-		
+
 Device_3Impl::Device_3Impl(DeviceClass *device_class,
 			   string &dev_name,
 			   string &desc):
@@ -378,7 +91,7 @@ Device_2Impl(device_class,dev_name,desc)
 
 	ext_3 = new Device_3ImplExt();
 }
-		
+
 Device_3Impl::Device_3Impl(DeviceClass *device_class,
 	           	   string &dev_name,string &desc,
 	           	   Tango::DevState dev_state,string &dev_status):
@@ -388,8 +101,8 @@ Device_2Impl(device_class,dev_name,desc,dev_state,dev_status),ext_3(NULL)
 	add_state_status_attrs();
 
 	ext_3 = new Device_3ImplExt();
-} 
-		   
+}
+
 Device_3Impl::Device_3Impl(DeviceClass *device_class,
 	           	   const char *dev_name,
 			   const char *desc,
@@ -407,8 +120,8 @@ Device_2Impl(device_class,dev_name,desc,dev_state,dev_status)
 
 //+-------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::read_attributes_3 
-// 
+// method : 		Device_3Impl::read_attributes_3
+//
 // description : 	Method called for each read_attributes operation executed
 //			from any client on a Tango device version 3.
 //
@@ -418,7 +131,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 					     Tango::DevSource source)
 throw (Tango::DevFailed, CORBA::SystemException)
 {
-	cout4 << "Device_3Impl::read_attributes_3 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl; 
+	cout4 << "Device_3Impl::read_attributes_3 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
 
 //
 // Record operation request in black box
@@ -427,7 +140,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	if (ext->store_in_bb == true)
 		blackbox_ptr->insert_attr(names,3,source);
 	ext->store_in_bb = true;
-			
+
 //
 // Build a sequence with the names of the attribute to be read.
 // This is necessary in case of the "AllAttr" shortcut is used
@@ -438,10 +151,10 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	unsigned long nb_dev_attr = dev_attr->get_attr_nb();
 	Tango::DevVarStringArray real_names(nb_names);
 	unsigned long i;
-	
+
 	if (nb_names == 1)
 	{
-		string att_name(names[0]);				
+		string att_name(names[0]);
 		if (att_name == AllAttr)
 		{
 			real_names.length(nb_dev_attr);
@@ -468,7 +181,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	Tango::AttributeValueList_3 *back;
 	Tango::AttributeValueList_4 *back4 = NULL;
 	try
-	{	
+	{
 		back = new Tango::AttributeValueList_3(nb_names);
 		back->length(nb_names);
 	}
@@ -478,18 +191,18 @@ throw (Tango::DevFailed, CORBA::SystemException)
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::read_attributes_3");
 	}
-				
+
 //
 // If the source parameter specifies device, call the read_attributes method
 // which does not throw exception except for major fault (cant allocate
 // memory,....)
 //
 	vector <long> idx_in_back;
-	
+
 	if (source == Tango::DEV)
 	{
 		try
-		{	
+		{
 			AutoTangoMonitor sync(this);
 			read_attributes_no_except(real_names,back,back4,false,idx_in_back);
 		}
@@ -555,14 +268,14 @@ throw (Tango::DevFailed, CORBA::SystemException)
        				names_from_device.length(nb_attr);
        				names_from_device[nb_attr - 1] = real_names[i];
        				idx_in_back.push_back(i);
-				
+
        				(*back)[i].err_list.length(0);
        			}
-       		}	
+       		}
        	}
 
 		if (nb_attr != 0)
-		{		
+		{
 //
 // Try to get their values from device
 //
@@ -579,7 +292,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			}
 
 		}
-	}	
+	}
 
 	return back;
 
@@ -588,8 +301,8 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 //+-------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::read_attributes_no_except 
-// 
+// method : 		Device_3Impl::read_attributes_no_except
+//
 // description : 	Read attributes from device but do not throw exception
 //			if it fails. This method is mainly a copy of the original
 //			DeviceImpl::read_attributes method.
@@ -611,7 +324,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					     vector<long> &idx)
 {
 //
-//  Write the device name into the per thread data for 
+//  Write the device name into the per thread data for
 //  sub device diagnostics.
 //  Keep the old name, to put it back at the end!
 //  During device access inside the same server,
@@ -629,9 +342,9 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 	try
 	{
-	
+
 //
-// Retrieve index of wanted attributes in the device attribute list and clear 
+// Retrieve index of wanted attributes in the device attribute list and clear
 // their value set flag
 //
 
@@ -644,7 +357,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		long i;
 
 		state_idx = status_idx = -1;
-		
+
 		for (i = 0;i < nb_names;i++)
 		{
 			long j;
@@ -724,12 +437,12 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						(*back4)[index].err_list = e.errors;
 						(*back4)[index].quality = Tango::ATTR_INVALID;
 						(*back4)[index].name = CORBA::string_dup(names[i]);
-						clear_att_dim((*back4)[index]);					
+						clear_att_dim((*back4)[index]);
 					}
 				}
-			}		
+			}
 		}
-		
+
 		long nb_wanted_attr = wanted_attr.size();
 		long nb_wanted_w_attr = wanted_w_attr.size();
 
@@ -774,7 +487,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			{
 				Attribute &att = dev_attr->get_attr_by_ind(wanted_attr[i].idx_in_multi_attr);
 				bool is_allowed_failed = false;
-				
+
 				try
 				{
 					vector<Tango::Attr *> &attr_vect = device_class->get_class_attr()->get_attr_list();
@@ -805,7 +518,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							attr_mut->lock();
 						}
 					}
-					
+
 //
 // Call the user read method
 //
@@ -837,11 +550,11 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
-							
+
 						(*back4)[index].err_list = e.errors;
 						(*back4)[index].quality = Tango::ATTR_INVALID;
 						(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back4)[index]);					
+						clear_att_dim((*back4)[index]);
 					}
 				}
 				catch (...)
@@ -869,18 +582,18 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						clear_att_dim((*back)[index]);
 					}
 					else
-					{							
+					{
 						if ((att.get_attr_serial_model() == ATTR_BY_KERNEL) && (is_allowed_failed == false))
 						{
 							cout4 << "Releasing attribute mutex for attribute " << att.get_name() << " due to a severe error which is not a DevFailed" << endl;
 							omni_mutex *attr_mut = att.get_attr_mutex();
 							attr_mut->unlock();
 						}
-						
+
 						(*back4)[index].err_list = del;
 						(*back4)[index].quality = Tango::ATTR_INVALID;
 						(*back4)[index].name = CORBA::string_dup(names[wanted_attr[i].idx_in_names]);
-						clear_att_dim((*back4)[index]);	
+						clear_att_dim((*back4)[index]);
 					}
 				}
 			}
@@ -895,7 +608,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			Tango::AttrWriteType w_type = dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr).get_writable();
 			try
 			{
-				if ((w_type == Tango::READ_WITH_WRITE) || (w_type == Tango::WRITE)) 
+				if ((w_type == Tango::READ_WITH_WRITE) || (w_type == Tango::WRITE))
 					dev_attr->get_attr_by_ind(wanted_w_attr[i].idx_in_multi_attr).set_rvalue();
 			}
 			catch (Tango::DevFailed &e)
@@ -909,7 +622,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				wanted_w_attr[i].failed = true;
 				if (back != NULL)
 				{
-					(*back)[index].err_list = e.errors;		
+					(*back)[index].err_list = e.errors;
 					(*back)[index].quality = Tango::ATTR_INVALID;
 					(*back)[index].name = CORBA::string_dup(names[wanted_w_attr[i].idx_in_names]);
 					clear_att_dim((*back)[index]);
@@ -924,11 +637,11 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}
-					
-					(*back4)[index].err_list = e.errors;		
+
+					(*back4)[index].err_list = e.errors;
 					(*back4)[index].quality = Tango::ATTR_INVALID;
 					(*back4)[index].name = CORBA::string_dup(names[wanted_w_attr[i].idx_in_names]);
-					clear_att_dim((*back4)[index]);				
+					clear_att_dim((*back4)[index]);
 				}
 			}
 		}
@@ -962,17 +675,17 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						ext->state_from_read = false;
 						if (back != NULL)
 						{
-							(*back)[state_idx].err_list = e.errors;		
+							(*back)[state_idx].err_list = e.errors;
 							(*back)[state_idx].quality = Tango::ATTR_INVALID;
 							(*back)[state_idx].name = CORBA::string_dup(names[state_idx]);
 							clear_att_dim((*back)[state_idx]);
 						}
 						else
 						{
-							(*back4)[state_idx].err_list = e.errors;		
+							(*back4)[state_idx].err_list = e.errors;
 							(*back4)[state_idx].quality = Tango::ATTR_INVALID;
 							(*back4)[state_idx].name = CORBA::string_dup(names[state_idx]);
-							clear_att_dim((*back4)[state_idx]);						
+							clear_att_dim((*back4)[state_idx]);
 						}
 					}
 				}
@@ -980,17 +693,17 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				{
 					if (back != NULL)
 					{
-						(*back)[state_idx].err_list = (*back)[wanted_attr[id].idx_in_names].err_list;		
+						(*back)[state_idx].err_list = (*back)[wanted_attr[id].idx_in_names].err_list;
 						(*back)[state_idx].quality = Tango::ATTR_INVALID;
 						(*back)[state_idx].name = CORBA::string_dup(names[state_idx]);
 						clear_att_dim((*back)[state_idx]);
 					}
 					else
 					{
-						(*back4)[state_idx].err_list = (*back4)[wanted_attr[id].idx_in_names].err_list;		
+						(*back4)[state_idx].err_list = (*back4)[wanted_attr[id].idx_in_names].err_list;
 						(*back4)[state_idx].quality = Tango::ATTR_INVALID;
 						(*back4)[state_idx].name = CORBA::string_dup(names[state_idx]);
-						clear_att_dim((*back4)[state_idx]);					
+						clear_att_dim((*back4)[state_idx]);
 					}
 				}
 			}
@@ -1008,23 +721,23 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			{
 				if (back != NULL)
 				{
-					(*back)[status_idx].err_list = e.errors;		
+					(*back)[status_idx].err_list = e.errors;
 					(*back)[status_idx].quality = Tango::ATTR_INVALID;
 					(*back)[status_idx].name = CORBA::string_dup(names[status_idx]);
 					clear_att_dim((*back)[status_idx]);
 				}
 				else
 				{
-					(*back4)[status_idx].err_list = e.errors;		
+					(*back4)[status_idx].err_list = e.errors;
 					(*back4)[status_idx].quality = Tango::ATTR_INVALID;
 					(*back4)[status_idx].name = CORBA::string_dup(names[status_idx]);
-					clear_att_dim((*back4)[status_idx]);				
+					clear_att_dim((*back4)[status_idx]);
 				}
 			}
 		}
 
 //
-// Build the sequence returned to caller for readable attributes and check 
+// Build the sequence returned to caller for readable attributes and check
 // that all the wanted attributes set value have been updated
 //
 
@@ -1054,7 +767,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					if (nb_err == 0)
 						state2attr(d_state,(*back4)[index]);
 				}
-				continue;				
+				continue;
 			}
 
 			if ((status_wanted == true) && (status_idx == i))
@@ -1067,7 +780,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 				else
 				{
 					if (nb_err == 0)
-						status2attr(d_status,(*back4)[index]);				
+						status2attr(d_status,(*back4)[index]);
 				}
 				continue;
 			}
@@ -1076,7 +789,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			{
 				Attribute &att = dev_attr->get_attr_by_name(names[i]);
 				Tango::AttrQuality qual = att.get_quality();
-				if (qual != Tango::ATTR_INVALID) 
+				if (qual != Tango::ATTR_INVALID)
 				{
 					if (att.get_value_flag() == false)
 					{
@@ -1108,7 +821,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							o << "Read value for attribute ";
 							o << att.get_name();
 							o << " has not been updated" << ends;
-						}		
+						}
 
 						if (back != NULL)
 						{
@@ -1137,7 +850,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 								attr_mut->unlock();
 							}
-							
+
 							(*back4)[index].err_list.length(1);
 							(*back4)[index].err_list[0].severity = Tango::ERR;
 							(*back4)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
@@ -1152,7 +865,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 #endif
 							(*back4)[index].quality = Tango::ATTR_INVALID;
 							(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
-							clear_att_dim((*back4)[index]);						
+							clear_att_dim((*back4)[index]);
 						}
 					}
 					else
@@ -1224,7 +937,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 									else
 										GIVE_USER_ATT_MUTEX(back4,index,att);
 								}
-							
+
 								(*back4)[index].time = att.get_when();
 								(*back4)[index].quality = att.get_quality();
 								(*back4)[index].data_format = att.get_data_format();
@@ -1252,7 +965,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 										(*back4)[index].w_dim.dim_x = 0;
 										(*back4)[index].w_dim.dim_y = 0;
 									}
-								}							
+								}
 							}
 						}
 						catch (Tango::DevFailed &e)
@@ -1271,16 +984,16 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								{
 									REL_ATT_MUTEX(back4,index,att);
 								}
-								
+
 								(*back4)[index].err_list = e.errors;
 								(*back4)[index].quality = Tango::ATTR_INVALID;
 								(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
-								clear_att_dim((*back4)[index]);							
+								clear_att_dim((*back4)[index]);
 							}
 						}
 					}
 				}
-				else 
+				else
 				{
 					if (qual != Tango::ATTR_INVALID)
 						qual = Tango::ATTR_INVALID;
@@ -1305,7 +1018,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 							attr_mut->unlock();
 						}
-						
+
 						(*back4)[index].time = att.get_when();
 						(*back4)[index].quality = qual;
 						(*back4)[index].data_format = att.get_data_format();
@@ -1319,7 +1032,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			}
 		}
 	}
-	
+
 	catch (...)
 	{
 		// set back the device attribution for the thread
@@ -1327,10 +1040,10 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		sub.set_associated_device(last_associated_device);
 		throw;
 	}
-	
+
 	// set back the device attribution for the thread
 	sub.set_associated_device(last_associated_device);
-	
+
 	cout4 << "Leaving Device_3Impl::read_attributes_no_except" << endl;
 }
 
@@ -1338,7 +1051,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::read_attributes_from_cache
-// 
+//
 // description : 	Read attributes from cache but do not throw exception
 //			if it fails. This method is mainly a copy of the original
 //			DeviceImpl::read_attributes method.
@@ -1358,18 +1071,19 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 {
 	unsigned long nb_names = names.length();
 	cout4 << "Reading " << nb_names << " attr in read_attributes_from_cache()" << endl;
-	
+
 //
 // Check that device supports the wanted attribute and that the attribute
 // is polled. If some are non polled, store
 // their index in the real_names sequence in a vector
 //
 
-	vector<long> non_polled;
-	vector<PollObj *> &poll_list = get_poll_obj_list();
+	unsigned long i;
+    vector<PollObj *> &poll_list = get_poll_obj_list();
+/*	vector<long> non_polled;
 	unsigned long nb_poll = poll_list.size();
-	unsigned long i,j;
-	
+	unsigned long j;
+
 	for (i = 0;i < nb_names;i++)
 	{
 		try
@@ -1387,7 +1101,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			if (j == nb_poll)
 			{
 				non_polled.push_back(i);
-			}		
+			}
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -1403,11 +1117,11 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				(*back4)[i].err_list = e.errors;
 				(*back4)[i].quality = Tango::ATTR_INVALID;
 				(*back4)[i].name = CORBA::string_dup(names[i]);
-				clear_att_dim((*back4)[i]);				
+				clear_att_dim((*back4)[i]);
 			}
-		}		
+		}
 	}
-	
+
 //
 // If some attributes are not polled but their polling update period is defined,
 // and the attribute is not in the device list of attr which should not be
@@ -1417,10 +1131,10 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 	bool found;
 	vector<long> poll_period;
 	unsigned long not_polled_attr = 0;
-	
+
 	if (non_polled.size() != 0)
 	{
-		
+
 //
 // Check that it is possible to start polling for the non polled attribute
 //
@@ -1429,12 +1143,12 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		{
 			Attribute &att = dev_attr->get_attr_by_name(names[non_polled[i]]);
 			poll_period.push_back(att.get_polling_period());
-			
+
 			if (poll_period.back() == 0)
 			{
 				TangoSys_OMemStream o;
 				o << "Attribute " << att.get_name() << " not polled" << ends;
-				
+
 				if (back != NULL)
 				{
 					(*back)[non_polled[i]].err_list.length(1);
@@ -1487,12 +1201,12 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 #endif
 						found = true;
 				}
-				
+
 				if (found == true)
 				{
 					TangoSys_OMemStream o;
 					o << "Attribute " << att.get_name() << " not polled" << ends;
-					
+
 					if (back != NULL)
 					{
 						(*back)[non_polled[i]].err_list.length(1);
@@ -1527,11 +1241,11 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 #endif
 						(*back4)[non_polled[i]].quality = Tango::ATTR_INVALID;
 						(*back4)[non_polled[i]].name = CORBA::string_dup(att.get_name().c_str());
-						clear_att_dim((*back4)[i]);						
+						clear_att_dim((*back4)[i]);
 					}
 					not_polled_attr++;
-					
-					continue;								
+
+					continue;
 				}
 			}
 		}
@@ -1543,11 +1257,11 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 
 		if (not_polled_attr == nb_names)
 			return;
-			
+
 //
 // Start polling
-//			
-				
+//
+
 		Tango::Util *tg = Tango::Util::instance();
 		DServer *adm_dev = tg->get_dserver_device();
 
@@ -1557,7 +1271,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		send->svalue[0] = device_name.c_str();
 		send->svalue[1] = CORBA::string_dup("attribute");
 
-		long start_polling_nb = 0;						
+		long start_polling_nb = 0;
 		for (i = 0;i < non_polled.size();i++)
 		{
 			if (back != NULL)
@@ -1569,14 +1283,14 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				if ((*back4)[non_polled[i]].err_list.length() != 0)
 					continue;
-			}			
-								
+			}
+
 			send->lvalue[0] = poll_period[i];
 			send->svalue[2] = names[non_polled[i]];
 
 			try
 			{
-				get_poll_monitor().rel_monitor();									
+				get_poll_monitor().rel_monitor();
 				adm_dev->add_obj_polling(send,false);
 				get_poll_monitor().get_monitor();
 				start_polling_nb++;
@@ -1597,13 +1311,13 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 					(*back4)[non_polled[i]].quality = Tango::ATTR_INVALID;
 					(*back4)[non_polled[i]].name = CORBA::string_dup(names[non_polled[i]]);
 					clear_att_dim((*back4)[i]);
-				}				
+				}
 				continue;
 			}
 		}
 
 		delete send;
-			
+
 //
 // Wait for first polling
 //
@@ -1618,23 +1332,23 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			struct timespec to_wait,inter;
 			to_wait.tv_sec = 0;
 			to_wait.tv_nsec = 500000000;
-			get_poll_monitor().rel_monitor();				
+			get_poll_monitor().rel_monitor();
 			nanosleep(&to_wait,&inter);
-			get_poll_monitor().get_monitor();				
+			get_poll_monitor().get_monitor();
 #endif
 		}
 
-	}
+	}*/
 
 //
 // For each attribute, check that some data are available in cache and that they
 // are not too old
 //
 
-	
+
 	for (i = 0;i < nb_names;i++)
 	{
-	
+
 		if (back != NULL)
 		{
 			if ((*back)[i].err_list.length() != 0)
@@ -1644,8 +1358,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		{
 			if ((*back4)[i].err_list.length() != 0)
 				continue;
-		}		
-					
+		}
+
 		PollObj *polled_attr = NULL;
 		unsigned long j;
 		for (j = 0;j < poll_list.size();j++)
@@ -1662,7 +1376,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				break;
 			}
 		}
-				
+
 //
 // Check that some data is available in cache
 //
@@ -1708,9 +1422,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				(*back4)[i].name = CORBA::string_dup(names[i]);
 				clear_att_dim((*back4)[i]);
 			}
-			continue;								
+			continue;
 		}
-		
+
 //
 // Check that data are still refreshed by the polling thread
 // Skip this test for object with external polling triggering (upd = 0)
@@ -1774,7 +1488,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 					(*back4)[i].name = CORBA::string_dup(names[i]);
 					clear_att_dim((*back4)[i]);
 				}
-				continue;			
+				continue;
 			}
 		}
 
@@ -1784,7 +1498,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 
 		Attribute &att = dev_attr->get_attr_by_name(names[i]);
 		long type = att.get_data_type();
-		
+
 //
 // Finally, after all these checks, get value and store it in the sequence
 // sent back to user
@@ -1803,10 +1517,10 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				omni_mutex_lock sync(*polled_attr);
 
 				Tango::AttrQuality qual;
-				
+
 				if (back != NULL)
 				{
-					
+
 //
 // Get device IDL release. Since release 4, devices are polled using read_attribute_4
 //
@@ -1831,33 +1545,33 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 //
 // Copy the polled data into the Any or the union
 //
-				
+
 				if (qual != Tango::ATTR_INVALID)
-				{				
+				{
 					polled_data_into_net_object(back,back4,i,type,vers,polled_attr,names);
 				}
 
 //
 // Init remaining structure members
 //
-				
+
 				if (back != NULL)
 				{
 					long vers = get_dev_idl_version();
 					if (vers >= 4)
 					{
 						AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
-					
+
 						(*back)[i].quality= att_val.quality;
 						(*back)[i].time = att_val.time;
 						(*back)[i].r_dim = att_val.r_dim;
 						(*back)[i].w_dim = att_val.w_dim;
-						(*back)[i].name = CORBA::string_dup(att_val.name);						
+						(*back)[i].name = CORBA::string_dup(att_val.name);
 					}
 					else
 					{
 						AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
-					
+
 						(*back)[i].quality= att_val.quality;
 						(*back)[i].time = att_val.time;
 						(*back)[i].r_dim = att_val.r_dim;
@@ -1868,13 +1582,13 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				else
 				{
 					AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
-					
+
 					(*back4)[i].quality= att_val.quality;
 					(*back4)[i].data_format = att_val.data_format;
 					(*back4)[i].time = att_val.time;
 					(*back4)[i].r_dim = att_val.r_dim;
 					(*back4)[i].w_dim = att_val.w_dim;
-					(*back4)[i].name = CORBA::string_dup(att_val.name);					
+					(*back4)[i].name = CORBA::string_dup(att_val.name);
 				}
 			}
 		}
@@ -1892,9 +1606,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				(*back4)[i].err_list = e.errors;
 				(*back4)[i].quality = Tango::ATTR_INVALID;
 				(*back4)[i].name = CORBA::string_dup(names[i]);
-				clear_att_dim((*back4)[i]);				
+				clear_att_dim((*back4)[i]);
 			}
-		}		
+		}
 	}
 }
 
@@ -1902,7 +1616,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 //+-------------------------------------------------------------------------
 //
 // method : 		DeviceImpl::write_attributes_3
-// 
+//
 // description : 	CORBA operation to write attribute(s) value
 //
 // argument: in :	- values: The new attribute(s) value to be set.
@@ -1926,7 +1640,7 @@ throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 
 	if (ext->store_in_bb == true)
 	{
-		blackbox_ptr->insert_attr(values,3);	
+		blackbox_ptr->insert_attr(values,3);
 		check_lock("write_attributes_3");
 	}
 	ext->store_in_bb = true;
@@ -1934,14 +1648,14 @@ throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 //
 // Call the method really doing the job
 //
-	
+
 	write_attributes_34(&values,NULL);
 }
 
 //+-------------------------------------------------------------------------
 //
 // method : 		DeviceImpl::write_attributes_34
-// 
+//
 // description : 	Method to write the attribute. This method is common to
 //					the IDL interface 3 and 4.
 //
@@ -1967,22 +1681,22 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 	unsigned long nb_failed = 0;
 	Tango::NamedDevErrorList errs;
-	  
+
 //
-//  Write the device name into the per thread data for 
+//  Write the device name into the per thread data for
 //  sub device diagnostics.
 //  Keep the old name, to put it back at the end!
 //  During device access inside the same server,
 //  the thread stays the same!
 //
-	
+
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
 	string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
 // Catch all execeptions to set back the associated device after
 // execution
-	
+
 	try
 	{
 
@@ -2048,16 +1762,16 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 				if (att.get_data_format() != Tango::SCALAR)
 				{
 					TangoSys_OMemStream o;
-					bool err = false;			
+					bool err = false;
 
 					if (att.get_max_dim_x() < single_att_dimx)
 					{
-						err = true;		
+						err = true;
 						o << "X ";
 					}
 
 					if (err == false)
-					{			
+					{
 						if (att.get_max_dim_y() < single_att_dimy)
 						{
 							err = true;
@@ -2066,7 +1780,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					}
 
 					if (err == true)
-					{		
+					{
 						o << "dimesion is greater than the max defined for attribute ";
 						o << att.get_name();
 						o << ends;
@@ -2201,7 +1915,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 							break;
 						else
 							--ite;
-					}		
+					}
 				}
 			}
 		}
@@ -2273,35 +1987,35 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 		sub.set_associated_device(last_associated_device);
 		throw;
 	}
-	
+
 	// set back the device attribution for the thread
 	sub.set_associated_device(last_associated_device);
-	
+
 //
 // Return to caller.
 //
 
 	cout4 << "Leaving Device_3Impl::write_attributes_34" << endl;
-		
+
 	if (nb_failed != 0)
 	{
 		throw Tango::MultiDevFailed(errs);
 	}
-		
+
 }
 
 
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::read_attribute_history_3
-// 
-// description : 	CORBA operation to read attribute value history from 
+//
+// description : 	CORBA operation to read attribute value history from
 //			the polling buffer.
 //
 // argument: in :	- name : attribute name
 //			- n : history depth (in record number)
 //
-// This method returns a pointer to a DevAttrHistoryList with one 
+// This method returns a pointer to a DevAttrHistoryList with one
 // DevAttrHistory structure for each attribute record
 //
 //--------------------------------------------------------------------------
@@ -2312,7 +2026,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
-	
+
 	cout4 << "Device_3Impl::read_attribute_history_3 arrived" << endl;
 
 //
@@ -2320,13 +2034,13 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //
 
 	blackbox_ptr->insert_op(Op_Read_Attr_history_3);
-	
+
 	Tango::DevAttrHistoryList_3 *back;
 	vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
-	
+
 //
-// Check that the device supports this attribute. This method returns an 
+// Check that the device supports this attribute. This method returns an
 // exception in case of unsupported attribute
 //
 
@@ -2334,7 +2048,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 
 	string attr_str(name);
 	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
-	
+
 //
 // Check that the wanted attribute is polled.
 //
@@ -2383,12 +2097,12 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //
 // Allocate memory for the returned value
 //
-		
+
 	try
 	{
 		back = new Tango::DevAttrHistoryList_3(n);
                 back->length(n);
-	}	
+	}
 	catch (bad_alloc)
 	{
 		Except::throw_exception((const char *)"API_MemoryAllocation",
@@ -2415,7 +2129,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //+-------------------------------------------------------------------------
 //
 // method :		Device_3Impl::info_3
-// 
+//
 // description :	CORBA operation to get device info
 //
 //--------------------------------------------------------------------------
@@ -2435,7 +2149,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	try
 	{
 		back = new Tango::DevInfo_3();
-	}	
+	}
 	catch (bad_alloc)
 	{
 		Except::throw_exception((const char *)"API_MemoryAllocation",
@@ -2449,7 +2163,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 	Tango::Util *tango_ptr = Tango::Util::instance();
 	back->server_host = CORBA::string_dup(tango_ptr->get_host_name().c_str());
-		
+
 //
 // Fill-in remaining structure fields
 //
@@ -2457,7 +2171,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	back->dev_class = CORBA::string_dup(device_class->get_name().c_str());
 	back->server_id = CORBA::string_dup(tango_ptr->get_ds_name().c_str());
 	back->server_version = DevVersion;
-	
+
 //
 // Build the complete info sent in the doc_url string
 //
@@ -2477,23 +2191,23 @@ throw (Tango::DevFailed, CORBA::SystemException)
 		doc_url = doc_url + cvs_location;
 	}
 	back->doc_url = CORBA::string_dup(doc_url.c_str());
-	
+
 //
 // Set the device type
 //
 
 	back->dev_type = CORBA::string_dup(device_class->get_type().c_str());
-		
+
 //
 // Record operation request in black box
 //
 
 	blackbox_ptr->insert_op(Op_Info_3);
-	
+
 //
 // Return to caller
 //
-				
+
 	cout4 << "Leaving Device_3Impl::info_3" << endl;
 	return back;
 }
@@ -2502,12 +2216,12 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::get_attribute_config_3
-// 
+//
 // description : 	CORBA operation to get attribute configuration.
 //
 // argument: in :	- names: name of attribute(s)
 //
-// This method returns a pointer to a AttributeConfigList_3 with one 
+// This method returns a pointer to a AttributeConfigList_3 with one
 // AttributeConfig_3 structure for each atribute
 //
 //
@@ -2537,13 +2251,13 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //
 
 	blackbox_ptr->insert_op(Op_Get_Attr_Config_3);
-	
+
 //
 // Get attribute number and device version
 //
 
 	long nb_dev_attr = dev_attr->get_attr_nb();
-	
+
 //
 // Check if the caller want to get config for all attribute
 // If the device implements IDL 3 (State and status as attributes)
@@ -2558,9 +2272,9 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		{
 			all_attr = true;
 			nb_attr = nb_dev_attr;
-		}	
+		}
 	}
-		
+
 //
 // Allocate memory for the AttributeConfig structures
 //
@@ -2580,7 +2294,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //
 // Fill in these structures
 //
-		
+
 	for (long i = 0;i < nb_attr;i++)
 	{
 		try
@@ -2602,20 +2316,20 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			throw;
 		}
 	}
-		
+
 //
 // Return to caller
 //
 
 	cout4 << "Leaving Device_3Impl::get_attribute_config_3" << endl;
-	
+
 	return back;
 }
 
 //+-------------------------------------------------------------------------
 //
 // method :		Device_3Impl::set_attribute_config_3
-// 
+//
 // description :	CORBA operation to set attribute configuration locally
 //			and in the Tango database
 //
@@ -2632,14 +2346,14 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	cout4 << "DeviceImpl::set_attribute_config_3 arrived" << endl;
 
 //
-// The attribute conf. is protected by two monitors. One protects access between 
+// The attribute conf. is protected by two monitors. One protects access between
 // get and set attribute conf. The second one protects access between set and
 // usage. This is the classical device monitor
 //
 
 	TangoMonitor &mon1 = get_att_conf_monitor();
 	AutoTangoMonitor sync1(&mon1);
-	
+
 //
 // Record operation request in black box
 // If this method is executed with the request to store info in
@@ -2652,7 +2366,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 	if (ext->store_in_bb == true)
 	{
-		blackbox_ptr->insert_op(Op_Set_Attr_Config_3);	
+		blackbox_ptr->insert_op(Op_Set_Attr_Config_3);
 		check_lock("set_attribute_config_3");
 	}
 	ext->store_in_bb = true;
@@ -2668,23 +2382,23 @@ throw (Tango::DevFailed, CORBA::SystemException)
 				        (const char *)"The device does not have any attribute",
 				        (const char *)"Device_3Impl::set_attribute_config_3");
 	}
-	
+
 //
 // Get some event related data
 //
-	
+
 	Tango::Util *tg = Tango::Util::instance();
 	EventSupplier *ev_supply = tg->get_event_supplier();
-	
+
 //
 // Update attribute config first in database, then locally
 //
-	
+
 	long nb_attr = new_conf.length();
 	long i;
 
 	try
-	{	
+	{
 		for (i = 0;i < nb_attr;i++)
 		{
 			string tmp_name(new_conf[i].name);
@@ -2701,7 +2415,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			if (Tango::Util::_UseDb == true)
 				attr.upd_database(new_conf[i],device_name);
 			attr.set_properties(new_conf[i],device_name);
-			
+
 //
 // In case the attribute quality factor was set to ALARM, reset it to VALID
 //
@@ -2710,11 +2424,11 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			    (old_alarm == true) &&
 			    (attr.is_alarmed().any() == false))
 				attr.set_quality(Tango::ATTR_VALID);
-				
+
 //
 // Send the event
 //
-				
+
 			if (ev_supply != NULL)
 			{
 				string tmp_name(new_conf[i].name);
@@ -2725,7 +2439,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (Tango::DevFailed &e)
 	{
-	
+
 //
 // Re build the list of "alarmable" attribute
 //
@@ -2739,14 +2453,14 @@ throw (Tango::DevFailed, CORBA::SystemException)
 				if (att.get_writable() != Tango::WRITE)
 					dev_attr->get_alarm_list().push_back(j);
 			}
-		}		
-	
+		}
+
 //
 // Change the exception reason flag
 //
 
 		TangoSys_OMemStream o;
-		
+
 		o << e.errors[0].reason;
 		if (i != 0)
 			o << "\nAll previous attribute(s) have been successfully updated";
@@ -2757,8 +2471,8 @@ throw (Tango::DevFailed, CORBA::SystemException)
 #if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
 		string s = o.str();
 		e.errors[0].reason = CORBA::string_dup(s.c_str());
-#else		
-		char *mess = o.str();			
+#else
+		char *mess = o.str();
 		e.errors[0].reason = CORBA::string_dup(mess);
 		delete [] mess;
 #endif
@@ -2780,25 +2494,25 @@ throw (Tango::DevFailed, CORBA::SystemException)
 				dev_attr->get_alarm_list().push_back(i);
 		}
 	}
-	
+
 //
 // Return to caller
 //
 
-	cout4 << "Leaving Device_3Impl::set_attribute_config_3" << endl;	
+	cout4 << "Leaving Device_3Impl::set_attribute_config_3" << endl;
 }
 
 
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::write_attributes_in_db
-// 
+//
 // description : 	Method to write memorized attributes in database
 //
 // argument: in :	- name : attribute name
 //			- n : history depth (in record number)
 //
-// This method returns a pointer to a DevAttrHistoryList with one 
+// This method returns a pointer to a DevAttrHistoryList with one
 // DevAttrHistory structure for each attribute record
 //
 //--------------------------------------------------------------------------
@@ -2808,12 +2522,12 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 //
 // Store memorized attribute in db
 //
-	
+
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::Database *db = tg->get_database();
-		
+
 	Tango::DbData db_data;
-		
+
 	for (unsigned long i = 0;i < att_in_db.size();i++)
 	{
 		Tango::DbDatum tmp_db;
@@ -2825,13 +2539,13 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 		long idx = att_in_db[i];
 		WAttribute &att = dev_attr->get_w_attr_by_ind(updated_attr[idx].idx_in_multi_attr);
 		tmp_db.name = att.get_name();
-		tmp_db << (short)1;		
+		tmp_db << (short)1;
 		db_data.push_back(tmp_db);
 
 //
 // Init property value
 //
-			
+
 		tmp_db.name = MemAttrPropName;
 		const char *ptr;
 		switch (att.get_data_type())
@@ -2843,20 +2557,20 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 		case Tango::DEV_LONG :
 			tmp_db << (*att.get_last_written_lg())[0];
 			break;
-			
+
 		case Tango::DEV_LONG64 :
 			tmp_db << (*att.get_last_written_lg64())[0];
 			break;
-			
+
 		case Tango::DEV_DOUBLE :
 			tmp_db << (*att.get_last_written_db())[0];
 			break;
-			
+
 		case Tango::DEV_STRING :
 			ptr = (*att.get_last_written_str())[0].in();
 			tmp_db << ptr;
 			break;
-			
+
 		case Tango::DEV_FLOAT :
 			tmp_db << (*att.get_last_written_fl())[0];
 			break;
@@ -2864,23 +2578,23 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 		case Tango::DEV_BOOLEAN :
 			tmp_db << (*att.get_last_written_boo())[0];
 			break;
-			
+
 		case Tango::DEV_USHORT :
 			tmp_db << (*att.get_last_written_ush())[0];
 			break;
-			
+
 		case Tango::DEV_UCHAR :
 			tmp_db << (*att.get_last_written_uch())[0];
 			break;
-			
+
 		case Tango::DEV_ULONG :
 			tmp_db << (*att.get_last_written_ulg())[0];
 			break;
-			
+
 		case Tango::DEV_ULONG64 :
 			tmp_db << (*att.get_last_written_ulg64())[0];
-			break;		
-			
+			break;
+
 		case Tango::DEV_STATE :
 			{
 			Tango::DevState tmp_state = (*att.get_last_written_state())[0];
@@ -2888,11 +2602,11 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 			}
 			break;
 		}
-		db_data.push_back(tmp_db);			
+		db_data.push_back(tmp_db);
 	}
 
 	db->put_device_attribute_property(device_name,db_data);
-		
+
 }
 
 void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<long> &updated_attr)
@@ -2904,14 +2618,14 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<long> &
 		ai.idx_in_multi_attr = updated_attr[i];
 		v.push_back(ai);
 	}
-	
+
 	write_attributes_in_db(att_in_db,v);
 }
 
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::add_state_status_attrs
-// 
+//
 // description : 	Add state and status in the device attribute list
 //
 //--------------------------------------------------------------------------
@@ -2927,9 +2641,9 @@ void Device_3Impl::add_state_status_attrs()
 	vector<AttrProperty> prop_list_state;
 	string att_name("State");
 	dev_attr->add_default(prop_list_state,device_name,att_name);
-	
+
 	dev_attr->add_attr(new Attribute(prop_list_state,att_state,device_name,-1));
-	
+
 //
 // Now, create the status attribute also with default properties
 //
@@ -2938,20 +2652,20 @@ void Device_3Impl::add_state_status_attrs()
 	vector<AttrProperty> prop_list_status;
 	att_name = "Status";
 	dev_attr->add_default(prop_list_status,device_name,att_name);
-	
+
 	dev_attr->add_attr(new Attribute(prop_list_status,att_status,device_name,-1));
-	
+
 }
 
 
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::add_alarmed
-// 
+//
 // description : 	Method to add alarmed attributes (if not already
 //			there) in the attribute list passed as argument
 //
-// argument: in :	- att_list : The attribute index in the 
+// argument: in :	- att_list : The attribute index in the
 //				     multi attribute instance
 //
 //--------------------------------------------------------------------------
@@ -2967,7 +2681,7 @@ void Device_3Impl::add_alarmed(vector<long> &att_list)
 		{
 			long nb_attr = att_list.size();
 			bool found = false;
-			
+
 			for (int j = 0;j < nb_attr;j++)
 			{
 				if (att_list[j] == alarmed_list[i])
@@ -2980,7 +2694,7 @@ void Device_3Impl::add_alarmed(vector<long> &att_list)
 //
 // If not found, add it
 //
-			
+
 			if (found == false)
 			{
 				att_list.push_back(alarmed_list[i]);
@@ -2993,7 +2707,7 @@ void Device_3Impl::add_alarmed(vector<long> &att_list)
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::reading_state_necessary
-// 
+//
 // description : 	Method to check ifi t is necessary to read
 //			state. If the device has some alarmed
 //			attribute and one of these attributes
@@ -3015,10 +2729,10 @@ long Device_3Impl::reading_state_necessary(vector<AttIdx> &wanted_attr)
 	vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_alarmed_attr = alarmed_list.size();
 	long ret = -1;
-	
+
 	if (nb_alarmed_attr == 0)
 		ret = -1;
-		
+
 	else
 	{
 		long nb_attr = wanted_attr.size();
@@ -3032,16 +2746,16 @@ long Device_3Impl::reading_state_necessary(vector<AttIdx> &wanted_attr)
 						return i;
 				}
 			}
-		} 
+		}
 	}
-	
+
 	return ret;
 }
 
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::alarmed_not_read
-// 
+//
 // description : 	This method find all the attributes which
 //			will be read by the state (because alarmed)
 //			and which have been already read.
@@ -3058,9 +2772,9 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 	vector<long> &alarmed_list = dev_attr->get_alarm_list();
 	long nb_alarmed_attr = alarmed_list.size();
 	long nb_attr = wanted_attr.size();
-	
+
 	ext->alarmed_not_read.clear();
-		
+
 	for (int i = 0;i < nb_alarmed_attr;i++)
 	{
 		bool found = false;
@@ -3072,11 +2786,11 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 				break;
 			}
 		}
-		
+
 		if (found == false)
 		{
 			ext->alarmed_not_read.push_back(alarmed_list[i]);
-		}		
+		}
 	}
 }
 
@@ -3084,7 +2798,7 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::state2attr
-// 
+//
 // description : 	Method to send a device state as an attribute object
 //
 // argument: in :	- state : The device state
@@ -3148,7 +2862,7 @@ void Device_3Impl::state2attr(Tango::DevState state,Tango::AttributeValue_4 &bac
 //+-------------------------------------------------------------------------
 //
 // method : 		Device_3Impl::status2attr
-// 
+//
 // description : 	Method to send a device status string as an
 //			attribute object
 //
@@ -3162,7 +2876,7 @@ void Device_3Impl::status2attr(Tango::ConstDevString status,Tango::AttributeValu
 	Tango::DevVarStringArray str_seq(1);
 	str_seq.length(1);
 	str_seq[0] = CORBA::string_dup(status);
-		
+
 	back.value <<= str_seq;
 #ifdef _TG_WINDOWS_
 	struct _timeb after_win;
@@ -3192,7 +2906,7 @@ void Device_3Impl::status2attr(Tango::ConstDevString status,Tango::AttributeValu
 	Tango::DevVarStringArray str_seq(1);
 	str_seq.length(1);
 	str_seq[0] = CORBA::string_dup(status);
-		
+
 	back.value.string_att_value(str_seq);
 #ifdef _TG_WINDOWS_
 	struct _timeb after_win;

@@ -2,7 +2,7 @@
 //
 // file :               Tango_const.h
 //
-// description :        Include for Tango system constant definition  
+// description :        Include for Tango system constant definition
 //
 // project :            TANGO
 //
@@ -19,161 +19,16 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
-//
-// $Log$
-// Revision 3.58  2011/01/24 12:19:01  taurel
-// - Adapted to release 7.2.5
-//
-// Revision 3.57  2011/01/18 14:55:48  taurel
-// - Release 7.2.4
-//
-// Revision 3.56  2011/01/10 13:53:17  taurel
-// - Tango release 7.2.3
-//
-// Revision 3.55  2010/12/08 10:21:53  taurel
-// - Tango release 7.2.2
-//
-// Revision 3.54  2010/11/02 14:06:54  taurel
-// - Replace dynamic_cast with static_cast in attribute.cpp.
-// - Release number is now 7.2.1
-//
-// Revision 3.53  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.52  2010/09/07 15:32:21  taurel
-// - Fix some re-connection problems with Windows
-// - Publish all endPoints in case of multiple network interface
-//
-// Revision 3.51  2010/08/19 12:10:20  taurel
-// - Change timeout during the first _narrow() call in connect() method
-//
-// Revision 3.50  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.49.2.1  2010/05/21 09:43:39  taurel
-// - Re-use the same event channel in case of server restart when a file
-// is use as database
-//
-// Revision 3.49  2009/10/23 14:36:27  taurel
-// - Tango 7.1.1
-// - Fix bugs 2880372 and 2881841
-// - Now support event in case of Tango system with multi db server
-// - The polling threads start with polling inactive
-//
-// Revision 3.48  2009/09/30 06:43:18  taurel
-// - Improve error detection in case of TANGO_HOST not set and not fully
-// qualified device name
-//
-// Revision 3.47  2009/09/22 11:06:01  taurel
-// - Environment variables in file also supported for Windows
-//
-// Revision 3.46  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.45  2009/09/08 14:21:22  taurel
-// - The tango rc file location can be defined by a configure option
-//
-// Revision 3.44  2009/09/01 07:41:31  taurel
-// - Commit after test suite for Tango 7.1
-//
-// Revision 3.43  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.42  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-//
-// Revision 3.41.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 3.41  2009/04/30 12:49:24  taurel
-// - Adapted to Tango 7.0.2
-//
-// Revision 3.40  2009/04/27 11:17:16  taurel
-// - Release 7.0.1
-//
-// Revision 3.39  2009/03/20 11:52:50  taurel
-// - Add tangorc files management (for env. variables)
-//
-// Revision 3.38  2009/02/03 15:17:11  jensmeyer
-// Added the storage of sub device properties on a regular basis of
-// 30 minutes to the heartbeat thread of a device server.
-//
-// Revision 3.37  2009/01/29 15:25:41  taurel
-// - First implementation of the Data Ready event
-//
-// Revision 3.36  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.35  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.34  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.33  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 3.32  2008/05/20 12:44:14  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.31  2008/04/02 16:03:56  taurel
-// - Fix compatibility bug in the Database::get_device_name() method
-// Revision 3.26.2.6  2008/05/20 06:17:46  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 3.30  2008/03/20 07:39:24  taurel
-// - Last commit before Release 6.1 ?
-// Revision 3.26.2.5  2008/02/07 15:58:14  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.29  2008/01/15 12:31:37  taurel
-// - Change db connection and re-connection timeout
-// Revision 3.26.2.4  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.26.2.3  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 3.26.2.2  2007/12/19 15:54:48  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.26.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
-// Revision 3.28  2008/01/07 07:17:21  taurel
-// - First access control system coding
-//
-// Revision 3.27  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-//
-// Revision 3.26  2007/11/08 12:03:44  taurel
-// - Start implementing user interceptors
-// - Fix bug in poll thread pproperty management when removing polling object
-// - Set a database timeout to 6 sec
-//
-// Revision 3.25  2007/10/16 08:24:14  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 3.24  2007/06/15 07:29:43  jensmeyer
-// Increase the tango library version number
 //
 //=============================================================================
 
@@ -308,6 +163,7 @@ namespace Tango
 //
 
 #define		MaxServerNameLength		255
+#define     MaxDevPropLength        255
 
 //
 // Files used to retrieve env. variables
@@ -890,7 +746,7 @@ enum LogTarget {
 #define kLogTargetSep "::"
 
 //
-// TANGO <rolling log files> threshold 
+// TANGO <rolling log files> threshold
 //
 
 // Min RollingFileAppender threshold (~500kB)
@@ -1015,41 +871,41 @@ typedef struct _OptAttrProp
  * strings already used.
  *
  *
- * API_MemoryAllocation		 
- * API_CommandNotFound 		 
- * API_IncompatibleCmdArgumentType	 
- * API_BlackBoxArgument		 
- * API_BlackBoxEmpty			 
- * API_CannotOpenFile  		 
- * API_SignalOutOfRange		 
- * API_CantInstallSignal		 
- * API_CommandNotAllowed		 
- * API_CantRetrieveClassList		 
- * API_ClassNotFound			 
- * API_InitMethodNotFound		 
- * API_JavaRuntimeSecurityException	 
- * API_InitThrowsException		 
- * API_InitNotPublic			 
- * API_DeviceNotFound  		 
- * API_CmdArgumentTypeNotSupported	 
- * API_MethodNotFound  		 
- * API_OverloadingNotSupported 	 
- * API_MethodArgument  		 
- * API_AttrWrongDefined		 
- * API_AttrOptProp			 
- * API_AttrNotFound			 
- * API_AttrValueNotSet 		 
- * API_AttrNoAlarm			 
- * API_AttrNotWritable 		 
- * API_IncompatibleAttrDataType	 
- * API_WAttrOutsideLimit		 
- * API_NtDebugWindowError		 
- * API_CantCreateClassPoa		 
- * API_CantGetDevObjectId		 
+ * API_MemoryAllocation
+ * API_CommandNotFound
+ * API_IncompatibleCmdArgumentType
+ * API_BlackBoxArgument
+ * API_BlackBoxEmpty
+ * API_CannotOpenFile
+ * API_SignalOutOfRange
+ * API_CantInstallSignal
+ * API_CommandNotAllowed
+ * API_CantRetrieveClassList
+ * API_ClassNotFound
+ * API_InitMethodNotFound
+ * API_JavaRuntimeSecurityException
+ * API_InitThrowsException
+ * API_InitNotPublic
+ * API_DeviceNotFound
+ * API_CmdArgumentTypeNotSupported
+ * API_MethodNotFound
+ * API_OverloadingNotSupported
+ * API_MethodArgument
+ * API_AttrWrongDefined
+ * API_AttrOptProp
+ * API_AttrNotFound
+ * API_AttrValueNotSet
+ * API_AttrNoAlarm
+ * API_AttrNotWritable
+ * API_IncompatibleAttrDataType
+ * API_WAttrOutsideLimit
+ * API_NtDebugWindowError
+ * API_CantCreateClassPoa
+ * API_CantGetDevObjectId
  * API_CantActivatePOAManager
  * API_DatabaseAccess
- * API_CorbaSysException 
- * API_BadConfigurationProperty 
+ * API_CorbaSysException
+ * API_BadConfigurationProperty
  * API_AttrIncorrectDataNumber
  * API_NotSupportedFeature
  * API_AttrNotAllowed
@@ -1059,18 +915,18 @@ typedef struct _OptAttrProp
  * API_CantGetClientIdent
  * API_DeviceLocked
  * API_CannotCheckAccessControl
- 
+
  * API_DeviceNotLocked
  * API_DeviceUnlocked
  * API_DeviceUnlockable
  * API_WrongLockingStatus
  * API_CantFindLockingThread
  * API_WrongHistoryDataBuffer
- * API_CannotCheckAccessControl 
+ * API_CannotCheckAccessControl
  * API_ReadOnlyMode
  * API_CantStoreDeviceClass
  * API_CantCreateLockingThread
- * 
+ *
  * API_PollingThreadNotFound
  * API_PolledDeviceNotInPoolConf
  * API_PolledDeviceNotInPoolMap
@@ -1078,5 +934,5 @@ typedef struct _OptAttrProp
 
 } // End of Tango namespace
 
-		
+
 #endif /* TANGO_CONST_H */
