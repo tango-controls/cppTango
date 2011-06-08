@@ -1080,7 +1080,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 
 	unsigned long i;
     vector<PollObj *> &poll_list = get_poll_obj_list();
-/*	vector<long> non_polled;
+	vector<long> non_polled;
 	unsigned long nb_poll = poll_list.size();
 	unsigned long j;
 
@@ -1128,7 +1128,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 // polled, start to poll them
 //
 
-	bool found;
+//	bool found;
 	vector<long> poll_period;
 	unsigned long not_polled_attr = 0;
 
@@ -1188,7 +1188,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				not_polled_attr++;
 				continue;
 			}
-			else
+/*			else
 			{
 				found = false;
 				vector<string> &napa = get_non_auto_polled_attr();
@@ -1247,7 +1247,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 
 					continue;
 				}
-			}
+			}*/
 		}
 
 //
@@ -1262,7 +1262,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 // Start polling
 //
 
-		Tango::Util *tg = Tango::Util::instance();
+/*		Tango::Util *tg = Tango::Util::instance();
 		DServer *adm_dev = tg->get_dserver_device();
 
 		DevVarLongStringArray *send = new DevVarLongStringArray();
@@ -1336,9 +1336,9 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			nanosleep(&to_wait,&inter);
 			get_poll_monitor().get_monitor();
 #endif
-		}
+		}*/
 
-	}*/
+	}
 
 //
 // For each attribute, check that some data are available in cache and that they
