@@ -1439,6 +1439,8 @@ void DServer::get_dev_prop(Tango::Util *tg)
                 }
             }
 		}
+		else
+            polling_th_pool_conf.clear();
 	}
 }
 
