@@ -225,6 +225,14 @@ check_return_value $ret
 #
 $echo "\nTesting all DeviceProxy polling methods"
 $DIR/poll_met $DEV1 $DEV2 $DEV1_ALIAS
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting polling threads pool"
+$DIR/poll_pool $DEV1 $DEV2 $INST_NAME
+ret=$?
+check_return_value $ret
+#
 $DIR/StopPoll $DEV1
 #
 $echo "\nTesting all AttributeProxy methods"

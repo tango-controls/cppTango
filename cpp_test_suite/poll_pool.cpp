@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 		admin_dev = new DeviceProxy(admin_dev_name);
 		admin_dev->command_inout("RestartServer");
 
-		Tango_sleep(1);
+		Tango_sleep(3);
 
 // Read polling threads pool conf once more
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv)
 
 		admin_dev->command_inout("RestartServer");
 
-		Tango_sleep(1);
+		Tango_sleep(3);
 
 // Check new pool conf
 
@@ -177,7 +177,7 @@ int main(int argc, char **argv)
 
 		admin_dev->command_inout("RestartServer");
 
-		Tango_sleep(1);
+		Tango_sleep(3);
 
 // Check new pool conf
 
@@ -203,7 +203,7 @@ int main(int argc, char **argv)
 
 		admin_dev->command_inout("RestartServer");
 
-		Tango_sleep(1);
+		Tango_sleep(3);
 
 // Check pool conf
 
@@ -311,5 +311,5 @@ void reset_device_server(Database *db,vector<string> &polling_pool_conf,string &
 
 	adm_dev->command_inout("RestartServer");
 
-	Tango_sleep(1);
+	Tango_sleep(3);
 }
