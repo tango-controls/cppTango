@@ -276,6 +276,9 @@ Poll:	Poll.o
 
 StopPoll:	StopPoll.o
 	$(CC) StopPoll.o -o $(BIN_TANGO_DIR)/StopPoll $(LFLAGS)
+
+poll_pool:	poll_pool.o
+	$(CC) poll_pool.o -o $(BIN_TANGO_DIR)/poll_pool $(LFLAGS)
 	
 clean:
 	rm -f *.o core
