@@ -533,6 +533,11 @@ void DevTestClass::command_factory()
 					    Tango::DEV_ENCODED,
 					    "void",
 					    "DevEncoded structure to test polling/history"));
+	command_list.push_back(new PollingPoolTst("PollingPoolTst",
+					    Tango::DEV_VOID,
+					    Tango::DEVVAR_STRINGARRAY,
+					    "void",
+					    "Polling threads pool configuration"));
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 

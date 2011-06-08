@@ -1628,4 +1628,45 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 }
 
 
+//+----------------------------------------------------------------------------
+//
+// method : 		PollingPoolTst::PollingPoolTst()
+//
+// description : 	constructor for the PollingPoolTst command of the
+//					DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+PollingPoolTst::PollingPoolTst(const char *name,Tango::CmdArgType in,
+		   Tango::CmdArgType out,const char *in_desc,
+		   const char *out_desc)
+:Tango::Command(name,in,out,in_desc,out_desc)
+{
+}
+
+bool PollingPoolTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+//
+// command allways allowed
+//
+	return(true);
+}
+
+CORBA::Any *PollingPoolTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+    Tango::DevVarStringArray *theOutputArray = new Tango::DevVarStringArray();
+    vector<string> pool_conf;
+
+    Tango::Util *tg = Tango::Util::instance();
+    tg->build_first_pool_conf(pool_conf);
+
+    (*theOutputArray) << pool_conf;
+    return insert(theOutputArray);
+}
 
