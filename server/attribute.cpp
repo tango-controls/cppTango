@@ -7119,7 +7119,8 @@ void Attribute::fire_change_event(DevFailed *except)
 						 		send_attr_4,
 								*this,
 								name,
-								except);
+								except,
+								true);
 		}
 		else
 		{
@@ -7429,7 +7430,8 @@ void Attribute::fire_archive_event(DevFailed *except)
 									*this,
 									name,
 									except,
-									&now_timeval);
+									&now_timeval,
+									true);
 		}
 		else
 		{

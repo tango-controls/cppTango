@@ -2,7 +2,7 @@
 ///
 ///  file       eventsupplier.h
 ///
-/// 	        C++ include file for implementing the TANGO event server and 
+/// 	        C++ include file for implementing the TANGO event server and
 ///		client singleton classes - EventSupplier and EventConsumer.
 ///             These classes are used to send events from the server
 ///             to the notification service and to receive events from
@@ -23,12 +23,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 ///
@@ -72,8 +72,8 @@ typedef struct _NotifService
 {
 	CosNotifyChannelAdmin::SupplierAdmin_var 				SupAdm;
 	CosNotifyChannelAdmin::ProxyID 							pID;
-	CosNotifyChannelAdmin::ProxyConsumer_var 				ProCon; 
-	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush; 
+	CosNotifyChannelAdmin::ProxyConsumer_var 				ProCon;
+	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	StrProPush;
 	CosNotifyChannelAdmin::EventChannelFactory_var 			EveChaFac;
 	CosNotifyChannelAdmin::EventChannel_var 				EveCha;
 	string													ec_ior;
@@ -98,13 +98,13 @@ protected :
 
 	EventSupplier(CORBA::ORB_var,
 		CosNotifyChannelAdmin::SupplierAdmin_var,
-		CosNotifyChannelAdmin::ProxyID, 
-		CosNotifyChannelAdmin::ProxyConsumer_var, 
-		CosNotifyChannelAdmin::StructuredProxyPushConsumer_var, 
+		CosNotifyChannelAdmin::ProxyID,
+		CosNotifyChannelAdmin::ProxyConsumer_var,
+		CosNotifyChannelAdmin::StructuredProxyPushConsumer_var,
 		CosNotifyChannelAdmin::EventChannelFactory_var,
 		CosNotifyChannelAdmin::EventChannel_var,
 		string &);
-		
+
 private :
 	static EventSupplier 									*_instance;
 	CosNotifyChannelAdmin::EventChannel_var 				eventChannel;
@@ -114,7 +114,7 @@ private :
 	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	structuredProxyPushConsumer;
 	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
 	CORBA::ORB_var 											orb_;
-	
+
 	inline int timeval_diff(TimeVal before, TimeVal after)
 	{
 		return ((after.tv_sec-before.tv_sec)*1000000 + after.tv_usec - before.tv_usec);
@@ -127,23 +127,23 @@ private :
 	void get_attribute_value(AttributeValue attr_value, LastAttrValue &curr_attr_value);
 	void reconnect_notifd();
 	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,CORBA::ORB_var &,string &,Database *,string &,Util *);
-			
-	// Added a mutex to synchronize the access to 
+
+	// Added a mutex to synchronize the access to
 	//	detect_and_push_change_event_3	and
 	// detect_and_push_archive_event_3 which are used
 	// from different threads
 	omni_mutex		event_mutex;
-	
-	// Added a mutex to synchronize the access to 
+
+	// Added a mutex to synchronize the access to
 	//	push_event_3 which is used
 	// from different threads
 	omni_mutex		push_mutex;
-	
-	// Added a mutex to synchronize the access to 
+
+	// Added a mutex to synchronize the access to
 	//	detect_event_3 which is used
 	// from different threads
 	omni_mutex		detect_mutex;
-	
+
 public :
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
 	void detect_and_push_events_3(DeviceImpl *,AttributeValue_3 *,AttributeValue_4 *,DevFailed *,string &,struct timeval *);
@@ -170,7 +170,7 @@ public :
 //
 //--------------------------------------------------------------------------
 
-				    
+
 	template <typename T>
 	void detect_and_push_events(DeviceImpl *device_impl,
 				    T &attr_value,
@@ -203,8 +203,8 @@ public :
 			detect_and_push_archive_event(device_impl,attr_value,attr,attr_name,except);
 		}
 	}
-	
-	
+
+
 	template <typename T>
 	void push_att_conf_events(DeviceImpl *device_impl,
 				    T &attr_conf,
@@ -222,12 +222,12 @@ public :
 		att_conf_subscription = now - attr.ext->event_attr_conf_subscription;
 
 		cout3 << "EventSupplier::push_att_conf_events(): last subscription " << att_conf_subscription << endl;
-		
+
 		vector<string> filterable_names;
 		vector<double> filterable_data;
 		vector<string> filterable_names_lg;
 		vector<long> filterable_data_lg;
-		
+
 		string ev_type(CONF_TYPE_EVENT);
 
 		push_event(device_impl,
@@ -245,14 +245,14 @@ public :
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::detect_change()
-// 
+//
 // description : 	Method to detect if there is a change according to the
 //			criterions and return a boolean set to true if a change
 //			is detected
 //
 // argument : in :	attr : The attribute object
 //			curr_attr_value : The current attribute value
-//			archive : 
+//			archive :
 //			delta_change_rel :
 //			delta_change_abs :
 //			except : The exception thrown during the last
@@ -275,8 +275,8 @@ public :
 				  DevFailed *except,
 				  bool &force_change,
 				  DeviceImpl *dev);
-				  
-				  
+
+
 	template <typename T>
 	bool detect_change(Attribute &attr,
 				  T &curr_attr_value,
@@ -288,18 +288,18 @@ public :
 				  DeviceImpl *dev)
 	{
 		bool is_change = false;
-		
+
 		cout3 << "EventSupplier::detect_change(): called for attribute " << attr.get_name() << endl;
-		
+
 		// get the mutex to synchronize the sending of events
 		omni_mutex_lock l(detect_mutex);
-		
+
 //
 // Send event, if the read_attribute failed or if it is the first time
 // that the read_attribute succeed after a failure.
 // Same thing if the attribute quality factor changes to INVALID
 //
-	
+
 		if (except != NULL)
 		{
 			force_change = true;
@@ -327,7 +327,7 @@ public :
 			}
 		}
 		else
-		{		
+		{
 			if ((except == NULL) && (attr.ext->prev_change_event.err == true))
 			{
 				force_change = true;
@@ -341,7 +341,7 @@ public :
 			}
 		}
 
-		const DevVarLong64Array *curr_seq_64, *prev_seq_64;	
+		const DevVarLong64Array *curr_seq_64, *prev_seq_64;
 		const DevVarLongArray *curr_seq_lo, *prev_seq_lo;
 		const DevVarShortArray *curr_seq_sh, *prev_seq_sh;
 		const DevVarDoubleArray *curr_seq_db, *prev_seq_db;
@@ -352,8 +352,8 @@ public :
 		const DevVarCharArray *curr_seq_uch, *prev_seq_uch;
 		const DevVarULongArray *curr_seq_ulo, *prev_seq_ulo;
 		const DevVarULong64Array *curr_seq_u64, *prev_seq_u64;
-		const DevVarStateArray *curr_seq_state, *prev_seq_state;		
-		
+		const DevVarStateArray *curr_seq_state, *prev_seq_state;
+
 		double rel_change[2], abs_change[2];
 		unsigned int i;
 		unsigned int curr_seq_nb,prev_seq_nb;
@@ -363,7 +363,7 @@ public :
 		delta_change_rel = delta_change_abs = 0;
 
 		bool enable_check = false;
-		
+
 		TangoMonitor &mon1 = dev->get_att_conf_monitor();
 		mon1.get_monitor();
 		if (!archive)
@@ -384,19 +384,19 @@ public :
 			abs_change[1] = attr.ext->archive_abs_change[1];
 			inited = attr.ext->prev_archive_event.inited;
 			if ((attr.ext->prev_archive_event.quality != Tango::ATTR_INVALID) && (curr_attr_value.quality != Tango::ATTR_INVALID))
-				    enable_check = true;		
+				    enable_check = true;
 		}
 		mon1.rel_monitor();
 
 		if (inited)
-		{	
+		{
 			if (enable_check == true)
 			{
 				CORBA::TypeCode_var ty_alias = ty->content_type();
-				CORBA::TypeCode_var ty_seq = ty_alias->content_type();					
+				CORBA::TypeCode_var ty_seq = ty_alias->content_type();
 				switch (ty_seq->kind())
 				{
-				case CORBA::tk_long:		
+				case CORBA::tk_long:
 					curr_attr_value.value >>= curr_seq_lo;
 					if (archive == true)
 						attr.ext->prev_archive_event.value >>= prev_seq_lo;
@@ -483,7 +483,7 @@ public :
 						}
 					}
 					break;
-					
+
 				case CORBA::tk_short:
 					curr_attr_value.value >>= curr_seq_sh;
 					if (archive == true)
@@ -498,7 +498,7 @@ public :
 						return true;
 					}
 					for (i=0; i<curr_seq_sh->length(); i++)
-					{	
+					{
 						if (rel_change[0] != INT_MAX)
 						{
 							if ((*prev_seq_sh)[i] != 0)
@@ -554,7 +554,7 @@ public :
 								delta_change_rel = 100;
 								if ((*curr_seq_db)[i] == (*prev_seq_db)[i]) delta_change_rel = 0;
 							}
-							
+
 							if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
 							{
 								is_change = true;
@@ -564,7 +564,7 @@ public :
 						if (abs_change[0] != INT_MAX)
 						{
 							delta_change_abs = (*curr_seq_db)[i] - (*prev_seq_db)[i];
-							
+
 							// Correct for rounding errors !
 							double max_change = delta_change_abs + (abs_change[1] * 1e-10);
 							double min_change = delta_change_abs + (abs_change[0] * 1e-10);
@@ -638,11 +638,11 @@ public :
 						if (abs_change[0] != INT_MAX)
 						{
 							delta_change_abs = (*curr_seq_fl)[i] - (*prev_seq_fl)[i];
-							
+
 							// Correct for rounding errors !
 							double max_change = delta_change_abs + (abs_change[1] * 1e-10);
 							double min_change = delta_change_abs + (abs_change[0] * 1e-10);
-															
+
 							//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
 							if (min_change <= abs_change[0] || max_change >= abs_change[1])
 							{
@@ -764,8 +764,8 @@ public :
 						}
 					}
 					break;
-					
-				case CORBA::tk_ulong:		
+
+				case CORBA::tk_ulong:
 					curr_attr_value.value >>= curr_seq_ulo;
 					if (archive == true)
 						attr.ext->prev_archive_event.value >>= prev_seq_ulo;
@@ -808,7 +808,7 @@ public :
 						}
 					}
 					break;
-					
+
 				case CORBA::tk_ulonglong:
 					curr_attr_value.value >>= curr_seq_u64;
 					if (archive == true)
@@ -852,7 +852,7 @@ public :
 						}
 					}
 					break;
-					
+
 				case CORBA::tk_enum:
 					curr_attr_value.value >>= curr_seq_state;
 					if (archive == true)
@@ -876,12 +876,12 @@ public :
 						}
 					}
 					break;
-					
+
 				default:
 					break;
 				}
 			}
-		}	
+		}
 
 		cout3 << "EventSupplier::detect_change(): leaving for attribute " << attr.get_name() << endl;
 		return(is_change);
@@ -893,8 +893,9 @@ public :
 						 AttributeValue_4 *attr_value_4,
 						 Attribute &attr,
 						 string &attr_name,
-						 DevFailed *except);
-	
+						 DevFailed *except,
+						 bool user_push = false);
+
 	template <typename T>
 	void detect_and_push_change_event(DeviceImpl *device_impl,
 						 T &attr_value,
@@ -933,24 +934,24 @@ public :
 		}
 		else
 		{
-	
+
 //
 // determine delta_change in percent compared with previous event sent
-// 
+//
 			is_change = detect_change(attr,attr_value,false,delta_change_rel,delta_change_abs,except,force_change,device_impl);
 			cout3 << "EventSupplier::detect_and_push_change_event(): rel_change " << delta_change_rel << " abs_change " << delta_change_abs << " is change = " << is_change << endl;
 		}
-		
+
 		// check whether the data quality has changed.
 		// Fire event on a quality change.
-		
+
 		if ( attr.ext->prev_change_event.quality != attr_value.quality )
 			{
 			is_change = true;
 			quality_change = true;
 			}
-		
-	
+
+
 		if (is_change)
 		{
 			vector<string> filterable_names;
@@ -972,19 +973,19 @@ public :
 			filterable_data.push_back(delta_change_rel);
 			filterable_names.push_back("delta_change_abs");
 			filterable_data.push_back(delta_change_abs);
-			
+
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
 				filterable_data.push_back((double)1.0);
 			else
 				filterable_data.push_back((double)0.0);
-			
+
 			filterable_names.push_back("quality");
 			if (quality_change == true)
 				filterable_data.push_back((double)1.0);
 			else
-				filterable_data.push_back((double)0.0);				
-			
+				filterable_data.push_back((double)0.0);
+
 			push_event(device_impl,
 				   "change",
 				   filterable_names,
@@ -995,13 +996,13 @@ public :
 				   attr_name,
 				   except);
 		}
-	cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;		
+	cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;
 	}
 
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::detect_and_push_archive_event()
-// 
+//
 // description : 	Method to detect if there it is necessary
 //			to push an archive event
 //
@@ -1017,15 +1018,16 @@ public :
 
 	void detect_and_push_archive_event_3(DeviceImpl *device_impl,
 						  AttributeValue_3 *attr_value,
-						  AttributeValue_4 *attr_value_4, 
+						  AttributeValue_4 *attr_value_4,
 						  Attribute &attr,
 						  string &attr_name,
 						  DevFailed *except,
-						  struct timeval *);
-						  
+						  struct timeval *,
+						  bool user_push = false);
+
 	template <typename T>
 	void detect_and_push_archive_event(DeviceImpl *device_impl,
-						  T &attr_value, 
+						  T &attr_value,
 						  Attribute &attr,
 						  string &attr_name,
 						  DevFailed *except)
@@ -1056,7 +1058,7 @@ public :
 
 		// get the mutex to synchronize the sending of events
 		omni_mutex_lock l(event_mutex);
-		
+
 		now_ms = (double)now_timeval.tv_sec * 1000. + (double)now_timeval.tv_usec / 1000.;
 		ms_since_last_periodic = now_ms - attr.ext->archive_last_periodic;
 
@@ -1069,7 +1071,7 @@ public :
 		// Specify the precision interval for the archive period testing
 		// 2% are used for periods < 5000 ms and
 		// 100ms are used for periods > 5000 ms.
-	
+
 		if ( arch_period >= 5000 )
 			{
 			 arch_period = arch_period - DELTA_PERIODIC_LONG;
@@ -1083,7 +1085,7 @@ public :
 			if (frac >= 0.5)
 					eve_round = ceil(tmp);
 			else
-					eve_round = floor(tmp);					
+					eve_round = floor(tmp);
 #else
 	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
 			double eve_round = rint((double)arch_period * DELTA_PERIODIC);
@@ -1097,13 +1099,13 @@ public :
 #endif
 			arch_period = (int)eve_round;
 			}
-		
+
 		if ((ms_since_last_periodic > arch_period) && (attr.ext->prev_archive_event.inited == true))
 		{
 			is_change = true;
 			period_change = true;
 		}
-		
+
 //
 // if no attribute of this name is registered with change then
 // insert the current value
@@ -1125,7 +1127,7 @@ public :
 		}
 		else
 		{
-	
+
 //
 // determine delta_change in percent compared with previous event sent
 //
@@ -1140,7 +1142,7 @@ public :
 					value_change = true;
 			}
 		}
-	
+
 		if (is_change)
 		{
 			vector<string> filterable_names;
@@ -1181,7 +1183,7 @@ public :
 			if (force_change == true)
 				filterable_data.push_back((double)1.0);
 			else
-				filterable_data.push_back((double)0.0);		
+				filterable_data.push_back((double)0.0);
 
 			push_event(device_impl,
 				   "archive",
@@ -1199,7 +1201,7 @@ public :
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::detect_and_push_quality_change_event()
-// 
+//
 // description : 	Method to detect if there it is necessary
 //			to push a quality change event
 //
@@ -1221,7 +1223,7 @@ public :
 	{
 		cout3 << "EventSupplier::detect_and_push_quality_change_event(): called for attribute " << attr_name << endl;
 		bool is_change = false;
-	
+
 //
 // if no attribute of this name is registered with change then
 // insert the current value
@@ -1247,13 +1249,13 @@ public :
 			else if (attr_value.quality != attr.ext->prev_quality_event.quality)
 				is_change = true;
 			else
-				is_change = false;	
+				is_change = false;
 		}
-	
+
 //
 // Send the event if necessary
 //
-	
+
 		if (is_change)
 		{
 			vector<string> filterable_names;
@@ -1285,7 +1287,7 @@ public :
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::detect_and_push_periodic_event()
-// 
+//
 // description : 	Method to detect if there it is necessary
 //			to push a periodic event
 //
@@ -1306,7 +1308,7 @@ public :
 					    string &attr_name,
 					    DevFailed *except,
 						struct timeval *);
-					    
+
 
 	template <typename T>
 	void detect_and_push_periodic_event(DeviceImpl *device_impl,
@@ -1335,7 +1337,7 @@ public :
 
 		now_ms = (double)now_timeval.tv_sec * 1000. + (double)now_timeval.tv_usec / 1000.;
 
-		int eve_period;		
+		int eve_period;
 		TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
 		mon1.get_monitor();
 		eve_period = attr.ext->event_period;
@@ -1344,7 +1346,7 @@ public :
 		// Specify the precision interval for the event period testing
 		// 2% are used for periods < 5000 ms and
 		// 100ms are used for periods > 5000 ms.
-	
+
 		if ( eve_period >= 5000 )
 			{
 			 eve_period = eve_period - DELTA_PERIODIC_LONG;
@@ -1358,7 +1360,7 @@ public :
 			if (frac >= 0.5)
 					eve_round = ceil(tmp);
 			else
-					eve_round = floor(tmp);					
+					eve_round = floor(tmp);
 #else
 	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
 			double eve_round = rint((double)eve_period * DELTA_PERIODIC);
@@ -1402,16 +1404,16 @@ public :
 
 	}
 
-	
+
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::push_event()
-// 
+//
 // description : 	Method to send the event to the event channel
 //
 // argument : in :	device_impl : The device
 //			event_type : The event type (change, periodic....)
-//			filterable_names : 
+//			filterable_names :
 //			filterable_data :
 //			attr_value : The attribute value
 //			except : The exception thrown during the last
@@ -1429,7 +1431,7 @@ public :
 				AttributeValue_4 *attr_value_4,
 		       	string &attr_name,
 		       	DevFailed *except);
-			
+
 
 	template <typename T>
 	void push_event(DeviceImpl *device_impl,
@@ -1446,11 +1448,11 @@ public :
 		string domain_name;
 
 		cout3 << "EventSupplier::push_event(): called for attribute " << attr_name << endl;
-		
+
 		// get the mutex to synchronize the sending of events
 		omni_mutex_lock l(push_mutex);
-		
-		string loc_attr_name = attr_name;	
+
+		string loc_attr_name = attr_name;
 		transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
 		domain_name = device_impl->get_name_lower() + "/" + loc_attr_name;
 
@@ -1465,7 +1467,7 @@ public :
 		struct_event.filterable_data.length(nb_filter + nb_filter_lg);
 
 		if (nb_filter != 0)
-		{	
+		{
 			if (nb_filter == filterable_data.size())
 			{
 				for (unsigned long i = 0; i < nb_filter; i++)
@@ -1477,7 +1479,7 @@ public :
 		}
 
 		if (nb_filter_lg != 0)
-		{	
+		{
 			if (nb_filter_lg == filterable_data_lg.size())
 			{
 				for (unsigned long i = 0; i < nb_filter_lg; i++)
@@ -1488,7 +1490,7 @@ public :
 			}
 		}
 
-		if (except == NULL)	
+		if (except == NULL)
 			struct_event.remainder_of_body <<= attr_value;
 		else
 			struct_event.remainder_of_body <<= except->errors;
@@ -1525,7 +1527,7 @@ public :
     		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
 			fail = true;
 		}
-	
+
 //
 // If it was not possible to communicate with notifd,
 // try a reconnection
