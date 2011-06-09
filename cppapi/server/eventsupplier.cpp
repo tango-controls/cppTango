@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$";
 ///		singleton classes - EventSupplier and EventConsumer.
 ///		These classes are used to send events from the server
 ///		to the notification service and to receive events from
-///		the notification service. 
+///		the notification service.
 ///
 ///		author(s) : E.Taurel (taurel@esrf.fr)
 ///
@@ -25,17 +25,17 @@ static const char *RcsId = "$Id$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 ///
 ///		$Revision$
-///		
+///
 ///
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -61,9 +61,9 @@ namespace Tango {
 
 EventSupplier *EventSupplier::_instance = NULL;
 
-					   					   
+
 /************************************************************************/
-/*		       															*/		
+/*		       															*/
 /* 			EventSupplier class 										*/
 /*			-------------------											*/
 /*		       															*/
@@ -95,7 +95,7 @@ EventSupplier *EventSupplier::create(CORBA::ORB_var _orb,
 				     string server_name,
 				     Database *db,
 				     string &host_name,
-				     Util *tg) 
+				     Util *tg)
 {
 	cout4 << "calling Tango::EventSupplier::create() \n";
 
@@ -112,22 +112,22 @@ EventSupplier *EventSupplier::create(CORBA::ORB_var _orb,
 // Connect process to the notifd service
 //
 
-	NotifService ns;	
+	NotifService ns;
 	connect_to_notifd(ns,_orb,server_name,db,host_name,tg);
-	
+
 //
 // EventSupplier singleton does not exist, create it
 //
 
 	EventSupplier *_event_supplier =
 		new EventSupplier(_orb,ns.SupAdm,ns.pID,ns.ProCon,ns.StrProPush,ns.EveChaFac,ns.EveCha,ns.ec_ior);
-		
+
 	_event_supplier->fqdn_prefix = "tango://";
 	if (Util::_FileDb == true)
 		_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + host_name + ':';
 	else
 		_event_supplier->fqdn_prefix = _event_supplier->fqdn_prefix + db->get_db_host() + ':' + db->get_db_port() + '/' ;
-	transform(_event_supplier->fqdn_prefix.begin(),_event_supplier->fqdn_prefix.end(),_event_supplier->fqdn_prefix.begin(),::tolower);	
+	transform(_event_supplier->fqdn_prefix.begin(),_event_supplier->fqdn_prefix.end(),_event_supplier->fqdn_prefix.begin(),::tolower);
 
 	return _event_supplier;
 }
@@ -162,7 +162,7 @@ void EventSupplier::subscription_change(TANGO_UNUSED(const CosNotification::Even
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::connect_to_notifd()
-// 
+//
 // description : 	Method to connect the process to the notifd
 //
 // argument : in :	ns : Ref. to a struct with notifd connection parameters
@@ -205,9 +205,9 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 				received = db->import_event(factory_name);
 			}
 		}
-		catch (...) 
+		catch (...)
 		{
-	
+
 //
 // Impossible to connect to notifd. In case there is already an entry in the db
 // for this server event channel, clear it.
@@ -221,7 +221,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 				}
 				catch (...) {}
 			}
-				
+
 //
 // There is a cout and a cerr here to have the message displayed on the console
 // AND sent to the logging system (cout is redirected to the logging when
@@ -233,25 +233,25 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 
 			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 				(const char*)"Failed to import the EventChannelFactory from the Tango database",
-				(const char*)"EventSupplier::create()");    
+				(const char*)"EventSupplier::create()");
 		}
 
 		if (tg->get_db_cache() == NULL)
 			received.inout() >>= dev_import_list;
-		factory_ior = string((dev_import_list->svalue)[1]);	
+		factory_ior = string((dev_import_list->svalue)[1]);
 	}
 	else
 	{
-		
+
 		Tango::DbDatum na;
-		
+
 		string cl_name("notifd");
 		try
 		{
 			na = db->get_device_name(server_name,cl_name);
 		}
 		catch (Tango::DevFailed &)
-		{				
+		{
 			cerr << "Failed to import EventChannelFactory from the Device Server property file" << endl;
 			cerr << "Event will not be generated" << endl;
 			cout << "Failed to import EventChannelFactory from the Device Server property file" << endl;
@@ -259,13 +259,13 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 
 			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 				(const char*)"Failed to import the EventChannelFactory from the Device Server property file",
-				(const char*)"EventSupplier::create()"); 
-						
-		}				
+				(const char*)"EventSupplier::create()");
+
+		}
 
 		factory_ior = na.value_string[0];
 	}
- 
+
 
 	try
 	{
@@ -294,7 +294,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 			cerr << factory_name << " is not an EventChannelFactory " << endl;
 			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 				(const char*)"Failed to import the EventChannelFactory from the Tango database",
-				(const char*)"EventSupplier::create()");    
+				(const char*)"EventSupplier::create()");
 		}
 	}
 	catch (...)
@@ -314,7 +314,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 			}
 			catch (...) {}
 		}
-			
+
 //
 // There is a cout and a cerr here to have the message displayed on the console
 // AND sent to the logging system (cout is redirected to the logging when
@@ -326,11 +326,11 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 
 		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 			(const char*)"Failed to narrow the EventChannelFactory, make sure the notifd process is running on this host",
-			(const char*)"EventSupplier::create()");    
+			(const char*)"EventSupplier::create()");
 	}
 
 //
-// Get a reference to an EventChannel for this device server from the 
+// Get a reference to an EventChannel for this device server from the
 // TANGO database
 //
 
@@ -339,7 +339,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 
 	if (Util::_FileDb == false)
 	{
-		try 
+		try
 		{
 			if (tg->get_db_cache() != NULL)
 			{
@@ -350,7 +350,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 				received = db->import_event(d_name);
 			}
 		}
-		catch (...) 
+		catch (...)
 		{
 //
 // There is a cout and a cerr here to have the message displayed on the console
@@ -370,7 +370,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 				received.inout() >>= dev_import_list;
         	channel_ior = string((dev_import_list->svalue)[1]);
         	channel_exported = dev_import_list->lvalue[0];
-		
+
 //
 // check if the channel is exported on this host, if not assume it
 // is an old channel and we need to recreate it on the local host
@@ -386,7 +386,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 		try
 		{
 			Tango::DbDatum na;
-		
+
 			string cl_name(NOTIFD_CHANNEL);
 			na = db->get_device_name(server_name,cl_name);
 			channel_ior = na.value_string[0];
@@ -394,7 +394,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 		}
 		catch (Tango::DevFailed &)
 		{
-			channel_exported = 0;						
+			channel_exported = 0;
 		}
 	}
 
@@ -407,7 +407,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 		{
         	if (event_channel_obj -> _non_existent())
                 event_channel_obj = CORBA::Object::_nil();
-	
+
 			_eventChannel = CosNotifyChannelAdmin::EventChannel::_nil();
  			_eventChannel = CosNotifyChannelAdmin::EventChannel::_narrow(event_channel_obj);
 
@@ -422,7 +422,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 			channel_exported = 0;
 		}
 	}
-	
+
 //
 // The device server event channel does not exist, let's create a new one
 //
@@ -457,9 +457,9 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 				bool retry = true;
 				int ctr = 0;
 				int db_to = db->get_timeout_millis();
-				
+
 				db->set_timeout_millis(db_to * 2);
-				
+
 				while ((retry == true) && (ctr < 4))
 				{
 					try
@@ -469,19 +469,19 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 					}
 					catch (Tango::CommunicationFailed &) {ctr++;}
 				}
-				
+
 				db->set_timeout_millis(db_to);
-				
+
         		cout4 << "successfully  exported event channel to Tango database !\n";
 			}
 			else
 			{
-			
+
 //
 // In case of DS started with -file option, store the
 // event channel within the event supplier object and in the file
 //
-				
+
 				ns.ec_ior = ior_string;
 
 				try
@@ -497,14 +497,14 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 			cerr << "Failed to create event channel - events will not be generated (hint: start the notifd daemon on this host)" << endl;
 			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 				(const char*)"Failed to create a new EventChannel, make sure the notifd process is running on this host",
-				(const char*)"EventSupplier::create()");    
+				(const char*)"EventSupplier::create()");
 		}
 		catch(const CosNotification::UnsupportedAdmin&)
 		{
 			cerr << "Failed to create event channel - events will not be generated (hint: start the notifd daemon on this host)" << endl;
 			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 				(const char*)"Failed to create a new EventChannel, make sure the notifd process is running on this host",
-				(const char*)"EventSupplier::create()");    
+				(const char*)"EventSupplier::create()");
 		}
 	}
 	else
@@ -528,7 +528,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
         cerr << "Could not get CosNotifyChannelAdmin::SupplierAdmin" << endl;
 		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 			(const char*)"Failed to get the default supplier admin from the notification daemon (hint: make sure the notifd process is running on this host)",
-			(const char*)"EventSupplier::create()");    
+			(const char*)"EventSupplier::create()");
     }
 
 //
@@ -563,8 +563,8 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 				catch(CORBA::Exception &) {}
 			}
 		}
-	}		
-			
+	}
+
 //
 // Obtain a Proxy Consumer
 //
@@ -583,7 +583,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
         	cerr << "Could not get CosNotifyChannelAdmin::ProxyConsumer" << endl;
 			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 				(const char*)"Failed to obtain a Notification push consumer, make sure the notifd process is running on this host",
-				(const char*)"EventSupplier::create()");    
+				(const char*)"EventSupplier::create()");
     	}
 	}
 	catch(const CosNotifyChannelAdmin::AdminLimitExceeded&)
@@ -591,7 +591,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 		cerr << "Failed to get push consumer from notification daemon - events will not be generated (hint: start the notifd daemon on this host)" << endl;
 		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
 			(const char*)"Failed to get push consumer from notification daemon (hint: make sure the notifd process is running on this host)",
-			(const char*)"EventSupplier::create()");    
+			(const char*)"EventSupplier::create()");
 	}
 
 	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var
@@ -601,7 +601,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 	{
        	cerr << "Tango::EventSupplier::create() could not get CosNotifyChannelAdmin::StructuredProxyPushConsumer" << endl;
     }
-	
+
 //
 // Init returned value
 //
@@ -617,7 +617,7 @@ void EventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::push_heartbeat_event()
-// 
+//
 // description : 	Method to send the hearbeat event
 //
 // argument : in :
@@ -631,11 +631,11 @@ void EventSupplier::push_heartbeat_event()
 	time_t delta_time;
 	time_t now_time;
 	static int heartbeat_counter=0;
-	
+
 //
 // Heartbeat - check wether a heartbeat event has been sent recently
 // if not then send it. A heartbeat contains no data, it is used by the
-// consumer to know that the supplier is still alive. 
+// consumer to know that the supplier is still alive.
 //
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -651,15 +651,15 @@ void EventSupplier::push_heartbeat_event()
 // So, if the polling thread is in advance, delta_time computed in
 // seconds will be 9 even if in reality it is 9,9
 //
-	
+
 	if (delta_time >= 9)
 	{
 		domain_name = "dserver/" + adm_dev->get_full_name();
-		
+
 		struct_event.header.fixed_header.event_type.domain_name = CORBA::string_dup(domain_name.c_str());
  		struct_event.header.fixed_header.event_type.type_name   = CORBA::string_dup(fqdn_prefix.c_str());
   		struct_event.header.variable_header.length( 0 );
-		
+
 		cout3 << "EventSupplier::push_heartbeat_event(): detected heartbeat event for " << domain_name << endl;
 		cout3 << "EventSupplier::push_heartbeat_event(): delta _time " << delta_time << endl;
   		struct_event.header.fixed_header.event_name  = CORBA::string_dup("heartbeat");
@@ -667,7 +667,7 @@ void EventSupplier::push_heartbeat_event()
   		struct_event.filterable_data[0].name = CORBA::string_dup("heartbeat_counter");
   		struct_event.filterable_data[0].value <<= (CORBA::Long) heartbeat_counter++;
 		adm_dev->last_heartbeat = now_time;
-		
+
 		struct_event.remainder_of_body <<= (CORBA::Long)adm_dev->last_heartbeat;
 
 //
@@ -699,7 +699,7 @@ void EventSupplier::push_heartbeat_event()
 			cout3 << "EventSupplier::push_heartbeat_event() caught a CORBA::SystemException ! " << endl;
 			fail = true;
 		}
-		
+
 //
 // If it was not possible to communicate with notifd,
 // try a reconnection
@@ -720,7 +720,7 @@ void EventSupplier::push_heartbeat_event()
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::reconnect_notifd()
-// 
+//
 // description : 	Method to reconnect to the notifd
 //
 // argument : in :
@@ -744,9 +744,9 @@ void EventSupplier::reconnect_notifd()
 	{
 		cout3 << "Notifd dead !!!!!!" << endl;
 	}
-	
+
 //
-// Reconnect process to notifd after forcing 
+// Reconnect process to notifd after forcing
 // process to re-read the file database
 // in case it is used
 //
@@ -756,7 +756,7 @@ void EventSupplier::reconnect_notifd()
 		NotifService ns;
 		Tango::Util *tg = Tango::Util::instance();
 		Database *db = tg->get_database();
-		
+
 		if (Util::_FileDb == true)
 			db->reread_filedatabase();
 
@@ -764,7 +764,7 @@ void EventSupplier::reconnect_notifd()
 				  tg->get_ds_name(),
 				  db,
 				  tg->get_host_name(),tg);
-		
+
 		supplierAdmin = ns.SupAdm;
 		proxyId = ns.pID;
 		proxyConsumer = ns.ProCon;
@@ -779,8 +779,8 @@ void EventSupplier::reconnect_notifd()
 	}
 
 
-	connect();	
-	
+	connect();
+
 }
 
 
@@ -830,14 +830,14 @@ void EventSupplier::detect_and_push_events_3(DeviceImpl *device_impl,
 	}
 	else
 		attr.ext->event_change_client_3 = false;
-		
+
 	if (periodic_subscription < EVENT_RESUBSCRIBE_PERIOD)
 	{
 		detect_and_push_periodic_event_3(device_impl,attr_value,attr_value_4,attr,attr_name,except,time_bef_attr);
 	}
 	else
 		attr.ext->event_periodic_client_3 = false;
-		
+
 	if (archive_subscription < EVENT_RESUBSCRIBE_PERIOD)
 	{
 		detect_and_push_archive_event_3(device_impl,attr_value,attr_value_4,attr,attr_name,except,time_bef_attr);
@@ -845,7 +845,7 @@ void EventSupplier::detect_and_push_events_3(DeviceImpl *device_impl,
 	else
 		attr.ext->event_archive_client_3 = false;
 }
-		
+
 bool EventSupplier::detect_change_3(Attribute &attr,
 				  AttributeValue_3 *curr_attr_value,
 				  AttributeValue_4 *curr_attr_value_4,
@@ -857,12 +857,12 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 				  DeviceImpl *dev)
 	{
 		bool is_change = false;
-		
+
 		cout3 << "EventSupplier::detect_change(): called for attribute " << attr.get_name() << endl;
 
 		Tango::AttrQuality the_new_quality;
 		CORBA::Any *the_new_any = NULL;
-		
+
 		if (curr_attr_value != NULL)
 		{
 			the_new_quality = curr_attr_value->quality;
@@ -872,7 +872,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 		{
 			the_new_quality = curr_attr_value_4->quality;
 		}
-		
+
 		// get the mutex to synchronize the sending of events
 		omni_mutex_lock l(detect_mutex);
 
@@ -881,12 +881,12 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 // that the read_attribute succeed after a failure.
 // Same thing if the attribute quality factor changes to INVALID
 //
-			
+
 		if (archive == true)
 		{
 			// force an event only when the last reading was not returning an exception or
 			// not returning the same exception
-			
+
 			if (except != NULL)
 			{
 				if ( attr.ext->prev_archive_event.err == true )
@@ -897,33 +897,33 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 						return false;
 					}
 				}
-					
+
 				force_change = true;
 				return true;
 			}
-			
+
 			// force an archive event when the last reading was still returning an exception
 			if ((except == NULL) && (attr.ext->prev_archive_event.err == true))
 			{
 				force_change = true;
 				return true;
 			}
-			
+
 			// check wether the quality is invalid
 			// Force an event only if the last reading was valid
-			
+
 		   if (the_new_quality == Tango::ATTR_INVALID)
 			{
 				if ( attr.ext->prev_archive_event.quality == Tango::ATTR_INVALID )
 				{
 					force_change = false;
-					return false;					
+					return false;
 				}
-					
+
 				force_change = true;
 				return true;
-			}			
-						
+			}
+
 			// force an archive event when the last reding was still marked as invalid data
 			if ((the_new_quality != Tango::ATTR_INVALID) && (attr.ext->prev_archive_event.quality == Tango::ATTR_INVALID))
 			{
@@ -932,10 +932,10 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 			}
 		}
 		else
-		{	
+		{
 			// force an event only when the last reading was not returning an exception or
 			// not returning the same exception
-			
+
 			if (except != NULL)
 			{
 				if ( attr.ext->prev_change_event.err == true )
@@ -946,7 +946,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 						return false;
 					}
 				}
-					
+
 				force_change = true;
 				return true;
 			}
@@ -957,22 +957,22 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 				force_change = true;
 				return true;
 			}
-						
+
 			// check wether the quality is invalid
 			// Force an event only if the last reading was valid
-			
+
 		   if (the_new_quality == Tango::ATTR_INVALID)
 			{
 				if ( attr.ext->prev_change_event.quality == Tango::ATTR_INVALID )
 				{
 						force_change = false;
-						return false;					
+						return false;
 				}
-					
+
 				force_change = true;
 				return true;
-			}			
-		
+			}
+
 			// force an change event when the last reding was still marked as invalid data
 			if ((the_new_quality != Tango::ATTR_INVALID) && (attr.ext->prev_change_event.quality == Tango::ATTR_INVALID))
 			{
@@ -992,9 +992,9 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 		const DevVarCharArray *curr_seq_uch, *prev_seq_uch;
 		const DevVarULongArray *curr_seq_ulo, *prev_seq_ulo;
 		const DevVarULong64Array *curr_seq_u64, *prev_seq_u64;
-		const DevVarStateArray *curr_seq_state, *prev_seq_state;		
+		const DevVarStateArray *curr_seq_state, *prev_seq_state;
 		DevState curr_sta, prev_sta;
-				
+
 		double rel_change[2], abs_change[2];
 		unsigned int i;
 		unsigned int curr_seq_nb,prev_seq_nb;
@@ -1003,7 +1003,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 		delta_change_rel = delta_change_abs = 0;
 
 		bool enable_check = false;
-		
+
 		TangoMonitor &mon1 = dev->get_att_conf_monitor();
 		mon1.get_monitor();
 		if (!archive)
@@ -1024,34 +1024,34 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 			abs_change[1] = attr.ext->archive_abs_change[1];
 			inited = attr.ext->prev_archive_event.inited;
 			if ((attr.ext->prev_archive_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
-				    enable_check = true;		
+				    enable_check = true;
 		}
 		mon1.rel_monitor();
 
 		if (inited)
-		{	
+		{
 			if (enable_check == true)
 			{
 
 			if (the_new_any != NULL)
 				ty = the_new_any->type();
-				
+
 //
 // First, analyse the DevEncoded data type
 //
-				
+
 				if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_ENCODED))
 				{
 					unsigned int curr_seq_str_nb,prev_seq_str_nb;
 					const char *curr_encoded_format,*prev_encoded_format;
 					Tango::DevVarUCharArray *curr_data_ptr,*prev_data_ptr;
-					
+
 					Tango::DevVarEncodedArray &un_seq = curr_attr_value_4->value.encoded_att_value();
 					curr_seq_str_nb = strlen(un_seq[0].encoded_format.in());
 					curr_seq_nb = un_seq[0].encoded_data.length();
 					curr_encoded_format = un_seq[0].encoded_format.in();
 					curr_data_ptr = &un_seq[0].encoded_data;
-					
+
 					if (archive == true)
 					{
 						DevVarEncodedArray &union_seq = attr.ext->prev_archive_event.value_4.encoded_att_value();
@@ -1073,7 +1073,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 						force_change = true;
 						return true;
 					}
-					
+
 					if (strcmp(curr_encoded_format,prev_encoded_format) != 0)
 					{
 						delta_change_rel = delta_change_abs = 100.;
@@ -1144,7 +1144,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 					}
 
 					if (dev_state_type == true)
-					{		
+					{
 						if (curr_sta != prev_sta)
 						{
 							delta_change_rel = delta_change_abs = 100.;
@@ -1152,7 +1152,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 						}
 						return is_change;
 					}
-				
+
 					CORBA::TypeCode_var ty_alias;
 					CORBA::TypeCode_var ty_seq;
 
@@ -1184,7 +1184,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							attr.ext->prev_archive_event.value >>= prev_seq_lo;
 						else
 							attr.ext->prev_change_event.value >>= prev_seq_lo;
-					}	
+					}
 
 					if (long_type == true)
 					{
@@ -1329,7 +1329,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							return true;
 						}
 						for (i=0; i<curr_seq_sh->length(); i++)
-						{	
+						{
 							if (rel_change[0] != INT_MAX)
 							{
 								if ((*prev_seq_sh)[i] != 0)
@@ -1363,7 +1363,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the double data type
 //
-	
+
 					bool double_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_DOUBLE))
@@ -1407,7 +1407,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 									delta_change_rel = 100;
 									if ((*curr_seq_db)[i] == (*prev_seq_db)[i]) delta_change_rel = 0;
 								}
-								
+
 								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
 								{
 									is_change = true;
@@ -1417,11 +1417,11 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							if (abs_change[0] != INT_MAX)
 							{
 								delta_change_abs = (*curr_seq_db)[i] - (*prev_seq_db)[i];
-								
+
 								// Correct for rounding errors !
 								double max_change = delta_change_abs + (abs_change[1] * 1e-10);
 								double min_change = delta_change_abs + (abs_change[0] * 1e-10);
-								
+
 								//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
 								if (min_change <= abs_change[0] || max_change >= abs_change[1])
 								{
@@ -1436,7 +1436,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the string data type
 //
-	
+
 					bool string_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_STRING))
@@ -1449,7 +1449,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							prev_seq_str = &attr.ext->prev_change_event.value_4.string_att_value();
 					}
 					else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_string))
-					{					
+					{
 						string_type = true;
 						*the_new_any >>= curr_seq_str;
 						if (archive == true)
@@ -1482,7 +1482,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the float data type
 //
-	
+
 					bool float_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_FLOAT))
@@ -1535,11 +1535,11 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							if (abs_change[0] != INT_MAX)
 							{
 								delta_change_abs = (*curr_seq_fl)[i] - (*prev_seq_fl)[i];
-								
+
 								// Correct for rounding errors !
 								double max_change = delta_change_abs + (abs_change[1] * 1e-10);
 								double min_change = delta_change_abs + (abs_change[0] * 1e-10);
-																
+
 								//if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
 								if (min_change <= abs_change[0] || max_change >= abs_change[1])
 								{
@@ -1554,7 +1554,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the unsigned short data type
 //
-	
+
 					bool unsigned_short_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_USHORT))
@@ -1620,7 +1620,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the boolean data type
 //
-	
+
 					bool boolean_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_BOOL))
@@ -1633,7 +1633,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							prev_seq_bo = &attr.ext->prev_change_event.value_4.bool_att_value();
 					}
 					else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_boolean))
-					{	
+					{
 						boolean_type = true;
 						*the_new_any >>= curr_seq_bo;
 						if (archive == true)
@@ -1666,7 +1666,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the char data type
 //
-	
+
 					bool char_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_UCHAR))
@@ -1732,7 +1732,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the unsigned long data type
 //
-	
+
 					bool unsigned_long_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_ULONG))
@@ -1746,7 +1746,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 					}
 					else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_ulong))
 					{
-						unsigned_long_type = true;		
+						unsigned_long_type = true;
 						*the_new_any >>= curr_seq_ulo;
 						if (archive == true)
 							attr.ext->prev_archive_event.value >>= prev_seq_ulo;
@@ -1798,7 +1798,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the unsigned 64 bits data type
 //
-	
+
 					bool unsigned_64_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_ULONG64))
@@ -1820,7 +1820,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 							attr.ext->prev_change_event.value >>= prev_seq_u64;
 
 					}
-		
+
 					if (unsigned_64_type == true)
 					{
 						curr_seq_nb = curr_seq_u64->length();
@@ -1865,7 +1865,7 @@ bool EventSupplier::detect_change_3(Attribute &attr,
 //
 // Now, the state data type
 //
-	
+
 					bool state_type = false;
 
 					if ((curr_attr_value_4 != NULL) && (curr_attr_value_4->value._d() == ATT_STATE))
@@ -1921,8 +1921,9 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 						 AttributeValue_4 *attr_value_4,
 						 Attribute &attr,
 						 string &attr_name,
-						 DevFailed *except)
-	
+						 DevFailed *except,
+						 bool user_push)
+
 {
 		string event, domain_name;
 		double delta_change_rel = 0.0;
@@ -1939,7 +1940,7 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 			the_quality = attr_value_4->quality;
 		else
 			the_quality = attr_value->quality;
-				
+
 		// get the mutex to synchronize the sending of events
 		omni_mutex_lock l(event_mutex);
 
@@ -1965,28 +1966,30 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 				attr.ext->prev_change_event.err = false;
 			}
 			attr.ext->prev_change_event.inited = true;
+			if (user_push == true)
+                is_change = true;
 		}
 		else
 		{
-	
+
 //
 // determine delta_change in percent compared with previous event sent
-// 
+//
 			is_change = detect_change_3(attr,attr_value,attr_value_4,false,delta_change_rel,delta_change_abs,except,force_change,device_impl);
 			cout3 << "EventSupplier::detect_and_push_change_event(): rel_change " << delta_change_rel << " abs_change " << delta_change_abs << " is change = " << is_change << endl;
 		}
-		
+
 		// check whether the data quality has changed.
 		// Fire event on a quality change.
-		
+
 		if ( except == NULL &&
 		    attr.ext->prev_change_event.quality != the_quality )
 		{
 			is_change = true;
 			quality_change = true;
 		}
-		
-	
+
+
 		if (is_change)
 		{
 			vector<string> filterable_names;
@@ -1998,7 +2001,7 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 			{
 				attr.ext->prev_change_event.err    = true;
 				attr.ext->prev_change_event.except = *except;
-			}		
+			}
 			else
 			{
 				if (attr_value_4 != NULL)
@@ -2022,25 +2025,25 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 				attr_value_4 = NULL;
 				need_free = true;
 			}
-		
+
 			domain_name = device_impl->get_name() + "/" + attr_name;
 			filterable_names.push_back("delta_change_rel");
 			filterable_data.push_back(delta_change_rel);
 			filterable_names.push_back("delta_change_abs");
 			filterable_data.push_back(delta_change_abs);
-			
+
 			filterable_names.push_back("forced_event");
 			if (force_change == true)
 				filterable_data.push_back((double)1.0);
 			else
 				filterable_data.push_back((double)0.0);
-			
+
 			filterable_names.push_back("quality");
 			if (quality_change == true)
 				filterable_data.push_back((double)1.0);
 			else
-				filterable_data.push_back((double)0.0);				
-			
+				filterable_data.push_back((double)0.0);
+
 			push_event_3(device_impl,
 				   "change",
 				   filterable_names,
@@ -2051,17 +2054,17 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 				   attr_value_4,
 				   attr_name,
 				   except);
-				   
+
 			if (need_free == true)
 				delete attr_value;
 		}
-		cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;		
+		cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;
 	}
 
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::detect_and_push_archive_event()
-// 
+//
 // description : 	Method to detect if there it is necessary
 //			to push an archive event
 //
@@ -2073,17 +2076,20 @@ void EventSupplier::detect_and_push_change_event_3(DeviceImpl *device_impl,
 //			except : The exception thrown during the last
 //				 attribute reading. NULL if no exception
 //			time_bef_attr : Date before the attribute was read
+//          user : flag set to true if the request comoes from a user
+//                  push event
 //
 //-----------------------------------------------------------------------------
 
 void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
-						  AttributeValue_3 *attr_value, 
+						  AttributeValue_3 *attr_value,
 						  AttributeValue_4 *attr_value_4,
 						  Attribute &attr,
 						  string &attr_name,
 						  DevFailed *except,
-						  struct timeval *time_bef_attr)
-{						  
+						  struct timeval *time_bef_attr,
+						  bool user_push)
+{
 	string event, domain_name;
 	double delta_change_rel = 0.0;
 	double delta_change_abs = 0.0;
@@ -2129,7 +2135,7 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 // unstable reading time. If we takes time now, it will also be unstable.
 // Use the time taken in the polling thread before the attribute was read. This one is much
 // more stable
-//		
+//
 
 	if (time_bef_attr != NULL)
 		now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
@@ -2162,7 +2168,7 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 		if (frac >= 0.5)
 			eve_round = ceil(tmp);
 		else
-			eve_round = floor(tmp);					
+			eve_round = floor(tmp);
 #else
 	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
 		double eve_round = rint((double)arch_period * DELTA_PERIODIC);
@@ -2175,14 +2181,14 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 	#endif
 #endif
 			arch_period = (int)eve_round;
-		}		
-			
+		}
+
 		if ((ms_since_last_periodic > arch_period) && (attr.ext->prev_archive_event.inited == true))
 		{
 			is_change = true;
 			period_change = true;
 		}
-	
+
 //
 // if no attribute of this name is registered with change then
 // insert the current value
@@ -2208,10 +2214,12 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 		attr.ext->archive_last_periodic = now_ms;
 		attr.ext->archive_last_event = now_ms;
 		attr.ext->prev_archive_event.inited = true;
+		if (user_push == true)
+            is_change = true;
 	}
 	else
 	{
-	
+
 //
 // determine delta_change in percent compared with previous event sent
 //
@@ -2229,13 +2237,13 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 // check whether the data quality has changed.
 // Fire event on a quality change.
 //
-		
+
 	if ( except == NULL &&
 		 attr.ext->prev_archive_event.quality != the_quality )
 	{
 		is_change = true;
 		quality_change = true;
-	}	
+	}
 
 	if (is_change)
 	{
@@ -2250,7 +2258,7 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 		{
 			attr.ext->prev_archive_event.err    = true;
 			attr.ext->prev_archive_event.except = *except;
-		}	
+		}
 		else
 		{
 			if (attr_value_4 != NULL)
@@ -2327,7 +2335,7 @@ void EventSupplier::detect_and_push_archive_event_3(DeviceImpl *device_impl,
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::detect_and_push_periodic_event()
-// 
+//
 // description : 	Method to detect if there it is necessary
 //			to push a periodic event
 //
@@ -2384,19 +2392,19 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 // get the mutex to synchronize the sending of events
 
 	omni_mutex_lock l(event_mutex);
-		
+
 // get the event period
 
-	int eve_period;		
+	int eve_period;
 	TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
-	mon1.get_monitor();	
-	eve_period = attr.ext->event_period;	
+	mon1.get_monitor();
+	eve_period = attr.ext->event_period;
 	mon1.rel_monitor();
 
 // Specify the precision interval for the event period testing
 // 2% are used for periods < 5000 ms and
 // 100ms are used for periods > 5000 ms.
-	
+
 	if ( eve_period >= 5000 )
 	{
 		 eve_period = eve_period - DELTA_PERIODIC_LONG;
@@ -2410,7 +2418,7 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 		if (frac >= 0.5)
 			eve_round = ceil(tmp);
 		else
-			eve_round = floor(tmp);					
+			eve_round = floor(tmp);
 #else
 	#if ((defined __SUNPRO_CC) || (!defined GCC_STD))
 		double eve_round = rint((double)eve_period * DELTA_PERIODIC);
@@ -2426,11 +2434,11 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 	}
 
 //
-// calculate the time 
+// calculate the time
 //
 	ms_since_last_periodic = now_ms - attr.ext->last_periodic;
 	cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic " << ms_since_last_periodic << " event_period " << eve_period << " for " << device_impl->get_name()+"/"+attr_name << endl;
-		
+
 	if ( ms_since_last_periodic > eve_period )
 	{
 		bool need_free = false;
@@ -2447,7 +2455,7 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 			attr_value_4 = NULL;
 			need_free = true;
 		}
-				
+
 		vector<string> filterable_names;
 		vector<double> filterable_data;
 		vector<string> filterable_names_lg;
@@ -2476,16 +2484,16 @@ void EventSupplier::detect_and_push_periodic_event_3(DeviceImpl *device_impl,
 
 }
 
-	
+
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::push_event()
-// 
+//
 // description : 	Method to send the event to the event channel
 //
 // argument : in :	device_impl : The device
 //			event_type : The event type (change, periodic....)
-//			filterable_names : 
+//			filterable_names :
 //			filterable_data :
 //			attr_value : The attribute value
 //			attr_value_4 : The attribute value for a IDL 4 device
@@ -2512,8 +2520,8 @@ void EventSupplier::push_event_3(DeviceImpl *device_impl,
 
 	// get the mutex to synchronize the sending of events
 	omni_mutex_lock l(push_mutex);
-	
-	string loc_attr_name = attr_name;	
+
+	string loc_attr_name = attr_name;
 	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
 	domain_name = device_impl->get_name_lower() + "/" + loc_attr_name;
 
@@ -2528,7 +2536,7 @@ void EventSupplier::push_event_3(DeviceImpl *device_impl,
 	struct_event.filterable_data.length(nb_filter + nb_filter_lg);
 
 	if (nb_filter != 0)
-	{	
+	{
 		if (nb_filter == filterable_data.size())
 		{
 			for (unsigned long i = 0; i < nb_filter; i++)
@@ -2540,7 +2548,7 @@ void EventSupplier::push_event_3(DeviceImpl *device_impl,
 	}
 
 	if (nb_filter_lg != 0)
-	{	
+	{
 		if (nb_filter_lg == filterable_data_lg.size())
 		{
 			for (unsigned long i = 0; i < nb_filter_lg; i++)
@@ -2608,7 +2616,7 @@ void EventSupplier::push_event_3(DeviceImpl *device_impl,
    		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
 		fail = true;
 	}
-	
+
 //
 // If it was not possible to communicate with notifd,
 // try a reconnection
@@ -2628,20 +2636,20 @@ void EventSupplier::push_event_3(DeviceImpl *device_impl,
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::push_att_data_ready_event()
-// 
-// description : 	
+//
+// description :
 //
 //-----------------------------------------------------------------------------
 
 void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const string &attr_name,long data_type,DevLong ctr)
 {
 	cout3 << "EventSupplier::push_att_data_ready_event(): called for attribute " << attr_name << endl;
-	
+
 	vector<string> filterable_names;
 	vector<double> filterable_data;
 	vector<string> filterable_names_lg;
 	vector<long> filterable_data_lg;
-	
+
 	string ev_type(DATA_READY_TYPE_EVENT);
 
 	AttDataReady dat_ready;
@@ -2663,7 +2671,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::disconnect_from_notifd()
-// 
+//
 // description : 	Method to disconnect the DS from the notifd event channel
 //
 //-----------------------------------------------------------------------------
@@ -2680,7 +2688,7 @@ void EventSupplier::disconnect_from_notifd()
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSupplier::set_svr_port_num()
-// 
+//
 // description : 	In case of DS using file as database, add the server port
 //					number received as argument to the fqdn prefix
 //
