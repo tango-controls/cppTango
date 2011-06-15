@@ -1688,10 +1688,14 @@ void DevTest::read_Encoded_attr_image(Tango::Attribute &att)
 
 void DevTest::read_Slow_attr(Tango::Attribute &att)
 {
+#ifdef WIN32
+	Sleep(500);
+#else
     struct timespec sl;
     sl.tv_sec = 0;
     sl.tv_nsec = 500000000;
     nanosleep(&sl,NULL);
+#endif
 
     att.set_value(&attr_slow);
 }
