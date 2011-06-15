@@ -755,6 +755,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new State_spec_attr_rwAttr());
 
   att_list.push_back(new Sub_device_tstAttr());
+  att_list.push_back(new SlowAttr());
 #ifndef COMPAT
   att_list.push_back(new Encoded_attr_rwAttr());
   att_list.push_back(new Encoded_attr_image());

@@ -124,6 +124,7 @@ public :
 	void read_Encoded_attr_image(Tango::Attribute &att);
 
 	void read_Sub_device_tst(Tango::Attribute &att);
+	void read_Slow_attr(Tango::Attribute &att);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -251,6 +252,7 @@ protected :
 	Tango::DevDouble	fast_actua;
 
 	Tango::DevBoolean   attr_sub_device_tst;
+	Tango::DevDouble    attr_slow;
 
 #ifndef COMPAT
 	Tango::EncodedAttribute jpeg;

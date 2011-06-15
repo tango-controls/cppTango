@@ -181,6 +181,8 @@ void DevTest::init_device()
 	attr_spec_state_rw[0] = Tango::ON;
 	attr_spec_state_rw[1] = Tango::OFF;
 
+	attr_slow = 3.3;
+
 #ifndef COMPAT
   	enc_attr.encoded_format = CORBA::string_dup("Which format?");
 /*  	enc_attr.encoded_data.length(200 * 1024 * 1024);
@@ -1682,4 +1684,14 @@ void DevTest::read_Encoded_attr_image(Tango::Attribute &att)
   free(imageData);
 
 #endif
+}
+
+void DevTest::read_Slow_attr(Tango::Attribute &att)
+{
+    struct timespec sl;
+    sl.tv_sec = 0;
+    sl.tv_nsec = 500000000;
+    nanosleep(&sl,NULL);
+
+    att.set_value(&attr_slow);
 }
