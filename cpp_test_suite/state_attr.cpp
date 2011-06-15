@@ -5,6 +5,10 @@
 #include <tango.h>
 #include <assert.h>
 
+#ifdef WIN32
+#include <process.h>
+#endif
+
 #define	coutv	if (verbose == true) cout
 
 #define STATE_LOG_MESSAGE	"State: Number of attribute(s) to read: "
@@ -551,13 +555,14 @@ int main(int argc, char **argv)
 	}
 	catch (CORBA::Exception &e)
 	{
+		Except::print_exception(e);
+
 		stop_logging(adm_name,file_name);
 		(*att_conf2)[0].alarms.min_alarm = "NaN";
 		device->set_attribute_config(*att_conf2);
 		device->stop_poll_attribute("SlowAttr");
 		device->stop_poll_attribute("Long_attr");
 
-		Except::print_exception(e);
 		exit(-1);
 	}
 
@@ -574,8 +579,12 @@ int main(int argc, char **argv)
 
 void build_f_name(string &f_name)
 {
-	pid_t pid = getpid();
 	stringstream str;
+#ifdef WIN32
+	int pid = _getpid();
+#else
+	pid_t pid = getpid();
+#endif
 	str << pid;
 
 	string tmp_name("file::/tmp/ds_");
@@ -669,7 +678,7 @@ int message_in_file(string &f_name,string &mess,vector<string> &mess_occur)
         return ret;
     }
  
-	string::size_type pos_env,pos_comment;
+	string::size_type pos_env;
 		   
     while (!inFile.eof())
 	{
