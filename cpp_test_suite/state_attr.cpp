@@ -7,7 +7,14 @@
 
 #define	coutv	if (verbose == true) cout
 
+#define STATE_LOG_MESSAGE	"State: Number of attribute(s) to read: "
+
 bool verbose = false;
+
+void start_logging(string &,string &);
+void stop_logging(string &,string &);
+int message_in_file(string &,string &,vector<string> &);
+void build_f_name(string &);
 
 using namespace Tango;
 using namespace std;
@@ -34,11 +41,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -64,9 +71,9 @@ int main(int argc, char **argv)
 	}
 	catch (Tango::DevFailed &e)
 	{
-              	Except::print_exception(e);
+		Except::print_exception(e);
 		exit(-1);
-        }
+	}
 	
 	long state_idx = att_info->size() - 2;
 	
@@ -109,7 +116,7 @@ int main(int argc, char **argv)
 	catch (Tango::DevFailed &)
 	{
 		failed = true;		
-        }
+	}
 	
 	assert ( failed == true );
 	
@@ -405,8 +412,6 @@ int main(int argc, char **argv)
 	
 	device->stop_poll_attribute("Status");		
 	device->stop_poll_attribute("State");
-	
-	delete device;
 
 //**************************************************************************
 //
@@ -451,7 +456,231 @@ int main(int argc, char **argv)
 		Except::print_exception(e);
 		exit(-1);
 	}
+
+//**************************************************************************
+//
+//	Check state for alarmed and polled attribute(s)
+//
+//**************************************************************************
+
+	if (device->is_attribute_polled("SlowAttr"))
+		device->stop_poll_attribute("SlowAttr");
+
+	string adm_name = device->adm_name();
+	string file_name;
+	build_f_name(file_name);
+	start_logging(adm_name,file_name);
+
+	AttributeInfoListEx *att_conf2;
+
+	try
+	{
+		DeviceAttribute da;
+
+// Set an alarm in the SlowAttr attribute
 		
+		vector<string> att_conf_list;
+		att_conf_list.push_back("SlowAttr");
+	
+		att_conf2 = device->get_attribute_config_ex(att_conf_list);
+
+		(*att_conf2)[0].alarms.min_alarm = "6.6";
+		device->set_attribute_config(*att_conf2);
+
+// Get device state with SlowAttr non-polled and polled
+
+		da = device->read_attribute("State");
+		Tango::DevState sta1 = device->state();
+		coutv << "State = " << Tango::DevStateName[sta1] << endl;
+
+		device->poll_attribute("SlowAttr",1000);
+		device->poll_attribute("Long_attr",1000);
+
+		Tango_sleep(2);
+
+		da = device->read_attribute("State");
+		Tango::DevState sta2 = device->state();
+		coutv << "State = " << Tango::DevStateName[sta2] << endl;
+
+		device->stop_poll_attribute("Long_attr");
+
+		Tango_sleep(2);
+
+		da = device->read_attribute("State");
+		Tango::DevState sta3 = device->state();
+		coutv << "State = " << Tango::DevStateName[sta3] << endl;
+
+// Stop lib logging
+
+		stop_logging(adm_name,file_name);
+
+		file_name.erase(0,6);
+		vector<string> mess_in_file;
+		string base_message(STATE_LOG_MESSAGE);
+		int res = message_in_file(file_name,base_message,mess_in_file);
+
+		for (unsigned long loop = 0;loop < mess_in_file.size();loop++)
+			coutv << "Message in file = " << mess_in_file[loop] << endl;
+
+// Reset device server to its normal state
+
+		(*att_conf2)[0].alarms.min_alarm = "NaN";
+		device->set_attribute_config(*att_conf2);
+		device->stop_poll_attribute("SlowAttr");
+
+// Check everything fine
+
+		assert (res == 0);
+		assert (mess_in_file.size() == 6);
+		string mess = base_message + "2";
+		assert (mess_in_file[0].find(mess) != string::npos);
+		assert (mess_in_file[1].find(mess) != string::npos);
+		mess = base_message + "0";
+		assert (mess_in_file[2].find(mess) != string::npos);
+		assert (mess_in_file[3].find(mess) != string::npos);
+		mess = base_message + "1";
+		assert (mess_in_file[4].find(mess) != string::npos);
+		assert (mess_in_file[5].find(mess) != string::npos);
+
+		assert (sta1 == Tango::ALARM);
+		assert (sta2 == Tango::ALARM);
+		assert (sta3 == Tango::ALARM);
+
+		cout << "   Reading State with alarmed and polled attribute(s) --> OK" << endl;
+
+	}
+	catch (CORBA::Exception &e)
+	{
+		stop_logging(adm_name,file_name);
+		(*att_conf2)[0].alarms.min_alarm = "NaN";
+		device->set_attribute_config(*att_conf2);
+		device->stop_poll_attribute("SlowAttr");
+		device->stop_poll_attribute("Long_attr");
+
+		Except::print_exception(e);
+		exit(-1);
+	}
+
+	delete device;	
 	return 0;
 	
+}
+
+//**************************************************************************
+//
+//	Create logging file name from PID (in /tmp directory)
+//
+//**************************************************************************
+
+void build_f_name(string &f_name)
+{
+	pid_t pid = getpid();
+	stringstream str;
+	str << pid;
+
+	string tmp_name("file::/tmp/ds_");
+	tmp_name = tmp_name + str.str();
+//	cout << "file_name = " << tmp_name << endl;
+	f_name = tmp_name;
+}
+
+//**************************************************************************
+//
+//	Ask library to log messages
+//
+//**************************************************************************
+
+void start_logging(string &adm_dev_name,string &f_name)
+{
+	try
+	{
+		vector<string> log_target;
+		log_target.push_back(adm_dev_name);
+		log_target.push_back(f_name);
+	
+		DeviceProxy adm_dev(adm_dev_name);
+		DeviceData dd;
+		dd << log_target;
+		adm_dev.command_inout("AddLoggingTarget",dd);
+
+		vector<string> log_level;
+		log_level.push_back(adm_dev_name);
+		vector<Tango::DevLong> log_level_long;
+		log_level_long.push_back(LOG_DEBUG);
+
+		dd.insert(log_level_long,log_level);
+		adm_dev.command_inout("SetLoggingLevel",dd);
+	}
+	catch (Tango::DevFailed &e)
+	{
+		Except::print_exception(e);
+	}
+}
+
+//**************************************************************************
+//
+//	Ask library to stop logging messages
+//
+//**************************************************************************
+
+void stop_logging(string &adm_dev_name,string &f_name)
+{
+	try
+	{
+		vector<string> log_target;
+		log_target.push_back(adm_dev_name);
+		log_target.push_back(f_name);
+	
+		DeviceProxy adm_dev(adm_dev_name);
+		DeviceData dd;
+		dd << log_target;
+		adm_dev.command_inout("RemoveLoggingTarget",dd);
+
+		vector<string> log_level;
+		log_level.push_back(adm_dev_name);
+		vector<Tango::DevLong> log_level_long;
+		log_level_long.push_back(LOG_WARN);
+
+		dd.insert(log_level_long,log_level);
+		adm_dev.command_inout("SetLoggingLevel",dd);
+	}
+	catch (Tango::DevFailed &e)
+	{
+		Except::print_exception(e);
+	}
+}
+
+//**************************************************************************
+//
+//	Find a message in the logging file
+//
+//**************************************************************************
+
+int message_in_file(string &f_name,string &mess,vector<string> &mess_occur)
+{
+	ifstream inFile;
+	string file_line;
+	int ret = 0;
+    
+    inFile.open(f_name.c_str());
+    if (!inFile)
+	{
+		ret = -1;
+        return ret;
+    }
+ 
+	string::size_type pos_env,pos_comment;
+		   
+    while (!inFile.eof())
+	{
+		getline(inFile,file_line);
+		
+		if ((pos_env = file_line.find(mess)) != string::npos)
+		{
+			mess_occur.push_back(file_line);
+		}
+    }
+   
+    inFile.close();
+    return ret;
 }
