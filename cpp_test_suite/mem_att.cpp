@@ -129,12 +129,114 @@ int main(int argc, char **argv)
 		DeviceAttribute  da_bool("Boolean_attr_w",false);
 
 		device->write_attribute(da_bool);
+
+// Try to change min_value then max_value with non-coherent value
+// The memorized value is 345
+
+		AttributeInfoListEx *att_conf = NULL;
+		
+		vector<string> att_conf_list;
+		att_conf_list.push_back(short_att_name);
+	
+		att_conf = device->get_attribute_config_ex(att_conf_list);
+
+		string old_min_value = (*att_conf)[0].min_value;
+		(*att_conf)[0].min_value = "500";
+		bool except = false;
+
+		try
+		{
+			device->set_attribute_config(*att_conf);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			except = true;
+			(*att_conf)[0].min_value = old_min_value;
+		}
+
+		assert (except == true);
+		except = false;
+
+		AttributeInfoListEx *att_conf2 = NULL;
+		att_conf2 = device->get_attribute_config_ex(att_conf_list);
+
+		assert ((*att_conf)[0].min_value == (*att_conf2)[0].min_value);
+		assert ((*att_conf)[0].max_value == (*att_conf2)[0].max_value);
+
+		string old_max_value = (*att_conf2)[0].max_value;
+		(*att_conf2)[0].max_value = "200";
+
+		try
+		{
+			device->set_attribute_config(*att_conf2);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			except = true;
+			(*att_conf2)[0].max_value = old_max_value;
+		}
+
+		assert (except == true);
+		except = false;
+
+		AttributeInfoListEx *att_conf3 = NULL;
+		att_conf3 = device->get_attribute_config_ex(att_conf_list);
+
+		assert ((*att_conf2)[0].min_value == (*att_conf3)[0].min_value);
+		assert ((*att_conf2)[0].max_value == (*att_conf3)[0].max_value);
+
+// Set a coherent min_value,max_value
+
+		(*att_conf2)[0].max_value = "400";
+		(*att_conf2)[0].min_value = "200";
+
+		try
+		{
+			device->set_attribute_config(*att_conf2);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			except = true;
+		}
+
+		assert (except == false);
+
+// Read conf
+
+		AttributeInfoListEx *att_conf4 = NULL;
+		att_conf4 = device->get_attribute_config_ex(att_conf_list);
+
+		assert ((*att_conf4)[0].min_value == "200");
+		assert ((*att_conf4)[0].max_value == "400");
+
+// Reset min_value,max_value
+
+		(*att_conf2)[0].max_value = "NaN";
+		(*att_conf2)[0].min_value = "NaN";
+
+		try
+		{
+			device->set_attribute_config(*att_conf2);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			except = true;
+		}
+
+		assert (except == false);
+
+		cout << "   Setting min_value/max_value for memorized attributes --> OK" << endl;
+
+		delete att_conf;
+		delete att_conf2;
+		delete att_conf3;
+		delete att_conf4;
 	}
 	catch (Tango::DevFailed &e)
 	{
-              	Except::print_exception(e);
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 	
 	delete device;		
 	return 0;
