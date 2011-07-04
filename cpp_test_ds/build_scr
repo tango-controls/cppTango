@@ -66,6 +66,15 @@ do
 		MAKE_PATH="make"
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
+
+	if [ $i = "redhate5" ]
+	then
+		echo "Red Hat 5 (64 bits) OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
 done
 
 #
