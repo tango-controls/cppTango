@@ -132,6 +132,18 @@ jenkins )
 			ATTR_ALIAS="redhate4_attr_alias"
 			INST_NAME=redhate4
 		fi
+
+		if [ $i = "redhate5" ]
+		then
+			echo "Red Hat 5 OS"
+			DIR="$BASE_DIR/redhate5/bin"
+			DEV1="test/redhate5/10"
+			DEV2="test/redhate5/11"
+			DEV3="test/redhate5/12"
+			DEV1_ALIAS="redhate5_alias"
+			ATTR_ALIAS="redhate5_attr_alias"
+			INST_NAME=redhate5
+		fi
 	done
 	;;
 #

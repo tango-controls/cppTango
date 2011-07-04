@@ -85,6 +85,18 @@ do
 		DS_INST_NAME_2=redhate4_2
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
+
+	if [ $i = "redhate5" ]
+	then
+		echo "Red Hat 5 OS (64 bits)"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		BIN_DIR="redhate5"
+		MAKE_PATH="make"
+		DS_INST_NAME=redhate5
+		DS_INST_NAME_2=redhate5_2
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
 done
 
 #
