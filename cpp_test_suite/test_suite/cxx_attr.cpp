@@ -15,7 +15,8 @@ using namespace std;
 class AttrTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
+	DeviceProxy *device, *dserver;
+	string device_name;
 
 public:
 	SUITE_NAME()
@@ -27,22 +28,39 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string device_name = "";
+		vector<string> uargs; // user arguments
+		uargs.push_back("device");
 
-		if(CxxTest::TangoPrinter::get_uargc() > 0)
+		vector<string> params; // parameters
+		params.push_back("fulldsname");
+
+		vector<string> params_opt; // optional parameters
+		params_opt.push_back("loop");
+
+		string dserver_name;
+
+		bool params_ok = true;
+		for(int i = 0; i < params.size() && params_ok; i++)
+			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+
+		if(CxxTest::TangoPrinter::get_uargc() > 0 && params_ok)
 		{
 			device_name = CxxTest::TangoPrinter::get_uargv()[0];
+			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
 		}
 		else
 		{
-			string param = "loop"; // parameter name found in TangoPrinter::params map
-			cout << "usage: %s device";
-			// checks if the param was defined in TangoPrinter::params map
-			if(CxxTest::TangoPrinter::is_param_defined(param))
-			{
-				// prints out the definition of the param (in this case "--loop=")
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(param) <<"]";
-			}
+			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
+
+			for(int i = 0; i < uargs.size(); i++)
+				cout << " " << uargs[i];
+
+			for(int i = 0; i < params.size(); i++)
+				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
+
+			for(int i = 0; i < params_opt.size(); i++)
+				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
+
 			cout  << endl;
 			exit(-1);
 		}
@@ -54,21 +72,35 @@ public:
 		try
 		{
 			device = new DeviceProxy(device_name);
+			dserver = new DeviceProxy(dserver_name);
 		}
 		catch (CORBA::Exception &e)
 		{
 			Except::print_exception(e);
-			exit(1);
+			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 
 	}
 
 	virtual ~SUITE_NAME()
 	{
+		DeviceData din;
+		din << device_name;
+		try
+		{
+			dserver->command_inout("DevRestart", din);
+		}
+		catch(CORBA::Exception &e)
+		{
+			Except::print_exception(e);
+			exit(-1);
+		}
 		cout << endl;
 		delete device;
+		delete dserver;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -90,9 +122,9 @@ public:
 	void test_one_attribute_at_a_time_for_all_SCALAR_types(void)
 	{
 		DeviceAttribute short_attr, long_attr, double_attr, string_attr;
-		short sh;
-		long lg;
-		double db;
+		DevShort sh;
+		DevLong lg;
+		DevDouble db;
 		string str;
 
 		short_attr = device->read_attribute("Short_attr");
@@ -135,9 +167,9 @@ public:
 		vector<DeviceAttribute> *attr_vec;
 		DeviceAttribute short_attr, long_attr, double_attr, string_attr;
 		vector<string> name_vec;
-		short sh;
-		long lg;
-		double db;
+		DevShort sh;
+		DevLong lg;
+		DevDouble db;
 		string str;
 
 		name_vec.push_back("String_attr");
@@ -204,9 +236,9 @@ public:
 	void test_one_attribute_at_a_time_for_all_SPECTRUM_types(void)
 	{
 		DeviceAttribute short_attr, long_attr, double_attr, string_attr;
-		vector<short> sh;
-		vector<long> lg;
-		vector<double> db;
+		vector<DevShort> sh;
+		vector<DevLong> lg;
+		vector<DevDouble> db;
 		vector<string> str;
 
 		short_attr = device->read_attribute("Short_spec_attr");
@@ -251,7 +283,7 @@ public:
 		vector<DeviceAttribute> *attr_vec;
 		DeviceAttribute double_attr, string_attr;
 		vector<string> name_vec;
-		vector<double> db;
+		vector<DevDouble> db;
 		vector<string> str;
 
 		name_vec.push_back("String_spec_attr");
@@ -281,9 +313,9 @@ public:
 	void test_one_attribute_at_a_time_for_all_IMAGE_types(void)
 	{
 		DeviceAttribute short_attr, long_attr, double_attr, string_attr;
-		vector<short> sh;
-		vector<long> lg;
-		vector<double> db;
+		vector<DevShort> sh;
+		vector<DevLong> lg;
+		vector<DevDouble> db;
 		vector<string> str;
 
 		short_attr = device->read_attribute("Short_ima_attr");
@@ -326,8 +358,8 @@ public:
 		vector<DeviceAttribute> *attr_vec;
 		DeviceAttribute long_attr, double_attr, string_attr;
 		vector<string> name_vec;
-		vector<long> lg;
-		double db;
+		vector<DevLong> lg;
+		DevDouble db;
 		vector<string> str;
 
 		name_vec.push_back("String_spec_attr");
@@ -365,9 +397,9 @@ public:
 	void test_attributes_written_using_the_set_value_date_and_quality_method(void)
 	{
 		DeviceAttribute short_attr, long_attr, double_attr, string_attr;
-		short sh;
-		long lg;
-		double db;
+		DevShort sh;
+		DevLong lg;
+		DevDouble db;
 		string str;
 
 		short_attr = device->read_attribute("attr_dq_sh");
