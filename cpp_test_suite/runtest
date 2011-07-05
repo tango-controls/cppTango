@@ -172,6 +172,15 @@ then
 fi
 
 #
+# First run the CXX test suite
+#
+
+$echo "Running the new Test Suite"
+$DIR/runner $DEV1
+ret=$?
+check_return_value $ret
+
+#
 # Run test suite
 #
 

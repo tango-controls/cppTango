@@ -126,7 +126,7 @@ fi
 
 #
 # Run make
-# Only one solution in Windows but 3 make in 3 directories for non-windows OS
+# Only one solution in Windows but 4 make in 4 directories for non-windows OS
 #
 
 echo $MAKE_CMD
@@ -147,6 +147,15 @@ fi
 
 if [ $OS_TYPE != "Windows" ]
 then
+	cd test_suite
+	echo $MAKE_CMD
+	$MAKE_CMD
+	RET=$?
+	if [ $RET != 0 ]
+	then
+		exit -1
+	fi
+
 	cd asyn
 	echo $MAKE_CMD
 	$MAKE_CMD
