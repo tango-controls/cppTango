@@ -156,7 +156,7 @@ then
 		exit -1
 	fi
 
-	cd asyn
+	cd ../asyn
 	echo $MAKE_CMD
 	$MAKE_CMD
 	RET=$?
