@@ -36,13 +36,13 @@ endif
 ifdef prefix
 TANGO_HOME = $(prefix)/$(BIN_DIR)
 LIB_TANGO_DIR = $(TANGO_HOME)/lib
-BIN_TANGO_DIR = $(TANGO_HOME)/bin
+BIN_SUITE_DIR = $(TANGO_HOME)/bin
 else
 #TANGO_HOME = /usr/tango
 TANGO_HOME = /home/taurel/tango/cppapi_develop
 LIB_TANGO_DIR = $(TANGO_HOME)/lib
 # binary target
-BIN_TANGO_DIR = bin
+BIN_SUITE_DIR = bin
 endif
 
 ##############################################################################
@@ -118,7 +118,6 @@ LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 endif
 
 OBJ_DIR = obj
-BIN_SUITE_DIR = bin
 
 .SUFFIXES:	.o .cpp
 #.cpp.o:
