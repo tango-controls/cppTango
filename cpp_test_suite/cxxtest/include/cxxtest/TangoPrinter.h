@@ -70,6 +70,10 @@ namespace CxxTest
          * (example: params["loop"] = "--loop=" ==> ./run_tests user_param --loop=10)
          */
         static map<string,string> params;
+        /*
+         * executable name
+         */
+        static string executable_name;
 
     public:
         TangoPrinter( CXXTEST_STD(ostream) &o = CXXTEST_STD(cout), const char *preLine = ":", const char *postLine = "" ) :
@@ -136,6 +140,9 @@ namespace CxxTest
 		{
         	argc = argc_tmp;
         	argv = argv_tmp;
+
+        	if(argc >= 1)
+        		executable_name = argv[0];
 
         	// compares if argument list contains any parameter from predefined list
         	for(int i = 1; i < argc; i++)
@@ -253,6 +260,11 @@ namespace CxxTest
 			return params;
 		}
 
+        static string &get_executable_name(void)
+        {
+        	return executable_name;
+        }
+
         /*
          * declare predefined parameters here
          */
@@ -262,6 +274,10 @@ namespace CxxTest
         	params_tmp["loop"] = "--loop=";
         	params_tmp["verbose"] = "--v";
         	params_tmp["fulldsname"] = "--fulldsname=";
+        	params_tmp["serverhost"] = "--serverhost=";
+        	params_tmp["serverversion"] = "--serverversion=";
+        	params_tmp["docurl"] = "--docurl=";
+        	params_tmp["devtype"] = "--devtype=";
         	return params_tmp;
         }
 
@@ -292,6 +308,7 @@ namespace CxxTest
 	map<string,string> TangoPrinter::pargv;
     int TangoPrinter::loop = 0;
     map<string,string> TangoPrinter::params = TangoPrinter::create_params();
+    string TangoPrinter::executable_name = "";
 }
 
 #endif // __cxxtest__TangoPrinter_h__
