@@ -214,7 +214,7 @@ then
 	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
 fi
 
-./runtest jenkins $INSTALL_DIR
+./runtest jenkins $INSTALL_DIR --fulldsname=devTest/$DS_INST_NAME
 RET=$?
 
 #
