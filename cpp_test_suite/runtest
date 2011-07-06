@@ -176,7 +176,7 @@ fi
 #
 
 $echo "Running the new Test Suite"
-$DIR/runner $DEV1
+$DIR/runner $DEV1 $DEV3 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice
 ret=$?
 check_return_value $ret
 
