@@ -12,6 +12,10 @@ using namespace std;
 #undef SUITE_NAME
 #define SUITE_NAME AttrMiscTestSuite
 
+#ifdef WIN32
+#define sleep(time) Sleep(time*1000)
+#endif // WIN32
+
 class AttrMiscTestSuite: public CxxTest::TestSuite
 {
 protected:
