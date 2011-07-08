@@ -1,14 +1,11 @@
-cxxtest\bin\cxxtestgen.py --template=cxxtest\template\tango_template.tpl -o runner.cpp ^
-cxx_blackbox.cpp ^
-cxx_misc.cpp ^
-cxx_attr_write.cpp ^
-cxx_attr_conf.cpp ^
-cxx_attr_misc.cpp ^
-cxx_attr.cpp ^
-cxx_misc_util.cpp ^
-cxx_templ_cmd.cpp ^
-cxx_exception.cpp ^
-cxx_cmd_query.cpp ^
-cxx_seq_vec.cpp ^
-cxx_test_state_on.cpp ^
-cxx_cmd_types.cpp
+set REL_DIR=..\..\..\..\
+%REL_DIR%cxxtest\bin\cxxtestgen.py --template=%REL_DIR%cxxtest\template\tango_template.tpl -o runner.cpp ^
+%REL_DIR%test_suite\cxx_attr_conf.cpp ^
+%REL_DIR%test_suite\cxx_attr.cpp ^
+%REL_DIR%test_suite\cxx_misc_util.cpp ^
+%REL_DIR%test_suite\cxx_templ_cmd.cpp ^
+%REL_DIR%test_suite\cxx_exception.cpp ^
+%REL_DIR%test_suite\cxx_cmd_query.cpp ^
+%REL_DIR%test_suite\cxx_seq_vec.cpp ^
+%REL_DIR%test_suite\cxx_test_state_on.cpp ^
+%REL_DIR%test_suite\cxx_cmd_types.cpp
