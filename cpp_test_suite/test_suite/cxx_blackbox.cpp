@@ -5,6 +5,7 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
+#include <unistd.h>
 
 using namespace Tango;
 using namespace std;
