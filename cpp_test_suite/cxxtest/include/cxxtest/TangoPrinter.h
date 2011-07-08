@@ -124,7 +124,7 @@ namespace CxxTest
 						test_name.erase(loop_pos,loop_str.length());
 
 					// replaces undersocres '_' with spaces ' ' in the test name
-					for(int i = 0; i < test_name.length(); i++)
+					for(size_t i = 0; i < test_name.size(); i++)
 					{
 						if(test_name[i] == '_')
 							test_name[i] = ' ';
@@ -174,6 +174,18 @@ namespace CxxTest
         			uargv.push_back(argv[i]);
         	}
         	uargc = uargv.size();
+
+        	// prints out the list of all parameters if required by user ("--?" or "--help")
+        	if(TangoPrinter::is_param_set("?") || TangoPrinter::is_param_set("help"))
+        	{
+        		cout << "\navailable parameters:";
+        		for(map<string,string>::iterator it = TangoPrinter::params.begin(); it != TangoPrinter::params.end(); ++it)
+        		{
+        			cout << " " << it->second;
+        		}
+        		cout << "\n";
+        		exit(0);
+        	}
 
         	// atoi() converts string into integer; if not possible, returns 0
         	if(is_param_defined("loop"))
@@ -278,6 +290,8 @@ namespace CxxTest
         	params_tmp["serverversion"] = "--serverversion=";
         	params_tmp["docurl"] = "--docurl=";
         	params_tmp["devtype"] = "--devtype=";
+        	params_tmp["?"] = "--?";
+        	params_tmp["help"] = "--help";
         	return params_tmp;
         }
 

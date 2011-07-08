@@ -40,7 +40,7 @@ public:
 		string dserver_name;
 
 		bool params_ok = true;
-		for(int i = 0; i < params.size() && params_ok; i++)
+		for(size_t i = 0; i < params.size() && params_ok; i++)
 			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
 
 		if(CxxTest::TangoPrinter::get_uargc() > 0 && params_ok)
@@ -52,13 +52,13 @@ public:
 		{
 			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
 
-			for(int i = 0; i < uargs.size(); i++)
+			for(size_t i = 0; i < uargs.size(); i++)
 				cout << " " << uargs[i];
 
-			for(int i = 0; i < params.size(); i++)
+			for(size_t i = 0; i < params.size(); i++)
 				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
 
-			for(int i = 0; i < params_opt.size(); i++)
+			for(size_t i = 0; i < params_opt.size(); i++)
 				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
 
 			cout  << endl;
