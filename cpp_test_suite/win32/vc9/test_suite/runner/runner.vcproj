@@ -98,7 +98,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\..\cxxtest\bin\cxxtestgen.py --template=..\..\..\..\cxxtest\template\tango_template.tpl -o runner.cpp ..\..\..\..\test_suite\cxx_attr.cpp"
+				CommandLine="..\..\..\..\build_runner.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
