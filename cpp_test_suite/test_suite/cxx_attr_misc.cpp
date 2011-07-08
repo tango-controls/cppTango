@@ -12,10 +12,6 @@ using namespace std;
 #undef SUITE_NAME
 #define SUITE_NAME AttrMiscTestSuite
 
-#ifdef WIN32
-#define sleep(time) Sleep(time*1000)
-#endif // WIN32
-
 class AttrMiscTestSuite: public CxxTest::TestSuite
 {
 protected:
@@ -79,7 +75,7 @@ public:
 			dserver = new DeviceProxy(dserver_name);
 
 			dserver->command_inout("RestartServer");
-			sleep(3);
+			Tango_sleep(3);
 		}
 		catch (CORBA::Exception &e)
 		{

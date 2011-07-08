@@ -214,7 +214,7 @@ public:
 	void test_memorized_attributes(void)
 	{
 		dserver->command_inout("RestartServer");
-		sleep(3);
+		Tango_sleep(3);
 
 		DevShort sh;
 		string str;

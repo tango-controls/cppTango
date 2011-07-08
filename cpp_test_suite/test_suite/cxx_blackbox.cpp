@@ -5,7 +5,6 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
-#include <unistd.h>
 
 using namespace Tango;
 using namespace std;
@@ -194,7 +193,7 @@ public:
 		}
 
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
-		sleep(3);
+		Tango_sleep(3);
 
 		TS_ASSERT_THROWS_NOTHING(device3 = new DeviceProxy(device3_name));
 

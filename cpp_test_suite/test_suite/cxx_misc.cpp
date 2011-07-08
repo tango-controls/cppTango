@@ -159,7 +159,7 @@ public:
 
 		din << device_name;
 		dserver->command_inout("DevRestart", din);
-		sleep(3);
+		Tango_sleep(3);
 		dout = device->command_inout("State");
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
