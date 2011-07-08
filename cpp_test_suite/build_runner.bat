@@ -1,1 +1,1 @@
-echo %PATH%
+cxxtest\bin\cxxtestgen.py --template=cxxtest\template\tango_template.tpl -o runner.cpp test_suite\cxx_attr.cpp
