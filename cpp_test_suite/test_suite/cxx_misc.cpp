@@ -196,7 +196,7 @@ public:
 
 	void test_info_call(void)
 	{
-		cout << endl << "---> " << server_host << endl << endl;
+		cout << endl << "---> server_host: " << server_host << " info().server_host: " << device->info().server_host << endl << endl;
 		TS_ASSERT(device->info().dev_class == "DevTest");
 		TS_ASSERT(device->info().dev_type == dev_type);
 		TS_ASSERT(device->info().doc_url == "Doc URL = " + doc_url);
