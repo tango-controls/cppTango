@@ -6,6 +6,10 @@
 #include <tango.h>
 #include <iostream>
 
+#ifdef WIN32
+#include <process.h>
+#endif 	// WIN32
+
 using namespace Tango;
 using namespace std;
 
@@ -165,7 +169,7 @@ public:
 		TS_ASSERT(lg_out == 20);
 
 		vector<string> *blackbox_out;
-		string out_str, version_str, reference_str;
+		string out_str, version_str, reference_str, pid_str;
 
 		// sets the "command_ionout" suffix (refer to blackbox.cpp build_info_as_str())
 		switch(server_version)
@@ -182,7 +186,17 @@ public:
 		default:
 			version_str = "";
 		}
-		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
+
+#ifdef WIN32
+		int pid = _getpid();
+#else
+		pid_t pid = getpid();
+#endif 	// WIN32
+
+		stringstream ss;
+		ss << pid;
+		pid_str = ss.str();
+		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host + " (CPP/Python client with PID " + pid_str + ")";
 
 		blackbox_out = device1->black_box(3);
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
