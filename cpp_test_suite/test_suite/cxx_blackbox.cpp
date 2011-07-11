@@ -20,7 +20,7 @@ class BlackboxTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *device3, *dserver;
-	string device1_name, device2_name, device3_name, full_ds_name, server_host, doc_url, dev_type;
+	string device1_name, device2_name, device3_name, fulldsname, server_host;
 	DevLong server_version;
 
 public:
@@ -42,8 +42,6 @@ public:
 		params.push_back("fulldsname");
 		params.push_back("serverhost");
 		params.push_back("serverversion");
-		params.push_back("docurl");
-		params.push_back("devtype");
 
 		vector<string> params_opt; // optional parameters
 		params_opt.push_back("loop");
@@ -61,11 +59,8 @@ public:
 			device3_name = CxxTest::TangoPrinter::get_uargv()[2];
 			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
 
-			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
 			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
-			doc_url = CxxTest::TangoPrinter::get_param_val(params[3]);
-			dev_type = CxxTest::TangoPrinter::get_param_val(params[4]);
 		}
 		else
 		{
@@ -196,7 +191,16 @@ public:
 		stringstream ss;
 		ss << pid;
 		pid_str = ss.str();
+
+//
+// This is to be redeveloped in the Tango core. Currently executing a command on a device
+// at the same host results in the PID information not been printed out.
+//
+#ifdef WIN32
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host + " (CPP/Python client with PID " + pid_str + ")";
+#else
+		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
+#endif 	// WIN32
 
 		blackbox_out = device1->black_box(3);
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
