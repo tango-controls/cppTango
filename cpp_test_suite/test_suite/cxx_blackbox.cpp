@@ -217,6 +217,12 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(device3 = new DeviceProxy(device3_name));
 
+		vactor<string> *bb = device3->black_box(5);
+		cout << endl << "===> blackbox size: " << (*bb).size() << endl;
+		if((*bb).size() > 1)
+				cout << "===> first element: " << (*bb)[0] << endl
+				<< "===> second element: " << (*bb)[1] << endl;
+
 		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_BlackBoxEmpty"
 						&& e.errors[0].severity == Tango::ERR));
