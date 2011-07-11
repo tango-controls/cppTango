@@ -129,6 +129,11 @@ $(OBJ_DIR)/%.o: %.cpp
 				
 all: runner
 
+conf:
+	$(CC) $(CXXFLAGS) -c conf_devtest.cpp -o $(OBJ_DIR)/conf_devtest.o
+	$(CC) $(OBJ_DIR)/conf_devtest.o -o $(BIN_TANGO_DIR)/conf_devtest $(LFLAGS)
+#	$(BIN_TANGO_DIR)/conf_devtest device1 device2 device3
+	
 test:
 	$(BIN_SUITE_DIR)/runner dev/test/10 dev/test/11 dev/test/12 --loop=5 --fulldsname=devTest/api
 
