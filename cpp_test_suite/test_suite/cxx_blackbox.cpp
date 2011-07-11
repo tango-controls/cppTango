@@ -221,7 +221,7 @@ public:
 		{
 			vector<string> *bb = device3->black_box(5);
 			cout << endl << "===> blackbox size: " << (*bb).size() << endl;
-			if((*bb).size() > 1)
+			if((*bb).size() > 0)
 					cout << "===> first element: " << (*bb)[0] << endl;
 		}
 		catch(...)
