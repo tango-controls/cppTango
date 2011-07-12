@@ -194,7 +194,6 @@ $echo "\nTesting insertion and extraction into DeviceData objects for all types"
 $DIR/cmd_types $DEV1 10
 ret=$?
 check_return_value $ret
-
 #
 $echo "\nTesting extraction from DeviceAttribute objects for all types"
 $DIR/attr_types $DEV1 10
@@ -203,6 +202,11 @@ check_return_value $ret
 #
 $echo "\nTesting attribute configuration changes"
 $DIR/att_conf $DEV1
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting miscellaneous attribute features"
+$DIR/attr_misc $DEV1
 ret=$?
 check_return_value $ret
 #
@@ -326,6 +330,11 @@ check_return_value $ret
 #
 $echo "\nTesting printing operators"
 $DIR/print_data $DEV1
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting printing attribute property"
+$DIR/attr_manip $DEV1
 ret=$?
 check_return_value $ret
 #

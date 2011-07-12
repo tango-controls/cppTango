@@ -25,11 +25,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -710,7 +710,7 @@ int main(int argc, char **argv)
 		
 		assert (ai.events.ch_event.abs_change == "Not specified");
 		assert (ai.events.ch_event.rel_change == "Not specified");
-		assert (ai.events.per_event.period == "Not specified");
+		assert (ai.events.per_event.period == "1000");
 		assert (ai.events.arch_event.archive_period == "Not specified");
 		
 		old_ai = ai;
@@ -1029,6 +1029,120 @@ int main(int argc, char **argv)
 		assert (qual == Tango::ATTR_VALID);
 		
 		cout << "   Alarm, Warning level detection --> OK" << endl;
+
+//*************************************************************************
+//
+//	Can't change hard coded properties
+//
+//*************************************************************************
+
+
+// Name
+
+		AttributeInfoEx ai_org,ai_mod;
+		att_name = "Float_spec_attr_rw";
+		
+		ai_org = device->get_attribute_config(att_name);
+
+		bool except = false;
+		ai_mod = ai_org;
+		ai_mod.name = "NewName";
+
+		AttributeInfoListEx ai_list_except;
+		ai_list_except.push_back(ai_mod);	
+
+		try
+		{
+			device->set_attribute_config(ai_list_except);			
+		}
+		catch (DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotFound") == 0)
+				except = true;
+		}
+		assert (except == true);
+
+// data type
+
+		except = false;
+		ai_mod = ai_org;
+		ai_mod.data_type = Tango::DEV_LONG;
+
+		ai_list_except.clear();
+		ai_list_except.push_back(ai_mod);
+
+		try
+		{
+			device->set_attribute_config(ai_list_except);			
+		}
+		catch (DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+				except = true;
+		}
+		assert (except == true);
+
+// data fornmat
+
+		except = false;
+		ai_mod = ai_org;
+		ai_mod.data_format = Tango::SCALAR;
+
+		ai_list_except.clear();
+		ai_list_except.push_back(ai_mod);
+
+		try
+		{
+			device->set_attribute_config(ai_list_except);			
+		}
+		catch (DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+				except = true;
+		}
+		assert (except == true);
+
+// writable
+
+		except = false;
+		ai_mod = ai_org;
+		ai_mod.writable = Tango::READ;
+
+		ai_list_except.clear();
+		ai_list_except.push_back(ai_mod);
+
+		try
+		{
+			device->set_attribute_config(ai_list_except);			
+		}
+		catch (DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+				except = true;
+		}
+		assert (except == true);
+
+// level
+
+		except = false;
+		ai_mod = ai_org;
+		ai_mod.disp_level = Tango::EXPERT;
+
+		ai_list_except.clear();
+		ai_list_except.push_back(ai_mod);
+
+		try
+		{
+			device->set_attribute_config(ai_list_except);			
+		}
+		catch (DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"API_AttrNotAllowed") == 0)
+				except = true;
+		}
+		assert (except == true);
+
+		cout << "   Exception when trying to change \"hard coded\" properties --> OK" << endl;		
 	}
 	catch (CORBA::Exception &e)
 	{
