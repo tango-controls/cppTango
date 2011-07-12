@@ -21,8 +21,8 @@ using namespace std;
 class BlackboxTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device1, *device2, *device3, *dserver;
-	string device1_name, device2_name, device3_name, fulldsname, server_host;
+	DeviceProxy *device1, *device2, *device3, *dserver, *dbserver;
+	string device1_name, device2_name, device3_name, fulldsname, server_host, dbserver_name;
 	DevLong server_version;
 
 public:
@@ -42,6 +42,7 @@ public:
 		params.push_back("fulldsname");
 		params.push_back("serverhost");
 		params.push_back("serverversion");
+		params.push_back("dbserver");
 
 		vector<string> params_opt; // optional parameters
 		params_opt.push_back("loop");
@@ -61,6 +62,7 @@ public:
 
 			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
+			dbserver_name = CxxTest::TangoPrinter::get_param_val(params[3]);
 		}
 		else
 		{
@@ -88,6 +90,7 @@ public:
 			device1 = new DeviceProxy(device1_name);
 			device2 = new DeviceProxy(device2_name);
 			dserver = new DeviceProxy(dserver_name);
+			dbserver = new DeviceProxy(dbserver_name);
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -98,7 +101,8 @@ public:
 		cout << endl;
 		cout << "new DeviceProxy(" << device1->name() << ") returned" << endl;
 		cout << "new DeviceProxy(" << device2->name() << ") returned" << endl;
-		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
+		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << dbserver->name() << ") returned" << endl << endl;
 	}
 
 	virtual ~SUITE_NAME()
@@ -120,6 +124,7 @@ public:
 		delete device1;
 		delete device2;
 		delete dserver;
+		delete dbserver;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -202,13 +207,40 @@ public:
 #else
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
 #endif 	// _TG_WINDOWS_
-		cout << "===> ref_str: " << reference_str << endl;
+
 		blackbox_out = device1->black_box(3);
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
 		{
 			out_str = *it;
 			out_str.erase(0,out_str.rfind(": ") + 2); // removes time stamp from the output
 			TS_ASSERT(out_str == reference_str);
+		}
+
+		// removing properties of memorized attributes
+		string query = "select attribute, name  from property_attribute_device where name like '\\_\\_%' and  device='" + device3_name + "'";
+		const DevVarLongStringArray *res;
+		DevVarLongStringArray result;
+		din << query;
+		dout = dbserver->command_inout("DbMySqlSelect", din);
+		dout >> res;
+		result = *res;
+		string attr_name, attr_prop;
+		// TODO: check the loop
+		for(unsigned int i = 0; i < result.svalue.length(); i++)
+		{
+			if(i%2 == 0)
+			{
+				cout << "===> attr_name: " << string(result.svalue[i].in()) << endl;
+				attr_name = device3_name + string(result.svalue[i].in());
+			}
+			else
+			{
+				cout << "===> attr_prop: " << string(result.svalue[i].in()) << endl;
+				attr_prop = string(result.svalue[i].in());
+
+				AttributeProxy *my_attr = new AttributeProxy(attr_name);
+				my_attr->delete_property(attr_prop);
+			}
 		}
 
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));

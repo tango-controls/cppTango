@@ -319,6 +319,7 @@ namespace CxxTest
         	params_tmp["devtype"] = "--devtype=";
         	params_tmp["?"] = "--?";
         	params_tmp["help"] = "--help";
+        	params_tmp["dbserver"] = "--dbserver=";
         	return params_tmp;
         }
 
