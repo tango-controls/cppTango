@@ -202,7 +202,7 @@ public:
 #else
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
 #endif 	// _TG_WINDOWS_
-
+		cout << "===> ref_str: " << reference_str << endl;
 		blackbox_out = device1->black_box(3);
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
 		{
