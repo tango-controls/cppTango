@@ -1,5 +1,5 @@
-#ifndef TestStateOnTestSuite_h
-#define TestStateOnTestSuite_h
+#ifndef TemplateTestSuite_h
+#define TemplateTestSuite_h
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
@@ -12,9 +12,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME TestStateOnTestSuite
+#define SUITE_NAME TemplateTestSuite
 
-class TestStateOnTestSuite: public CxxTest::TestSuite
+class TemplateTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device;
@@ -101,12 +101,12 @@ public:
 // Tests -------------------------------------------------------
 //
 
-// Test Test State ON
+// Test TestName
 
-	void test_test_state_on(void)
+	void test_TestName(void)
 	{
-		TS_ASSERT(device->state() == Tango::ON);
+		TS_ASSERT(true);
 	}
 };
 #undef cout
-#endif // TestStateOnTestSuite_h
+#endif // TemplateTestSuite_h

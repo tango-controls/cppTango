@@ -9,6 +9,8 @@
 using namespace Tango;
 using namespace std;
 
+#define cout cout << "\t"
+
 #undef SUITE_NAME
 #define SUITE_NAME AttrMiscTestSuite
 
@@ -21,8 +23,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -83,7 +83,8 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device->name() << ") returned" << endl;
 		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 
 	}
@@ -399,4 +400,5 @@ public:
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 	}
 };
+#undef cout
 #endif // AttrMiscTestSuite_h

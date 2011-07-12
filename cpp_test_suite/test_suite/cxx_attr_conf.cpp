@@ -9,6 +9,8 @@
 using namespace Tango;
 using namespace std;
 
+#define cout cout << "\t"
+
 #undef SUITE_NAME
 #define SUITE_NAME AttrConfTestSuite
 
@@ -20,8 +22,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -82,9 +82,10 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device1->name() << ") returned";
-		cout << endl << "new DeviceProxy(" << device2->name() << ") returned";
-		cout << endl << "new DeviceProxy(" << device3->name() << ") returned" << endl << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device1->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << device2->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << device3->name() << ") returned" << endl << endl;
 
 	}
 
@@ -333,4 +334,5 @@ public:
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAddAttribute")); // ?
 	}
 };
+#undef cout
 #endif // AttrConfTestSuite_h

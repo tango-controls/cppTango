@@ -81,6 +81,33 @@ namespace CxxTest
         virtual ~TangoPrinter() { delete outputStream(); }
 
         /*
+         * Prints out formatted name of each test suite.
+         * Use the following test suite naming convention:
+         * 		MySuiteNameTestSuite
+         * The suffix TestSuite is removed, prefix Testing is prepended
+         * and spaces are added before each capital letter.
+         * As the effect we get:
+         * 		Testing My Suite Name :
+         */
+        void enterSuite( const SuiteDescription &desc )
+		{
+        	string suite_name = tracker().suite().suiteName();
+        	size_t suffix_pos = suite_name.rfind("TestSuite");
+        	if(suffix_pos != string::npos)
+        	{
+        		suite_name.erase(suffix_pos,9);
+        	}
+        	for(size_t i = 1; i < suite_name.size(); i++)
+        	{
+        		if(isupper(suite_name[i]) && islower(suite_name[i-1]))
+				{
+        			suite_name.insert(i," ");
+				}
+        	}
+        	cout << "\nTesting " << suite_name << " :\n";
+		}
+
+        /*
          * Checks if a test failed and exits.
          * If not, checks if the "loop" parameter has been defined
          * and runs all tests which names end with "__loop"
@@ -119,7 +146,7 @@ namespace CxxTest
 						test_name.erase(0,4);
 
 					// removes the "__loop" suffix from the test name
-					int loop_pos = test_name.rfind(loop_str);
+					size_t loop_pos = test_name.rfind(loop_str);
 					if(loop_pos == test_name.length() - loop_str.length())
 						test_name.erase(loop_pos,loop_str.length());
 
@@ -130,7 +157,7 @@ namespace CxxTest
 							test_name[i] = ' ';
 					}
 
-        			cout << tracker().suite().suiteName() << " : " << test_name << " --> OK" << "\n" ;
+        			cout << "\t" << test_name << " --> OK" << "\n" ;
         			counter = loop - 1;
         		}
         	}

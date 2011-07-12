@@ -9,6 +9,8 @@
 using namespace Tango;
 using namespace std;
 
+#define cout cout << "\t"
+
 #undef SUITE_NAME
 #define SUITE_NAME MiscTestSuite
 
@@ -22,8 +24,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -91,7 +91,8 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device->name() << ") returned" << endl;
 		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 	}
 
@@ -204,4 +205,5 @@ public:
 		TS_ASSERT(device->info().server_version == server_version);
 	}
 };
+#undef cout
 #endif // MiscTestSuite_h

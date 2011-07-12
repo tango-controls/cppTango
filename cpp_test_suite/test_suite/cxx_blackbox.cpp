@@ -6,12 +6,14 @@
 #include <tango.h>
 #include <iostream>
 
-#ifdef WIN32
+#ifdef _TG_WINDOWS_
 #include <process.h>
-#endif 	// WIN32
+#endif 	// _TG_WINDOWS_
 
 using namespace Tango;
 using namespace std;
+
+#define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME BlackboxTestSuite
@@ -26,8 +28,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -95,7 +95,8 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device1->name() << ") returned" << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device1->name() << ") returned" << endl;
 		cout << "new DeviceProxy(" << device2->name() << ") returned" << endl;
 		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 	}
@@ -182,11 +183,11 @@ public:
 			version_str = "";
 		}
 
-#ifdef WIN32
+#ifdef _TG_WINDOWS_
 		int pid = _getpid();
 #else
 		pid_t pid = getpid();
-#endif 	// WIN32
+#endif 	// _TG_WINDOWS_
 
 		stringstream ss;
 		ss << pid;
@@ -196,11 +197,11 @@ public:
 // This is to be redeveloped in the Tango core. Currently executing a command on a device
 // at the same host results in the PID information not been printed out.
 //
-#ifdef WIN32
+#ifdef _TG_WINDOWS_
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host + " (CPP/Python client with PID " + pid_str + ")";
 #else
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
-#endif 	// WIN32
+#endif 	// _TG_WINDOWS_
 
 		blackbox_out = device1->black_box(3);
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
@@ -238,4 +239,5 @@ public:
 		TS_ASSERT(out_str == reference_str);
 	}
 };
+#undef cout
 #endif // BlackboxTestSuite_h

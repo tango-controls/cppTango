@@ -9,6 +9,8 @@
 using namespace Tango;
 using namespace std;
 
+#define cout cout << "\t"
+
 #undef SUITE_NAME
 #define SUITE_NAME MiscUtilTestSuite
 
@@ -21,8 +23,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -77,7 +77,8 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
 	}
 
@@ -112,7 +113,7 @@ public:
 		din << class_name;
 
 		string name = device->name();
-		int rf = name.rfind('/');
+		size_t rf = name.rfind('/');
 		if(rf != string::npos)
 			name.erase(rf);
 
@@ -171,4 +172,5 @@ public:
 										&& e.errors[0].severity == Tango::ERR));
 	}
 };
+#undef cout
 #endif // MiscUtilTestSuite_h

@@ -9,6 +9,8 @@
 using namespace Tango;
 using namespace std;
 
+#define cout cout << "\t"
+
 #undef SUITE_NAME
 #define SUITE_NAME SeqVecTestSuite
 
@@ -20,8 +22,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -76,7 +76,8 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
 	}
 
@@ -276,4 +277,5 @@ public:
 		TS_ASSERT(input == output);
 	}
 };
+#undef cout
 #endif // SeqVecTestSuite_h

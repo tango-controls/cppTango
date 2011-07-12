@@ -9,6 +9,8 @@
 using namespace Tango;
 using namespace std;
 
+#define cout cout << "\t"
+
 #undef SUITE_NAME
 #define SUITE_NAME AttrWriteTestSuite
 
@@ -20,8 +22,6 @@ protected:
 public:
 	SUITE_NAME()
 	{
-
-		cout << endl;
 
 //
 // Arguments check -------------------------------------------------
@@ -79,7 +79,8 @@ public:
 			exit(-1);
 		}
 
-		cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl;
+		cout << endl;
+		cout << "new DeviceProxy(" << device->name() << ") returned" << endl;
 		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 
 	}
@@ -236,4 +237,5 @@ public:
 		TS_ASSERT(attributes[2].name == "Boolean_attr_w" && bl == 0);
 	}
 };
+#undef cout
 #endif // AttrWriteTestSuite_h
