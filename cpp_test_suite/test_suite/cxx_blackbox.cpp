@@ -231,7 +231,7 @@ public:
 			if(i%2 == 0)
 			{
 				cout << "===> attr_name: " << string(result.svalue[i].in()) << endl;
-				attr_name = device3_name + string(result.svalue[i].in());
+				attr_name = device3_name + "/" + string(result.svalue[i].in());
 			}
 			else
 			{
