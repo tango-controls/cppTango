@@ -207,9 +207,7 @@ public:
 		{
 			out_str = *it;
 			out_str.erase(0,out_str.rfind(": ") + 2); // removes time stamp from the output
-
-			cout << "---> reference_str: " << reference_str << " out_str: " << out_str << endl << endl;
-//			TS_ASSERT(out_str == reference_str);
+			TS_ASSERT(out_str == reference_str);
 		}
 
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
