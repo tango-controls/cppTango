@@ -730,7 +730,7 @@ int main(int argc, char **argv)
 		ai.events.arch_event.archive_abs_change = "13,14";
 
 		AttributeInfoListEx ai_list;
-		ai_list.push_back(ai);	
+		ai_list.push_back(ai);
 		device->set_attribute_config(ai_list);
 
 // Get config once more

@@ -132,7 +132,7 @@ public:
 
 // Test DevState and DevStatus commnds
 
-	void test_DevState_and_DevStatus_commnds(void)
+	void test_DevState_and_DevStatus_commands(void)
 	{
 		DeviceData dout;
 		string str;
@@ -148,7 +148,7 @@ public:
 
 // Test DevRestart commnd
 
-	void test_DevRestart_commnd(void)
+	void test_DevRestart_command(void)
 	{
 		DeviceData din, dout;
 		DevState state_in = Tango::OFF, state_out;
@@ -168,7 +168,7 @@ public:
 
 // Test name, description, state and status CORBA attributes
 
-	void test_name_description_state_and_status_CORBA_attributes(void)
+	void test_name_description_state_and_status_read_as_CORBA_attributes(void)
 	{
 		DeviceData dout;
 		string str;

@@ -239,7 +239,7 @@ int main(int argc, char **argv)
 #else
 		Sleep(2000);
 #endif
-						
+
 		coutv << "cb excuted = " << cb.cb_executed << endl;
 		assert (cb.cb_executed == 2);
 		assert (cb.val == 31);
