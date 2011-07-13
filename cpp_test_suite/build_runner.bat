@@ -1,5 +1,6 @@
 set REL_DIR=..\..\..\..\
 %REL_DIR%cxxtest\bin\cxxtestgen.py --template=%REL_DIR%cxxtest\template\tango_template.tpl -o runner.cpp ^
+%REL_DIR%test_suite\cxx_blackbox.cpp ^
 %REL_DIR%test_suite\cxx_attr_misc.cpp ^
 %REL_DIR%test_suite\cxx_attr_write.cpp ^
 %REL_DIR%test_suite\cxx_attr_conf.cpp ^
@@ -11,5 +12,4 @@ set REL_DIR=..\..\..\..\
 %REL_DIR%test_suite\cxx_seq_vec.cpp ^
 %REL_DIR%test_suite\cxx_test_state_on.cpp ^
 %REL_DIR%test_suite\cxx_misc.cpp ^
-%REL_DIR%test_suite\cxx_blackbox.cpp ^
 %REL_DIR%test_suite\cxx_cmd_types.cpp
