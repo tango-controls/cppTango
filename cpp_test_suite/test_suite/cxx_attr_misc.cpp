@@ -95,7 +95,8 @@ public:
 		DeviceData din;
 		lg = 1246;
 		din << lg;
-		try {
+		try
+		{
 			device->command_inout("IOSetAttr", din);
 			din << device_name;
 			dserver->command_inout("DevRestart", din);

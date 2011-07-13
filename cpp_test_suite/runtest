@@ -177,8 +177,6 @@ fi
 
 $echo "Running the new Test Suite"
 touch win32/vc9/test_suite/runner/runner.cpp
-hostname --help
-#FULLY_QUALIFIED_HOST_NAME=`hostname -f`
 $DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2
 ret=$?
 check_return_value $ret
