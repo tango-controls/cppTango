@@ -205,10 +205,10 @@ $DIR/att_conf $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting miscellaneous attribute features"
-$DIR/attr_misc $DEV1
-ret=$?
-check_return_value $ret
+#$echo "\nTesting miscellaneous attribute features"
+#$DIR/attr_misc $DEV1
+#ret=$?
+#check_return_value $ret
 #
 $echo "\nTesting miscellaneous DeviceData object features"
 $DIR/misc_devdata
