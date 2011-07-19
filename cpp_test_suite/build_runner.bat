@@ -11,4 +11,5 @@ set REL_DIR=..\..\..\..\
 %REL_DIR%test_suite\cxx_cmd_query.cpp ^
 %REL_DIR%test_suite\cxx_seq_vec.cpp ^
 %REL_DIR%test_suite\cxx_test_state_on.cpp ^
-%REL_DIR%test_suite\cxx_misc.cpp
+%REL_DIR%test_suite\cxx_misc.cpp ^
+%REL_DIR%test_suite\cxx_cmd_types.cpp

@@ -1104,32 +1104,32 @@ public:
 
 		delete lo;
 	}
-
-// Test SPECTRUM unsigned long
-
-	void test_Spectrum_Unsigned_Long_DevVarULongArray__loop(void)
-	{
-		DeviceAttribute da;
-		try
-		{
-			da = device->read_attribute("ULong_spec_attr_rw");
-		}
-		catch (CORBA::Exception &e)
-		{
-			Except::print_exception(e);
-			exit(-1);
-		}
-		DevVarULongArray *lo;
-		bool ret = (da >> lo);
-
-		TS_ASSERT (ret == true);
-		TS_ASSERT ( (*lo)[0] == 2222 );
-		TS_ASSERT ( (*lo)[1] == 22222 );
-		TS_ASSERT ( (*lo)[2] == 222222 );
-		TS_ASSERT ( (*lo)[3] == 0 );
-
-		delete lo;
-	}
+//
+//// Test SPECTRUM unsigned long
+//
+//	void test_Spectrum_Unsigned_Long_DevVarULongArray__loop(void)
+//	{
+//		DeviceAttribute da;
+//		try
+//		{
+//			da = device->read_attribute("ULong_spec_attr_rw");
+//		}
+//		catch (CORBA::Exception &e)
+//		{
+//			Except::print_exception(e);
+//			exit(-1);
+//		}
+//		DevVarULongArray *lo;
+//		bool ret = (da >> lo);
+//
+//		TS_ASSERT (ret == true);
+//		TS_ASSERT ( (*lo)[0] == 2222 );
+//		TS_ASSERT ( (*lo)[1] == 22222 );
+//		TS_ASSERT ( (*lo)[2] == 222222 );
+//		TS_ASSERT ( (*lo)[3] == 0 );
+//
+//		delete lo;
+//	}
 
 // Test SPECTRUM unsigned long 64 bits
 
