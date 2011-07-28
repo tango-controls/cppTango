@@ -149,8 +149,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_event", "multi_event\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "poll_pool", "poll_pool\poll_pool.vcproj", "{6406C9C4-DCB7-43C5-828A-15B669A2A1A4}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "compare_test", "compare_test\compare_test.vcproj", "{94D774D1-1403-4F01-AD70-1337438E970C}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "runner", "runner\runner.vcproj", "{94D774D1-1403-4F01-AD70-1337438E970B}"
 EndProject
 Global
@@ -449,10 +447,6 @@ Global
 		{6406C9C4-DCB7-43C5-828A-15B669A2A1A4}.Debug|Win32.Build.0 = Release|Win32
 		{6406C9C4-DCB7-43C5-828A-15B669A2A1A4}.Release|Win32.ActiveCfg = Release|Win32
 		{6406C9C4-DCB7-43C5-828A-15B669A2A1A4}.Release|Win32.Build.0 = Release|Win32
-		{94D774D1-1403-4F01-AD70-1337438E970C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{94D774D1-1403-4F01-AD70-1337438E970C}.Debug|Win32.Build.0 = Debug|Win32
-		{94D774D1-1403-4F01-AD70-1337438E970C}.Release|Win32.ActiveCfg = Release|Win32
-		{94D774D1-1403-4F01-AD70-1337438E970C}.Release|Win32.Build.0 = Release|Win32
 		{94D774D1-1403-4F01-AD70-1337438E970B}.Debug|Win32.ActiveCfg = Debug|Win32
 		{94D774D1-1403-4F01-AD70-1337438E970B}.Debug|Win32.Build.0 = Debug|Win32
 		{94D774D1-1403-4F01-AD70-1337438E970B}.Release|Win32.ActiveCfg = Release|Win32
