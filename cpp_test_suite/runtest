@@ -180,7 +180,7 @@ touch win32/vc9/test_suite/runner/runner.cpp
 pwd
 CURR_DIR=`pwd`
 #WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../test_suite/out\\"
-WIN_OUT_DIR=`cygpath -w -p pwd`
+WIN_OUT_DIR=`pwd | cygpath -w -p`
 $echo $WIN_OUT_DIR
 if [ $INST_NAME = "win32_vc9" ]
 then
