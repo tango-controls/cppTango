@@ -154,7 +154,7 @@ runner: compare_test
 	cxx_cmd_query.cpp \
 	cxx_seq_vec.cpp \
 	cxx_test_state_on.cpp \
-	cxx_cmd_types.cpp
+	cxx_cmd_types.cpp \
 	cxx_blackbox.cpp
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
