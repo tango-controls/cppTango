@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="runner"
-	ProjectGUID="{94D774D1-1403-4F01-AD70-1337438E970B}"
-	RootNamespace="runner2"
+	Name="compare_test"
+	ProjectGUID="{94D774D1-1403-4F01-AD70-1337438E970C}"
+	RootNamespace="compare_test"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -61,14 +61,16 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				AdditionalDependencies="compare_test.lib"
-				AdditionalLibraryDirectories="$(OutDir)"
 				GenerateDebugInformation="true"
 				SubSystem="1"
 				TargetMachine="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\compare_test.lib"
 			/>
 			<Tool
 				Name="VCManifestTool"
@@ -100,7 +102,6 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="..\..\..\..\build_runner.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -118,7 +119,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\..\cxxtest\include\"
+				AdditionalIncludeDirectories="..\..\..\..\cxxtest\include\;..\..\..\..\test_suite\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -138,8 +139,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalDependencies="compare_test.lib"
-				AdditionalLibraryDirectories="$(OutDir)"
+				AdditionalLibraryDirectories=""
 				GenerateDebugInformation="false"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -148,6 +148,10 @@
 			/>
 			<Tool
 				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCLibrarianTool"
+				OutputFile="$(OutDir)\compare_test.lib"
 			/>
 			<Tool
 				Name="VCManifestTool"
@@ -178,7 +182,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\runner.cpp"
+				RelativePath="..\..\..\..\test_suite\compare_test.cpp"
 				>
 			</File>
 		</Filter>
