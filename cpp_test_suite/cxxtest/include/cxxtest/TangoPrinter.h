@@ -28,10 +28,10 @@
 #include <string.h>
 #include <map>
 
-using namespace std;
-
 namespace CxxTest 
 {
+	using namespace std;
+
     class TangoPrinter : public ErrorFormatter
     {
     private:
@@ -320,6 +320,8 @@ namespace CxxTest
         	params_tmp["?"] = "--?";
         	params_tmp["help"] = "--help";
         	params_tmp["dbserver"] = "--dbserver=";
+        	params_tmp["outpath"] = "--outpath="; // device server logging target directory, eg. /tmp/
+        	params_tmp["refpath"] = "--refpath="; // directory where the compare test reference files (*.out) are stored
         	return params_tmp;
         }
 

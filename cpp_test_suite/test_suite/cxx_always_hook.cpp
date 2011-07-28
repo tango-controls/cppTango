@@ -19,13 +19,12 @@ class AlwaysHookTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device, *dserver;
-	string device_name, dserver_name, refpath, outpath, binpath, file_name, ref_file, out_file;
+	string device_name, dserver_name, refpath, outpath, file_name, ref_file, out_file;
 
 public:
 	SUITE_NAME()
 	{
 
-		refpath = "out/";
 		file_name = "always_hook.out";
 
 //
@@ -38,7 +37,7 @@ public:
 		vector<string> params; // parameters
 		params.push_back("fulldsname");
 		params.push_back("outpath");
-		params.push_back("binpath");
+		params.push_back("refpath");
 
 		vector<string> params_opt; // optional parameters
 		params_opt.push_back("loop");
@@ -52,7 +51,7 @@ public:
 			device_name = CxxTest::TangoPrinter::get_uargv()[0];
 			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
 			outpath = CxxTest::TangoPrinter::get_param_val(params[1]);
-			binpath = CxxTest::TangoPrinter::get_param_val(params[2]);
+			refpath = CxxTest::TangoPrinter::get_param_val(params[2]);
 		}
 		else
 		{
@@ -94,7 +93,7 @@ public:
 // File names ------------------------------------------------------
 //
 
-		ref_file = binpath + refpath + file_name;
+		ref_file = refpath + file_name;
 		out_file = outpath + file_name;
 
 	}

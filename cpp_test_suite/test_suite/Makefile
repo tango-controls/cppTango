@@ -137,8 +137,12 @@ conf:
 test:
 	$(BIN_SUITE_DIR)/runner dev/test/10 dev/test/11 dev/test/12 --loop=5 --fulldsname=devTest/api
 
-runner:
+compare_test: compare_test.cpp
+	$(CC) $(CXXFLAGS) -c compare_test.cpp -o $(OBJ_DIR)/compare_test.o
+
+runner: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp \
+	cxx_always_hook.cpp \
 	cxx_misc.cpp \
 	cxx_attr_write.cpp \
 	cxx_attr_conf.cpp \
@@ -151,9 +155,9 @@ runner:
 	cxx_seq_vec.cpp \
 	cxx_test_state_on.cpp \
 	cxx_cmd_types.cpp
-#	cxx_blackbox.cpp
+	cxx_blackbox.cpp
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
-	$(CC) $(OBJ_DIR)/runner.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
+	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
 
 clean:
 	rm -f $(OBJ_DIR)/*.o core

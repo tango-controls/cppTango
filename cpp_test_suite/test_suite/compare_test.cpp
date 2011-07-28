@@ -225,12 +225,20 @@ void CmpTst::CompareTest::compare(string ref, string out)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] Cannot open output file: " + out);
 
 	unsigned int line_number = 0;
+	// tmp
+	cout << out << ":" << endl;
+	// end tmp
 	while(refstream && outstream)
 	{
 		line_number++;
 		string ref_line, out_line, ref_line_orig, out_line_orig;
 		getline(refstream, ref_line);
 		getline(outstream, out_line);
+
+		// tmp
+		cout << line_number << "\t" << out_line << endl;
+		// end tmp
+
 		ref_line_orig = ref_line; // stores original line for error message, see linebreak hook below
 		out_line_orig = out_line;
 		size_t end_line = min(ref_line.size(), out_line.size());
