@@ -179,7 +179,7 @@ $echo "Running the new Test Suite"
 touch win32/vc9/test_suite/runner/runner.cpp
 pwd
 CURR_DIR=`pwd`
-WIN_OUT_DIR="c:\jenkins\workspace\tango_test_suite\operatingsystems\windows_vc9\cpp_test_suite\win32\vc9\test_suite\runner\../../../../test_suite/out\"
+WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../test_suite/out\\"
 if [ $INST_NAME = "win32_vc9" ]
 then
 	$echo "Script run under Windows"
