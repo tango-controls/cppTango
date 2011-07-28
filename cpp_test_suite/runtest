@@ -178,7 +178,7 @@ fi
 $echo "Running the new Test Suite"
 touch win32/vc9/test_suite/runner/runner.cpp
 pwd
-CURR_DIR=pwd
+CURR_DIR=`pwd`
 ls -l $DIR
 ls -l $DIR/..
 ls -l $DIR/../..
