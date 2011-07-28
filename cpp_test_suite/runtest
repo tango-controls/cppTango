@@ -179,10 +179,10 @@ $echo "Running the new Test Suite"
 touch win32/vc9/test_suite/runner/runner.cpp
 pwd
 CURR_DIR=`pwd`
-ls -l $DIR
-ls -l $DIR/..
-ls -l $DIR/../..
-$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/out/
+ls $CURR_DIR
+ls $CUR_DIR/test_suite
+ls $CUR_DIR/test_suite/out
+$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/test_suite/out/
 ret=$?
 check_return_value $ret
 
