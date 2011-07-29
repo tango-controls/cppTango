@@ -192,9 +192,12 @@ then
 	$echo $WIN_OUT_DIR
 	$echo ""
 	$echo "Content of $WIN_OUT_DIR:"
+	$echo ""
 	$echo "`ls $WIN_OUT_DIR`"
-	$echo "Content of ${WIN_OUT_DIR}\test_suite\out:"
-	$echo "`ls ${WIN_OUT_DIR}\\test_suite\\out`"
+	$echo "Content of $WIN_OUT_DIR\\test_suite\\out:"
+	$echo ""
+	$echo "`ls $WIN_OUT_DIR\\test_suite\\out`"
+	$echo ""
 	
 	
 	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\
