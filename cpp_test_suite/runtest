@@ -185,7 +185,19 @@ $echo $WIN_OUT_DIR
 if [ $INST_NAME = "win32_vc9" ]
 then
 	$echo "Script run under Windows"
-	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR/out/
+	$echo ""
+	$echo "Command pwd:"
+	pwd
+	$echo "Windows equivalent:"
+	$echo $WIN_OUT_DIR
+	$echo ""
+	$echo "Content of $WIN_OUT_DIR:"
+	$echo "`ls $WIN_OUT_DIR`"
+	$echo "Content of $WIN_OUT_DIR\out:"
+	$echo "`ls ${WIN_OUT_DIR}\out`"
+	
+	
+	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\out\
 fi
 if [ $INST_NAME != "win32_vc9" ]
 then
