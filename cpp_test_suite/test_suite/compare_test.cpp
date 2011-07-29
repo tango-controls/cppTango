@@ -51,16 +51,6 @@ void CmpTst::CompareTest::out_set_event_properties(string file, map<string,strin
 						begin = line.find(property_str, begin + (*it).second.size());
 					}
 				}
-
-	//			string property_str = property + "=\"";
-	//			size_t beginning = line.find(property_str);
-	//			// if property found in the line
-	//			if(beginning != string::npos)
-	//			{
-	//				beginning += property_str.length();
-	//				size_t end = line.find("\"", beginning); // looking for the property value closing double quotation mark
-	//				line.replace(beginning, end - beginning, value); // replacing with new value
-	//			}
 			}
 
 			outfile << line; // writing line to the tmp file
@@ -83,6 +73,13 @@ void CmpTst::CompareTest::out_set_event_properties(string file, map<string,strin
 		if(rename(string(outfile_name).c_str(), file.c_str()) != 0)
 			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_set_event_properties] Cannot rename file: " + outfile_name);
 	}
+}
+
+void CmpTst::CompareTest::out_set_replace_numbers(string file, string prefix, string num)
+{
+	map<string,string> prefix_num_map;
+	prefix_num_map[prefix] = num;
+	out_set_replace_numbers(file, prefix_num_map);
 }
 
 void CmpTst::CompareTest::out_set_replace_numbers(string file, map<string,string> prefix_num_map)
@@ -110,20 +107,16 @@ void CmpTst::CompareTest::out_set_replace_numbers(string file, map<string,string
 			for(map<string,string>::iterator it = prefix_num_map.begin(); it != prefix_num_map.end(); ++it)
 			{
 				string prefix = (*it).first;
-				// replaces property with value each time the keyword is found in the line
+				// replaces property with value each time the prefix is found in the line
 				size_t begin = line.find(prefix);
 				while(begin != string::npos)
 				{
 					begin += prefix.size();
 
 					size_t i = begin;
+					// checks if the next character is a number
 					while(i < line.size() && line[i] >= '0' && line[i] <='9')
 						i++;
-
-//					for(size_t i = begin; i < line.size(); i++)
-//					{
-//						if(isnum(line[i]))
-//					}
 
 					size_t end = i;
 					line.replace(begin, end - begin, (*it).second);
@@ -225,19 +218,12 @@ void CmpTst::CompareTest::compare(string ref, string out)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] Cannot open output file: " + out);
 
 	unsigned int line_number = 0;
-	// tmp
-	cout << out << ":" << endl;
-	// end tmp
 	while(refstream && outstream)
 	{
 		line_number++;
 		string ref_line, out_line, ref_line_orig, out_line_orig;
 		getline(refstream, ref_line);
 		getline(outstream, out_line);
-
-		// tmp
-		cout << line_number << "\t" << out_line << endl;
-		// end tmp
 
 		ref_line_orig = ref_line; // stores original line for error message, see linebreak hook below
 		out_line_orig = out_line;
@@ -288,6 +274,37 @@ void CmpTst::CompareTest::clean_up(string ref, string out)
 
 	if(out_err)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::clean_up] Cannot remove file: " + out);
+}
+
+void CmpTst::CompareTest::print_output(string out)
+{
+	print_output(out, false);
+}
+
+void CmpTst::CompareTest::print_output(string out, bool show_line_numbers)
+{
+	ifstream outstream;
+
+	outstream.open(out.c_str());
+	if(!outstream)
+		throw CmpTst::CompareTestException("[CmpTst::CompareTest::print_output] Cannot open output file: " + out);
+
+	cout << out << ":" << endl;
+	unsigned int line_number = 0;
+	while(outstream)
+	{
+		line_number++;
+		string ref_line, out_line, ref_line_orig, out_line_orig;
+		getline(outstream, out_line);
+		if(show_line_numbers)
+			cout << line_number << "\t" << out_line << endl;
+		else
+			cout << out_line << endl;
+	}
+
+	outstream.close();
+	if(outstream.bad())
+		throw CmpTst::CompareTestException("[CmpTst::CompareTest::print_output] Cannot close file: " + out);
 }
 
 #undef TMP_SUFFIX
