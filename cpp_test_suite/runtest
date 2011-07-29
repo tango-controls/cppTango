@@ -178,14 +178,14 @@ fi
 $echo "Running the new Test Suite"
 touch win32/vc9/test_suite/runner/runner.cpp
 pwd
-CURR_DIR=`pwd`
+CURR_DIR="`pwd`"
 #WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../test_suite/out\\"
-WIN_OUT_DIR=`pwd | cygpath -w -p`
+WIN_OUT_DIR="`cygpath -w -p $CURR_DIR`"
 $echo $WIN_OUT_DIR
 if [ $INST_NAME = "win32_vc9" ]
 then
 	$echo "Script run under Windows"
-	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR/out
+	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR/out/
 fi
 if [ $INST_NAME != "win32_vc9" ]
 then
