@@ -142,6 +142,8 @@ compare_test: compare_test.cpp
 
 runner: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp \
+	cxx_dserver_cmd.cpp \
+	cxx_dserver_misc.cpp \
 	cxx_always_hook.cpp \
 	cxx_misc.cpp \
 	cxx_attr_write.cpp \

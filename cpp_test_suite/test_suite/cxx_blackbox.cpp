@@ -7,7 +7,7 @@
 #include <iostream>
 
 #ifdef _TG_WINDOWS_
-#include <process.h>
+#include <process.h> // needed to obtain process id
 #endif 	// _TG_WINDOWS_
 
 using namespace Tango;
@@ -254,6 +254,10 @@ public:
 			cout << endl << "===> blackbox size: " << (*bb).size() << endl;
 			if((*bb).size() > 0)
 					cout << "===> first element: " << (*bb)[0] << endl;
+		}
+		catch(DevFailed &e)
+		{
+			cout << "===> Nothing yet stored in blackbox" << endl;
 		}
 		catch(...)
 		{

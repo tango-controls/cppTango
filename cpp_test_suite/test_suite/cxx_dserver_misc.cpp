@@ -1,0 +1,254 @@
+#ifndef DServerMiscTestSuite_h
+#define DServerMiscTestSuite_h
+
+#include <cxxtest/TestSuite.h>
+#include <cxxtest/TangoPrinter.h>
+#include <tango.h>
+#include <iostream>
+
+using namespace Tango;
+using namespace std;
+
+#define cout cout << "\t"
+
+#undef SUITE_NAME
+#define SUITE_NAME DServerMiscTestSuite
+
+class DServerMiscTestSuite: public CxxTest::TestSuite
+{
+protected:
+	DeviceProxy *device1, *device2, *device3, *dserver, *dbserver;
+	string device1_name, device2_name, device3_name, dserver_name, full_ds_name, server_host, dbserver_name, doc_url;
+	DevLong server_version;
+
+public:
+	SUITE_NAME()
+	{
+
+//
+// Arguments check -------------------------------------------------
+//
+
+		vector<string> uargs; // user arguments
+		uargs.push_back("device1");
+		uargs.push_back("device2");
+		uargs.push_back("device3");
+
+		vector<string> params; // parameters
+		params.push_back("fulldsname");
+		params.push_back("serverhost");
+		params.push_back("serverversion");
+		params.push_back("dbserver");
+		params.push_back("docurl");
+
+		vector<string> params_opt; // optional parameters
+		params_opt.push_back("loop");
+
+		bool params_ok = true;
+		for(size_t i = 0; i < params.size() && params_ok; i++)
+			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+
+		if(CxxTest::TangoPrinter::get_uargc() > 0 && params_ok)
+		{
+			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
+			device2_name = CxxTest::TangoPrinter::get_uargv()[1];
+			device3_name = CxxTest::TangoPrinter::get_uargv()[2];
+			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
+
+			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
+			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
+			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
+			dbserver_name = CxxTest::TangoPrinter::get_param_val(params[3]);
+			doc_url = CxxTest::TangoPrinter::get_param_val(params[4]);
+		}
+		else
+		{
+			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
+
+			for(size_t i = 0; i < uargs.size(); i++)
+				cout << " " << uargs[i];
+
+			for(size_t i = 0; i < params.size(); i++)
+				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
+
+			for(size_t i = 0; i < params_opt.size(); i++)
+				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
+
+			cout  << endl;
+			exit(-1);
+		}
+
+//
+// Initialization --------------------------------------------------
+//
+
+		try
+		{
+			device1 = new DeviceProxy(device1_name);
+			device2 = new DeviceProxy(device2_name);
+			dserver = new DeviceProxy(dserver_name);
+			dbserver = new DeviceProxy(dbserver_name);
+		}
+		catch (CORBA::Exception &e)
+		{
+			Except::print_exception(e);
+			exit(-1);
+		}
+
+		cout << endl;
+		cout << "new DeviceProxy(" << device1->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << device2->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << dbserver->name() << ") returned" << endl << endl;
+	}
+
+	virtual ~SUITE_NAME()
+	{
+		// set the Tango::ON state on suite tearDown() in case a test fails leaving Tango::OFF status
+		DeviceData din;
+		din << device1_name;
+		try
+		{
+			dserver->command_inout("DevRestart", din);
+		}
+		catch(CORBA::Exception &e)
+		{
+			Except::print_exception(e);
+			exit(-1);
+		}
+
+		cout << endl;
+		delete device1;
+		delete device2;
+		delete dserver;
+		delete dbserver;
+	}
+
+	static SUITE_NAME *createSuite()
+	{
+		return new SUITE_NAME();
+	}
+
+	static void destroySuite(SUITE_NAME *suite)
+	{
+		delete suite;
+	}
+
+//
+// Tests -------------------------------------------------------
+//
+
+// Test State and Status commands
+
+	void test_State_and_Status_commands(void)
+	{
+		DeviceData dout;
+		DevState state;
+		string str;
+
+		dout = dserver->command_inout("Status");
+		dout >> str;
+		TS_ASSERT(str == "The device is ON\nThe polling is ON");
+
+		dout = dserver->command_inout("State");
+		dout >> state;
+		TS_ASSERT(state == Tango::ON);
+	}
+
+// Test DevRestart command on the dserver device
+
+	void test_DevRestart_command_on_the_dserver_device(void)
+	{
+		DeviceData din, dout;
+		DevState state_in, state_out;
+		string str;
+
+		state_in = Tango::OFF;
+		din << state_in;
+		device1->command_inout("IOState", din);
+		dout = device1->command_inout("State");
+		dout >> state_out;
+		TS_ASSERT(state_out == Tango::OFF);
+
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
+		Tango_sleep(3);
+
+		dout = device1->command_inout("State");
+		dout >> state_out;
+		TS_ASSERT(state_out == Tango::ON);
+	}
+
+// Test DevRestart command on classical device
+
+	void test_DevRestart_command_on_classical_device(void)
+	{
+		DeviceData din, dout;
+		DevState state_in, state_out;
+		string str;
+
+		str = "a/b/c";
+		din << str;
+		TS_ASSERT_THROWS_ASSERT(dserver->command_inout("DevRestart", din), Tango::DevFailed &e,
+				TS_ASSERT(string(e.errors[0].reason.in()) == "API_DeviceNotFound"
+						&& e.errors[0].severity == Tango::ERR));
+
+		state_in = Tango::OFF;
+		din << state_in;
+		device1->command_inout("IOState", din);
+		dout = device1->command_inout("State");
+		dout >> state_out;
+		TS_ASSERT(state_out == Tango::OFF);
+
+		str = device1_name;
+		din << str;
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer", din));
+		Tango_sleep(3);
+
+		dout = device1->command_inout("State");
+		dout >> state_out;
+		TS_ASSERT(state_out == Tango::ON);
+	}
+
+// Test name, description, state ans status CORBA attributes
+
+	void test_name_description_state_ans_status_CORBA_attributes(void)
+	{
+		DeviceData dout;
+		DevState state_out;
+		string str;
+
+		str = dserver->name();
+		TS_ASSERT(str == dserver_name);
+
+		str = dserver->description();
+		TS_ASSERT(str == "A device server device !!");
+
+		str = dserver->status();
+		TS_ASSERT(str == "The device is ON\nThe polling is ON");
+
+		state_out = dserver->state();
+		TS_ASSERT(state_out == Tango::ON);
+	}
+
+// Ping the device
+
+	void test_ping_the_device(void)
+	{
+		TS_ASSERT_THROWS_NOTHING(dserver->ping());
+	}
+
+// Test info call
+
+	void test_info_call(void)
+	{
+		TS_ASSERT(dserver->info().dev_class == "DServer");
+		// TODO: uncomment the following if needed
+//		TS_ASSERT(dserver->info().dev_type == "Uninitialised");
+		TS_ASSERT(dserver->info().doc_url == "Doc URL = " + doc_url);
+		TS_ASSERT(dserver->info().server_host == server_host);
+		TS_ASSERT(dserver->info().server_id == full_ds_name);
+		TS_ASSERT(dserver->info().server_version == server_version);
+	}
+};
+#undef cout
+#endif // DServerMiscTestSuite_h
