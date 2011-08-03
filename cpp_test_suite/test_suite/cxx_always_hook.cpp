@@ -20,12 +20,17 @@ class AlwaysHookTestSuite: public CxxTest::TestSuite
 protected:
 	DeviceProxy *device, *dserver;
 	string device_name, dserver_name, refpath, outpath, file_name, ref_file, out_file;
+	int loglevel, dsloglevel;
+	bool logging_level_restored, logging_target_restored;
 
 public:
 	SUITE_NAME()
 	{
-
+		// output/reference file name
 		file_name = "always_hook.out";
+
+		logging_level_restored = false;
+		logging_target_restored = false;
 
 //
 // Arguments check -------------------------------------------------
@@ -38,6 +43,8 @@ public:
 		params.push_back("fulldsname");
 		params.push_back("outpath");
 		params.push_back("refpath");
+		params.push_back("loglevel");
+		params.push_back("dsloglevel");
 
 		vector<string> params_opt; // optional parameters
 		params_opt.push_back("loop");
@@ -52,6 +59,8 @@ public:
 			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
 			outpath = CxxTest::TangoPrinter::get_param_val(params[1]);
 			refpath = CxxTest::TangoPrinter::get_param_val(params[2]);
+			loglevel = atoi(CxxTest::TangoPrinter::get_param_val(params[3]).c_str());
+			dsloglevel = atoi(CxxTest::TangoPrinter::get_param_val(params[4]).c_str());
 		}
 		else
 		{
@@ -101,6 +110,36 @@ public:
 	virtual ~SUITE_NAME()
 	{
 		cout << endl;
+
+		// clean up in case test suite terminates before logging level is restored to defaults
+		if(!logging_level_restored)
+		{
+			DeviceData din;
+			DevVarLongStringArray reset_device_level;
+			reset_device_level.lvalue.length(2);
+			reset_device_level.lvalue[0] = loglevel;
+			reset_device_level.lvalue[1] = dsloglevel;
+			reset_device_level.svalue.length(2);
+			reset_device_level.svalue[0] = "*";
+			reset_device_level.svalue[1] = dserver_name.c_str();
+			din << reset_device_level;
+			dserver->command_inout("SetLoggingLevel", din);
+		}
+
+		// clean up in case test suite terminates before logging targets are restored to defaults
+		if(!logging_target_restored)
+		{
+			DeviceData din;
+			DevVarStringArray remove_logging_targets;
+			remove_logging_targets.length(4);
+			remove_logging_targets[0] = device_name.c_str();
+			remove_logging_targets[1] = string("file::" + out_file).c_str();
+			remove_logging_targets[2] = dserver_name.c_str();
+			remove_logging_targets[3] = string("file::" + out_file).c_str();
+			din << remove_logging_targets;
+			dserver->command_inout("RemoveLoggingTarget", din);
+		}
+
 		delete device;
 		delete dserver;
 	}
@@ -136,6 +175,8 @@ public:
 	void test_changing_logging_level(void)
 	{
 		DeviceData din, dout;
+
+		// set logging level to 5 for the device and device server
 		DevVarLongStringArray device_level, dserver_level;
 		device_level.lvalue.length(1);
 		device_level.lvalue[0] = 5;
@@ -150,39 +191,39 @@ public:
 		din << dserver_level;
 		dserver->command_inout("SetLoggingLevel", din);
 
+		// set logging targets for the device and device server
 		DevVarStringArray logging_targets;
 		logging_targets.length(4);
 		logging_targets[0] = device_name.c_str();
 		logging_targets[1] = string("file::" + out_file).c_str();
 		logging_targets[2] = dserver_name.c_str();
 		logging_targets[3] = string("file::" + out_file).c_str();
-
 		din << logging_targets;
 		dserver->command_inout("AddLoggingTarget", din);
 
+		// execute IOLong command
 		DevLong lg_in = 10, lg_out;
 		din << lg_in;
 		dout = device->command_inout("IOLong", din);
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
 
+		// restore device and device server logging level to default
 		DevVarLongStringArray reset_device_level;
-		reset_device_level.lvalue.length(1);
-		reset_device_level.lvalue[0] = 0;
-		reset_device_level.svalue.length(1);
+		reset_device_level.lvalue.length(2);
+		reset_device_level.lvalue[0] = loglevel;
+		reset_device_level.lvalue[1] = dsloglevel;
+		reset_device_level.svalue.length(2);
 		reset_device_level.svalue[0] = "*";
+		reset_device_level.svalue[1] = dserver_name.c_str();
 		din << reset_device_level;
 		dserver->command_inout("SetLoggingLevel", din);
+		logging_level_restored = true; // flag indicating that logging level has been restored to defaults (see destructor)
 
-		DevVarStringArray remove_logging_targets;
-		remove_logging_targets.length(4);
-		remove_logging_targets[0] = device_name.c_str();
-		remove_logging_targets[1] = string("file::" + out_file).c_str();
-		remove_logging_targets[2] = dserver_name.c_str();
-		remove_logging_targets[3] = string("file::" + out_file).c_str();
-
+		// remove logging targets for device and device server
 		din << logging_targets;
 		dserver->command_inout("RemoveLoggingTarget", din);
+		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
 	}
 
 // Test comparing input with output
@@ -195,7 +236,6 @@ public:
 			prop_val_map["timestamp"] = "10";
 			prop_val_map["thread"] = "1";
 			CmpTst::CompareTest::out_set_event_properties(out_file, prop_val_map);
-
 
 			map<string,string> key_val_map;
 			key_val_map["DSERVER"] = dserver_name;

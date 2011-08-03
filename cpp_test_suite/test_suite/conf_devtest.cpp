@@ -3,19 +3,19 @@
 using namespace  Tango;
 
 /*
- * This is an executable that configures properties of testing device servers provided as
- * command line parameters. Attribute values, their ranges and other properties are set
- * to defaults used in the test suite.
+ * This is a utility that configures properties of test device servers provided as
+ * command line parameters. Attribute values, their ranges and other properties are
+ * set to defaults used in the test suite.
  */
 int main(int argc, char **argv)
 {
-	if(argc < 4)
+	if(argc < 5)
 	{
-		cout << "usage: " << argv[0] << " device1 device2 device3" << endl;
+		cout << "usage: " << argv[0] << " dserver device1 device2 device3" << endl;
 		exit(-1);
 	}
 
-	string device1 = argv[1], device2 = argv[2], device3 = argv[3];
+	string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4];
 
 	Database *db = new Database();
 	DbData db_data;
@@ -23,6 +23,20 @@ int main(int argc, char **argv)
 	long num_prop;
 	string str;
 	DevLong lg;
+	DeviceData din;
+
+//
+// dserver properties
+//
+
+	DbDatum logging_level("logging_level");
+	string logging_str = "WARNING";
+	logging_level << logging_str;
+	db_data.push_back(logging_level);
+
+	db->put_device_property(dserver_name, db_data);
+
+	db_data.clear();
 
 //
 // Properties common to all devices
@@ -40,9 +54,16 @@ int main(int argc, char **argv)
 	long_attr_max_alarm << lg;
 	db_data.push_back(long_attr_max_alarm);
 
-	for(int i = 1; i < argc; i++)
+	for(int i = 2; i < argc; i++)
 	{
-		db->put_device_attribute_property(argv[i], db_data);
+		try
+		{
+			db->put_device_attribute_property(argv[i], db_data);
+		}
+		catch(...)
+		{
+			cout << "Exception: cannot set common properties for the device: " << argv[i] << endl;
+		}
 	}
 
 	db_data.clear();
@@ -63,8 +84,14 @@ int main(int argc, char **argv)
 	added_short_attr_format << str;
 	db_data.push_back(added_short_attr_format);
 
-	db->put_device_attribute_property(device1, db_data);
-
+	try
+	{
+		db->put_device_attribute_property(device1_name, db_data);
+	}
+	catch(...)
+	{
+		cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
+	}
 
 // device2
 
@@ -84,8 +111,16 @@ int main(int argc, char **argv)
 	string_spec_attr_format << str;
 	db_data.push_back(string_spec_attr_format);
 
-	db->put_device_attribute_property(device2, db_data);
+	try
+	{
+		db->put_device_attribute_property(device2_name, db_data);
+	}
+	catch(...)
+	{
+		cout << "Exception: cannot set specific properties for the device: " << device2_name << endl;
+	}
 
+	delete db;
 
 	return 0;
 }

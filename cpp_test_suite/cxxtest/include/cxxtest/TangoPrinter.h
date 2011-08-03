@@ -320,8 +320,10 @@ namespace CxxTest
         	params_tmp["?"] = "--?";
         	params_tmp["help"] = "--help";
         	params_tmp["dbserver"] = "--dbserver=";
-        	params_tmp["outpath"] = "--outpath="; // device server logging target directory, eg. /tmp/
+        	params_tmp["outpath"] = "--outpath="; // device server logging target directory, e.g. /tmp/
         	params_tmp["refpath"] = "--refpath="; // directory where the compare test reference files (*.out) are stored
+        	params_tmp["loglevel"] = "--loglevel="; // default device logging level, e.g. 0
+        	params_tmp["dsloglevel"] = "--dsloglevel="; // default device server logging level, e.g. 3
         	return params_tmp;
         }
 

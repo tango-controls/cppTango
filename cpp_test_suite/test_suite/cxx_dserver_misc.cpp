@@ -17,8 +17,8 @@ using namespace std;
 class DServerMiscTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device1, *device2, *device3, *dserver, *dbserver;
-	string device1_name, device2_name, device3_name, dserver_name, full_ds_name, server_host, dbserver_name, doc_url;
+	DeviceProxy *device, *dserver;
+	string device_name, dserver_name, full_ds_name, server_host, doc_url;
 	DevLong server_version;
 
 public:
@@ -30,15 +30,12 @@ public:
 //
 
 		vector<string> uargs; // user arguments
-		uargs.push_back("device1");
-		uargs.push_back("device2");
-		uargs.push_back("device3");
+		uargs.push_back("device");
 
 		vector<string> params; // parameters
 		params.push_back("fulldsname");
 		params.push_back("serverhost");
 		params.push_back("serverversion");
-		params.push_back("dbserver");
 		params.push_back("docurl");
 
 		vector<string> params_opt; // optional parameters
@@ -50,16 +47,13 @@ public:
 
 		if(CxxTest::TangoPrinter::get_uargc() > 0 && params_ok)
 		{
-			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
-			device2_name = CxxTest::TangoPrinter::get_uargv()[1];
-			device3_name = CxxTest::TangoPrinter::get_uargv()[2];
+			device_name = CxxTest::TangoPrinter::get_uargv()[0];
 			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
 
 			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
 			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
-			dbserver_name = CxxTest::TangoPrinter::get_param_val(params[3]);
-			doc_url = CxxTest::TangoPrinter::get_param_val(params[4]);
+			doc_url = CxxTest::TangoPrinter::get_param_val(params[3]);
 		}
 		else
 		{
@@ -84,10 +78,8 @@ public:
 
 		try
 		{
-			device1 = new DeviceProxy(device1_name);
-			device2 = new DeviceProxy(device2_name);
+			device = new DeviceProxy(device_name);
 			dserver = new DeviceProxy(dserver_name);
-			dbserver = new DeviceProxy(dbserver_name);
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -96,17 +88,15 @@ public:
 		}
 
 		cout << endl;
-		cout << "new DeviceProxy(" << device1->name() << ") returned" << endl;
-		cout << "new DeviceProxy(" << device2->name() << ") returned" << endl;
-		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl;
-		cout << "new DeviceProxy(" << dbserver->name() << ") returned" << endl << endl;
+		cout << "new DeviceProxy(" << device->name() << ") returned" << endl;
+		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 	}
 
 	virtual ~SUITE_NAME()
 	{
 		// set the Tango::ON state on suite tearDown() in case a test fails leaving Tango::OFF status
 		DeviceData din;
-		din << device1_name;
+		din << device_name;
 		try
 		{
 			dserver->command_inout("DevRestart", din);
@@ -118,10 +108,8 @@ public:
 		}
 
 		cout << endl;
-		delete device1;
-		delete device2;
+		delete device;
 		delete dserver;
-		delete dbserver;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -165,15 +153,15 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device1->command_inout("IOState", din);
-		dout = device1->command_inout("State");
+		device->command_inout("IOState", din);
+		dout = device->command_inout("State");
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(3);
 
-		dout = device1->command_inout("State");
+		dout = device->command_inout("State");
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}
@@ -194,17 +182,17 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device1->command_inout("IOState", din);
-		dout = device1->command_inout("State");
+		device->command_inout("IOState", din);
+		dout = device->command_inout("State");
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
-		str = device1_name;
+		str = device_name;
 		din << str;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer", din));
 		Tango_sleep(3);
 
-		dout = device1->command_inout("State");
+		dout = device->command_inout("State");
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}
