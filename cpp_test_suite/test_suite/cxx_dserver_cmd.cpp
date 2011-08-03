@@ -180,8 +180,20 @@ public:
 		usr_dev_vec.push_back("DevTest::" + device2_name);
 		usr_dev_vec.push_back("DevTest::" + device3_name);
 
+		cout << "\tOriginal server device vector:" << endl;
+		for(size_t i = 0; i < serv_dev_vec.size(); i++)
+			cout << "\t---> " << serv_dev_vec[i] << endl;
+
 		sort(serv_dev_vec.begin(), serv_dev_vec.end()); 	// sort expected and returned device names
 		sort(usr_dev_vec.begin(), usr_dev_vec.end());		// in alphabetical order to compare the vectors
+
+		cout << "\tSorted server device vector:" << endl;
+		for(size_t i = 0; i < serv_dev_vec.size(); i++)
+			cout << "\t---> " << serv_dev_vec[i] << endl;
+
+		cout << "\tSorted user device vector:" << endl;
+		for(size_t i = 0; i < usr_dev_vec.size(); i++)
+			cout << "\t---> " << usr_dev_vec[i] << endl;
 
 		TS_ASSERT(serv_dev_vec[0] == usr_dev_vec[0]);
 		TS_ASSERT(serv_dev_vec[1] == usr_dev_vec[1]);
