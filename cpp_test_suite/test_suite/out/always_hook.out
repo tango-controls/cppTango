@@ -69,12 +69,12 @@
 </log4j:event>
 
 <log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
-<log4j:message><![CDATA[In get_monitor() dev/tomasz/1, thread = 2, ctr = 0]]></log4j:message>
+<log4j:message><![CDATA[In get_monitor() DEVICE1, thread = 2, ctr = 0]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
 <log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
-<log4j:message><![CDATA[In get_monitor() dev/tomasz/1, thread = 2, ctr = 1]]></log4j:message>
+<log4j:message><![CDATA[In get_monitor() DEVICE1, thread = 2, ctr = 1]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
@@ -113,12 +113,12 @@
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
-<log4j:event logger="dev/tomasz/1" timestamp="10" level="DEBUG" thread="1">
+<log4j:event logger="DEVICE1" timestamp="10" level="DEBUG" thread="1">
 <log4j:message><![CDATA[[IOLong::execute] received number 10]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
-<log4j:event logger="dev/tomasz/1" timestamp="10" level="DEBUG" thread="1">
+<log4j:event logger="DEVICE1" timestamp="10" level="DEBUG" thread="1">
 <log4j:message><![CDATA[[IOLong::execute] return number 20]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
