@@ -29,8 +29,8 @@ public:
 		// output/reference file name
 		file_name = "always_hook.out";
 
-		logging_level_restored = false;
-		logging_target_restored = false;
+		logging_level_restored = true;
+		logging_target_restored = true;
 
 //
 // Arguments check -------------------------------------------------
@@ -178,18 +178,15 @@ public:
 
 		// set logging level to 5 for the device and device server
 		DevVarLongStringArray device_level, dserver_level;
-		device_level.lvalue.length(1);
+		device_level.lvalue.length(2);
 		device_level.lvalue[0] = 5;
-		device_level.svalue.length(1);
+		device_level.lvalue[1] = 5;
+		device_level.svalue.length(2);
 		device_level.svalue[0] = device_name.c_str();
+		device_level.svalue[1] = dserver_name.c_str();
 		din << device_level;
 		dserver->command_inout("SetLoggingLevel", din);
-		dserver_level.lvalue.length(1);
-		dserver_level.lvalue[0] = 5;
-		dserver_level.svalue.length(1);
-		dserver_level.svalue[0] = dserver_name.c_str();
-		din << dserver_level;
-		dserver->command_inout("SetLoggingLevel", din);
+		logging_level_restored = false; // flag indicating that logging level has been modified
 
 		// set logging targets for the device and device server
 		DevVarStringArray logging_targets;
@@ -200,6 +197,7 @@ public:
 		logging_targets[3] = string("file::" + out_file).c_str();
 		din << logging_targets;
 		dserver->command_inout("AddLoggingTarget", din);
+		logging_target_restored = false; // flag indicating that logging targets have been added
 
 		// execute IOLong command
 		DevLong lg_in = 10, lg_out;

@@ -5,7 +5,6 @@
 #include <cxxtest/TangoPrinter.h>
 #include <tango.h>
 #include <iostream>
-#include <algorithm>
 #include "compare_test.h"
 
 using namespace Tango;
@@ -30,8 +29,8 @@ public:
 		// output/reference file name
 		file_name = "dserver_cmd.out";
 
-		logging_level_restored = false;
-		logging_target_restored = false;
+		logging_level_restored = true;
+		logging_target_restored = true;
 
 //
 // Arguments check -------------------------------------------------
@@ -206,7 +205,7 @@ public:
 	{
 		DeviceData din, dout;
 
-		// get logging level and check if defaults
+		// get logging level and check if default
 		const DevVarLongStringArray *dserver_level_out;
 		DevVarStringArray dserver_name_in;
 		dserver_name_in.length(1);
@@ -225,6 +224,7 @@ public:
 		dserver_level_in.svalue[0] = dserver_name.c_str();
 		din << dserver_level_in;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
+		logging_level_restored = false; // flag indicating that logging level has been modified
 
 		// query device server class
 		const DevVarStringArray *query_class_out;
@@ -293,6 +293,7 @@ public:
 		logging_target[1] = string("file::" + out_file).c_str();
 		din << logging_target;
 		dserver->command_inout("AddLoggingTarget", din);
+		logging_target_restored = false; // flag indicating that logging targets have been added
 
 		// query device server class
 		const DevVarStringArray *query_class_out;
