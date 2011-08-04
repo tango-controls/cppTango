@@ -290,6 +290,9 @@ public:
 	{
 		try
 		{
+			CmpTst::CompareTest::print_output(out_file, true);
+			CmpTst::CompareTest::print_output(ref_file, true);
+
 			map<string,string> prop_val_map;
 			prop_val_map["timestamp"] = "10";
 			prop_val_map["thread"] = "1";
