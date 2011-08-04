@@ -255,6 +255,7 @@ public:
 		pid = atoi((*result).svalue[0].in());
 		if(pid > 0)
 			kill(pid, sig_num);
+		Tango_sleep(2);
 
 		// set logging level back to defaults
 		DevVarLongStringArray reset_dserver_level;
