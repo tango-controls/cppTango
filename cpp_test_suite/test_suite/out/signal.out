@@ -48,13 +48,13 @@
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
-<log4j:event logger="DEVICE2" timestamp="10" level="DEBUG" thread="1">
-<log4j:message><![CDATA[[Device signal handler] received signal number 14 for device DEVICE2]]></log4j:message>
+<log4j:event logger="DEVICE1" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[[Device signal handler] received signal number 14 for device DEVICE1]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
-<log4j:event logger="DEVICE1" timestamp="10" level="DEBUG" thread="1">
-<log4j:message><![CDATA[[Device signal handler] received signal number 14 for device DEVICE1]]></log4j:message>
+<log4j:event logger="DEVICE2" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[[Device signal handler] received signal number 14 for device DEVICE2]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 
