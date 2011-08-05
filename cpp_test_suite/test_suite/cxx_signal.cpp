@@ -216,6 +216,7 @@ public:
 		// register signal
 		din << sig_num;
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegSig", din));
+		Tango_sleep(2);
 		TS_ASSERT_THROWS_NOTHING(device2->command_inout("IORegSig", din));
 
 		// set logging level to 5
