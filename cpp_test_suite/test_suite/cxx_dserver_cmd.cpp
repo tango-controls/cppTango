@@ -124,7 +124,14 @@ public:
 			reset_dserver_level.svalue.length(1);
 			reset_dserver_level.svalue[0] = dserver_name.c_str();
 			din << reset_dserver_level;
-			dserver->command_inout("SetLoggingLevel", din);
+			try
+			{
+				dserver->command_inout("SetLoggingLevel", din);
+			}
+			catch(DevFailed &e)
+			{
+				Except::print_exception(e);
+			}
 		}
 
 		// clean up in case test suite terminates before logging targets are restored to defaults
@@ -136,7 +143,14 @@ public:
 			remove_logging_target[0] = dserver_name.c_str();
 			remove_logging_target[1] = string("file::" + out_file).c_str();
 			din << remove_logging_target;
-			dserver->command_inout("RemoveLoggingTarget", din);
+			try
+			{
+				dserver->command_inout("RemoveLoggingTarget", din);
+			}
+			catch(DevFailed &e)
+			{
+				Except::print_exception(e);
+			}
 		}
 
 		delete dserver;

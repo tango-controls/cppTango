@@ -1,5 +1,5 @@
-#ifndef SignalTestSuite_h
-#define SignalTestSuite_h
+#ifndef ClassSignalTestSuite_h
+#define ClassSignalTestSuite_h
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
@@ -14,9 +14,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME SignalTestSuite
+#define SUITE_NAME ClassSignalTestSuite
 
-class SignalTestSuite: public CxxTest::TestSuite
+class ClassSignalTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *dserver, *dbserver;
@@ -28,7 +28,7 @@ public:
 	SUITE_NAME()
 	{
 		// output/reference file name
-		file_name = "signal.out";
+		file_name = "class_signal.out";
 
 		logging_level_restored = true;
 		logging_target_restored = true;
@@ -178,7 +178,6 @@ public:
 			try
 			{
 				device1->command_inout("IOUnregSig", din);
-				device2->command_inout("IOUnregSig", din);
 			}
 			catch(DevFailed &e)
 			{
@@ -206,49 +205,46 @@ public:
 // Tests -------------------------------------------------------
 //
 
-// Test signal out of range exceptions
+// Test class signal out of range exceptions
 
-	void test_signal_out_of_range_exceptions(void)
+	void test_class_signal_out_of_range_exceptions(void)
 	{
 		DeviceData din;
 		DevLong sig_num = 1000;
 		din << sig_num;
 
-		// try to register signal of out of range value
-		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IORegSig", din), Tango::DevFailed &e,
+		// try to register class signal of out of range value
+		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IORegClassSig", din), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_SignalOutOfRange"
 						&& e.errors[0].severity == Tango::ERR));
 
-		// try to unregister signal of out of range value
-		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOUnregSig", din), Tango::DevFailed &e,
+		// try to unregister class signal of out of range value
+		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOUnregClassSig", din), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_SignalOutOfRange"
 						&& e.errors[0].severity == Tango::ERR));
 	}
 
-// Test registering and unregistering signals
+// Test registering and unregistering class signals
 
 	void test_registering_and_unregistering_signals(void)
 	{
 		DeviceData din;
 		DevLong sig_num = 14;
 		din << sig_num;
-		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegSig", din));
-		Tango_sleep(2);
-		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOUnregSig", din));
-		Tango_sleep(2);
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegClassSig", din));
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOUnregClassSig", din));
 	}
 
-// Test signal handling
+// Test class signal handling
 
-	void test_signal_handling(void)
+	void test_class_signal_handling(void)
 	{
 		DeviceData din, dout;
 		DevLong sig_num = 14;
 
-		// register signal
+		// register class signal
 		din << sig_num;
-		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegSig", din));
-		TS_ASSERT_THROWS_NOTHING(device2->command_inout("IORegSig", din));
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegClassSig", din));
 		signal_unregistered = false; // flag indicating that signals have been registered
 
 		// set logging level to 5
@@ -317,10 +313,9 @@ public:
 		dserver->command_inout("RemoveLoggingTarget", din);
 		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
 
-		// unregister signal
+		// unregister class ignal
 		din << sig_num;
-		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOUnregSig", din));
-		TS_ASSERT_THROWS_NOTHING(device2->command_inout("IOUnregSig", din));
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOUnregClassSig", din));
 		signal_unregistered = true; // flag indicating that signals have been unregistered
 	}
 
@@ -364,4 +359,4 @@ public:
 	}
 };
 #undef cout
-#endif // SignalTestSuite_h
+#endif // ClassSignalTestSuite_h
