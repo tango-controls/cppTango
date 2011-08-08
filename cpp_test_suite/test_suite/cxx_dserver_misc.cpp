@@ -136,6 +136,7 @@ public:
 
 		dout = dserver->command_inout("Status");
 		dout >> str;
+		cout << str;
 		TS_ASSERT(str == "The device is ON\nThe polling is ON");
 
 		dout = dserver->command_inout("State");
