@@ -142,6 +142,7 @@ compare_test: compare_test.cpp
 
 runner: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp \
+	cxx_poll_admin.cpp \
 	cxx_class_dev_signal.cpp \
 	cxx_class_signal.cpp \
 	cxx_signal.cpp \

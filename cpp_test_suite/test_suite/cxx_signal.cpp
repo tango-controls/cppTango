@@ -30,6 +30,7 @@ public:
 		// output/reference file name
 		file_name = "signal.out";
 
+		// clean up flags
 		logging_level_restored = true;
 		logging_target_restored = true;
 		signal_unregistered = true;
@@ -121,6 +122,10 @@ public:
 	virtual ~SUITE_NAME()
 	{
 		cout << endl;
+
+//
+// Clean up --------------------------------------------------------
+//
 
 		// clean up in case test suite terminates before logging level is restored to defaults
 		if(!logging_level_restored)
