@@ -1004,6 +1004,13 @@ public:
 		dout >> status_arr;
 		// extract the first 3 lines of the status and compare with the reference string
 		// TODO: although device/time dependent, the other 3 lines could also be compared
+
+		cout << "~~~~~ status[0] ~~~~~" << endl;
+		cout << status[0] << endl;
+		cout << "~~~~~ status[1] ~~~~~" << endl;
+		cout << status[1] << endl;
+		cout << "~~~~~ end of status ~~~~~" << endl;
+
 		status[0] = string((*status_arr)[0].in()).substr(0,status_ref[0].length());
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
