@@ -182,6 +182,7 @@ CURR_DIR="`pwd`"
 WIN_OUT_DIR="`cygpath -w -p $CURR_DIR`"
 if [ $INST_NAME = "win32_vc9" ]
 then
+	export ORBtraceLevel=40
 	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\ --loglevel=0 --dsloglevel=3
 else
 	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=10 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$HOST.esrf.fr --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/test_suite/out/ --loglevel=0 --dsloglevel=3
