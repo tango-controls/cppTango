@@ -273,6 +273,7 @@ public:
 				din << device1_name;
 				TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("DevPollStatus", din));
 				dout >> status_arr;
+				cout << "status length : " << (*status_arr).length() << endl;
 				cout << "Polling status on startup: " << endl << string((*status_arr)[0].in()) << endl << endl << string((*status_arr)[1].in()) << endl;
 
 		// check if the devices are not polled
