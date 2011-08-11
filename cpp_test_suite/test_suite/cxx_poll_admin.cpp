@@ -269,6 +269,12 @@ public:
 		DeviceData dout;
 		string status;
 
+		const DevVarStringArray *status_arr;
+				din << device1_name;
+				TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("DevPollStatus", din));
+				dout >> status_arr;
+				cout << "Polling status on startup: " << endl << string((*status_arr)[0].in()) << endl << endl << string((*status_arr)[1].in()) << endl;
+
 		// check if the devices are not polled
 		const DevVarStringArray *polled_devices;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
