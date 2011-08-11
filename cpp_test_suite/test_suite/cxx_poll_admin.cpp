@@ -264,7 +264,7 @@ public:
 
 // Test Start, Stop polling
 
-	void Start_Stop_polling(void)
+	void test_Start_Stop_polling(void)
 	{
 		DeviceData dout;
 		string status;
@@ -297,7 +297,7 @@ public:
 
 // Test polling status for a non polled device
 
-	void get_polling_status_for_a_non_polled_device(void)
+	void test_get_polling_status_for_a_non_polled_device(void)
 	{
 		DeviceData din, dout;
 
@@ -318,7 +318,7 @@ public:
 
 // Start polling a command
 
-	void start_polling_a_command(void)
+	void test_start_polling_a_command(void)
 	{
 		DeviceData din, dout;
 		DevVarLongStringArray cmd_poll;
@@ -337,7 +337,7 @@ public:
 
 // Check if command polling is started
 
-	void check_if_command_polling_is_started(void)
+	void test_check_if_command_polling_is_started(void)
 	{
 		DeviceData din, dout;
 
@@ -363,7 +363,7 @@ public:
 
 // Update command polling period
 
-	void update_command_polling_period(void)
+	void test_update_command_polling_period(void)
 	{
 		DeviceData din, dout;
 
@@ -394,7 +394,7 @@ public:
 
 // Stop polling the command
 
-	void stop_polling_the_command(void)
+	void test_stop_polling_the_command(void)
 	{
 		DeviceData din, dout;
 
@@ -417,7 +417,7 @@ public:
 
 // Start polling an attribute
 
-	void start_polling_an_attribute(void)
+	void test_start_polling_an_attribute(void)
 	{
 		DeviceData din, dout;
 		DevVarLongStringArray attr_poll;
@@ -436,7 +436,7 @@ public:
 
 // Check if attribute polling is started
 
-	void check_if_attribute_polling_is_started(void)
+	void test_check_if_attribute_polling_is_started(void)
 	{
 		DeviceData din, dout;
 
@@ -462,7 +462,7 @@ public:
 
 // Update attribute polling period
 
-	void update_attribute_polling_period(void)
+	void test_update_attribute_polling_period(void)
 	{
 		DeviceData din, dout;
 
@@ -493,7 +493,7 @@ public:
 
 // Stop polling the attribute
 
-	void stop_polling_the_attribute(void)
+	void test_stop_polling_the_attribute(void)
 	{
 		DeviceData din, dout;
 
@@ -516,7 +516,7 @@ public:
 
 // Start polling an attribute and a command
 
-	void start_polling_an_attribute_and_a_command(void)
+	void test_start_polling_an_attribute_and_a_command(void)
 	{
 		DeviceData din, dout;
 		DevVarLongStringArray attr_poll, cmd_poll;
@@ -546,7 +546,7 @@ public:
 
 // Check if polling is started
 
-	void check_if_polling_is_started(void)
+	void test_check_if_polling_is_started(void)
 	{
 		DeviceData din, dout;
 
@@ -576,7 +576,7 @@ public:
 
 // Stop polling the attribute and the command
 
-	void stop_polling_the_attribute_and_the_command(void)
+	void test_stop_polling_the_attribute_and_the_command(void)
 	{
 		DeviceData din, dout;
 
@@ -609,7 +609,7 @@ public:
 
 // Start polling for several devices
 
-	void start_polling_for_several_devices(void)
+	void test_start_polling_for_several_devices(void)
 	{
 		DeviceData din, dout;
 		DevVarLongStringArray attr_poll, cmd_poll;
@@ -657,7 +657,7 @@ public:
 
 // Check if polling for several devices is started
 
-	void check_if_polling_for_serveral_devices_is_started(void)
+	void test_check_if_polling_for_serveral_devices_is_started(void)
 	{
 		DeviceData din, dout;
 
@@ -700,7 +700,7 @@ public:
 
 // Stop polling for several devices
 
-	void stop_polling_for_several_devices(void)
+	void test_stop_polling_for_several_devices(void)
 	{
 		DeviceData din, dout;
 		DevVarStringArray rem_attr_poll, rem_cmd_poll;
@@ -748,7 +748,7 @@ public:
 
 // Test device polling after a restart
 
-	void device_polling_after_a_restart(void)
+	void test_device_polling_after_a_restart(void)
 	{
 		DeviceData din, dout;
 		DevVarLongStringArray attr_poll, cmd_poll;
@@ -832,7 +832,7 @@ public:
 
 // Poll object which returns an exception
 
-	void poll_object_which_returns_an_exception(void)
+	void test_poll_object_which_returns_an_exception(void)
 	{
 		DeviceData din, dout;
 		DevVarLongStringArray attr_poll, cmd_poll;
@@ -1011,6 +1011,10 @@ public:
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
 
 		cout << endl;
+		cout << "~~~~~ (*status_arr)[0].in() ~~~~~" << endl;
+		cout << (*status_arr)[0].in() << endl;
+		cout << "~~~~~ (*status_arr)[1].in() ~~~~~" << endl;
+		cout << (*status_arr)[1].in() << endl;
 		cout << "~~~~~ status[0] ~~~~~" << endl;
 		cout << status[0] << endl;
 		cout << "~~~~~ status_ref[0] ~~~~~" << endl;
