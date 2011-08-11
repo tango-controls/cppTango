@@ -912,6 +912,7 @@ public:
 		const DevVarStringArray *status_arr, *polled_devices;
 		string status[2], status_ref[2];
 
+		cout << "---> Poll period 1: " << device1->get_attribute_poll_period("Double_attr") << endl;
 		// start polling an attribute for device1
 		attr_poll.lvalue.length(1);
 		attr_poll.lvalue[0] = 200;
@@ -922,6 +923,7 @@ public:
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev1_double_attr_polling_restored = false;
+		cout << "---> Poll period 2: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// start polling a command for device1
 		cmd_poll.lvalue.length(1);
@@ -933,6 +935,7 @@ public:
 		din << cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev1_IOStr1_polling_restored = false;
+		cout << "---> Poll period 3: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// start polling an attribute for device2
 		attr_poll.lvalue[0] = 200;
@@ -942,6 +945,7 @@ public:
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev2_double_attr_polling_restored = false;
+		cout << "---> Poll period 4: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// start polling a command for device2
 		cmd_poll.lvalue[0] = 500;
@@ -951,12 +955,14 @@ public:
 		din << cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev2_IOStr1_polling_restored = false;
+		cout << "---> Poll period 5: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// check if the devices are polled
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
 		dout >> polled_devices;
 		TS_ASSERT((*polled_devices)[0].in() == device1_name);
 		TS_ASSERT((*polled_devices)[1].in() == device2_name);
+		cout << "---> Poll period 6: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		Tango_sleep(3);
 
@@ -972,6 +978,7 @@ public:
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
 		TS_ASSERT(status[1] == status_ref[1]);
+		cout << "---> Poll period 7: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// get polling status for the device2
 		din << device2_name;
@@ -983,16 +990,19 @@ public:
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
 		TS_ASSERT(status[1] == status_ref[1]);
+		cout << "---> Poll period 8: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// restart server
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(5);
+		cout << "---> Poll period 9: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// check if the devices are still polled
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
 		dout >> polled_devices;
 		TS_ASSERT((*polled_devices)[0].in() == device1_name);
 		TS_ASSERT((*polled_devices)[1].in() == device2_name);
+		cout << "---> Poll period 10: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		Tango_sleep(3);
 
@@ -1010,20 +1020,22 @@ public:
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
 
-		cout << endl;
-		cout << "~~~~~ (*status_arr)[0].in() ~~~~~" << endl;
-		cout << (*status_arr)[0].in() << endl;
-		cout << "~~~~~ (*status_arr)[1].in() ~~~~~" << endl;
-		cout << (*status_arr)[1].in() << endl;
-		cout << "~~~~~ status[0] ~~~~~" << endl;
-		cout << status[0] << endl;
-		cout << "~~~~~ status_ref[0] ~~~~~" << endl;
-		cout << status_ref[0] << endl;
-		cout << "~~~~~ status[1] ~~~~~" << endl;
-		cout << status[1] << endl;
-		cout << "~~~~~ status_ref[1] ~~~~~" << endl;
-		cout << status_ref[1] << endl;
-		cout << "~~~~~ end of status ~~~~~" << endl << endl;
+		cout << "---> Poll period 11: " << device1->get_attribute_poll_period("Double_attr") << endl;
+
+//		cout << endl;
+//		cout << "~~~~~ (*status_arr)[0].in() ~~~~~" << endl;
+//		cout << (*status_arr)[0].in() << endl;
+//		cout << "~~~~~ (*status_arr)[1].in() ~~~~~" << endl;
+//		cout << (*status_arr)[1].in() << endl;
+//		cout << "~~~~~ status[0] ~~~~~" << endl;
+//		cout << status[0] << endl;
+//		cout << "~~~~~ status_ref[0] ~~~~~" << endl;
+//		cout << status_ref[0] << endl;
+//		cout << "~~~~~ status[1] ~~~~~" << endl;
+//		cout << status[1] << endl;
+//		cout << "~~~~~ status_ref[1] ~~~~~" << endl;
+//		cout << status_ref[1] << endl;
+//		cout << "~~~~~ end of status ~~~~~" << endl << endl;
 
 
 		TS_ASSERT(status[1] == status_ref[1]);
