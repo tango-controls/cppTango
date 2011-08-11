@@ -266,7 +266,7 @@ public:
 
 	void test_Start_Stop_polling(void)
 	{
-		DeviceData dout;
+		DeviceData din, dout;
 		string status;
 
 		const DevVarStringArray *status_arr;
