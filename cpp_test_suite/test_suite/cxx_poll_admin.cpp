@@ -992,6 +992,18 @@ public:
 		TS_ASSERT(status[1] == status_ref[1]);
 		cout << "---> Poll period 8: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
+
+
+	// tmp update object polling
+	cmd_poll.lvalue[0] = 300;
+	cmd_poll.svalue[0] = device1_name.c_str();
+	cmd_poll.svalue[1] = "attribute";
+	cmd_poll.svalue[2] = "Double_attr";
+	din << cmd_poll;
+	TS_ASSERT_THROWS_NOTHING(dserver->command_inout("UpdObjPollingPeriod", din));
+	dev1_double_attr_polling_restored = false;
+	cout << "---> Poll period 8.1: " << device1->get_attribute_poll_period("Double_attr") << endl;
+
 		// restart server
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(5);
