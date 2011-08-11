@@ -120,45 +120,45 @@ public:
 
 		// clean up in case test suite terminates before 'IOStr1'
 		// command polling state is restored to defaults for device1
-		if(!dev1_IOStr1_polling_restored)
-		{
-			DeviceData din;
-			DevVarStringArray rem_cmd_poll;
-			rem_cmd_poll.length(3);
-			rem_cmd_poll[0] = device1_name.c_str();
-			rem_cmd_poll[1] = "command";
-			rem_cmd_poll[2] = "IOStr1";
-			din << rem_cmd_poll;
-			try
-			{
-				dserver->command_inout("RemObjPolling", din);
-			}
-			catch(DevFailed &e)
-			{
-				Except::print_exception(e);
-			}
-		}
+//		if(!dev1_IOStr1_polling_restored)
+//		{
+//			DeviceData din;
+//			DevVarStringArray rem_cmd_poll;
+//			rem_cmd_poll.length(3);
+//			rem_cmd_poll[0] = device1_name.c_str();
+//			rem_cmd_poll[1] = "command";
+//			rem_cmd_poll[2] = "IOStr1";
+//			din << rem_cmd_poll;
+//			try
+//			{
+//				dserver->command_inout("RemObjPolling", din);
+//			}
+//			catch(DevFailed &e)
+//			{
+//				Except::print_exception(e);
+//			}
+//		}
 
 		// clean up in case test suite terminates before 'Double_attr'
 		// attribute polling state is restored to defaults for device1
-		if(!dev1_double_attr_polling_restored)
-		{
-			DeviceData din;
-			DevVarStringArray rem_attr_poll;
-			rem_attr_poll.length(3);
-			rem_attr_poll[0] = device1_name.c_str();
-			rem_attr_poll[1] = "attribute";
-			rem_attr_poll[2] = "Double_attr";
-			din << rem_attr_poll;
-			try
-			{
-				dserver->command_inout("RemObjPolling", din);
-			}
-			catch(DevFailed &e)
-			{
-				Except::print_exception(e);
-			}
-		}
+//		if(!dev1_double_attr_polling_restored)
+//		{
+//			DeviceData din;
+//			DevVarStringArray rem_attr_poll;
+//			rem_attr_poll.length(3);
+//			rem_attr_poll[0] = device1_name.c_str();
+//			rem_attr_poll[1] = "attribute";
+//			rem_attr_poll[2] = "Double_attr";
+//			din << rem_attr_poll;
+//			try
+//			{
+//				dserver->command_inout("RemObjPolling", din);
+//			}
+//			catch(DevFailed &e)
+//			{
+//				Except::print_exception(e);
+//			}
+//		}
 
 		// clean up in case test suite terminates before 'IOStr1'
 		// command polling state is restored to defaults for device2
