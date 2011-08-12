@@ -120,45 +120,45 @@ public:
 
 		// clean up in case test suite terminates before 'IOStr1'
 		// command polling state is restored to defaults for device1
-//		if(!dev1_IOStr1_polling_restored)
-//		{
-//			DeviceData din;
-//			DevVarStringArray rem_cmd_poll;
-//			rem_cmd_poll.length(3);
-//			rem_cmd_poll[0] = device1_name.c_str();
-//			rem_cmd_poll[1] = "command";
-//			rem_cmd_poll[2] = "IOStr1";
-//			din << rem_cmd_poll;
-//			try
-//			{
-//				dserver->command_inout("RemObjPolling", din);
-//			}
-//			catch(DevFailed &e)
-//			{
-//				Except::print_exception(e);
-//			}
-//		}
+		if(!dev1_IOStr1_polling_restored)
+		{
+			DeviceData din;
+			DevVarStringArray rem_cmd_poll;
+			rem_cmd_poll.length(3);
+			rem_cmd_poll[0] = device1_name.c_str();
+			rem_cmd_poll[1] = "command";
+			rem_cmd_poll[2] = "IOStr1";
+			din << rem_cmd_poll;
+			try
+			{
+				dserver->command_inout("RemObjPolling", din);
+			}
+			catch(DevFailed &e)
+			{
+				Except::print_exception(e);
+			}
+		}
 
 		// clean up in case test suite terminates before 'Double_attr'
 		// attribute polling state is restored to defaults for device1
-//		if(!dev1_double_attr_polling_restored)
-//		{
-//			DeviceData din;
-//			DevVarStringArray rem_attr_poll;
-//			rem_attr_poll.length(3);
-//			rem_attr_poll[0] = device1_name.c_str();
-//			rem_attr_poll[1] = "attribute";
-//			rem_attr_poll[2] = "Double_attr";
-//			din << rem_attr_poll;
-//			try
-//			{
-//				dserver->command_inout("RemObjPolling", din);
-//			}
-//			catch(DevFailed &e)
-//			{
-//				Except::print_exception(e);
-//			}
-//		}
+		if(!dev1_double_attr_polling_restored)
+		{
+			DeviceData din;
+			DevVarStringArray rem_attr_poll;
+			rem_attr_poll.length(3);
+			rem_attr_poll[0] = device1_name.c_str();
+			rem_attr_poll[1] = "attribute";
+			rem_attr_poll[2] = "Double_attr";
+			din << rem_attr_poll;
+			try
+			{
+				dserver->command_inout("RemObjPolling", din);
+			}
+			catch(DevFailed &e)
+			{
+				Except::print_exception(e);
+			}
+		}
 
 		// clean up in case test suite terminates before 'IOStr1'
 		// command polling state is restored to defaults for device2
@@ -266,15 +266,8 @@ public:
 
 	void test_Start_Stop_polling(void)
 	{
-		DeviceData din, dout;
+		DeviceData dout;
 		string status;
-
-		const DevVarStringArray *status_arr;
-				din << device1_name;
-				TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("DevPollStatus", din));
-				dout >> status_arr;
-				cout << "status length : " << (*status_arr).length() << endl;
-				cout << "Polling status on startup: " << endl << string((*status_arr)[0].in()) << endl << endl << string((*status_arr)[1].in()) << endl;
 
 		// check if the devices are not polled
 		const DevVarStringArray *polled_devices;
@@ -919,7 +912,6 @@ public:
 		const DevVarStringArray *status_arr, *polled_devices;
 		string status[2], status_ref[2];
 
-		cout << "---> Poll period 1: " << device1->get_attribute_poll_period("Double_attr") << endl;
 		// start polling an attribute for device1
 		attr_poll.lvalue.length(1);
 		attr_poll.lvalue[0] = 200;
@@ -930,7 +922,6 @@ public:
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev1_double_attr_polling_restored = false;
-		cout << "---> Poll period 2: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// start polling a command for device1
 		cmd_poll.lvalue.length(1);
@@ -942,7 +933,6 @@ public:
 		din << cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev1_IOStr1_polling_restored = false;
-		cout << "---> Poll period 3: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// start polling an attribute for device2
 		attr_poll.lvalue[0] = 200;
@@ -952,7 +942,6 @@ public:
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev2_double_attr_polling_restored = false;
-		cout << "---> Poll period 4: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// start polling a command for device2
 		cmd_poll.lvalue[0] = 500;
@@ -962,14 +951,12 @@ public:
 		din << cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
 		dev2_IOStr1_polling_restored = false;
-		cout << "---> Poll period 5: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// check if the devices are polled
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
 		dout >> polled_devices;
 		TS_ASSERT((*polled_devices)[0].in() == device1_name);
 		TS_ASSERT((*polled_devices)[1].in() == device2_name);
-		cout << "---> Poll period 6: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		Tango_sleep(3);
 
@@ -985,7 +972,6 @@ public:
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
 		TS_ASSERT(status[1] == status_ref[1]);
-		cout << "---> Poll period 7: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// get polling status for the device2
 		din << device2_name;
@@ -997,31 +983,16 @@ public:
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
 		TS_ASSERT(status[1] == status_ref[1]);
-		cout << "---> Poll period 8: " << device1->get_attribute_poll_period("Double_attr") << endl;
-
-
-
-	// tmp update object polling
-	cmd_poll.lvalue[0] = 300;
-	cmd_poll.svalue[0] = device1_name.c_str();
-	cmd_poll.svalue[1] = "attribute";
-	cmd_poll.svalue[2] = "Double_attr";
-	din << cmd_poll;
-	TS_ASSERT_THROWS_NOTHING(dserver->command_inout("UpdObjPollingPeriod", din));
-	dev1_double_attr_polling_restored = false;
-	cout << "---> Poll period 8.1: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// restart server
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(5);
-		cout << "---> Poll period 9: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		// check if the devices are still polled
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
 		dout >> polled_devices;
 		TS_ASSERT((*polled_devices)[0].in() == device1_name);
 		TS_ASSERT((*polled_devices)[1].in() == device2_name);
-		cout << "---> Poll period 10: " << device1->get_attribute_poll_period("Double_attr") << endl;
 
 		Tango_sleep(3);
 
@@ -1033,30 +1004,9 @@ public:
 		dout >> status_arr;
 		// extract the first 3 lines of the status and compare with the reference string
 		// TODO: although device/time dependent, the other 3 lines could also be compared
-
-
 		status[0] = string((*status_arr)[0].in()).substr(0,status_ref[0].length());
 		TS_ASSERT(status[0] == status_ref[0]);
 		status[1] = string((*status_arr)[1].in()).substr(0,status_ref[1].length());
-
-		cout << "---> Poll period 11: " << device1->get_attribute_poll_period("Double_attr") << endl;
-
-//		cout << endl;
-//		cout << "~~~~~ (*status_arr)[0].in() ~~~~~" << endl;
-//		cout << (*status_arr)[0].in() << endl;
-//		cout << "~~~~~ (*status_arr)[1].in() ~~~~~" << endl;
-//		cout << (*status_arr)[1].in() << endl;
-//		cout << "~~~~~ status[0] ~~~~~" << endl;
-//		cout << status[0] << endl;
-//		cout << "~~~~~ status_ref[0] ~~~~~" << endl;
-//		cout << status_ref[0] << endl;
-//		cout << "~~~~~ status[1] ~~~~~" << endl;
-//		cout << status[1] << endl;
-//		cout << "~~~~~ status_ref[1] ~~~~~" << endl;
-//		cout << status_ref[1] << endl;
-//		cout << "~~~~~ end of status ~~~~~" << endl << endl;
-
-
 		TS_ASSERT(status[1] == status_ref[1]);
 
 		// get polling status for the device2
