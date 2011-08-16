@@ -215,8 +215,7 @@ public:
 		CommandInfo cmd_inf = cmd_inf_list[5];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"EventSubscriptionChange");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
-		cout << "---> out type: " << cmd_inf.out_type << endl;
-		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
+		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_LONG);
 		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"list of events consumer wants to subscribe to");
 		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"none");
 	}
@@ -531,6 +530,25 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Lg[0]=Upd period. Str[0]=Device name. Str[1]=Object type. Str[2]=Object name");
 		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Uninitialised");
+	}
+
+// Test ZMQEventSubscriptionChange command_list_query
+
+	void test_command_list_query_ZMQEventSubscriptionChange(void)
+	{
+//		CommandInfo cmd_inf = dserver->command_query("ZMQEventSubscriptionChange");
+		CommandInfo cmd_inf = cmd_inf_list[30];
+		cout << "---> cmd_name: " << cmd_inf.cmd_name << endl
+				<< " in_type: " <<  cmd_inf.in_type << endl
+				<< " out_type: " <<  cmd_inf.out_type << endl
+				<< " in_type_desc: " <<  cmd_inf.in_type_desc << endl
+				<< " out_type_desc: " <<  cmd_inf.out_type_desc << endl;
+
+//		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"EventSubscriptionChange");
+//		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
+//		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_LONG);
+//		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"list of events consumer wants to subscribe to");
+//		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"none");
 	}
 };
 #undef cout
