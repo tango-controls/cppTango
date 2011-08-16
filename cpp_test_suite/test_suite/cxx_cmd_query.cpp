@@ -217,7 +217,7 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_LONG);
 		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Event consumer wants to subscribe to");
-		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"none");
+		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Tango lib release");
 	}
 
 // Test GetLoggingLevel command_list_query
