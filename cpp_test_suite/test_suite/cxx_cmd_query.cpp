@@ -542,7 +542,7 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Events consumer wants to subscribe to");
-		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release command list");
+		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release");
 	}
 };
 #undef cout
