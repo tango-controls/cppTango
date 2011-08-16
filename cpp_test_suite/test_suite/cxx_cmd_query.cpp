@@ -216,7 +216,7 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"EventSubscriptionChange");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_LONG);
-		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"list of events consumer wants to subscribe to");
+		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Event consumer wants to subscribe to");
 		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"none");
 	}
 
