@@ -119,43 +119,6 @@ public:
 // Tests -------------------------------------------------------
 //
 
-// Test Logging level
-
-	void test_logging_level(void)
-	{
-		DeviceData din, dout;
-		din << Tango::ON;
-		DeviceProxy dserver = DeviceProxy("dserver/devTest/tomasz");
-		device->command_inout("IOState", din);
-
-		DevVarStringArray str_arr;
-		DevVarLongStringArray lg_str_arr_in;
-		const DevVarLongStringArray *lg_str_arr_out;
-
-		lg_str_arr_in.lvalue.length(1);
-		lg_str_arr_in.svalue.length(1);
-		lg_str_arr_in.lvalue[0] = 4;
-		lg_str_arr_in.svalue[0] = "dev/tomasz/1";
-		din << lg_str_arr_in;
-		dserver.command_inout("SetLoggingLevel", din);
-
-		str_arr.length(1);
-		str_arr[0] = "dev/tomasz/1";
-		din << str_arr;
-		dout = dserver.command_inout("GetLoggingLevel", din);
-		dout >> lg_str_arr_out;
-//		cout << "---> " << (*lg_str_arr_out).svalue[0] << " logging level: " << (*lg_str_arr_out).lvalue[0] << endl;
-
-		try
-		{
-			device->command_inout("IOTempl");
-		}
-		catch(...)
-		{
-			cout << "---> exception" << endl;
-		}
-	}
-
 // Test IOTempl
 
 	void test_IOTempl(void)
