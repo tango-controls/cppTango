@@ -48,7 +48,7 @@ public:
 		for(size_t i = 0; i < params.size() && params_ok; i++)
 			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
 
-		if(CxxTest::TangoPrinter::get_uargc() >= 3 && params_ok)
+		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
 		{
 			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
 
@@ -79,16 +79,14 @@ public:
 		{
 			device1 = new DeviceProxy(device1_name);
 			dserver = new DeviceProxy(dserver_name);
+			device1->ping();
+			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
 		{
 			Except::print_exception(e);
 			exit(-1);
 		}
-
-		cout << endl;
-		cout << "new DeviceProxy(" << device1->name() << ") returned" << endl;
-		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 
 	}
 

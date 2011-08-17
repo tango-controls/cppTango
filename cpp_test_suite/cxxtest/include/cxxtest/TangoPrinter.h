@@ -104,7 +104,7 @@ namespace CxxTest
         			suite_name.insert(i," ");
 				}
         	}
-        	cout << "\nTesting " << suite_name << " :\n";
+        	cout << "\nTesting " << suite_name << " :\n\n";
 		}
 
         /*
@@ -222,7 +222,7 @@ namespace CxxTest
 			return tracker().failedTests();
 		}
 
-        static int get_argc(void)
+        static unsigned int get_argc(void)
         {
         	return argc;
         }
@@ -237,7 +237,7 @@ namespace CxxTest
         	return uargv;
         }
 
-        static int get_uargc(void)
+        static unsigned int get_uargc(void)
 		{
 			return uargc;
 		}
@@ -245,7 +245,7 @@ namespace CxxTest
         /*
          * returns number of predefined parameters used in command line by user
          */
-        static int get_pargc(void)
+        static unsigned int get_pargc(void)
 		{
 			return pargc;
 		}

@@ -48,7 +48,7 @@ public:
 		for(size_t i = 0; i < params.size() && params_ok; i++)
 			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
 
-		if(CxxTest::TangoPrinter::get_uargc() > 0 && params_ok)
+		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
 		{
 			device_name = CxxTest::TangoPrinter::get_uargv()[0];
 			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
@@ -84,6 +84,8 @@ public:
 		{
 			device = new DeviceProxy(device_name);
 			dserver = new DeviceProxy(dserver_name);
+			device->ping();
+			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -91,9 +93,6 @@ public:
 			exit(-1);
 		}
 
-		cout << endl;
-		cout << "new DeviceProxy(" << device->name() << ") returned" << endl;
-		cout << "new DeviceProxy(" << dserver->name() << ") returned" << endl << endl;
 	}
 
 	virtual ~SUITE_NAME()
@@ -200,7 +199,7 @@ public:
 		TS_ASSERT(device->info().dev_class == "DevTest");
 		TS_ASSERT(device->info().dev_type == dev_type);
 		TS_ASSERT(device->info().doc_url == "Doc URL = " + doc_url);
-//		TS_ASSERT(device->info().server_host == server_host);
+		TS_ASSERT(device->info().server_host == server_host);
 		TS_ASSERT(device->info().server_id == full_ds_name);
 		TS_ASSERT(device->info().server_version == server_version);
 	}
