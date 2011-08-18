@@ -6,6 +6,21 @@ using namespace CmpTst;
 
 #define TMP_SUFFIX ".tmp"
 
+//+-------------------------------------------------------------------------
+//
+// method :			out_set_event_properties
+//
+// description :	Scans the output file seeking log4j:event tags and replaces
+//			values of the indicated properties in the found tags. E.g.:
+//			Original log4j:event tag:
+//			<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+//			After out_set_event_properties("outfile", "thread", "20") call:
+//			<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="20">
+// argument : in :	- file : output file to be modified
+//					- prop : property to be changed the value of
+//					- value : new value
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::out_set_event_properties(string file, string prop, string val)
 {
 	map<string,string> prop_val_map;
@@ -13,6 +28,26 @@ void CmpTst::CompareTest::out_set_event_properties(string file, string prop, str
 	out_set_event_properties(file, prop_val_map);
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			out_set_event_properties
+//
+// description :	Scans the output file seeking log4j:event tags and replaces
+//			values of the properties indicated by pop_val_map in the tags found.
+//			E.g.:
+//			Original log4j:event tag:
+//			<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+//			Map declaration:
+//				map<std::string,std::string> pop_val_map;
+//				prop_val_map["timestamp"] = "5";
+//				prop_val_map["thread"] = "20";
+//			The tag after out_set_event_properties("outfile", pop_val_map) call:
+//			<log4j:event logger="DSERVER" timestamp="5" level="DEBUG" thread="20">
+// argument : in :	- file : output file to be modified
+//					- prop_val_map : 	keys - properties to be modified,
+//										values - new values of the properties
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::out_set_event_properties(string file, map<string,string> prop_val_map)
 {
 	if(prop_val_map.size() > 0)
@@ -75,6 +110,25 @@ void CmpTst::CompareTest::out_set_event_properties(string file, map<string,strin
 	}
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			out_set_replace_numbers
+//
+// description :	Scans the output file seeking the occurrences of the
+//			prefix and replaces the following number with the one declared.
+//			The prefix can be any string directly preceding the number
+//			to be replaced.
+//			E.g.:
+//			Original tag in the output file:
+//			<![CDATA[In rel_monitor() DSERVER, ctr = 123, thread = 2]]>
+//			The tag after out_set_replace_numbers("outfile", "ctr = ", "4") call:
+//			<![CDATA[In rel_monitor() DSERVER, ctr = 4, thread = 2]]>
+// argument : in :	- file : 	output file to be modified
+//					- prefix : 	string directly preceding the number
+//								to be replaced
+//					- num :		new number
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::out_set_replace_numbers(string file, string prefix, string num)
 {
 	map<string,string> prefix_num_map;
@@ -82,6 +136,30 @@ void CmpTst::CompareTest::out_set_replace_numbers(string file, string prefix, st
 	out_set_replace_numbers(file, prefix_num_map);
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			out_set_replace_numbers
+//
+// description :	Scans the output file seeking the occurrences of the
+//			prefixes indicated by the prefix_num_map and replaces the
+//			following numbers with the ones declared in the map.
+//			The prefix can be any string directly preceding the number
+//			to be replaced.
+//			E.g.:
+//			Original tag in the output file:
+//			<![CDATA[In rel_monitor() DSERVER, ctr = 123, thread = 2]]>
+//			Map declaration:
+//				map<std::string,std::string> prefix_num_map;
+//				prefix_num_map["ctr = "] = "4";
+//				prefix_num_map["thread = "] = "567";
+//			The tag after out_set_replace_numbers("outfile", prefix_num_map) call:
+//			<![CDATA[In rel_monitor() DSERVER, ctr = 4, thread = 567]]>
+// argument : in :	- file : 	output file to be modified
+//					- prefix_num_map : 	keys - strings preceding the numbers
+//											to be modified,
+//										values - new numbers
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::out_set_replace_numbers(string file, map<string,string> prefix_num_map)
 {
 	if(prefix_num_map.size() > 0)
@@ -146,6 +224,22 @@ void CmpTst::CompareTest::out_set_replace_numbers(string file, map<string,string
 	}
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			ref_replace_keywords
+//
+// description :	Scans the output file seeking the occurrences of the
+//			keyword and replaces them with the declared value.
+//			E.g.:
+//			Original tag in the output file:
+//			<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+//			The tag after ref_replace_keywords("outfile", "DSERVER", "dserver/devTest/test") call:
+//			<log4j:event logger="dserver/devTest/test" timestamp="10" level="DEBUG" thread="1">
+// argument : in :	- file : 	output file to be modified
+//					- key : 	keyword to be replaced
+//					- value :	new string
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::ref_replace_keywords(string file, string key, string val)
 {
 	map<string,string> key_val_map;
@@ -153,6 +247,27 @@ void CmpTst::CompareTest::ref_replace_keywords(string file, string key, string v
 	ref_replace_keywords(file, key_val_map);
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			ref_replace_keywords
+//
+// description :	Scans the output file seeking the occurrences of the
+//			keywords indicated by the key_val_map and replaces them with
+//			the declared values.
+//			E.g.:
+//			Original tag in the output file:
+//			<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+//			Map declaration:
+//				map<std::string,std::string> key_val_map;
+//				key_val_map["DSERVER"] = "dserver/devTest/test";
+//				key_val_map["DEBUG"] = "INFO";
+//			The tag after ref_replace_keywords("outfile", key_val_map) call:
+//			<log4j:event logger="dserver/devTest/test" timestamp="10" level="INFO" thread="1">
+// argument : in :	- file : 	output file to be modified
+//					- key_val_map : 	keys - keywords to be replaced,
+//										values - new replacement strings
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::ref_replace_keywords(string file, map<string,string> key_val_map)
 {
 	if(key_val_map.size() > 0)
@@ -200,6 +315,21 @@ void CmpTst::CompareTest::ref_replace_keywords(string file, map<string,string> k
 	}
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			compare
+//
+// description :	Compares the output file with the reference file line
+//			by line. Throws an exception at the first occurrence of any
+//			discrepancy. No exception thrown means the files are identical.
+//			The exception indicates the number of the inconsistent line and
+//			displays it as well as the corresponding line from the reference
+//			file.
+// argument : in :	- ref : 	reference file to be compared with
+//					- out :		output file to be compared with the
+//								reference file
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::compare(string ref, string out)
 {
 	ifstream refstream, outstream;
@@ -247,6 +377,16 @@ void CmpTst::CompareTest::compare(string ref, string out)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::compare] Cannot close file: " + out);
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			clean_up
+//
+// description :	Removes the output file and all the temporary files
+//			created while running the CompareTest like ref_tmp, or out_tmp.
+// argument : in :	- ref : 	reference file
+//					- out :		output file
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::clean_up(string ref, string out)
 {
 	string ref_tmp = ref + TMP_SUFFIX;
@@ -276,11 +416,28 @@ void CmpTst::CompareTest::clean_up(string ref, string out)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::clean_up] Cannot remove file: " + out);
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			print_output
+//
+// description :	Displays the output file.
+// argument : in :	- out :		output file to be displayed
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::print_output(string out)
 {
 	print_output(out, false);
 }
 
+//+-------------------------------------------------------------------------
+//
+// method :			print_output
+//
+// description :	Displays the output file and shows the line numbers.
+// argument : in :	- out :					output file to be displayed
+//					- show_line_numbers :	if true displays line numbers
+//
+//--------------------------------------------------------------------------
 void CmpTst::CompareTest::print_output(string out, bool show_line_numbers)
 {
 	ifstream outstream;
