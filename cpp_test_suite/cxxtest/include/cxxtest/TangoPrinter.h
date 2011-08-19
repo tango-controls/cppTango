@@ -64,7 +64,18 @@ namespace CxxTest
          * (example: ./run_tests user_param --loop=10 ==> pargv["loop"] == "10")
          */
         static map<string,string> pargv;
+        /*
+         * number of times each test with '__loop' suffix is to be executed
+         */
         static int loop;
+        /*
+         * number of times each sutie with '__loop' suffix is to be executed
+         */
+        static int suite_loop;
+        /*
+         * number of times current suite with '__loop' suffix was executed
+         */
+        static int suite_counter;
         /*
          * map of predefined parameter names and their declarations (the way of usage in the command line)
          * (example: params["loop"] = "--loop=" ==> ./run_tests user_param --loop=10)
@@ -93,9 +104,15 @@ namespace CxxTest
 		{
         	string suite_name = tracker().suite().suiteName();
         	size_t suffix_pos = suite_name.rfind("TestSuite");
+        	size_t suite_name_len = suite_name.length();
+			string loop_str = "__loop";
+			size_t loop_str_len = loop_str.length();
+			bool is_suite_loop = suite_name_len >= loop_str_len && suite_name.substr(suite_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
+
         	if(suffix_pos != string::npos)
         	{
-        		suite_name.erase(suffix_pos,9);
+//        		suite_name.erase(suffix_pos,9);
+        		suite_name.erase(suffix_pos);
         	}
         	for(size_t i = 1; i < suite_name.size(); i++)
         	{
@@ -104,7 +121,10 @@ namespace CxxTest
         			suite_name.insert(i," ");
 				}
         	}
-        	cout << "\nTesting " << suite_name << " :\n\n";
+        	if(!is_suite_loop || suite_loop < 2)
+        		cout << "\nTesting " << suite_name << " :\n\n";
+        	else
+        		cout << "\nTesting " << suite_name << ", " << suite_loop << " iterations :\n\n";
 		}
 
         /*
@@ -120,18 +140,19 @@ namespace CxxTest
         	{
         		const SuiteDescription &suite_tmp = tracker().suite();
         		(const_cast<SuiteDescription &>(suite_tmp)).tearDown();
-        		cout <<  "\nTEST FAILED in " << loop - counter << ". iteration\n" ;
+        		cout <<  "TEST FAILED in:\n" << loop - counter << " iteration of test case\n" << suite_counter << " iteration of test suite\n\n" ;
         		exit(-1);
             }
         	else
         	{
-        		string test_name = tracker().test().testName();
-        		int test_name_len = test_name.length();
+        		string test_name = desc.testName();
+        		size_t test_name_len = test_name.length();
         		string loop_str = "__loop";
-        		int loop_str_len = loop_str.length();
-        		if(counter > 0 && test_name_len >= loop_str_len && test_name.substr(test_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0) {
+        		size_t loop_str_len = loop_str.length();
+        		bool is_loop = test_name_len >= loop_str_len && test_name.substr(test_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
+        		if(counter > 0 && is_loop) {
         			counter--;
-        			const TestDescription &test = tracker().test();
+        			const TestDescription &test = desc;
 					(const_cast<TestDescription &>(test)).setUp();
 					(const_cast<TestDescription &>(test)).run();
 					(const_cast<TestDescription &>(test)).tearDown();
@@ -157,10 +178,56 @@ namespace CxxTest
 							test_name[i] = ' ';
 					}
 
-        			cout << "\t" << test_name << " --> OK" << "\n" ;
+					// prints out the the success notice only after the last iteration
+					// of test case execution in the last iteration of the test suite run
+					string suite_name = tracker().suite().suiteName();
+					size_t suite_name_len = suite_name.length();
+					string loop_str = "__loop";
+					size_t loop_str_len = loop_str.length();
+					bool is_suite_loop = suite_name_len >= loop_str_len && suite_name.substr(suite_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
+					if(!is_suite_loop || (is_suite_loop && suite_counter >= suite_loop))
+					{
+						if(!is_loop || loop < 2)
+							cout << "\t" << test_name << " --> OK\n";
+						else
+							cout << "\t" << test_name << ", " << loop << " iterations --> OK\n";
+					}
+
         			counter = loop - 1;
         		}
         	}
+        }
+
+        void leaveSuite( const SuiteDescription &desc )
+        {
+    		string suite_name = tracker().suite().suiteName();
+    		size_t suite_name_len = suite_name.length();
+    		string loop_str = "__loop";
+    		size_t loop_str_len = loop_str.length();
+    		if(suite_counter < suite_loop && suite_name_len >= loop_str_len && suite_name.substr(suite_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0) {
+				const SuiteDescription &suite = tracker().suite();
+				unsigned int num_tests = (const_cast<SuiteDescription &>(suite)).numTests();
+    			while(suite_counter < suite_loop)
+    			{
+    				suite_counter++;
+    				TestDescription *test = (const_cast<SuiteDescription &>(suite)).firstTest();
+					(const_cast<SuiteDescription &>(suite)).setUp();
+					unsigned int test_counter = 0;
+					while(test_counter < num_tests && test != 0)
+					{
+						tracker().enterTest(*test);
+						test->setUp();
+						test->run();
+						leaveTest(*test);
+						test->tearDown();
+						test = test->next();
+						test_counter++;
+					}
+					(const_cast<SuiteDescription &>(suite)).tearDown();
+    			}
+    			suite_counter = 1;
+    		}
+        	cout << "\n";
         }
 
         int run( int argc_tmp, char **argv_tmp )
@@ -217,6 +284,10 @@ namespace CxxTest
         	// atoi() converts string into integer; if not possible, returns 0
         	if(is_param_defined("loop"))
         		loop = atoi(get_param_val("loop").c_str());
+
+        	// atoi() converts string into integer; if not possible, returns 0
+        	if(is_param_defined("suiteloop"))
+        		suite_loop = atoi(get_param_val("suiteloop").c_str());
 
 			TestRunner::runAllTests( *this );
 			return tracker().failedTests();
@@ -324,6 +395,7 @@ namespace CxxTest
         	params_tmp["refpath"] = "--refpath="; // directory where the compare test reference files (*.out) are stored
         	params_tmp["loglevel"] = "--loglevel="; // default device logging level, e.g. 0
         	params_tmp["dsloglevel"] = "--dsloglevel="; // default device server logging level, e.g. 3
+        	params_tmp["suiteloop"] = "--suiteloop="; // executes suite in a loop
         	return params_tmp;
         }
 
@@ -355,6 +427,8 @@ namespace CxxTest
     int TangoPrinter::loop = 0;
     map<string,string> TangoPrinter::params = TangoPrinter::create_params();
     string TangoPrinter::executable_name = "";
+    int TangoPrinter::suite_loop = 0;
+    int TangoPrinter::suite_counter = 1;
 }
 
 #endif // __cxxtest__TangoPrinter_h__
