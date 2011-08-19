@@ -14,9 +14,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME ClassSignalTestSuite
+#define SUITE_NAME ClassSignalTestSuite__loop
 
-class ClassSignalTestSuite: public CxxTest::TestSuite
+class ClassSignalTestSuite__loop: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *dserver, *dbserver;
@@ -240,6 +240,7 @@ public:
 	{
 		DeviceData din, dout;
 		DevLong sig_num = 14;
+		int sig_num_int = 14;
 
 		// register class signal
 		din << sig_num;
@@ -282,7 +283,7 @@ public:
 		dout >> result;
 		pid = atoi((*result).svalue[0].in());
 		if(pid > 0)
-			kill(pid, sig_num);
+			kill(pid, sig_num_int);
 		Tango_sleep(2);
 
 		// set logging level back to defaults
