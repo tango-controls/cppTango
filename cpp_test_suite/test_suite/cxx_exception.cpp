@@ -97,7 +97,6 @@ public:
 			Except::print_exception(e);
 			exit(-1);
 		}
-		cout << endl;
 		delete device;
 		delete dserver;
 	}

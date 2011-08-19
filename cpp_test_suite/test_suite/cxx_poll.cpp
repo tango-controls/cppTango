@@ -12,9 +12,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME PollTestSuite
+#define SUITE_NAME PollTestSuite__loop
 
-class PollTestSuite: public CxxTest::TestSuite
+class PollTestSuite__loop: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *dserver;
@@ -26,10 +26,10 @@ public:
 	{
 
 		// clean up flags
-		dev1_Double_attr_polling_restored = false;
-		dev1_IOStr1_polling_restored = false;
-		dev1_attr_wrong_size_polling_restored = false;
-		dev1_IOExcept_polling_restored = false;
+		dev1_Double_attr_polling_restored = true;
+		dev1_IOStr1_polling_restored = true;
+		dev1_attr_wrong_size_polling_restored = true;
+		dev1_IOExcept_polling_restored = true;
 
 //
 // Arguments check -------------------------------------------------
@@ -92,7 +92,6 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		cout << endl;
 
 //
 // Clean up --------------------------------------------------------

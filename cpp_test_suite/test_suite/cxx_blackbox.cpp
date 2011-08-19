@@ -119,7 +119,6 @@ public:
 			exit(-1);
 		}
 
-		cout << endl;
 		delete device1;
 		delete device2;
 		delete dserver;

@@ -105,7 +105,6 @@ public:
 			exit(-1);
 		}
 
-		cout << endl;
 		delete device;
 		delete dserver;
 	}

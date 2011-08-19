@@ -86,7 +86,6 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		cout << endl;
 		delete device;
 		delete dserver;
 	}

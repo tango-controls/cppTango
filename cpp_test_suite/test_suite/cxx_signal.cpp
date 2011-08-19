@@ -247,6 +247,7 @@ public:
 	{
 		DeviceData din, dout;
 		DevLong sig_num = 14;
+		int sig_num_int = 14;
 
 		// register signal
 		din << sig_num;
@@ -290,7 +291,7 @@ public:
 		dout >> result;
 		pid = atoi((*result).svalue[0].in());
 		if(pid > 0)
-			kill(pid, sig_num);
+			kill(pid, sig_num_int);
 		Tango_sleep(2);
 
 		// set logging level back to defaults

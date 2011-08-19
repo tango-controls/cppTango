@@ -12,9 +12,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME PollAdminTestSuite
+#define SUITE_NAME PollAdminTestSuite__loop
 
-class PollAdminTestSuite: public CxxTest::TestSuite
+class PollAdminTestSuite__loop: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *dserver;
@@ -97,7 +97,6 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		cout << endl;
 
 //
 // Clean up --------------------------------------------------------
