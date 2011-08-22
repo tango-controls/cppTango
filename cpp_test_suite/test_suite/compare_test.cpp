@@ -379,10 +379,28 @@ void CmpTst::CompareTest::compare(string ref, string out)
 
 //+-------------------------------------------------------------------------
 //
+// method :			clean_on_startup
+//
+// description :	Removes the temporary files created while running
+//			the CompareTest which were left undeleted on sudden termination
+//			of a test suite.
+// argument : in :	- ref : 	reference file
+//					- out :		output file
+//
+//--------------------------------------------------------------------------
+void CmpTst::CompareTest::clean_on_startup(string ref, string out)
+{
+	string ref_tmp = ref + TMP_SUFFIX;
+	remove(ref_tmp.c_str());
+	remove(out.c_str());
+}
+
+//+-------------------------------------------------------------------------
+//
 // method :			clean_up
 //
-// description :	Removes the output file and all the temporary files
-//			created while running the CompareTest like ref_tmp, or out_tmp.
+// description :	Removes the output file and the temporary files
+//			created while running the CompareTest (ref_tmp).
 // argument : in :	- ref : 	reference file
 //					- out :		output file
 //
@@ -392,28 +410,34 @@ void CmpTst::CompareTest::clean_up(string ref, string out)
 	string ref_tmp = ref + TMP_SUFFIX;
 	bool ref_err = false, out_err = false;
 
-	ifstream refstream, outstream;
-	refstream.open(ref_tmp.c_str());
-	if(refstream)
-	{
-		refstream.close();
-		if(remove(ref_tmp.c_str()) != 0)
-			ref_err = true;
-	}
+	if(remove(ref_tmp.c_str()) != 0)
+		ref_err = true;
 
-	outstream.open(out.c_str());
-	if(outstream)
-	{
-		outstream.close();
-		if(remove(out.c_str()) != 0)
-			out_err = true;
-	}
+	if(remove(out.c_str()) != 0)
+		out_err = true;
 
 	if(ref_err)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::clean_up] Cannot remove file: " + ref_tmp);
 
 	if(out_err)
 		throw CmpTst::CompareTestException("[CmpTst::CompareTest::clean_up] Cannot remove file: " + out);
+}
+
+//+-------------------------------------------------------------------------
+//
+// method :			leave_output
+//
+// description :	Removes the temporary files created while running
+//			the CompareTest (ref_tmp) and leaves the output file.
+// argument : in :	- ref : 	reference file
+//
+//--------------------------------------------------------------------------
+void CmpTst::CompareTest::leave_output(string ref)
+{
+	string ref_tmp = ref + TMP_SUFFIX;
+
+	if(remove(ref_tmp.c_str()) != 0)
+		throw CmpTst::CompareTestException("[CmpTst::CompareTest::clean_up] Cannot remove file: " + ref_tmp);
 }
 
 //+-------------------------------------------------------------------------

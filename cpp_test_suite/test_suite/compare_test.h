@@ -169,6 +169,19 @@ namespace CmpTst
 
 		//+-------------------------------------------------------------------------
 		//
+		// method :			clean_on_startup
+		//
+		// description :	Removes the temporary files created while running
+		//			the CompareTest which were left undeleted on sudden termination
+		//			of a test suite.
+		// argument : in :	- ref : 	reference file
+		//					- out :		output file
+		//
+		//--------------------------------------------------------------------------
+		static void clean_on_startup(std::string ref, std::string out);
+
+		//+-------------------------------------------------------------------------
+		//
 		// method :			clean_up
 		//
 		// description :	Removes the output file and all the temporary files
@@ -178,6 +191,17 @@ namespace CmpTst
 		//
 		//--------------------------------------------------------------------------
 		static void clean_up(std::string ref, std::string out);
+
+		//+-------------------------------------------------------------------------
+		//
+		// method :			leave_output
+		//
+		// description :	Removes the temporary files created while running
+		//			the CompareTest (ref_tmp) and leaves the output file.
+		// argument : in :	- ref : 	reference file
+		//
+		//--------------------------------------------------------------------------
+		static void leave_output(std::string ref);
 
 		//+-------------------------------------------------------------------------
 		//

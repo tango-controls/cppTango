@@ -14,9 +14,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME SignalTestSuite__loop
+#define SUITE_NAME SignalTestSuite
 
-class SignalTestSuite__loop: public CxxTest::TestSuite
+class SignalTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *dserver, *dbserver;
@@ -114,6 +114,7 @@ public:
 
 		ref_file = refpath + file_name;
 		out_file = outpath + file_name;
+		CmpTst::CompareTest::clean_on_startup(ref_file, out_file);
 
 	}
 
@@ -357,7 +358,7 @@ public:
 		{
 			try
 			{
-				CmpTst::CompareTest::clean_up(ref_file, out_file);
+				CmpTst::CompareTest::leave_output(ref_file, out_file);
 			}
 			catch(CmpTst::CompareTestException &in_e)
 			{
