@@ -14,9 +14,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME ClassDevSignalTestSuite__loop
+#define SUITE_NAME ClassDevSignalTestSuite
 
-class ClassDevSignalTestSuite__loop: public CxxTest::TestSuite
+class ClassDevSignalTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *dserver, *dbserver;
@@ -240,6 +240,7 @@ public:
 		signal_unregistered = false; // flag indicating that signals have been registered
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegClassSig", din));
 		class_signal_unregistered = false; // flag indicating that class signals have been registered
+		Tango_sleep(2);
 
 		// set logging level to 5
 		DevVarLongStringArray dserver_level_in;
