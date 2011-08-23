@@ -214,6 +214,8 @@ public:
 		TS_ASSERT(serv_dev_vec[0] == usr_dev_vec[0]);
 		TS_ASSERT(serv_dev_vec[1] == usr_dev_vec[1]);
 		TS_ASSERT(serv_dev_vec[2] == usr_dev_vec[2]);
+
+		cout << "---> Hello world!" << endl;
 	}
 
 // Test trace levels commands

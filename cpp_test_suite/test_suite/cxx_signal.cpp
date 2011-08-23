@@ -14,9 +14,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME SignalTestSuite__loop
+#define SUITE_NAME SignalTestSuite
 
-class SignalTestSuite__loop: public CxxTest::TestSuite
+class SignalTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *dserver, *dbserver;
