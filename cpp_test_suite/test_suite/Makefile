@@ -170,6 +170,7 @@ runner_on_demand: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp $(test_suites)
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
+	$(BIN_SUITE_DIR)/runner $(params)
 	
 clean:
 	rm -f $(OBJ_DIR)/*.o core
