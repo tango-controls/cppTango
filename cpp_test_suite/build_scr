@@ -125,6 +125,25 @@ else
 fi
 
 #
+# Create runner_on_demand script
+#
+
+RUNNER_ON_DEMAND=$INSTALL_DIR/$BIN_DIR/bin/runner_on_demand
+CURRENT_PATH=`pwd`
+
+if [ -f $RUNNER_ON_DEMAND ]
+then
+	rm -f $RUNNER_ON_DEMAND
+fi
+
+echo "#!/bin/bash" > $RUNNER_ON_DEMAND
+echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib:/segfs/tango/ORB/omniORB4.1.5/$BIN_DIR/lib:$LD_LIBRARY_PATH" >> $RUNNER_ON_DEMAND 
+echo "export TANGO_HOST=kidiboo:10000" >> $RUNNER_ON_DEMAND
+echo "cd $CURRENT_PATH/cpp_test_suite" >> $RUNNER_ON_DEMAND
+echo "$MAKE_PATH test_suites=\"$*\" prefix=$INSTALL_DIR $OS_SPEC $CLEAN runner_on_demand" >> $RUNNER_ON_DEMAND
+
+
+#
 # Run make
 # Only one solution in Windows but 4 make in 4 directories for non-windows OS
 #
