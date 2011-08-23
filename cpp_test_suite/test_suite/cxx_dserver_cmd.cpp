@@ -373,7 +373,7 @@ public:
 		{
 			try
 			{
-				CmpTst::CompareTest::leave_output(ref_file, out_file);
+				CmpTst::CompareTest::leave_output(ref_file);
 			}
 			catch(CmpTst::CompareTestException &in_e)
 			{
