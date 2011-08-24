@@ -331,7 +331,7 @@ public:
 
 // Test comparing input with output
 
-	void comparing_input_with_output(void)
+	void test_comparing_input_with_output(void)
 	{
 		try
 		{
