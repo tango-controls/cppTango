@@ -273,7 +273,7 @@ public:
 		logging_target[4] = dserver_name.c_str();
 		logging_target[5] = string("file::" + out_file).c_str();
 		din << logging_target;
-		dserver->command_inout("AddLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddLoggingTarget", din));
 		logging_target_restored = false; // flag indicating that logging targets have been added
 
 		// get device server PID and send signal
@@ -281,7 +281,7 @@ public:
 		const DevVarLongStringArray *result;
 		string query = "select pid from device where name='" + dserver_name + "'";
 		din << query;
-		dout = dbserver->command_inout("DbMySqlSelect", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dbserver->command_inout("DbMySqlSelect", din));
 		dout >> result;
 		pid = atoi((*result).svalue[0].in());
 		if(pid > 0)
@@ -312,7 +312,7 @@ public:
 		remove_logging_target[4] = dserver_name.c_str();
 		remove_logging_target[5] = string("file::" + out_file).c_str();
 		din << remove_logging_target;
-		dserver->command_inout("RemoveLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemoveLoggingTarget", din));
 		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
 
 		// unregister class signal
