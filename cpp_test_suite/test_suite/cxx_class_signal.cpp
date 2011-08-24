@@ -323,7 +323,7 @@ public:
 
 // Test comparing input with output
 
-	void test_comparing_input_with_output(void)
+	void comparing_input_with_output(void)
 	{
 		try
 		{
