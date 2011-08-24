@@ -135,11 +135,11 @@ public:
 		DeviceData dout;
 		string str;
 		DevState state;
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> str;
 		TS_ASSERT(str == "The device is in ON state.");
 
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
 	}
@@ -151,15 +151,15 @@ public:
 		DeviceData din, dout;
 		DevState state_in = Tango::OFF, state_out;
 		din << state_in;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
 		din << device_name;
-		dserver->command_inout("DevRestart", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("DevRestart", din));
 		Tango_sleep(3);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}
@@ -175,11 +175,11 @@ public:
 		TS_ASSERT(device->name() == device_name);
 		TS_ASSERT(device->description() == "A TANGO device");
 
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> str;
 		TS_ASSERT(str == "The device is in ON state.");
 
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
 	}

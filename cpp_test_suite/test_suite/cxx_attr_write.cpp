@@ -168,17 +168,17 @@ public:
 		attributes_str.push_back("UShort_attr_w");
 		attributes_str.push_back("UChar_attr_w");
 
-		device->write_attribute(short_attr_w);
-		device->write_attribute(long_attr_w);
-		device->write_attribute(double_attr_w);
-		device->write_attribute(string_attr_w);
-		device->write_attribute(float_attr_w);
-		device->write_attribute(boolean_attr_w);
-		device->write_attribute(ushort_attr_w);
-		device->write_attribute(uchar_attr_w);
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(short_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(long_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(double_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(string_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(float_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(boolean_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(ushort_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device->write_attribute(uchar_attr_w));
 
 		vector<DeviceAttribute> *attributes_vec;
-		attributes_vec = device->read_attributes(attributes_str);
+		TS_ASSERT_THROWS_NOTHING(attributes_vec = device->read_attributes(attributes_str));
 
 		vector<DeviceAttribute> &attributes = *attributes_vec;
 		attributes[0] >> sh;
@@ -211,7 +211,7 @@ public:
 
 	void test_memorized_attributes(void)
 	{
-		dserver->command_inout("RestartServer");
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(3);
 
 		DevShort sh;
@@ -223,7 +223,7 @@ public:
 		attributes_str.push_back("Boolean_attr_w");
 
 		vector<DeviceAttribute> *attributes_vec;
-		attributes_vec = device->read_attributes(attributes_str);
+		TS_ASSERT_THROWS_NOTHING(attributes_vec = device->read_attributes(attributes_str));
 
 		vector<DeviceAttribute> &attributes = *attributes_vec;
 		attributes[0] >> sh;

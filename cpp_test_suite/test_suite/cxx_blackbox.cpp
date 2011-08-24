@@ -151,19 +151,19 @@ public:
 		DevLong lg_in = 10, lg_out;
 
 		din << lg_in;
-		dout = device1->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
-		dout = device1->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
-		dout = device1->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
-		dout = device1->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
-		dout = device1->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
 
@@ -206,7 +206,7 @@ public:
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
 #endif 	// _TG_WINDOWS_
 
-		blackbox_out = device1->black_box(3);
+		TS_ASSERT_THROWS_NOTHING(blackbox_out = device1->black_box(3));
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
 		{
 			out_str = *it;
@@ -219,7 +219,7 @@ public:
 		const DevVarLongStringArray *res;
 		DevVarLongStringArray result;
 		din << query;
-		dout = dbserver->command_inout("DbMySqlSelect", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dbserver->command_inout("DbMySqlSelect", din));
 		dout >> res;
 		result = *res;
 		string attr_name, attr_prop;
@@ -236,8 +236,9 @@ public:
 				cout << "===> attr_prop: " << string(result.svalue[i].in()) << endl;
 				attr_prop = string(result.svalue[i].in());
 
-				AttributeProxy *my_attr = new AttributeProxy(attr_name);
-				my_attr->delete_property(attr_prop);
+				AttributeProxy *my_attr;
+				TS_ASSERT_THROWS_NOTHING(my_attr = new AttributeProxy(attr_name));
+				TS_ASSERT_THROWS_NOTHING(my_attr->delete_property(attr_prop));
 			}
 		}
 
@@ -267,7 +268,7 @@ public:
 						&& e.errors[0].severity == Tango::ERR));
 
 		reference_str = "Operation ping requested from " + server_host;
-		blackbox_out = device2->black_box(1);
+		TS_ASSERT_THROWS_NOTHING(blackbox_out = device2->black_box(1));
 		out_str = (*blackbox_out)[0];
 		out_str.erase(0,out_str.rfind(": ") + 2);
 		TS_ASSERT(out_str == reference_str);

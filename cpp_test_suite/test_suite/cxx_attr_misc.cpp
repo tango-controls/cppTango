@@ -131,27 +131,27 @@ public:
 		DevShort sh;
 		DevLong lg;
 
-		attr = device->read_attribute("Toto");
+		TS_ASSERT_THROWS_NOTHING(attr = device->read_attribute("Toto"));
 		TS_ASSERT_THROWS_ASSERT(attr >> sh, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
 								&& e.errors[0].severity == Tango::ERR));
 
-		attr = device->read_attribute("attr_no_data");
+		TS_ASSERT_THROWS_NOTHING(attr = device->read_attribute("attr_no_data"));
 		TS_ASSERT_THROWS_ASSERT(attr >> sh, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrValueNotSet"
 								&& e.errors[0].severity == Tango::ERR));
 
-		attr = device->read_attribute("attr_wrong_type");
+		TS_ASSERT_THROWS_NOTHING(attr = device->read_attribute("attr_wrong_type"));
 		TS_ASSERT_THROWS_ASSERT(attr >> sh, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
 								&& e.errors[0].severity == Tango::ERR));
 
-		attr = device->read_attribute("attr_wrong_size");
+		TS_ASSERT_THROWS_NOTHING(attr = device->read_attribute("attr_wrong_size"));
 		TS_ASSERT_THROWS_ASSERT(attr >> lg, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
 								&& e.errors[0].severity == Tango::ERR));
 
-		attr = device->read_attribute("attr_no_alarm");
+		TS_ASSERT_THROWS_NOTHING(attr = device->read_attribute("attr_no_alarm"));
 		TS_ASSERT_THROWS_ASSERT(attr >> lg, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNoAlarm"
 								&& e.errors[0].severity == Tango::ERR));
@@ -172,7 +172,7 @@ public:
 		DevVarUShortArray *ush_array;
 		DevVarUCharArray *uch_array;
 
-		long_attr_with_w = device->read_attribute("Long_attr_with_w");
+		TS_ASSERT_THROWS_NOTHING(long_attr_with_w = device->read_attribute("Long_attr_with_w"));
 		TS_ASSERT(long_attr_with_w.get_name() == "Long_attr_with_w");
 		TS_ASSERT(long_attr_with_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(long_attr_with_w.get_dim_x() == 1);
@@ -181,7 +181,7 @@ public:
 		TS_ASSERT((*lg_array)[0] == 1246);
 		TS_ASSERT((*lg_array)[1] == 0);
 
-		long_attr_w = device->read_attribute("Long_attr_w");
+		TS_ASSERT_THROWS_NOTHING(long_attr_w = device->read_attribute("Long_attr_w"));
 		TS_ASSERT(long_attr_w.get_name() == "Long_attr_w");
 		TS_ASSERT(long_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(long_attr_w.get_dim_x() == 1);
@@ -189,7 +189,7 @@ public:
 		long_attr_w >> lg_array ;
 		TS_ASSERT((*lg_array)[0] == 0);
 
-		short_attr_rw = device->read_attribute("Short_attr_rw");
+		TS_ASSERT_THROWS_NOTHING(short_attr_rw = device->read_attribute("Short_attr_rw"));
 		TS_ASSERT(short_attr_rw.get_name() == "Short_attr_rw");
 		TS_ASSERT(short_attr_rw.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(short_attr_rw.get_dim_x() == 1);
@@ -198,7 +198,7 @@ public:
 		TS_ASSERT((*sh_array)[0] == 66);
 		TS_ASSERT((*sh_array)[1] == 0);
 
-		float_attr_w = device->read_attribute("Float_attr_w");
+		TS_ASSERT_THROWS_NOTHING(float_attr_w = device->read_attribute("Float_attr_w"));
 		TS_ASSERT(float_attr_w.get_name() == "Float_attr_w");
 		TS_ASSERT(float_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(float_attr_w.get_dim_x() == 1);
@@ -206,7 +206,7 @@ public:
 		float_attr_w >> fl_array;
 		TS_ASSERT((*fl_array)[0] == 0);
 
-		ushort_attr_w = device->read_attribute("UShort_attr_w");
+		TS_ASSERT_THROWS_NOTHING(ushort_attr_w = device->read_attribute("UShort_attr_w"));
 		TS_ASSERT(ushort_attr_w.get_name() == "UShort_attr_w");
 		TS_ASSERT(ushort_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(ushort_attr_w.get_dim_x() == 1);
@@ -214,7 +214,7 @@ public:
 		ushort_attr_w >> ush_array;
 		TS_ASSERT((*ush_array)[0] == 0);
 
-		uchar_attr_w = device->read_attribute("UChar_attr_w");
+		TS_ASSERT_THROWS_NOTHING(uchar_attr_w = device->read_attribute("UChar_attr_w"));
 		TS_ASSERT(uchar_attr_w.get_name() == "UChar_attr_w");
 		TS_ASSERT(uchar_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(uchar_attr_w.get_dim_x() == 1);
@@ -233,7 +233,7 @@ public:
 		DevVarDoubleArray *db_array;
 		DevVarStringArray *str_array;
 
-		short_attr_w2 = device->read_attribute("Short_attr_w2");
+		TS_ASSERT_THROWS_NOTHING(short_attr_w2 = device->read_attribute("Short_attr_w2"));
 		TS_ASSERT(short_attr_w2.get_name() == "Short_attr_w2");
 		TS_ASSERT(short_attr_w2.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(short_attr_w2.get_dim_x() == 1);
@@ -241,7 +241,7 @@ public:
 		short_attr_w2 >> sh_array;
 		TS_ASSERT((*sh_array)[0] == 0);
 
-		long_attr_w = device->read_attribute("Long_attr_w");
+		TS_ASSERT_THROWS_NOTHING(long_attr_w = device->read_attribute("Long_attr_w"));
 		TS_ASSERT(long_attr_w.get_name() == "Long_attr_w");
 		TS_ASSERT(long_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(long_attr_w.get_dim_x() == 1);
@@ -249,7 +249,7 @@ public:
 		long_attr_w >> lg_array;
 		TS_ASSERT((*lg_array)[0] == 0);
 
-		double_attr_w = device->read_attribute("Double_attr_w");
+		TS_ASSERT_THROWS_NOTHING(double_attr_w = device->read_attribute("Double_attr_w"));
 		TS_ASSERT(double_attr_w.get_name() == "Double_attr_w");
 		TS_ASSERT(double_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(double_attr_w.get_dim_x() == 1);
@@ -257,7 +257,7 @@ public:
 		double_attr_w >> db_array;
 		TS_ASSERT((*db_array)[0] == 0);
 
-		string_attr_w2 = device->read_attribute("String_attr_w2");
+		TS_ASSERT_THROWS_NOTHING(string_attr_w2 = device->read_attribute("String_attr_w2"));
 		TS_ASSERT(string_attr_w2.get_name() == "String_attr_w2");
 		TS_ASSERT(string_attr_w2.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(string_attr_w2.get_dim_x() == 1);
@@ -276,9 +276,9 @@ public:
 		DevVarDoubleArray *db_array;
 		DevVarStringArray *str_array;
 
-		device->command_inout("IOInitWAttr");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOInitWAttr"));
 
-		short_attr_w = device->read_attribute("Short_attr_w");
+		TS_ASSERT_THROWS_NOTHING(short_attr_w = device->read_attribute("Short_attr_w"));
 		TS_ASSERT(short_attr_w.get_name() == "Short_attr_w");
 		TS_ASSERT(short_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(short_attr_w.get_dim_x() == 1);
@@ -286,7 +286,7 @@ public:
 		short_attr_w >> sh_array;
 		TS_ASSERT((*sh_array)[0] == 10);
 
-		long_attr_w = device->read_attribute("Long_attr_w");
+		TS_ASSERT_THROWS_NOTHING(long_attr_w = device->read_attribute("Long_attr_w"));
 		TS_ASSERT(long_attr_w.get_name() == "Long_attr_w");
 		TS_ASSERT(long_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(long_attr_w.get_dim_x() == 1);
@@ -294,7 +294,7 @@ public:
 		long_attr_w >> lg_array;
 		TS_ASSERT((*lg_array)[0] == 100);
 
-		double_attr_w = device->read_attribute("Double_attr_w");
+		TS_ASSERT_THROWS_NOTHING(double_attr_w = device->read_attribute("Double_attr_w"));
 		TS_ASSERT(double_attr_w.get_name() == "Double_attr_w");
 		TS_ASSERT(double_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(double_attr_w.get_dim_x() == 1);
@@ -302,7 +302,7 @@ public:
 		double_attr_w >> db_array;
 		TS_ASSERT((*db_array)[0] == 1.1);
 
-		string_attr_w = device->read_attribute("String_attr_w");
+		TS_ASSERT_THROWS_NOTHING(string_attr_w = device->read_attribute("String_attr_w"));
 		TS_ASSERT(string_attr_w.get_name() == "String_attr_w");
 		TS_ASSERT(string_attr_w.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(string_attr_w.get_dim_x() == 1);
@@ -325,11 +325,11 @@ public:
 		DevState state;
 		const char *status;
 
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
 
-		long_attr = device->read_attribute("Long_attr");
+		TS_ASSERT_THROWS_NOTHING(long_attr = device->read_attribute("Long_attr"));
 		TS_ASSERT(long_attr.get_name() == "Long_attr");
 		TS_ASSERT(long_attr.get_quality() == Tango::ATTR_VALID);
 		TS_ASSERT(long_attr.get_dim_x() == 1);
@@ -339,61 +339,61 @@ public:
 
 		lg = 900;
 		din << lg;
-		device->command_inout("IOSetAttr", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOSetAttr", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ALARM);
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ALARM state.\nAlarm : Value too low for Long_attr") == 0);
 
 		lg = 1200;
 		din << lg;
-		device->command_inout("IOSetAttr", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOSetAttr", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 
 		state = Tango::ON;
 		din << state;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 
 		lg = 2000;
 		din << lg;
-		device->command_inout("IOSetAttr", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOSetAttr", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ALARM);
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ALARM state.\nAlarm : Value too high for Long_attr") == 0);
 
 		lg = 1200;
 		din << lg;
-		device->command_inout("IOSetAttr", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOSetAttr", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 
 		state = Tango::ON;
 		din << state;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
-		dout = device->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("Status"));
 		dout >> status;
 		TS_ASSERT(strcmp(status,"The device is in ON state.") == 0);
 	}

@@ -181,13 +181,13 @@ public:
 		const DevVarStringArray *str_arr;
 
 		// execute QueryClass command
-		dout = dserver->command_inout("QueryClass");
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("QueryClass"));
 		dout >> str_arr;
 		TS_ASSERT(string((*str_arr)[0].in()) == "DevTest");
 
 		// execute QueryDevice command
 		vector<string> serv_dev_vec, usr_dev_vec;
-		dout = dserver->command_inout("QueryDevice");
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("QueryDevice"));
 		dout >> str_arr;
 		for(size_t i = 0; i < (*str_arr).length(); i++)
 			serv_dev_vec.push_back(string((*str_arr)[i].in()));
@@ -215,14 +215,14 @@ public:
 		TS_ASSERT(serv_dev_vec[1] == usr_dev_vec[1]);
 		TS_ASSERT(serv_dev_vec[2] == usr_dev_vec[2]);
 
-		cout << "---> Hello world 1!" << endl;
+		cout << "Hello world 1" << endl;
 	}
 
 // Test trace levels commands
 
 	void test_trace_levels_commands(void)
 	{
-		cout << "---> Hello world 2!" << endl;
+		cout << "Hello world 2" << endl;
 
 		DeviceData din, dout;
 
@@ -232,7 +232,7 @@ public:
 		dserver_name_in.length(1);
 		dserver_name_in[0] = dserver_name.c_str();
 		din << dserver_name_in;
-		dout = dserver->command_inout("GetLoggingLevel", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingLevel", din));
 		dout >> dserver_level_out;
 		TS_ASSERT((*dserver_level_out).lvalue[0] == dsloglevel);
 		TS_ASSERT((*dserver_level_out).svalue[0].in() == dserver_name);
@@ -249,13 +249,13 @@ public:
 
 		// query device server class
 		const DevVarStringArray *query_class_out;
-		dout = dserver->command_inout("QueryClass");
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("QueryClass"));
 		dout >> query_class_out;
 		TS_ASSERT(string((*query_class_out)[0].in()) == "DevTest");
 
 		// get logging level again and check if 5
 		din << dserver_name_in;
-		dout = dserver->command_inout("GetLoggingLevel", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingLevel", din));
 		dout >> dserver_level_out;
 		TS_ASSERT((*dserver_level_out).lvalue[0] == 5);
 		TS_ASSERT((*dserver_level_out).svalue[0].in() == dserver_name);
@@ -268,27 +268,28 @@ public:
 
 		// once more get logging level and check if set to defaults
 		din << dserver_name_in;
-		dout = dserver->command_inout("GetLoggingLevel", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingLevel", din));
 		dout >> dserver_level_out;
 		TS_ASSERT((*dserver_level_out).lvalue[0] == dsloglevel);
 		TS_ASSERT((*dserver_level_out).svalue[0].in() == dserver_name);
 
-		cout << "---> Hello world 3!" << endl;
+		cout << "Hello world 3" << endl;
 	}
 
 // Test set output file commands
 
 	void test_set_output_file_commands(void)
 	{
-		cout << "---> Hello world 4!" << endl;
+		cout << "Hello world 4" << endl;
 
 		DeviceData din, dout;
 
 		// check if logging target is not set
 		const DevVarStringArray *logging_target_out;
 		din << dserver_name;
-		dout = dserver->command_inout("GetLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingTarget", din));
 		dout >> logging_target_out;
+		cout << "Hello world 5" << endl;
 		TS_ASSERT((*logging_target_out).length() == 0);
 
 		// set logging level to 5
@@ -300,6 +301,7 @@ public:
 		din << dserver_level_in;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
 		logging_level_restored = false; // flag indicating that logging level has been modified
+		cout << "Hello world 6" << endl;
 
 		// try to add logging target as a file which cannot be opened
 		DevVarStringArray fake_logging_target;
@@ -310,6 +312,7 @@ public:
 		TS_ASSERT_THROWS_ASSERT(dserver->command_inout("AddLoggingTarget", din), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CannotOpenFile"
 						&& e.errors[0].severity == Tango::ERR));
+		cout << "Hello world 7" << endl;
 
 		// add logging target
 		DevVarStringArray logging_target;
@@ -317,13 +320,15 @@ public:
 		logging_target[0] = dserver_name.c_str();
 		logging_target[1] = string("file::" + out_file).c_str();
 		din << logging_target;
-		dserver->command_inout("AddLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddLoggingTarget", din));
 		logging_target_restored = false; // flag indicating that logging targets have been added
+		cout << "Hello world 8" << endl;
 
 		// query device server class
 		const DevVarStringArray *query_class_out;
-		dout = dserver->command_inout("QueryClass");
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("QueryClass"));
 		dout >> query_class_out;
+		cout << "Hello world 9" << endl;
 		TS_ASSERT(string((*query_class_out)[0].in()) == "DevTest");
 
 		// remove logging target
@@ -332,8 +337,9 @@ public:
 		remove_logging_target[0] = dserver_name.c_str();
 		remove_logging_target[1] = string("file::" + out_file).c_str();
 		din << remove_logging_target;
-		dserver->command_inout("RemoveLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemoveLoggingTarget", din));
 		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
+		cout << "Hello world 10" << endl;
 
 		// set logging level back to defaults
 		DevVarLongStringArray reset_dserver_level;
@@ -344,12 +350,14 @@ public:
 		din << reset_dserver_level;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
 		logging_level_restored = true; // flag indicating that logging level has been restored to defaults (see destructor)
+		cout << "Hello world 11" << endl;
 
 		// check if logging target was removed
 		const DevVarStringArray *check_logging_target;
 		din << dserver_name;
-		dout = dserver->command_inout("GetLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingTarget", din));
 		dout >> check_logging_target;
+		cout << "Hello world 12" << endl;
 		TS_ASSERT((*check_logging_target).length() == 0);
 	}
 
@@ -357,6 +365,7 @@ public:
 
 	void test_comparing_input_with_output(void)
 	{
+		cout << "Hello world 13" << endl;
 		try
 		{
 			map<string,string> prop_val_map;

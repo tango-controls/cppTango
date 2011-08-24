@@ -122,7 +122,8 @@ public:
 
 	void test_command_Status(void)
 	{
-		CommandInfo cmd_inf = device->command_query("Status");
+		CommandInfo cmd_inf;
+		TS_ASSERT_THROWS_NOTHING(cmd_inf = device->command_query("Status"));
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"Status");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_STRING);

@@ -109,12 +109,13 @@ public:
 		const char *class_name = "DevTest", *dev_name;
 		din << class_name;
 
-		string name = device->name();
+		string name;
+		TS_ASSERT_THROWS_NOTHING(name = device->name());
 		size_t rf = name.rfind('/');
 		if(rf != string::npos)
 			name.erase(rf);
 
-		dout = device->command_inout("IODevListByClass", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODevListByClass", din));
 		dout >> dev_name;
 		TS_ASSERT(dev_name == name);
 	}
@@ -138,7 +139,7 @@ public:
 	{
 		DeviceData dout;
 		const char *dserver_name_tmp;
-		dout = device->command_inout("IODServDevice");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODServDevice"));
 		dout >> dserver_name_tmp;
 		string dserver_name_tmp_str(dserver_name_tmp);
 //		transform(dserver_name_tmp_str.begin(), dserver_name_tmp_str.end(), dserver_name_tmp_str.begin(), ::tolower);
@@ -152,7 +153,7 @@ public:
 		DeviceData din, dout;
 		const char *device_name_tmp;
 		din << device_name;
-		dout = device->command_inout("IODevByName", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODevByName", din));
 		dout >> device_name_tmp;
 		TS_ASSERT(device_name_tmp == device_name);
 	}

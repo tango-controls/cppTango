@@ -123,7 +123,7 @@ public:
 	void test_get_a_full_lib_default_conf(void)
 	{
 		AttributeInfoEx att_inf;
-		att_inf = device1->get_attribute_config("Double_attr");
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("Double_attr"));
 		TS_ASSERT(att_inf.name == "Double_attr");
 		TS_ASSERT(att_inf.writable == Tango::READ);
 		TS_ASSERT(att_inf.data_format == Tango::SCALAR);
@@ -148,7 +148,7 @@ public:
 	void test_get_a_full_user_default_conf(void)
 	{
 		AttributeInfoEx att_inf;
-		att_inf = device1->get_attribute_config("Long_attr_w");
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("Long_attr_w"));
 		TS_ASSERT(att_inf.name == "Long_attr_w");
 		TS_ASSERT(att_inf.writable == Tango::WRITE);
 		TS_ASSERT(att_inf.data_format == Tango::SCALAR);
@@ -173,7 +173,7 @@ public:
 	void test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level(void)
 	{
 		AttributeInfoEx att_inf;
-		att_inf = device1->get_attribute_config("String_spec_attr");
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("String_spec_attr"));
 		TS_ASSERT(att_inf.name == "String_spec_attr");
 		TS_ASSERT(att_inf.writable == Tango::READ);
 		TS_ASSERT(att_inf.data_format == Tango::SPECTRUM);
@@ -192,7 +192,7 @@ public:
 		TS_ASSERT(att_inf.max_alarm == "Not specified");
 		TS_ASSERT(att_inf.writable_attr_name == "None");
 
-		att_inf = device2->get_attribute_config("String_spec_attr");
+		TS_ASSERT_THROWS_NOTHING(att_inf = device2->get_attribute_config("String_spec_attr"));
 		TS_ASSERT(att_inf.name == "String_spec_attr");
 		TS_ASSERT(att_inf.writable == Tango::READ);
 		TS_ASSERT(att_inf.data_format == Tango::SPECTRUM);
@@ -211,7 +211,7 @@ public:
 		TS_ASSERT(att_inf.max_alarm == "Not specified");
 		TS_ASSERT(att_inf.writable_attr_name == "None");
 
-		att_inf = device3->get_attribute_config("String_spec_attr");
+		TS_ASSERT_THROWS_NOTHING(att_inf = device3->get_attribute_config("String_spec_attr"));
 		TS_ASSERT(att_inf.name == "String_spec_attr");
 		TS_ASSERT(att_inf.writable == Tango::READ);
 		TS_ASSERT(att_inf.data_format == Tango::SPECTRUM);
@@ -242,7 +242,7 @@ public:
 		attributes.push_back("Long_attr_w");
 		attributes.push_back("Double_attr");
 
-		att_inf_list = device1->get_attribute_config_ex(attributes);
+		TS_ASSERT_THROWS_NOTHING(att_inf_list = device1->get_attribute_config_ex(attributes));
 
 		att_inf = (*att_inf_list)[0];
 		TS_ASSERT(att_inf.name == "String_spec_attr");
@@ -309,7 +309,7 @@ public:
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAddAttribute"));
 
 		AttributeInfoEx att_inf;
-		att_inf = device1->get_attribute_config("Added_short_attr");
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("Added_short_attr"));
 		TS_ASSERT(att_inf.name == "Added_short_attr");
 		TS_ASSERT(att_inf.writable == Tango::READ);
 		TS_ASSERT(att_inf.data_format == Tango::SCALAR);

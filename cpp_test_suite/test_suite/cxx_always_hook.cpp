@@ -182,7 +182,7 @@ public:
 		DeviceData din, dout;
 		DevLong lg_in = 10, lg_out;
 		din << lg_in;
-		dout = device->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
 	}
@@ -202,7 +202,7 @@ public:
 		device_level.svalue[0] = device_name.c_str();
 		device_level.svalue[1] = dserver_name.c_str();
 		din << device_level;
-		dserver->command_inout("SetLoggingLevel", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
 		logging_level_restored = false; // flag indicating that logging level has been modified
 
 		// set logging targets for the device and device server
@@ -213,13 +213,13 @@ public:
 		logging_targets[2] = dserver_name.c_str();
 		logging_targets[3] = string("file::" + out_file).c_str();
 		din << logging_targets;
-		dserver->command_inout("AddLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddLoggingTarget", din));
 		logging_target_restored = false; // flag indicating that logging targets have been added
 
 		// execute IOLong command
 		DevLong lg_in = 10, lg_out;
 		din << lg_in;
-		dout = device->command_inout("IOLong", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
 
@@ -232,12 +232,12 @@ public:
 		reset_device_level.svalue[0] = "*";
 		reset_device_level.svalue[1] = dserver_name.c_str();
 		din << reset_device_level;
-		dserver->command_inout("SetLoggingLevel", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
 		logging_level_restored = true; // flag indicating that logging level has been restored to defaults (see destructor)
 
 		// remove logging targets for device and device server
 		din << logging_targets;
-		dserver->command_inout("RemoveLoggingTarget", din);
+		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemoveLoggingTarget", din));
 		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
 	}
 

@@ -139,7 +139,7 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 
 		TS_ASSERT_THROWS_ASSERT(device->command_inout("IOTemplState"), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
@@ -147,7 +147,7 @@ public:
 
 		state_in = Tango::ON;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 	}
 
 // Test IOTemplIn
@@ -180,7 +180,7 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 
 		din << lg;
 		TS_ASSERT_THROWS_ASSERT(device->command_inout("IOTemplInState", din), Tango::DevFailed &e,
@@ -189,7 +189,7 @@ public:
 
 		state_in = Tango::ON;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 	}
 
 // Test IOTemplOut
@@ -198,7 +198,7 @@ public:
 	{
 		DeviceData dout;
 		const DevVarLongArray *out;
-		dout = device->command_inout("IOTemplOut");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOTemplOut"));
 		dout >> out;
 		TS_ASSERT((*out)[0] == 10
 				&& (*out)[1] == 20
@@ -212,7 +212,7 @@ public:
 	{
 		DeviceData dout;
 		const DevVarLongArray *out;
-		dout = device->command_inout("IOTemplOutState");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOTemplOutState"));
 		dout >> out;
 		TS_ASSERT((*out)[0] == 10
 				&& (*out)[1] == 20
@@ -229,7 +229,7 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 
 		TS_ASSERT_THROWS_ASSERT(device->command_inout("IOTemplOutState"), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotAllowed"
@@ -237,7 +237,7 @@ public:
 
 		state_in = Tango::ON;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 	}
 
 // Test IOTemplInOut
@@ -248,7 +248,7 @@ public:
 		const DevVarDoubleArray *out;
 		DevDouble db = 3.4;
 		din << db;
-		dout = device->command_inout("IOTemplInOut", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOTemplInOut", din));
 		dout >> out;
 		TS_ASSERT((*out)[0] == 3.4
 				&& (*out)[1] == 6.8);
@@ -262,7 +262,7 @@ public:
 		const DevVarDoubleArray *out;
 		DevDouble db = 4.2;
 		din << db;
-		dout = device->command_inout("IOTemplInOutState", din);
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOTemplInOutState", din));
 		dout >> out;
 		TS_ASSERT((*out)[0] == 4.2
 				&& (*out)[1] == 8.4);
@@ -278,7 +278,7 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 
 		din << db;
 		TS_ASSERT_THROWS_ASSERT(device->command_inout("IOTemplInOutState", din), Tango::DevFailed &e,
@@ -287,7 +287,7 @@ public:
 
 		state_in = Tango::ON;
 		din << state_in;
-		device->command_inout("IOState", din);
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
 	}
 };
 #undef cout

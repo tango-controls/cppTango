@@ -173,8 +173,8 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 //		cout << "----> STATE: " << state_out << endl;
 		TS_ASSERT(state_out == Tango::OFF);
@@ -187,8 +187,8 @@ public:
 
 		state_in = Tango::ON;
 		din << state_in;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 //		cout << "----> STATE: " << state_out << endl;
 		TS_ASSERT(state_out == Tango::ON);

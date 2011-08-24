@@ -132,11 +132,11 @@ public:
 		DevState state;
 		string str;
 
-		dout = dserver->command_inout("Status");
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("Status"));
 		dout >> str;
 		TS_ASSERT(str == "The device is ON\nThe polling is ON");
 
-		dout = dserver->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("State"));
 		dout >> state;
 		TS_ASSERT(state == Tango::ON);
 	}
@@ -151,15 +151,15 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(3);
 
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}
@@ -180,8 +180,8 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		device->command_inout("IOState", din);
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
@@ -190,7 +190,7 @@ public:
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer", din));
 		Tango_sleep(3);
 
-		dout = device->command_inout("State");
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}
@@ -203,16 +203,16 @@ public:
 		DevState state_out;
 		string str;
 
-		str = dserver->name();
+		TS_ASSERT_THROWS_NOTHING(str = dserver->name());
 		TS_ASSERT(str == dserver_name);
 
-		str = dserver->description();
+		TS_ASSERT_THROWS_NOTHING(str = dserver->description());
 		TS_ASSERT(str == "A device server device !!");
 
-		str = dserver->status();
+		TS_ASSERT_THROWS_NOTHING(str = dserver->status());
 		TS_ASSERT(str == "The device is ON\nThe polling is ON");
 
-		state_out = dserver->state();
+		TS_ASSERT_THROWS_NOTHING(state_out = dserver->state());
 		TS_ASSERT(state_out == Tango::ON);
 	}
 
