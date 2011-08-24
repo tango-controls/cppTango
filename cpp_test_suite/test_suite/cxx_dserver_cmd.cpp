@@ -222,6 +222,8 @@ public:
 
 	void test_trace_levels_commands(void)
 	{
+		cout << "---> Hello world 2!" << endl;
+
 		DeviceData din, dout;
 
 		// get logging level and check if default
@@ -270,12 +272,16 @@ public:
 		dout >> dserver_level_out;
 		TS_ASSERT((*dserver_level_out).lvalue[0] == dsloglevel);
 		TS_ASSERT((*dserver_level_out).svalue[0].in() == dserver_name);
+
+		cout << "---> Hello world 3!" << endl;
 	}
 
 // Test set output file commands
 
 	void test_set_output_file_commands(void)
 	{
+		cout << "---> Hello world 4!" << endl;
+
 		DeviceData din, dout;
 
 		// check if logging target is not set
