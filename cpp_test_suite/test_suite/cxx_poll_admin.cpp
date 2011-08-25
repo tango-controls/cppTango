@@ -111,6 +111,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}
@@ -132,6 +133,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}
@@ -153,6 +155,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}
@@ -174,6 +177,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}
@@ -195,6 +199,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}
@@ -216,6 +221,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}
@@ -237,6 +243,7 @@ public:
 			}
 			catch(DevFailed &e)
 			{
+				cout << endl << "Exception in suite tearDown():" << endl;
 				Except::print_exception(e);
 			}
 		}

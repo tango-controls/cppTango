@@ -102,6 +102,7 @@ public:
 		}
 		catch(CORBA::Exception &e)
 		{
+			cout << endl << "Exception in suite tearDown():" << endl;
 			Except::print_exception(e);
 			exit(-1);
 		}
