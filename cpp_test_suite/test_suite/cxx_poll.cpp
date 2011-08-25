@@ -43,6 +43,7 @@ public:
 
 		vector<string> params_opt; // optional parameters
 		params_opt.push_back("loop");
+		params_opt.push_back("suiteloop");
 
 		bool params_ok = true;
 		for(size_t i = 0; i < params.size() && params_ok; i++)
