@@ -112,6 +112,7 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
+		cout << "Hello world 19" << endl;
 
 //
 // Clean up --------------------------------------------------------
@@ -120,6 +121,7 @@ public:
 		// clean up in case test suite terminates before logging level is restored to defaults
 		if(!logging_level_restored)
 		{
+			cout << "Hello world 20" << endl;
 			DeviceData din;
 			DevVarLongStringArray reset_dserver_level;
 			reset_dserver_level.lvalue.length(1);
@@ -141,6 +143,7 @@ public:
 		// clean up in case test suite terminates before logging targets are restored to defaults
 		if(!logging_target_restored)
 		{
+			cout << "Hello world 21" << endl;
 			DeviceData din;
 			DevVarStringArray remove_logging_target;
 			remove_logging_target.length(2);
@@ -276,6 +279,7 @@ public:
 
 	void test_set_output_file_commands(void)
 	{
+		cout << "Hello world 1" << endl;
 		DeviceData din, dout;
 
 		// check if logging target is not set
@@ -294,6 +298,7 @@ public:
 		din << dserver_level_in;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
 		logging_level_restored = false; // flag indicating that logging level has been modified
+		cout << "Hello world 2" << endl;
 
 		// try to add logging target as a file which cannot be opened
 		DevVarStringArray fake_logging_target;
@@ -304,6 +309,7 @@ public:
 		TS_ASSERT_THROWS_ASSERT(dserver->command_inout("AddLoggingTarget", din), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CannotOpenFile"
 						&& e.errors[0].severity == Tango::ERR));
+		cout << "Hello world 3" << endl;
 
 		// add logging target
 		DevVarStringArray logging_target;
@@ -319,6 +325,7 @@ public:
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("QueryClass"));
 		dout >> query_class_out;
 		TS_ASSERT(string((*query_class_out)[0].in()) == "DevTest");
+		cout << "Hello world 4" << endl;
 
 		// remove logging target
 		DevVarStringArray remove_logging_target;
@@ -338,6 +345,7 @@ public:
 		din << reset_dserver_level;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
 		logging_level_restored = true; // flag indicating that logging level has been restored to defaults (see destructor)
+		cout << "Hello world 5" << endl;
 
 		// check if logging target was removed
 		const DevVarStringArray *check_logging_target;
@@ -345,44 +353,57 @@ public:
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingTarget", din));
 		dout >> check_logging_target;
 		TS_ASSERT((*check_logging_target).length() == 0);
+		cout << "Hello world 6" << endl;
 	}
 
 // Test comparing input with output
 
 	void test_comparing_input_with_output(void)
 	{
+		cout << "Hello world 7" << endl;
 		try
 		{
 			map<string,string> prop_val_map;
 			prop_val_map["timestamp"] = "10";
 			prop_val_map["thread"] = "1";
 			CmpTst::CompareTest::out_set_event_properties(out_file, prop_val_map);
+			cout << "Hello world 8" << endl;
 
 
 			map<string,string> key_val_map;
 			key_val_map["DSERVER"] = dserver_name;
 			key_val_map["FILE"] = out_file;
 			CmpTst::CompareTest::ref_replace_keywords(ref_file, key_val_map);
+			cout << "Hello world 9" << endl;
 
 			map<string,string> prefix_num_map;
 			prefix_num_map["thread = "] = "2";
 			CmpTst::CompareTest::out_set_replace_numbers(out_file, prefix_num_map);
+			cout << "Hello world 10" << endl;
 
 			CmpTst::CompareTest::compare(ref_file, out_file);
+			cout << "Hello world 11" << endl;
 			CmpTst::CompareTest::clean_up(ref_file, out_file);
+			cout << "Hello world 12" << endl;
 		}
 		catch(CmpTst::CompareTestException &e)
 		{
+			cout << "Hello world 13" << endl;
 			try
 			{
 				CmpTst::CompareTest::leave_output(ref_file);
+				cout << "Hello world 14" << endl;
 			}
 			catch(CmpTst::CompareTestException &in_e)
 			{
+				cout << "Hello world 15" << endl;
 				cout << in_e.what() << endl;
+				cout << "Hello world 16" << endl;
 			}
+			cout << "Hello world 17" << endl;
 			TS_FAIL(e.what());
 		}
+		cout << "Hello world 18" << endl;
 	}
 };
 #undef cout

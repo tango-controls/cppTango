@@ -129,6 +129,7 @@ public:
 
 	void test_State_and_Status_commands(void)
 	{
+		cout << "Hello world 1" << endl;
 		DeviceData dout;
 		DevState state;
 		string str;
@@ -146,6 +147,7 @@ public:
 
 	void test_DevRestart_command_on_the_dserver_device(void)
 	{
+		cout << "Hello world 2" << endl;
 		DeviceData din, dout;
 		DevState state_in, state_out;
 		string str;
@@ -169,6 +171,7 @@ public:
 
 	void test_DevRestart_command_on_classical_device(void)
 	{
+		cout << "Hello world 3" << endl;
 		DeviceData din, dout;
 		DevState state_in, state_out;
 		string str;
@@ -200,6 +203,7 @@ public:
 
 	void test_name_description_state_ans_status_CORBA_attributes(void)
 	{
+		cout << "Hello world 4" << endl;
 		DeviceData dout;
 		DevState state_out;
 		string str;
