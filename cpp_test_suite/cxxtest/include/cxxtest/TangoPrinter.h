@@ -135,8 +135,6 @@ namespace CxxTest
          */
         void leaveTest( const TestDescription &test )
         {
-        	cout << "------> leaveTest : \t\t\ttracker().suite().suiteName() = " << tracker().suite().suiteName() << "\n";
-        	cout << "------> leaveTest : \t\t\ttracker().test().testName() = " << tracker().test().testName() << "\n";
         	static int counter = loop - 1;
         	if ( tracker().testFailed() )
         	{
@@ -155,18 +153,14 @@ namespace CxxTest
         		if(test_name_len >= loop_str_len)
         			is_loop = test_name.substr(test_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
         		if(counter > 0 && is_loop) {
-                	cout << "------> test loop iteration : " << loop - counter << " : tracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
         			counter--;
-					tracker().enterTest(test);
 					(const_cast<TestDescription &>(test)).setUp();
 					(const_cast<TestDescription &>(test)).run();
 					(const_cast<TestDescription &>(test)).tearDown();
-//					leaveTest(test);
-					tracker().leaveTest(test);
+					leaveTest(test);
         		}
         		else
         		{
-                	cout << "------> prepare info begin : \ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
         			// removes 'test' prefix from the test name
 					if(test_name.find("test_") == 0)
 						test_name.erase(0,5);
@@ -184,53 +178,31 @@ namespace CxxTest
 						if(test_name[i] == '_')
 							test_name[i] = ' ';
 					}
-                	cout << "------> prepare info middle : \ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
 
 					// prints out the the success notice only after the last iteration
 					// of test case execution in the last iteration of the test suite run
 					string suite_name = tracker().suite().suiteName();
-					cout << "------> 1\n";
 					size_t suite_name_len = suite_name.length();
-					cout << "------> 2 suite_name_len: " << suite_name_len << "\n";
 					string loop_str = "__loop";
-					cout << "------> 3\n";
 					size_t loop_str_len = loop_str.length();
-					cout << "------> 4\n";
 					bool is_suite_loop = false;
-					cout << "------> 5\n";
 					if(suite_name_len >= loop_str_len)
-					{
-						cout << "------> 6\n";
 						is_suite_loop = suite_name.substr(suite_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
-						cout << "------> 7 is_suite_loop: " << is_suite_loop << "\n";
-					}
 					if(!is_suite_loop || (is_suite_loop && suite_counter >= suite_loop))
 					{
-						cout << "------> 8\n";
 						if(!is_loop || loop < 2)
-						{
-							cout << "------> 9\n";
 							cout << "\t" << test_name << " --> OK\n";
-							cout << "------> 10\n";
-						}
 						else
-						{
-							cout << "------> 11\n";
 							cout << "\t" << test_name << ", " << loop << " iterations --> OK\n";
-							cout << "------> 12\n";
-						}
 					}
-                	cout << "------> prepare info end : \t\ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
 
         			counter = loop - 1;
-					cout << "------> 13\n";
         		}
         	}
         }
 
         void leaveSuite( const SuiteDescription &suite )
         {
-			cout << "--> Entered leaveSuite for " << suite.suiteName() << "\n";
     		string suite_name = suite.suiteName();
     		size_t suite_name_len = suite_name.length();
     		string loop_str = "__loop";
@@ -239,17 +211,13 @@ namespace CxxTest
 				unsigned int num_tests = (const_cast<SuiteDescription &>(suite)).numTests();
     			while(suite_counter < suite_loop)
     			{
-    				cout << "--> suite_loop = " << suite_loop << " suite_counter = " << suite_counter << "\n";
     				suite_counter++;
     				TestDescription *test = (const_cast<SuiteDescription &>(suite)).firstTest();
 					(const_cast<SuiteDescription &>(suite)).setUp();
 					unsigned int test_counter = 0;
 					while(test_counter < num_tests && test != 0)
 					{
-						cout << "--> Executing test " << (test_counter + 1) << "/" << num_tests << " : " << test->testName() << "\n";
-						cout << "--> before tracker().enterTest() : \ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
 						tracker().enterTest(*test);
-						cout << "--> after tracker().enterTest() : \ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
 						test->setUp();
 						test->run();
 						leaveTest(*test);
