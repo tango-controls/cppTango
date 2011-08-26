@@ -135,7 +135,8 @@ namespace CxxTest
          */
         void leaveTest( const TestDescription &test )
         {
-        	cout << "------> leaveTest : \t\t\ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
+        	cout << "------> leaveTest : \t\t\ttracker().suite().suiteName() = " << tracker().suite().suiteName() << "\n";
+        	cout << "------> leaveTest : \t\t\ttracker().test().testName() = " << tracker().test().testName() << "\n";
         	static int counter = loop - 1;
         	if ( tracker().testFailed() )
         	{
@@ -156,10 +157,12 @@ namespace CxxTest
         		if(counter > 0 && is_loop) {
                 	cout << "------> test loop iteration : " << loop - counter << " : tracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
         			counter--;
+					tracker().enterTest(test);
 					(const_cast<TestDescription &>(test)).setUp();
 					(const_cast<TestDescription &>(test)).run();
 					(const_cast<TestDescription &>(test)).tearDown();
-					leaveTest(test);
+//					leaveTest(test);
+					tracker().leaveTest(test);
         		}
         		else
         		{
