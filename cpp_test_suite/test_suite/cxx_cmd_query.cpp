@@ -530,18 +530,18 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Uninitialised");
 	}
 
-// Test ZmqEventSubscriptionChange command_list_query
-
-	void test_command_list_query_ZMQEventSubscriptionChange(void)
-	{
-//		CommandInfo cmd_inf = dserver->command_query("ZmqEventSubscriptionChange");
-		CommandInfo cmd_inf = cmd_inf_list[30];
-		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"ZmqEventSubscriptionChange");
-		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
-		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
-		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Events consumer wants to subscribe to");
-		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release");
-	}
+//// Test ZmqEventSubscriptionChange command_list_query
+//
+//	void test_command_list_query_ZMQEventSubscriptionChange(void)
+//	{
+////		CommandInfo cmd_inf = dserver->command_query("ZmqEventSubscriptionChange");
+//		CommandInfo cmd_inf = cmd_inf_list[30];
+//		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"ZmqEventSubscriptionChange");
+//		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
+//		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
+//		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Events consumer wants to subscribe to");
+//		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release");
+//	}
 };
 #undef cout
 #endif // CmdQueryTestSuite_h
