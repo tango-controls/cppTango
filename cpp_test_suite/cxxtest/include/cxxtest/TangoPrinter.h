@@ -186,22 +186,41 @@ namespace CxxTest
 					// prints out the the success notice only after the last iteration
 					// of test case execution in the last iteration of the test suite run
 					string suite_name = tracker().suite().suiteName();
+					cout << "------> 1\n";
 					size_t suite_name_len = suite_name.length();
+					cout << "------> 2 suite_name_len: " << suite_name_len << "\n";
 					string loop_str = "__loop";
+					cout << "------> 3\n";
 					size_t loop_str_len = loop_str.length();
+					cout << "------> 4\n";
 					bool is_suite_loop = false;
+					cout << "------> 5\n";
 					if(suite_name_len >= loop_str_len)
+					{
+						cout << "------> 6\n";
 						is_suite_loop = suite_name.substr(suite_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
+						cout << "------> 7 is_suite_loop: " << is_suite_loop << "\n";
+					}
 					if(!is_suite_loop || (is_suite_loop && suite_counter >= suite_loop))
 					{
+						cout << "------> 8\n";
 						if(!is_loop || loop < 2)
+						{
+							cout << "------> 9\n";
 							cout << "\t" << test_name << " --> OK\n";
+							cout << "------> 10\n";
+						}
 						else
+						{
+							cout << "------> 11\n";
 							cout << "\t" << test_name << ", " << loop << " iterations --> OK\n";
+							cout << "------> 12\n";
+						}
 					}
                 	cout << "------> prepare info end : \t\ttracker().suite().suiteName() = " << tracker().suite().suiteName() << " tracker().test().testName() = " << tracker().test().testName() << "\n";
 
         			counter = loop - 1;
+					cout << "------> 13\n";
         		}
         	}
         }
