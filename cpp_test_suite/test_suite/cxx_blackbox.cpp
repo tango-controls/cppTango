@@ -198,7 +198,7 @@ public:
 		pid_str = ss.str();
 
 //
-// This is to be redeveloped in the Tango core. Currently executing a command on a device
+// TODO: This is to be redeveloped in the Tango core. Currently executing a command on a device
 // at the same host results in the PID information not been printed out.
 //
 #ifdef _TG_WINDOWS_
@@ -229,12 +229,12 @@ public:
 		{
 			if(i%2 == 0)
 			{
-				cout << "===> attr_name: " << string(result.svalue[i].in()) << endl;
+//				cout << "===> attr_name: " << string(result.svalue[i].in()) << endl;
 				attr_name = device3_name + "/" + string(result.svalue[i].in());
 			}
 			else
 			{
-				cout << "===> attr_prop: " << string(result.svalue[i].in()) << endl;
+//				cout << "===> attr_prop: " << string(result.svalue[i].in()) << endl;
 				attr_prop = string(result.svalue[i].in());
 
 				AttributeProxy *my_attr;
@@ -248,21 +248,21 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(device3 = new DeviceProxy(device3_name));
 
-		try
-		{
-			vector<string> *bb = device3->black_box(5);
-			cout << endl << "===> blackbox size: " << (*bb).size() << endl;
-			if((*bb).size() > 0)
-					cout << "===> first element: " << (*bb)[0] << endl;
-		}
-		catch(DevFailed &e)
-		{
-			cout << "===> Nothing yet stored in blackbox" << endl;
-		}
-		catch(...)
-		{
-			cout << "===> Error in checking blackbox size" << endl;
-		}
+//		try
+//		{
+//			vector<string> *bb = device3->black_box(5);
+//			cout << endl << "===> blackbox size: " << (*bb).size() << endl;
+//			if((*bb).size() > 0)
+//					cout << "===> first element: " << (*bb)[0] << endl;
+//		}
+//		catch(DevFailed &e)
+//		{
+//			cout << "===> Nothing yet stored in blackbox" << endl;
+//		}
+//		catch(...)
+//		{
+//			cout << "===> Error in checking blackbox size" << endl;
+//		}
 
 		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_BlackBoxEmpty"

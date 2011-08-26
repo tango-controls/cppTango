@@ -117,12 +117,6 @@ public:
 // Test Scalar Short
 
 	void test_Scalar_Short(void) {
-		static int counter = 0;
-		counter++;
-//		if(counter > 2) {
-//			TS_FAIL("Forced fail");
-//		}
-		cout << "\t loop iteration " << counter << endl;
 		DeviceAttribute da;
 #ifndef COMPAT
 		TS_ASSERT (da.get_data_format() == Tango::FMT_UNKNOWN);
