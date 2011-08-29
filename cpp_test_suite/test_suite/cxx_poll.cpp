@@ -361,7 +361,7 @@ public:
 		}
 		catch(DevFailed &e)
 		{
-			if(string(e.errors[0].reason.in()) != "API_ThrowException")
+			if(string(e.errors[0].reason.in()) != "API_AttrOptProp")
 			{
 				Except::print_exception(e);
 				TS_FAIL("attr_wrong_size thrown");
