@@ -355,9 +355,18 @@ public:
 		DeviceAttribute mock_attr;
 		DevLong lg;
 		TS_ASSERT_THROWS_NOTHING(mock_attr = device1->read_attribute("attr_wrong_size"));
-		TS_ASSERT_THROWS_ASSERT(mock_attr >> lg, Tango::DevFailed &e,
-				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
-						&& e.errors[0].severity == Tango::ERR));
+		try
+		{
+			mock_attr >> lg;
+		}
+		catch(DevFailed &e)
+		{
+			Except::print_exception(e);
+			TS_FAIL("attr_wrong_size thrown");
+		}
+//		TS_ASSERT_THROWS_ASSERT(mock_attr >> lg, Tango::DevFailed &e,
+//				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
+//						&& e.errors[0].severity == Tango::ERR));
 
 		// execute a command which throws an exception
 		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IOExcept"), Tango::DevFailed &e,
