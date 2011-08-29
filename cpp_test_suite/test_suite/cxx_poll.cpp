@@ -361,8 +361,11 @@ public:
 		}
 		catch(DevFailed &e)
 		{
-			Except::print_exception(e);
-			TS_FAIL("attr_wrong_size thrown");
+			if(string(e.errors[0].reason.in()) != "API_ThrowException")
+			{
+				Except::print_exception(e);
+				TS_FAIL("attr_wrong_size thrown");
+			}
 		}
 //		TS_ASSERT_THROWS_ASSERT(mock_attr >> lg, Tango::DevFailed &e,
 //				TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrOptProp"
