@@ -336,7 +336,15 @@ public:
 
 		// execute a command
 		string str_out;
-		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOStr1"));
+		try
+		{
+			dout = device1->command_inout("IOStr1");
+		}
+		catch(DevFailed &e)
+		{
+			Except::print_exception(e);
+			TS_FAIL("IOStr1 thrown");
+		}
 		dout >> str_out;
 		TS_ASSERT(str_out == "Hello from IOStr1");
 
