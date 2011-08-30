@@ -359,11 +359,11 @@ fi
 #$DIR/ConfEventBugClient $DEV3
 #ret=$?
 #check_return_value $ret
-##
-##	Now, test asynchronous features
-##
-#cd asyn;./runtest $*
-##
+#
+#	Now, test asynchronous features
+#
+cd asyn;./runtest $*
+#
 ##
 ##	Now, test events
 ##
