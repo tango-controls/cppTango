@@ -2061,10 +2061,14 @@ public:
 //
 // methods not usable for the external world
 //
+
 	virtual void set_rvalue() {};
 	void delete_seq();
 	bool check_scalar_wattribute();
+
 	void wanted_date(bool flag) {date = flag;}
+	bool get_wanted_date() {return date;}
+
 	Tango::TimeVal &get_when() {return when;}
 	void set_time();
 		
