@@ -147,7 +147,6 @@ runner: compare_test
 	cxx_class_dev_signal.cpp \
 	cxx_class_signal.cpp \
 	cxx_signal.cpp \
-	cxx_dserver_cmd.cpp \
 	cxx_dserver_misc.cpp \
 	cxx_always_hook.cpp \
 	cxx_misc.cpp \
@@ -165,6 +164,7 @@ runner: compare_test
 	cxx_blackbox.cpp
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
+#	cxx_dserver_cmd.cpp
 
 runner_on_demand: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp $(test_suites)
