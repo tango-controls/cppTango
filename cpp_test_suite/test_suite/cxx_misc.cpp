@@ -55,6 +55,13 @@ public:
 
 			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
 			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
+// For Windows / Linux compatibility
+			string::size_type pos = server_host.find('.');
+			pos--;
+			if (server_host[pos] == 0x0d)
+			{
+				server_host.erase(pos,1);
+			}
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
 			doc_url = CxxTest::TangoPrinter::get_param_val(params[3]);
 			dev_type = CxxTest::TangoPrinter::get_param_val(params[4]);
