@@ -52,6 +52,7 @@ public:
 
 			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
 			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
+cout << "Server_host = " << server_host << ", string size = " << server_host.size() << endl;
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
 			doc_url = CxxTest::TangoPrinter::get_param_val(params[3]);
 		}
