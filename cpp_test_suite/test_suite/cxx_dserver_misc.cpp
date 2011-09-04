@@ -53,6 +53,14 @@ public:
 			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
 			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
 cout << "Server_host = " << server_host << ", string size = " << server_host.size() << endl;
+string::size_type pos = server_host.find('.');
+pos--;
+if (server_host[pos] == 0x0a)
+	cout << "Line feed" << endl;
+else if (server_host[pos] == 0x0d)
+	cout << "Carriage return" << endl;
+else
+	cout << "Another character" << endl;
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
 			doc_url = CxxTest::TangoPrinter::get_param_val(params[3]);
 		}
