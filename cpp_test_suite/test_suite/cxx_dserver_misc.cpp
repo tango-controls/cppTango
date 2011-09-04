@@ -232,6 +232,7 @@ public:
 		// TODO: uncomment the following if needed
 //		TS_ASSERT(dserver->info().dev_type == "Uninitialised");
 		TS_ASSERT(dserver->info().doc_url == "Doc URL = " + doc_url);
+cout << "dserver->info().server_host: " << dserver->info().server_host << ", server_host = " << server_host << endl;
 		TS_ASSERT(dserver->info().server_host == server_host);
 		TS_ASSERT(dserver->info().server_id == full_ds_name);
 		TS_ASSERT(dserver->info().server_version == server_version);
