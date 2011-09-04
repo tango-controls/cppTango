@@ -362,7 +362,7 @@ fi
 #
 #	Now, test asynchronous features
 #
-cd asyn;./runtest $*
+#cd asyn;./runtest $*
 #
 ##
 ##	Now, test events
