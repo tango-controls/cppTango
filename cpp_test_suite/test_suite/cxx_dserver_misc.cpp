@@ -58,7 +58,11 @@ pos--;
 if (server_host[pos] == 0x0a)
 	cout << "Line feed" << endl;
 else if (server_host[pos] == 0x0d)
+{
 	cout << "Carriage return" << endl;
+	server_host.erase(pos,1);
+	cout << "After erasing character: " << server_host << endl;
+}
 else
 	cout << "Another character" << endl;
 			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
