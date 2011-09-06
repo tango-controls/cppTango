@@ -214,35 +214,35 @@ $DIR/att_conf $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting miscellaneous attribute features"
-$DIR/attr_misc $DEV1
-ret=$?
-check_return_value $ret
-#
 $echo "\nTesting miscellaneous DeviceData object features"
 $DIR/misc_devdata
 ret=$?
 check_return_value $ret
 #
-#$echo "\nTesting miscellaneous DeviceAttribute object features"
-#$DIR/misc_devattr
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting miscellaneous DeviceAttribute object features"
+$DIR/misc_devattr
+ret=$?
+check_return_value $ret
 #
-#$echo "\nTesting writing attribute (with the eight data types) using DeviceAttribute"
-#$DIR/write_attr $DEV1 10
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting writing attribute (with the eight data types) using DeviceAttribute"
+$DIR/write_attr $DEV1 10
+ret=$?
+check_return_value $ret
 #
-#$echo "\nTesting copy constructor and assignement operator of the DeviceProxy class"
-#$DIR/copy_devproxy $DEV1 $DEV2 $DEV3
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting copy constructor and assignement operator of the DeviceProxy class"
+$DIR/copy_devproxy $DEV1 $DEV2 $DEV3
+ret=$?
+check_return_value $ret
 #
-#$echo "\nTesting object property methods of the Database class"
-#$DIR/obj_prop
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting miscellaneous attribute features"
+$DIR/attr_misc $DEV1
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting object property methods of the Database class"
+$DIR/obj_prop
+ret=$?
+check_return_value $ret
 #
 #$echo "\nTesting command_history and attribute_history DeviceProxy methods"
 #$DIR/Poll $DEV1
