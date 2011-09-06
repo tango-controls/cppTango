@@ -129,7 +129,6 @@ int main(int argc, char **argv)
 
 //		cout << "         make a DevRestart" << endl;
 		ddIn << devnm;
-		adm_dev->set_timeout_millis(10000);
 		ddOut = adm_dev->command_inout( "DevRestart", ddIn );
 		Tango_sleep( 5 );
 
