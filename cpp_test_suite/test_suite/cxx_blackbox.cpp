@@ -118,7 +118,6 @@ public:
 		din << device1_name;
 		try
 		{
-			dserver->set_timeout_millis(10000);
 			dserver->command_inout("DevRestart", din);
 		}
 		catch(CORBA::Exception &e)
