@@ -156,7 +156,7 @@ runner: compare_test
 	cxx_dserver_misc.cpp \
 	cxx_misc.cpp \
 	cxx_always_hook.cpp \
-	cxx_dserver_cmd.cpp
+	cxx_dserver_cmd.cpp \
 	cxx_class_dev_signal.cpp \
 	cxx_class_signal.cpp \
 	cxx_signal.cpp \
