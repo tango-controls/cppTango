@@ -61,6 +61,14 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.5/$(BIN_DIR)
 
 LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 
+##############################################################################
+#
+# 		ZMQ base directory
+#
+##############################################################################
+
+ZMQ_BASE = /home/taurel/bin/zmq
+
 ifdef _solaris
 CC = /opt/SUNWspro/bin/CC
 endif
@@ -92,6 +100,7 @@ INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 		-I$(TANGO_HOME)/client \
 		-I$(LOG4TANGO_BASE)/include/tango \
 		-I../cxxtest/include \
+		-I$(ZMQ_BASE)/include \
 		-I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
@@ -146,6 +155,11 @@ runner: compare_test
 	cxx_poll_admin.cpp \
 	cxx_dserver_misc.cpp \
 	cxx_misc.cpp \
+	cxx_always_hook.cpp \
+	cxx_dserver_cmd.cpp
+	cxx_class_dev_signal.cpp \
+	cxx_class_signal.cpp \
+	cxx_signal.cpp \
 	cxx_attr_write.cpp \
 	cxx_attr_conf.cpp \
 	cxx_attr_misc.cpp \
@@ -160,11 +174,7 @@ runner: compare_test
 	cxx_blackbox.cpp
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
-#	cxx_always_hook.cpp \
-#	cxx_dserver_cmd.cpp
-#	cxx_class_dev_signal.cpp \
-#	cxx_class_signal.cpp \
-#	cxx_signal.cpp 
+
 runner_on_demand: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp $(test_suites)
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
