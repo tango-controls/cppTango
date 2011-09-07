@@ -587,8 +587,20 @@ void build_f_name(string &f_name)
 #endif
 	str << pid;
 
-	string tmp_name("file::/tmp/ds_");
+	string tmp_name("/tmp/ds_");
 	tmp_name = tmp_name + str.str();
+
+//  Check if the file already exist (Already happend in Windows)
+
+	fstream f_str;
+	f_str.open(tmp_name.c_str());
+	if (f_str.is_open() == true)
+	{
+		tmp_name = tmp_name + "_1_";
+		f_str.close();
+	}
+
+	tmp_name.insert(0,"file::");
 //	cout << "file_name = " << tmp_name << endl;
 	f_name = tmp_name;
 }
