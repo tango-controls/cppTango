@@ -59,6 +59,14 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.5/$(BIN_DIR)
 
 LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 
+##############################################################################
+#
+# 		ZMQ base directory
+#
+##############################################################################
+
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+
 
 ifdef _solaris
 CC = /opt/SUNWspro/bin/CC
@@ -79,21 +87,25 @@ ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/include \
 			   -I$(LOG4TANGO_BASE)/include/tango \
+			   -I$(ZMQ_BASE)/include \
 			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR)/debug \
-	   	   -L $(LOG4TANGO_BASE)/lib
+	   	   -L $(LOG4TANGO_BASE)/lib \
+		   -L $(ZMQ_BASE)/lib
 else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/server \
 			   -I$(TANGO_HOME)/client \
 			   -I$(LOG4TANGO_BASE)/include/tango \
+			   -I$(ZMQ_BASE)/include \
 			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
-	   	   -L $(LOG4TANGO_BASE)/lib
+	   	   -L $(LOG4TANGO_BASE)/lib \
+		   -L $(ZMQ_BASE)/lib
 endif
 
 
@@ -111,7 +123,7 @@ CXXFLAGS = -g -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
 LIB_TANGO = -ltango
 LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 	-lomniORB4 -lomniDynamic4 -lomnithread \
-	-lCOS4 -lpthread -ldl
+	-lCOS4 -lzmq -lpthread -ldl
 endif
 
 .SUFFIXES:	.o .cpp
