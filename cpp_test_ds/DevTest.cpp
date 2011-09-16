@@ -269,26 +269,26 @@ Tango::DevVarLongArray *DevTest::IOTemplOut()
 {
 	cout << "[DevTest::IOTemplOut]" << endl;
 
-    	Tango::DevVarLongArray *argout;
-    	argout = new Tango::DevVarLongArray();
+	Tango::DevVarLongArray *argout;
+	argout = new Tango::DevVarLongArray();
 
-    	argout->length(4);
-    	(*argout)[0] = 10;
-    	(*argout)[1] = 20;
-    	(*argout)[2] = 30;
-    	(*argout)[3] = 40;
+	argout->length(4);
+	(*argout)[0] = 10;
+	(*argout)[1] = 20;
+	(*argout)[2] = 30;
+	(*argout)[3] = 40;
 
-    	return argout;
+	return argout;
 }
 
 void DevTest::IOTemplIn(Tango::DevLong received)
 {
-    	cout << "[DevTest::IOTemplIn] received " << received << endl;
+	cout << "[DevTest::IOTemplIn] received " << received << endl;
 }
 
 void DevTest::IOPushEvent()
 {
-    	cout << "[DevTest::IOPushEvent] received " << endl;
+	cout << "[DevTest::IOPushEvent] received " << endl;
 
 	vector<string> f_names;
 	vector<double> f_val;
@@ -704,7 +704,6 @@ void DevTest::write_ULong_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_ULong_attr_rw for attribute " << att.get_name() << endl;
 	att.get_write_value(attr_ulong_rw);
-cout << "received value = " << attr_ulong_rw << endl;
 
 	if (attr_ulong_rw > 1000)
 		att.set_write_value((Tango::DevULong)1111);
@@ -714,7 +713,6 @@ void DevTest::write_ULong64_attr_rw(Tango::WAttribute &att)
 {
 	cout << "In write_ULong64_attr_rw for attribute " << att.get_name() << endl;
 	att.get_write_value(attr_ulong64_rw);
-cout << "Received value = " << attr_ulong64_rw << endl;
 }
 
 void DevTest::write_State_attr_rw(Tango::WAttribute &att)
@@ -1358,42 +1356,42 @@ void DevTest::read_String_ima_attr_rw(Tango::Attribute &att)
 void DevTest::read_Event_change_tst(Tango::Attribute &att)
 {
 	cout << "[DevTest::read_attr] attribute name event_change_tst" << endl;
-      	if (event_change_attr_except == false)
-      	{
-			if (event_throw_out_of_sync == true)
-			{
+	if (event_change_attr_except == false)
+	{
+		if (event_throw_out_of_sync == true)
+		{
 #ifdef WIN32
-				Sleep(400);
+			Sleep(400);
 #else
-				struct timespec sleep_time;
-				sleep_time.tv_sec = 0;
-				sleep_time.tv_nsec = 400000000;
-				nanosleep(&sleep_time,NULL);
+			struct timespec sleep_time;
+			sleep_time.tv_sec = 0;
+			sleep_time.tv_nsec = 400000000;
+			nanosleep(&sleep_time,NULL);
 #endif
-			}
-      		att.set_value(attr_event,attr_event_size);
-      	}
-      	else
-      	{
-        	Tango::Except::throw_exception((const char *)"bbb",
+		}
+      	att.set_value(attr_event,attr_event_size);
+	}
+	else
+	{
+        Tango::Except::throw_exception((const char *)"bbb",
        			       		       (const char *)"This is a test",
 			       		       (const char *)"DevTest::read_attr");
-      	}
+	}
 }
 
 void DevTest::read_Event64_change_tst(Tango::Attribute &att)
 {
 	cout << "[DevTest::read_attr] attribute name event64_change_tst" << endl;
-      	if (event_change_attr_except == false)
-      	{
-      		att.set_value(attr_event64,attr_event64_size);
-      	}
-      	else
-      	{
-        	Tango::Except::throw_exception((const char *)"bbb64",
+	if (event_change_attr_except == false)
+	{
+		att.set_value(attr_event64,attr_event64_size);
+	}
+	else
+	{
+        Tango::Except::throw_exception((const char *)"bbb64",
        			       		       (const char *)"This is a test",
 			       		       (const char *)"DevTest::read_attr");
-      	}
+	}
 }
 void DevTest::read_Event_quality_tst(Tango::Attribute &att)
 {
