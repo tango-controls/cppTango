@@ -141,7 +141,7 @@ all: per_event change_event change_event64 archive_event user_event \
     server_event reco_event reco_svc state_event scan att_conf_event \
     data_ready_event \
     change_event_buffer att_conf_event_buffer data_ready_event_buffer \
-	event_lock multi_event
+	event_lock multi_event att_type_event
 
 
 per_event:	per_event.o
@@ -200,7 +200,10 @@ data_ready_event_buffer:	data_ready_event_buffer.o
 	$(CC) data_ready_event_buffer.o -o $(BIN_TANGO_DIR)/data_ready_event_buffer $(LFLAGS)	
 
 event_lock:	event_lock.o
-	$(CC) event_lock.o -o $(BIN_TANGO_DIR)/event_lock $(LFLAGS)	
+	$(CC) event_lock.o -o $(BIN_TANGO_DIR)/event_lock $(LFLAGS)
+
+att_type_event:	att_type_event.o
+	$(CC) att_type_event.o -o $(BIN_TANGO_DIR)/att_type_event $(LFLAGS)
 															
 clean:
 	rm -f *.o core

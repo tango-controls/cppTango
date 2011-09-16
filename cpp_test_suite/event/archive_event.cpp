@@ -128,7 +128,7 @@ int main(int argc, char **argv)
 	try
 	{
 
-		string att_name("event_change_tst");
+		string att_name("Event_change_tst");
 				
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
@@ -588,6 +588,7 @@ int main(int argc, char **argv)
 		
 		// start the polling first!
 		device->poll_attribute(att_name,1000);
+#ifdef NOTIFD
 		eve_id = device->subscribe_event(att_name,Tango::ARCHIVE_EVENT,&cb,filters);
 
 //
@@ -746,6 +747,7 @@ int main(int argc, char **argv)
 
 		device->unsubscribe_event(eve_id);
 		cout << "   unsubscribe_event --> OK" << endl;
+#endif
 
 //
 // Change the event parameters. This means restart the device to take
@@ -788,6 +790,7 @@ int main(int argc, char **argv)
 		
 		// start the polling first!
 		device->poll_attribute(att_name,250);
+#ifdef NOTIFD
 		eve_id = device->subscribe_event(att_name,Tango::ARCHIVE_EVENT,&cb,filters);
 
 //
@@ -877,6 +880,7 @@ int main(int argc, char **argv)
 
 		device->unsubscribe_event(eve_id);		
 		cout << "   unsubscribe_event --> OK" << endl;
+#endif
 				
 //
 // Stop polling

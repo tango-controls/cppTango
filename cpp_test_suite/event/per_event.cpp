@@ -124,8 +124,8 @@ int main(int argc, char **argv)
 	try
 	{
 
-		string att_name("short_attr");
-		string another_att("event_change_tst");
+		string att_name("Short_attr");
+		string another_att("Event_change_tst");
 				
 //
 // Test set up (stop polling and clear event_period attribute property but
@@ -257,6 +257,7 @@ int main(int argc, char **argv)
 // subscribe to a periodic event with a filter
 //
 
+#ifdef NOTIFD
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
@@ -285,6 +286,7 @@ int main(int argc, char **argv)
 		device->unsubscribe_event(eve_id);
 		
 		cout << "   unsubscribe_event (with filter) --> OK" << endl;
+#endif
 
 //
 // Change polling period to 200mS
@@ -351,10 +353,10 @@ int main(int argc, char **argv)
 		DbAttribute db_att(att_name,device_name);
 		DbData db_dat;
 		DbDatum dat(att_name);
-		dat << (long)1;
+		dat << (DevLong)1;
 		db_dat.push_back(dat);
 		DbDatum dat1("event_period");
-		dat1 << (long)600;
+		dat1 << (DevLong)600;
 		db_dat.push_back(dat1);
 		
 		db_att.put_property(db_dat);
@@ -405,10 +407,11 @@ int main(int argc, char **argv)
 // Check that callback was called
 //
 		
-		Tango_sleep(3);
+//		Tango_sleep(3);
+		Tango_sleep(6);
 		coutv << "cb excuted = " << cb.cb_executed << endl;
-		assert (cb.cb_executed >= 3);
-		assert (cb.cb_executed < 8);
+		assert (cb.cb_executed >= 5);
+		assert (cb.cb_executed < 12);
 		assert (cb.delta_msec > 500);
 		assert (cb.delta_msec < 700);
 		

@@ -149,6 +149,11 @@ $DIR/per_event $DEV1
 ret=$?
 check_return_value $ret
 #
+$echo "Testing miscellaneous attribute data type"
+$DIR/att_type_event $DEV1
+ret=$?
+check_return_value $ret
+#
 $echo "\nTesting change event and ApiUtil::cleanup() stuff"
 $DIR/change_event $DEV1
 ret=$?
@@ -194,10 +199,10 @@ $DIR/att_conf_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting change events with quality change"
-$DIR/scan $DEV1
-ret=$?
-check_return_value $ret
+#$echo "\nTesting change events with quality change"
+#$DIR/scan $DEV1
+#ret=$?
+#check_return_value $ret
 #
 $echo "\nTesting attribute data ready event"
 $DIR/data_ready_event $DEV1

@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 	
 	try
 	{
-		string att_name("event64_change_tst");
+		string att_name("Event64_change_tst");
 				
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute

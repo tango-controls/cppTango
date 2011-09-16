@@ -106,6 +106,7 @@ protected:
 
 void EventUnsubCallBack::push_event(Tango::EventData* event_data)
 {
+	coutv << "EventUnsubCallBack::push_event()" << endl;
 	cb_executed++;
 	if (cb_executed == 2)
 	{
@@ -148,7 +149,7 @@ int main(int argc, char **argv)
 	
 	try
 	{
-		string att_name("event_change_tst");
+		string att_name("Event_change_tst");
 				
 //
 // Test set up (stop polling and clear abs_change and rel_change attribute
@@ -643,6 +644,7 @@ device = new DeviceProxy(device_name);
 		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");
 		// start the polling first!
 		device->poll_attribute(att_name,1000);
+#ifdef NOTIFD
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 //
@@ -801,6 +803,7 @@ device = new DeviceProxy(device_name);
 		device->unsubscribe_event(eve_id);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
+#endif
 
 //
 // Try to unsubscribe within the callback
@@ -810,6 +813,14 @@ device = new DeviceProxy(device_name);
 		
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb_unsub,filters);
 		cb_unsub.set_ev_id(eve_id);
+
+#ifndef WIN32
+		rest = sleep(2);
+		if (rest != 0)
+			sleep(2);
+#else
+		Sleep(2000);
+#endif
 
 		device->command_inout("IOIncValue");
 
@@ -858,6 +869,7 @@ device = new DeviceProxy(device_name);
 	delete device;
 
 	Tango::ApiUtil::cleanup();
+cout << "Cleanup done" << endl;
 	
 	return 0;
 
