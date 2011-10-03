@@ -479,7 +479,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			{
 
 				string &mem_value = att.get_mem_value();
-				if ((mem_value != MemNotUsed) || (from_init == true))
+                if (mem_value != MemNotUsed)
 				{
 					nb_wr++;
 					att_val.length(nb_wr);
