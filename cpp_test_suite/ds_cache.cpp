@@ -5,6 +5,7 @@
 #include <tango.h>
 #include <assert.h>
 
+#define	BASE	68
 #define	coutv	if (verbose == true) cout
 bool verbose = false;
 
@@ -22,12 +23,40 @@ int main(int argc, char **argv)
 
 	try
 	{
-			
+
+//
+// Compute cache size
+//
+
+		Database *db = new Database();
+		string obj("CtrlSystem");
+		string wild("*");
+
+		DbDatum d = db->get_object_property_list(obj,wild);
+		vector<string> vs_obj;
+		d >> vs_obj;
+		int nb_prop = vs_obj.size();
+
+		DbData dd;
+		int loop;
+
+		for (loop = 0;loop < nb_prop;loop++)
+		{
+			dd.push_back(DbDatum(vs_obj[loop]));
+		}
+		db->get_property(obj,dd);
+
+		int prop_elt = 0;
+		for (loop = 0;loop < nb_prop;loop++)
+		{
+			prop_elt = prop_elt + dd[loop].size();
+		}
+		int cache_size = BASE + 2 + (2 * nb_prop) + prop_elt + 8;
+		
 //
 // Try to create a DS cache
 //
 
-		Database *db = new Database();
 		string ds_name("DsCache/test");
 		string h_name("pcantares.esrf.fr");
 		DbServerCache *dsc = new DbServerCache(db,ds_name,h_name);	
@@ -40,7 +69,7 @@ int main(int argc, char **argv)
 
 		int ca_size = dsc->get_data_nb();
 		coutv << "Cache size = " << ca_size << endl;
-		assert(ca_size == 86);
+		assert(ca_size == cache_size);
 
 		cout << "   Db cache size --> OK" << endl;
 
@@ -95,8 +124,8 @@ int main(int argc, char **argv)
 
 		const DbServerCache::PropEltIdx &ctrl_prop = dsc->get_ctrl_serv_prop();
 		coutv << "Control system object prop data between " << ctrl_prop.first_idx << " and " << ctrl_prop.last_idx << endl;
-		assert(ctrl_prop.first_idx == 68);
-		assert(ctrl_prop.last_idx == 77);
+		assert(ctrl_prop.first_idx == BASE);
+		assert(ctrl_prop.last_idx == (BASE + 2 + (2 * nb_prop) + prop_elt) - 1);
 
 		cout << "   Indexes in db cache --> OK" << endl;
 
