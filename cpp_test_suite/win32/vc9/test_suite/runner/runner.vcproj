@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="9,00"
 	Name="runner"
 	ProjectGUID="{94D774D1-1403-4F01-AD70-1337438E970B}"
 	RootNamespace="runner2"
@@ -25,6 +25,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="..\..\..\..\build_runner.bat"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -41,10 +42,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="..\..\..\..\cxxtest\include\"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
 				DebugInformationFormat="4"
@@ -114,7 +116,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				EnableIntrinsicFunctions="true"
 				AdditionalIncludeDirectories="..\..\..\..\cxxtest\include\;..\..\..\..\test_suite\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
@@ -175,11 +177,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\runner.cpp"
+				RelativePath="..\..\..\..\test_suite\compare_test.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\..\test_suite\compare_test.cpp"
+				RelativePath=".\runner.cpp"
 				>
 			</File>
 		</Filter>
