@@ -115,7 +115,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				EnableIntrinsicFunctions="true"
 				PreprocessorDefinitions="WIN32;_CONSOLE"
 				RuntimeLibrary="0"
