@@ -184,6 +184,9 @@ FQDN="`host $HOST`"
 host
 host -v $HOST 
 echo ${#HOST}
+HOST2=${HOST/\013}
+echo "HOST2="$HOST2
+echo ${#HOST2}
 $echo "FQDN = "$FQDN
 if [ $INST_NAME = "win32_vc9" ]
 then
