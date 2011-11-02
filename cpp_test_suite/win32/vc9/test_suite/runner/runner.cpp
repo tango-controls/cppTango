@@ -31,41 +31,41 @@ int main( int argc, char **argv )
 static DServerMiscTestSuite *suite_DServerMiscTestSuite = 0;
 
 static CxxTest::List Tests_DServerMiscTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<DServerMiscTestSuite> suiteDescription_DServerMiscTestSuite( "../../../../test_suite/cxx_dserver_misc.cpp", 17, "DServerMiscTestSuite", Tests_DServerMiscTestSuite, suite_DServerMiscTestSuite, 121, 126 );
+CxxTest::DynamicSuiteDescription<DServerMiscTestSuite> suiteDescription_DServerMiscTestSuite( "../../../../test_suite/cxx_dserver_misc.cpp", 17, "DServerMiscTestSuite", Tests_DServerMiscTestSuite, suite_DServerMiscTestSuite, 124, 129 );
 
 static class TestDescription_DServerMiscTestSuite_test_State_and_Status_commands : public CxxTest::RealTestDescription {
 public:
- TestDescription_DServerMiscTestSuite_test_State_and_Status_commands() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 137, "test_State_and_Status_commands" ) {}
+ TestDescription_DServerMiscTestSuite_test_State_and_Status_commands() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 140, "test_State_and_Status_commands" ) {}
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_State_and_Status_commands(); }
 } testDescription_DServerMiscTestSuite_test_State_and_Status_commands;
 
 static class TestDescription_DServerMiscTestSuite_test_DevRestart_command_on_the_dserver_device : public CxxTest::RealTestDescription {
 public:
- TestDescription_DServerMiscTestSuite_test_DevRestart_command_on_the_dserver_device() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 154, "test_DevRestart_command_on_the_dserver_device" ) {}
+ TestDescription_DServerMiscTestSuite_test_DevRestart_command_on_the_dserver_device() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 157, "test_DevRestart_command_on_the_dserver_device" ) {}
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_DevRestart_command_on_the_dserver_device(); }
 } testDescription_DServerMiscTestSuite_test_DevRestart_command_on_the_dserver_device;
 
 static class TestDescription_DServerMiscTestSuite_test_DevRestart_command_on_classical_device : public CxxTest::RealTestDescription {
 public:
- TestDescription_DServerMiscTestSuite_test_DevRestart_command_on_classical_device() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 177, "test_DevRestart_command_on_classical_device" ) {}
+ TestDescription_DServerMiscTestSuite_test_DevRestart_command_on_classical_device() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 180, "test_DevRestart_command_on_classical_device" ) {}
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_DevRestart_command_on_classical_device(); }
 } testDescription_DServerMiscTestSuite_test_DevRestart_command_on_classical_device;
 
 static class TestDescription_DServerMiscTestSuite_test_name_description_state_ans_status_CORBA_attributes : public CxxTest::RealTestDescription {
 public:
- TestDescription_DServerMiscTestSuite_test_name_description_state_ans_status_CORBA_attributes() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 208, "test_name_description_state_ans_status_CORBA_attributes" ) {}
+ TestDescription_DServerMiscTestSuite_test_name_description_state_ans_status_CORBA_attributes() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 211, "test_name_description_state_ans_status_CORBA_attributes" ) {}
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_name_description_state_ans_status_CORBA_attributes(); }
 } testDescription_DServerMiscTestSuite_test_name_description_state_ans_status_CORBA_attributes;
 
 static class TestDescription_DServerMiscTestSuite_test_ping_the_device : public CxxTest::RealTestDescription {
 public:
- TestDescription_DServerMiscTestSuite_test_ping_the_device() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 229, "test_ping_the_device" ) {}
+ TestDescription_DServerMiscTestSuite_test_ping_the_device() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 232, "test_ping_the_device" ) {}
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_ping_the_device(); }
 } testDescription_DServerMiscTestSuite_test_ping_the_device;
 
 static class TestDescription_DServerMiscTestSuite_test_info_call : public CxxTest::RealTestDescription {
 public:
- TestDescription_DServerMiscTestSuite_test_info_call() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 236, "test_info_call" ) {}
+ TestDescription_DServerMiscTestSuite_test_info_call() : CxxTest::RealTestDescription( Tests_DServerMiscTestSuite, suiteDescription_DServerMiscTestSuite, 239, "test_info_call" ) {}
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_info_call(); }
 } testDescription_DServerMiscTestSuite_test_info_call;
 
