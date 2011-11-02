@@ -184,7 +184,7 @@ FQDN="`host $HOST`"
 host
 host -v $HOST 
 echo ${#HOST}
-HOST2=${HOST/\013}
+HOST2=`echo -n $HOST`
 echo "HOST2="$HOST2
 echo ${#HOST2}
 $echo "FQDN = "$FQDN
