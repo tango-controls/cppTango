@@ -182,7 +182,8 @@ $echo "FULL_HOSTNAME = "$FULL_HOSTNAME
 $echo "HOST = "$HOST
 FQDN="`host $HOST`"
 host
-host -v $HOST
+host -v $HOST 
+echo ${#HOST}
 $echo "FQDN = "$FQDN
 if [ $INST_NAME = "win32_vc9" ]
 then
