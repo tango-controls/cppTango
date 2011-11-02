@@ -180,6 +180,8 @@ CURR_DIR="`pwd`"
 FULL_HOSTNAME=`host $HOST | awk '{print $1}'`
 $echo "FULL_HOSTNAME = "$FULL_HOSTNAME
 $echo "HOST = "$HOST
+FQDN="`host $HOST`"
+$echo "FQDN = "$FQDN
 if [ $INST_NAME = "win32_vc9" ]
 then
 	touch win32/vc9/test_suite/runner/runner.cpp
