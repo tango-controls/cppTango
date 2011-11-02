@@ -177,17 +177,22 @@ fi
 
 $echo "Running the new Test Suite"
 CURR_DIR="`pwd`"
-FULL_HOSTNAME=`host $HOST | awk '{print $1}'`
-$echo "FULL_HOSTNAME = "$FULL_HOSTNAME
-$echo "HOST = "$HOST
-FQDN="`host $HOST`"
-host
-host -v $HOST 
-echo ${#HOST}
-HOST2=`echo -n $HOST`
-echo "HOST2="$HOST2
-echo ${#HOST2}
-$echo "FQDN = "$FQDN
+
+#
+# Don't know why but when running this script from Jenkins on windows,
+# the HOST string has 9 characters instead of 8. There is a \013 (carriage retrun)
+# appended at the end
+#
+
+if [ $INST_NAME = "win32_vc9" ]
+then
+	FULL_HOSTNAME=`host PCTAUREL | awk '{print $1}'`
+else
+	FULL_HOSTNAME=`host $HOST | awk '{print $1}'`
+fi
+
+echo "FULL_HOSTNAME="$FULL_HOSTNAME
+
 if [ $INST_NAME = "win32_vc9" ]
 then
 	touch win32/vc9/test_suite/runner/runner.cpp
