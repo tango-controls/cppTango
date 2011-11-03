@@ -149,7 +149,7 @@ $DIR/per_event $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "Testing miscellaneous attribute data type"
+$echo "\nTesting miscellaneous attribute data type"
 $DIR/att_type_event $DEV1
 ret=$?
 check_return_value $ret
