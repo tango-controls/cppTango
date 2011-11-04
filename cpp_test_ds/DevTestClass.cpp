@@ -523,6 +523,7 @@ void DevTestClass::command_factory()
 					    Tango::DEV_BOOLEAN,
 					    "void",
 					    "true = sub device connected"));
+#ifndef COMPAT
 	command_list.push_back(new IOEncoded("IOEncoded",
 					    Tango::DEV_ENCODED,
 					    Tango::DEV_ENCODED,
@@ -538,6 +539,7 @@ void DevTestClass::command_factory()
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling threads pool configuration"));
+#endif
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 

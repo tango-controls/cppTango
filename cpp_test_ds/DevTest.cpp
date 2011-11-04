@@ -551,10 +551,8 @@ void DevTest::IOSetWAttrLimit(const Tango::DevVarDoubleArray *in)
 
 void DevTest::push_data_ready(const Tango::DevVarLongStringArray *in)
 {
-#ifndef COMPAT
 	cout << "Pushing Data Ready event for attribute " << in->svalue[0].in() << endl;
 	push_data_ready_event(in->svalue[0].in(),in->lvalue[0]);
-#endif
 }
 
 //+----------------------------------------------------------------------------

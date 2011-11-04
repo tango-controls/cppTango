@@ -1469,12 +1469,10 @@ bool PushDataReady::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 
 CORBA::Any *PushDataReady::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
-#ifndef COMPAT
 	const Tango::DevVarLongStringArray *in;
 	extract(in_any,in);
 
 	(static_cast<DevTest *>(device))->push_data_ready(in);
-#endif
 	return insert();
 }
 
@@ -1643,6 +1641,7 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //
 //-----------------------------------------------------------------------------
 
+#ifndef COMPAT
 PollingPoolTst::PollingPoolTst(const char *name,Tango::CmdArgType in,
 		   Tango::CmdArgType out,const char *in_desc,
 		   const char *out_desc)
@@ -1669,4 +1668,4 @@ CORBA::Any *PollingPoolTst::execute(Tango::DeviceImpl *device,const CORBA::Any &
     (*theOutputArray) << pool_conf;
     return insert(theOutputArray);
 }
-
+#endif
