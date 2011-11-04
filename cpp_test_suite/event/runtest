@@ -13,7 +13,7 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be ubuntu904, python or \"jenkins <dir>\""
+	$echo "ds_system can be ubuntu1010, python or \"jenkins <dir>\""
 	exit 1
 fi
 
@@ -22,20 +22,20 @@ fi
 #
 
 PYTHON_HOST=controls02
-UBUNTU904_HOST=pcantares
+UBUNTU1010_HOST=pcantares
 
 HOST=`hostname`
 SERV_NAME=devTest
 
 
 case $1 in
-ubuntu904 )
-	if [ $HOST != $UBUNTU904_HOST ]
+ubuntu1010 )
+	if [ $HOST != $UBUNTU1010_HOST ]
 	then
-		$echo "For ubuntu904, test should run on "$UBUNTU904_HOST
+		$echo "For ubuntu1010, test should run on "$UBUNTU1010_HOST
 		exit 1
 	fi
-	DIR=bin/ubuntu904
+	DIR=bin/ubuntu1010
 	DEV1="dev/test/10"
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"

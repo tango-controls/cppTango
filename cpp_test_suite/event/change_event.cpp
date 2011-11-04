@@ -641,10 +641,10 @@ device = new DeviceProxy(device_name);
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");
 		// start the polling first!
 		device->poll_attribute(att_name,1000);
 #ifdef NOTIFD
+		filters.push_back("$delta_change_abs >= 2 or $delta_change_abs <= -2");
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb,filters);
 
 //
@@ -869,8 +869,7 @@ device = new DeviceProxy(device_name);
 	delete device;
 
 	Tango::ApiUtil::cleanup();
-cout << "Cleanup done" << endl;
-	
+
 	return 0;
 
 }
