@@ -138,7 +138,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				AdditionalLibraryDirectories="C:\tango_src\cppapi_7_2_6\win32\tango_vc9\tango_static\lib"
+				AdditionalLibraryDirectories=""
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
