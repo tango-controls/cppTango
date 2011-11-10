@@ -307,15 +307,11 @@ int main(int argc, char **argv)
 		cout << "NB prop = " << props.size() << endl;
 		for (unsigned long l = 0;l < props.size();l++)
 			cout << "prop = " << props[l] << endl;
-		assert (props.size() == 8);
+		assert (props.size() == 4);
 		assert (props[0] == "cmd_min_poll_period");
-		assert (props[1] == "logging_level");
-		assert (props[2] == "logging_rft");
-		assert (props[3] == "logging_target");
-		assert (props[4] == "min_poll_period");
-		assert (props[5] == "poll_old_factor");
-		assert (props[6] == "tst_property");
-		assert (props[7] == "__SubDevices");
+		assert (props[1] == "min_poll_period");
+		assert (props[2] == "tst_property");
+		assert (props[3] == "__SubDevices");
 
 		cout << "   Get property list --> OK" << endl;
 #endif
