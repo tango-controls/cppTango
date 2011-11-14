@@ -187,6 +187,7 @@ CURR_DIR="`pwd`"
 if [ $INST_NAME = "win32_vc9" ]
 then
 	FULL_HOSTNAME=`host PCTAUREL | awk '{print $1}'`
+	FULL_HOSTNAME=`echo $FULL_HOSTNAME | tr "[:upper:]" "[:lower:]"`
 else
 	FULL_HOSTNAME=`host $HOST | awk '{print $1}'`
 fi
