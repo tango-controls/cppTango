@@ -15,17 +15,13 @@ endif
 
 ifdef ubuntu
 ifdef dev
-OS=ubuntu904
+OS=ubuntu1010
 else
 OS=ubuntu1004
 endif
 endif
 
 BIN_DIR = $(OS)
-
-ifdef _solaris
-BIN_DIR = $(OS)_CC
-endif
 
 ##############################################################################
 #
@@ -49,7 +45,7 @@ endif
 #
 ##############################################################################
 
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.5/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
 
 ##############################################################################
 #
@@ -66,11 +62,6 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 ##############################################################################
 
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
-
-
-ifdef _solaris
-CC = /opt/SUNWspro/bin/CC
-endif
 
 ifdef linux
 CC = c++
@@ -106,15 +97,6 @@ LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
 	   	   -L $(LOG4TANGO_BASE)/lib \
 		   -L $(ZMQ_BASE)/lib
-endif
-
-
-ifdef _solaris
-CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
-LIB_TANGO = -ltango
-LFLAGS =  -g -mt $(LIB_DIRS) $(LIB_TANGO) -llog4tango \
-	  -lomniORB4 -lomniDynamic4 -lomnithread -lCOS4 \
-	  -lposix4 -lsocket -lnsl -lpthread
 endif
 
 
