@@ -205,15 +205,9 @@ public:
 		ss << pid;
 		pid_str = ss.str();
 
-//
-// TODO: This is to be redeveloped in the Tango core. Currently executing a command on a device
-// at the same host results in the PID information not been printed out.
-//
-#ifdef _TG_WINDOWS_
+
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host + " (CPP/Python client with PID " + pid_str + ")";
-#else
-		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host;
-#endif 	// _TG_WINDOWS_
+
 
 		TS_ASSERT_THROWS_NOTHING(blackbox_out = device1->black_box(3));
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
