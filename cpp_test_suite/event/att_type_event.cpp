@@ -33,7 +33,6 @@ public:
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
-	short value;
 	struct timeval now_timeval;
 #ifdef WIN32
 	struct _timeb before_win;
@@ -67,9 +66,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		coutv << "StateEventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
-
-			*(event_data->attr_value) >> value;
-			coutv << "CallBack value " << value << endl;
+			coutv << "CallBack value " << *(event_data->attr_value) << endl;
 		}
 		else
 		{

@@ -45,7 +45,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 {
 	vector<long> value;
 //	Tango::DevState sta;
-        struct timeval now_timeval;
+	struct timeval now_timeval;
 
 #ifdef WIN32
 	struct _timeb before_win;
@@ -75,7 +75,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 	cb_executed++;
 	try
 	{
-		coutv << "StateEventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
+		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
 
@@ -121,6 +121,7 @@ void EventEncodedCallBack::push_event(Tango::EventData* event_data)
 		if (!event_data->err)
 		{
 			coutv << "Valid data received" << endl;
+			coutv << *(event_data->attr_value) << endl;
 		}
 		else
 		{
@@ -189,7 +190,7 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+	
 		eve_id = device->subscribe_event(att_name,Tango::USER_EVENT,&cb,filters);
 
 //

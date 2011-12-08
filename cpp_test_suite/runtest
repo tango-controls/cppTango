@@ -302,7 +302,7 @@ $DIR/read_hist_ext $DEV1
 ret=$?
 check_return_value $ret
 #
-$echo "\nTesting individual polling buffer depth"
+$echo "\nTesting individual polling buffer depth and polling methods in DeviceImpl"
 $DIR/ring_depth $DEV1
 ret=$?
 check_return_value $ret

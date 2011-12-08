@@ -148,7 +148,32 @@ int main(int argc, char **argv)
 		
 		db_data1.push_back(cmd1);
 		db_data1.push_back(attr1);		
-		device->delete_property(db_data1);			
+		device->delete_property(db_data1);
+
+// Call command which execute polling methods in DeviceImpl
+
+		device->set_timeout_millis(8000);
+		DeviceData dd;
+		dd = device->command_inout("IOPollingInDevice");
+
+		vector<string> vs_poll;
+		dd >> vs_poll;
+
+		assert (vs_poll.size() == 12);
+		assert (vs_poll[0] == "Attribute Double_spec_attr polled = false");
+		assert (vs_poll[1] == "Command OULong polled = false");
+		assert (vs_poll[2] == "Attribute Double_spec_attr polling period = 0");
+		assert (vs_poll[3] == "Command OULong polling period = 0");
+		assert (vs_poll[4] == "Attribute Double_spec_attr polled = true");
+		assert (vs_poll[5] == "Command OULong polled = true");
+		assert (vs_poll[6] == "Attribute Double_spec_attr polling period = 250");
+		assert (vs_poll[7] == "Command OULong polling period = 250");
+		assert (vs_poll[8] == "Attribute Double_spec_attr polled = false");
+		assert (vs_poll[9] == "Command OULong polled = false");
+		assert (vs_poll[10] == "Attribute Double_spec_attr polling period = 0");
+		assert (vs_poll[11] == "Command OULong polling period = 0");
+
+		cout << "   Polling related methods in DeviceImpl --> OK" << endl;
 	}
 	catch (Tango::DevFailed &e)
 	{
