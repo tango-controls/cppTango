@@ -539,6 +539,11 @@ void DevTestClass::command_factory()
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling threads pool configuration"));
+	command_list.push_back(new PollingInDeviceTst("IOPollingInDevice",
+					    Tango::DEV_VOID,
+					    Tango::DEVVAR_STRINGARRAY,
+					    "void",
+					    "Polling in device test outputs"));
 #endif
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));

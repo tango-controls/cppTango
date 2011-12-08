@@ -1669,3 +1669,40 @@ CORBA::Any *PollingPoolTst::execute(Tango::DeviceImpl *device,const CORBA::Any &
     return insert(theOutputArray);
 }
 #endif
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		PollingInDeviceTst::PollingInDeviceTst()
+//
+// description : 	constructor for the PollingInDeviceTst command of the
+//					DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+PollingInDeviceTst::PollingInDeviceTst(const char *name,Tango::CmdArgType in,
+		   Tango::CmdArgType out,const char *in_desc,
+		   const char *out_desc)
+:Tango::Command(name,in,out,in_desc,out_desc)
+{
+}
+
+bool PollingInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+//
+// command allways allowed
+//
+	return(true);
+}
+
+CORBA::Any *PollingInDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+    Tango::DevVarStringArray *theOutputArray = (static_cast<DevTest *>(device))->IOPollingInDevice();
+    return insert(theOutputArray);
+}

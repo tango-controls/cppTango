@@ -8,6 +8,8 @@
 #include <sys/time.h>
 #endif
 
+#include <iterator>
+
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
 	short value;
@@ -199,7 +201,6 @@ void DevTest::init_device()
 	enc_data[0] = (unsigned char)40;
 	enc_data[1] = (unsigned char)41;*/
 #endif
-
 }
 
 
@@ -553,6 +554,125 @@ void DevTest::push_data_ready(const Tango::DevVarLongStringArray *in)
 {
 	cout << "Pushing Data Ready event for attribute " << in->svalue[0].in() << endl;
 	push_data_ready_event(in->svalue[0].in(),in->lvalue[0]);
+}
+
+Tango::DevVarStringArray *DevTest::IOPollingInDevice()
+{
+    Tango::DevVarStringArray *ret = new Tango::DevVarStringArray();
+    ret->length(12);
+    stringstream ss;
+    string att_name("Double_spec_attr");
+    string cmd_name("OULong");
+
+// is_xxx_polled
+
+    ss << "Attribute " << att_name << " polled = ";
+    if (is_attribute_polled(att_name) == true)
+        ss << "true";
+    else
+        ss << "false";
+    (*ret)[0] = Tango::string_dup(ss.str().c_str());
+
+    ss.str("");
+    ss.clear();
+    ss << "Command " << cmd_name << " polled = ";
+    if (is_command_polled(cmd_name) == true)
+        ss << "true";
+    else
+        ss << "false";
+    (*ret)[1] = Tango::string_dup(ss.str().c_str());
+
+// get_xxx_poll_period
+
+    ss.str("");
+    ss.clear();
+    ss << "Attribute " << att_name << " polling period = " << get_attribute_poll_period(att_name);
+    (*ret)[2] = Tango::string_dup(ss.str().c_str());
+
+    ss.str("");
+    ss.clear();
+    ss << "Command " << cmd_name << " polling period = " << get_command_poll_period(cmd_name);
+    (*ret)[3] = Tango::string_dup(ss.str().c_str());
+
+// poll_xxx
+
+    poll_attribute(att_name,250);
+    poll_command(cmd_name,250);
+
+    sleep(1);
+
+// is_xxx_polled
+
+    ss.str("");
+    ss.clear();
+    ss << "Attribute " << att_name << " polled = ";
+    if (is_attribute_polled(att_name) == true)
+        ss << "true";
+    else
+        ss << "false";
+    (*ret)[4] = Tango::string_dup(ss.str().c_str());
+
+    ss.str("");
+    ss.clear();
+    ss << "Command " << cmd_name << " polled = ";
+    if (is_command_polled(cmd_name) == true)
+        ss << "true";
+    else
+        ss << "false";
+    (*ret)[5] = Tango::string_dup(ss.str().c_str());
+
+// get_xxx_poll_period
+
+    ss.str("");
+    ss.clear();
+    ss << "Attribute " << att_name << " polling period = " << get_attribute_poll_period(att_name);
+    (*ret)[6] = Tango::string_dup(ss.str().c_str());
+
+    ss.str("");
+    ss.clear();
+    ss << "Command " << cmd_name << " polling period = " << get_command_poll_period(cmd_name);
+    (*ret)[7] = Tango::string_dup(ss.str().c_str());
+
+// stop_poll_xxx
+
+    stop_poll_attribute(att_name);
+    stop_poll_command(cmd_name);
+
+    sleep(1);
+
+// is_xxx_polled
+
+    ss.str("");
+    ss.clear();
+    ss << "Attribute " << att_name << " polled = ";
+    if (is_attribute_polled(att_name) == true)
+        ss << "true";
+    else
+        ss << "false";
+    (*ret)[8] = Tango::string_dup(ss.str().c_str());
+
+    ss.str("");
+    ss.clear();
+    ss << "Command " << cmd_name << " polled = ";
+    if (is_command_polled(cmd_name) == true)
+        ss << "true";
+    else
+        ss << "false";
+    (*ret)[9] = Tango::string_dup(ss.str().c_str());
+
+// get_xxx_poll_period
+
+    ss.str("");
+    ss.clear();
+    ss << "Attribute " << att_name << " polling period = " << get_attribute_poll_period(att_name);
+    (*ret)[10] = Tango::string_dup(ss.str().c_str());
+
+    ss.str("");
+    ss.clear();
+    ss << "Command " << cmd_name << " polling period = " << get_command_poll_period(cmd_name);
+    (*ret)[11] = Tango::string_dup(ss.str().c_str());
+
+    return ret;
 }
 
 //+----------------------------------------------------------------------------

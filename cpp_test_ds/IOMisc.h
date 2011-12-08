@@ -317,3 +317,12 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
+
+class PollingInDeviceTst : public Tango::Command {
+public:
+	PollingInDeviceTst(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~PollingInDeviceTst() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};

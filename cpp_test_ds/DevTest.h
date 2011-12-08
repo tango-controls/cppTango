@@ -54,6 +54,8 @@ public :
 
 	void set_attr_long(Tango::DevLong l) {attr_long = l;}
 
+	Tango::DevVarStringArray *IOPollingInDevice();
+
 //
 // Attribute related methods
 //
