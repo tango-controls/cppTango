@@ -599,7 +599,7 @@ Tango::DevVarStringArray *DevTest::IOPollingInDevice()
     poll_attribute(att_name,250);
     poll_command(cmd_name,250);
 
-    sleep(1);
+    Tango_sleep(1);
 
 // is_xxx_polled
 
@@ -638,7 +638,7 @@ Tango::DevVarStringArray *DevTest::IOPollingInDevice()
     stop_poll_attribute(att_name);
     stop_poll_command(cmd_name);
 
-    sleep(1);
+    Tango_sleep(1);
 
 // is_xxx_polled
 
