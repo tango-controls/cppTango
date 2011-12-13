@@ -118,7 +118,18 @@ endif
 
 
 ifdef linux
-CXXFLAGS =  -g -D_REENTRANT $(INCLUDE_DIRS)
+
+#Check that we have at least gcc 4.3 (for c++0x features)
+
+GCC_MAJOR_VERSION_GTEQ4 := $(shell expr `c++ -dumpversion | cut -f1 -d.` \>= 4)
+GCC_MINOR_VERSION_GTEQ3 := $(shell expr `c++ -dumpversion | cut -f2 -d.` \>= 3)
+ifeq ($(GCC_MAJOR_VERSION_GTEQ4),1)
+    ifeq ($(GCC_MINOR_VERSION_GTEQ3),1)
+        CXX11 = -std=c++0x
+    endif
+endif
+
+CXXFLAGS =  -g $(CXX11) -D_REENTRANT $(INCLUDE_DIRS)
 LFLAGS =  -g $(LIB_DIRS) $(LIB_TANGO) \
 	-llog4tango -lomniORB4  -lomniDynamic4 \
 	-lCOS4 -lomnithread -lzmq -lpthread -ldl
