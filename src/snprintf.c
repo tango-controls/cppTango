@@ -8,7 +8,7 @@
 //					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
 //					Bastiaan Bakker. All rights reserved.   
 //					
-//					2004,2005,2006,2007,2008,2009,2010
+//					2004,2005,2006,2007,2008,2009,2010,2011,2012
 //					Synchrotron SOLEIL
 //                	L'Orme des Merisiers
 //                	Saint-Aubin - BP 48 - France
