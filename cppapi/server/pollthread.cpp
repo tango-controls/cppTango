@@ -786,6 +786,7 @@ void PollThread::execute_cmd()
 				compute_new_date(now,local_cmd.new_upd);
 				tmp_work.wake_up_date = now;
 				insert_in_list(tmp_work);
+				tune_ctr = 0;
 			}
 			else
 			{
