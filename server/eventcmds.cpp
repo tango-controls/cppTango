@@ -21,12 +21,12 @@ static const char *RcsId = "$Id$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -228,7 +228,7 @@ namespace Tango
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSubscriptionChangeCmd::EventSubscriptionChangeCmd()
-// 
+//
 // description : 	constructor for the command of the EventTester.
 //
 // In : - name : The command name
@@ -262,7 +262,7 @@ EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,Tango::C
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSubscriptionChangeCmd::is_allowed()
-// 
+//
 // description : 	method to test whether command is allowed or not in this
 //			state. In this case, the command is allowed only if
 //			the device is in ON state
@@ -287,9 +287,9 @@ bool EventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *devi
 //+----------------------------------------------------------------------------
 //
 // method : 		EventSubscriptionChangeCmd::execute()
-// 
+//
 // description : 	method to trigger the execution of the command.
-//                PLEASE DO NOT MODIFY this method core without pogo   
+//                PLEASE DO NOT MODIFY this method core without pogo
 //
 // in : - device : The device on which the command must be excuted
 //		- in_any : The command input data
@@ -313,7 +313,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 								o.str(),
 								(const char *)"EventSubscriptionChangeCmd::execute");
 	}
- 
+
 	string dev_name, attr_name, action, event, attr_name_lower;
 	dev_name = (*argin)[0];
 	attr_name = (*argin)[1];
@@ -322,7 +322,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 	attr_name_lower = attr_name;
 	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
-	
+
 	cout4 << "EventSubscriptionChangeCmd: execute(): subscribtion for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -335,12 +335,12 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	{
      	TangoSys_OMemStream o;
 		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
-	   
+
 		Except::throw_exception((const char *)"DServer_Events",
 									    o.str(),
 									   (const char *)"EventSubscriptionChangeCmd::execute");
 	}
-		
+
 //
 // If the EventSupplier object is not created, create it right now
 //
@@ -361,11 +361,11 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 		string &p_num = tg->get_svr_port_num();
 		ev->set_svr_port_num(p_num);
 	}
-	
+
 //
 // Get device reference
 //
-	
+
 	DeviceImpl *dev_impl;
 	try
 	{
@@ -375,10 +375,10 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	{
 		TangoSys_OMemStream o;
 		o << "Device " << (*argin)[0] << " not found" << ends;
- 
+
 		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
                                    (const char *)"DServer::EventSubscriptionChangeCmd:");
-	}                                                                                 
+	}
 
 	int attr_ind = dev_impl->dev_attr->get_attr_ind_by_name(attr_name.c_str());
 	Attribute &attribute = dev_impl->dev_attr->get_attr_by_ind(attr_ind);
@@ -386,17 +386,24 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 //
 // Check if the request comes from a Tango 6 client (without client identification)
 // If true, the event has to be sent using AttributeValue_3 data structure
+// If cl is NULL, this means that the call is local (Two tango classes within the
+// same process and with events between device from class 1 and device from classs 2)
 //
 
 	client_addr *cl = device->get_client_ident();
 	int cl_release;
 
-	if (cl->client_ident == true)
-		cl_release = 4;
-	else
-		cl_release = 3;
+    if (cl == NULL)
+        cl_release = 4;
+    else
+    {
+        if (cl->client_ident == true)
+            cl_release = 4;
+        else
+            cl_release = 3;
+    }
 
-	
+
 	if (action == "subscribe")
 	{
 		if (event == "user_event")
@@ -419,7 +426,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 				o << "The attribute ";
 				o << attr_name;
 				o << " is not data ready event enabled" << ends;
-				
+
 				Except::throw_exception((const char*)"API_AttributeNotDataReadyEnabled",
 										o.str(),
 										(const char *)"EventSubscriptionChangeCmd::execute");
@@ -428,20 +435,20 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 			attribute.ext->event_data_ready_subscription = time(NULL);
 		}
 		else
-		{	
-			
+		{
+
 //
 // If the polling is necessary to send events, check whether the polling is
 // started for the requested attribute.
 //
-			
-			if (attribute.is_polled() == false )			
+
+			if (attribute.is_polled() == false )
 			{
 				TangoSys_OMemStream o;
 				o << "The polling (necessary to send events) for the attribute ";
 				o << attr_name;
 				o << " is not started" << ends;
-								
+
 				if ( event == "change")
 				{
 					if (attribute.is_change_event() == false)
@@ -463,15 +470,15 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 						}
 					}
 					else
-					{					
+					{
 						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
 									o.str(),
-									(const char *)"EventSubscriptionChangeCmd::execute");					
+									(const char *)"EventSubscriptionChangeCmd::execute");
 					}
 				}
 			}
-			
-				
+
+
        		if (event == "change")
        		{
 				cout4 << "EventSubscriptionChangeCmd::execute(): update change subscription\n";
@@ -493,7 +500,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 					    		(attribute.ext->rel_change[1] == INT_MAX) &&
 					    		(attribute.ext->abs_change[0] == INT_MAX) &&
 					    		(attribute.ext->abs_change[1] == INT_MAX))
-							{		
+							{
 								TangoSys_OMemStream o;
 								o << "Event properties (abs_change or rel_change) for attribute ";
 								o << attr_name;
@@ -521,10 +528,10 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
        			attribute.ext->event_periodic_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_periodic_client_3 = true;
-      		}                                                  
+      		}
       		else if (event == "archive")
       		{
-      			
+
 //
 // Check if the attribute has some of the archive properties defined
 //
@@ -553,19 +560,19 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 							}
 						}
 					}
-				}		
-		
+				}
+
 				cout4 << "EventSubscriptionChangeCmd::execute(): update archive subscription\n";
        			attribute.ext->event_archive_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_archive_client_3 = true;
-      		}				 			
-		}		  
-	
+      		}
+		}
+
 //
 // Start polling for attribute in question. I suppose I should
-// check to see if the attribute is polled already. For the 
-// moment I will simply ignore the exception. Why not rather 
+// check to see if the attribute is polled already. For the
+// moment I will simply ignore the exception. Why not rather
 // introduce a is_polled() method in each Attribute ?
 //
 // Use the add_obj_polling() admin device method whith no
@@ -573,14 +580,14 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 // the server is started if  there no more event client connected
 // to the attribute
 //
-			
+
 		Tango::Util *tg = Tango::Util::instance();
 		try
 		{
 			DServer *adm_dev = tg->get_dserver_device();
 
 			if (adm_dev->get_heartbeat_started() == false)
-			{				
+			{
 				adm_dev->add_event_heartbeat();
 				adm_dev->set_heartbeat_started(true);
 			}
@@ -591,10 +598,10 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	}
 
 	Tango::DevLong ret = (Tango::DevLong)tg->get_tango_lib_release();
-	CORBA::Any *out_any = new CORBA::Any();	
-	(*out_any) <<= ret;	
+	CORBA::Any *out_any = new CORBA::Any();
+	(*out_any) <<= ret;
 	return out_any;
-	
+
 }
 
 
