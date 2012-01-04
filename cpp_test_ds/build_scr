@@ -134,12 +134,13 @@ then
 	then
 		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /p:Platform=x64 /t:$PROJ_NAME;$BUILD /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
 		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
+		cd cpp_test_ds/win64_ds_vc10
 	else
 		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME $BUILD Debug  /projectconfig Debug /out $OUTFILE "
 		export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
+		cd cpp_test_ds/win32_ds_vs9
 	fi
 	echo $PATH
-	cd cpp_test_ds/win32_ds_vs9
 	/bin/rm -f $OUTFILE
 else
 	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $LIB_TYPE $CLEAN all"
