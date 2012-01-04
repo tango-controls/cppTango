@@ -115,16 +115,11 @@ if [ $OS_TYPE = "Windows" ]
 then
 	if [ -z $CLEAN ]
 	then
-		if [ $OS_SPEC = "Windows_64_VC10" ]
-		then
-			BUILD="Build"
-		else
-			BUILD="/build"
-		fi
+		BUILD="/build"
 	else
 		if [ $OS_SPEC = "Windows_64_VC10" ]
 		then
-			BUILD="Rebuild"
+			PROJ_NAME="Clean;"$PROJ_NAME
 		else
 			BUILD="/rebuild"
 		fi
@@ -132,7 +127,7 @@ then
 	export PREFIX=$INSTALL_DIR
 	if [ $OS_SPEC = "Windows_64_VC10" ]
 	then
-		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /p:Platform=x64 /t:$PROJ_NAME;$BUILD /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
+		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /p:Platform=x64 /t:$PROJ_NAME /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
 		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
 		cd cpp_test_ds/win64_ds_vc10
 	else
