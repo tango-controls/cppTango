@@ -48,6 +48,15 @@ do
 		MAKE_PATH="devenv"
 		INSTALL_DIR=$WIN_INSTALL_DIR
 	fi
+
+	if [ $i = "Windows_VC10" ]
+	then
+		echo "Windows VC10 (64 bits)"
+		OS_TYPE="Windows"
+		OS_SPEC="Windows_64_VC10"
+		MAKE_PATH="MSBuild.exe"
+		INSTALL_DIR=$WIN_INSTALL_DIR
+	fi
 	
 	if [ $i = "centos5" ]
 	then
@@ -106,14 +115,30 @@ if [ $OS_TYPE = "Windows" ]
 then
 	if [ -z $CLEAN ]
 	then
-		BUILD="/build"
+		if [ $OS_SPEC = "Windows_64_VC10" ]
+		then
+			BUILD="Build"
+		else
+			BUILD="/build"
+		fi
 	else
-		BUILD="/rebuild"
+		if [ $OS_SPEC = "Windows_64_VC10" ]
+		then
+			BUILD="Rebuild"
+		else
+			BUILD="/rebuild"
+		fi
 	fi
-	MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME $BUILD Debug  /projectconfig Debug /out $OUTFILE "
-	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
-	echo $PATH
 	export PREFIX=$INSTALL_DIR
+	if [ $OS_SPEC = "Windows_64_VC10" ]
+	then
+		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /p:Platform=x64 /t:$PROJ_NAME;$BUILD /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
+		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
+	else
+		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME $BUILD Debug  /projectconfig Debug /out $OUTFILE "
+		export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
+	fi
+	echo $PATH
 	cd cpp_test_ds/win32_ds_vs9
 	/bin/rm -f $OUTFILE
 else
@@ -140,7 +165,12 @@ then
 
 		PROJ_NAME="win32_ds_win"
 		OUTFILE="devenv_ds_win"
-		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME /build Debug /projectconfig Debug /out $OUTFILE"
+		if [ $OS_SPEC = "Windows_64_VC10" ]
+		then
+			MAKE_CMD="$MAKE_PATH WIN32_DS.sln /p:Platform=x64 /t:$PROJ_NAME /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
+		else
+			MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME /build Debug /projectconfig Debug /out $OUTFILE"
+		fi
 		/bin/rm -f $OUTFILE
 
 		echo $MAKE_CMD
