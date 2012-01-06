@@ -251,13 +251,13 @@ ps -ef | grep devTest
 # Start test
 #
 
-#if [ $OS_TYPE = "Windows" ]
-#then
-#	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
-#fi
+if [ $OS_TYPE = "Windows" ]
+then
+	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
+fi
 
-#./runtest jenkins $INSTALL_DIR
-#RET=$?
+./runtest jenkins $INSTALL_DIR
+RET=$?
 
 #
 # kill the servers
