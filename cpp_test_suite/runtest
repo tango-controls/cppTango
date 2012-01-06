@@ -83,18 +83,7 @@ jenkins )
 			DEV1_ALIAS="ubuntu1004_alias"
 			ATTR_ALIAS="ubuntu1004_attr_alias"
 			INST_NAME=ubuntu1004
-		fi
-	
-		if [ $i = "solaris10" ]
-		then
-			echo "Solaris 10 OS"
-			DIR="$BASE_DIR/solaris10_CC/bin"
-			DEV1="test/solaris10/10"
-			DEV2="test/solaris10/11"
-			DEV3="test/solaris10/12"
-			DEV1_ALIAS="solaris10_alias"
-			ATTR_ALIAS="solaris10_attr_alias"
-			INST_NAME=solaris10
+			OS=Linux
 		fi
 
 		if [ $i = "Windows_VC9" ]
@@ -107,6 +96,20 @@ jenkins )
 			DEV1_ALIAS="win32_vc9_alias"
 			ATTR_ALIAS="win32_vc9_attr_alias"
 			INST_NAME=win32_vc9
+			OS=Windows
+		fi
+
+		if [ $i = "Windows_VC10" ]
+		then
+			echo "Windows VC10 (64 bits)"
+			DIR="$BASE_DIR/win64/bin"
+			DEV1="test/win64_vc10/10"
+			DEV2="test/win64_vc10/11"
+			DEV3="test/win64_vc10/12"
+			DEV1_ALIAS="win64_vc10_alias"
+			ATTR_ALIAS="win64_vc10_attr_alias"
+			INST_NAME=win64_vc10
+			OS=Windows
 		fi
 	
 		if [ $i = "centos5" ]
@@ -119,6 +122,7 @@ jenkins )
 			DEV1_ALIAS="centos5_alias"
 			ATTR_ALIAS="centos5_attr_alias"
 			INST_NAME=centos5
+			OS=Linux
 		fi
 
 		if [ $i = "redhate4" ]
@@ -131,6 +135,7 @@ jenkins )
 			DEV1_ALIAS="redhate4_alias"
 			ATTR_ALIAS="redhate4_attr_alias"
 			INST_NAME=redhate4
+			OS=Linux
 		fi
 
 		if [ $i = "redhate5" ]
@@ -143,6 +148,7 @@ jenkins )
 			DEV1_ALIAS="redhate5_alias"
 			ATTR_ALIAS="redhate5_attr_alias"
 			INST_NAME=redhate5
+			OS=Linux
 		fi
 	done
 	;;
@@ -166,7 +172,7 @@ fi
 #
 # First, print used libs
 #
-if [ $INST_NAME != "win32_vc9" ]
+if [ $OS != "Windows" ]
 then
 	ldd $DIR/misc_devproxy
 fi
@@ -184,9 +190,16 @@ CURR_DIR="`pwd`"
 # appended at the end
 #
 
-if [ $INST_NAME = "win32_vc9" ]
+if [ $OS = "Windows" ]
 then
-	FULL_HOSTNAME=`host PCTAUREL | awk '{print $1}'`
+	if [ $INST_NAME = "win32_vc9" ]
+	then
+		FULL_HOSTNAME=`host PCTAUREL | awk '{print $1}'`
+		touch win32/vc9/test_suite/runner/runner.cpp
+	else
+		FULL_HOSTNAME=`host W-CB126-1 | awk '{print $1}'`
+		touch win64/vc10/test_suite/runner/runner.cpp
+	fi
 	FULL_HOSTNAME=`echo $FULL_HOSTNAME | tr "[:upper:]" "[:lower:]"`
 else
 	FULL_HOSTNAME=`host $HOST | awk '{print $1}'`
@@ -194,9 +207,8 @@ fi
 
 echo "FULL_HOSTNAME="$FULL_HOSTNAME
 
-if [ $INST_NAME = "win32_vc9" ]
+if [ $OS = "Windows" ]
 then
-	touch win32/vc9/test_suite/runner/runner.cpp
 	#WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../test_suite/out\\"
 	WIN_OUT_DIR="`cygpath -w -p $CURR_DIR`"
 	$DIR/runner $DEV1 $DEV2 $DEV3 --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3

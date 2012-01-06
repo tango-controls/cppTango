@@ -522,6 +522,7 @@ int main(int argc, char **argv)
 		vector<string> mess_in_file;
 		string base_message(STATE_LOG_MESSAGE);
 		int res = message_in_file(file_name,base_message,mess_in_file);
+		coutv << "File name = " << file_name << ", res = " << res << endl;
 
 		for (unsigned long loop = 0;loop < mess_in_file.size();loop++)
 			coutv << "Message in file = " << mess_in_file[loop] << endl;

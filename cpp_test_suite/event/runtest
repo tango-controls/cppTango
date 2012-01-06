@@ -70,16 +70,6 @@ jenkins )
 			DEV3="test/ubuntu1004/12"
 			DEV1_ALIAS="ubuntu1004_alias"
 		fi
-	
-		if [ $i = "solaris10" ]
-		then
-			echo "Solaris 10 OS"
-			DIR="$BASE_DIR/solaris10_CC/bin"
-			DEV1="test/solaris10/10"
-			DEV2="test/solaris10/11"
-			DEV3="test/solaris10/12"
-			DEV1_ALIAS="solaris10_alias"
-		fi
 
 		if [ $i = "Windows_VC9" ]
 		then
@@ -89,6 +79,16 @@ jenkins )
 			DEV2="test/win32_vc9/11"
 			DEV3="test/win32_vc9/12"
 			DEV1_ALIAS="win32_vc9_alias"
+		fi
+
+		if [ $i = "Windows_VC10" ]
+		then
+			echo "Windows VC10 (64 bits)"
+			DIR="$BASE_DIR/win64/bin"
+			DEV1="test/win64_vc10/10"
+			DEV2="test/win64_vc10/11"
+			DEV3="test/win64_vc10/12"
+			DEV1_ALIAS="win64_vc10_alias"
 		fi
 
 		if [ $i = "centos5" ]
