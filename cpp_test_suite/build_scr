@@ -61,6 +61,19 @@ do
 		BIN_DIR="win32"
 		OUTFILE="devenv_suite"
 	fi
+
+	if [ $i = "Windows_VC10" ]
+	then
+		echo "Windows VC10 (64 bits)"
+		OS_TYPE="Windows"
+		OS_SPEC="Windows_64_VC10"
+		MAKE_PATH="MSBuild.exe"
+		DS_INST_NAME=win64_vc10
+		DS_INST_NAME_2=win64_vc10_2
+		INSTALL_DIR=$WIN_INSTALL_DIR
+		BIN_DIR="win64"
+		OUTFILE="msbuild_suite"
+	fi
 	
 	if [ $i = "centos5" ]
 	then
@@ -107,17 +120,23 @@ if [ $OS_TYPE = "Windows" ]
 then
 	if [ -z $CLEAN ]
 	then
-		BUILD="/build"
+		BUILD="Build"
 	else
-		BUILD="/rebuild"
+		BUILD="Clean;Build"
 	fi
-	MAKE_CMD="$MAKE_PATH test_suite.sln $BUILD Release /out $OUTFILE "
-	export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
+	export PREFIX=$INSTALL_DIR
+	if [ $OS_SPEC = "Windows_64_VC10" ]
+	then
+		MAKE_CMD="$MAKE_PATH test_suite.sln /m /p:Platform=x64 /t:$BUILD /p:Configuration=Release /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
+		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
+		cd cpp_test_suite/win64/vc10/test_suite
+	else
+		MAKE_CMD="$MAKE_PATH test_suite.sln $BUILD Release /out $OUTFILE "
+		export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
+		cd cpp_test_suite/win32/vc9/test_suite
+	fi
 	PATH=$PATH:/bin
 	echo $PATH
-	export PREFIX=$INSTALL_DIR
-	cd cpp_test_suite/win32/vc9/test_suite
-#	cd /cygdrive/c/tango_src/cpp_test_suite/win32/vc9/test_suite
 	rm -f $OUTFILE
 else
 	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $CLEAN all"
@@ -232,13 +251,13 @@ ps -ef | grep devTest
 # Start test
 #
 
-if [ $OS_TYPE = "Windows" ]
-then
-	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
-fi
+#if [ $OS_TYPE = "Windows" ]
+#then
+#	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
+#fi
 
-./runtest jenkins $INSTALL_DIR
-RET=$?
+#./runtest jenkins $INSTALL_DIR
+#RET=$?
 
 #
 # kill the servers
