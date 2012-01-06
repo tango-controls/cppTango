@@ -120,9 +120,19 @@ if [ $OS_TYPE = "Windows" ]
 then
 	if [ -z $CLEAN ]
 	then
-		BUILD="Build"
+		if [ $OS_SPEC = "Windows_64_VC10" ]
+		then
+			BUILD="Build"
+		else
+			BUILD="/build"
+		fi
 	else
-		BUILD="Clean;Build"
+		if [ $OS_SPEC = "Windows_64_VC10" ]
+		then
+			BUILD="Clean;Build"
+		else
+			BUILD="/rebuild"
+		fi
 	fi
 	export PREFIX=$INSTALL_DIR
 	if [ $OS_SPEC = "Windows_64_VC10" ]
