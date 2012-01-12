@@ -217,9 +217,9 @@ else
 fi
 echo "runner command="$RUNNER_CMD
 
-#$RUNNER_CMD
-#ret=$?
-#check_return_value $ret
+$RUNNER_CMD
+ret=$?
+check_return_value $ret
 
 
 #
