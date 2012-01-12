@@ -13,7 +13,7 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be redhate5_64, ubuntu904, python or \"jenkins <dir>\""
+	$echo "ds_system can be redhate5_64, ubuntu1010, python or \"jenkins <dir>\""
 	exit 1
 fi
 
@@ -23,7 +23,7 @@ fi
 
 REDHATE5_64_HOST=esrflinux2-1a
 PYTHON_HOST=controls01
-UBUNTU904_HOST=pcantares
+UBUNTU1010_HOST=pcantares
 
 HOST=`hostname`
 SERV_NAME=devTest
@@ -39,13 +39,13 @@ redhate5_64 )
 	DIR=bin/redhate5_64
 	;;
 #
-ubuntu904 )
-	if [ $HOST != $UBUNTU904_HOST ]
+ubuntu1010 )
+	if [ $HOST != $UBUNTU1010_HOST ]
 	then
-		$echo "For ubuntu 9.04, test should run on "$UBUTU904_HOST
+		$echo "For ubuntu 10.10, test should run on "$UBUTU1010_HOST
 		exit 1
 	fi
-	DIR=bin/ubuntu904
+	DIR=bin/ubuntu1010
 	DEV1="dev/test/10"
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"
@@ -217,9 +217,9 @@ else
 fi
 echo "runner command="$RUNNER_CMD
 
-$RUNNER_CMD
-ret=$?
-check_return_value $ret
+#$RUNNER_CMD
+#ret=$?
+#check_return_value $ret
 
 
 #

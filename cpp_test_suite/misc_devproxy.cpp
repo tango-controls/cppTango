@@ -258,11 +258,8 @@ int main(int argc, char **argv)
 		pid_t pid = getpid();
 #endif
 
-#if ((defined WIN32) || (defined __SUNPRO_CC) || (defined GCC_STD))
 		stringstream st;
-#else
-		strstream st;
-#endif
+
 		string s;
 		st << pid;
 		st >> s;

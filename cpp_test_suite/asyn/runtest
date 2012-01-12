@@ -21,7 +21,7 @@ fi
 # test host
 #
 
-UBUNTU904_HOST=pcantares
+UBUNTU1010_HOST=pcantares
 PYTHON_HOST=controls02
 
 HOST=`hostname`
@@ -29,13 +29,13 @@ SERV_NAME=devTest
 
 
 case $1 in
-ubuntu904 )
-	if [ $HOST != $UBUNTU904_HOST ]
+ubuntu1010 )
+	if [ $HOST != $UBUNTU1010_HOST ]
 	then
-		$echo "For ubuntu 9.04, test should run on "$UBUNTU904_HOST
+		$echo "For ubuntu 10.10, test should run on "$UBUNTU904_HOST
 		exit 1
 	fi
-	DIR=bin/ubuntu904
+	DIR=bin/ubuntu1010
 	DEV1="dev/test/10"
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"
