@@ -95,6 +95,23 @@ int main(int argc, char **argv)
 	
 	assert( db_out == db2 );
 	
-	cout << "   Copy constructor --> OK" << endl;	
+	cout << "   Copy constructor --> OK" << endl;
+
+// Test move assignement
+
+	DeviceAttribute d_ma;
+	float fl_move = 2.0;
+	d_ma << fl_move;
+
+	DeviceAttribute d_ma_out;
+	d_ma_out = move(d_ma);
+
+	float fl_move_out;
+	d_ma_out >> fl_move_out;
+
+	assert (fl_move == fl_move_out );
+
+	cout << "   Move assignement --> OK" << endl;
+
 	return 0;		
 }
