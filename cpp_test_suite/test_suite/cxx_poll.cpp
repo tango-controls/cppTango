@@ -217,6 +217,8 @@ public:
 		const DevVarStringArray *polled_devices;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
 		dout >> polled_devices;
+for (unsigned int i = 0;i < polled_devices->length();i++)
+	cout << "Polled device = " << (*polled_devices)[i] << endl;
 		TS_ASSERT((*polled_devices).length() == 0);
 
 		// check if the data source is set to polling buffer and than device (CACHE_DEV)
