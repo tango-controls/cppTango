@@ -84,6 +84,15 @@ do
 		MAKE_PATH="make"
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
+
+	if [ $i = "debian6" ]
+	then
+		echo "Debian 6 (64 bits) OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
 done
 
 #
@@ -127,7 +136,7 @@ then
 	export PREFIX=$INSTALL_DIR
 	if [ $OS_SPEC = "Windows_64_VC10" ]
 	then
-		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /p:Platform=x64 /t:$PROJ_NAME /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
+		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /m /p:Platform=x64 /t:$PROJ_NAME /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
 		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
 		cd cpp_test_ds/win64_ds_vc10
 	else
