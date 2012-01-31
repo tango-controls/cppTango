@@ -120,6 +120,16 @@ jenkins )
 			DEV3="test/redhate5/12"
 			DEV1_ALIAS="redhate5_alias"
 		fi
+
+		if [ $i = "debian6" ]
+		then
+			echo "Debian 6 OS"
+			DIR="$BASE_DIR/debian6/bin"
+			DEV1="test/debian6/10"
+			DEV2="test/debian6/11"
+			DEV3="test/debian6/12"
+			DEV1_ALIAS="debian6_alias"
+		fi
 	done
 	;;
 #

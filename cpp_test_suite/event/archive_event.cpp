@@ -47,22 +47,16 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 #endif
 	coutv << "date : tv_sec = " << now_timeval.tv_sec;
 	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-	
-	int delta_s = now_timeval.tv_sec - old_sec;
-	if (delta_s == 0)
-		delta_msec = (now_timeval.tv_usec - old_usec) / 1000;
-	else
-	{
-		delta_msec = (now_timeval.tv_usec + (1000000 - old_usec)) / 1000;
-		if (delta_s > 1)
-			delta_msec = delta_msec + ((delta_s - 1)* 1000);
-	}
+
+	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);		
+
 	old_sec = now_timeval.tv_sec;
 	old_usec = now_timeval.tv_usec;
 	
 	coutv << "delta_msec = " << delta_msec << endl;
 
 	cb_executed++;
+
 	try
 	{
 		coutv << "StateEventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";

@@ -150,6 +150,19 @@ jenkins )
 			INST_NAME=redhate5
 			OS=Linux
 		fi
+
+		if [ $i = "debian6" ]
+		then
+			echo "Debian 6 OS"
+			DIR="$BASE_DIR/debian6/bin"
+			DEV1="test/debian6/10"
+			DEV2="test/debian6/11"
+			DEV3="test/debian6/12"
+			DEV1_ALIAS="debian6_alias"
+			ATTR_ALIAS="debian6_attr_alias"
+			INST_NAME=debian6
+			OS=Linux
+		fi
 	done
 	;;
 #
