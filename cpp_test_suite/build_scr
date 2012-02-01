@@ -249,7 +249,7 @@ ORB_LIB=/segfs/tango/ORB/omniORB4.1.6/$BIN_DIR/lib
 ZMQ_LIB=/segfs/tango/transport/zmq/$BIN_DIR/lib
 
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$ZMQ_LIB:$LD_LIBRARY_PATH
-export TANGO_HOST=kidiboo:10000
+export TANGO_HOST=acucentos:10000
 
 if [ $OS_TYPE = "Windows" ]
 then
