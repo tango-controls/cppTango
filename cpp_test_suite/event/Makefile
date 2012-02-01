@@ -61,8 +61,8 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 #
 ##############################################################################
 
-#ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = /home/taurel/bin/zmq
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = /home/taurel/bin/zmq
 
 ifdef linux
 CC = c++
