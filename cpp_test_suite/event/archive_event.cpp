@@ -326,14 +326,14 @@ int main(int argc, char **argv)
 		
 //
 // Wait for the periodic part of the event (default = 10 sec)
-// Wait one second for the callback sent because exception ot thrown any more
+// Wait one second for the callback sent because exception not thrown any more
 //
 
 		Tango_sleep(1);
 		long nb_cb = cb.cb_executed;
 		Tango_sleep(12);
 
-		coutv << "theorical nb = " << nb_cb + 1 << ", real nb = " << cb.cb_executed << endl;		
+cout << "theorical nb = " << nb_cb + 1 << ", real nb = " << cb.cb_executed << endl;		
 		assert (cb.cb_executed == (nb_cb + 1));
 		cout << "   CallBack executed for the periodic part of the event --> OK" << endl;
 		
@@ -359,7 +359,7 @@ int main(int argc, char **argv)
 		dbd.push_back(DbDatum("archive_rel_change"));
 		dbd.push_back(DbDatum("archive_period"));
 		dba.delete_property(dbd);
-		
+exit(0);		
 		dbd.clear();
 		a << (short)2;
 		dbd.push_back(a);
