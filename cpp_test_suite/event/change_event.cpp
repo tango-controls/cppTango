@@ -385,7 +385,12 @@ int main(int argc, char **argv)
 // Subscribe to the event using the full device name
 //
 
-		string full_device_name("tango://kidiboo:10000/");
+		char *tg_host = getenv("TANGO_HOST");
+		if (tg_host == NULL)
+			assert(false);
+
+		string full_device_name("tango://");
+		full_device_name = full_device_name + tg_host + '/';
 		full_device_name = full_device_name + device_name;
 		Tango::DeviceProxy full_dp(full_device_name);
 
@@ -402,7 +407,15 @@ int main(int argc, char **argv)
 // Subscribe to the event using the full device name with fqdn
 //
 
-		string full_device_name_fqdn("tango://kidiboo.esrf.fr:10000/");
+		string tg(tg_host);
+		string::size_type pos = tg.find(':');
+		if (pos == string::npos)
+			assert(false);
+		string host = tg.substr(0,pos);
+		string port = tg.substr(pos);
+
+		string full_device_name_fqdn("tango://");
+		full_device_name_fqdn = full_device_name_fqdn + host + ".esrf.fr" + port + '/';
 		full_device_name_fqdn = full_device_name_fqdn + device_name;
 		Tango::DeviceProxy full_dp_fq(full_device_name_fqdn);
 
