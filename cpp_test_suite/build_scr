@@ -278,7 +278,7 @@ then
 	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
 fi
 
-./runtest jenkins $INSTALL_DIR
+#./runtest jenkins $INSTALL_DIR
 RET=$?
 
 #
