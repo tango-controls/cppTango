@@ -343,9 +343,6 @@ void DevTest::IOSubscribeEvent()
 //	eve_id = remote_dev->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
 
 
-
-	vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
-
 	vector<string> filters;
 
 	if (remote_dev == NULL)
