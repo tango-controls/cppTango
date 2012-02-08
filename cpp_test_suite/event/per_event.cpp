@@ -113,7 +113,9 @@ int main(int argc, char **argv)
 	}
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
-
+int ctr = 0;
+while(1)
+{
 	
 	try
 	{
@@ -496,6 +498,10 @@ int main(int argc, char **argv)
 		Except::print_exception(ex);
 		exit(-1);
 	}
+ctr++;
+cout << "Loop number = " << ctr << endl;
+}
+
 
 	delete device;
 	
