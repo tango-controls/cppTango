@@ -205,9 +205,7 @@ public:
 		ss << pid;
 		pid_str = ss.str();
 
-
 		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host + " (CPP/Python client with PID " + pid_str + ")";
-
 
 		TS_ASSERT_THROWS_NOTHING(blackbox_out = device1->black_box(3));
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
@@ -242,6 +240,7 @@ public:
 				AttributeProxy *my_attr;
 				TS_ASSERT_THROWS_NOTHING(my_attr = new AttributeProxy(attr_name));
 				TS_ASSERT_THROWS_NOTHING(my_attr->delete_property(attr_prop));
+				delete my_attr;
 			}
 		}
 
@@ -269,6 +268,7 @@ public:
 		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_BlackBoxEmpty"
 						&& e.errors[0].severity == Tango::ERR));
+		delete device3;
 
 		reference_str = "Operation ping requested from " + server_host;
 		TS_ASSERT_THROWS_NOTHING(blackbox_out = device2->black_box(1));

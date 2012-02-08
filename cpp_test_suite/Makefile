@@ -45,7 +45,11 @@ endif
 #
 ##############################################################################
 
+ifdef prefix
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+else
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -53,7 +57,11 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
+ifdef prefix
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+else
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -61,7 +69,11 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 #
 ##############################################################################
 
+ifdef prefix
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+else
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+endif
 
 ifdef linux
 CC = c++
@@ -73,6 +85,8 @@ endif
 # 		Compilation
 #
 ##############################################################################
+
+OBJS_DIR = 	objs
 
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
@@ -117,171 +131,177 @@ LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 	-lCOS4 -lzmq -lpthread -ldl
 endif
 
-.SUFFIXES:	.o .cpp
-.cpp.o:
-	$(CC) $(CXXFLAGS) -c $<
+#.SUFFIXES:	.o .cpp
+#.cpp.o:
+#	$(CC) $(CXXFLAGS) -c $<
 	
+$(OBJS_DIR)/%.o: %.cpp
+	@./cr_dir $(OBJS_DIR)
+	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 	
 				
 all: new_devproxy multiple_new reconnect cmd_inout read_attr cmd_types \
      attr_types misc_devdata misc_devattr misc_devproxy write_attr \
      copy_devproxy obj_prop read_hist poll_met poll_except poll_attr print_data \
-     print_data_hist syntax size attr_proxy read_hist_ext write_attr_3 \
+     print_data_hist size attr_proxy read_hist_ext write_attr_3 \
      ring_depth attr_misc state_attr rds mem_att attr_manip prop_list ds_cache sub_dev \
      locked_device lock restart_device unlock allowed_cmd w_r_attr  acc_right \
 	 ConfEventBugClient att_conf Poll StopPoll poll_pool
 
+
+run: runtest
+	./runtest $(platform)
 	
-new_devproxy:	new_devproxy.o
+on_demand: $(on_demand)
+
+	
+new_devproxy:	$(OBJS_DIR)/new_devproxy.o
 	@./cr_dir $(BIN_TANGO_DIR)
-	$(CC) new_devproxy.o -o $(BIN_TANGO_DIR)/new_devproxy $(LFLAGS)
+	$(CC) $(OBJS_DIR)/new_devproxy.o -o $(BIN_TANGO_DIR)/new_devproxy $(LFLAGS)
 
-multiple_new:	multiple_new.o
-	$(CC) multiple_new.o -o $(BIN_TANGO_DIR)/multiple_new $(LFLAGS)
+multiple_new:	$(OBJS_DIR)/multiple_new.o
+	$(CC) $(OBJS_DIR)/multiple_new.o -o $(BIN_TANGO_DIR)/multiple_new $(LFLAGS)
 
-reconnect:	reconnect.o
-	$(CC) reconnect.o -o $(BIN_TANGO_DIR)/reconnect $(LFLAGS)
+reconnect:	$(OBJS_DIR)/reconnect.o
+	$(CC) $(OBJS_DIR)/reconnect.o -o $(BIN_TANGO_DIR)/reconnect $(LFLAGS)
 
-reconnect_attr:	reconnect_attr.o
-	$(CC) reconnect_attr.o -o $(BIN_TANGO_DIR)/reconnect_attr $(LFLAGS)
+reconnect_attr:	$(OBJS_DIR)/reconnect_attr.o
+	$(CC) $(OBJS_DIR)/reconnect_attr.o -o $(BIN_TANGO_DIR)/reconnect_attr $(LFLAGS)
 	
-cmd_inout:	cmd_inout.o
-	$(CC) cmd_inout.o -o $(BIN_TANGO_DIR)/cmd_inout $(LFLAGS)
+cmd_inout:	$(OBJS_DIR)/cmd_inout.o
+	$(CC) $(OBJS_DIR)/cmd_inout.o -o $(BIN_TANGO_DIR)/cmd_inout $(LFLAGS)
 
-read_attr:	read_attr.o
-	$(CC) read_attr.o -o $(BIN_TANGO_DIR)/read_attr $(LFLAGS)
+read_attr:	$(OBJS_DIR)/read_attr.o
+	$(CC) $(OBJS_DIR)/read_attr.o -o $(BIN_TANGO_DIR)/read_attr $(LFLAGS)
 
-cmd_types:	cmd_types.o
-	$(CC) cmd_types.o -o $(BIN_TANGO_DIR)/cmd_types $(LFLAGS)
+cmd_types:	$(OBJS_DIR)/cmd_types.o
+	$(CC) $(OBJS_DIR)/cmd_types.o -o $(BIN_TANGO_DIR)/cmd_types $(LFLAGS)
 
-attr_types:	attr_types.o
-	$(CC) attr_types.o -o $(BIN_TANGO_DIR)/attr_types $(LFLAGS)
+attr_types:	$(OBJS_DIR)/attr_types.o
+	$(CC) $(OBJS_DIR)/attr_types.o -o $(BIN_TANGO_DIR)/attr_types $(LFLAGS)
 
-misc_devdata:	misc_devdata.o
-	$(CC) misc_devdata.o -o $(BIN_TANGO_DIR)/misc_devdata $(LFLAGS)
+misc_devdata:	$(OBJS_DIR)/misc_devdata.o
+	$(CC) $(OBJS_DIR)/misc_devdata.o -o $(BIN_TANGO_DIR)/misc_devdata $(LFLAGS)
 		
-misc_devattr:	misc_devattr.o
-	$(CC) misc_devattr.o -o $(BIN_TANGO_DIR)/misc_devattr $(LFLAGS)
+misc_devattr:	$(OBJS_DIR)/misc_devattr.o
+	$(CC) $(OBJS_DIR)/misc_devattr.o -o $(BIN_TANGO_DIR)/misc_devattr $(LFLAGS)
 						
-misc_devproxy:	misc_devproxy.o
-	$(CC) misc_devproxy.o -o $(BIN_TANGO_DIR)/misc_devproxy $(LFLAGS)
+misc_devproxy:	$(OBJS_DIR)/misc_devproxy.o
+	$(CC) $(OBJS_DIR)/misc_devproxy.o -o $(BIN_TANGO_DIR)/misc_devproxy $(LFLAGS)
 
-write_attr:	write_attr.o
-	$(CC) write_attr.o -o $(BIN_TANGO_DIR)/write_attr $(LFLAGS)
+write_attr:	$(OBJS_DIR)/write_attr.o
+	$(CC) $(OBJS_DIR)/write_attr.o -o $(BIN_TANGO_DIR)/write_attr $(LFLAGS)
 		
-copy_devproxy:	copy_devproxy.o
-	$(CC) copy_devproxy.o -o $(BIN_TANGO_DIR)/copy_devproxy $(LFLAGS)
+copy_devproxy:	$(OBJS_DIR)/copy_devproxy.o
+	$(CC) $(OBJS_DIR)/copy_devproxy.o -o $(BIN_TANGO_DIR)/copy_devproxy $(LFLAGS)
 
-obj_prop:	obj_prop.o
-	$(CC) obj_prop.o -o $(BIN_TANGO_DIR)/obj_prop $(LFLAGS)
+obj_prop:	$(OBJS_DIR)/obj_prop.o
+	$(CC) $(OBJS_DIR)/obj_prop.o -o $(BIN_TANGO_DIR)/obj_prop $(LFLAGS)
 
-read_hist:	read_hist.o
-	$(CC) read_hist.o -o $(BIN_TANGO_DIR)/read_hist $(LFLAGS)
+read_hist:	$(OBJS_DIR)/read_hist.o
+	$(CC) $(OBJS_DIR)/read_hist.o -o $(BIN_TANGO_DIR)/read_hist $(LFLAGS)
 	
-att_conf:	att_conf.o
-	$(CC) att_conf.o -o $(BIN_TANGO_DIR)/att_conf $(LFLAGS)
+att_conf:	$(OBJS_DIR)/att_conf.o
+	$(CC) $(OBJS_DIR)/att_conf.o -o $(BIN_TANGO_DIR)/att_conf $(LFLAGS)
 
-poll_met:	poll_met.o
-	$(CC) poll_met.o -o $(BIN_TANGO_DIR)/poll_met $(LFLAGS)
+poll_met:	$(OBJS_DIR)/poll_met.o
+	$(CC) $(OBJS_DIR)/poll_met.o -o $(BIN_TANGO_DIR)/poll_met $(LFLAGS)
 
-poll_except:	poll_except.o
-	$(CC) poll_except.o -o $(BIN_TANGO_DIR)/poll_except $(LFLAGS)
+poll_except:	$(OBJS_DIR)/poll_except.o
+	$(CC) $(OBJS_DIR)/poll_except.o -o $(BIN_TANGO_DIR)/poll_except $(LFLAGS)
 	
-poll_attr:	poll_attr.o
-	$(CC) poll_attr.o -o $(BIN_TANGO_DIR)/poll_attr $(LFLAGS)
+poll_attr:	$(OBJS_DIR)/poll_attr.o
+	$(CC) $(OBJS_DIR)/poll_attr.o -o $(BIN_TANGO_DIR)/poll_attr $(LFLAGS)
 
-print_data:	print_data.o
-	$(CC) print_data.o -o $(BIN_TANGO_DIR)/print_data $(LFLAGS)
+print_data:	$(OBJS_DIR)/print_data.o
+	$(CC) $(OBJS_DIR)/print_data.o -o $(BIN_TANGO_DIR)/print_data $(LFLAGS)
 
-print_data_hist:	print_data_hist.o
-	$(CC) print_data_hist.o -o $(BIN_TANGO_DIR)/print_data_hist $(LFLAGS)
-
-syntax:	syntax.o
-	$(CC) syntax.o -o $(BIN_TANGO_DIR)/syntax $(LFLAGS)
+print_data_hist:	$(OBJS_DIR)/print_data_hist.o
+	$(CC) $(OBJS_DIR)/print_data_hist.o -o $(BIN_TANGO_DIR)/print_data_hist $(LFLAGS)
 						
-size:	size.o
-	$(CC) size.o -o $(BIN_TANGO_DIR)/size $(LFLAGS)
+size:	$(OBJS_DIR)/size.o
+	$(CC) $(OBJS_DIR)/size.o -o $(BIN_TANGO_DIR)/size $(LFLAGS)
 
-write_attr_3:	write_attr_3.o
-	$(CC) write_attr_3.o -o $(BIN_TANGO_DIR)/write_attr_3 $(LFLAGS)
+write_attr_3:	$(OBJS_DIR)/write_attr_3.o
+	$(CC) $(OBJS_DIR)/write_attr_3.o -o $(BIN_TANGO_DIR)/write_attr_3 $(LFLAGS)
 
-read_hist_ext:	read_hist_ext.o
-	$(CC) read_hist_ext.o -o $(BIN_TANGO_DIR)/read_hist_ext $(LFLAGS)
+read_hist_ext:	$(OBJS_DIR)/read_hist_ext.o
+	$(CC) $(OBJS_DIR)/read_hist_ext.o -o $(BIN_TANGO_DIR)/read_hist_ext $(LFLAGS)
 
-attr_proxy:	attr_proxy.o
-	$(CC) attr_proxy.o -o $(BIN_TANGO_DIR)/attr_proxy $(LFLAGS)
+attr_proxy:	$(OBJS_DIR)/attr_proxy.o
+	$(CC) $(OBJS_DIR)/attr_proxy.o -o $(BIN_TANGO_DIR)/attr_proxy $(LFLAGS)
 				
-ring_depth:	ring_depth.o
-	$(CC) ring_depth.o -o $(BIN_TANGO_DIR)/ring_depth $(LFLAGS)
+ring_depth:	$(OBJS_DIR)/ring_depth.o
+	$(CC) $(OBJS_DIR)/ring_depth.o -o $(BIN_TANGO_DIR)/ring_depth $(LFLAGS)
 
-attr_misc:	attr_misc.o
-	$(CC) attr_misc.o -o $(BIN_TANGO_DIR)/attr_misc $(LFLAGS)
+attr_misc:	$(OBJS_DIR)/attr_misc.o
+	$(CC) $(OBJS_DIR)/attr_misc.o -o $(BIN_TANGO_DIR)/attr_misc $(LFLAGS)
 
-state_attr:	state_attr.o
-	$(CC) state_attr.o -o $(BIN_TANGO_DIR)/state_attr $(LFLAGS)
+state_attr:	$(OBJS_DIR)/state_attr.o
+	$(CC) $(OBJS_DIR)/state_attr.o -o $(BIN_TANGO_DIR)/state_attr $(LFLAGS)
 
-rds:	rds.o
-	$(CC) rds.o -o $(BIN_TANGO_DIR)/rds $(LFLAGS)
+rds:	$(OBJS_DIR)/rds.o
+	$(CC) $(OBJS_DIR)/rds.o -o $(BIN_TANGO_DIR)/rds $(LFLAGS)
 
-mem_att:	mem_att.o
-	$(CC) mem_att.o -o $(BIN_TANGO_DIR)/mem_att $(LFLAGS)
+mem_att:	$(OBJS_DIR)/mem_att.o
+	$(CC) $(OBJS_DIR)/mem_att.o -o $(BIN_TANGO_DIR)/mem_att $(LFLAGS)
 
-helper:	helper.o
-	$(CC) helper.o -o $(BIN_TANGO_DIR)/helper $(LFLAGS)
+helper:	$(OBJS_DIR)/helper.o
+	$(CC) $(OBJS_DIR)/helper.o -o $(BIN_TANGO_DIR)/helper $(LFLAGS)
 
-64:	64.o
-	$(CC) 64.o -o $(BIN_TANGO_DIR)/64 $(LFLAGS)
+64:	$(OBJS_DIR)/64.o
+	$(CC) $(OBJS_DIR)/64.o -o $(BIN_TANGO_DIR)/64 $(LFLAGS)
 
-attr_manip:	attr_manip.o
-	$(CC) attr_manip.o -o $(BIN_TANGO_DIR)/attr_manip $(LFLAGS)
+attr_manip:	$(OBJS_DIR)/attr_manip.o
+	$(CC) $(OBJS_DIR)/attr_manip.o -o $(BIN_TANGO_DIR)/attr_manip $(LFLAGS)
 
-add_rem_attr:	add_rem_attr.o
-	$(CC) add_rem_attr.o -o $(BIN_TANGO_DIR)/add_rem_attr $(LFLAGS)
+add_rem_attr:	$(OBJS_DIR)/add_rem_attr.o
+	$(CC) $(OBJS_DIR)/add_rem_attr.o -o $(BIN_TANGO_DIR)/add_rem_attr $(LFLAGS)
 	
-add_rem_dev:	add_rem_dev.o
-	$(CC) add_rem_dev.o -o $(BIN_TANGO_DIR)/add_rem_dev $(LFLAGS)
+add_rem_dev:	$(OBJS_DIR)/add_rem_dev.o
+	$(CC) $(OBJS_DIR)/add_rem_dev.o -o $(BIN_TANGO_DIR)/add_rem_dev $(LFLAGS)
 									
-prop_list:	prop_list.o
-	$(CC) prop_list.o -o $(BIN_TANGO_DIR)/prop_list $(LFLAGS)
+prop_list:	$(OBJS_DIR)/prop_list.o
+	$(CC) $(OBJS_DIR)/prop_list.o -o $(BIN_TANGO_DIR)/prop_list $(LFLAGS)
 
-ds_cache:	ds_cache.o
-	$(CC) ds_cache.o -o $(BIN_TANGO_DIR)/ds_cache $(LFLAGS)
+ds_cache:	$(OBJS_DIR)/ds_cache.o
+	$(CC) $(OBJS_DIR)/ds_cache.o -o $(BIN_TANGO_DIR)/ds_cache $(LFLAGS)
 
-lock:	lock.o
-	$(CC) lock.o -o $(BIN_TANGO_DIR)/lock $(LFLAGS)
+lock:	$(OBJS_DIR)/lock.o
+	$(CC) $(OBJS_DIR)/lock.o -o $(BIN_TANGO_DIR)/lock $(LFLAGS)
 
-locked_device:	locked_device.o
-	$(CC) locked_device.o -o $(BIN_TANGO_DIR)/locked_device $(LFLAGS)
+locked_device:	$(OBJS_DIR)/locked_device.o
+	$(CC) $(OBJS_DIR)/locked_device.o -o $(BIN_TANGO_DIR)/locked_device $(LFLAGS)
 
-restart_device:	restart_device.o
-	$(CC) restart_device.o -o $(BIN_TANGO_DIR)/restart_device $(LFLAGS)
+restart_device:	$(OBJS_DIR)/restart_device.o
+	$(CC) $(OBJS_DIR)/restart_device.o -o $(BIN_TANGO_DIR)/restart_device $(LFLAGS)
 
-unlock:	unlock.o
-	$(CC) unlock.o -o $(BIN_TANGO_DIR)/unlock $(LFLAGS)
+unlock:	$(OBJS_DIR)/unlock.o
+	$(CC) $(OBJS_DIR)/unlock.o -o $(BIN_TANGO_DIR)/unlock $(LFLAGS)
 
-allowed_cmd:	allowed_cmd.o
-	$(CC) allowed_cmd.o -o $(BIN_TANGO_DIR)/allowed_cmd $(LFLAGS)
+allowed_cmd:	$(OBJS_DIR)/allowed_cmd.o
+	$(CC) $(OBJS_DIR)/allowed_cmd.o -o $(BIN_TANGO_DIR)/allowed_cmd $(LFLAGS)
 
-w_r_attr:	w_r_attr.o
-	$(CC) w_r_attr.o -o $(BIN_TANGO_DIR)/w_r_attr $(LFLAGS)
+w_r_attr:	$(OBJS_DIR)/w_r_attr.o
+	$(CC) $(OBJS_DIR)/w_r_attr.o -o $(BIN_TANGO_DIR)/w_r_attr $(LFLAGS)
 
-acc_right:	acc_right.o
-	$(CC) acc_right.o -o $(BIN_TANGO_DIR)/acc_right $(LFLAGS)
+acc_right:	$(OBJS_DIR)/acc_right.o
+	$(CC) $(OBJS_DIR)/acc_right.o -o $(BIN_TANGO_DIR)/acc_right $(LFLAGS)
 
-sub_dev:	sub_dev.o
-	$(CC) sub_dev.o -o $(BIN_TANGO_DIR)/sub_dev $(LFLAGS)
+sub_dev:	$(OBJS_DIR)/sub_dev.o
+	$(CC) $(OBJS_DIR)/sub_dev.o -o $(BIN_TANGO_DIR)/sub_dev $(LFLAGS)
 
-ConfEventBugClient:	ConfEventBugClient.o
-	$(CC) ConfEventBugClient.o -o $(BIN_TANGO_DIR)/ConfEventBugClient $(LFLAGS)
+ConfEventBugClient:	$(OBJS_DIR)/ConfEventBugClient.o
+	$(CC) $(OBJS_DIR)/ConfEventBugClient.o -o $(BIN_TANGO_DIR)/ConfEventBugClient $(LFLAGS)
 
-Poll:	Poll.o
-	$(CC) Poll.o -o $(BIN_TANGO_DIR)/Poll $(LFLAGS)
+Poll:	$(OBJS_DIR)/Poll.o
+	$(CC) $(OBJS_DIR)/Poll.o -o $(BIN_TANGO_DIR)/Poll $(LFLAGS)
 
-StopPoll:	StopPoll.o
-	$(CC) StopPoll.o -o $(BIN_TANGO_DIR)/StopPoll $(LFLAGS)
+StopPoll:	$(OBJS_DIR)/StopPoll.o
+	$(CC) $(OBJS_DIR)/StopPoll.o -o $(BIN_TANGO_DIR)/StopPoll $(LFLAGS)
 
-poll_pool:	poll_pool.o
-	$(CC) poll_pool.o -o $(BIN_TANGO_DIR)/poll_pool $(LFLAGS)
+poll_pool:	$(OBJS_DIR)/poll_pool.o
+	$(CC) $(OBJS_DIR)/poll_pool.o -o $(BIN_TANGO_DIR)/poll_pool $(LFLAGS)
 	
 clean:
-	rm -f *.o core
+	rm -f $(OBJS_DIR)/*.o core

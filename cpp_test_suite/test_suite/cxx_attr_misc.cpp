@@ -19,6 +19,7 @@ class AttrMiscTestSuite: public CxxTest::TestSuite
 protected:
 	DeviceProxy *device, *dserver;
 	string device_name;
+	AttributeInfoListEx *init_attr_conf;
 
 public:
 	SUITE_NAME()
@@ -78,6 +79,18 @@ public:
 
 			dserver->command_inout("RestartServer");
 			Tango_sleep(3);
+
+			vector<string> attr_list;
+			attr_list.push_back("Double_attr");
+			attr_list.push_back("Float_attr");
+			attr_list.push_back("Long_attr");
+			attr_list.push_back("Long64_attr");
+			attr_list.push_back("Short_attr");
+			attr_list.push_back("UChar_attr");
+			attr_list.push_back("ULong_attr");
+			attr_list.push_back("ULong64_attr");
+			attr_list.push_back("UShort_attr");
+			init_attr_conf = device->get_attribute_config_ex(attr_list);
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -95,6 +108,8 @@ public:
 		din << lg;
 		try
 		{
+			device->set_attribute_config(*init_attr_conf);
+
 			device->command_inout("IOSetAttr", din);
 			din << device_name;
 			dserver->command_inout("DevRestart", din);
@@ -123,6 +138,73 @@ public:
 //
 // Tests -------------------------------------------------------
 //
+
+//
+// Test set/get min/max alarm/warning functions
+//
+
+	void test_set_get_ranges(void)
+	{
+		const DevVarStringArray *ranges;
+		DeviceData dout;
+
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetRanges"));
+		TS_ASSERT_THROWS_NOTHING(dout >> ranges);
+
+		TS_ASSERT((*ranges).length() == 45);
+		TS_ASSERT(string((*ranges)[0].in()) == "Double_attr");
+		TS_ASSERT(string((*ranges)[1].in()) == "-999.99");
+		TS_ASSERT(string((*ranges)[2].in()) == "-888.88");
+		TS_ASSERT(string((*ranges)[3].in()) == "888.88");
+		TS_ASSERT(string((*ranges)[4].in()) == "999.99");
+		TS_ASSERT(string((*ranges)[5].in()) == "Float_attr");
+		TS_ASSERT(string((*ranges)[6].in()) == "-777.77");
+		TS_ASSERT(string((*ranges)[7].in()) == "-666.66");
+		TS_ASSERT(string((*ranges)[8].in()) == "666.66");
+		TS_ASSERT(string((*ranges)[9].in()) == "777.77");
+		TS_ASSERT(string((*ranges)[10].in()) == "Long_attr");
+		TS_ASSERT(string((*ranges)[11].in()) == "1000");
+		TS_ASSERT(string((*ranges)[12].in()) == "1100");
+		TS_ASSERT(string((*ranges)[13].in()) == "1400");
+		TS_ASSERT(string((*ranges)[14].in()) == "1500");
+		TS_ASSERT(string((*ranges)[15].in()) == "Long64_attr");
+		TS_ASSERT(string((*ranges)[16].in()) == "-90000");
+		TS_ASSERT(string((*ranges)[17].in()) == "-80000");
+		TS_ASSERT(string((*ranges)[18].in()) == "80000");
+		TS_ASSERT(string((*ranges)[19].in()) == "90000");
+		TS_ASSERT(string((*ranges)[20].in()) == "Short_attr");
+		TS_ASSERT(string((*ranges)[21].in()) == "-5000");
+		TS_ASSERT(string((*ranges)[22].in()) == "-4000");
+		TS_ASSERT(string((*ranges)[23].in()) == "4000");
+		TS_ASSERT(string((*ranges)[24].in()) == "5000");
+		TS_ASSERT(string((*ranges)[25].in()) == "UChar_attr");
+		TS_ASSERT(string((*ranges)[26].in()) == "0");
+		TS_ASSERT(string((*ranges)[27].in()) == "1");
+		TS_ASSERT(string((*ranges)[28].in()) == "240");
+		TS_ASSERT(string((*ranges)[29].in()) == "250");
+		TS_ASSERT(string((*ranges)[30].in()) == "ULong_attr");
+		TS_ASSERT(string((*ranges)[31].in()) == "0");
+		TS_ASSERT(string((*ranges)[32].in()) == "1");
+		TS_ASSERT(string((*ranges)[33].in()) == "666666");
+		TS_ASSERT(string((*ranges)[34].in()) == "777777");
+		TS_ASSERT(string((*ranges)[35].in()) == "ULong64_attr");
+		TS_ASSERT(string((*ranges)[36].in()) == "0");
+		TS_ASSERT(string((*ranges)[37].in()) == "1");
+		TS_ASSERT(string((*ranges)[38].in()) == "88888888");
+		TS_ASSERT(string((*ranges)[39].in()) == "99999999");
+		TS_ASSERT(string((*ranges)[40].in()) == "UShort_attr");
+		TS_ASSERT(string((*ranges)[41].in()) == "0");
+		TS_ASSERT(string((*ranges)[42].in()) == "1");
+		TS_ASSERT(string((*ranges)[43].in()) == "20000");
+		TS_ASSERT(string((*ranges)[44].in()) == "30000");
+
+
+//		// display ranges
+//		for(unsigned int i = 0; i < ranges->length(); i++)
+//		{
+//			cout << "\t" << (*ranges)[i].in() << endl;
+//		}
+	}
 
 // Test read attribute exceptions
 

@@ -165,6 +165,16 @@ public:
 		TS_ASSERT(att_inf.max_value == "100000");
 		TS_ASSERT(att_inf.min_alarm == "1");
 		TS_ASSERT(att_inf.max_alarm == "99999");
+		TS_ASSERT(att_inf.alarms.min_warning == "2");
+		TS_ASSERT(att_inf.alarms.max_warning == "99998");
+		TS_ASSERT(att_inf.alarms.delta_val == "10000");
+		TS_ASSERT(att_inf.alarms.delta_t == "1");
+		TS_ASSERT(att_inf.events.ch_event.abs_change == "30000");
+		TS_ASSERT(att_inf.events.ch_event.rel_change == "20000");
+		TS_ASSERT(att_inf.events.per_event.period == "2000");
+		TS_ASSERT(att_inf.events.arch_event.archive_abs_change == "33333");
+		TS_ASSERT(att_inf.events.arch_event.archive_rel_change == "22222");
+		TS_ASSERT(att_inf.events.arch_event.archive_period == "3000");
 		TS_ASSERT(att_inf.writable_attr_name == "None");
 	}
 
@@ -280,6 +290,16 @@ public:
 		TS_ASSERT(att_inf.max_value == "100000");
 		TS_ASSERT(att_inf.min_alarm == "1");
 		TS_ASSERT(att_inf.max_alarm == "99999");
+		TS_ASSERT(att_inf.alarms.min_warning == "2");
+		TS_ASSERT(att_inf.alarms.max_warning == "99998");
+		TS_ASSERT(att_inf.alarms.delta_val == "10000");
+		TS_ASSERT(att_inf.alarms.delta_t == "1");
+		TS_ASSERT(att_inf.events.ch_event.abs_change == "30000");
+		TS_ASSERT(att_inf.events.ch_event.rel_change == "20000");
+		TS_ASSERT(att_inf.events.per_event.period == "2000");
+		TS_ASSERT(att_inf.events.arch_event.archive_abs_change == "33333");
+		TS_ASSERT(att_inf.events.arch_event.archive_rel_change == "22222");
+		TS_ASSERT(att_inf.events.arch_event.archive_period == "3000");
 		TS_ASSERT(att_inf.writable_attr_name == "None");
 
 		att_inf = (*att_inf_list)[2];

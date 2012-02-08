@@ -26,6 +26,23 @@ int main(int argc, char **argv)
 	string device1_alias = argv[3];
 	string attr_alias = argv[4];
 
+//	try
+//	{
+//		// connect to device
+//		device = new DeviceProxy(device1_name);
+//
+//		// Connect to admin device
+//		string adm_name = device->adm_name();
+//		admin = new DeviceProxy(adm_name);
+//	}
+//	catch (CORBA::Exception &e)
+//	{
+//		Except::print_exception(e);
+//		exit(1);
+//	}
+//
+//	admin-> // command in out - info - to get host and port
+
 //
 // First check device name syntax when creating DeviceProxy instance
 //
@@ -125,12 +142,8 @@ int main(int argc, char **argv)
 	assert (prop_val == 25);
 	cout << "   Connecting to device via alias like my_alias --> OK" << endl;
 
-	char *tg_host = getenv("TANGO_HOST");
-	if (tg_host == NULL)
-		assert(false);
-
-	string tmp_name(tg_host);
-	tmp_name = tmp_name + '/' + device1_alias;
+	string tmp_name("kidiboo:10000/");
+	tmp_name = tmp_name + device1_alias;
 	
 	val = check_proxy(tmp_name.c_str());
 	assert (val == 2);
@@ -262,10 +275,9 @@ int main(int argc, char **argv)
 
 	cout << "   Connecting to attribute via alias like et_attr_alias --> OK" << endl;
 
-	tmp_name.clear();
-	tmp_name = tg_host;
-	tmp_name = tmp_name + '/' + attr_alias;
-
+	tmp_name = "Kidiboo:10000/";
+	tmp_name = tmp_name + attr_alias;
+	
 	val = attr_check_proxy(tmp_name.c_str());
 	assert (val == 3);
 	

@@ -14,7 +14,7 @@ endif
 
 ifdef ubuntu
 ifdef dev
-OS=ubuntu904
+OS=ubuntu1010
 else
 OS=ubuntu1004
 endif
@@ -44,7 +44,11 @@ endif
 #
 ##############################################################################
 
+ifdef prefix
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+else
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -52,7 +56,11 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
+ifdef prefix
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+else
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -60,7 +68,11 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 #
 ##############################################################################
 
+ifdef prefix
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+else
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+endif
 
 ifdef linux
 CC = c++
@@ -71,6 +83,8 @@ endif
 # 		Compilation
 #
 ##############################################################################
+
+OBJS_DIR = 	objs
 
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
@@ -114,54 +128,57 @@ LFLAGS =  -g $(LIB_DIRS)  -ltango -llog4tango \
 endif
 
 
-.SUFFIXES:	.o .cpp
-.cpp.o:
-	$(CC) $(CXXFLAGS) -c $<
+#.SUFFIXES:	.o .cpp
+#.cpp.o:
+#	$(CC) $(CXXFLAGS) -c $<
 	
+$(OBJS_DIR)/%.o: %.cpp
+	@./cr_dir $(OBJS_DIR)
+	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 				
 all: asyn_cmd asyn_attr asyn_attr_multi asyn_write_attr asyn_write_attr_multi \
      asyn_cb asyn_cb2 asyn_cb_cmd asyn_attr_cb asyn_write_cb asyn_thread \
      auto_asyn_cmd
      
-asyn_cmd:	asyn_cmd.o
+asyn_cmd:	$(OBJS_DIR)/asyn_cmd.o
 	@./cr_dir $(BIN_TANGO_DIR)
-	$(CC) asyn_cmd.o -o $(BIN_TANGO_DIR)/asyn_cmd $(LFLAGS)
+	$(CC) $(OBJS_DIR)/asyn_cmd.o -o $(BIN_TANGO_DIR)/asyn_cmd $(LFLAGS)
 
-asyn_attr:	asyn_attr.o
-	$(CC) asyn_attr.o -o $(BIN_TANGO_DIR)/asyn_attr $(LFLAGS)
+asyn_attr:	$(OBJS_DIR)/asyn_attr.o
+	$(CC) $(OBJS_DIR)/asyn_attr.o -o $(BIN_TANGO_DIR)/asyn_attr $(LFLAGS)
 
-asyn_attr_multi:	asyn_attr_multi.o
-	$(CC) asyn_attr_multi.o -o $(BIN_TANGO_DIR)/asyn_attr_multi $(LFLAGS)
+asyn_attr_multi:	$(OBJS_DIR)/asyn_attr_multi.o
+	$(CC) $(OBJS_DIR)/asyn_attr_multi.o -o $(BIN_TANGO_DIR)/asyn_attr_multi $(LFLAGS)
 
-asyn_write_attr:	asyn_write_attr.o
-	$(CC) asyn_write_attr.o -o $(BIN_TANGO_DIR)/asyn_write_attr $(LFLAGS)
+asyn_write_attr:	$(OBJS_DIR)/asyn_write_attr.o
+	$(CC) $(OBJS_DIR)/asyn_write_attr.o -o $(BIN_TANGO_DIR)/asyn_write_attr $(LFLAGS)
 							
-asyn_write_attr_multi:	asyn_write_attr_multi.o
-	$(CC) asyn_write_attr_multi.o -o $(BIN_TANGO_DIR)/asyn_write_attr_multi $(LFLAGS)
+asyn_write_attr_multi:	$(OBJS_DIR)/asyn_write_attr_multi.o
+	$(CC) $(OBJS_DIR)/asyn_write_attr_multi.o -o $(BIN_TANGO_DIR)/asyn_write_attr_multi $(LFLAGS)
 
-asyn_cb:	asyn_cb.o
-	$(CC) asyn_cb.o -o $(BIN_TANGO_DIR)/asyn_cb $(LFLAGS)
+asyn_cb:	$(OBJS_DIR)/asyn_cb.o
+	$(CC) $(OBJS_DIR)/asyn_cb.o -o $(BIN_TANGO_DIR)/asyn_cb $(LFLAGS)
 
-asyn_cb2:	asyn_cb2.o
-	$(CC) asyn_cb2.o -o $(BIN_TANGO_DIR)/asyn_cb2 $(LFLAGS)
+asyn_cb2:	$(OBJS_DIR)/asyn_cb2.o
+	$(CC) $(OBJS_DIR)/asyn_cb2.o -o $(BIN_TANGO_DIR)/asyn_cb2 $(LFLAGS)
 	
-asyn_cb_cmd:	asyn_cb_cmd.o
-	$(CC) asyn_cb_cmd.o -o $(BIN_TANGO_DIR)/asyn_cb_cmd $(LFLAGS)
+asyn_cb_cmd:	$(OBJS_DIR)/asyn_cb_cmd.o
+	$(CC) $(OBJS_DIR)/asyn_cb_cmd.o -o $(BIN_TANGO_DIR)/asyn_cb_cmd $(LFLAGS)
 
-asyn_attr_cb:	asyn_attr_cb.o
-	$(CC) asyn_attr_cb.o -o $(BIN_TANGO_DIR)/asyn_attr_cb $(LFLAGS)
+asyn_attr_cb:	$(OBJS_DIR)/asyn_attr_cb.o
+	$(CC) $(OBJS_DIR)/asyn_attr_cb.o -o $(BIN_TANGO_DIR)/asyn_attr_cb $(LFLAGS)
 
-asyn_write_cb:	asyn_write_cb.o
-	$(CC) asyn_write_cb.o -o $(BIN_TANGO_DIR)/asyn_write_cb $(LFLAGS)
+asyn_write_cb:	$(OBJS_DIR)/asyn_write_cb.o
+	$(CC) $(OBJS_DIR)/asyn_write_cb.o -o $(BIN_TANGO_DIR)/asyn_write_cb $(LFLAGS)
 
-asyn_thread:	asyn_thread.o
-	$(CC) asyn_thread.o -o $(BIN_TANGO_DIR)/asyn_thread $(LFLAGS)
+asyn_thread:	$(OBJS_DIR)/asyn_thread.o
+	$(CC) $(OBJS_DIR)/asyn_thread.o -o $(BIN_TANGO_DIR)/asyn_thread $(LFLAGS)
 
-auto_asyn_cmd:	auto_asyn_cmd.o
-	$(CC) auto_asyn_cmd.o -o $(BIN_TANGO_DIR)/auto_asyn_cmd $(LFLAGS)
+auto_asyn_cmd:	$(OBJS_DIR)/auto_asyn_cmd.o
+	$(CC) $(OBJS_DIR)/auto_asyn_cmd.o -o $(BIN_TANGO_DIR)/auto_asyn_cmd $(LFLAGS)
 	
-asyn_faf:	asyn_faf.o
-	$(CC) asyn_faf.o -o $(BIN_TANGO_DIR)/asyn_faf $(LFLAGS)
+asyn_faf:	$(OBJS_DIR)/asyn_faf.o
+	$(CC) $(OBJS_DIR)/asyn_faf.o -o $(BIN_TANGO_DIR)/asyn_faf $(LFLAGS)
 						
 clean:
-	rm -f *.o core
+	rm -f $(OBJS_DIR)/*.o core

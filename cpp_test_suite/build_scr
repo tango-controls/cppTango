@@ -180,12 +180,35 @@ then
 	fi
 	
 	echo "#!/bin/bash" > $RUNNER_ON_DEMAND
-	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib:/segfs/tango/ORB/omniORB4.1.5/$BIN_DIR/lib:$LD_LIBRARY_PATH" >> $RUNNER_ON_DEMAND 
+	echo "export CURRENT_DIR=\`pwd\`" >> $RUNNER_ON_DEMAND
+	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:/segfs/tango/transport/zmq/$BIN_DIR/lib:/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib:/segfs/tango/ORB/omniORB4.1.5/$BIN_DIR/lib:$LD_LIBRARY_PATH" >> $RUNNER_ON_DEMAND 
 	echo "export TANGO_HOST=kidiboo:10000" >> $RUNNER_ON_DEMAND
 	echo "export TEST_SUITE_PATH=$CURRENT_PATH/test_suite" >> $RUNNER_ON_DEMAND
 	echo "cd $CURRENT_PATH/test_suite" >> $RUNNER_ON_DEMAND
 	echo "$MAKE_PATH test_suites=\"\$*\" prefix=$INSTALL_DIR $OS_SPEC $CLEAN runner_on_demand" >> $RUNNER_ON_DEMAND
+	echo "cd \$CURRENT_DIR" >> $RUNNER_ON_DEMAND
 fi
+
+#
+# Create export_variables script
+# (exports all environmental variables necessary to execute particular tests)
+#
+
+if [ $OS_TYPE != "Windows" ]
+then
+	EXPORT_VARIABLES=$INSTALL_DIR/$BIN_DIR/bin/export_variables
+	
+	if [ -f $EXPORT_VARIABLES ]
+	then
+		rm -f $EXPORT_VARIABLES
+	fi
+	
+	echo "#!/bin/bash" > $EXPORT_VARIABLES
+	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:/segfs/tango/transport/zmq/$BIN_DIR/lib:/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib:/segfs/tango/ORB/omniORB4.1.5/$BIN_DIR/lib:$LD_LIBRARY_PATH" >> $EXPORT_VARIABLES 
+	echo "export TANGO_HOST=kidiboo:10000" >> $EXPORT_VARIABLES
+fi
+
+
 
 #
 # Run make

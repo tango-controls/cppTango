@@ -45,7 +45,11 @@ endif
 #
 ##############################################################################
 
+ifdef prefix
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+else
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -53,7 +57,11 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
+ifdef prefix
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+else
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -61,8 +69,11 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 #
 ##############################################################################
 
+ifdef prefix
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
-#ZMQ_BASE = /home/taurel/bin/zmq
+else
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+endif
 
 ifdef linux
 CC = c++
@@ -74,6 +85,8 @@ endif
 # 		Compilation
 #
 ##############################################################################
+
+OBJS_DIR = 	objs
 
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
@@ -88,14 +101,14 @@ LIB_DIRS = -L $(OMNI_BASE)/lib \
 	   	   -L $(ZMQ_BASE)/lib
 else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
-		-I$(TANGO_HOME)/server \
-		-I$(TANGO_HOME)/client \
-		-I$(LOG4TANGO_BASE)/include/tango \
-		-I$(ZMQ_BASE)/include \
-		-I. 
+			   -I$(TANGO_HOME)/server \
+			   -I$(TANGO_HOME)/client \
+			   -I$(LOG4TANGO_BASE)/include/tango \
+			   -I$(ZMQ_BASE)/include \
+			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
-           -L $(LIB_TANGO_DIR)/debug \
+           -L $(LIB_TANGO_DIR) \
 	   	   -L $(LOG4TANGO_BASE)/lib \
 	   	   -L $(ZMQ_BASE)/lib
 endif
@@ -122,10 +135,13 @@ endif
 # Rule
 #
 
-.SUFFIXES:	.o .cpp
-.cpp.o:
-	$(CC) $(CXXFLAGS) -c $<
+#.SUFFIXES:	.o .cpp
+#.cpp.o:
+#	$(CC) $(CXXFLAGS) -c $<
 
+$(OBJS_DIR)/%.o: %.cpp
+	@./cr_dir $(OBJS_DIR)
+	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 
 			
 all: per_event change_event change_event64 archive_event user_event \
@@ -135,66 +151,66 @@ all: per_event change_event change_event64 archive_event user_event \
 	event_lock multi_event att_type_event
 
 
-per_event:	per_event.o
+per_event:	$(OBJS_DIR)/per_event.o
 	@./cr_dir $(BIN_TANGO_DIR)
-	$(CC) per_event.o -o $(BIN_TANGO_DIR)/per_event $(LFLAGS)
+	$(CC) $(OBJS_DIR)/per_event.o -o $(BIN_TANGO_DIR)/per_event $(LFLAGS)
 
-change_event:	change_event.o
-	$(CC) change_event.o -o $(BIN_TANGO_DIR)/change_event $(LFLAGS)
+change_event:	$(OBJS_DIR)/change_event.o
+	$(CC) $(OBJS_DIR)/change_event.o -o $(BIN_TANGO_DIR)/change_event $(LFLAGS)
 
-change_event64:	change_event64.o
-	$(CC) change_event64.o -o $(BIN_TANGO_DIR)/change_event64 $(LFLAGS)
+change_event64:	$(OBJS_DIR)/change_event64.o
+	$(CC) $(OBJS_DIR)/change_event64.o -o $(BIN_TANGO_DIR)/change_event64 $(LFLAGS)
 	
-change_event_buffer:	change_event_buffer.o
-	$(CC) change_event_buffer.o -o $(BIN_TANGO_DIR)/change_event_buffer $(LFLAGS)
+change_event_buffer:	$(OBJS_DIR)/change_event_buffer.o
+	$(CC) $(OBJS_DIR)/change_event_buffer.o -o $(BIN_TANGO_DIR)/change_event_buffer $(LFLAGS)
 
-archive_event:	archive_event.o
-	$(CC) archive_event.o -o $(BIN_TANGO_DIR)/archive_event $(LFLAGS)
+archive_event:	$(OBJS_DIR)/archive_event.o
+	$(CC) $(OBJS_DIR)/archive_event.o -o $(BIN_TANGO_DIR)/archive_event $(LFLAGS)
 
-user_event:	user_event.o
-	$(CC) user_event.o -o $(BIN_TANGO_DIR)/user_event $(LFLAGS)
+user_event:	$(OBJS_DIR)/user_event.o
+	$(CC) $(OBJS_DIR)/user_event.o -o $(BIN_TANGO_DIR)/user_event $(LFLAGS)
 
-server_event:	server_event.o
-	$(CC) server_event.o -o $(BIN_TANGO_DIR)/server_event $(LFLAGS)
+server_event:	$(OBJS_DIR)/server_event.o
+	$(CC) $(OBJS_DIR)/server_event.o -o $(BIN_TANGO_DIR)/server_event $(LFLAGS)
 
-multi_event:	multi_event.o
-	$(CC) multi_event.o -o $(BIN_TANGO_DIR)/multi_event $(LFLAGS)
+multi_event:	$(OBJS_DIR)/multi_event.o
+	$(CC) $(OBJS_DIR)/multi_event.o -o $(BIN_TANGO_DIR)/multi_event $(LFLAGS)
 
-reco_event:	reco_event.o
-	$(CC) reco_event.o -o $(BIN_TANGO_DIR)/reco_event $(LFLAGS)
+reco_event:	$(OBJS_DIR)/reco_event.o
+	$(CC) $(OBJS_DIR)/reco_event.o -o $(BIN_TANGO_DIR)/reco_event $(LFLAGS)
 
-reco_svc:	reco_svc.o
-	$(CC) reco_svc.o -o $(BIN_TANGO_DIR)/reco_svc $(LFLAGS)
+reco_svc:	$(OBJS_DIR)/reco_svc.o
+	$(CC) $(OBJS_DIR)/reco_svc.o -o $(BIN_TANGO_DIR)/reco_svc $(LFLAGS)
 		
-back_per_event:	back_per_event.o
-	$(CC) back_per_event.o -o $(BIN_TANGO_DIR)/back_per_event $(LFLAGS)
+back_per_event:	$(OBJS_DIR)/back_per_event.o
+	$(CC) $(OBJS_DIR)/back_per_event.o -o $(BIN_TANGO_DIR)/back_per_event $(LFLAGS)
 	
-back_ch_event:	back_ch_event.o
-	$(CC) back_ch_event.o -o $(BIN_TANGO_DIR)/back_ch_event $(LFLAGS)
+back_ch_event:	$(OBJS_DIR)/back_ch_event.o
+	$(CC) $(OBJS_DIR)/back_ch_event.o -o $(BIN_TANGO_DIR)/back_ch_event $(LFLAGS)
 
-state_event:	state_event.o
-	$(CC) state_event.o -o $(BIN_TANGO_DIR)/state_event $(LFLAGS)
+state_event:	$(OBJS_DIR)/state_event.o
+	$(CC) $(OBJS_DIR)/state_event.o -o $(BIN_TANGO_DIR)/state_event $(LFLAGS)
 
-scan:	scan.o
-	$(CC) scan.o -o $(BIN_TANGO_DIR)/scan $(LFLAGS)
+scan:	$(OBJS_DIR)/scan.o
+	$(CC) $(OBJS_DIR)/scan.o -o $(BIN_TANGO_DIR)/scan $(LFLAGS)
 	
-att_conf_event:	att_conf_event.o
-	$(CC) att_conf_event.o -o $(BIN_TANGO_DIR)/att_conf_event $(LFLAGS)
+att_conf_event:	$(OBJS_DIR)/att_conf_event.o
+	$(CC) $(OBJS_DIR)/att_conf_event.o -o $(BIN_TANGO_DIR)/att_conf_event $(LFLAGS)
 
-att_conf_event_buffer: att_conf_event_buffer.o
-	$(CC) att_conf_event_buffer.o -o $(BIN_TANGO_DIR)/att_conf_event_buffer $(LFLAGS)
+att_conf_event_buffer: $(OBJS_DIR)/att_conf_event_buffer.o
+	$(CC) $(OBJS_DIR)/att_conf_event_buffer.o -o $(BIN_TANGO_DIR)/att_conf_event_buffer $(LFLAGS)
 	
-data_ready_event:	data_ready_event.o
-	$(CC) data_ready_event.o -o $(BIN_TANGO_DIR)/data_ready_event $(LFLAGS)
+data_ready_event:	$(OBJS_DIR)/data_ready_event.o
+	$(CC) $(OBJS_DIR)/data_ready_event.o -o $(BIN_TANGO_DIR)/data_ready_event $(LFLAGS)
 	
-data_ready_event_buffer:	data_ready_event_buffer.o
-	$(CC) data_ready_event_buffer.o -o $(BIN_TANGO_DIR)/data_ready_event_buffer $(LFLAGS)	
+data_ready_event_buffer:	$(OBJS_DIR)/data_ready_event_buffer.o
+	$(CC) $(OBJS_DIR)/data_ready_event_buffer.o -o $(BIN_TANGO_DIR)/data_ready_event_buffer $(LFLAGS)	
 
-event_lock:	event_lock.o
-	$(CC) event_lock.o -o $(BIN_TANGO_DIR)/event_lock $(LFLAGS)
-
-att_type_event:	att_type_event.o
-	$(CC) att_type_event.o -o $(BIN_TANGO_DIR)/att_type_event $(LFLAGS)
-															
+event_lock:	$(OBJS_DIR)/event_lock.o
+	$(CC) $(OBJS_DIR)/event_lock.o -o $(BIN_TANGO_DIR)/event_lock $(LFLAGS)	
+					
+att_type_event:	$(OBJS_DIR)/att_type_event.o
+	$(CC) $(OBJS_DIR)/att_type_event.o -o $(BIN_TANGO_DIR)/att_type_event $(LFLAGS)										
+	
 clean:
-	rm -f *.o core
+	rm -f $(OBJS_DIR)/*.o core

@@ -29,6 +29,16 @@ SERV_NAME=devTest
 
 
 case $1 in
+trogucki )
+	DIR=../bin
+	DEV1="dev/tomasz/1"
+	DEV2="dev/tomasz/2"
+	DEV3="dev/tomasz/3"
+	DEV1_ALIAS="device1_alias"
+	ATTR_ALIAS="attribute_alias"
+	INST_NAME=tomasz
+	;;
+#
 ubuntu1010 )
 	if [ $HOST != $UBUNTU1010_HOST ]
 	then

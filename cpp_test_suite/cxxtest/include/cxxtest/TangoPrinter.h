@@ -398,6 +398,8 @@ namespace CxxTest
         	params_tmp["loglevel"] = "--loglevel="; // default device logging level, e.g. 0
         	params_tmp["dsloglevel"] = "--dsloglevel="; // default device server logging level, e.g. 3
         	params_tmp["suiteloop"] = "--suiteloop="; // executes suite in a loop
+        	params_tmp["devicealias"] = "--devicealias="; // device1 alias
+        	params_tmp["attributealias"] = "--attributealias="; // Short_attr alias
         	return params_tmp;
         }
 

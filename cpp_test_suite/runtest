@@ -30,6 +30,16 @@ SERV_NAME=devTest
 
 
 case $1 in
+trogucki )
+	DIR=bin
+	DEV1="dev/tomasz/1"
+	DEV2="dev/tomasz/2"
+	DEV3="dev/tomasz/3"
+	DEV1_ALIAS="device1_alias"
+	ATTR_ALIAS="attribute_alias"
+	INST_NAME=tomasz
+	;;
+#
 redhate5_64 )
 	if [ $HOST != $REDHATE5_64_HOST ]
 	then
@@ -66,7 +76,7 @@ python )
 jenkins )
 	if [ $# != 2 ]
 	then
-		echo "Mising base directory"
+		echo "Missing base directory"
 		exit -1
 	fi
 	BASE_DIR=$2
@@ -190,6 +200,7 @@ then
 	ldd $DIR/misc_devproxy
 fi
 
+
 #
 # First run the CXX test suite
 #
@@ -224,13 +235,26 @@ if [ $OS = "Windows" ]
 then
 	#WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../test_suite/out\\"
 	WIN_OUT_DIR="`cygpath -w -p $CURR_DIR`"
-	RUNNER_CMD="$DIR/runner $DEV1 $DEV2 $DEV3 --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3"
+	RUN_CMD="$DIR/runner $DEV1 $DEV2 $DEV3 --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
+	
+	echo "runner command="$RUN_CMD
+	$RUN_CMD
 else
-	RUNNER_CMD="$DIR/runner $DEV1 $DEV2 $DEV3 --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/test_suite/out/ --loglevel=0 --dsloglevel=3 --suiteloop=3"
+	export RUN_CMD="runner $DEV1 $DEV2 $DEV3 --loop=1 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/test_suite/out/ --loglevel=0 --dsloglevel=3 --suiteloop=1 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
+	
+	# create runner_run script
+	RUNNER_RUN=$DIR/runner_run
+	if [ -f $RUNNER_RUN ]
+	then
+		rm -f $RUNNER_RUN
+	fi
+	echo "#!/bin/bash" > $RUNNER_RUN
+	echo "./$RUN_CMD" >> $RUNNER_RUN
+	
+	# run test suite
+	echo "runner command="$RUN_CMD
+	eval $DIR/$RUN_CMD
 fi
-echo "runner command="$RUNNER_CMD
-
-$RUNNER_CMD
 ret=$?
 check_return_value $ret
 
@@ -374,11 +398,6 @@ check_return_value $ret
 #
 $echo "\nTesting the sub device diagnostics"
 $DIR/sub_dev $DEV1 $DEV2 $DEV3
-ret=$?
-check_return_value $ret
-#
-$echo "\nTesting miscellaneous device name syntax"
-$DIR/syntax $DEV1 $DEV2 $DEV1_ALIAS $ATTR_ALIAS
 ret=$?
 check_return_value $ret
 #

@@ -27,6 +27,16 @@ int main(int argc, char **argv)
 	string device2_name = argv[2];
 	string device3_name = argv[3];
 	
+	// sort device names alphabetically
+	vector<string> devices;
+	std::transform(device1_name.begin(), device1_name.end(), device1_name.begin(), ::tolower);
+	std::transform(device2_name.begin(), device2_name.end(), device2_name.begin(), ::tolower);
+	std::transform(device3_name.begin(), device3_name.end(), device3_name.begin(), ::tolower);
+	devices.push_back(device1_name);
+	devices.push_back(device2_name);
+	devices.push_back(device3_name);
+	sort(devices.begin(), devices.end());
+
 	if (argc == 5)
 	{
 		if (strcmp(argv[4],"-v") == 0)
@@ -36,8 +46,8 @@ int main(int argc, char **argv)
 	try 
 	{
 		// be sure that the device name are lower case letters
-		std::transform(device1_name.begin(), device1_name.end(), 
-                       device1_name.begin(), ::tolower);
+//		std::transform(device1_name.begin(), device1_name.end(),
+//                       device1_name.begin(), ::tolower);
 		
 		// connect to device
 		device = new DeviceProxy(device1_name);
@@ -56,7 +66,7 @@ int main(int argc, char **argv)
 
 	try
 	{
-	
+
 // restart server to clean all sub device lists
 		
 		bool except = false;
@@ -95,7 +105,7 @@ int main(int argc, char **argv)
 			vector<string> sub_dev_list;
 			dd >> sub_dev_list;
 
-			string result = device1_name + " " + device2_name;
+			string result = device1_name + " " + devices[1];
 			assert( sub_dev_list.size() == 1);
 			assert( sub_dev_list[0]     == result);
 
@@ -128,11 +138,11 @@ int main(int argc, char **argv)
 
 			assert( sub_dev_list.size() == 3);
 			
-			string result = device2_name;
+			string result = devices[1];
 			assert( sub_dev_list[0]     == result);
-			result = device1_name + " " + device2_name;
+			result = device1_name + " " + devices[1];
 			assert( sub_dev_list[1]     == result);
-			result = device1_name + " " + device3_name;
+			result = device1_name + " " + devices[2];
 			assert( sub_dev_list[2]     == result);
 
 			cout << "  Add sub devices in command method and external thread --> OK" << endl;

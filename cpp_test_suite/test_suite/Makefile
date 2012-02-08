@@ -34,9 +34,7 @@ TANGO_HOME = $(prefix)/$(BIN_DIR)
 LIB_TANGO_DIR = $(TANGO_HOME)/lib
 BIN_SUITE_DIR = $(TANGO_HOME)/bin
 else
-#TANGO_HOME = /usr/tango
 TANGO_HOME = /home/taurel/tango/cppapi_develop
-#LIB_TANGO_DIR = $(TANGO_HOME)/lib
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(OS)/lib/debug
 # binary target
 BIN_SUITE_DIR = bin
@@ -48,7 +46,11 @@ endif
 #
 ##############################################################################
 
+ifdef prefix
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+else
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -56,7 +58,11 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
+ifdef prefix
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+else
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -64,7 +70,11 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 #
 ##############################################################################
 
+ifdef prefix
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+else
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+endif
 
 ifdef linux
 CC = c++
@@ -76,6 +86,8 @@ endif
 # 		Compilation
 #
 ##############################################################################
+
+OBJS_DIR = 	objs
 
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
@@ -91,12 +103,12 @@ LIB_DIRS = -L $(OMNI_BASE)/lib \
 	   	   -L $(ZMQ_BASE)/lib
 else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
-		-I$(TANGO_HOME)/server \
-		-I$(TANGO_HOME)/client \
-		-I$(LOG4TANGO_BASE)/include/tango \
-		-I../cxxtest/include \
-		-I$(ZMQ_BASE)/include \
-		-I. 
+			   -I$(TANGO_HOME)/server \
+			   -I$(TANGO_HOME)/client \
+			   -I$(LOG4TANGO_BASE)/include/tango \
+			   -I../cxxtest/include \
+			   -I$(ZMQ_BASE)/include \
+			   -I. 
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
@@ -135,8 +147,10 @@ all: runner
 
 conf:
 	$(CC) $(CXXFLAGS) -c conf_devtest.cpp -o $(OBJ_DIR)/conf_devtest.o
-	$(CC) $(OBJ_DIR)/conf_devtest.o -o $(BIN_TANGO_DIR)/conf_devtest $(LFLAGS)
-#	$(BIN_TANGO_DIR)/conf_devtest device1 device2 device3
+	$(CC) $(OBJ_DIR)/conf_devtest.o -o $(BIN_SUITE_DIR)/conf_devtest $(LFLAGS)
+
+execute_conf:
+	$(BIN_SUITE_DIR)/conf_devtest $(conf_params)
 	
 test:
 	$(BIN_SUITE_DIR)/runner dev/test/10 dev/test/11 dev/test/12 --loop=5 --fulldsname=devTest/api
@@ -146,6 +160,7 @@ compare_test: compare_test.cpp
 
 runner: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp \
+	cxx_syntax.cpp \
 	cxx_poll.cpp \
 	cxx_poll_admin.cpp \
 	cxx_dserver_misc.cpp \
@@ -170,10 +185,14 @@ runner: compare_test
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
 
+ifdef test_suites
 runner_on_demand: compare_test
 	../cxxtest/bin/cxxtestgen.py --template=../cxxtest/template/tango_template.tpl -o runner.cpp $(test_suites)
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
+else
+runner_on_demand: runner
+endif
 	
 clean:
 	rm -f $(OBJ_DIR)/*.o core
