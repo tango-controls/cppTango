@@ -35,7 +35,9 @@ LIB_TANGO_DIR = $(TANGO_HOME)/lib
 BIN_SUITE_DIR = $(TANGO_HOME)/bin
 else
 TANGO_HOME = /home/taurel/tango/cppapi_develop
+#LIB_TANGO_DIR = $(TANGO_HOME)/lib
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(OS)/lib/debug
+
 # binary target
 BIN_SUITE_DIR = bin
 endif
