@@ -140,9 +140,6 @@ int main(int argc, char **argv)
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
-int ctr  = 0;
-while (1)
-{
 	try
 	{
 		string att_name("Event_change_tst");
@@ -874,9 +871,6 @@ device = new DeviceProxy(device_name);
 		Except::print_exception(ex);
 		exit(-1);
 	}
-ctr++;
-cout << "Loop number " << ctr << endl;
-}
 
 	delete device;
 
