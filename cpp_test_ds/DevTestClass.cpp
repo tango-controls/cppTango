@@ -523,7 +523,6 @@ void DevTestClass::command_factory()
 					    Tango::DEV_BOOLEAN,
 					    "void",
 					    "true = sub device connected"));
-#ifndef COMPAT
 	command_list.push_back(new IOEncoded("IOEncoded",
 					    Tango::DEV_ENCODED,
 					    Tango::DEV_ENCODED,
@@ -539,12 +538,16 @@ void DevTestClass::command_factory()
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling threads pool configuration"));
+	command_list.push_back(new SetGetRanges("SetGetRanges",
+					    Tango::DEV_VOID,
+					    Tango::DEVVAR_STRINGARRAY,
+					    "void",
+					    "Ranges values string array"));
 	command_list.push_back(new PollingInDeviceTst("IOPollingInDevice",
 					    Tango::DEV_VOID,
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling in device test outputs"));
-#endif
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 
@@ -632,6 +635,8 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Short_attrAttr());
   att_list.push_back(new Long_attrAttr());
   att_list.back()->set_data_ready_event(true);
+  att_list.push_back(new Long64_attrAttr());
+  att_list.back()->set_data_ready_event(true);
   att_list.push_back(new Double_attrAttr());
   att_list.push_back(new String_attrAttr());
 //  att_list.back()->set_polling_period(250);
@@ -666,6 +671,16 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   def_prop.set_max_value("100000");
   def_prop.set_min_alarm("1");
   def_prop.set_max_alarm("99999");
+  def_prop.set_min_warning("2");
+  def_prop.set_max_warning("99998");
+  def_prop.set_delta_val("10000");
+  def_prop.set_delta_t("1");
+  def_prop.set_abs_change("30000");
+  def_prop.set_rel_change("20000");
+  def_prop.set_period("2000");
+  def_prop.set_archive_abs_change("33333");
+  def_prop.set_archive_rel_change("22222");
+  def_prop.set_archive_period("3000");
 //  Tango::Attr *at = new Tango::Attr("Long_attr_w", Tango::DEV_LONG, Tango::WRITE);
   Tango::Attr *at = new Long_attr_wAttr();
   at->set_default_properties(def_prop);
@@ -723,6 +738,8 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Boolean_attrAttr());
   att_list.push_back(new UShort_attrAttr());
   att_list.push_back(new UChar_attrAttr());
+  att_list.push_back(new ULong_attrAttr());
+  att_list.push_back(new ULong64_attrAttr());
 
   att_list.push_back(new Float_spec_attrAttr());
   att_list.push_back(new Boolean_spec_attrAttr());

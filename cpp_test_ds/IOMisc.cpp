@@ -1545,20 +1545,44 @@ AcquisitionThread::AcquisitionThread () : omni_thread()
 void *AcquisitionThread::run_undetached (void *arg)
 {
 	Tango::Util *tg = Tango::Util::instance();
-	string &inst_name = tg->get_ds_inst_name();
-    string sub_dev;
-    if  (inst_name == "api")
-        sub_dev = "dev/test";
-    else
-    {
-        sub_dev = "test/";
-        sub_dev = sub_dev + inst_name;
-    }
-    sub_dev = sub_dev + "/11";
 
-    cout << "Thread : Connect device = " << sub_dev << endl;
+//
+// sort the devices in the ascending name order
+//
 
-	Tango::DeviceProxy *dev = new Tango::DeviceProxy (sub_dev);
+	vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+	vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
+
+	size_t n = dev_list_sorted.size();
+	// the second device on the list is selected to be the sub device, so the list has to comprise of 2 or more elements
+	if(n > 1) {
+		// bubble sort
+		do {
+			size_t i = 0;
+			for(i; i < n-1; i++)
+			{
+				if(dev_list_sorted[i]->get_name() > dev_list_sorted[i+1]->get_name())
+				{
+					Tango::DeviceImpl *dev_tmp;
+					dev_tmp = dev_list_sorted[i];
+					dev_list_sorted[i] = dev_list_sorted[i+1];
+					dev_list_sorted[i+1] = dev_tmp;
+				}
+			}
+			n = i;
+		}
+		while(n != 1);
+
+		cout << "Thread : Connect device = " << dev_list_sorted[1]->get_name() << endl;
+
+		try
+		{
+			Tango::DeviceProxy *dev = new Tango::DeviceProxy(dev_list_sorted[1]->get_name());
+		}
+		catch(...)
+		{
+		}
+	}
 
 	return NULL;
 }
@@ -1602,20 +1626,41 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		omni_thread *acquisition_thread = new AcquisitionThread();
 
 		Tango::Util *tg = Tango::Util::instance();
-		string &inst_name = tg->get_ds_inst_name();
-		string sub_dev;
-		if  (inst_name == "api")
-            sub_dev = "dev/test";
-        else
-        {
-            sub_dev = "test/";
-            sub_dev = sub_dev + inst_name;
-		}
-		sub_dev = sub_dev + "/12";
 
-		Tango::DeviceProxy *remote_dev;
-		remote_dev = new Tango::DeviceProxy(sub_dev);
-		connected = true;
+
+//
+// sort the devices in the ascending name order
+//
+
+		vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+		vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
+
+		size_t n = dev_list_sorted.size();
+		// the third device on the list is selected to be the sub device, so the list has to comprise of 3 or more elements
+		if(n > 2) {
+			// bubble sort
+			do {
+				size_t i = 0;
+				for(i; i < n-1; i++)
+				{
+					if(dev_list_sorted[i]->get_name() > dev_list_sorted[i+1]->get_name())
+					{
+						Tango::DeviceImpl *dev_tmp;
+						dev_tmp = dev_list_sorted[i];
+						dev_list_sorted[i] = dev_list_sorted[i+1];
+						dev_list_sorted[i+1] = dev_tmp;
+					}
+				}
+				n = i;
+			}
+			while(n != 1);
+
+			Tango::DeviceProxy *remote_dev;
+			remote_dev = new Tango::DeviceProxy(dev_list_sorted[2]->get_name());
+			connected = true;
+		}
+		else
+			connected = false;
 	}
 	catch (...)
 	{
@@ -1641,7 +1686,6 @@ CORBA::Any *SubDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 //
 //-----------------------------------------------------------------------------
 
-#ifndef COMPAT
 PollingPoolTst::PollingPoolTst(const char *name,Tango::CmdArgType in,
 		   Tango::CmdArgType out,const char *in_desc,
 		   const char *out_desc)
@@ -1668,7 +1712,6 @@ CORBA::Any *PollingPoolTst::execute(Tango::DeviceImpl *device,const CORBA::Any &
     (*theOutputArray) << pool_conf;
     return insert(theOutputArray);
 }
-#endif
 
 
 //+----------------------------------------------------------------------------
@@ -1705,4 +1748,400 @@ CORBA::Any *PollingInDeviceTst::execute(Tango::DeviceImpl *device,const CORBA::A
 {
     Tango::DevVarStringArray *theOutputArray = (static_cast<DevTest *>(device))->IOPollingInDevice();
     return insert(theOutputArray);
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		IOSetGetRanges::IOSetGetRanges()
+//
+// description : 	constructor for the IOSetGetRanges command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+SetGetRanges::SetGetRanges(const char *name,Tango::CmdArgType in,
+		   Tango::CmdArgType out,const char *in_desc,
+		   const char *out_desc)
+:Command(name,in,out,in_desc,out_desc)
+{
+}
+
+
+bool SetGetRanges::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+  try {
+    cout << "[SetGetRanges::execute]" << endl;
+
+    Tango::MultiAttribute *attributes = device->get_device_attr();
+//    Tango::Attribute attr;
+    Tango::DevVarStringArray *ranges = new Tango::DevVarStringArray();
+//	ranges.length(4);
+	TangoSys_MemStream str;
+	vector<string> ranges_vec;
+
+	{
+//		{
+//		Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
+////		Tango::DevLong lg_min_alarm = 20;
+//		Tango::AttributeConfig attr_cfg;
+//		attr.get_properties(attr_cfg);
+//		attr_cfg.min_alarm = "15";
+//		attr_cfg.description = AlrmValueNotSpec;
+//		attr_cfg.min_value = AlrmValueNotSpec;
+//		attr.upd_database(attr_cfg, device->get_name());
+//		attr.set_properties(attr_cfg, device);
+////		attr.set_min_alarm(lg_min_alarm);
+//		return insert(ranges);
+//		}
+
+		Tango::Attribute &attr = attributes->get_attr_by_name("Double_attr");
+		Tango::DevDouble db, db_min_alarm = -999.99, db_min_warning = -888.88, db_max_warning = 888.88, db_max_alarm = 999.99;
+		attr.set_min_alarm(db_min_alarm);
+		attr.set_min_warning(db_min_warning);
+		attr.set_max_warning(db_max_warning);
+		attr.set_max_alarm(db_max_alarm);
+		attr.get_min_alarm(db);
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << db;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(db);
+		str.str("");
+		str.clear();
+		str << db;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(db);
+		str.str("");
+		str.clear();
+		str << db;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(db);
+		str.str("");
+		str.clear();
+		str << db;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
+		Tango::DevFloat fl, fl_min_alarm = -777.77, fl_min_warning = -666.66, fl_max_warning = 666.66, fl_max_alarm = 777.77;
+		attr.set_min_alarm(fl_min_alarm);
+		attr.set_min_warning(fl_min_warning);
+		attr.set_max_warning(fl_max_warning);
+		attr.set_max_alarm(fl_max_alarm);
+		attr.get_min_alarm(fl);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << fl;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(fl);
+		str.str("");
+		str.clear();
+		str << fl;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(fl);
+		str.str("");
+		str.clear();
+		str << fl;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(fl);
+		str.str("");
+		str.clear();
+		str << fl;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
+		Tango::DevLong lg, lg_min_alarm = 1000, lg_min_warning = 1100, lg_max_warning = 1400, lg_max_alarm = 1500;
+		attr.set_min_alarm(lg_min_alarm);
+		attr.set_min_warning(lg_min_warning);
+		attr.set_max_warning(lg_max_warning);
+		attr.set_max_alarm(lg_max_alarm);
+		attr.get_min_alarm(lg);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << lg;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(lg);
+		str.str("");
+		str.clear();
+		str << lg;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(lg);
+		str.str("");
+		str.clear();
+		str << lg;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(lg);
+		str.str("");
+		str.clear();
+		str << lg;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("Long64_attr");
+		Tango::DevLong64 lg64, lg64_min_alarm = -90000, lg64_min_warning = -80000, lg64_max_warning = 80000, lg64_max_alarm = 90000;
+		attr.set_min_alarm(lg64_min_alarm);
+		attr.set_min_warning(lg64_min_warning);
+		attr.set_max_warning(lg64_max_warning);
+		attr.set_max_alarm(lg64_max_alarm);
+		attr.get_min_alarm(lg64);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << lg64;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(lg64);
+		str.str("");
+		str.clear();
+		str << lg64;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(lg64);
+		str.str("");
+		str.clear();
+		str << lg64;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(lg64);
+		str.str("");
+		str.clear();
+		str << lg64;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("Short_attr");
+		Tango::DevShort sh, sh_min_alarm = -5000, sh_min_warning = -4000, sh_max_warning = 4000, sh_max_alarm = 5000;
+		attr.set_min_alarm(sh_min_alarm);
+		attr.set_min_warning(sh_min_warning);
+		attr.set_max_warning(sh_max_warning);
+		attr.set_max_alarm(sh_max_alarm);
+		attr.get_min_alarm(sh);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << sh;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(sh);
+		str.str("");
+		str.clear();
+		str << sh;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(sh);
+		str.str("");
+		str.clear();
+		str << sh;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(sh);
+		str.str("");
+		str.clear();
+		str << sh;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("UChar_attr");
+		Tango::DevUChar uch, uch_min_alarm = 0, uch_min_warning = 1, uch_max_warning = 240, uch_max_alarm = 250;
+		attr.set_min_alarm(uch_min_alarm);
+		attr.set_min_warning(uch_min_warning);
+		attr.set_max_warning(uch_max_warning);
+		attr.set_max_alarm(uch_max_alarm);
+		attr.get_min_alarm(uch);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << (short)uch;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(uch);
+		str.str("");
+		str.clear();
+		str << (short)uch;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(uch);
+		str.str("");
+		str.clear();
+		str << (short)uch;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(uch);
+		str.str("");
+		str.clear();
+		str << (short)uch;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("ULong_attr");
+		Tango::DevULong ulg, ulg_min_alarm = 0, ulg_min_warning = 1, ulg_max_warning = 666666, ulg_max_alarm = 777777;
+		attr.set_min_alarm(ulg_min_alarm);
+		attr.set_min_warning(ulg_min_warning);
+		attr.set_max_warning(ulg_max_warning);
+		attr.set_max_alarm(ulg_max_alarm);
+		attr.get_min_alarm(ulg);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << ulg;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(ulg);
+		str.str("");
+		str.clear();
+		str << ulg;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(ulg);
+		str.str("");
+		str.clear();
+		str << ulg;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(ulg);
+		str.str("");
+		str.clear();
+		str << ulg;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("ULong64_attr");
+		Tango::DevULong64 ulg64, ulg64_min_alarm = 0, ulg64_min_warning = 1, ulg64_max_warning = 88888888, ulg64_max_alarm = 99999999;
+		attr.set_min_alarm(ulg64_min_alarm);
+		attr.set_min_warning(ulg64_min_warning);
+		attr.set_max_warning(ulg64_max_warning);
+		attr.set_max_alarm(ulg64_max_alarm);
+		attr.get_min_alarm(ulg64);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << ulg64;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(ulg64);
+		str.str("");
+		str.clear();
+		str << ulg64;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(ulg64);
+		str.str("");
+		str.clear();
+		str << ulg64;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(ulg64);
+		str.str("");
+		str.clear();
+		str << ulg64;
+		ranges_vec.push_back(str.str());
+	}
+
+	{
+		Tango::Attribute &attr = attributes->get_attr_by_name("UShort_attr");
+		Tango::DevUShort ush, ush_min_alarm = 0, ush_min_warning = 1, ush_max_warning = 20000, ush_max_alarm = 30000;
+		attr.set_min_alarm(ush_min_alarm);
+		attr.set_min_warning(ush_min_warning);
+		attr.set_max_warning(ush_max_warning);
+		attr.set_max_alarm(ush_max_alarm);
+		attr.get_min_alarm(ush);
+		str.str("");
+		str.clear();
+		str << attr.get_name();
+		ranges_vec.push_back(str.str());
+		str.str("");
+		str.clear();
+		str << ush;
+		ranges_vec.push_back(str.str());
+		attr.get_min_warning(ush);
+		str.str("");
+		str.clear();
+		str << ush;
+		ranges_vec.push_back(str.str());
+		attr.get_max_warning(ush);
+		str.str("");
+		str.clear();
+		str << ush;
+		ranges_vec.push_back(str.str());
+		attr.get_max_alarm(ush);
+		str.str("");
+		str.clear();
+		str << ush;
+		ranges_vec.push_back(str.str());
+	}
+
+    ranges->length(ranges_vec.size());
+    for(unsigned int i = 0; i < ranges_vec.size(); i++)
+    {
+    	cout << ranges_vec[i] << endl;
+    	(*ranges)[i] = Tango::string_dup(ranges_vec[i].c_str());
+    }
+
+//    Tango::DevVarStringArray names;
+//    names.length(1);
+//    names[0] = "Long_attr";
+//    Tango::AttributeConfigList *config = (static_cast<DevTest *>(device))->get_attribute_config(names);
+//    cout << "Configuration length : " << config->length() << endl;
+
+    cout << "Ranges have been set" << endl;
+
+//    Tango::DeviceImpl *dev;
+//    Tango::Util *tg = Tango::Util::instance();
+//    dev = tg->get_get_dserver_device();
+//
+//    Tango::MultiAttribute *attributes = dev->get_device_attr();
+//    Tango::Attribute attribute = attributes->get_attr_by_name("State");
+//
+//    cout << "## Attribute label: " << attribute.get_label() << endl;
+
+//    get_attr_by_ind();
+
+//    CORBA::String_var d_name = dev->name();
+//    return insert(static_cast<const char *>(d_name));
+    return insert(ranges);
+  }
+  catch (CORBA::Exception &e)
+    {
+	  cout << "Exception while setting ranges" << endl;
+      Tango::Except::print_exception(e);
+      throw ;
+    }
 }

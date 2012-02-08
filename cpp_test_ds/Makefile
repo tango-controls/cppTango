@@ -49,7 +49,11 @@ endif
 #
 ##############################################################################
 
+ifdef prefix
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+else
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -57,7 +61,11 @@ OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
+ifdef prefix
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+else
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -65,8 +73,11 @@ LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
 #
 ##############################################################################
 
-#ZMQ_BASE = /home/taurel/bin/zmq_pgm
+ifdef prefix
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+else
+ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+endif
 
 ifdef linux
 CC = c++
@@ -79,6 +90,8 @@ endif
 # 		Compilation
 #
 ##############################################################################
+
+OBJS_DIR = 	objs
 
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
@@ -93,16 +106,16 @@ LIB_DIRS = -L $(OMNI_BASE)/lib \
 		   -L $(ZMQ_BASE)/lib
 else
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
-		-I$(TANGO_HOME)/server \
-		-I$(TANGO_HOME)/client \
-		-I$(LOG4TANGO_BASE)/include/tango \
-		-I$(ZMQ_BASE)/include \
-		-I.
+			   -I$(TANGO_HOME)/server \
+			   -I$(TANGO_HOME)/client \
+			   -I$(LOG4TANGO_BASE)/include/tango \
+			   -I$(ZMQ_BASE)/include \
+			   -I.
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
-	   -L $(LOG4TANGO_BASE)/lib \
-	   -L $(ZMQ_BASE)/lib
+           -L $(LOG4TANGO_BASE)/lib \
+           -L $(ZMQ_BASE)/lib
 endif
 
 
@@ -136,30 +149,35 @@ LFLAGS =  -g $(LIB_DIRS) $(LIB_TANGO) \
 endif
 
 
-SVC_OBJS = 	main.o \
-		TypeCmds.o \
-		SigThrow.o \
-		IOMisc.o \
-		IOStr1.o \
-		IOStr2.o \
-		IOArray1.o \
-		IOArray2.o \
-		IOStrArray.o \
-		IOStruct.o \
-		IOSetAttr.o \
-		IOAddAttribute.o \
-		IOSeqVec.o \
-		FileDb.o \
-		classfactory.o \
-		DevTestClass.o \
-		DevTest.o
+SVC_OBJS = 	$(OBJS_DIR)/main.o \
+		$(OBJS_DIR)/TypeCmds.o \
+		$(OBJS_DIR)/SigThrow.o \
+		$(OBJS_DIR)/IOMisc.o \
+		$(OBJS_DIR)/IOStr1.o \
+		$(OBJS_DIR)/IOStr2.o \
+		$(OBJS_DIR)/IOArray1.o \
+		$(OBJS_DIR)/IOArray2.o \
+		$(OBJS_DIR)/IOStrArray.o \
+		$(OBJS_DIR)/IOStruct.o \
+		$(OBJS_DIR)/IOSetAttr.o \
+		$(OBJS_DIR)/IOAddAttribute.o \
+		$(OBJS_DIR)/IOSeqVec.o \
+		$(OBJS_DIR)/FileDb.o \
+		$(OBJS_DIR)/classfactory.o \
+		$(OBJS_DIR)/DevTestClass.o \
+		$(OBJS_DIR)/DevTest.o
 
 
 
-.SUFFIXES:	.o .cpp
-.cpp.o:
-	$(CC) $(CXXFLAGS) -c $<
+#.SUFFIXES:	.o .cpp
+#.cpp.o:
+#	@./cr_dir $(OBJS_DIR)
+#	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 
+
+$(OBJS_DIR)/%.o: %.cpp
+	@./cr_dir $(OBJS_DIR)
+	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 
 all: DevTest
 
@@ -169,7 +187,7 @@ DevTest:	$(SVC_OBJS)
 
 
 clean:
-	rm -f *.o core
+	rm -f $(OBJS_DIR)/*.o core
 
 
 

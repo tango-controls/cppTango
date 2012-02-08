@@ -62,6 +62,7 @@ public :
 
 	void read_Short_attr(Tango::Attribute &att);
 	void read_Long_attr(Tango::Attribute &att);
+	void read_Long64_attr(Tango::Attribute &att);
 	void read_Double_attr(Tango::Attribute &att);
 	void read_String_attr(Tango::Attribute &att);
 	void read_Short_spec_attr(Tango::Attribute &att);
@@ -112,6 +113,8 @@ public :
 	void read_Boolean_attr(Tango::Attribute &att);
 	void read_UShort_attr(Tango::Attribute &att);
 	void read_UChar_attr(Tango::Attribute &att);
+	void read_ULong_attr(Tango::Attribute &att);
+	void read_ULong64_attr(Tango::Attribute &att);
 	void read_Float_spec_attr(Tango::Attribute &att);
 	void read_Boolean_spec_attr(Tango::Attribute &att);
 	void read_UShort_spec_attr(Tango::Attribute &att);
@@ -196,6 +199,7 @@ protected :
 	Tango::DevULong64 attr_ulong64_rw;
 	Tango::DevState attr_state_rw;
 	Tango::DevLong attr_long;
+	Tango::DevLong64 attr_long64;
 	Tango::DevDouble attr_db_array[3];
 	Tango::DevLong attr_long_array[10];
 	Tango::DevString attr_str_array[2];
@@ -243,6 +247,8 @@ protected :
 	Tango::DevBoolean attr_boolean;
 	Tango::DevUShort attr_ushort;
 	Tango::DevUChar attr_uchar;
+	Tango::DevULong attr_ulong;
+	Tango::DevULong64 attr_ulong64;
 
 	Tango::DevFloat attr_spec_float[3];
 	Tango::DevBoolean attr_spec_boolean[5];

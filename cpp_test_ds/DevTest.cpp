@@ -313,7 +313,38 @@ void DevTest::IOPushDevEncodedEvent()
 
 void DevTest::IOSubscribeEvent()
 {
-    	cout << "[DevTest::IOSubscribeEvent] received " << endl;
+	cout << "[DevTest::IOSubscribeEvent] received " << endl;
+
+//TODO: modify conf_devtest.cpp to automatically create a remote device based on the instance name
+
+//	vector<string> filters;
+//
+//	if (remote_dev == NULL)
+//	{
+//    	Tango::Util *tg = Tango::Util::instance();
+//    	tg->g
+//		vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+//		if(dev_list.size() > 1) // the second device on the list is chosen
+//		{
+//			vector<string> devices;
+//			for(size_t i = 0; i < dev_list.size(); i++)
+//				devices.push_back(dev_list[i]->get_name());
+//			sort(devices.begin(),devices.end());
+//			remote_dev = new Tango::DeviceProxy(devices[1]);
+//		}
+//		else
+//			cout << "EXCEPTION: at least 2 devices have to be defined" << endl;
+//	}
+//	string att_name("short_attr");
+//	cb.cb_executed = 0;
+//
+//	// start the polling first!
+//	remote_dev->poll_attribute(att_name,1000);
+//	eve_id = remote_dev->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
+
+
+
+	vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
 
 	vector<string> filters;
 
@@ -1121,6 +1152,13 @@ void DevTest::read_Long_attr(Tango::Attribute &att)
       	att.set_value(&attr_long);
 }
 
+void DevTest::read_Long64_attr(Tango::Attribute &att)
+{
+      	cout << "[DevTest::read_attr] attribute name Long64_attr" << endl;
+      	attr_long64 = 300;
+      	att.set_value(&attr_long64);
+}
+
 void DevTest::read_Double_attr(Tango::Attribute &att)
 {
     	cout << "[DevTest::read_attr] attribute name Double_attr" << endl;
@@ -1567,6 +1605,20 @@ void DevTest::read_UChar_attr(Tango::Attribute &att)
     	att.set_value(&attr_uchar);
 }
 
+void DevTest::read_ULong_attr(Tango::Attribute &att)
+{
+    	cout << "[DevTest::read_attr] attribute name ULong_attr" << endl;
+    	attr_ulong = 100;
+    	att.set_value(&attr_ulong);
+}
+
+void DevTest::read_ULong64_attr(Tango::Attribute &att)
+{
+    	cout << "[DevTest::read_attr] attribute name ULong64_attr" << endl;
+    	attr_ulong64 = 200;
+    	att.set_value(&attr_ulong64);
+}
+
 void DevTest::read_Float_spec_attr(Tango::Attribute &att)
 {
       	cout << "[DevTest::read_attr] attribute name Float_spec_attr" << endl;
@@ -1711,27 +1763,47 @@ void DevTest::read_Sub_device_tst(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name Sub_device_tst" << endl;
 
 		Tango::Util *tg = Tango::Util::instance();
-		string &inst_name = tg->get_ds_inst_name();
-		string sub_dev;
-		if  (inst_name == "api")
-            sub_dev = "dev/test";
-        else
-        {
-            sub_dev = "test/";
-            sub_dev = sub_dev + inst_name;
-		}
-		sub_dev = sub_dev + "/11";
 
-		try
-		{
-			Tango::DeviceProxy *remote_dev;
-			remote_dev = new Tango::DeviceProxy(sub_dev);
-			attr_sub_device_tst = true;
+//
+// sort the devices in the ascending name order
+//
+
+		vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
+		vector<Tango::DeviceImpl *> dev_list_sorted = dev_list;
+
+		size_t n = dev_list_sorted.size();
+		// the second device on the list is selected to be the sub device, so the list has to comprise of 2 or more elements
+		if(n > 1) {
+			// bubble sort
+			do {
+				size_t i;
+				for(i = 0; i < n-1; i++)
+				{
+					if(dev_list_sorted[i]->get_name() > dev_list_sorted[i+1]->get_name())
+					{
+						Tango::DeviceImpl *dev_tmp;
+						dev_tmp = dev_list_sorted[i];
+						dev_list_sorted[i] = dev_list_sorted[i+1];
+						dev_list_sorted[i+1] = dev_tmp;
+					}
+				}
+				n = i;
+			}
+			while(n != 1);
+
+			try
+			{
+				Tango::DeviceProxy *remote_dev;
+				remote_dev = new Tango::DeviceProxy(dev_list_sorted[1]->get_name());
+				attr_sub_device_tst = true;
+			}
+			catch (...)
+			{
+				attr_sub_device_tst = false;
+			}
 		}
-		catch (...)
-		{
+		else
 			attr_sub_device_tst = false;
-		}
 
 		att.set_value(&attr_sub_device_tst);
 }

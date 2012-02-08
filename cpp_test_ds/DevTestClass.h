@@ -28,6 +28,16 @@ public:
 	{(static_cast<DevTest *>(dev))->read_Long_attr(att);}
 };
 
+class Long64_attrAttr: public Tango::Attr
+{
+public:
+	Long64_attrAttr():Attr("Long64_attr", Tango::DEV_LONG64, Tango::READ) {};
+	~Long64_attrAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_Long64_attr(att);}
+};
+
 class Double_attrAttr: public Tango::Attr
 {
 public:
@@ -86,6 +96,26 @@ public:
 
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
 	{(static_cast<DevTest *>(dev))->read_UChar_attr(att);}
+};
+
+class ULong_attrAttr: public Tango::Attr
+{
+public:
+	ULong_attrAttr():Attr("ULong_attr", Tango::DEV_ULONG, Tango::READ) {};
+	~ULong_attrAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_ULong_attr(att);}
+};
+
+class ULong64_attrAttr: public Tango::Attr
+{
+public:
+	ULong64_attrAttr():Attr("ULong64_attr", Tango::DEV_ULONG64, Tango::READ) {};
+	~ULong64_attrAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_ULong64_attr(att);}
 };
 
 //-----------------------------------------------------------------------------------
