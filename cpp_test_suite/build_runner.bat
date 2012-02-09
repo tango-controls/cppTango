@@ -1,5 +1,6 @@
 set REL_DIR=..\..\..\..\
 %REL_DIR%cxxtest\bin\cxxtestgen.py --template=%REL_DIR%cxxtest\template\tango_template.tpl -o runner.cpp ^
+%REL_DIR%test_suite\cxx_syntax.cpp ^
 %REL_DIR%test_suite\cxx_poll.cpp ^
 %REL_DIR%test_suite\cxx_poll_admin.cpp ^
 %REL_DIR%test_suite\cxx_dserver_misc.cpp ^
