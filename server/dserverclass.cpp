@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,243 +36,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 3.23  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.22  2009/02/03 15:15:08  jensmeyer
-// Added a QuerySubDevice command to read the list of opened sub device
-// connections.
-//
-// Revision 3.21  2009/01/29 16:23:49  taurel
-// - Commit after merge with branch Release_6_1_1-bugfixes
-//
-// Revision 3.20  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.19  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.18  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.17  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.16  2008/09/04 13:19:31  taurel
-// - Add push_event() feature for attribute of the DevEncoded data type
-//
-// Revision 3.15  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-// Revision 3.14.2.1  2009/01/29 15:17:01  taurel
-// - Add some bug fixes for server used with the -f option (database as
-// file)
-//
-// Revision 3.14  2008/03/20 07:39:24  taurel
-// - Last commit before Release 6.1 ?
-// Revision 3.12.2.3  2008/01/03 16:05:52  taurel
-// - Some changes in locking feature implementation
-//
-// Revision 3.13  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-// Revision 3.12.2.2  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.12.2.1  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
-//
-// Revision 3.12  2007/04/20 14:40:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.11  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.10  2007/03/29 07:04:05  taurel
-// - Change some data types for 64 bits compatibility
-//
-// Revision 3.9  2005/08/09 15:53:34  jensmeyer
-// Changed DServerClass::instance() to return an exception
-// in the case of a not initialised object. The exit() killed the server
-// during a startup when a client send requests to early.
-//
-// Revision 3.8  2005/07/20 14:40:46  taurel
-// - Fix bug in polling thread out of sync error. Time threshold to generate
-// event heartbeat error changed from 10 to 11. Fix some comments
-//
-// Revision 3.7  2005/05/10 11:26:40  taurel
-// - Fix some deadlock than for attribute for command
-// - Uncomment the two wizard admin device commands
-//
-// Revision 3.6  2005/03/14 12:01:24  taurel
-// - Fix bug in the event system for device server started with the -file option
-//
-// Revision 3.5  2005/03/14 09:49:29  taurel
-// - Fix some bugs in filedatabase (Change in the data transferred between client and
-//   server).
-// - Fix bug in event re-connection
-// - Add event support even for device server started with the -file command line option
-//
-// Revision 3.4  2005/01/13 08:29:05  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 3.3.2.3  2004/10/27 05:59:46  taurel
-// - Some minor changes to compile on all our supported platforms
-//
-// Revision 3.3.2.2  2004/10/22 11:25:50  taurel
-// Added warning alarm
-// Change attribute config. It now includes alarm and event parameters
-// Array attribute property now supported
-// subscribe_event throws exception for change event if they are not correctly configured
-// Change in the polling thread: The event heartbeat has its own work in the work list
-// Also add some event_unregister
-// Fix order in which classes are destructed
-// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
-// Change in the CORBA info call for the device type
-//
-// Revision 3.3.2.1  2004/10/05 13:55:02  maxchiandone
-// First upload for filedatabase.
-//
-// Revision 3.3  2004/07/07 08:40:11  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.2.2.3  2004/03/09 16:36:36  taurel
-// - Added HP aCC port (thanks to Claudio from Elettra)
-// - Some last small bugs fixes
-//
-// Revision 3.2.2.2  2004/02/06 11:58:51  taurel
-// - Many changes in the event system
-//
-// Revision 3.2.2.1  2004/01/20 08:32:37  taurel
-// -First commit after merge with the event branch and work on the AttributeProxy class
-// - Fix bug in the stream "clear()" method usage when used with gcc 3.3
-//
-// Revision 3.2  2003/05/28 14:55:09  taurel
-// Add the include (conditionally) of the include files generated by autoconf
-//
-// Revision 3.1  2003/04/03 15:24:09  taurel
-// Added methods to print DeviceData, DeviceAttribute, DeviceDataHistory
-// and DeviceAttributeHistory instance
-// Revision 3.0.2.1  2003/04/10 11:07:44  andy_gotz
-// added event commands to DServer admin object
-//
-// Revision 3.0  2003/03/25 16:43:19  taurel
-// Many changes for Tango release 3.0 including
-// - Added full logging features
-// - Added asynchronous calls
-// - Host name of clients now stored in black-box
-// - Three serialization model in DS
-// - Fix miscellaneous bugs
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and destructor methods
-// - Some internal cleanups
-// - Change the way how TangoMonitor class is implemented. It's a recursive
-//   mutex
-//
-// Revision 2.11  2003/03/11 17:55:53  nleclercq
-// Switch from log4cpp to log4tango
-//
-// Revision 2.10  2003/02/17 14:57:41  taurel
-// Added the new Tango logging stuff (Thanks Nicolas from Soleil)
-//
-// Revision 2.9  2003/01/09 12:03:16  taurel
-// - Ported to gcc 3.2
-// - Added ApiUtil::cleanup() and ApiUtil::~ApiUtil() methods
-// - Replace some ORB * by ORB_ptr
-// - Use CORBA::ORB::is_nil() instead of comparing to NULL
-//
-// Revision 2.8  2002/12/16 12:07:19  taurel
-// No change in code at all but only forgot th emost important line in
-// list of updates in the previous release :
-// - Change underlying ORB from ORBacus to omniORB
-//
-// Revision 2.7  2002/12/16 10:16:21  taurel
-// - New method get_device_list() in Util class
-// - Util::get_class_list takes DServer device into account
-// - Util::get_device_by_name() takes DServer device into account
-// - Util::get_device_list_by_class() takes DServer device into account
-// - New parameter to the attribute::set_value() method to enable CORBA to free
-// memory allocated for the attribute
-//
-// Revision 2.6  2002/10/17 07:43:06  taurel
-// Fix bug in history stored by the polling thread :
-// - We need one copy of the attribute data to build an history!!! It is true
-// also for command which return data created by the DeviceImpl::create_xxx
-// methods. Chnage in pollring.cpp/pollring.h/dserverpoll.cpp/pollobj.cpp
-// and pollobj.h
-//
-// Revision 2.5  2002/10/15 11:27:19  taurel
-// Fix bugs in device.cpp file :
-// - Protect the state and status CORBA attribute with the device monitor
-// Add the "TgLibVers" string as a #define in tango_config.h
-//
-// Revision 2.4  2002/08/12 15:06:54  taurel
-// Several big fixes and changes
-//   - Remove HP-UX specific code
-//   - Fix bug in polling alogorithm which cause the thread to enter an infinite
-//     loop (pollthread.cpp)
-//   - For bug for Win32 device when trying to set attribute config
-//     (attribute.cpp)
-//
-// Revision 2.3  2002/07/02 15:22:24  taurel
-// Miscellaneous small changes/bug fixes for Tango CPP release 2.1.0
-//     - classes reference documentation now generated using doxygen instead of doc++
-//     - A little file added to the library which summarizes version number.
-//       The RCS/CVS "ident" command will now tells you that release library x.y.z is composed
-//       by C++ client classes set release a.b and C++ server classes set release c.d
-//     - Fix incorrect field setting for DevFailed exception re-thrown from a CORBA exception
-//     - It's now not possible to poll the Init command
-//     - It's now possible to define a default class doc. per control system
-//       instance (using property)
-//     - The test done to check if attribute value has been set before it is
-//       returned to caller is done only if the attribute quality is set to VALID
-//     - The JTCInitialize object is now stored in the Util
-//     - Windows specific : The tango.h file now also include winsock.h
-//
-// Revision 2.2  2002/04/30 10:50:41  taurel
-// Don't check alarm on attribute if attribute quality factor is INVALID
-//
-// Revision 2.1  2002/04/29 12:24:03  taurel
-// Fix bug in attribute::set_value method and on the check against min and max value when writing attributes
-//
-// Revision 2.0  2002/04/09 14:45:10  taurel
-// See Tango WEB pages for list of changes
-//
-// Revision 1.6  2001/10/08 09:03:12  taurel
-// See tango WEB pages for list of changes
-//
-// Revision 1.5  2001/07/04 12:27:10  taurel
-// New methods re_throw_exception(). Read_attributes supports AllAttr mnemonic A new add_attribute()method in DeviceImpl class New way to define attribute properties New pattern to prevent full re-compile For multi-classes DS, it is now possible to use the Util::get_device_by_name() method in device constructor Adding << operator ovebloading Fix devie CORBA ref. number when device constructor sends an excep.
-//
-// Revision 1.4  2001/05/04 09:28:13  taurel
-// Fix bugs in DServer::restart() method and in Util::get_device_by_name() method
-//
-// Revision 1.3  2001/03/30 08:03:45  taurel
-// Fix bugs in attributes. For linux, add signal_handler in its own thread, change the way to kill server. For all system, change DevRestart philosophy.
-//
-// Revision 1.2  2001/03/09 08:20:15  taurel
-// Fix bug in the MultiClassAttribute::init_class_attribute() method. Also remove the DbErr_DeviceNotDefined define.
-//
-// Revision 1.1.1.1  2001/02/27 08:46:21  taurel
-// Imported sources
-//
-// Revision 1.3  2000/04/13 10:40:41  taurel
-// Added attribute support
-//
-// Revision 1.2  2000/02/04 11:00:14  taurel
-// Just update revision number
-//
-// Revision 1.1.1.1  2000/02/04 10:58:27  taurel
-// Imported sources
-//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -284,7 +47,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <dserverclass.h>
 #include <pollcmds.h>
-#include <eventcmds.h>
 #ifdef TANGO_HAS_LOG4TANGO
 #include <logcmds.h>
 #endif
@@ -348,7 +110,7 @@ CORBA::Any *DevRestartCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 // return to the caller
 //
 
-	CORBA::Any *ret = return_empty_any("DevKillCmd");
+	CORBA::Any *ret = return_empty_any("DevRestartCmd");
 	return ret;
 }
 
@@ -437,7 +199,7 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 // return data to the caller
 //
 
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -497,7 +259,7 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 //
 // return data to the caller
 //
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -556,7 +318,7 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 //
 // return data to the caller
 //
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -887,7 +649,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	{
 		delete(Tango::Util::instance()->get_trace_output_stream());
 		Tango::Util::instance()->set_trace_output_stream((ofstream *)NULL);
-#if ((defined _WINDOWS) || (defined __SUNPRO_CC) || (defined GCC_STD))
+
 		ostream &tmp_stream = Tango::Util::instance()->get_out();
 
 //
@@ -899,9 +661,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 		cout.copyfmt(tmp_stream);
 		cout.clear(tmp_stream.rdstate());
 		cout.rdbuf(tmp_stream.rdbuf());
-#else
-		cout = Tango::Util::instance()->get_out();
-#endif
+
 		Tango::Util::instance()->set_trace_output(in_file);
 	}
 	else
@@ -909,13 +669,10 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 		ofstream *ofp = new ofstream(in_file_ptr);
 		if (ofp->good())
 		{
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD)
 			cout.copyfmt(*ofp);
 			cout.clear(ofp->rdstate());
 			cout.rdbuf(ofp->rdbuf());
-#else
-			cout = *ofp;
-#endif
+
 			delete(Tango::Util::instance()->get_trace_output_stream());
 			Tango::Util::instance()->set_trace_output(in_file);
 			Tango::Util::instance()->set_trace_output_stream(ofp);
@@ -998,7 +755,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 //
 // return data to the caller
 //
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -1075,7 +832,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 //
 // return data to the caller
 //
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -1131,12 +888,12 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 // Get DS event channel IOR which is stored in the EventSupplier object
 //
 
-	CORBA::Any *out_any;
-	EventSupplier *event_supplier;
-	event_supplier = Util::instance()->get_event_supplier();
-	if (event_supplier == NULL)
+	CORBA::Any *out_any = NULL;
+	NotifdEventSupplier *nd_event_supplier;
+	nd_event_supplier = Util::instance()->get_notifd_event_supplier();
+	if (nd_event_supplier == NULL)
 	{
-		cout3 << "Try to retrieve DS event channel while EventSupplier object is not yet created" << endl;
+		cout3 << "Try to retrieve DS event channel while NotifdEventSupplier object is not yet created" << endl;
 
 		Except::throw_exception((const char *)"API_EventSupplierNotConstructed",
 				      	(const char *)"Try to retrieve DS event channel while EventSupplier object is not created",
@@ -1145,7 +902,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 	else
 	{
 
-		string &ior = event_supplier->get_event_channel_ior();
+		string &ior = nd_event_supplier->get_event_channel_ior();
 
 //
 // return data to the caller
@@ -1326,7 +1083,7 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 // return data to the caller
 //
 
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -1394,7 +1151,7 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 // return to the caller
 //
 
-	CORBA::Any *out_any;
+	CORBA::Any *out_any = NULL;
 	try
 	{
 		out_any = new CORBA::Any();
@@ -1412,6 +1169,215 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 	return(out_any);
 }
 
+
+//+----------------------------------------------------------------------------
+//
+// method : 		EventSubscriptionChangeCmd::EventSubscriptionChangeCmd()
+//
+// description : 	constructor for the command of the EventTester.
+//
+// In : - name : The command name
+//		- in : The input parameter type
+//		- out : The output parameter type
+//		- in_desc : The input parameter description
+//		- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,
+								Tango::CmdArgType in,
+								Tango::CmdArgType out,
+								const char *in_desc,
+								const char *out_desc)
+:Command(name,in,out,in_desc,out_desc)
+{
+}
+
+//
+//	Constructor without in/out parameters description
+//
+
+EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgType out)
+:Command(name,in,out)
+{
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		EventSubscriptionChangeCmd::is_allowed()
+//
+// description : 	method to test whether command is allowed or not in this
+//			state. In this case, the command is allowed only if
+//			the device is in ON state
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns :	boolean - true == is allowed , false == not allowed
+//
+//-----------------------------------------------------------------------------
+bool EventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return true;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		EventSubscriptionChangeCmd::execute()
+//
+// description : 	method to trigger the execution of the command.
+//                PLEASE DO NOT MODIFY this method core without pogo
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+    cout4 << "EventSubscriptionChangeCmd::execute(): arrived" << endl;
+
+//
+// Extract the input string array
+//
+
+	const Tango::DevVarStringArray *in_data;
+	extract(in_any,in_data);
+
+//
+// call DServer method which implements this command
+//
+
+	Tango::DevLong ret = ((DServer *)device)->event_subscription_change(in_data);
+
+//
+// return to the caller
+//
+
+	CORBA::Any *out_any = NULL;
+	try
+	{
+		out_any = new CORBA::Any();
+	}
+	catch (bad_alloc)
+	{
+		cout3 << "Bad allocation while in EventSubscriptionChangeCmd::execute()" << endl;
+		Except::throw_exception((const char *)"API_MemoryAllocation",
+				      (const char *)"Can't allocate memory in server",
+				      (const char *)"EventSubscriptionChangeCmd::execute");
+	}
+	(*out_any) <<= ret;
+
+	cout4 << "Leaving EventSubscriptionChangeCmd::execute()" << endl;
+	return(out_any);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ZmqEventSubscriptionChangeCmd::EventSubscriptionChangeCmd()
+//
+// description : 	constructor for the command of the .
+//
+// In : - name : The command name
+//		- in : The input parameter type
+//		- out : The output parameter type
+//		- in_desc : The input parameter description
+//		- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+ZmqEventSubscriptionChangeCmd::ZmqEventSubscriptionChangeCmd(const char *name,
+								Tango::CmdArgType in,
+								Tango::CmdArgType out,
+								const char *in_desc,
+								const char *out_desc)
+:Command(name,in,out,in_desc,out_desc)
+{
+}
+
+//
+//	Constructor without in/out parameters description
+//
+
+ZmqEventSubscriptionChangeCmd::ZmqEventSubscriptionChangeCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgType out)
+:Command(name,in,out)
+{
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ZmqEventSubscriptionChangeCmd::is_allowed()
+//
+// description : 	method to test whether command is allowed or not in this
+//			state. In this case, the command is allowed only if
+//			the device is in ON state
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns :	boolean - true == is allowed , false == not allowed
+//
+//-----------------------------------------------------------------------------
+bool ZmqEventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return true;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ZmqEventSubscriptionChangeCmd::execute()
+//
+// description : 	method to trigger the execution of the command.
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+    cout4 << "ZmqEventSubscriptionChangeCmd::execute(): arrived" << endl;
+
+//
+// Extract the input string array
+//
+
+	const Tango::DevVarStringArray *in_data;
+	extract(in_any,in_data);
+
+//
+// call DServer method which implements this command
+//
+
+	Tango::DevVarLongStringArray *ret = ((DServer *)device)->zmq_event_subscription_change(in_data);
+
+//
+// return to the caller
+//
+
+	CORBA::Any *out_any = NULL;
+	try
+	{
+		out_any = new CORBA::Any();
+	}
+	catch (bad_alloc)
+	{
+		cout3 << "Bad allocation while in ZmqEventSubscriptionChangeCmd::execute()" << endl;
+		Except::throw_exception((const char *)"API_MemoryAllocation",
+				      (const char *)"Can't allocate memory in server",
+				      (const char *)"ZmqEventSubscriptionChangeCmd::execute");
+	}
+	(*out_any) <<= ret;
+
+	cout4 << "Leaving ZmqEventSubscriptionChangeCmd::execute()" << endl;
+	return(out_any);
+}
 
 
 
@@ -1666,9 +1632,14 @@ void DServerClass::command_factory()
 							"Device server output file"));
 #endif // TANGO_HAS_LOG4TANGO
 	command_list.push_back(new EventSubscriptionChangeCmd("EventSubscriptionChange",
-							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,
-							"list of events consumer wants to subscribe to",
-							"none"));
+							Tango::DEVVAR_STRINGARRAY, Tango::DEV_LONG,
+							"Event consumer wants to subscribe to",
+							"Tango lib release"));
+
+	command_list.push_back(new ZmqEventSubscriptionChangeCmd("ZmqEventSubscriptionChange",
+							Tango::DEVVAR_STRINGARRAY, Tango::DEVVAR_LONGSTRINGARRAY,
+							"Events consumer wants to subscribe to",
+							"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release"));
 
 	command_list.push_back(new QueryWizardClassPropertyCmd("QueryWizardClassProperty",
 							Tango::DEV_STRING,

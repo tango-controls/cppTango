@@ -5,9 +5,9 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // file :               ClassAttribute.cpp
 //
-// description :        C++ source code for the 
+// description :        C++ source code for the
 //				AttrProperty
-//				ClassAttribute and 
+//				ClassAttribute and
 //				MultiClassAttribute
 //			classes. These classes
 //			are used to manage attribute properties defined at the
@@ -19,7 +19,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -30,12 +30,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -228,8 +228,8 @@ namespace Tango
 
 //+-------------------------------------------------------------------------
 //
-// method : 		AttrProperty::AttrProperty 
-// 
+// method : 		AttrProperty::AttrProperty
+//
 // description : 	Constructors for the AttrProperty class.
 //			These constructor change the property name to
 //			lowercase letters and also change the property
@@ -245,13 +245,13 @@ AttrProperty::AttrProperty(string &name,string &value):attr_name(name),
 						       attr_value(value)
 {
 	attr_lg = 0;
-	
+
 //
 // Property name in lower case letters
 //
 
 	transform(attr_name.begin(),attr_name.end(),attr_name.begin(),::tolower);
-	
+
 //
 // For data_type or data_format properties, also change property value to
 // lowercase letters
@@ -268,13 +268,13 @@ AttrProperty::AttrProperty(const char *name,const char *value):attr_name(name),
 							       attr_value(value)
 {
 	attr_lg = 0;
-	
+
 //
 // Property name in lower case letters
 //
 
 	transform(attr_name.begin(),attr_name.end(),attr_name.begin(),::tolower);
-	
+
 //
 // For data_type or data_format properties, also change property value to
 // lowercase letters
@@ -299,8 +299,8 @@ AttrProperty::AttrProperty(const char *name,string &value):attr_name(name),
 
 //+-------------------------------------------------------------------------
 //
-// method : 		AttrProperty::convert 
-// 
+// method : 		AttrProperty::convert
+//
 // description : 	Convert the property value into a long. The long data
 //			is also stored in the AttrProperty class
 //
@@ -309,8 +309,8 @@ AttrProperty::AttrProperty(const char *name,string &value):attr_name(name),
 void AttrProperty::convert()
 {
 	TangoSys_MemStream o;
-	o << attr_value << ends;
-	if (!(o >> attr_lg))
+	o << attr_value;
+	if (!(o >> attr_lg && o.eof()))
 	{
 		Except::throw_exception((const char *)"API_AttrOptProp",
 				      (const char *)"Can't convert property value",
@@ -321,7 +321,7 @@ void AttrProperty::convert()
 //+-------------------------------------------------------------------------
 //
 // operator overloading : 	<<
-// 
+//
 // description : 	Friend function to ease printing instance of the
 //			AttrProperty class
 //
@@ -339,8 +339,8 @@ ostream &operator<<(ostream &o_str,const AttrProperty &p)
 //+-------------------------------------------------------------------------
 //
 // method : 		MultiClassAttribute::MultiClassAttribute
-// 
-// description : 	constructor for the MultiClassAttribute class from the 
+//
+// description : 	constructor for the MultiClassAttribute class from the
 //			device class name
 //
 //--------------------------------------------------------------------------
@@ -356,8 +356,8 @@ MultiClassAttribute::~MultiClassAttribute()
 //+-------------------------------------------------------------------------
 //
 // method : 		MultiClassAttribute::MultiClassAttribute
-// 
-// description : 	constructor for the MultiClassAttribute class from the 
+//
+// description : 	constructor for the MultiClassAttribute class from the
 //			device class name
 //
 //--------------------------------------------------------------------------
@@ -370,7 +370,7 @@ MultiClassAttribute::MultiClassAttribute()
 //+-------------------------------------------------------------------------
 //
 // method : 		MultiClassAttribute::init_class_attribute
-// 
+//
 // description : 	Ask the database for prperties defined at class
 //			level and build the ClassAttribute object for
 //			each attribute with defined properties
@@ -388,11 +388,11 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 	CORBA::Any send;
 
 	long nb_attr;
-	if (base == 0)	
+	if (base == 0)
 		nb_attr = attr_list.size();
 	else
 		nb_attr = 1;
-	
+
 //
 // Get class attribute(s) properties stored in DB
 // No need to implement
@@ -404,16 +404,16 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 	if ((nb_attr != 0) && (Tango::Util::_UseDb == true))
 	{
 		Tango::DbData db_list;
-		
+
 		for(i = 0;i < nb_attr;i++)
 			db_list.push_back(DbDatum(attr_list[i + base]->get_name()));
-	
+
 		try
 		{
 			tg->get_database()->get_class_attribute_property(class_name,db_list,tg->get_db_cache());
 		}
 		catch (Tango::DevFailed &e)
-		{	
+		{
 			TangoSys_OMemStream o;
 			o << "Can't get class attribute properties for class " << class_name << ends;
 
@@ -421,21 +421,21 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 				                o.str(),
 				                (const char *)"MultiClassAttribute::init_class_attribute");
 		}
-	
+
 //
 // Sort property for each attribute and create a ClassAttribute object for each
 // of them
 //
-	
-		long ind = 0;	
+
+		long ind = 0;
 		for (i = 0;i < nb_attr;i++)
 		{
 			vector<AttrProperty> prop_list;
 
-			string attr_name = db_list[ind].name;				
+			string attr_name = db_list[ind].name;
 			long nb_prop;
 			db_list[ind] >> nb_prop;
-		
+
 			ind++;
 			for (long j = 0;j < nb_prop;j++)
 			{
@@ -448,7 +448,7 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 						tmp = tmp + " ";
 						tmp = tmp + db_list[ind].value_string[k];
 					}
-					prop_list.push_back(AttrProperty(db_list[ind].name,tmp));					
+					prop_list.push_back(AttrProperty(db_list[ind].name,tmp));
 				}
 				else
 					prop_list.push_back(AttrProperty(db_list[ind].name,db_list[ind].value_string[0]));
@@ -471,18 +471,18 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 				{
 					TangoSys_OMemStream o;
 					o << "Attribute " << attr_name << " not found in class attribute(s)" << ends;
-		
+
 					Except::throw_exception((const char *)"API_AttrNotFound",
 							        o.str(),
 							        (const char *)"MultiClassAttribute::init_class_attribute");
 				}
-				
+
 //
 // Add its class property list
 //
 
 				attr_list[k]->set_class_properties(prop_list);
-			}		
+			}
 		}
 	}
 
@@ -498,7 +498,7 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 //+-------------------------------------------------------------------------
 //
 // method : 		MultiClassAttribute::get_attr
-// 
+//
 // description : 	Get the Attr object for the attribute with
 //			name passed as parameter
 //
@@ -518,26 +518,26 @@ Attr &MultiClassAttribute::get_attr(string &attr_name)
 //
 
 	vector<Attr *>::iterator pos;
-	
+
 	pos = find_if(attr_list.begin(),attr_list.end(),
 		      bind2nd(WantedClassAttr<Attr *,string,bool>(),attr_name));
-	
+
 	if (pos == attr_list.end())
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_name << " not found in class attribute(s)" << ends;
-		
+
 		Except::throw_exception((const char *)"API_AttrOptProp",o.str(),
 				      (const char *)"MultiClassAttribute::get_attr");
 	}
-	
+
 	return *(*pos);
 }
 
 //+-------------------------------------------------------------------------
 //
 // method : 		MultiClassAttribute::remove_attr
-// 
+//
 // description : 	Remove the Attr object for the attribute with
 //			name passed as parameter
 //
@@ -564,7 +564,7 @@ void MultiClassAttribute::remove_attr(string &attr_name,const string &cl_name)
 //+-------------------------------------------------------------------------
 //
 // operator overloading : 	<<
-// 
+//
 // description : 	Friend function to ease printing instance of the
 //			Attr class. It prints all the attribute
 //			property(ies) name and value defined in DB

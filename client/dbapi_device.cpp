@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -17,12 +17,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -33,7 +33,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 
-                                                   
+
 using namespace CORBA;
 
 namespace Tango
@@ -43,11 +43,11 @@ namespace Tango
 //
 // DbDevice::DbDevice() - constructor to create a DbDevice object for
 //			  accessing a device of this name in the specified
-//			  TANGO database (import/export info and properties) 
+//			  TANGO database (import/export info and properties)
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name, Database *dev_dbase)
+DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_NullPtr)
 {
 	name = dev_name;
 	dbase = dev_dbase;
@@ -62,7 +62,7 @@ DbDevice::DbDevice(string &dev_name, Database *dev_dbase)
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name)
+DbDevice::DbDevice(string &dev_name):ext(Tango_NullPtr)
 {
 	name = dev_name;
 	db_ind = ApiUtil::instance()->get_db_ind();
@@ -77,15 +77,15 @@ DbDevice::DbDevice(string &dev_name)
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name,string &host,string &port_str)
+DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_NullPtr)
 {
 	name = dev_name;
-	
+
 	TangoSys_MemStream s;
 	int port_num;
 	s << port_str << ends;
 	s >> port_num;
-	
+
 	db_ind = ApiUtil::instance()->get_db_ind(host,port_num);
 	ext_dbase = false;
 }
@@ -174,7 +174,7 @@ void DbDevice::get_property(DbData &db_data)
 	}
 	else
 		dsc = NULL;
-	
+
 	if (ext_dbase == true)
 		dbase->get_device_property(name, db_data, dsc);
 	else
@@ -222,7 +222,7 @@ void DbDevice::delete_property(DbData &db_data)
 
 //-----------------------------------------------------------------------------
 //
-// DbDevice::get_attribute_property() - public method to get device attribute 
+// DbDevice::get_attribute_property() - public method to get device attribute
 //           properties from the database
 //
 //-----------------------------------------------------------------------------
@@ -311,7 +311,7 @@ void DbDevice::clear_access_except_errors()
 	{
 		ApiUtil *au = ApiUtil::instance();
 		(au->get_db_vect())[db_ind]->clear_access_except_errors();
-	}	
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -332,7 +332,7 @@ void DbDevice::get_property_list(const string &wildcard,vector<string> &prop_lis
 	}
 	else
 		dsc = NULL;
-	
+
 	if (ext_dbase == true)
 	{
 		dbase->get_device_property_list(name, wildcard, prop_list, dsc);

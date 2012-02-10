@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :         	E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -40,6 +40,9 @@ static const char *RcsId = "$Id$";
 #endif
 
 #include <tango.h>
+
+#include <iostream>
+#include <algorithm>
 
 namespace Tango
 {
@@ -96,7 +99,7 @@ void Util::polling_configure()
 // A loop on each class and each device in class
 //
 
-	int smallest_upd;
+	int smallest_upd = 0;
 	bool first_loop = true;
 
 	for (i = 0;i < tmp_cl_list.size();i++)
@@ -167,8 +170,12 @@ void Util::polling_configure()
 
 				s << poll_cmd_list[k + 1];
 				s >> upd;
+				s.clear();
 				s.str("");
 				send->lvalue[0] = upd;
+
+                if (upd < 0)
+                    upd = -upd;
 
 				if (first_loop == true)
 				{
@@ -205,8 +212,12 @@ void Util::polling_configure()
 
 				s << poll_attr_list[k + 1];
 				s >> upd;
+				s.clear();
 				s.str("");
 				send->lvalue[0] = upd;
+
+                if (upd < 0)
+                    upd = -upd;
 
 				if (first_loop == true)
 				{
@@ -252,7 +263,7 @@ void Util::polling_configure()
 //
 
 	unsigned long nb_thread = ext->poll_ths.size();
-	cout4 << "POLLING: " << nb_thread << " threads needed for polling from a pool of " << get_polling_threads_pool_size() << endl;
+	cout4 << "POLLING: " << nb_thread << " thread(s) needed for polling from a pool of " << get_polling_threads_pool_size() << endl;
 	for (unsigned long loop = 0;loop < nb_thread;++loop)
 	{
 		unsigned long nb_cmd = ext->poll_ths[loop]->v_poll_cmd.size();
@@ -272,7 +283,14 @@ void Util::polling_configure()
 		{
 			try
 			{
-				admin_dev->add_obj_polling(ext->poll_ths[loop]->v_poll_cmd[cmd_loop],false,delta_time);
+			    bool upd_db = false;
+			    int upd = ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->lvalue[0];
+			    if (upd < 0)
+			    {
+			        ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->lvalue[0] = -upd;
+                    upd_db = true;
+			    }
+				admin_dev->add_obj_polling(ext->poll_ths[loop]->v_poll_cmd[cmd_loop],upd_db,delta_time);
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -477,7 +495,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 //
 
 			bool deadlock = false;
-			long lock_ctr;
+			long lock_ctr = 0;
 			if (th->id() == dev_mon.get_locking_thread_id())
 			{
 				cout4 << "Possible deadlock detected!" << endl;
@@ -631,7 +649,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 //
 
 			bool deadlock = false;
-			long lock_ctr;
+			long lock_ctr = 0;
 			if (th->id() == dev_mon.get_locking_thread_id())
 			{
 				cout4 << "Possible deadlock detected!" << endl;
@@ -868,7 +886,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 
 		for (iter = ext->poll_ths.begin();iter != ext->poll_ths.end();++iter)
 		{
-			if ((*iter)->nb_polled_objects < lower_polled_objects)
+			if ((*iter)->nb_polled_objects <= lower_polled_objects)
 			{
 				lower_polled_objects = (*iter)->nb_polled_objects;
 				lower_iter = iter;
@@ -929,7 +947,6 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 			if (smallest_upd < (*lower_iter)->smallest_upd)
 				(*lower_iter)->smallest_upd = smallest_upd;
 		}
-
 		ret = ind;
 	}
 
@@ -1048,7 +1065,7 @@ int Util::get_polling_thread_id_by_name(const char *dev_name)
 
 PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 {
-	PollingThreadInfo *ret_ptr;
+	PollingThreadInfo *ret_ptr = NULL;
 	vector<PollingThreadInfo *>::iterator iter;
 
 	for (iter = ext->poll_ths.begin();iter != ext->poll_ths.end();++iter)
@@ -1318,8 +1335,6 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 			iter  = poll_cmd_list.erase(iter,iter + 2);
 			if (iter == poll_cmd_list.end())
 				break;
-			else
-				iter = iter - 2;
 		}
 	}
 
@@ -1359,8 +1374,6 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 			iter  = poll_attr_list.erase(iter,iter + 2);
 			if (iter == poll_attr_list.end())
 				break;
-			else
-				iter = iter - 2;
 		}
 	}
 
@@ -1556,9 +1569,8 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
                         int nb_lines = (length / MaxDevPropLength) + 1;
                         if (nb_lines > 1)
                         {
-                            string::size_type start,len;
+                            string::size_type start;
                             start = 0;
-                            len = MaxDevPropLength;
 
                             for (int i = 0;i < nb_lines;i++)
                             {

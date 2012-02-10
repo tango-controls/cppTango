@@ -1,4 +1,4 @@
-///=============================================================================	
+///=============================================================================
 //
 // file :		encoded_attribute.h
 //
@@ -8,7 +8,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -19,42 +19,16 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
-//
-// $Log$
-// Revision 3.8  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.7  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 3.6  2009/09/10 07:00:30  taurel
-// - Add some documentation fo rthe new ctor
-//
-// Revision 3.5  2009/09/08 14:22:15  taurel
-// - Manage internal buffer(s) as a cicular buffer pool
-//
-// Revision 3.4  2009/04/06 06:54:34  taurel
-// - Fix some typos
-// - Commit in Unix format
-//
-// Revision 3.3  2009/03/26 16:08:44  jlpons
-// Added decoding interface (DevEncoded format)
-//
-// Revision 3.2  2009/03/20 15:15:31  jlpons
-// Fixed inline assembly error on gcc 4 release
-//
-// Revision 3.1  2009/03/19 17:50:29  jlpons
-// Added management of DevEncoded format
 //
 //
 //=============================================================================
@@ -69,14 +43,10 @@
 namespace Tango
 {
 
-class EncodedAttributeExt
-{
-};
-
 /**
  * This class provides method to deal with Tango::DevEncoded attribute format.
  */
- 
+
 class EncodedAttribute
 {
 
@@ -90,7 +60,7 @@ public:
  *
  */
 	EncodedAttribute();
-	
+
 /**
  * Create a new EncodedAttribute object with a user defined buffer pool.
  *
@@ -228,13 +198,13 @@ public:
     return (DevUChar *)buffer_array[buf_elt_nb-1];
   else
     return (DevUChar *)buffer_array[index-1];}
-	
+
  long       get_size()
  {if (index==0)
     return (long)buffSize_array[buf_elt_nb-1];
   else
     return (long)buffSize_array[index-1];}
-	
+
  DevString *get_format() {return &format;}
  bool get_exclusion() {return manage_exclusion;}
  omni_mutex *get_mutex()
@@ -242,19 +212,26 @@ public:
  	return &(mutex_array[buf_elt_nb-1]);
   else
     return &(mutex_array[index-1]);}
- 
-private:
 
-  unsigned char 		**buffer_array;
-  int           		*buffSize_array;
-  omni_mutex			*mutex_array;
-  char          		*format;
-  
-  int 					index;
-  int					buf_elt_nb;
-  bool					manage_exclusion;
-  
-  EncodedAttributeExt	*ext;
+private:
+    class EncodedAttributeExt
+    {
+    };
+
+    unsigned char 		    **buffer_array;
+    int           		    *buffSize_array;
+    omni_mutex			    *mutex_array;
+    char          		    *format;
+
+    int 					index;
+    int					    buf_elt_nb;
+    bool					manage_exclusion;
+
+#ifdef HAS_UNIQUE_PTR
+    unique_ptr<EncodedAttributeExt>     ext;           // Class extension
+#else
+    EncodedAttributeExt	                *ext;
+#endif
 
 };
 
@@ -262,7 +239,7 @@ private:
   index++; \
   if (index == buf_elt_nb) \
   	index = 0;
-	
+
 } // End of Tango namespace
 
 #endif // _ENCODED_ATT_H

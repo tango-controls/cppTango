@@ -1,8 +1,8 @@
 //
 // apiexcept.h - include file for TANGO device api exceptions
 //
-// 
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+//
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -13,12 +13,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -45,7 +45,7 @@ class NamedDevFailed
 public:
 	NamedDevFailed(const DevErrorList &err,const string &na,long idx):name(na),idx_in_call(idx),err_stack(err) {}
 	NamedDevFailed();
-		
+
 	string		name;
 	long		idx_in_call;
 	DevErrorList	err_stack;
@@ -56,10 +56,10 @@ class NamedDevFailedList: public Tango::DevFailed
 public:
 	NamedDevFailedList(const Tango::MultiDevFailed &,string,const char *,const char *);
 	NamedDevFailedList() {};
-		
+
 	size_t get_faulty_attr_nb() {return err_list.size();}
 	bool call_failed() {if ((err_list.size()==0) && (errors.length()!=0))return true;else return false;}
-	
+
 	vector<NamedDevFailed>	err_list;
 };
 
@@ -396,7 +396,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
                         			   desc.str(),ori.str()); \
 	}
 
-	
+
 #define TRANSIENT_NOT_EXIST_EXCEPT_CMD(E) \
 	if (E.minor() == omni::TRANSIENT_CallTimedout) \
 	{ \
@@ -451,7 +451,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
                     		   desc.str(), \
 				   (const char*)"Connection::command_inout()"); \
 	}
-	
+
 
 } // End of Tango namespace
 

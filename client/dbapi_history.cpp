@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- Feb 2007
 //
-// Copyright (C) :      2007,2008,2009,2010,2011
+// Copyright (C) :      2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -17,12 +17,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -53,7 +53,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
-                                                      
+
 using namespace CORBA;
 
 namespace Tango
@@ -99,7 +99,7 @@ DbHistory::DbHistory(string _propname,string _attname,string _date,vector<string
 string DbHistory::get_name() {
 
   return propname;
- 
+
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +157,7 @@ bool DbHistory::is_deleted() {
 //                                  DD/MM/YYYY hh:mm:ss
 //
 //-----------------------------------------------------------------------------
-  
+
 string DbHistory::format_mysql_date(string _date) {
 
     // Handle MySQL date formating
@@ -181,7 +181,7 @@ void DbHistory::make_db_datum(vector<string> &values) {
   value.name = propname;
   value.value_string.resize(values.size());
   for (unsigned int i=0; i<values.size(); i++)
-    value.value_string[i] = values[i]; 
+    value.value_string[i] = values[i];
 
 }
 

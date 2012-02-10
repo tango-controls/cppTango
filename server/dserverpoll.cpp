@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -51,11 +51,7 @@ static const char *RcsId = "$Id$\n$Name$";
 	#include <sys/time.h>
 #endif
 
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
-	#include <iomanip>
-#else
-	#include <iomanip.h>
-#endif
+#include <iomanip>
 
 namespace Tango
 {
@@ -546,7 +542,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	DeviceImpl *dev;
+	DeviceImpl *dev = NULL;
 	try
 	{
 		dev = tg->get_device_by_name((argin->svalue)[0]);
@@ -576,7 +572,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	transform(obj_type.begin(),obj_type.end(),obj_type.begin(),::tolower);
 	string obj_name((argin->svalue)[2]);
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
-	PollObjType type;
+	PollObjType type = Tango::POLL_CMD;
 
 	if (obj_type == PollCommand)
 	{
@@ -669,19 +665,6 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		check_upd_authorized(dev,upd,type,obj_name);
 
 //
-// Round the update period (which is in mS) to the next tenth of a second
-//
-
-/*	double upd_db = (double)upd;
-	double remain = fmod(upd_db,(double)MIN_POLL_PERIOD);
-	double base = floor(upd_db) - remain;
-	if (remain >= 50)
-		upd = (long)base + MIN_POLL_PERIOD;
-	else
-		upd = (long)base;
-	cout4 << "Rounded polling period = " << upd << " mS" << endl;*/
-
-//
 // Create a new PollObj instance for this object
 // Protect this code by a monitor in case of the polling thread using one of
 // the vector element.
@@ -723,9 +706,12 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 
 	cout4 << "Sending cmd to polling thread" << endl;
 	int interupted;
+
 	TangoMonitor &mon = th_info->poll_mon;
 	PollThCmd &shared_cmd = th_info->shared_data;
 
+	int th_id = omni_thread::self()->id();
+	if (th_id != poll_th_id)
 	{
 		omni_mutex_lock sync(mon);
 		if (shared_cmd.cmd_pending == true)
@@ -778,6 +764,20 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 			}
 		}
 	}
+	else
+	{
+		shared_cmd.cmd_pending = true;
+		shared_cmd.cmd_code = POLL_ADD_OBJ;
+		shared_cmd.dev = dev;
+		shared_cmd.index = poll_list.size() - 1;
+		shared_cmd.new_upd = delta_ms;
+
+		PollThread *poll_th = th_info->poll_th;
+		poll_th->set_local_cmd(shared_cmd);
+		poll_th->execute_cmd();
+	}
+
+
 	cout4 << "Thread cmd normally executed" << endl;
 	th_info->nb_polled_objects++;
 
@@ -912,6 +912,21 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	cout4 << "Polling properties updated" << endl;
 
 //
+// Update info in Attribute/Command object
+//
+
+    if (type == POLL_ATTR)
+    {
+        Attribute &att = dev->get_device_attr()->get_attr_by_name(argin->svalue[2]);
+        att.set_polling_period(upd);
+    }
+    else
+    {
+        Command &cmd = dev->get_device_class()->get_cmd_by_name(argin->svalue[2].in());
+        cmd.set_polling_period(upd);
+    }
+
+//
 // Mark the device as polled
 //
 
@@ -961,7 +976,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	DeviceImpl *dev;
+	DeviceImpl *dev = NULL;
 	try
 	{
 		dev = tg->get_device_by_name((argin->svalue)[0]);
@@ -1003,7 +1018,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	transform(obj_type.begin(),obj_type.end(),obj_type.begin(),::tolower);
 	string obj_name((argin->svalue)[2]);
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
-	PollObjType type;
+	PollObjType type = Tango::POLL_CMD;
 
 	if (obj_type == PollCommand)
 	{
@@ -1120,11 +1135,8 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		shared_cmd.type = type;
 		shared_cmd.new_upd = (argin->lvalue)[0];
 
-#ifdef __SUNPRO_CC
-		distance(dev->get_poll_obj_list().begin(),ite,shared_cmd.index);
-#else
 		shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
-#endif
+
 		mon.signal();
 	}
 	else
@@ -1135,11 +1147,8 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		shared_cmd.name = obj_name;
 		shared_cmd.type = type;
 		shared_cmd.new_upd = (argin->lvalue)[0];
-#ifdef __SUNPRO_CC
-		distance(dev->get_poll_obj_list().begin(),ite,shared_cmd.index);
-#else
+
 		shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
-#endif
 
 		PollThread *poll_th = th_info->poll_th;
 		poll_th->set_local_cmd(shared_cmd);
@@ -1202,6 +1211,21 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		send_data.push_back(db_info);
 		dev->get_db_device()->put_property(send_data);
 	}
+
+//
+// Update info in Attribute/Command object
+//
+
+    if (type == POLL_ATTR)
+    {
+        Attribute &att = dev->get_device_attr()->get_attr_by_name(argin->svalue[2]);
+        att.set_polling_period(upd);
+    }
+    else
+    {
+        Command &cmd = dev->get_device_class()->get_cmd_by_name(argin->svalue[2].in());
+        cmd.set_polling_period(upd);
+    }
 }
 
 
@@ -1210,17 +1234,17 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 // method : 		DServer::rem_obj_polling()
 //
 // description : 	command to remove an already polled object from the device
-//			polled object list
+//			        polled object list
 //
-// in :			The polling parameters :
-//				device name
-//				object type (command or attribute)
-//				object name
+// in :	- argin: The polling parameters :
+//				    device name
+//				    object type (command or attribute)
+//				    object name
+//      - with_db_upd : Update db flag
 //
 //-----------------------------------------------------------------------------
 
-void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,
-			      bool with_db_upd)
+void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db_upd)
 {
 	NoSyncModelTangoMonitor nosync_mon(this);
 
@@ -1245,7 +1269,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	DeviceImpl *dev;
+	DeviceImpl *dev = NULL;
 	try
 	{
 		dev = tg->get_device_by_name((*argin)[0]);
@@ -1287,7 +1311,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,
 	transform(obj_type.begin(),obj_type.end(),obj_type.begin(),::tolower);
 	string obj_name((*argin)[2]);
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
-	PollObjType type;
+	PollObjType type = Tango::POLL_CMD;
 
 	if (obj_type == PollCommand)
 	{
@@ -1342,6 +1366,9 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,
 		int interupted;
 		TangoMonitor &mon = th_info->poll_mon;
 		PollThCmd &shared_cmd = th_info->shared_data;
+
+        int th_id = omni_thread::self()->id();
+        if (th_id != poll_th_id)
 		{
 			omni_mutex_lock sync(mon);
 			if (shared_cmd.cmd_pending == true)
@@ -1382,6 +1409,23 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,
 				}
 			}
 		}
+        else
+        {
+            shared_cmd.cmd_pending = true;
+			if (tmp_upd == 0)
+				shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
+			else
+				shared_cmd.cmd_code = POLL_REM_OBJ;
+            shared_cmd.dev = dev;
+            shared_cmd.name = obj_name;
+            shared_cmd.type = type;
+
+            shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
+
+            PollThread *poll_th = th_info->poll_th;
+            poll_th->set_local_cmd(shared_cmd);
+            poll_th->execute_cmd();
+        }
 		cout4 << "Thread cmd normally executed" << endl;
 	}
 	else
@@ -1500,6 +1544,21 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,
 			cout4 << "Database polling properties updated" << endl;
 		}
 	}
+
+//
+// Update info in Attribute/Command object
+//
+
+    if (type == POLL_ATTR)
+    {
+        Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
+        att.set_polling_period(0);
+    }
+    else
+    {
+        Command &cmd = dev->get_device_class()->get_cmd_by_name((*argin)[2].in());
+        cmd.set_polling_period(0);
+    }
 
 //
 // If the device is not polled any more, update the pool conf first locally.
@@ -1904,16 +1963,10 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 	vector<string>::iterator ite = find(v_ptr->begin(),v_ptr->end(),obj_name);
 	if (ite != v_ptr->end())
 	{
-cout << obj_name << " found in vector" << endl;
 		ite++;
 		TangoSys_MemStream s;
 		s << *ite;
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
 		if ((s >> min_upd) == false)
-#else
-		s >> min_upd;
-		if (!s)
-#endif
 		{
 			TangoSys_OMemStream o;
 			o << "System property ";
