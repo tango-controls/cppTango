@@ -842,7 +842,8 @@ public:
 		DeviceData din, dout;
 		DevVarLongStringArray attr_poll, cmd_poll;
 		const DevVarStringArray *polled_devices, *status_arr;
-		string status[2], status_ref[2];
+		string status[2], status_ref[2], status_arr_str;
+		size_t pos;
 
 		// start polling an attribute
 		attr_poll.lvalue.length(1);
@@ -859,16 +860,19 @@ public:
 
 		// get polling status for the device
 		status_ref[0] = "Polled attribute name = attr_wrong_size\nPolling period (mS) = 200\nPolling ring buffer depth = 10";
-		status_ref[1] = "Last attribute read FAILED :\n\tReason = API_AttrOptProp\n\tDesc = Data size for attribute attr_wrong_size exceeds given limit\n\tOrigin = Attribute::set_value";
+		status_ref[1] = "Last attribute read FAILED :\n\tReason = API_AttrOptProp\n\tDesc = Data size for attribute attr_wrong_size exceeds given limit";
 		din << device1_name;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("DevPollStatus", din));
 		dout >> status_arr;
+		status_arr_str = (*status_arr)[0].in();
 		// extract the first and the last 3 lines of the status and compare with the reference string
 		// TODO: although device/time dependent, the other, middle 3 lines could also be compared
-		status[0] = string((*status_arr)[0].in()).substr(0,status_ref[0].length()); // first 3 lines
+		status[0] = status_arr_str.substr(0,status_ref[0].length()); // first 3 lines
 		TS_ASSERT(status[0] == status_ref[0]);
-		status[1] = string((*status_arr)[0].in()).substr(
-				string((*status_arr)[0].in()).length() - status_ref[1].length(),
+		pos = status_arr_str.rfind("\n");
+		if(pos != string::npos)
+			status_arr_str.erase(pos);
+		status[1] = status_arr_str.substr(status_arr_str.length() - status_ref[1].length(),
 				status_ref[1].length()); // last 3 lines
 		TS_ASSERT(status[1] == status_ref[1]);
 
@@ -879,16 +883,19 @@ public:
 
 		// again get polling status for the device
 		status_ref[0] = "Polled attribute name = attr_wrong_size\nPolling period (mS) = 200\nPolling ring buffer depth = 10";
-		status_ref[1] = "Last attribute read FAILED :\n\tReason = API_AttrOptProp\n\tDesc = Data size for attribute attr_wrong_size exceeds given limit\n\tOrigin = Attribute::set_value";
+		status_ref[1] = "Last attribute read FAILED :\n\tReason = API_AttrOptProp\n\tDesc = Data size for attribute attr_wrong_size exceeds given limit";
 		din << device1_name;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("DevPollStatus", din));
 		dout >> status_arr;
+		status_arr_str = (*status_arr)[0].in();
 		// extract the first and the last 3 lines of the status and compare with the reference string
 		// TODO: although device/time dependent, the other, middle 3 lines could also be compared
 		status[0] = string((*status_arr)[0].in()).substr(0,status_ref[0].length()); // first 3 lines
 		TS_ASSERT(status[0] == status_ref[0]);
-		status[1] = string((*status_arr)[0].in()).substr(
-				string((*status_arr)[0].in()).length() - status_ref[1].length(),
+		pos = status_arr_str.rfind("\n");
+		if(pos != string::npos)
+			status_arr_str.erase(pos);
+		status[1] = status_arr_str.substr(status_arr_str.length() - status_ref[1].length(),
 				status_ref[1].length()); // last 3 lines
 		TS_ASSERT(status[1] == status_ref[1]);
 
