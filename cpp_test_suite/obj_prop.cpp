@@ -151,6 +151,31 @@ int main(int argc, char **argv)
 		assert( df_v[0].is_empty() == true );
 				
 		cout << "   Delete object property (for vectors) --> OK" << endl;
+
+//
+// Database copy ctor
+//
+
+		Database db2 = *dbase;
+		
+		vector<string> vs;
+		DeviceData ddata;
+		ddata = db2.command_inout("DbInfo");
+		ddata >> vs;
+
+		cout << "   Database call after copy construction --> OK" << endl;
+
+//
+// Database assignment operator
+//
+
+		Database db3;
+		db3 = db2;
+		
+		ddata = db3.command_inout("DbInfo");
+		ddata >> vs;
+
+		cout << "   Database call after assignement operator --> OK" << endl;
 										
 	}
 	
