@@ -240,7 +240,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>tangod.lib;log4tangod.lib;omniorb4d.lib;omnidynamic4d.lib;omnithreadd.lib;COS4d.lib;zmqd.lib;ws2_32.lib;Rpcrt4.lib;tango.res;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tangod.lib;log4tangod.lib;omniorb4d.lib;omnidynamic4d.lib;omnithreadd.lib;COS4d.lib;zmqd.lib;ws2_32.lib;tango.res;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(PREFIX)\win64\bin\archive_win\devTest.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OMNI_BASE)\win64\lib;$(PREFIX)\win64\lib\vc10;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib;C:\tango_src\cppapi_develop\win32\resources;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>

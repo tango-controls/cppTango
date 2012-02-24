@@ -1846,7 +1846,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 
 	{
 		Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
-		Tango::DevFloat fl, fl_min_alarm = -777.77, fl_min_warning = -666.66, fl_max_warning = 666.66, fl_max_alarm = 777.77;
+		Tango::DevFloat fl, fl_min_alarm = -777.77f, fl_min_warning = -666.66f, fl_max_warning = 666.66f, fl_max_alarm = 777.77f;
 		attr.set_min_alarm(fl_min_alarm);
 		attr.set_min_warning(fl_min_warning);
 		attr.set_max_warning(fl_max_warning);

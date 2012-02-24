@@ -51,7 +51,7 @@ CORBA::Any *IOThrow::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 			         (Tango::ErrSeverity)severity );
 				 
 #if ((defined WIN32) || (defined __SUNPRO_CC))
-   CORBA::Any *out;
+   CORBA::Any *out = NULL;
    return(out);
 #endif
 }
@@ -102,7 +102,7 @@ CORBA::Any *IOExcept::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
 			         (const char *)"IOExcept::execute()");
 
 #if ((defined WIN32) || (defined __SUNPRO_CC))
-  CORBA::Any *out;
+  CORBA::Any *out = NULL;
   return out;
 #endif
 }
@@ -189,7 +189,7 @@ CORBA::Any *IOReThrow::execute(Tango::DeviceImpl *device,const CORBA::Any &in_an
   }
   
 #if ((defined WIN32) || (defined __SUNPRO_CC))
-   CORBA::Any *out;
+   CORBA::Any *out = NULL;
    return out;
 #endif
 }
