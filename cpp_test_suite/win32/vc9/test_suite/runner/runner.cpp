@@ -26,6 +26,61 @@ int main( int argc, char **argv )
 }
 
 // The CxxTest "world"
+#include "../../../../test_suite/cxx_syntax.cpp"
+
+static SyntaxTestSuite *suite_SyntaxTestSuite = 0;
+
+static CxxTest::List Tests_SyntaxTestSuite = { 0, 0 };
+CxxTest::DynamicSuiteDescription<SyntaxTestSuite> suiteDescription_SyntaxTestSuite( "../../../../test_suite/cxx_syntax.cpp", 17, "SyntaxTestSuite", Tests_SyntaxTestSuite, suite_SyntaxTestSuite, 96, 101 );
+
+static class TestDescription_SyntaxTestSuite_test_check_device_name_syntax_when_creating_DeviceProxy_instance : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_check_device_name_syntax_when_creating_DeviceProxy_instance() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 156, "test_check_device_name_syntax_when_creating_DeviceProxy_instance" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_check_device_name_syntax_when_creating_DeviceProxy_instance(); }
+} testDescription_SyntaxTestSuite_test_check_device_name_syntax_when_creating_DeviceProxy_instance;
+
+static class TestDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_alias_as_my_alias : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_alias_as_my_alias() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 188, "test_connect_to_a_device_via_its_alias_as_my_alias" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_connect_to_a_device_via_its_alias_as_my_alias(); }
+} testDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_alias_as_my_alias;
+
+static class TestDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_alias_as_host_port_my_alias : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_alias_as_host_port_my_alias() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 206, "test_connect_to_a_device_via_its_alias_as_host_port_my_alias" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_connect_to_a_device_via_its_alias_as_host_port_my_alias(); }
+} testDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_alias_as_host_port_my_alias;
+
+static class TestDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_classic_name : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_classic_name() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 225, "test_connect_to_a_device_via_its_classic_name" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_connect_to_a_device_via_its_classic_name(); }
+} testDescription_SyntaxTestSuite_test_connect_to_a_device_via_its_classic_name;
+
+static class TestDescription_SyntaxTestSuite_test_check_attribute_name_syntax_when_creating_AttributeProxy_instance : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_check_attribute_name_syntax_when_creating_AttributeProxy_instance() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 232, "test_check_attribute_name_syntax_when_creating_AttributeProxy_instance" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_check_attribute_name_syntax_when_creating_AttributeProxy_instance(); }
+} testDescription_SyntaxTestSuite_test_check_attribute_name_syntax_when_creating_AttributeProxy_instance;
+
+static class TestDescription_SyntaxTestSuite_test_connect_to_an_attribute_via_its_alias_as_attribute_alias : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_connect_to_an_attribute_via_its_alias_as_attribute_alias() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 265, "test_connect_to_an_attribute_via_its_alias_as_attribute_alias" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_connect_to_an_attribute_via_its_alias_as_attribute_alias(); }
+} testDescription_SyntaxTestSuite_test_connect_to_an_attribute_via_its_alias_as_attribute_alias;
+
+static class TestDescription_SyntaxTestSuite_test_connect_to_an_attribute_via_its_alias_as_host_port_attribute_alias : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_connect_to_an_attribute_via_its_alias_as_host_port_attribute_alias() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 276, "test_connect_to_an_attribute_via_its_alias_as_host_port_attribute_alias" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_connect_to_an_attribute_via_its_alias_as_host_port_attribute_alias(); }
+} testDescription_SyntaxTestSuite_test_connect_to_an_attribute_via_its_alias_as_host_port_attribute_alias;
+
+static class TestDescription_SyntaxTestSuite_test_check_alias_call : public CxxTest::RealTestDescription {
+public:
+ TestDescription_SyntaxTestSuite_test_check_alias_call() : CxxTest::RealTestDescription( Tests_SyntaxTestSuite, suiteDescription_SyntaxTestSuite, 288, "test_check_alias_call" ) {}
+ void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_check_alias_call(); }
+} testDescription_SyntaxTestSuite_test_check_alias_call;
+
 #include "../../../../test_suite/cxx_poll.cpp"
 
 static PollTestSuite__loop *suite_PollTestSuite__loop = 0;
@@ -41,13 +96,13 @@ public:
 
 static class TestDescription_PollTestSuite__loop_test_commands_and_attributes_obtained_from_polling_buffer : public CxxTest::RealTestDescription {
 public:
- TestDescription_PollTestSuite__loop_test_commands_and_attributes_obtained_from_polling_buffer() : CxxTest::RealTestDescription( Tests_PollTestSuite__loop, suiteDescription_PollTestSuite__loop, 293, "test_commands_and_attributes_obtained_from_polling_buffer" ) {}
+ TestDescription_PollTestSuite__loop_test_commands_and_attributes_obtained_from_polling_buffer() : CxxTest::RealTestDescription( Tests_PollTestSuite__loop, suiteDescription_PollTestSuite__loop, 290, "test_commands_and_attributes_obtained_from_polling_buffer" ) {}
  void runTest() { if ( suite_PollTestSuite__loop ) suite_PollTestSuite__loop->test_commands_and_attributes_obtained_from_polling_buffer(); }
 } testDescription_PollTestSuite__loop_test_commands_and_attributes_obtained_from_polling_buffer;
 
 static class TestDescription_PollTestSuite__loop_test_check_the_CACHE_DEV_source_parameter : public CxxTest::RealTestDescription {
 public:
- TestDescription_PollTestSuite__loop_test_check_the_CACHE_DEV_source_parameter() : CxxTest::RealTestDescription( Tests_PollTestSuite__loop, suiteDescription_PollTestSuite__loop, 375, "test_check_the_CACHE_DEV_source_parameter" ) {}
+ TestDescription_PollTestSuite__loop_test_check_the_CACHE_DEV_source_parameter() : CxxTest::RealTestDescription( Tests_PollTestSuite__loop, suiteDescription_PollTestSuite__loop, 372, "test_check_the_CACHE_DEV_source_parameter" ) {}
  void runTest() { if ( suite_PollTestSuite__loop ) suite_PollTestSuite__loop->test_check_the_CACHE_DEV_source_parameter(); }
 } testDescription_PollTestSuite__loop_test_check_the_CACHE_DEV_source_parameter;
 
@@ -168,13 +223,13 @@ public:
 
 static class TestDescription_PollAdminTestSuite__loop_test_polling_for_several_devices_after_a_ServerRestart : public CxxTest::RealTestDescription {
 public:
- TestDescription_PollAdminTestSuite__loop_test_polling_for_several_devices_after_a_ServerRestart() : CxxTest::RealTestDescription( Tests_PollAdminTestSuite__loop, suiteDescription_PollAdminTestSuite__loop, 913, "test_polling_for_several_devices_after_a_ServerRestart" ) {}
+ TestDescription_PollAdminTestSuite__loop_test_polling_for_several_devices_after_a_ServerRestart() : CxxTest::RealTestDescription( Tests_PollAdminTestSuite__loop, suiteDescription_PollAdminTestSuite__loop, 920, "test_polling_for_several_devices_after_a_ServerRestart" ) {}
  void runTest() { if ( suite_PollAdminTestSuite__loop ) suite_PollAdminTestSuite__loop->test_polling_for_several_devices_after_a_ServerRestart(); }
 } testDescription_PollAdminTestSuite__loop_test_polling_for_several_devices_after_a_ServerRestart;
 
 static class TestDescription_PollAdminTestSuite__loop_test_start_a_command_externally_triggered : public CxxTest::RealTestDescription {
 public:
- TestDescription_PollAdminTestSuite__loop_test_start_a_command_externally_triggered() : CxxTest::RealTestDescription( Tests_PollAdminTestSuite__loop, suiteDescription_PollAdminTestSuite__loop, 1072, "test_start_a_command_externally_triggered" ) {}
+ TestDescription_PollAdminTestSuite__loop_test_start_a_command_externally_triggered() : CxxTest::RealTestDescription( Tests_PollAdminTestSuite__loop, suiteDescription_PollAdminTestSuite__loop, 1079, "test_start_a_command_externally_triggered" ) {}
  void runTest() { if ( suite_PollAdminTestSuite__loop ) suite_PollAdminTestSuite__loop->test_start_a_command_externally_triggered(); }
 } testDescription_PollAdminTestSuite__loop_test_start_a_command_externally_triggered;
 
@@ -264,35 +319,41 @@ public:
 static AttrMiscTestSuite *suite_AttrMiscTestSuite = 0;
 
 static CxxTest::List Tests_AttrMiscTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<AttrMiscTestSuite> suiteDescription_AttrMiscTestSuite( "../../../../test_suite/cxx_attr_misc.cpp", 17, "AttrMiscTestSuite", Tests_AttrMiscTestSuite, suite_AttrMiscTestSuite, 113, 118 );
+CxxTest::DynamicSuiteDescription<AttrMiscTestSuite> suiteDescription_AttrMiscTestSuite( "../../../../test_suite/cxx_attr_misc.cpp", 17, "AttrMiscTestSuite", Tests_AttrMiscTestSuite, suite_AttrMiscTestSuite, 128, 133 );
+
+static class TestDescription_AttrMiscTestSuite_test_set_get_ranges : public CxxTest::RealTestDescription {
+public:
+ TestDescription_AttrMiscTestSuite_test_set_get_ranges() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 146, "test_set_get_ranges" ) {}
+ void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_set_get_ranges(); }
+} testDescription_AttrMiscTestSuite_test_set_get_ranges;
 
 static class TestDescription_AttrMiscTestSuite_test_read_attribute_exceptions : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrMiscTestSuite_test_read_attribute_exceptions() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 129, "test_read_attribute_exceptions" ) {}
+ TestDescription_AttrMiscTestSuite_test_read_attribute_exceptions() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 211, "test_read_attribute_exceptions" ) {}
  void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_read_attribute_exceptions(); }
 } testDescription_AttrMiscTestSuite_test_read_attribute_exceptions;
 
 static class TestDescription_AttrMiscTestSuite_test_SCALAR_attribute_of_type_different_than_READ : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrMiscTestSuite_test_SCALAR_attribute_of_type_different_than_READ() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 167, "test_SCALAR_attribute_of_type_different_than_READ" ) {}
+ TestDescription_AttrMiscTestSuite_test_SCALAR_attribute_of_type_different_than_READ() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 249, "test_SCALAR_attribute_of_type_different_than_READ" ) {}
  void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_SCALAR_attribute_of_type_different_than_READ(); }
 } testDescription_AttrMiscTestSuite_test_SCALAR_attribute_of_type_different_than_READ;
 
 static class TestDescription_AttrMiscTestSuite_test_read_attribute_on_write_type_attribute : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrMiscTestSuite_test_read_attribute_on_write_type_attribute() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 229, "test_read_attribute_on_write_type_attribute" ) {}
+ TestDescription_AttrMiscTestSuite_test_read_attribute_on_write_type_attribute() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 311, "test_read_attribute_on_write_type_attribute" ) {}
  void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_read_attribute_on_write_type_attribute(); }
 } testDescription_AttrMiscTestSuite_test_read_attribute_on_write_type_attribute;
 
 static class TestDescription_AttrMiscTestSuite_test_read_attribute_on_initialised_write_type_attribute : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrMiscTestSuite_test_read_attribute_on_initialised_write_type_attribute() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 272, "test_read_attribute_on_initialised_write_type_attribute" ) {}
+ TestDescription_AttrMiscTestSuite_test_read_attribute_on_initialised_write_type_attribute() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 354, "test_read_attribute_on_initialised_write_type_attribute" ) {}
  void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_read_attribute_on_initialised_write_type_attribute(); }
 } testDescription_AttrMiscTestSuite_test_read_attribute_on_initialised_write_type_attribute;
 
 static class TestDescription_AttrMiscTestSuite_test_alarm_on_attribute : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrMiscTestSuite_test_alarm_on_attribute() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 320, "test_alarm_on_attribute" ) {}
+ TestDescription_AttrMiscTestSuite_test_alarm_on_attribute() : CxxTest::RealTestDescription( Tests_AttrMiscTestSuite, suiteDescription_AttrMiscTestSuite, 402, "test_alarm_on_attribute" ) {}
  void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_alarm_on_attribute(); }
 } testDescription_AttrMiscTestSuite_test_alarm_on_attribute;
 
@@ -348,19 +409,19 @@ public:
 
 static class TestDescription_AttrConfTestSuite_test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrConfTestSuite_test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level() : CxxTest::RealTestDescription( Tests_AttrConfTestSuite, suiteDescription_AttrConfTestSuite, 173, "test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level" ) {}
+ TestDescription_AttrConfTestSuite_test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level() : CxxTest::RealTestDescription( Tests_AttrConfTestSuite, suiteDescription_AttrConfTestSuite, 183, "test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level" ) {}
  void runTest() { if ( suite_AttrConfTestSuite ) suite_AttrConfTestSuite->test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level(); }
 } testDescription_AttrConfTestSuite_test_get_a_db_conf_with_some_conf_defined_at_class_level_and_device_level;
 
 static class TestDescription_AttrConfTestSuite_test_several_attributes_in_one_call : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrConfTestSuite_test_several_attributes_in_one_call() : CxxTest::RealTestDescription( Tests_AttrConfTestSuite, suiteDescription_AttrConfTestSuite, 236, "test_several_attributes_in_one_call" ) {}
+ TestDescription_AttrConfTestSuite_test_several_attributes_in_one_call() : CxxTest::RealTestDescription( Tests_AttrConfTestSuite, suiteDescription_AttrConfTestSuite, 246, "test_several_attributes_in_one_call" ) {}
  void runTest() { if ( suite_AttrConfTestSuite ) suite_AttrConfTestSuite->test_several_attributes_in_one_call(); }
 } testDescription_AttrConfTestSuite_test_several_attributes_in_one_call;
 
 static class TestDescription_AttrConfTestSuite_test_add_one_attribute_on_the_fly_and_get_its_config : public CxxTest::RealTestDescription {
 public:
- TestDescription_AttrConfTestSuite_test_add_one_attribute_on_the_fly_and_get_its_config() : CxxTest::RealTestDescription( Tests_AttrConfTestSuite, suiteDescription_AttrConfTestSuite, 307, "test_add_one_attribute_on_the_fly_and_get_its_config" ) {}
+ TestDescription_AttrConfTestSuite_test_add_one_attribute_on_the_fly_and_get_its_config() : CxxTest::RealTestDescription( Tests_AttrConfTestSuite, suiteDescription_AttrConfTestSuite, 327, "test_add_one_attribute_on_the_fly_and_get_its_config" ) {}
  void runTest() { if ( suite_AttrConfTestSuite ) suite_AttrConfTestSuite->test_add_one_attribute_on_the_fly_and_get_its_config(); }
 } testDescription_AttrConfTestSuite_test_add_one_attribute_on_the_fly_and_get_its_config;
 
