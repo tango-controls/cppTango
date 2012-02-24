@@ -146,7 +146,7 @@ public:
 		DevLong lg = 1000;
 		DevDouble db = 1.2345;
 		string str = "Hello world";
-		DevFloat fl = 10.22;
+		DevFloat fl = 10.22f;
 		DevBoolean bl = 0;
 		DevUShort ush = 1234;
 		DevUChar uch = 233;

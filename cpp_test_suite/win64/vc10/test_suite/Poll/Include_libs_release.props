@@ -11,7 +11,7 @@
       <WarningLevel>Level2</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>tango.lib;log4tango.lib;omniORB4.lib;omniDynamic4.lib;omnithread.lib;COS4.lib;zmq.lib;rpcrt4.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tango.lib;log4tango.lib;omniORB4.lib;omniDynamic4.lib;omnithread.lib;COS4.lib;zmq.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(PREFIX)\win64\bin\$(ProjectName).exe</OutputFile>
       <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\win64\lib;$(LOG4TANGO_BASE)\win64\lib;$(ZMQ_BASE)\win64\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>

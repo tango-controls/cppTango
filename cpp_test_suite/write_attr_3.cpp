@@ -839,9 +839,9 @@ int main(int argc, char **argv)
 	for (i = 0;i < loop;i++)
 	{
 		vector<float> vin,vout;
-		vin.push_back(66.0);
-		vin.push_back(77.0);
-		vin.push_back(88.0);
+		vin.push_back(66.0f);
+		vin.push_back(77.0f);
+		vin.push_back(88.0f);
 		
 		DeviceAttribute dout;
 		DeviceAttribute din("Float_spec_attr_rw",vin);
@@ -856,8 +856,8 @@ int main(int argc, char **argv)
 			exit(-1);
 		}
 		dout >> vout;
-		vin.insert(vin.begin(),11.5);
-		vin.insert(vin.begin(),5.5);
+		vin.insert(vin.begin(),11.5f);
+		vin.insert(vin.begin(),5.5f);
 		assert( vout == vin );
 	}
 	cout << "   Write spectrum float (READ_WRITE attribute) --> OK" << endl;
