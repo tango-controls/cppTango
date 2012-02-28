@@ -143,6 +143,66 @@ public:
 // Test set/get min/max alarm/warning functions
 //
 
+	void test_set_get_alarms(void)
+	{
+		const DevVarStringArray *alarms;
+		DeviceData dout;
+
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetAlarms"));
+		TS_ASSERT_THROWS_NOTHING(dout >> alarms);
+
+		TS_ASSERT((*alarms).length() == 45);
+		TS_ASSERT(string((*alarms)[0].in()) == "Double_attr");
+		TS_ASSERT(string((*alarms)[1].in()) == "-999.99");
+		TS_ASSERT(string((*alarms)[2].in()) == "-888.88");
+		TS_ASSERT(string((*alarms)[3].in()) == "888.88");
+		TS_ASSERT(string((*alarms)[4].in()) == "999.99");
+		TS_ASSERT(string((*alarms)[5].in()) == "Float_attr");
+		TS_ASSERT(string((*alarms)[6].in()) == "-777.77");
+		TS_ASSERT(string((*alarms)[7].in()) == "-666.66");
+		TS_ASSERT(string((*alarms)[8].in()) == "666.66");
+		TS_ASSERT(string((*alarms)[9].in()) == "777.77");
+		TS_ASSERT(string((*alarms)[10].in()) == "Long_attr");
+		TS_ASSERT(string((*alarms)[11].in()) == "1000");
+		TS_ASSERT(string((*alarms)[12].in()) == "1100");
+		TS_ASSERT(string((*alarms)[13].in()) == "1400");
+		TS_ASSERT(string((*alarms)[14].in()) == "1500");
+		TS_ASSERT(string((*alarms)[15].in()) == "Long64_attr");
+		TS_ASSERT(string((*alarms)[16].in()) == "-90000");
+		TS_ASSERT(string((*alarms)[17].in()) == "-80000");
+		TS_ASSERT(string((*alarms)[18].in()) == "80000");
+		TS_ASSERT(string((*alarms)[19].in()) == "90000");
+		TS_ASSERT(string((*alarms)[20].in()) == "Short_attr");
+		TS_ASSERT(string((*alarms)[21].in()) == "-5000");
+		TS_ASSERT(string((*alarms)[22].in()) == "-4000");
+		TS_ASSERT(string((*alarms)[23].in()) == "4000");
+		TS_ASSERT(string((*alarms)[24].in()) == "5000");
+		TS_ASSERT(string((*alarms)[25].in()) == "UChar_attr");
+		TS_ASSERT(string((*alarms)[26].in()) == "1");
+		TS_ASSERT(string((*alarms)[27].in()) == "2");
+		TS_ASSERT(string((*alarms)[28].in()) == "230");
+		TS_ASSERT(string((*alarms)[29].in()) == "240");
+		TS_ASSERT(string((*alarms)[30].in()) == "ULong_attr");
+		TS_ASSERT(string((*alarms)[31].in()) == "1");
+		TS_ASSERT(string((*alarms)[32].in()) == "2");
+		TS_ASSERT(string((*alarms)[33].in()) == "666666");
+		TS_ASSERT(string((*alarms)[34].in()) == "777777");
+		TS_ASSERT(string((*alarms)[35].in()) == "ULong64_attr");
+		TS_ASSERT(string((*alarms)[36].in()) == "1");
+		TS_ASSERT(string((*alarms)[37].in()) == "2");
+		TS_ASSERT(string((*alarms)[38].in()) == "77777777");
+		TS_ASSERT(string((*alarms)[39].in()) == "88888888");
+		TS_ASSERT(string((*alarms)[40].in()) == "UShort_attr");
+		TS_ASSERT(string((*alarms)[41].in()) == "1");
+		TS_ASSERT(string((*alarms)[42].in()) == "2");
+		TS_ASSERT(string((*alarms)[43].in()) == "20000");
+		TS_ASSERT(string((*alarms)[44].in()) == "30000");
+	}
+
+//
+// Test set/get min/max value functions
+//
+
 	void test_set_get_ranges(void)
 	{
 		const DevVarStringArray *ranges;
@@ -151,59 +211,69 @@ public:
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetRanges"));
 		TS_ASSERT_THROWS_NOTHING(dout >> ranges);
 
-		TS_ASSERT((*ranges).length() == 45);
-		TS_ASSERT(string((*ranges)[0].in()) == "Double_attr");
-		TS_ASSERT(string((*ranges)[1].in()) == "-999.99");
-		TS_ASSERT(string((*ranges)[2].in()) == "-888.88");
-		TS_ASSERT(string((*ranges)[3].in()) == "888.88");
-		TS_ASSERT(string((*ranges)[4].in()) == "999.99");
-		TS_ASSERT(string((*ranges)[5].in()) == "Float_attr");
-		TS_ASSERT(string((*ranges)[6].in()) == "-777.77");
-		TS_ASSERT(string((*ranges)[7].in()) == "-666.66");
-		TS_ASSERT(string((*ranges)[8].in()) == "666.66");
-		TS_ASSERT(string((*ranges)[9].in()) == "777.77");
-		TS_ASSERT(string((*ranges)[10].in()) == "Long_attr");
-		TS_ASSERT(string((*ranges)[11].in()) == "1000");
-		TS_ASSERT(string((*ranges)[12].in()) == "1100");
-		TS_ASSERT(string((*ranges)[13].in()) == "1400");
-		TS_ASSERT(string((*ranges)[14].in()) == "1500");
-		TS_ASSERT(string((*ranges)[15].in()) == "Long64_attr");
-		TS_ASSERT(string((*ranges)[16].in()) == "-90000");
-		TS_ASSERT(string((*ranges)[17].in()) == "-80000");
-		TS_ASSERT(string((*ranges)[18].in()) == "80000");
-		TS_ASSERT(string((*ranges)[19].in()) == "90000");
-		TS_ASSERT(string((*ranges)[20].in()) == "Short_attr");
-		TS_ASSERT(string((*ranges)[21].in()) == "-5000");
-		TS_ASSERT(string((*ranges)[22].in()) == "-4000");
-		TS_ASSERT(string((*ranges)[23].in()) == "4000");
-		TS_ASSERT(string((*ranges)[24].in()) == "5000");
-		TS_ASSERT(string((*ranges)[25].in()) == "UChar_attr");
-		TS_ASSERT(string((*ranges)[26].in()) == "0");
-		TS_ASSERT(string((*ranges)[27].in()) == "1");
-		TS_ASSERT(string((*ranges)[28].in()) == "240");
-		TS_ASSERT(string((*ranges)[29].in()) == "250");
-		TS_ASSERT(string((*ranges)[30].in()) == "ULong_attr");
-		TS_ASSERT(string((*ranges)[31].in()) == "0");
-		TS_ASSERT(string((*ranges)[32].in()) == "1");
-		TS_ASSERT(string((*ranges)[33].in()) == "666666");
-		TS_ASSERT(string((*ranges)[34].in()) == "777777");
-		TS_ASSERT(string((*ranges)[35].in()) == "ULong64_attr");
-		TS_ASSERT(string((*ranges)[36].in()) == "0");
-		TS_ASSERT(string((*ranges)[37].in()) == "1");
-		TS_ASSERT(string((*ranges)[38].in()) == "88888888");
-		TS_ASSERT(string((*ranges)[39].in()) == "99999999");
-		TS_ASSERT(string((*ranges)[40].in()) == "UShort_attr");
-		TS_ASSERT(string((*ranges)[41].in()) == "0");
-		TS_ASSERT(string((*ranges)[42].in()) == "1");
-		TS_ASSERT(string((*ranges)[43].in()) == "20000");
-		TS_ASSERT(string((*ranges)[44].in()) == "30000");
+		TS_ASSERT((*ranges).length() == 27);
+		TS_ASSERT(string((*ranges)[0].in()) == "Double_attr_w");
+		TS_ASSERT(string((*ranges)[1].in()) == "-1111.11");
+		TS_ASSERT(string((*ranges)[2].in()) == "1111.11");
+		TS_ASSERT(string((*ranges)[3].in()) == "Float_attr_w");
+		TS_ASSERT(string((*ranges)[4].in()) == "-888.88");
+		TS_ASSERT(string((*ranges)[5].in()) == "888.88");
+		TS_ASSERT(string((*ranges)[6].in()) == "Long_attr_w");
+		TS_ASSERT(string((*ranges)[7].in()) == "900");
+		TS_ASSERT(string((*ranges)[8].in()) == "1600");
+		TS_ASSERT(string((*ranges)[9].in()) == "Long64_attr_rw");
+		TS_ASSERT(string((*ranges)[10].in()) == "-100000");
+		TS_ASSERT(string((*ranges)[11].in()) == "100000");
+		TS_ASSERT(string((*ranges)[12].in()) == "Short_attr_w");
+		TS_ASSERT(string((*ranges)[13].in()) == "-6000");
+		TS_ASSERT(string((*ranges)[14].in()) == "6000");
+		TS_ASSERT(string((*ranges)[15].in()) == "UChar_attr_w");
+		TS_ASSERT(string((*ranges)[16].in()) == "0");
+		TS_ASSERT(string((*ranges)[17].in()) == "250");
+		TS_ASSERT(string((*ranges)[18].in()) == "ULong_attr_rw");
+		TS_ASSERT(string((*ranges)[19].in()) == "0");
+		TS_ASSERT(string((*ranges)[20].in()) == "888888");
+		TS_ASSERT(string((*ranges)[21].in()) == "ULong64_attr_rw");
+		TS_ASSERT(string((*ranges)[22].in()) == "0");
+		TS_ASSERT(string((*ranges)[23].in()) == "99999999");
+		TS_ASSERT(string((*ranges)[24].in()) == "UShort_attr_w");
+		TS_ASSERT(string((*ranges)[25].in()) == "0");
+		TS_ASSERT(string((*ranges)[26].in()) == "40000");
+	}
 
+//
+// Test set/get properties functions
+//
 
-//		// display ranges
-//		for(unsigned int i = 0; i < ranges->length(); i++)
-//		{
-//			cout << "\t" << (*ranges)[i].in() << endl;
-//		}
+	void test_set_get_properties(void)
+	{
+		const DevVarStringArray *props;
+		DeviceData dout;
+
+		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetProperties"));
+		TS_ASSERT_THROWS_NOTHING(dout >> props);
+
+		TS_ASSERT((*props).length() == 20);
+		TS_ASSERT(string((*props)[0].in()) == "Test_label");
+		TS_ASSERT(string((*props)[1].in()) == "Test_description");
+		TS_ASSERT(string((*props)[2].in()) == "Test_description");
+		TS_ASSERT(string((*props)[3].in()) == "Test_standard_unit");
+		TS_ASSERT(string((*props)[4].in()) == "Test_display_unit");
+		TS_ASSERT(string((*props)[5].in()) == "Test_format");
+		TS_ASSERT(string((*props)[6].in()) == "0");
+		TS_ASSERT(string((*props)[7].in()) == "200");
+		TS_ASSERT(string((*props)[8].in()) == "10");
+		TS_ASSERT(string((*props)[9].in()) == "190");
+		TS_ASSERT(string((*props)[10].in()) == "20");
+		TS_ASSERT(string((*props)[11].in()) == "180");
+		TS_ASSERT(string((*props)[12].in()) == "5");
+		TS_ASSERT(string((*props)[13].in()) == "10");
+		TS_ASSERT(string((*props)[14].in()) == "300");
+		TS_ASSERT(string((*props)[15].in()) == "400");
+		TS_ASSERT(string((*props)[16].in()) == "-0.2,0.3");
+		TS_ASSERT(string((*props)[17].in()) == "-40,50");
+		TS_ASSERT(string((*props)[18].in()) == "-0.6,0.7");
+		TS_ASSERT(string((*props)[19].in()) == "-80,90");
 	}
 
 // Test read attribute exceptions
