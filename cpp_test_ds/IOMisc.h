@@ -318,11 +318,31 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
 
+class SetGetAlarms : public Tango::Command
+{
+public:
+	SetGetAlarms(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~SetGetAlarms() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
 class SetGetRanges : public Tango::Command
 {
 public:
 	SetGetRanges(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
 	~SetGetRanges() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+class SetGetProperties : public Tango::Command
+{
+public:
+	SetGetProperties(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~SetGetProperties() {};
 
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);

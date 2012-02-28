@@ -538,11 +538,21 @@ void DevTestClass::command_factory()
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling threads pool configuration"));
+	command_list.push_back(new SetGetAlarms("SetGetAlarms",
+					    Tango::DEV_VOID,
+					    Tango::DEVVAR_STRINGARRAY,
+					    "void",
+					    "DevVarStringArray containing alarm values"));
 	command_list.push_back(new SetGetRanges("SetGetRanges",
 					    Tango::DEV_VOID,
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
-					    "Ranges values string array"));
+					    "DevVarStringArray containing ranges values"));
+	command_list.push_back(new SetGetProperties("SetGetProperties",
+					    Tango::DEV_VOID,
+					    Tango::DEVVAR_STRINGARRAY,
+					    "void",
+					    "DevVarStringArray containing properties values"));
 	command_list.push_back(new PollingInDeviceTst("IOPollingInDevice",
 					    Tango::DEV_VOID,
 					    Tango::DEVVAR_STRINGARRAY,
