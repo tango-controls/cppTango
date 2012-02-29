@@ -1,4 +1,4 @@
-///=============================================================================	
+///=============================================================================
 //
 // file :		jpeg_memory.cpp
 //
@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -20,12 +20,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -54,7 +54,7 @@ typedef struct {
 static int nb_allocated = 0;
 static MEMORY_HEADER MemTable[MAX_BUFFER];
 
-// Allocate a buffer (always 16 bytes aligned) 
+// Allocate a buffer (always 16 bytes aligned)
 void *malloc_16(size_t size) {
 
   void *mptr;
@@ -83,7 +83,7 @@ void *malloc_16(size_t size) {
   return mptr16;
 }
 
-// Allocate a buffer (always 16 bytes aligned) 
+// Allocate a buffer (always 16 bytes aligned)
 void *calloc_16(size_t count,size_t size) {
 
   void *mptr;
@@ -109,7 +109,7 @@ void *calloc_16(size_t count,size_t size) {
 
 // Free a buffer
 void free_16( void *ptr ) {
-  
+
   int i,found;
 
   if( ptr==NULL ) return;
@@ -124,7 +124,7 @@ void free_16( void *ptr ) {
     free( MemTable[i].buff );
     nb_allocated--;
 //    memcpy( &(MemTable[i]) , &(MemTable[i+1]) , sizeof(MEMORY_HEADER)*(nb_allocated-i) );
-	for(int j=i;j<nb_allocated;j++) MemTable[j] = MemTable[j+1]; 
+	for(int j=i;j<nb_allocated;j++) MemTable[j] = MemTable[j+1];
   } else {
     printf("jpeg_memory warning: Trying to free unallocated memory");
   }

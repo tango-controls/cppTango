@@ -29,14 +29,14 @@ while(<DUMP>)
 {
     if(!/\bUNDEF\b/ && /\bExternal\b/)
     {
-	s/^.*\|\s+//;
-	split;
-	$_ = $_[0];
+		s/^.*\|\s+//;
+		@values = split;
+		$_ = $values[0];
 
-	if(!/^\?\?_G/ && !/^\?\?_E/)
-	{
-	    print DEF "    $_\n";
-	}
+		if(!/^\?\?_G/ && !/^\?\?_E/)
+		{
+			print DEF "    $_\n";
+		}
     }
 }
 

@@ -1,4 +1,4 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -9,12 +9,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -76,7 +76,7 @@ public:
 };
 
 
-class t_server 
+class t_server
 {
 public:
 	std::string 					name;
@@ -87,7 +87,7 @@ public:
 
 template <class T> class hasName
 {
-    string 		name; 
+    string 		name;
 public:
     hasName (string _name) : name(_name) {};
     bool operator () (T* obj);
@@ -95,7 +95,7 @@ public:
 
 template <class T> class hasAttributeName
 {
-    string 		attribute_name; 
+    string 		attribute_name;
 public:
     hasAttributeName (string _name) : attribute_name(_name) {};
     bool operator () (T* obj);
@@ -108,7 +108,7 @@ public:
 	FileDatabaseExt();
 
 	~FileDatabaseExt();
-	
+
 };
 
 
@@ -176,7 +176,7 @@ private:
 	std::string read_word(std::ifstream& f);
 	void CHECK_LEX(int lt,int le);
 	std::vector<std::string> parse_resource_value(std::ifstream& f);
-	
+
 	std::string read_full_word(std::ifstream& f);
 
 
@@ -198,7 +198,7 @@ private:
   	int 			StartLine;
   	char 			CurrentChar;
   	char 			NextChar;
-  
+
   	bool 			DELETE_ENTRY;
   	string 			word;
 
@@ -206,6 +206,6 @@ private:
 };
 
 } // end namespace Tango
- 
+
 #endif
- 
+

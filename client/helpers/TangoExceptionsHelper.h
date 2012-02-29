@@ -1,5 +1,5 @@
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						Synchrotron SOLEIL
 //                		L'Orme des Merisiers
 //                		Saint-Aubin - BP 48 - France
@@ -10,12 +10,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -27,8 +27,8 @@
 #endif
 
 //-----------------------------------------------------------------------------
-// DEFINE A SPECIAL VERSION OF TANGO ERROR_STREAM MACRO SO THAT FOLLOWING 
-// MACROS CAN BE SAFELY USED FROM C++ (PURE) CLIENT WHERE THERE IS NO 
+// DEFINE A SPECIAL VERSION OF TANGO ERROR_STREAM MACRO SO THAT FOLLOWING
+// MACROS CAN BE SAFELY USED FROM C++ (PURE) CLIENT WHERE THERE IS NO
 // INSTANCIATED LOGGER
 //-----------------------------------------------------------------------------
 #define _ERROR_STREAM \
@@ -39,7 +39,7 @@
 // _HANDLE_DEV_EXCEPTION MACRO
 //=============================================================================
 
-#define _HANDLE_DEV_EXCEPTION(_cmd, _origin) _HANDLE_DEV_EXCEPTION_FILE_LINE(_cmd,_origin, __FILE__, __LINE__) 
+#define _HANDLE_DEV_EXCEPTION(_cmd, _origin) _HANDLE_DEV_EXCEPTION_FILE_LINE(_cmd,_origin, __FILE__, __LINE__)
 
 #define _HANDLE_DEV_EXCEPTION_FILE_LINE(_cmd, _origin, _file, _line) \
 	catch (Tango::ConnectionFailed &e)  { \
