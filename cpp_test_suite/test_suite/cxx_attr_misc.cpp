@@ -270,10 +270,10 @@ public:
 		TS_ASSERT(string((*props)[13].in()) == "10");
 		TS_ASSERT(string((*props)[14].in()) == "300");
 		TS_ASSERT(string((*props)[15].in()) == "400");
-		TS_ASSERT(string((*props)[16].in()) == "-0.2,0.3");
-		TS_ASSERT(string((*props)[17].in()) == "-40,50");
-		TS_ASSERT(string((*props)[18].in()) == "-0.6,0.7");
-		TS_ASSERT(string((*props)[19].in()) == "-80,90");
+		TS_ASSERT(string((*props)[16].in()) == "0.2,0.3");
+		TS_ASSERT(string((*props)[17].in()) == "40,50");
+		TS_ASSERT(string((*props)[18].in()) == "0.6,0.7");
+		TS_ASSERT(string((*props)[19].in()) == "80,90");
 	}
 
 // Test read attribute exceptions
