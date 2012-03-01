@@ -16,7 +16,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -62,10 +62,9 @@ namespace Tango
 Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
            const char *assoc)
 :name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),
-      mem(false),mem_init(true)
+mem(false),mem_init(true),ext(new AttrExt)
 {
 	format = Tango::SCALAR;
-	ext = new AttrExt();
 
 	ext->fire_change_event = false;
 	ext->check_change_event = true;
@@ -107,10 +106,11 @@ Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
 
 Attr::Attr(const char *att_name,long att_type,DispLevel level,
 	   AttrWriteType att_writable, const char *assoc)
-:name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),mem(false)
+:name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),mem(false),
+ext(new AttrExt(level))
 {
 	format = Tango::SCALAR;
-	ext = new AttrExt(level);
+
 	if (name != "State")
 		check_type();
 
@@ -145,7 +145,9 @@ Attr::Attr(const char *att_name,long att_type,DispLevel level,
 
 Attr::~Attr()
 {
+#ifndef HAS_UNIQUE_PTR
 	delete ext;
+#endif
 }
 
 //+-------------------------------------------------------------------------
@@ -214,41 +216,112 @@ void Attr::check_type()
 
 void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 {
-	if (prop_list.label.empty() == false)
+	if ((prop_list.label.empty() == false) &&
+		(TG_strcasecmp(prop_list.label.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.label.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("label",prop_list.label));
 
-	if (prop_list.description.empty() == false)
+	if (prop_list.description.empty() == false &&
+		(TG_strcasecmp(prop_list.description.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.description.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("description",prop_list.description));
 
-	if (prop_list.unit.empty() == false)
+	if (prop_list.unit.empty() == false &&
+		(TG_strcasecmp(prop_list.unit.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.unit.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("unit",prop_list.unit));
 
-	if (prop_list.standard_unit.empty() == false)
+	if (prop_list.standard_unit.empty() == false &&
+		(TG_strcasecmp(prop_list.standard_unit.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.standard_unit.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("standard_unit",prop_list.standard_unit));
 
-	if (prop_list.display_unit.empty() == false)
+	if (prop_list.display_unit.empty() == false &&
+		(TG_strcasecmp(prop_list.display_unit.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.display_unit.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("display_unit",prop_list.display_unit));
 
-	if (prop_list.format.empty() == false)
+	if (prop_list.format.empty() == false &&
+		(TG_strcasecmp(prop_list.format.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.format.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("format",prop_list.format));
 
-	if (prop_list.min_value.empty() == false)
+	if (prop_list.min_value.empty() == false &&
+		(TG_strcasecmp(prop_list.min_value.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.min_value.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("min_value",prop_list.min_value));
 
-	if (prop_list.max_value.empty() == false)
+	if (prop_list.max_value.empty() == false &&
+		(TG_strcasecmp(prop_list.max_value.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.max_value.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("max_value",prop_list.max_value));
 
-	if (prop_list.min_alarm.empty() == false)
+	if (prop_list.min_alarm.empty() == false &&
+		(TG_strcasecmp(prop_list.min_alarm.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.min_alarm.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("min_alarm",prop_list.min_alarm));
 
-	if (prop_list.max_alarm.empty() == false)
+	if (prop_list.max_alarm.empty() == false &&
+		(TG_strcasecmp(prop_list.max_alarm.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.max_alarm.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("max_alarm",prop_list.max_alarm));
 
-	if (prop_list.delta_val.empty() == false)
+	if (prop_list.min_warning.empty() == false &&
+		(TG_strcasecmp(prop_list.min_warning.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.min_warning.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("min_warning",prop_list.min_warning));
+
+	if (prop_list.max_warning.empty() == false &&
+		(TG_strcasecmp(prop_list.max_warning.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.max_warning.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("max_warning",prop_list.max_warning));
+
+	if (prop_list.delta_val.empty() == false &&
+		(TG_strcasecmp(prop_list.delta_val.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.delta_val.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("delta_val",prop_list.delta_val));
 
-	if (prop_list.delta_t.empty() == false)
+	if (prop_list.delta_t.empty() == false &&
+		(TG_strcasecmp(prop_list.delta_t.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.delta_t.c_str(),"0") != 0) &&
+		(TG_strcasecmp(prop_list.delta_t.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("delta_t",prop_list.delta_t));
+
+	if (prop_list.abs_change.empty() == false &&
+		(TG_strcasecmp(prop_list.abs_change.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.abs_change.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("abs_change",prop_list.abs_change));
+
+	if (prop_list.rel_change.empty() == false &&
+		(TG_strcasecmp(prop_list.rel_change.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.rel_change.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("rel_change",prop_list.rel_change));
+
+	TangoSys_MemStream def_event_period;
+	def_event_period << (int)(DEFAULT_EVENT_PERIOD);
+	if (prop_list.period.empty() == false &&
+		(TG_strcasecmp(prop_list.period.c_str(),AlrmValueNotSpec) != 0) &&
+		(prop_list.period != def_event_period.str()) &&
+		(TG_strcasecmp(prop_list.period.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("event_period",prop_list.period));
+
+	if (prop_list.archive_abs_change.empty() == false &&
+		(TG_strcasecmp(prop_list.archive_abs_change.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.archive_abs_change.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("archive_abs_change",prop_list.archive_abs_change));
+
+	if (prop_list.archive_rel_change.empty() == false &&
+		(TG_strcasecmp(prop_list.archive_rel_change.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.archive_rel_change.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("archive_rel_change",prop_list.archive_rel_change));
+
+	TangoSys_MemStream def_archive_period;
+	def_archive_period << (int)(INT_MAX);
+	if (prop_list.archive_period.empty() == false &&
+		(TG_strcasecmp(prop_list.archive_period.c_str(),AlrmValueNotSpec) != 0) &&
+		(prop_list.archive_period != def_archive_period.str()) &&
+		(TG_strcasecmp(prop_list.archive_period.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("archive_period",prop_list.archive_period));
 
 }
 
@@ -315,7 +388,7 @@ void Attr::set_memorized()
 //--------------------------------------------------------------------------
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
-:Attr(att_name,att_type),ext(NULL)
+:Attr(att_name,att_type),ext(Tango_NullPtr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -344,7 +417,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 }
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,long x)
-:Attr(att_name,att_type,w_type),ext(NULL)
+:Attr(att_name,att_type,w_type),ext(Tango_NullPtr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -373,7 +446,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 }
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel level)
-:Attr(att_name,att_type,level),ext(NULL)
+:Attr(att_name,att_type,level),ext(Tango_NullPtr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -402,7 +475,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 }
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,long x,DispLevel level)
-:Attr(att_name,att_type,level,w_type),ext(NULL)
+:Attr(att_name,att_type,level,w_type),ext(Tango_NullPtr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -440,7 +513,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 //--------------------------------------------------------------------------
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
-:SpectrumAttr(att_name,att_type,x),ext(NULL)
+:SpectrumAttr(att_name,att_type,x),ext(Tango_NullPtr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -459,7 +532,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,
 		     long x,long y)
-:SpectrumAttr(att_name,att_type,w_type,x),ext(NULL)
+:SpectrumAttr(att_name,att_type,w_type,x),ext(Tango_NullPtr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -478,7 +551,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 		     long y,DispLevel level)
-:SpectrumAttr(att_name,att_type,x,level),ext(NULL)
+:SpectrumAttr(att_name,att_type,x,level),ext(Tango_NullPtr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -497,7 +570,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,
 		     long x, long y,DispLevel level)
-:SpectrumAttr(att_name,att_type,w_type,x,level),ext(NULL)
+:SpectrumAttr(att_name,att_type,w_type,x,level),ext(Tango_NullPtr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -513,4 +586,5 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 	}
 	max_y = y;
 }
+
 } // End of Tango namespace

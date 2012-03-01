@@ -1,4 +1,4 @@
-///=============================================================================	
+///=============================================================================
 //
 // file :		jpeg_color_mmx.cpp
 //
@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -20,12 +20,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -130,7 +130,7 @@ ALIGN8 short  _rcmm[]    = { 1,1,1,1 };
 // 1               --> 0x0001
 //
 // This problem is the reason of all the following macros.
-// It's not a nice way to solve it> When we will have time, we will 
+// It's not a nice way to solve it> When we will have time, we will
 // try to find a cleaner solution
 //
 
@@ -144,19 +144,19 @@ ALIGN8 short  _rcmm[]    = { 1,1,1,1 };
 	"psubw	"#REG1", QWORD PTR [esp]	\n" \
 	"psubw	"#REG2", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define add_127_mmx_reg(REG1) \
 	"push	0xff81ff81	\n" \
 	"push	0xff81ff81	\n"	\
 	"paddw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define add_1_mmx_reg(REG1) \
 	"push	0x00010001	\n" \
 	"push	0x00010001	\n"	\
 	"paddw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define mul_cxx_mmx_reg(REG1,REG2,REG3,REG4) \
 	"push	0xe9fae9fa	\n" \
 	"push	0xe9fae9fa	\n"	\
@@ -171,7 +171,7 @@ ALIGN8 short  _rcmm[]    = { 1,1,1,1 };
 	"push	0x59ba59ba	\n"	\
 	"pmulhw "#REG4", QWORD PTR [esp]	\n" \
 	"add	esp,32	\n"
-	
+
 #define mul_rgb_mmx_reg(REG1,REG2,REG3) \
 	"push	0x26462646	\n" \
 	"push	0x26462646	\n"	\
@@ -183,7 +183,7 @@ ALIGN8 short  _rcmm[]    = { 1,1,1,1 };
 	"push	0x0e980e98	\n"	\
 	"pmulhw "#REG3", QWORD PTR [esp]	\n" \
 	"add	esp,24	\n"
-	
+
 #define mul_rgbc_mmx_reg(REG1,REG2,REG3) \
 	"push	0x40004000	\n"	\
 	"push	0xea67ea67	\n" \
@@ -201,32 +201,32 @@ ALIGN8 short  _rcmm[]    = { 1,1,1,1 };
 #define sub_128_mmx_reg(REG1,REG2) \
     "psubw     "#REG1",_128mm      \n" \
     "psubw     "#REG2",_128mm      \n"
-	
+
 #define add_127_mmx_reg(REG1) \
     "paddw "#REG1",_offymm       \n"
-	
+
 #define add_1_mmx_reg(REG1) \
     "paddw "#REG1",_rcmm         \n"
-	
+
 #define mul_cxx_mmx_reg(REG1,REG2,REG3,REG4) \
     "pmulhw    "#REG1",_cbgmm      \n" \
     "pmulhw    "#REG2",_cbbmm      \n" \
     "pmulhw    "#REG3",_crgmm      \n" \
     "pmulhw    "#REG4",_crrmm      \n"
-	
+
 #define mul_rgb_mmx_reg(REG1,REG2,REG3) \
       "pmulhw "#REG1",_rymm        \n" \
       "pmulhw "#REG2",_gymm        \n" \
       "pmulhw "#REG3",_bymm        \n"
-	
+
 #define mul_rgbc_mmx_reg(REG1,REG2,REG3) \
       "pmulhw "#REG1",_rcbcrmm     \n" \
       "pmulhw "#REG2",_gcbcrmm     \n" \
       "pmulhw "#REG3",_bcbcrmm     \n"
-	  
+
 #endif /* __PIC__ */
 
-		
+
 #endif /* _WINDOWS */
 
 //------------------------------------------------------------------------------
@@ -245,7 +245,7 @@ void jpeg_yh2v2_to_rgb32_mmx(unsigned char *block,long width,unsigned char *rgb)
 
 #ifdef _WINDOWS
 
-    // Visual C++ inline assembly    
+    // Visual C++ inline assembly
     _asm {
 
       mov  edi,rgb
@@ -306,7 +306,7 @@ __blrow_h2v2:
       punpcklbw mm6,mm0    // G3R3G2R2G1R1G0R0
       punpcklbw mm7,mm1    // 00B300B200B100B0
       movq      mm1,mm6
-      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0      
+      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0
       punpckhwd mm6,mm7    // 00B3G3R300B2G2R2
 
       movq      [edi]  ,mm1
@@ -341,7 +341,7 @@ __blrow_h2v2:
       punpcklbw mm6,mm0    // G3R3G2R2G1R1G0R0
       punpcklbw mm7,mm1    // 00B300B200B100B0
       movq      mm1,mm6
-      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0      
+      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0
       punpckhwd mm6,mm7    // 00B3G3R300B2G2R2
 
       movq      [edi+16],mm1
@@ -376,7 +376,7 @@ __blrow_h2v2:
       punpcklbw mm6,mm0    // G3R3G2R2G1R1G0R0
       punpcklbw mm7,mm1    // 00B300B200B100B0
       movq      mm1,mm6
-      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0      
+      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0
       punpckhwd mm6,mm7    // 00B3G3R300B2G2R2
 
       movq      [edi+eax]  ,mm1
@@ -411,7 +411,7 @@ __blrow_h2v2:
       punpcklbw mm6,mm0    // G3R3G2R2G1R1G0R0
       punpcklbw mm7,mm1    // 00B300B200B100B0
       movq      mm1,mm6
-      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0      
+      punpcklwd mm1,mm7    // 00B1G1R100B0G0R0
       punpckhwd mm6,mm7    // 00B3G3R300B2G2R2
 
       movq      [edi+eax+16],mm1
@@ -433,7 +433,7 @@ __blrow_h2v2:
     ".intel_syntax noprefix    \n"
 #ifdef _64BITS
     "push rbx                  \n"
-    "mov  rbx,rcx              \n"    
+    "mov  rbx,rcx              \n"
     "xor  rcx,rcx              \n"
     "shl  rax,2                \n"
 "__blrow_h2v2:                 \n"
@@ -443,7 +443,7 @@ __blrow_h2v2:
     "movd mm3,[rbx+64]         \n"
 #else
     "push ebx                  \n"
-    "mov  ebx,ecx              \n"    
+    "mov  ebx,ecx              \n"
     "xor  ecx,ecx              \n"
     "shl  eax,2                \n"
 "__blrow_h2v2:                 \n"
@@ -481,7 +481,7 @@ __blrow_h2v2:
     "punpcklbw mm6,mm0         \n"
     "punpcklbw mm7,mm1         \n"
     "movq      mm1,mm6         \n"
-    "punpcklwd mm1,mm7         \n"  
+    "punpcklwd mm1,mm7         \n"
     "punpckhwd mm6,mm7         \n"
 #ifdef _64BITS
     "movq      [rdi]  ,mm1     \n"
@@ -551,11 +551,11 @@ __blrow_h2v2:
     "movq      [rdi+rax]  ,mm1 \n"
     "movq      [rdi+rax+8],mm6 \n"
     "movd mm1,[rsi+rdx+12]     \n"
-#else 
+#else
     "movq      [edi+eax]  ,mm1 \n"
     "movq      [edi+eax+8],mm6 \n"
     "movd mm1,[esi+edx+12]     \n"
-#endif   
+#endif
     "pxor      mm0,mm0         \n"
     "punpcklbw mm1,mm0         \n"
     "movq      mm6,mm5         \n"
@@ -589,7 +589,7 @@ __blrow_h2v2:
     "cmp rcx,128               \n"
     "jl  __blrow_h2v2          \n"
     "pop rbx                   \n"
-#else 
+#else
     "movq     [edi+eax+16],mm1 \n"
     "movq     [edi+eax+24],mm6 \n"
     "sub edx,ecx               \n"
@@ -667,7 +667,7 @@ __blcol_h1v1:
     punpcklbw mm5,mm2    // G3R3G2R2G1R1G0R0
     punpcklbw mm4,mm0    // 00B300B200B100B0
     movq      mm1,mm5
-    punpcklwd mm1,mm4    // 00B1G1R100B0G0R0      
+    punpcklwd mm1,mm4    // 00B1G1R100B0G0R0
     punpckhwd mm5,mm4    // 00B3G3R300B2G2R2
 
     movq      [edi],mm1
@@ -705,7 +705,7 @@ __blcol_h1v1:
     punpcklbw mm5,mm2    // G3R3G2R2G1R1G0R0
     punpcklbw mm4,mm0    // 00B300B200B100B0
     movq      mm1,mm5
-    punpcklwd mm1,mm4    // 00B1G1R100B0G0R0      
+    punpcklwd mm1,mm4    // 00B1G1R100B0G0R0
     punpckhwd mm5,mm4    // 00B3G3R300B2G2R2
 
     movq      [edi+16],mm1
@@ -831,7 +831,7 @@ void conv_block_GRAY8Y_mmx(long width,unsigned char *g,short *y) {
 
   // Visual C++ inline assembly
   _asm {
-      
+
     mov esi,g
     mov edi,y
     mov eax,width
@@ -915,7 +915,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
   long   i,j,y0,pitch;
   short *yB;
   // ! Due to wrong gcc stack code (does not detect push), yB is cleared during asm !
-  
+
   pitch = 6*width-48;
 
   for(j=0;j<8;j++) {
@@ -1066,7 +1066,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       __asm__ (
       ".intel_syntax noprefix  \n"
 #ifdef _64BITS
-      "push rbx                \n"      
+      "push rbx                \n"
       "mov  rbx,rcx            \n"
       "mov  rcx,rax            \n"
       "shl  rax,1              \n"
@@ -1077,7 +1077,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd mm2,[rsi+3]        \n"
       "movd mm4,[rsi+8]        \n"
 #else
-      "push ebx                \n"      
+      "push ebx                \n"
       "mov  ebx,ecx            \n"
       "mov  ecx,eax            \n"
       "shl  eax,1              \n"
@@ -1087,7 +1087,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd mm3,[esi+6]        \n"
       "movd mm2,[esi+3]        \n"
       "movd mm4,[esi+8]        \n"
-#endif      
+#endif
       "psrlq mm4,8             \n"
       "punpcklbw mm1,mm0       \n"
       "punpcklbw mm2,mm0       \n"
@@ -1122,7 +1122,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd mm3,[esi+eax+6]    \n"
       "movd mm2,[esi+eax+3]    \n"
       "movd mm4,[esi+eax+8]    \n"
-#endif      
+#endif
       "psrlq mm4,8             \n"
       "punpcklbw mm1,mm0       \n"
       "punpcklbw mm2,mm0       \n"
@@ -1157,7 +1157,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd mm3,[esi+eax]      \n"
       "movd mm2,[esi+3]        \n"
       "movd mm4,[esi+eax+3]    \n"
-#endif      
+#endif
       "punpcklbw mm1,mm0       \n"
       "punpcklbw mm2,mm0       \n"
       "punpcklbw mm3,mm0       \n"
@@ -1176,7 +1176,7 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd mm4,[esi+eax+6]    \n"
       "movd mm3,[esi+8]        \n"
       "movd mm5,[esi+eax+8]    \n"
-#endif      
+#endif
       "psrlq mm3,8             \n"
       "psrlq mm5,8             \n"
       "punpcklbw mm2,mm0       \n"
@@ -1202,13 +1202,13 @@ void conv_block_RGB24H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd [rbx],mm1          \n"
       "psrlq mm1,32            \n"
       "movd [rdx],mm1          \n"
-      "pop rbx                 \n"      
+      "pop rbx                 \n"
 #else
       "movd [ebx],mm1          \n"
       "psrlq mm1,32            \n"
       "movd [edx],mm1          \n"
-      "pop ebx                 \n"      
-#endif      
+      "pop ebx                 \n"
+#endif
       ".att_syntax             \n"
       : /* no output */
       : "D"(yB),"S"(rgb),"a"(width),"c"(cb),"d"(cr)
@@ -1379,7 +1379,7 @@ void conv_block_RGB32H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       __asm__ (
       ".intel_syntax noprefix  \n"
 #ifdef _64BITS
-      "push rbx                \n"      
+      "push rbx                \n"
       "mov rbx,rcx             \n"
       "pxor mm0,mm0            \n"
       "shl  rax,2              \n"
@@ -1388,7 +1388,7 @@ void conv_block_RGB32H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd mm2,[rsi+4]        \n"
       "movd mm4,[rsi+12]       \n"
 #else
-      "push ebx                \n"      
+      "push ebx                \n"
       "mov ebx,ecx             \n"
       "pxor mm0,mm0            \n"
       "shl  eax,2              \n"
@@ -1507,12 +1507,12 @@ void conv_block_RGB32H2V2_mmx(long width,unsigned char *rgb,short *y,short *cb,s
       "movd [rbx],mm1          \n"
       "psrlq mm1,32            \n"
       "movd [rdx],mm1          \n"
-      "pop rbx                 \n"      
+      "pop rbx                 \n"
 #else
       "movd [ebx],mm1          \n"
       "psrlq mm1,32            \n"
       "movd [edx],mm1          \n"
-      "pop ebx                 \n"      
+      "pop ebx                 \n"
 #endif
       ".att_syntax             \n"
       : /* no output */

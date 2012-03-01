@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -25,12 +25,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -90,7 +90,7 @@ NamedDevFailed::NamedDevFailed()
 //+-------------------------------------------------------------------------
 //
 // method : 		NamedDevFailedList::NamedDevFailedList
-// 
+//
 // description : 	Constructor for the NamedDevFailedList class.
 //			This exception is constructed from the CORBA
 //			MultiDevFailed exception. Remember that CORBA does not
@@ -103,7 +103,7 @@ NamedDevFailed::NamedDevFailed()
 //		   - dev_name : The device name
 //		   - op_name : The API CORBA operation interface where  the
 //			       exception has been catched
-//		   - reason : The summary DevFailed exception reason field	
+//		   - reason : The summary DevFailed exception reason field
 //
 //--------------------------------------------------------------------------
 
@@ -115,7 +115,7 @@ NamedDevFailedList::NamedDevFailedList(const Tango::MultiDevFailed &corba_ex,
 {
 	unsigned int i;
 	unsigned long nb_obj_failed = corba_ex.errors.length();
-	
+
 	for (i = 0;i < nb_obj_failed;i++)
 	{
 		NamedDevFailed tmp_err(corba_ex.errors[i].err_list,
@@ -128,7 +128,7 @@ NamedDevFailedList::NamedDevFailedList(const Tango::MultiDevFailed &corba_ex,
 // Build an exception summary (as string) in the DevFailed part of this
 // exception.
 //
-	
+
 	TangoSys_OMemStream desc;
 	desc << "Failed to execute " << op_name << " on device " << dev_name;
 	desc << ", object(s) ";
@@ -144,15 +144,9 @@ NamedDevFailedList::NamedDevFailedList(const Tango::MultiDevFailed &corba_ex,
 	errors[0].severity = Tango::ERR;
 	errors[0].reason = CORBA::string_dup(reason);
 	errors[0].origin = CORBA::string_dup(op_name);
-	
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
+
 	string st = desc.str();
 	errors[0].desc = CORBA::string_dup(st.c_str());
-#else
-	char *tmp_str = desc.str();
-	errors[0].desc = CORBA::string_dup(tmp_str);
-	delete[]tmp_str;
-#endif
 }
 
 

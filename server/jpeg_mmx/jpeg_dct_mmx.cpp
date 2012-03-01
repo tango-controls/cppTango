@@ -1,4 +1,4 @@
-///=============================================================================	
+///=============================================================================
 //
 // file :		jpeg_dct_mmx.cpp
 //
@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -20,12 +20,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -79,7 +79,7 @@ ALIGN8 short __jpmm_tg_2_16[]   = {  27146,  27146,  27146,  27146 }; //tg * (2<
 ALIGN8 short __jpmm_tg_3_16[]   = { -21746, -21746, -21746, -21746 }; //tg * (2<<16) + 0.5
 ALIGN8 short __jpmm_cos_4_16[]  = { -19195, -19195, -19195, -19195 }; //cos * (2<<16) + 0.5
 ALIGN8 short __jpmm_ocos_4_16[] = {  23170,  23170,  23170,  23170 }; //cos * (2<<15) + 0.5
-	
+
 
 ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
 
@@ -117,11 +117,11 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
     19266, 19266, 25172, -10426,    //    w09 w01 w08 w00
     19266, 19266, 10426, -25172,    //    w13 w05 w12 w04
     19266, -19266, 10426, 25172,    //    w11 w03 w10 w02
-    -19266, 19266, -25172, -10426,  //    w15 w07 w14 w06, 
+    -19266, 19266, -25172, -10426,  //    w15 w07 w14 w06,
     26722, 15137, 22654, -26722,    //    w22 w20 w18 w16
     22654, 5315, -5315, -15137,     //    w23 w21 w19 w17
     15137, 5315, 5315, 22654,       //    w30 w28 w26 w24
-    -26722, 22654, -15137, -26722,  //    w31 w29 w27 w25, 
+    -26722, 22654, -15137, -26722,  //    w31 w29 w27 w25,
 
     //row4
     16384, 16384, 21407, -8867,     //    w09 w01 w08 w00
@@ -131,7 +131,7 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
     22725, 12873, 19266, -22725,    //    w22 w20 w18 w16
     19266, 4520, -4520, -12873,     //    w23 w21 w19 w17
     12873, 4520, 4520, 19266,       //    w30 w28 w26 w24
-    -22725, 19266, -12873, -22725,  //    w31 w29 w27 w25 
+    -22725, 19266, -12873, -22725,  //    w31 w29 w27 w25
 
     //row5
     19266, 19266, 25172, -10426,    //    w09 w01 w08 w00
@@ -147,7 +147,7 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
     21407, 21407, 27969, -11585,    //    w09 w01 w08 w00
     21407, 21407, 11585, -27969,    //    w13 w05 w12 w04
     21407, -21407, 11585, 27969,    //    w11 w03 w10 w02
-    -21407, 21407, -27969, -11585,  //    w15 w07 w14 w06, 
+    -21407, 21407, -27969, -11585,  //    w15 w07 w14 w06,
     29692, 16819, 25172, -29692,    //    w22 w20 w18 w16
     25172, 5906, -5906, -16819,     //    w23 w21 w19 w17
     16819, 5906, 5906, 25172,       //    w30 w28 w26 w24
@@ -185,44 +185,44 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
 // 23170  ->  0x5a82
 //
 // This problem is the reason of all the following macros.
-// It's not a nice way to solve it> When we will have time, we will 
+// It's not a nice way to solve it> When we will have time, we will
 // try to find a cleaner solution
 //
 
 #ifndef _WINDOWS
 
-#ifdef __PIC__ 
+#ifdef __PIC__
 
 #define  por_one_mmx_reg(REG1) \
 	"push	0x00010001	\n" \
 	"push	0x00010001	\n"	\
 	"por	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define  add_round_mmx_reg(REG1) \
 	"push	0x00010000	\n" \
 	"push	0x00010000	\n"	\
 	"paddd	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define	mov_tg_1_16_mmx_reg(REG1) \
     "push	0x32ec32ec	\n" \
 	"push	0x32ec32ec	\n"	\
 	"movq	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define  mov_tg_2_16_mmx_reg(REG1) \
 	"push	0x6a0a6a0a	\n" \
 	"push	0x6a0a6a0a	\n"	\
 	"movq	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define	mov_tg_3_16_mmx_reg(REG1) \
 	"push	0xab0eab0e	\n" \
 	"push	0xab0eab0e	\n"	\
 	"movq	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define	mov_ocos_4_16_mmx_reg(REG1) \
 	"push	0x5a825a82	\n" \
 	"push	0x5a825a82	\n"	\
@@ -234,19 +234,19 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
 	"push	0x32ec32ec	\n"	\
 	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define  mul_tg_2_16_mmx_reg(REG1) \
 	"push	0x6a0a6a0a	\n" \
 	"push	0x6a0a6a0a	\n"	\
 	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define  mul_tg_3_16_mmx_reg(REG1) \
 	"push	0xab0eab0e	\n" \
 	"push	0xab0eab0e	\n"	\
 	"pmulhw	"#REG1", QWORD PTR [esp]	\n" \
 	"add	esp,8	\n"
-	
+
 #define  mul_ocos_4_16_mmx_reg(REG1) \
 	"push	0x5a825a82	\n" \
 	"push	0x5a825a82	\n"	\
@@ -264,42 +264,42 @@ ALIGN8 short __jpmm_row_tab_frw[] = {  // forward_dct coeff table
 	"add    ebx,_GLOBAL_OFFSET_TABLE_	\n" \
 	"lea	"#REG1",__jpmm_row_tab_frw@GOTOFF	\n"
 #endif
-			
+
 #else /* __PIC__ */
 
 #define  por_one_mmx_reg(REG1) \
     "por "#REG1", __jpmm_one_corr   \n"
-	
+
 #define add_round_mmx_reg(REG1) \
     "paddd  "#REG1", __jpmm_round_frw_row \n"
-	
+
 #define	mov_tg_1_16_mmx_reg(REG1) \
 	"movq "#REG1", __jpmm_tg_1_16 \n"
-	
+
 #define mov_tg_2_16_mmx_reg(REG1) \
     "movq "#REG1", __jpmm_tg_2_16 \n"
-	
+
 #define	mov_tg_3_16_mmx_reg(REG1) \
 	"movq "#REG1", __jpmm_tg_3_16 \n"
-	
+
 #define	mov_ocos_4_16_mmx_reg(REG1) \
 	"movq "#REG1", __jpmm_ocos_4_16 \n"
-	
+
 #define	mul_tg_1_16_mmx_reg(REG1) \
 	"pmulhw "#REG1", __jpmm_tg_1_16 \n"
-	
+
 #define mul_tg_2_16_mmx_reg(REG1) \
     "pmulhw "#REG1", __jpmm_tg_2_16 \n"
-	
+
 #define	mul_tg_3_16_mmx_reg(REG1) \
 	"pmulhw "#REG1", __jpmm_tg_3_16 \n"
-	
+
 #define	mul_ocos_4_16_mmx_reg(REG1) \
 	"pmulhw "#REG1", __jpmm_ocos_4_16 \n"
-	
+
 #define lea_addr_in_reg(REG1) \
 	"lea	"#REG1",__jpmm_row_tab_frw	\n"
-	
+
 #endif /* __PIC__ */
 #endif /* _WINDOWS */
 
@@ -483,13 +483,13 @@ void jpeg_fdct_mmx( short *block )
 
     movq [ecx + 2*16+8], mm1 // 1 // save y2
      paddsw mm7, mm6 // 6 // y0 = tp03 + tp12
-     
+
     movq mm1, [eax + 3*16] // 1 // x3
      psllw mm3, SHIFT_FRW_COL+1 // t5
 
     psubsw mm1, [eax + 4*16] // t4 = x[3] - x[4]
      movq mm6, mm2 // 6 // t6
-    
+
     movq [ecx + 4*16+8], mm4 // 4 // save y4
      paddsw mm2, mm3 // t6 + t5
 
@@ -639,7 +639,7 @@ void jpeg_fdct_mmx( short *block )
 
     punpcklwd mm3, mm1// // y3 y2 y1 y0
     sub edi, 0x01//   // i = i - 1
-    
+
     punpckhwd mm6, mm1// // y7 y6 y5 y4
     add ebx,64//  // increment to next table
 
@@ -668,7 +668,7 @@ void jpeg_fdct_mmx( short *block )
   "movq mm1, [rax + 6*16]     \n"
   "movq mm2, mm0              \n"
   "movq mm3, [rax + 2*16]     \n"
-  "paddsw mm0, mm1            \n" 
+  "paddsw mm0, mm1            \n"
   "movq mm4, [rax + 5*16]     \n"
   "psllw mm0, 3               \n"
   "movq mm5, [rax + 0*16]     \n"
@@ -825,7 +825,7 @@ void jpeg_fdct_mmx( short *block )
   __asm__ (
   ".intel_syntax noprefix     \n"
   "push rbx                   \n"
-   lea_addr_in_reg(rbx)  
+   lea_addr_in_reg(rbx)
   "mov rcx, rax               \n"
   "mov rdi, 0x08              \n"
 "lp_mmx_fdct_row1:            \n"
@@ -888,7 +888,7 @@ void jpeg_fdct_mmx( short *block )
   "movq [rcx-8], mm6          \n"
   "cmp rdi, 0x00              \n"
   "jg lp_mmx_fdct_row1        \n"
-  "pop rbx                    \n"  
+  "pop rbx                    \n"
   "emms                       \n"
   ".att_syntax                \n"
   : /* no output */
@@ -908,7 +908,7 @@ void jpeg_fdct_mmx( short *block )
   "movq mm1, [eax + 6*16]     \n"
   "movq mm2, mm0              \n"
   "movq mm3, [eax + 2*16]     \n"
-  "paddsw mm0, mm1            \n" 
+  "paddsw mm0, mm1            \n"
   "movq mm4, [eax + 5*16]     \n"
   "psllw mm0, 3               \n"
   "movq mm5, [eax + 0*16]     \n"
@@ -1076,7 +1076,7 @@ void jpeg_fdct_mmx( short *block )
 	"add    $_GLOBAL_OFFSET_TABLE_, %ebx	\n"
 	"lea	__jpmm_row_tab_frw@GOTOFF(%ebx),%ebx	\n"
    );
-#endif 
+#endif
 #endif /* __PIC__ */
 
   // Rows
@@ -1148,7 +1148,7 @@ void jpeg_fdct_mmx( short *block )
   "movq [ecx-8], mm6          \n"
   "cmp edi, 0x00              \n"
   "jg lp_mmx_fdct_row1        \n"
-  "pop ebx                    \n"  
+  "pop ebx                    \n"
   "emms                       \n"
   ".att_syntax                \n"
   : /* no output */
@@ -1187,7 +1187,7 @@ ALIGN8 short __jpmm_row_tabs[] = {
     26722,   6270,  -6270, -17855,
     17855,   6270,   6270,  26722,
     -31521,  26722, -17855, -31521,
- 
+
     // Table for rows 2 - constants are multiplied by cos_2_16
 
     21407,  21407,  21407, -21407,
@@ -1230,7 +1230,7 @@ ALIGN8 short __jpmm_row_tabs[] = {
     22654,   5315,  -5315, -15137,
     15137,   5315,   5315,  22654,
     -26722,  22654, -15137, -26722,
- 
+
     // Table for rows 6 - constants are multiplied by cos_2_16
 
     21407,  21407,  21407, -21407,
@@ -1263,7 +1263,7 @@ ALIGN8 long __jpmm_rounder[]  = {
    0,     0 ,
    120,   120 ,
    512,   512 ,
-   512,   512 
+   512,   512
 };
 
 // Offset
@@ -1271,7 +1271,7 @@ ALIGN8 short __jpmm_offset128[]  = { 128,128,128,128 };
 
 #ifndef _WINDOWS
 
-#ifdef __PIC__ 	
+#ifdef __PIC__
 #define add_off128_mmx_reg(REG1) \
 	"push	0x00800080	\n" \
 	"push	0x00800080	\n"	\
@@ -1298,14 +1298,14 @@ ALIGN8 short __jpmm_offset128[]  = { 128,128,128,128 };
 
 
 #else /* __PIC__ */
-		
+
 #define add_off128_mmx_reg(REG1) \
     "paddw  "#REG1", __jpmm_offset128 \n"
-	
+
 #define lea_addr_in_regs(REG1,REG2) \
 	"lea	"#REG1",__jpmm_row_tabs	\n" \
 	"lea	"#REG2",__jpmm_rounder	\n" \
-	
+
 #endif /* __PIC__ */
 #endif /* _WINDOWS */
 
@@ -1396,7 +1396,7 @@ __mmx_idct_rows:
 
   pslld mm7, 16         ; y7 0 y5 0
   movq  [edi], mm1     ; 1   ; save y3 y2 y1 y0
-                               
+
   por mm7, mm4       ; 4   ; y7 y6 y5 y4
   movq  [edi+8], mm7     ; 7   ; save y7 y6 y5 y4
 
@@ -1777,7 +1777,7 @@ __mmx_idct_cols:
 	"pop	%ecx   \n"
    );
 #endif
-#endif /* __PIC__ */  
+#endif /* __PIC__ */
   // gcc inline assembly code (32bits)
   // Rows
   __asm__ (

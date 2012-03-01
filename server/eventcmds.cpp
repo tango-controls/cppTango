@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -32,193 +32,9 @@ static const char *RcsId = "$Id$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 1.30  2010/09/09 13:46:00  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.29  2010/05/26 09:15:36  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 1.28  2009/12/09 15:48:56  taurel
-// - Add Attr and Attribute methods set_data_ready_event() and is_data_ready_event().
-// - Admin device command EventSubcriptionChange fails is one of these methods has not been called
-// Revision 1.27.2.1  2010/05/18 08:27:23  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 1.27  2009/10/27 08:25:03  taurel
-// - No real changes. Only some code beautifulling
-//
-// Revision 1.26  2009/08/27 07:23:45  taurel
-// - Commit after another merge with Release_7_0_2-bugfixes branch
-//
-// Revision 1.25  2009/06/17 08:52:08  taurel
-// - Commit after a merge with branch Release_7_0_2-bugfixes
-//
-// Revision 1.24.2.1  2009/06/12 08:28:51  taurel
-// - Fix bug when using events in multi Tango host environment.
-// The TANGO_HOST is now transferred within the even tin the fixed
-// header event_type field.
-// The DS admin device EventSubscriptionChange command now returns with which Tango lib it is runnig.
-// This allows the client to know if the tango host info will be transmitted within the event
-//
-// Revision 1.24  2009/04/27 11:16:34  taurel
-// - Attribute with DevState data type do not need a relative or absolute
-// change property
-//
-// Revision 1.23  2009/01/29 15:25:41  taurel
-// - First implementation of the Data Ready event
-//
-// Revision 1.22  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 1.21  2009/01/06 09:28:50  taurel
-// - Add compatibility between a server IDL V4 and clients IDL V3
-//
-// Revision 1.20  2008/10/06 15:01:09  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 1.19  2008/10/03 06:52:31  taurel
-// - Add some licensing info in each files
-//
-// Revision 1.18  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 1.17  2008/09/23 14:59:35  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 1.16  2008/07/01 07:38:40  taurel
-// - Some more code for a proper implementation of the DevEncoded data type with the new IDL release 4
-//
-// Revision 1.15  2008/01/18 14:25:30  jensmeyer
-// Added the stateless event subscription in the EventConsumer.
-// The subscribe_event method has an option now to subscribe for
-// events in stateless way.
-//
-// Revision 1.14  2007/03/06 08:19:43  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 1.13  2007/02/16 10:40:57  taurel
-// - Implementing a new types of event on the Attribute configuration
-//
-// Revision 1.12  2006/11/10 08:25:08  taurel
-// - Fix bug if an EventSubsriptionChange command arrives in the admin
-// device while the DS is in its shutdown sequence
-//
-// Revision 1.11  2006/06/20 08:00:04  jensmeyer
-// After changing the the init value of the attribute polling period to -1 insted of 0 I detected
-// a campatibility problem with the old versions. I changed back the init value to 0 and
-// solved the problem with new methods on the Attribute object.
-//
-// Revision 1.10  2006/06/14 11:21:35  jensmeyer
-// Modifications to make the set_polling_period() for attributes work
-// with a polling period set to 0.
-//
-// Revision 1.9  2006/05/18 14:29:12  jensmeyer
-// Changed the handling of the event period for periodic and archiving events.
-// The event period is now stored as the configured value and no longer
-// multilplied by the factor DELTA_PERIODIC.
-// The calculation of the precision to fire periodic events has moved from
-// the attribbute to the push methods in the event supplier.
-//
-// For event periods < 5000 ms a precision of 2% was kept, but for
-// times < 5000 ms a fixed precision of 100 ms was added.
-// This avoids periodic events with a long event period to be fired to early.
-//
-// Revision 1.8  2006/04/28 13:17:20  taurel
-// - Attribute class: Add state and status attribute special case to the method Attribute_2_AttributeValue
-// - Device_3Impl: The monitor taken by the read_attribute_history_3 call was the Device Monitor. Replaced it by the polling list monitor
-//
-// Revision 1.7  2006/04/13 06:12:28  jensmeyer
-// Added methods to configure and fire manually change and archive events without
-// polling.
-//
-// Revision 1.6  2005/12/16 17:38:57  jensmeyer
-// Changed the error checking during an attribute subscription.
-// Also added an option to allow manual change events.
-//
-// Revision 1.5  2005/11/09 09:43:57  jensmeyer
-// Stopped automatic polling when subscribing for events!
-// Added exceptions when polling is not started for an attribute.
-//
-// Changed the default of the archiving period from 10 seconds to
-// no periodic event!
-// Added exception when trying to subscribe a not configured attribute.
-//
-// Revision 1.4  2005/06/29 08:31:18  taurel
-// - Last commit before release 5.2 ?
-//
-// Revision 1.3  2005/01/13 08:29:06  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 1.2.2.3  2004/12/09 08:33:00  taurel
-// - Fix a small memory leak in case of error
-//
-// Revision 1.2.2.2  2004/11/04 09:46:39  taurel
-// - Add a tuning method in the polling thread
-// - Some minor fixes to pass test suite
-//
-// Revision 1.2.2.1  2004/10/22 11:25:51  taurel
-// Added warning alarm
-// Change attribute config. It now includes alarm and event parameters
-// Array attribute property now supported
-// subscribe_event throws exception for change event if they are not correctly configured
-// Change in the polling thread: The event heartbeat has its own work in the work list
-// Also add some event_unregister
-// Fix order in which classes are destructed
-// Fix bug in asynchronous mode (PUSH_CALLBACK). The callback thread ate all the CPU
-// Change in the CORBA info call for the device type
-//
-// Revision 1.2  2004/07/07 07:59:20  taurel
-// Added some files
-//
-// Revision 1.1.4.4  2004/04/24 12:09:25  taurel
-// - Replace RCS Header by RCS Id
-//
-// Revision 1.1.4.3  2004/02/18 15:06:18  taurel
-// Now the DevRestart command immediately restart device event (if any). Previously, it was possible to wait up to 200 secondes before they
-// restart
-//
-// Revision 1.1.4.2  2004/02/06 11:58:51  taurel
-// - Many changes in the event system
-//
-// Revision 1.1.4.1  2004/01/20 08:33:12  taurel
-// -First commit after merge with the event branch and work on the AttributeProxy class
-// - Fix bug in the stream "clear()" method usage when used with gcc 3.3
-//
-// Revision 1.1.2.5  2003/11/16 22:10:43  andy_gotz
-// New version which defines 4 types of events - change, quality, periodic and
-// archive. Code has been factorised to reduce redundancy. Minimum and maximum
-// changes are supported. Event period is taken into account. Relative and
-// absolute changes are detected. Whole sequence is taken into account when
-// determining change.
-//
-// Revision 1.1.2.4  2003/07/17 03:46:46  andy_gotz
-// Added new events "on_valid" and "on_state_change"; factorized EventSupplier::detect_and_push_events() method;
-// Catching more exceptions when creating EventSupplier, device server will start without Notification service;
-// Added AttributeProxy and DbAttribute classes to api; created test programs in test directory
-//
-// Revision 1.1.2.3  2003/04/15 19:01:55  andy_gotz
-// added heartbeat on client and server side; cleaned up cout's
-//
-// Revision 1.1.2.2  2003/04/13 22:12:17  andy_gotz
-// added heartbeat; polling starts automatically on subscription
-//
-// Revision 1.1.2.1  2003/04/10 11:07:44  andy_gotz
-// added event commands to DServer admin object
-//
 //-=============================================================================
-//
-//  		This file was generated by POGO
-//	(Program Obviously used to Generate tango Object)
-//
-//         (c) - Software Engineering Group - ESRF
-//=============================================================================
-
 
 #include <tango.h>
-#include <eventcmds.h>
 #include <eventsupplier.h>
 
 namespace Tango
@@ -227,83 +43,17 @@ namespace Tango
 
 //+----------------------------------------------------------------------------
 //
-// method : 		EventSubscriptionChangeCmd::EventSubscriptionChangeCmd()
+// method : 		DServer::event_subscription_change()
 //
-// description : 	constructor for the command of the EventTester.
+// description : 	method to execute the command EventSubscriptionChange command.
 //
-// In : - name : The command name
-//		- in : The input parameter type
-//		- out : The output parameter type
-//		- in_desc : The input parameter description
-//		- out_desc : The output parameter description
+// in : - argin : The command input argument
+//
+// returns : The command output data (Tango lib release number)
 //
 //-----------------------------------------------------------------------------
-EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,
-								Tango::CmdArgType in,
-								Tango::CmdArgType out,
-								const char *in_desc,
-								const char *out_desc)
-:Command(name,in,out,in_desc,out_desc)
+DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin)
 {
-}
-
-//
-//	Constructor without in/out parameters description
-//
-
-EventSubscriptionChangeCmd::EventSubscriptionChangeCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgType out)
-:Command(name,in,out)
-{
-}
-
-
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		EventSubscriptionChangeCmd::is_allowed()
-//
-// description : 	method to test whether command is allowed or not in this
-//			state. In this case, the command is allowed only if
-//			the device is in ON state
-//
-// in : - device : The device on which the command must be excuted
-//		- in_any : The command input data
-//
-// returns :	boolean - true == is allowed , false == not allowed
-//
-//-----------------------------------------------------------------------------
-bool EventSubscriptionChangeCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
-{
-		//	End of Generated Code
-
-		//	Re-Start of Generated Code
-		return true;
-}
-
-
-
-
-//+----------------------------------------------------------------------------
-//
-// method : 		EventSubscriptionChangeCmd::execute()
-//
-// description : 	method to trigger the execution of the command.
-//                PLEASE DO NOT MODIFY this method core without pogo
-//
-// in : - device : The device on which the command must be excuted
-//		- in_any : The command input data
-//
-// returns : The command output data (packed in the Any object)
-//
-//-----------------------------------------------------------------------------
-CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
-{
-	cout4 << "EventSubscriptionChangeCmd::execute(): arrived" << endl;
-
-	const Tango::DevVarStringArray	*argin;
-	extract(in_any, argin);
-
     if (argin->length() < 4)
     {
 		TangoSys_OMemStream o;
@@ -311,7 +61,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 		Except::throw_exception((const char *)"DServer_Events",
 								o.str(),
-								(const char *)"EventSubscriptionChangeCmd::execute");
+								(const char *)"DServer::event_subscription_change");
 	}
 
 	string dev_name, attr_name, action, event, attr_name_lower;
@@ -323,7 +73,8 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	attr_name_lower = attr_name;
 	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
-	cout4 << "EventSubscriptionChangeCmd: execute(): subscribtion for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+
 	Tango::Util *tg = Tango::Util::instance();
 
 //
@@ -338,18 +89,18 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 		Except::throw_exception((const char *)"DServer_Events",
 									    o.str(),
-									   (const char *)"EventSubscriptionChangeCmd::execute");
+									   (const char *)"DServer::event_subscription_change");
 	}
 
 //
 // If the EventSupplier object is not created, create it right now
 //
 
-	EventSupplier *ev;
-	if ((ev = tg->get_event_supplier()) == NULL)
+	NotifdEventSupplier *ev;
+	if ((ev = tg->get_notifd_event_supplier()) == NULL)
 	{
-		tg->create_event_supplier();
-		ev = tg->get_event_supplier();
+		tg->create_notifd_event_supplier();
+		ev = tg->get_notifd_event_supplier();
 	}
 
 //
@@ -358,30 +109,63 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 	if (Util::_FileDb == true && ev != NULL)
 	{
-		string &p_num = tg->get_svr_port_num();
-		ev->set_svr_port_num(p_num);
+		ev->file_db_svr();
 	}
+
+    string mcast;
+    int rate,ivl;
+
+    event_subscription(dev_name,attr_name,action,event,attr_name_lower,NOTIFD,mcast,rate,ivl);
+
+	Tango::DevLong ret_val = (Tango::DevLong)tg->get_tango_lib_release();
+	return ret_val;
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DServer::event_subscription()
+//
+// description : 	method to do all the necessary checks on attribute config
+//                  to generate events
+//
+// in : - dev_name : The device name
+//      - attr_name : The attribute name
+//      - action : What the user want to do
+//      - event : The event type
+//      - attr_name_lower : The attribute name in lower case letters
+//      - ct : The channel type (notifd or zmq)
+//      - mcast_data : The multicast transport data
+//      - rate : PGM rate parameter
+//      - ivl : PGM ivl paramteter
+//
+//-----------------------------------------------------------------------------
+
+DeviceImpl *DServer::event_subscription(string &dev_name,string &attr_name,string &action,string &event,string &attr_name_lower,ChannelType ct,string &mcast_data,int &rate,int &ivl)
+{
+    Tango::Util *tg = Tango::Util::instance();
 
 //
 // Get device reference
 //
 
-	DeviceImpl *dev_impl;
+	DeviceImpl *dev_impl = NULL;
+
 	try
 	{
-		dev_impl = tg->get_device_by_name((*argin)[0]);
+		dev_impl = tg->get_device_by_name(dev_name);
 	}
 	catch (Tango::DevFailed &e)
 	{
 		TangoSys_OMemStream o;
-		o << "Device " << (*argin)[0] << " not found" << ends;
-
+		o << "Device " << dev_name << " not found" << ends;
 		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
-                                   (const char *)"DServer::EventSubscriptionChangeCmd:");
+                                   (const char *)"DServer::event_subscription");
 	}
 
-	int attr_ind = dev_impl->dev_attr->get_attr_ind_by_name(attr_name.c_str());
-	Attribute &attribute = dev_impl->dev_attr->get_attr_by_ind(attr_ind);
+    MultiAttribute *m_attr = dev_impl->get_device_attr();
+	int attr_ind = m_attr->get_attr_ind_by_name(attr_name.c_str());
+	Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
 
 //
 // Check if the request comes from a Tango 6 client (without client identification)
@@ -390,7 +174,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 // same process and with events between device from class 1 and device from classs 2)
 //
 
-	client_addr *cl = device->get_client_ident();
+	client_addr *cl = get_client_ident();
 	int cl_release;
 
     if (cl == NULL)
@@ -403,19 +187,18 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
             cl_release = 3;
     }
 
-
 	if (action == "subscribe")
 	{
 		if (event == "user_event")
 		{
-			cout4 << "EventSubscriptionChangeCmd::execute(): update user_event subscription\n";
+			cout4 << "DServer::event_subscription(): update user_event subscription\n";
 			attribute.ext->event_user_subscription = time(NULL);
 			if (cl_release == 3)
 				attribute.ext->event_user_client_3 = true;
 		}
 		else if (event == "attr_conf")
 		{
-			cout4 << "EventSubscriptionChangeCmd::execute(): update attr_conf subscription\n";
+			cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 			attribute.ext->event_attr_conf_subscription = time(NULL);
 		}
 		else if (event == "data_ready")
@@ -429,9 +212,9 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 				Except::throw_exception((const char*)"API_AttributeNotDataReadyEnabled",
 										o.str(),
-										(const char *)"EventSubscriptionChangeCmd::execute");
+										(const char *)"DServer::event_subscription");
 			}
-			cout4 << "EventSubscriptionChangeCmd::execute(): update data_ready subscription\n";
+			cout4 << "DServer::event_subscription(): update data_ready subscription\n";
 			attribute.ext->event_data_ready_subscription = time(NULL);
 		}
 		else
@@ -455,7 +238,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 					{
 						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
 									o.str(),
-									(const char *)"EventSubscriptionChangeCmd::execute");
+									(const char *)"DServer::event_subscription");
 					}
 				}
 				else
@@ -466,14 +249,14 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 						{
 							Except::throw_exception((const char *)"API_AttributePollingNotStarted",
 										o.str(),
-										(const char *)"EventSubscriptionChangeCmd::execute");
+										(const char *)"DServer::event_subscription");
 						}
 					}
 					else
 					{
 						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
 									o.str(),
-									(const char *)"EventSubscriptionChangeCmd::execute");
+									(const char *)"DServer::event_subscription");
 					}
 				}
 			}
@@ -481,7 +264,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
        		if (event == "change")
        		{
-				cout4 << "EventSubscriptionChangeCmd::execute(): update change subscription\n";
+				cout4 << "DServer::event_subscription(): update change subscription\n";
 
 //
 // Check if the attribute has some of the change properties defined
@@ -508,7 +291,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
 																o.str(),
-																(const char *)"EventSubscriptionChangeCmd::execute");
+																(const char *)"DServer::event_subscription");
 							}
 						}
 					}
@@ -519,12 +302,12 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 			}
       		else if (event == "quality")
       		{
-				cout4 << "EventSubscriptionChangeCmd::execute(): update quality_change subscription\n";
+				cout4 << "DServer::event_subscription(): update quality_change subscription\n";
        			attribute.ext->event_quality_subscription = time(NULL);
       		}
       		else if (event == "periodic")
       		{
-				cout4 << "EventSubscriptionChangeCmd::execute(): update periodic subscription\n";
+				cout4 << "DServer::event_subscription(): update periodic subscription\n";
        			attribute.ext->event_periodic_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_periodic_client_3 = true;
@@ -556,18 +339,114 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 
 								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
 															 	o.str(),
-																(const char *)"EventSubscriptionChangeCmd::execute");
+																(const char *)"DServer::event_subscription");
 							}
 						}
 					}
 				}
 
-				cout4 << "EventSubscriptionChangeCmd::execute(): update archive subscription\n";
+				cout4 << "DServer::event_subscription(): update archive subscription\n";
        			attribute.ext->event_archive_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_archive_client_3 = true;
       		}
 		}
+
+//
+// Set channel type in attribute object
+//
+
+        if (ct == ZMQ)
+            attribute.set_use_zmq_event();
+        else
+            attribute.set_use_notifd_event();
+
+//
+// Check if multicast has to be used for event transport
+// (only for ZMQ event)
+// Don't forget syntax in attribute mcast_event string:
+// event_name:ip_address:port:rate:ivl
+// The last two are not optionals
+//
+
+        if (ct == ZMQ)
+        {
+            bool found = false;
+			for(unsigned int i = 0;i != attribute.ext->mcast_event.size();++i)
+			{
+                if (attribute.ext->mcast_event[i].find(event) == 0)
+                {
+                    string::size_type start,end;
+                    start = attribute.ext->mcast_event[i].find(':');
+                    start++;
+                    end = attribute.ext->mcast_event[i].find(':',start);
+
+                    if ((end = attribute.ext->mcast_event[i].find(':',end + 1)) == string::npos)
+                    {
+                        mcast_data = attribute.ext->mcast_event[i].substr(start);
+                        rate = 0;
+                        ivl = 0;
+                        found = true;
+                        break;
+                    }
+                    else
+                    {
+                        mcast_data = attribute.ext->mcast_event[i].substr(start,end - start);
+
+//
+// Get rate because one is defined
+//
+
+                        string::size_type start_rate = end + 1;
+                        if ((end = attribute.ext->mcast_event[i].find(':',start_rate)) == string::npos)
+                        {
+                            istringstream iss(attribute.ext->mcast_event[i].substr(start_rate));
+                            iss >> rate;
+                            rate = rate * 1024;
+                            ivl = 0;
+                            found = true;
+                            break;
+                        }
+                        else
+                        {
+                            istringstream iss(attribute.ext->mcast_event[i].substr(start_rate,end - start_rate));
+                            iss >> rate;
+                            rate = rate * 1024;
+
+//
+// Get ivl because one is defined
+//
+
+                            istringstream iss_ivl(attribute.ext->mcast_event[i].substr(end + 1));
+                            iss_ivl >> ivl;
+                            ivl = ivl * 1000;
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+			}
+
+			if (found == false)
+			{
+			    rate = 0;
+			    ivl = 0;
+			}
+
+//
+// If one of the 2 parameters are not deefined, get the default value
+//
+
+            if (rate == 0)
+                rate = mcast_rate;
+            if (ivl == 0)
+                ivl = mcast_ivl;
+        }
+        else
+        {
+            rate = 0;
+            ivl = 0;
+        }
 
 //
 // Start polling for attribute in question. I suppose I should
@@ -581,15 +460,12 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 // to the attribute
 //
 
-		Tango::Util *tg = Tango::Util::instance();
 		try
 		{
-			DServer *adm_dev = tg->get_dserver_device();
-
-			if (adm_dev->get_heartbeat_started() == false)
+			if (get_heartbeat_started() == false)
 			{
-				adm_dev->add_event_heartbeat();
-				adm_dev->set_heartbeat_started(true);
+				add_event_heartbeat();
+				set_heartbeat_started(true);
 			}
 		}
 		catch (...)
@@ -597,12 +473,172 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 		}
 	}
 
-	Tango::DevLong ret = (Tango::DevLong)tg->get_tango_lib_release();
-	CORBA::Any *out_any = new CORBA::Any();
-	(*out_any) <<= ret;
-	return out_any;
-
+	return dev_impl;
 }
 
+//+----------------------------------------------------------------------------
+//
+// method : 		DServer::zmq_event_subscription_change()
+//
+// description : 	method to execute the command ZmqEventSubscriptionChange command.
+//
+// in : - argin : The command input argument
+//
+// returns : The command output data (Tango lib release number)
+//
+//-----------------------------------------------------------------------------
+DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVarStringArray *argin)
+{
+    if (argin->length() < 4)
+    {
+		TangoSys_OMemStream o;
+		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
+
+		Except::throw_exception((const char *)"DServer_Events",
+								o.str(),
+								(const char *)"DServer::zmq_event_subscription_change");
+	}
+
+	string dev_name, attr_name, action, event, attr_name_lower;
+	dev_name = (*argin)[0];
+	attr_name = (*argin)[1];
+	action = (*argin)[2];
+	event = (*argin)[3];
+
+	attr_name_lower = attr_name;
+	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
+
+	cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+	Tango::Util *tg = Tango::Util::instance();
+
+//
+// If we receive this command while the DS is in its
+// shuting down sequence, do nothing
+//
+
+	if (tg->get_heartbeat_thread_object() == NULL)
+	{
+     	TangoSys_OMemStream o;
+		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+
+		Except::throw_exception((const char *)"DServer_Events",
+									    o.str(),
+									   (const char *)"DServer::zmq_event_subscription_change");
+	}
+
+//
+// If the EventSupplier object is not created, create it right now
+//
+
+	ZmqEventSupplier *ev;
+	if ((ev = tg->get_zmq_event_supplier()) == NULL)
+	{
+		tg->create_zmq_event_supplier();
+		ev = tg->get_zmq_event_supplier();
+	}
+
+//
+// Call common method (common between old and new command)
+//
+
+    string mcast;
+    int rate,ivl;
+
+    DeviceImpl *dev = event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl);
+
+//
+// Check if the client is a new one
+//
+
+    bool new_client = ev->update_connected_client(get_client_ident());
+    if (new_client == true)
+        ev->set_double_send();
+
+//
+// Create the event publisher socket (if not already done)
+// Take care for case where the device is running with db in a file
+//
+
+    string ev_name = ev->get_fqdn_prefix();
+    if (Util::_FileDb == true)
+    {
+        int size = ev_name.size();
+        if (ev_name[size - 1] == '#')
+            ev_name.erase(size - 1);
+    }
+
+    ev_name = ev_name + dev->get_name_lower() + '/' + attr_name_lower;
+    if (Util::_FileDb == true && ev != NULL)
+        ev_name = ev_name + MODIFIER_DBASE_NO;
+    ev_name = ev_name + '.' +  event;
+
+//
+// If the event is defined as using mcast transport, get caller host
+//
+
+    bool local_call = false;
+    if (mcast.empty() == false)
+    {
+        client_addr *c_addr = get_client_ident();
+        if ((c_addr->client_ip[5] == 'u') ||
+            ((c_addr->client_ip[9] == '1') && (c_addr->client_ip[10] == '2') && (c_addr->client_ip[11] == '7')))
+        {
+           local_call = true;
+        }
+
+    }
+
+//
+// Create ZMQ event socket
+//
+
+    if (mcast.empty() == false)
+        ev->create_mcast_event_socket(mcast,ev_name,rate,local_call);
+    else
+        ev->create_event_socket();
+
+//
+// Init event counter in Event Supplier
+//
+
+    ev->init_event_cptr(ev_name);
+
+//
+// Init data returned by command
+//
+
+	Tango::DevVarLongStringArray *ret_data = new Tango::DevVarLongStringArray();
+	ret_data->lvalue.length(5);
+	ret_data->svalue.length(2);
+
+	ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();
+	ret_data->lvalue[1] = dev->get_dev_idl_version();
+	ret_data->lvalue[2] = zmq_sub_event_hwm;
+	ret_data->lvalue[3] = rate;
+	ret_data->lvalue[4] = ivl;
+
+    string &heartbeat_endpoint = ev->get_heartbeat_endpoint();
+	ret_data->svalue[0] = CORBA::string_dup(heartbeat_endpoint.c_str());
+	if (mcast.empty() == true)
+	{
+        string &event_endpoint = ev->get_event_endpoint();
+        ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
+	}
+	else
+	{
+	    if (local_call == true)
+	    {
+            string &event_endpoint = ev->get_event_endpoint();
+            ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
+	    }
+	    else
+	    {
+            string &event_endpoint = ev->get_mcast_event_endpoint(ev_name);
+            ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
+	    }
+	}
+
+	return ret_data;
+}
 
 }	// namespace
