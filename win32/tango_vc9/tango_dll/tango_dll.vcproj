@@ -48,7 +48,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="4"
-				AdditionalIncludeDirectories="C:\tango_src\cppapi\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32_dll\include&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\include&quot;"
+				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;&quot;$(OMNI_BASE)\win32_dll\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\include&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;"
 				RuntimeLibrary="2"
 				RuntimeTypeInfo="true"
@@ -72,22 +72,22 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango726 release\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango802 release\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4tango.lib omniorb414_rt.lib omnidynamic414_rt.lib omnithread34_rt.lib COS414_rt.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				OutputFile="lib/tango726.dll"
-				Version="7.2.6"
+				AdditionalDependencies="log4tango.lib omniorb416_rt.lib omnidynamic416_rt.lib omnithread34_rt.lib COS416_rt.lib zmq.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
+				OutputFile="$(PREFIX)\win32\lib\vc9_dll\tango802.dll"
+				Version="8.0.2"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\win32_dll\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\win32_dll\lib&quot;;&quot;$(ZMQ_BASE)\win32\lib\vc9_dll&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
 				ModuleDefinitionFile="tango.def"
-				ProgramDatabaseFile=".\Release/tango726.pdb"
+				ProgramDatabaseFile=".\Release/tango802.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="lib/tango.lib"
+				ImportLibrary="$(PREFIX)\win32\lib\vc9_dll\tango.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -146,7 +146,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\tango_src\cppapi\server\jpeg;..;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32_dll\include&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\include&quot;"
+				AdditionalIncludeDirectories="..;..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;&quot;$(OMNI_BASE)\win32_dll\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\include&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL;JPG_USE_ASM;_CRT_SECURE_NO_DEPRECATE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -155,7 +155,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_dll.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.7.2.6.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win32\lib\vc9_dll\tangod.8.0.2.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -172,23 +172,23 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango726d debug\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango802d debug\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="log4tangod.lib omniORB414_rtd.lib omniDynamic414_rtd.lib COS414_rtd.lib omnithread34_rtd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="log4tangod.lib omniORB416_rtd.lib omniDynamic416_rtd.lib COS416_rtd.lib omnithread34_rtd.lib zmqd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
 				ShowProgress="2"
-				OutputFile="lib/tango726d.dll"
-				Version="7.2.6"
+				OutputFile="$(PREFIX)\win32\lib\vc9_dll\tango802d.dll"
+				Version="8.0.2"
 				LinkIncremental="2"
-				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\win32_dll\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(ZMQ_BASE)\win32\lib\vc9_dll&quot;;&quot;$(OMNI_BASE)\win32_dll\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32_dll\lib&quot;"
 				ModuleDefinitionFile="tango.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/tango726d.pdb"
+				ProgramDatabaseFile=".\Debug/tango802d.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="lib/tangod.lib"
+				ImportLibrary="$(PREFIX)\win32\lib\vc9_dll\tangod.lib"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -742,6 +742,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\dev_poll.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\devapi_attr.cpp"
 				>
 				<FileConfiguration
@@ -1114,28 +1118,8 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\event.cpp"
+				RelativePath="..\..\..\client\event.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-						BasicRuntimeChecks="3"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\..\server\eventcmds.cpp"
@@ -1162,11 +1146,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventkeepalive.cpp"
+				RelativePath="..\..\..\client\eventkeepalive.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventqueue.cpp"
+				RelativePath="..\..\..\client\eventqueue.cpp"
 				>
 			</File>
 			<File
@@ -1396,6 +1380,14 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\client\notifdeventconsumer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\notifdeventsupplier.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\ntservice.cpp"
@@ -1793,6 +1785,14 @@
 					/>
 				</FileConfiguration>
 			</File>
+			<File
+				RelativePath="..\..\..\client\zmqeventconsumer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\zmqeventsupplier.cpp"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -1899,11 +1899,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\event.h"
+				RelativePath="..\..\..\client\event.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\eventcmds.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\eventconsumer.h"
 				>
 			</File>
 			<File

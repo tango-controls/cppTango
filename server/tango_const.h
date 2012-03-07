@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -42,7 +42,13 @@ namespace Tango
 // Some general interest define
 //
 
-#define		TgLibVers				"7.2.7"		// Please, always code this following format "X.Y.Z"
+#define     TANGO_VERSION_MAJOR     8
+#define     TANGO_VERSION_MINOR     0
+#define     TANGO_VERSION_PATCH     2
+
+#define     build_string(s)         #s
+#define     xbuild_string(s)        build_string(s)
+#define     TgLibVers               xbuild_string(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH)
 
 #define		DevVersion				4			// IDL version number
 #define		DefaultMaxSeq			20
@@ -55,7 +61,7 @@ namespace Tango
 #define		EnvVariable				"TANGO_HOST"
 #define		WindowsEnvVariable		"TANGO_ROOT"
 #define		DbObjName				"database"
-#define		DescNotSet				"Uninitialised"
+#define		NotSet					"Uninitialised"
 #define		ResNotDefined			"0"
 #define		MessBoxTitle			"Tango Device Server"
 #define		StatusNotSet			"Not initialised"
@@ -86,6 +92,8 @@ namespace Tango
 #define		TANGO_PY_MOD_NAME		"_PyTango.pyd"
 #define		DATABASE_CLASS			"DataBase"
 
+#define		TANGO_FLOAT_PRECISION	15
+
 //
 // Event related define
 //
@@ -96,6 +104,34 @@ namespace Tango
 #define		DELTA_PERIODIC				0.98  // Using a delta of 2% only for times < 5000 ms
 #define     DELTA_PERIODIC_LONG			100   // For times > 5000ms only keep a delta of 100ms
 #define		HEARTBEAT					"Event heartbeat"
+
+//
+// ZMQ event system related define
+//
+
+#define     EPHEMERAL_PORT_BEGIN        49152
+#define     EPHEMERAL_PORT_END          65535
+#define     ZMQ_EVENT_PROT_VERSION      1
+#define     HEARTBEAT_METHOD_NAME       "push_heartbeat_event"
+#define     EVENT_METHOD_NAME           "push_zmq_event"
+#define     HEARTBEAT_EVENT_NAME        "heartbeat"
+#define     CTRL_SOCK_ENDPOINT          "inproc://control"
+#define     MCAST_PROT                  "pgm://"
+#define     MCAST_HOPS                  5
+#define     PGM_RATE                    80 * 1024
+#define     PGM_IVL                     20 * 1000
+#define     MAX_SOCKET_SUB              10
+#define     PUB_HWM                     1000
+#define     SUB_HWM                     1000
+
+#define     ZMQ_END                     0
+#define     ZMQ_CONNECT_HEARTBEAT       1
+#define     ZMQ_DISCONNECT_HEARTBEAT    2
+#define     ZMQ_CONNECT_EVENT           3
+#define     ZMQ_DISCONNECT_EVENT        4
+#define     ZMQ_CONNECT_MCAST_EVENT     5
+#define     ZMQ_DELAY_EVENT             6
+#define     ZMQ_RELEASE_EVENT           7
 
 //
 // Event when using a file as database stuff
@@ -821,7 +857,18 @@ enum EventType {
 	ARCHIVE_EVENT,
 	USER_EVENT,
 	ATTR_CONF_EVENT,
-	DATA_READY_EVENT
+	DATA_READY_EVENT,
+	numEventType
+};
+
+const char * const EventName[] = {
+    "change",
+    "quality",
+    "periodic",
+    "archive",
+    "user_event",
+    "attr_conf",
+    "data_ready"
 };
 
 enum AttrSerialModel
@@ -831,14 +878,36 @@ enum AttrSerialModel
 	ATTR_BY_USER
 };
 
-enum KeepAliveCmdCode {
+enum KeepAliveCmdCode
+{
 	EXIT_TH = 0
 };
 
-enum AccessControlType {
+enum AccessControlType
+{
 	ACCESS_READ = 0,
 	ACCESS_WRITE
 };
+
+enum MinMaxValueCheck
+{
+    MIN = 0,
+    MAX
+};
+
+enum ChannelType
+{
+    ZMQ = 0,
+    NOTIFD
+};
+
+typedef struct _SendEventType
+{
+	_SendEventType() : change(false), archive(false), periodic(false) { };
+	bool change;
+	bool archive;
+	bool periodic;
+}SendEventType;
 
 //
 // The optional attribute properties
@@ -871,65 +940,71 @@ typedef struct _OptAttrProp
  * strings already used.
  *
  *
- * API_MemoryAllocation
- * API_CommandNotFound
- * API_IncompatibleCmdArgumentType
+ * API_AttrEventProp
+ * API_AttrIncorrectDataNumber
+ * API_AttrNoAlarm
+ * API_AttrNotAllowed
+ * API_AttrNotFound
+ * API_AttrNotWritable
+ * API_AttrOptProp
+ * API_AttrPropValueNotSet
+ * API_AttrValueNotSet
+ * API_AttrWrongDefined
+ * API_AttrWrongMemValue
+ * API_BadConfigurationProperty
  * API_BlackBoxArgument
  * API_BlackBoxEmpty
+ * API_CannotCheckAccessControl
  * API_CannotOpenFile
- * API_SignalOutOfRange
- * API_CantInstallSignal
- * API_CommandNotAllowed
- * API_CantRetrieveClassList
- * API_ClassNotFound
- * API_InitMethodNotFound
- * API_JavaRuntimeSecurityException
- * API_InitThrowsException
- * API_InitNotPublic
- * API_DeviceNotFound
- * API_CmdArgumentTypeNotSupported
- * API_MethodNotFound
- * API_OverloadingNotSupported
- * API_MethodArgument
- * API_AttrWrongDefined
- * API_AttrOptProp
- * API_AttrNotFound
- * API_AttrValueNotSet
- * API_AttrNoAlarm
- * API_AttrNotWritable
- * API_IncompatibleAttrDataType
- * API_WAttrOutsideLimit
- * API_NtDebugWindowError
- * API_CantCreateClassPoa
- * API_CantGetDevObjectId
  * API_CantActivatePOAManager
- * API_DatabaseAccess
- * API_CorbaSysException
- * API_BadConfigurationProperty
- * API_AttrIncorrectDataNumber
- * API_NotSupportedFeature
- * API_AttrNotAllowed
- * API_AttrWrongMemValue
- * API_WizardConfError
- * API_EventSupplierNotConstructed
- * API_CantGetClientIdent
- * API_DeviceLocked
- * API_CannotCheckAccessControl
-
- * API_DeviceNotLocked
- * API_DeviceUnlocked
- * API_DeviceUnlockable
- * API_WrongLockingStatus
- * API_CantFindLockingThread
- * API_WrongHistoryDataBuffer
- * API_CannotCheckAccessControl
- * API_ReadOnlyMode
- * API_CantStoreDeviceClass
+ * API_CantCreateClassPoa
  * API_CantCreateLockingThread
- *
- * API_PollingThreadNotFound
+ * API_CantFindLockingThread
+ * API_CantGetClientIdent
+ * API_CantGetDevObjectId
+ * API_CantInstallSignal
+ * API_CantRetrieveClass
+ * API_CantRetrieveClassList
+ * API_CantStoreDeviceClass
+ * API_ClassNotFound
+ * API_CmdArgumentTypeNotSupported
+ * API_CommandNotAllowed
+ * API_CommandNotFound
+ * API_CorbaSysException
+ * API_CorruptedDatabase
+ * API_DatabaseAccess
+ * API_DeviceLocked
+ * API_DeviceNotFound
+ * API_DeviceNotLocked
+ * API_DeviceUnlockable
+ * API_DeviceUnlocked
+ * API_EventSupplierNotConstructed
+ * API_IncoherentDbData
+ * API_IncoherentDevData
+ * API_IncoherentValues
+ * API_IncompatibleAttrDataType
+ * API_IncompatibleCmdArgumentType
+ * API_InitMethodNotFound
+ * API_InitNotPublic
+ * API_InitThrowsException
+ * API_JavaRuntimeSecurityException
+ * API_MemoryAllocation
+ * API_MethodArgument
+ * API_MethodNotFound
+ * API_NotSupportedFeature
+ * API_NtDebugWindowError
+ * API_OverloadingNotSupported
  * API_PolledDeviceNotInPoolConf
  * API_PolledDeviceNotInPoolMap
+ * API_PollingThreadNotFound
+ * API_ReadOnlyMode
+ * API_SignalOutOfRange
+ * API_SystemCallFailed
+ * API_WAttrOutsideLimit
+ * API_WizardConfError
+ * API_WrongHistoryDataBuffer
+ * API_WrongLockingStatus
+ * API_ZmqInitFailed
  */
 
 } // End of Tango namespace

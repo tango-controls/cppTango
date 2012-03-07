@@ -5,13 +5,13 @@
 
 ##############################################################################
 #
-#		PLEASE, Update library version here (for versionning support)
+#		PLEASE, Update library version here (for versioning support)
 #
 ##############################################################################
 
-MAJOR_VERS = 7
-MINOR_VERS = 2
-PATCH_VERS = 7
+MAJOR_VERS = 8
+MINOR_VERS = 0
+PATCH_VERS = 2
 
 ##############################################################################
 #
@@ -19,7 +19,11 @@ PATCH_VERS = 7
 #
 ##############################################################################
 
+ifdef prefix
 TANGO_HOME = /segfs/tango
+else
+TANGO_HOME = /segfs/tango
+endif
 
 ##############################################################################
 #
@@ -31,7 +35,11 @@ OS=$(shell /csadmin/common/scripts/get_os.share)
 endif
 
 ifdef ubuntu
-OS=ubuntu904
+ifdef dev
+OS=ubuntu1010
+else
+OS=ubuntu1004
+endif
 endif
 
 ##############################################################################
@@ -42,7 +50,11 @@ endif
 #
 ##############################################################################
 
+ifdef prefix
 BIN_DIR = $(OS)
+else
+BIN_DIR = $(OS)
+endif
 
 ifdef _solaris
 ifdef gcc
@@ -52,10 +64,9 @@ BIN_DIR = $(OS)_CC
 endif
 endif
 
-
 # check for 64 bits!!!!
 ifdef 64bits
-ifneq ($(OS),ubuntu1004)
+ifeq ($(OS),redhate4)
 BIN_DIR = $(OS)_64
 endif
 endif
@@ -81,7 +92,11 @@ endif
 #
 ##############################################################################
 
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.5/$(BIN_DIR)
+ifdef prefix
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.6/$(BIN_DIR)
+else
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.6/$(BIN_DIR)
+endif
 
 ##############################################################################
 #
@@ -89,7 +104,24 @@ OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.5/$(BIN_DIR)
 #
 ##############################################################################
 
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.4/$(BIN_DIR)
+ifdef prefix
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+else
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+endif
+
+##############################################################################
+#
+# 		ZMQ base directory
+#
+##############################################################################
+
+
+ifdef prefix
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+else
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+endif
 
 ##############################################################################
 #

@@ -7,7 +7,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -18,72 +18,16 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
-//
-// $Log$
-// Revision 3.16  2010/12/09 07:55:35  taurel
-// - Default gcc on debian 30 also doesn't like getaddrinfo() AI_ADDRCONFIG
-// flag
-//
-// Revision 3.15  2010/12/08 16:27:35  taurel
-// - Compile with getnameinfo() and getaddrinfo() on Windows
-//
-// Revision 3.14  2010/12/08 09:57:46  taurel
-// - Replace gethostbyname() and gethostbyaddr() by getaddrinfo() and
-// getnameinfo()
-//
-// Revision 3.13  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.12  2010/02/08 14:40:19  taurel
-// - Add a patch from Nicolas about Mac-OS port
-//
-// Revision 3.11  2009/09/22 11:04:45  taurel
-// - Environment variables in file also supported for Windows
-//
-// Revision 3.10  2009/04/20 13:25:50  taurel
-// - Fix bug in case of default constructed DeviceProxy and alias() method
-// - Add some ctors from "const char *" to make programmer's life easier
-//
-// Revision 3.9  2009/04/08 08:30:39  taurel
-// - Fix a bug in case of TangoAccessControl server started with
-// SUPER_TANGO set to 1
-//
-// Revision 3.8  2009/03/20 11:52:06  taurel
-// - Add tangorc files management (for env. variables)
-//
-// Revision 3.7  2009/03/13 09:32:27  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.6  2009/03/02 15:55:51  taurel
-// - Ported to Windows
-//
-// Revision 3.5  2009/02/19 12:25:36  taurel
-// - Other Changes for Solaris compilation
-//
-// Revision 3.4  2009/01/21 12:45:14  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.3  2008/10/06 15:02:16  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.2  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.1  2008/05/20 12:42:28  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 1.1.2.1  2008/02/07 15:56:58  taurel
-// - First implementation of the Controlled Access done
 //
 //-======================================================================
 
@@ -98,27 +42,20 @@
 
 #ifndef _TG_WINDOWS_
 #include <pwd.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#else
-#include <ws2tcpip.h>
 #endif
 
 namespace Tango
 {
 
-
-/** 
- *	This class is extends TangoApi.DeviceProxy 
+/**
+ *	This class is extends TangoApi.DeviceProxy
  *	to manage Tango access device.
  *	 - Check if control access is requested.
  *	 - Check who is the user and the host.
  *	 - Check access for this user, this host and the specified device.
  *
  * @author  verdier
- * @Revision 
+ * @Revision
  */
 
 
@@ -164,8 +101,8 @@ void AccessProxy::real_ctor()
 
 	if (forced == false)
 		ping();
-	
-		
+
+
 	set_access_control(ACCESS_WRITE);
 }
 
@@ -245,94 +182,45 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 //	If not already done, get host address
 //
 
-			if (host_ips.empty() == true)
-			{
-				char h_name[80];
-				int res = gethostname(h_name,80);
-				if (res == 0)
-				{
-	  				struct addrinfo hints;
+            if (host_ips.empty() == true)
+            {
+                ApiUtil *au = ApiUtil::instance();
+                vector<string> adrs;
+                string at_least_one;
 
-					memset(&hints,0,sizeof(struct addrinfo));
-#ifdef _TG_WINDOWS_
-#ifdef WIN32_VC9
-					hints.ai_falgs	   = AI_ADDRCONFIG;
-#endif
-#else
-#ifdef GCC_HAS_AI_ADDRCONFIG
-  					hints.ai_flags     = AI_ADDRCONFIG;
-#endif
-#endif
-  					hints.ai_family    = AF_INET;
-	  				hints.ai_socktype  = SOCK_STREAM;
-
-	  				struct addrinfo	*info;
-					struct addrinfo *ptr;
-					char tmp_host[128];
-
-	  				int result = getaddrinfo(h_name,NULL,&hints,&info);
-
-	  				if (result == 0)
-					{
-						ptr = info;
-						string at_least;
-						bool first = true;
-						bool found = false;
-
-						while (ptr != NULL)
-						{
-	    					if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,128,0,0,NI_NUMERICHOST) == 0)
-							{
-								string host_str(tmp_host);
-								if (first == true)
-								{
-									at_least = host_str;
-									first = false;
-								}
+                try
+                {
+                    au->get_ip_from_if(adrs);
 
 //
 // Filter out local address and IP v6
 //
 
-								if (host_str.find("127.") == 0) {}
-								else if (host_str.find(":") != string::npos) {}
-								else
-								{
-									host_ips.push_back(tmp_host);
-									found = true;
-								}
-							}
-							else
-							{
-								cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
-								cerr << "Access right set to ACCESS_READ" << endl;
+                    for (unsigned int nb_adrs = 0;nb_adrs < adrs.size();nb_adrs++)
+                    {
+                        string &tmp_host = adrs[nb_adrs];
+                        if (nb_adrs == 0)
+                            at_least_one = tmp_host;
 
-								freeaddrinfo(info);
-								return ACCESS_READ;
-							}
-							ptr = ptr->ai_next;
-						}
-						freeaddrinfo(info);
+                        if (tmp_host.find("127.") == 0) {}
+                        else if (tmp_host.find(":") != string::npos) {}
+                        else
+                            host_ips.push_back(tmp_host);
+                    }
 
-						if (found == false)
-							host_ips.push_back(at_least);
-					}
-					else
-					{
-						cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
-						cerr << "Access right set to ACCESS_READ" << endl;
+                    if (host_ips.empty() == true)
+                    {
+                        host_ips.push_back(at_least_one);
+                    }
+                }
+                catch (DevFailed)
+                {
+                    cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
+                    cerr << "Access right set to ACCESS_READ" << endl;
 
-						return ACCESS_READ;
-					}
-				}
-				else
-				{
-					cerr << "AccessProxy::check_access_control: Can't get my host name !" << endl;
-					cerr << "Access right set to ACCESS_READ" << endl;
-
-					return ACCESS_READ;
-				}
-			}
+                    return ACCESS_READ;
+                }
+            }
 
 //
 //	Check for user and host rights on specified device

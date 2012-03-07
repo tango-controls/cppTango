@@ -31,7 +31,7 @@ PROJECT_NAME           = "Tango Device Server Core Classes Reference "
 # This could be handy for archiving the generated documentation or 
 # if some version control system is used.
 
-PROJECT_NUMBER         = 7.2.6
+PROJECT_NUMBER         = 8.0.2
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) 
 # base path where the generated documentation will be put. 
@@ -579,7 +579,8 @@ INPUT                  = device.h \
                          w_attribute.h \
                          device_3.h \
                          device_4.h \
-                         encoded_attribute.h
+                         encoded_attribute.h \
+			 attrprop.h
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 

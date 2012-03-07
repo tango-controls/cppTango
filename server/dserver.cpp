@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -47,6 +47,8 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <new>
 #include <algorithm>
+#include <iterator>
+#include <sstream>
 #include <math.h>
 
 #ifndef _TG_WINDOWS_
@@ -181,6 +183,12 @@ void DServer::init_device()
 			tg->add_class_to_list(this->get_device_class());
 
 //
+// Retrieve event related properties (multicast and other)
+//
+
+			get_event_prop(tg);
+
+//
 // A loop for each class
 //
 
@@ -245,10 +253,12 @@ void DServer::init_device()
 // Create all device(s)
 //
 
+                    class_list[i]->set_device_factory_done(false);
 					{
 						AutoTangoMonitor sync(class_list[i]);
 						class_list[i]->device_factory(&dev_list);
 					}
+                    class_list[i]->set_device_factory_done(true);
 
 //
 // Set value for each device with memorized writable attr
@@ -259,7 +269,7 @@ void DServer::init_device()
 // method
 //
 
-					PyLock *lock_ptr;
+					PyLock *lock_ptr = NULL;
 					omni_thread *th;
 
 					if (tg->is_py_ds() == true)
@@ -277,6 +287,12 @@ void DServer::init_device()
 					{
 						lock_ptr->Get();
 					}
+
+//
+// Get mcast event parameters (in case of)
+//
+
+					class_list[i]->get_mcast_event(this);
 				}
 				else
 				{
@@ -307,10 +323,12 @@ void DServer::init_device()
 // Create all device(s)
 //
 
+                    class_list[i]->set_device_factory_done(false);
 					{
 						AutoTangoMonitor sync(class_list[i]);
 						class_list[i]->device_factory(dev_list_nodb);
 					}
+                    class_list[i]->set_device_factory_done(true);
 
 					delete dev_list_nodb;
 				}
@@ -521,7 +539,6 @@ void DServer::delete_devices()
 // Clean-up db (dyn attribute)
 //
 
-
 					if (tg->get_polled_dyn_attr_names().size() != 0)
 						tg->clean_attr_polled_prop();
 					if (tg->get_all_dyn_attr_names().size() != 0)
@@ -586,7 +603,7 @@ Tango::DevVarStringArray *DServer::query_class()
 	cout4 << "In query_class command" << endl;
 
 	long nb_class = class_list.size();
-	Tango::DevVarStringArray *ret;
+	Tango::DevVarStringArray *ret = NULL;
 
 	try
 	{
@@ -626,7 +643,7 @@ Tango::DevVarStringArray *DServer::query_device()
 	cout4 << "In query_device command" << endl;
 
 	long nb_class = class_list.size();
-	Tango::DevVarStringArray *ret;
+	Tango::DevVarStringArray *ret = NULL;
 	vector<string> vs;
 
 	try
@@ -769,6 +786,7 @@ void DServer::restart(string &d_name)
 //
 // clean the sub-device list for this device
 //
+
 	Tango::Util *tg = Tango::Util::instance();
 	tg->get_sub_dev_diag().remove_sub_devices (dev_to_del->get_name());
 	tg->get_sub_dev_diag().set_associated_device(dev_to_del->get_name());
@@ -809,9 +827,9 @@ void DServer::restart(string &d_name)
 //
 
 	client_addr *cl_addr = NULL;
-	client_addr *old_cl_addr;
-	time_t l_date;
-	DevLong l_ctr,l_valid;
+	client_addr *old_cl_addr = NULL;
+	time_t l_date = 0;
+	DevLong l_ctr = 0,l_valid = 0;
 
 	if (dev_to_del->is_device_locked() == true)
 	{
@@ -854,12 +872,16 @@ void DServer::restart(string &d_name)
 // model
 //
 
+	tg->set_svr_starting(true);
+	dev_cl->set_device_factory_done(false);
 	{
 		AutoTangoMonitor sync(dev_cl);
 		AutoPyLock PyLo;
 
 		dev_cl->device_factory(&name);
 	}
+	dev_cl->set_device_factory_done(true);
+	tg->set_svr_starting(false);
 
 //
 // Apply memorized values for memorized attributes (if any)
@@ -946,6 +968,10 @@ void DServer::restart(string &d_name)
 			att.set_archive_event_sub();
 		if (eve[i].user == true)
 			att.set_user_event_sub();
+        if (eve[i].notifd == true)
+            att.set_use_notifd_event();
+        if (eve[i].zmq == true)
+            att.set_use_zmq_event();
 	}
 
 //
@@ -1049,10 +1075,12 @@ void ServRestartThread::run(void *ptr)
     tg->set_polling_threads_pool_size(ULONG_MAX);
 	dev->set_poll_th_pool_size(DEFAULT_POLLING_THREADS_POOL_SIZE);
 
+    tg->set_svr_starting(true);
 	{
 		AutoPyLock PyLo;
 		dev->init_device();
 	}
+	tg->set_svr_starting(false);
 
 //
 // Restart polling (if any)
@@ -1086,7 +1114,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	cout4 << "In query_class_prop command" << endl;
 
 	long nb_class = class_list.size();
-	Tango::DevVarStringArray *ret;
+	Tango::DevVarStringArray *ret = NULL;
 
 //
 // Find the wanted class in server and throw exception if not found
@@ -1156,7 +1184,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	cout4 << "In query_dev_prop command" << endl;
 
 	long nb_class = class_list.size();
-	Tango::DevVarStringArray *ret;
+	Tango::DevVarStringArray *ret = NULL;
 
 //
 // Find the wanted class in server and throw exception if not found
@@ -1482,6 +1510,242 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 				o << " Your request is not allowed while a device is locked." << ends;
 				v << "DServer::" << cmd_name << ends;
 				Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
+			}
+		}
+	}
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DServer::get_event_prop()
+//
+// description : 	Get the property defining which event has to be transported
+//					using multicast protocol
+//
+// argin: tg : Tango Util instance pointer
+//
+//-----------------------------------------------------------------------------
+
+void DServer::get_event_prop(Tango::Util *tg)
+{
+
+	if (tg->_UseDb == true)
+	{
+
+//
+// Get property
+//
+
+		DbData db_data;
+
+		db_data.push_back(DbDatum("MulticastEvent"));
+		db_data.push_back(DbDatum("MulticastHops"));
+		db_data.push_back(DbDatum("MulticastRate"));
+		db_data.push_back(DbDatum("MulticastIvl"));
+		db_data.push_back(DbDatum("DSEventBufferHwm"));
+		db_data.push_back(DbDatum("EventBufferHwm"));
+
+		try
+		{
+			tg->get_database()->get_property(CONTROL_SYSTEM,db_data,tg->get_db_cache());
+
+			mcast_event_prop.clear();
+			db_data[0] >> mcast_event_prop;
+
+//
+// Check property coherency
+//
+
+			vector<string>::size_type nb_elt = mcast_event_prop.size();
+			bool uncoherent  = false;
+
+			for (unsigned int i = 0;i < nb_elt;++i)
+			{
+				if (is_ip_address(mcast_event_prop[i]) == true)
+				{
+
+//
+// Check multicast address validity
+//
+
+                    string start_ip_mcast = mcast_event_prop[i].substr(0,mcast_event_prop[i].find('.'));
+
+                    istringstream ss(start_ip_mcast);
+                    int ip_start;
+                    ss >> ip_start;
+
+                    if ((ip_start < 224) || (ip_start > 239))
+                        uncoherent = true;
+                    else
+                    {
+
+//
+// Check property definition
+//
+
+                        if (nb_elt < i + 3)
+                            uncoherent = true;
+                        else
+                        {
+                            if (nb_elt > i + 4)
+                            {
+                                if ((is_event_name(mcast_event_prop[i + 2]) == false) &&
+                                    (is_event_name(mcast_event_prop[i + 3]) == false) &&
+                                    (is_event_name(mcast_event_prop[i + 4]) == false))
+                                    uncoherent = true;
+                            }
+                            else if (nb_elt > i + 3)
+                            {
+                                if ((is_event_name(mcast_event_prop[i + 2]) == false) &&
+                                    (is_event_name(mcast_event_prop[i + 3]) == false))
+                                    uncoherent = true;
+                            }
+                            else
+                            {
+                                if (is_event_name(mcast_event_prop[i + 2]) == false)
+                                    uncoherent = true;
+                            }
+                        }
+                    }
+
+//
+// If the property is uncoherent, clear it but inform user
+// No event will use multicasting in this case
+//
+
+					if (uncoherent == true)
+					{
+						cerr << "Database CtrlSystem/MulticastEvent property is uncoherent" << endl;
+						cerr << "Prop syntax = mcast ip adr (must be between 224.x.y.z and 239.x.y.z) - port - [rate] - [ivl] - event name" << endl;
+						cerr << "All events will use unicast communication" << endl;
+
+						mcast_event_prop.clear();
+						break;
+					}
+					else
+						i = i + 1;
+				}
+			}
+
+//
+// All values in lower case letters
+//
+
+			for (unsigned int i = 0;i < nb_elt;i++)
+			{
+				transform(mcast_event_prop[i].begin(),mcast_event_prop[i].end(),mcast_event_prop[i].begin(),::tolower);
+			}
+
+//
+// Multicast Hops
+//
+
+            mcast_hops = MCAST_HOPS;
+            if (db_data[1].is_empty() == false)
+                db_data[1] >> mcast_hops;
+
+//
+// Multicast PGM rate
+//
+
+            mcast_rate = PGM_RATE;
+            if (db_data[2].is_empty() == false)
+            {
+                db_data[2] >> mcast_rate;
+                mcast_rate = mcast_rate * 1024;
+            }
+
+//
+// Multicast IVL
+//
+
+            mcast_ivl = PGM_IVL;
+            if (db_data[3].is_empty() == false)
+            {
+                db_data[3] >> mcast_ivl;
+                mcast_ivl = mcast_ivl * 1000;
+            }
+
+//
+// Publisher Hwm
+//
+
+            zmq_pub_event_hwm = PUB_HWM;
+            if (db_data[4].is_empty() == false)
+                db_data[4] >> zmq_pub_event_hwm;
+
+//
+// Subscriber Hwm
+//
+
+            zmq_sub_event_hwm = SUB_HWM;
+            if (db_data[5].is_empty() == false)
+                db_data[5] >> zmq_sub_event_hwm;
+
+		}
+		catch (Tango::DevFailed &)
+		{
+			cerr << "Database error while trying to retrieve multicast event property" << endl;
+			cerr << "All events will use unicast communication" << endl;
+		}
+	}
+	else
+		mcast_event_prop.clear();
+
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DServer::mcast_event_for_att()
+//
+// description : 	Return in m_event vector, list of mcast event for the
+//					specified device/attribute.
+//					For each event, the returned string in the vector
+//					follow the syntax
+//						event_name:ip_adr:port:rate:ivl
+//					The last two are optionals
+//					Please note that the same dev/att may have several event
+//					using multicasting
+//
+// argin: dev_name : The device name
+//		  att_name : The attribute name
+// argout: m_event : The multicast event definition
+//
+//-----------------------------------------------------------------------------
+
+void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<string> &m_event)
+{
+
+	m_event.clear();
+
+	string full_att_name = dev_name + '/' + att_name;
+
+	vector<string>::size_type nb_elt = mcast_event_prop.size();
+	unsigned int ip_adr_ind = 0;
+
+	for (unsigned int i = 0;i < nb_elt;++i)
+	{
+		if (is_ip_address(mcast_event_prop[i]) == true)
+		{
+			ip_adr_ind = i;
+			continue;
+		}
+
+		if (is_event_name(mcast_event_prop[i]) == true)
+		{
+			if (mcast_event_prop[i].find(full_att_name) == 0)
+			{
+				string::size_type pos = mcast_event_prop[i].rfind('.');
+				string tmp = mcast_event_prop[i].substr(pos + 1);
+				tmp = tmp + ':' + mcast_event_prop[ip_adr_ind] + ':' + mcast_event_prop[ip_adr_ind + 1];
+				if (is_event_name(mcast_event_prop[ip_adr_ind + 2]) == false)
+				{
+					tmp = tmp + ':' + mcast_event_prop[ip_adr_ind + 2];
+					if (is_event_name(mcast_event_prop[ip_adr_ind + 3]) == false)
+						tmp = tmp + ':' + mcast_event_prop[ip_adr_ind + 3];
+				}
+				m_event.push_back(tmp);
 			}
 		}
 	}

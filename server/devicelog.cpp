@@ -8,7 +8,7 @@
 //
 // author(s) :	  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -19,12 +19,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -115,7 +115,7 @@ namespace Tango
 // method : DeviceImpl::get_logger_i
 //--------------------------------------------------------------------------
 log4tango::Logger* DeviceImpl::get_logger_i (void)
-{ 
+{
   try {
     // trace
     cout4 << "Entering DeviceImpl::get_logger_i" << endl;
@@ -130,9 +130,9 @@ log4tango::Logger* DeviceImpl::get_logger_i (void)
         // get device name
         std::string dev_name(device_name);
         // avoid case sensitive troubles
-        std::transform(dev_name.begin(), 
-                       dev_name.end(), 
-                       dev_name.begin(), 
+        std::transform(dev_name.begin(),
+                       dev_name.end(),
+                       dev_name.begin(),
                        ::tolower);
         // instanciate the logger using device name
         ext->logger = new log4tango::Logger(dev_name);
@@ -200,7 +200,7 @@ void DeviceImpl::init_logger (void)
     db_data.push_back(DbDatum("logging_level"));
     db_data.push_back(DbDatum("logging_target"));
     db_data.push_back(DbDatum("logging_rft"));
-    try { 
+    try {
       db_dev->get_property(db_data);
     } catch (...) {
       // error: set logging level then return
@@ -212,7 +212,7 @@ void DeviceImpl::init_logger (void)
     if (!level_set_from_cmd_line && db_data[0].is_empty() == false) {
       db_data[0] >> log_level_property;
       // avoid case sensitive troubles
-      std::transform(log_level_property.begin(), log_level_property.end(), 
+      std::transform(log_level_property.begin(), log_level_property.end(),
                      log_level_property.begin(), ::toupper);
       cout4 << "Initial logging level set to [" << log_level_property << "]" << endl;
       // convert from string to log4tango level
@@ -232,14 +232,14 @@ void DeviceImpl::init_logger (void)
     }
     // save current logging level
     ext->saved_log_level = the_logger->get_level();
-    // get rolling threshold for file targets 
+    // get rolling threshold for file targets
     long rft_property = static_cast<long>(kDefaultRollingThreshold);
     if (db_data[2].is_empty() == false) {
       db_data[2] >> rft_property;
     }
     // save current rolling threshold
     ext->rft = static_cast<size_t>(rft_property);
-    // set logging targets 
+    // set logging targets
     std::vector<std::string> log_target_property;
     if (db_data[1].is_empty() == false) {
       db_data[1] >> log_target_property;
@@ -250,9 +250,9 @@ void DeviceImpl::init_logger (void)
     }
     // set rolling file threshold for file targets
     Logging::set_rolling_file_threshold(the_logger, ext->rft);
-    // trace 
+    // trace
     cout4 << "Leaving DeviceImpl::init_logger" << endl;
-  } 
+  }
   catch (...) {
     // igore any exception
   }

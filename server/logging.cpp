@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :  N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -21,12 +21,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -157,12 +157,12 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
- 
+
 //-----------------------------------------------------------------------------
 // HEADERS
 //-----------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
-# include <direct.h> 
+# include <direct.h>
 #else
 # include <sys/types.h>
 # include <sys/stat.h>
@@ -174,11 +174,11 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tangoappender.h>
 #include <tangorollingfileappender.h>
 
-namespace Tango 
+namespace Tango
 {
 
 //-----------------------------------------------------------------------------
-// TANGO KERNEL CMD LINE DEBUGGING LEVEL 
+// TANGO KERNEL CMD LINE DEBUGGING LEVEL
 //-----------------------------------------------------------------------------
 #define kTANGO_CORE_CMD_LINE_LEVEL 5
 
@@ -188,7 +188,7 @@ namespace Tango
 #define _VERBOSE(_MSG_) \
   if (Logging::_cmd_line_level >= kTANGO_CORE_CMD_LINE_LEVEL) \
     ::printf _MSG_;
-    
+
 //-----------------------------------------------------------------------------
 // LOCAL CONSTs (should be a Logging static const member)
 //-----------------------------------------------------------------------------
@@ -202,7 +202,7 @@ static const char* kDefaultConsoleName = "cout";
 log4tango::Logger* _core_logger = 0;
 // the logging path (use to store file logging targets)
 std::string Logging::_log_path("");
-// the <rollover> threshold for RollingFileAppender 
+// the <rollover> threshold for RollingFileAppender
 size_t Logging::_rft = 0;
 // the cmd line verbose level
 int Logging::_cmd_line_level = 0;
@@ -224,11 +224,11 @@ void Logging::init (const std::string& ds_name, // dserver name
 #else
   const char* kDefaultTangoLogPath = "/tmp/tango";
 #endif
-  try {    
+  try {
     // store cmd line verbose level (set by user)
     Logging::_cmd_line_level = cmd_line_level;
     _VERBOSE(("Entering Logging::init\n"));
-    // set default <rollover> threshold for RollingFileAppender 
+    // set default <rollover> threshold for RollingFileAppender
     Logging::_rft = kDefaultRollingThreshold;
     // try to get logging path from kTangoLogPathVar env. var.
     char *ftg_path = ::getenv(kTangoLogPathVar);
@@ -245,8 +245,8 @@ void Logging::init (const std::string& ds_name, // dserver name
     // instanciate the logger
     log4tango::Logger* logger = new log4tango::Logger(dserver_dev_name);
     // is logging level set from cmd line?
-    bool level_set_from_cmd_line = (cmd_line_level >= kTANGO_CORE_CMD_LINE_LEVEL) 
-                                 ? true 
+    bool level_set_from_cmd_line = (cmd_line_level >= kTANGO_CORE_CMD_LINE_LEVEL)
+                                 ? true
                                  : false;
     _VERBOSE(("\tcmd line logging level is %d\n", cmd_line_level));
     // set logger's effective level
@@ -258,10 +258,10 @@ void Logging::init (const std::string& ds_name, // dserver name
     }
     // core-logger's targets
     std::vector<std::string> targets;
-    if (use_db == true) 
+    if (use_db == true)
     {
       // get logging properties from database
-      try 
+      try
       {
         DbData db_data;
         // the logging path property (overwrites env.var.)
@@ -274,15 +274,15 @@ void Logging::init (const std::string& ds_name, // dserver name
         db_data.push_back(DbDatum("logging_target"));
         // get properties from TANGO-db
         db.get_device_property(dserver_dev_name, db_data,tg->get_db_cache());
-        // set logging path 
+        // set logging path
         string level_str("WARN");
         if (db_data[0].is_empty() == false) {
           db_data[0] >> Logging::_log_path;
-          _VERBOSE(("\tLogging::_log_path is %s (set from db)\n", 
+          _VERBOSE(("\tLogging::_log_path is %s (set from db)\n",
           Logging::_log_path.c_str()));
         }
         Logging::_rft = kDefaultRollingThreshold;
-        // set rolling file threshold 
+        // set rolling file threshold
         if (db_data[1].is_empty() == false) {
           unsigned long rtf;
           db_data[1] >> rtf;
@@ -300,7 +300,7 @@ void Logging::init (const std::string& ds_name, // dserver name
 #endif
         }
         // set logging level (if not set from cmd line)
-        if (! level_set_from_cmd_line) 
+        if (! level_set_from_cmd_line)
         {
           string level_str("WARN");
           if (db_data[2].is_empty() == false)
@@ -334,7 +334,7 @@ void Logging::init (const std::string& ds_name, // dserver name
     }
     Tango::_core_logger = logger;
     _VERBOSE(("Leaving Logging::init\n"));
-  } 
+  }
   catch (...) {
     _VERBOSE(("\tUnknown exception caught\n"));
     // ignore exception
@@ -344,12 +344,10 @@ void Logging::init (const std::string& ds_name, // dserver name
 //+----------------------------------------------------------------------------
 // method : Logging::cleanup
 //-----------------------------------------------------------------------------
-void Logging::cleanup (void) 
+void Logging::cleanup (void)
 {
-  if (Tango::_core_logger) {
     delete Tango::_core_logger;
     Tango::_core_logger = 0;
-  }
 }
 
 //+----------------------------------------------------------------------------
@@ -410,7 +408,7 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
     } // for each tuple
     // trace
     cout4 << "Leaving Logging::add_logging_target" << endl;
-  } 
+  }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
     o << "std::exception caught [" << e.what() << "]" << ends;
@@ -423,8 +421,8 @@ void Logging::add_logging_target (const Tango::DevVarStringArray *argin)
 // method : Logging::add_logging_target
 //--------------------------------------------------------------------------
 void Logging::add_logging_target(log4tango::Logger* logger,
-                                 const std::string& tg_type, 
-                                 const std::string& tg_name, 
+                                 const std::string& tg_type,
+                                 const std::string& tg_name,
                                  int throw_exception)
 {
   std::string tg_type_name(tg_type);
@@ -436,7 +434,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
 // method : Logging::add_logging_target
 //--------------------------------------------------------------------------
 void Logging::add_logging_target(log4tango::Logger* logger,
-                                 const std::string& in_type_name, 
+                                 const std::string& in_type_name,
                                  int throw_exception)
 {
   try {
@@ -481,7 +479,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
     }
     // build full path name (for file targets)
     std::string full_file_name;
-    // build internal target name  (i.e. appender name) 
+    // build internal target name  (i.e. appender name)
     std::string appender_name(ltg_type_str + kLogTargetSep);
     switch (ltg_type) {
       case LOG_CONSOLE: {
@@ -491,7 +489,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
         if (ltg_name_str == kDefaultTargetName) {
           // use default path and file name
           full_file_name  = Logging::_log_path + "/";
-          full_file_name += Logging::dev_to_file_name(logger->get_name()) + ".log"; 
+          full_file_name += Logging::dev_to_file_name(logger->get_name()) + ".log";
         } else if (ltg_name_str.find('/') !=  std::string::npos) {
           // user specified a "custom" path and file name
           full_file_name = ltg_name_str;
@@ -502,7 +500,7 @@ void Logging::add_logging_target(log4tango::Logger* logger,
         ltg_name_str = full_file_name;
         appender_name += ltg_name_str;
       } break;
-      case LOG_DEVICE: { 
+      case LOG_DEVICE: {
         if (ltg_name_str == kDefaultTargetName) {
           if (throw_exception) {
             TangoSys_OMemStream o;
@@ -600,12 +598,12 @@ void Logging::add_logging_target(log4tango::Logger* logger,
       }
     }
     else {
-      cout4 << "Target " << appender_name 
+      cout4 << "Target " << appender_name
             << " is already attached to "
-            << logger->get_name() << endl;  
+            << logger->get_name() << endl;
     }
     cout4 << "Leaving Logging::add_logging_target (internal impl)" << endl;
-  } 
+  }
   catch (std::exception& e) {
     if (throw_exception) {
       TangoSys_OMemStream o;
@@ -627,7 +625,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
     Logging::kill_zombie_appenders();
     // trace
     cout4 << "Entering Logging::remove_logging_target" << endl;
-    // log input 
+    // log input
     unsigned int i;
     for (i = 0; i < argin->length(); i++) {
       cout4 << "Input string = " << (*argin)[i].in() << endl;
@@ -646,7 +644,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
     // dev_name pattern
     std::string pattern;
     // target type (as int and string)
-    int tg_type;
+    int tg_type = 0;
     std::string tg_type_str;
     // target name or pattern
     std::string tg_name;
@@ -683,7 +681,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
       // check target type
       if (tg_type_str == kLogTargetConsole) {
         tg_type = Tango::LOG_CONSOLE;
-        // force target name to kDefaultConsoleName 
+        // force target name to kDefaultConsoleName
         tg_name = kDefaultConsoleName;
       }
       else if (tg_type_str == kLogTargetFile) {
@@ -709,12 +707,12 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
           o << "Internal error (got a NULL logger)" << ends;
           Except::throw_exception((const char *)"API_InternalError", o.str(),
                                   (const char *)"Logging::remove_logging_target");
-        } 
+        }
         // CASE I: remove ONE target of type <tg_type_str>
         if (remove_all_targets == 0) {
           // build full appender name (target_type+sep+target_name)
           std::string full_tg_name = tg_type_str + kLogTargetSep;
-          // a special case : target is the a file 
+          // a special case : target is the a file
           if (tg_type == Tango::LOG_FILE) {
             if (tg_name == kDefaultTargetName) {
               // use both default path and file name
@@ -729,16 +727,16 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
             }
           }
           else {
-            full_tg_name += tg_name;  
+            full_tg_name += tg_name;
           }
-          cout4 << "removing target " << full_tg_name 
+          cout4 << "removing target " << full_tg_name
                 << " from " << dl[j]->get_name() << endl;
           // remove appender from device's logger
           logger->remove_appender(full_tg_name);
         }
         // CASE II: remove ALL targets of type <tg_type_str>
         else {
-          cout4 << "removing ALL <" << tg_type_str 
+          cout4 << "removing ALL <" << tg_type_str
                 << "> targets from " << dl[j]->get_name() << endl;
           // get logger's appender list
           log4tango::AppenderList al = logger->get_all_appenders();
@@ -750,7 +748,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
             idx = al[a]->get_name().find(substr);
             if (idx != std::string::npos) {
               cout4 << "\tremoving " << al[a]->get_name() << endl;
-              logger->remove_appender(al[a]->get_name()); 
+              logger->remove_appender(al[a]->get_name());
             }
           } // for each appender in <al>
         } // else (if remove_all_targets)
@@ -758,7 +756,7 @@ void Logging::remove_logging_target (const Tango::DevVarStringArray *argin)
     } // for each tuple
     // trace
     cout4 << "Leaving Logging::remove_logging_target" << endl;
-  } 
+  }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
     o << "std::exception caught [" << e.what() << "]" << ends;
@@ -788,7 +786,7 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
       TangoSys_OMemStream o;
       o << "Device " << dev_name << " not found" << ends;
       Except::re_throw_exception(e,
-                                (const char *)"API_DeviceNotFound", 
+                                (const char *)"API_DeviceNotFound",
                                 o.str(),
                                 (const char *)"Logging::get_logging_target");
     }
@@ -819,7 +817,7 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     } // for i
     // trace
     cout4 << "Leaving Logging::get_logging_target " << endl;
-  } 
+  }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
     o << "std::exception caught [" << e.what() << "]" << ends;
@@ -887,15 +885,15 @@ void Logging::set_logging_level (const DevVarLongStringArray *argin)
                                   (const char *)"Logging::set_logging_level");
         }
         // map TANGO level to log4tango level
-        log4tango::Level::Value log4tango_level = 
+        log4tango::Level::Value log4tango_level =
             Logging::tango_to_log4tango_level(static_cast<Tango::LogLevel>(argin->lvalue[i]));
         // set logger's level
         logger->set_level(log4tango_level);
       } // for j
     } // for i
-    // trace 
+    // trace
     cout4 << "Leaving Logging::set_logging_level" << endl;
-  } 
+  }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
     o << "std::exception caught [" << e.what() << "]" << ends;
@@ -962,9 +960,9 @@ DevVarLongStringArray* Logging::get_logging_level (const DevVarStringArray *argi
         ret->lvalue[ret->lvalue.length() - 1] = tango_level;
       } // for j
     } // for i
-    // trace 
+    // trace
     cout4 << "Leaving Logging::get_logging_level" << endl;
-  } 
+  }
   catch (std::exception& e) {
     TangoSys_OMemStream o;
     o << "std::exception caught [" << e.what() << "]" << ends;
@@ -981,13 +979,13 @@ void  Logging::stop_logging (void)
 {
   cout4 << "Entering Logging::stop_logging" << endl;
   // get all devices
-  std::vector<DeviceImpl*> dl = 
+  std::vector<DeviceImpl*> dl =
     Util::instance()->get_device_list(std::string("*"));
   for (unsigned int i = 0; i < dl.size(); i++) {
     dl[i]->stop_logging();
   }
   cout4 << "Leaving Logging::stop_logging" << endl;
-}  
+}
 
 //+----------------------------------------------------------------------------
 // method : Logging::start_logging
@@ -996,7 +994,7 @@ void  Logging::start_logging (void)
 {
   cout4 << "Entering Logging::start_logging" << endl;
   // get all devices
-  std::vector<DeviceImpl*> dl = 
+  std::vector<DeviceImpl*> dl =
             Util::instance()->get_device_list(std::string("*"));
   for (unsigned int i = 0; i < dl.size(); i++) {
     dl[i]->start_logging();
@@ -1010,7 +1008,7 @@ void  Logging::start_logging (void)
 void Logging::kill_zombie_appenders (void)
 {
   cout4 << "Entering kill_zombie_appenders" << endl;
-  // get all devices 
+  // get all devices
   std::vector<DeviceImpl*> dl(0);
   dl = Util::instance()->get_device_list("*");
   // for each device in <dl>
@@ -1028,10 +1026,10 @@ void Logging::kill_zombie_appenders (void)
       // for each appender in <al>
       for (j = 0; j < al.size(); j++) {
         if (al[j]->is_valid() == false) {
-          cout4 << "Removing zombie appender " 
-                << dl[i]->get_name() 
-                << "::" 
-                << al[j]->get_name() 
+          cout4 << "Removing zombie appender "
+                << dl[i]->get_name()
+                << "::"
+                << al[j]->get_name()
                 << endl;
           logger->remove_appender(al[j]);
         }
@@ -1055,7 +1053,7 @@ void Logging::set_rolling_file_threshold(log4tango::Logger* logger, size_t rtf)
   else if (rtf > kMaxRollingThreshold) {
     rtf = kMaxRollingThreshold;
   }
-  // misc. var to find file targets in appender list 
+  // misc. var to find file targets in appender list
   std::string::size_type idx;
   TangoRollingFileAppender *rfa;
   std::string prefix = std::string(kLogTargetFile) + kLogTargetSep;
@@ -1115,7 +1113,7 @@ log4tango::Level::Value Logging::tango_to_log4tango_level (Tango::LogLevel tango
 //+----------------------------------------------------------------------------
 // method : Logging::tango_to_log4tango_level  (string version)
 //-----------------------------------------------------------------------------
-log4tango::Level::Value Logging::tango_to_log4tango_level (const std::string& tango_level, 
+log4tango::Level::Value Logging::tango_to_log4tango_level (const std::string& tango_level,
                                                            bool throw_exception)
 {
   log4tango::Level::Value log4tango_level;
@@ -1174,13 +1172,13 @@ Tango::LogLevel Logging::log4tango_to_tango_level (log4tango::Level::Value log4t
 }
 
 //+----------------------------------------------------------------------------
-// method : Logging::dev_to_file_name 
+// method : Logging::dev_to_file_name
 //-----------------------------------------------------------------------------
 std::string Logging::dev_to_file_name (const std::string& _dev_name)
 {
   cout4 << "Entering Logging::dev_to_file_name (input " << _dev_name << ")" << endl;
   string file_name(_dev_name);
-  std::transform(file_name.begin(), file_name.end(), file_name.begin(), ::tolower);   
+  std::transform(file_name.begin(), file_name.end(), file_name.begin(), ::tolower);
   std::string::size_type pos = 0;
   do  {
     pos = file_name.find('/', pos);
@@ -1196,10 +1194,10 @@ std::string Logging::dev_to_file_name (const std::string& _dev_name)
 }
 
 //+----------------------------------------------------------------------------
-// method : Logging::get_target_type_and_name 
+// method : Logging::get_target_type_and_name
 //-----------------------------------------------------------------------------
-int Logging::get_target_type_and_name (const std::string& input, 
-                                       std::string& type, 
+int Logging::get_target_type_and_name (const std::string& input,
+                                       std::string& type,
                                        std::string& name)
 {
   cout4 << "Logging::get_target_type_and_name (input " << input << ")" << endl;
@@ -1231,13 +1229,13 @@ int Logging::create_log_dir (const std::string& full_path)
     std::string sub_path;
     sub_path.assign(full_path.begin(), full_path.begin() + pos);
     if (sub_path.size()) {
-        Logging::create_log_dir(sub_path); 
-    }   
+        Logging::create_log_dir(sub_path);
+    }
   }
 #ifdef _TG_WINDOWS_
   int res = ::mkdir(full_path.c_str());
 #else
-  int res = ::mkdir(full_path.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);    
+  int res = ::mkdir(full_path.c_str(), S_IRWXU | S_IRWXG | S_IRWXO);
 #endif
   //-_VERBOSE(("\tLeaving Logging::create_log_dir (::mkdir returned %d)\n", res));
   return res;
@@ -1258,7 +1256,7 @@ LogAdapter::LogAdapter (Tango::DeviceImpl *dev)
 //+----------------------------------------------------------------------------
 // method : LogAdapter::~LogAdapter
 //-----------------------------------------------------------------------------
-LogAdapter::~LogAdapter ( ) 
+LogAdapter::~LogAdapter ( )
 {
  //no-op dtor
 }

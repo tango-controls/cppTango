@@ -11,7 +11,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -86,6 +86,9 @@ public :
 	void re_lock_devices(const Tango::DevVarStringArray *);
 	Tango::DevVarLongStringArray *dev_lock_status(Tango::ConstDevString);
 
+	Tango::DevLong event_subscription_change(const Tango::DevVarStringArray *);
+	Tango::DevVarLongStringArray *zmq_event_subscription_change(const Tango::DevVarStringArray *);
+
 	void delete_devices();
 
 #ifdef TANGO_HAS_LOG4TANGO
@@ -119,8 +122,12 @@ public :
 
 	TANGO_IMP_EXP static void register_class_factory(ClassFactoryFuncPtr f_ptr) {class_factory_func_ptr = f_ptr;}
 	void _add_class(DeviceClass *dc) {this->add_class(dc);}
+	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
-	friend class EventSupplier;
+	void mcast_event_for_att(string &,string &,vector<string> &);
+
+	friend class NotifdEventSupplier;
+	friend class ZmqEventSupplier;
 
 protected :
 	string							process_name;
@@ -148,8 +155,19 @@ private:
 	void add_class(DeviceClass *);
 	void create_cpp_class(const char *,const char *);
 	void get_dev_prop(Tango::Util *);
+    DeviceImpl *event_subscription(string &,string &,string &,string &,string &,ChannelType,string &,int &,int &);
+	void get_event_prop(Tango::Util *);
+	bool is_event_name(string &);
+	bool is_ip_address(string &);
 
 	bool			from_constructor;
+	vector<string>	mcast_event_prop;
+
+	DevLong         mcast_hops;
+	DevLong         mcast_rate;
+	DevLong         mcast_ivl;
+	DevLong         zmq_pub_event_hwm;
+	DevLong         zmq_sub_event_hwm;
 };
 
 class KillThread: public omni_thread
@@ -174,6 +192,29 @@ struct Pol
 	long			upd;
 	string 			name;
 };
+
+
+/******************************************************************************
+ *
+ *			Some inline methods
+ *
+ ******************************************************************************/
+
+inline bool DServer::is_event_name(string &str)
+{
+	if (count(str.begin(),str.end(),'/') != 3)
+		return false;
+	if (count(str.begin(),str.end(),'.') != 1)
+		return false;
+	return true;
+}
+
+inline bool DServer::is_ip_address(string &str)
+{
+	if (count(str.begin(),str.end(),'.') != 3)
+		return false;
+	return true;
+}
 
 } // End of namespace Tango
 

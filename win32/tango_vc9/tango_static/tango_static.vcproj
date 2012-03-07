@@ -43,8 +43,8 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="C:\tango_src\cppapi\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;"
+				AdditionalIncludeDirectories="..\..\..\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;STATIC_EXPORT"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -70,7 +70,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\tango.lib"
+				OutputFile="$(PREFIX)\win32\lib\vc9\tango.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -116,14 +116,14 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="C:\tango_src\cppapi\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
-				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM"
+				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;STATIC_EXPORT"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\lib/tangod.7.2.6.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win32\lib\vc9\tangod.8.0.2.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -142,7 +142,7 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				OutputFile="lib\tangod.lib"
+				OutputFile="$(PREFIX)\win32\lib\vc9\tangod.lib"
 				IgnoreAllDefaultLibraries="true"
 			/>
 			<Tool
@@ -270,11 +270,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\event.h"
+				RelativePath="..\..\..\client\event.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\eventcmds.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\eventconsumer.h"
 				>
 			</File>
 			<File
@@ -366,11 +370,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
@@ -931,6 +935,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\dev_poll.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\devapi_attr.cpp"
 				>
 				<FileConfiguration
@@ -1283,28 +1291,8 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\event.cpp"
+				RelativePath="..\..\..\client\event.cpp"
 				>
-				<FileConfiguration
-					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions=""
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\..\server\eventcmds.cpp"
@@ -1331,11 +1319,11 @@
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventkeepalive.cpp"
+				RelativePath="..\..\..\client\eventkeepalive.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\eventqueue.cpp"
+				RelativePath="..\..\..\client\eventqueue.cpp"
 				>
 			</File>
 			<File
@@ -1565,6 +1553,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\client\notifdeventconsumer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\notifdeventsupplier.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\ntservice.cpp"
@@ -1961,6 +1957,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\client\zmqeventconsumer.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\zmqeventsupplier.cpp"
+				>
 			</File>
 		</Filter>
 		<File

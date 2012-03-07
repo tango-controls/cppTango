@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -35,155 +35,6 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 1.39  2011/01/10 14:39:27  taurel
-// - Some compilation errors while compiling Tango 7.2.3
-//
-// Revision 1.38  2011/01/10 13:09:02  taurel
-// - No retry on command to get data for cache during DS startup
-// - Only three reties during DbDevExport
-// - Device are deleted by omniORB even if not exported into Tango database
-//
-// Revision 1.37  2010/09/24 14:06:15  taurel
-// - For Python DS, do not give full device ownership to the POA.
-// Otherwise, a python DS crashes at exit.
-//
-// Revision 1.36  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 1.35  2010/06/23 09:13:28  taurel
-// - Change some comments
-//
-// Revision 1.34  2010/06/21 12:38:23  taurel
-// - Implement a much faster server shutdown sequence
-//
-// Revision 1.33  2009/09/18 09:18:06  taurel
-// - End of attribute serialization implementation?
-//
-// Revision 1.32  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 1.31  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 1.30  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 1.29  2008/10/02 09:09:47  taurel
-// - First implementation of multiple polling thread(s)
-//
-// Revision 1.28  2008/09/04 07:37:05  taurel
-// - Fix bug in memorized attributes
-// - Changes for the new IDL 4
-//
-// Revision 1.27  2008/05/20 12:44:11  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 1.26  2008/03/11 14:38:25  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
-// Revision 1.25  2008/01/25 15:44:51  taurel
-// - Some changes in the Db cache
-// - A lighter system to shutdown DS in case of dynamic attribute
-//
-// Revision 1.24  2007/12/12 10:17:18  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-// Revision 1.23.2.1  2008/02/07 15:58:14  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 1.23  2007/11/08 12:03:44  taurel
-// - Start implementing user interceptors
-// - Fix bug in poll thread pproperty management when removing polling object
-// - Set a database timeout to 6 sec
-//
-// Revision 1.22  2007/10/16 08:22:51  taurel
-// - Add management of the TC connection establishment timeout for DB access
-// - Add DB server cache in DS used during DS startup sequence
-// - Comment out the sleep time during DS startup sequence
-//
-// Revision 1.21  2007/05/22 12:48:40  taurel
-// - Clarified an error message
-//
-// Revision 1.20  2007/05/17 07:59:07  taurel
-// - The polling is not configured via a separate thread any more. The polling thread add_obj_polling method has been modified to support a parameter telling to the polling thread when it has to polled the object.
-// Add device name in monitor print message
-// Add device_destroyer method in DeviceClass class
-//
-// Revision 1.19  2007/05/11 07:29:29  taurel
-// - Added device_destroyer() methods. These method are doing the opposite of
-// the device_factory() one. They remove (and delete) a device from the list
-// of available device in the class. They do not mmodify the DB
-//
-// Revision 1.18  2007/04/20 14:40:29  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 1.17  2007/04/16 14:56:36  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 1.16  2007/03/06 08:18:04  taurel
-// - Added 64 bits data types for 64 bits computer...
-//
-// Revision 1.15  2006/11/20 16:26:37  taurel
-// - Small changes when removing servant in case the device is not exported
-//
-// Revision 1.14  2006/06/21 14:52:19  taurel
-// - Just fixing a logging print message
-//
-// Revision 1.13  2006/06/12 14:22:33  jensmeyer
-// Corrected error handling for during initialisation of memorised attributes.
-//
-// Revision 1.12  2006/05/18 08:52:37  taurel
-// - Miscellaneous changes due to Python device server ported to Windows
-// - Fix some bugs discovered by Windows VC8 using the test suite
-// - Update Windows resource file include path
-// - Fix some Windows VC8 warnings
-//
-// Revision 1.11  2006/03/09 08:18:06  taurel
-// - Change the order of device server destruction. First devices then class.
-// It was the contrary....
-//
-// Revision 1.10  2006/02/20 08:51:48  taurel
-// - A small edit mistake in delete_dev method...
-//
-// Revision 1.9  2006/02/20 08:30:00  taurel
-// - Add a new method in DeviceClass to delete a device at run-time
-//
-// Revision 1.8  2006/02/17 16:53:04  jensmeyer
-// Corrections when porting to VC7 under windows
-//
-// Revision 1.7  2006/01/27 14:27:10  taurel
-// - Fix a severe incompatibility problem introduced by all the modifs done for
-// PY DS
-// - Duplicate some EventSupplier class methods (instead of using template) in order to be able to generate Tango shared library on Suse 9.3
-//
-// Revision 1.6  2006/01/20 15:30:13  taurel
-// - Fixes in the default command management
-//
-// Revision 1.5  2006/01/20 08:30:05  taurel
-// - Added necessary changes to support Device server written in Python
-//
-// Revision 1.4  2005/11/07 12:15:00  jensmeyer
-// Corrected initialisation of memorised attributes. No longer exits when receiving an
-// exception during initialisation. Also added an option to only initialise the attribute setpoint and not writing to the attribute.
-// set_memorized_init(false) -> only applies setpoint.
-// set_memorized_init(true) -> also writes setpoint value to the attribute.
-//
-// Revision 1.3  2005/06/29 08:31:16  taurel
-// - Last commit before release 5.2 ?
-//
-// Revision 1.2  2005/01/13 08:31:12  taurel
-// - Merge trunk with Release_5_0 from brach Release_5_branch
-//
-// Revision 1.1.2.2  2004/10/27 05:59:46  taurel
-// - Some minor changes to compile on all our supported platforms
-//
-// Revision 1.1.2.1  2004/10/22 11:28:30  taurel
-// Splitted device.cpp/device.h files in two sets device.cpp/device.h for the DeviceImpl
-// class and deviceclass.cpp/deviceclass.h for the DeviceClass class
-//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -192,6 +43,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <new>
+#include <iterator>
 
 #include <basiccommand.h>
 #include <blackbox.h>
@@ -223,14 +75,8 @@ static void lower_cmd_name(string &cmd)
 //
 //-----------------------------------------------------------------------------
 
-DeviceClass::DeviceClass(string &s):name(s)
+DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt)
 {
-
-//
-// Create the DeviceClassExt instance
-//
-
-	ext = new DeviceClassExt;
 
 //
 // Create the associated DbClass object
@@ -277,7 +123,7 @@ DeviceClass::DeviceClass(string &s):name(s)
 // Give a default value for device type
 //
 
-	type = DescNotSet;
+	type = NotSet;
 
 }
 
@@ -308,6 +154,8 @@ void DeviceClass::get_class_system_resource()
 		db_data.push_back(DbDatum("cvs_tag"));
 		db_data.push_back(DbDatum("cvs_location"));
 		db_data.push_back(DbDatum("AllowedAccessCmd"));
+		db_data.push_back(DbDatum("svn_tag"));
+		db_data.push_back(DbDatum("svn_location"));
 
 		try
 		{
@@ -364,6 +212,11 @@ void DeviceClass::get_class_system_resource()
 		}
 		else
 			db_data[0] >> doc_url;
+
+		if (db_data[4].is_empty() == false)
+			db_data[4] >> ext->svn_tag;
+		if (db_data[5].is_empty() == false)
+			db_data[5] >> ext->svn_location;
 
 	}
 	else
@@ -579,18 +432,8 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						case Tango::DEV_BOOLEAN:
 							if (from_init == false)
 							{
-#if ((defined _TG_WINDOWS_) || (defined __SUNPRO_CC) || (defined GCC_STD))
 								if (!(str >> boolalpha >> boo))
 									throw_mem_value(device_list[i],att);
-#else
-								transform(mem_value.begin(),mem_value.end(),mem_value.begin(),::tolower);
-								if (mem_value == "true")
-									boo = true;
-								else if (mem_value == "false")
-									boo = false;
-								else
-									throw_mem_value(device_list[i],att);
-#endif
 								att.set_write_value(boo);
 							}
 							else
@@ -848,7 +691,6 @@ DeviceClass::~DeviceClass()
 // Clean-up db (dyn attribute)
 //
 
-
 			if (tg->get_polled_dyn_attr_names().size() != 0)
 				tg->clean_attr_polled_prop();
 			if (tg->get_all_dyn_attr_names().size() != 0)
@@ -885,7 +727,9 @@ DeviceClass::~DeviceClass()
 // Delete the class extension object
 //
 
+#ifndef HAS_UNIQUE_PTR
 	delete ext;
+#endif
 
 	cout4 << "Leaving DeviceClass destructor for class " << name << endl;
 }
@@ -935,6 +779,29 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 		Device_3Impl *dev_3 = static_cast<Device_3Impl *>(device_list[idx]);
 		dev_3->delete_dev();
 	}
+
+//
+// Wait for CORBA to call the device dtor
+//
+
+    if (device_list[idx] != NULL)
+    {
+#ifdef _TG_WINDOWS_
+        while (device_list[idx] != NULL)
+        {
+            Sleep(10);
+        }
+#else
+        struct timespec ts;
+        ts.tv_sec = 0;
+        ts.tv_nsec = 10000000;
+
+        while (device_list[idx] != NULL)
+        {
+            nanosleep(&ts,NULL);
+        }
+#endif
+    }
 
 	cout4 << "Leaving DeviceClass delete_dev" << endl;
 }
@@ -1501,6 +1368,78 @@ bool DeviceClass::is_command_allowed(const char *cmd)
 		ret = false;
 
 	return ret;
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DeviceClass::get_mcast_event()
+//
+// description : 	Get for all class devices and for all attributes multicast
+//					event parameters (if any)
+//
+// in :	dserv : Pointer to the DServer device
+//
+//-----------------------------------------------------------------------------
+
+void DeviceClass::get_mcast_event(DServer *dserv)
+{
+	cout4 << "Entering DeviceClass::get_mcast_event() method" << endl;
+	vector<string> m_cast;
+
+	for (unsigned int i = 0;i < device_list.size();++i)
+	{
+		vector<Attribute *> &att_list = device_list[i]->get_device_attr()->get_attribute_list();
+		for (unsigned int j = 0;j < att_list.size();++j)
+		{
+			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
+			if (m_cast.size() != 0)
+				att_list[j]->set_mcast_event(m_cast);
+		}
+	}
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceClass::get_cmd_by_name
+//
+// description :	Get a reference to the Command object
+//
+// in : 	cmd_name : The command name
+//
+//-----------------------------------------------------------------------------
+
+Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
+{
+	vector<Command *>::iterator pos;
+
+#ifdef HAS_LAMBDA_FUNC
+    pos = find_if(command_list.begin(),command_list.end(),
+                    [&] (Command *cmd) -> bool
+                    {
+                        if (cmd_name.size() != cmd->get_lower_name().size())
+                            return false;
+                        string tmp_name(cmd_name);
+                        transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+                        return cmd->get_lower_name() == tmp_name;
+                    });
+#else
+	pos = find_if(command_list.begin(),command_list.end(),
+		      bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+#endif
+
+	if (pos == command_list.end())
+	{
+		cout3 << "DeviceClass::get_cmd_by_name throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << cmd_name << " command not found" << ends;
+		Except::throw_exception((const char *)"API_CommandNotFound",
+				      o.str(),
+				      (const char *)"DeviceClass::get_cmd_by_name");
+	}
+
+	return *(*pos);
 }
 
 } // End of Tango namespace

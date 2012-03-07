@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -17,12 +17,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -42,11 +42,11 @@ namespace Tango
 //
 // DbClass::DbClass() - constructor to create a DbClass object for
 //			accessing a class of this name in the specified
-//			  TANGO database (import/export info and properties) 
+//			  TANGO database (import/export info and properties)
 //
 //-----------------------------------------------------------------------------
 
-DbClass::DbClass(string class_name, Database *class_dbase)
+DbClass::DbClass(string class_name, Database *class_dbase):ext(Tango_NullPtr)
 {
 	name = string(class_name);
 	dbase = class_dbase;
@@ -61,7 +61,7 @@ DbClass::DbClass(string class_name, Database *class_dbase)
 //
 //-----------------------------------------------------------------------------
 
-DbClass::DbClass(string class_name)
+DbClass::DbClass(string class_name):ext(Tango_NullPtr)
 {
 	name = string(class_name);
 	db_ind = ApiUtil::instance()->get_db_ind();
@@ -90,7 +90,7 @@ void DbClass::get_property(DbData &db_data)
 // Try to get db server cache in case we are called during a DS
 // startup sequence
 //
-	
+
 	ApiUtil *au = ApiUtil::instance();
 	DbServerCache *dsc;
 	if (au->in_server() == true)
@@ -104,7 +104,7 @@ void DbClass::get_property(DbData &db_data)
 //
 // Call DB (or cache)
 //
-	
+
 	if (ext_dbase == true)
 		dbase->get_class_property(name, db_data, dsc);
 	else
@@ -180,7 +180,7 @@ void DbClass::delete_property(DbData &db_data)
 
 //-----------------------------------------------------------------------------
 //
-// DbClass::get_attribute_property() - public method to get class attribute 
+// DbClass::get_attribute_property() - public method to get class attribute
 //           properties from the database
 //
 //-----------------------------------------------------------------------------
