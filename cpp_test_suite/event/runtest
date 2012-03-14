@@ -50,8 +50,10 @@ ubuntu1010 )
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"
 	DEV20="dev/test/20"
+	DS_INST_NAME=api
 	DS_INST_NAME_2=api2
 	DEV1_ALIAS="et_alias"
+	DS_PATH=$DIR
 	;;
 #
 python )
@@ -82,7 +84,7 @@ jenkins )
 			DEV3="test/ubuntu1004/12"
 			DEV1_ALIAS="ubuntu1004_alias"
 			DEV20="test/ubuntu1004/20"
-			DS_INST_NAME_2="ubuntu1004_2"
+			DS_INST_NAME="ubuntu1004"
 		fi
 
 		if [ $i = "Windows_VC9" ]
@@ -94,7 +96,7 @@ jenkins )
 			DEV3="test/win32_vc9/12"
 			DEV1_ALIAS="win32_vc9_alias"
 			DEV20="test/win32_vc9/20"
-			DS_INST_NAME_2="win32_vc9_2"
+			DS_INST_NAME="win32_vc9"
 		fi
 
 		if [ $i = "Windows_VC10" ]
@@ -106,7 +108,7 @@ jenkins )
 			DEV3="test/win64_vc10/12"
 			DEV1_ALIAS="win64_vc10_alias"
 			DEV20="test/win64_vc10/20"
-			DS_INST_NAME_2="win64_vc10_2"
+			DS_INST_NAME="win64_vc10"
 		fi
 
 		if [ $i = "centos5" ]
@@ -118,7 +120,7 @@ jenkins )
 			DEV3="test/centos5/12"
 			DEV1_ALIAS="centos5_alias"
 			DEV20="test/centos5/20"
-			DS_INST_NAME_2="centos5_2"
+			DS_INST_NAME="centos5"
 		fi
 
 		if [ $i = "redhate4" ]
@@ -130,7 +132,7 @@ jenkins )
 			DEV3="test/redhate4/12"
 			DEV1_ALIAS="redhate4_alias"
 			DEV20="test/redhate4/20"
-			DS_INST_NAME_2="redhate4_2"
+			DS_INST_NAME="redhate4"
 		fi
 
 		if [ $i = "redhate5" ]
@@ -142,7 +144,7 @@ jenkins )
 			DEV3="test/redhate5/12"
 			DEV1_ALIAS="redhate5_alias"
 			DEV20="test/redhate5/20"
-			DS_INST_NAME_2="redhate5_2"
+			DS_INST_NAME="redhate5"
 		fi
 
 		if [ $i = "debian6" ]
@@ -154,9 +156,11 @@ jenkins )
 			DEV3="test/debian6/12"
 			DEV1_ALIAS="debian6_alias"
 			DEV20="test/debian6/20"
-			DS_INST_NAME_2="debian6_2"
+			DS_INST_NAME="debian6"
 		fi
 	done
+	DS_INST_NAME_2="$DS_INST_NAME"_2
+	DS_PATH=$DIR/archive
 	;;
 #
 * )
@@ -259,6 +263,40 @@ $echo "\nTesting server_event"
 $DIR/server_event $DEV1
 ret=$?
 check_return_value $ret
+#
+
+#
+# kill both servers
+#
+
+PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
+#echo "PIDS = $PIDS"
+for pid in $PIDS
+do
+#	echo "Killing process with PID $pid"
+	kill $pid
+done
+
+sleep 2
+
+#
+# Start only one server
+#
+
+$DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+
+sleep 2
+
+#
+# Next test will restart both servers
+#
+
+$echo "\nTesting event re-connection (takes time...)"
+sleep 16 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+$DIR/reco_zmq $DEV1
+ret=$?
+check_return_value $ret
 
 #
 # kill servers
@@ -279,10 +317,12 @@ sleep 2
 #
 
 $echo "\nTesting stateless event connection (takes time...)"
-sleep 18 &&  $DIR/archive/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 $DIR/stateless_sub $DEV20
 ret=$?
 check_return_value $ret
+
+$echo "\n"
 #
 #$echo "\nTesting client reconnection to notifd (help needed)"
 #$DIR/reco_event $DEV1

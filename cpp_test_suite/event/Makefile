@@ -148,7 +148,7 @@ all: per_event change_event change_event64 archive_event user_event \
     server_event reco_event reco_svc state_event scan att_conf_event \
     data_ready_event \
     change_event_buffer att_conf_event_buffer data_ready_event_buffer \
-	event_lock multi_event att_type_event stateless_sub
+	event_lock multi_event att_type_event stateless_sub reco_zmq
 
 
 per_event:	$(OBJS_DIR)/per_event.o
@@ -210,7 +210,10 @@ event_lock:	$(OBJS_DIR)/event_lock.o
 	$(CC) $(OBJS_DIR)/event_lock.o -o $(BIN_TANGO_DIR)/event_lock $(LFLAGS)
 
 stateless_sub:	$(OBJS_DIR)/stateless_sub.o
-	$(CC) $(OBJS_DIR)/stateless_sub.o -o $(BIN_TANGO_DIR)/stateless_sub $(LFLAGS)	
+	$(CC) $(OBJS_DIR)/stateless_sub.o -o $(BIN_TANGO_DIR)/stateless_sub $(LFLAGS)
+
+reco_zmq:	$(OBJS_DIR)/reco_zmq.o
+	$(CC) $(OBJS_DIR)/reco_zmq.o -o $(BIN_TANGO_DIR)/reco_zmq $(LFLAGS)	
 					
 att_type_event:	$(OBJS_DIR)/att_type_event.o
 	$(CC) $(OBJS_DIR)/att_type_event.o -o $(BIN_TANGO_DIR)/att_type_event $(LFLAGS)										
