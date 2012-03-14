@@ -61,7 +61,11 @@ int main(int argc, char **argv)
 	check_size("AttrWrittenEvent",sizeof(AttrWrittenEvent),20);
 	check_size("CallBack",sizeof(CallBack),8);
 
-	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);		
+	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);	
+
+	check_size("MultiAttrProp<T>",sizeof(MultiAttrProp<DevShort>),284);
+	check_size("AttrProp<T>",sizeof(AttrProp<DevShort>),16);
+	check_size("DoubleAttrProp<T>",sizeof(DoubleAttrProp<DevShort>),24);
 }
 
 void check_size(const char *class_name,long class_size,long std_size)
@@ -74,38 +78,3 @@ void check_size(const char *class_name,long class_size,long std_size)
 }
 
 
-/* Suse 7.2 sizes
-
-Attr -> 52
-SpectrumAttr -> 60 	    
-ImageAttr -> 68	    
-DeviceImpl -> 116
-Device_2Impl -> 140
-DeviceClass -> 48
-Util -> 68
-Attribute -> 208
-WAttribute -> 252
-MultiAttribute -> 40
-Command -> 32
-TemplCommand -> 52
-TemplCommandIn -> 64
-TemplCommandOut -> 64
-TemplCommandInOut -> 64
-DeviceProxy -> 100
-DeviceData -> 12
-DeviceDataHistory -> 44
-DeviceAttribute -> 52
-DeviceAttributeHistory -> 76
-ApiUtil -> 68				    
-Database -> 108
-DbDevice -> 20
-DbClass -> 20
-DbServer -> 20
-DbDatum -> 32
-DbData -> 12
-CmdDoneEvent -> 24
-AttrReadEvent -> 24
-AttrWrittenEvent -> 20
-CallBack -> 8
-	
-*/

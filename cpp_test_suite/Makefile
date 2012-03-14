@@ -111,6 +111,7 @@ LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
 	   	   -L $(LOG4TANGO_BASE)/lib \
 		   -L $(ZMQ_BASE)/lib
+
 endif
 
 
