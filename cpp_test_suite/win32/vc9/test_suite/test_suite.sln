@@ -153,6 +153,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "runner", "runner\runner.vcp
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "att_type_event", "att_type_event\att_type_event.vcproj", "{509AE767-82A2-48A7-8C11-21D5A2432F3E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stateless_sub", "stateless_sub\stateless_sub.vcproj", "{D7E6ABD7-9412-4F77-80C8-75517D2B8D3E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -455,6 +457,10 @@ Global
 		{509AE767-82A2-48A7-8C11-21D5A2432F3E}.Debug|Win32.Build.0 = Release|Win32
 		{509AE767-82A2-48A7-8C11-21D5A2432F3E}.Release|Win32.ActiveCfg = Release|Win32
 		{509AE767-82A2-48A7-8C11-21D5A2432F3E}.Release|Win32.Build.0 = Release|Win32
+		{D7E6ABD7-9412-4F77-80C8-75517D2B8D3E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D7E6ABD7-9412-4F77-80C8-75517D2B8D3E}.Debug|Win32.Build.0 = Debug|Win32
+		{D7E6ABD7-9412-4F77-80C8-75517D2B8D3E}.Release|Win32.ActiveCfg = Release|Win32
+		{D7E6ABD7-9412-4F77-80C8-75517D2B8D3E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
