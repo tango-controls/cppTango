@@ -278,7 +278,7 @@ sleep 2
 # Next command will restart server 2
 #
 
-$echo "Testing stateless event connection (takes time...)"
+$echo "\nTesting stateless event connection (takes time...)"
 sleep 18 &&  $DIR/archive/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 $DIR/stateless_sub $DEV20
 ret=$?
