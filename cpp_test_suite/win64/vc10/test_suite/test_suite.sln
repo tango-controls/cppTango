@@ -155,6 +155,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "att_type_event", "att_type_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stateless_sub", "stateless_sub\stateless_sub.vcxproj", "{4BDF04F0-C19E-42E4-837C-B63EECA8D651}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reco_zmq", "reco_zmq\reco_zmq.vcxproj", "{978CF74F-FE36-4343-B02E-33A62976818F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -765,6 +767,13 @@ Global
 		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|Win32.Build.0 = Release|Win32
 		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|x64.ActiveCfg = Release|x64
 		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|x64.Build.0 = Release|x64
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Debug|Win32.Build.0 = Debug|Win32
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Debug|x64.ActiveCfg = Debug|Win32
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Release|Win32.ActiveCfg = Release|Win32
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Release|Win32.Build.0 = Release|Win32
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Release|x64.ActiveCfg = Release|x64
+		{978CF74F-FE36-4343-B02E-33A62976818F}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
