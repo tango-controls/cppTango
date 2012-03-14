@@ -153,6 +153,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "runner", "runner\runner.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "att_type_event", "att_type_event\att_type_event.vcxproj", "{509AE767-82A2-48A7-8C11-21D5A2432F3E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stateless_sub", "stateless_sub\stateless_sub.vcxproj", "{4BDF04F0-C19E-42E4-837C-B63EECA8D651}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -756,6 +758,13 @@ Global
 		{509AE767-82A2-48A7-8C11-21D5A2432F3E}.Release|Win32.Build.0 = Release|Win32
 		{509AE767-82A2-48A7-8C11-21D5A2432F3E}.Release|x64.ActiveCfg = Release|x64
 		{509AE767-82A2-48A7-8C11-21D5A2432F3E}.Release|x64.Build.0 = Release|x64
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Debug|Win32.Build.0 = Debug|Win32
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Debug|x64.ActiveCfg = Debug|Win32
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|Win32.ActiveCfg = Release|Win32
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|Win32.Build.0 = Release|Win32
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|x64.ActiveCfg = Release|x64
+		{4BDF04F0-C19E-42E4-837C-B63EECA8D651}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
