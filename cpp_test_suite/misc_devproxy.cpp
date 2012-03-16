@@ -145,6 +145,10 @@ int main(int argc, char **argv)
 		DeviceInfo inf;
 		inf = device->info();
 		assert( inf.dev_class == "DevTest" );
+
+		transform(inf.server_id.begin(),inf.server_id.end(),inf.server_id.begin(),::tolower);
+		transform(ds_name.begin(),ds_name.end(),ds_name.begin(),::tolower);
+
 		assert( inf.server_id == ds_name );
 		assert( inf.doc_url == "Doc URL = http://www.tango-controls.org" );
 		assert( inf.dev_type == "TestDevice");
