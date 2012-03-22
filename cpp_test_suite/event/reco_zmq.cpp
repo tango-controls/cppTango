@@ -69,7 +69,7 @@ int main(int argc, char **argv)
 	{
 
 //
-// Subscribe to a user event with stateless flag set
+// Subscribe to a user event
 //
 
     	int eventID = 0;
@@ -124,16 +124,59 @@ int main(int argc, char **argv)
 //
 
 		device->command_inout("IOPushEvent");
+		device->command_inout("IOPushEvent");
 		
 		Tango_sleep(1);
 
 		coutv << "Callback execution after re-connection and event = " << eventCallback->cb_executed << endl;
-		coutv << "Callback error before re-connection and event = " << eventCallback->cb_err << endl;
+		coutv << "Callback error after re-connection and event = " << eventCallback->cb_err << endl;
 	
-		assert (eventCallback->cb_executed == 5);
+		assert (eventCallback->cb_executed == 6);
 		assert (eventCallback->cb_err >= 1);
 
-		cout << "   Event re-connection --> OK" << endl;						
+		cout << "   Event re-connection (differents ports) --> OK" << endl;
+
+//
+// Clear call back counters and kill device server once more
+//
+
+        eventCallback->cb_executed = 0;
+        eventCallback->cb_err = 0;
+
+		admin_dev.command_inout("kill");
+
+//
+// Wait for some error and re-connection
+//
+
+		Tango_sleep(40);
+	
+//
+// Check error and re-connection
+//
+
+		coutv << "Callback execution after second re-connection = " << eventCallback->cb_executed << endl;
+		coutv << "Callback error after second re-connection = " << eventCallback->cb_err << endl;
+
+		assert (eventCallback->cb_err >= 1);
+		assert (eventCallback->cb_executed == 1);
+
+//
+// Fire yet another event
+//
+
+		device->command_inout("IOPushEvent");
+		device->command_inout("IOPushEvent");
+		
+		Tango_sleep(1);
+
+		coutv << "Callback execution after second re-connection and event = " << eventCallback->cb_executed << endl;
+		coutv << "Callback error after second re-connection and event = " << eventCallback->cb_err << endl;
+	
+		assert (eventCallback->cb_executed == 3);
+		assert (eventCallback->cb_err >= 1);
+
+		cout << "   Event re-connection (same ports) --> OK" << endl;			
 	}
 	catch (Tango::DevFailed &e)
 	{

@@ -294,6 +294,7 @@ sleep 2
 $echo "\nTesting event re-connection (takes time...)"
 sleep 16 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+sleep 62 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 $DIR/reco_zmq $DEV1
 ret=$?
 check_return_value $ret
