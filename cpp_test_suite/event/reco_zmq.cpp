@@ -166,14 +166,13 @@ int main(int argc, char **argv)
 //
 
 		device->command_inout("IOPushEvent");
-		device->command_inout("IOPushEvent");
 		
 		Tango_sleep(1);
 
 		coutv << "Callback execution after second re-connection and event = " << eventCallback->cb_executed << endl;
 		coutv << "Callback error after second re-connection and event = " << eventCallback->cb_err << endl;
 	
-		assert (eventCallback->cb_executed == 3);
+		assert (eventCallback->cb_executed == 2);
 		assert (eventCallback->cb_err >= 1);
 
 		cout << "   Event re-connection (same ports) --> OK" << endl;			
