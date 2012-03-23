@@ -270,10 +270,10 @@ check_return_value $ret
 #
 
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
-#echo "PIDS = $PIDS"
+echo "PIDS = $PIDS"
 for pid in $PIDS
 do
-#	echo "Killing process with PID $pid"
+	echo "Killing process with PID $pid"
 	kill $pid
 done
 
@@ -295,7 +295,7 @@ $echo "\nTesting event re-connection (takes time...)"
 sleep 16 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 sleep 62 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
-$DIR/reco_zmq $DEV1
+$DIR/reco_zmq $DEV1 -v
 ret=$?
 check_return_value $ret
 
@@ -304,10 +304,10 @@ check_return_value $ret
 #
 
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
-#echo "PIDS = $PIDS"
+echo "PIDS = $PIDS"
 for pid in $PIDS
 do
-#	echo "Killing process with PID $pid"
+	echo "Killing process with PID $pid"
 	kill $pid
 done
 
@@ -319,7 +319,7 @@ sleep 2
 
 $echo "\nTesting stateless event connection (takes time...)"
 sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
-$DIR/stateless_sub $DEV20
+$DIR/stateless_sub $DEV20 -v
 ret=$?
 check_return_value $ret
 
