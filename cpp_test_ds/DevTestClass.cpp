@@ -677,7 +677,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   def_prop.set_standard_unit("100");
   def_prop.set_display_unit("Et ta soeur");
   def_prop.set_format("Tres long");
-  def_prop.set_min_value("1");
+  def_prop.set_min_value("0");
   def_prop.set_max_value("100000");
   def_prop.set_min_alarm("1");
   def_prop.set_max_alarm("99999");
@@ -685,12 +685,12 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   def_prop.set_max_warning("99998");
   def_prop.set_delta_val("10000");
   def_prop.set_delta_t("1");
-  def_prop.set_abs_change("30000");
-  def_prop.set_rel_change("20000");
-  def_prop.set_period("2000");
-  def_prop.set_archive_abs_change("33333");
-  def_prop.set_archive_rel_change("22222");
-  def_prop.set_archive_period("3000");
+  def_prop.set_event_abs_change("30000");
+  def_prop.set_event_rel_change("20000");
+  def_prop.set_event_period("2000");
+  def_prop.set_archive_event_abs_change("33333");
+  def_prop.set_archive_event_rel_change("22222");
+  def_prop.set_archive_event_period("3000");
 //  Tango::Attr *at = new Tango::Attr("Long_attr_w", Tango::DEV_LONG, Tango::WRITE);
   Tango::Attr *at = new Long_attr_wAttr();
   at->set_default_properties(def_prop);
