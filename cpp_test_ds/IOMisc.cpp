@@ -2657,6 +2657,13 @@ bool SetGetProperties::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &i
 		return(false);
 }
 
+void SetGetProperties::set_vect(vector<double> &vect,double v1,double v2)
+{
+	vect.clear();
+	vect.push_back(v1);
+	vect.push_back(v2);
+}
+
 CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
 {
 
@@ -2754,10 +2761,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11.0;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -2869,10 +2876,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11.0;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -2984,10 +2991,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3099,10 +3106,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3214,10 +3221,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3329,10 +3336,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3444,10 +3451,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3559,10 +3566,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3674,10 +3681,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
@@ -3789,10 +3796,10 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			multi_prop.delta_val = 11;
 			multi_prop.event_period = 301;
 			multi_prop.archive_period = 401;
-			changes = {0.3,0.4}; multi_prop.rel_change = changes;
-			changes = {41.0,51.0}; multi_prop.abs_change = changes;
-			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
-			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			set_vect(changes,0.3,0.4); multi_prop.rel_change = changes;
+			set_vect(changes,41.0,51.0); multi_prop.abs_change = changes;
+			set_vect(changes,0.7,0.8); multi_prop.archive_rel_change = changes;
+			set_vect(changes,81.0,91.0); multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
