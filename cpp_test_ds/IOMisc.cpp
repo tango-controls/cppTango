@@ -265,7 +265,7 @@ bool IOState::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -316,7 +316,7 @@ bool IOStartPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -357,7 +357,7 @@ bool IOShortSleep::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_an
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -402,7 +402,7 @@ bool IOSleepExcept::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -450,7 +450,7 @@ bool IOExit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -489,7 +489,7 @@ bool IOTrigPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -541,7 +541,7 @@ bool IOAttrTrigPoll::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -593,7 +593,7 @@ bool IOInitWAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -647,7 +647,7 @@ bool IOAttrThrowEx::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -717,7 +717,7 @@ bool IOAddOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -759,7 +759,7 @@ bool IORemoveOneElt::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -801,7 +801,7 @@ bool IOIncValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -844,7 +844,7 @@ bool IODecValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -886,7 +886,7 @@ bool IOChangeQuality::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -944,7 +944,7 @@ bool IOPushEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -986,7 +986,7 @@ bool IOPushDevEncodedEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::A
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -1028,7 +1028,7 @@ bool IOSubscribeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &i
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -1070,7 +1070,7 @@ bool IOUnSubscribeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any 
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 		return(true);
@@ -1113,7 +1113,7 @@ bool IOGetCbExecuted::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1156,7 +1156,7 @@ bool IOFillPollBuffAttr::is_allowed(Tango::DeviceImpl *device, const CORBA::Any 
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1196,7 +1196,7 @@ bool IOFillPollBuffEncodedAttr::is_allowed(Tango::DeviceImpl *device, const CORB
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1236,7 +1236,7 @@ bool IOFillPollBuffCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1276,7 +1276,7 @@ bool FileDbCmd::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1316,7 +1316,7 @@ bool GetLongSize::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1362,7 +1362,7 @@ bool ChangeEncodedFormat::is_allowed(Tango::DeviceImpl *device, const CORBA::Any
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1417,7 +1417,7 @@ bool ChangeEncodedData::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1459,7 +1459,7 @@ bool PushDataReady::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_a
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1502,7 +1502,7 @@ bool IOSetWAttrLimit::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in
 {
 
 //
-// command allways allowed
+// command always allowed
 //
 
 	return(true);
@@ -1612,7 +1612,7 @@ SubDeviceTst::SubDeviceTst(const char *name,Tango::CmdArgType in,
 bool SubDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 //
-// command allways allowed
+// command always allowed
 //
 	return(true);
 }
@@ -1696,7 +1696,7 @@ PollingPoolTst::PollingPoolTst(const char *name,Tango::CmdArgType in,
 bool PollingPoolTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 //
-// command allways allowed
+// command always allowed
 //
 	return(true);
 }
@@ -1739,7 +1739,7 @@ PollingInDeviceTst::PollingInDeviceTst(const char *name,Tango::CmdArgType in,
 bool PollingInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 //
-// command allways allowed
+// command always allowed
 //
 	return(true);
 }
@@ -1849,7 +1849,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -1895,7 +1895,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -1941,7 +1941,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -1987,7 +1987,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2033,7 +2033,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2079,7 +2079,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2125,7 +2125,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2171,7 +2171,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2217,13 +2217,13 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		alarms->length(alarms_vec.size());
 		for(unsigned int i = 0; i < alarms_vec.size(); i++)
 		{
-			cout << alarms_vec[i] << endl;
+//			cout << alarms_vec[i] << endl;
 			(*alarms)[i] = Tango::string_dup(alarms_vec[i].c_str());
 		}
 
@@ -2326,7 +2326,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2360,7 +2360,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2394,7 +2394,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2428,7 +2428,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2462,7 +2462,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2496,7 +2496,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2530,7 +2530,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2564,7 +2564,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		try
@@ -2598,13 +2598,13 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device,const CORBA::Any &in
 		{
 			if(wattr_ptr != NULL)
 				wattr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
 
 		ranges->length(ranges_vec.size());
 		for(unsigned int i = 0; i < ranges_vec.size(); i++)
 		{
-			cout << ranges_vec[i] << endl;
+//			cout << ranges_vec[i] << endl;
 			(*ranges)[i] = Tango::string_dup(ranges_vec[i].c_str());
 		}
 
@@ -2685,86 +2685,1218 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 			attr.get_properties_3(conf);
 			attr_ptr = &attr;
 
+			// test properties provided as strings
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
-			multi_prop.unit = "Test_description";
+			multi_prop.unit = "Test_unit";
 			multi_prop.standard_unit = "Test_standard_unit";
 			multi_prop.display_unit = "Test_display_unit";
 			multi_prop.format = "Test_format";
-	        multi_prop.min_value = "0";
-	        multi_prop.max_value = "200";
-	        multi_prop.min_alarm = "10";
-	        multi_prop.max_alarm = "190";
-	        multi_prop.min_warning = "20";
-	        multi_prop.max_warning = "180";
-	        multi_prop.delta_t = "5";
-	        multi_prop.delta_val = "10";
-	        multi_prop.event_period = "300";
-	        multi_prop.archive_period = "400";
-	        multi_prop.rel_change = "0.2,0.3";
-	        multi_prop.abs_change = "40,50";
-	        multi_prop.archive_rel_change = "0.6,0.7";
-	        multi_prop.archive_abs_change = "80,90";
-	        attr.set_properties(multi_prop);
+			multi_prop.min_value = "0";
+			multi_prop.max_value = "200";
+			multi_prop.min_alarm = "10";
+			multi_prop.max_alarm = "190";
+			multi_prop.min_warning = "20";
+			multi_prop.max_warning = "180";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.60,0.70";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
 
-	        attr.get_properties(multi_prop_get);
+			attr.get_properties(multi_prop_get);
 
-	        cout << "## label = " << multi_prop_get.label << "\n"
-	        		<< "## description = " << multi_prop_get.description << "\n"
-	        		<< "## unit = " << multi_prop_get.unit << "\n"
-	        		<< "## standard_unit = " << multi_prop_get.standard_unit << "\n"
-	        		<< "## display_unit = " << multi_prop_get.display_unit << "\n"
-	        		<< "## format = " << multi_prop_get.format << "\n"
-	        		<< "## min_value = " << multi_prop_get.min_value << "\n"
-	        		<< "## max_value = " << multi_prop_get.max_value << "\n"
-	        		<< "## min_alarm = " << multi_prop_get.min_alarm << "\n"
-	        		<< "## max_alarm = " << multi_prop_get.max_alarm << "\n"
-	        		<< "## min_warning = " << multi_prop_get.min_warning << "\n"
-	        		<< "## max_warning = " << multi_prop_get.max_warning << "\n"
-	        		<< "## delta_t = " << multi_prop_get.delta_t << "\n"
-	        		<< "## delta_val = " << multi_prop_get.delta_val << "\n"
-	        		<< "## event_period = " << multi_prop_get.event_period << "\n"
-	        		<< "## archive_period = " << multi_prop_get.archive_period << "\n"
-	        		<< "## rel_change = " << multi_prop_get.rel_change << "\n"
-	        		<< "## abs_change = " << multi_prop_get.abs_change << "\n"
-	        		<< "## archive_rel_change = " << multi_prop_get.archive_rel_change << "\n"
-	        		<< "## archive_abs_change = " << multi_prop_get.archive_abs_change << endl;
+			props_vec.push_back("Double_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
 
-	        props_vec.push_back(multi_prop_get.label);
-	        props_vec.push_back(multi_prop_get.description);
-	        props_vec.push_back(multi_prop_get.unit);
-	        props_vec.push_back(multi_prop_get.standard_unit);
-	        props_vec.push_back(multi_prop_get.display_unit);
-	        props_vec.push_back(multi_prop_get.format);
-	        props_vec.push_back(multi_prop_get.min_value);
-	        props_vec.push_back(multi_prop_get.max_value);
-	        props_vec.push_back(multi_prop_get.min_alarm);
-	        props_vec.push_back(multi_prop_get.max_alarm);
-	        props_vec.push_back(multi_prop_get.min_warning);
-	        props_vec.push_back(multi_prop_get.max_warning);
-	        props_vec.push_back(multi_prop_get.delta_t);
-	        props_vec.push_back(multi_prop_get.delta_val);
-	        props_vec.push_back(multi_prop_get.event_period);
-	        props_vec.push_back(multi_prop_get.archive_period);
-	        props_vec.push_back(multi_prop_get.rel_change);
-	        props_vec.push_back(multi_prop_get.abs_change);
-	        props_vec.push_back(multi_prop_get.archive_rel_change);
-	        props_vec.push_back(multi_prop_get.archive_abs_change);
+			attr.set_upd_properties(conf);
 
-	        attr.set_upd_properties(conf);
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1.0;
+			multi_prop.max_value = 201.0;
+			multi_prop.min_alarm = 11.0;
+			multi_prop.max_alarm = 191.0;
+			multi_prop.min_warning = 21.0;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11.0;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Double_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
 		}
 		catch(Tango::DevFailed &e)
 		{
 			if(attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
-			Tango::Except::print_exception(e);
+			throw e;
 		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevFloat> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "0";
+			multi_prop.max_value = "200";
+			multi_prop.min_alarm = "10";
+			multi_prop.max_alarm = "190";
+			multi_prop.min_warning = "20";
+			multi_prop.max_warning = "180";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Float_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1.0;
+			multi_prop.max_value = 201.0;
+			multi_prop.min_alarm = 11.0;
+			multi_prop.max_alarm = 191.0;
+			multi_prop.min_warning = 21.0;
+			multi_prop.max_warning = 181.0;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11.0;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Float_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevLong> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "0";
+			multi_prop.max_value = "200";
+			multi_prop.min_alarm = "10";
+			multi_prop.max_alarm = "190";
+			multi_prop.min_warning = "20";
+			multi_prop.max_warning = "180";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Long_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Long_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevLong64> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("Long64_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "0";
+			multi_prop.max_value = "200";
+			multi_prop.min_alarm = "10";
+			multi_prop.max_alarm = "190";
+			multi_prop.min_warning = "20";
+			multi_prop.max_warning = "180";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Long64_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Long64_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevShort> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("Short_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "0";
+			multi_prop.max_value = "200";
+			multi_prop.min_alarm = "10";
+			multi_prop.max_alarm = "190";
+			multi_prop.min_warning = "20";
+			multi_prop.max_warning = "180";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Short_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Short_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevUChar> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("UChar_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "-0.5";
+			multi_prop.max_value = "-200.55";
+			multi_prop.min_alarm = "-10.0";
+			multi_prop.max_alarm = "-190.5";
+			multi_prop.min_warning = "-20.0";
+			multi_prop.max_warning = "-180.0";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("UChar_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("UChar_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevULong> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("ULong_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "-0.5";
+			multi_prop.max_value = "-200.55";
+			multi_prop.min_alarm = "-10.0";
+			multi_prop.max_alarm = "-190.5";
+			multi_prop.min_warning = "-20.0";
+			multi_prop.max_warning = "-180.0";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("ULong_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("ULong_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevULong64> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("ULong64_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "-0.5";
+			multi_prop.max_value = "-200.55";
+			multi_prop.min_alarm = "-10.0";
+			multi_prop.max_alarm = "-190.5";
+			multi_prop.min_warning = "-20.0";
+			multi_prop.max_warning = "-180.0";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("ULong64_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("ULong64_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevUShort> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("UShort_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "-0.5";
+			multi_prop.max_value = "-200.55";
+			multi_prop.min_alarm = "-10.0";
+			multi_prop.max_alarm = "-190.5";
+			multi_prop.min_warning = "-20.0";
+			multi_prop.max_warning = "-180.0";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("UShort_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("UShort_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+		try
+		{
+			Tango::MultiAttrProp<Tango::DevEncoded> multi_prop, multi_prop_get;
+			Tango::Attribute &attr = attributes->get_attr_by_name("Encoded_attr");
+
+			attr.get_properties_3(conf);
+			attr_ptr = &attr;
+
+			// test properties provided as strings
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = "-0.5";
+			multi_prop.max_value = "-200.55";
+			multi_prop.min_alarm = "-10.0";
+			multi_prop.max_alarm = "-190.5";
+			multi_prop.min_warning = "-20.0";
+			multi_prop.max_warning = "-180.0";
+			multi_prop.delta_t = "5";
+			multi_prop.delta_val = "10";
+			multi_prop.event_period = "300";
+			multi_prop.archive_period = "400";
+			multi_prop.rel_change = "0.2,0.3";
+			multi_prop.abs_change = "40,50";
+			multi_prop.archive_rel_change = "0.6,0.7";
+			multi_prop.archive_abs_change = "80,90";
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Encoded_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+
+			// test properties provided as actual values
+			attr.get_properties(multi_prop);
+			multi_prop.label = "Test_label";
+			multi_prop.description = "Test_description";
+			multi_prop.unit = "Test_unit";
+			multi_prop.standard_unit = "Test_standard_unit";
+			multi_prop.display_unit = "Test_display_unit";
+			multi_prop.format = "Test_format";
+			multi_prop.min_value = 1;
+			multi_prop.max_value = 201;
+			multi_prop.min_alarm = 11;
+			multi_prop.max_alarm = 191;
+			multi_prop.min_warning = 21;
+			multi_prop.max_warning = 181;
+			multi_prop.delta_t = 6;
+			multi_prop.delta_val = 11;
+			multi_prop.event_period = 301;
+			multi_prop.archive_period = 401;
+			changes = {0.3,0.4}; multi_prop.rel_change = changes;
+			changes = {41.0,51.0}; multi_prop.abs_change = changes;
+			changes = {0.7,0.8}; multi_prop.archive_rel_change = changes;
+			changes = {81.0,91.0}; multi_prop.archive_abs_change = changes;
+			attr.set_properties(multi_prop);
+
+			attr.get_properties(multi_prop_get);
+
+			props_vec.push_back("Encoded_attr");
+			props_vec.push_back(multi_prop_get.label);
+			props_vec.push_back(multi_prop_get.description);
+			props_vec.push_back(multi_prop_get.unit);
+			props_vec.push_back(multi_prop_get.standard_unit);
+			props_vec.push_back(multi_prop_get.display_unit);
+			props_vec.push_back(multi_prop_get.format);
+			props_vec.push_back(multi_prop_get.min_value);
+			props_vec.push_back(multi_prop_get.max_value);
+			props_vec.push_back(multi_prop_get.min_alarm);
+			props_vec.push_back(multi_prop_get.max_alarm);
+			props_vec.push_back(multi_prop_get.min_warning);
+			props_vec.push_back(multi_prop_get.max_warning);
+			props_vec.push_back(multi_prop_get.delta_t);
+			props_vec.push_back(multi_prop_get.delta_val);
+			props_vec.push_back(multi_prop_get.event_period);
+			props_vec.push_back(multi_prop_get.archive_period);
+			props_vec.push_back(multi_prop_get.rel_change);
+			props_vec.push_back(multi_prop_get.abs_change);
+			props_vec.push_back(multi_prop_get.archive_rel_change);
+			props_vec.push_back(multi_prop_get.archive_abs_change);
+
+			attr.set_upd_properties(conf);
+		}
+		catch(Tango::DevFailed &e)
+		{
+			if(attr_ptr != NULL)
+				attr_ptr->set_upd_properties(conf);
+			throw e;
+		}
+
+
+
+//		try
+//		{
+//			Tango::MultiAttrProp<Tango::DevDouble> multi_prop, multi_prop_get;
+//			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UChar_attr_w");
+//
+//			attr.get_properties_3(conf);
+//			attr_ptr = &attr;
+//
+//			attr.get_properties(multi_prop);
+//			multi_prop.label = "Test_label";
+//			multi_prop.description = "Test_description";
+//			multi_prop.unit = "Test_unit";
+//			multi_prop.standard_unit = "Test_standard_unit";
+//			multi_prop.display_unit = "Test_display_unit";
+//			multi_prop.format = "Test_format";
+//			multi_prop.min_value = "0";
+//			multi_prop.max_value = "200";
+//			multi_prop.min_alarm = "10";
+//			multi_prop.max_alarm = "190";
+//			multi_prop.min_warning = "20";
+//			multi_prop.max_warning = "180";
+//			multi_prop.delta_t = "5";
+//			multi_prop.delta_val = "10";
+//			multi_prop.event_period = "300";
+//			multi_prop.archive_period = "400";
+//			multi_prop.rel_change = "0.2,0.3";
+//			multi_prop.abs_change = "40,50";
+//			multi_prop.archive_rel_change = "0.6,0.7";
+//			multi_prop.archive_abs_change = "80,90";
+//			attr.set_properties(multi_prop);
+//
+//			attr.get_properties(multi_prop_get);
+//
+//			props_vec.push_back(attr_names[i]);
+//			props_vec.push_back(multi_prop_get.label);
+//			props_vec.push_back(multi_prop_get.description);
+//			props_vec.push_back(multi_prop_get.unit);
+//			props_vec.push_back(multi_prop_get.standard_unit);
+//			props_vec.push_back(multi_prop_get.display_unit);
+//			props_vec.push_back(multi_prop_get.format);
+//			props_vec.push_back(multi_prop_get.min_value);
+//			props_vec.push_back(multi_prop_get.max_value);
+//			props_vec.push_back(multi_prop_get.min_alarm);
+//			props_vec.push_back(multi_prop_get.max_alarm);
+//			props_vec.push_back(multi_prop_get.min_warning);
+//			props_vec.push_back(multi_prop_get.max_warning);
+//			props_vec.push_back(multi_prop_get.delta_t);
+//			props_vec.push_back(multi_prop_get.delta_val);
+//			props_vec.push_back(multi_prop_get.event_period);
+//			props_vec.push_back(multi_prop_get.archive_period);
+//			props_vec.push_back(multi_prop_get.rel_change);
+//			props_vec.push_back(multi_prop_get.abs_change);
+//			props_vec.push_back(multi_prop_get.archive_rel_change);
+//			props_vec.push_back(multi_prop_get.archive_abs_change);
+//
+//			attr.set_upd_properties(conf);
+//		}
+//		catch(Tango::DevFailed &e)
+//		{
+//			if(attr_ptr != NULL)
+//				attr_ptr->set_upd_properties(conf);
+//			throw e;
+//		}
 
 		props->length(props_vec.size());
 		for(unsigned int i = 0; i < props_vec.size(); i++)
 		{
-			cout << props_vec[i] << endl;
+//			cout << props_vec[i] << endl;
 			(*props)[i] = Tango::string_dup(props_vec[i].c_str());
 		}
 

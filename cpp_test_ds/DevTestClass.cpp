@@ -677,7 +677,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   def_prop.set_standard_unit("100");
   def_prop.set_display_unit("Et ta soeur");
   def_prop.set_format("Tres long");
-  def_prop.set_min_value("0");
+  def_prop.set_min_value("1");
   def_prop.set_max_value("100000");
   def_prop.set_min_alarm("1");
   def_prop.set_max_alarm("99999");
