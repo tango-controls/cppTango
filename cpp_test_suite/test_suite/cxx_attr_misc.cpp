@@ -20,11 +20,15 @@ protected:
 	DeviceProxy *device, *dserver;
 	string device_name;
 	AttributeInfoListEx *init_attr_conf;
+	bool timeout_restored;
+	int def_timeout;
 
 public:
 	SUITE_NAME()
 	{
-
+		// clean up flags
+		timeout_restored = true;
+		def_timeout = 300;
 //
 // Arguments check -------------------------------------------------
 //
@@ -91,6 +95,8 @@ public:
 			attr_list.push_back("ULong64_attr");
 			attr_list.push_back("UShort_attr");
 			init_attr_conf = device->get_attribute_config_ex(attr_list);
+
+			def_timeout = device->get_timeout_millis();
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -121,6 +127,24 @@ public:
 			exit(-1);
 		}
 
+//
+// Clean up --------------------------------------------------------
+//
+
+		// clean up in case test suite terminates before timeout is restored to defaults
+		if(!timeout_restored)
+		{
+			try
+			{
+				device->set_timeout_millis(def_timeout);
+			}
+			catch(DevFailed &e)
+			{
+				cout << endl << "Exception in suite tearDown():" << endl;
+				Except::print_exception(e);
+			}
+		}
+
 		delete device;
 		delete dserver;
 	}
@@ -147,6 +171,9 @@ public:
 	{
 		const DevVarStringArray *alarms;
 		DeviceData dout;
+
+		device->set_timeout_millis(2*def_timeout);
+		timeout_restored = false;
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetAlarms"));
 		TS_ASSERT_THROWS_NOTHING(dout >> alarms);
@@ -197,6 +224,9 @@ public:
 		TS_ASSERT(string((*alarms)[42].in()) == "2");
 		TS_ASSERT(string((*alarms)[43].in()) == "20000");
 		TS_ASSERT(string((*alarms)[44].in()) == "30000");
+
+		device->set_timeout_millis(def_timeout);
+		timeout_restored = true;
 	}
 
 //
@@ -207,6 +237,9 @@ public:
 	{
 		const DevVarStringArray *ranges;
 		DeviceData dout;
+
+		device->set_timeout_millis(2*def_timeout);
+		timeout_restored = false;
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetRanges"));
 		TS_ASSERT_THROWS_NOTHING(dout >> ranges);
@@ -239,6 +272,9 @@ public:
 		TS_ASSERT(string((*ranges)[24].in()) == "UShort_attr_w");
 		TS_ASSERT(string((*ranges)[25].in()) == "0");
 		TS_ASSERT(string((*ranges)[26].in()) == "40000");
+
+		device->set_timeout_millis(def_timeout);
+		timeout_restored = true;
 	}
 
 //
@@ -250,30 +286,216 @@ public:
 		const DevVarStringArray *props;
 		DeviceData dout;
 
+		device->set_timeout_millis(2*def_timeout);
+		timeout_restored = false;
+
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetProperties"));
 		TS_ASSERT_THROWS_NOTHING(dout >> props);
 
-		TS_ASSERT((*props).length() == 20);
-		TS_ASSERT(string((*props)[0].in()) == "Test_label");
-		TS_ASSERT(string((*props)[1].in()) == "Test_description");
-		TS_ASSERT(string((*props)[2].in()) == "Test_description");
-		TS_ASSERT(string((*props)[3].in()) == "Test_standard_unit");
-		TS_ASSERT(string((*props)[4].in()) == "Test_display_unit");
-		TS_ASSERT(string((*props)[5].in()) == "Test_format");
-		TS_ASSERT(string((*props)[6].in()) == "0");
-		TS_ASSERT(string((*props)[7].in()) == "200");
-		TS_ASSERT(string((*props)[8].in()) == "10");
-		TS_ASSERT(string((*props)[9].in()) == "190");
-		TS_ASSERT(string((*props)[10].in()) == "20");
-		TS_ASSERT(string((*props)[11].in()) == "180");
-		TS_ASSERT(string((*props)[12].in()) == "5");
-		TS_ASSERT(string((*props)[13].in()) == "10");
-		TS_ASSERT(string((*props)[14].in()) == "300");
-		TS_ASSERT(string((*props)[15].in()) == "400");
-		TS_ASSERT(string((*props)[16].in()) == "0.2,0.3");
-		TS_ASSERT(string((*props)[17].in()) == "40,50");
-		TS_ASSERT(string((*props)[18].in()) == "0.6,0.7");
-		TS_ASSERT(string((*props)[19].in()) == "80,90");
+//		cout << "## prop length = " << (*props).length() << endl;
+
+		TS_ASSERT((*props).length() == 420);
+		size_t i = 0;
+		TS_ASSERT(string((*props)[i].in()) == "Double_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "Float_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "Long_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "Long64_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "Short_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "UChar_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "ULong_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "ULong64_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90"); i++;
+
+		TS_ASSERT(string((*props)[i].in()) == "UShort_attr"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_label"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_description"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_standard_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_display_unit"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "Test_format"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "200"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "190"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "20"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "180"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "5"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "10"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "300"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "400"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.2,0.3"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "40,50"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "0.6,0.7"); i++;
+		TS_ASSERT(string((*props)[i].in()) == "80,90");
+
+		device->set_timeout_millis(def_timeout);
+		timeout_restored = true;
 	}
 
 // Test read attribute exceptions
