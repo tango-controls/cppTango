@@ -2676,6 +2676,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device,const CORBA::Any
 		vector<string> props_vec;
 		Tango::AttributeConfig_3 conf;
 		Tango::Attribute *attr_ptr = NULL;
+        vector<Tango::DevDouble> changes;
 
 		try
 		{
