@@ -4,8 +4,8 @@
 //										Jens Meyer
 //										Emmanuel Taurel
 //
-// Copyright (C) :      1997-1999 AT&T Laboratories Cambridge 
-//						2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      1997-1999 AT&T Laboratories Cambridge
+//						2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -16,12 +16,12 @@
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -45,16 +45,16 @@ public:
   void readerIn(void)
   {
     mut.lock();
-	 
+
 	 // In the case of usage with another threading library, omni_thread::self() might
 	 // return a NULL pointer!
 	 int threadId = 0;
-	 omni_thread *th = omni_thread::self(); 
+	 omni_thread *th = omni_thread::self();
 	 if ( th != NULL )
 	 {
 		threadId = th->id();
 	 }
-	 	 
+
      if ((n < 0) && (writerId == threadId))
 	 {
       // this thread already has lock as writer, simply decrement n
@@ -87,16 +87,16 @@ public:
   void writerIn(void)
   {
     mut.lock();
-	 
+
 	 // In the case of usage with another threading library, omni_thread::self() might
-	 // return a NULL pointer! 
+	 // return a NULL pointer!
 	 int threadId = 0;
-	 omni_thread *th = omni_thread::self(); 
+	 omni_thread *th = omni_thread::self();
 	 if ( th != NULL )
 	 {
 		threadId = th->id();
-	 }			 
-			 
+	 }
+
      if ((n < 0) && (writerId == threadId))
 	 {
       // this thread already has lock as writer, simply decrement n
@@ -106,9 +106,9 @@ public:
      }
      while (n != 0)
        cond.wait();
-    
+
 	 n--;
-	 
+
 	 // Now the writer lock was taken.
 	 // Make sure we get a correct thread ID
 	 // With the class ensure_self it should return always a thread ID.
@@ -116,7 +116,7 @@ public:
 	 if (th == NULL)
 	 	auto_self = new omni_thread::ensure_self();
 	 writerId  = omni_thread::self()->id();
-	 	 
+
      mut.unlock();
   }
 
@@ -132,12 +132,12 @@ public:
 			delete auto_self;
 			auto_self = NULL;
 		}
-      
+
 		cond.broadcast();	// might as well wake up all readers
 	}
     mut.unlock();
   }
-  
+
 private:
 	// in the case of usage with another threading library, omni_thread::self() might
 	// return a NULL pointer!

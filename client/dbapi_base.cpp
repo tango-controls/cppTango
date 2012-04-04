@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- September 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -18,156 +18,16 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 //
-// $Log$
-// Revision 3.57  2010/12/09 12:58:43  taurel
-// - Fix another controlled access related bug (in DbDeleteDeviceProperty)
-//
-// Revision 3.56  2010/12/09 12:03:06  taurel
-// - Fix bug in control access. The db device access right were not got from
-// db if it was not he first device on which the access was checked
-//
-// Revision 3.55  2010/10/04 12:16:04  taurel
-// - Fix some double free in case of communication problems with db server
-//
-// Revision 3.54  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.53  2010/09/09 08:36:19  taurel
-// - Better TANGO_HOST=localhost:xxx management
-//
-// Revision 3.52  2010/08/25 14:25:41  taurel
-// - Support localhost in TANGO_HOST env. variable. Bug 2894469
-//
-// Revision 3.51  2010/08/17 08:55:07  taurel
-// - Added a Database::get_file_name() method
-//
-// Revision 3.50  2010/05/26 09:16:21  taurel
-// - Another commit after merge with the bug fixes branch
-//
-// Revision 3.49  2010/04/12 12:56:24  taurel
-// - Fix a memory leak in the new method get_server_release()
-//
-// Revision 3.48  2010/01/08 08:04:49  taurel
-// - More changes for thread safety
-//
-// Revision 3.47  2010/01/07 08:35:06  taurel
-// - Several change sto improve thread safety of the DeviceProxy, AttributeProxy, ApiUtul and EventConsumer classes
-//
-// Revision 3.46  2009/12/18 14:51:01  taurel
-// - Safety commit before christmas holydays
-// - Many changes to make the DeviceProxy, Database and AttributeProxy
-// classes thread safe (good help from the helgrind tool from valgrind)
-// Revision 3.45.2.3  2010/05/21 09:42:49  taurel
-// - Re-use the same event channel in case of server restart when a file
-// is use as database
-//
-// Revision 3.45.2.2  2010/05/20 12:39:26  taurel
-// - Fixed some memory leaks when using a file as database (-file option)
-//
-// Revision 3.45.2.1  2010/05/18 08:20:09  taurel
-// - Events from device in a DS started with a file as database are now
-// back into operation
-//
-// Revision 3.45  2009/09/22 11:04:45  taurel
-// - Environment variables in file also supported for Windows
-//
-// Revision 3.44  2009/08/27 07:22:43  taurel
-// - Commit after anothre merge with Release_7_0_2-bugfixes branch
-//
-// Revision 3.42.2.1  2009/06/24 06:42:57  taurel
-// - The database host is stored using its FQDN
-//
-// Revision 3.42  2009/04/28 15:40:21  taurel
-// - Fix bug in the fill_server_cache() method. The call to the DB
-// was done twice...
-//
-// Revision 3.41  2009/04/27 09:23:20  jensmeyer
-// Added access right check in Database::is_command_allowed().
-//
-// Revision 3.40  2009/03/20 16:48:05  jlpons
-// Fixed wrong _TG_WINDOWS_ define
-//
-// Revision 3.39  2009/03/20 11:52:06  taurel
-// - Add tangorc files management (for env. variables)
-//
-// Revision 3.38  2009/03/13 09:32:27  taurel
-// - Small changes to fix Windows VC8 warnings in Warning level 3
-//
-// Revision 3.37  2009/02/27 13:24:43  taurel
-// - Small changes for Solaris
-//
-// Revision 3.36  2009/02/23 14:27:53  taurel
-// - Added a DeviceProxy::get_property_list() method
-//
-// Revision 3.35  2009/01/29 16:24:26  taurel
-// - Commit after merge with branch Release_6_1_1-bugfixes
-//
-// Revision 3.27.2.1  2008/11/19 10:57:40  jensmeyer
-// Bug fix in get_device_exported_for_class() to call the correct command
-// name of the database server.
-// Revision 3.34  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.33  2008/12/17 09:54:44  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.32  2008/10/06 15:02:16  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.31  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.30  2008/10/01 11:44:34  jensmeyer
-// Corrected in get_device_exported_for_class() the command name used on the
-// database server to DbGetExportdDeviceListForClass.
-//
-// Revision 3.29  2008/06/14 11:28:07  taurel
-// - DevEncoded attribute data type implementation work going on
-//
-// Revision 3.28  2008/05/20 12:42:29  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 3.27  2008/04/02 15:57:46  taurel
-// - Fix compatibility bug in the Database::get_device_name() method
-// Revision 3.20.2.2  2008/02/07 15:56:58  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 3.26  2008/03/20 07:37:00  taurel
-// - Last commit before Release 6.1 ?
-//
-// Revision 3.25  2008/03/11 14:36:44  taurel
-// - Apply patches from Frederic Picca about compilation with gcc 4.2
-//
-// Revision 3.24  2008/01/25 15:45:58  taurel
-// - Some changes in the Db cache
-// - A lighter system to shutdown DS in case of dynamic attribute
-//
-// Revision 3.23  2008/01/08 14:32:39  taurel
-// - Fix bug in the unexport_event() method
-// Revision 3.20.2.1  2007/12/19 15:53:07  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 3.22  2008/01/07 07:13:25  taurel
-// - Some tab spacing in services related calls
-//
-// Revision 3.21  2007/12/12 10:15:46  taurel
-// - Db calls during DS startup has a separate timeout and some retries
-//
-// Revision 3.20  2007/11/08 12:00:20  taurel
-// - Add miscellaneous getter methods in the DbServerCache class
-// - The DbDatum::Size() method is now inline
-// - Fix bug in database re-connection timeout management
 //
 
 #if HAVE_CONFIG_H
@@ -176,7 +36,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <accessproxy.h>
-                                                  
+
 using namespace CORBA;
 
 namespace Tango
@@ -195,7 +55,9 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(ORB *orb_in) : Connection(orb_in),access_proxy(NULL),access_checked(false),access_service_defined(false)
+Database::Database(ORB *orb_in) : Connection(orb_in),
+ext(new DatabaseExt),
+access_proxy(NULL),access_checked(false),access_service_defined(false)
 {
 //
 // get host and port from environment variable TANGO_HOST
@@ -203,13 +65,11 @@ Database::Database(ORB *orb_in) : Connection(orb_in),access_proxy(NULL),access_c
 
 	string tango_host_env_var;
 	int ret;
-	filedb = 0;
+	filedb = Tango_NullPtr;
 	serv_version = 0;
-	
-	ext = new DatabaseExt();
 
 	ret = get_env_var(EnvVariable,tango_host_env_var);
-	
+
 	if (ret == -1)
 	{
 		TangoSys_MemStream desc;
@@ -218,53 +78,52 @@ Database::Database(ORB *orb_in) : Connection(orb_in),access_proxy(NULL),access_c
 					       desc.str(),
 					       (const char *)"Database::Database");
 	}
-	
+
 	check_tango_host(tango_host_env_var.c_str());
-	
+
 	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << endl;
 
 	build_connection();
-	
-	get_server_release();
-	
+
+	set_server_release();
+
 	dev_name();
 }
 
 #ifdef _TG_WINDOWS_
 Database::Database(ORB *orb_in,string &ds_exec_name,string &ds_inst_name) : Connection(orb_in),
-													access_proxy(NULL),access_checked(false),access_service_defined(false)
+ext(new DatabaseExt),
+access_proxy(NULL),access_checked(false),access_service_defined(false)
 {
 //
 // get host and port from environment variable TANGO_HOST
 //
 	char *tango_host_env_c_str;
-	filedb = 0;
+	filedb = Tango_NullPtr;
 	serv_version = 0;
-	
-	ext = new DatabaseExt();
 
 	if (get_tango_host_from_reg(&tango_host_env_c_str,ds_exec_name,ds_inst_name) == -1)
 		tango_host_env_c_str = NULL;
 
 	if (tango_host_env_c_str == NULL)
-	{		
+	{
 		TangoSys_MemStream desc;
 		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << ends;
 		ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
 					       desc.str(),
 					       (const char *)"Database::Database");
 	}
-	
+
 	check_tango_host(tango_host_env_c_str);
-	
+
 	delete [] tango_host_env_c_str;
 
 	cout4 <<"Database::Database(): TANGO host " << host << " port " << port << endl;
 
 	build_connection();
-	
-	get_server_release();
-	
+
+	set_server_release();
+
 	dev_name();
 }
 #endif
@@ -272,18 +131,18 @@ Database::Database(ORB *orb_in,string &ds_exec_name,string &ds_inst_name) : Conn
 //+----------------------------------------------------------------------------
 //
 // method : 		Database::check_tango_host()
-// 
+//
 // description : 	Check the TANGO_HOST environment variable syntax and
 //			extract database server host(s) and port(s) from
 //			it
 //
-// in :	tango_host_env_c_str : The TANGO_HOST env. variable value		
+// in :	tango_host_env_c_str : The TANGO_HOST env. variable value
 //
 //-----------------------------------------------------------------------------
 
 void Database::check_tango_host(const char *tango_host_env_c_str)
 {
-	filedb = 0;
+	filedb = Tango_NullPtr;
 	string tango_host_env(tango_host_env_c_str);
 	string::size_type separator;
 
@@ -291,9 +150,9 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 	separator = tango_host_env.find(',');
 	if (separator != string::npos)
 	{
-	
+
 //
-// It is a multi db server system, extract each host and port and check 
+// It is a multi db server system, extract each host and port and check
 // syntax validity (<host>:<port>,<host>:<port>)
 //
 
@@ -309,7 +168,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			if (host_sep != string::npos)
 			{
 				if ((host_sep == sub.size() - 1) || (host_sep == 0))
-				{		
+				{
 					TangoSys_MemStream desc;
 					desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
 					ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
@@ -319,7 +178,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 				multi_db_port.push_back(sub.substr(host_sep + 1));
 			}
 			else
-			{		
+			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
 				ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
@@ -336,7 +195,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		if (host_sep != string::npos)
 		{
 			if ((host_sep == last.size() - 1) || (host_sep == 0))
-			{		
+			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
 				ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
@@ -346,7 +205,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			multi_db_port.push_back(last.substr(host_sep + 1));
 		}
 		else
-		{		
+		{
 			TangoSys_MemStream desc;
 			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
 			ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
@@ -357,7 +216,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		if (tmp_host.find('.') == string::npos)
 			get_fqdn(tmp_host);
 		multi_db_host.push_back(tmp_host);
-		
+
 		db_port = multi_db_port[0];
 		db_host = multi_db_host[0];
 		db_port_num = atoi(db_port.c_str());
@@ -368,12 +227,12 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 //
 // Single database server case
 //
-			
+
 		separator = tango_host_env.find(":");
 		if (separator != string::npos)
 		{
 			if ((separator == tango_host_env.size() - 1) || (separator == 0))
-			{		
+			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << ends;
 				ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
@@ -384,7 +243,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			db_port_num = atoi(db_port.c_str());
 		}
 		else
-		{		
+		{
 			TangoSys_MemStream desc;
 			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << ends;
 			ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
@@ -417,11 +276,11 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		if (db_host.find('.') == string::npos)
 			get_fqdn(db_host);
 	}
-	
+
 	host = db_host;
 	port = db_port;
 	port_num = db_port_num;
-	
+
 	dbase_used = true;
 	from_env_var = true;
 
@@ -430,59 +289,175 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 
 //-----------------------------------------------------------------------------
 //
-// Database::Database(string host, int port, ORB *orb) - constructor to 
+// Database::Database(string host, int port, ORB *orb) - constructor to
 //           create connection to TANGO Database with host, port, orb specified.
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_in),access_proxy(NULL),
-														access_checked(false),access_service_defined(false)
+Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_in),
+ext(new DatabaseExt),
+access_proxy(NULL),access_checked(false),access_service_defined(false)
 {
-	filedb = 0;
+	filedb = Tango_NullPtr;
 	serv_version = 0;
 	db_multi_svc = false;
-	
-	ext = new DatabaseExt();
-	
+
 	host = in_host;
 	db_host = host;
-	
+
 	TangoSys_MemStream o;
 	o << in_port << ends;
-#ifdef STRSTREAM
-	char *ptr = o.str();
-	port = ptr;
-	delete [] ptr;
-#else
+
 	string st = o.str();
 	port = st.c_str();
-#endif
 
 	db_port = port;
-	
+
 	db_port_num = in_port;
 	port_num = in_port;
 	from_env_var = false;
 	dbase_used = true;
-		
+
 	build_connection();
-	
-	get_server_release();
-	
+
+	set_server_release();
+
 	dev_name();
 }
 
-Database::Database(string &name) : Connection(true),access_proxy(NULL),access_checked(false),access_service_defined(false)
-{	
+Database::Database(string &name) : Connection(true),
+ext(new DatabaseExt),
+access_proxy(NULL),access_checked(false),access_service_defined(false)
+{
 	file_name = name;
 	filedb = new FileDatabase(file_name);
 	serv_version = 230;
 
 	check_acc = false;
-	
-	ext = new DatabaseExt();
-//	dev_name();
 }
+
+//-----------------------------------------------------------------------------
+//
+// Database::Database() - copy constructor
+//
+//-----------------------------------------------------------------------------
+
+Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
+{
+
+//
+// Copy Databaase members
+//
+
+	db_multi_svc = sou.db_multi_svc;
+	multi_db_port = sou.multi_db_port;
+	multi_db_host = sou.multi_db_host;
+	file_name = sou.file_name;
+	if (sou.filedb == Tango_NullPtr)
+        filedb = Tango_NullPtr;
+    else
+        filedb = new FileDatabase(file_name);
+	serv_version = sou.serv_version;
+
+    if (sou.access_proxy == Tango_NullPtr)
+        access_proxy = Tango_NullPtr;
+    else
+        access_proxy = new AccessProxy(sou.access_proxy->name().c_str());
+	access_checked = sou.access_checked;
+	access_except_errors = sou.access_except_errors;
+
+	dev_class_cache = sou.dev_class_cache;
+	db_device_name = sou.db_device_name;
+
+	access_service_defined = sou.access_service_defined;
+
+//
+// Copy extension class
+//
+
+#ifdef HAS_UNIQUE_PTR
+    if (sou.ext.get() != NULL)
+    {
+        ext.reset(new DatabaseExt);
+        ext->db_tg = sou.ext->db_tg;
+    }
+#else
+	if (sou.ext == NULL)
+		ext = NULL;
+	else
+	{
+		ext = new DatabaseExt();
+		ext->db_tg = sou.ext->db_tg;
+	}
+#endif
+
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::Database() - assignement operator
+//
+//-----------------------------------------------------------------------------
+
+Database &Database::operator=(const Database &rval)
+{
+
+    if (this != &rval)
+    {
+        this->Connection::operator=(rval);
+
+//
+// Now Database members
+//
+
+        db_multi_svc = rval.db_multi_svc;
+        multi_db_port = rval.multi_db_port;
+        multi_db_host = rval.multi_db_host;
+        file_name = rval.file_name;
+        serv_version = rval.serv_version;
+
+        delete filedb;
+        if (rval.filedb == Tango_NullPtr)
+            filedb = Tango_NullPtr;
+        else
+            filedb = new FileDatabase(file_name);
+
+        delete access_proxy;
+        if (rval.access_proxy == Tango_NullPtr)
+            access_proxy = Tango_NullPtr;
+        else
+            access_proxy = new AccessProxy(rval.access_proxy->name().c_str());
+        access_checked = rval.access_checked;
+        access_except_errors = rval.access_except_errors;
+
+        dev_class_cache = rval.dev_class_cache;
+        db_device_name = rval.db_device_name;
+
+        access_service_defined = rval.access_service_defined;
+
+#ifdef HAS_UNIQUE_PTR
+        if (rval.ext.get() != NULL)
+        {
+            ext.reset(new DatabaseExt);
+            ext->db_tg = rval.ext->db_tg;
+        }
+        else
+            ext.reset();
+#else
+        delete ext;
+        if (rval.ext != NULL)
+        {
+            ext = new DatabaseExt;
+            ext->db_tg = rval.ext->db_tg;
+        }
+        else
+            ext = NULL;
+#endif
+    }
+
+	return *this;
+}
+
 
 //-----------------------------------------------------------------------------
 //
@@ -510,21 +485,36 @@ void Database::check_access_and_get()
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_server_release() - Check which is the database server release
+// Database::set_server_release() - Check which is the database server release
 //
 //-----------------------------------------------------------------------------
 
-void Database::get_server_release()
+void Database::set_server_release()
 {
+
 	try
 	{
-		DevCmdInfo *cmd_ptr = device->command_query("DbGetDeviceAttributeProperty2");
-		serv_version = 230;
+	    DevCmdInfo *cmd_ptr = device->command_query("DbDeleteAllDeviceAttributeProperty");
+	    serv_version = 400;
 		delete cmd_ptr;
 	}
 	catch (Tango::DevFailed &e)
 	{
-		serv_version = 210;
+		if (::strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+		{
+		    try
+		    {
+                DevCmdInfo *cmd_ptr = device->command_query("DbGetDeviceAttributeProperty2");
+                serv_version = 230;
+                delete cmd_ptr;
+		    }
+		    catch (Tango::DevFailed &e)
+		    {
+		        serv_version = 210;
+		    }
+		}
+		else
+            serv_version = 210;
 	}
 }
 
@@ -537,7 +527,7 @@ void Database::get_server_release()
 const string &Database::get_file_name()
 {
 	if (filedb == 0)
-	{			
+	{
 		Tango::Except::throw_exception ((const char *)"API_NotSupportedFeature",
 										(const char *)"The database is not a file-based database",
 										(const char *)"Database::get_file_name");
@@ -559,22 +549,22 @@ Database::~Database()
 		write_filedatabase();
 		delete filedb;
 	}
-	
-	if (access_proxy != NULL)
-		delete access_proxy;
-	
-	if (ext != NULL)
-		delete ext;
+
+    delete access_proxy;
+
+#ifndef HAS_UNIQUE_PTR
+    delete ext;
+#endif
 }
 
 #ifdef _TG_WINDOWS_
 //+----------------------------------------------------------------------------
 //
 // method : 		Util::get_tango_host_from_reg()
-// 
+//
 // description : 	When the server is a Win32 service, it is not
 //			possible to get the env. variable TANGO_HOST
-//			value. In this case, the TANGO_HOST value is 
+//			value. In this case, the TANGO_HOST value is
 //			stored in the WIN32 registry when the service is
 //			installed and retrieved by this method.
 //
@@ -646,8 +636,7 @@ void Database::write_filedatabase()
 
 void Database::reread_filedatabase()
 {
-	if (filedb != 0)
-		delete filedb;
+    delete filedb;
 	filedb = new FileDatabase(file_name);
 }
 
@@ -700,7 +689,7 @@ string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
 			db_corbaloc = db_corbaloc+db_host+":";
 		db_corbaloc = db_corbaloc+port+"/"+DbObjName;
 	}
-		
+
 	return db_corbaloc;
 }
 
@@ -712,8 +701,8 @@ string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
 
 void Database::post_reconnection()
 {
-	get_server_release();
-	
+	set_server_release();
+
 	dev_name();
 }
 
@@ -728,32 +717,25 @@ string Database::get_info()
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	if (filedb != 0)
 		received = filedb->DbInfo(send);
-	else 
+	else
 		CALL_DB_SERVER("DbInfo",send,received);
-	const DevVarStringArray *db_info_list;
+	const DevVarStringArray *db_info_list = NULL;
 	received.inout() >>= db_info_list;
 
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
+
 	for (unsigned int i=0; i<db_info_list->length(); i++)
 	{
 		ostream << (*db_info_list)[i].in() << endl;
 	}
 	ostream << ends;
-	
 	string ret_str = ostream.str();
-#ifdef STRSTREAM
-	ostream.rdbuf()->freeze(false);
-#endif /* STRSTREAM */
-	
+
 	return(ret_str);
 }
 
@@ -769,7 +751,7 @@ DbDevImportInfo Database::import_device(string &dev)
 	DeviceData received_cmd;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	const DevVarLongStringArray *dev_import_list;
+	const DevVarLongStringArray *dev_import_list = NULL;
 
 //
 // Import device is allways possible whatever access rights are
@@ -778,11 +760,13 @@ DbDevImportInfo Database::import_device(string &dev)
 	DbDevImportInfo dev_import;
 	{
 		WriterLock guard(Connection::ext->con_to_mon);
-			
+
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
-	
+
 		send <<= dev.c_str();
+		bool imported_from_cache = false;
+
 		try
 		{
 			if (filedb != 0)
@@ -792,10 +776,43 @@ DbDevImportInfo Database::import_device(string &dev)
 			}
 			else
 			{
-				DeviceData send_name;
-				send_name << dev;
-				CALL_DB_SERVER("DbImportDevice",send_name,received_cmd);
-				received_cmd >> dev_import_list;
+
+//
+// If we are in a server with a valid db_cache (meaning only during
+// device server startup sequence) and if
+// the device to be imported is the TAC device, do the
+// import from the cache.
+// All devices imported in a DS during its startup sequence will
+// be searched first from the cache. This will slow down a litle
+// bit but with this code the TAC device is really imported from the
+// cache instead of from DB itself.
+//
+
+                ApiUtil *au = ApiUtil::instance();
+                if (au->in_server() == true)
+                {
+                    if (ext->db_tg != NULL)
+                    {
+                        try
+                        {
+                            DbServerCache *dsc = ext->db_tg->get_db_cache();
+                            if (dsc != NULL)
+                            {
+                                dev_import_list = dsc->import_tac_dev(dev);
+                                imported_from_cache = true;
+                            }
+                        }
+                        catch (Tango::DevFailed &) {}
+                    }
+                }
+
+                if (imported_from_cache == false)
+                {
+                    DeviceData send_name;
+                    send_name << dev;
+                    CALL_DB_SERVER("DbImportDevice",send_name,received_cmd);
+                    received_cmd >> dev_import_list;
+                }
 			}
 		}
 		catch (Tango::DevFailed &)
@@ -818,7 +835,7 @@ DbDevImportInfo Database::import_device(string &dev)
 		if (dev_import_list->svalue.length() == 6)
 		{
 			omni_mutex_lock guard(ext->map_mutex);
-		
+
 			map<string,string>::iterator pos = dev_class_cache.find(dev);
 			if (pos == dev_class_cache.end())
 			{
@@ -834,7 +851,7 @@ DbDevImportInfo Database::import_device(string &dev)
 				}
 			}
 		}
-	
+
 		access = tmp_access;
 	}
 
@@ -851,28 +868,23 @@ void Database::export_device(DbDevExportInfo& dev_export)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *dev_export_list = new DevVarStringArray;
 	dev_export_list->length(5);
 	(*dev_export_list)[0] = string_dup(dev_export.name.c_str());
 	(*dev_export_list)[1] = string_dup(dev_export.ior.c_str());
 	(*dev_export_list)[2] = string_dup(dev_export.host.c_str());
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
+
 	ostringstream ostream;
-#endif /* STRSTREAM */
+
 	ostream << dev_export.pid << ends;
-#ifdef STRSTREAM
-	(*dev_export_list)[3] = string_dup(ostream.str());
-	delete [] (ostream.str());
-#else
 	string st = ostream.str();
+
 	(*dev_export_list)[3] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 	(*dev_export_list)[4] = string_dup(dev_export.version.c_str());
+
 	send <<= dev_export_list;
 
 	if (filedb != 0)
@@ -893,9 +905,9 @@ void Database::unexport_device(string dev)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= string_dup(dev.c_str());
 	if (filedb != 0)
 		filedb->DbUnExportDevice(send);
@@ -915,7 +927,7 @@ void Database::add_device(DbDevInfo &dev_info)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
 
 	DevVarStringArray *dev_info_list = new DevVarStringArray;
@@ -942,9 +954,9 @@ void Database::delete_device(string dev)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= dev.c_str();
 	if (filedb != 0)
 		filedb->DbDeleteDevice(send);
@@ -964,9 +976,9 @@ void Database::add_server(string &server, DbDevInfos &dev_infos)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *dev_info_list = new DevVarStringArray;
 	dev_info_list->length(2*dev_infos.size()+1);
 	(*dev_info_list)[0] = string_dup(server.c_str());
@@ -994,9 +1006,9 @@ void Database::delete_server(string &server)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= string_dup(server.c_str());
 	if (filedb != 0)
 		filedb->DbDeleteServer(send);
@@ -1016,33 +1028,27 @@ void Database::export_server(DbDevExportInfos& dev_export)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *dev_export_list = new DevVarStringArray;
 	dev_export_list->length(5*dev_export.size());
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
+
 	ostringstream ostream;
-#endif /* STRSTREAM */
+
 	for (unsigned int i=0; i<dev_export.size(); i++)
 	{
 		(*dev_export_list)[i*5] = string_dup(dev_export[i].name.c_str());
 		(*dev_export_list)[i*5+1] = string_dup(dev_export[i].ior.c_str());
 		(*dev_export_list)[i*5+2] = string_dup(dev_export[i].host.c_str());
 		ostream << dev_export[i].pid << ends;
-#ifdef STRSTREAM
-		(*dev_export_list)[i*5+3] = string_dup(ostream.str());
-		ostream.rdbuf()->freeze(false);
-#else
+
 		string st = ostream.str();
 		(*dev_export_list)[i*5+3] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 		(*dev_export_list)[i*5+4] = string_dup(dev_export[i].version.c_str());
 	}
 	send <<= dev_export_list;
-	
+
 	if (filedb != 0)
 		filedb->DbExportServer(send);
 	else
@@ -1061,9 +1067,9 @@ void Database::unexport_server(string &server)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= server.c_str();
 	if (filedb != 0)
 		filedb->DbUnExportServer(send);
@@ -1084,23 +1090,32 @@ DbServerInfo Database::get_server_info(string &server)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= server.c_str();
 	if (filedb != 0)
 		received = filedb->DbGetServerInfo(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetServerInfo",send,received);
 
-	const DevVarStringArray *server_info_list;
+	const DevVarStringArray *server_info_list = NULL;
 	received.inout() >>= server_info_list;
 
 	DbServerInfo server_info;
-	server_info.name = string((*server_info_list)[0]);
-	server_info.host = string((*server_info_list)[1]);
-	server_info.mode = atoi((*server_info_list)[2]);
-	server_info.level = atoi((*server_info_list)[3]);
+	if (server_info_list != NULL)
+	{
+        server_info.name = string((*server_info_list)[0]);
+        server_info.host = string((*server_info_list)[1]);
+        server_info.mode = atoi((*server_info_list)[2]);
+        server_info.level = atoi((*server_info_list)[3]);
+	}
+	else
+	{
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                       (const char *)"Incoherent data received from database",
+                                       (const char *)"Database::get_server_info()");
+	}
 
 	return(server_info);
 }
@@ -1115,10 +1130,10 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 {
 	unsigned int i;
 	Any_var received;
-	const DevVarStringArray *property_values;
-	
+	const DevVarStringArray *property_values = NULL;
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(dev.c_str());
@@ -1126,7 +1141,7 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 	{
 		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
 	}
-	
+
 	if (db_cache == NULL)
 	{
 
@@ -1136,9 +1151,9 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 
 		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 		Any send;
-		
+
 		send <<= property_names;
-	
+
 		if (filedb != 0)
 			received = filedb->DbGetDeviceProperty(send);
 		else
@@ -1169,9 +1184,9 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 
 				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 				Any send;
-		
+
 				send <<= property_names;
-	
+
 				if (filedb != 0)
 					received = filedb->DbGetDeviceProperty(send);
 				else
@@ -1187,23 +1202,20 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 	}
 
 	unsigned int n_props, index;
-#ifdef STRSTREAM
-	strstream iostream; 
-#else
 	stringstream iostream;
-#endif /* STRSTREAM */
+
 	iostream << (*property_values)[1].in() << ends;
 	iostream >> n_props;
 	index = 2;
 	for (i=0; i<n_props; i++)
 	{
 		int n_values;
-		db_data[i].name = (*property_values)[index].in(); index++;	
+		db_data[i].name = (*property_values)[index].in(); index++;
 		iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends; 
+		iostream << (*property_values)[index].in() << ends;
 		iostream >> n_values;
 		index++;
-	
+
 		db_data[i].value_string.resize(n_values);
 		if (n_values == 0)
 		{
@@ -1213,12 +1225,12 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 		{
 			for (int j=0; j<n_values; j++)
 			{
-				db_data[i].value_string[j] = (*property_values)[index].in(); 
+				db_data[i].value_string[j] = (*property_values)[index].in();
 				index++;
 			}
 		}
 	}
-		
+
 	return;
 }
 
@@ -1231,29 +1243,21 @@ void Database::get_device_property(string dev, DbData &db_data,DbServerCache *db
 
 void Database::put_device_property(string dev, DbData &db_data)
 {
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
 	(*property_values)[0] = string_dup(dev.c_str());
 	ostream << db_data.size();
-#ifdef STRSTREAM
-	ostream << ends;
-	(*property_values)[1] = string_dup(ostream.str());
-	ostream.rdbuf()->freeze(false);
-#else
+
 	string st = ostream.str();
 	(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 	for (unsigned int i=0; i<db_data.size(); i++)
 	{
 		index++; property_values->length(index);
@@ -1261,15 +1265,11 @@ void Database::put_device_property(string dev, DbData &db_data)
 		ostream.seekp (0); ostream.clear();
 		ostream << db_data[i].size() << ends;
 		index++; property_values->length(index);
-#ifdef STRSTREAM
-		ostream << ends;
-		(*property_values)[index-1] = string_dup(ostream.str());
-		ostream.rdbuf()->freeze(false);
-#else
+
 		string st = ostream.str();
 		(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
-		for (int j=0; j<db_data[i].size(); j++)
+
+		for (size_t j=0; j<db_data[i].size(); j++)
 		{
 			index++; property_values->length(index);
 			(*property_values)[index-1] = string_dup(db_data[i].value_string[j].c_str());
@@ -1284,7 +1284,7 @@ void Database::put_device_property(string dev, DbData &db_data)
 	}
 	else
 		CALL_DB_SERVER_NO_RET("DbPutDeviceProperty",send);
-		
+
 	return;
 }
 
@@ -1301,7 +1301,7 @@ void Database::delete_device_property(string dev, DbData &db_data)
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(dev.c_str());
@@ -1313,7 +1313,7 @@ void Database::delete_device_property(string dev, DbData &db_data)
 
 	if (filedb != 0)
 		filedb->DbDeleteDeviceProperty(send);
-	else 
+	else
 		CALL_DB_SERVER_NO_RET("DbDeleteDeviceProperty",send);
 
 	return;
@@ -1321,7 +1321,7 @@ void Database::delete_device_property(string dev, DbData &db_data)
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_device_attribute_property() - public method to get device 
+// Database::get_device_attribute_property() - public method to get device
 //					       attribute properties from
 //                                             the Database
 //
@@ -1331,10 +1331,10 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 {
 	unsigned int i,j;
 	Any_var received;
-	const DevVarStringArray *property_values;
-	
+	const DevVarStringArray *property_values = NULL;
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(dev.c_str());
@@ -1342,7 +1342,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 	{
 		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
 	}
-	
+
 	if (db_cache == NULL)
 	{
 
@@ -1352,7 +1352,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 
 		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 		Any send;
-		
+
 		send <<= property_names;
 
 		if (filedb != 0)
@@ -1384,7 +1384,6 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 // Try  to get property(ies) from cache
 //
 
-		serv_version = 230;
 		try
 		{
 			property_values = db_cache->get_dev_att_property(property_names);
@@ -1401,7 +1400,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 
 				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 				Any send;
-		
+
 				send <<= property_names;
 
 				if (filedb != 0)
@@ -1421,14 +1420,11 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 			}
 		}
 	}
-	
+
 	unsigned int n_attribs, index;
 	int i_total_props;
-#ifdef STRSTREAM
-	strstream iostream; 
-#else
 	stringstream iostream;
-#endif /* STRSTREAM */
+
 	iostream << (*property_values)[1].in() << ends;
 	iostream >> n_attribs;
 	index = 2;
@@ -1436,24 +1432,24 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 		db_data.resize((property_values->length())/2 -1);
 
 	i_total_props = 0;
-	
+
 	if (serv_version < 230)
 	{
 		for (i=0; i<n_attribs; i++)
 		{
 			unsigned short n_props;
-			db_data[i_total_props].name = (*property_values)[index]; index++;	
+			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends; 
+			iostream << (*property_values)[index].in() << ends;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props; i_total_props++;
 			index++;
 			for (j=0; j<n_props; j++)
 			{
-				db_data[i_total_props].name = (*property_values)[index]; 
+				db_data[i_total_props].name = (*property_values)[index];
 				index++;
 				db_data[i_total_props].value_string.resize(1);
-				db_data[i_total_props].value_string[0] = (*property_values)[index]; 
+				db_data[i_total_props].value_string[0] = (*property_values)[index];
 				index++; i_total_props++;
 			}
 		}
@@ -1466,9 +1462,9 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 			old_size++;
 			db_data.resize(old_size);
 			unsigned short n_props;
-			db_data[i_total_props].name = (*property_values)[index]; index++;	
+			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
-			iostream << (*property_values)[index].in() << ends; 
+			iostream << (*property_values)[index].in() << ends;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props;
 			db_data.resize(old_size + n_props);
@@ -1477,11 +1473,11 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 			index++;
 			for (j=0; j<n_props; j++)
 			{
-				db_data[i_total_props].name = (*property_values)[index]; 
+				db_data[i_total_props].name = (*property_values)[index];
 				index++;
 				int n_values;
 				iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-				iostream << (*property_values)[index].in() << ends; 
+				iostream << (*property_values)[index].in() << ends;
 				iostream >> n_values;
 				index++;
 
@@ -1494,7 +1490,7 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 				{
 					for (int k=0; k<n_values; k++)
 					{
-						db_data[i_total_props].value_string[k] = (*property_values)[index].in(); 
+						db_data[i_total_props].value_string[k] = (*property_values)[index].in();
 						index++;
 					}
 				}
@@ -1502,33 +1498,30 @@ void Database::get_device_attribute_property(string dev, DbData &db_data, DbServ
 			}
 		}
 	}
-		
+
+    cout4 << "Leaving get_device_attribute_property" << endl;
 	return;
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::put_device_attribute_property() - public method to put device 
+// Database::put_device_attribute_property() - public method to put device
 //	     attribute properties into the Database
 //
 //-----------------------------------------------------------------------------
 
 void Database::put_device_attribute_property(string dev, DbData &db_data)
 {
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index, n_attribs ;
 	bool retry = true;
-	
+
 	check_access_and_get();
 
 	while (retry == true)
-	{	
+	{
 		DevVarStringArray *property_values = new DevVarStringArray;
 		property_values->length(2); index = 2;
 		(*property_values)[0] = string_dup(dev.c_str());
@@ -1545,13 +1538,10 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 				ostream.seekp(0); ostream.clear();
 				ostream << n_props << ends;
 				index++; property_values->length(index);
-#ifdef STRSTREAM
-				(*property_values)[index-1] = string_dup(ostream.str());
-				ostream.rdbuf()->freeze(false);
-#else
+
 				string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 				for (int j=0; j<n_props; j++)
 				{
 					index++; property_values->length(index);
@@ -1560,13 +1550,10 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 					int prop_size = db_data[i+j+1].size();
 					ostream.seekp(0); ostream.clear();
 					ostream << prop_size << ends;
-#ifdef STRSTREAM
-					(*property_values)[index-1] = string_dup(ostream.str());
-					ostream.rdbuf()->freeze(false);
-#else
+
 					string st = ostream.str();
 					(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 					property_values->length(index + prop_size);
 					for (int q=0; q<prop_size; q++)
 					{
@@ -1580,13 +1567,9 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 
 			ostream.seekp(0); ostream.clear();
 			ostream << n_attribs << ends;
-#ifdef STRSTREAM
-			(*property_values)[1] = string_dup(ostream.str());
-			ostream.rdbuf()->freeze(false);
-#else
+
 			string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 		}
 		else
 		{
@@ -1599,13 +1582,10 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 				ostream.seekp(0); ostream.clear();
 				ostream << n_props << ends;
 				index++; property_values->length(index);
-#ifdef STRSTREAM
-				(*property_values)[index-1] = string_dup(ostream.str());
-				ostream.rdbuf()->freeze(false);
-#else
+
 				string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 				for (int j=0; j<n_props; j++)
 				{
 					index++; property_values->length(index);
@@ -1618,13 +1598,9 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 			}
 			ostream.seekp(0); ostream.clear();
 			ostream << n_attribs << ends;
-#ifdef STRSTREAM
-			(*property_values)[1] = string_dup(ostream.str());
-			ostream.rdbuf()->freeze(false);
-#else
+
 			string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 		}
 		send <<= property_values;
 
@@ -1652,7 +1628,7 @@ void Database::put_device_attribute_property(string dev, DbData &db_data)
 			}
 		}
 	}
-		
+
 	return;
 }
 
@@ -1667,9 +1643,9 @@ void Database::delete_device_attribute_property(string dev, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_values = new DevVarStringArray;
 	unsigned int nb_prop = db_data.size() - 1;
 	property_values->length(nb_prop + 2);
@@ -1682,9 +1658,9 @@ void Database::delete_device_attribute_property(string dev, DbData &db_data)
 
 	if (filedb != 0)
 		filedb->DbDeleteDeviceAttributeProperty(send);
-	else 
+	else
 		CALL_DB_SERVER_NO_RET("DbDeleteDeviceAttributeProperty",send);
-		
+
 	return;
 }
 
@@ -1698,15 +1674,15 @@ void Database::delete_device_attribute_property(string dev, DbData &db_data)
 void Database::get_class_property(string device_class, DbData &db_data, DbServerCache *db_cache)
 {
 	unsigned int i;
-	const DevVarStringArray *property_values;
+	const DevVarStringArray *property_values = NULL;
 	Any_var received;
 
 //
 // Parameters for db server call
 //
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
-	
+
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(device_class.c_str());
 	for (i=0; i<db_data.size(); i++)
@@ -1717,7 +1693,7 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 //
 // Call db server or get data from cache
 //
-	
+
 	if (db_cache != NULL)
 	{
 
@@ -1741,12 +1717,12 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 
 				Any send;
 				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 				send <<= property_names;
 
 				if (filedb != 0)
 					received = filedb->DbGetClassProperty(send);
-				else 
+				else
 					CALL_DB_SERVER("DbGetClassProperty",send,received);
 
 				received.inout() >>= property_values;
@@ -1767,12 +1743,12 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 
 		Any send;
 		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 		send <<= property_names;
 
 		if (filedb != 0)
 			received = filedb->DbGetClassProperty(send);
-		else 
+		else
 			CALL_DB_SERVER("DbGetClassProperty",send,received);
 
 		received.inout() >>= property_values;
@@ -1781,32 +1757,29 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 //
 // Build data returned to caller from those received from db server or from cache
 //
-	
+
 	unsigned int n_props, index;
-#ifdef STRSTREAM
-	strstream iostream; 
-#else
 	stringstream iostream;
-#endif /* STRSTREAM */
+
 	iostream << (*property_values)[1].in() << ends;
 	iostream >> n_props;
 	index = 2;
 	for (i=0; i<n_props; i++)
 	{
 		int n_values;
-		db_data[i].name = (*property_values)[index]; index++;	
+		db_data[i].name = (*property_values)[index]; index++;
 		iostream.seekp(0); iostream.seekg(0); iostream.clear();
 		iostream << (*property_values)[index].in() << ends; index++;
 		iostream >> n_values;
-	
+
 		db_data[i].value_string.resize(n_values);
 		for (int j=0; j<n_values; j++)
 		{
-			db_data[i].value_string[j] = (*property_values)[index]; 
+			db_data[i].value_string[j] = (*property_values)[index];
 			index++;
 		}
 	}
-		
+
 	return;
 }
 
@@ -1819,28 +1792,21 @@ void Database::get_class_property(string device_class, DbData &db_data, DbServer
 
 void Database::put_class_property(string device_class, DbData &db_data)
 {
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
-	Any send;
+    Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
 	(*property_values)[0] = string_dup(device_class.c_str());
 	ostream << db_data.size() << ends;
-#ifdef STRSTREAM
-	(*property_values)[1] = string_dup(ostream.str());
-	ostream.rdbuf()->freeze(false);
-#else
+
 	string st = ostream.str();
 	(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 	for (unsigned int i=0; i<db_data.size(); i++)
 	{
 		index++; property_values->length(index);
@@ -1848,14 +1814,11 @@ void Database::put_class_property(string device_class, DbData &db_data)
 		ostream.seekp (0); ostream.clear();
 		ostream << db_data[i].size() << ends;
 		index++; property_values->length(index);
-#ifdef STRSTREAM
-		(*property_values)[index-1] = string_dup(ostream.str());
-		ostream.rdbuf()->freeze(false);
-#else
+
 		string st = ostream.str();
 		(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
-		for (int j=0; j<db_data[i].size(); j++)
+
+		for (size_t j=0; j<db_data[i].size(); j++)
 		{
 			index++; property_values->length(index);
 			(*property_values)[index-1] = string_dup(db_data[i].value_string[j].c_str());
@@ -1870,7 +1833,7 @@ void Database::put_class_property(string device_class, DbData &db_data)
 	}
 	else
 		CALL_DB_SERVER_NO_RET("DbPutClassProperty",send);
-		
+
 	return;
 }
 
@@ -1913,10 +1876,10 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 {
 	unsigned int i;
 	Any_var received;
-	const DevVarStringArray *property_values;
-	
+	const DevVarStringArray *property_values = NULL;
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(device_class.c_str());
@@ -1924,7 +1887,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 	{
 		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
 	}
-	
+
 	if (db_cache == NULL)
 	{
 
@@ -1934,7 +1897,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 
 		Any send;
 		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-		
+
 		send <<= property_names;
 
 		if (filedb != 0)
@@ -1968,7 +1931,6 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 // Try to get property(ies) from cache
 //
 
-		serv_version = 230;
 		try
 		{
 			property_values = db_cache->get_class_att_property(property_names);
@@ -1985,7 +1947,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 
 				Any send;
 				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-		
+
 				send <<= property_names;
 
 				if (filedb != 0)
@@ -2005,15 +1967,11 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 			}
 		}
 	}
-	
+
 
 	unsigned int n_attribs, index;
 	int i_total_props;
-#ifdef STRSTREAM
-	strstream iostream; 
-#else
 	stringstream iostream;
-#endif /* STRSTREAM */
 
 	iostream << (*property_values)[1].in() << ends;
 	iostream >> n_attribs;
@@ -2021,23 +1979,23 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 	if (serv_version < 230)
 		db_data.resize((property_values->length())/2 - 1);
 	i_total_props = 0;
-	
+
 	if (serv_version < 230)
 	{
 		for (i=0; i<n_attribs; i++)
 		{
 			short n_props;
-			db_data[i_total_props].name = (*property_values)[index]; index++;	
+			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
 			iostream << (*property_values)[index].in() << ends; index++;
 			iostream >> n_props;
 			db_data[i_total_props] << n_props; i_total_props++;
 			for (int j=0; j<n_props; j++)
 			{
-				db_data[i_total_props].name = (*property_values)[index]; 
+				db_data[i_total_props].name = (*property_values)[index];
 				index++;
 				db_data[i_total_props].value_string.resize(1);
-				db_data[i_total_props].value_string[0] = (*property_values)[index]; 
+				db_data[i_total_props].value_string[0] = (*property_values)[index];
 				index++; i_total_props++;
 			}
 		}
@@ -2050,7 +2008,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 			old_size++;
 			db_data.resize(old_size);
 			short n_props;
-			db_data[i_total_props].name = (*property_values)[index]; index++;	
+			db_data[i_total_props].name = (*property_values)[index]; index++;
 			iostream.seekp(0); iostream.seekg(0); iostream.clear();
 			iostream << (*property_values)[index].in() << ends;
 			iostream >> n_props;
@@ -2061,7 +2019,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 			index++;
 			for (int j=0; j<n_props; j++)
 			{
-				db_data[i_total_props].name = (*property_values)[index]; 
+				db_data[i_total_props].name = (*property_values)[index];
 				index++;
 				int n_values;
 				iostream.seekp(0); iostream.seekg(0); iostream.clear();
@@ -2078,7 +2036,7 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 				{
 					for (int k=0; k<n_values; k++)
 					{
-						db_data[i_total_props].value_string[k] = (*property_values)[index].in(); 
+						db_data[i_total_props].value_string[k] = (*property_values)[index].in();
 						index++;
 					}
 				}
@@ -2086,38 +2044,34 @@ void Database::get_class_attribute_property(string device_class, DbData &db_data
 			}
 		}
 	}
-		
+
 	return;
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::put_class_attribute_property() - public method to put class 
+// Database::put_class_attribute_property() - public method to put class
 //	     attribute properties into the Database
 //
 //-----------------------------------------------------------------------------
 
 void Database::put_class_attribute_property(string device_class, DbData &db_data)
 {
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index, n_attribs;
 	bool retry = true;
-	
+
 	check_access_and_get();
-	
+
 	while (retry == true)
 	{
 		DevVarStringArray *property_values = new DevVarStringArray;
 		property_values->length(2); index = 2;
 		(*property_values)[0] = string_dup(device_class.c_str());
 		n_attribs = 0;
-		
+
 		if (serv_version >= 230)
 		{
 			for (unsigned int i=0; i<db_data.size(); )
@@ -2129,13 +2083,10 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 				ostream.seekp(0); ostream.clear();
 				ostream << n_props << ends;
 				index++; property_values->length(index);
-#ifdef STRSTREAM
-				(*property_values)[index-1] = string_dup(ostream.str());
-				ostream.rdbuf()->freeze(false);
-#else
+
 				string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 				for (int j=0; j<n_props; j++)
 				{
 					index++; property_values->length(index);
@@ -2144,13 +2095,10 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 					int prop_size = db_data[i+j+1].size();
 					ostream.seekp(0); ostream.clear();
 					ostream << prop_size << ends;
-#ifdef STRSTREAM
-					(*property_values)[index-1] = string_dup(ostream.str());
-					ostream.rdbuf()->freeze(false);
-#else
+
 					string st = ostream.str();
 					(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 					property_values->length(index + prop_size);
 					for (int q=0; q<prop_size; q++)
 					{
@@ -2161,16 +2109,12 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 				i = i+n_props+1;
 				n_attribs++;
 			}
-	
+
 			ostream.seekp(0); ostream.clear();
 			ostream << n_attribs << ends;
-#ifdef STRSTREAM
-			(*property_values)[1] = string_dup(ostream.str());
-			ostream.rdbuf()->freeze(false);
-#else
+
 			string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 		}
 		else
 		{
@@ -2183,13 +2127,10 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 				ostream.seekp(0); ostream.clear();
 				ostream << n_props << ends;
 				index++; property_values->length(index);
-#ifdef STRSTREAM
-				(*property_values)[index-1] = string_dup(ostream.str());
-				ostream.rdbuf()->freeze(false);
-#else
+
 				string st = ostream.str();
 				(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 				for (int j=0; j<n_props; j++)
 				{
 					index++; property_values->length(index);
@@ -2202,13 +2143,9 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 			}
 			ostream.seekp(0); ostream.clear();
 			ostream << n_attribs << ends;
-#ifdef STRSTREAM
-			(*property_values)[1] = string_dup(ostream.str());
-			ostream.rdbuf()->freeze(false);
-#else
+
 			string st = ostream.str();
 			(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 		}
 		send <<= property_values;
 
@@ -2230,7 +2167,7 @@ void Database::put_class_attribute_property(string device_class, DbData &db_data
 			retry = false;
 		}
 	}
-		
+
 	return;
 }
 
@@ -2245,9 +2182,9 @@ void Database::delete_class_attribute_property(string device_class, DbData &db_d
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_values = new DevVarStringArray;
 	unsigned int nb_prop = db_data.size() - 1;
 	property_values->length(nb_prop + 2);
@@ -2260,9 +2197,9 @@ void Database::delete_class_attribute_property(string device_class, DbData &db_d
 
 	if (filedb != 0)
 		filedb->DbDeleteClassAttributeProperty(send);
-	else 
+	else
 		CALL_DB_SERVER_NO_RET("DbDeleteClassAttributeProperty",send);
-		
+
 	return;
 }
 
@@ -2281,25 +2218,25 @@ DbDatum Database::get_device_name(string &d_server, string &d_class)
 DbDatum Database::get_device_name(string &device_server, string &device_class, DbServerCache *db_cache)
 {
 	Any_var received;
-	const DevVarStringArray *device_names;
-	
+	const DevVarStringArray *device_names = NULL;
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *device_server_class = new DevVarStringArray;
 	device_server_class->length(2);
 	(*device_server_class)[0] = string_dup(device_server.c_str());
 	(*device_server_class)[1] = string_dup(device_class.c_str());
-	
+
 	if (db_cache == NULL)
 	{
 		Any send;
 		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-		
+
 		send <<= device_server_class;
 
 		if (filedb != 0)
 			received = filedb->DbGetDeviceList(send);
-		else 
+		else
 			CALL_DB_SERVER("DbGetDeviceList",send,received);
 		received.inout() >>= device_names;
 	}
@@ -2316,9 +2253,9 @@ DbDatum Database::get_device_name(string &device_server, string &device_class, D
 	db_datum.value_string.resize(n_devices);
 	for (int i=0; i<n_devices; i++)
 	{
-		db_datum.value_string[i] = (*device_names)[i]; 
+		db_datum.value_string[i] = (*device_names)[i];
 	}
-		
+
 	return db_datum;
 }
 
@@ -2334,28 +2271,37 @@ DbDatum Database::get_device_exported(string &filter)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= filter.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetDeviceExportedList(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetDeviceExportedList",send,received);
-	const DevVarStringArray *device_names;
+	const DevVarStringArray *device_names = NULL;
 	received.inout() >>= device_names;
 
 	DbDatum db_datum;
-	int n_devices;
-	n_devices = device_names->length();
-	db_datum.name = filter;
-	db_datum.value_string.resize(n_devices);
-	for (int i=0; i<n_devices; i++)
-	{
-		db_datum.value_string[i] = (*device_names)[i]; 
-	}
-		
+    if (device_names == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_device_exported()");
+    }
+    else
+    {
+        int n_devices;
+        n_devices = device_names->length();
+        db_datum.name = filter;
+        db_datum.value_string.resize(n_devices);
+        for (int i=0; i<n_devices; i++)
+        {
+            db_datum.value_string[i] = (*device_names)[i];
+        }
+    }
+
 	return db_datum;
 }
 
@@ -2371,28 +2317,37 @@ DbDatum Database::get_device_member(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= wildcard.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetDeviceMemberList(send);
 	else
 		CALL_DB_SERVER("DbGetDeviceMemberList",send,received);
-	const DevVarStringArray *device_member;
+	const DevVarStringArray *device_member = NULL;
 	received.inout() >>= device_member;
 
 	DbDatum db_datum;
-	int n_members;
-	n_members = device_member->length();
-	db_datum.name = wildcard;
-	db_datum.value_string.resize(n_members);
-	for (int i=0; i<n_members; i++)
-	{
-		db_datum.value_string[i] = (*device_member)[i]; 
-	}
-		
+    if (device_member == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_device_member()");
+    }
+    else
+    {
+        int n_members;
+        n_members = device_member->length();
+        db_datum.name = wildcard;
+        db_datum.value_string.resize(n_members);
+        for (int i=0; i<n_members; i++)
+        {
+            db_datum.value_string[i] = (*device_member)[i];
+        }
+    }
+
 	return db_datum;
 }
 
@@ -2408,28 +2363,38 @@ DbDatum Database::get_device_family(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= wildcard.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetDeviceFamilyList(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetDeviceFamilyList",send,received);
-	const DevVarStringArray *device_family;
+	const DevVarStringArray *device_family = NULL;
 	received.inout() >>= device_family;
 
 	DbDatum db_datum;
-	int n_familys;
-	n_familys = device_family->length();
-	db_datum.name = wildcard;
-	db_datum.value_string.resize(n_familys);
-	for (int i=0; i<n_familys; i++)
-	{
-		db_datum.value_string[i] = (*device_family)[i]; 
-	}
-		
+
+    if (device_family == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_device_family()");
+    }
+    else
+    {
+        int n_familys;
+        n_familys = device_family->length();
+        db_datum.name = wildcard;
+        db_datum.value_string.resize(n_familys);
+        for (int i=0; i<n_familys; i++)
+        {
+            db_datum.value_string[i] = (*device_family)[i];
+        }
+    }
+
 	return db_datum;
 }
 
@@ -2446,28 +2411,38 @@ DbDatum Database::get_device_domain(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= wildcard.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetDeviceDomainList(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetDeviceDomainList",send,received);
-	const DevVarStringArray *device_domain;
+	const DevVarStringArray *device_domain = NULL;
 	received.inout() >>= device_domain;
 
 	DbDatum db_datum;
-	int n_domains;
-	n_domains = device_domain->length();
-	db_datum.name = wildcard;
-	db_datum.value_string.resize(n_domains);
-	for (int i=0; i<n_domains; i++)
-	{
-		db_datum.value_string[i] = (*device_domain)[i]; 
-	}
-		
+
+    if (device_domain == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_device_domain()");
+    }
+    else
+    {
+        int n_domains;
+        n_domains = device_domain->length();
+        db_datum.name = wildcard;
+        db_datum.value_string.resize(n_domains);
+        for (int i=0; i<n_domains; i++)
+        {
+            db_datum.value_string[i] = (*device_domain)[i];
+        }
+    }
+
 	return db_datum;
 }
 
@@ -2481,7 +2456,7 @@ DbDatum Database::get_device_domain(string &wildcard)
 void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *dsc)
 {
 	WriterLock guard(Connection::ext->con_to_mon);
-	
+
 	AccessControlType tmp_access = access;
 	access = ACCESS_WRITE;
 	try
@@ -2489,22 +2464,22 @@ void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *ds
 		get_property(obj,db_data,dsc);
 	}
 	catch (Tango::DevFailed &) {}
-	access = tmp_access;	
+	access = tmp_access;
 }
 
 void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 {
 	unsigned int i;
 	Any_var received;
-	const DevVarStringArray *property_values;
+	const DevVarStringArray *property_values = NULL;
 
 	{
 		WriterLock guard(Connection::ext->con_to_mon);
-			
+
 		if ((access == ACCESS_READ) && (access_checked == false))
 			check_access();
 	}
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(obj.c_str());
@@ -2514,10 +2489,10 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 	}
 
 	if (db_cache == NULL)
-	{	
+	{
 		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 		Any send;
-		
+
 		send <<= property_names;
 
 		if (filedb != 0)
@@ -2529,7 +2504,7 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 	}
 	else
 	{
-	
+
 //
 // Try to get property(ies) from cache
 //
@@ -2550,7 +2525,7 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 
 				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 				Any send;
-		
+
 				send <<= property_names;
 
 				if (filedb != 0)
@@ -2566,25 +2541,22 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 			}
 		}
 	}
-	
+
 	unsigned int n_props, index;
-#ifdef STRSTREAM
-	strstream iostream; 
-#else
 	stringstream iostream;
-#endif /* STRSTREAM */
+
 	iostream << (*property_values)[1].in() << ends;
 	iostream >> n_props;
 	index = 2;
 	for (i=0; i<n_props; i++)
 	{
 		int n_values;
-		db_data[i].name = (*property_values)[index]; index++;	
+		db_data[i].name = (*property_values)[index]; index++;
 		iostream.seekp (0);  iostream.seekg (0); iostream.clear();
-		iostream << (*property_values)[index].in() << ends; 
+		iostream << (*property_values)[index].in() << ends;
 		iostream >> n_values;
 		index++;
-	
+
 		db_data[i].value_string.resize(n_values);
 		if (n_values == 0)
 		{
@@ -2594,7 +2566,7 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 		{
 			for (int j=0; j<n_values; j++)
 			{
-				db_data[i].value_string[j] = (*property_values)[index]; 
+				db_data[i].value_string[j] = (*property_values)[index];
 				index++;
 			}
 		}
@@ -2612,29 +2584,21 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 
 void Database::put_property(string obj, DbData &db_data)
 {
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	int index;
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_values = new DevVarStringArray;
 	property_values->length(2); index = 2;
 	(*property_values)[0] = string_dup(obj.c_str());
 	ostream << db_data.size();
-#ifdef STRSTREAM
-	ostream << ends;
-	(*property_values)[1] = string_dup(ostream.str());
-	ostream.rdbuf()->freeze(false);
-#else
+
 	string st = ostream.str();
 	(*property_values)[1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
+
 	for (unsigned int i=0; i<db_data.size(); i++)
 	{
 		index++; property_values->length(index);
@@ -2642,15 +2606,11 @@ void Database::put_property(string obj, DbData &db_data)
 		ostream.seekp (0); ostream.clear();
 		ostream << db_data[i].size() << ends;
 		index++; property_values->length(index);
-#ifdef STRSTREAM
-		ostream << ends;
-		(*property_values)[index-1] = string_dup(ostream.str());
-		ostream.rdbuf()->freeze(false);
-#else
+
 		string st = ostream.str();
 		(*property_values)[index-1] = string_dup(st.c_str());
-#endif /* STRSTREAM */
-		for (int j=0; j<db_data[i].size(); j++)
+
+		for (size_t j=0; j<db_data[i].size(); j++)
 		{
 			index++; property_values->length(index);
 			(*property_values)[index-1] = string_dup(db_data[i].value_string[j].c_str());
@@ -2660,9 +2620,9 @@ void Database::put_property(string obj, DbData &db_data)
 
 	if (filedb != 0)
 		filedb->DbPutProperty(send);
-	else 
+	else
 		CALL_DB_SERVER_NO_RET("DbPutProperty",send);
-		
+
 	return;
 }
 
@@ -2677,9 +2637,9 @@ void Database::delete_property(string obj, DbData &db_data)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *property_names = new DevVarStringArray;
 	property_names->length(db_data.size()+1);
 	(*property_names)[0] = string_dup(obj.c_str());
@@ -2691,7 +2651,7 @@ void Database::delete_property(string obj, DbData &db_data)
 
 	if (filedb != 0)
 		filedb->DbDeleteProperty(send);
-	else 
+	else
 		CALL_DB_SERVER_NO_RET("DbDeleteProperty",send);
 
 	return;
@@ -2710,20 +2670,20 @@ void Database::get_device_alias(string alias,string &dev_name)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= alias.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetAliasDevice(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetAliasDevice",send,received);
-	const char *dev_name_tmp;
+	const char *dev_name_tmp = NULL;
 	received.inout() >>= dev_name_tmp;
 	dev_name = dev_name_tmp;
 }
- 
+
 //-----------------------------------------------------------------------------
 //
 // Database::get_alias() - public method to get alias name from
@@ -2736,20 +2696,20 @@ void Database::get_alias(string dev_name,string &alias_name)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= dev_name.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetDeviceAlias(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetDeviceAlias",send,received);
-	const char *dev_name_tmp;
+	const char *dev_name_tmp = NULL;
 	received.inout() >>= dev_name_tmp;
 	alias_name = dev_name_tmp;
 }
- 
+
 //-----------------------------------------------------------------------------
 //
 // Database::get_attribute_alias() - public method to get attribute name from
@@ -2762,18 +2722,26 @@ void Database::get_attribute_alias(string  attr_alias, string &attr_name)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= attr_alias.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetAttributeAlias(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetAttributeAlias",send,received);
-	const char* attr_name_tmp;
+	const char* attr_name_tmp = NULL;
 	received.inout() >>= attr_name_tmp;
-	attr_name = attr_name_tmp;
+
+    if (attr_name_tmp == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_attribute_alias()");
+    }
+    else
+        attr_name = attr_name_tmp;
 }
 
 //-----------------------------------------------------------------------------
@@ -2788,26 +2756,36 @@ DbDatum Database::get_device_alias_list(string &alias)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	send <<= alias.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetDeviceAliasList(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetDeviceAliasList",send,received);
-	const DevVarStringArray *alias_array;
+	const DevVarStringArray *alias_array = NULL;
 	received.inout() >>= alias_array;
 
 	DbDatum db_datum;
-	int n_aliases;
-	n_aliases = alias_array->length();
-	db_datum.name = alias;
-	db_datum.value_string.resize(n_aliases);
-	for (int i=0; i<n_aliases; i++)
-	{
-		db_datum.value_string[i] = (*alias_array)[i]; 
-	}
-		
+
+    if (alias_array == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_device_alias_list()");
+    }
+    else
+    {
+        int n_aliases;
+        n_aliases = alias_array->length();
+        db_datum.name = alias;
+        db_datum.value_string.resize(n_aliases);
+        for (int i=0; i<n_aliases; i++)
+        {
+            db_datum.value_string[i] = (*alias_array)[i];
+        }
+    }
+
 	return db_datum;
 }
 
@@ -2823,26 +2801,36 @@ DbDatum Database::get_attribute_alias_list(string &alias)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	send <<= alias.c_str();
 
 	if (filedb != 0)
 		received = filedb->DbGetAttributeAliasList(send);
-	else 
+	else
 		CALL_DB_SERVER("DbGetAttributeAliasList",send,received);
-	const DevVarStringArray *alias_array;
+	const DevVarStringArray *alias_array = NULL;
 	received.inout() >>= alias_array;
 
 	DbDatum db_datum;
-	int n_aliases;
-	n_aliases = alias_array->length();
-	db_datum.name = alias;
-	db_datum.value_string.resize(n_aliases);
-	for (int i=0; i<n_aliases; i++)
-	{
-		db_datum.value_string[i] = (*alias_array)[i]; 
-	}
-		
+
+    if (alias_array == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_attribute_alias_list()");
+    }
+    else
+    {
+        int n_aliases;
+        n_aliases = alias_array->length();
+        db_datum.name = alias;
+        db_datum.value_string.resize(n_aliases);
+        for (int i=0; i<n_aliases; i++)
+        {
+            db_datum.value_string[i] = (*alias_array)[i];
+        }
+    }
+
 	return db_datum;
 }
 
@@ -2854,26 +2842,35 @@ DbDatum Database::get_attribute_alias_list(string &alias)
 
 DbDatum Database::make_string_array(string name,Any_var &received) {
 
-	const DevVarStringArray *prop_list;
+	const DevVarStringArray *prop_list = NULL;
 	DbDatum db_datum;
 	int n_props;
-	
+
 	received.inout() >>= prop_list;
-	n_props = prop_list->length();
-	db_datum.name = name;
-	db_datum.value_string.resize(n_props);
-	for (int i=0; i<n_props; i++)
-	{
-		db_datum.value_string[i] = (*prop_list)[i]; 
-	}
-		
+    if (prop_list == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::make_string_array()");
+    }
+    else
+    {
+        n_props = prop_list->length();
+        db_datum.name = name;
+        db_datum.value_string.resize(n_props);
+        for (int i=0; i<n_props; i++)
+        {
+            db_datum.value_string[i] = (*prop_list)[i];
+        }
+    }
+
 	return db_datum;
 
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_device_property_list() - public method to get a device property 
+// Database::get_device_property_list() - public method to get a device property
 //					  list from the Database
 //
 //-----------------------------------------------------------------------------
@@ -2883,18 +2880,18 @@ DbDatum Database::get_device_property_list(string &dev, string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *sent_names = new DevVarStringArray;
 	sent_names->length(2);
 	(*sent_names)[0] = string_dup(dev.c_str());
 	(*sent_names)[1] = string_dup(wildcard.c_str());
-	
+
 	send <<= sent_names;
 
 	CALL_DB_SERVER("DbGetDevicePropertyList",send,received);
-	
+
 	return make_string_array(dev,received);
 }
 
@@ -2934,7 +2931,7 @@ void Database::get_device_property_list(string &dev, const string &wildcard, vec
 				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 				Any send;
 				Any_var received;
-		
+
 				send <<= send_seq;
 
 				if (filedb != 0)
@@ -2967,11 +2964,11 @@ DbDatum Database::get_host_list()
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 
 	check_access_and_get();
-	
+
 	send <<= "*";
 
 	CALL_DB_SERVER("DbGetHostList",send,received);
-	
+
 	return make_string_array(string("host"),received);
 }
 
@@ -2986,19 +2983,19 @@ DbDatum Database::get_host_list(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
 
 	send <<= wildcard.c_str();
-	
+
 	CALL_DB_SERVER("DbGetHostList",send,received);
-	
+
 	return make_string_array(string("host"),received);
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_server_class_list() - Query the database for a list of classes 
+// Database::get_server_class_list() - Query the database for a list of classes
 //                                     instancied for a server
 //
 //-----------------------------------------------------------------------------
@@ -3010,39 +3007,49 @@ DbDatum Database::get_server_class_list(string &servname)
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 
 	check_access_and_get();
-	
+
 	send <<= servname.c_str();
 
 	CALL_DB_SERVER("DbGetDeviceServerClassList",send,received);
-	
-	const DevVarStringArray *prop_list;
+
+	const DevVarStringArray *prop_list = NULL;
 	received.inout() >>= prop_list;
-	
-	// Extract the DServer class
 
 	DbDatum db_datum;
-	int n_props;
-	int nb_classes;
-	n_props = prop_list->length();
-	if(n_props == 0 )
-	  nb_classes = 0;
-	else
-	  nb_classes = n_props - 1;
-		
-	db_datum.name = servname;
-	db_datum.value_string.resize(nb_classes);
-	for (int i=0,j=0; i<n_props; i++)
-	{
-		if( strcmp( (*prop_list)[i] , "DServer" ) !=0 )
-			db_datum.value_string[j++] = (*prop_list)[i]; 
-	}
-		
+    if (prop_list == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_server_class_list()");
+    }
+    else
+    {
+
+        // Extract the DServer class
+
+        int n_props;
+        int nb_classes;
+        n_props = prop_list->length();
+        if(n_props == 0 )
+          nb_classes = 0;
+        else
+          nb_classes = n_props - 1;
+
+        db_datum.name = servname;
+        db_datum.value_string.resize(nb_classes);
+        for (int i=0,j=0; i<n_props; i++)
+        {
+            if( strcmp( (*prop_list)[i] , "DServer" ) !=0 )
+                db_datum.value_string[j++] = (*prop_list)[i];
+        }
+    }
+
 	return db_datum;
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_server_name_list() - Query the database for a list of server 
+// Database::get_server_name_list() - Query the database for a list of server
 //                                    names registred in the database
 //
 //-----------------------------------------------------------------------------
@@ -3052,19 +3059,19 @@ DbDatum Database::get_server_name_list()
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= "*";
 
 	CALL_DB_SERVER("DbGetServerNameList",send,received);
-	
+
 	return make_string_array(string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_instance_name_list() - Query the database for a list of instance 
+// Database::get_instance_name_list() - Query the database for a list of instance
 //                                      names registred for specified server name
 //
 //-----------------------------------------------------------------------------
@@ -3074,19 +3081,19 @@ DbDatum Database::get_instance_name_list(string &servname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= servname.c_str();
 
 	CALL_DB_SERVER("DbGetInstanceNameList",send,received);
-	
+
 	return make_string_array(servname,received);
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_server_list() - Query the database for a list of servers registred 
+// Database::get_server_list() - Query the database for a list of servers registred
 //                               in the database
 //
 //-----------------------------------------------------------------------------
@@ -3096,19 +3103,19 @@ DbDatum Database::get_server_list()
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= "*";
 
 	CALL_DB_SERVER("DbGetServerList",send,received);
-	
+
 	return make_string_array(string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_server_list() - Query the database for a list of servers registred 
+// Database::get_server_list() - Query the database for a list of servers registred
 //                               in the database
 //
 //-----------------------------------------------------------------------------
@@ -3118,19 +3125,19 @@ DbDatum Database::get_server_list(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= wildcard.c_str();
 
 	CALL_DB_SERVER("DbGetServerList",send,received);
-	
+
 	return make_string_array(string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_host_server_list() - Query the database for a list of servers 
+// Database::get_host_server_list() - Query the database for a list of servers
 //                                    registred on the specified host
 //
 //-----------------------------------------------------------------------------
@@ -3140,13 +3147,13 @@ DbDatum Database::get_host_server_list(string &hostname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= hostname.c_str();
 
 	CALL_DB_SERVER("DbGetHostServerList",send,received);
-	
+
 	return make_string_array(string("server"),received);
 }
 
@@ -3158,42 +3165,29 @@ DbDatum Database::get_host_server_list(string &hostname)
 
 void Database::put_server_info(DbServerInfo &info)
 {
-
-#ifdef STRSTREAM
-	ostrstream ostream;
-#else
 	ostringstream ostream;
-#endif /* STRSTREAM */
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	DevVarStringArray *serv_info = new DevVarStringArray;
-	
+
 	check_access_and_get();
-	
+
 	serv_info->length(4);
 	(*serv_info)[0] = string_dup(info.name.c_str());
 	(*serv_info)[1] = string_dup(info.host.c_str());
 
 	ostream.seekp(0); ostream.clear();
 	ostream << info.mode << ends;
-#ifdef STRSTREAM
-	(*serv_info)[2] = string_dup(ostream.str());
-	ostream.rdbuf()->freeze(false);
-#else
+
 	string st = ostream.str();
 	(*serv_info)[2] = string_dup(st.c_str());
-#endif /* STRSTREAM */
 
 	ostream.seekp(0); ostream.clear();
 	ostream << info.level << ends;
-#ifdef STRSTREAM
-	(*serv_info)[3] = string_dup(ostream.str());
-	ostream.rdbuf()->freeze(false);
-#else
+
 	st = ostream.str();
 	(*serv_info)[3] = string_dup(st.c_str());
-#endif /* STRSTREAM */
-	
+
 	send <<= serv_info;
 
 	CALL_DB_SERVER_NO_RET("DbPutServerInfo",send);
@@ -3212,19 +3206,19 @@ void Database::delete_server_info(string &servname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= servname.c_str();
 
 	CALL_DB_SERVER_NO_RET("DbDeleteServerInfo",send);
-	
+
 	return;
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_device_class_list() - Query the database for server devices 
+// Database::get_device_class_list() - Query the database for server devices
 //                                     and classes.
 //
 //-----------------------------------------------------------------------------
@@ -3234,19 +3228,19 @@ DbDatum Database::get_device_class_list(string &servname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= servname.c_str();
 
 	CALL_DB_SERVER("DbGetDeviceClassList",send,received);
-	
+
 	return make_string_array(string("server"),received);
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_object_list() - Query the database for a list of object 
+// Database::get_object_list() - Query the database for a list of object
 //                               (ie non-device) for which properties are defined
 //
 //-----------------------------------------------------------------------------
@@ -3256,13 +3250,13 @@ DbDatum Database::get_object_list(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= wildcard.c_str();
 
 	CALL_DB_SERVER("DbGetObjectList",send,received);
-	
+
 	return make_string_array(string("object"),received);
 }
 
@@ -3279,19 +3273,19 @@ DbDatum Database::get_object_property_list(string &objname,string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *obj_info = new DevVarStringArray;
-	
+
 	obj_info->length(2);
 	(*obj_info)[0] = string_dup(objname.c_str());
 	(*obj_info)[1] = string_dup(wildcard.c_str());
-	
+
 	send <<= obj_info;
 
 	CALL_DB_SERVER("DbGetPropertyList",send,received);
-	
+
 	return make_string_array(string("object"),received);
 }
 
@@ -3308,13 +3302,13 @@ DbDatum Database::get_class_property_list(string &classname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= classname.c_str();
 
 	CALL_DB_SERVER("DbGetClassPropertyList",send,received);
-	
+
 	return make_string_array(string("class"),received);
 }
 
@@ -3329,7 +3323,7 @@ string Database::get_class_for_device(string &devname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
 
 //
@@ -3342,18 +3336,18 @@ string Database::get_class_for_device(string &devname)
 
 	{
 		omni_mutex_lock guard(ext->map_mutex);
-			
+
 		map<string,string>::iterator pos = dev_class_cache.find(devname);
 		if (pos == dev_class_cache.end())
 		{
 			send <<= devname.c_str();
 
 			CALL_DB_SERVER("DbGetClassforDevice",send,received);
-		
-			const char *classname;
+
+			const char *classname = NULL;
 			received.inout() >>= classname;
 			ret_str = classname;
-				
+
 			pair<map<string,string>::iterator,bool> status;
 			status = dev_class_cache.insert(make_pair(devname,ret_str));
 			if (status.second == false)
@@ -3368,9 +3362,9 @@ string Database::get_class_for_device(string &devname)
 		{
 			ret_str = pos->second;
 		}
-	}	
+	}
 
-	return ret_str;	
+	return ret_str;
 }
 
 //-----------------------------------------------------------------------------
@@ -3383,19 +3377,19 @@ string Database::get_class_for_device(string &devname)
 DbDatum Database::get_class_inheritance_for_device(string &devname)
 {
 	Any send;
-	Any_var received;	
+	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= devname.c_str();
 
 	try {
-	
+
 	  CALL_DB_SERVER("DbGetClassInheritanceForDevice",send,received);
-	  
+
 	} catch (DevFailed &e) {
-	
+
 	  // Check if an old API else re-throw
 	  if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") != 0) {
 	    throw e;
@@ -3403,12 +3397,12 @@ DbDatum Database::get_class_inheritance_for_device(string &devname)
 	    DbDatum db_datum;
 	    db_datum.name = "class";
 	    db_datum.value_string.resize(1);
-            db_datum.value_string[0] = "Device_3Impl"; 
-	    return db_datum;	    
+            db_datum.value_string[0] = "Device_3Impl";
+	    return db_datum;
 	  }
-	  
+
 	}
-	
+
 	return make_string_array(string("class"),received);
 }
 
@@ -3423,13 +3417,13 @@ DbDatum Database::get_class_list(string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= wildcard.c_str();
 
 	CALL_DB_SERVER("DbGetClassList",send,received);
-	
+
 	return make_string_array(string("class"),received);
 }
 
@@ -3446,19 +3440,19 @@ DbDatum Database::get_class_attribute_list(string &classname,string &wildcard)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *class_info = new DevVarStringArray;
-	
+
 	class_info->length(2);
 	(*class_info)[0] = string_dup(classname.c_str());
 	(*class_info)[1] = string_dup(wildcard.c_str());
-	
+
 	send <<= class_info;
 
 	CALL_DB_SERVER("DbGetClassAttributeList",send,received);
-	
+
 	return make_string_array(string("class"),received);
 }
 
@@ -3474,13 +3468,13 @@ DbDatum Database::get_device_exported_for_class(string &classname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= classname.c_str();
 
 	CALL_DB_SERVER("DbGetExportdDeviceListForClass",send,received);
-	
+
 	return make_string_array(string("device"),received);
 }
 
@@ -3494,17 +3488,17 @@ void Database::put_device_alias(string &devname,string &aliasname)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	DevVarStringArray *alias_info = new DevVarStringArray;
-	
+
 	alias_info->length(2);
 	(*alias_info)[0] = string_dup(devname.c_str());
 	(*alias_info)[1] = string_dup(aliasname.c_str());
-	
+
 	send <<= alias_info;
 
 	CALL_DB_SERVER_NO_RET("DbPutDeviceAlias",send);
-	
+
 	return;
 }
 
@@ -3519,13 +3513,13 @@ void Database::delete_device_alias(string &aliasname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= aliasname.c_str();
 
 	CALL_DB_SERVER_NO_RET("DbDeleteDeviceAlias",send);
-	
+
 	return;
 }
 
@@ -3540,17 +3534,17 @@ void Database::put_attribute_alias(string &attname,string &aliasname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	DevVarStringArray *alias_info = new DevVarStringArray;
-	
+
 	alias_info->length(2);
 	(*alias_info)[0] = string_dup(attname.c_str());
 	(*alias_info)[1] = string_dup(aliasname.c_str());
-	
+
 	send <<= alias_info;
 
 	CALL_DB_SERVER_NO_RET("DbPutAttributeAlias",send);
-	
+
 	return;
 }
 
@@ -3565,78 +3559,83 @@ void Database::delete_attribute_alias(string &aliasname)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	send <<= aliasname.c_str();
 
 	CALL_DB_SERVER("DbDeleteAttributeAlias",send,received);
-	
+
 	return;
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::make_history_array() - Convert the result of a DbGet...PropertyHist 
+// Database::make_history_array() - Convert the result of a DbGet...PropertyHist
 //                                  command.
 //
 //-----------------------------------------------------------------------------
 
 vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &received) {
 
-	const DevVarStringArray *ret;	
+	const DevVarStringArray *ret = NULL;
 	received.inout() >>= ret;
-	
+
 	vector<DbHistory> v;
-	unsigned int	i=0;
-	int		  count=0;
-	int		  offset;
-	string	aName = "";
-	string	pName;
-	string	pDate;
-	string	pCount;
+    if (ret == NULL)
+    {
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::make_history_array()");
+    }
+    else
+    {
+        unsigned int	i=0;
+        int		  count=0;
+        int		  offset;
+        string	aName = "";
+        string	pName;
+        string	pDate;
+        string	pCount;
 
-	while(i<ret->length())
-	{
-		if(is_attribute)
-		{
-			aName = (*ret)[i];
-			pName = (*ret)[i+1];
-			pDate = (*ret)[i+2];
-			pCount = (*ret)[i+3];
-			offset = 4;
-		}
-		else
-		{
-			pName = (*ret)[i];
-			pDate = (*ret)[i+1];
-			pCount = (*ret)[i+2];
-			offset = 3;
-		}
+        while(i<ret->length())
+        {
+            if(is_attribute)
+            {
+                aName = (*ret)[i];
+                pName = (*ret)[i+1];
+                pDate = (*ret)[i+2];
+                pCount = (*ret)[i+3];
+                offset = 4;
+            }
+            else
+            {
+                pName = (*ret)[i];
+                pDate = (*ret)[i+1];
+                pCount = (*ret)[i+2];
+                offset = 3;
+            }
 
-#ifdef STRSTREAM
-		istrstream istream(pCount.c_str());
-#else
-		istringstream istream(pCount);
-#endif /* STRSTREAM */
-		istream >> count;
-		if (!istream)
-		{
-			Except::throw_exception( (const char *)"API_HistoryInvalid",
-					         (const char *)"History format is invalid", 
-					         (const char *)"Database::make_history_array()");
-		}
-		vector<string> value;
-		for(int j=0;j<count;j++)
-		 value.push_back( string((*ret)[i+offset+j]) );
+            istringstream istream(pCount);
+            istream >> count;
+            if (!istream)
+            {
+                Except::throw_exception( (const char *)"API_HistoryInvalid",
+                                 (const char *)"History format is invalid",
+                                 (const char *)"Database::make_history_array()");
+            }
+            vector<string> value;
+            for(int j=0;j<count;j++)
+             value.push_back( string((*ret)[i+offset+j]) );
 
-		if (is_attribute)
-			v.push_back(DbHistory(aName,pName,pDate,value));
-		else
-			v.push_back(DbHistory(pName,pDate,value));
+            if (is_attribute)
+                v.push_back(DbHistory(aName,pName,pDate,value));
+            else
+                v.push_back(DbHistory(pName,pDate,value));
 
-		i += (count+offset);
-	}
+            i += (count+offset);
+        }
+    }
 
 	return v;
 }
@@ -3653,21 +3652,21 @@ vector<DbHistory> Database::get_property_history(string &objname,string &propnam
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *obj_info = new DevVarStringArray;
-	
+
 	obj_info->length(2);
 	(*obj_info)[0] = string_dup(objname.c_str());
 	(*obj_info)[1] = string_dup(propname.c_str());
-	
+
 	send <<= obj_info;
 
 	CALL_DB_SERVER("DbGetPropertyHist",send,received);
-	
+
 	return make_history_array(false,received);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -3682,26 +3681,26 @@ vector<DbHistory> Database::get_device_property_history(string &devname,string &
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *obj_info = new DevVarStringArray;
-	
+
 	obj_info->length(2);
 	(*obj_info)[0] = string_dup(devname.c_str());
 	(*obj_info)[1] = string_dup(propname.c_str());
-	
+
 	send <<= obj_info;
 
 	CALL_DB_SERVER("DbGetDevicePropertyHist",send,received);
-	
+
 	return make_history_array(false,received);
-  
+
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_device_attribute_property_history() - Returns the history of 
+// Database::get_device_attribute_property_history() - Returns the history of
 //                                                     the specified device
 //                                                     attribute property
 //
@@ -3712,22 +3711,22 @@ vector<DbHistory> Database::get_device_attribute_property_history(string &devnam
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	check_access_and_get();
-	
+
 	DevVarStringArray *obj_info = new DevVarStringArray;
-	
+
 	obj_info->length(3);
 	(*obj_info)[0] = string_dup(devname.c_str());
 	(*obj_info)[1] = string_dup(attname.c_str());
 	(*obj_info)[2] = string_dup(propname.c_str());
-	
+
 	send <<= obj_info;
 
 	CALL_DB_SERVER("DbGetDeviceAttributePropertyHist",send,received);
-	
+
 	return make_history_array(true,received);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -3742,26 +3741,26 @@ vector<DbHistory> Database::get_class_property_history(string &classname,string 
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	DevVarStringArray *obj_info = new DevVarStringArray;
-	
+
 	check_access_and_get();
-	
+
 	obj_info->length(2);
 	(*obj_info)[0] = string_dup(classname.c_str());
 	(*obj_info)[1] = string_dup(propname.c_str());
-	
+
 	send <<= obj_info;
 
 	CALL_DB_SERVER("DbGetClassPropertyHist",send,received);
-	
+
 	return make_history_array(false,received);
-  
+
 }
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_class_attribute_property_history() - Returns the history of 
+// Database::get_class_attribute_property_history() - Returns the history of
 //                                                    the specified class
 //                                                    attribute property
 //
@@ -3773,20 +3772,20 @@ vector<DbHistory> Database::get_class_attribute_property_history(string &classna
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
 	DevVarStringArray *obj_info = new DevVarStringArray;
-	
+
 	check_access_and_get();
-	
+
 	obj_info->length(3);
 	(*obj_info)[0] = string_dup(classname.c_str());
 	(*obj_info)[1] = string_dup(attname.c_str());
 	(*obj_info)[2] = string_dup(propname.c_str());
-	
+
 	send <<= obj_info;
 
 	CALL_DB_SERVER("DbGetClassAttributePropertyHist",send,received);
-	
+
 	return make_history_array(true,received);
-  
+
 }
 
 //-----------------------------------------------------------------------------
@@ -3801,7 +3800,7 @@ DbDatum Database::get_services(string &servname,string &instname)
 	DbDatum db_datum;
 	vector<string> services;
 	vector<string> filter_services;
-  
+
 // Get list of services
 
 	ApiUtil *au = ApiUtil::instance();
@@ -3813,29 +3812,33 @@ DbDatum Database::get_services(string &servname,string &instname)
 			Tango::Util *tg = Tango::Util::instance(false);
 			dsc = tg->get_db_cache();
 		}
-		catch (Tango::DevFailed &)
+		catch (Tango::DevFailed &e)
 		{
-			dsc = NULL;
+            string reason = e.errors[0].reason.in();
+            if (reason == "API_UtilSingletonNotCreated" && ext->db_tg != NULL)
+                dsc = ext->db_tg->get_db_cache();
+            else
+                dsc = NULL;
 		}
 	}
 	else
 		dsc = NULL;
-	
+
 	DbDatum db_d(SERVICE_PROP_NAME);
 	data.push_back(db_d);
 	get_property_forced(CONTROL_SYSTEM, data,dsc);
 	data[0] >> services;
-  
-// Filter 
+
+// Filter
 
 	string filter = servname+"/";
 	if( strcmp( instname.c_str() , "*")!=0 )
 		filter += instname + ":";
-    
+
 	transform(filter.begin(),filter.end(),filter.begin(),::tolower);
-    
+
 	for(unsigned int i=0;i<services.size();i++)
-	{ 
+	{
 		transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
 		if( strncmp( services[i].c_str() , filter.c_str() , filter.length() )==0 )
 		{
@@ -3845,16 +3848,16 @@ DbDatum Database::get_services(string &servname,string &instname)
 			{
 				filter_services.push_back( services[i].substr(pos+1) );
 			}
-		}  
+		}
 	}
 
-// Build return value 
- 
+// Build return value
+
 	db_datum.name = "services";
 	db_datum.value_string.resize(filter_services.size());
 	for (unsigned int i=0; i<filter_services.size(); i++)
-		db_datum.value_string[i] = filter_services[i]; 
-  
+		db_datum.value_string[i] = filter_services[i];
+
 	return db_datum;
 }
 
@@ -3870,18 +3873,18 @@ void Database::register_service(string &servname,string &instname,string &devnam
 	vector<string> services;
 	vector<string> new_services;
 	bool service_exists = false;
-  
+
 // Get list of services
 
 	data.push_back( DbDatum(SERVICE_PROP_NAME) );
 	get_property(CONTROL_SYSTEM,data );
 	data[0] >> services;
-  
+
 	string full_name = servname+"/"+instname+":";
 	transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
 
-// Update service list 
-  
+// Update service list
+
 	for(unsigned int i=0;i<services.size();i++)
 	{
 		string service_lower = services[i];
@@ -3900,11 +3903,11 @@ void Database::register_service(string &servname,string &instname,string &devnam
 			}
 		}
 		else
-		{ 
-			new_services.push_back( services[i] );      
-		}   
+		{
+			new_services.push_back( services[i] );
+		}
 	}
-  
+
 	if( !service_exists )
 	{
 // Add the new service
@@ -3915,7 +3918,7 @@ void Database::register_service(string &servname,string &instname,string &devnam
 
 	data[0] << new_services;
 	put_property(CONTROL_SYSTEM,data);
-  
+
 	return;
 }
 
@@ -3931,18 +3934,18 @@ void Database::unregister_service(string &servname,string &instname)
 	vector<string> services;
 	vector<string> new_services;
 	bool service_deleted = false;
-  
+
 // Get list of services
 
 	data.push_back( DbDatum(SERVICE_PROP_NAME) );
 	get_property(CONTROL_SYSTEM, data );
 	data[0] >> services;
-  
+
 	string full_name = servname+"/"+instname+":";
 	transform(full_name.begin(),full_name.end(),full_name.begin(),::tolower);
 
-// Update service list 
-   
+// Update service list
+
 	for(unsigned int i=0;i<services.size();i++)
 	{
 		string service_lower = services[i];
@@ -3953,10 +3956,10 @@ void Database::unregister_service(string &servname,string &instname)
 		}
 		else
 		{
-			service_deleted = true;    
-		}   
+			service_deleted = true;
+		}
 	}
-  
+
 	if( service_deleted )
 	{
 // Update the property
@@ -3964,7 +3967,7 @@ void Database::unregister_service(string &servname,string &instname)
 		data[0] << new_services;
 		put_property(CONTROL_SYSTEM,data);
 	}
-  
+
 	return;
 }
 
@@ -3978,7 +3981,7 @@ void Database::export_event(DevVarStringArray *eve_export)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	send <<= eve_export;
 
 	CALL_DB_SERVER_NO_RET("DbExportEvent",send);
@@ -3996,7 +3999,7 @@ void Database::unexport_event(string &event)
 {
 	Any send;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 	send <<= event.c_str();
 
 	CALL_DB_SERVER_NO_RET("DbUnExportEvent",send);
@@ -4015,17 +4018,17 @@ CORBA::Any *Database::import_event(string &event)
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 //
 // Import device is allways possible whatever access rights are
 //
 
 	{
 		WriterLock guard(Connection::ext->con_to_mon);
-				
+
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
-	
+
 		send <<= event.c_str();
 
 		try
@@ -4052,41 +4055,41 @@ CORBA::Any *Database::import_event(string &event)
 CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 {
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
-	
+
 //
 // Some check on args.
 //
-	
+
 	string::size_type pos;
 	pos = ds_name.find('/');
 	if (pos == string::npos)
 	{
 		Tango::Except::throw_exception((const char *)"API_MethodArgument",
 				       		(const char *)"The device server name parameter is incorrect. Should be: <ds_exec_name>/<inst_name>",
-				       		(const char *)"Database::fill_server_cache");		
+				       		(const char *)"Database::fill_server_cache");
 	}
 
 //
-// Filling the cache is allways possible whatever access rights are
+// Filling the cache is always possible whatever access rights are
 //
 
 	Any_var received;
 	{
 		WriterLock guard(Connection::ext->con_to_mon);
-					
+
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
-		
+
 //
 // Call the db server
 //
-	
+
 		Any send;
 		DevVarStringArray *sent_info = new DevVarStringArray;
-	
+
 		sent_info->length(2);
 		(*sent_info)[0] = string_dup(ds_name.c_str());
-		(*sent_info)[1] = string_dup(loc_host.c_str());	
+		(*sent_info)[1] = string_dup(loc_host.c_str());
 		send <<= sent_info;
 
 		try
@@ -4100,7 +4103,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 			throw;
 		}
 	}
-	
+
 	return received._retn();
 }
 
@@ -4131,16 +4134,16 @@ void Database::delete_all_device_attribute_property(string dev_name,DbData &db_d
 	{
 		Tango::Except::throw_exception((const char *)"API_NotSupportedFeature",
 				       		(const char *)"The underlying database command is not implemented when the database is a file",
-				       		(const char *)"Database::delete_all_device_attribute_property");	
+				       		(const char *)"Database::delete_all_device_attribute_property");
 	}
 	else
-		CALL_DB_SERVER_NO_RET("DbDeleteAllDeviceAttributeProperty",send);	
+		CALL_DB_SERVER_NO_RET("DbDeleteAllDeviceAttributeProperty",send);
 }
 
 
 //-----------------------------------------------------------------------------
 //
-// Database::check_access() - 
+// Database::check_access() -
 //
 //-----------------------------------------------------------------------------
 
@@ -4155,7 +4158,7 @@ void Database::check_access()
 
 //-----------------------------------------------------------------------------
 //
-// Database::check_access_control() - 
+// Database::check_access_control() -
 //
 //-----------------------------------------------------------------------------
 
@@ -4164,17 +4167,17 @@ AccessControlType Database::check_access_control(string &devname)
 //
 // For DB device
 //
-	
+
 	if ((access_checked == true) && (devname == db_device_name))
 		return access;
-	
+
 	AccessControlType local_access = ACCESS_WRITE;
-	
+
 	try
 	{
 		if ((access_checked == false) && (access_proxy == NULL))
 		{
-			
+
 //
 // Try to get Access Service device name from an environment
 // variable (for test purpose) or from the AccessControl service
@@ -4198,18 +4201,18 @@ AccessControlType Database::check_access_control(string &devname)
 				}
 				else
 				{
-					
+
 //
 // No access service defined, give WRITE ACCESS to everyone also on the
 // database device
 //
-					
+
 //					cerr << "No access service found" << endl;
 					access = ACCESS_WRITE;
 					return ACCESS_WRITE;
 				}
 			}
-			
+
 //
 // Build the local AccessProxy instance
 // If the database has been built for a device defined with a FQDN,
@@ -4221,11 +4224,8 @@ AccessControlType Database::check_access_control(string &devname)
 			if (from_env_var == false)
 			{
 				int num = 0;
-#ifdef __SUNPRO_CC
-				count(access_devname_str.begin(),access_devname_str.end(),'/',num);
-#else
 				num = count(access_devname_str.begin(),access_devname_str.end(),'/');
-#endif
+
 				if (num == 2)
 				{
 					string fqdn("tango://");
@@ -4249,7 +4249,7 @@ AccessControlType Database::check_access_control(string &devname)
 			else
 				local_access = ACCESS_READ;
 		}
-		
+
 		access_except_errors.length(0);
 	}
 	catch (Tango::DevFailed &e)
@@ -4269,20 +4269,20 @@ AccessControlType Database::check_access_control(string &devname)
 
 //-----------------------------------------------------------------------------
 //
-// Database::is_command_allowed() - 
+// Database::is_command_allowed() -
 //
 //-----------------------------------------------------------------------------
 
 bool Database::is_command_allowed(string &devname,string &cmd)
 {
 	WriterLock guard(Connection::ext->con_to_mon);
-	
+
 	bool ret;
 
 	if (access_proxy == NULL)
 	{
 		AccessControlType acc = check_access_control(devname);
-		
+
 		if (access_proxy == NULL)
 		{
 //			ret = !check_acc;
@@ -4305,7 +4305,7 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 //
 // In case of Database object, the first command uses the default access right (READ)
 // Therefore, this is_command_allowed method is called and the access are checked by the
-// check_access_control() call upper in this method. If the access is WRITE, force 
+// check_access_control() call upper in this method. If the access is WRITE, force
 // true for the retrun value of this method
 //
 
@@ -4327,14 +4327,14 @@ bool Database::is_command_allowed(string &devname,string &cmd)
 		string dev_class = get_class_for_device(devname);
 		ret = access_proxy->is_command_allowed(dev_class,cmd);
 	}
-	
+
 	return ret;
 }
 
 //-----------------------------------------------------------------------------
 //
 // method :			Database::write_event_channel_ior_filedatabase() -
-// 
+//
 // description : 	Method to connect write the event channel ior to the file
 //					used as database
 //

@@ -3,14 +3,14 @@ SUBDIRS=helpers .
 # We need the ORB to compile and the tango header files to compile
 INCLUDES = -I$(top_srcdir)/lib/cpp/server \
            -I$(top_srcdir)/lib/cpp/log4tango/include \
-	   -I$(top_builddir)/lib/cpp/log4tango/include \
-             $(ORB_INCLUDE_PREFIX)
+	   	   -I$(top_builddir)/lib/cpp/log4tango/include \
+             $(ORB_INCLUDE_PREFIX) $(LIBZMQ_CFLAGS)
 
 # We're making a libtool convenience library which is not to be installed,
 # therefore the automake noinst variable
 noinst_LTLIBRARIES = libclient.la
 
-AM_CXXFLAGS=-D_TANGO_LIB
+AM_CXXFLAGS=-D_TANGO_LIB @CPP_ELEVEN@
 
 # These are the sources for the library.
 libclient_la_SOURCES = dbapi_class.cpp     	\
@@ -36,7 +36,13 @@ libclient_la_SOURCES = dbapi_class.cpp     	\
 					   filedatabase.cpp    	\
 					   apiexcept.cpp 		\
 					   accessproxy.cpp		\
-					   lockthread.cpp
+					   lockthread.cpp		\
+					   event.cpp			\
+					   eventkeepalive.cpp 	\
+					   eventqueue.cpp		\
+					   notifdeventconsumer.cpp \
+					   zmqeventconsumer.cpp
+
 					   
 
 tangoincludedir = $(includedir)/tango
@@ -47,6 +53,8 @@ tangoinclude_HEADERS = accessproxy.h		\
 		  		  dbapi.h     		\
 		  		  devapi.h    		\
 		  		  devasyn.h   		\
+				  event.h			\
+				  eventconsumer.h	\
 		  		  filedatabase.h    \
 		  		  group.h			\
 				  lockthread.h
