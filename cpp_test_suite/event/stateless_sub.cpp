@@ -28,6 +28,18 @@ public:
 
 void EventCallback::push_event( Tango::EventData *ed )
 {
+	struct timeval now_timeval;
+#ifdef WIN32
+	struct _timeb before_win;
+	_ftime(&before_win);
+	now_timeval.tv_sec = (unsigned long)before_win.time;
+	now_timeval.tv_usec = (long)before_win.millitm * 1000;
+#else
+	gettimeofday(&now_timeval,NULL);
+#endif
+	coutv << "date : tv_sec = " << now_timeval.tv_sec;
+	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
+
 	coutv << "In callback with error flag = " << ed->err << endl;
     if(ed->err == false)
 		cb_executed++;
@@ -80,6 +92,17 @@ int main(int argc, char **argv)
 
         eventID = device->subscribe_event(att_name,Tango::CHANGE_EVENT,eventCallback,filters,true);
 
+	    struct timeval now_timeval;
+#ifdef WIN32
+	    struct _timeb before_win;
+	    _ftime(&before_win);
+	    now_timeval.tv_sec = (unsigned long)before_win.time;
+	    now_timeval.tv_usec = (long)before_win.millitm * 1000;
+#else
+	    gettimeofday(&now_timeval,NULL);
+#endif
+        coutv << "Subscription done at " << now_timeval.tv_sec << "," << now_timeval.tv_usec << endl;
+
 //
 // Wait for connection and event
 //
@@ -89,6 +112,15 @@ int main(int argc, char **argv)
 //
 // Check error and connection
 //
+
+#ifdef WIN32
+	    _ftime(&before_win);
+	    now_timeval.tv_sec = (unsigned long)before_win.time;
+	    now_timeval.tv_usec = (long)before_win.millitm * 1000;
+#else
+	    gettimeofday(&now_timeval,NULL);
+#endif
+        coutv << "Check done at " << now_timeval.tv_sec << "," << now_timeval.tv_usec << endl;
 
 		coutv << "cb err = " << eventCallback->cb_err << endl;
 		coutv << "cb executed = " << eventCallback->cb_executed << endl;
