@@ -157,6 +157,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "stateless_sub", "stateless_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "reco_zmq", "reco_zmq\reco_zmq.vcproj", "{C5F9071F-B8DC-4C67-9364-84B1FF583951}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attr_conf_test", "attr_conf_test\attr_conf_test.vcproj", "{498BBB37-9982-41F9-8A39-140E794E76DC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -467,6 +469,10 @@ Global
 		{C5F9071F-B8DC-4C67-9364-84B1FF583951}.Debug|Win32.Build.0 = Debug|Win32
 		{C5F9071F-B8DC-4C67-9364-84B1FF583951}.Release|Win32.ActiveCfg = Release|Win32
 		{C5F9071F-B8DC-4C67-9364-84B1FF583951}.Release|Win32.Build.0 = Release|Win32
+		{498BBB37-9982-41F9-8A39-140E794E76DC}.Debug|Win32.ActiveCfg = Debug|Win32
+		{498BBB37-9982-41F9-8A39-140E794E76DC}.Debug|Win32.Build.0 = Debug|Win32
+		{498BBB37-9982-41F9-8A39-140E794E76DC}.Release|Win32.ActiveCfg = Release|Win32
+		{498BBB37-9982-41F9-8A39-140E794E76DC}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
