@@ -36,11 +36,11 @@ int main(int argc,char *argv[])
         check_description(dev,admin_dev,att,"Dev desc","No description","No description","No description");
         cout << "        Description : no class, no lib --> OK" << endl;
 
-        att = "DefUserAttr";
+        att = "DefClassAttr";
         check_description(dev,admin_dev,att,"Dev desc","Class desc","No description","No description");
         cout << "        Description : class, no lib --> OK" << endl;
 
-        att = "DefClassAttr";
+        att = "DefUserAttr";
         check_description(dev,admin_dev,att,"Dev desc","User desc","User desc","No description");
         cout << "        Description : no class, lib --> OK" << endl;
 
@@ -56,11 +56,11 @@ int main(int argc,char *argv[])
         check_min_value(dev,admin_dev,att,"10","Not specified","Not specified","Not specified");
         cout << "\n        min_value : no class, no lib --> OK" << endl;
 
-        att = "DefUserAttr";
+        att = "DefClassAttr";
         check_min_value(dev,admin_dev,att,"10","20","Not specified","Not specified");
         cout << "        min_value : class, no lib --> OK" << endl;
 
-        att = "DefClassAttr";
+        att = "DefUserAttr";
         check_min_value(dev,admin_dev,att,"10","30","30","Not specified");
         cout << "        min_value : no class, lib --> OK" << endl;
 
@@ -76,11 +76,11 @@ int main(int argc,char *argv[])
         check_ev_period_value(dev,admin_dev,att,"2500","1000","1000","1000");
         cout << "\n        event_period : no class, no lib --> OK" << endl;
 
-        att = "DefUserAttr";
+        att = "DefClassAttr";
         check_ev_period_value(dev,admin_dev,att,"2500","500","1000","1000");
         cout << "        event_period : class, no lib --> OK" << endl;
 
-        att = "DefClassAttr";
+        att = "DefUserAttr";
         check_ev_period_value(dev,admin_dev,att,"2500","1500","1500","1000");
         cout << "        event_period : no class, lib --> OK" << endl;
 
@@ -96,11 +96,11 @@ int main(int argc,char *argv[])
         check_rel_change_value(dev,admin_dev,att,"12","Not specified","Not specified","Not specified");
         cout << "\n        rel_change : no class, no lib --> OK" << endl;
 
-        att = "DefUserAttr";
+        att = "DefClassAttr";
         check_rel_change_value(dev,admin_dev,att,"12","33,34","Not specified","Not specified");
         cout << "        rel_change : class, no lib --> OK" << endl;
 
-        att = "DefClassAttr";
+        att = "DefUserAttr";
         check_rel_change_value(dev,admin_dev,att,"12","55","55","Not specified");
         cout << "        rel_change : no class, lib --> OK" << endl;
 
@@ -116,11 +116,11 @@ int main(int argc,char *argv[])
         check_delta_val_value(dev,admin_dev,att,"222","Not specified","Not specified","Not specified");
         cout << "\n        delta_val : no class, no lib --> OK" << endl;
 
-        att = "DefUserAttr";
+        att = "DefClassAttr";
         check_delta_val_value(dev,admin_dev,att,"222","5","Not specified","Not specified");
         cout << "        delta_val : class, no lib --> OK" << endl;
 
-        att = "DefClassAttr";
+        att = "DefUserAttr";
         check_delta_val_value(dev,admin_dev,att,"222","77","77","Not specified");
         cout << "        delta_val : no class, lib --> OK" << endl;
 
