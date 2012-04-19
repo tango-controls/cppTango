@@ -974,6 +974,16 @@ void check_delta_val_value(Tango::DeviceProxy &dev,
     aie = dev.get_attribute_config(att);
     assert (aie.alarms.delta_val == lib_desc);
 
+// Return to class ter (to reset to initial setting)
+
+    aie.alarms.delta_val = "Nan";
+    aie.alarms.delta_t = "Nan";
+    aie_list.clear();
+    aie_list.push_back(aie);
+    dev.set_attribute_config(aie_list);
+
+    admin_dev.command_inout("DevRestart",dd);
+
 // User input == user default
 
 /*    aie.alarms.delta_val = dev_desc;
