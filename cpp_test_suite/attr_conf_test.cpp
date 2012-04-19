@@ -29,22 +29,22 @@ int main(int argc,char *argv[])
 // For string attribute property
 //
 
-		string att("attr_dq_sh");
+		string att("DefAttr");
 
 		cout << "DeviceProxy instance created successfully" << endl;
 
         check_description(dev,admin_dev,att,"Dev desc","No description","No description","No description");
         cout << "        Description : no class, no lib --> OK" << endl;
 
-        att = "attr_dq_db";
+        att = "DefUserAttr";
         check_description(dev,admin_dev,att,"Dev desc","Class desc","No description","No description");
         cout << "        Description : class, no lib --> OK" << endl;
 
-        att = "attr_dq_lo";
+        att = "DefClassAttr";
         check_description(dev,admin_dev,att,"Dev desc","User desc","User desc","No description");
         cout << "        Description : no class, lib --> OK" << endl;
 
-        att = "attr_no_data";
+        att = "DefClassUserAttr";
         check_description(dev,admin_dev,att,"Dev desc","Class description","User desc","No description");
         cout << "        Description : class, lib --> OK" << endl;
 
@@ -52,19 +52,19 @@ int main(int argc,char *argv[])
 // For number attribute property
 //
 
-        att = "attr_dq_sh";
+        att = "DefAttr";
         check_min_value(dev,admin_dev,att,"10","Not specified","Not specified","Not specified");
         cout << "\n        min_value : no class, no lib --> OK" << endl;
 
-        att = "attr_dq_db";
+        att = "DefUserAttr";
         check_min_value(dev,admin_dev,att,"10","20","Not specified","Not specified");
         cout << "        min_value : class, no lib --> OK" << endl;
 
-        att = "attr_dq_lo";
+        att = "DefClassAttr";
         check_min_value(dev,admin_dev,att,"10","30","30","Not specified");
         cout << "        min_value : no class, lib --> OK" << endl;
 
-        att = "attr_no_data";
+        att = "DefClassUserAttr";
         check_min_value(dev,admin_dev,att,"10","20","30","Not specified");
         cout << "        min_value : class, lib --> OK" << endl;
 
@@ -72,19 +72,19 @@ int main(int argc,char *argv[])
 // For event_period attribute property
 //
 
-        att = "attr_dq_sh";
+        att = "DefAttr";
         check_ev_period_value(dev,admin_dev,att,"2500","1000","1000","1000");
         cout << "\n        event_period : no class, no lib --> OK" << endl;
 
-        att = "attr_dq_db";
+        att = "DefUserAttr";
         check_ev_period_value(dev,admin_dev,att,"2500","500","1000","1000");
         cout << "        event_period : class, no lib --> OK" << endl;
 
-        att = "attr_dq_lo";
+        att = "DefClassAttr";
         check_ev_period_value(dev,admin_dev,att,"2500","1500","1500","1000");
         cout << "        event_period : no class, lib --> OK" << endl;
 
-        att = "attr_no_data";
+        att = "DefClassUserAttr";
         check_ev_period_value(dev,admin_dev,att,"2500","500","1500","1000");
         cout << "        event_period : class, lib --> OK" << endl;
 
@@ -92,19 +92,19 @@ int main(int argc,char *argv[])
 // For rel_change attribute property
 //
 
-        att = "attr_dq_sh";
+        att = "DefAttr";
         check_rel_change_value(dev,admin_dev,att,"12","Not specified","Not specified","Not specified");
         cout << "\n        rel_change : no class, no lib --> OK" << endl;
 
-        att = "attr_dq_db";
+        att = "DefUserAttr";
         check_rel_change_value(dev,admin_dev,att,"12","33,34","Not specified","Not specified");
         cout << "        rel_change : class, no lib --> OK" << endl;
 
-        att = "attr_dq_lo";
+        att = "DefClassAttr";
         check_rel_change_value(dev,admin_dev,att,"12","55","55","Not specified");
         cout << "        rel_change : no class, lib --> OK" << endl;
 
-        att = "attr_no_data";
+        att = "DefClassUserAttr";
         check_rel_change_value(dev,admin_dev,att,"12","33,34","55","Not specified");
         cout << "        rel_change : class, lib --> OK" << endl;
 
@@ -112,19 +112,19 @@ int main(int argc,char *argv[])
 // For rds alarm
 //
 
-        att = "attr_dq_sh";
+        att = "DefAttr";
         check_delta_val_value(dev,admin_dev,att,"222","Not specified","Not specified","Not specified");
         cout << "\n        delta_val : no class, no lib --> OK" << endl;
 
-        att = "attr_dq_db";
+        att = "DefUserAttr";
         check_delta_val_value(dev,admin_dev,att,"222","5","Not specified","Not specified");
         cout << "        delta_val : class, no lib --> OK" << endl;
 
-        att = "attr_dq_lo";
+        att = "DefClassAttr";
         check_delta_val_value(dev,admin_dev,att,"222","77","77","Not specified");
         cout << "        delta_val : no class, lib --> OK" << endl;
 
-        att = "attr_no_data";
+        att = "DefClassUserAttr";
         check_delta_val_value(dev,admin_dev,att,"222","5","77","Not specified");
         cout << "        delta_val : class, lib --> OK" << endl;
     }
