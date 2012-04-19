@@ -537,13 +537,13 @@ int main(int argc, char **argv)
 
 		assert (res == 0);
 		assert (mess_in_file.size() == 6);
-		string mess = base_message + "2";
+		string mess = base_message + "5";
 		assert (mess_in_file[0].find(mess) != string::npos);
 		assert (mess_in_file[1].find(mess) != string::npos);
-		mess = base_message + "0";
+		mess = base_message + "3";
 		assert (mess_in_file[2].find(mess) != string::npos);
 		assert (mess_in_file[3].find(mess) != string::npos);
-		mess = base_message + "1";
+		mess = base_message + "4";
 		assert (mess_in_file[4].find(mess) != string::npos);
 		assert (mess_in_file[5].find(mess) != string::npos);
 
