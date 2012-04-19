@@ -424,6 +424,11 @@ $DIR/ConfEventBugClient $DEV3
 ret=$?
 check_return_value $ret
 #
+$echo "\nTesting resetting attribute configuration (to user default, to class default, to lib default...)"
+$DIR/attr_conf_test $DEV1
+ret=$?
+check_return_value $ret
+#
 #	Now, test asynchronous features
 #
 cd asyn;./runtest $*

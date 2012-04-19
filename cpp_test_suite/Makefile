@@ -147,7 +147,7 @@ all: new_devproxy multiple_new reconnect cmd_inout read_attr cmd_types \
      print_data_hist size attr_proxy read_hist_ext write_attr_3 \
      ring_depth attr_misc state_attr rds mem_att attr_manip prop_list ds_cache sub_dev \
      locked_device lock restart_device unlock allowed_cmd w_r_attr  acc_right \
-	 ConfEventBugClient att_conf Poll StopPoll poll_pool
+	 ConfEventBugClient att_conf Poll StopPoll poll_pool attr_conf_test
 
 
 run: runtest
@@ -240,6 +240,9 @@ attr_misc:	$(OBJS_DIR)/attr_misc.o
 
 state_attr:	$(OBJS_DIR)/state_attr.o
 	$(CC) $(OBJS_DIR)/state_attr.o -o $(BIN_TANGO_DIR)/state_attr $(LFLAGS)
+
+attr_conf_test:	$(OBJS_DIR)/attr_conf_test.o
+	$(CC) $(OBJS_DIR)/attr_conf_test.o -o $(BIN_TANGO_DIR)/attr_conf_test $(LFLAGS)
 
 rds:	$(OBJS_DIR)/rds.o
 	$(CC) $(OBJS_DIR)/rds.o -o $(BIN_TANGO_DIR)/rds $(LFLAGS)
