@@ -131,6 +131,11 @@ public :
 	void read_Sub_device_tst(Tango::Attribute &att);
 	void read_Slow_attr(Tango::Attribute &att);
 
+	void read_Def_attr(Tango::Attribute &att);
+	void read_DefUser_attr(Tango::Attribute &att);
+	void read_DefClass_attr(Tango::Attribute &att);
+	void read_DefClassUser_attr(Tango::Attribute &att);
+
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
 	void write_ULong_attr_rw(Tango::WAttribute &att);
@@ -179,6 +184,11 @@ public :
 	void write_ULong_spec_attr_rw(Tango::WAttribute &att);
 	void write_ULong64_spec_attr_rw(Tango::WAttribute &att);
 	void write_State_spec_attr_rw(Tango::WAttribute &att);
+
+	void write_Def_attr(Tango::WAttribute &att);
+	void write_DefUser_attr(Tango::WAttribute &att);
+	void write_DefClass_attr(Tango::WAttribute &att);
+	void write_DefClassUser_attr(Tango::WAttribute &att);
 
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
@@ -270,6 +280,7 @@ protected :
 	unsigned char		enc_data[10];
 #endif
 
+    Tango::DevLong      att_conf;
 };
 
 #endif

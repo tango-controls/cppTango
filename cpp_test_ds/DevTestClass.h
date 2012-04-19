@@ -1026,6 +1026,54 @@ public:
 	{(static_cast<DevTest *>(dev))->read_Slow_attr(att);}
 };
 
+
+class DefAttr: public Tango::Attr
+{
+public:
+	DefAttr():Attr("DefAttr",Tango::DEV_LONG,Tango::READ_WRITE) {};
+	~DefAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_Def_attr(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_Def_attr(att);}
+};
+
+class DefUserAttr: public Tango::Attr
+{
+public:
+	DefUserAttr():Attr("DefUserAttr",Tango::DEV_LONG,Tango::READ_WRITE) {};
+	~DefUserAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_DefUser_attr(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_DefUser_attr(att);}
+};
+
+class DefClassAttr: public Tango::Attr
+{
+public:
+	DefClassAttr():Attr("DefClassAttr",Tango::DEV_LONG,Tango::READ_WRITE) {};
+	~DefClassAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_DefClass_attr(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_DefClass_attr(att);}
+};
+
+class DefClassUserAttr: public Tango::Attr
+{
+public:
+	DefClassUserAttr():Attr("DefClassUserAttr",Tango::DEV_LONG,Tango::READ_WRITE) {};
+	~DefClassUserAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_DefClassUser_attr(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_DefClassUser_attr(att);}
+};
 // ----------------------------------------------------------------------------
 
 

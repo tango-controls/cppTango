@@ -201,6 +201,8 @@ void DevTest::init_device()
 	enc_data[0] = (unsigned char)40;
 	enc_data[1] = (unsigned char)41;*/
 #endif
+
+    att_conf = 10;
 }
 
 
@@ -1119,6 +1121,26 @@ void DevTest::write_Poll_buffRW(Tango::WAttribute &att)
 	cout << "In write_Poll_buffRW for attribute " << att.get_name() << endl;
 }
 
+void DevTest::write_Def_attr(Tango::WAttribute &att)
+{
+	cout << "In write_Def_attr for attribute " << att.get_name() << endl;
+}
+
+void DevTest::write_DefUser_attr(Tango::WAttribute &att)
+{
+	cout << "In write_DefUser_attr for attribute " << att.get_name() << endl;
+}
+
+void DevTest::write_DefClass_attr(Tango::WAttribute &att)
+{
+	cout << "In write_DefClass_attr for attribute " << att.get_name() << endl;
+}
+
+void DevTest::write_DefClassUser_attr(Tango::WAttribute &att)
+{
+	cout << "In write_DefClassUser_attr for attribute " << att.get_name() << endl;
+}
+
 //+----------------------------------------------------------------------------
 //
 // method : 		DevTest::read_xxx
@@ -1884,3 +1906,28 @@ void DevTest::read_Slow_attr(Tango::Attribute &att)
 
     att.set_value(&attr_slow);
 }
+
+void DevTest::read_Def_attr(Tango::Attribute &att)
+{
+      	cout << "[DevTest::read_attr] attribute name DefAttr" << endl;
+      	att.set_value(&att_conf);
+}
+
+void DevTest::read_DefUser_attr(Tango::Attribute &att)
+{
+      	cout << "[DevTest::read_attr] attribute name DefUserAttr" << endl;
+      	att.set_value(&att_conf);
+}
+
+void DevTest::read_DefClass_attr(Tango::Attribute &att)
+{
+      	cout << "[DevTest::read_attr] attribute name DefClassAttr" << endl;
+      	att.set_value(&att_conf);
+}
+
+void DevTest::read_DefClassUser_attr(Tango::Attribute &att)
+{
+      	cout << "[DevTest::read_attr] attribute name DefClassUserAttr" << endl;
+      	att.set_value(&att_conf);
+}
+

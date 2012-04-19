@@ -661,17 +661,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Double_ima_attrAttr());
   att_list.push_back(new String_ima_attrAttr());
 
-  Tango::UserDefaultAttrProp att_no_data_prop;
-  att_no_data_prop.set_description("User desc");
-  att_no_data_prop.set_min_value("30");
-  att_no_data_prop.set_delta_val("77");
-  att_no_data_prop.set_delta_t("88");
-  att_no_data_prop.set_event_rel_change("55");
-  att_no_data_prop.set_event_period("1500");
-  Tango::Attr *att_no_data = new attr_no_dataAttr();
-  att_no_data->set_default_properties(att_no_data_prop);
-  att_list.push_back(att_no_data);
-
+  att_list.push_back(new attr_no_dataAttr());
   att_list.push_back(new attr_wrong_typeAttr());
   att_list.push_back(new attr_wrong_sizeAttr());
   att_list.push_back(new attr_no_alarmAttr());
@@ -720,18 +710,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new PollString_spec_attrAttr());
 
   att_list.push_back(new attr_dq_shAttr());
-
-  Tango::UserDefaultAttrProp att_dq_prop;
-  att_dq_prop.set_description("User desc");
-  att_dq_prop.set_min_value("30");
-  att_dq_prop.set_delta_val("77");
-  att_dq_prop.set_delta_t("88");
-  att_dq_prop.set_event_rel_change("55");
-  att_dq_prop.set_event_period("1500");
-  Tango::Attr *att_dq = new attr_dq_loAttr();
-  att_dq->set_default_properties(att_dq_prop);
-  att_list.push_back(att_dq);
-
+  att_list.push_back(new attr_dq_loAttr());
   att_list.push_back(new attr_dq_dbAttr());
   att_list.push_back(new attr_dq_strAttr());
 
@@ -816,6 +795,23 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new Encoded_attr_image());
 #endif
 
+  Tango::UserDefaultAttrProp att_no_data_prop;
+  att_no_data_prop.set_description("User desc");
+  att_no_data_prop.set_min_value("30");
+  att_no_data_prop.set_delta_val("77");
+  att_no_data_prop.set_delta_t("88");
+  att_no_data_prop.set_event_rel_change("55");
+  att_no_data_prop.set_event_period("1500");
+  Tango::Attr *db_att = new DefUserAttr();
+  db_att->set_default_properties(att_no_data_prop);
+  att_list.push_back(db_att);
+
+  Tango::Attr *uclass_att = new DefClassUserAttr();
+  uclass_att->set_default_properties(att_no_data_prop);
+  att_list.push_back(uclass_att);
+
+  att_list.push_back(new DefAttr());
+  att_list.push_back(new DefClassAttr());
 }
 
 
