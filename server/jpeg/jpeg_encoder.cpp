@@ -1,4 +1,4 @@
-///=============================================================================	
+///=============================================================================
 //
 // file :		jpeg_encoder.cpp
 //
@@ -9,7 +9,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -20,12 +20,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -40,7 +40,7 @@
 //
 //=============================================================================
 
-// 
+//
 // File:        jpeg_encoder.cpp
 // Description: Main encoding functions
 // Program:     Simple jpeg coding/decoding library
@@ -99,12 +99,12 @@ static unsigned char bits_dc_luminance[17] =
   { 0, 0, 1, 5, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0 };
 static unsigned char val_dc_luminance[] =
   { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-  
+
 static unsigned char bits_dc_chrominance[17] =
   { 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 };
 static unsigned char val_dc_chrominance[] =
   { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
-  
+
 static unsigned char bits_ac_luminance[17] =
   { 0, 0, 2, 1, 3, 3, 2, 4, 3, 5, 5, 4, 4, 0, 0, 1, 0x7d };
 static unsigned char val_ac_luminance[] =
@@ -129,7 +129,7 @@ static unsigned char val_ac_luminance[] =
     0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9, 0xea,
     0xf1, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8,
     0xf9, 0xfa };
-  
+
 static unsigned char bits_ac_chrominance[17] =
   { 0, 0, 2, 1, 2, 4, 4, 3, 4, 7, 5, 4, 4, 0, 1, 2, 0x77 };
 static unsigned char val_ac_chrominance[] =
@@ -191,7 +191,7 @@ static void jpeg_write_DQT(OutputBitStream *bs,short *qTable,int tableId,int pre
 
   bs->put_byte(0xFF);
   bs->put_byte(M_DQT);
-  
+
   if( prec ) mSize = 64*2 + 1 + 2;
   else       mSize = 64 + 1 + 2;
   bs->put_short( mSize );
@@ -250,7 +250,7 @@ static void jpeg_init_htable(HUFFMANTABLE *table,unsigned char *bits,unsigned ch
   }
   huffsize[p] = 0;
   lastp = p;
-  
+
   code = 0;
   si = huffsize[0];
   p = 0;
@@ -264,7 +264,7 @@ static void jpeg_init_htable(HUFFMANTABLE *table,unsigned char *bits,unsigned ch
   }
 
   memset(table->huffSize,0,256);
-  
+
   for (p = 0; p < lastp; p++) {
     i = vals[p];
     table->huffCode[i] = huffcode[p];
@@ -306,7 +306,7 @@ static void jpeg_write_SOF(OutputBitStream *bs,int width,int height,JPGCOMPONENT
   bs->put_byte(0xFF);
   bs->put_byte(M_SOF1);
   bs->put_short( mSize );
-  bs->put_byte( 8 ); // Precision 
+  bs->put_byte( 8 ); // Precision
   bs->put_short(height);
   bs->put_short(width);
   bs->put_byte(nbComp);
@@ -326,7 +326,7 @@ static void jpeg_write_SOS(OutputBitStream *bs,JPGCOMPONENT *comps,int nbComp) {
   int mSize = 2 * nbComp + 2 + 1 + 3;
 
   bs->put_byte(0xFF);
-  bs->put_byte(M_SOS);  
+  bs->put_byte(M_SOS);
   bs->put_short( mSize );
   bs->put_byte(nbComp);
 
@@ -437,7 +437,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
 
   // Header
   jpeg_write_SOI(bs);
-  
+
   // Quatization tables
   jpeg_scale_qtable(quality,std_luminance_quant_tbl,lumQuant,&prec);
   jpeg_scale_qtable(quality,std_chrominance_quant_tbl,chrQuant,&prec);
@@ -453,7 +453,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
   jpeg_write_DHT(bs,hTables+1,0+0x10);
   jpeg_write_DHT(bs,hTables+2,1);
   jpeg_write_DHT(bs,hTables+3,1+0x10);
-  
+
   // Luminance component (Y)
   comps[0].horzSampling = 2;
   comps[0].vertSampling = 2;
@@ -499,7 +499,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
     jpeg_rgb24_to_ycc(width,height,rWidth,rHeight,rgb,ycc);
   else
     jpeg_rgb32_to_ycc(width,height,rWidth,rHeight,rgb,ycc);
-	
+
   // Encode blocks (downsampling :2 for Cb and Cr)
   int nbMCU = rWidth/16 * rHeight/16;
   short *block = ycc;
@@ -533,7 +533,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
     block+=384;
 
   }
-  
+
   block = ycc;
   bs->init();
   for(int i=0;i<nbMCU;i++) {
@@ -561,7 +561,7 @@ static void jpeg_encode_rgb(int width,int height,unsigned char *rgb,double quali
   *jpegSize = bs->get_size();
   memcpy(*jpegData,bs->get_data(),bs->get_size());
   delete bs;
-  
+
 }
 
 // --------------------------------------------------------------------------
@@ -594,7 +594,7 @@ void jpeg_encode_gray8(int width,int height,unsigned char *gray8,double quality,
 
   // Header
   jpeg_write_SOI(bs);
-  
+
   // Quatization tables
   jpeg_scale_qtable(quality,std_luminance_quant_tbl,lumQuant,&prec);
   jpeg_write_DQT(bs,lumQuant,0,prec);

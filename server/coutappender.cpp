@@ -4,13 +4,13 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // file :         coutappender.cpp
 //
-// description :  
+// description :
 //
 // project :      TANGO
 //
 // author(s) :    N.Leclercq - SOLEIL
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -21,12 +21,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -85,7 +85,7 @@ static const char *RcsId = "$Id$\n$Name$";
 namespace Tango
 {
   CoutAppender::CoutAppender (const std::string& name)
-    : log4tango::LayoutAppender(name) 
+    : log4tango::LayoutAppender(name)
   {
     //no-op ctor
   }
@@ -98,19 +98,19 @@ namespace Tango
   int CoutAppender::_append (const log4tango::LoggingEvent& event)
   {
 #ifdef _TG_WINDOWS_
-    CoutBuf *dbg_win; 
+    CoutBuf *dbg_win;
     try {
-      dbg_win = Util::instance(false)->get_debug_object(); 
+      dbg_win = Util::instance(false)->get_debug_object();
     } catch (...) {
       dbg_win = 0;
     }
     if (dbg_win)
       dbg_win->dbg_out(get_layout().format(event).c_str());
-    else 
+    else
 #endif
       ::printf("%s\n", get_layout().format(event).c_str());
     return 0;
-  } 
+  }
 
 } // namespace tango
 

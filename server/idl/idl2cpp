@@ -6,7 +6,7 @@
 
 TANGO_HOME=/home/taurel/tango;         export TANGO_HOME
 SRC_DIR=$TANGO_HOME/idl;   		export SRC_DIR
-OMNIIDL_HOME=/segfs/tango/ORB/omniORB4.1.2/ubuntu704/bin	export OMNIIDL_HOME
+OMNIIDL_HOME=/segfs/tango/ORB/omniORB4.1.6/ubuntu1010/bin	export OMNIIDL_HOME
 #OMNIIDL_HOME=/local/tango/omniorb/bin	export OMNIIDL_HOME
 
 #

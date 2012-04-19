@@ -1,4 +1,4 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,12
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -9,12 +9,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -38,12 +38,12 @@
 // DbPutDeviceProperty                  done
 // DbDeleteDeviceProperty               done
 // DbGetDeviceAttributeProperty         done
-// DbPutDeviceAttributeProperty         done 
+// DbPutDeviceAttributeProperty         done
 // DbDeleteDeviceAttributeProperty      to check
 // DbGetClassProperty                   done
 // DbPutClassProperty                   done
 // DbDeleteClassProperty
-// DbGetClassAttributeProperty          done 
+// DbGetClassAttributeProperty          done
 // DbPutClassAttributeProperty          done
 // DbDeleteClassAttributeProperty
 // DbGetDeviceList                      done
@@ -114,9 +114,9 @@ t_device* search_device(t_server& s, string& name)
 	for (unsigned int j = 0; j < s.devices.size(); j++)
 	{
 		if (equalsIgnoreCase(s.devices[j]->name, name))
-			return s.devices[j]; 
+			return s.devices[j];
 	};
-	
+
 	return NULL;
 }
 
@@ -126,7 +126,7 @@ t_tango_class* search_class(t_server& s, string& name)
 	{
 		if (equalsIgnoreCase(s.classes[i]->name, name))
 			return s.classes[i];
-				
+
 	}
 	return NULL;
 }
@@ -154,16 +154,16 @@ t_attribute_property* search_class_attr_prop(t_tango_class* d, const string& nam
 }
 
 std::string& trim(string& str)
-{  
+{
 // trim leading whitespace
    	string::size_type  notwhite = str.find_first_not_of(" \t\n");
    	str.erase(0,notwhite);
 
 // trim trailing whitespace
-   	notwhite = str.find_last_not_of(" \t\n"); 
+   	notwhite = str.find_last_not_of(" \t\n");
    	str.erase(notwhite+1);
 	return str;
-} 
+}
 
 
 std::vector<std::string>& makeStringArray(const std::string& input, vector<string>& results)
@@ -204,7 +204,7 @@ std::vector<std::string>& makeStringArray(const std::string& input, vector<strin
       }
       else if( i > 0 )
       {
-        s = input.substr( positions[i-1] + sizeS2, 
+        s = input.substr( positions[i-1] + sizeS2,
           positions[i] - positions[i-1] - sizeS2 );
       }
     }
@@ -218,14 +218,14 @@ std::vector<std::string>& makeStringArray(const std::string& input, vector<strin
 
 template <class T>
 bool hasName<T>::operator() (T* obj)
-{ 
-	return (Tango::equalsIgnoreCase(obj->name,name)); 
+{
+	return (Tango::equalsIgnoreCase(obj->name,name));
 }
 
 template <class T>
 bool hasAttributeName<T>::operator() (T* obj)
-{ 
-	return (Tango::equalsIgnoreCase(obj->attribute_name,attribute_name)); 
+{
+	return (Tango::equalsIgnoreCase(obj->attribute_name,attribute_name));
 }
 
 
@@ -237,7 +237,7 @@ FileDatabase::FileDatabase(const std::string& file_name)
 {
 	cout4 << "FILEDATABASE: FileDatabase constructor" << endl;
 	filename = file_name;
-	
+
 	parse_res_file(filename);
 }
 
@@ -295,20 +295,20 @@ FileDatabase::~FileDatabase()
 void FileDatabase :: read_char(ifstream& f)
 {
   	CurrentChar=NextChar;
-  	if(!f.eof()) 
-		f.get(NextChar);   
-  	else         
-		NextChar=0;    
-  	if(CurrentChar=='\n') 
+  	if(!f.eof())
+		f.get(NextChar);
+  	else
+		NextChar=0;
+  	if(CurrentChar=='\n')
 		CrtLine++;
 }
 
-int FileDatabase :: class_lex(string& tmp_word) 
+int FileDatabase :: class_lex(string& tmp_word)
 {
 /* exepction */
 	if(tmp_word.empty()) return 0;
 	if(tmp_word.length()==0) return _TG_STRING;
-  
+
 /* Special character */
 
 	if(tmp_word == "/")  return _TG_SLASH;
@@ -316,7 +316,7 @@ int FileDatabase :: class_lex(string& tmp_word)
 	if(tmp_word == ",")  return _TG_COMA;
 	if(tmp_word == ":")  return _TG_COLON;
 	if(tmp_word == "->") return _TG_ARROW;
-  
+
 	return _TG_STRING;
 }
 
@@ -324,7 +324,7 @@ int FileDatabase :: class_lex(string& tmp_word)
 // ****************************************************
 // Go to the next line                                */
 // ****************************************************
-void  FileDatabase :: jump_line(ifstream& f) 
+void  FileDatabase :: jump_line(ifstream& f)
 {
 	while(CurrentChar!='\n' && CurrentChar!=0) read_char(f);
 		read_char(f);
@@ -340,11 +340,11 @@ void  FileDatabase :: jump_space(ifstream& f)
   // ****************************************************
   // Read the next word in the file                           */
   // ****************************************************
-string FileDatabase :: read_word(ifstream& f) 
+string FileDatabase :: read_word(ifstream& f)
 {
- 
+
    string ret_word="";
- 
+
    /* Jump space and comments */
    jump_space(f);
    while( CurrentChar=='#' ) {
@@ -371,7 +371,7 @@ string FileDatabase :: read_word(ifstream& f)
        return ret_word;
      }
    }
-   
+
    StartLine=CrtLine;
 
    /* Treat special character */
@@ -411,11 +411,11 @@ string FileDatabase :: read_word(ifstream& f)
    }
 
    /* Treat other word */
-   while( CurrentChar>32 && CurrentChar!=':' && CurrentChar!='/' 
+   while( CurrentChar>32 && CurrentChar!=':' && CurrentChar!='/'
 	  && CurrentChar!='\\' && CurrentChar!=',' )
    {
      if( CurrentChar=='-' && NextChar=='>' )
-       break;     
+       break;
      ret_word+=CurrentChar;
      read_char(f);
    }
@@ -423,13 +423,13 @@ string FileDatabase :: read_word(ifstream& f)
    if(ret_word.length()==0) {
      return string(lexical_word_null);
    }
-   
+
    return ret_word;
   }
 
   // ****************************************************
-  // Read the next word in the file                  
-  // And allow / inside                  
+  // Read the next word in the file
+  // And allow / inside
   // ****************************************************
 string FileDatabase:: read_full_word(ifstream& f)
 {
@@ -488,7 +488,7 @@ string FileDatabase:: read_full_word(ifstream& f)
 }
 
 
-void FileDatabase:: CHECK_LEX(int lt,int le) 
+void FileDatabase:: CHECK_LEX(int lt,int le)
 {
    	if( lt!=le )
 	{
@@ -508,30 +508,30 @@ vector<string> FileDatabase:: parse_resource_value(ifstream& f)
 	int  lex;
 	vector<string> ret;
 	int       nbr;
-  
+
 	/* Resource value */
 	lex=_TG_COMA;
 	nbr=0;
-  
-	while( (lex==_TG_COMA || lex==_TG_ASLASH) && word!="" ) 
+
+	while( (lex==_TG_COMA || lex==_TG_ASLASH) && word!="" )
 	{
 		word=read_full_word(f);
 		lex=class_lex(word);
- 
+
   	/* allow ... ,\ syntax */
 		if( lex==_TG_ASLASH )
 		{
 			word=read_full_word(f);
 			lex=class_lex(word);
 		}
-     
+
 		CHECK_LEX(lex,_TG_STRING);
 
 		ret.push_back(word);
 		nbr++;
-     
+
 		word=read_word(f);
-		lex=class_lex(word);   
+		lex=class_lex(word);
   	}
 
 	return ret;
@@ -579,14 +579,14 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 /* CHECK BEGINING OF CONFIG FILE  */
 
 	word=read_word(f);
-	if( word == "" ) 
+	if( word == "" )
 	{
 		f.close();
 		return file_name + " is empty...";
 	}
 	lex=class_lex(word);
 	m_server.name = word;
-	
+
 /* PARSE                          */
 
 	while( !eof )
@@ -595,7 +595,7 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 		{
 /* Start a resource mame */
          	case _TG_STRING:
-	
+
 /* Domain */
            		domain=word;
            		word=read_word(f);
@@ -611,7 +611,7 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 			//cout << "FAMILI " << family << endl;
            		word=read_word(f);
 			lex=class_lex(word);
-        
+
 	   		switch(lex)
 			{
 	   		case _TG_SLASH:
@@ -622,7 +622,7 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
              			member=word;
              			word=read_word(f);
 				lex=class_lex(word);
-	
+
              			switch(lex)
 				{
 	       			case _TG_SLASH:
@@ -631,13 +631,13 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 					lex=class_lex(word);
            				CHECK_LEX(lex,_TG_STRING);
 	         			name=word;
-					
+
            				word=read_word(f);
 					lex=class_lex(word);
-	  
+
 	         			switch(lex)
 					{
-	  				case _TG_COLON: 
+	  				case _TG_COLON:
 				     		{
 	               /* Device definition */
 						m_server.instance_name = family;
@@ -648,21 +648,21 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 						un_class->name = name;
 						m_server.classes.push_back(un_class);
 	               				if( equalsIgnoreCase(member, "device") )
-						{	    
+						{
 	                 /* Device definition */
 							for (unsigned int n = 0; n < values.size(); n++)
-							{ 
+							{
 	                 //cout << "    Device: <" << values[n] << ">" << endl;
 								un_device = new t_device;
 								un_device->name = values[n];
 								m_server.devices.push_back(un_device);
 								un_class->devices.push_back(un_device);
 							}
-		        			}	    
+		        			}
 		      				}
 	             				break;
-	    
-	           			case _TG_ARROW:  
+
+	           			case _TG_ARROW:
 	             				{
 	               /* We have an attribute property definition */
                        				word=read_word(f);
@@ -670,18 +670,18 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
                        				CHECK_LEX(lex,_TG_STRING);
 	                		 	prop_name=word;
 						//cout << "Attribute property: " << prop_name << endl;
-	    
+
 	               				/* jump : */
                        				word=read_word(f);
 						lex=class_lex(word);
                        				CHECK_LEX(lex,_TG_COLON);
-	    
+
 	               				/* Resource value */
 	               				vector<string> values = parse_resource_value(f);
 	               				lex=class_lex(word);
-	  
+
 	               /* Device attribute definition */
-	               
+
 						//cout << "    " << domain << "/" << family << "/" << member << endl;
 						string device_name = domain + "/" + family + "/" + member;
 						t_device* d = search_device(m_server, device_name);
@@ -701,43 +701,43 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 							prop->value.push_back(values[n]);
 						}
 						un_dev_attr_prop->properties.push_back(prop);
-									
-									
+
+
 	             				}
 		    	 			break;
-	  
-	           			default:  
+
+	           			default:
                      				return "COLON or -> expected at line " + StartLine;
-	   
+
 	         			}
-	         			break;	    
-	    
+	         			break;
+
 	       			case _TG_ARROW:
 					{
-	
+
 	         /* We have a device property or attribute class definition */
-            
+
 	        			word=read_word(f);
 					lex=class_lex(word);
                 			CHECK_LEX(lex,_TG_STRING);
 	        			prop_name=word;
-	    
+
 	         /* jump : */
                 			word=read_word(f); lex=class_lex(word);
                 			CHECK_LEX(lex,_TG_COLON);
-	    
+
 	         /* Resource value */
-	        			vector<string> values = parse_resource_value(f); 
+	        			vector<string> values = parse_resource_value(f);
 	        			lex=class_lex(word);
-	    
+
 	         			if(equalsIgnoreCase(domain, "class"))
 					{
-	    
+
 	           /* Class attribute property definition */
 						 //cout << "Class attribute property definition" << endl;
 						 //cout << "      family,member,prop_name,values :" << family <<","<<member<< "," <<prop_name<<","<< endl;
 						t_tango_class* c = search_class(m_server, family);
-						 
+
 						if (c != NULL)
 						{
 							t_attribute_property* un_class_attr_prop = search_class_attr_prop(c, member);
@@ -758,11 +758,11 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 
 	          	 //put_tango_class_attr_prop(family,member,prop_name,values);
 						}
-	    
+
 	         			}
 					else
 					{
-	      
+
 	           /* Device property definition */
 							//cout << "Device property definition " << prop_name << endl;
 	            //cout << "    " << domain << "/" << family << "/" << member << endl;
@@ -783,16 +783,16 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 	         			}
 					}
 		 			break;
-	     	    
-	       			default:  
+
+	       			default:
                  			return "SLASH or -> expected at line " + StartLine;
-	  
-	     			}	  
+
+	     			}
 	     			break;
 
 	   		case _TG_ARROW:
 				{
-	  
+
 	    	 /* We have a class property */
   	    	 /* Member */
             	 		word=read_word(f); lex=class_lex(word);
@@ -801,12 +801,12 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
             	 		word=read_word(f); lex=class_lex(word);
 
 	    	 /* Resource value */
-	    	 		vector<string> values = parse_resource_value(f); 
+	    	 		vector<string> values = parse_resource_value(f);
   	    	 		lex=class_lex(word);
 
 	    	 /* Class resource */
 	    	 		if( equalsIgnoreCase(domain, "class") )
-				{	
+				{
 						//cout << "Tango resource class " << endl;
 					{
 						un_class = search_class(m_server, family);
@@ -822,8 +822,8 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 							 }
 							 un_class->properties.push_back(un_prop);
 						 }
-					}   
-	      	 
+					}
+
 	    	 		}
 				else if ( equalsIgnoreCase(domain, "free") )
 				{
@@ -836,9 +836,9 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 	    	 		}
 				}
 	     			break;
-	  	  
+
 	   		default:
-             			return "SLASH or -> expected at line " + StartLine;	   
+             			return "SLASH or -> expected at line " + StartLine;
 			}
 			break;
 
@@ -848,10 +848,10 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
 
       		eof=(word == lexical_word_null);
      		}
-   
+
 		 f.close();
      	return "";
-  
+
 }
 
 void FileDatabase:: display()
@@ -882,7 +882,7 @@ void FileDatabase:: display()
 					cout << "                 property[" << l << "] = " << m_server.classes[i]->devices[j]->attribute_properties[k]->properties[l]->name << endl;
 					for (unsigned int m = 0; m < m_server.classes[i]->devices[j]->attribute_properties[k]->properties[l]->value.size(); m++)
 						cout << "                    value[" << m << "] = " << m_server.classes[i]->devices[j]->attribute_properties[k]->properties[l]->value[m] << endl;
-				}			
+				}
 			}
 		}
 		for (j = 0; j < m_server.classes[i]->properties.size(); j++)
@@ -926,7 +926,7 @@ string FileDatabase :: get_display()
 					ost << "                 property[" << l << "] = " << m_server.classes[i]->devices[j]->attribute_properties[k]->properties[l]->name << endl;
 					for (unsigned int m = 0; m < m_server.classes[i]->devices[j]->attribute_properties[k]->properties[l]->value.size(); m++)
 						ost << "                    value[" << m << "] = " << m_server.classes[i]->devices[j]->attribute_properties[k]->properties[l]->value[m] << endl;
-				}			
+				}
 			}
 		}
 		for (j = 0; j < m_server.classes[i]->properties.size(); j++)
@@ -952,7 +952,7 @@ void  FileDatabase :: write_file()
 	else
 		f_name.insert(pos + 1,"_",1);
 	*/
-	
+
 	f.open (f_name.c_str());
 	vector<t_tango_class *>::const_iterator it;
 	for(it = m_server.classes.begin(); it != m_server.classes.end(); ++it)
@@ -971,7 +971,7 @@ void  FileDatabase :: write_file()
 		f << endl;
 	}
 	f << endl;
-	
+
 	for(it = m_server.classes.begin(); it != m_server.classes.end(); ++it)
 	{
 		f << "#############################################" << endl;
@@ -995,7 +995,7 @@ void  FileDatabase :: write_file()
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"" ;
 					f << (*iterator_s);
-					if (iterator_s->find(' ', 0)!=string::npos) 
+					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"";
 				}
 				++iterator_s;
@@ -1003,10 +1003,10 @@ void  FileDatabase :: write_file()
 				{
 					f << ",\\" << endl;
 					f << margin_s;
-					if (its->find(' ', 0)!=string::npos) 
+					if (its->find(' ', 0)!=string::npos)
 						f << "\"" ;
 					f << (*its);
-					if (its->find(' ', 0)!=string::npos) 
+					if (its->find(' ', 0)!=string::npos)
 						f << "\"";
 				}
 			}
@@ -1024,10 +1024,10 @@ void  FileDatabase :: write_file()
 				vector<string>::iterator iterator_s = (*itp)->value.begin();
 				if (iterator_s != (*itp)->value.end())
 				{
-					if (iterator_s->find(' ', 0)!=string::npos) 
+					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"" ;
 					f << (*iterator_s);
-					if (iterator_s->find(' ', 0)!=string::npos) 
+					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"";
 					++iterator_s;
 					for(vector<string>::iterator its = iterator_s; its != (*itp)->value.end(); ++its)
@@ -1035,10 +1035,10 @@ void  FileDatabase :: write_file()
 						f << ",\\" << endl;
 						string margin_s(margin,' ');
 						f << margin_s;
-						if (its->find(' ', 0)!=string::npos) 
+						if (its->find(' ', 0)!=string::npos)
 							f << "\"" ;
 						f << (*its);
-						if (its->find(' ', 0)!=string::npos) 
+						if (its->find(' ', 0)!=string::npos)
 							f << "\"";
 					}
 				}
@@ -1046,7 +1046,7 @@ void  FileDatabase :: write_file()
 			}
 		}
 		f << endl;
-		
+
 	}
 	f << endl;
 	for(vector<t_device*>::const_iterator ite = m_server.devices.begin(); ite != m_server.devices.end(); ++ite)
@@ -1059,10 +1059,10 @@ void  FileDatabase :: write_file()
 			if (iterator_s != (*itp)->value.end())
 			{
 				int margin = (*ite)->name.size() + 1 + (*itp)->name.size() + 2;
-				if (iterator_s->find(' ', 0)!=string::npos) 
+				if (iterator_s->find(' ', 0)!=string::npos)
 					f << "\"" ;
 				f << (*iterator_s);
-				if (iterator_s->find(' ', 0)!=string::npos) 
+				if (iterator_s->find(' ', 0)!=string::npos)
 					f << "\"";
 				++iterator_s;
 				for(vector<string>::iterator its = iterator_s; its != (*itp)->value.end(); ++its)
@@ -1070,10 +1070,10 @@ void  FileDatabase :: write_file()
 					f << ",\\" << endl;
 					string margin_s(margin,' ');
 					f << margin_s;
-					if (its->find(' ', 0)!=string::npos) 
+					if (its->find(' ', 0)!=string::npos)
 						f << "\"" ;
 					f << (*its);
-					if (its->find(' ', 0)!=string::npos) 
+					if (its->find(' ', 0)!=string::npos)
 						f << "\"";
 				}
 			}
@@ -1090,10 +1090,10 @@ void  FileDatabase :: write_file()
 				vector<string>::iterator iterator_s = (*itp)->value.begin();
 				if (iterator_s != (*itp)->value.end())
 				{
-					if (iterator_s->find(' ', 0)!=string::npos) 
+					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"" ;
 					f << (*iterator_s);
-					if (iterator_s->find(' ', 0)!=string::npos) 
+					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"";
 					++iterator_s;
 					for(vector<string>::iterator its = iterator_s; its != (*itp)->value.end(); ++its)
@@ -1101,17 +1101,17 @@ void  FileDatabase :: write_file()
 						f << ",\\" << endl;
 						string margin_s(margin,' ');
 						f << margin_s;
-						if (its->find(' ', 0)!=string::npos) 
+						if (its->find(' ', 0)!=string::npos)
 							f << "\"" ;
 						f << (*its);
-						if (its->find(' ', 0)!=string::npos) 
+						if (its->find(' ', 0)!=string::npos)
 							f << "\"";
 					}
 				}
 				f << endl;
 			}
 		}
-		
+
 	}
 
 	f.close();
@@ -1119,7 +1119,7 @@ void  FileDatabase :: write_file()
 
 
 CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
-{ 
+{
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
 	const Tango::DevVarStringArray* data_in;
 	char num_prop_str[256];
@@ -1132,16 +1132,16 @@ CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 	send >>= data_in;
 
 	CORBA::Any* any_ptr;
-	any_ptr = new CORBA::Any();	
+	any_ptr = new CORBA::Any();
 	int index = 0;
 	int seq_length = 2;
-		
+
 	data_out->length(2);
 	(*data_out)[0] = CORBA::string_dup( (*data_in)[0] ); index++;
 	num_prop = data_in->length() - 1;
-	sprintf(num_prop_str,"%d",num_prop);	
+	sprintf(num_prop_str,"%d",num_prop);
 	(*data_out)[index] = CORBA::string_dup(num_prop_str); index++;
-	
+
 	if (data_in->length() >= 2)
 	{
 		unsigned long nb_defined_dev = m_server.devices.size();
@@ -1168,13 +1168,13 @@ CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 							(*data_out)[index] = CORBA::string_dup(num_vals_str); index++;
 							for (int k=0; k < num_val; k++)
 							{
-								(*data_out)[index] = CORBA::string_dup( m_server.devices[i]->properties[m]->value[k].c_str());index++; 
+								(*data_out)[index] = CORBA::string_dup( m_server.devices[i]->properties[m]->value[k].c_str());index++;
 							}
 							break;
 						}
-						
+
 					}
-					
+
 					if (m == nb_defined_prop)
 					{
 						seq_length = seq_length + 3;
@@ -1187,7 +1187,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 				break;
 			}
 		}
-		
+
 		if (i == nb_defined_dev)
 		{
 			for (i = 0;i < num_prop;i++)
@@ -1204,23 +1204,23 @@ CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 	(*any_ptr) <<= data_out;
 
 	//for (unsigned int i = 0; i < data_out->length(); i++)
-	//	cout << "data_out[" << i << "] = " << (*data_out)[i] << endl; 
+	//	cout << "data_out[" << i << "] = " << (*data_out)[i] << endl;
 
 	return any_ptr;
 };
 
 CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
-{ 
+{
 	cout4 << "FILEDATABASE: entering DbPutDeviceProperty" << endl;
 
 	CORBA::Any* any_ptr = new CORBA::Any;
-	
+
 	const Tango::DevVarStringArray* data_in;
 	unsigned int n_properties=0;
 	int n_values=0;
 	int index = 0;
-	
-	
+
+
 	send >>= data_in;
 
 	if ((*data_in).length() > 1)
@@ -1251,11 +1251,11 @@ CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 					prop.value[j] = (*data_in)[index]; index++;
 				}
 			}
-			else 
+			else
 			{
 				/* it is a new property */
 				t_property* temp_property = new t_property;
-				temp_property->name = (*data_in)[index-1]; 
+				temp_property->name = (*data_in)[index-1];
 				sscanf((*data_in)[index],"%d",&n_values); index++;
 				for(int j = 0; j < n_values; j++)
 				{
@@ -1263,25 +1263,25 @@ CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 				}
 				device_trovato.properties.push_back(temp_property);
 			}
-			
+
 		}
 	}
-	
-	
+
+
 	write_file();
 	return any_ptr;
 };
 
 CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
-{ 
+{
 	cout4 << "FILEDATABASE: entering DbDeleteDeviceProperty" << endl;
-	
+
 	const Tango::DevVarStringArray* data_in;
-		
+
 	send >>= data_in;
-	
+
 	//for(unsigned int i = 0; i < (*data_in).length(); i++)
-	//	cout << "(*data_in)[" << i << "] = " << (*data_in)[i] << endl; 
+	//	cout << "(*data_in)[" << i << "] = " << (*data_in)[i] << endl;
 
 	std::vector<t_device*>::iterator it;
 	it = find_if(m_server.devices.begin(), m_server.devices.end(), hasName<t_device>(string((*data_in)[0])));
@@ -1303,15 +1303,15 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
 	}
 
 	CORBA::Any* any_ptr = new CORBA::Any;
-		
+
 	write_file();
 	return any_ptr;
-	
+
 };
 
 
 CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
-{ 
+{
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
 	const Tango::DevVarStringArray* data_in;
 	char num_prop_str[256];
@@ -1321,7 +1321,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 	int num_attr_find = 0;
 
 	CORBA::Any* any_ptr;
-	any_ptr = new CORBA::Any();	
+	any_ptr = new CORBA::Any();
 
 	cout4 << "FILEDATABASE: entering DbGetDeviceAttributeProperty" << endl;
 
@@ -1336,7 +1336,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 	num_attr = data_in->length() - 1;
 	sprintf(num_attr_str, "%d", num_attr);
 	(*data_out)[index] = CORBA::string_dup( num_attr_str ); index++;
-	
+
 
 	std::vector<t_device*>::iterator dev_it;
 	dev_it = find_if(m_server.devices.begin(), m_server.devices.end(), hasName<t_device>(string((*data_in)[0])));
@@ -1344,13 +1344,13 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 	{
 		 //cout << "Device " << (*dev_it)->name << " trovato." << endl;
 		 for(unsigned int k =0; k < num_attr; k++)
-		 {			 
+		 {
 			 data_out->length(index+2);
 			(*data_out)[index] = CORBA::string_dup((*data_in)[k+1]); index++; // attribute name
 			(*data_out)[index] = CORBA::string_dup("0"); index++; // number of properties
 			 for(unsigned int j = 0; j < (*dev_it)->attribute_properties.size(); j++)
 			 {
-				if (equalsIgnoreCase((*dev_it)->attribute_properties[j]->attribute_name, (*data_in)[k+1].in())) 
+				if (equalsIgnoreCase((*dev_it)->attribute_properties[j]->attribute_name, (*data_in)[k+1].in()))
 				{
 					//cout << "Proprieta' " << (*dev_it)->attribute_properties[j]->attribute_name << " trovata." << endl;
 					num_prop = (*dev_it)->attribute_properties[j]->properties.size();
@@ -1359,7 +1359,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 					num_attr_find++;
 
 					(*data_out)[index-1] = CORBA::string_dup(num_prop_str);
-					
+
 					for (unsigned int l = 0; l < num_prop; l++)
 					{
 						char num_val_str[256];
@@ -1371,16 +1371,16 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 						sprintf(num_val_str, "%d", (*dev_it)->attribute_properties[j]->properties[l]->value.size());
 #endif
 						(*data_out)[index] = CORBA::string_dup(num_val_str); index++;
-						
+
 						for(unsigned int ii = 0; ii < (*dev_it)->attribute_properties[j]->properties[l]->value.size(); ii++)
 						{
-							//cout << ii << " = " << (*dev_it)->attribute_properties[j]->properties[l]->value[ii].c_str() << endl; 
+							//cout << ii << " = " << (*dev_it)->attribute_properties[j]->properties[l]->value[ii].c_str() << endl;
 							(*data_out)[index] = CORBA::string_dup((*dev_it)->attribute_properties[j]->properties[l]->value[ii].c_str()); index++;
 						}
 					}
-					
+
 			  }
-				 				
+
 			 }
 			}
 	} else {
@@ -1392,10 +1392,10 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 		 }
 
 	}
-	
+
 	//for(unsigned int i = 0; i < data_out->length(); i++)
 	//	cout << "data_out[" << i << "] = " << (*data_out)[i] << endl;
-	
+
 	(*any_ptr) <<= data_out;
 
 	return any_ptr;
@@ -1404,21 +1404,21 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 
 
 CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
-{ 
+{
 	const Tango::DevVarStringArray* data_in;
 	unsigned int num_prop = 0;
 	unsigned int num_attr = 0;
 	unsigned int num_vals = 0;
-	
-	CORBA::Any* ret = new CORBA::Any;	
-	
+
+	CORBA::Any* ret = new CORBA::Any;
+
 	cout4 << "FILEDATABASE: entering DbPutDeviceAttributeProperty" << endl;
 
 	send >>= data_in;
 
 
 	unsigned int index = 0;
-	
+
 	std::vector<t_device*>::iterator dev_it;
 	dev_it = find_if(m_server.devices.begin(), m_server.devices.end(), hasName<t_device>(string((*data_in)[index])));index++;
 	if (dev_it != m_server.devices.end())
@@ -1436,19 +1436,19 @@ CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
 				// the property is not yet in the file: we add it
 				temp_attribute_property = new t_attribute_property;
 				temp_attribute_property->attribute_name = string((*data_in)[index]);
-				(*dev_it)->attribute_properties.push_back(temp_attribute_property); 
-				
+				(*dev_it)->attribute_properties.push_back(temp_attribute_property);
+
 			}
-			//if (equalsIgnoreCase((*dev_it)->attribute_properties[j]->attribute_name, (*data_in)[index].in())) 
-			
+			//if (equalsIgnoreCase((*dev_it)->attribute_properties[j]->attribute_name, (*data_in)[index].in()))
+
 			index++;
-			sscanf((*data_in)[index],"%d",&num_prop); index++; 
+			sscanf((*data_in)[index],"%d",&num_prop); index++;
 			for (unsigned int i = 0; i < num_prop; i++)
 			{
 				bool exist = false;
 				for(unsigned int k = 0; k < temp_attribute_property->properties.size(); k++)
 				{
-		  		if (equalsIgnoreCase(temp_attribute_property->properties[k]->name, (*data_in)[index].in())) 
+		  		if (equalsIgnoreCase(temp_attribute_property->properties[k]->name, (*data_in)[index].in()))
 		  		{
 						index++;
 						temp_attribute_property->properties[k]->value.erase(temp_attribute_property->properties[k]->value.begin(),
@@ -1489,30 +1489,30 @@ CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
 					}
 				}
 
-			 } 
+			 }
 		}
-			
-	} 
+
+	}
 	write_file();
 	return ret;
 };
 
 
 CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
-{ 
+{
 	cout4 << "FILEDATABASE: entering DbDeleteDeviceAttributeProperty" << endl;
-	
+
 	const Tango::DevVarStringArray* data_in;
-		
+
 	send >>= data_in;
-	
+
 	//for(unsigned int i = 0; i < (*data_in).length(); i++)
-	//	cout << "(*data_in)[" << i << "] = " << (*data_in)[i] << endl; 
+	//	cout << "(*data_in)[" << i << "] = " << (*data_in)[i] << endl;
 
 	std::vector<t_device*>::iterator it;
 	it = find_if(m_server.devices.begin(), m_server.devices.end(), hasName<t_device>(string((*data_in)[0])));
 	std::string attribute_name = string((*data_in)[0]);
-	
+
 	if (it != m_server.devices.end())
 	{
 		t_device& device_trovato = *(*(it));
@@ -1524,7 +1524,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
 				{
 					std::vector<t_property*>::iterator itp;
 					itp = find_if(device_trovato.attribute_properties[j]->properties.begin(), device_trovato.attribute_properties[j]->properties.end(), hasName<t_property>(string((*data_in)[m])));
-					
+
 					if (itp != device_trovato.attribute_properties[j]->properties.end())
 					{
 //						cout << "found property" << (*itp)->name << "for attribute " << device_trovato.attribute_properties[j]->attribute_name << endl;
@@ -1539,12 +1539,12 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
 	CORBA::Any* ret = new CORBA::Any;
 	write_file();
 	return ret;
-	
+
 };
 
 
 CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
-{ 
+{
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
 	const Tango::DevVarStringArray* data_in;
 	char num_prop_str[256];
@@ -1556,20 +1556,20 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 
 	send >>= data_in;
 
-	CORBA::Any *any_ptr = new CORBA::Any();	
+	CORBA::Any *any_ptr = new CORBA::Any();
 	int index = 0;
 	int seq_length = 2;
 
-	
+
 	data_out->length(2);
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]); index++;
 	num_prop = data_in->length() - 1;
-	sprintf(num_prop_str,"%d",num_prop);	
+	sprintf(num_prop_str,"%d",num_prop);
 	(*data_out)[index] = CORBA::string_dup(num_prop_str); index++;
-	
+
 	unsigned long nb_classes_defined = m_server.classes.size();
 	unsigned long i;
-	
+
 	for(i = 0; i < nb_classes_defined; i++)
 	{
 		if (equalsIgnoreCase((*data_in)[0].in(), m_server.classes[i]->name))
@@ -1601,7 +1601,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 						break;
 					}
 				}
-				
+
 				if (m == nb_prop_defined)
 				{
 					seq_length = seq_length + 2;
@@ -1631,19 +1631,19 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 	(*any_ptr) <<= data_out;
 
 	cout4 << "FILEDATABASE: ending DbGetClassProperty" << endl;
-		
+
 	return any_ptr;
 };
 
 
 CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
-{ 
+{
 	CORBA::Any* ret = new CORBA::Any;
 	const Tango::DevVarStringArray* data_in;
 	unsigned int n_properties=0;
 	int n_values=0;
 	unsigned int index = 0;
-	
+
 	cout4 << "FILEDATABASE: entering DbPutClassProperty" << endl;
 
 	send >>= data_in;
@@ -1661,7 +1661,7 @@ CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 			return ret;
 		}
 		t_tango_class& classe_trovata = *(*(it));
-		
+
 		sscanf((*data_in)[index],"%d",&n_properties); index++;
 		for (unsigned int i=0; i< n_properties; i++)
 		{
@@ -1677,10 +1677,10 @@ CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 				for(int j = 0; j< n_values; j++)
 				{
 					prop.value[j] = (*data_in)[index]; index++;
-					//db_data[i] >> prop.value; 
+					//db_data[i] >> prop.value;
 				}
 			}
-			else 
+			else
 			{
 				/* it is a new property */
 				t_property* temp_property = new t_property;
@@ -1697,25 +1697,25 @@ CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 					return ret;
 				}
 			}
-			
+
 		}
 	}
-	
+
 	write_file();
 	return ret;
 };
 
 
 CORBA::Any*   FileDatabase :: DbDeleteClassProperty(CORBA::Any& send)
-{ 
+{
 	cout4 << "FILEDATABASE: entering DbDeleteClassProperty" << endl;
-	
+
 	const Tango::DevVarStringArray* data_in;
-		
+
 	send >>= data_in;
-	
+
 //	for(unsigned int i = 0; i < (*data_in).length(); i++)
-//		cout << "(*data_in)[" << i << "] = " << (*data_in)[i] << endl; 
+//		cout << "(*data_in)[" << i << "] = " << (*data_in)[i] << endl;
 
 	std::vector<t_tango_class*>::iterator it;
 	it = find_if(m_server.classes.begin(), m_server.classes.end(), hasName<t_tango_class>(string((*data_in)[0])));
@@ -1743,9 +1743,9 @@ CORBA::Any*   FileDatabase :: DbDeleteClassProperty(CORBA::Any& send)
 
 
 CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
-{ 
-	
-	CORBA::Any* any_ptr = new CORBA::Any();	
+{
+
+	CORBA::Any* any_ptr = new CORBA::Any();
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
 	const Tango::DevVarStringArray* data_in;
 	unsigned int num_attr  = 0;
@@ -1762,7 +1762,7 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]); index++;
 	num_attr = data_in->length() - 1;
 	sprintf(num_attr_str,"%d",num_attr);
-	(*data_out)[1] = CORBA::string_dup(num_attr_str); index++;	
+	(*data_out)[1] = CORBA::string_dup(num_attr_str); index++;
 
 	std::vector<t_tango_class*>::iterator it;
 	it = find_if(m_server.classes.begin(), m_server.classes.end(), hasName<t_tango_class>(string((*data_in)[0])));
@@ -1780,16 +1780,16 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 		return any_ptr;
 	}
 	t_tango_class& classe_trovata = *(*(it));
-	
+
 	for(unsigned int k =0; k < num_attr; k++)
-	{	
+	{
 		data_out->length(index+2);
 		(*data_out)[index] = CORBA::string_dup((*data_in)[k+1]); index++;
 		(*data_out)[index] = CORBA::string_dup("0"); index++;
-			 
+
 		for(unsigned int j = 0; j < classe_trovata.attribute_properties.size(); j++)
 		{
-		 if (equalsIgnoreCase(classe_trovata.attribute_properties[j]->attribute_name, (*data_in)[k+1].in())) 
+		 if (equalsIgnoreCase(classe_trovata.attribute_properties[j]->attribute_name, (*data_in)[k+1].in()))
 		 {
 			 num_prop = classe_trovata.attribute_properties[j]->properties.size();
 			 sprintf(num_prop_str, "%d", num_prop);
@@ -1823,19 +1823,19 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 
 		}
 	 }
-	
+
 	//for(unsigned int i = 0; i < data_out->length(); i++)
-	//	cout << "data_out[" << i << "] = " << (*data_out)[i] << endl;	
-	
+	//	cout << "data_out[" << i << "] = " << (*data_out)[i] << endl;
+
 	(*any_ptr) <<= data_out;
-		
+
 	return any_ptr;
 };
 
 
 CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
-{ 
-	CORBA::Any* ret = new CORBA::Any();	
+{
+	CORBA::Any* ret = new CORBA::Any();
 	const Tango::DevVarStringArray* data_in;
 	unsigned int num_attr  = 0;
 	unsigned int num_prop = 0;
@@ -1845,7 +1845,7 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 	cout4 << "FILEDATABASE: entering DbPutClassAttributeProperty" << endl;
 
 	send >>= data_in;
-	
+
 	std::vector<t_tango_class*>::iterator it;
 	it = find_if(m_server.classes.begin(), m_server.classes.end(), hasName<t_tango_class>(string((*data_in)[index])));index++;
 	if (it == m_server.classes.end())
@@ -1868,17 +1868,17 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 				// the property is not yet in the file: we add it
 				temp_attribute_property = new t_attribute_property;
 				temp_attribute_property->attribute_name = string((*data_in)[index]);
-				classe_trovata.attribute_properties.push_back(temp_attribute_property); 
-				
+				classe_trovata.attribute_properties.push_back(temp_attribute_property);
+
 			}
 			index++;
-			sscanf((*data_in)[index],"%d",&num_prop); index++; 
+			sscanf((*data_in)[index],"%d",&num_prop); index++;
 			for (unsigned int i = 0; i < num_prop; i++)
 			{
 				bool exist = false;
 				for(unsigned int k = 0; k < temp_attribute_property->properties.size(); k++)
 				{
-		  		if (equalsIgnoreCase(temp_attribute_property->properties[k]->name, (*data_in)[index].in())) 
+		  		if (equalsIgnoreCase(temp_attribute_property->properties[k]->name, (*data_in)[index].in()))
 		  		{
 						index++;
 						temp_attribute_property->properties[k]->value.erase(temp_attribute_property->properties[k]->value.begin(),
@@ -1919,11 +1919,11 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 					}
 				}
 
-			 } 
+			 }
 		}
-			
-	} 
-				
+
+	}
+
 
 	write_file();
 	return ret;
@@ -1931,7 +1931,7 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 
 
 CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = new CORBA::Any;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -1941,20 +1941,20 @@ CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
-{ 
-	CORBA::Any* any_ptr = new CORBA::Any();	
+{
+	CORBA::Any* any_ptr = new CORBA::Any();
 	const Tango::DevVarStringArray* data_in;
 	Tango::DevVarStringArray* data_out  = new DevVarStringArray;
-	
+
 	cout4 << "FILEDATABASE: entering DbGetDeviceList" << endl;
 
 	send >>= data_in;
-	
-	if (data_in->length() == 2) 
+
+	if (data_in->length() == 2)
 	{
 		if ( equalsIgnoreCase((*data_in)[0].in(), m_server.name + "/" + m_server.instance_name))
 		{
-			unsigned int i;		
+			unsigned int i;
 			for(i = 0; i < m_server.classes.size(); i++)
 			{
 				//if ( strcmp((*data_in)[1], m_server.classes[i]->name.c_str()) == 0 )
@@ -1968,7 +1968,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 					break;
 				}
 			}
-			
+
 			if (i == m_server.classes.size())
 			{
 				delete any_ptr;
@@ -2001,9 +2001,9 @@ CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 };
 
 
-CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){ 
+CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){
 	CORBA::Any* any_ptr = new CORBA::Any();
-	
+
 	Tango::DevVarStringArray* data_out  = new DevVarStringArray;
 	data_out->length(13);
 	char temp_str[256];
@@ -2032,7 +2032,7 @@ CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){
 		temp_long += (*it)->properties.size();
 	sprintf(temp_str,"Class properties defined = %ld", temp_long);
 	(*data_out)[9] = CORBA::string_dup(temp_str);
-	
+
 	temp_long = 0;
 	for(std::vector<t_device*>::iterator ite = m_server.devices.begin(); ite != m_server.devices.end(); ite++)
 		temp_long += (*ite)->properties.size();
@@ -2044,19 +2044,19 @@ CORBA::Any*  FileDatabase :: DbInfo(CORBA::Any&){
 		temp_long += (*iter)->attribute_properties.size();
 	sprintf(temp_str,"Class attribute properties defined = %ld", temp_long);
 	(*data_out)[11] = CORBA::string_dup(temp_str);
-	
+
 	temp_long = 0;
 	for(std::vector<t_device*>::iterator itera = m_server.devices.begin(); itera != m_server.devices.end(); itera++)
 		temp_long += (*itera)->attribute_properties.size();
 	sprintf(temp_str,"Device attribute properties defined = %ld", temp_long);
 	(*data_out)[12] = CORBA::string_dup(temp_str);
 	(*any_ptr) <<= data_out;
-	
+
 	return any_ptr;
 };
 
 CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
@@ -2068,7 +2068,7 @@ CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2079,7 +2079,7 @@ CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2090,7 +2090,7 @@ CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2101,7 +2101,7 @@ CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2112,7 +2112,7 @@ CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2123,7 +2123,7 @@ CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2134,7 +2134,7 @@ CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2145,7 +2145,7 @@ CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2156,7 +2156,7 @@ CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetServerInfo(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2168,20 +2168,20 @@ CORBA::Any*  FileDatabase :: DbGetServerInfo(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceMemberList(CORBA::Any&)
-{ 
-	CORBA::Any* any_ptr = new CORBA::Any();	
-	
+{
+	CORBA::Any* any_ptr = new CORBA::Any();
+
 	Tango::DevVarStringArray* argout = new Tango::DevVarStringArray();
 	argout->length(1);
 	(*argout)[0] = CORBA::string_dup("NoMember");
 	(*any_ptr) <<= argout;
-		
+
 	return any_ptr;
 };
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceExportedList(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2192,26 +2192,26 @@ CORBA::Any*  FileDatabase :: DbGetDeviceExportedList(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceFamilyList(CORBA::Any&)
-{ 
-	CORBA::Any* any_ptr = new CORBA::Any();	
-	
+{
+	CORBA::Any* any_ptr = new CORBA::Any();
+
 	Tango::DevVarStringArray* argout = new Tango::DevVarStringArray();
 	argout->length(1);
 	(*argout)[0] = CORBA::string_dup("NoDevice");
 	(*any_ptr) <<= argout;
-	
+
 	return any_ptr;
 };
 
 CORBA::Any*  FileDatabase :: DbGetDeviceDomainList(CORBA::Any&)
-{ 
-	CORBA::Any* any_ptr = new CORBA::Any();	
-	
+{
+	CORBA::Any* any_ptr = new CORBA::Any();
+
 	Tango::DevVarStringArray* argout = new Tango::DevVarStringArray();
 	argout->length(1);
 	(*argout)[0] = CORBA::string_dup("NoDevice");
 	(*any_ptr) <<= argout;
-	
+
 	return any_ptr;
 };
 
@@ -2219,32 +2219,32 @@ CORBA::Any*  FileDatabase :: DbGetDeviceDomainList(CORBA::Any&)
  * so I put nothing out
  */
 CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
-{ 
-	CORBA::Any* any_ptr = new CORBA::Any();	
-	
-	
+{
+	CORBA::Any* any_ptr = new CORBA::Any();
+
+
 	const Tango::DevVarStringArray* data_in;
 	Tango::DevVarStringArray* data_out  = new DevVarStringArray;
 	char num_attr_str[256];
 	const char* zero_str = "0";
-	
+
 	cout4 << "FILEDATABASE: entering DbGetProperty" << endl;
 
 	send >>= data_in;
-	
+
 	data_out->length(2);
 	sprintf(num_attr_str,"%lud",data_in->length()-1);
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]);
 	(*data_out)[1] = CORBA::string_dup(zero_str);
-	
+
 	(*any_ptr) <<= data_out;
-	
+
 	return any_ptr;
 };
 
 
 CORBA::Any*  FileDatabase :: DbPutProperty(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
@@ -2254,9 +2254,9 @@ CORBA::Any*  FileDatabase :: DbPutProperty(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbDeleteProperty(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
-	
+
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbDeleteProperty");
@@ -2265,9 +2265,9 @@ CORBA::Any*  FileDatabase :: DbDeleteProperty(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetAliasDevice(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
-	
+
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAliasDevice");
@@ -2276,9 +2276,9 @@ CORBA::Any*  FileDatabase :: DbGetAliasDevice(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceAlias(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
-	
+
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceAlias");
@@ -2287,7 +2287,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAlias(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetAttributeAlias(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
 
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
@@ -2298,9 +2298,9 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAlias(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetDeviceAliasList(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
-	
+
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceAliasList");
@@ -2309,9 +2309,9 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAliasList(CORBA::Any&)
 
 
 CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
-{ 
+{
 	CORBA::Any* ret = NULL;
-	
+
 	Tango::Except::throw_exception((const char *)"Method not implemented.",
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAttributeAliasList");
@@ -2322,7 +2322,7 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 //-----------------------------------------------------------------------------
 //
 // method :			FileDatabase::write_event_channel_ior() -
-// 
+//
 // description : 	Method to write the event channel ior into the file
 //
 // argument : in : ior_string : The event channel IOR
@@ -2351,7 +2351,7 @@ void FileDatabase::write_event_channel_ior(string &ior_string)
 			break;
 		}
 	}
-			
+
 	if (i == m_server.classes.size())
 	{
 

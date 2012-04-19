@@ -4,7 +4,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // file :               PollCmds.cpp
 //
-// description :        C++ source for the DServerClass and for the 
+// description :        C++ source for the DServerClass and for the
 //			command class defined for this class. The singleton
 //			class derived from DeviceClass. It implements the
 //			command list and all properties and methods required
@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -25,12 +25,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -145,8 +145,8 @@ namespace Tango
 
 //+-------------------------------------------------------------------------
 //
-// method : 		PolledDeviceCmd::PolledDeviceCmd 
-// 
+// method : 		PolledDeviceCmd::PolledDeviceCmd
+//
 // description : 	constructors for Command class PolledDevice
 //
 //--------------------------------------------------------------------------
@@ -162,8 +162,8 @@ PolledDeviceCmd::PolledDeviceCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		PolledDeviceCmd::execute 
-// 
+// method : 		PolledDeviceCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -183,8 +183,8 @@ CORBA::Any *PolledDeviceCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORB
 
 //+-------------------------------------------------------------------------
 //
-// method : 		DevPollStatusCmd::DevPollStatusCmd 
-// 
+// method : 		DevPollStatusCmd::DevPollStatusCmd
+//
 // description : 	constructors for Command class DevPollStatus
 //
 //--------------------------------------------------------------------------
@@ -202,8 +202,8 @@ DevPollStatusCmd::DevPollStatusCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		DevPollStatusCmd::execute 
-// 
+// method : 		DevPollStatusCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -213,7 +213,7 @@ CORBA::Any *DevPollStatusCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 {
 
 	cout4 << "DevPollStatus::execute(): arrived " << endl;
-	
+
 //
 // Extract the input string
 //
@@ -227,7 +227,7 @@ CORBA::Any *DevPollStatusCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 	}
 	string d_name(tmp_name);
 	cout4 << "Received string = " << d_name << endl;
-	
+
 //
 // Call the device method and return to caller
 //
@@ -238,8 +238,8 @@ CORBA::Any *DevPollStatusCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 
 //+-------------------------------------------------------------------------
 //
-// method : 		AddObjPollingCmd::AddObjPollingCmd 
-// 
+// method : 		AddObjPollingCmd::AddObjPollingCmd
+//
 // description : 	constructors for Command class DevPollStatus
 //
 //--------------------------------------------------------------------------
@@ -255,8 +255,8 @@ AddObjPollingCmd::AddObjPollingCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		AddObjPollingCmd::execute 
-// 
+// method : 		AddObjPollingCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -266,7 +266,7 @@ CORBA::Any *AddObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 {
 
 	cout4 << "AddObjPolling::execute(): arrived " << endl;
-	
+
 //
 // Extract the input structure
 //
@@ -278,13 +278,13 @@ CORBA::Any *AddObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 				        (const char *)"Imcompatible command argument type, expected type is : DevVarLongStringArray",
 				        (const char *)"AddObjPollingCmd::execute");
 	}
-	
+
 //
 // Call the device method and return to caller
 //
 
 	(static_cast<DServer *>(device))->add_obj_polling(tmp_data);
-	
+
 //
 // Return to caller
 //
@@ -296,8 +296,8 @@ CORBA::Any *AddObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 
 //+-------------------------------------------------------------------------
 //
-// method : 		UpdObjPollingPeriodCmd::UpdObjPollingPeriodCmd 
-// 
+// method : 		UpdObjPollingPeriodCmd::UpdObjPollingPeriodCmd
+//
 // description : 	constructors for Command class UpdObjPolledPeriod
 //
 //--------------------------------------------------------------------------
@@ -313,8 +313,8 @@ UpdObjPollingPeriodCmd::UpdObjPollingPeriodCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		UpdObjPollingPeriodCmd::execute 
-// 
+// method : 		UpdObjPollingPeriodCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -324,7 +324,7 @@ CORBA::Any *UpdObjPollingPeriodCmd::execute(DeviceImpl *device, const CORBA::Any
 {
 
 	cout4 << "UpdObjPollingPeriod::execute(): arrived " << endl;
-	
+
 //
 // Extract the input structure
 //
@@ -336,13 +336,13 @@ CORBA::Any *UpdObjPollingPeriodCmd::execute(DeviceImpl *device, const CORBA::Any
 				        (const char *)"Imcompatible command argument type, expected type is : DevVarLongStringArray",
 				        (const char *)"UpdObjPollingPeriodCmd::execute");
 	}
-	
+
 //
 // Call the device method and return to caller
 //
 
 	(static_cast<DServer *>(device))->upd_obj_polling_period(tmp_data);
-	
+
 //
 // Return to caller
 //
@@ -354,8 +354,8 @@ CORBA::Any *UpdObjPollingPeriodCmd::execute(DeviceImpl *device, const CORBA::Any
 
 //+-------------------------------------------------------------------------
 //
-// method : 		RemObjPollingCmd::RemObjPollingCmd 
-// 
+// method : 		RemObjPollingCmd::RemObjPollingCmd
+//
 // description : 	constructors for Command class RemObjPolled
 //
 //--------------------------------------------------------------------------
@@ -371,8 +371,8 @@ RemObjPollingCmd::RemObjPollingCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		RemObjPollingCmd::execute 
-// 
+// method : 		RemObjPollingCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -382,7 +382,7 @@ CORBA::Any *RemObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 {
 
 	cout4 << "RemObjPolling::execute(): arrived " << endl;
-	
+
 //
 // Extract the input structure
 //
@@ -394,13 +394,13 @@ CORBA::Any *RemObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 				        (const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
 				        (const char *)"RemObjPollingCmd::execute");
 	}
-	
+
 //
 // Call the device method and return to caller
 //
 
 	(static_cast<DServer *>(device))->rem_obj_polling(tmp_data);
-	
+
 //
 // Return to caller
 //
@@ -411,8 +411,8 @@ CORBA::Any *RemObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 
 //+-------------------------------------------------------------------------
 //
-// method : 		StartPollingCmd::StartPollingCmd 
-// 
+// method : 		StartPollingCmd::StartPollingCmd
+//
 // description : 	constructors for Command class RemObjPolled
 //
 //--------------------------------------------------------------------------
@@ -426,8 +426,8 @@ StopPollingCmd::StopPollingCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		StartPollingCmd::execute 
-// 
+// method : 		StartPollingCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -437,13 +437,13 @@ CORBA::Any *StopPollingCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA
 {
 
 	cout4 << "StopPolling::execute(): arrived " << endl;
-	
+
 //
 // Call the device method and return to caller
 //
 
 	(static_cast<DServer *>(device))->stop_polling();
-	
+
 //
 // Return to caller
 //
@@ -454,8 +454,8 @@ CORBA::Any *StopPollingCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA
 
 //+-------------------------------------------------------------------------
 //
-// method : 		StartPollingCmd::StartPollingCmd 
-// 
+// method : 		StartPollingCmd::StartPollingCmd
+//
 // description : 	constructors for Command class RemObjPolled
 //
 //--------------------------------------------------------------------------
@@ -469,8 +469,8 @@ StartPollingCmd::StartPollingCmd(const char *name,
 
 //+-------------------------------------------------------------------------
 //
-// method : 		StartPollingCmd::execute 
-// 
+// method : 		StartPollingCmd::execute
+//
 // description : 	Trigger the execution of the method really implemented
 //			the command in the DServer class
 //
@@ -480,13 +480,13 @@ CORBA::Any *StartPollingCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORB
 {
 
 	cout4 << "StartPolling::execute(): arrived " << endl;
-	
+
 //
 // Call the device method and return to caller
 //
 
 	(static_cast<DServer *>(device))->start_polling();
-	
+
 //
 // Return to caller
 //

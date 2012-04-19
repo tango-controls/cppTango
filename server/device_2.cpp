@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -71,7 +71,7 @@ namespace Tango
 //--------------------------------------------------------------------------
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,string &dev_name):
-DeviceImpl(device_class,dev_name),ext_2(NULL)
+DeviceImpl(device_class,dev_name),ext_2(Tango_NullPtr)
 {
 	ext->idl_version = 2;
 }
@@ -79,7 +79,7 @@ DeviceImpl(device_class,dev_name),ext_2(NULL)
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 			   string &dev_name,
 			   string &desc):
-DeviceImpl(device_class,dev_name,desc),ext_2(NULL)
+DeviceImpl(device_class,dev_name,desc),ext_2(Tango_NullPtr)
 {
 	ext->idl_version = 2;
 }
@@ -87,17 +87,17 @@ DeviceImpl(device_class,dev_name,desc),ext_2(NULL)
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 	           	   string &dev_name,string &desc,
 	           	   Tango::DevState dev_state,string &dev_status):
-DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(NULL)
+DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
 {
 	ext->idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 	           	   const char *dev_name,
-			   const char *desc,
+                   const char *desc,
 	           	   Tango::DevState dev_state,
 	           	   const char *dev_status):
-DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(NULL)
+DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
 {
 	ext->idl_version = 2;
 }
@@ -930,8 +930,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 		if ((source == Tango::CACHE_DEV) && (polling_failed == true))
 		{
-			if (back != NULL)
-				delete back;
+            delete back;
 
 			AutoTangoMonitor sync(this,true);
 			ext->store_in_bb = false;
@@ -988,7 +987,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 	long nb_cmd = device_class->get_command_list().size();
 	cout4 << nb_cmd << " command(s) for device" << endl;
-	Tango::DevCmdInfoList_2 *back;
+	Tango::DevCmdInfoList_2 *back = NULL;
 
 	try
 	{
@@ -1011,12 +1010,12 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			if (str_in.size() != 0)
 				tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
 			else
-				tmp.in_type_desc = CORBA::string_dup(DescNotSet);
+				tmp.in_type_desc = CORBA::string_dup(NotSet);
 			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
 			if (str_out.size() != 0)
 				tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
 			else
-				tmp.out_type_desc = CORBA::string_dup(DescNotSet);
+				tmp.out_type_desc = CORBA::string_dup(NotSet);
 
 			(*back)[i] = tmp;
 		}
@@ -1064,7 +1063,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::command_query_2 arrived" << endl;
 
-	Tango::DevCmdInfo_2 *back;
+	Tango::DevCmdInfo_2 *back = NULL;
 	string cmd(command);
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
@@ -1102,12 +1101,12 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			if (str_in.size() != 0)
 				back->in_type_desc = CORBA::string_dup(str_in.c_str());
 			else
-				back->in_type_desc = CORBA::string_dup(DescNotSet);
+				back->in_type_desc = CORBA::string_dup(NotSet);
 			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
 			if (str_out.size() != 0)
 				back->out_type_desc = CORBA::string_dup(str_out.c_str());
 			else
-				back->out_type_desc = CORBA::string_dup(DescNotSet);
+				back->out_type_desc = CORBA::string_dup(NotSet);
 			break;
 		}
 	}
@@ -1173,7 +1172,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	cout4 << "Device_2Impl::get_attribute_config_2 arrived" << endl;
 
 	long nb_attr = names.length();
-	Tango::AttributeConfigList_2 *back;
+	Tango::AttributeConfigList_2 *back = NULL;
 	bool all_attr = false;
 
 //
@@ -1288,7 +1287,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	AutoTangoMonitor sync(&mon);
 
 	cout4 << "Device_2Impl::command_inout_history_2 arrived" << endl;
-	Tango::DevCmdHistoryList *back;
+	Tango::DevCmdHistoryList *back = NULL;
 
 	string cmd_str(command);
 
@@ -1402,7 +1401,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 
 	if ((state_cmd == true) || (status_cmd == true))
 	{
-		Tango::DevAttrHistoryList_3 *back_attr;
+		Tango::DevAttrHistoryList_3 *back_attr = NULL;
 		try
 		{
 			back_attr = new Tango::DevAttrHistoryList_3(n);
@@ -1493,8 +1492,8 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	blackbox_ptr->insert_op(Op_Read_Attr_history_2);
 
 	long vers = get_dev_idl_version();
-	Tango::DevAttrHistoryList *back;
-	Tango::DevAttrHistoryList_3 *back_3;
+	Tango::DevAttrHistoryList *back = NULL;
+	Tango::DevAttrHistoryList_3 *back_3 = NULL;
 	vector<PollObj *> &poll_list = get_poll_obj_list();
 	long nb_poll = poll_list.size();
 
