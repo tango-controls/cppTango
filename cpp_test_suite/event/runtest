@@ -320,7 +320,7 @@ PIDS=`ps -e | grep $DS_NAME | grep -v grep`
 echo "PIDS = $PIDS"
 
 $echo "\nTesting stateless event connection (takes time...)"
-sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+sleep 24 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 $DIR/stateless_sub $DEV20 -v
 ret=$?
 check_return_value $ret
