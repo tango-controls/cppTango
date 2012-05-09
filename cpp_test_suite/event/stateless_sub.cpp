@@ -80,6 +80,18 @@ int main(int argc, char **argv)
 
         eventID = device->subscribe_event(att_name,Tango::CHANGE_EVENT,eventCallback,filters,true);
 
+		Tango_sleep(6);
+
+		device->unsubscribe_event(eventID);
+
+		cout << "   Unsubscription while event still not connected --> OK" << endl;						
+
+//
+// Re-subscribe
+//
+
+		eventID = device->subscribe_event(att_name,Tango::CHANGE_EVENT,eventCallback,true);
+
 //
 // Wait for connection and event
 //

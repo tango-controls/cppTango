@@ -15,7 +15,7 @@ endif
 
 ifdef ubuntu
 ifdef dev
-OS=ubuntu1010
+OS=ubuntu1204
 else
 OS=ubuntu1004
 endif
