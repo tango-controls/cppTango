@@ -4,6 +4,29 @@ using namespace  Tango;
 
 #define CLASS_NAME "DevTest"
 
+void print_changes(string &desc, string &server, DbData &db_data)
+{
+	cout << desc << " -> " << server << " : " << endl;
+
+	DbData::iterator it = db_data.begin();
+	while(it != db_data.end())
+	{
+		cout << "   " << it->name;
+		for(size_t i = 0; i < it->value_string.size(); i++)
+			cout << ((i == 0) ? (" = ") : (" , ")) << it->value_string[i];
+//			cout << "   " << ((i == 0) ? ((str << it->value_string[i], (str >> nb_prop && str.eof()) ? " : " : (" = " + it->value_string[i]))) : (" , " + it->value_string[i]));
+		cout << endl;
+		++it;
+	}
+	cout << endl;
+}
+
+void print_changes(const char *desc, const char *server, DbData &db_data)
+{
+	string desc_str(desc), server_str(server);
+	print_changes(desc_str, server_str, db_data);
+}
+
 /*
  * This is a utility that configures properties of test device servers provided as
  * command line parameters. Attribute values, their ranges and other properties are
@@ -48,6 +71,9 @@ int main(int argc, char **argv)
 	try
 	{
 		db->add_server(str, db_dev_infos);
+		for(size_t i = 0; i < db_dev_infos.size(); i++)
+			cout << "Added pseudo server : " << str << " -> " << db_dev_infos[i].name << ", class : " << db_dev_infos[i]._class << endl;
+		cout << endl;
 	}
 	catch(...)
 	{
@@ -63,6 +89,7 @@ int main(int argc, char **argv)
 	try
 	{
 		db->put_device_property(db_dev_info_1.name, db_data);
+		print_changes("Device properties", db_dev_info_1.name.c_str(), db_data);
 	}
 	catch(...)
 	{
@@ -78,6 +105,7 @@ int main(int argc, char **argv)
 	try
 	{
 		db->put_device_property(db_dev_info_2.name, db_data);
+		print_changes("Device properties", db_dev_info_2.name.c_str(), db_data);
 	}
 	catch(...)
 	{
@@ -98,6 +126,7 @@ int main(int argc, char **argv)
 	try
 	{
 		db->put_device_property(dserver_name, db_data);
+		print_changes("Dserver properties", dserver_name.c_str(), db_data);
 	}
 	catch(...)
 	{
@@ -119,7 +148,8 @@ int main(int argc, char **argv)
 
 	try
 	{
-		db->put_class_property("DevTest", db_data);
+		db->put_class_property(CLASS_NAME, db_data);
+		print_changes("Class properties", CLASS_NAME, db_data);
 	}
 	catch(...)
 	{
@@ -154,9 +184,58 @@ int main(int argc, char **argv)
 	class_added_short_attr_label << str;
 	db_data.push_back(class_added_short_attr_label);
 
+	DbDatum class_def_class_attr("DefClassAttr"), class_def_class_attr_description("description"), class_def_class_attr_min_value("min_value"), class_def_class_attr_event_period("event_period"), class_def_class_attr_rel_change("rel_change"), class_def_class_attr_delta_val("delta_val"), class_def_class_attr_delta_t("delta_t");
+
+	num_prop = 6;
+	class_def_class_attr << num_prop;
+	db_data.push_back(class_def_class_attr);
+	str = "Class desc";
+	class_def_class_attr_description << str;
+	db_data.push_back(class_def_class_attr_description);
+	str = "20";
+	class_def_class_attr_min_value << str;
+	db_data.push_back(class_def_class_attr_min_value);
+	str = "500";
+	class_def_class_attr_event_period << str;
+	db_data.push_back(class_def_class_attr_event_period);
+	str = "33,44";
+	class_def_class_attr_rel_change << str;
+	db_data.push_back(class_def_class_attr_rel_change);
+	str = "5";
+	class_def_class_attr_delta_val << str;
+	db_data.push_back(class_def_class_attr_delta_val);
+	str = "2";
+	class_def_class_attr_delta_t << str;
+	db_data.push_back(class_def_class_attr_delta_t);
+
+	DbDatum class_def_class_user_attr("DefClassUserAttr"), class_def_class_user_attr_description("description"), class_def_class_user_attr_min_value("min_value"), class_def_class_user_attr_event_period("event_period"), class_def_class_user_attr_rel_change("rel_change"), class_def_class_user_attr_delta_val("delta_val"), class_def_class_user_attr_delta_t("delta_t");
+
+	num_prop = 6;
+	class_def_class_user_attr << num_prop;
+	db_data.push_back(class_def_class_user_attr);
+	str = "Class description";
+	class_def_class_user_attr_description << str;
+	db_data.push_back(class_def_class_user_attr_description);
+	str = "20";
+	class_def_class_user_attr_min_value << str;
+	db_data.push_back(class_def_class_user_attr_min_value);
+	str = "500";
+	class_def_class_user_attr_event_period << str;
+	db_data.push_back(class_def_class_user_attr_event_period);
+	str = "33,44";
+	class_def_class_user_attr_rel_change << str;
+	db_data.push_back(class_def_class_user_attr_rel_change);
+	str = "5";
+	class_def_class_user_attr_delta_val << str;
+	db_data.push_back(class_def_class_user_attr_delta_val);
+	str = "2";
+	class_def_class_user_attr_delta_t << str;
+	db_data.push_back(class_def_class_user_attr_delta_t);
+
 	try
 	{
 		db->put_class_attribute_property(CLASS_NAME, db_data);
+		print_changes("Class level attribute properties", CLASS_NAME, db_data);
 	}
 	catch(...)
 	{
@@ -183,6 +262,7 @@ int main(int argc, char **argv)
 		try
 		{
 			db->put_device_attribute_property(argv[i], db_data);
+			print_changes("Common device properties", argv[i], db_data);
 		}
 		catch(...)
 		{
@@ -210,29 +290,19 @@ int main(int argc, char **argv)
 	try
 	{
 		db->put_device_attribute_property(device1_name, db_data);
+		print_changes("Device specific attribute properties", device1_name.c_str(), db_data);
 	}
 	catch(...)
 	{
-		cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
+		cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << endl;
 	}
 
 	db_data.clear();
 	DbDatum min_poll_period("min_poll_period");
-
 	lg = 200;
 	min_poll_period << lg;
 	db_data.push_back(min_poll_period);
 
-	try
-	{
-		db->put_device_property(device1_name, db_data);
-	}
-	catch(...)
-	{
-		cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
-	}
-
-	db_data.clear();
 	DbDatum cmd_min_poll_period("cmd_min_poll_period");
 	str_vec.push_back("IOExcept");
 	str_vec.push_back("500");
@@ -240,9 +310,15 @@ int main(int argc, char **argv)
 	str_vec.clear();
 	db_data.push_back(cmd_min_poll_period);
 
+	DbDatum tst_property("tst_property");
+	lg = 25;
+	tst_property << lg;
+	db_data.push_back(tst_property);
+
 	try
 	{
 		db->put_device_property(device1_name, db_data);
+		print_changes("Device specific properties", device1_name.c_str(), db_data);
 	}
 	catch(...)
 	{
@@ -252,35 +328,22 @@ int main(int argc, char **argv)
 	try
 	{
 		db->put_device_alias(device1_name, device1_alias);
+		cout << "Device alias -> " << device1_name << " :\n   " << device1_alias << "\n" << endl;
 	}
 	catch(...)
 	{
-		cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
+		cout << "Exception: cannot set device alias for the device: " << device1_name << endl;
 	}
 
 	try
 	{
 		str = device1_name + "/" + "Short_attr";
 		db->put_attribute_alias(str, attribute_alias);
+		cout << "Attribute alias -> " << str << " :\n   " << attribute_alias << "\n" << endl;
 	}
 	catch(...)
 	{
-		cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
-	}
-
-	db_data.clear();
-	DbDatum tst_property("tst_property");
-	lg = 25;
-	tst_property << lg;
-	db_data.push_back(tst_property);
-
-	try
-	{
-		db->put_device_property(device1_name, db_data);
-	}
-	catch(...)
-	{
-		cout << "Exception: cannot set specific properties for the device: " << device1_name << endl;
+		cout << "Exception: cannot set attribute alias for the attribute: " << device1_name + "/" + "Short_attr" << endl;
 	}
 
 // device2
@@ -305,6 +368,7 @@ int main(int argc, char **argv)
 	try
 	{
 		db->put_device_attribute_property(device2_name, db_data);
+		print_changes("Device specific properties", device2_name.c_str(), db_data);
 	}
 	catch(...)
 	{
