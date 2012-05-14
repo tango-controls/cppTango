@@ -1,4 +1,4 @@
-AC_INIT(log4tango, 4.0.5, nicolas.leclercq@synchrotron-soleil.fr)
+AC_INIT(log4tango, 4.0.6, nicolas.leclercq@synchrotron-soleil.fr)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE
@@ -15,7 +15,7 @@ AC_PREREQ(2.50)
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work 
 #                 better
 # CURRENT : REVISION : AGE
-LT_VERSION=4:5:0
+LT_VERSION=4:6:0
 
 AC_SUBST(LT_VERSION)
 
