@@ -89,7 +89,7 @@ public:
   Level::Value level;
 
   /** Name of thread in which this logging event was generated */
-  //std::string thread_name;
+  std::string thread_name;
 
   /** id of thread in which this logging event was generated */
   long thread_id;

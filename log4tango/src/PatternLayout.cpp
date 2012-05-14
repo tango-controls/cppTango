@@ -133,7 +133,13 @@ namespace log4tango {
 
     struct ThreadNameComponent : public PatternLayout::PatternComponent {
         virtual void append(std::ostringstream& out, const LoggingEvent& event) {
-            out << event.thread_id; // event.thread_name;
+            out << event.thread_name;
+        }
+    };
+
+    struct ThreadIdComponent : public PatternLayout::PatternComponent {
+        virtual void append(std::ostringstream& out, const LoggingEvent& event) {
+            out << event.thread_id;
         }
     };
 
@@ -357,6 +363,12 @@ int PatternLayout::set_conversion_pattern (const std::string& conversionPattern)
                 break;
             case 'p':
                 component = new LevelComponent();
+                break;
+            case 't':
+                component = new ThreadIdComponent();
+                break;
+            case 'T':
+                component = new ThreadNameComponent();
                 break;
             case 'r':
                 component = new MillisSinceEpochComponent();
