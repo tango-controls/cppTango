@@ -61,9 +61,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
 else
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.5/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
 endif
 
 ##############################################################################
