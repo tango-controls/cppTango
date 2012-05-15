@@ -123,7 +123,8 @@ endif
 
 CXXFLAGS = -g $(CXX11) -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS)
 LIB_TANGO = -ltango
-LFLAGS =  -g $(LIB_DIRS)  -ltango -llog4tango \
+#LIB_TANGO = /home/taurel/tango/install/ubuntu1204/lib/debug/libtango.8.0.5.a -lgcov
+LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
 	  -lomniORB4 -lomniDynamic4 -lCOS4 -lzmq -lomnithread -lpthread -ldl
 endif
 
