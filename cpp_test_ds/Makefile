@@ -128,6 +128,7 @@ LIB_TANGO = $(LIB_TANGO_DIR)/debug/libtango.a
 endif
 else
 LIB_TANGO = -ltango
+#LIB_TANGO = /home/taurel/tango/install/ubuntu1204/lib/debug/libtango.8.0.5.a -lgcov
 endif
 
 
