@@ -275,6 +275,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = config src include tests $(am__append_1)
+ACLOCAL_AMFLAGS = -I m4
 DIST_SUBDIRS = config src include tests $(am__append_2)
 EXTRA_DIST = log4tango.pc.in \
 		log4tango.m4 \
