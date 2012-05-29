@@ -1,5 +1,7 @@
 SUBDIRS = config src include tests
 
+ACLOCAL_AMFLAGS = -I m4
+
 if DOC
 SUBDIRS += doc
 endif
