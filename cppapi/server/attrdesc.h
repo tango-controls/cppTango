@@ -12,7 +12,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -47,27 +47,6 @@ namespace Tango
 class AttrProperty;
 class WAttribute;
 
-class AttrExt
-{
-public:
-	AttrExt():poll_period(0),cl_name("Attr") {disp_level = Tango::OPERATOR;}
-	AttrExt(DispLevel level):poll_period(0),cl_name("Attr") {disp_level = level;}
-
-	Tango::DispLevel	disp_level;			// Display  level
-	long				poll_period;		// Polling period
-
-	bool				fire_change_event;
-	bool				fire_archive_event;
-	bool				check_change_event;
-	bool				check_archive_event;
-	bool				fire_dr_event;
-
-	string				cl_name;
-};
-
-class UserDefaultAttrPropExt
-{
-};
 
 /**
  * User class to set attribute default properties.
@@ -92,10 +71,10 @@ public:
 /**
  * Constructs a newly allocated UserDefaultAttrProp object.
  */
-	UserDefaultAttrProp() {ext = NULL;}
+	UserDefaultAttrProp():ext(Tango_NullPtr) {}
 //@}
 
-	~UserDefaultAttrProp() {delete ext;}
+	~UserDefaultAttrProp() {}
 
 /**@name Set default property methods */
 //@{
@@ -244,7 +223,7 @@ public:
  *
  * @param	def_abs_change	The user default change event abs_change property
  */
-	void set_abs_change(const char *def_abs_change)
+	void set_event_abs_change(const char *def_abs_change)
 	{
 		abs_change = def_abs_change;
 	}
@@ -254,7 +233,7 @@ public:
  *
  * @param	def_rel_change	The user default change event rel_change property
  */
-	void set_rel_change(const char *def_rel_change)
+	void set_event_rel_change(const char *def_rel_change)
 	{
 		rel_change = def_rel_change;
 	}
@@ -264,7 +243,7 @@ public:
  *
  * @param	def_period	The user default periodic event period property
  */
-	void set_period(const char *def_period)
+	void set_event_period(const char *def_period)
 	{
 		period = def_period;
 	}
@@ -274,7 +253,7 @@ public:
  *
  * @param	def_archive_abs_change	The user default archive event abs_change property
  */
-	void set_archive_abs_change(const char *def_archive_abs_change)
+	void set_archive_event_abs_change(const char *def_archive_abs_change)
 	{
 		archive_abs_change = def_archive_abs_change;
 	}
@@ -284,7 +263,7 @@ public:
  *
  * @param	def_archive_rel_change	The user default archive event rel_change property
  */
-	void set_archive_rel_change(const char *def_archive_rel_change)
+	void set_archive_event_rel_change(const char *def_archive_rel_change)
 	{
 		archive_rel_change = def_archive_rel_change;
 	}
@@ -294,7 +273,7 @@ public:
  *
  * @param	def_archive_period	The user default archive event period property
  */
-	void set_archive_period(const char *def_archive_period)
+	void set_archive_event_period(const char *def_archive_period)
 	{
 		archive_period = def_archive_period;
 	}
@@ -321,7 +300,16 @@ public:
 	string			archive_rel_change;
 	string			archive_period;
 
-	UserDefaultAttrPropExt	*ext;
+private:
+    class UserDefaultAttrPropExt
+    {
+    };
+
+#ifdef HAS_UNIQUE_PTR
+    unique_ptr<UserDefaultAttrPropExt>  ext;           // Class extension
+#else
+	UserDefaultAttrPropExt	            *ext;
+#endif
 };
 
 /**
@@ -484,32 +472,23 @@ public:
 	bool is_data_ready_event() {return ext->fire_dr_event;}
 //@}
 
-	string 			&get_name() {return name;}
-	Tango::AttrDataFormat 	get_format() {return format;}
-	Tango::AttrWriteType 	get_writable() {return writable;}
-	long 			get_type() {return type;}
-	Tango::DispLevel	get_disp_level() {return ext->disp_level;}
-	long			get_polling_period() {return ext->poll_period;}
-	bool			get_memorized() {return mem;}
-	bool			get_memorized_init() {return mem_init;}
-	string			&get_assoc() {return assoc_name;}
-	const string	&get_cl_name() {return ext->cl_name;}
-	void			set_cl_name(const string &cl) {ext->cl_name = cl;}
-	bool			is_assoc()
-				{
-					if (assoc_name != AssocWritNotSpec)
-						return true;
-					else
-						return false;
-				}
+	string  &get_name() {return name;}
+	Tango::AttrDataFormat get_format() {return format;}
+	Tango::AttrWriteType get_writable() {return writable;}
+	long get_type() {return type;}
+	Tango::DispLevel get_disp_level() {return ext->disp_level;}
+	long get_polling_period() {return ext->poll_period;}
+	bool get_memorized() {return mem;}
+	bool get_memorized_init() {return mem_init;}
+	string	&get_assoc() {return assoc_name;}
+	const string &get_cl_name() {return ext->cl_name;}
+	void set_cl_name(const string &cl) {ext->cl_name = cl;}
+	bool is_assoc() {if (assoc_name != AssocWritNotSpec)return true;else return false;}
 
 	vector<AttrProperty>	&get_class_properties() {return class_properties;}
 	vector<AttrProperty>	&get_user_default_properties() {return user_default_properties;}
-	void 			set_class_properties(vector<AttrProperty> &in_prop)
-				{
-					class_properties = in_prop;
-				}
-	void			check_type();
+	void set_class_properties(vector<AttrProperty> &in_prop) {class_properties=in_prop;}
+	void check_type();
 
 	virtual void read(DeviceImpl *,Attribute &) {};
 	virtual void write(DeviceImpl *,WAttribute &) {};
@@ -532,12 +511,42 @@ protected:
 	vector<AttrProperty>	class_properties;
 	vector<AttrProperty>	user_default_properties;
 
-private:
-	AttrExt					*ext;
-};
+ 	void convert_def_prop(const string &, double &);
+ 	void validate_def_prop(const string &, const char *);
+ 	void validate_def_change_prop(const string &, const char *);
+ 	void throw_incoherent_def_prop(const char *, const char *);
+ 	void throw_invalid_def_prop(const char *, const char *);
 
-class SpectrumAttrExt
-{
+private:
+    class AttrExt
+    {
+    public:
+        AttrExt():poll_period(0),fire_change_event(false),fire_archive_event(false),
+                  check_change_event(false),check_archive_event(false),
+                  fire_dr_event(false),cl_name("Attr")
+                  {disp_level = Tango::OPERATOR;}
+        AttrExt(DispLevel level):poll_period(0),fire_change_event(false),fire_archive_event(false),
+                                 check_change_event(false),check_archive_event(false),
+                                 fire_dr_event(false),cl_name("Attr")
+                                 {disp_level = level;}
+
+        Tango::DispLevel	disp_level;			// Display  level
+        long				poll_period;		// Polling period
+
+        bool				fire_change_event;
+        bool				fire_archive_event;
+        bool				check_change_event;
+        bool				check_archive_event;
+        bool				fire_dr_event;
+
+        string				cl_name;
+    };
+
+#ifdef HAS_UNIQUE_PTR
+    unique_ptr<AttrExt>     ext;           // Class extension
+#else
+	AttrExt					*ext;
+#endif
 };
 
 /**
@@ -614,7 +623,7 @@ public:
 /**
  * The object desctructor.
  */
-	~SpectrumAttr() {delete ext;}
+	~SpectrumAttr() {}
 //@}
 
 	long 			get_max_x() {return max_x;}
@@ -623,12 +632,17 @@ protected:
 	long			max_x;
 
 private:
-	SpectrumAttrExt		*ext;
+    class SpectrumAttrExt
+    {
+    };
+
+#ifdef HAS_UNIQUE_PTR
+    unique_ptr<SpectrumAttrExt>     ext;           // Class extension
+#else
+	SpectrumAttrExt		            *ext;
+#endif
 };
 
-class ImageAttrExt
-{
-};
 
 /**
  * User class to create a two dimensions attribute object.
@@ -712,7 +726,7 @@ public:
 /**
  * The object desctructor.
  */
-	~ImageAttr() {delete ext;}
+	~ImageAttr() {}
 //@}
 
 	long 			get_max_y() {return max_y;}
@@ -721,7 +735,15 @@ protected:
 	long			max_y;
 
 private:
-	ImageAttrExt		*ext;
+    class ImageAttrExt
+    {
+    };
+
+#ifdef HAS_UNIQUE_PTR
+    unique_ptr<ImageAttrExt>    ext;           // Class extension
+#else
+	ImageAttrExt		        *ext;
+#endif
 };
 
 } // End of Tango namespace
