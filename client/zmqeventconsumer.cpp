@@ -225,21 +225,21 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
                 res = heartbeat_sub_sock->recv(&received_event_name);
                 if (res == false)
                 {
-                    cerr << "First Zmq recv call on heartbeat socket returned false!" << endl;
+					print_error_message("First Zmq recv call on heartbeat socket returned false!");
                     continue;
                 }
 
                 res = heartbeat_sub_sock->recv(&received_endian);
                 if (res == false)
                 {
-                    cerr << "Second Zmq recv call on heartbeat socket returned false!" << endl;
+                    print_error_message("Second Zmq recv call on heartbeat socket returned false!");
                     continue;
                 }
 
                 res = heartbeat_sub_sock->recv(&received_call);
                 if (res == false)
                 {
-                    cerr << "Third Zmq recv call on heartbeat socket returned false!" << endl;
+                    print_error_message("Third Zmq recv call on heartbeat socket returned false!");
                     continue;
                 }
 
@@ -247,7 +247,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
             }
             catch (zmq::error_t &e)
             {
-                cerr << "Zmq exception while receiving heartbeat data!" << endl;
+                print_error_message("Zmq exception while receiving heartbeat data!");
                 cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
                 items[1].revents = 0;
                 continue;
@@ -310,28 +310,28 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
                 res = event_sub_sock->recv(&received_event_name);
                 if (res == false)
                 {
-                    cerr << "First Zmq recv call on event socket returned false!" << endl;
+                    print_error_message("First Zmq recv call on event socket returned false!");
                     continue;
                 }
 
                 res = event_sub_sock->recv(&received_endian);
                 if (res == false)
                 {
-                    cerr << "Second Zmq recv call on event socket returned false!" << endl;
+                    print_error_message("Second Zmq recv call on event socket returned false!");
                     continue;
                 }
 
                 res = event_sub_sock->recv(&received_call);
                 if (res == false)
                 {
-                    cerr << "Third Zmq recv call on event socket returned false!" << endl;
+                    print_error_message("Third Zmq recv call on event socket returned false!");
                     continue;
                 }
 
                 res = event_sub_sock->recv(&received_event_data);
                 if (res == false)
                 {
-                    cerr << "Forth Zmq recv call on event socket returned false!" << endl;
+                    print_error_message("Forth Zmq recv call on event socket returned false!");
                     continue;
                 }
 
@@ -339,7 +339,7 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
             }
             catch (zmq::error_t &e)
             {
-                cerr << "Zmq exception while receiving event data!" << endl;
+                print_error_message("Zmq exception while receiving event data!");
                 cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
                 items[2].revents = 0;
                 continue;
@@ -528,7 +528,9 @@ void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::me
     }
     catch (...)
     {
-        cerr << "Received a malformed event call info data for event " << event_name << endl;
+        string st("Received a malformed event call info data for event ");
+		st = st + event_name;
+		print_error_message(st.c_str());
         unsigned char *tmp = (unsigned char *)received_call.data();
         for (unsigned int loop = 0;loop < received_call.size();loop++)
         {
@@ -604,7 +606,9 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
     }
     catch (...)
     {
-        cerr << "Received a malformed event call info data for event " << event_name << endl;
+        string st("Received a malformed event call info data for event ");
+		st = st + event_name;
+		print_error_message(st.c_str());
         unsigned char *tmp = (unsigned char *)zmq_msg_data(&received_call);
         for (unsigned int loop = 0;loop < zmq_msg_size(&received_call);loop++)
         {
@@ -973,7 +977,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                 if (event_mcast.insert(make_pair(ev_name,tmp_sock)).second == false)
                 {
                     delete tmp_sock;
-                    cerr << "Error while inserting pair<event name,mcast socket> in map!" << endl;
+                    print_error_message("Error while inserting pair<event name,mcast socket> in map!");
 
                     Except::throw_exception((const char *)"DServer_Events",
                                             (const char *)"Error while inserting pair<event name,multicast socket> in map",
@@ -1008,7 +1012,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
         break;
 
         default:
-            cerr << "ZMQ main thread: Received an unknown command code from control socket!" << endl;
+            print_error_message("ZMQ main thread: Received an unknown command code from control socket!");
         break;
     }
 
@@ -1709,7 +1713,9 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
         }
         catch (...)
         {
-            cerr << "Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of " << ipos->first << endl;
+            string st("Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of ");
+			st = st + ipos->first;
+			print_error_message(st.c_str());
         }
     }
     else
@@ -1739,7 +1745,9 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
                         }
                         catch (...)
                         {
-                            cerr << "Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of " << ipos->first << endl;
+                            string st("Tango::ZmqEventConsumer::push_heartbeat_event() timeout on channel monitor of ");
+							st = st + ipos->first;
+							print_error_message(st.c_str());
                         }
                         break;
                     }
@@ -1747,7 +1755,11 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
             }
         }
         if (loop == env_var_fqdn_prefix.size())
-            cerr << "No entry in channel map for heartbeat " << ev_name << "!" << endl;
+		{
+            string st("No entry in channel map for heartbeat ");
+			st = st + ev_name;
+			print_error_message(st.c_str());
+		}
     }
 
     map_modification_lock.readerOut();
@@ -2231,7 +2243,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    cerr << "Tango::ZmqEventConsumer::push_structured_event() exception in callback method of " << ipos->first << endl;
+                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+									st = st + ipos->first;
+									print_error_message(st.c_str());
                                 }
 
                                 delete event_data;
@@ -2285,7 +2299,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    cerr << "Tango::ZmqEventConsumer::push_structured_event() exception in callback method of " << ipos->first << endl;
+                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+									st = st + ipos->first;
+									print_error_message(st.c_str());
                                 }
 
                                 delete event_data;
@@ -2315,7 +2331,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 }
                                 catch (...)
                                 {
-                                    cerr << "Tango::ZmqEventConsumer::push_structured_event() exception in callback method of " << ipos->first << endl;
+                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+									st = st + ipos->first;
+									print_error_message(st.c_str());
                                 }
                                 delete event_data;
                             }
@@ -2365,7 +2383,11 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                 string reason = e.errors[0].reason.in();
                 if (reason == "API_CommandTimedOut")
-                    cerr << "Tango::ZmqEventConsumer::push_structured_event() timeout on callback monitor of " << ipos->first << endl;
+				{
+                    string st("Tango::ZmqEventConsumer::push_structured_event() timeout on callback monitor of ");
+					st = st + ipos->first;
+					print_error_message(st.c_str());
+				}
 
                 break;
             }
@@ -2381,7 +2403,10 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     map_modification_lock.readerOut();
                 }
 
-                cerr << "Tango::ZmqEventConsumer::push_structured_event(): - " << ipos->first << " - Unknown exception (Not a DevFailed) while calling Callback " << endl;
+                string st("Tango::ZmqEventConsumer::push_structured_event(): - ");
+				st = st + ipos->first;
+				st = st + " - Unknown exception (Not a DevFailed) while calling Callback ";
+				print_error_message(st.c_str());
 
                 break;
             }
@@ -2394,10 +2419,37 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
     if (loop == env_var_fqdn_prefix.size())
     {
-        cerr << "Event " << ev_name << " not found in event callback map !!!" << endl;
+        string st("Event ");
+		st = st + ev_name;
+		st = st + " not found in event callback map !!!";
+		print_error_message(st.c_str());
 		// even if nothing was found in the map, free the lock
         map_modification_lock.readerOut();
     }
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ZmqEventConsumer::print_error_message
+//
+// description :    Print error message on stderr but first print date
+//
+// argument(s) : in : mess : The user error message
+//
+//-----------------------------------------------------------------------------
+
+void ZmqEventConsumer::print_error_message(const char *mess)
+{
+	time_t tmp_val = time(NULL);
+					
+	char tmp_date[128];
+#ifdef _TG_WINDOWS_
+	ctime_s(tmp_date,128,&tmp_val);
+#else
+	ctime_r(&tmp_val,tmp_date);
+#endif
+	tmp_date[strlen(tmp_date) - 1] = '\0';
+	cerr << tmp_date << ": " << mess << endl;
 }
 
 //+----------------------------------------------------------------------------
