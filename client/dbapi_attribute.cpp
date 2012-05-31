@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- July 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -17,12 +17,12 @@ static const char *RcsId = "$Id$\n$Name$";
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -33,7 +33,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 
-                                                   
+
 using namespace CORBA;
 
 namespace Tango
@@ -43,7 +43,7 @@ namespace Tango
 //
 // DbAttribute::DbAttribute() - constructor to create a DbAttribute object for
 //			  accessing an attribute of this name in the specified
-//			  TANGO database (import/export info and properties) 
+//			  TANGO database (import/export info and properties)
 //
 //-----------------------------------------------------------------------------
 
@@ -83,12 +83,12 @@ DbAttribute::DbAttribute(string &att_name, string &dev_name, string &host,string
 {
 	name = att_name;
 	device_name = dev_name;
-	
+
 	TangoSys_MemStream s;
 	int port_num;
 	s << port_str << ends;
 	s >> port_num;
-	
+
 	db_ind = ApiUtil::instance()->get_db_ind(host,port_num);
 	ext_dbase = false;
 }

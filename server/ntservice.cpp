@@ -1,4 +1,4 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -9,12 +9,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
@@ -66,9 +66,9 @@ static char* GetErrorText()
 void NTEventLogger::emitMessage(int eventType, const char* msg)
 {
     	const char* strings[1];
-    
+
     	strings[0] = msg;
-    
+
     	::ReportEvent(eventSource_,         // handle of event source
 		      eventType,            // event type
 		      0,                    // event logger
@@ -83,7 +83,7 @@ void NTEventLogger::emitMessage(int eventType, const char* msg)
 bool NTEventLogger::installValues(HKEY key)
 {
 	char path[512];
-    
+
 //
 // Get path to executable.
 //
@@ -94,7 +94,7 @@ bool NTEventLogger::installValues(HKEY key)
 		cerr << "GetModuleFileName failed: " << err.in() << endl;
 		return false;
    	}
-    
+
     const char* keyname;
 
 //
@@ -170,7 +170,7 @@ bool NTEventLogger::install()
     HKEY keyHandle;
     if(::RegOpenKeyEx(regHandle,keyName.c_str(), 0, KEY_ALL_ACCESS, &keyHandle) != ERROR_SUCCESS)
     {
-    
+
 //
 // Create the key
 //
@@ -199,7 +199,7 @@ NTEventLogger::uninstall()
 //
 // Constructor the key name
 //
-    
+
 	string keyName("SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\");
     keyName += service_;
 
@@ -254,7 +254,7 @@ static BOOL WINAPI _OB_controlHandler(DWORD dwCtrlType)
 
     }
     return false;
-} 
+}
 
 //
 // The NTService - only one instance is allowed
@@ -274,7 +274,7 @@ void NTService::statusUpdate(DWORD currentState, DWORD exitCode, DWORD waitHint)
 
     if(debug_)
         return;
-    
+
     if (currentState == SERVICE_START_PENDING)
         status_.dwControlsAccepted = 0;
     else
@@ -309,7 +309,7 @@ void NTService::control(DWORD ctrlCode)
     switch(ctrlCode)
     {
     case SERVICE_CONTROL_STOP:
-	
+
 //
 // Stop the service.
 //
@@ -322,9 +322,9 @@ void NTService::control(DWORD ctrlCode)
     	statusUpdate(SERVICE_STOP_PENDING);
         stop();
         return;
-        
+
     case SERVICE_CONTROL_INTERROGATE:
-	
+
 //
 // Update the service status.
 //
@@ -350,13 +350,13 @@ void NTService::main(int argc, char** argv)
     statusHandle_ = ::RegisterServiceCtrlHandler(name_.c_str(), _OB_serviceCtrl);
     if(statusHandle_)
     {
-	
+
 //
 // SERVICE_STATUS members that don't change in example
 //
         status_.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
         status_.dwServiceSpecificExitCode = 0;
-        
+
 //
 // report the status to the service control manager.
 //
@@ -452,7 +452,7 @@ checkPoint_(0),
 stopped_(false)
 {
     instance_ = this;
-	
+
 //
 // Build exececutable name from full executable name
 //
@@ -466,7 +466,7 @@ stopped_(false)
 		tmp++;
 		exec_name_ = tmp;
 	}
-	
+
 //
 // Remove the .exe after the executable name
 //
@@ -488,11 +488,8 @@ stopped_(false)
 
 NTService::~NTService()
 {
-    if(logger_ != 0)
-    {
-		delete logger_;
-		logger_ = 0;
-    }
+    delete logger_;
+    logger_ = 0;
     instance_ = 0;
 }
 
@@ -524,7 +521,7 @@ bool NTService::install(char *inst_name,bool autoStart)
 //
 // Open the service manager.
 //
-    
+
     SC_HANDLE managerHandle = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 	if(!managerHandle)
     {
@@ -532,7 +529,7 @@ bool NTService::install(char *inst_name,bool autoStart)
         cerr << "OpenSCManager failed: " <<  err.in() << endl;
         return rc;
     }
-	
+
 //
 // Build service name and title
 //
@@ -540,11 +537,11 @@ bool NTService::install(char *inst_name,bool autoStart)
 	name_ = exec_name_ + '_';
 	name_ = name_ + inst_name;
 	title_ = exec_name_ + " Tango device server (" + inst_name + ")";
-	
+
 //
 // Create a new service.
 //
-    
+
     DWORD start = (autoStart) ? SERVICE_AUTO_START : SERVICE_DEMAND_START;
     SC_HANDLE serviceHandle = ::CreateService(managerHandle,              // SCManager database
 						  name_.c_str(),              // name of service
@@ -559,7 +556,7 @@ bool NTService::install(char *inst_name,bool autoStart)
 						  "",                         // dependencies
 						  NULL,                       // LocalSystem account
 						  NULL);                      // no password
-    
+
     if(serviceHandle)
     {
         cout << title_.c_str() << ": installed." << endl;
@@ -571,7 +568,7 @@ bool NTService::install(char *inst_name,bool autoStart)
 		CORBA::String_var err = GetErrorText();
         cerr << "CreateService Failed: " << err.in() << endl;
     }
-    
+
     ::CloseServiceHandle(managerHandle);
 
 
@@ -583,7 +580,7 @@ bool NTService::install(char *inst_name,bool autoStart)
     {
 		rc = logger_ -> install();
     }
-	
+
 //
 // Store instance name and TANGO_HOST env. variable in the registry.
 // The key name is built from the exec name and the instance name//
@@ -607,7 +604,7 @@ bool NTService::install(char *inst_name,bool autoStart)
     if(::RegOpenKeyEx(regHandle, keyName.c_str(), 0, KEY_ALL_ACCESS,
 			  &keyHandle) != ERROR_SUCCESS)
     {
-	
+
 //
 // Create the key
 //
@@ -643,7 +640,7 @@ bool NTService::install(char *inst_name,bool autoStart)
 		cerr << "Tango_host environment variable not defined !!!" << endl;
 		return false;
 	}
-	
+
     keyname = "TangoHost";
     if (::RegSetValueEx(keyHandle,keyname,0,REG_SZ,(unsigned char *)env,
 			    strlen(env) + 1) != ERROR_SUCCESS)
@@ -675,7 +672,7 @@ bool NTService::uninstall(char *inst_name)
 					    SERVICE_ALL_ACCESS);
     if(serviceHandle)
     {
-	
+
 //
 // try to stop the service
 //
@@ -700,7 +697,7 @@ bool NTService::uninstall(char *inst_name)
            	 else
            		 cerr << title_ << ": failed to stop." << endl;
         }
-        
+
 //
 // now remove the service
 //
@@ -745,7 +742,7 @@ void NTService::run(int argc, char** argv)
     }
     else
     {
-	
+
 //
 // Define the service dispatch table.
 //
@@ -797,7 +794,7 @@ int NTService::options(int argc,char *argv[])
 // Find command line argument specific to service
 //
 // TO DO
-// TAKE CARE: When the service is started, this method is called with only 
+// TAKE CARE: When the service is started, this method is called with only
 // one arg. We can't test argc <=2 or we have to refuse to do anything if argc
 // <2 only if it is not a start command
 //

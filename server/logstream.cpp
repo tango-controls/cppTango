@@ -9,7 +9,7 @@
 // author(s) :	  N.Leclercq - SOLEIL
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -20,12 +20,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -45,7 +45,7 @@ namespace Tango
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevFailed &e)
 {
@@ -70,7 +70,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevFaile
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarCharArray &v)
 {
@@ -87,7 +87,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarCh
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarShortArray &v)
 {
@@ -104,7 +104,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarSh
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarLongArray &v)
 {
@@ -121,7 +121,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarLo
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarFloatArray &v)
 {
@@ -138,7 +138,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarFl
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarDoubleArray &v)
 {
@@ -155,7 +155,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarDo
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarUShortArray &v)
 {
@@ -172,7 +172,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarUS
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarULongArray &v)
 {
@@ -189,7 +189,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarUL
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarStringArray &v)
 {
@@ -206,13 +206,13 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const DevVarSt
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribute &a)
 {
 	Tango::AttributeConfig conf;
 	(const_cast<Attribute &>(a)).get_properties(conf);
-	
+
         ls << "Attribute name: " << conf.name.in() << endl;
 	ls << "Attribute data_type: ";
 	switch (conf.data_type)
@@ -220,15 +220,15 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	  case Tango::DEV_SHORT :
 		  ls << "Tango::DevShort" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_LONG :
-		  ls << "Tango::DevLong" << endl; 
+		  ls << "Tango::DevLong" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_DOUBLE :
-		  ls << "Tango::DevDouble" << endl; 
+		  ls << "Tango::DevDouble" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_STRING :
 		  ls << "Tango::DevString" << endl;
 		  break;
@@ -236,19 +236,19 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	  case Tango::DEV_FLOAT :
 		  ls << "Tango::DevFloat" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_BOOLEAN :
-		  ls << "Tango::DevBoolean" << endl; 
+		  ls << "Tango::DevBoolean" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_USHORT :
-		  ls << "Tango::DevUShort" << endl; 
+		  ls << "Tango::DevUShort" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_UCHAR :
 		  ls << "Tango::DevUChar" << endl;
 		  break;
-		  
+
 	  case Tango::DEV_STATE :
 	  	  ls << "Tango::DevState" << endl;
 		  break;
@@ -258,21 +258,21 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	{
 	  case Tango::FMT_UNKNOWN:
 	  	  break;
-		  
+
 	  case Tango::SCALAR :
 		  ls << "scalar" << endl;
 		  break;
-		  
+
 	  case Tango::SPECTRUM :
-		  ls << "spectrum, max_dim_x: " 
+		  ls << "spectrum, max_dim_x: "
             << conf.max_dim_x << endl;
 		  break;
-		  
+
 	  case Tango::IMAGE :
-		  ls << "image, max_dim_x: " 
-            << conf.max_dim_x 
-            << ", max_dim_y: " 
-            << conf.max_dim_y 
+		  ls << "image, max_dim_x: "
+            << conf.max_dim_x
+            << ", max_dim_y: "
+            << conf.max_dim_y
             << endl;
 		  break;
 	}
@@ -298,7 +298,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream&  operator<< (log4tango::LoggerStream& ls, const AttrProperty& ap)
 {
@@ -310,7 +310,7 @@ log4tango::LoggerStream&  operator<< (log4tango::LoggerStream& ls, const AttrPro
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attr& a)
 {
@@ -318,11 +318,11 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attr& a)
   unsigned int n = v.size();
   if (n) {
 	  for (unsigned  i = 0; i < n; i++) {
-      ls << "Attr: " 
+      ls << "Attr: "
          << const_cast<Attr&>(a).get_name()
-         << " Property: name:" 
-         << v[i].get_name() 
-         << " - value:" 
+         << " Property: name:"
+         << v[i].get_name()
+         << " - value:"
          << v[i].get_value();
       if (i <= (n - 2)) ls << endl;
 	  }
@@ -335,7 +335,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attr& a)
 //+----------------------------------------------------------------------------
 //
 // method : LoggerStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const AttrManip& m)
 {
@@ -348,7 +348,7 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const AttrMani
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Devfailed &e)
 {
@@ -372,7 +372,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Devfailed &e)
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarCharArray &v)
 {
@@ -389,7 +389,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarCharArra
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarShortArray &v)
 {
@@ -406,7 +406,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarShortArr
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarLongArray &v)
 {
@@ -423,7 +423,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarLongArra
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarFloatArray &v)
 {
@@ -440,7 +440,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarFloatArr
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarDoubleArray &v)
 {
@@ -457,7 +457,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarDoubleAr
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarUShortArray &v)
 {
@@ -474,7 +474,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarUShortAr
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarULongArray &v)
 {
@@ -491,7 +491,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarULongArr
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarStringArray &v)
 {
@@ -508,7 +508,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const DevVarStringAr
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attribute &a)
 {
@@ -533,24 +533,24 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attribute &a)
 		  ls << "Tango::DevString" << endl;
 		  break;
 	}
-	
+
 	ls << "Attribute data_format: ";
 	switch (conf.data_format)
 	{
 	  case Tango::SCALAR:
-		  ls << "scalar" 
+		  ls << "scalar"
          << endl;
 		  break;
 	  case Tango::SPECTRUM:
-		  ls << "spectrum, max_dim_x: " 
-         << conf.max_dim_x 
+		  ls << "spectrum, max_dim_x: "
+         << conf.max_dim_x
          << endl;
 		  break;
 	  case Tango::IMAGE:
-		  ls << "image, max_dim_x: " 
-         << conf.max_dim_x 
-         << ", max_dim_y: " 
-         << conf.max_dim_y 
+		  ls << "image, max_dim_x: "
+         << conf.max_dim_x
+         << ", max_dim_y: "
+         << conf.max_dim_y
          << endl;
 		  break;
 	}
@@ -569,7 +569,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attribute &a)
 	ls << "Attribute min alarm: " << conf.min_alarm.in() << endl;
 	ls << "Attribute max alarm: " << conf.max_alarm.in() << endl;
 	ls << "Attribute min value: " << conf.min_value.in() << endl;
-	ls << "Attribute max value: " << conf.max_value.in() << endl;	
+	ls << "Attribute max value: " << conf.max_value.in() << endl;
 	ls << "Attribute writable_attr_name: " << conf.writable_attr_name.in() << endl;
 
 	return ls;
@@ -578,14 +578,14 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attribute &a)
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const AttrProperty &p)
 {
 	AttrProperty &ap = const_cast<AttrProperty &>(p);
-	ls << "Attr.Property: name:" 
-     << ap.get_name() 
-     << " - Property value:" 
+	ls << "Attr.Property: name:"
+     << ap.get_name()
+     << " - Property value:"
      << ap.get_value();
 	return ls;
 }
@@ -593,7 +593,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const AttrProperty &
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attr& a)
 {
@@ -601,11 +601,11 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attr& a)
   unsigned int n = v.size();
   if (n) {
 	  for (unsigned  i = 0; i < n; i++) {
-      ls << "Attr: " 
+      ls << "Attr: "
          << const_cast<Attr&>(a).get_name()
-         << " Property: name:" 
-         << v[i].get_name() 
-         << " - value:" 
+         << " Property: name:"
+         << v[i].get_name()
+         << " - value:"
          << v[i].get_value();
       if (i <= (n - 2)) ls << endl;
 	  }
@@ -618,7 +618,7 @@ log4tango::LogStream& operator<< (log4tango::LogStream& ls, const Attr& a)
 //+----------------------------------------------------------------------------
 //
 // method : LogStream::operator<<
-// 
+//
 //-----------------------------------------------------------------------------
 log4tango::LogStream& operator<< (log4tango::LogStream& ls, const AttrManip& m)
 {

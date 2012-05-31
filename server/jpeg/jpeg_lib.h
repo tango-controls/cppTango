@@ -1,4 +1,4 @@
-///=============================================================================	
+///=============================================================================
 //
 // file :		jpeg_lib.h
 //
@@ -10,7 +10,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -21,12 +21,12 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Tango is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
@@ -57,8 +57,8 @@ void jpeg_encode_gray8(int width,int height,unsigned char *gray8,
                        double quality,int *jpegSize,unsigned char **jpegData);
 
 // ----------------------------------------------------------------------------
-// Decode a JPEG image and return error code in case of failure, 0 is returned 
-// otherwise. frame is a pointer to a set of 8bit sample (8bit gray scale or 
+// Decode a JPEG image and return error code in case of failure, 0 is returned
+// otherwise. frame is a pointer to a set of 8bit sample (8bit gray scale or
 // 32bit rgb format) which is allocated by the function and must be freed by
 // the caller.
 // ----------------------------------------------------------------------------
