@@ -166,11 +166,11 @@ then
 	then
 		MAKE_CMD="$MAKE_PATH $LIBNAME/$LIBNAME.vcxproj /p:Platform=x64 /t:$TARGETNAME /p:Configuration=$DEBUG_MODE /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
 		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
-		cd NextRelease/win64/tango_vc10
+		cd trunk/win64/tango_vc10
 	else
 		MAKE_CMD="$MAKE_PATH winnt_lib.sln /project $LIBNAME $BUILD $DEBUG_MODE /projectconfig $DEBUG_MODE /out $OUTFILE"
 		export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
-		cd NextRelease/win32/tango_vc9
+		cd trunk/win32/tango_vc9
 	fi
 	echo $PATH
 	/bin/rm -f $OUTFILE
@@ -178,7 +178,7 @@ else
 	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $CPU_BUS $DEBUG_MODE $CLEAN $LIBNAME install_include install_link"
 
 # branch dependent path:
-	cd NextRelease
+	cd trunk
 fi
 
 echo $MAKE_CMD
