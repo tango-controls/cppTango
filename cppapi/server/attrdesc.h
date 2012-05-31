@@ -278,6 +278,36 @@ public:
 		archive_period = def_archive_period;
 	}
 //@}
+	
+	void set_abs_change(const char *def_abs_change)
+	{
+		set_event_abs_change(def_abs_change);
+	}
+	
+	void set_rel_change(const char *def_rel_change)
+	{
+		set_event_rel_change(def_rel_change);
+	}
+	
+	void set_period(const char *def_period)
+	{
+		set_event_period(def_period);
+	}
+	
+	void set_archive_abs_change(const char *def_archive_abs_change)
+	{
+		set_archive_event_abs_change(def_archive_abs_change);
+	}
+	
+	void set_archive_rel_change(const char *def_archive_rel_change)
+	{
+		set_archive_event_rel_change(def_archive_rel_change);
+	}
+	
+	void set_archive_period(const char *def_archive_period)
+	{
+		set_archive_event_period(def_archive_period);
+	}
 
 	string 			label;
 	string 			description;
