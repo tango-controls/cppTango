@@ -522,6 +522,7 @@ private :
     void process_event(zmq::message_t &,zmq::message_t &,zmq::message_t &,zmq::message_t &);
     void process_event(zmq_msg_t &,zmq_msg_t &,zmq_msg_t &,zmq_msg_t &);
     void multi_tango_host(zmq::socket_t *,SocketCmd,string &);
+	void print_error_message(const char *);
 
     friend class DelayEvent;
 };
