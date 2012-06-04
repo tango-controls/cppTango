@@ -222,24 +222,24 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
             bool res;
             try
             {
-                res = heartbeat_sub_sock->recv(&received_event_name);
+                res = heartbeat_sub_sock->recv(&received_event_name,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-					print_error_message("First Zmq recv call on heartbeat socket returned false!");
+					print_error_message("First Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
                     continue;
                 }
 
-                res = heartbeat_sub_sock->recv(&received_endian);
+                res = heartbeat_sub_sock->recv(&received_endian,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-                    print_error_message("Second Zmq recv call on heartbeat socket returned false!");
+                    print_error_message("Second Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
                     continue;
                 }
 
-                res = heartbeat_sub_sock->recv(&received_call);
+                res = heartbeat_sub_sock->recv(&received_call,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-                    print_error_message("Third Zmq recv call on heartbeat socket returned false!");
+                    print_error_message("Third Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
                     continue;
                 }
 
@@ -307,31 +307,31 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
             bool res;
             try
             {
-                res = event_sub_sock->recv(&received_event_name);
+                res = event_sub_sock->recv(&received_event_name,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-                    print_error_message("First Zmq recv call on event socket returned false!");
+                    print_error_message("First Zmq recv call on event socket returned false! De-synchronized event system?");
                     continue;
                 }
 
-                res = event_sub_sock->recv(&received_endian);
+                res = event_sub_sock->recv(&received_endian,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-                    print_error_message("Second Zmq recv call on event socket returned false!");
+                    print_error_message("Second Zmq recv call on event socket returned false! De-synchronized event system?");
                     continue;
                 }
 
-                res = event_sub_sock->recv(&received_call);
+                res = event_sub_sock->recv(&received_call,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-                    print_error_message("Third Zmq recv call on event socket returned false!");
+                    print_error_message("Third Zmq recv call on event socket returned false! De-synchronized event system?");
                     continue;
                 }
 
-                res = event_sub_sock->recv(&received_event_data);
+                res = event_sub_sock->recv(&received_event_data,ZMQ_DONTWAIT);
                 if (res == false)
                 {
-                    print_error_message("Forth Zmq recv call on event socket returned false!");
+                    print_error_message("Forth Zmq recv call on event socket returned false! De-synchronized event system?");
                     continue;
                 }
 
