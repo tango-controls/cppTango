@@ -1236,6 +1236,19 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
     }
 
 //
+// Throw exception if the device is not found in DB
+//
+
+	if (::strcmp((*data_list)[imp_tac.first_idx + 1],"Not Found") == 0)
+	{
+		TangoSys_OMemStream o;
+		o << "Device " << tac_dev << " not defined in database" << ends;
+
+		Tango::Except::throw_exception((const char *)"DB_DeviceNotDefined",o.str(),
+									   (const char *)"DbServerCache::import_tac_dev");
+	}
+
+//
 // Return cache data
 //
 

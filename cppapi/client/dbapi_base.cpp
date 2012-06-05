@@ -4255,7 +4255,7 @@ AccessControlType Database::check_access_control(string &devname)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+		if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0 || ::strcmp(e.errors[0].reason.in(),"DB_DeviceNotDefined") == 0)
 		{
 			string tmp_err_desc(e.errors[0].desc.in());
 			tmp_err_desc = tmp_err_desc + "\nControlled access service defined in Db but unreachable --> Read access given to all devices...";
