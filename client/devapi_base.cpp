@@ -1063,7 +1063,13 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 					if (e.length() == 0)
 						desc << "Command " << command << " on device " << dev_name() << " is not authorized" << ends;
 					else
+					{
 						desc << "Command " << command << " on device " << dev_name() << " is not authorized because an error occurs while talking to the Controlled Access Service" << ends;
+						string ex(e[0].desc);
+						if (ex.find("defined") != string::npos)
+							desc << "\n" << ex;
+						desc << ends;
+					}
 
 					NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
 													  (const char *)"Connection::command_inout()");
@@ -1249,7 +1255,13 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 					if (e.length() == 0)
 						desc << "Command " << command << " on device " << dev_name() << " is not authorized" << ends;
 					else
+					{
 						desc << "Command " << command << " on device " << dev_name() << " is not authorized because an error occurs while talking to the Controlled Access Service" << ends;
+						string ex(e[0].desc);
+						if (ex.find("defined") != string::npos)
+							desc << "\n" << ex;
+						desc << ends;
+					}
 
 					NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
 													  (const char *)"Connection::command_inout()");
