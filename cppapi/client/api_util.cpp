@@ -45,6 +45,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <net/if.h>
 #include <sys/ioctl.h>
 #include <netdb.h>
+#include <signal.h>
 
 // There is a NO_DATA defined in netdb.h
 
@@ -244,6 +245,20 @@ void ApiUtil::create_orb()
 	_argv[0] = (char*)"dummy";
 
 //
+// Get user signal handler for SIGPIPE
+// (ORB_init call install a SIG_IGN for SIGPIPE. This
+// could be annoying in case the user uses SIGPIPE)
+//
+
+#ifndef _TG_WINDOWS_
+	struct sigaction sa;
+	sa.sa_handler = NULL;
+
+	if (sigaction(SIGPIPE,NULL,&sa) == -1)
+		sa.sa_handler = NULL;
+#endif
+
+//
 // Init the ORB
 //
 
@@ -256,6 +271,24 @@ void ApiUtil::create_orb()
 	_orb = CORBA::ORB_init(_argc,_argv,"omniORB4",options);
 
 	free(_argv);
+
+//
+// Restore SIGPIPE handler
+//
+
+#ifndef _TG_WINDOWS_
+	if (sa.sa_handler != NULL)
+	{
+		struct sigaction sb;
+
+		sb = sa;
+
+		if (sigaction(SIGPIPE,&sb,NULL) == -1)
+		{
+			cerr << "Can re-install user signal handler for SIGPIPE!" << endl;
+		}
+	}
+#endif
 }
 
 //-----------------------------------------------------------------------------
