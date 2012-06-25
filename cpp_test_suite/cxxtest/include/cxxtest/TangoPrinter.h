@@ -28,7 +28,9 @@
 #include <string.h>
 #include <map>
 
-namespace CxxTest 
+#define _TS_CATCH_ABORT(b) _TS_CATCH_TYPE( (const Tango::DevFailed &e), {cout << "\n\nException : \n" << endl; Tango::Except::print_exception(e); throw;} ) _TS_CATCH_TYPE( (const CxxTest::AbortTest &), b )
+
+namespace CxxTest
 {
 	using namespace std;
 
@@ -36,7 +38,7 @@ namespace CxxTest
     {
     private:
     	/*
-    	 * command line parametres counter
+    	 * command line parameters counter
     	 */
         static int argc;
         /*
@@ -69,7 +71,7 @@ namespace CxxTest
          */
         static int loop;
         /*
-         * number of times each sutie with '__loop' suffix is to be executed
+         * number of times each suite with '__loop' suffix is to be executed
          */
         static int suite_loop;
         /*
@@ -85,6 +87,27 @@ namespace CxxTest
          * executable name
          */
         static string executable_name;
+        /*
+         * list of expected user arguments; printed out if provided arguments do not match the expected in quantity
+         */
+        static vector<string> uargs_validate;
+        /*
+         * list of expected mandatory parameters; printed out if provided arguments do not match the expected in quantity
+         */
+        static set<string> params_validate;
+        /*
+         * list of expected optional parameters; printed out if provided arguments do not match the expected in quantity
+         */
+        static set<string> params_opt_validate;
+        /*
+         * flag indicating if provided arguments are valid (in terms of quantity)
+         */
+        static bool args_valid;
+        /*
+         * set containing registered names of the methods which are to be called to restore original device settings
+         * in case a test case fails before restoring these settings by itself
+         */
+        static set<string> restore_set;
 
     public:
         TangoPrinter( CXXTEST_STD(ostream) &o = CXXTEST_STD(cout), const char *preLine = ":", const char *postLine = "" ) :
@@ -102,6 +125,11 @@ namespace CxxTest
          */
         void enterSuite( const SuiteDescription &desc )
 		{
+        	params_opt_validate.clear();
+        	params_validate.clear();
+        	uargs_validate.clear();
+        	restore_set.clear();
+        	args_valid = true;
         	string suite_name = tracker().suite().suiteName();
         	size_t suffix_pos = suite_name.rfind("TestSuite");
         	size_t suite_name_len = suite_name.length();
@@ -169,10 +197,10 @@ namespace CxxTest
 
 					// removes the "__loop" suffix from the test name
 					size_t loop_pos = test_name.rfind(loop_str);
-					if(loop_pos == test_name.length() - loop_str.length())
+					if(loop_pos != string::npos && loop_pos == test_name.length() - loop_str.length())
 						test_name.erase(loop_pos,loop_str.length());
 
-					// replaces undersocres '_' with spaces ' ' in the test name
+					// replaces underscores '_' with spaces ' ' in the test name
 					for(size_t i = 0; i < test_name.size(); i++)
 					{
 						if(test_name[i] == '_')
@@ -211,6 +239,11 @@ namespace CxxTest
 				unsigned int num_tests = (const_cast<SuiteDescription &>(suite)).numTests();
     			while(suite_counter < suite_loop)
     			{
+    	        	params_opt_validate.clear();
+    	        	params_validate.clear();
+    	        	uargs_validate.clear();
+    	        	restore_set.clear();
+    	        	args_valid = true;
     				suite_counter++;
     				TestDescription *test = (const_cast<SuiteDescription &>(suite)).firstTest();
 					(const_cast<SuiteDescription &>(suite)).setUp();
@@ -254,7 +287,7 @@ namespace CxxTest
         			int param_value_length = param_value.length();
         			if(param_value.compare(arg_tmp.substr(0, param_value_length)) == 0)
         			{
-        				// checks if the parameter has already been used to accept value of only the first occurance of the parameter
+        				// checks if the parameter has already been used to accept value of only the first occurrence of the parameter
         				if(pargv.size() > 0 && pargv.find(param_key) != pargv.end())
         				{
         					is_param = true;
@@ -295,6 +328,60 @@ namespace CxxTest
 			return tracker().failedTests();
 		}
 
+        /*
+         * registers a restore point to take up an action in TestSuite tearDown method
+         * in case a test case does not restore the default device properties
+         */
+        static void restore_push(const char* name)
+        {
+        	restore_push(string(name));
+        }
+
+        /*
+         * registers a restore point to take up an action in TestSuite tearDown method
+         * in case a test case does not restore the default device properties
+         */
+        static void restore_push(const string &name)
+        {
+        	restore_set.insert(name);
+        }
+
+        /*
+		 * unregisters the restore point (after the test case had successfully restored the default device properties)
+		 */
+        static void restore_pop(const char* name)
+		{
+			restore_pop(string(name));
+		}
+
+        /*
+		 * unregisters the restore point (after the test case had successfully restored the default device properties)
+         */
+        static void restore_pop(const string &name)
+        {
+        	restore_set.erase(name);
+        }
+
+        /*
+         * checks if the restore point has been registered
+         */
+		static bool is_restore_set(const char* name)
+		{
+		   return is_restore_set(string(name));
+		}
+
+        /*
+         * checks if the restore point has been registered
+         */
+        static bool is_restore_set(const string &name)
+        {
+        	bool result = false;
+        	if(!restore_set.empty())
+        		if(restore_set.find(name) != restore_set.end())
+        			result = true;
+        	return result;
+        }
+
         static unsigned int get_argc(void)
         {
         	return argc;
@@ -326,7 +413,7 @@ namespace CxxTest
         /*
          * checks if parameter of given name was used by user in command line
          */
-        static bool is_param_set(const string key)
+        static bool is_param_set(const string &key)
         {
         	if(pargv.size() > 0 && pargv.find(key) != pargv.end())
 				return true;
@@ -337,7 +424,7 @@ namespace CxxTest
         /*
          * returns value of the parameter of given name in the form of string
          */
-        static string get_param_val(const string key)
+        static string get_param_val(const string &key)
         {
         	if(pargv.size() > 0 && pargv.find(key) != pargv.end())
         		return pargv[key];
@@ -348,7 +435,7 @@ namespace CxxTest
         /*
          * checks if parameter of given name was defined
          */
-        static bool is_param_defined(const string key)
+        static bool is_param_defined(const string &key)
 		{
 			if(params.size() > 0 && params.find(key) != params.end())
 				return true;
@@ -359,7 +446,7 @@ namespace CxxTest
         /*
          * returns parameter definition based on it's name
          */
-        static string get_param_def(const string key)
+        static string get_param_def(const string &key)
 		{
 			if(params.size() > 0 && params.find(key) != params.end())
 				return params[key];
@@ -375,6 +462,89 @@ namespace CxxTest
         static string &get_executable_name(void)
         {
         	return executable_name;
+        }
+
+        /*
+         * registers description of user argument on the list, returns its value (if set) or empty string
+         */
+        static string get_uarg(const string &uarg)
+        {
+        	string uarg_val = "";
+        	uargs_validate.push_back(uarg);
+        	if(get_uargc() >= uargs_validate.size())
+        		uarg_val = get_uargv()[uargs_validate.size()-1];
+        	else
+        		args_valid = false;
+        	return uarg_val;
+        }
+
+        /*
+         * registers description of mandatory parameter on the list, returns its value (if set) or empty string
+         */
+        static string get_param(const string &param)
+        {
+        	string param_val = "";
+        	if(is_param_defined(param))
+        	{
+				params_validate.insert(get_param_def(param));
+				if(!is_param_set(param))
+					args_valid = false;
+				param_val = get_param_val(param);
+        	}
+        	return param_val;
+        }
+
+        /*
+         * registers description of optional parameter on the list, returns its value (if set) or empty string
+         */
+        static string get_param_opt(const string &param)
+        {
+        	string param_val = "";
+        	if(is_param_defined(param))
+        	{
+				params_opt_validate.insert(get_param_def(param));
+				param_val = get_param_val(param);
+        	}
+        	return param_val;
+        }
+
+        /*
+         * registers description of optional parameter on the list, returns true if parameter has been set
+         * (useful when no value for parameter is expected e.g. "--v")
+         */
+        static bool is_param_opt_set(const string &param)
+        {
+        	bool param_opt_set = false;
+        	if(is_param_defined(param))
+        	{
+				params_opt_validate.insert(get_param_def(param));
+				if(is_param_set(param))
+					param_opt_set = true;
+        	}
+        	return param_opt_set;
+        }
+
+        /*
+         * checks if all required arguments have been properly set, if not prints out usage hint and terminates
+         */
+        static void validate_args()
+        {
+        	if(!args_valid)
+        	{
+    			cout << "usage: " << get_executable_name();
+
+    			for(size_t i = 0; i < uargs_validate.size(); i++)
+    				cout << " " << uargs_validate[i];
+
+    			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
+    				cout << " " << *it;
+
+    			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
+    				cout << " [" << *it << "]";
+
+    			cout  << "\n";
+    			exit(-1);
+        	}
         }
 
         /*
@@ -433,6 +603,13 @@ namespace CxxTest
     string TangoPrinter::executable_name = "";
     int TangoPrinter::suite_loop = 0;
     int TangoPrinter::suite_counter = 1;
+
+    vector<string> TangoPrinter::uargs_validate;
+    set<string> TangoPrinter::params_validate;
+    set<string> TangoPrinter::params_opt_validate;
+    bool TangoPrinter::args_valid = true;
+
+    set<string> TangoPrinter::restore_set = set<string>();
 }
 
 #endif // __cxxtest__TangoPrinter_h__
