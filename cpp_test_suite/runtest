@@ -62,6 +62,7 @@ ubuntu1204 )
 	DEV1_ALIAS="et_alias"
 	ATTR_ALIAS="et_attr_alias"
 	INST_NAME=api
+	OS=Linux
 	;;
 #
 python )
