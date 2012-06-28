@@ -334,10 +334,14 @@ public:
 	void test_synchronous_command_with_forwarding_and_several_DeviceData_arguments()
 	{
 		DevDouble db;
-		vector<DeviceData> arguments(3);
-		arguments[0] << 15.0;
-		arguments[1] << 25.0;
-		arguments[2] << 35.0;
+		DeviceData dd1, dd2, dd3;
+		vector<DeviceData> arguments;
+		dd1 << 15.0;
+		dd2 << 25.0;
+		dd3 << 35.0;
+		arguments.push_back(dd1);
+		arguments.push_back(dd2);
+		arguments.push_back(dd3);
 		GroupCmdReplyList crl = group->command_inout("IODouble",arguments);
 		TS_ASSERT(crl.has_failed() == false);
 		TS_ASSERT(crl.size() == 3);
@@ -355,10 +359,14 @@ public:
 	void test_asynchronous_command_with_forwarding_and_several_DeviceData_arguments()
 	{
 		DevDouble db;
-		vector<DeviceData> arguments(3);
-		arguments[0] << 45.0;
-		arguments[1] << 55.0;
-		arguments[2] << 65.0;
+		DeviceData dd1, dd2, dd3;
+		vector<DeviceData> arguments;
+		dd1 << 45.0;
+		dd2 << 55.0;
+		dd3 << 65.0;
+		arguments.push_back(dd1);
+		arguments.push_back(dd2);
+		arguments.push_back(dd3);
 		long request_id = group->command_inout_asynch("IODouble",arguments);
 		GroupCmdReplyList crl = group->command_inout_reply(request_id);
 		TS_ASSERT(crl.has_failed() == false);
