@@ -688,6 +688,7 @@ void check_rel_change_value(Tango::DeviceProxy &dev,
     dev.set_attribute_config(aie_list);
 
     aie = dev.get_attribute_config(att);
+cout << "Attribute conf = " << aie << endl;
     assert (aie.events.ch_event.rel_change == class_desc);
 
     Tango::DeviceData dd;
