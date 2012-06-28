@@ -97,7 +97,7 @@ int main(int argc,char *argv[])
         cout << "\n        rel_change : no class, no lib --> OK" << endl;
 
         att = "DefClassAttr";
-        check_rel_change_value(dev,admin_dev,att,"12","33,44","Not specified","Not specified");
+        check_rel_change_value(dev,admin_dev,att,"12","33,34","Not specified","Not specified");
         cout << "        rel_change : class, no lib --> OK" << endl;
 
         att = "DefUserAttr";
@@ -105,7 +105,7 @@ int main(int argc,char *argv[])
         cout << "        rel_change : no class, lib --> OK" << endl;
 
         att = "DefClassUserAttr";
-        check_rel_change_value(dev,admin_dev,att,"12","33,44","55","Not specified");
+        check_rel_change_value(dev,admin_dev,att,"12","33,34","55","Not specified");
         cout << "        rel_change : class, lib --> OK" << endl;
 
 //
@@ -688,7 +688,6 @@ void check_rel_change_value(Tango::DeviceProxy &dev,
     dev.set_attribute_config(aie_list);
 
     aie = dev.get_attribute_config(att);
-cout << "Attribute conf = " << aie << endl;
     assert (aie.events.ch_event.rel_change == class_desc);
 
     Tango::DeviceData dd;
