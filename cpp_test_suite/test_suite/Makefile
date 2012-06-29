@@ -185,7 +185,9 @@ runner: compare_test
 	cxx_test_state_on.cpp \
 	cxx_cmd_types.cpp \
 	cxx_blackbox.cpp \
-	cxx_group.cpp
+	cxx_group.cpp \
+	cxx_encoded.cpp \
+	cxx_database.cpp
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
 
