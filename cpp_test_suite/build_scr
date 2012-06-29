@@ -218,6 +218,9 @@ fi
 echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
+echo "Compilation done"
+echo "OS_TYPE = $OS_TYPE"
+echo "RET = $RET"
 
 if [ $OS_TYPE = "Windows" ]
 then
