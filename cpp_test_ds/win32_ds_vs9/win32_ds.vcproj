@@ -45,7 +45,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(PREFIX)/win32/include&quot;;..;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;"
+				AdditionalIncludeDirectories="&quot;$(PREFIX)/win32/include&quot;;..;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include\vc9&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;_WINSTATIC"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -76,7 +76,7 @@
 				OutputFile="$(PREFIX)/win32/bin/archive/devTest.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="&quot;$(PREFIX)\win32\lib\vc9&quot;;&quot;$(OMNI_BASE)\win32\lib&quot;;&quot;$(ZMQ_BASE)\win32\lib\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(PREFIX)\win32\lib\vc9&quot;;&quot;$(OMNI_BASE)\win32\lib&quot;;&quot;$(ZMQ_BASE)\win32\lib\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib\vc9&quot;"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\Debug/devTest.pdb"
 				SubSystem="1"
