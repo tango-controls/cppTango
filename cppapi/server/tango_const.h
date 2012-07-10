@@ -42,8 +42,8 @@ namespace Tango
 // Some general interest define
 //
 
-#define     TANGO_VERSION_MAJOR     8
-#define     TANGO_VERSION_MINOR     1
+#define     TANGO_VERSION_MAJOR     9
+#define     TANGO_VERSION_MINOR     0
 #define     TANGO_VERSION_PATCH     0
 
 #define     build_string(s)         #s
