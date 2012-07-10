@@ -82,8 +82,8 @@
     <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</PreLinkEventUseInBuild>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tango805d</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tango805</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">tango900d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">tango900</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -165,16 +165,16 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango810 release\*.obj</Command>
+      <Command>C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango900 release\*.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>log4tango.lib;omniorb416_rt.lib;omnidynamic416_rt.lib;omnithread34_rt.lib;COS416_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(PREFIX)\win64\lib\vc10_dll\tango810.dll</OutputFile>
-      <Version>8.1,0</Version>
+      <OutputFile>$(PREFIX)\win64\lib\vc10_dll\tango900.dll</OutputFile>
+      <Version>9.0.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OMNI_BASE)\win64_dll\lib;$(ZMQ_BASE)\win64\lib\vc10_dll;$(LOG4TANGO_BASE)\win64_dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
-      <ProgramDatabaseFile>.\Release/tango810.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Release/tango900.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -254,7 +254,7 @@
       <PrecompiledHeaderOutputFile>.\Debug/tango_dll.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>$(PREFIX)\win64\lib\vc10_dll\tangod.8.1.0.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(PREFIX)\win64\lib\vc10_dll\tangod.9.0.0.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -266,17 +266,17 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango810d debug\*.obj</Command>
+      <Command>C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango900d debug\*.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>log4tangod.lib;omniORB416_rtd.lib;omniDynamic416_rtd.lib;COS416_rtd.lib;omnithread34_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
-      <OutputFile>$(PREFIX)\win64\lib\vc10_dll\tango810d.dll</OutputFile>
-      <Version>8.1.0</Version>
+      <OutputFile>$(PREFIX)\win64\lib\vc10_dll\tango900d.dll</OutputFile>
+      <Version>9.0.0</Version>
       <AdditionalLibraryDirectories>$(ZMQ_BASE)\win64\lib\vc10_dll;$(OMNI_BASE)\win64_dll\lib;$(LOG4TANGO_BASE)\win64_dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/tango810d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Debug/tango900d.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
