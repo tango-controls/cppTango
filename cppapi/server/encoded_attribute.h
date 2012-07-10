@@ -45,6 +45,9 @@ namespace Tango
 
 /**
  * This class provides method to deal with Tango::DevEncoded attribute format.
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class EncodedAttribute
@@ -192,6 +195,8 @@ public:
  void decode_gray16(DeviceAttribute *attr,int *width,int *height,unsigned short **gray16);
 
 //@}
+
+/// @privatesection
 
  DevUChar  *get_data()
  {if (index==0)

@@ -179,13 +179,15 @@ public:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
 class TimedAttrData:public Tango::AttrData<T>
 {
 public:
-	struct timeval		t_val;
 
 /**@name Miscellaneous constructors for scalar attribute
  */
@@ -712,6 +714,9 @@ public:
 	TimedAttrData(DevErrorList &errs,timeval when): AttrData<T>(errs),t_val(when) {}
 //@}
 
+/// @privatesection
+	struct timeval		t_val;
+
 #ifdef _TG_WINDOWS_
 
 	TimedAttrData(const T *p,struct _timeb t): AttrData<T>(p) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
@@ -768,13 +773,15 @@ public:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
 class AttrHistoryStack
 {
 public:
-	AttrHistoryStack() {};
 
 /**
  * Store a new element in the stack
@@ -811,6 +818,9 @@ public:
  */
 	vector<TimedAttrData<T> > &get_data() {return hist;}
 
+/// @privatesection
+	AttrHistoryStack() {};
+
 	vector<Tango::TimedAttrData<T> >	hist;
 };
 
@@ -840,16 +850,15 @@ public:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
 class TimedCmdData
 {
 public:
-	T		        *ptr;
-	DevErrorList	err;
-	struct timeval	t_val;
-	bool		    release;
 
 /**@name Constructors
  * Miscellaneous constructors
@@ -895,11 +904,6 @@ public:
  */
 	TimedCmdData(T *p_data,bool rel,struct timeval when): ptr(p_data),t_val(when),release(rel) {}
 
-#ifdef _TG_WINDOWS_
-	TimedCmdData(T *p,struct _timeb t): ptr(p),release(false) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedCmdData(T *p,bool rel,struct _timeb t): ptr(p),release(rel) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-#endif
-
 
 /**
  * Create a new TimedCmdData object for errors.
@@ -921,8 +925,19 @@ public:
  * @param when The date
  */
 	TimedCmdData(DevErrorList errs,timeval when): ptr(NULL),err(errs),t_val(when),release(false) {}
-
 //@}
+
+/// @privatesection
+
+	T		        *ptr;
+	DevErrorList	err;
+	struct timeval	t_val;
+	bool		    release;
+
+#ifdef _TG_WINDOWS_
+	TimedCmdData(T *p,struct _timeb t): ptr(p),release(false) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedCmdData(T *p,bool rel,struct _timeb t): ptr(p),release(rel) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+#endif
 };
 
 
@@ -946,13 +961,15 @@ public:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
 class CmdHistoryStack
 {
 public:
-	CmdHistoryStack() {};
 
 /**
  * Store a new element in the stack
@@ -988,6 +1005,10 @@ public:
  * @return The stack itself
  */
 	vector<TimedCmdData<T> > &get_data() {return hist;}
+
+/// @privatesection
+
+	CmdHistoryStack() {};
 
 	vector<Tango::TimedCmdData<T> >	hist;
 };

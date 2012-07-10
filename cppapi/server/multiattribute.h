@@ -76,6 +76,9 @@ struct EventPar
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class MultiAttribute
@@ -268,6 +271,8 @@ protected:
 //@}
 
 public:
+/// @privatesection
+
 	void add_write_value(Attribute &);
 	void add_attribute(string &,DeviceClass *,long);
 	void remove_attribute(string &,bool);

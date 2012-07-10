@@ -158,12 +158,16 @@ class EventSupplier;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Attribute
 {
 public:
 
+/// @privatesection
 	enum alarm_flags
 	{
 		min_level,
@@ -173,6 +177,7 @@ public:
 		max_warn,
 		numFlags
 	};
+/// @publicsection
 
 /**@name Constructors
  * Miscellaneous constructors */
@@ -2032,6 +2037,7 @@ protected:
 //@}
 
 public:
+/// @privatesection
 
 //
 // methods not usable for the external world (outside the lib)
@@ -2157,6 +2163,7 @@ private:
 	DevEncoded			enc_help;
 
 protected:
+/// @privatesection
 
 //
 // The extension class

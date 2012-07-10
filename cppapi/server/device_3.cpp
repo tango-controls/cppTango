@@ -130,7 +130,6 @@ void Device_3Impl::real_ctor()
 
 Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_3Impl::read_attributes_3 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
 
@@ -678,7 +677,10 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						alarmed_not_read(wanted_attr);
 						ext->state_from_read = true;
-						d_state = dev_state();
+                        if (is_alarm_state_forced() == true)
+                            d_state = DeviceImpl::dev_state();
+                        else
+                            d_state = dev_state();
 						ext->state_from_read = false;
 					}
 					catch (Tango::DevFailed &e)
@@ -726,7 +728,10 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		{
 			try
 			{
-				d_status = dev_status();
+                if (is_alarm_state_forced() == true)
+                    d_status = DeviceImpl::dev_status();
+                else
+                    d_status = dev_status();
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -1497,7 +1502,6 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 //--------------------------------------------------------------------------
 
 void Device_3Impl::write_attributes_3(const Tango::AttributeValueList& values)
-throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_3Impl::write_attributes_3 arrived" << endl;
@@ -1913,7 +1917,6 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* name,
 								    CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -2027,7 +2030,6 @@ throw(Tango::DevFailed, CORBA::SystemException)
 
 
 Tango::DevInfo_3 *Device_3Impl::info_3()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_3Impl::info_3 arrived" << endl;
 
@@ -2126,7 +2128,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::DevVarStringArray& names)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_att_conf_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -2231,7 +2232,6 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "DeviceImpl::set_attribute_config_3 arrived" << endl;

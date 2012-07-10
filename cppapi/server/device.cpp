@@ -1324,7 +1324,6 @@ Tango::ConstDevString DeviceImpl::dev_status()
 
 CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 				     const CORBA::Any &in_any)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this);
 
@@ -1396,7 +1395,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 char *DeviceImpl::name()
-throw (CORBA::SystemException)
 {
 	try
 	{
@@ -1447,7 +1445,6 @@ throw (CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 char *DeviceImpl::adm_name()
-throw (CORBA::SystemException)
 {
 	try
 	{
@@ -1500,7 +1497,6 @@ throw (CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 char *DeviceImpl::description()
-throw (CORBA::SystemException)
 {
 	try
 	{
@@ -1548,7 +1544,6 @@ throw (CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::DevState DeviceImpl::state()
-throw (CORBA::SystemException)
 {
 	Tango::DevState tmp;
 	string last_associated_device;
@@ -1638,7 +1633,6 @@ throw (CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 char *DeviceImpl::status()
-throw (CORBA::SystemException)
 {
 	char *tmp;
 	string last_associated_device;
@@ -1723,7 +1717,6 @@ throw (CORBA::SystemException)
 
 
 Tango::DevVarStringArray* DeviceImpl::black_box(CORBA::Long n)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::black_box arrived" << endl;
 
@@ -1752,7 +1745,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 
 Tango::DevCmdInfoList* DeviceImpl::command_list_query()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::command_list_query arrived" << endl;
 
@@ -1828,7 +1820,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::command_query arrived" << endl;
 
@@ -1921,7 +1912,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 
 Tango::DevInfo *DeviceImpl::info()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::info arrived" << endl;
 
@@ -2030,7 +2020,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 
 void DeviceImpl::ping()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::ping arrived" << endl;
 
@@ -2061,7 +2050,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVarStringArray& names)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::get_attribute_config arrived" << endl;
 
@@ -2175,7 +2163,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "DeviceImpl::set_attribute_config arrived" << endl;
@@ -2379,7 +2366,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarStringArray& names)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 
@@ -2820,7 +2806,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 void DeviceImpl::write_attributes(const Tango::AttributeValueList& values)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "DeviceImpl::write_attributes arrived" << endl;
@@ -5153,5 +5138,18 @@ void DeviceImpl::att_conf_loop()
     ext->run_att_conf_loop = false;
 }
 
+//+-------------------------------------------------------------------------
+//
+// method : 		DeviceImpl::check_att_conf
+//
+// description :
+//
+//--------------------------------------------------------------------------
+
+void DeviceImpl::check_att_conf()
+{
+    if (ext->run_att_conf_loop == true)
+        att_conf_loop();
+}
 
 } // End of Tango namespace

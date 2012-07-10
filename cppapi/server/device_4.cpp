@@ -37,70 +37,6 @@ static const char *RcsId = "$Id$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 3.12  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.10  2009/09/17 08:28:06  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
-// Revision 3.9  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.8  2009/01/08 14:58:03  taurel
-// - The read_attribute_4 also transfer the client authentification
-//
-// Revision 3.7  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.6  2008/11/18 09:28:56  taurel
-// - Ported to gcc 4.3
-// - Removed some cout messages
-//
-// Revision 3.5  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.4  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.3  2008/09/23 14:59:33  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.2  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.1  2008/05/20 12:44:10  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 1.1.2.7  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 1.1.2.6  2008/02/07 15:58:13  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 1.1.2.5  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 1.1.2.4  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 1.1.2.3  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
-//
-// Revision 1.1.2.2  2007/11/20 14:40:19  taurel
-// - Add the new way to retrieve command history from polling buffer
-// implemented in Tango V7
-//
-// Revision 1.1.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
-//
 //-============================================================================
 
 #if HAVE_CONFIG_H
@@ -174,7 +110,6 @@ Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(Tango_NullPt
 //--------------------------------------------------------------------------
 
 Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name,CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -300,7 +235,6 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* command,CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -507,7 +441,6 @@ CORBA::Any *Device_4Impl::command_inout_4(const char *in_cmd,
 					  const CORBA::Any &in_data,
 					  Tango::DevSource source,
 					  const Tango::ClntIdent &cl_id)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_4Impl::command_inout_4 arrived, source = " << source << ", command = " << in_cmd << endl;
 
@@ -555,7 +488,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source,const Tango::ClntIdent &cl_id)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_4Impl::read_attributes_4 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
 
@@ -741,7 +673,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 void Device_4Impl::write_attributes_4(const Tango::AttributeValueList_4 & values,
 									  const Tango::ClntIdent &cl_id)
-throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_4Impl::write_attributes_4 arrived" << endl;
@@ -784,7 +715,6 @@ throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 
 void Device_4Impl::set_attribute_config_4(const Tango::AttributeConfigList_3& new_conf,
 										  const Tango::ClntIdent &cl_id)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_4Impl::set_attribute_config_4 arrived" << endl;
@@ -833,7 +763,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::AttributeValueList_4& values,
 									  const Tango::ClntIdent &cl_id)
-throw (Tango::MultiDevFailed,Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_4Impl::write_read_attributes_4 arrived" << endl;

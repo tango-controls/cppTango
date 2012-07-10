@@ -59,6 +59,9 @@ namespace Tango
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -100,15 +103,6 @@ public:
  */
 	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_NullPtr) {}
 //@}
-
-	operator string()
-	{
-		return str;
-	}
-	operator const char *()
-	{
-		return str.c_str();
-	}
 
 /**@name Assignment operators
  * These operators allow to assign the value of the property by providing
@@ -236,6 +230,17 @@ public:
 	bool is_val() {return is_value;}
 //@}
 
+/// @privatesection
+
+	operator string()
+	{
+		return str;
+	}
+	operator const char *()
+	{
+		return str.c_str();
+	}
+
 private:
 	T val;
 	string str;
@@ -272,6 +277,9 @@ private:
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -334,15 +342,6 @@ public:
  */
 	DoubleAttrProp(const string &value_str) : str(value_str), is_value(false) {}
 //@}
-
-	operator string()
-	{
-		return str;
-	}
-	operator const char *()
-	{
-		return str.c_str();
-	}
 
 /**@name Assignment operators
  * These operators allow to assign the values of the compound attribute property
@@ -525,6 +524,17 @@ public:
 	bool is_val() {return is_value;}
 //@}
 
+/// @privatesection
+
+	operator string()
+	{
+		return str;
+	}
+	operator const char *()
+	{
+		return str.c_str();
+	}
+
 private:
         vector<T> val;
         string str;
@@ -559,6 +569,9 @@ private:
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>

@@ -117,7 +117,6 @@ DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
 CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 					  const CORBA::Any &in_data,
 					  Tango::DevSource source)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_2Impl::command_inout_2 arrived, source = " << source << ", command = " << in_cmd << endl;
 	PollObj *polled_cmd = NULL;
@@ -444,7 +443,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 //	AutoTangoMonitor sync(this);
 
@@ -977,7 +975,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 
 Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_2Impl::command_list_query_2 arrived" << endl;
 
@@ -1059,7 +1056,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::command_query_2 arrived" << endl;
 

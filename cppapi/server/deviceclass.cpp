@@ -1442,4 +1442,20 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 	return *(*pos);
 }
 
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceClass::check_att_conf
+//
+// description :	Check attribute configuration (for wrong conf. in db
+//                  exception) for all devices in the class
+//
+//-----------------------------------------------------------------------------
+void DeviceClass::check_att_conf()
+{
+    vector<DeviceImpl *>::iterator ite;
+
+    for (ite = device_list.begin();ite != device_list.end();++ite)
+        (*ite)->check_att_conf();
+}
+
 } // End of Tango namespace

@@ -60,6 +60,9 @@ namespace Tango
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class WAttribute:public Attribute
@@ -756,6 +759,8 @@ public:
 	void set_write_value(vector<Tango::DevState> &val, long x = 1, long y = 0);
 //@}
 
+/// @privatesection
+
 	void set_write_value(Tango::DevEncoded *, long x = 1,long y = 0); // Dummy method for compiler
 
 	virtual void set_rvalue();
@@ -799,6 +804,7 @@ public:
     bool mem_value_below_above(MinMaxValueCheck,string &);
 
 protected:
+/// @privatesection
 	virtual bool check_rds_alarm();
 
 private:

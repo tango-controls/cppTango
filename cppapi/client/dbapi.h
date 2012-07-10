@@ -28,7 +28,6 @@
 
 #include <vector>
 #include <errno.h>
-
 #include <devapi.h>
 
 
@@ -44,6 +43,7 @@ class DbDevInfo;
 class DbDevImportInfo;
 class DbDevExportInfo;
 class DbServerInfo;
+class DbDevFullInfo;
 class DbHistory;
 
 class FileDatabase;
@@ -51,10 +51,10 @@ class DbServerCache;
 class Util;
 class AccessProxy;
 
-typedef vector<DbDatum> DbData;
 typedef vector<DbDevInfo> DbDevInfos;
 typedef vector<DbDevExportInfo> DbDevExportInfos;
 typedef vector<DbDevImportInfo> DbDevImportInfos;
+typedef vector<DbDatum> DbData;
 
 #define		POGO_DESC	"Description"
 #define		POGO_TITLE	"ProjectTitle"
@@ -177,6 +177,7 @@ public :
 	DbDevImportInfo import_device(string &);
 	void export_device(DbDevExportInfo &);
 	void unexport_device(string);
+    DbDevFullInfo get_device_info(string &);
 
 	DbDatum get_device_name(string &, string &,DbServerCache *dsc);
 	DbDatum get_device_name(string &, string &);
@@ -696,12 +697,32 @@ public :
 	string ior;
 	string version;
 };
+
+/****************************************************************
+ *                                                              *
+ *                  DbDevFullInfo                               *
+ *                                                              *
+ ****************************************************************/
+
+
+class DbDevFullInfo: public DbDevImportInfo
+{
+public :
+    string  class_name;
+	string  ds_full_name;
+	string  host;
+	string  started_date;
+	string  stopped_date;
+	long    pid;
+};
+
 //
 // DbDevExportInfo
 //
+
 class DbDevExportInfo
 {
-public :
+public:
 	string name;
 	string ior;
 	string host;
@@ -709,9 +730,11 @@ public :
 	int pid;
 
 };
+
 //
 // DbServerInfo
 //
+
 class DbServerInfo
 {
 public :

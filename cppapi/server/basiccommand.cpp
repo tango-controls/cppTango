@@ -94,7 +94,10 @@ CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::
 
 	try
 	{
-		(*out_any) <<= device->dev_status();
+	    if (device->is_alarm_state_forced() == true)
+            (*out_any) <<= device->DeviceImpl::dev_status();
+        else
+            (*out_any) <<= device->dev_status();
 	}
 	catch(...)
 	{
@@ -151,7 +154,11 @@ CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 
 	try
 	{
-		(*out_any) <<= device->dev_state();
+	    if (device->is_alarm_state_forced() == true)
+            (*out_any) <<= device->DeviceImpl::dev_state();
+        else
+            (*out_any) <<= device->dev_state();
+
 	}
 	catch(...)
 	{

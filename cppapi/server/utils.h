@@ -145,6 +145,9 @@ public:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Util
@@ -497,7 +500,7 @@ public:
 	unsigned long get_polling_threads_pool_size() {return ext->poll_pool_size;}
 //@}
 
-/**@Miscellaneous methods */
+/**@name Miscellaneous methods */
 //@{
 /**
  * Check if the device server process is in its starting phase
@@ -683,8 +686,6 @@ public:
  * server started without database usage.
  */
 	TANGO_IMP static bool	_UseDb;
-
-	TANGO_IMP static bool	_FileDb;
 /**
  * A daemon process flag. If this flag is set to true, the server
  * process will not exit if it not able to connect to the database.
@@ -699,9 +700,13 @@ public:
  * value is 60 seconds.
  */
  	TANGO_IMP static long	_sleep_between_connect;
-
-
 //@}
+
+/// @privatesection
+
+	TANGO_IMP static bool	_FileDb;
+
+/// @publicsection
 
 #ifdef _TG_WINDOWS_
 /**@name Windows specific methods */
@@ -842,6 +847,7 @@ private:
     };
 
 public:
+/// @privatesection
 	void set_interceptors(Interceptors *in) {ext->inter = in;}
 	Interceptors *get_interceptors() {return ext->inter;}
 

@@ -56,12 +56,17 @@ namespace Tango
 
 #define NOSPACEINDOC_EXCEPT
 
+
 /**
  * Container class for all exception related methods. Most of these methods are
  * static methods
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
+ * @ingroup Client
  */
 
 class Except
@@ -1717,10 +1722,13 @@ public:
 
 //@}
 
+/// @privatesection
+
 	static char *print_CORBA_SystemException(const CORBA::SystemException *);
 	static omni_mutex the_mutex;
 
 protected:
+/// @privatesection
 	static char mess[256];
 };
 

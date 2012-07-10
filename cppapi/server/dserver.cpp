@@ -290,6 +290,12 @@ void DServer::init_device()
 					}
 
 //
+// Check attribute configuration
+//
+
+                    class_list[i]->check_att_conf();
+
+//
 // Get mcast event parameters (in case of)
 //
 

@@ -1290,8 +1290,8 @@ void Database::put_device_property(string dev, DbData &db_data)
 
 //-----------------------------------------------------------------------------
 //
-// Database::delete_device_property() - public method to delete device properties from
-//                                   the Database
+// Database::delete_device_property() - public method to delete device properties
+//                      from the Database
 //
 //-----------------------------------------------------------------------------
 
@@ -1322,8 +1322,7 @@ void Database::delete_device_property(string dev, DbData &db_data)
 //-----------------------------------------------------------------------------
 //
 // Database::get_device_attribute_property() - public method to get device
-//					       attribute properties from
-//                                             the Database
+//					attribute properties from the Database
 //
 //-----------------------------------------------------------------------------
 
@@ -4353,6 +4352,68 @@ void Database::write_event_channel_ior_filedatabase(string &ec_ior)
 	}
 
 	filedb->write_event_channel_ior(ec_ior);
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_info() - public method to get device information
+//
+//-----------------------------------------------------------------------------
+
+DbDevFullInfo Database::get_device_info(string &dev)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= dev.c_str();
+
+    CALL_DB_SERVER("DbGetDeviceInfo",send,received);
+
+	const DevVarLongStringArray *dev_info_db = NULL;
+	received.inout() >>= dev_info_db;
+
+	DbDevFullInfo dev_info;
+	if (dev_info_db != NULL)
+	{
+        dev_info.name = string(dev_info_db->svalue[0]);
+        dev_info.ior = string(dev_info_db->svalue[1]);
+        dev_info.version = string(dev_info_db->svalue[2]);
+        dev_info.ds_full_name = string(dev_info_db->svalue[3]);
+        dev_info.host = string(dev_info_db->svalue[4]);
+        if (::strlen(dev_info_db->svalue[5]) != 1)
+            dev_info.started_date = string(dev_info_db->svalue[5]);
+        if (::strlen(dev_info_db->svalue[6]) != 1)
+            dev_info.stopped_date = string(dev_info_db->svalue[6]);
+
+        if (dev_info_db->svalue.length() > 7)
+{
+cout << "Class received in one call" << endl;
+            dev_info.class_name = string(dev_info_db->svalue[7]);
+}
+        else
+        {
+            try
+            {
+                dev_info.class_name = get_class_for_device(dev);
+            }
+            catch(...) {}
+        }
+
+        dev_info.exported = dev_info_db->lvalue[0];
+        dev_info.pid = dev_info_db->lvalue[1];
+	}
+	else
+	{
+        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                       (const char *)"Incoherent data received from database",
+                                       (const char *)"Database::get_device_info()");
+	}
+
+	return(dev_info);
+
 }
 
 } // End of Tango namespace

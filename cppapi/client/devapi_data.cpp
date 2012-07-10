@@ -1927,6 +1927,111 @@ void DeviceData::insert (const char *str_datum, DevVarCharArray *char_datum)
 	any.inout() <<= the_enc;
 }
 
+//-----------------------------------------------------------------------------
+//
+// DeviceData::insert (const char *&, DevVarCharArray *) - insert a pair of
+//             char *,DevVarCharArray into DeviceData
+//
+//-----------------------------------------------------------------------------
+
+void DeviceData::insert (const char *str_datum,unsigned char *data,unsigned int length)
+{
+	DevEncoded *the_enc = new DevEncoded();
+	the_enc->encoded_format = CORBA::string_dup(str_datum);
+
+	the_enc->encoded_data.replace(length,length,data,false);
+	any.inout() <<= the_enc;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceData::extract(const char *&,unsigned char *&,unsigned int &)
+//
+// - extract data for the DevEncoded data type
+//
+//-----------------------------------------------------------------------------
+
+bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigned int &data_size)
+{
+    bool ret = true;
+    const DevEncoded *tmp_enc = NULL;
+	ret = (any.inout() >>= tmp_enc);
+	if (ret == false)
+	{
+		if (exceptions_flags.test(isempty_flag))
+		{
+			any_is_null();
+		}
+		if (exceptions_flags.test(wrongtype_flag))
+		{
+			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+				       		(const char*)"Cannot extract, data in DeviceData object is not a DevEncoded",
+				        	(const char*)"DeviceData::extract");
+		}
+	}
+	else
+	{
+	    if (tmp_enc == NULL)
+	    {
+            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+                                       (const char *)"Incoherent data received from server",
+                                       (const char *)"DeviceData::extract");
+	    }
+        else
+        {
+            str = tmp_enc->encoded_format;
+            data_size = tmp_enc->encoded_data.length();
+            data_ptr = tmp_enc->encoded_data.get_buffer();
+        }
+	}
+	return ret;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceData::extract(const char *&,unsigned char *&,unsigned int &)
+//
+// - extract data for the DevEncoded data type
+//
+//-----------------------------------------------------------------------------
+
+bool DeviceData::extract(string &str,vector<unsigned char> &datum)
+{
+    bool ret = true;
+    const DevEncoded *tmp_enc = NULL;
+	ret = (any.inout() >>= tmp_enc);
+	if (ret == false)
+	{
+		if (exceptions_flags.test(isempty_flag))
+		{
+			any_is_null();
+		}
+		if (exceptions_flags.test(wrongtype_flag))
+		{
+			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+				       		(const char*)"Cannot extract, data in DeviceData object is not a DevEncoded",
+				        	(const char*)"DeviceData::extract");
+		}
+	}
+	else
+	{
+	    if (tmp_enc == NULL)
+	    {
+            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+                                       (const char *)"Incoherent data received from server",
+                                       (const char *)"DeviceData::extract");
+	    }
+        else
+        {
+			str = tmp_enc->encoded_format;
+
+			unsigned long length = tmp_enc->encoded_data.length();
+			datum.resize(length);
+			datum.assign(tmp_enc->encoded_data.get_buffer(),tmp_enc->encoded_data.get_buffer() + length);
+        }
+	}
+	return ret;
+}
 
 //+-------------------------------------------------------------------------
 //

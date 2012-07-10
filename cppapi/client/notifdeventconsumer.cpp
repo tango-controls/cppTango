@@ -600,9 +600,9 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
 		// create a channel monitor
-		new_event_channel_struct.channel_monitor = new TangoMonitor();
-		// set the timeout for the channel monitor to 500ms not to block the event consumer for to long.
-		new_event_channel_struct.channel_monitor->timeout(500);
+		new_event_channel_struct.channel_monitor = new TangoMonitor(channel_name.c_str());
+		// set the timeout for the channel monitor to 1000ms not to block the event consumer for to long.
+		new_event_channel_struct.channel_monitor->timeout(1000);
 		set_channel_type(new_event_channel_struct);
 
 		channel_map[channel_name] = new_event_channel_struct;
@@ -860,9 +860,10 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 		if (ipos != event_callback_map.end())
 		{
 			EventCallBackStruct &evt_cb = ipos->second;
-			AutoTangoMonitor _mon(evt_cb.callback_monitor);
 			try
 			{
+				AutoTangoMonitor _mon(evt_cb.callback_monitor);
+
 				AttributeValue *attr_value = NULL;
 				AttributeValue_3 *attr_value_3 = NULL;
 				AttributeValue_4 *attr_value_4 = NULL;

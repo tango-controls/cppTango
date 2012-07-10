@@ -59,6 +59,9 @@ class WAttribute;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class UserDefaultAttrProp
@@ -73,8 +76,6 @@ public:
  */
 	UserDefaultAttrProp():ext(Tango_NullPtr) {}
 //@}
-
-	~UserDefaultAttrProp() {}
 
 /**@name Set default property methods */
 //@{
@@ -278,6 +279,9 @@ public:
 		archive_period = def_archive_period;
 	}
 //@}
+
+/// @privatesection
+	~UserDefaultAttrProp() {}
 	
 	void set_abs_change(const char *def_abs_change)
 	{
@@ -351,6 +355,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Attr
@@ -502,6 +509,7 @@ public:
 	bool is_data_ready_event() {return ext->fire_dr_event;}
 //@}
 
+/// @privatesection
 	string  &get_name() {return name;}
 	Tango::AttrDataFormat get_format() {return format;}
 	Tango::AttrWriteType get_writable() {return writable;}
@@ -530,6 +538,7 @@ public:
 #endif
 
 protected:
+/// @privatesection
 	string					name;
 	Tango::AttrDataFormat	format;
 	Tango::AttrWriteType	writable;
@@ -588,6 +597,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class SpectrumAttr: public Attr
@@ -656,6 +668,7 @@ public:
 	~SpectrumAttr() {}
 //@}
 
+/// @privatesection
 	long 			get_max_x() {return max_x;}
 
 protected:
@@ -683,6 +696,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class ImageAttr: public SpectrumAttr
@@ -759,9 +775,11 @@ public:
 	~ImageAttr() {}
 //@}
 
+/// @privatesection
 	long 			get_max_y() {return max_y;}
 
 protected:
+/// @privatesection
 	long			max_y;
 
 private:

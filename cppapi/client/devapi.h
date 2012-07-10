@@ -479,6 +479,7 @@ public :
 
 	void insert(const string &,vector<unsigned char>&);
 	void insert(const char *,DevVarCharArray *);
+	void insert(const char *,unsigned char *,unsigned int);
 
 //
 // insert methods for TANGO CORBA sequence types
@@ -539,6 +540,9 @@ public :
 	bool operator >> (DevState&);
 	bool extract(vector<DevLong>&, vector<string>&);
 	bool extract(vector<double>&, vector<string>&);
+
+    bool extract(const char *&,const unsigned char *&,unsigned int &);
+    bool extract(string &,vector<unsigned char> &);
 
 //
 // extract methods for TANGO CORBA sequence types
@@ -870,8 +874,11 @@ public :
 	void insert(DevVarULong64Array *datum,int,int);
 	void insert(DevVarStateArray *datum,int,int);
 
-	void insert(char *&,unsigned char *&,unsigned int);
-	void insert(string &,vector<unsigned char> &);
+	void insert(char *&,unsigned char *&,unsigned int);     // Deprecated. For compatibility purpose
+	void insert(const char *,unsigned char *,unsigned int);
+	void insert(const string &,vector<unsigned char> &);
+	void insert(string &,vector<unsigned char> &);         // Deprecated. For compatibility purpose
+	void insert(const char *,DevVarCharArray *);
 
 //
 // Extract operators for  C++ types
@@ -950,6 +957,7 @@ public :
 	bool extract_set  (vector<DevState>&);
 	bool extract_set  (string &,vector<unsigned char> &);
 
+	bool extract(char *&,unsigned char *&,unsigned int &);          // Deprecated, for compatibility purpose
 	bool extract(const char *&,unsigned char *&,unsigned int &);
 	bool extract(string &,vector<unsigned char> &);
 

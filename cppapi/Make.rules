@@ -10,8 +10,8 @@
 ##############################################################################
 
 MAJOR_VERS = 8
-MINOR_VERS = 0
-PATCH_VERS = 5
+MINOR_VERS = 1
+PATCH_VERS = 0
 
 ##############################################################################
 #
@@ -105,9 +105,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
 else
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
 endif
 
 ##############################################################################

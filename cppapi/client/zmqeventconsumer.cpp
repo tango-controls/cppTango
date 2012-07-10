@@ -1298,9 +1298,9 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
 		// create a channel monitor
-		new_event_channel_struct.channel_monitor = new TangoMonitor();
-		// set the timeout for the channel monitor to 500ms not to block the event consumer for to long.
-		new_event_channel_struct.channel_monitor->timeout(500);
+		new_event_channel_struct.channel_monitor = new TangoMonitor(channel_name.c_str());
+		// set the timeout for the channel monitor to 1000ms not to block the event consumer for to long.
+		new_event_channel_struct.channel_monitor->timeout(1000);
 
 		new_event_channel_struct.event_system_failed = false;
 		set_channel_type(new_event_channel_struct);

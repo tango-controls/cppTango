@@ -70,6 +70,9 @@ namespace Tango
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Device_4Impl : public virtual POA_Tango::Device_4,
@@ -184,8 +187,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistory_4 *read_attribute_history_4(const char* name,
-								  CORBA::Long n)
-	throw(Tango::DevFailed, CORBA::SystemException);
+								  CORBA::Long n);
 
 /**
  * Read command value history.
@@ -210,8 +212,7 @@ public:
  */
 
 	virtual Tango::DevCmdHistory_4 *command_inout_history_4(const char* command,
-								CORBA::Long n)
-	throw(Tango::DevFailed, CORBA::SystemException);
+								CORBA::Long n);
 
 /**
  * Execute a command.
@@ -236,8 +237,7 @@ public:
 	virtual CORBA::Any *command_inout_4(const char *in_cmd,
 					    const CORBA::Any &in_data,
 					    Tango::DevSource source,
-					    const Tango::ClntIdent &cl_ident)
-	throw (Tango::DevFailed, CORBA::SystemException);
+					    const Tango::ClntIdent &cl_ident);
 
 /**
  * Read attribute(s) value.
@@ -262,8 +262,7 @@ public:
  */
 	virtual Tango::AttributeValueList_4 *read_attributes_4(const Tango::DevVarStringArray& names,
 								     Tango::DevSource source,
-									 const Tango::ClntIdent &cl_ident)
-								     throw (Tango::DevFailed, CORBA::SystemException);
+									 const Tango::ClntIdent &cl_ident);
 
 /**
  * Write attribute(s) value.
@@ -283,8 +282,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
     	virtual void write_attributes_4(const Tango::AttributeValueList_4 &values,
-    									const Tango::ClntIdent &cl_ident)
-    			throw (Tango::MultiDevFailed, Tango::DevFailed,CORBA::SystemException);
+    									const Tango::ClntIdent &cl_ident);
 
 /**
  * Set attribute(s) configuration.
@@ -304,8 +302,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
     	virtual void set_attribute_config_4(const Tango::AttributeConfigList_3& new_conf,
-    										const Tango::ClntIdent &cl_ident)
-    		throw (Tango::DevFailed, CORBA::SystemException);
+    										const Tango::ClntIdent &cl_ident);
 
 /**
  * Write then read attribute(s) value.
@@ -330,12 +327,9 @@ public:
  * <b>DevFailed</b> exception specification
  */
     	virtual Tango::AttributeValueList_4* write_read_attributes_4(const Tango::AttributeValueList_4 &values,
-    										  const Tango::ClntIdent &cl_ident)
-    		throw (Tango::MultiDevFailed,Tango::DevFailed, CORBA::SystemException);
+    										  const Tango::ClntIdent &cl_ident);
 
 //@}
-
-public:
 
 private:
     class Device_4ImplExt
