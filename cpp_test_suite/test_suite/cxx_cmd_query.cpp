@@ -116,7 +116,7 @@ public:
 	void test_command_list_query(void)
 	{
 		TS_ASSERT_THROWS_NOTHING(cmd_inf_list = *dserver->command_list_query());
-		TS_ASSERT(cmd_inf_list.size() == 31);
+		TS_ASSERT(cmd_inf_list.size() == 32);
 	}
 
 // Test Status command
@@ -206,12 +206,25 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Uninitialised");
 	}
 
+// Test EventConfirmSubscription command_list_query
+
+	void test_command_list_query_EventConfirmSubscriptionChange(void)
+	{
+//		CommandInfo cmd_inf = dserver->command_query("EventConfirmSubscription");
+		CommandInfo cmd_inf = cmd_inf_list[5];
+		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"EventConfirmSubscription");
+		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
+		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
+		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Str[0] = dev1 name, Str[1] = att1 name, Str[2] = event name, Str[3] = dev2 name, Str[4] = att2 name, Str[5] = event name,...");
+		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Uninitialised");
+	}
+
 // Test EventSubscriptionChange command_list_query
 
 	void test_command_list_query_EventSubscriptionChange(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("EventSubscriptionChange");
-		CommandInfo cmd_inf = cmd_inf_list[5];
+		CommandInfo cmd_inf = cmd_inf_list[6];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"EventSubscriptionChange");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_LONG);
@@ -224,7 +237,7 @@ public:
 	void test_command_list_query_GetLoggingLevel(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("GetLoggingLevel");
-		CommandInfo cmd_inf = cmd_inf_list[6];
+		CommandInfo cmd_inf = cmd_inf_list[7];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"GetLoggingLevel");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
@@ -237,7 +250,7 @@ public:
 	void test_command_list_query_GetLoggingTarget(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("GetLoggingTarget");
-		CommandInfo cmd_inf = cmd_inf_list[7];
+		CommandInfo cmd_inf = cmd_inf_list[8];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"GetLoggingTarget");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_STRING);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -250,7 +263,7 @@ public:
 	void test_command_list_query_Init(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("Init");
-		CommandInfo cmd_inf = cmd_inf_list[8];
+		CommandInfo cmd_inf = cmd_inf_list[9];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"Init");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -263,7 +276,7 @@ public:
 	void test_command_list_query_Kill(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("Kill");
-		CommandInfo cmd_inf = cmd_inf_list[9];
+		CommandInfo cmd_inf = cmd_inf_list[10];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"Kill");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -276,7 +289,7 @@ public:
 	void test_command_list_query_LockDevice(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("LockDevice");
-		CommandInfo cmd_inf = cmd_inf_list[10];
+		CommandInfo cmd_inf = cmd_inf_list[11];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"LockDevice");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -289,7 +302,7 @@ public:
 	void test_command_list_query_PolledDevice(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("PolledDevice");
-		CommandInfo cmd_inf = cmd_inf_list[11];
+		CommandInfo cmd_inf = cmd_inf_list[12];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"PolledDevice");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -302,7 +315,7 @@ public:
 	void test_command_list_query_QueryClass(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("QueryClass");
-		CommandInfo cmd_inf = cmd_inf_list[12];
+		CommandInfo cmd_inf = cmd_inf_list[13];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"QueryClass");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -315,7 +328,7 @@ public:
 	void test_command_list_query_QueryDevice(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("QueryDevice");
-		CommandInfo cmd_inf = cmd_inf_list[13];
+		CommandInfo cmd_inf = cmd_inf_list[14];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"QueryDevice");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -328,7 +341,7 @@ public:
 	void test_command_list_query_QuerySubDevice(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("QuerySubDevice");
-		CommandInfo cmd_inf = cmd_inf_list[14];
+		CommandInfo cmd_inf = cmd_inf_list[15];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"QuerySubDevice");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -341,7 +354,7 @@ public:
 	void test_command_list_query_QueryWizardClassProperty(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("QueryWizardClassProperty");
-		CommandInfo cmd_inf = cmd_inf_list[15];
+		CommandInfo cmd_inf = cmd_inf_list[16];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"QueryWizardClassProperty");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_STRING);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -354,7 +367,7 @@ public:
 	void test_command_list_query_QueryWizardDevProperty(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("QueryWizardDevProperty");
-		CommandInfo cmd_inf = cmd_inf_list[16];
+		CommandInfo cmd_inf = cmd_inf_list[17];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"QueryWizardDevProperty");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_STRING);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_STRINGARRAY);
@@ -367,7 +380,7 @@ public:
 	void test_command_list_query_ReLockDevices(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("ReLockDevices");
-		CommandInfo cmd_inf = cmd_inf_list[17];
+		CommandInfo cmd_inf = cmd_inf_list[18];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"ReLockDevices");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -380,7 +393,7 @@ public:
 	void test_command_list_query_RemObjPolling(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("RemObjPolling");
-		CommandInfo cmd_inf = cmd_inf_list[18];
+		CommandInfo cmd_inf = cmd_inf_list[19];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"RemObjPolling");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -393,7 +406,7 @@ public:
 	void test_command_list_query_RemoveLoggingTarget(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("RemoveLoggingTarget");
-		CommandInfo cmd_inf = cmd_inf_list[19];
+		CommandInfo cmd_inf = cmd_inf_list[20];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"RemoveLoggingTarget");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -406,7 +419,7 @@ public:
 	void test_command_list_query_RestartServer(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("RestartServer");
-		CommandInfo cmd_inf = cmd_inf_list[20];
+		CommandInfo cmd_inf = cmd_inf_list[21];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"RestartServer");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -419,7 +432,7 @@ public:
 	void test_command_list_query_SetLoggingLevel(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("SetLoggingLevel");
-		CommandInfo cmd_inf = cmd_inf_list[21];
+		CommandInfo cmd_inf = cmd_inf_list[22];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"SetLoggingLevel");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -432,7 +445,7 @@ public:
 	void test_command_list_query_StartLogging(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("StartLogging");
-		CommandInfo cmd_inf = cmd_inf_list[22];
+		CommandInfo cmd_inf = cmd_inf_list[23];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"StartLogging");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -445,7 +458,7 @@ public:
 	void test_command_list_query_StartPolling(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("StartPolling");
-		CommandInfo cmd_inf = cmd_inf_list[23];
+		CommandInfo cmd_inf = cmd_inf_list[24];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"StartPolling");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -458,7 +471,7 @@ public:
 	void test_command_list_query_State(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("State");
-		CommandInfo cmd_inf = cmd_inf_list[24];
+		CommandInfo cmd_inf = cmd_inf_list[25];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"State");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_STATE);
@@ -471,7 +484,7 @@ public:
 	void test_command_list_query_Status(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("Status");
-		CommandInfo cmd_inf = cmd_inf_list[25];
+		CommandInfo cmd_inf = cmd_inf_list[26];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"Status");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_STRING);
@@ -484,7 +497,7 @@ public:
 	void test_command_list_query_StopLogging(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("StopLogging");
-		CommandInfo cmd_inf = cmd_inf_list[26];
+		CommandInfo cmd_inf = cmd_inf_list[27];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"StopLogging");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -497,7 +510,7 @@ public:
 	void test_command_list_query_StopPolling(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("StopPolling");
-		CommandInfo cmd_inf = cmd_inf_list[27];
+		CommandInfo cmd_inf = cmd_inf_list[28];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"StopPolling");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -510,7 +523,7 @@ public:
 	void test_command_list_query_UnLockDevice(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("UnLockDevice");
-		CommandInfo cmd_inf = cmd_inf_list[28];
+		CommandInfo cmd_inf = cmd_inf_list[29];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"UnLockDevice");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_LONG);
@@ -523,7 +536,7 @@ public:
 	void test_command_list_query_list_query_UpdObjPollingPeriod(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("UpdObjPollingPeriod");
-		CommandInfo cmd_inf = cmd_inf_list[29];
+		CommandInfo cmd_inf = cmd_inf_list[30];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"UpdObjPollingPeriod");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_VOID);
@@ -536,13 +549,14 @@ public:
 	void test_command_list_query_ZMQEventSubscriptionChange(void)
 	{
 //		CommandInfo cmd_inf = dserver->command_query("ZmqEventSubscriptionChange");
-		CommandInfo cmd_inf = cmd_inf_list[30];
+		CommandInfo cmd_inf = cmd_inf_list[31];
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"ZmqEventSubscriptionChange");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Events consumer wants to subscribe to");
 		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release");
 	}
+
 };
 #undef cout
 #endif // CmdQueryTestSuite_h
