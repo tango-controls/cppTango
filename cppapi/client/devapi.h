@@ -1223,6 +1223,7 @@ public :
 
 	void connect(string &name);
 	virtual void reconnect(bool);
+	bool is_connected();
 	int get_idl_version() {return version;}
 	Tango::Device_var &get_device() {return device;} 	// For CORBA expert !!
 

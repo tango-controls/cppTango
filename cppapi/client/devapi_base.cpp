@@ -664,6 +664,21 @@ void Connection::reconnect(bool db_used)
 
 //-----------------------------------------------------------------------------
 //
+// Connection::is_connected() - returns true if connection is in the OK state
+//
+//-----------------------------------------------------------------------------
+
+bool Connection::is_connected()
+{
+	bool connected = true;
+	ReaderLock guard(ext->con_to_mon);
+	if(connection_state != CONNECTION_OK)
+		connected = false;
+	return connected;
+}
+
+//-----------------------------------------------------------------------------
+//
 // Connection::get_env_var() - Get an environment variable
 //
 // This method get an environment variable value from different source.
