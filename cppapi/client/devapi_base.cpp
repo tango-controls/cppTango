@@ -79,6 +79,7 @@ Connection::ConnectionExt &Connection::ConnectionExt::operator=(const Connection
 	prev_failed_t0 = rval.prev_failed_t0;
 
 	device_4 = rval.device_4;
+	device_5 = rval.device_5;
 
 	return *this;
 }
@@ -396,58 +397,71 @@ void Connection::connect(string &corba_name)
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 			}
 
-			ext->device_4 = Device_4::_narrow(obj);
+			ext->device_5 = Device_5::_narrow(obj);
 
 			if (connect_to_db == false)
 				omniORB::setClientConnectTimeout(0);
 
-			if (CORBA::is_nil(ext->device_4))
-			{
-				ext->device_3 = Device_3::_narrow(obj);
+            if (CORBA::is_nil(ext->device_5))
+            {
+                ext->device_4 = Device_4::_narrow(obj);
 
-				if (CORBA::is_nil(ext->device_3))
-				{
-					device_2 = Device_2::_narrow(obj);
-					if (CORBA::is_nil(device_2))
-					{
-						device = Device::_narrow(obj);
-						if (CORBA::is_nil(device))
-						{
-							cerr << "Can't build connection to object " << corba_name <<  endl;
-							connection_state = CONNECTION_NOTOK;
+                if (CORBA::is_nil(ext->device_4))
+                {
+                    ext->device_3 = Device_3::_narrow(obj);
 
-							TangoSys_OMemStream desc;
-							desc << "Failed to connect to device " << dev_name();
-							desc << " (device nil after _narrowing)" << ends;
-							ApiConnExcept::throw_exception((const char*)"API_CantConnectToDevice",
-                        			       			desc.str(),
-                        			       			(const char*)"Connection::connect()");
-						}
-						else
-						{
-							version = 1;
-						}
-					}
-					else
-					{
-						version = 2;
-						device = Device_2::_duplicate(device_2);
-					}
-				}
-				else
-				{
-					version = 3;
-					device_2 = Device_3::_duplicate(ext->device_3);
-					device = Device_3::_duplicate(ext->device_3);
-				}
-			}
-			else
-			{
-				version = 4;
-				ext->device_3 = Device_4::_duplicate(ext->device_4);
-				device_2 = Device_4::_duplicate(ext->device_4);
-				device = Device_4::_duplicate(ext->device_4);
-			}
+                    if (CORBA::is_nil(ext->device_3))
+                    {
+                        device_2 = Device_2::_narrow(obj);
+                        if (CORBA::is_nil(device_2))
+                        {
+                            device = Device::_narrow(obj);
+                            if (CORBA::is_nil(device))
+                            {
+                                cerr << "Can't build connection to object " << corba_name <<  endl;
+                                connection_state = CONNECTION_NOTOK;
+
+                                TangoSys_OMemStream desc;
+                                desc << "Failed to connect to device " << dev_name();
+                                desc << " (device nil after _narrowing)" << ends;
+                                ApiConnExcept::throw_exception((const char*)"API_CantConnectToDevice",
+                                                        desc.str(),
+                                                        (const char*)"Connection::connect()");
+                            }
+                            else
+                            {
+                                version = 1;
+                            }
+                        }
+                        else
+                        {
+                            version = 2;
+                            device = Device_2::_duplicate(device_2);
+                        }
+                    }
+                    else
+                    {
+                        version = 3;
+                        device_2 = Device_3::_duplicate(ext->device_3);
+                        device = Device_3::_duplicate(ext->device_3);
+                    }
+                }
+                else
+                {
+                    version = 4;
+                    ext->device_3 = Device_4::_duplicate(ext->device_4);
+                    device_2 = Device_4::_duplicate(ext->device_4);
+                    device = Device_4::_duplicate(ext->device_4);
+                }
+            }
+            else
+            {
+                version = 5;
+                ext->device_4 = Device_5::_duplicate(ext->device_5);
+                ext->device_3 = Device_5::_duplicate(ext->device_5);
+                device_2 = Device_5::_duplicate(ext->device_5);
+                device = Device_5::_duplicate(ext->device_5);
+            }
 			retry = false;
 
 //
@@ -940,20 +954,32 @@ void Connection::set_timeout_millis(int millisecs)
 
 		omniORB::setClientCallTimeout(device,millisecs);
 
-		if (version == 4)
-		{
+        switch (version)
+        {
+        case 5:
+			omniORB::setClientCallTimeout(ext->device_5,millisecs);
 			omniORB::setClientCallTimeout(ext->device_4,millisecs);
 			omniORB::setClientCallTimeout(ext->device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
-		}
-		else if (version == 3)
-		{
+			break;
+
+        case 4:
+			omniORB::setClientCallTimeout(ext->device_4,millisecs);
 			omniORB::setClientCallTimeout(ext->device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
-		}
-		else if (version == 2)
-		{
+			break;
+
+        case 3:
+			omniORB::setClientCallTimeout(ext->device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
+			break;
+
+        case 2:
+			omniORB::setClientCallTimeout(device_2,millisecs);
+			break;
+
+        default:
+            break;
 		}
 	}
 	catch (Tango::DevFailed &) {}

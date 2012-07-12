@@ -1192,6 +1192,8 @@ protected :
 
         int					user_connect_timeout;
         bool				tango_host_localhost;
+
+        Tango::Device_5_var device_5;
     };
 
 #ifdef HAS_UNIQUE_PTR

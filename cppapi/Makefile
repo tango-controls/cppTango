@@ -121,6 +121,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/device_2.o \
 		$(OBJS_DIR)/device_3.o \
 		$(OBJS_DIR)/device_4.o \
+		$(OBJS_DIR)/device_5.o \
 		$(OBJS_DIR)/dev_event.o \
 		$(OBJS_DIR)/dev_poll.o \
 		$(OBJS_DIR)/deviceclass.o \
@@ -209,6 +210,7 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/device_2.so.o \
 		$(OBJS_DIR_SL)/device_3.so.o \
 		$(OBJS_DIR_SL)/device_4.so.o \
+		$(OBJS_DIR_SL)/device_5.so.o \
 		$(OBJS_DIR_SL)/dev_event.so.o \
 		$(OBJS_DIR_SL)/dev_poll.so.o \
 		$(OBJS_DIR_SL)/deviceclass.so.o \
@@ -326,6 +328,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			device_2.h \
 			device_3.h \
 			device_4.h \
+			device_5.h \
 			deviceclass.h \
 			dserver.h \
 			dserverclass.h \

@@ -80,7 +80,7 @@ ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 //-----------------------------------------------------------------------------
 
 DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState s,const char *st)
-:Device_4Impl(cl_ptr,n,d,s,st)
+:Device_5Impl(cl_ptr,n,d,s,st)
 {
 	process_name = Tango::Util::instance()->get_ds_exec_name();
 	instance_name = Tango::Util::instance()->get_ds_inst_name();

@@ -55,7 +55,7 @@ namespace Tango
 typedef Tango::DeviceClass *(*Cpp_creator_ptr)(const char *);
 typedef void (*ClassFactoryFuncPtr)(DServer *);
 
-class DServer: public Device_4Impl
+class DServer: public Device_5Impl
 {
 public :
 	DServer(DeviceClass *,const char *,const char *,Tango::DevState,const char *);

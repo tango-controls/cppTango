@@ -124,6 +124,7 @@
 	#include <device_2.h>
 	#include <device_3.h>
 	#include <device_4.h>
+	#include <device_5.h>
 	#include <command.h>
 	#include <dserver.h>
 	#include <attribute.tpp>
