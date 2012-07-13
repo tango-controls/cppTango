@@ -1579,7 +1579,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 #else
 
 //
-// Get address from intrerfaces
+// Get address from interfaces
 //
 
 		int sock = socket(AF_INET,SOCK_STREAM,0);

@@ -30,13 +30,17 @@
 #include <errno.h>
 #include <devapi.h>
 
+/** @defgroup DBase Database Client classes
+ * @ingroup Client
+ */
 
 using namespace std;
 
 namespace Tango {
 
-//
-// forward declarations
+///
+/// forward declarations
+///
 
 class DbDatum;
 class DbDevInfo;
@@ -51,6 +55,10 @@ class DbServerCache;
 class Util;
 class AccessProxy;
 
+///
+/// Some typedef and define
+///
+
 typedef vector<DbDevInfo> DbDevInfos;
 typedef vector<DbDevExportInfo> DbDevExportInfos;
 typedef vector<DbDevImportInfo> DbDevImportInfos;
@@ -59,313 +67,36 @@ typedef vector<DbDatum> DbData;
 #define		POGO_DESC	"Description"
 #define		POGO_TITLE	"ProjectTitle"
 
-//
-// Database - database object for implementing generic high-level
-//                 interface for TANGO database api
-//
+///
+/// Classes declaration
+///
 
-/****************************************************************************************
- * 																						*
- * 					The Database class													*
- * 					------------------													*
- * 																						*
- ***************************************************************************************/
+/**********************************************************************
+ *                                                                    *
+ * Database - database object for implementing generic high-level     *
+ *                 interface for TANGO database api                   *
+ *                                                                    *
+ **********************************************************************/
 
-class Database : public Tango::Connection
-{
-private :
-	virtual string get_corba_name(bool);
-	virtual string build_corba_name() {return string("nada");}
-	virtual int get_lock_ctr() {return 0;}
-	virtual void set_lock_ctr(int) {}
+#include "Database.h"
 
-    class DatabaseExt
-    {
-    public:
-        DatabaseExt():db_tg(NULL) {};
+/**********************************************************************
+ *                                                                    *
+ *  DbDevice - A database object for accessing device related         *
+ *               information in the database                          *
+ *                                                                    *
+ **********************************************************************/
 
-        Tango::Util 	*db_tg;
-        omni_mutex		map_mutex;
-    };
-
-#ifdef HAS_UNIQUE_PTR
-    unique_ptr<DatabaseExt>     ext;
-#else
-	DatabaseExt			        *ext;
-#endif
-
-	bool				db_multi_svc;
-	vector<string>		multi_db_port;
-	vector<string>		multi_db_host;
-	FileDatabase 		*filedb;
-	string 				file_name;
-	int					serv_version;
-
-	AccessProxy			*access_proxy;
-	bool				access_checked;
-	DevErrorList		access_except_errors;
-
-	map<string,string>	dev_class_cache;
-	string				db_device_name;
-
-	bool				access_service_defined;
-
-	DbDatum         make_string_array(string, CORBA::Any_var &);
-	vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
-
-	void check_access();
-	inline string dev_name();
-	void set_server_release();
-	void check_access_and_get();
-
-public :
-	Database(CORBA::ORB *orb=NULL);
-	Database(string &host, int port, CORBA::ORB *orb=NULL);
-	Database(string &file);
-
-	Database(const Database &);
-	Database & operator=(const Database &);
-
-	void write_filedatabase();
-	void reread_filedatabase();
-	void write_event_channel_ior_filedatabase(string &);
-	void build_connection ();
-	void post_reconnection();
-	~Database();
-	inline Device_var &get_dbase() { return device;}
-	void check_tango_host(const char *);
-	AccessControlType check_access_control(string &);
-	bool is_control_access_checked() {return access_checked;}
-	void set_access_checked(bool val) {access_checked = val;}
-
-	void set_tango_utils(Tango::Util *ptr) {ext->db_tg=ptr;}
-	int get_server_release() {return serv_version;}
-
-	DevErrorList &get_access_except_errors() {return access_except_errors;}
-	void clear_access_except_errors() {access_except_errors.length(0);}
-	bool is_command_allowed(string &,string &);
-
-	bool is_multi_tango_host() {return db_multi_svc;}
-	vector<string> &get_multi_host() {return multi_db_host;}
-	vector<string> &get_multi_port() {return multi_db_port;}
-
-	const string &get_file_name();
-
-#ifdef _TG_WINDOWS_
-	Database(CORBA::ORB *orb,string &,string &);
-	long get_tango_host_from_reg(char **,string &,string &);
-#endif
-
-//
-// general methods
-//
-
-	string get_info();
-	DbDatum get_host_list();
-	DbDatum get_host_list(string &);
-	DbDatum get_services(string &,string &);
-	void register_service(string &,string &,string &);
-	void unregister_service(string &,string &);
-	CORBA::Any *fill_server_cache(string &,string &);
-
-//
-// device methods
-//
-
-	void add_device(DbDevInfo&);
-	void delete_device(string);
-	DbDevImportInfo import_device(string &);
-	void export_device(DbDevExportInfo &);
-	void unexport_device(string);
-    DbDevFullInfo get_device_info(string &);
-
-	DbDatum get_device_name(string &, string &,DbServerCache *dsc);
-	DbDatum get_device_name(string &, string &);
-	DbDatum get_device_exported(string &);
-	DbDatum get_device_domain(string &);
-	DbDatum get_device_family(string &);
-	DbDatum get_device_member(string &);
-	void get_device_alias(string,string &);
-	void get_alias(string,string &);
-	DbDatum get_device_alias_list(string &);
-	string get_class_for_device(string &);
-	DbDatum get_class_inheritance_for_device(string &);
-	DbDatum get_device_exported_for_class(string &);
-	void put_device_alias(string &,string &);
-	void delete_device_alias(string &);
-
-//
-// server methods
-//
-	void add_server(string &, DbDevInfos&);
-	void delete_server(string &);
-	void export_server(DbDevExportInfos &);
-	void unexport_server(string &);
-
-	DbServerInfo get_server_info(string &);
-	void put_server_info(DbServerInfo &);
-	void delete_server_info(string &);
-	DbDatum get_server_class_list(string &);
-	DbDatum get_server_name_list();
-	DbDatum get_instance_name_list(string &);
-	DbDatum get_server_list();
-	DbDatum get_server_list(string &);
-	DbDatum get_host_server_list(string &);
-	DbDatum get_device_class_list(string &);
-
-//
-// property methods
-//
-
-	void get_property(string, DbData &,DbServerCache *dsc);
-	void get_property(string st, DbData &db) {get_property(st,db,NULL);}
-	void get_property_forced(string, DbData &,DbServerCache *dsc = NULL);
-	void put_property(string, DbData &);
-	void delete_property(string, DbData &);
-	vector<DbHistory> get_property_history(string &,string &);
-	DbDatum get_object_list(string &);
-	DbDatum get_object_property_list(string &,string &);
-
-	void get_device_property(string, DbData &, DbServerCache *dsc);
-	void get_device_property(string st, DbData &db) {get_device_property(st,db,NULL);}
-	void put_device_property(string, DbData &);
-	void delete_device_property(string, DbData &);
-	vector<DbHistory> get_device_property_history(string &,string &);
-	DbDatum get_device_property_list(string &,string &);
-	void get_device_property_list(string &,const string &,vector<string> &,DbServerCache *dsc = NULL);
-
-	void get_device_attribute_property(string, DbData &, DbServerCache *dsc);
-	void get_device_attribute_property(string st, DbData &db) {get_device_attribute_property(st,db,NULL);}
-	void put_device_attribute_property(string, DbData &);
-	void delete_device_attribute_property(string, DbData &);
-	void delete_all_device_attribute_property(string, DbData &);
-	vector<DbHistory> get_device_attribute_property_history(string &,string &,string &);
-
-	void get_class_property(string, DbData &, DbServerCache *dsc);
-	void get_class_property(string st,DbData &db) {get_class_property(st,db,NULL);}
-	void put_class_property(string, DbData &);
-	void delete_class_property(string, DbData &);
-	vector<DbHistory> get_class_property_history(string &,string &);
-	DbDatum get_class_list(string &);
-	DbDatum get_class_property_list(string &);
-
-	void get_class_attribute_property(string, DbData &, DbServerCache *dsc);
-	void get_class_attribute_property(string st,DbData &db) {get_class_attribute_property(st,db,NULL);}
-	void put_class_attribute_property(string, DbData &);
-	void delete_class_attribute_property(string, DbData &);
-	vector<DbHistory> get_class_attribute_property_history(string &,string &,string &);
-	DbDatum get_class_attribute_list(string &,string &);
+#include "DbDevice.h"
 
 
-// attribute methods
+/**********************************************************************
+ *                                                                    *
+ *  DbProperty - A database object for accessing general properties   *
+ *               which are stored in the database                     *
+ *                                                                    *
+ **********************************************************************/
 
-	void get_attribute_alias(string, string&);
-	DbDatum get_attribute_alias_list(string &);
-	void put_attribute_alias(string &,string &);
-	void delete_attribute_alias(string &);
-
-// event methods
-
-	void export_event(DevVarStringArray *);
-	void unexport_event(string &);
-	CORBA::Any *import_event(string &);
-
-};
-
-//
-// Some Database class inline methods
-//
-
-
-inline string Database::dev_name()
-{
-	if (db_device_name.empty() == true)
-	{
-		CORBA::String_var n = device->name();
-		db_device_name = n;
-	}
-	return db_device_name;
-}
-
-
-//
-// Some macros to call the Db server
-// These macros will do some retries in case of
-// timeout while calling the DB device
-// This is necessary in case of massive DS
-// startup (after a power cut for instance)
-// when the Db is over-loaded
-//
-
-//					cerr << "Database timeout while executing command " << NAME << ", still " << db_retries << " retries" << endl;
-
-#define MANAGE_EXCEPT(NAME) \
-	catch (Tango::CommunicationFailed &e) \
-	{ \
-		if (e.errors.length() >= 2) \
-		{ \
-			if (::strcmp(e.errors[1].reason.in(),"API_DeviceTimedOut") == 0) \
-			{ \
-				if (db_retries != 0) \
-				{ \
-					db_retries--; \
-					if (db_retries == 0) \
-						throw; \
-				} \
-				else \
-					throw; \
-			} \
-			else \
-				throw; \
-		} \
-		else \
-			throw; \
-	}
-
-#define CALL_DB_SERVER_NO_RET(NAME,SEND) \
-	{ \
-		bool retry_mac = true; \
-		long db_retries = 0; \
-		if (ext->db_tg != NULL) \
-		{ \
-			if (ext->db_tg->is_svr_starting() == true) \
-				db_retries = DB_START_PHASE_RETRIES; \
-		} \
-		while (retry_mac == true) \
-		{ \
-			try \
-			{ \
-				command_inout(NAME,SEND); \
-				retry_mac = false; \
-			} \
-			MANAGE_EXCEPT(NAME) \
-		} \
-	}
-
-#define CALL_DB_SERVER(NAME,SEND,RET) \
-	{ \
-		bool retry_mac = true; \
-		long db_retries = 0; \
-		if (ext->db_tg != NULL) \
-		{ \
-			if (ext->db_tg->is_svr_starting() == true) \
-				db_retries = DB_START_PHASE_RETRIES; \
-		} \
-		while (retry_mac == true) \
-		{ \
-			try \
-			{ \
-				RET = command_inout(NAME,SEND); \
-				retry_mac = false; \
-			} \
-			MANAGE_EXCEPT(NAME) \
-		} \
-	}
-
-//
-// DbProperty - a database object for accessing general properties which
-//                  are stored in the database
-//
 class DbProperty
 {
 public :
@@ -379,61 +110,13 @@ public :
 	void delete_(DbData&);
 };
 
-//
-// DbDevice - a database object for accessing device related information
-//                 in the database
-//
 
-class DbDevice
-{
-private :
-	string 		name;
-	Database 	*dbase;
-	int 		db_ind;
-	bool 		ext_dbase;
-
-    class DbDeviceExt
-    {
-    public:
-        DbDeviceExt() {};
-    };
-
-#ifdef HAS_UNIQUE_PTR
-    unique_ptr<DbDeviceExt>     ext;
-#else
-	DbDeviceExt	                *ext;
-#endif
-
-public :
-	DbDevice(string &);
-	DbDevice(string &, Database *);
-	DbDevice(string &,string &,string &);
-	~DbDevice();
-	void set_name(string &new_name) {name = new_name;}
-	Database *get_dbase();
-	void set_dbase(Database *db) {dbase = db;}
-//
-// methods
-//
-	DbDevImportInfo import_device();
-	void export_device(DbDevExportInfo&);
-	void add_device(DbData&);
-	void delete_device();
-	void get_property(DbData&);
-	void put_property(DbData&);
-	void delete_property(DbData&);
-	void get_attribute_property(DbData&);
-	void put_attribute_property(DbData&);
-	void delete_attribute_property(DbData&);
-	AccessControlType check_access_control();
-	void clear_access_except_errors();
-	void get_property_list(const string &,vector<string> &);
-};
-
-//
-// DbAttribute - a database object for accessing Attribute related information
-//                 in the database
-//
+/**********************************************************************
+ *                                                                    *
+ *  DbAttribute - A database object for accessing attribute related   *
+ *               information in the database                          *
+ *                                                                    *
+ **********************************************************************/
 
 class DbAttribute
 {
@@ -456,10 +139,20 @@ public :
 	void put_property(DbData&);
 	void delete_property(DbData&);
 };
-//
-// DbServer - a database object for accessing server related information
-//            in the database
-//
+
+/**********************************************************************
+ *                                                                    *
+ *  DbServer - A database object for accessing server related         *
+ *               information in the database                          *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * A database object for a device server which can be used to query or modify server database information.
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbServer
 {
 private :
@@ -481,22 +174,95 @@ private :
 #endif
 
 public :
-	DbServer(string);
-	DbServer(string, Database*);
-	~DbServer();
+/**@name Constructors */
+//@{
+/**
+ * Create a DbServer instance.
+ *
+ * A constructor for a DbServer object for a server in the TANGO database specified by the TANGO_HOST
+ * environment variable.
+ *
+ * @param [in] server_name	The device server name
+ *
+ */
+	DbServer(string server_name);
+/**
+ * Create a DbServer instance using a specified database
+ *
+ * A constructor for a DbServer object for the server in the specified database. This method reuses the
+ * Database supplied by the programmer
+ *
+ * @param [in] server_name	The device server name
+ * @param [in] db The database object
+ *
+ */
+	DbServer(string server_name, Database *db);
+//@}
 //
 // methods
 //
-	void add_server(DbDevInfos&);
+/**@name Server oriented methods */
+//@{
+/**
+ * Add a device server process into the database
+ *
+ * Add a group of devices to the database. The device names, server names and classes are specified in the
+ * vector of DbDevInfo structures
+ *
+ * @param [in] serv Device server process data
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void add_server(DbDevInfos &serv);
+/**
+ * Delete the device server from database
+ *
+ * Delete the device server and its associated devices from the database.
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
 	void delete_server();
-	void export_server(DbDevExportInfos&);
+/**
+ * Export all device server devices in database
+ *
+ * Export a group of device to the database. The device names, IOR, class, server name, pid etc. are specified
+ * in the vector of DbDevExportInfo structures.
+ *
+ * @param [in] serv Devices information
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void export_server(DbDevExportInfos &serv);
+/**
+ * Mark all devices belonging to the device server as un-exported
+ *
+ * Mark all the devices exported by the server as un-exported.
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
 	void unexport_server();
+//@}
+
+/// @privatesection
+	~DbServer();
+
 	DbServerInfo get_server_info();
 };
-//
-// DbClass - a database object for accessing class related information
-//                in the database
-//
+
+
+/**********************************************************************
+ *                                                                    *
+ *  DbClass - A database object for accessing class related           *
+ *               information in the database                          *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * A database object for a class which can be used to query or modify class properties
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbClass
 {
 private :
@@ -518,32 +284,309 @@ private :
 #endif
 
 public :
-	DbClass(string, Database*);
-	DbClass(string);
-	~DbClass();
+/**@name Constructors */
+//@{
+/**
+ * Create a DbClass instance.
+ *
+ * A constructor for a DbClass object for a class in the TANGO database specified by the TANGO_HOST
+ * environment variable
+ *
+ * @param [in] class_name	The Tango class name
+ *
+ */
+	DbClass(string class_name);
+/**
+ * Create a DbClass instance using a specified database
+ *
+ * A constructor for a DbClass object for the Tango class in the specified database. This method reuses the
+ * Database supplied by the programmer.
+ *
+ * @param [in] class_name	The Tango class name
+ * @param [in] db The database object
+ *
+ */
+	DbClass(string class_name, Database *db);
+//@}
+
 //
 // methods
 //
-	void get_property(DbData&);
-	void put_property(DbData&);
-	void delete_property(DbData&);
-	void get_attribute_property(DbData&);
-	void put_attribute_property(DbData&);
-	void delete_attribute_property(DbData&);
+/**@name Property oriented methods */
+//@{
+/**
+ * Get class property from database
+ *
+ * Query the database for the list of properties of this class. See Database::get_class_property() for an example
+ * of how to specify and retrieve the properties.
+ *
+ * @param [in,out] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void get_property(DbData &db);
+/**
+ * Update class property in database
+ *
+ * Update the list of properties for this class in the database. See Database::put_class_property() for an example
+ * of how to specify the properties.
+ *
+ * @param [in] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void put_property(DbData &db);
+/**
+ * Remove class property from database
+ *
+ * Delete the list of specified properties for this class in the database. See Database::delete_property() for an
+ * example of how to specify the properties.
+ *
+ * @param [in] db Property name(s)
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void delete_property(DbData &db);
+/**
+ * Get class attribute property from database
+ *
+ * Query the database for the list of attribute properties of this class. See Database::get_class_attribute_property()
+ * for an example of how to specify and retrieve the properties.
+ *
+ * @param [in,out] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void get_attribute_property(DbData &db);
+/**
+ * Update class attribute property in database
+ *
+ * Update the list of attribute properties for this class in the database. See Database::put_class_attribute_property()
+ * for an example of how to specify the properties.
+ *
+ * @param [in] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void put_attribute_property(DbData &db);
+/**
+ * Remove class attribute property from database
+ *
+ * Delete all properties for the list of specified attributes for this class in the database. See Database::delete_class_attribute_property()
+ * for an example of how to specify the properties.
+ *
+ * @param [in] db Property name(s)
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void delete_attribute_property(DbData &db);
+//@}
+
+/// @privatesection
+	~DbClass();
 };
-//
-// DbDatum - data object for sending and receiving data from the
-//               TANGO database api
-//
+
+
+/**********************************************************************
+ *                                                                    *
+ *  DbDatum -    A database object for sending and receiving data     *
+ *               from the Tango database API                          *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * A database value
+ *
+ * A single database value which has a name, type, address and value and methods for inserting and extracting
+ * C++ native types. This is the fundamental type for specifying database properties. Every property has a
+ * name and has one or more values associated with it. The values can be inserted and extracted using the
+ * operators << and >> respectively. A status flag indicates if there is data in the DbDatum object or not. An
+ * additional flag allows the user to activate exceptions.
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbDatum
 {
-public :
+public:
+/// @privatesection
 	enum except_flags
 	{
 		isempty_flag,
 		wrongtype_flag,
 		numFlags
 	};
+/// @publicsection
+/**@name Constructors */
+//@{
+/**
+ * Create a DbDatum object.
+ *
+ * Create an instance of the DbDatum class with name set to the specified parameter
+ *
+ * @param [in] name	The CORBA ORB pointer. Default value is fine for 99 % of cases
+ *
+ */
+	DbDatum (string name);
+/**
+ * Create a DbDatum object.
+ *
+ * Create an instance of the DbDatum class with name set to the specified parameter
+ *
+ * @param [in] name	The CORBA ORB pointer. Default value is fine for 99 % of cases
+ *
+ */
+	DbDatum (const char *name);
+//@}
+
+/**@name Operators overloading */
+//@{
+/**
+ * Inserters operators
+ *
+ * The insert and extract operators are specified for the following C++ types :
+ * @li bool
+ * @li unsigned char
+ * @li short
+ * @li unsigned short
+ * @li DevLong
+ * @li DevULong
+ * @li DevLong64
+ * @li DevULong64
+ * @li float
+ * @li double
+ * @li string
+ * @li char* (insert only)
+ * @li const char *
+ * @li vector<string>
+ * @li vector<short>
+ * @li vector<unsigned short>
+ * @li vector<DevLong>
+ * @li vector<DevULong>
+ * @li vector<DevLong64>
+ * @li vector<DevULong64>
+ * @li vector<float>
+ * @li vector<double>
+ *
+ * Here is an example of creating, inserting and extracting some DbDatum types :
+ * @code
+ * DbDatum my_short("my_short"), my_long(“my_long”), my_string("my_string");
+ * DbDatum my_float_vector("my_float_vector"), my_double_vector("my_double_vector");
+ *
+ * string a_string;
+ * short a_short;
+ * DevLong a_long;
+ * vector<float> a_float_vector;
+ * vector<double> a_double_vector;
+ *
+ * my_short << 100; // insert a short
+ * my_short >> a_short; // extract a short
+ * my_long << 1000; // insert a DevLong
+ * my_long >> a_long; // extract a long
+ * my_string << string("estas lista a bailar el tango ?"); // insert a string
+ * my_string >> a_string; // extract a string
+ * my_float_vector << a_float_vector // insert a vector of floats
+ * my_float_vector >> a_float_vector; // extract a vector of floats
+ * my_double_vector << a_double_vector; // insert a vector of doubles
+ * my_double_vector >> a_double_vector; // extract a vector of doubles
+ * @endcode
+ *
+ * @param [in] val Data to be inserted
+ *
+ * @exception WrongData if requested
+ */
+	void operator << (bool val);
+/**
+ * Extractors operators
+ *
+ * See documentation of the DbDatum::operator<< for details
+ *
+ * @param [out] val Data to be initalized with database value
+ * @return A boolean set to true if the extraction succeeds
+ * @exception WrongData if requested
+ */
+    bool operator >> (bool &val);
+//@}
+/**@name Exception related methods methods */
+//@{
+/**
+ * Set exception flag
+ *
+ * Is a method which allows the user to switch on/off exception throwing for trying to extract data from an
+ * empty DbDatum object. The default is to not throw exception. The following flags are supported :
+ * @li @b isempty_flag - throw a WrongData exception (reason = API_EmptyDbDatum) if user tries to extract
+ *       data from an empty DbDatum object
+ * @li @b wrongtype_flag - throw a WrongData exception (reason = API_IncompatibleArgumentType) if user
+ *       tries to extract data with a type different than the type used for insertion
+ *
+ * @param [in] fl The exception flag
+ */
+	void exceptions(bitset<DbDatum::numFlags> fl) { exceptions_flags = fl;}
+/**
+ * Get exception flag
+ *
+ * Returns the whole exception flags.
+ * The following is an example of how to use these exceptions related methods
+ * @code
+ * DbDatum da;
+ *
+ * bitset<DbDatum::numFlags> bs = da.exceptions();
+ * cout << "bs = " << bs << endl;
+ *
+ * da.set_exceptions(DbDatum::wrongtype_flag);
+ * bs = da.exceptions();
+ *
+ * cout << "bs = " << bs << endl;
+ * @endcode
+ *
+ * @return The exception flag
+ */
+	bitset<DbDatum::numFlags> exceptions() {return exceptions_flags;}
+/**
+ * Reset one exception flag
+ *
+ * Resets one exception flag
+ *
+ * @param [in] fl The exception flag
+ */
+	void reset_exceptions(except_flags fl) {exceptions_flags.reset((size_t)fl);}
+/**
+ * Set one exception flag
+ *
+ * Sets one exception flag. See DbDatum::exceptions() for a usage example
+ *
+ * @param [in] fl The exception flag
+ */
+	void set_exceptions(except_flags fl) {exceptions_flags.set((size_t)fl);}
+//@}
+/**@name Miscellaneous methods */
+//@{
+/**
+ * Test if instance is empty
+ *
+ * is_empty() is a boolean method which returns true or false depending on whether the DbDatum object contains
+ * data or not. It can be used to test whether a property is defined in the database or not e.g.
+ * @code
+ * sl_props.push_back(parity_prop);
+ * dbase->get_device_property(device_name, sl_props);
+ *
+ * if (! parity_prop.is_empty())
+ * {
+ *     parity_prop >> parity;
+ * }
+ * else
+ * {
+ *     cout << device_name << " has no parity defined in database !" << endl;
+ * }
+ * @endcode
+ *
+ * @return True if DdDatum instance is empty
+ *
+ * @exception WrongData if requested
+ */
+	bool is_empty();
+//@}
+/// @privatesection
 
 	string name;
 	vector<string> value_string;
@@ -551,25 +594,16 @@ public :
 // constructor methods
 //
 	DbDatum();
-	DbDatum (string);
-	DbDatum (const char *);
 	~DbDatum();
 	DbDatum(const DbDatum &);
 	DbDatum &operator=(const DbDatum &);
 
 	size_t size() {return value_string.size();}
-	bool is_empty();
-
-	void exceptions(bitset<numFlags> fl) { exceptions_flags = fl;}
-	bitset<numFlags> exceptions() {return exceptions_flags;}
-	void reset_exceptions(except_flags fl) {exceptions_flags.reset((size_t)fl);}
-	void set_exceptions(except_flags fl) {exceptions_flags.set((size_t)fl);}
 
 //
 // insert methods
 //
 
-	void operator << (bool);
 	void operator << (short);
 	void operator << (unsigned char);
 	void operator << (unsigned short);
@@ -599,7 +633,6 @@ public :
 // extract methods
 //
 
-	bool operator >> (bool&);
 	bool operator >> (short&);
 	bool operator >> (unsigned char&);
 	bool operator >> (unsigned short&);
@@ -640,10 +673,20 @@ private :
 	DbDatumExt			    *ext;
 #endif
 };
-//
-// DbHistory data object for receiving data history from the
-//           TANGO database api
-//
+
+/**********************************************************************
+ *                                                                    *
+ *  DbHistory - A data object for receiving data history from the     *
+ *               Tango database                                       *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * Class used to retrieve database object history
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbHistory
 {
 public:
@@ -659,10 +702,35 @@ public:
 // getter methods
 //
 
+/**
+ * Get property name
+ *
+ * @return The property name
+ */
   string get_name();
+/**
+ * Get attribute name
+ *
+ * @return The attribute name
+ */
   string get_attribute_name();
+/**
+ * Get change date
+ *
+ * @return The date
+ */
   string get_date();
+/**
+ * Get value
+ *
+ * @return The property value
+ */
   DbDatum get_value();
+/**
+ * Get property deleted flag
+ *
+ * @return The property deleted flag
+ */
   bool is_deleted();
 
 private:
@@ -676,26 +744,47 @@ private:
   string format_mysql_date(string );
   void make_db_datum(vector<string> &);
 };
-//
-// DbDevInfo
-//
+
+/**********************************************************************
+ *                                                                    *
+ *                  DbDevInfo                                         *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * Device information for Database device creation
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
+
 class DbDevInfo
 {
 public :
-	string name;
-	string _class;
-	string server;
+	string name;    ///< The device name
+	string _class;  ///< The device class name
+	string server;  ///< The full device server process name
 };
-//
-// DbDevImportInfo
-//
+
+/**********************************************************************
+ *                                                                    *
+ *                  DbDevImportInfo                                   *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * Device import information from the database
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbDevImportInfo
 {
 public :
-	string name;
-	long exported;
-	string ior;
-	string version;
+	string  name;       ///< The device name
+	long    exported;   ///< The exported flag
+	string  ior;        ///< The device IOR
+	string  version;    ///< The device version (as a string)
 };
 
 /****************************************************************
@@ -704,44 +793,59 @@ public :
  *                                                              *
  ****************************************************************/
 
-
+/**
+ * Device information from the database
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbDevFullInfo: public DbDevImportInfo
 {
 public :
-    string  class_name;
-	string  ds_full_name;
-	string  host;
-	string  started_date;
-	string  stopped_date;
-	long    pid;
+    string  class_name;         ///< The device class name
+	string  ds_full_name;       ///< The full device server process name
+	string  host;               ///< The host name where the device server process is running
+	string  started_date;       ///< Date of the last device export (empty if not set in DB)
+	string  stopped_date;       ///< Date of the last device un-export (empty if not set in DB)
+	long    pid;                ///< The device server process PID (-1 if not set in DB)
 };
 
-//
-// DbDevExportInfo
-//
 
+/**********************************************************************
+ *                                                                    *
+ *                  DbDevExportInfo                                   *
+ *                                                                    *
+ **********************************************************************/
+
+/**
+ * Device export information to the database
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbDevExportInfo
 {
-public:
-	string name;
-	string ior;
-	string host;
-	string version;
-	int pid;
-
+public :
+	string  name;        ///< The device name
+	string  ior;         ///< The device IOR
+	string  host;        ///< The host name where the device server process runs
+	string  version;     ///< The device version
+	int     pid;         ///< The device server process PID
 };
 
-//
-// DbServerInfo
-//
+/**********************************************************************
+ *                                                                    *
+ *                  DbServerInfo                                      *
+ *                                                                    *
+ **********************************************************************/
 
 class DbServerInfo
 {
 public :
-	string name;
-	string host;
-	int mode;
-	int level;
+	string  name;
+	string  host;
+	int     mode;
+	int     level;
 };
 
 
@@ -856,6 +960,78 @@ private:
 	DevVarStringArray		ret_obj_att_prop;
 	DevVarStringArray		ret_prop_list;
 };
+
+/*
+// Some macros to call the Db server
+// These macros will do some retries in case of
+// timeout while calling the DB device
+// This is necessary in case of massive DS
+// startup (after a power cut for instance)
+// when the Db is over-loaded
+*/
+
+#define MANAGE_EXCEPT(NAME) \
+	catch (Tango::CommunicationFailed &e) \
+	{ \
+		if (e.errors.length() >= 2) \
+		{ \
+			if (::strcmp(e.errors[1].reason.in(),"API_DeviceTimedOut") == 0) \
+			{ \
+				if (db_retries != 0) \
+				{ \
+					db_retries--; \
+					if (db_retries == 0) \
+						throw; \
+				} \
+				else \
+					throw; \
+			} \
+			else \
+				throw; \
+		} \
+		else \
+			throw; \
+	}
+
+#define CALL_DB_SERVER_NO_RET(NAME,SEND) \
+	{ \
+		bool retry_mac = true; \
+		long db_retries = 0; \
+		if (ext->db_tg != NULL) \
+		{ \
+			if (ext->db_tg->is_svr_starting() == true) \
+				db_retries = DB_START_PHASE_RETRIES; \
+		} \
+		while (retry_mac == true) \
+		{ \
+			try \
+			{ \
+				command_inout(NAME,SEND); \
+				retry_mac = false; \
+			} \
+			MANAGE_EXCEPT(NAME) \
+		} \
+	}
+
+#define CALL_DB_SERVER(NAME,SEND,RET) \
+	{ \
+		bool retry_mac = true; \
+		long db_retries = 0; \
+		if (ext->db_tg != NULL) \
+		{ \
+			if (ext->db_tg->is_svr_starting() == true) \
+				db_retries = DB_START_PHASE_RETRIES; \
+		} \
+		while (retry_mac == true) \
+		{ \
+			try \
+			{ \
+				RET = command_inout(NAME,SEND); \
+				retry_mac = false; \
+			} \
+			MANAGE_EXCEPT(NAME) \
+		} \
+	}
 
 } // End of Tango namespace
 

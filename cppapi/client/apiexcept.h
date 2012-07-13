@@ -40,27 +40,69 @@ namespace Tango {
 *
 ****************************************************************************/
 
+/**
+ * An exception class
+ *
+ * This class is used as exception for the DeviceProxy::write_attribute call()
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class NamedDevFailed
 {
 public:
+	string		    name;           ///< The name of the attribute which fails
+	long		    idx_in_call;    ///< Index in the write_attributes method parameter vector of the attribute which failed.
+	DevErrorList	err_stack;      ///< The error stack
+
+/// @privatesection
+
 	NamedDevFailed(const DevErrorList &err,const string &na,long idx):name(na),idx_in_call(idx),err_stack(err) {}
 	NamedDevFailed();
-
-	string		name;
-	long		idx_in_call;
-	DevErrorList	err_stack;
 };
+
+/**
+ * An exception class
+ *
+ * This class is used as exception for the DeviceProxy::write_attribute call()
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
 
 class NamedDevFailedList: public Tango::DevFailed
 {
 public:
-	NamedDevFailedList(const Tango::MultiDevFailed &,string,const char *,const char *);
-	NamedDevFailedList() {};
-
+/**
+ * Get faulty attribute number
+ *
+ * Returns the number of attributes which failed during the write_attribute call.
+ *
+ * @return The number of attribute(s) which fail during the write_attribute call
+ */
 	size_t get_faulty_attr_nb() {return err_list.size();}
+/**
+ * Check if the call failed
+ *
+ * This method returns true if at least one attribute failed during the call
+ *
+ * @return A boolean set to true if the call failed for at least one attribute
+ */
 	bool call_failed() {if ((err_list.empty()==true) && (errors.length()!=0))return true;else return false;}
 
-	vector<NamedDevFailed>	err_list;
+	vector<NamedDevFailed>	err_list;   ///< There is one element in this vector for each attribute which failed during its writing.
+
+/// @privatesection
+
+	NamedDevFailedList(const Tango::MultiDevFailed &,string,const char *,const char *);
+	NamedDevFailedList() {};
 };
 
 

@@ -57,9 +57,22 @@ class EventConsumerKeepAliveThread;
  * 																				*
  *******************************************************************************/
 
+/**
+ * Asynchronous command execution callback data
+ *
+ * This class is used to pass data to the callback method in asynchronous callback model for command execution.
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class CmdDoneEvent
 {
 public:
+///@privatesection
 	CmdDoneEvent(DeviceProxy *dev,
 		     string &cmd,
 		     DeviceData &arg,
@@ -69,11 +82,12 @@ public:
 					   errors(err_in)
 	{if (errors.length()==0) err=false;else err=true;}
 
-	Tango::DeviceProxy 	*device;
-	string				&cmd_name;
-	DeviceData			&argout;
-	bool				err;
-	DevErrorList		&errors;
+///@publicsection
+	Tango::DeviceProxy 	*device;        ///< The DeviceProxy object on which the call was executed
+	string				&cmd_name;      ///< The command name
+	DeviceData			&argout;        ///< The command argout
+	bool				err;            ///< A boolean flag set to true if the command failed. False otherwise
+	DevErrorList		&errors;        ///< The error stack
 
 private:
     class CmdDoneEventExt
@@ -95,9 +109,23 @@ private:
  * 																				*
  *******************************************************************************/
 
+/**
+ * Asynchronous read attribute execution callback data
+ *
+ * This class is used to pass data to the callback method in asynchronous callback model for read_attribute(s)
+ * execution
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class AttrReadEvent
 {
 public:
+///@privatesection
 	AttrReadEvent(DeviceProxy *dev,
 		      vector<string> &att_names,
 		      vector<DeviceAttribute> *arg,
@@ -107,11 +135,12 @@ public:
 					    errors(err_in)
 	{if (errors.length()==0) err=false;else err=true;}
 
-	Tango::DeviceProxy 		*device;
-	vector<string>			&attr_names;
-	vector<DeviceAttribute>	*argout;
-	bool					err;
-	DevErrorList			&errors;
+///@publicsection
+	Tango::DeviceProxy 		*device;        ///< The DeviceProxy object on which the call was executed
+	vector<string>			&attr_names;    ///< The attribute name list
+	vector<DeviceAttribute>	*argout;        ///< The attribute data
+	bool					err;            ///< A boolean flag set to true if the request failed. False otherwise
+	DevErrorList			&errors;        ///< The error stack
 
 private:
     class AttrReadEventExt
@@ -133,9 +162,23 @@ private:
  * 																				*
  *******************************************************************************/
 
+/**
+ * Asynchronous write attribute execution callback data
+ *
+ * This class is used to pass data to the callback method in asynchronous callback model for write_attribute(s)
+ * execution.
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class AttrWrittenEvent
 {
 public:
+///@privatesection
 	AttrWrittenEvent(DeviceProxy *dev,
 			 vector<string> &att_names,
 			 NamedDevFailedList &err_in):device(dev),
@@ -143,10 +186,11 @@ public:
 					       errors(err_in)
 	{err = errors.call_failed();}
 
-	Tango::DeviceProxy	*device;
-	vector<string>		&attr_names;
-	bool				err;
-	NamedDevFailedList	&errors;
+///@publicsection
+	Tango::DeviceProxy	*device;        ///< The DeviceProxy object on which the call was executed
+	vector<string>		&attr_names;    ///< The attribute name list
+	bool				err;            ///< A boolean flag set to true if the request failed. False otherwise
+	NamedDevFailedList	&errors;        ///< The error stack
 
 private:
     class AttrWrittenEventExt
@@ -168,6 +212,21 @@ private:
  * 																				*
  *******************************************************************************/
 
+/**
+ * Event and asynchronous (callback model) calls base class
+ *
+ * When using the event push model (callback automatically executed), there are some cases (same callback
+ * used for events coming from different devices hosted in device server process running on different hosts)
+ * where the callback method could be executed concurently by different threads started by the ORB. The
+ * user has to code his callback method in a thread safe manner.
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class CallBack
 {
 
@@ -175,14 +234,76 @@ friend class EventConsumer;
 friend class EventConsumerKeepAliveThread;
 
 public:
-	virtual ~CallBack() {};
-
+#ifdef GEN_DOC
+/**
+ * Asynchronous command execution callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when the asynchronous callback
+ * model is used. This is the method which will be executed when the server reply from a command_inout is
+ * received in both push and pull sub-mode.
+ *
+ * @param cde The command data
+ */
+	virtual void cmd_ended(CmdDoneEvent *cde) {};
+/**
+ * Asynchronous read attribute execution callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when the asynchronous callback
+ * model is used. This is the method which will be executed when the server reply from a read_attribute(s) is
+ * received in both push and pull sub-mode.
+ *
+ * @param are The read attribute data
+ */
+	virtual void attr_read(AttrReadEvent *are) {};
+/**
+ * Asynchronous write attribute execution callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when the asynchronous callback
+ * model is used. This is the method which will be executed when the server reply from a write_attribute(s)
+ * is received in both push and pull sub-mode.
+ *
+ * @param awe The write attribute data
+ */
+	virtual void attr_written(AttrWrittenEvent *awe) {};
+/**
+ * Event callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when events are used. This is
+ * the method which will be executed when the server send event(s) to the client.
+ *
+ * @param ed The event data
+ */
+	virtual void push_event(EventData *ed) {};
+/**
+ * attribute configuration change event callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when events are used. This
+ * is the method which will be executed when the server send attribute configuration change event(s) to the
+ * client.
+ *
+ * @param ace The attribute configuration change event data
+ */
+	virtual void push_event(AttrConfEventData *ace) {};
+/**
+ * Data ready event callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when events are used. This is
+ * the method which will be executed when the server send attribute data ready event(s) to the client.
+ *
+ * @param dre The data ready event data
+ */
+	virtual void push_event(DataReadyEventData *dre) {};
+#else
 	virtual void cmd_ended(CmdDoneEvent *) {};
 	virtual void attr_read(AttrReadEvent *) {};
 	virtual void attr_written(AttrWrittenEvent *) {};
 	virtual void push_event(EventData *) {};
 	virtual void push_event(AttrConfEventData *) {};
 	virtual void push_event(DataReadyEventData *) {};
+#endif
+
+/// @privatesection
+	virtual ~CallBack() {};
 
 private:
     class CallBackExt

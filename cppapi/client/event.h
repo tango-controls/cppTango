@@ -70,26 +70,41 @@ void client_leavefunc();
  * 																				*
  *******************************************************************************/
 
+/**
+ * Event callback execution data
+ *
+ * This class is used to pass data to the callback method when an event is sent to the client
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class EventData
 {
 public :
+///@privatesection
 	EventData(DeviceProxy *dev,string &nam,string &evt,Tango::DeviceAttribute *attr_value_in,
 	DevErrorList &errors_in);
 	~EventData();
 	EventData(const EventData &);
 	EventData & operator=(const EventData &);
-
-	DeviceProxy *device;
-	string attr_name;
-	string event;
-	DeviceAttribute *attr_value;
-	bool err;
-	DevErrorList errors;
 	/**
 	 * The date when the event arrived
 	 */
 	Tango::TimeVal reception_date;
 	Tango::TimeVal &get_date() {return reception_date;}
+
+///@publicsection
+	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
+	string          attr_name;      ///< The attribute name
+	string          event;          ///< The event name
+	DeviceAttribute *attr_value;    ///< The attribute data
+	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
+	DevErrorList    errors;         ///< The error stack
+
 private:
 	void set_time();
 };
@@ -137,27 +152,43 @@ public:
  * 																				*
  *******************************************************************************/
 
+/**
+ * Attribute configuration change event callback execution data
+ *
+ * This class is used to pass data to the callback method when an attribute configuration event is sent to the
+ * client
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class AttrConfEventData
 {
 public :
+///@privatesection
 	AttrConfEventData(DeviceProxy *dev,string &nam,string &evt,
 	                  Tango::AttributeInfoEx *attr_conf_in,
 	                  DevErrorList &errors_in);
 	~AttrConfEventData();
 	AttrConfEventData(const AttrConfEventData &);
 	AttrConfEventData & operator=(const AttrConfEventData &);
-
-	DeviceProxy *device;
-	string attr_name;
-	string event;
-	AttributeInfoEx *attr_conf;
-	bool err;
-	DevErrorList errors;
 	/**
 	 * The date when the event arrived
 	 */
 	Tango::TimeVal reception_date;
 	Tango::TimeVal &get_date() {return reception_date;}
+
+///@publicsection
+	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
+	string          attr_name;      ///< The attribute name
+	string          event;          ///< The event name
+	AttributeInfoEx *attr_conf;     ///< The attribute configuration
+	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
+	DevErrorList    errors;         ///< The error stack
+
 private:
 	void set_time();
 };
@@ -205,28 +236,42 @@ public:
  * 																				*
  *******************************************************************************/
 
+/**
+ * Data ready event callback execution data
+ *
+ * This class is used to pass data to the callback method when an attribute data ready event is sent to the client.
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
 class DataReadyEventData
 {
 public :
+///@privatesection
 	DataReadyEventData(DeviceProxy *,AttDataReady *,string &evt,DevErrorList &);
 	~DataReadyEventData() {};
 	DataReadyEventData(const DataReadyEventData &);
 	DataReadyEventData & operator=(const DataReadyEventData &);
-
-	DeviceProxy 	*device;
-	string 			attr_name;
-	string			event;
-	int 			attr_data_type;
-	int 			ctr;
-
-	bool 			err;
-	DevErrorList 	errors;
-
 	/**
 	 * The date when the event arrived
 	 */
 	Tango::TimeVal 	reception_date;
 	Tango::TimeVal &get_date() {return reception_date;}
+
+///@publicsection
+	DeviceProxy 	*device;            ///< The DeviceProxy object on which the call was executed
+	string 			attr_name;          ///< The attribute name
+	string			event;              ///< The event name
+	int 			attr_data_type;     ///< The attribute data type
+	int 			ctr;                ///< The user counter. Set to 0 if not defined when sent by the server
+
+	bool 			err;                ///< A boolean flag set to true if the request failed. False otherwise
+	DevErrorList 	errors;             ///< The error stack
+
 private:
 	void set_time();
 };

@@ -309,7 +309,15 @@ CLIENT_INCLUDE =	apiexcept.h \
 			group.h \
 			accessproxy.h \
 			eventconsumer.h \
-			event.h
+			event.h \
+			Database.h \
+			DbDevice.h \
+			ApiUtil.h \
+			DeviceData.h \
+			DeviceAttribute.h \
+			Connection.h \
+			DeviceProxy.h \
+			AttributeProxy.h
 
 SERVER_INCLUDE =	attrdesc.h \
 			attribute.h \
