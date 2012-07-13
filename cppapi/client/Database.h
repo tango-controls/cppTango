@@ -57,10 +57,7 @@ private :
     class DatabaseExt
     {
     public:
-        DatabaseExt():db_tg(NULL) {};
-
-        Tango::Util 	*db_tg;
-        omni_mutex		map_mutex;
+        DatabaseExt() {};
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -84,6 +81,9 @@ private :
 	string				db_device_name;
 
 	bool				access_service_defined;
+
+    Tango::Util         *db_tg;
+    omni_mutex          map_mutex;
 
 	DbDatum         make_string_array(string, CORBA::Any_var &);
 	vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
@@ -1431,7 +1431,7 @@ public :
 	bool is_control_access_checked() {return access_checked;}
 	void set_access_checked(bool val) {access_checked = val;}
 
-	void set_tango_utils(Tango::Util *ptr) {ext->db_tg=ptr;}
+	void set_tango_utils(Tango::Util *ptr) {db_tg=ptr;}
 	int get_server_release() {return serv_version;}
 
 	DevErrorList &get_access_except_errors() {return access_except_errors;}

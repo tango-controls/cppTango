@@ -122,8 +122,6 @@ private:
     {
     public:
         DeviceProxyExt() {};
-
-        omni_mutex			lock_mutex;
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -131,6 +129,8 @@ private:
 #else
 	DeviceProxyExt		        *ext_proxy;		// Class extension
 #endif
+
+    omni_mutex                  lock_mutex;
 
 public :
 /**@name Constructors */

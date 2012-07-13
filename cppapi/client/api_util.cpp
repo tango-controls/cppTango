@@ -73,7 +73,8 @@ omni_mutex ApiUtil::inst_mutex;
 //
 //-----------------------------------------------------------------------------
 
-ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt)
+ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
+notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
 {
 	_orb = CORBA::ORB::_nil();
 
@@ -110,9 +111,9 @@ ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false)
 //
 
 #ifdef _TG_WINDOWS_
-	ext->cl_pid = _getpid();
+	cl_pid = _getpid();
 #else
-	ext->cl_pid = getpid();
+	cl_pid = getpid();
 #endif
 
 //
@@ -126,7 +127,7 @@ ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false)
 		istringstream iss(var);
 		iss >> user_to;
 		if (iss)
-			ext->user_connect_timeout = user_to;
+			user_connect_timeout = user_to;
 	}
 
 //
@@ -140,7 +141,7 @@ ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false)
 		istringstream iss(var);
 		iss >> sub_hwm;
 		if (iss)
-			ext->user_sub_hwm = sub_hwm;
+			user_sub_hwm = sub_hwm;
 	}
 }
 
@@ -184,7 +185,7 @@ ApiUtil::~ApiUtil()
 	if (ext != NULL)
 #endif
 	{
-		if ((ext->notifd_event_consumer != NULL) || (ext->zmq_event_consumer != NULL))
+		if ((notifd_event_consumer != NULL) || (zmq_event_consumer != NULL))
 		{
 			event_was_used = true;
 			leavefunc();
@@ -701,22 +702,22 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 
 void ApiUtil::create_notifd_event_consumer()
 {
-    ext->notifd_event_consumer = NotifdEventConsumer::create();
+    notifd_event_consumer = NotifdEventConsumer::create();
 }
 
 void ApiUtil::create_zmq_event_consumer()
 {
-    ext->zmq_event_consumer = ZmqEventConsumer::create();
+    zmq_event_consumer = ZmqEventConsumer::create();
 }
 
 NotifdEventConsumer *ApiUtil::get_notifd_event_consumer()
 {
-	return ext->notifd_event_consumer;
+	return notifd_event_consumer;
 }
 
 ZmqEventConsumer *ApiUtil::get_zmq_event_consumer()
 {
-	return ext->zmq_event_consumer;
+	return zmq_event_consumer;
 }
 
 //+----------------------------------------------------------------------------
@@ -1489,7 +1490,7 @@ int ApiUtil::get_env_var(const char *env_var_name,string &env_var)
 
 void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 {
-    if (ext->host_ip_adrs.empty() == true)
+    if (host_ip_adrs.empty() == true)
     {
 #ifndef _TG_WINDOWS_
 		int sock = socket(AF_INET,SOCK_STREAM,0);
@@ -1570,7 +1571,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 												   (const char *)"ApiUtil::get_ip_from_if()");
 					}
 					string tmp_str(dest);
-					ext->host_ip_adrs.push_back(tmp_str);
+					host_ip_adrs.push_back(tmp_str);
 				}
 			}
 		}
@@ -1632,7 +1633,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 					}
 					string tmp_str(dest);
 					if (tmp_str != "0.0.0.0" && tmp_str != "0:0:0:0:0:0:0:0" &&tmp_str != "::")
-						ext->host_ip_adrs.push_back(tmp_str);
+						host_ip_adrs.push_back(tmp_str);
 				}
 			}
 		}
@@ -1644,7 +1645,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 //
 
     ip_adr_list.clear();
-    copy(ext->host_ip_adrs.begin(),ext->host_ip_adrs.end(),back_inserter(ip_adr_list));
+    copy(host_ip_adrs.begin(),host_ip_adrs.end(),back_inserter(ip_adr_list));
 }
 
 //+-------------------------------------------------------------------------

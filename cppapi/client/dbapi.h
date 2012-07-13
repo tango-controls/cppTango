@@ -997,9 +997,9 @@ private:
 	{ \
 		bool retry_mac = true; \
 		long db_retries = 0; \
-		if (ext->db_tg != NULL) \
+		if (db_tg != NULL) \
 		{ \
-			if (ext->db_tg->is_svr_starting() == true) \
+			if (db_tg->is_svr_starting() == true) \
 				db_retries = DB_START_PHASE_RETRIES; \
 		} \
 		while (retry_mac == true) \
@@ -1017,9 +1017,9 @@ private:
 	{ \
 		bool retry_mac = true; \
 		long db_retries = 0; \
-		if (ext->db_tg != NULL) \
+		if (db_tg != NULL) \
 		{ \
-			if (ext->db_tg->is_svr_starting() == true) \
+			if (db_tg->is_svr_starting() == true) \
 				db_retries = DB_START_PHASE_RETRIES; \
 		} \
 		while (retry_mac == true) \

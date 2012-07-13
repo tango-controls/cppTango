@@ -663,7 +663,7 @@ inline ApiUtil *ApiUtil::instance()
 
 inline long Connection::add_asyn_request(CORBA::Request_ptr req,TgRequest::ReqType req_type)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	long id = ApiUtil::instance()->get_pasyn_table()->store_request(req,req_type);
 	pasyn_ctr++;
 	return id;
@@ -671,7 +671,7 @@ inline long Connection::add_asyn_request(CORBA::Request_ptr req,TgRequest::ReqTy
 
 inline void Connection::remove_asyn_request(long id)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 
 	ApiUtil::instance()->get_pasyn_table()->remove_request(id);
 	pasyn_ctr--;
@@ -679,14 +679,14 @@ inline void Connection::remove_asyn_request(long id)
 
 inline void Connection::add_asyn_cb_request(CORBA::Request_ptr req,CallBack *cb,Connection *con,TgRequest::ReqType req_type)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->store_request(req,cb,con,req_type);
 	pasyn_cb_ctr++;
 }
 
 inline void Connection::remove_asyn_cb_request(Connection *con,CORBA::Request_ptr req)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->remove_request(con,req);
 	pasyn_cb_ctr--;
 }
@@ -694,15 +694,15 @@ inline void Connection::remove_asyn_cb_request(Connection *con,CORBA::Request_pt
 inline long Connection::get_pasyn_cb_ctr()
 {
 	long ret;
-	ext->asyn_mutex.lock();
+	asyn_mutex.lock();
 	ret = pasyn_cb_ctr;
-	ext->asyn_mutex.unlock();
+	asyn_mutex.unlock();
 	return ret;
 }
 
 inline void Connection::dec_asynch_counter(asyn_req_type ty)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	if (ty==POLLING)
 		pasyn_ctr--;
 	else if (ty==CALL_BACK)
@@ -711,7 +711,7 @@ inline void Connection::dec_asynch_counter(asyn_req_type ty)
 
 inline void DeviceProxy::check_connect_adm_device()
 {
-	omni_mutex_lock guard(ext->adm_dev_mutex);
+	omni_mutex_lock guard(adm_dev_mutex);
 	if (adm_device == NULL)
 		connect_to_adm_device();
 }

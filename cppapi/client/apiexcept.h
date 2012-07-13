@@ -424,8 +424,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 	set_connection_state(CONNECTION_NOTOK); \
 	ctr++; \
 \
-	if ((ext->tr_reco == false) || \
-	   ((ctr == 2) && (ext->tr_reco == true))) \
+	if ((tr_reco == false) || \
+	   ((ctr == 2) && (tr_reco == true))) \
 	{ \
 \
 		TangoSys_OMemStream desc; \
@@ -482,8 +482,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 	} \
 	ctr++; \
 \
-	if ((ext->tr_reco == false) || \
-	   ((ctr == 2) && (ext->tr_reco == true))) \
+	if ((tr_reco == false) || \
+	   ((ctr == 2) && (tr_reco == true))) \
 	{ \
 		TangoSys_OMemStream desc; \
 		desc << "Failed to execute command_inout on device " << dev_name(); \

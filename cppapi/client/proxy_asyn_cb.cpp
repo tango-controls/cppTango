@@ -88,7 +88,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 	req_seq.length(1);
 
 	if (version >= 4)
-		req_seq[0] = ext->device_4->_request("command_inout_4");
+		req_seq[0] = device_4->_request("command_inout_4");
 	else if (version >= 2)
 		req_seq[0] = device_2->_request("command_inout_2");
 	else
@@ -1125,7 +1125,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		req_seq[0] = Connection::ext->device_4->_request("read_attributes_4");
+		req_seq[0] = Connection::device_4->_request("read_attributes_4");
 		req_seq[0]->add_in_arg() <<= names;
 		req_seq[0]->add_in_arg() <<= source;
 		req_seq[0]->add_in_arg() <<= ci;
@@ -1133,7 +1133,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 	}
 	else if (version == 3)
 	{
-		req_seq[0] = Connection::ext->device_3->_request("read_attributes_3");
+		req_seq[0] = Connection::device_3->_request("read_attributes_3");
 		req_seq[0]->add_in_arg() <<= names;
 		req_seq[0]->add_in_arg() <<= source;
 		req_seq[0]->set_return_type(Tango::_tc_AttributeValueList_3);
@@ -1236,7 +1236,7 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		req_seq[0] = ext->device_4->_request("write_attributes_4");
+		req_seq[0] = device_4->_request("write_attributes_4");
 		req_seq[0]->add_in_arg() <<= att_4;
 		req_seq[0]->add_in_arg() <<= ci;
 		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);
@@ -1335,7 +1335,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		req_seq[0] = ext->device_4->_request("write_attributes_4");
+		req_seq[0] = device_4->_request("write_attributes_4");
 		req_seq[0]->add_in_arg() <<= att_4;
 		req_seq[0]->add_in_arg() <<= ci;
 		req_seq[0]->exceptions()->add(Tango::_tc_MultiDevFailed);

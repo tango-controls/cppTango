@@ -145,7 +145,7 @@ public:
 	bool in_server() {return in_serv;}
 	void in_server(bool serv) {in_serv = serv;}
 
-	TangoSys_Pid get_client_pid() {return ext->cl_pid;}
+	TangoSys_Pid get_client_pid() {return cl_pid;}
 	void clean_locking_threads(bool clean=true);
 
 	bool is_lock_exit_installed() {omni_mutex_lock guard(lock_th_map);return exit_lock_installed;}
@@ -161,10 +161,10 @@ public:
 // Utilities methods
 //
 
-	int get_user_connect_timeout() {return ext->user_connect_timeout;}
+	int get_user_connect_timeout() {return user_connect_timeout;}
 
-	DevLong get_user_sub_hwm() {return ext->user_sub_hwm;}
-	void set_event_buffer_hwm(DevLong val) {if (ext->user_sub_hwm == -1)ext->user_sub_hwm=val;}
+	DevLong get_user_sub_hwm() {return user_sub_hwm;}
+	void set_event_buffer_hwm(DevLong val) {if (user_sub_hwm == -1)user_sub_hwm=val;}
 
 	void get_ip_from_if(vector<string> &);
 
@@ -175,10 +175,10 @@ public:
 	void create_notifd_event_consumer();
 	void create_zmq_event_consumer();
 
-	bool is_notifd_event_consumer_created() {return ext->notifd_event_consumer != NULL;}
+	bool is_notifd_event_consumer_created() {return notifd_event_consumer != NULL;}
 	NotifdEventConsumer *get_notifd_event_consumer();
 
-	bool is_zmq_event_consumer_created() {return ext->zmq_event_consumer != NULL;}
+	bool is_zmq_event_consumer_created() {return zmq_event_consumer != NULL;}
 	ZmqEventConsumer *get_zmq_event_consumer();
 
 //
@@ -222,15 +222,7 @@ private:
     class ApiUtilExt
     {
     public:
-        ApiUtilExt():notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),
-                     zmq_event_consumer(NULL),user_sub_hwm(-1) {};
-
-        NotifdEventConsumer *notifd_event_consumer;
-        TangoSys_Pid		cl_pid;
-        int					user_connect_timeout;
-        ZmqEventConsumer    *zmq_event_consumer;
-        vector<string>      host_ip_adrs;
-        DevLong             user_sub_hwm;
+        ApiUtilExt() {};
     };
 
 	TANGO_IMP static ApiUtil 	*_instance;
@@ -243,6 +235,13 @@ private:
 #else
 	ApiUtilExt					*ext; 		// Class extension
 #endif
+
+    NotifdEventConsumer         *notifd_event_consumer;
+    TangoSys_Pid		        cl_pid;
+    int					        user_connect_timeout;
+    ZmqEventConsumer            *zmq_event_consumer;
+    vector<string>              host_ip_adrs;
+    DevLong                     user_sub_hwm;
 };
 
 #endif /* _APIUTIL_H */

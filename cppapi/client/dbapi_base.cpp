@@ -57,7 +57,7 @@ namespace Tango
 
 Database::Database(ORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 //
 // get host and port from environment variable TANGO_HOST
@@ -93,7 +93,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 #ifdef _TG_WINDOWS_
 Database::Database(ORB *orb_in,string &ds_exec_name,string &ds_inst_name) : Connection(orb_in),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 //
 // get host and port from environment variable TANGO_HOST
@@ -265,7 +265,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			if (res == 0)
 			{
 				db_host = h_name;
-				Connection::ext->tango_host_localhost = true;
+				tango_host_localhost = true;
 			}
 		}
 
@@ -296,7 +296,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 
 Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 	filedb = Tango_NullPtr;
 	serv_version = 0;
@@ -327,7 +327,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 
 Database::Database(string &name) : Connection(true),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 	file_name = name;
 	filedb = new FileDatabase(file_name);
@@ -346,7 +346,7 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
 {
 
 //
-// Copy Databaase members
+// Copy Database members
 //
 
 	db_multi_svc = sou.db_multi_svc;
@@ -370,6 +370,7 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
 	db_device_name = sou.db_device_name;
 
 	access_service_defined = sou.access_service_defined;
+	db_tg = sou.db_tg;
 
 //
 // Copy extension class
@@ -379,7 +380,6 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
     if (sou.ext.get() != NULL)
     {
         ext.reset(new DatabaseExt);
-        ext->db_tg = sou.ext->db_tg;
     }
 #else
 	if (sou.ext == NULL)
@@ -387,7 +387,6 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
 	else
 	{
 		ext = new DatabaseExt();
-		ext->db_tg = sou.ext->db_tg;
 	}
 #endif
 
@@ -434,12 +433,12 @@ Database &Database::operator=(const Database &rval)
         db_device_name = rval.db_device_name;
 
         access_service_defined = rval.access_service_defined;
+        db_tg = rval.db_tg;
 
 #ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DatabaseExt);
-            ext->db_tg = rval.ext->db_tg;
         }
         else
             ext.reset();
@@ -448,7 +447,6 @@ Database &Database::operator=(const Database &rval)
         if (rval.ext != NULL)
         {
             ext = new DatabaseExt;
-            ext->db_tg = rval.ext->db_tg;
         }
         else
             ext = NULL;
@@ -471,12 +469,12 @@ void Database::check_access_and_get()
 {
 	bool local_access_checked;
 	{
-		ReaderLock guard(Connection::ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_access_checked = access_checked;
 	}
 	if (local_access_checked == false)
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (access_checked == false)
 			check_access();
 	}
@@ -683,7 +681,7 @@ string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
 	else
 	{
 		db_corbaloc = "corbaloc:iiop:";
-		if (Connection::ext->tango_host_localhost == true)
+		if (tango_host_localhost == true)
 			db_corbaloc = db_corbaloc+"localhost:";
 		else
 			db_corbaloc = db_corbaloc+db_host+":";
@@ -759,7 +757,7 @@ DbDevImportInfo Database::import_device(string &dev)
 
 	DbDevImportInfo dev_import;
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
@@ -791,11 +789,11 @@ DbDevImportInfo Database::import_device(string &dev)
                 ApiUtil *au = ApiUtil::instance();
                 if (au->in_server() == true)
                 {
-                    if (ext->db_tg != NULL)
+                    if (db_tg != NULL)
                     {
                         try
                         {
-                            DbServerCache *dsc = ext->db_tg->get_db_cache();
+                            DbServerCache *dsc = db_tg->get_db_cache();
                             if (dsc != NULL)
                             {
                                 dev_import_list = dsc->import_tac_dev(dev);
@@ -834,7 +832,7 @@ DbDevImportInfo Database::import_device(string &dev)
 
 		if (dev_import_list->svalue.length() == 6)
 		{
-			omni_mutex_lock guard(ext->map_mutex);
+			omni_mutex_lock guard(map_mutex);
 
 			map<string,string>::iterator pos = dev_class_cache.find(dev);
 			if (pos == dev_class_cache.end())
@@ -2454,7 +2452,7 @@ DbDatum Database::get_device_domain(string &wildcard)
 
 void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *dsc)
 {
-	WriterLock guard(Connection::ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 
 	AccessControlType tmp_access = access;
 	access = ACCESS_WRITE;
@@ -2473,7 +2471,7 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 	const DevVarStringArray *property_values = NULL;
 
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		if ((access == ACCESS_READ) && (access_checked == false))
 			check_access();
@@ -3335,7 +3333,7 @@ string Database::get_class_for_device(string &devname)
 	string ret_str;
 
 	{
-		omni_mutex_lock guard(ext->map_mutex);
+		omni_mutex_lock guard(map_mutex);
 
 		map<string,string>::iterator pos = dev_class_cache.find(devname);
 		if (pos == dev_class_cache.end())
@@ -3815,8 +3813,8 @@ DbDatum Database::get_services(string &servname,string &instname)
 		catch (Tango::DevFailed &e)
 		{
             string reason = e.errors[0].reason.in();
-            if (reason == "API_UtilSingletonNotCreated" && ext->db_tg != NULL)
-                dsc = ext->db_tg->get_db_cache();
+            if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+                dsc = db_tg->get_db_cache();
             else
                 dsc = NULL;
 		}
@@ -4024,7 +4022,7 @@ CORBA::Any *Database::import_event(string &event)
 //
 
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
@@ -4075,7 +4073,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 
 	Any_var received;
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
@@ -4275,7 +4273,7 @@ AccessControlType Database::check_access_control(string &devname)
 
 bool Database::is_command_allowed(string &devname,string &cmd)
 {
-	WriterLock guard(Connection::ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 
 	bool ret;
 

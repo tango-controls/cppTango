@@ -70,17 +70,8 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-Connection::ConnectionExt &Connection::ConnectionExt::operator=(const Connection::ConnectionExt &rval)
+Connection::ConnectionExt &Connection::ConnectionExt::operator=(TANGO_UNUSED(const Connection::ConnectionExt &rval))
 {
-	tr_reco  = rval.tr_reco;
-	device_3 = rval.device_3;
-
-	prev_failed    = rval.prev_failed;
-	prev_failed_t0 = rval.prev_failed_t0;
-
-	device_4 = rval.device_4;
-	device_5 = rval.device_5;
-
 	return *this;
 }
 
@@ -93,7 +84,9 @@ Connection::ConnectionExt &Connection::ConnectionExt::operator=(const Connection
 
 Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 				    timeout(CLNT_TIMEOUT),
-				    version(0),source(Tango::CACHE_DEV),ext(new ConnectionExt())
+				    version(0),source(Tango::CACHE_DEV),ext(new ConnectionExt()),
+				    tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
+				    user_connect_timeout(-1),tango_host_localhost(false)
 {
 
 //
@@ -127,10 +120,13 @@ Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 
 	int ucto = au->get_user_connect_timeout();
 	if (ucto != -1)
-		ext->user_connect_timeout = ucto;
+		user_connect_timeout = ucto;
 }
 
-Connection::Connection(bool dummy):ext(Tango_NullPtr)
+
+
+Connection::Connection(bool dummy):ext(Tango_NullPtr),tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
+				    user_connect_timeout(-1),tango_host_localhost(false)
 {
 	if (dummy)
 	{
@@ -189,6 +185,19 @@ Connection::Connection(const Connection &sou):ext(Tango_NullPtr)
 	check_acc = sou.check_acc;
 	access = sou.access;
 
+    tr_reco = sou.tr_reco;
+    device_3 = sou.device_3;
+
+    prev_failed = sou.prev_failed;
+    prev_failed_t0 = sou.prev_failed_t0;
+
+    device_4 = sou.device_4;
+
+    user_connect_timeout = sou.user_connect_timeout;
+    tango_host_localhost = sou.tango_host_localhost;
+
+    device_5 = sou.device_5;
+
 #ifdef HAS_UNIQUE_PTR
     if (sou.ext.get() != NULL)
     {
@@ -240,6 +249,19 @@ Connection &Connection::operator=(const Connection &rval)
 	check_acc = rval.check_acc;
 	access = rval.access;
 
+    tr_reco = rval.tr_reco;
+    device_3 = rval.device_3;
+
+    prev_failed = rval.prev_failed;
+    prev_failed_t0 = rval.prev_failed_t0;
+
+    device_4 = rval.device_4;
+
+    user_connect_timeout = rval.user_connect_timeout;
+    tango_host_localhost = rval.tango_host_localhost;
+
+    device_5 = rval.device_5;
+
 #ifdef HAS_UNIQUE_PTR
     if (rval.ext.get() != NULL)
     {
@@ -276,12 +298,12 @@ void Connection::check_and_reconnect()
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
 			reconnect(dbase_used);
 	}
@@ -291,13 +313,13 @@ void Connection::check_and_reconnect(Tango::DevSource &sou)
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 		sou = source;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
 			reconnect(dbase_used);
 	}
@@ -307,13 +329,13 @@ void Connection::check_and_reconnect(Tango::AccessControlType &act)
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 		act = access;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
 			reconnect(dbase_used);
 	}
@@ -323,14 +345,14 @@ void Connection::check_and_reconnect(Tango::DevSource &sou,Tango::AccessControlT
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 		act = access;
 		sou = source;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
 			reconnect(dbase_used);
 	}
@@ -338,19 +360,19 @@ void Connection::check_and_reconnect(Tango::DevSource &sou,Tango::AccessControlT
 
 void Connection::set_connection_state(int con)
 {
-	WriterLock guard(ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 	connection_state = con;
 }
 
 Tango::DevSource Connection::get_source()
 {
-	ReaderLock guard(ext->con_to_mon);
+	ReaderLock guard(con_to_mon);
 	return source;
 }
 
 void Connection::set_source(Tango::DevSource sou)
 {
-	WriterLock guard(ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 	source = sou;
 }
 
@@ -391,26 +413,26 @@ void Connection::connect(string &corba_name)
 
 			if (connect_to_db == false)
 			{
-				if (ext->user_connect_timeout != -1)
-					omniORB::setClientConnectTimeout(ext->user_connect_timeout);
+				if (user_connect_timeout != -1)
+					omniORB::setClientConnectTimeout(user_connect_timeout);
 				else
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 			}
 
-			ext->device_5 = Device_5::_narrow(obj);
+			device_5 = Device_5::_narrow(obj);
 
 			if (connect_to_db == false)
 				omniORB::setClientConnectTimeout(0);
 
-            if (CORBA::is_nil(ext->device_5))
+            if (CORBA::is_nil(device_5))
             {
-                ext->device_4 = Device_4::_narrow(obj);
+                device_4 = Device_4::_narrow(obj);
 
-                if (CORBA::is_nil(ext->device_4))
+                if (CORBA::is_nil(device_4))
                 {
-                    ext->device_3 = Device_3::_narrow(obj);
+                    device_3 = Device_3::_narrow(obj);
 
-                    if (CORBA::is_nil(ext->device_3))
+                    if (CORBA::is_nil(device_3))
                     {
                         device_2 = Device_2::_narrow(obj);
                         if (CORBA::is_nil(device_2))
@@ -442,25 +464,25 @@ void Connection::connect(string &corba_name)
                     else
                     {
                         version = 3;
-                        device_2 = Device_3::_duplicate(ext->device_3);
-                        device = Device_3::_duplicate(ext->device_3);
+                        device_2 = Device_3::_duplicate(device_3);
+                        device = Device_3::_duplicate(device_3);
                     }
                 }
                 else
                 {
                     version = 4;
-                    ext->device_3 = Device_4::_duplicate(ext->device_4);
-                    device_2 = Device_4::_duplicate(ext->device_4);
-                    device = Device_4::_duplicate(ext->device_4);
+                    device_3 = Device_4::_duplicate(device_4);
+                    device_2 = Device_4::_duplicate(device_4);
+                    device = Device_4::_duplicate(device_4);
                 }
             }
             else
             {
                 version = 5;
-                ext->device_4 = Device_5::_duplicate(ext->device_5);
-                ext->device_3 = Device_5::_duplicate(ext->device_5);
-                device_2 = Device_5::_duplicate(ext->device_5);
-                device = Device_5::_duplicate(ext->device_5);
+                device_4 = Device_5::_duplicate(device_5);
+                device_3 = Device_5::_duplicate(device_5);
+                device_2 = Device_5::_duplicate(device_5);
+                device = Device_5::_duplicate(device_5);
             }
 			retry = false;
 
@@ -563,12 +585,12 @@ void Connection::reconnect(bool db_used)
 #endif /* _TG_WINDOWS_ */
 
 	double	t = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-	double	delay = t - ext->prev_failed_t0;
+	double	delay = t - prev_failed_t0;
 
 	if (connection_state != CONNECTION_OK)
 	{
 		//	Do not reconnect if to soon
-		if ( (ext->prev_failed == true) && delay < (RECONNECTION_DELAY / 1000) )
+		if ( (prev_failed == true) && delay < (RECONNECTION_DELAY / 1000) )
 		{
 			TangoSys_OMemStream desc;
 			desc << "Failed to connect to device " << dev_name() << endl;
@@ -616,15 +638,15 @@ void Connection::reconnect(bool db_used)
 		{
 			try
 			{
-				if (ext->user_connect_timeout != -1)
-					omniORB::setClientConnectTimeout(ext->user_connect_timeout);
+				if (user_connect_timeout != -1)
+					omniORB::setClientConnectTimeout(user_connect_timeout);
 				else
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 				device->ping();
 				omniORB::setClientConnectTimeout(0);
 
-				ext->prev_failed_t0 = t;
-				ext->prev_failed    = false;
+				prev_failed_t0 = t;
+				prev_failed    = false;
 
 //
 // If the device is the database, call its post-reconnection method
@@ -655,8 +677,8 @@ void Connection::reconnect(bool db_used)
 	}
 	catch (DevFailed &)
 	{
-		ext->prev_failed    = true;
-		ext->prev_failed_t0 = t;
+		prev_failed    = true;
+		prev_failed_t0 = t;
 
 		throw;
 	}
@@ -671,7 +693,7 @@ void Connection::reconnect(bool db_used)
 bool Connection::is_connected()
 {
 	bool connected = true;
-	ReaderLock guard(ext->con_to_mon);
+	ReaderLock guard(con_to_mon);
 	if(connection_state != CONNECTION_OK)
 		connected = false;
 	return connected;
@@ -945,7 +967,7 @@ void Connection::get_fqdn(string &the_host)
 
 int Connection::get_timeout_millis()
 {
-	ReaderLock guard(ext->con_to_mon);
+	ReaderLock guard(con_to_mon);
 	return timeout;
 }
 
@@ -958,7 +980,7 @@ int Connection::get_timeout_millis()
 
 void Connection::set_timeout_millis(int millisecs)
 {
-	WriterLock guard(ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 
 	timeout = millisecs;
 
@@ -972,20 +994,20 @@ void Connection::set_timeout_millis(int millisecs)
         switch (version)
         {
         case 5:
-			omniORB::setClientCallTimeout(ext->device_5,millisecs);
-			omniORB::setClientCallTimeout(ext->device_4,millisecs);
-			omniORB::setClientCallTimeout(ext->device_3,millisecs);
+			omniORB::setClientCallTimeout(device_5,millisecs);
+			omniORB::setClientCallTimeout(device_4,millisecs);
+			omniORB::setClientCallTimeout(device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
 			break;
 
         case 4:
-			omniORB::setClientCallTimeout(ext->device_4,millisecs);
-			omniORB::setClientCallTimeout(ext->device_3,millisecs);
+			omniORB::setClientCallTimeout(device_4,millisecs);
+			omniORB::setClientCallTimeout(device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
 			break;
 
         case 3:
-			omniORB::setClientCallTimeout(ext->device_3,millisecs);
+			omniORB::setClientCallTimeout(device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
 			break;
 
@@ -1128,7 +1150,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				received = ext->device_4->command_inout_4(command.c_str(),data_in.any,local_source,ci);
+				received = device_4->command_inout_4(command.c_str(),data_in.any,local_source,ci);
 			}
 			else if (version >= 2)
 				received = device_2->command_inout_2(command.c_str(),data_in.any,local_source);
@@ -1315,7 +1337,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				return (ext->device_4->command_inout_4(command.c_str(),any,local_source,ci));
+				return (device_4->command_inout_4(command.c_str(),any,local_source,ci));
 			}
 			else if (version >= 2)
 				return (device_2->command_inout_2(command.c_str(),any,local_source));
@@ -2911,7 +2933,7 @@ DeviceInfo const &DeviceProxy::info()
 
 			if (version >= 3)
 			{
-				dev_info_3 = ext->device_3->info_3();
+				dev_info_3 = device_3->info_3();
 
 				_info.dev_class = dev_info_3->dev_class;
 				_info.server_id = dev_info_3->server_id;
@@ -3729,7 +3751,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 			}
 			else
 			{
-				attr_config_list_3 = ext->device_3->get_attribute_config_3(attr_list);
+				attr_config_list_3 = device_3->get_attribute_config_3(attr_list);
 
 				dev_attr_config->resize(attr_config_list_3->length());
 
@@ -4329,10 +4351,10 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				ext->device_4->set_attribute_config_4(attr_config_list_3,ci);
+				device_4->set_attribute_config_4(attr_config_list_3,ci);
 			}
 			else if (version == 3)
-				ext->device_3->set_attribute_config_3(attr_config_list_3);
+				device_3->set_attribute_config_3(attr_config_list_3);
 			else
 				device->set_attribute_config(attr_config_list);
 			ctr = 2;
@@ -4451,10 +4473,10 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				attr_value_list_4 = ext->device_4->read_attributes_4(attr_list,local_source,ci);
+				attr_value_list_4 = device_4->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = ext->device_3->read_attributes_3(attr_list,local_source);
+				attr_value_list_3 = device_3->read_attributes_3(attr_list,local_source);
 			else if (version == 2)
 				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
 			else
@@ -4644,10 +4666,10 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 				ClntIdent ci;
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
-				attr_value_list_4 = ext->device_4->read_attributes_4(attr_list,local_source,ci);
+				attr_value_list_4 = device_4->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = ext->device_3->read_attributes_3(attr_list,local_source);
+				attr_value_list_3 = device_3->read_attributes_3(attr_list,local_source);
 			else if (version == 2)
 				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
 			else
@@ -4718,10 +4740,10 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				attr_value_list_4 = ext->device_4->read_attributes_4(attr_list,local_source,ci);
+				attr_value_list_4 = device_4->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = ext->device_3->read_attributes_3(attr_list,local_source);
+				attr_value_list_3 = device_3->read_attributes_3(attr_list,local_source);
 			else if (version == 2)
 				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
 			else
@@ -4949,10 +4971,10 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				ext->device_4->write_attributes_4(attr_value_list_4,ci);
+				device_4->write_attributes_4(attr_value_list_4,ci);
 			}
 			else if (version == 3)
-				ext->device_3->write_attributes_3(attr_value_list);
+				device_3->write_attributes_3(attr_value_list);
 			else
 				device->write_attributes(attr_value_list);
 			ctr = 2;
@@ -5166,10 +5188,10 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				ext->device_4->write_attributes_4(attr_value_list_4,ci);
+				device_4->write_attributes_4(attr_value_list_4,ci);
 			}
 			else if (version == 3)
-				ext->device_3->write_attributes_3(attr_value_list);
+				device_3->write_attributes_3(attr_value_list);
 			else
 				device->write_attributes(attr_value_list);
 			ctr = 2;
@@ -5308,7 +5330,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 
 
 			if (version >= 3)
-				ext->device_3->write_attributes_3(attr_val);
+				device_3->write_attributes_3(attr_val);
 			else
 				device->write_attributes(attr_val);
 			ctr = 2;
@@ -5459,7 +5481,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			ext->device_4->write_attributes_4(attr_val,ci);
+			device_4->write_attributes_4(attr_val,ci);
 			ctr = 2;
 
 		}
@@ -5640,7 +5662,7 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 			if (version <= 3)
 				hist = device_2->command_inout_history_2(cmd_name.c_str(),depth);
 			else
-				hist_4 = ext->device_4->command_inout_history_4(cmd_name.c_str(),depth);
+				hist_4 = device_4->command_inout_history_4(cmd_name.c_str(),depth);
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -5757,9 +5779,9 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 			else
 			{
 				if (version == 3)
-					hist_3 = ext->device_3->read_attribute_history_3(cmd_name.c_str(),depth);
+					hist_3 = device_3->read_attribute_history_3(cmd_name.c_str(),depth);
 				else
-					hist_4 = ext->device_4->read_attribute_history_4(cmd_name.c_str(),depth);
+					hist_4 = device_4->read_attribute_history_4(cmd_name.c_str(),depth);
 			}
 			ctr = 2;
 		}
@@ -7022,7 +7044,7 @@ void DeviceProxy::lock(int lock_validity)
 	}
 
 	{
-		omni_mutex_lock guard(ext_proxy->lock_mutex);
+		omni_mutex_lock guard(lock_mutex);
 		if (lock_ctr != 0)
 		{
 			if (lock_validity != lock_valid)
@@ -7075,7 +7097,7 @@ void DeviceProxy::lock(int lock_validity)
 //
 
 	{
-		omni_mutex_lock guard(ext_proxy->lock_mutex);
+		omni_mutex_lock guard(lock_mutex);
 
 		lock_ctr++;
 		lock_valid = lock_validity;
@@ -7134,7 +7156,7 @@ void DeviceProxy::lock(int lock_validity)
 				pos->second.shared->cmd_code = LOCK_ADD_DEV;
 				pos->second.shared->dev_name = device_name;
 				{
-					omni_mutex_lock guard(ext_proxy->lock_mutex);
+					omni_mutex_lock guard(lock_mutex);
 					pos->second.shared->lock_validity = lock_valid;
 				}
 
@@ -7219,7 +7241,7 @@ void DeviceProxy::unlock(bool force)
 	int local_lock_ctr;
 
 	{
-		omni_mutex_lock guard(ext_proxy->lock_mutex);
+		omni_mutex_lock guard(lock_mutex);
 
 		lock_ctr--;
 		if (glob_ctr != lock_ctr)
@@ -7753,7 +7775,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			attr_value_list_4 = ext->device_4->write_read_attributes_4(attr_value_list,ci);
+			attr_value_list_4 = device_4->write_read_attributes_4(attr_value_list,ci);
 
 			ctr = 2;
 

@@ -136,7 +136,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 	CORBA::Request_ptr request;
 
 	if (version >= 4)
-		request = ext->device_4->_request("command_inout_4");
+		request = device_4->_request("command_inout_4");
 	else if (version >=2)
 		request = device_2->_request("command_inout_2");
 	else
@@ -716,7 +716,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
-		request = Connection::ext->device_4->_request("read_attributes_4");
+		request = Connection::device_4->_request("read_attributes_4");
 		request->add_in_arg() <<= names;
 		request->add_in_arg() <<= source;
 		request->add_in_arg() <<= ci;
@@ -724,7 +724,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	}
 	else if (version == 3)
 	{
-		request = Connection::ext->device_3->_request("read_attributes_3");
+		request = Connection::device_3->_request("read_attributes_3");
 		request->add_in_arg() <<= names;
 		request->add_in_arg() <<= source;
 		request->set_return_type(Tango::_tc_AttributeValueList_3);
@@ -1672,7 +1672,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		request = ext->device_4->_request("write_attributes_4");
+		request = device_4->_request("write_attributes_4");
 		request->add_in_arg() <<= att_4;
 		request->add_in_arg() <<= ci;
 		request->exceptions()->add(Tango::_tc_MultiDevFailed);
@@ -1759,7 +1759,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		request = ext->device_4->_request("write_attributes_4");
+		request = device_4->_request("write_attributes_4");
 		request->add_in_arg() <<= att_4;
 		request->add_in_arg() <<= ci;
 		request->exceptions()->add(Tango::_tc_MultiDevFailed);
@@ -2451,7 +2451,7 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 
 void Connection::cancel_asynch_request(long id)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_as_cancelled(id);
 	pasyn_ctr--;
 }
@@ -2470,7 +2470,7 @@ void Connection::cancel_asynch_request(long id)
 
 void Connection::cancel_all_polling_asynch_request()
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_all_polling_as_cancelled();
 	pasyn_ctr = 0;
 }

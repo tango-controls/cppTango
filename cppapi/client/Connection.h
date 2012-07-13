@@ -109,25 +109,9 @@ protected :
     class ConnectionExt
     {
     public:
-        ConnectionExt():tr_reco(true),prev_failed(false),prev_failed_t0(0.0),user_connect_timeout(-1),tango_host_localhost(false) {}
+        ConnectionExt() {}
         ~ConnectionExt() {}
         ConnectionExt & operator=(const ConnectionExt &);
-
-        bool				tr_reco;
-        Tango::Device_3_var device_3;
-
-        bool			  	prev_failed;
-        double		  		prev_failed_t0;
-
-        Tango::Device_4_var	device_4;
-        omni_mutex			adm_dev_mutex;
-        omni_mutex			asyn_mutex;
-        ReadersWritersLock	con_to_mon;
-
-        int					user_connect_timeout;
-        bool				tango_host_localhost;
-
-        Tango::Device_5_var	device_5;
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -135,6 +119,22 @@ protected :
 #else
 	ConnectionExt		        *ext; 	// Class extension
 #endif
+
+    bool				tr_reco;
+    Tango::Device_3_var device_3;
+
+    bool			  	prev_failed;
+    double		  		prev_failed_t0;
+
+    Tango::Device_4_var	device_4;
+    omni_mutex			adm_dev_mutex;
+    omni_mutex			asyn_mutex;
+    ReadersWritersLock	con_to_mon;
+
+    int					user_connect_timeout;
+    bool				tango_host_localhost;
+
+    Tango::Device_5_var	device_5;
 
 public :
 ///@publicsection
@@ -195,7 +195,7 @@ public :
  *
  * @param [in] val The device transparency flag
  */
-	virtual void set_transparency_reconnection(bool val) {ext->tr_reco = val;}
+	virtual void set_transparency_reconnection(bool val) {tr_reco = val;}
 /**
  * Get device transparency (reconnection) mode
  *
@@ -204,7 +204,7 @@ public :
  *
  * @return The device transparency flag
  */
-	virtual bool get_transparency_reconnection() {return ext->tr_reco;}
+	virtual bool get_transparency_reconnection() {return tr_reco;}
 //@}
 
 /** @name Synchronous command oriented methods */
