@@ -1,11 +1,11 @@
 #
-#		Rules for Tango lib generation
+#       Rules for Tango lib generation
 #
 
 
 ##############################################################################
 #
-#		PLEASE, Update library version here (for versioning support)
+#       PLEASE, Update library version here (for versioning support)
 #
 ##############################################################################
 
@@ -15,7 +15,7 @@ PATCH_VERS = 0
 
 ##############################################################################
 #
-# 		The base directory
+#       The base directory
 #
 ##############################################################################
 
@@ -44,9 +44,9 @@ endif
 
 ##############################################################################
 #
-# 		The directory where generated libs will be placed
-#		They will automatically be created if they do not
-#		already exist.
+#       The directory where generated libs will be placed
+#       They will automatically be created if they do not
+#       already exist.
 #
 ##############################################################################
 
@@ -73,7 +73,7 @@ endif
 
 ##############################################################################
 #
-# 		Installation directory for include files and libraries
+#       Installation directory for include files and libraries
 #
 ##############################################################################
 
@@ -88,7 +88,7 @@ endif
 
 ##############################################################################
 #
-# 		OmniORB base directory
+#       OmniORB base directory
 #
 ##############################################################################
 
@@ -100,7 +100,7 @@ endif
 
 ##############################################################################
 #
-# 		Log4tango base directory
+#       Log4tango base directory
 #
 ##############################################################################
 
@@ -112,7 +112,7 @@ endif
 
 ##############################################################################
 #
-# 		ZMQ base directory
+#       ZMQ base directory
 #
 ##############################################################################
 
@@ -125,7 +125,7 @@ endif
 
 ##############################################################################
 #
-# 		doxygen base directory
+#       doxygen base directory
 #
 ##############################################################################
 
