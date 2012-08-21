@@ -37,8 +37,8 @@ ifdef prefix
 OBJS_DIR = 	objs/$(BIN_DIR)
 OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
 else
-OBJS_DIR = 	objs/$(BIN_DIR)
-OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
+OBJS_DIR = 	objs
+OBJS_DIR_SL = 	objs_sl
 endif
 
 
