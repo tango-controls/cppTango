@@ -219,7 +219,7 @@ public:
  * @param val A reference to a Tango::DevLong64 data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevLong64 &val) {val = w_ext->long64_val;}
+	void get_write_value(Tango::DevLong64 &val) {val = long64_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -229,7 +229,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevLong64 *&ptr) {ptr = w_ext->long64_ptr;}
+	void get_write_value(const Tango::DevLong64 *&ptr) {ptr = long64_ptr;}
 
 
 /**
@@ -353,7 +353,7 @@ public:
  * @param val A reference to a Tango::DevULong data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevULong &val) {val = w_ext->ulong_val;}
+	void get_write_value(Tango::DevULong &val) {val = ulong_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -363,7 +363,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevULong *&ptr) {ptr = w_ext->ulong_ptr;}
+	void get_write_value(const Tango::DevULong *&ptr) {ptr = ulong_ptr;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -372,7 +372,7 @@ public:
  * @param val A reference to a Tango::DevULong64 data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevULong64 &val) {val = w_ext->ulong64_val;}
+	void get_write_value(Tango::DevULong64 &val) {val = ulong64_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -382,7 +382,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevULong64 *&ptr) {ptr = w_ext->ulong64_ptr;}
+	void get_write_value(const Tango::DevULong64 *&ptr) {ptr = ulong64_ptr;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -391,7 +391,7 @@ public:
  * @param val A reference to a Tango::DevState data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevState &val) {val = w_ext->dev_state_val;}
+	void get_write_value(Tango::DevState &val) {val = dev_state_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -401,7 +401,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevState *&ptr) {ptr = w_ext->state_ptr;}
+	void get_write_value(const Tango::DevState *&ptr) {ptr = state_ptr;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -777,8 +777,8 @@ public:
 	long get_w_dim_x() {return w_dim_x;}
 	long get_w_dim_y() {return w_dim_y;}
 
-	void set_user_set_write_value(bool val) {w_ext->uswv = val;}
-	bool get_user_set_write_value() {return w_ext->uswv;}
+	void set_user_set_write_value(bool val) {uswv = val;}
+	bool get_user_set_write_value() {return uswv;}
 
 	Tango::DevVarShortArray *get_last_written_sh() {return &short_array_val;}
 	Tango::DevVarLongArray *get_last_written_lg() {return &long_array_val;}
@@ -788,10 +788,10 @@ public:
 	Tango::DevVarBooleanArray *get_last_written_boo() {return &boolean_array_val;}
 	Tango::DevVarUShortArray *get_last_written_ush() {return &ushort_array_val;}
 	Tango::DevVarCharArray *get_last_written_uch() {return &uchar_array_val;}
-	Tango::DevVarLong64Array *get_last_written_lg64() {return &w_ext->long64_array_val;}
-	Tango::DevVarULong64Array *get_last_written_ulg64() {return &w_ext->ulong64_array_val;}
-	Tango::DevVarULongArray *get_last_written_ulg() {return &w_ext->ulong_array_val;}
-	Tango::DevVarStateArray *get_last_written_state() {return &w_ext->state_array_val;}
+	Tango::DevVarLong64Array *get_last_written_lg64() {return &long64_array_val;}
+	Tango::DevVarULong64Array *get_last_written_ulg64() {return &ulong64_array_val;}
+	Tango::DevVarULongArray *get_last_written_ulg() {return &ulong_array_val;}
+	Tango::DevVarStateArray *get_last_written_state() {return &state_array_val;}
 	Tango::DevEncoded &get_last_written_encoded() {return encoded_val;}
 
 	bool is_memorized() {return memorized;}
@@ -816,31 +816,7 @@ private:
     class WAttributeExt
     {
     public:
-        WAttributeExt():long64_ptr(NULL),ulong_ptr(NULL),
-                        ulong64_ptr(NULL),state_ptr(NULL),
-                        uswv(false)
-                        {}
-
-        Tango::DevLong64			long64_val;
-        Tango::DevLong64			old_long64_val;
-        Tango::DevULong				ulong_val;
-        Tango::DevULong				old_ulong_val;
-        Tango::DevULong64			ulong64_val;
-        Tango::DevULong64			old_ulong64_val;
-        Tango::DevState				dev_state_val;
-        Tango::DevState				old_dev_state_val;
-
-        Tango::DevVarLong64Array	long64_array_val;
-        Tango::DevVarULongArray		ulong_array_val;
-        Tango::DevVarULong64Array	ulong64_array_val;
-        Tango::DevVarStateArray		state_array_val;
-
-        const Tango::DevLong64		*long64_ptr;
-        const Tango::DevULong		*ulong_ptr;
-        const Tango::DevULong64		*ulong64_ptr;
-        const Tango::DevState		*state_ptr;
-
-        bool						uswv;					// User set_write_value
+        WAttributeExt() {}
     };
 
 // Defined prior to Tango IDL release 3
@@ -907,6 +883,31 @@ private:
 #else
 	WAttributeExt				*w_ext;
 #endif
+
+//
+// Ported from the extension class
+//
+
+    Tango::DevLong64			long64_val;
+    Tango::DevLong64			old_long64_val;
+    Tango::DevULong				ulong_val;
+    Tango::DevULong				old_ulong_val;
+    Tango::DevULong64			ulong64_val;
+    Tango::DevULong64			old_ulong64_val;
+    Tango::DevState				dev_state_val;
+    Tango::DevState				old_dev_state_val;
+
+    Tango::DevVarLong64Array	long64_array_val;
+    Tango::DevVarULongArray		ulong_array_val;
+    Tango::DevVarULong64Array	ulong64_array_val;
+    Tango::DevVarStateArray		state_array_val;
+
+    const Tango::DevLong64		*long64_ptr;
+    const Tango::DevULong		*ulong_ptr;
+    const Tango::DevULong64		*ulong64_ptr;
+    const Tango::DevState		*state_ptr;
+
+    bool						uswv;					// User set_write_value
 };
 
 

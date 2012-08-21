@@ -383,7 +383,7 @@ public:
  * @param ser The new serialization model. The serialization model must be one
  * of BY_DEVICE, BY_CLASS, BY_PROCESS or NO_SYNC
  */
-	void set_serial_model(SerialModel ser) {ext->ser_model = ser;}
+	void set_serial_model(SerialModel ser) {ser_model = ser;}
 
 /**
  * Get the serialization model
@@ -391,28 +391,28 @@ public:
  * @return The serialization model. This serialization model is one of
  * BY_DEVICE, BY_CLASS, BY_PROCESS or NO_SYNC
  */
-	SerialModel get_serial_model() {return ext->ser_model;}
+	SerialModel get_serial_model() {return ser_model;}
 
 /**
  * Get a reference to the notifd TANGO EventSupplier object
  *
  * @return The notifd EventSupplier object
  */
-	NotifdEventSupplier *get_notifd_event_supplier() {return ext->nd_event_supplier;}
+	NotifdEventSupplier *get_notifd_event_supplier() {return nd_event_supplier;}
 
 /**
  * Get a reference to the ZMQ TANGO EventSupplier object
  *
  * @return The zmq EventSupplier object
  */
-	ZmqEventSupplier *get_zmq_event_supplier() {return ext->zmq_event_supplier;}
+	ZmqEventSupplier *get_zmq_event_supplier() {return zmq_event_supplier;}
 
 /**
  * Set device server process event buffer high water mark (HWM)
  *
  * @param val The new event buffer high water mark in number of events
  */
-	void set_ds_event_buffer_hwm(DevLong val) {if (ext->user_pub_hwm == -1)ext->user_pub_hwm = val;}
+	void set_ds_event_buffer_hwm(DevLong val) {if (user_pub_hwm == -1)user_pub_hwm = val;}
 //@}
 
 /** @name Polling related methods */
@@ -490,14 +490,14 @@ public:
  *
  * @param thread_nb The maximun number of threads in the polling threads pool
  */
-	void set_polling_threads_pool_size(unsigned long thread_nb) {ext->poll_pool_size = thread_nb;}
+	void set_polling_threads_pool_size(unsigned long thread_nb) {poll_pool_size = thread_nb;}
 
 /**
  * Get the polling threads pool size
  *
  * @return The maximun number of threads in the polling threads pool
  */
-	unsigned long get_polling_threads_pool_size() {return ext->poll_pool_size;}
+	unsigned long get_polling_threads_pool_size() {return poll_pool_size;}
 //@}
 
 /**@name Miscellaneous methods */
@@ -507,13 +507,13 @@ public:
  *
  * @return A boolean set to true if the server is in its starting phase.
  */
-	bool is_svr_starting() {return ext->svr_starting;}
+	bool is_svr_starting() {return svr_starting;}
 /**
  * Check if the device server process is in its shutting down sequence
  *
  * @return A boolean set to true if the server is in its shutting down phase.
  */
-	bool is_svr_shutting_down() {return ext->svr_stopping;}
+	bool is_svr_shutting_down() {return svr_stopping;}
 /**
  * Check if the device is actually restarted by the device server
  * process admin device with its DevRestart command
@@ -671,7 +671,7 @@ public:
  * any argument. It returns a boolean value. If this boolean is set to true,
  * the device server process exit.
  */
- 	void server_set_event_loop(bool (*f_ptr)()) {ext->ev_loop_func = f_ptr;}
+ 	void server_set_event_loop(bool (*f_ptr)()) {ev_loop_func = f_ptr;}
 //@}
 
 
@@ -785,124 +785,69 @@ private:
     class UtilExt
     {
     public:
-        UtilExt():heartbeat_th(NULL),heartbeat_th_id(0),
-              poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),only_one("process"),
-              nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),db_cache(NULL),
-              inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
-              conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
-              zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false)
-        {shared_data.cmd_pending=false;shared_data.trigger=false;
-        cr_py_lock = new CreatePyLock();}
+        UtilExt() {}
 
-        ~UtilExt() {delete cr_py_lock;}
-
-        vector<string>				cmd_line_name_list;
-
-        PollThread					*heartbeat_th;			// The heartbeat thread object
-        int							heartbeat_th_id;		// The heartbeat thread identifier
-        PollThCmd					shared_data;			// The shared buffer
-        TangoMonitor				poll_mon;				// The monitor
-        bool						poll_on;				// Polling on flag
-        SerialModel					ser_model;				// The serialization model
-        TangoMonitor				only_one;				// Serialization monitor
-        NotifdEventSupplier			*nd_event_supplier;	    // The notifd event supplier object
-
-        void						*py_interp;				// The Python interpreter
-        bool						py_ds;					// The Python DS flag
-        CreatePyLock				*cr_py_lock;			// The python lock creator pointer
-        bool						py_dbg;					// Badly written Python dbg flag
-
-        DbServerCache				*db_cache;				// The db cache
-        Interceptors				*inter;					// The user interceptors
-
-        bool						svr_starting;			// Server is starting flag
-        bool						svr_stopping;			// Server is shutting down flag
-
-        vector<string>				polled_dyn_attr_names;	// Dynamic att. names (used for polling clean-up)
-        vector<string>				polled_att_list;		// Full polled att list
-        vector<string>				all_dyn_attr;			// All dynamic attr name list
-        string						dyn_att_dev_name;		// Device name (use for dyn att clean-up)
-
-        unsigned long				poll_pool_size;			// Polling threads pool size
-        vector<string>  			poll_pool_conf;			// Polling threads pool conf.
-        map<string,int>				dev_poll_th_map;		// Link between device name and polling thread id
-        vector<PollingThreadInfo *>	poll_ths;				// Polling threads
-        bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
-
-        bool 						(*ev_loop_func)(void);	// Ptr to user event loop
-        bool						shutdown_server;		// Flag to exit the manual event loop
-
-        SubDevDiag					sub_dev_diag;			// Object to handle sub device diagnostics
-        bool						_dummy_thread;			// The main DS thread is not the process main thread
-
-        string						svr_port_num;			// Server port when using file as database
-
-        ZmqEventSupplier            *zmq_event_supplier;    // The zmq event supplier object
-        bool                        endpoint_specified;     // Endpoint specified on cmd line
-        string                      specified_ip;           // IP address specified in the endpoint
-        DevLong                     user_pub_hwm;           // User defined pub HWM
-
-        vector<string>              restarting_devices;     // Restarting devices name
-        bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
+        ~UtilExt() {}
     };
+
 
 public:
 /// @privatesection
-	void set_interceptors(Interceptors *in) {ext->inter = in;}
-	Interceptors *get_interceptors() {return ext->inter;}
+	void set_interceptors(Interceptors *in) {inter = in;}
+	Interceptors *get_interceptors() {return inter;}
 
-	vector<string> &get_cmd_line_name_list() {return ext->cmd_line_name_list;}
-	TangoMonitor &get_heartbeat_monitor() {return ext->poll_mon;}
-	PollThCmd &get_heartbeat_shared_cmd() {return ext->shared_data;}
-	bool poll_status() {return ext->poll_on;}
-	void poll_status(bool status) {ext->poll_on = status;}
+	vector<string> &get_cmd_line_name_list() {return cmd_line_name_list;}
+	TangoMonitor &get_heartbeat_monitor() {return poll_mon;}
+	PollThCmd &get_heartbeat_shared_cmd() {return shared_data;}
+	bool poll_status() {return poll_on;}
+	void poll_status(bool status) {poll_on = status;}
 
 //
 // Some methods are duplicated here (with different names). It is for compatibility reason
 //
 
 	void polling_configure();
-	PollThread *get_polling_thread_object() {return ext->heartbeat_th;}
-	PollThread *get_heartbeat_thread_object() {return ext->heartbeat_th;}
-	void clr_poll_th_ptr() {ext->heartbeat_th = NULL;}
-	void clr_heartbeat_th_ptr() {ext->heartbeat_th = NULL;}
-	int get_polling_thread_id() {return ext->heartbeat_th_id;}
-	int get_heartbeat_thread_id() {return ext->heartbeat_th_id;}
+	PollThread *get_polling_thread_object() {return heartbeat_th;}
+	PollThread *get_heartbeat_thread_object() {return heartbeat_th;}
+	void clr_poll_th_ptr() {heartbeat_th = NULL;}
+	void clr_heartbeat_th_ptr() {heartbeat_th = NULL;}
+	int get_polling_thread_id() {return heartbeat_th_id;}
+	int get_heartbeat_thread_id() {return heartbeat_th_id;}
 	void stop_heartbeat_thread();
-	string &get_svr_port_num() {return ext->svr_port_num;}
+	string &get_svr_port_num() {return svr_port_num;}
 
 	void create_notifd_event_supplier();
 	void create_zmq_event_supplier();
 
-	void *get_py_interp() {return ext->py_interp;}
-	void set_py_interp(void *ptr) {ext->py_interp = ptr;}
+	void *get_py_interp() {return py_interp;}
+	void set_py_interp(void *ptr) {py_interp = ptr;}
 
-	bool is_py_ds() {return ext->py_ds;}
-	void set_py_ds() {ext->py_ds=true;}
+	bool is_py_ds() {return py_ds;}
+	void set_py_ds() {py_ds=true;}
 
-	bool is_py_dbg() {return ext->py_dbg;}
-	void set_py_dbg() {ext->py_dbg=true;}
+	bool is_py_dbg() {return py_dbg;}
+	void set_py_dbg() {py_dbg=true;}
 
-	void set_py_lock_creator(CreatePyLock *py) {ext->cr_py_lock = py;}
-	CreatePyLock *get_py_lock_creator() {return ext->cr_py_lock;}
+	void set_py_lock_creator(CreatePyLock *py) {cr_py_lock = py;}
+	CreatePyLock *get_py_lock_creator() {return cr_py_lock;}
 
-	DbServerCache *get_db_cache() {return ext->db_cache;}
-	void unvalidate_db_cache() {if (ext->db_cache!=NULL){delete ext->db_cache;ext->db_cache = NULL;}}
+	DbServerCache *get_db_cache() {return db_cache;}
+	void unvalidate_db_cache() {if (db_cache!=NULL){delete db_cache;db_cache = NULL;}}
 
-	void set_svr_starting(bool val) {ext->svr_starting = val;}
-	void set_svr_shutting_down(bool val) {ext->svr_stopping = val;}
+	void set_svr_starting(bool val) {svr_starting = val;}
+	void set_svr_shutting_down(bool val) {svr_stopping = val;}
 
-	vector<string> &get_polled_dyn_attr_names() {return ext->polled_dyn_attr_names;}
-	vector<string> &get_full_polled_att_list() {return ext->polled_att_list;}
-	string &get_dyn_att_dev_name() {return ext->dyn_att_dev_name;}
-	vector<string> &get_all_dyn_attr_names() {return ext->all_dyn_attr;}
+	vector<string> &get_polled_dyn_attr_names() {return polled_dyn_attr_names;}
+	vector<string> &get_full_polled_att_list() {return polled_att_list;}
+	string &get_dyn_att_dev_name() {return dyn_att_dev_name;}
+	vector<string> &get_all_dyn_attr_names() {return all_dyn_attr;}
 
 	void clean_attr_polled_prop();
 	void clean_dyn_attr_prop();
 
 	int create_poll_thread(const char *dev_name,bool startup,int smallest_upd = -1);
 	void stop_all_polling_threads();
-	vector<PollingThreadInfo *> &get_polling_threads_info() {return ext->poll_ths;}
+	vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
 	PollingThreadInfo *get_polling_thread_info_by_id(int);
 	int get_polling_thread_id_by_name(const char *);
 	void check_pool_conf(DServer *,unsigned long);
@@ -913,31 +858,31 @@ public:
 	void get_th_polled_devs(long,vector<string> &);
 	void build_first_pool_conf(vector<string> &);
 	bool is_dev_already_in_pool_conf(string &,vector<string>&,int);
-	vector<string> &get_poll_pool_conf() {return ext->poll_pool_conf;}
+	vector<string> &get_poll_pool_conf() {return poll_pool_conf;}
 	int get_dev_entry_in_pool_conf(string &);
 	void remove_dev_from_polling_map(string &dev_name);
 	void remove_polling_thread_info_by_id(int);
 
-	bool is_server_event_loop_set() {if (ext->ev_loop_func != NULL)return true;else return false;}
-	void set_shutdown_server(bool val) {ext->shutdown_server = val;}
+	bool is_server_event_loop_set() {if (ev_loop_func != NULL)return true;else return false;}
+	void set_shutdown_server(bool val) {shutdown_server = val;}
 
-	void shutdown_server();
+	void shutdown_ds();
 
-	SubDevDiag &get_sub_dev_diag() {return ext->sub_dev_diag;}
+	SubDevDiag &get_sub_dev_diag() {return sub_dev_diag;}
 
-	bool get_endpoint_specified() {return ext->endpoint_specified;}
-	void set_endpoint_specified(bool val) {ext->endpoint_specified = val;}
+	bool get_endpoint_specified() {return endpoint_specified;}
+	void set_endpoint_specified(bool val) {endpoint_specified = val;}
 
-	string &get_specified_ip() {return ext->specified_ip;}
-	void set_specified_ip(string &val) {ext->specified_ip = val;}
+	string &get_specified_ip() {return specified_ip;}
+	void set_specified_ip(string &val) {specified_ip = val;}
 
-	DevLong get_user_pub_hwm() {return ext->user_pub_hwm;}
+	DevLong get_user_pub_hwm() {return user_pub_hwm;}
 
-	void add_restarting_device(string &d_name) {ext->restarting_devices.push_back(d_name);}
+	void add_restarting_device(string &d_name) {restarting_devices.push_back(d_name);}
 	void delete_restarting_device(string &d_name);
 
-    bool is_wattr_nan_allowed() {return ext->wattr_nan_allowed;}
-	void set_wattr_nan_allowed(bool val) {ext->wattr_nan_allowed=val;}
+    bool is_wattr_nan_allowed() {return wattr_nan_allowed;}
+	void set_wattr_nan_allowed(bool val) {wattr_nan_allowed=val;}
 
 private:
 	TANGO_IMP static Util	*_instance;
@@ -1019,6 +964,59 @@ private:
 	Util::UtilExt					*ext;			// Class extension
 #endif
 	vector<DeviceClass *>			cl_list;		// Full class list ptr
+
+//
+// Ported from the extension class
+//
+
+	vector<string>				cmd_line_name_list;
+
+	PollThread					*heartbeat_th;			// The heartbeat thread object
+	int							heartbeat_th_id;		// The heartbeat thread identifier
+	PollThCmd					shared_data;			// The shared buffer
+	TangoMonitor				poll_mon;				// The monitor
+	bool						poll_on;				// Polling on flag
+	SerialModel					ser_model;				// The serialization model
+	TangoMonitor				only_one;				// Serialization monitor
+	NotifdEventSupplier			*nd_event_supplier;	    // The notifd event supplier object
+
+	void						*py_interp;				// The Python interpreter
+	bool						py_ds;					// The Python DS flag
+	CreatePyLock				*cr_py_lock;			// The python lock creator pointer
+	bool						py_dbg;					// Badly written Python dbg flag
+
+	DbServerCache				*db_cache;				// The db cache
+	Interceptors				*inter;					// The user interceptors
+
+	bool						svr_starting;			// Server is starting flag
+	bool						svr_stopping;			// Server is shutting down flag
+
+	vector<string>				polled_dyn_attr_names;	// Dynamic att. names (used for polling clean-up)
+	vector<string>				polled_att_list;		// Full polled att list
+	vector<string>				all_dyn_attr;			// All dynamic attr name list
+	string						dyn_att_dev_name;		// Device name (use for dyn att clean-up)
+
+	unsigned long				poll_pool_size;			// Polling threads pool size
+	vector<string>  			poll_pool_conf;			// Polling threads pool conf.
+	map<string,int>				dev_poll_th_map;		// Link between device name and polling thread id
+	vector<PollingThreadInfo *>	poll_ths;				// Polling threads
+	bool						conf_needs_db_upd;		// Polling conf needs to be udated in db
+
+	bool 						(*ev_loop_func)(void);	// Ptr to user event loop
+	bool						shutdown_server;		// Flag to exit the manual event loop
+
+	SubDevDiag					sub_dev_diag;			// Object to handle sub device diagnostics
+	bool						_dummy_thread;			// The main DS thread is not the process main thread
+
+	string						svr_port_num;			// Server port when using file as database
+
+	ZmqEventSupplier            *zmq_event_supplier;    // The zmq event supplier object
+	bool                        endpoint_specified;     // Endpoint specified on cmd line
+	string                      specified_ip;           // IP address specified in the endpoint
+	DevLong                     user_pub_hwm;           // User defined pub HWM
+
+	vector<string>              restarting_devices;     // Restarting devices name
+	bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
 };
 
 // Add template methods definitions
@@ -1048,11 +1046,11 @@ inline bool Util::is_device_restarting(string &d_name)
 {
     bool ret = false;
 
-    if (ext->restarting_devices.empty() == false)
+    if (restarting_devices.empty() == false)
     {
         vector<string>::iterator pos;
-        pos = find(ext->restarting_devices.begin(),ext->restarting_devices.end(),d_name);
-        if (pos != ext->restarting_devices.end())
+        pos = find(restarting_devices.begin(),restarting_devices.end(),d_name);
+        if (pos != restarting_devices.end())
             ret = true;
     }
 

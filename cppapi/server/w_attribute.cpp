@@ -83,7 +83,8 @@ WAttribute::WAttribute(vector<AttrProperty> &prop_list,
 :Attribute(prop_list,tmp_attr,dev_name,idx),
 long_ptr(NULL),double_ptr(NULL),str_ptr(NULL),float_ptr(NULL),
 boolean_ptr(NULL),ushort_ptr(NULL),uchar_ptr(NULL),encoded_ptr(NULL),
-string_allocated(false),memorized(false),memorized_init(true),w_ext(new WAttributeExt)
+string_allocated(false),memorized(false),memorized_init(true),w_ext(new WAttributeExt),
+long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false)
 {
 
 //
@@ -97,10 +98,10 @@ string_allocated(false),memorized(false),memorized_init(true),w_ext(new WAttribu
 	boolean_val = old_boolean_val = true;
 	ushort_val = old_ushort_val = 0;
 	uchar_val = old_uchar_val = 0;
-	w_ext->long64_val = w_ext->old_long64_val = 0;
-	w_ext->ulong_val = w_ext->old_ulong_val = 0;
-	w_ext->ulong64_val = w_ext->old_ulong64_val = 0;
-	w_ext->dev_state_val = w_ext->old_dev_state_val = Tango::UNKNOWN;
+	long64_val = old_long64_val = 0;
+	ulong_val = old_ulong_val = 0;
+	ulong64_val = old_ulong64_val = 0;
+	dev_state_val = old_dev_state_val = Tango::UNKNOWN;
 	str_val = CORBA::string_dup("Not initialised");
 	old_str_val = CORBA::string_dup("Not initialised");
 	encoded_val.encoded_data.length(0);
@@ -124,14 +125,14 @@ string_allocated(false),memorized(false),memorized_init(true),w_ext(new WAttribu
 	ushort_array_val[0] = 0;
 	uchar_array_val.length(1);
 	uchar_array_val[0] = 0;
-	w_ext->long64_array_val.length(1);
-	w_ext->long64_array_val[0] = 0;
-	w_ext->ulong_array_val.length(1);
-	w_ext->ulong_array_val[0] = 0;
-	w_ext->ulong64_array_val.length(1);
-	w_ext->ulong64_array_val[0] = 0;
-	w_ext->state_array_val.length(1);
-	w_ext->state_array_val[0] = Tango::UNKNOWN;
+	long64_array_val.length(1);
+	long64_array_val[0] = 0;
+	ulong_array_val.length(1);
+	ulong_array_val[0] = 0;
+	ulong64_array_val.length(1);
+	ulong64_array_val[0] = 0;
+	state_array_val.length(1);
+	state_array_val[0] = Tango::UNKNOWN;
 
 
 	short_ptr = &short_val;
@@ -213,9 +214,9 @@ void WAttribute::set_rvalue()
 
 	case Tango::DEV_LONG64:
 		if (data_format == Tango::SCALAR)
-			set_value(&w_ext->long64_val,1,0,false);
+			set_value(&long64_val,1,0,false);
 		else
-			set_value(const_cast<DevLong64 *>(w_ext->long64_array_val.get_buffer()),w_dim_x,w_dim_y,false);
+			set_value(const_cast<DevLong64 *>(long64_array_val.get_buffer()),w_dim_x,w_dim_y,false);
 		break;
 
 	case Tango::DEV_DOUBLE:
@@ -262,16 +263,16 @@ void WAttribute::set_rvalue()
 
 	case Tango::DEV_ULONG:
 		if (data_format == Tango::SCALAR)
-			set_value(&w_ext->ulong_val,1,0,false);
+			set_value(&ulong_val,1,0,false);
 		else
-			set_value(const_cast<DevULong *>(w_ext->ulong_array_val.get_buffer()),w_dim_x,w_dim_y,false);
+			set_value(const_cast<DevULong *>(ulong_array_val.get_buffer()),w_dim_x,w_dim_y,false);
 		break;
 
 	case Tango::DEV_ULONG64:
 		if (data_format == Tango::SCALAR)
-			set_value(&w_ext->ulong64_val,1,0,false);
+			set_value(&ulong64_val,1,0,false);
 		else
-			set_value(const_cast<DevULong64 *>(w_ext->ulong64_array_val.get_buffer()),w_dim_x,w_dim_y,false);
+			set_value(const_cast<DevULong64 *>(ulong64_array_val.get_buffer()),w_dim_x,w_dim_y,false);
 		break;
 
 	case Tango::DEV_ENCODED:
@@ -303,7 +304,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
 
 	switch (data_type)
@@ -573,11 +574,11 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
             }
         }
 
-		w_ext->long64_ptr = lg64_ptr->get_buffer();
+		long64_ptr = lg64_ptr->get_buffer();
 		if (data_format == Tango::SCALAR)
 		{
-			w_ext->old_long64_val = w_ext->long64_val;
-			w_ext->long64_val = (*lg64_ptr)[0];
+			old_long64_val = long64_val;
+			long64_val = (*lg64_ptr)[0];
 			w_dim_x = 1;
 			w_dim_y = 0;
 		}
@@ -1126,11 +1127,11 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
             }
         }
 
-		w_ext->ulong_ptr = ulo_ptr->get_buffer();
+		ulong_ptr = ulo_ptr->get_buffer();
 		if (data_format == Tango::SCALAR)
 		{
-			w_ext->old_ulong_val = w_ext->ulong_val;
-			w_ext->ulong_val = (*ulo_ptr)[0];
+			old_ulong_val = ulong_val;
+			ulong_val = (*ulo_ptr)[0];
 			w_dim_x = 1;
 			w_dim_y = 0;
 		}
@@ -1218,11 +1219,11 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
             }
         }
 
-		w_ext->ulong64_ptr = ulg64_ptr->get_buffer();
+		ulong64_ptr = ulg64_ptr->get_buffer();
 		if (data_format == Tango::SCALAR)
 		{
-			w_ext->old_ulong64_val = w_ext->ulong64_val;
-			w_ext->ulong64_val = (*ulg64_ptr)[0];
+			old_ulong64_val = ulong64_val;
+			ulong64_val = (*ulg64_ptr)[0];
 			w_dim_x = 1;
 			w_dim_y = 0;
 		}
@@ -1299,7 +1300,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
 
 	switch (data_type)
@@ -1568,11 +1569,11 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
                 }
             }
 
-			w_ext->long64_ptr = lg64_seq.get_buffer();
+			long64_ptr = lg64_seq.get_buffer();
 			if (data_format == Tango::SCALAR)
 			{
-				w_ext->old_long64_val = w_ext->long64_val;
-				w_ext->long64_val = lg64_seq[0];
+				old_long64_val = long64_val;
+				long64_val = lg64_seq[0];
 				w_dim_x = 1;
 				w_dim_y = 0;
 			}
@@ -2118,11 +2119,11 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
                 }
             }
 
-			w_ext->ulong_ptr = ulo_seq.get_buffer();
+			ulong_ptr = ulo_seq.get_buffer();
 			if (data_format == Tango::SCALAR)
 			{
-				w_ext->old_ulong_val = w_ext->ulong_val;
-				w_ext->ulong_val = ulo_seq[0];
+				old_ulong_val = ulong_val;
+				ulong_val = ulo_seq[0];
 				w_dim_x = 1;
 				w_dim_y = 0;
 			}
@@ -2210,11 +2211,11 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
                 }
             }
 
-			w_ext->ulong64_ptr = ulo64_seq.get_buffer();
+			ulong64_ptr = ulo64_seq.get_buffer();
 			if (data_format == Tango::SCALAR)
 			{
-				w_ext->old_ulong64_val = w_ext->ulong64_val;
-				w_ext->ulong64_val = ulo64_seq[0];
+				old_ulong64_val = ulong64_val;
+				ulong64_val = ulo64_seq[0];
 				w_dim_x = 1;
 				w_dim_y = 0;
 			}
@@ -2299,11 +2300,11 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 				}
 			}
 
-			w_ext->state_ptr = sta_seq.get_buffer();
+			state_ptr = sta_seq.get_buffer();
 			if (data_format == Tango::SCALAR)
 			{
-				w_ext->old_dev_state_val = w_ext->dev_state_val;
-				w_ext->dev_state_val = sta_seq[0];
+				old_dev_state_val = dev_state_val;
+				dev_state_val = sta_seq[0];
 				w_dim_x = 1;
 				w_dim_y = 0;
 			}
@@ -3086,7 +3087,7 @@ void WAttribute::rollback()
 		break;
 
 	case Tango::DEV_LONG64 :
-		w_ext->long64_val = w_ext->old_long64_val;
+		long64_val = old_long64_val;
 		break;
 
 	case Tango::DEV_DOUBLE :
@@ -3115,15 +3116,15 @@ void WAttribute::rollback()
 		break;
 
 	case Tango::DEV_ULONG :
-		w_ext->ulong_val = w_ext->old_ulong_val;
+		ulong_val = old_ulong_val;
 		break;
 
 	case Tango::DEV_ULONG64 :
-		w_ext->ulong64_val = w_ext->old_ulong64_val;
+		ulong64_val = old_ulong64_val;
 		break;
 
 	case Tango::DEV_STATE :
-		w_ext->dev_state_val = w_ext->old_dev_state_val;
+		dev_state_val = old_dev_state_val;
 		break;
 	}
 }
@@ -3158,7 +3159,7 @@ void WAttribute::copy_data(const CORBA::Any &any)
 	case Tango::DEV_LONG64 :
 		const Tango::DevVarLong64Array *lo64_ptr;
 		any >>= lo64_ptr;
-		w_ext->long64_array_val = *lo64_ptr;
+		long64_array_val = *lo64_ptr;
 		break;
 
 	case Tango::DEV_DOUBLE :
@@ -3200,19 +3201,19 @@ void WAttribute::copy_data(const CORBA::Any &any)
 	case Tango::DEV_ULONG :
 		const Tango::DevVarULongArray *ulo_ptr;
 		any >>= ulo_ptr;
-		w_ext->ulong_array_val = *ulo_ptr;
+		ulong_array_val = *ulo_ptr;
 		break;
 
 	case Tango::DEV_ULONG64 :
 		const Tango::DevVarULong64Array *ulo64_ptr;
 		any >>= ulo64_ptr;
-		w_ext->ulong64_array_val = *ulo64_ptr;
+		ulong64_array_val = *ulo64_ptr;
 		break;
 
 	case Tango::DEV_STATE :
 		const Tango::DevVarStateArray *sta_ptr;
 		any >>= sta_ptr;
-		w_ext->state_array_val = *sta_ptr;
+		state_array_val = *sta_ptr;
 		break;
 	}
 }
@@ -3231,7 +3232,7 @@ void WAttribute::copy_data(const Tango::AttrValUnion &the_union)
 		break;
 
 	case Tango::DEV_LONG64 :
-		w_ext->long64_array_val = the_union.long64_att_value();
+		long64_array_val = the_union.long64_att_value();
 		break;
 
 	case Tango::DEV_DOUBLE :
@@ -3259,15 +3260,15 @@ void WAttribute::copy_data(const Tango::AttrValUnion &the_union)
 		break;
 
 	case Tango::DEV_ULONG :
-		w_ext->ulong_array_val = the_union.ulong_att_value();
+		ulong_array_val = the_union.ulong_att_value();
 		break;
 
 	case Tango::DEV_ULONG64 :
-		w_ext->ulong64_array_val = the_union.ulong64_att_value();
+		ulong64_array_val = the_union.ulong64_att_value();
 		break;
 
 	case Tango::DEV_STATE :
-		w_ext->state_array_val = the_union.state_att_value();
+		state_array_val = the_union.state_att_value();
 		break;
 	}
 }
@@ -3386,12 +3387,12 @@ bool WAttribute::check_rds_alarm()
 			break;
 
 		case Tango::DEV_LONG64:
-			nb_written = w_ext->long64_array_val.length();
+			nb_written = long64_array_val.length();
 			nb_read = (data_format == Tango::SCALAR) ? 1 : value.lg64_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong64 delta = (data_format == Tango::SCALAR) ? w_ext->long64_array_val[0] - get_tmp_scalar_long64()[0] : w_ext->long64_array_val[i] - (*value.lg64_seq)[i];
+				DevLong64 delta = (data_format == Tango::SCALAR) ? long64_array_val[0] - get_tmp_scalar_long64()[0] : long64_array_val[i] - (*value.lg64_seq)[i];
 
 				DevLong64 abs_delta;
 				if (delta < 0)
@@ -3540,12 +3541,12 @@ bool WAttribute::check_rds_alarm()
 			break;
 
 		case Tango::DEV_ULONG:
-			nb_written = w_ext->ulong_array_val.length();
+			nb_written = ulong_array_val.length();
 			nb_read = (data_format == Tango::SCALAR) ? 1 : value.ulg_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong delta = (data_format == Tango::SCALAR) ? w_ext->ulong_array_val[0] - get_tmp_scalar_ulong()[0] : w_ext->ulong_array_val[i] - (*value.ulg_seq)[i];
+				DevLong delta = (data_format == Tango::SCALAR) ? ulong_array_val[0] - get_tmp_scalar_ulong()[0] : ulong_array_val[i] - (*value.ulg_seq)[i];
 				if ((unsigned int)abs(delta) >= delta_val.ulg)
 				{
 					quality = Tango::ATTR_ALARM;
@@ -3557,12 +3558,12 @@ bool WAttribute::check_rds_alarm()
 			break;
 
 		case Tango::DEV_ULONG64:
-			nb_written = w_ext->ulong64_array_val.length();
+			nb_written = ulong64_array_val.length();
 			nb_read = (data_format == Tango::SCALAR) ? 1 : value.ulg64_seq->length();
 			nb_data = (nb_written > nb_read) ? nb_read : nb_written;
 			for (i = 0;i < nb_data;i++)
 			{
-				DevLong64 delta = (data_format == Tango::SCALAR) ? w_ext->ulong64_array_val[0] - get_tmp_scalar_ulong64()[0] : w_ext->ulong64_array_val[i] - (*value.ulg64_seq)[i];
+				DevLong64 delta = (data_format == Tango::SCALAR) ? ulong64_array_val[0] - get_tmp_scalar_ulong64()[0] : ulong64_array_val[i] - (*value.ulg64_seq)[i];
 
 				DevULong64 abs_delta;
 				if (delta < 0)
@@ -3810,14 +3811,14 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type,string &ret_m
         }
         else
         {
-            nb_written = w_ext->long64_array_val.length();
+            nb_written = long64_array_val.length();
             for (i = 0;i < nb_written;i++)
             {
                 if (check_type == MIN)
                 {
-                    if (w_ext->long64_array_val[i] < min_value.lg64)
+                    if (long64_array_val[i] < min_value.lg64)
                     {
-                        ss << w_ext->long64_array_val[i];
+                        ss << long64_array_val[i];
                         ret_mem_value = ss.str();
                         ret = true;
                         break;
@@ -3825,9 +3826,9 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type,string &ret_m
                 }
                 else
                 {
-                    if (w_ext->long64_array_val[i] > max_value.lg64)
+                    if (long64_array_val[i] > max_value.lg64)
                     {
-                        ss << w_ext->long64_array_val[i];
+                        ss << long64_array_val[i];
                         ret_mem_value = ss.str();
                         ret = true;
                         break;
@@ -4065,14 +4066,14 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type,string &ret_m
         }
         else
         {
-            nb_written = w_ext->ulong_array_val.length();
+            nb_written = ulong_array_val.length();
             for (i = 0;i < nb_written;i++)
             {
                 if (check_type == MIN)
                 {
-                    if (w_ext->ulong_array_val[i] < min_value.ulg)
+                    if (ulong_array_val[i] < min_value.ulg)
                     {
-                        ss << w_ext->ulong_array_val[i];
+                        ss << ulong_array_val[i];
                         ret_mem_value = ss.str();
                         ret = true;
                         break;
@@ -4080,9 +4081,9 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type,string &ret_m
                 }
                 else
                 {
-                    if (w_ext->ulong_array_val[i] > max_value.ulg)
+                    if (ulong_array_val[i] > max_value.ulg)
                     {
-                        ss << w_ext->ulong_array_val[i];
+                        ss << ulong_array_val[i];
                         ret_mem_value = ss.str();
                         ret = true;
                         break;
@@ -4116,14 +4117,14 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type,string &ret_m
         }
         else
         {
-            nb_written = w_ext->ulong64_array_val.length();
+            nb_written = ulong64_array_val.length();
             for (i = 0;i < nb_written;i++)
             {
                 if (check_type == MIN)
                 {
-                    if (w_ext->ulong64_array_val[i] < min_value.ulg64)
+                    if (ulong64_array_val[i] < min_value.ulg64)
                     {
-                        ss << w_ext->ulong64_array_val[i];
+                        ss << ulong64_array_val[i];
                         ret_mem_value = ss.str();
                         ret = true;
                         break;
@@ -4131,9 +4132,9 @@ bool WAttribute::mem_value_below_above(MinMaxValueCheck check_type,string &ret_m
                 }
                 else
                 {
-                    if (w_ext->ulong64_array_val[i] > max_value.ulg64)
+                    if (ulong64_array_val[i] > max_value.ulg64)
                     {
-                        ss << w_ext->ulong64_array_val[i];
+                        ss << ulong64_array_val[i];
                         ret_mem_value = ss.str();
                         ret = true;
                         break;

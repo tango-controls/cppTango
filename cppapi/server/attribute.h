@@ -418,7 +418,7 @@ public:
  * @return The attribute polling period in mS. Set to 0 when the attribute is
  * not polled
  */
-	long get_polling_period() {return ext->poll_period;}
+	long get_polling_period() {return poll_period;}
 /**
  * Get all modifiable attribute properties in one call
  *
@@ -456,7 +456,7 @@ public:
  *
  * @return The attribute serialization model
  */
-	AttrSerialModel get_attr_serial_model() {return ext->attr_serial_model;}
+	AttrSerialModel get_attr_serial_model() {return attr_serial_model;}
 /**
  * Set attribute user mutex
  *
@@ -1617,24 +1617,24 @@ public:
  * @param detect Triggers the verification of the change event properties when set to true.
  */
 	void set_change_event(bool implemented, bool detect = true)
-			{ ext->change_event_implmented = implemented;
-			  ext->check_change_event_criteria = detect;
+			{ change_event_implmented = implemented;
+			  check_change_event_criteria = detect;
 			  if(detect==false){
-			  ext->prev_change_event.err=false;
-			  ext->prev_change_event.quality=Tango::ATTR_VALID;}}
+			  prev_change_event.err=false;
+			  prev_change_event.quality=Tango::ATTR_VALID;}}
 /**
  * Check if the change event is fired manually (without polling) for this attribute.
  *
  * @return A boolean set to true if a manual fire change event is implemented.
  */
-	bool is_change_event() {return ext->change_event_implmented;}
+	bool is_change_event() {return change_event_implmented;}
 /**
  * Check if the change event criteria should be checked when firing
  * the event manually.
  *
  * @return A boolean set to true if a change event criteria will be checked.
  */
-	bool is_check_change_criteria() {return ext->check_change_event_criteria;}
+	bool is_check_change_criteria() {return check_change_event_criteria;}
 
 
 /**
@@ -1675,35 +1675,35 @@ public:
  * @param detect Triggers the verification of the archive event properties when set to true.
  */
 	void set_archive_event(bool implemented, bool detect = true)
-			{ext->archive_event_implmented = implemented;
-			 ext->check_archive_event_criteria = detect;}
+			{archive_event_implmented = implemented;
+			 check_archive_event_criteria = detect;}
 
 /**
  * Check if the archive event is fired manually for this attribute.
  *
  * @return A boolean set to true if a manual fire archive event is implemented.
  */
-	bool is_archive_event() {return ext->archive_event_implmented;}
+	bool is_archive_event() {return archive_event_implmented;}
 /**
  * Check if the archive event criteria should be checked when firing
  * the event manually.
  *
  * @return A boolean set to true if a archive event criteria will be checked.
  */
-	bool is_check_archive_criteria() {return ext->check_archive_event_criteria;}
+	bool is_check_archive_criteria() {return check_archive_event_criteria;}
 
 /**
  * Set a flag to indicate that the server fires data ready events
  *
  * @param implemented True when the server fires change events manually.
  */
-	void set_data_ready_event(bool implemented) {ext->dr_event_implmented = implemented;}
+	void set_data_ready_event(bool implemented) {dr_event_implmented = implemented;}
 /**
  * Check if the data ready event is fired for this attribute.
  *
  * @return A boolean set to true if a fire data ready event is implemented.
  */
-	bool is_data_ready_event() {return ext->dr_event_implmented;}
+	bool is_data_ready_event() {return dr_event_implmented;}
 
 
 /**
@@ -2047,8 +2047,8 @@ public:
 	void get_properties_2(Tango::AttributeConfig_2 &conf);
 	void get_properties_3(Tango::AttributeConfig_3 &conf);
 	void set_properties(const Tango::AttributeConfig_3 &conf);
-	void set_properties(const Tango::AttributeConfig &conf,Tango::DeviceImpl *dev);
-	void set_properties(const Tango::AttributeConfig_3 &conf,Tango::DeviceImpl *dev);
+	void set_properties(const Tango::AttributeConfig &conf,Tango::DeviceImpl *d);
+	void set_properties(const Tango::AttributeConfig_3 &conf,Tango::DeviceImpl *d);
 
 	virtual void set_rvalue() {};
 	void delete_seq();
@@ -2074,10 +2074,10 @@ public:
 	Tango::DevVarStateArray *get_state_value() {return value.state_seq;}
 	Tango::DevVarEncodedArray *get_encoded_value() {return value.enc_seq;}
 
-	Tango::DevLong64	*get_tmp_scalar_long64() {return ext->tmp_lo64;}
-	Tango::DevULong		*get_tmp_scalar_ulong() {return ext->tmp_ulo;}
-	Tango::DevULong64	*get_tmp_scalar_ulong64() {return ext->tmp_ulo64;}
-	Tango::DevState		*get_tmp_scalar_state() {return ext->tmp_state;}
+	Tango::DevLong64	*get_tmp_scalar_long64() {return tmp_lo64;}
+	Tango::DevULong		*get_tmp_scalar_ulong() {return tmp_ulo;}
+	Tango::DevULong64	*get_tmp_scalar_ulong64() {return tmp_ulo64;}
+	Tango::DevState		*get_tmp_scalar_state() {return tmp_state;}
 
 	void add_write_value(Tango::DevVarShortArray *);
 	void add_write_value(Tango::DevVarLongArray *);
@@ -2097,7 +2097,7 @@ public:
 	string &get_name_lower() {return name_lower;}
 	void set_value_flag(bool val) {value_flag = val;}
 	bool get_value_flag() {return value_flag;}
-	DispLevel get_disp_level() {return ext->disp_level;}
+	DispLevel get_disp_level() {return disp_level;}
 
 	omni_mutex *get_attr_mutex() {return &(ext->attr_mutex);}
 	omni_mutex *get_user_attr_mutex() {return ext->user_attr_mutex;}
@@ -2109,39 +2109,39 @@ public:
 	void set_upd_properties(const Tango::AttributeConfig_3 &);
 	void set_upd_properties(const Tango::AttributeConfig_3 &,string &);
 
-	bool change_event_subscribed() {if (ext->event_change_subscription != 0)return true;else return false;}
-	bool periodic_event_subscribed() {if (ext->event_periodic_subscription != 0)return true;else return false;}
-	bool archive_event_subscribed() {if (ext->event_archive_subscription != 0)return true;else return false;}
-	bool quality_event_subscribed() {if (ext->event_quality_subscription != 0)return true;else return false;}
-	bool user_event_subscribed() {if (ext->event_user_subscription != 0)return true;else return false;}
+	bool change_event_subscribed() {if (event_change_subscription != 0)return true;else return false;}
+	bool periodic_event_subscribed() {if (event_periodic_subscription != 0)return true;else return false;}
+	bool archive_event_subscribed() {if (event_archive_subscription != 0)return true;else return false;}
+	bool quality_event_subscribed() {if (event_quality_subscription != 0)return true;else return false;}
+	bool user_event_subscribed() {if (event_user_subscription != 0)return true;else return false;}
 
-	bool use_notifd_event() {return ext->notifd_event;}
-	bool use_zmq_event() {return ext->zmq_event;}
+	bool use_notifd_event() {return notifd_event;}
+	bool use_zmq_event() {return zmq_event;}
 
-	void set_change_event_sub() {ext->event_change_subscription=time(NULL);}
-	void set_periodic_event_sub() {ext->event_periodic_subscription=time(NULL);}
-	void set_archive_event_sub() {ext->event_archive_subscription=time(NULL);}
-	void set_quality_event_sub() {ext->event_quality_subscription=time(NULL);}
-	void set_user_event_sub() {ext->event_user_subscription=time(NULL);}
-	void set_use_notifd_event() {ext->notifd_event = true;}
-	void set_use_zmq_event() {ext->zmq_event = true;}
+	void set_change_event_sub() {event_change_subscription=time(NULL);}
+	void set_periodic_event_sub() {event_periodic_subscription=time(NULL);}
+	void set_archive_event_sub() {event_archive_subscription=time(NULL);}
+	void set_quality_event_sub() {event_quality_subscription=time(NULL);}
+	void set_user_event_sub() {event_user_subscription=time(NULL);}
+	void set_use_notifd_event() {notifd_event = true;}
+	void set_use_zmq_event() {zmq_event = true;}
 
-	long get_attr_idx() {return ext->idx_in_attr;}
-	void set_attr_idx(long new_idx) {ext->idx_in_attr=new_idx;}
+	long get_attr_idx() {return idx_in_attr;}
+	void set_attr_idx(long new_idx) {idx_in_attr=new_idx;}
 	DeviceImpl *get_att_device();
 
 	void Attribute_2_AttributeValue(Tango::AttributeValue_3 *,DeviceImpl *);
 	void Attribute_2_AttributeValue(Tango::AttributeValue_4 *,DeviceImpl *);
 	void AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *,Tango::AttributeValue_3 *);
 
-	void set_mcast_event(vector<string> &vs) {ext->mcast_event.clear();copy(vs.begin(),vs.end(),back_inserter(ext->mcast_event));}
+	void set_mcast_event(vector<string> &vs) {mcast_event.clear();copy(vs.begin(),vs.end(),back_inserter(mcast_event));}
 
 	bool is_polled(DeviceImpl *);
-	void set_polling_period(long per) {ext->poll_period = per;}
+	void set_polling_period(long per) {poll_period = per;}
 
-	void save_alarm_quality() {ext->old_quality=quality;ext->old_alarm=alarm;}
+	void save_alarm_quality() {old_quality=quality;old_alarm=alarm;}
 
-	bool is_startup_exception() {return ext->check_startup_exceptions;}
+	bool is_startup_exception() {return check_startup_exceptions;}
 	void throw_startup_exception(const char*);
 
 #ifndef TANGO_HAS_LOG4TANGO
@@ -2172,67 +2172,10 @@ protected:
     class AttributeExt
     {
     public:
-        AttributeExt() : poll_period(0),event_period(0),archive_period(0),
-                         last_periodic(0.0),archive_last_periodic(0.0),periodic_counter(0),
-                         archive_periodic_counter(0),archive_last_event(0.0),
-                         dev(NULL),change_event_implmented(false),archive_event_implmented(false),
-                         check_change_event_criteria(true),check_archive_event_criteria(true),
-                         event_periodic_client_3(false),event_change_client_3(false),event_archive_client_3(false),
-                         event_user_client_3(false),user_attr_mutex(NULL),dr_event_implmented(false),
-                         scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
-                         check_startup_exceptions(false), startup_exceptions_clear(true) {}
+        AttributeExt() : user_attr_mutex(NULL) {}
 
-        Tango::DispLevel 	disp_level;						// Display level
-        long				poll_period;					// Polling period
-        double				rel_change[2];					// Delta for relative change events in %
-        double				abs_change[2];					// Delta for absolute change events
-        double				archive_rel_change[2];			// Delta for relative archive change events in %
-        double				archive_abs_change[2];			// Delta for absolute change events
-        int					event_period;					// Delta for periodic events in ms
-        int					archive_period;					// Delta for archive periodic events in ms
-        double				last_periodic;					// Last time a periodic event was detected
-        double				archive_last_periodic;			// Last time an archive periodic event was detected
-        long				periodic_counter;				// Number of periodic events sent so far
-        long				archive_periodic_counter;		// Number of periodic events sent so far
-        LastAttrValue		prev_change_event;				// Last change attribute
-        LastAttrValue		prev_quality_event;				// Last quality attribute
-        LastAttrValue		prev_archive_event;				// Last archive attribute
-        time_t				event_change_subscription;		// Last time() a subscription was made
-        time_t				event_quality_subscription;		// Last time() a subscription was made
-        time_t				event_periodic_subscription;	// Last time() a subscription was made
-        time_t				event_archive_subscription; 	// Last time() a subscription was made
-        time_t				event_user_subscription; 		// Last time() a subscription was made
-        time_t				event_attr_conf_subscription;	// Last time() a subscription was made
-        time_t				event_data_ready_subscription;	// Last time() a subscription was made
-        double				archive_last_event;				// Last time an archive event was detected (periodic or not)
-        long				idx_in_attr;					// Index in MultiClassAttribute vector
-        string				d_name;							// The device name
-        DeviceImpl 			*dev;							// The device object
-        bool				change_event_implmented;		// Flag true if a manual fire change event is implemented.
-        bool				archive_event_implmented;		// Flag true if a manual fire archive event is implemented.
-        bool				check_change_event_criteria;	// True if change event criteria should be checked when sending the event
-        bool				check_archive_event_criteria;	// True if change event criteria should be checked when sending the event
-        bool				event_periodic_client_3;		// True if at least one periodic event client is using IDL 3
-        bool				event_change_client_3;			// True if at least one periodic event client is using IDL 3
-        bool				event_archive_client_3;			// True if at least one periodic event client is using IDL 3
-        bool				event_user_client_3;			// True if at least one periodic event client is using IDL 3
-        Tango::DevLong64	tmp_lo64[2];
-        Tango::DevULong		tmp_ulo[2];
-        Tango::DevULong64	tmp_ulo64[2];
-        Tango::DevState		tmp_state[2];
         omni_mutex			attr_mutex;						// Mutex to protect the attributes shared data buffer
         omni_mutex			*user_attr_mutex;				// Ptr for user mutex in case he manages exclusion
-        AttrSerialModel		attr_serial_model;				// Flag for attribute serialization model
-        bool				dr_event_implmented;			// Flag true if fire data ready event is implemented
-        bool				scalar_str_attr_release;		// Need memory freeing (scalar string attr, R/W att)
-        bool                notifd_event;                   // Set to true if event required using notifd
-        bool                zmq_event;                      // Set to true if event required using ZMQ
-        vector<string>      mcast_event;                    // In case of multicasting used for event transport
-        AttrQuality         old_quality;                    // Previous attribute quality
-        bitset<numFlags>    old_alarm;                      // Previous attribute alarm
-        map<string,const DevFailed> startup_exceptions;		// Map containing exceptions related to attribute configuration raised during the server startup sequence
-        bool 				check_startup_exceptions;		// Flag set to true if there is at least one exception in startup_exceptions map
-        bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
     };
 
 	AttributeExt		*ext;
@@ -2281,6 +2224,60 @@ protected:
 	Tango::DevEncoded	tmp_enc[2];
 
 	vector<AttrProperty>::iterator pos_end;
+
+//
+// Ported from the extension class
+//
+
+    Tango::DispLevel 	disp_level;						// Display level
+    long				poll_period;					// Polling period
+    double				rel_change[2];					// Delta for relative change events in %
+    double				abs_change[2];					// Delta for absolute change events
+    double				archive_rel_change[2];			// Delta for relative archive change events in %
+    double				archive_abs_change[2];			// Delta for absolute change events
+    int					event_period;					// Delta for periodic events in ms
+    int					archive_period;					// Delta for archive periodic events in ms
+    double				last_periodic;					// Last time a periodic event was detected
+    double				archive_last_periodic;			// Last time an archive periodic event was detected
+    long				periodic_counter;				// Number of periodic events sent so far
+    long				archive_periodic_counter;		// Number of periodic events sent so far
+    LastAttrValue		prev_change_event;				// Last change attribute
+    LastAttrValue		prev_quality_event;				// Last quality attribute
+    LastAttrValue		prev_archive_event;				// Last archive attribute
+    time_t				event_change_subscription;		// Last time() a subscription was made
+    time_t				event_quality_subscription;		// Last time() a subscription was made
+    time_t				event_periodic_subscription;	// Last time() a subscription was made
+    time_t				event_archive_subscription; 	// Last time() a subscription was made
+    time_t				event_user_subscription; 		// Last time() a subscription was made
+    time_t				event_attr_conf_subscription;	// Last time() a subscription was made
+    time_t				event_data_ready_subscription;	// Last time() a subscription was made
+    double				archive_last_event;				// Last time an archive event was detected (periodic or not)
+    long				idx_in_attr;					// Index in MultiClassAttribute vector
+    string				d_name;							// The device name
+    DeviceImpl 			*dev;							// The device object
+    bool				change_event_implmented;		// Flag true if a manual fire change event is implemented.
+    bool				archive_event_implmented;		// Flag true if a manual fire archive event is implemented.
+    bool				check_change_event_criteria;	// True if change event criteria should be checked when sending the event
+    bool				check_archive_event_criteria;	// True if change event criteria should be checked when sending the event
+    bool				event_periodic_client_3;		// True if at least one periodic event client is using IDL 3
+    bool				event_change_client_3;			// True if at least one periodic event client is using IDL 3
+    bool				event_archive_client_3;			// True if at least one periodic event client is using IDL 3
+    bool				event_user_client_3;			// True if at least one periodic event client is using IDL 3
+    Tango::DevLong64	tmp_lo64[2];
+    Tango::DevULong		tmp_ulo[2];
+    Tango::DevULong64	tmp_ulo64[2];
+    Tango::DevState		tmp_state[2];
+    AttrSerialModel		attr_serial_model;				// Flag for attribute serialization model
+    bool				dr_event_implmented;			// Flag true if fire data ready event is implemented
+    bool				scalar_str_attr_release;		// Need memory freeing (scalar string attr, R/W att)
+    bool                notifd_event;                   // Set to true if event required using notifd
+    bool                zmq_event;                      // Set to true if event required using ZMQ
+    vector<string>      mcast_event;                    // In case of multicasting used for event transport
+    AttrQuality         old_quality;                    // Previous attribute quality
+    bitset<numFlags>    old_alarm;                      // Previous attribute alarm
+    map<string,const DevFailed> startup_exceptions;		// Map containing exceptions related to attribute configuration raised during the server startup sequence
+    bool 				check_startup_exceptions;		// Flag set to true if there is at least one exception in startup_exceptions map
+    bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 };
 
 //
@@ -2318,12 +2315,12 @@ inline void Attribute::throw_hard_coded_prop(const char *prop_name)
 
 inline void Attribute::throw_startup_exception(const char* origin)
 {
-	if(ext->check_startup_exceptions)
+	if(check_startup_exceptions)
 	{
 		string err_msg;
 		vector<string> event_exceptions;
 		vector<string> opt_exceptions;
-		for(map<string,const DevFailed>::iterator it = ext->startup_exceptions.begin(); it != ext->startup_exceptions.end(); ++it)
+		for(map<string,const DevFailed>::iterator it = startup_exceptions.begin(); it != startup_exceptions.end(); ++it)
 		{
 			if(it->first == "event_period" || it->first == "archive_period" || it->first == "rel_change" || it->first == "abs_change" || it->first == "archive_rel_change" || it->first == "archive_abs_change")
 				event_exceptions.push_back(it->first);
@@ -2338,9 +2335,9 @@ inline void Attribute::throw_startup_exception(const char* origin)
 				err_msg += "\n" + tmp_msg;
 			}
 		}
-		err_msg = "\nDevice " + ext->d_name + "-> Attribute : " + name + err_msg;
+		err_msg = "\nDevice " + d_name + "-> Attribute : " + name + err_msg;
 
-		if(event_exceptions.size() == ext->startup_exceptions.size())
+		if(event_exceptions.size() == startup_exceptions.size())
 		{
 			if(event_exceptions.size() == 1)
 				err_msg += "\nSetting a valid value (also 'NaN', 'Not specified' and '' - empty string) for any property for this attribute will automatically bring the above-mentioned property to its library defaults";

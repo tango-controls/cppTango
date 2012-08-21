@@ -148,7 +148,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("min_alarm",ext->d_name,"Attribute::set_min_alarm()");
+		throw_err_data_type("min_alarm",d_name,"Attribute::set_min_alarm()");
 
 	else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -168,7 +168,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 		T max_alarm_tmp;
 		memcpy((void *) &max_alarm_tmp, (const void *) &max_alarm, sizeof(T));
 		if(new_min_alarm >= max_alarm_tmp)
-			throw_incoherent_val_err("min_alarm","max_alarm",ext->d_name,"Attribute::set_min_alarm()");
+			throw_incoherent_val_err("min_alarm","max_alarm",d_name,"Attribute::set_min_alarm()");
 	}
 
 //
@@ -192,7 +192,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -208,7 +208,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 // Then, update database
 //
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -246,7 +246,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 			{
 				try
 				{
-					tg->get_database()->delete_device_attribute_property(ext->d_name,db_data);
+					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
 				catch (CORBA::COMM_FAILURE)
@@ -285,7 +285,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 // Push a att conf event
 //
 
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         get_att_device()->push_att_conf_event(this);
 
 //
@@ -301,12 +301,12 @@ inline void Attribute::set_min_alarm(const string &new_min_alarm_str)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("min_alarm",ext->d_name,"Attribute::set_min_alarm()");
+		throw_err_data_type("min_alarm",d_name,"Attribute::set_min_alarm()");
 
 	string min_alarm_str_tmp = new_min_alarm_str;
-	string dev_name = ext->d_name;
+	string dev_name = d_name;
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -531,7 +531,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("max_alarm",ext->d_name,"Attribute::set_max_alarm()");
+		throw_err_data_type("max_alarm",d_name,"Attribute::set_max_alarm()");
 
 	else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -551,7 +551,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 		T min_alarm_tmp;
 		memcpy((void *) &min_alarm_tmp, (const void *) &min_alarm, sizeof(T));
 		if(new_max_alarm <= min_alarm_tmp)
-			throw_incoherent_val_err("min_alarm","max_alarm",ext->d_name,"Attribute::set_max_alarm()");
+			throw_incoherent_val_err("min_alarm","max_alarm",d_name,"Attribute::set_max_alarm()");
 	}
 
 //
@@ -575,7 +575,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::TangoMonitor *mon_ptr = NULL;
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -591,7 +591,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 // Then, update database
 //
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -629,7 +629,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 			{
 				try
 				{
-					tg->get_database()->delete_device_attribute_property(ext->d_name,db_data);
+					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
 				catch (CORBA::COMM_FAILURE)
@@ -668,7 +668,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 // Push a att conf event
 //
 
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         get_att_device()->push_att_conf_event(this);
 
 //
@@ -684,12 +684,12 @@ inline void Attribute::set_max_alarm(const string &new_max_alarm_str)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("max_alarm",ext->d_name,"Attribute::set_max_alarm()");
+		throw_err_data_type("max_alarm",d_name,"Attribute::set_max_alarm()");
 
 	string max_alarm_str_tmp = new_max_alarm_str;
-	string dev_name = ext->d_name;
+	string dev_name = d_name;
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -914,7 +914,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("min_warning",ext->d_name,"Attribute::set_min_warning()");
+		throw_err_data_type("min_warning",d_name,"Attribute::set_min_warning()");
 
 	else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -934,7 +934,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 		T max_warning_tmp;
 		memcpy((void *) &max_warning_tmp, (const void *) &max_warning, sizeof(T));
 		if(new_min_warning >= max_warning_tmp)
-			throw_incoherent_val_err("min_warning","max_warning",ext->d_name,"Attribute::set_min_warning()");
+			throw_incoherent_val_err("min_warning","max_warning",d_name,"Attribute::set_min_warning()");
 	}
 
 //
@@ -958,7 +958,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::TangoMonitor *mon_ptr = NULL;
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -974,7 +974,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 // Then, update database
 //
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -1012,7 +1012,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 			{
 				try
 				{
-					tg->get_database()->delete_device_attribute_property(ext->d_name,db_data);
+					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
 				catch (CORBA::COMM_FAILURE)
@@ -1051,7 +1051,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 // Push a att conf event
 //
 
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		get_att_device()->push_att_conf_event(this);
 
 //
@@ -1067,12 +1067,12 @@ inline void Attribute::set_min_warning(const string &new_min_warning_str)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("min_warning",ext->d_name,"Attribute::set_min_warning()");
+		throw_err_data_type("min_warning",d_name,"Attribute::set_min_warning()");
 
 	string min_warning_str_tmp = new_min_warning_str;
-	string dev_name = ext->d_name;
+	string dev_name = d_name;
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -1297,7 +1297,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("max_warning",ext->d_name,"Attribute::set_max_warning()");
+		throw_err_data_type("max_warning",d_name,"Attribute::set_max_warning()");
 
 	else if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -1317,7 +1317,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 		T min_warning_tmp;
 		memcpy((void *) &min_warning_tmp, (const void *) &min_warning, sizeof(T));
 		if(new_max_warning <= min_warning_tmp)
-			throw_incoherent_val_err("min_warning","max_warning",ext->d_name,"Attribute::set_max_warning()");
+			throw_incoherent_val_err("min_warning","max_warning",d_name,"Attribute::set_max_warning()");
 	}
 
 //
@@ -1341,7 +1341,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::TangoMonitor *mon_ptr = NULL;
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -1357,7 +1357,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 // Then, update database
 //
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -1395,7 +1395,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 			{
 				try
 				{
-					tg->get_database()->delete_device_attribute_property(ext->d_name,db_data);
+					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
 				catch (CORBA::COMM_FAILURE)
@@ -1434,7 +1434,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 // Push a att conf event
 //
 
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		get_att_device()->push_att_conf_event(this);
 
 //
@@ -1450,12 +1450,12 @@ inline void Attribute::set_max_warning(const string &new_max_warning_str)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("max_warning",ext->d_name,"Attribute::set_max_warning()");
+		throw_err_data_type("max_warning",d_name,"Attribute::set_max_warning()");
 
 	string max_warning_str_tmp = new_max_warning_str;
-	string dev_name = ext->d_name;
+	string dev_name = d_name;
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -1683,7 +1683,7 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
 
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -1739,29 +1739,29 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 		(data_type == Tango::DEV_STATE))
 	{
 		if(TG_strcasecmp(props.min_alarm,AlrmValueNotSpec) != 0)
-			throw_err_data_type("min_alarm",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("min_alarm",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.max_alarm,AlrmValueNotSpec) != 0)
-			throw_err_data_type("max_alarm",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("max_alarm",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.min_value,AlrmValueNotSpec) != 0)
-			throw_err_data_type("min_value",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("min_value",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.max_value,AlrmValueNotSpec) != 0)
-			throw_err_data_type("max_value",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("max_value",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.min_warning,AlrmValueNotSpec) != 0)
-			throw_err_data_type("min_warning",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("min_warning",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.max_warning,AlrmValueNotSpec) != 0)
-			throw_err_data_type("max_warning",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("max_warning",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.delta_t,AlrmValueNotSpec) != 0)
-			throw_err_data_type("delta_t",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("delta_t",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.delta_val,AlrmValueNotSpec) != 0)
-			throw_err_data_type("delta_val",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("delta_val",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.rel_change,AlrmValueNotSpec) != 0)
-			throw_err_data_type("rel_change",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("rel_change",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.abs_change,AlrmValueNotSpec) != 0)
-			throw_err_data_type("abs_change",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("abs_change",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.archive_rel_change,AlrmValueNotSpec) != 0)
-			throw_err_data_type("archive_rel_change",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("archive_rel_change",d_name,"Attribute::set_properties()");
 		if(TG_strcasecmp(props.archive_abs_change,AlrmValueNotSpec) != 0)
-			throw_err_data_type("archive_abs_change",ext->d_name,"Attribute::set_properties()");
+			throw_err_data_type("archive_abs_change",d_name,"Attribute::set_properties()");
 	}
 
 //
@@ -1772,7 +1772,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 
     Tango::Util *tg = Tango::Util::instance();
     Tango::TangoMonitor *mon_ptr = NULL;
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -1808,13 +1808,13 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 // Set properties and update database
 //
 
-	set_upd_properties(conf,ext->d_name);
+	set_upd_properties(conf,d_name);
 
 //
 // Push a att conf event
 //
 
-    if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+    if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         get_att_device()->push_att_conf_event(this);
 }
 

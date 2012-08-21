@@ -420,13 +420,13 @@ public:
  *
  * @param	level	The attribute display level
  */
- 	void set_disp_level(Tango::DispLevel level) {ext->disp_level = level;}
+ 	void set_disp_level(Tango::DispLevel level) {disp_level = level;}
 /**
  * Set the attribute polling update period
  *
  * @param	update	The attribute polling period (in mS)
  */
- 	void set_polling_period(long update) {ext->poll_period = update;}
+ 	void set_polling_period(long update) {poll_period = update;}
 /**
  * Set the attribute as memorized in database (only for scalar and writable
  * attribute)
@@ -452,21 +452,21 @@ public:
  * @param detect Triggers the verification of the change event properties when set to true.
  */
 	void set_change_event(bool implemented, bool detect)
-			{ ext->fire_change_event  = implemented;
-			  ext->check_change_event = detect; }
+			{ fire_change_event  = implemented;
+			  check_change_event = detect; }
 /**
  * Check if the change event is fired manually for this attribute.
  *
  * @return A boolean set to true if a manual fire change event is implemented.
  */
-	bool is_change_event() {return ext->fire_change_event;}
+	bool is_change_event() {return fire_change_event;}
 /**
  * Check if the change event criteria should be checked when firing
  * the event manually.
  *
  * @return A boolean set to true if a change event criteria will be checked.
  */
-	bool is_check_change_criteria() {return ext->check_change_event;}
+	bool is_check_change_criteria() {return check_change_event;}
 /**
  * Set a flag to indicate that the server fires archive events manually without
  * the polling to be started for the attribute
@@ -478,35 +478,35 @@ public:
  * @param detect Triggers the verification of the archive event properties when set to true.
  */
 	void set_archive_event(bool implemented, bool detect)
-			{ext->fire_archive_event  = implemented;
-			 ext->check_archive_event = detect;}
+			{fire_archive_event  = implemented;
+			 check_archive_event = detect;}
 
 /**
  * Check if the archive event is fired manually for this attribute.
  *
  * @return A boolean set to true if a manual fire archive event is implemented.
  */
-	bool is_archive_event() {return ext->fire_archive_event;}
+	bool is_archive_event() {return fire_archive_event;}
 /**
  * Check if the archive event criteria should be checked when firing
  * the event manually.
  *
  * @return A boolean set to true if a archive event criteria will be checked.
  */
-	bool is_check_archive_criteria() {return ext->check_archive_event;}
+	bool is_check_archive_criteria() {return check_archive_event;}
 
 /**
  * Set a flag to indicate that the server fires data ready events
  *
  * @param implemented True when the server fires data ready events
  */
-	void set_data_ready_event(bool implemented) { ext->fire_dr_event  = implemented;}
+	void set_data_ready_event(bool implemented) { fire_dr_event  = implemented;}
 /**
  * Check if the data ready event is fired for this attribute.
  *
  * @return A boolean set to true if firing data ready event is implemented.
  */
-	bool is_data_ready_event() {return ext->fire_dr_event;}
+	bool is_data_ready_event() {return fire_dr_event;}
 //@}
 
 /// @privatesection
@@ -514,13 +514,13 @@ public:
 	Tango::AttrDataFormat get_format() {return format;}
 	Tango::AttrWriteType get_writable() {return writable;}
 	long get_type() {return type;}
-	Tango::DispLevel get_disp_level() {return ext->disp_level;}
-	long get_polling_period() {return ext->poll_period;}
+	Tango::DispLevel get_disp_level() {return disp_level;}
+	long get_polling_period() {return poll_period;}
 	bool get_memorized() {return mem;}
 	bool get_memorized_init() {return mem_init;}
 	string	&get_assoc() {return assoc_name;}
-	const string &get_cl_name() {return ext->cl_name;}
-	void set_cl_name(const string &cl) {ext->cl_name = cl;}
+	const string &get_cl_name() {return cl_name;}
+	void set_cl_name(const string &cl) {cl_name = cl;}
 	bool is_assoc() {if (assoc_name != AssocWritNotSpec)return true;else return false;}
 
 	vector<AttrProperty>	&get_class_properties() {return class_properties;}
@@ -560,25 +560,7 @@ private:
     class AttrExt
     {
     public:
-        AttrExt():poll_period(0),fire_change_event(false),fire_archive_event(false),
-                  check_change_event(false),check_archive_event(false),
-                  fire_dr_event(false),cl_name("Attr")
-                  {disp_level = Tango::OPERATOR;}
-        AttrExt(DispLevel level):poll_period(0),fire_change_event(false),fire_archive_event(false),
-                                 check_change_event(false),check_archive_event(false),
-                                 fire_dr_event(false),cl_name("Attr")
-                                 {disp_level = level;}
-
-        Tango::DispLevel	disp_level;			// Display  level
-        long				poll_period;		// Polling period
-
-        bool				fire_change_event;
-        bool				fire_archive_event;
-        bool				check_change_event;
-        bool				check_archive_event;
-        bool				fire_dr_event;
-
-        string				cl_name;
+        AttrExt() {}
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -586,6 +568,21 @@ private:
 #else
 	AttrExt					*ext;
 #endif
+
+//
+// Ported from the extension class
+//
+
+    Tango::DispLevel	disp_level;			// Display  level
+    long				poll_period;		// Polling period
+
+    bool				fire_change_event;
+    bool				fire_archive_event;
+    bool				check_change_event;
+    bool				check_archive_event;
+    bool				fire_dr_event;
+
+    string				cl_name;
 };
 
 /**

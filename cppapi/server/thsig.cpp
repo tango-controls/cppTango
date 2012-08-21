@@ -199,7 +199,7 @@ void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
 			{
 				try
 				{
-					tg->shutdown_server();
+					tg->shutdown_ds();
 				}
 				catch(...)
 				{

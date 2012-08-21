@@ -62,7 +62,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("min_value",ext->d_name,"WAttribute::set_min_value()");
+		throw_err_data_type("min_value",d_name,"WAttribute::set_min_value()");
 
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -82,7 +82,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 		T max_value_tmp;
 		memcpy((void *) &max_value_tmp, (const void *) &max_value, sizeof(T));
 		if(new_min_value >= max_value_tmp)
-			throw_incoherent_val_err("min_value","max_value",ext->d_name,"WAttribute::set_min_value()");
+			throw_incoherent_val_err("min_value","max_value",d_name,"WAttribute::set_min_value()");
 	}
 
 //
@@ -105,7 +105,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::TangoMonitor *mon_ptr = NULL;
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -121,7 +121,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 // Then, update database
 //
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -159,7 +159,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 			{
 				try
 				{
-					tg->get_database()->delete_device_attribute_property(ext->d_name,db_data);
+					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
 				catch (CORBA::COMM_FAILURE)
@@ -198,7 +198,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 // Push a att conf event
 //
 
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		get_att_device()->push_att_conf_event(this);
 
 //
@@ -214,12 +214,12 @@ inline void WAttribute::set_min_value(const string &new_min_value_str)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("min_value",ext->d_name,"WAttribute::set_min_value()");
+		throw_err_data_type("min_value",d_name,"WAttribute::set_min_value()");
 
 	string min_value_str_tmp = new_min_value_str;
-	string dev_name = ext->d_name;
+	string dev_name = d_name;
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 
@@ -437,7 +437,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("max_value",ext->d_name,"WAttribute::set_max_value()");
+		throw_err_data_type("max_value",d_name,"WAttribute::set_max_value()");
 
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
 		(data_type != ranges_type2const<T>::enu))
@@ -457,7 +457,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 		T min_value_tmp;
 		memcpy((void *) &min_value_tmp, (const void *) &min_value, sizeof(T));
 		if(new_max_value <= min_value_tmp)
-			throw_incoherent_val_err("min_value","max_value",ext->d_name,"WAttribute::set_max_value()");
+			throw_incoherent_val_err("min_value","max_value",d_name,"WAttribute::set_max_value()");
 	}
 
 //
@@ -480,7 +480,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 
 	Tango::Util *tg = Tango::Util::instance();
 	Tango::TangoMonitor *mon_ptr = NULL;
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
@@ -496,7 +496,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 // Then, update database
 //
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 	vector<AttrProperty> &def_user_prop = att.get_user_default_properties();
@@ -534,7 +534,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 			{
 				try
 				{
-					tg->get_database()->delete_device_attribute_property(ext->d_name,db_data);
+					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
 				catch (CORBA::COMM_FAILURE)
@@ -573,7 +573,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 // Push a att conf event
 //
 
-	if (tg->is_svr_starting() == false && tg->is_device_restarting(ext->d_name) == false)
+	if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
 		get_att_device()->push_att_conf_event(this);
 
 //
@@ -589,12 +589,12 @@ inline void WAttribute::set_max_value(const string &new_max_value_str)
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
 		(data_type == Tango::DEV_STATE))
-		throw_err_data_type("max_value",ext->d_name,"WAttribute::set_max_value()");
+		throw_err_data_type("max_value",d_name,"WAttribute::set_max_value()");
 
 	string max_value_str_tmp = new_max_value_str;
-	string dev_name = ext->d_name;
+	string dev_name = d_name;
 
-	Tango::DeviceClass *dev_class = get_att_device_class(ext->d_name);
+	Tango::DeviceClass *dev_class = get_att_device_class(d_name);
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);
 

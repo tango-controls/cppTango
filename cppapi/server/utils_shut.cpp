@@ -74,7 +74,7 @@ namespace Tango
 {
 //+----------------------------------------------------------------------------
 //
-// method : 		Util::shutdown_server()
+// method : 		Util::shutdown_ds()
 //
 // description : 	This method sends command to the polling thread for
 //			all cmd/attr with polling configuration stored in db.
@@ -84,7 +84,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-void Util::shutdown_server()
+void Util::shutdown_ds()
 {
 
 //

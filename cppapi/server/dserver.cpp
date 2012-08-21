@@ -1291,7 +1291,7 @@ void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
 //
 
 	Tango::Util *tg = Tango::Util::instance();
-	tg->shutdown_server();
+	tg->shutdown_ds();
 
 	return NULL;
 }

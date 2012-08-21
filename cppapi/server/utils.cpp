@@ -158,17 +158,30 @@ Util *Util::instance(bool exit)
 //-----------------------------------------------------------------------------
 
 #ifdef _TG_WINDOWS
-Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),mon("Windows startup"),ext(new UtilExt)
+Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),mon("Windows startup"),ext(new UtilExt),
+heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
+only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
+db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
+conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
+zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false)
 # ifndef TANGO_HAS_LOG4TANGO
     ,cout_tmp(cout.rdbuf())
 # endif
 #else
-Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt)
+Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt),
+heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
+only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
+db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
+conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
+zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false)
 # ifndef TANGO_HAS_LOG4TANGO
     ,cout_tmp(cout.rdbuf())
 # endif
 #endif
 {
+	shared_data.cmd_pending=false;
+	shared_data.trigger=false;
+    cr_py_lock = new CreatePyLock();
 
 //
 // Do the job
@@ -415,10 +428,10 @@ void Util::effective_job(int argc,char *argv[])
 // Create the heartbeat thread and start it
 //
 
-		ext->heartbeat_th = new PollThread(ext->shared_data,ext->poll_mon,true);
-		ext->heartbeat_th->start();
-		ext->heartbeat_th_id = ext->heartbeat_th->id();
-		cout4 << "Heartbeat thread Id = " << ext->heartbeat_th_id;
+		heartbeat_th = new PollThread(shared_data,poll_mon,true);
+		heartbeat_th->start();
+		heartbeat_th_id = heartbeat_th->id();
+		cout4 << "Heartbeat thread Id = " << heartbeat_th_id;
 
 		cout4 << "Tango object singleton constructed" << endl;
 
@@ -726,7 +739,7 @@ void Util::check_args(int argc,char *argv[])
 									cerr << "Strange ORB endPoint specification" << endl;
 									print_usage(argv[0]);
 								}
-								ext->svr_port_num = endpoint.substr(++pos);
+								svr_port_num = endpoint.substr(++pos);
 								break;
 							}
 						}
@@ -1102,7 +1115,7 @@ void Util::connect_db()
 			set_svr_starting(false);
 			try
 			{
-				ext->db_cache = new DbServerCache(db,get_ds_name(),get_host_name());
+				db_cache = new DbServerCache(db,get_ds_name(),get_host_name());
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -1193,7 +1206,7 @@ void Util::misc_init()
 		istringstream iss(var);
 		iss >> pub_hwm;
 		if (iss)
-			ext->user_pub_hwm = pub_hwm;
+			user_pub_hwm = pub_hwm;
 	}
 }
 
@@ -1301,19 +1314,19 @@ void Util::create_notifd_event_supplier()
 	{
 		try
 		{
-			ext->nd_event_supplier = NotifdEventSupplier::create(orb,ds_name,this);
-			ext->nd_event_supplier->connect();
+			nd_event_supplier = NotifdEventSupplier::create(orb,ds_name,this);
+			nd_event_supplier->connect();
 		}
 		catch (...)
 		{
-			ext->nd_event_supplier = NULL;
+			nd_event_supplier = NULL;
 			if (_FileDb == true)
 				cerr << "Can't create notifd event supplier. Notifd event not available" << endl;
 		}
 	}
 	else
 	{
-		ext->nd_event_supplier = NULL;
+		nd_event_supplier = NULL;
 	}
 }
 
@@ -1331,18 +1344,18 @@ void Util::create_zmq_event_supplier()
 	{
 		try
 		{
-			ext->zmq_event_supplier = ZmqEventSupplier::create(this);
+			zmq_event_supplier = ZmqEventSupplier::create(this);
 		}
 		catch (...)
 		{
-			ext->zmq_event_supplier = NULL;
+			zmq_event_supplier = NULL;
 			if (_FileDb == true)
 				cerr << "Can't create zmq event supplier. Zmq event not available" << endl;
 		}
 	}
 	else
 	{
-		ext->zmq_event_supplier = NULL;
+		zmq_event_supplier = NULL;
 	}
 }
 
@@ -1390,6 +1403,8 @@ Util::~Util()
 #ifndef HAS_UNIQUE_PTR
     delete ext;
 #endif
+
+	delete cr_py_lock;
 }
 
 
@@ -1421,9 +1436,9 @@ void Util::server_already_running()
 	{
 		const Tango::DevVarLongStringArray *db_dev;
 		CORBA::Any_var received;
-		if (ext->db_cache != NULL)
+		if (db_cache != NULL)
 		{
-			db_dev = ext->db_cache->import_adm_dev();
+			db_dev = db_cache->import_adm_dev();
 		}
 		else
 		{
@@ -1559,21 +1574,21 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 	if (Util::_service == true)
 	{
 		omni_thread::create_dummy();
-		ext->_dummy_thread = true;
+		_dummy_thread = true;
 	}
 
 	omni_thread *th = omni_thread::self();
 	if (th == NULL)
 	{
 		th = omni_thread::create_dummy();
-		ext->_dummy_thread = true;
+		_dummy_thread = true;
 	}
 #else
 	omni_thread *th = omni_thread::self();
 	if (th == NULL)
 	{
 		th = omni_thread::create_dummy();
-		ext->_dummy_thread = true;
+		_dummy_thread = true;
 	}
 #endif
 
@@ -1655,13 +1670,13 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 // Delete the db cache if it has been used
 //
 
-		if (ext->db_cache != NULL)
+		if (db_cache != NULL)
 		{
 		// extract sub device information before deleting cache!
 			get_sub_dev_diag().get_sub_devices_from_cache();
 
-			delete ext->db_cache;
-			ext->db_cache = NULL;
+			delete db_cache;
+			db_cache = NULL;
 		}
 #ifdef _TG_WINDOWS_
 	}
@@ -1765,7 +1780,7 @@ void Util::server_run()
 	//JM : 9.8.2005 : destroy() should be called at the exit of run()!
 	try
 	{
-		if (ext->ev_loop_func != NULL)
+		if (ev_loop_func != NULL)
 		{
 
 //
@@ -1777,18 +1792,18 @@ void Util::server_run()
 			sleep_time.tv_nsec = 20000000;
 			bool user_shutdown_server;
 
-			while(ext->shutdown_server == false)
+			while(shutdown_server == false)
 			{
 				if (is_svr_shutting_down() == false)
 				{
 					if (orb->work_pending())
 						orb->perform_work();
 
-					user_shutdown_server = (*ext->ev_loop_func)();
+					user_shutdown_server = (*ev_loop_func)();
 					if (user_shutdown_server == true)
 					{
-						shutdown_server();
-						ext->shutdown_server = true;
+						shutdown_ds();
+						shutdown_server = true;
 					}
 				}
 				else
@@ -1850,7 +1865,7 @@ void Util::server_cleanup()
 	}
 #endif
 
-	if (ext->_dummy_thread == true)
+	if (_dummy_thread == true)
 		omni_thread::release_dummy();
 }
 
@@ -2354,13 +2369,13 @@ void Util::clean_dyn_attr_prop()
 	{
 		DbData send_data;
 
-		for (unsigned long loop = 0;loop < ext->all_dyn_attr.size();loop++)
+		for (unsigned long loop = 0;loop < all_dyn_attr.size();loop++)
 		{
-			DbDatum db_dat(ext->all_dyn_attr[loop]);
+			DbDatum db_dat(all_dyn_attr[loop]);
 			send_data.push_back(db_dat);
 		}
 
-		db->delete_all_device_attribute_property(ext->dyn_att_dev_name,send_data);
+		db->delete_all_device_attribute_property(dyn_att_dev_name,send_data);
 	}
 }
 
@@ -2377,8 +2392,8 @@ void Util::clean_dyn_attr_prop()
 void Util::delete_restarting_device(string &d_name)
 {
     vector<string>::iterator pos;
-    pos = remove(ext->restarting_devices.begin(),ext->restarting_devices.end(),d_name);
-    ext->restarting_devices.erase(pos,ext->restarting_devices.end());
+    pos = remove(restarting_devices.begin(),restarting_devices.end(),d_name);
+    restarting_devices.erase(pos,restarting_devices.end());
 }
 
 #ifdef _TG_WINDOWS_
@@ -2554,13 +2569,13 @@ void *Util::ORBWin32Loop::run_undetached(void *ptr)
 // Delete DB cache (if there is one)
 //
 
-	if (util->ext->db_cache != NULL)
+	if (util->db_cache != NULL)
 	{
 		// extract sub device information before deleting cache!
 		util->get_sub_dev_diag().get_sub_devices_from_cache();
 
-		delete util->ext->db_cache;
-		util->ext->db_cache = NULL;
+		delete util->db_cache;
+		util->db_cache = NULL;
 	}
 
 //

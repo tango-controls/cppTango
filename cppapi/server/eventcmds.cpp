@@ -207,14 +207,14 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 		if (event == "user_event")
 		{
 			cout4 << "DServer::event_subscription(): update user_event subscription\n";
-			attribute.ext->event_user_subscription = time(NULL);
+			attribute.event_user_subscription = time(NULL);
 			if (cl_release == 3)
-				attribute.ext->event_user_client_3 = true;
+				attribute.event_user_client_3 = true;
 		}
 		else if (event == "attr_conf")
 		{
 			cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
-			attribute.ext->event_attr_conf_subscription = time(NULL);
+			attribute.event_attr_conf_subscription = time(NULL);
 		}
 		else if (event == "data_ready")
 		{
@@ -230,7 +230,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 										(const char *)"DServer::event_subscription");
 			}
 			cout4 << "DServer::event_subscription(): update data_ready subscription\n";
-			attribute.ext->event_data_ready_subscription = time(NULL);
+			attribute.event_data_ready_subscription = time(NULL);
 		}
 		else
 		{
@@ -294,10 +294,10 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					{
 						if ( attribute.is_check_change_criteria() == true )
 						{
-							if ((attribute.ext->rel_change[0] == INT_MAX) &&
-					    		(attribute.ext->rel_change[1] == INT_MAX) &&
-					    		(attribute.ext->abs_change[0] == INT_MAX) &&
-					    		(attribute.ext->abs_change[1] == INT_MAX))
+							if ((attribute.rel_change[0] == INT_MAX) &&
+					    		(attribute.rel_change[1] == INT_MAX) &&
+					    		(attribute.abs_change[0] == INT_MAX) &&
+					    		(attribute.abs_change[1] == INT_MAX))
 							{
 								TangoSys_OMemStream o;
 								o << "Event properties (abs_change or rel_change) for attribute ";
@@ -311,21 +311,21 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 						}
 					}
 				}
-       			attribute.ext->event_change_subscription = time(NULL);
+       			attribute.event_change_subscription = time(NULL);
 				if (cl_release == 3)
-					attribute.ext->event_change_client_3 = true;
+					attribute.event_change_client_3 = true;
 			}
       		else if (event == "quality")
       		{
 				cout4 << "DServer::event_subscription(): update quality_change subscription\n";
-       			attribute.ext->event_quality_subscription = time(NULL);
+       			attribute.event_quality_subscription = time(NULL);
       		}
       		else if (event == "periodic")
       		{
 				cout4 << "DServer::event_subscription(): update periodic subscription\n";
-       			attribute.ext->event_periodic_subscription = time(NULL);
+       			attribute.event_periodic_subscription = time(NULL);
 				if (cl_release == 3)
-					attribute.ext->event_periodic_client_3 = true;
+					attribute.event_periodic_client_3 = true;
       		}
       		else if (event == "archive")
       		{
@@ -343,9 +343,9 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					{
 						if ( attribute.is_check_archive_criteria() == true )
 						{
-							if ((attribute.ext->archive_abs_change[0] == INT_MAX) &&
-					      		(attribute.ext->archive_abs_change[1] == INT_MAX) &&
-						   	    (attribute.ext->archive_period        == INT_MAX))
+							if ((attribute.archive_abs_change[0] == INT_MAX) &&
+					      		(attribute.archive_abs_change[1] == INT_MAX) &&
+						   	    (attribute.archive_period        == INT_MAX))
 							{
 								TangoSys_OMemStream o;
 								o << "Archive event properties (archive_abs_change or archive_rel_change or archive_period) for attribute ";
@@ -361,9 +361,9 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				}
 
 				cout4 << "DServer::event_subscription(): update archive subscription\n";
-       			attribute.ext->event_archive_subscription = time(NULL);
+       			attribute.event_archive_subscription = time(NULL);
 				if (cl_release == 3)
-					attribute.ext->event_archive_client_3 = true;
+					attribute.event_archive_client_3 = true;
       		}
 		}
 
@@ -387,18 +387,18 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         if (ct == ZMQ)
         {
             bool found = false;
-			for(unsigned int i = 0;i != attribute.ext->mcast_event.size();++i)
+			for(unsigned int i = 0;i != attribute.mcast_event.size();++i)
 			{
-                if (attribute.ext->mcast_event[i].find(event) == 0)
+                if (attribute.mcast_event[i].find(event) == 0)
                 {
                     string::size_type start,end;
-                    start = attribute.ext->mcast_event[i].find(':');
+                    start = attribute.mcast_event[i].find(':');
                     start++;
-                    end = attribute.ext->mcast_event[i].find(':',start);
+                    end = attribute.mcast_event[i].find(':',start);
 
-                    if ((end = attribute.ext->mcast_event[i].find(':',end + 1)) == string::npos)
+                    if ((end = attribute.mcast_event[i].find(':',end + 1)) == string::npos)
                     {
-                        mcast_data = attribute.ext->mcast_event[i].substr(start);
+                        mcast_data = attribute.mcast_event[i].substr(start);
                         rate = 0;
                         ivl = 0;
                         found = true;
@@ -406,16 +406,16 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
                     }
                     else
                     {
-                        mcast_data = attribute.ext->mcast_event[i].substr(start,end - start);
+                        mcast_data = attribute.mcast_event[i].substr(start,end - start);
 
 //
 // Get rate because one is defined
 //
 
                         string::size_type start_rate = end + 1;
-                        if ((end = attribute.ext->mcast_event[i].find(':',start_rate)) == string::npos)
+                        if ((end = attribute.mcast_event[i].find(':',start_rate)) == string::npos)
                         {
-                            istringstream iss(attribute.ext->mcast_event[i].substr(start_rate));
+                            istringstream iss(attribute.mcast_event[i].substr(start_rate));
                             iss >> rate;
                             rate = rate * 1024;
                             ivl = 0;
@@ -424,7 +424,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
                         }
                         else
                         {
-                            istringstream iss(attribute.ext->mcast_event[i].substr(start_rate,end - start_rate));
+                            istringstream iss(attribute.mcast_event[i].substr(start_rate,end - start_rate));
                             iss >> rate;
                             rate = rate * 1024;
 
@@ -432,7 +432,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 // Get ivl because one is defined
 //
 
-                            istringstream iss_ivl(attribute.ext->mcast_event[i].substr(end + 1));
+                            istringstream iss_ivl(attribute.mcast_event[i].substr(end + 1));
                             iss_ivl >> ivl;
                             ivl = ivl * 1000;
                             found = true;

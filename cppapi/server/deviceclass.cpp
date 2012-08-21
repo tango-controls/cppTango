@@ -75,7 +75,8 @@ static void lower_cmd_name(string &cmd)
 //
 //-----------------------------------------------------------------------------
 
-DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt)
+DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
+		only_one("class"),default_cmd(NULL),py_class(false),device_factory_done(false)
 {
 
 //
@@ -172,9 +173,9 @@ void DeviceClass::get_class_system_resource()
 		}
 
 		if (db_data[1].is_empty() == false)
-			db_data[1] >> ext->cvs_tag;
+			db_data[1] >> cvs_tag;
 		if (db_data[2].is_empty() == false)
-			db_data[2] >> ext->cvs_location;
+			db_data[2] >> cvs_location;
 
 //
 // Init allowed commands vector (in lowercase letters)
@@ -214,9 +215,9 @@ void DeviceClass::get_class_system_resource()
 			db_data[0] >> doc_url;
 
 		if (db_data[4].is_empty() == false)
-			db_data[4] >> ext->svn_tag;
+			db_data[4] >> svn_tag;
 		if (db_data[5].is_empty() == false)
-			db_data[5] >> ext->svn_location;
+			db_data[5] >> svn_location;
 
 	}
 	else

@@ -45,7 +45,7 @@ namespace Tango
 
 //-----------------------------------------------------------------------------
 //
-// DeviceAttributeExt::assignement operator
+// DeviceAttributeExt::assignment operator
 //
 //-----------------------------------------------------------------------------
 

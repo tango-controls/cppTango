@@ -94,11 +94,11 @@ public:
 			break;
 
 		case BY_CLASS:
-			mon = &(dev->device_class->ext->only_one);
+			mon = &(dev->device_class->only_one);
 			break;
 
 		case BY_PROCESS:
-			mon = &(Util::instance()->ext->only_one);
+			mon = &(Util::instance()->only_one);
 			break;
 		}
 		if (mon)
@@ -118,12 +118,12 @@ public:
 			break;
 
 		case BY_CLASS:
-			mon = &(dev_cl->ext->only_one);
+			mon = &(dev_cl->only_one);
 			mon->get_monitor();
 			break;
 
 		case BY_PROCESS:
-			mon = &(Util::instance()->ext->only_one);
+			mon = &(Util::instance()->only_one);
 			mon->get_monitor();
 			break;
 		}
