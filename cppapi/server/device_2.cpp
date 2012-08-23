@@ -73,7 +73,7 @@ namespace Tango
 Device_2Impl::Device_2Impl(DeviceClass *device_class,string &dev_name):
 DeviceImpl(device_class,dev_name),ext_2(Tango_NullPtr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
@@ -81,7 +81,7 @@ Device_2Impl::Device_2Impl(DeviceClass *device_class,
 			   string &desc):
 DeviceImpl(device_class,dev_name,desc),ext_2(Tango_NullPtr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
@@ -89,7 +89,7 @@ Device_2Impl::Device_2Impl(DeviceClass *device_class,
 	           	   Tango::DevState dev_state,string &dev_status):
 DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
@@ -99,7 +99,7 @@ Device_2Impl::Device_2Impl(DeviceClass *device_class,
 	           	   const char *dev_status):
 DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 
@@ -132,7 +132,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 // is already done
 //
 
-	if (ext->store_in_bb == true)
+	if (store_in_bb == true)
 	{
 		blackbox_ptr->insert_cmd(in_cmd,2,source);
 
@@ -154,7 +154,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 			check_lock("command_inout2",in_cmd);
 		}
 	}
-	ext->store_in_bb = true;
+	store_in_bb = true;
 
 //
 // If the source parameter specifies device, call the command_inout method
@@ -164,7 +164,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 	if (source == Tango::DEV)
 	{
 		AutoTangoMonitor sync(this);
-		ext->store_in_bb = false;
+		store_in_bb = false;
 		return command_inout(in_cmd,in_data);
 	}
 	else
@@ -424,7 +424,7 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 	if ((source != Tango::CACHE) && (polling_failed == true))
 	{
 		AutoTangoMonitor sync(this);
-		ext->store_in_bb = false;
+		store_in_bb = false;
 		ret = command_inout(in_cmd,in_data);
 	}
 
@@ -483,7 +483,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 		if (source == Tango::DEV)
 		{
 			AutoTangoMonitor sync(this,true);
-			ext->store_in_bb = false;
+			store_in_bb = false;
 			return read_attributes(names);
 		}
 		else
@@ -931,7 +931,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
             delete back;
 
 			AutoTangoMonitor sync(this,true);
-			ext->store_in_bb = false;
+			store_in_bb = false;
 			//return read_attributes(names);
 			back = read_attributes(names);
 		}

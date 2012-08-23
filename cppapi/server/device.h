@@ -219,13 +219,13 @@ public:
  *
  * @return Device previous state
  */
-	Tango::DevState &get_prev_state() {return ext->device_prev_state;}
+	Tango::DevState &get_prev_state() {return device_prev_state;}
 /**
  * Set device state.
  *
  * @param new_state The new device state
  */
-	void set_state (const Tango::DevState &new_state) {ext->device_prev_state = device_state; device_state = new_state;}
+	void set_state (const Tango::DevState &new_state) {device_prev_state = device_state; device_state = new_state;}
 
 /**
  * Get device name.
@@ -3381,43 +3381,43 @@ protected:
 public:
 /// @privatesection
 
-	void set_exported_flag(bool exp) {ext->exported = exp;}
-	bool get_exported_flag() {return ext->exported;}
+	void set_exported_flag(bool exp) {exported = exp;}
+	bool get_exported_flag() {return exported;}
 
-	void set_poll_ring_depth(long depth) {ext->poll_ring_depth = depth;}
-	long get_poll_ring_depth() {return ext->poll_ring_depth;}
+	void set_poll_ring_depth(long depth) {poll_ring_depth = depth;}
+	long get_poll_ring_depth() {return poll_ring_depth;}
 
-	void set_poll_old_factor(long fact) {ext->poll_old_factor = fact;}
-	long get_poll_old_factor() {return ext->poll_old_factor;}
+	void set_poll_old_factor(long fact) {poll_old_factor = fact;}
+	long get_poll_old_factor() {return poll_old_factor;}
 
-	void is_polled(bool poll) {ext->polled = poll;}
-	bool is_polled() {return ext->polled;}
+	void is_polled(bool poll) {polled = poll;}
+	bool is_polled() {return polled;}
 
-	vector<string> &get_polled_cmd() {return ext->polled_cmd;}
-	vector<string> &get_polled_attr() {return ext->polled_attr;}
-	vector<string> &get_non_auto_polled_cmd() {return ext->non_auto_polled_cmd;}
-	vector<string> &get_non_auto_polled_attr() {return ext->non_auto_polled_attr;}
-	vector<PollObj *> &get_poll_obj_list() {return ext->poll_obj_list;}
+	vector<string> &get_polled_cmd() {return polled_cmd;}
+	vector<string> &get_polled_attr() {return polled_attr;}
+	vector<string> &get_non_auto_polled_cmd() {return non_auto_polled_cmd;}
+	vector<string> &get_non_auto_polled_attr() {return non_auto_polled_attr;}
+	vector<PollObj *> &get_poll_obj_list() {return poll_obj_list;}
 	void stop_polling(bool);
 	void stop_polling() {stop_polling(true);}
 
 	void check_command_exists(const string &);
 	Command *get_command(const string &);
 
-	string &get_name_lower() {return ext->device_name_lower;}
+	string &get_name_lower() {return device_name_lower;}
 
-	TangoMonitor &get_dev_monitor() {return ext->only_one;}
-	TangoMonitor &get_poll_monitor() {return ext->poll_mon;}
-	TangoMonitor &get_att_conf_monitor() {return ext->att_conf_mon;}
+	TangoMonitor &get_dev_monitor() {return only_one;}
+	TangoMonitor &get_poll_monitor() {return poll_mon;}
+	TangoMonitor &get_att_conf_monitor() {return att_conf_mon;}
 
-	long get_dev_idl_version() {return ext->idl_version;}
+	long get_dev_idl_version() {return idl_version;}
 	long get_cmd_poll_ring_depth(string &);
 	long get_attr_poll_ring_depth(string &);
-	vector<long> &get_alarmed_not_read() {return ext->alarmed_not_read;}
+	vector<long> &get_alarmed_not_read() {return alrm_not_read;}
 	void poll_lists_2_v5();
 
-	bool is_py_device() {return ext->py_device;}
-	void set_py_device(bool py) {ext->py_device=py;}
+	bool is_py_device() {return py_device;}
+	void set_py_device(bool py) {py_device=py;}
 
 	Tango::client_addr *get_client_ident();
 	void lock(client_addr *,int);
@@ -3425,40 +3425,40 @@ public:
 	Tango::DevLong unlock(bool);
 	void basic_unlock(bool forced = false);
 	bool valid_lock();
-	Tango::DevVarLongStringArray *lock_status();
+	Tango::DevVarLongStringArray *lock_stat();
 
-	bool is_device_locked() {return ext->device_locked;}
-	client_addr *get_locker() {return ext->locker_client;}
-	client_addr *get_old_locker() {return ext->old_locker_client;}
-	time_t get_locking_date() {return ext->locking_date;}
-	Tango::DevLong get_locking_ctr() {return ext->lock_ctr;}
-	Tango::DevLong get_lock_validity() {return ext->lock_validity;}
-	void clean_locker_ptrs() {ext->locker_client=NULL;ext->old_locker_client=NULL;}
+	bool is_device_locked() {return device_locked;}
+	client_addr *get_locker() {return locker_client;}
+	client_addr *get_old_locker() {return old_locker_client;}
+	time_t get_locking_date() {return locking_date;}
+	Tango::DevLong get_locking_ctr() {return lock_ctr;}
+	Tango::DevLong get_lock_validity() {return lock_validity;}
+	void clean_locker_ptrs() {locker_client=NULL;old_locker_client=NULL;}
 	void set_locking_param(client_addr *,client_addr *,time_t,DevLong,DevLong);
 
-	void set_alias_name_lower(string &al) {ext->alias_name_lower = al;}
-	string &get_alias_name_lower() {return ext->alias_name_lower;}
+	void set_alias_name_lower(string &al) {alias_name_lower = al;}
+	string &get_alias_name_lower() {return alias_name_lower;}
 
 	void push_att_conf_event(Attribute *);
 
 	void data_into_net_object(Attribute &,AttributeValueList_3 *,AttributeValueList_4 *,long,AttrWriteType,bool);
 	void polled_data_into_net_object(AttributeValueList_3 *,AttributeValueList_4 *,long,long,long,PollObj *,const DevVarStringArray &);
 
-	int get_min_poll_period() {return ext->min_poll_period;}
-	vector<string> &get_cmd_min_poll_period() {return ext->cmd_min_poll_period;}
-	vector<string> &get_attr_min_poll_period() {return ext->attr_min_poll_period;}
+	int get_min_poll_period() {return min_poll_period;}
+	vector<string> &get_cmd_min_poll_period() {return cmd_min_poll_period;}
+	vector<string> &get_attr_min_poll_period() {return attr_min_poll_period;}
 
 	void init_cmd_poll_ext_trig (string cmd_name);
 	void init_attr_poll_ext_trig (string cmd_name);
 
-    void set_run_att_conf_loop(bool val) {ext->run_att_conf_loop=val;}
-    vector<string> &get_att_wrong_db_conf() {return ext->att_wrong_db_conf;}
+    void set_run_att_conf_loop(bool val) {run_att_conf_loop=val;}
+    vector<string> &get_att_wrong_db_conf() {return att_wrong_db_conf;}
     void check_att_conf();
-    bool is_alarm_state_forced() {return ext->force_alarm_state;}
+    bool is_alarm_state_forced() {return force_alarm_state;}
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
-	{return ext->logger ? ext->logger : get_logger_i();}
+	{return logger ? logger : get_logger_i();}
 
   	void init_logger(void);
   	void start_logging(void);
@@ -3475,74 +3475,8 @@ private:
     class DeviceImplExt
     {
     public:
-#ifdef TANGO_HAS_LOG4TANGO
-        DeviceImplExt(const char *d_name): exported(false),polled(false),
-        poll_ring_depth(0),poll_old_factor(0),only_one(d_name),
-        logger(NULL),saved_log_level(log4tango::Level::WARN),
-        rft(Tango::kDefaultRollingThreshold),idl_version(1),
-        store_in_bb(true),poll_mon("cache"),
-        att_conf_mon("att_config"),state_from_read(false),
-        py_device(false),
-        device_locked(false),locker_client(NULL),old_locker_client(NULL),
-        lock_ctr(0),min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
-#else
-        DeviceImplExt(const char *d_name):exported(false),polled(false),poll_ring_depth(0)
-                only_one(d_name),store_in_bb(true),poll_mon("cache"),
-                att_conf_mon("att_config"),state_from_read(false),
-                py_device(false),device_locked(false),locker_client(NULL),
-                old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
-                run_att_conf_loop(true),force_alarm_state(false) {};
-#endif
-        ~DeviceImplExt();
-
-        bool				exported;
-        bool				polled;
-        long				poll_ring_depth;
-        long				poll_old_factor;
-        vector<string>		polled_cmd;
-        vector<string>		polled_attr;
-        vector<string>		non_auto_polled_cmd;
-        vector<string>		non_auto_polled_attr;
-        vector<PollObj *>	poll_obj_list;
-
-        TangoMonitor		only_one;		        // Device monitor
-        Tango::DevState		device_prev_state;	    // Device previous state
-
-#ifdef TANGO_HAS_LOG4TANGO
-        log4tango::Logger* 	logger;
-        log4tango::Level::Value saved_log_level;
-        size_t              rft;
-#endif
-        string				device_name_lower;
-        long				idl_version;
-
-        vector<string>		cmd_poll_ring_depth;
-        vector<string>		attr_poll_ring_depth;
-
-        bool				store_in_bb;
-        TangoMonitor		poll_mon;		        // Polling list monitor
-        TangoMonitor		att_conf_mon;		    // Attribute config monitor
-        bool				state_from_read;
-        vector<long>		alarmed_not_read;
-
-        bool				py_device;
-        string				alias_name_lower;	    // Alias name (if any)
-
-        bool				device_locked;
-        client_addr			*locker_client;
-        client_addr			*old_locker_client;
-        DevLong				lock_validity;
-        time_t				locking_date;
-        string				lock_status;
-        DevLong				lock_ctr;
-
-        long				min_poll_period;
-        vector<string>		cmd_min_poll_period;
-        vector<string>		attr_min_poll_period;
-
-        bool                run_att_conf_loop;
-        bool                force_alarm_state;
-        vector<string>      att_wrong_db_conf;
+        DeviceImplExt() {};
+        ~DeviceImplExt() {};
     };
 
 
@@ -3575,6 +3509,60 @@ protected:
 	DevVarStateArray			dummy_state_att_value;
 	DevVarEncodedArray			dummy_encoded_att_value;
 
+//
+// Ported from the extension class
+//
+
+#ifdef TANGO_HAS_LOG4TANGO
+	log4tango::Logger* 	logger;
+	log4tango::Level::Value saved_log_level;
+	size_t              rft;
+#endif
+
+	long				idl_version;
+
+    long				poll_old_factor;
+    bool				exported;
+    bool				polled;
+    long				poll_ring_depth;
+    vector<string>		polled_cmd;
+    vector<string>		polled_attr;
+    vector<string>		non_auto_polled_cmd;
+    vector<string>		non_auto_polled_attr;
+    vector<PollObj *>	poll_obj_list;
+
+    TangoMonitor		only_one;		        // Device monitor
+    Tango::DevState		device_prev_state;	    // Device previous state
+
+    string				device_name_lower;
+
+    vector<string>		cmd_poll_ring_depth;
+    vector<string>		attr_poll_ring_depth;
+
+    bool				store_in_bb;
+    TangoMonitor		poll_mon;		        // Polling list monitor
+    TangoMonitor		att_conf_mon;		    // Attribute config monitor
+    bool				state_from_read;
+    vector<long>		alrm_not_read;
+
+    bool				py_device;
+    string				alias_name_lower;	    // Alias name (if any)
+
+    bool				device_locked;
+    client_addr			*locker_client;
+    client_addr			*old_locker_client;
+    DevLong				lock_validity;
+    time_t				locking_date;
+    string				lock_status;
+    DevLong				lock_ctr;
+
+    long				min_poll_period;
+    vector<string>		cmd_min_poll_period;
+    vector<string>		attr_min_poll_period;
+
+    bool                run_att_conf_loop;
+    bool                force_alarm_state;
+    vector<string>      att_wrong_db_conf;
 
 private:
 

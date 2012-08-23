@@ -332,7 +332,7 @@ public:
  *
  * @return The command display level
  */
-	Tango::DispLevel get_disp_level() {return ext->cmd_disp_level;}
+	Tango::DispLevel get_disp_level() {return cmd_disp_level;}
 
 /**
  * Set the input parameter description field.
@@ -367,21 +367,21 @@ public:
  *
  * @param level The command display level
  */
-	void set_disp_level(Tango::DispLevel level) {ext->cmd_disp_level = level;}
+	void set_disp_level(Tango::DispLevel level) {cmd_disp_level = level;}
 
 /**
  * Set the command polling period.
  *
  * @param per The command polling period (in mS)
  */
-	void set_polling_period(long per) {ext->poll_period = per;}
+	void set_polling_period(long per) {poll_period = per;}
 
 /**
  * Get the command polling period.
  *
  * @return The command polling period (in mS)
  */
-	long get_polling_period() {return ext->poll_period;}
+	long get_polling_period() {return poll_period;}
 //@}
 
 
@@ -1202,11 +1202,7 @@ private:
     class CommandExt
     {
     public:
-        CommandExt():poll_period(0) {cmd_disp_level = Tango::OPERATOR;}
-        CommandExt(Tango::DispLevel level):poll_period(0) {cmd_disp_level = level;}
-
-        Tango::DispLevel	cmd_disp_level;		    // Display  level
-        long			    poll_period;		    // Polling period
+        CommandExt() {}
     };
 
 	void alloc_any(CORBA::Any *&);
@@ -1217,6 +1213,13 @@ private:
 #else
 	CommandExt		                *ext;
 #endif
+
+//
+// Ported from the extension class
+//
+
+    Tango::DispLevel	cmd_disp_level;		    // Display  level
+    long			    poll_period;		    // Polling period
 };
 
 //=============================================================================

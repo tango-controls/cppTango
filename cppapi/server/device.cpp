@@ -87,7 +87,16 @@ extern omni_thread::key_t key;
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 		       const char *de,Tango::DevState st,const char *sta)
 :device_name(d_name),desc(de),device_status(sta),
- device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name))
+ device_state(st),device_class(cl_ptr),ext(new DeviceImplExt),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),
+ rft(Tango::kDefaultRollingThreshold),idl_version(1),poll_old_factor(0),
+#endif
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),locker_client(NULL),
+ old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ run_att_conf_loop(true),force_alarm_state(false)
 {
     real_ctor();
 }
@@ -95,13 +104,31 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
 		       Tango::DevState st,string &sta)
 :device_name(d_name),desc(de),device_status(sta),
- device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str()))
+ device_state(st),device_class(cl_ptr),ext(new DeviceImplExt),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),
+ rft(Tango::kDefaultRollingThreshold),idl_version(1),poll_old_factor(0),
+#endif
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),locker_client(NULL),
+ old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ run_att_conf_loop(true),force_alarm_state(false)
 {
     real_ctor();
 }
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
-:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str()))
+:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),
+ rft(Tango::kDefaultRollingThreshold),idl_version(1),poll_old_factor(0),
+#endif
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),locker_client(NULL),
+ old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ run_att_conf_loop(true),force_alarm_state(false)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -111,7 +138,16 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
 }
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
-:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str()))
+:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),
+ rft(Tango::kDefaultRollingThreshold),idl_version(1),poll_old_factor(0),
+#endif
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),locker_client(NULL),
+ old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ run_att_conf_loop(true),force_alarm_state(false)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -126,15 +162,15 @@ void DeviceImpl::real_ctor()
     version = DevVersion;
 	blackbox_depth = 0;
 
-	ext->device_prev_state = device_state;
+	device_prev_state = device_state;
 
 //
 // Init lower case device name
 //
 
-	ext->device_name_lower = device_name;
-	transform(ext->device_name_lower.begin(),ext->device_name_lower.end(),
-		  ext->device_name_lower.begin(),::tolower);
+	device_name_lower = device_name;
+	transform(device_name_lower.begin(),device_name_lower.end(),
+		  device_name_lower.begin(),::tolower);
 
 //
 //  Write the device name into the per thread data for
@@ -142,7 +178,7 @@ void DeviceImpl::real_ctor()
 //
 
     Tango::Util *tg = Tango::Util::instance();
-	tg->get_sub_dev_diag().set_associated_device(ext->device_name_lower);
+	tg->get_sub_dev_diag().set_associated_device(device_name_lower);
 
 //
 // Create the DbDevice object
@@ -161,7 +197,7 @@ void DeviceImpl::real_ctor()
 
 	black_box_create();
 
-	ext->idl_version = 1;
+	idl_version = 1;
 
 //
 // Create the multi attribute object
@@ -296,7 +332,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 	bool kill_thread = false;
 	int ind;
 
-	if ((ind = tg->get_dev_entry_in_pool_conf(ext->device_name_lower)) ==  -1)
+	if ((ind = tg->get_dev_entry_in_pool_conf(device_name_lower)) ==  -1)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find entry for device " << device_name << " in polling threads pool configuration !"<< ends;
@@ -309,9 +345,9 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 	string::size_type pos;
 	if ((pos = conf_entry.find(',')) != string::npos)
 	{
-		pos = conf_entry.find(ext->device_name_lower);
-		if ((pos + ext->device_name_lower.size()) != conf_entry.size())
-			conf_entry.erase(pos,ext->device_name_lower.size() + 1);
+		pos = conf_entry.find(device_name_lower);
+		if ((pos + device_name_lower.size()) != conf_entry.size())
+			conf_entry.erase(pos,device_name_lower.size() + 1);
 		else
 			conf_entry.erase(pos - 1);
 	}
@@ -322,7 +358,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 		kill_thread = true;
 	}
 
-	tg->remove_dev_from_polling_map(ext->device_name_lower);
+	tg->remove_dev_from_polling_map(device_name_lower);
 
 //
 // Kill the thread if needed and join
@@ -406,6 +442,27 @@ DeviceImpl::~DeviceImpl()
 //
 
 	delete dev_attr;
+
+//
+// Do the job formerly done by the extension class destructor
+//
+
+#ifdef TANGO_HAS_LOG4TANGO
+	if (logger && logger != Logging::get_core_logger())
+	{
+		logger->remove_all_appenders();
+		delete logger;
+		logger = 0;
+	}
+#endif
+
+	for (unsigned long i = 0;i < poll_obj_list.size();i++)
+	{
+		delete (poll_obj_list[i]);
+	}
+
+    delete locker_client;
+    delete old_locker_client;
 
 //
 // Delete the extension class instance
@@ -546,11 +603,11 @@ void DeviceImpl::get_dev_system_resource()
 			set_poll_old_factor(DEFAULT_POLL_OLD_FACTOR);
 		if (db_data[8].is_empty() == false)
 		{
-			db_data[8] >> ext->cmd_poll_ring_depth;
-			unsigned long nb_prop = ext->cmd_poll_ring_depth.size();
+			db_data[8] >> cmd_poll_ring_depth;
+			unsigned long nb_prop = cmd_poll_ring_depth.size();
 			if ((nb_prop % 2) == 1)
 			{
-				ext->cmd_poll_ring_depth.clear();
+				cmd_poll_ring_depth.clear();
 				TangoSys_OMemStream o;
 				o << "System property cmd_poll_ring_depth for device " << device_name << " has wrong syntax" << ends;
 				Except::throw_exception((const char *)"API_BadConfigurationProperty",
@@ -558,18 +615,18 @@ void DeviceImpl::get_dev_system_resource()
 				        		(const char *)"DeviceImpl::get_dev_system_resource()");
 			}
 			for (unsigned int i = 0;i < nb_prop;i = i + 2)
-				transform(ext->cmd_poll_ring_depth[i].begin(),
-					  ext->cmd_poll_ring_depth[i].end(),
-					  ext->cmd_poll_ring_depth[i].begin(),
+				transform(cmd_poll_ring_depth[i].begin(),
+					  cmd_poll_ring_depth[i].end(),
+					  cmd_poll_ring_depth[i].begin(),
 					  ::tolower);
 		}
 		if (db_data[9].is_empty() == false)
 		{
-			db_data[9] >> ext->attr_poll_ring_depth;
-			unsigned long nb_prop = ext->attr_poll_ring_depth.size();
-			if ((ext->attr_poll_ring_depth.size() % 2) == 1)
+			db_data[9] >> attr_poll_ring_depth;
+			unsigned long nb_prop = attr_poll_ring_depth.size();
+			if ((attr_poll_ring_depth.size() % 2) == 1)
 			{
-				ext->attr_poll_ring_depth.clear();
+				attr_poll_ring_depth.clear();
 				TangoSys_OMemStream o;
 				o << "System property attr_poll_ring_depth for device " << device_name << " has wrong syntax" << ends;
 				Except::throw_exception((const char *)"API_BadConfigurationProperty",
@@ -577,9 +634,9 @@ void DeviceImpl::get_dev_system_resource()
 				        		(const char *)"DeviceImpl::get_dev_system_resource()");
 			}
 			for (unsigned int i = 0;i < nb_prop;i = i + 2)
-				transform(ext->attr_poll_ring_depth[i].begin(),
-					  ext->attr_poll_ring_depth[i].end(),
-					  ext->attr_poll_ring_depth[i].begin(),
+				transform(attr_poll_ring_depth[i].begin(),
+					  attr_poll_ring_depth[i].end(),
+					  attr_poll_ring_depth[i].begin(),
 					  ::tolower);
 		}
 
@@ -588,15 +645,15 @@ void DeviceImpl::get_dev_system_resource()
 //
 
 		if (db_data[10].is_empty() == false)
-			db_data[10] >> ext->min_poll_period;
+			db_data[10] >> min_poll_period;
 
 		if (db_data[11].is_empty() == false)
 		{
-			db_data[11] >> ext->cmd_min_poll_period;
-			unsigned long nb_prop = ext->cmd_min_poll_period.size();
-			if ((ext->cmd_min_poll_period.size() % 2) == 1)
+			db_data[11] >> cmd_min_poll_period;
+			unsigned long nb_prop = cmd_min_poll_period.size();
+			if ((cmd_min_poll_period.size() % 2) == 1)
 			{
-				ext->cmd_min_poll_period.clear();
+				cmd_min_poll_period.clear();
 				TangoSys_OMemStream o;
 				o << "System property cmd_min_poll_period for device " << device_name << " has wrong syntax" << ends;
 				Except::throw_exception((const char *)"API_BadConfigurationProperty",
@@ -604,19 +661,19 @@ void DeviceImpl::get_dev_system_resource()
 				        		(const char *)"DeviceImpl::get_dev_system_resource()");
 			}
 			for (unsigned int i = 0;i < nb_prop;i = i + 2)
-				transform(ext->cmd_min_poll_period[i].begin(),
-					  ext->cmd_min_poll_period[i].end(),
-					  ext->cmd_min_poll_period[i].begin(),
+				transform(cmd_min_poll_period[i].begin(),
+					  cmd_min_poll_period[i].end(),
+					  cmd_min_poll_period[i].begin(),
 					  ::tolower);
 		}
 
 		if (db_data[12].is_empty() == false)
 		{
-			db_data[12] >> ext->attr_min_poll_period;
-			unsigned long nb_prop = ext->attr_min_poll_period.size();
-			if ((ext->attr_min_poll_period.size() % 2) == 1)
+			db_data[12] >> attr_min_poll_period;
+			unsigned long nb_prop = attr_min_poll_period.size();
+			if ((attr_min_poll_period.size() % 2) == 1)
 			{
-				ext->attr_min_poll_period.clear();
+				attr_min_poll_period.clear();
 				TangoSys_OMemStream o;
 				o << "System property attr_min_poll_period for device " << device_name << " has wrong syntax" << ends;
 				Except::throw_exception((const char *)"API_BadConfigurationProperty",
@@ -624,9 +681,9 @@ void DeviceImpl::get_dev_system_resource()
 				        		(const char *)"DeviceImpl::get_dev_system_resource()");
 			}
 			for (unsigned int i = 0;i < nb_prop;i = i + 2)
-				transform(ext->attr_min_poll_period[i].begin(),
-					  ext->attr_min_poll_period[i].end(),
-					  ext->attr_min_poll_period[i].begin(),
+				transform(attr_min_poll_period[i].begin(),
+					  attr_min_poll_period[i].end(),
+					  attr_min_poll_period[i].begin(),
 					  ::tolower);
 		}
 
@@ -872,15 +929,15 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 {
 	long ret;
 
-	if (ext->cmd_poll_ring_depth.size() == 0)
+	if (cmd_poll_ring_depth.size() == 0)
 	{
 //
 // No specific depth defined
 //
-		if (ext->poll_ring_depth == 0)
+		if (poll_ring_depth == 0)
 			ret = DefaultPollRingDepth;
 		else
-			ret = ext->poll_ring_depth;
+			ret = poll_ring_depth;
 	}
 	else
 	{
@@ -889,12 +946,12 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 // Try to find command in list of specific polling buffer depth
 //
 
-		for (k = 0; k < ext->cmd_poll_ring_depth.size();k = k + 2)
+		for (k = 0; k < cmd_poll_ring_depth.size();k = k + 2)
 		{
-			if (ext->cmd_poll_ring_depth[k] == cmd_name)
+			if (cmd_poll_ring_depth[k] == cmd_name)
 			{
 				TangoSys_MemStream s;
-				s << ext->cmd_poll_ring_depth[k + 1];
+				s << cmd_poll_ring_depth[k + 1];
 				if ((s >> ret) == false)
 				{
 					TangoSys_OMemStream o;
@@ -906,16 +963,16 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 				break;
 			}
 		}
-		if (k >= ext->cmd_poll_ring_depth.size())
+		if (k >= cmd_poll_ring_depth.size())
 		{
 //
 // Not found
 //
 
-			if (ext->poll_ring_depth == 0)
+			if (poll_ring_depth == 0)
 				ret = DefaultPollRingDepth;
 			else
-				ret = ext->poll_ring_depth;
+				ret = poll_ring_depth;
 		}
 	}
 
@@ -943,7 +1000,7 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 {
 	long ret;
 
-	if (ext->attr_poll_ring_depth.size() == 0)
+	if (attr_poll_ring_depth.size() == 0)
 	{
 		if ((attr_name == "state") || (attr_name == "status"))
 		{
@@ -956,10 +1013,10 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 // No specific depth defined
 //
 
-			if (ext->poll_ring_depth == 0)
+			if (poll_ring_depth == 0)
 				ret = DefaultPollRingDepth;
 			else
-				ret = ext->poll_ring_depth;
+				ret = poll_ring_depth;
 		}
 	}
 	else
@@ -969,12 +1026,12 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 // Try to find command in list of specific polling buffer depth
 //
 
-		for (k = 0; k < ext->attr_poll_ring_depth.size();k = k + 2)
+		for (k = 0; k < attr_poll_ring_depth.size();k = k + 2)
 		{
-			if (ext->attr_poll_ring_depth[k] == attr_name)
+			if (attr_poll_ring_depth[k] == attr_name)
 			{
 				TangoSys_MemStream s;
-				s << ext->attr_poll_ring_depth[k + 1];
+				s << attr_poll_ring_depth[k + 1];
 				if ((s >> ret) == false)
 				{
 					TangoSys_OMemStream o;
@@ -986,7 +1043,7 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 				break;
 			}
 		}
-		if (k >= ext->attr_poll_ring_depth.size())
+		if (k >= attr_poll_ring_depth.size())
 		{
 			if ((attr_name == "state") || (attr_name == "status"))
 			{
@@ -998,10 +1055,10 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 // Not found
 //
 
-				if (ext->poll_ring_depth == 0)
+				if (poll_ring_depth == 0)
 					ret = DefaultPollRingDepth;
 				else
-					ret = ext->poll_ring_depth;
+					ret = poll_ring_depth;
 			}
 		}
 	}
@@ -1031,10 +1088,10 @@ Tango::DevState DeviceImpl::dev_state()
 // simply set it to ALARM
 //
 
-    if (ext->run_att_conf_loop == true)
+    if (run_att_conf_loop == true)
         att_conf_loop();
 
-    if (ext->force_alarm_state == true)
+    if (force_alarm_state == true)
     {
         return Tango::ALARM;
     }
@@ -1058,7 +1115,7 @@ Tango::DevState DeviceImpl::dev_state()
 
             if (vers >= 3)
             {
-                if (ext->state_from_read == true)
+                if (state_from_read == true)
                 {
                     vector<long>::iterator ite = attr_list_2.begin();
                     while (ite != attr_list_2.end())
@@ -1101,7 +1158,7 @@ Tango::DevState DeviceImpl::dev_state()
 // Read the hardware
 //
 
-                if (ext->state_from_read == false)
+                if (state_from_read == false)
                 {
                     read_attr_hardware(attr_list);
                 }
@@ -1122,7 +1179,7 @@ Tango::DevState DeviceImpl::dev_state()
 //
 
                     long idx;
-                    if ((vers >= 3) && (ext->state_from_read == true))
+                    if ((vers >= 3) && (state_from_read == true))
                         idx = attr_list_2[i];
                     else
                         idx = attr_list[i];
@@ -1170,7 +1227,7 @@ Tango::DevState DeviceImpl::dev_state()
                         for (j = 0;j < i;j++)
                         {
                             long idx;
-                            if ((vers >= 3) && (ext->state_from_read == true))
+                            if ((vers >= 3) && (state_from_read == true))
                                 idx = attr_list_2[j];
                             else
                                 idx = attr_list[j];
@@ -1206,7 +1263,7 @@ Tango::DevState DeviceImpl::dev_state()
                 for (long i = 0;i < nb_wanted_attr;i++)
                 {
                     long idx;
-                    if ((vers >= 3) && (ext->state_from_read == true))
+                    if ((vers >= 3) && (state_from_read == true))
                         idx = attr_list_2[i];
                     else
                         idx = attr_list[i];
@@ -1254,20 +1311,20 @@ Tango::ConstDevString DeviceImpl::dev_status()
 	NoSyncModelTangoMonitor mon(this);
 	const char *returned_str;
 
-    if (ext->run_att_conf_loop == true)
+    if (run_att_conf_loop == true)
         att_conf_loop();
 
-    if (ext->force_alarm_state == true)
+    if (force_alarm_state == true)
     {
         alarm_status = "The device is in ALARM state.";
-        size_t nb_wrong_att = ext->att_wrong_db_conf.size();
+        size_t nb_wrong_att = att_wrong_db_conf.size();
         alarm_status = alarm_status + "\nAttribute";
         if (nb_wrong_att > 1)
             alarm_status = alarm_status + "s";
         alarm_status = alarm_status + " ";
         for (size_t i = 0;i < nb_wrong_att;++i)
         {
-            alarm_status = alarm_status + ext->att_wrong_db_conf[i];
+            alarm_status = alarm_status + att_wrong_db_conf[i];
             if ((nb_wrong_att > 1) && (i <= nb_wrong_att - 2))
                 alarm_status = alarm_status + ", ";
         }
@@ -1352,9 +1409,9 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 // Record operation request in black box
 //
 
-		if (ext->store_in_bb == true)
+		if (store_in_bb == true)
 			blackbox_ptr->insert_cmd(in_cmd);
-		ext->store_in_bb = true;
+		store_in_bb = true;
 
 //
 // Execute command
@@ -2393,9 +2450,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 // Record operation request in black box
 //
 
-		if (ext->store_in_bb == true)
+		if (store_in_bb == true)
 			blackbox_ptr->insert_attr(names);
-		ext->store_in_bb = true;
+		store_in_bb = true;
 
 //
 // Return exception if the device does not have any attribute
@@ -3407,36 +3464,6 @@ void DeviceImpl::poll_lists_2_v5()
 
 }
 
-//+----------------------------------------------------------------------------
-//
-// method :		DeviceImplExt::~DeviceImplExt
-//
-// description :	DeviceImpl extension class destructor. This destructor
-//			delete memory for ring buffer used for polling.
-//
-//-----------------------------------------------------------------------------
-
-DeviceImpl::DeviceImplExt::~DeviceImplExt()
-{
-	for (unsigned long i = 0;i < poll_obj_list.size();i++)
-	{
-		delete (poll_obj_list[i]);
-	}
-
-#ifdef TANGO_HAS_LOG4TANGO
-	if (logger && logger != Logging::get_core_logger())
-	{
-		logger->remove_all_appenders();
-		delete logger;
-		logger = 0;
-	}
-#endif
-
-    delete locker_client;
-    delete old_locker_client;
-
-}
-
 
 //+-------------------------------------------------------------------------
 //
@@ -3918,11 +3945,11 @@ void DeviceImpl::lock(client_addr *cl,int validity)
 // If the lock is not valid any more, clear it
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
-			if (*cl != *(ext->locker_client))
+			if (*cl != *(locker_client))
 			{
 				TangoSys_OMemStream o;
 				o << "Device " << get_name() << " is already locked by another client" << ends;
@@ -3940,15 +3967,15 @@ void DeviceImpl::lock(client_addr *cl,int validity)
 // Lock the device
 //
 
-	ext->device_locked = true;
-	if (ext->locker_client == NULL)
+	device_locked = true;
+	if (locker_client == NULL)
 	{
-		ext->locker_client = new client_addr(*cl);
+		locker_client = new client_addr(*cl);
 	}
 
-	ext->locking_date = time(NULL);
-	ext->lock_validity = validity;
-	ext->lock_ctr++;
+	locking_date = time(NULL);
+	lock_validity = validity;
+	lock_ctr++;
 }
 
 //+-------------------------------------------------------------------------
@@ -3971,11 +3998,11 @@ void DeviceImpl::relock(client_addr *cl)
 // and if this lock is valid
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
-			if (*cl != *(ext->locker_client))
+			if (*cl != *(locker_client))
 			{
 				TangoSys_OMemStream o;
 				o << get_name() << ": ";
@@ -3984,8 +4011,8 @@ void DeviceImpl::relock(client_addr *cl)
 								(const char *)"Device_Impl::relock");
 			}
 
-			ext->device_locked = true;
-			ext->locking_date = time(NULL);
+			device_locked = true;
+			locking_date = time(NULL);
 		}
 		else
 		{
@@ -4022,7 +4049,7 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 // If the lock is not valid any more, clear it
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
@@ -4030,7 +4057,7 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 
 			if (forced == false)
 			{
-				if (*cl != *(ext->locker_client))
+				if (*cl != *(locker_client))
 				{
 					TangoSys_OMemStream o;
 					o << "Device " << get_name() << " is locked by another client, can't unlock it" << ends;
@@ -4041,12 +4068,12 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 		}
 	}
 
-	if (ext->lock_ctr > 0)
-		ext->lock_ctr--;
-	if ((ext->lock_ctr <= 0) || (forced == true))
+	if (lock_ctr > 0)
+		lock_ctr--;
+	if ((lock_ctr <= 0) || (forced == true))
 		basic_unlock(forced);
 
-	return ext->lock_ctr;
+	return lock_ctr;
 }
 
 //+-------------------------------------------------------------------------
@@ -4059,13 +4086,13 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 
 void DeviceImpl::basic_unlock(bool forced)
 {
-	ext->device_locked = false;
+	device_locked = false;
 	if (forced == true)
-		ext->old_locker_client = ext->locker_client;
+		old_locker_client = locker_client;
 	else
-		delete ext->locker_client;
-	ext->locker_client = NULL;
-	ext->lock_ctr = 0;
+		delete locker_client;
+	locker_client = NULL;
+	lock_ctr = 0;
 }
 
 //+-------------------------------------------------------------------------
@@ -4082,7 +4109,7 @@ void DeviceImpl::basic_unlock(bool forced)
 bool DeviceImpl::valid_lock()
 {
 	time_t now = time(NULL);
-	if (now > (ext->locking_date + ext->lock_validity))
+	if (now > (locking_date + lock_validity))
 		return false;
 	else
 		return true;
@@ -4090,7 +4117,7 @@ bool DeviceImpl::valid_lock()
 
 //+-------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::lock_status
+// method : 		DeviceImpl::lock_stat
 //
 // description : 	Build a device locking status
 //
@@ -4107,7 +4134,7 @@ bool DeviceImpl::valid_lock()
 //
 //--------------------------------------------------------------------------
 
-Tango::DevVarLongStringArray *DeviceImpl::lock_status()
+Tango::DevVarLongStringArray *DeviceImpl::lock_stat()
 {
 	Tango::DevVarLongStringArray *dvlsa = new Tango::DevVarLongStringArray();
 	dvlsa->lvalue.length(6);
@@ -4118,28 +4145,28 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 // If the lock is not valid any more, clear it
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
-			ext->lock_status = "Device " + device_name + " is locked by ";
+			lock_status = "Device " + device_name + " is locked by ";
 			ostringstream ostr;
-			ostr << *(ext->locker_client) << ends;
-			ext->lock_status = ext->lock_status + ostr.str();
+			ostr << *(locker_client) << ends;
+			lock_status = lock_status + ostr.str();
 
 			dvlsa->lvalue[0] = 1;
-			dvlsa->lvalue[1] = ext->locker_client->client_pid;
-			const char *tmp = ext->locker_client->client_ip;
+			dvlsa->lvalue[1] = locker_client->client_pid;
+			const char *tmp = locker_client->client_ip;
 			dvlsa->svalue[1] = CORBA::string_dup(tmp);
-			if (ext->locker_client->client_lang == Tango::JAVA)
+			if (locker_client->client_lang == Tango::JAVA)
 			{
-				dvlsa->svalue[2] = CORBA::string_dup(ext->locker_client->java_main_class.c_str());
+				dvlsa->svalue[2] = CORBA::string_dup(locker_client->java_main_class.c_str());
 
-				Tango::DevULong64 tmp_data = ext->locker_client->java_ident[0];
+				Tango::DevULong64 tmp_data = locker_client->java_ident[0];
 				dvlsa->lvalue[2] = (DevLong)((tmp_data & 0xFFFFFFFF00000000LL) >> 32);
 				dvlsa->lvalue[3] = (DevLong)(tmp_data & 0xFFFFFFFF);
 
-				tmp_data = ext->locker_client->java_ident[1];
+				tmp_data = locker_client->java_ident[1];
 				dvlsa->lvalue[4] = (DevLong)((tmp_data & 0xFFFFFFFF00000000LL) >> 32);
 				dvlsa->lvalue[5] = (DevLong)(tmp_data & 0xFFFFFFFF);
 			}
@@ -4153,7 +4180,7 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 		else
 		{
 			basic_unlock();
-			ext->lock_status = "Device " + device_name + " is not locked";
+			lock_status = "Device " + device_name + " is not locked";
 			dvlsa->svalue[1] = CORBA::string_dup("Not defined");
 			dvlsa->svalue[2] = CORBA::string_dup("Not defined");
 			for (long loop = 0;loop < 6;loop++)
@@ -4162,14 +4189,14 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 	}
 	else
 	{
-		ext->lock_status = "Device " + device_name + " is not locked";
+		lock_status = "Device " + device_name + " is not locked";
 		dvlsa->svalue[1] = CORBA::string_dup("Not defined");
 		dvlsa->svalue[2] = CORBA::string_dup("Not defined");
 		for (long loop = 0;loop < 6;loop++)
 			dvlsa->lvalue[loop] = 0;
 	}
 
-	dvlsa->svalue[0] = CORBA::string_dup(ext->lock_status.c_str());
+	dvlsa->svalue[0] = CORBA::string_dup(lock_status.c_str());
 
 	return dvlsa;
 }
@@ -4190,12 +4217,12 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 
 void DeviceImpl::set_locking_param(client_addr *cl,client_addr *old_cl,time_t date,DevLong ctr,DevLong valid)
 {
-	ext->locker_client = cl;
-	ext->old_locker_client = old_cl;
-	ext->locking_date = date;
-	ext->lock_ctr = ctr;
-	ext->device_locked = true;
-	ext->lock_validity = valid;
+	locker_client = cl;
+	old_locker_client = old_cl;
+	locking_date = date;
+	lock_ctr = ctr;
+	device_locked = true;
+	lock_validity = valid;
 }
 
 
@@ -4210,7 +4237,7 @@ void DeviceImpl::set_locking_param(client_addr *cl,client_addr *old_cl,time_t da
 
 void DeviceImpl::check_lock(const char *meth,const char *cmd)
 {
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
@@ -4234,7 +4261,7 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 					throw_locked_exception(meth);
 			}
 
-			if (*cl != *(ext->locker_client))
+			if (*cl != *(locker_client))
 			{
 
 //
@@ -4261,9 +4288,9 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 	else
 	{
 		client_addr *cl = get_client_ident();
-		if (ext->old_locker_client != NULL)
+		if (old_locker_client != NULL)
 		{
-			if (*cl == (*ext->old_locker_client))
+			if (*cl == (*old_locker_client))
 			{
 				TangoSys_OMemStream o;
 				TangoSys_OMemStream o2;
@@ -4271,8 +4298,8 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 				o2 << "Device_Impl::" << meth << ends;
 				Except::throw_exception((const char *)DEVICE_UNLOCKED_REASON,o.str(),o2.str());
 			}
-			delete ext->old_locker_client;
-			ext->old_locker_client = NULL;
+			delete old_locker_client;
+			old_locker_client = NULL;
 		}
 	}
 }
@@ -4643,7 +4670,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 
 void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 										AttributeValueList_4 *back4,
-										long index,long type,long vers,PollObj *polled_attr,
+										long index,long type,long vers,PollObj *polled_att,
 										const DevVarStringArray &names)
 {
 	const Tango::DevVarDoubleArray *tmp_db;
@@ -4679,7 +4706,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarShortArray &union_seq = att_val.value.short_att_value();
 				new_tmp_sh = new DevVarShortArray(union_seq.length(),
 									union_seq.length(),
@@ -4688,7 +4715,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_sh;
 				new_tmp_sh = new DevVarShortArray(tmp_sh->length(),
 								tmp_sh->length(),
@@ -4699,7 +4726,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.short_att_value(att_val.value.short_att_value());
 		}
 		break;
@@ -4709,7 +4736,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarDoubleArray &union_seq = att_val.value.double_att_value();
 				new_tmp_db = new DevVarDoubleArray(union_seq.length(),
 									union_seq.length(),
@@ -4718,7 +4745,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_db;
 				new_tmp_db = new DevVarDoubleArray(tmp_db->length(),
 							   tmp_db->length(),
@@ -4729,7 +4756,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.double_att_value(att_val.value.double_att_value());
 		}
 		break;
@@ -4739,7 +4766,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarLongArray &union_seq = att_val.value.long_att_value();
 				new_tmp_lg = new DevVarLongArray(union_seq.length(),
 									union_seq.length(),
@@ -4748,7 +4775,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_lg;
 				new_tmp_lg = new DevVarLongArray(tmp_lg->length(),
 							   tmp_lg->length(),
@@ -4759,7 +4786,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.long_att_value(att_val.value.long_att_value());
 		}
 		break;
@@ -4769,7 +4796,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarLong64Array &union_seq = att_val.value.long64_att_value();
 				new_tmp_lg64 = new DevVarLong64Array(union_seq.length(),
 									union_seq.length(),
@@ -4778,7 +4805,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_lg64;
 				new_tmp_lg64 = new DevVarLong64Array(tmp_lg64->length(),tmp_lg64->length(),
 						 				const_cast<DevLong64 *>(tmp_lg64->get_buffer()),false);
@@ -4787,7 +4814,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.long64_att_value(att_val.value.long64_att_value());
 		}
 		break;
@@ -4797,7 +4824,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarStringArray &union_seq = att_val.value.string_att_value();
 				new_tmp_str = new DevVarStringArray(union_seq.length(),
 									union_seq.length(),
@@ -4806,7 +4833,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_str;
 				new_tmp_str = new DevVarStringArray(tmp_str->length(),
 								tmp_str->length(),
@@ -4817,7 +4844,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.string_att_value(att_val.value.string_att_value());
 		}
 		break;
@@ -4827,7 +4854,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarFloatArray &union_seq = att_val.value.float_att_value();
 				new_tmp_fl = new DevVarFloatArray(union_seq.length(),
 									union_seq.length(),
@@ -4836,7 +4863,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_fl;
 				new_tmp_fl = new DevVarFloatArray(tmp_fl->length(),
 						  	tmp_fl->length(),
@@ -4847,7 +4874,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.float_att_value(att_val.value.float_att_value());
 		}
 		break;
@@ -4857,7 +4884,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarBooleanArray &union_seq = att_val.value.bool_att_value();
 				new_tmp_boo = new DevVarBooleanArray(union_seq.length(),
 									union_seq.length(),
@@ -4866,7 +4893,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_boo;
 				new_tmp_boo = new DevVarBooleanArray(tmp_boo->length(),
 						   tmp_boo->length(),
@@ -4877,7 +4904,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.bool_att_value(att_val.value.bool_att_value());
 		}
 		break;
@@ -4887,7 +4914,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarUShortArray &union_seq = att_val.value.ushort_att_value();
 				new_tmp_ush = new DevVarUShortArray(union_seq.length(),
 									union_seq.length(),
@@ -4896,7 +4923,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_ush;
 				new_tmp_ush = new DevVarUShortArray(tmp_ush->length(),
 						 			tmp_ush->length(),
@@ -4907,7 +4934,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.ushort_att_value(att_val.value.ushort_att_value());
 		}
 		break;
@@ -4917,7 +4944,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarCharArray &union_seq = att_val.value.uchar_att_value();
 				new_tmp_uch = new DevVarUCharArray(union_seq.length(),
 									union_seq.length(),
@@ -4926,7 +4953,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_uch;
 				new_tmp_uch = new DevVarCharArray(tmp_uch->length(),
 							tmp_uch->length(),
@@ -4937,7 +4964,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.uchar_att_value(att_val.value.uchar_att_value());
 		}
 		break;
@@ -4947,7 +4974,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarULongArray &union_seq = att_val.value.ulong_att_value();
 				new_tmp_ulg = new DevVarULongArray(union_seq.length(),
 									union_seq.length(),
@@ -4956,7 +4983,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_ulg;
 				new_tmp_ulg = new DevVarULongArray(tmp_ulg->length(),tmp_ulg->length(),
 						 		const_cast<DevULong *>(tmp_ulg->get_buffer()),false);
@@ -4965,7 +4992,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.ulong_att_value(att_val.value.ulong_att_value());
 		}
 		break;
@@ -4975,7 +5002,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				DevVarULong64Array &union_seq = att_val.value.ulong64_att_value();
 				new_tmp_ulg64 = new DevVarULong64Array(union_seq.length(),
 									union_seq.length(),
@@ -4984,7 +5011,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				att_val.value >>= tmp_ulg64;
 				new_tmp_ulg64 = new DevVarULong64Array(tmp_ulg64->length(),tmp_ulg64->length(),
 						 		const_cast<DevULong64 *>(tmp_ulg64->get_buffer()),false);
@@ -4993,7 +5020,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			(*back4)[index].value.ulong64_att_value(att_val.value.ulong64_att_value());
 		}
 		break;
@@ -5003,7 +5030,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		{
 			if (vers >= 4)
 			{
-				AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				if (att_val.value._d() == DEVICE_STATE)
 				{
 					sta = att_val.value.dev_state_att();
@@ -5021,7 +5048,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 			}
 			else
 			{
-				AttributeValue_3 &att_val = polled_attr->get_last_attr_value_3(false);
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
 				CORBA::TypeCode_var ty;
 				ty = att_val.value.type();
 
@@ -5041,7 +5068,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			if (att_val.value._d() == DEVICE_STATE)
 			{
 				sta = att_val.value.dev_state_att();
@@ -5075,7 +5102,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 		}
 		else
 		{
-			AttributeValue_4 &att_val = polled_attr->get_last_attr_value_4(false);
+			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 			DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
 
 			unsigned int nb_encoded = polled_seq.length();
@@ -5126,16 +5153,16 @@ void DeviceImpl::att_conf_loop()
     {
         if (att_list[i]->is_startup_exception() == true)
         {
-            ext->force_alarm_state = true;
+            force_alarm_state = true;
             wrong_conf_att_list.push_back(att_list[i]->get_name());
             att_wrong_conf = true;
         }
     }
 
     if (att_wrong_conf == false)
-        ext->force_alarm_state = false;
+        force_alarm_state = false;
 
-    ext->run_att_conf_loop = false;
+    run_att_conf_loop = false;
 }
 
 //+-------------------------------------------------------------------------
@@ -5148,7 +5175,7 @@ void DeviceImpl::att_conf_loop()
 
 void DeviceImpl::check_att_conf()
 {
-    if (ext->run_att_conf_loop == true)
+    if (run_att_conf_loop == true)
         att_conf_loop();
 }
 
