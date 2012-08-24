@@ -94,8 +94,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
- state_from_read(false),py_device(false),locker_client(NULL),
- old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
  run_att_conf_loop(true),force_alarm_state(false)
 {
     real_ctor();
@@ -111,8 +111,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
- state_from_read(false),py_device(false),locker_client(NULL),
- old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
  run_att_conf_loop(true),force_alarm_state(false)
 {
     real_ctor();
@@ -126,8 +126,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
- state_from_read(false),py_device(false),locker_client(NULL),
- old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
  run_att_conf_loop(true),force_alarm_state(false)
 {
 	desc = "A Tango device";
@@ -145,8 +145,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
- state_from_read(false),py_device(false),locker_client(NULL),
- old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
  run_att_conf_loop(true),force_alarm_state(false)
 {
 	desc = description;
