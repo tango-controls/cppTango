@@ -20,6 +20,8 @@ class DatabaseTestSuite: public CxxTest::TestSuite
 protected:
 	DeviceProxy *device;
 	string device_name;
+	string dev_alias;
+	string att_alias;
 	Database *db;
 
 public:
@@ -31,6 +33,9 @@ public:
 //
 
 		device_name = CxxTest::TangoPrinter::get_uarg("device");
+
+		dev_alias = CxxTest::TangoPrinter::get_param("devicealias");
+		att_alias = CxxTest::TangoPrinter::get_param("attributealias");
 
 		CxxTest::TangoPrinter::validate_args();
 
@@ -77,7 +82,7 @@ public:
 //
 
 
-// Miscellaneous inserters and extracters for DeviceData object
+// The get_device_info call
 
 	void test_get_device_info()
 	{
@@ -98,6 +103,36 @@ public:
 		TS_ASSERT(dbfi.pid == dvlsa->lvalue[1]);
 	}
 
+// The device alias
+
+	void test_device_alias_calls()
+	{
+		string d_alias,d_name;
+
+		db->get_alias_from_device(device_name,d_alias);
+		TS_ASSERT(d_alias == dev_alias);
+
+		db->get_device_from_alias(dev_alias,d_name);
+		TS_ASSERT(d_name == device_name);
+	}
+
+// The attribute alias
+
+	void test_attribute_alias_calls()
+	{
+		string a_alias,a_name;
+
+		string full_att_name(device_name);
+		full_att_name = full_att_name + "/Short_attr";
+
+		db->get_alias_from_attribute(full_att_name,a_alias);
+		TS_ASSERT(a_alias == att_alias);
+
+		db->get_attribute_from_alias(att_alias,a_name);
+		transform(a_name.begin(),a_name.end(),a_name.begin(),::tolower);
+		transform(full_att_name.begin(),full_att_name.end(),full_att_name.begin(),::tolower);
+		TS_ASSERT(a_name == full_att_name);
+	}
 };
 #undef cout
 #endif // DatabaseTestSuite_h
