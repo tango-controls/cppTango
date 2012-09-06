@@ -122,9 +122,9 @@ log4tango::Logger* DeviceImpl::get_logger_i (void)
     // instanciate the logger (
     // shame on me for a such huggly impl. but polymorphism
     // can't be used here !
-    if (logger == 0) {
+    if (ext->logger == 0) {
       if (device_class->get_name() == "DServer") {
-        logger = Logging::get_core_logger();
+        ext->logger = Logging::get_core_logger();
       }
       else {
         // get device name
@@ -135,23 +135,23 @@ log4tango::Logger* DeviceImpl::get_logger_i (void)
                        dev_name.begin(),
                        ::tolower);
         // instanciate the logger using device name
-        logger = new log4tango::Logger(dev_name);
-        if (logger == 0) {
-          logger = Logging::get_core_logger();
+        ext->logger = new log4tango::Logger(dev_name);
+        if (ext->logger == 0) {
+          ext->logger = Logging::get_core_logger();
         }
         // set default level
-        logger->set_level(log4tango::Level::WARN);
+        ext->logger->set_level(log4tango::Level::WARN);
         // save current level
-        saved_log_level = log4tango::Level::WARN;
+        ext->saved_log_level = log4tango::Level::WARN;
       }
     }
     // trace
     cout4 << "Leaving DeviceImpl::get_logger_i" << endl;
   } catch (...) {
     // save our souls...
-   logger = Logging::get_core_logger();
+   ext->logger = Logging::get_core_logger();
   }
-  return logger;
+  return ext->logger;
 }
 
 //+-------------------------------------------------------------------------
@@ -233,14 +233,14 @@ void DeviceImpl::init_logger (void)
       		the_logger->set_level(cmd_line_level);
     }
     // save current logging level
-    saved_log_level = the_logger->get_level();
+    ext->saved_log_level = the_logger->get_level();
     // get rolling threshold for file targets
     long rft_property = static_cast<long>(kDefaultRollingThreshold);
     if (db_data[2].is_empty() == false) {
       db_data[2] >> rft_property;
     }
     // save current rolling threshold
-    rft = static_cast<size_t>(rft_property);
+    ext->rft = static_cast<size_t>(rft_property);
     // set logging targets
     std::vector<std::string> log_target_property;
     if (db_data[1].is_empty() == false) {
@@ -251,7 +251,7 @@ void DeviceImpl::init_logger (void)
       }
     }
     // set rolling file threshold for file targets
-    Logging::set_rolling_file_threshold(the_logger, rft);
+    Logging::set_rolling_file_threshold(the_logger, ext->rft);
     // trace
     cout4 << "Leaving DeviceImpl::init_logger" << endl;
   }
@@ -264,14 +264,14 @@ void DeviceImpl::init_logger (void)
 // method : DeviceImpl::start_logging
 //--------------------------------------------------------------------------
 void DeviceImpl::start_logging (void) {
-  get_logger()->set_level(saved_log_level);
+  get_logger()->set_level(ext->saved_log_level);
 }
 
 //+-------------------------------------------------------------------------
 // method : DeviceImpl::stop_logging
 //--------------------------------------------------------------------------
 void DeviceImpl::stop_logging (void) {
-  saved_log_level = get_logger()->get_level();
+  ext->saved_log_level = get_logger()->get_level();
   get_logger()->set_level(log4tango::Level::OFF);
 }
 

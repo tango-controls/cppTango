@@ -106,7 +106,7 @@ Device_2Impl(device_class,dev_name,desc,dev_state,dev_status),ext_3(new Device_3
 
 void Device_3Impl::real_ctor()
 {
-    idl_version = 3;
+    ext->idl_version = 3;
 	add_state_status_attrs();
 
 	init_cmd_poll_period();
@@ -137,9 +137,9 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 // Record operation request in black box
 //
 
-	if (store_in_bb == true)
+	if (ext->store_in_bb == true)
 		blackbox_ptr->insert_attr(names,3,source);
-	store_in_bb = true;
+	ext->store_in_bb = true;
 
 //
 // Build a sequence with the names of the attribute to be read.
@@ -676,16 +676,16 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					try
 					{
 						alarmed_not_read(wanted_attr);
-						state_from_read = true;
+						ext->state_from_read = true;
                         if (is_alarm_state_forced() == true)
                             d_state = DeviceImpl::dev_state();
                         else
                             d_state = dev_state();
-						state_from_read = false;
+						ext->state_from_read = false;
 					}
 					catch (Tango::DevFailed &e)
 					{
-						state_from_read = false;
+						ext->state_from_read = false;
 						if (back != NULL)
 						{
 							(*back)[state_idx].err_list = e.errors;
@@ -1515,12 +1515,12 @@ void Device_3Impl::write_attributes_3(const Tango::AttributeValueList& values)
 // is already done
 //
 
-	if (store_in_bb == true)
+	if (ext->store_in_bb == true)
 	{
 		blackbox_ptr->insert_attr(values,3);
 		check_lock("write_attributes_3");
 	}
-	store_in_bb = true;
+	ext->store_in_bb = true;
 
 //
 // Call the method really doing the job
@@ -2255,12 +2255,12 @@ void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& ne
 //
 //
 
-	if (store_in_bb == true)
+	if (ext->store_in_bb == true)
 	{
 		blackbox_ptr->insert_op(Op_Set_Attr_Config_3);
 		check_lock("set_attribute_config_3");
 	}
-	store_in_bb = true;
+	ext->store_in_bb = true;
 
 //
 // Return exception if the device does not have any attribute
@@ -2666,7 +2666,7 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 	long nb_alarmed_attr = alarmed_list.size();
 	long nb_attr = wanted_attr.size();
 
-	alrm_not_read.clear();
+	ext->alarmed_not_read.clear();
 
 	for (int i = 0;i < nb_alarmed_attr;i++)
 	{
@@ -2682,7 +2682,7 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 
 		if (found == false)
 		{
-			alrm_not_read.push_back(alarmed_list[i]);
+			ext->alarmed_not_read.push_back(alarmed_list[i]);
 		}
 	}
 }

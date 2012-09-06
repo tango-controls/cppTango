@@ -83,14 +83,14 @@ public:
 		case NO_SYNC:
 			if (force == true)
 			{
-				mon = &(dev->only_one);
+				mon = &(dev->ext->only_one);
 			}
 			else
 				mon = NULL;
 			break;
 
 		case BY_DEVICE:
-			mon = &(dev->only_one);
+			mon = &(dev->ext->only_one);
 			break;
 
 		case BY_CLASS:
@@ -162,7 +162,7 @@ public:
 		SerialModel ser = Util::instance()->get_serial_model();
 		if (ser == NO_SYNC)
 		{
-			mon = &(dev->only_one);
+			mon = &(dev->ext->only_one);
 			mon->get_monitor();
 		}
 		else

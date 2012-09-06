@@ -59,21 +59,19 @@ namespace Tango
 Command::Command(const char *s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out)
-:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
+:name(s),in_type(in),out_type(out),ext(new CommandExt)
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = Tango::OPERATOR;
 }
 
 Command::Command(string &s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out)
-:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
+:name(s),in_type(in),out_type(out),ext(new CommandExt)
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = Tango::OPERATOR;
 }
 
 Command::Command(const char *s,
@@ -81,7 +79,7 @@ Command::Command(const char *s,
 		 Tango::CmdArgType out,
 		 const char *in_desc,
 		 const char *out_desc)
-:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
+:name(s),in_type(in),out_type(out),ext(new CommandExt)
 {
 	if (in_desc != NULL)
 		in_type_desc = in_desc;
@@ -89,7 +87,6 @@ Command::Command(const char *s,
 		out_type_desc = out_desc;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = Tango::OPERATOR;
 }
 
 Command::Command(string &s,
@@ -98,33 +95,30 @@ Command::Command(string &s,
 		 string &in_desc,
 		 string &out_desc)
 :name(s),in_type(in),out_type(out),
-in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt),poll_period(0)
+in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt)
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = Tango::OPERATOR;
 }
 
 Command::Command(const char *s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out,
 		 Tango::DispLevel level)
-:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
+:name(s),in_type(in),out_type(out),ext(new CommandExt(level))
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = level;
 }
 
 Command::Command(string &s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out,
 		 Tango::DispLevel level)
-:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
+:name(s),in_type(in),out_type(out),ext(new CommandExt(level))
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = level;
 }
 
 Command::Command(const char *s,
@@ -133,7 +127,7 @@ Command::Command(const char *s,
 		 const char *in_desc,
 		 const char *out_desc,
 		 Tango::DispLevel level)
-:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
+:name(s),in_type(in),out_type(out),ext(new CommandExt(level))
 {
 	if (in_desc != NULL)
 		in_type_desc = in_desc;
@@ -141,7 +135,6 @@ Command::Command(const char *s,
 		out_type_desc = out_desc;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = level;
 }
 
 Command::Command(string &s,
@@ -151,11 +144,10 @@ Command::Command(string &s,
 		 string &out_desc,
 		 Tango::DispLevel level)
 :name(s),in_type(in),out_type(out),
-in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt),poll_period(0)
+in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt(level))
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
-	cmd_disp_level = level;
 }
 
 //+----------------------------------------------------------------------------

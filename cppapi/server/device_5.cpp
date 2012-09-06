@@ -65,7 +65,7 @@ namespace Tango
 Device_5Impl::Device_5Impl(DeviceClass *device_class,string &dev_name):
 Device_4Impl(device_class,dev_name),ext_5(Tango_NullPtr)
 {
-	idl_version = 5;
+	ext->idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
@@ -73,7 +73,7 @@ Device_5Impl::Device_5Impl(DeviceClass *device_class,
 			   string &desc):
 Device_4Impl(device_class,dev_name,desc),ext_5(Tango_NullPtr)
 {
-	idl_version = 5;
+	ext->idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
@@ -81,7 +81,7 @@ Device_5Impl::Device_5Impl(DeviceClass *device_class,
 	           	   Tango::DevState dev_state,string &dev_status):
 Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_NullPtr)
 {
-	idl_version = 5;
+	ext->idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
@@ -91,7 +91,7 @@ Device_5Impl::Device_5Impl(DeviceClass *device_class,
 	           	   const char *dev_status):
 Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_NullPtr)
 {
-	idl_version = 5;
+	ext->idl_version = 5;
 }
 
 
