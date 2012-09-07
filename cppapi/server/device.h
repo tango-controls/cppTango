@@ -219,13 +219,13 @@ public:
  *
  * @return Device previous state
  */
-	Tango::DevState &get_prev_state() {return ext->device_prev_state;}
+	Tango::DevState &get_prev_state() {return device_prev_state;}
 /**
  * Set device state.
  *
  * @param new_state The new device state
  */
-	void set_state (const Tango::DevState &new_state) {ext->device_prev_state = device_state; device_state = new_state;}
+	void set_state (const Tango::DevState &new_state) {device_prev_state = device_state; device_state = new_state;}
 
 /**
  * Get device name.
@@ -3384,8 +3384,8 @@ public:
 	void set_exported_flag(bool exp) {exported = exp;}
 	bool get_exported_flag() {return exported;}
 
-	void set_poll_ring_depth(long depth) {ext->poll_ring_depth = depth;}
-	long get_poll_ring_depth() {return ext->poll_ring_depth;}
+	void set_poll_ring_depth(long depth) {poll_ring_depth = depth;}
+	long get_poll_ring_depth() {return poll_ring_depth;}
 
 	void set_poll_old_factor(long fact) {poll_old_factor = fact;}
 	long get_poll_old_factor() {return poll_old_factor;}
@@ -3393,20 +3393,20 @@ public:
 	void is_polled(bool poll) {polled = poll;}
 	bool is_polled() {return polled;}
 
-	vector<string> &get_polled_cmd() {return ext->polled_cmd;}
-	vector<string> &get_polled_attr() {return ext->polled_attr;}
-	vector<string> &get_non_auto_polled_cmd() {return ext->non_auto_polled_cmd;}
-	vector<string> &get_non_auto_polled_attr() {return ext->non_auto_polled_attr;}
-	vector<PollObj *> &get_poll_obj_list() {return ext->poll_obj_list;}
+	vector<string> &get_polled_cmd() {return polled_cmd;}
+	vector<string> &get_polled_attr() {return polled_attr;}
+	vector<string> &get_non_auto_polled_cmd() {return non_auto_polled_cmd;}
+	vector<string> &get_non_auto_polled_attr() {return non_auto_polled_attr;}
+	vector<PollObj *> &get_poll_obj_list() {return poll_obj_list;}
 	void stop_polling(bool);
 	void stop_polling() {stop_polling(true);}
 
 	void check_command_exists(const string &);
 	Command *get_command(const string &);
 
-	string &get_name_lower() {return ext->device_name_lower;}
+	string &get_name_lower() {return device_name_lower;}
 
-	TangoMonitor &get_dev_monitor() {return ext->only_one;}
+	TangoMonitor &get_dev_monitor() {return only_one;}
 	TangoMonitor &get_poll_monitor() {return ext->poll_mon;}
 	TangoMonitor &get_att_conf_monitor() {return ext->att_conf_mon;}
 
@@ -3476,7 +3476,6 @@ private:
     {
     public:
         DeviceImplExt(const char *d_name):
-        poll_ring_depth(0),only_one(d_name),
         store_in_bb(true),poll_mon("cache"),
         att_conf_mon("att_config"),state_from_read(false),
         py_device(false),
@@ -3484,25 +3483,6 @@ private:
         lock_ctr(0),min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
         ~DeviceImplExt();
 
-        long				poll_ring_depth;
-        vector<string>		polled_cmd;
-        vector<string>		polled_attr;
-        vector<string>		non_auto_polled_cmd;
-        vector<string>		non_auto_polled_attr;
-        vector<PollObj *>	poll_obj_list;
-
-        TangoMonitor		only_one;		        // Device monitor
-        Tango::DevState		device_prev_state;	    // Device previous state
-//
-//#ifdef TANGO_HAS_LOG4TANGO
-//        log4tango::Logger* 	logger;
-//        log4tango::Level::Value saved_log_level;
-//        size_t              rft;
-//#endif
-        string				device_name_lower;
-
-        vector<string>		cmd_poll_ring_depth;
-        vector<string>		attr_poll_ring_depth;
 
         bool				store_in_bb;
         TangoMonitor		poll_mon;		        // Polling list monitor
@@ -3575,6 +3555,25 @@ protected:
 
     bool				exported;
     bool				polled;
+    long				poll_ring_depth;
+    vector<string>		polled_cmd;
+    vector<string>		polled_attr;
+    vector<string>		non_auto_polled_cmd;
+    vector<string>		non_auto_polled_attr;
+    vector<PollObj *>	poll_obj_list;
+
+    TangoMonitor		only_one;		        // Device monitor
+    Tango::DevState		device_prev_state;	    // Device previous state
+//
+//#ifdef TANGO_HAS_LOG4TANGO
+//        log4tango::Logger* 	logger;
+//        log4tango::Level::Value saved_log_level;
+//        size_t              rft;
+//#endif
+    string				device_name_lower;
+
+    vector<string>		cmd_poll_ring_depth;
+    vector<string>		attr_poll_ring_depth;
 
 
 private:
