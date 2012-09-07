@@ -106,7 +106,7 @@ Device_2Impl(device_class,dev_name,desc,dev_state,dev_status),ext_3(new Device_3
 
 void Device_3Impl::real_ctor()
 {
-    ext->idl_version = 3;
+    idl_version = 3;
 	add_state_status_attrs();
 
 	init_cmd_poll_period();

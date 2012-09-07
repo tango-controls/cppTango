@@ -3381,17 +3381,17 @@ protected:
 public:
 /// @privatesection
 
-	void set_exported_flag(bool exp) {ext->exported = exp;}
-	bool get_exported_flag() {return ext->exported;}
+	void set_exported_flag(bool exp) {exported = exp;}
+	bool get_exported_flag() {return exported;}
 
 	void set_poll_ring_depth(long depth) {ext->poll_ring_depth = depth;}
 	long get_poll_ring_depth() {return ext->poll_ring_depth;}
 
-	void set_poll_old_factor(long fact) {ext->poll_old_factor = fact;}
-	long get_poll_old_factor() {return ext->poll_old_factor;}
+	void set_poll_old_factor(long fact) {poll_old_factor = fact;}
+	long get_poll_old_factor() {return poll_old_factor;}
 
-	void is_polled(bool poll) {ext->polled = poll;}
-	bool is_polled() {return ext->polled;}
+	void is_polled(bool poll) {polled = poll;}
+	bool is_polled() {return polled;}
 
 	vector<string> &get_polled_cmd() {return ext->polled_cmd;}
 	vector<string> &get_polled_attr() {return ext->polled_attr;}
@@ -3410,7 +3410,7 @@ public:
 	TangoMonitor &get_poll_monitor() {return ext->poll_mon;}
 	TangoMonitor &get_att_conf_monitor() {return ext->att_conf_mon;}
 
-	long get_dev_idl_version() {return ext->idl_version;}
+	long get_dev_idl_version() {return idl_version;}
 	long get_cmd_poll_ring_depth(string &);
 	long get_attr_poll_ring_depth(string &);
 	vector<long> &get_alarmed_not_read() {return ext->alarmed_not_read;}
@@ -3458,7 +3458,7 @@ public:
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
-	{return ext->logger ? ext->logger : get_logger_i();}
+	{return logger ? logger : get_logger_i();}
 
   	void init_logger(void);
   	void start_logging(void);
@@ -3475,30 +3475,16 @@ private:
     class DeviceImplExt
     {
     public:
-#ifdef TANGO_HAS_LOG4TANGO
-        DeviceImplExt(const char *d_name): exported(false),polled(false),
-        poll_ring_depth(0),poll_old_factor(0),only_one(d_name),
-        logger(NULL),saved_log_level(log4tango::Level::WARN),
-        rft(Tango::kDefaultRollingThreshold),idl_version(1),
+        DeviceImplExt(const char *d_name):
+        poll_ring_depth(0),only_one(d_name),
         store_in_bb(true),poll_mon("cache"),
         att_conf_mon("att_config"),state_from_read(false),
         py_device(false),
         device_locked(false),locker_client(NULL),old_locker_client(NULL),
         lock_ctr(0),min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
-#else
-        DeviceImplExt(const char *d_name):exported(false),polled(false),poll_ring_depth(0)
-                only_one(d_name),store_in_bb(true),poll_mon("cache"),
-                att_conf_mon("att_config"),state_from_read(false),
-                py_device(false),device_locked(false),locker_client(NULL),
-                old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
-                run_att_conf_loop(true),force_alarm_state(false) {};
-#endif
         ~DeviceImplExt();
 
-        bool				exported;
-        bool				polled;
         long				poll_ring_depth;
-        long				poll_old_factor;
         vector<string>		polled_cmd;
         vector<string>		polled_attr;
         vector<string>		non_auto_polled_cmd;
@@ -3507,14 +3493,13 @@ private:
 
         TangoMonitor		only_one;		        // Device monitor
         Tango::DevState		device_prev_state;	    // Device previous state
-
-#ifdef TANGO_HAS_LOG4TANGO
-        log4tango::Logger* 	logger;
-        log4tango::Level::Value saved_log_level;
-        size_t              rft;
-#endif
+//
+//#ifdef TANGO_HAS_LOG4TANGO
+//        log4tango::Logger* 	logger;
+//        log4tango::Level::Value saved_log_level;
+//        size_t              rft;
+//#endif
         string				device_name_lower;
-        long				idl_version;
 
         vector<string>		cmd_poll_ring_depth;
         vector<string>		attr_poll_ring_depth;
@@ -3574,6 +3559,22 @@ protected:
 	DevVarULong64Array			dummy_ulong64_att_value;
 	DevVarStateArray			dummy_state_att_value;
 	DevVarEncodedArray			dummy_encoded_att_value;
+
+//
+// Ported from the extension class
+//
+
+#ifdef TANGO_HAS_LOG4TANGO
+        log4tango::Logger* 	logger;
+        log4tango::Level::Value saved_log_level;
+        size_t              rft;
+#endif
+
+    long				poll_old_factor;
+    long				idl_version;
+
+    bool				exported;
+    bool				polled;
 
 
 private:

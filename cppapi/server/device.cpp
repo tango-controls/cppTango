@@ -87,7 +87,11 @@ extern omni_thread::key_t key;
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 		       const char *de,Tango::DevState st,const char *sta)
 :device_name(d_name),desc(de),device_status(sta),
- device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name))
+ device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name)),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
+#endif
+ exported(false),polled(false)
 {
     real_ctor();
 }
@@ -95,13 +99,21 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
 		       Tango::DevState st,string &sta)
 :device_name(d_name),desc(de),device_status(sta),
- device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str()))
+ device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str())),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
+#endif
+ exported(false),polled(false)
 {
     real_ctor();
 }
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
-:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str()))
+:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str())),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
+#endif
+ exported(false),polled(false)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -111,7 +123,11 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
 }
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
-:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str()))
+:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str())),
+#ifdef TANGO_HAS_LOG4TANGO
+ logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
+#endif
+ exported(false),polled(false)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -161,7 +177,7 @@ void DeviceImpl::real_ctor()
 
 	black_box_create();
 
-	ext->idl_version = 1;
+	idl_version = 1;
 
 //
 // Create the multi attribute object
@@ -406,6 +422,19 @@ DeviceImpl::~DeviceImpl()
 //
 
 	delete dev_attr;
+
+//
+// Clean up previously executed in extension destructor
+//
+
+#ifdef TANGO_HAS_LOG4TANGO
+	if (logger && logger != Logging::get_core_logger())
+	{
+		logger->remove_all_appenders();
+		delete logger;
+		logger = 0;
+	}
+#endif
 
 //
 // Delete the extension class instance
@@ -3423,14 +3452,14 @@ DeviceImpl::DeviceImplExt::~DeviceImplExt()
 		delete (poll_obj_list[i]);
 	}
 
-#ifdef TANGO_HAS_LOG4TANGO
-	if (logger && logger != Logging::get_core_logger())
-	{
-		logger->remove_all_appenders();
-		delete logger;
-		logger = 0;
-	}
-#endif
+//#ifdef TANGO_HAS_LOG4TANGO
+//	if (logger && logger != Logging::get_core_logger())
+//	{
+//		logger->remove_all_appenders();
+//		delete logger;
+//		logger = 0;
+//	}
+//#endif
 
     delete locker_client;
     delete old_locker_client;
