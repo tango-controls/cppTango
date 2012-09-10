@@ -345,7 +345,9 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 						{
 							if ((attribute.ext->archive_abs_change[0] == INT_MAX) &&
 					      		(attribute.ext->archive_abs_change[1] == INT_MAX) &&
-						   	    (attribute.ext->archive_period        == INT_MAX))
+								(attribute.ext->archive_rel_change[0] == INT_MAX) &&
+								(attribute.ext->archive_rel_change[1] == INT_MAX) &&
+								(attribute.ext->archive_period        == INT_MAX))
 							{
 								TangoSys_OMemStream o;
 								o << "Archive event properties (archive_abs_change or archive_rel_change or archive_period) for attribute ";

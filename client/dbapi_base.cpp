@@ -733,7 +733,7 @@ string Database::get_info()
 	{
 		ostream << (*db_info_list)[i].in() << endl;
 	}
-	ostream << ends;
+
 	string ret_str = ostream.str();
 
 	return(ret_str);
@@ -3808,18 +3808,23 @@ DbDatum Database::get_services(string &servname,string &instname)
 	DbServerCache *dsc;
 	if (au->in_server() == true)
 	{
-		try
+		if (from_env_var == false)
+			dsc = NULL;
+		else
 		{
-			Tango::Util *tg = Tango::Util::instance(false);
-			dsc = tg->get_db_cache();
-		}
-		catch (Tango::DevFailed &e)
-		{
-            string reason = e.errors[0].reason.in();
-            if (reason == "API_UtilSingletonNotCreated" && ext->db_tg != NULL)
-                dsc = ext->db_tg->get_db_cache();
-            else
-                dsc = NULL;
+			try
+			{
+				Tango::Util *tg = Tango::Util::instance(false);
+				dsc = tg->get_db_cache();
+			}
+			catch (Tango::DevFailed &e)
+			{
+				string reason = e.errors[0].reason.in();
+				if (reason == "API_UtilSingletonNotCreated" && ext->db_tg != NULL)
+					dsc = ext->db_tg->get_db_cache();
+				else
+					dsc = NULL;
+			}
 		}
 	}
 	else

@@ -131,13 +131,13 @@ public:
 	void get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
 
 protected:
-	DeviceImpl		*dev;
-	PollObjType		type;
-	string 			name;
+	DeviceImpl			*dev;
+	PollObjType			type;
+	string 				name;
 	struct timeval		upd;
 	struct timeval		needed_time;
-	double			max_delta_t;
-	PollRing		ring;
+	double				max_delta_t;
+	PollRing			ring;
 };
 
 inline bool operator<(const PollObj &,const PollObj &)

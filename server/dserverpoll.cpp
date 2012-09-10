@@ -1338,97 +1338,102 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 //
 
 	PollingThreadInfo *th_info;
+	int poll_th_id;
 
-	int poll_th_id = tg->get_polling_thread_id_by_name((*argin)[0]);
-	if (poll_th_id == 0)
+	if (tg->is_svr_shutting_down() == false)
 	{
-		TangoSys_OMemStream o;
-		o << "Can't find a polling thread for device " << (*argin)[0] << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
-						(const char *)"DServer::rem_obj_polling");
-	}
+		poll_th_id = tg->get_polling_thread_id_by_name((*argin)[0]);
+		if (poll_th_id == 0)
+		{
+			TangoSys_OMemStream o;
+			o << "Can't find a polling thread for device " << (*argin)[0] << ends;
+			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+							(const char *)"DServer::rem_obj_polling");
+		}
 
-	cout4 << "Thread in charge of device " << (*argin)[0] << " is thread " << poll_th_id << endl;
-	th_info = tg->get_polling_thread_info_by_id(poll_th_id);
+		cout4 << "Thread in charge of device " << (*argin)[0] << " is thread " << poll_th_id << endl;
+		th_info = tg->get_polling_thread_info_by_id(poll_th_id);
 
 //
 // Test whether the polling thread is still running!
 //
 
-	if ( th_info->poll_th != NULL )
-	{
+		if ( th_info->poll_th != NULL )
+		{
+
 //
 // Send command to the polling thread
 //
 
-		cout4 << "Sending cmd to polling thread" << endl;
-		TangoMonitor &mon = th_info->poll_mon;
-		PollThCmd &shared_cmd = th_info->shared_data;
+			cout4 << "Sending cmd to polling thread" << endl;
+			TangoMonitor &mon = th_info->poll_mon;
+			PollThCmd &shared_cmd = th_info->shared_data;
 
-        int th_id = omni_thread::self()->id();
-        if (th_id != poll_th_id)
-		{
-			omni_mutex_lock sync(mon);
-			if (shared_cmd.cmd_pending == true)
+			int th_id = omni_thread::self()->id();
+			if (th_id != poll_th_id)
 			{
-				mon.wait();
-			}
-			shared_cmd.cmd_pending = true;
-			if (tmp_upd == 0)
-				shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
-			else
-				shared_cmd.cmd_code = POLL_REM_OBJ;
-			shared_cmd.dev = dev;
-			shared_cmd.name = obj_name;
-			shared_cmd.type = type;
+				omni_mutex_lock sync(mon);
+				if (shared_cmd.cmd_pending == true)
+				{
+					mon.wait();
+				}
+				shared_cmd.cmd_pending = true;
+				if (tmp_upd == 0)
+					shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
+				else
+					shared_cmd.cmd_code = POLL_REM_OBJ;
+				shared_cmd.dev = dev;
+				shared_cmd.name = obj_name;
+				shared_cmd.type = type;
 
-			mon.signal();
+				mon.signal();
 
-			cout4 << "Cmd sent to polling thread" << endl;
+				cout4 << "Cmd sent to polling thread" << endl;
 
 //
 // Wait for thread to execute command except if the command is
 // requested by the polling thread itself
 //
 
-			int th_id = omni_thread::self()->id();
-			if (th_id != poll_th_id)
-			{
-				while (shared_cmd.cmd_pending == true)
+				int th_id = omni_thread::self()->id();
+				if (th_id != poll_th_id)
 				{
-					int interupted = mon.wait(DEFAULT_TIMEOUT);
-					if ((shared_cmd.cmd_pending == true) && (interupted == false))
+					while (shared_cmd.cmd_pending == true)
 					{
-						cout4 << "TIME OUT" << endl;
-						Except::throw_exception((const char *)"API_CommandTimedOut",
-					        		(const char *)"Polling thread blocked !!!",
-					        		(const char *)"DServer::rem_obj_polling");
+						int interupted = mon.wait(DEFAULT_TIMEOUT);
+						if ((shared_cmd.cmd_pending == true) && (interupted == false))
+						{
+							cout4 << "TIME OUT" << endl;
+							Except::throw_exception((const char *)"API_CommandTimedOut",
+										(const char *)"Polling thread blocked !!!",
+										(const char *)"DServer::rem_obj_polling");
+						}
 					}
 				}
 			}
-		}
-        else
-        {
-            shared_cmd.cmd_pending = true;
-			if (tmp_upd == 0)
-				shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
 			else
-				shared_cmd.cmd_code = POLL_REM_OBJ;
-            shared_cmd.dev = dev;
-            shared_cmd.name = obj_name;
-            shared_cmd.type = type;
+			{
+				shared_cmd.cmd_pending = true;
+				if (tmp_upd == 0)
+					shared_cmd.cmd_code = POLL_REM_EXT_TRIG_OBJ;
+				else
+					shared_cmd.cmd_code = POLL_REM_OBJ;
+				shared_cmd.dev = dev;
+				shared_cmd.name = obj_name;
+				shared_cmd.type = type;
 
-            shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
+				shared_cmd.index = distance(dev->get_poll_obj_list().begin(),ite);
 
-            PollThread *poll_th = th_info->poll_th;
-            poll_th->set_local_cmd(shared_cmd);
-            poll_th->execute_cmd();
-        }
-		cout4 << "Thread cmd normally executed" << endl;
-	}
-	else
-	{
-		cout4 << "Polling thread is no longer running!!!!" << endl;
+				PollThread *poll_th = th_info->poll_th;
+				poll_th->set_local_cmd(shared_cmd);
+				poll_th->execute_cmd();
+			}
+			cout4 << "Thread cmd normally executed" << endl;
+		}
+		else
+		{
+			cout4 << "Polling thread is no longer running!!!!" << endl;
+		}
 	}
 
 //
@@ -1604,7 +1609,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 // Kill the thread if needed and join
 //
 
-		if (kill_thread == true)
+		if (kill_thread == true  && tg->is_svr_shutting_down() == false)
 		{
 			TangoMonitor &mon = th_info->poll_mon;
 			PollThCmd &shared_cmd = th_info->shared_data;

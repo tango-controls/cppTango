@@ -940,6 +940,7 @@ void DServer::restart(string &d_name)
 	DeviceImpl *new_dev = NULL;
 
 	vector<Tango::DeviceImpl *> &d_list = dev_cl->get_device_list();
+
 	for (i = 0;i < d_list.size();i++)
 	{
 		if (d_list[i]->get_name() == lower_d_name)
