@@ -87,14 +87,15 @@ extern omni_thread::key_t key;
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 		       const char *de,Tango::DevState st,const char *sta)
 :device_name(d_name),desc(de),device_status(sta),
- device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name)),
+ device_state(st),device_class(cl_ptr),ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
- locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
 {
     real_ctor();
 }
@@ -102,27 +103,29 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
 		       Tango::DevState st,string &sta)
 :device_name(d_name),desc(de),device_status(sta),
- device_state(st),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str())),
+ device_state(st),device_class(cl_ptr),ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
- locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
 {
     real_ctor();
 }
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
-:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str())),
+:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
- locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -132,14 +135,15 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
 }
 
 DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
-:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt(d_name.c_str())),
+:device_name(d_name),device_class(cl_ptr),ext(new DeviceImplExt),
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
  exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
- locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -638,15 +642,15 @@ void DeviceImpl::get_dev_system_resource()
 //
 
 		if (db_data[10].is_empty() == false)
-			db_data[10] >> ext->min_poll_period;
+			db_data[10] >> min_poll_period;
 
 		if (db_data[11].is_empty() == false)
 		{
-			db_data[11] >> ext->cmd_min_poll_period;
-			unsigned long nb_prop = ext->cmd_min_poll_period.size();
-			if ((ext->cmd_min_poll_period.size() % 2) == 1)
+			db_data[11] >> cmd_min_poll_period;
+			unsigned long nb_prop = cmd_min_poll_period.size();
+			if ((cmd_min_poll_period.size() % 2) == 1)
 			{
-				ext->cmd_min_poll_period.clear();
+				cmd_min_poll_period.clear();
 				TangoSys_OMemStream o;
 				o << "System property cmd_min_poll_period for device " << device_name << " has wrong syntax" << ends;
 				Except::throw_exception((const char *)"API_BadConfigurationProperty",
@@ -654,19 +658,19 @@ void DeviceImpl::get_dev_system_resource()
 				        		(const char *)"DeviceImpl::get_dev_system_resource()");
 			}
 			for (unsigned int i = 0;i < nb_prop;i = i + 2)
-				transform(ext->cmd_min_poll_period[i].begin(),
-					  ext->cmd_min_poll_period[i].end(),
-					  ext->cmd_min_poll_period[i].begin(),
+				transform(cmd_min_poll_period[i].begin(),
+					  cmd_min_poll_period[i].end(),
+					  cmd_min_poll_period[i].begin(),
 					  ::tolower);
 		}
 
 		if (db_data[12].is_empty() == false)
 		{
-			db_data[12] >> ext->attr_min_poll_period;
-			unsigned long nb_prop = ext->attr_min_poll_period.size();
-			if ((ext->attr_min_poll_period.size() % 2) == 1)
+			db_data[12] >> attr_min_poll_period;
+			unsigned long nb_prop = attr_min_poll_period.size();
+			if ((attr_min_poll_period.size() % 2) == 1)
 			{
-				ext->attr_min_poll_period.clear();
+				attr_min_poll_period.clear();
 				TangoSys_OMemStream o;
 				o << "System property attr_min_poll_period for device " << device_name << " has wrong syntax" << ends;
 				Except::throw_exception((const char *)"API_BadConfigurationProperty",
@@ -674,9 +678,9 @@ void DeviceImpl::get_dev_system_resource()
 				        		(const char *)"DeviceImpl::get_dev_system_resource()");
 			}
 			for (unsigned int i = 0;i < nb_prop;i = i + 2)
-				transform(ext->attr_min_poll_period[i].begin(),
-					  ext->attr_min_poll_period[i].end(),
-					  ext->attr_min_poll_period[i].begin(),
+				transform(attr_min_poll_period[i].begin(),
+					  attr_min_poll_period[i].end(),
+					  attr_min_poll_period[i].begin(),
 					  ::tolower);
 		}
 
@@ -1081,10 +1085,10 @@ Tango::DevState DeviceImpl::dev_state()
 // simply set it to ALARM
 //
 
-    if (ext->run_att_conf_loop == true)
+    if (run_att_conf_loop == true)
         att_conf_loop();
 
-    if (ext->force_alarm_state == true)
+    if (force_alarm_state == true)
     {
         return Tango::ALARM;
     }
@@ -1304,20 +1308,20 @@ Tango::ConstDevString DeviceImpl::dev_status()
 	NoSyncModelTangoMonitor mon(this);
 	const char *returned_str;
 
-    if (ext->run_att_conf_loop == true)
+    if (run_att_conf_loop == true)
         att_conf_loop();
 
-    if (ext->force_alarm_state == true)
+    if (force_alarm_state == true)
     {
         alarm_status = "The device is in ALARM state.";
-        size_t nb_wrong_att = ext->att_wrong_db_conf.size();
+        size_t nb_wrong_att = att_wrong_db_conf.size();
         alarm_status = alarm_status + "\nAttribute";
         if (nb_wrong_att > 1)
             alarm_status = alarm_status + "s";
         alarm_status = alarm_status + " ";
         for (size_t i = 0;i < nb_wrong_att;++i)
         {
-            alarm_status = alarm_status + ext->att_wrong_db_conf[i];
+            alarm_status = alarm_status + att_wrong_db_conf[i];
             if ((nb_wrong_att > 1) && (i <= nb_wrong_att - 2))
                 alarm_status = alarm_status + ", ";
         }
@@ -5146,16 +5150,16 @@ void DeviceImpl::att_conf_loop()
     {
         if (att_list[i]->is_startup_exception() == true)
         {
-            ext->force_alarm_state = true;
+            force_alarm_state = true;
             wrong_conf_att_list.push_back(att_list[i]->get_name());
             att_wrong_conf = true;
         }
     }
 
     if (att_wrong_conf == false)
-        ext->force_alarm_state = false;
+        force_alarm_state = false;
 
-    ext->run_att_conf_loop = false;
+    run_att_conf_loop = false;
 }
 
 //+-------------------------------------------------------------------------
@@ -5168,7 +5172,7 @@ void DeviceImpl::att_conf_loop()
 
 void DeviceImpl::check_att_conf()
 {
-    if (ext->run_att_conf_loop == true)
+    if (run_att_conf_loop == true)
         att_conf_loop();
 }
 

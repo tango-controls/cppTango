@@ -3444,17 +3444,17 @@ public:
 	void data_into_net_object(Attribute &,AttributeValueList_3 *,AttributeValueList_4 *,long,AttrWriteType,bool);
 	void polled_data_into_net_object(AttributeValueList_3 *,AttributeValueList_4 *,long,long,long,PollObj *,const DevVarStringArray &);
 
-	int get_min_poll_period() {return ext->min_poll_period;}
-	vector<string> &get_cmd_min_poll_period() {return ext->cmd_min_poll_period;}
-	vector<string> &get_attr_min_poll_period() {return ext->attr_min_poll_period;}
+	int get_min_poll_period() {return min_poll_period;}
+	vector<string> &get_cmd_min_poll_period() {return cmd_min_poll_period;}
+	vector<string> &get_attr_min_poll_period() {return attr_min_poll_period;}
 
 	void init_cmd_poll_ext_trig (string cmd_name);
 	void init_attr_poll_ext_trig (string cmd_name);
 
-    void set_run_att_conf_loop(bool val) {ext->run_att_conf_loop=val;}
-    vector<string> &get_att_wrong_db_conf() {return ext->att_wrong_db_conf;}
+    void set_run_att_conf_loop(bool val) {run_att_conf_loop=val;}
+    vector<string> &get_att_wrong_db_conf() {return att_wrong_db_conf;}
     void check_att_conf();
-    bool is_alarm_state_forced() {return ext->force_alarm_state;}
+    bool is_alarm_state_forced() {return force_alarm_state;}
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
@@ -3475,17 +3475,7 @@ private:
     class DeviceImplExt
     {
     public:
-        DeviceImplExt(const char *d_name):
-        min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
-
-
-        long				min_poll_period;
-        vector<string>		cmd_min_poll_period;
-        vector<string>		attr_min_poll_period;
-
-        bool                run_att_conf_loop;
-        bool                force_alarm_state;
-        vector<string>      att_wrong_db_conf;
+        DeviceImplExt() {};
     };
 
 
@@ -3542,12 +3532,6 @@ protected:
 
     TangoMonitor		only_one;		        // Device monitor
     Tango::DevState		device_prev_state;	    // Device previous state
-//
-//#ifdef TANGO_HAS_LOG4TANGO
-//        log4tango::Logger* 	logger;
-//        log4tango::Level::Value saved_log_level;
-//        size_t              rft;
-//#endif
     string				device_name_lower;
 
     vector<string>		cmd_poll_ring_depth;
@@ -3569,6 +3553,14 @@ protected:
     time_t				locking_date;
     string				lock_stat;
     DevLong				lock_ctr;
+
+    long				min_poll_period;
+    vector<string>		cmd_min_poll_period;
+    vector<string>		attr_min_poll_period;
+
+    bool                run_att_conf_loop;
+    bool                force_alarm_state;
+    vector<string>      att_wrong_db_conf;
 
 
 private:
