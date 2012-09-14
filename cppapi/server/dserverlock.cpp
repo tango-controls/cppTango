@@ -190,7 +190,7 @@ Tango::DevLong DServer::un_lock_device(const Tango::DevVarLongStringArray *in_da
 		string d_name(in_data->svalue[loop]);
 
 		if (d_name == get_name())
-			ctr = ext->lock_ctr;
+			ctr = lock_ctr;
 		else
 		{
 			DeviceImpl *the_dev = tg->get_device_by_name(d_name);

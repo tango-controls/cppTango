@@ -472,7 +472,7 @@ CORBA::Any *Device_4Impl::command_inout_4(const char *in_cmd,
 // Call the Device_2Impl command_inout
 //
 
-	ext->store_in_bb = false;
+	store_in_bb = false;
 	return (command_inout_2(in_cmd,in_data,source));
 
 }
@@ -495,9 +495,9 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 // Record operation request in black box
 //
 
-	if (ext->store_in_bb == true)
+	if (store_in_bb == true)
 		blackbox_ptr->insert_attr(names,cl_id,4,source);
-	ext->store_in_bb = true;
+	store_in_bb = true;
 
 //
 // Build a sequence with the names of the attribute to be read.
@@ -681,9 +681,9 @@ void Device_4Impl::write_attributes_4(const Tango::AttributeValueList_4 & values
 // Record operation request in black box
 //
 
-	if (ext->store_in_bb == true)
+	if (store_in_bb == true)
 		blackbox_ptr->insert_attr(values,cl_id,4);
-	ext->store_in_bb = true;
+	store_in_bb = true;
 
 //
 // Check if the device is locked and by who
@@ -695,7 +695,7 @@ void Device_4Impl::write_attributes_4(const Tango::AttributeValueList_4 & values
 // Call the Device_3Impl write_attributes
 //
 
-	ext->store_in_bb = false;
+	store_in_bb = false;
 	return write_attributes_34(NULL,&values);
 }
 
@@ -744,7 +744,7 @@ void Device_4Impl::set_attribute_config_4(const Tango::AttributeConfigList_3& ne
 // Call the Device_3Impl set_attribute_config
 //
 
-	ext->store_in_bb = false;
+	store_in_bb = false;
 	return set_attribute_config_3(new_conf);
 }
 
@@ -798,7 +798,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 // First, write the attribute
 //
 
-	ext->store_in_bb = false;
+	store_in_bb = false;
 	write_attributes_4(values,cl_id);
 
 //
@@ -812,7 +812,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 	Tango::CppClntIdent cci = 0;
 	dummy_cl_id.cpp_clnt(cci);
 
-	ext->store_in_bb = false;
+	store_in_bb = false;
 	Tango::AttributeValueList_4 *read_val_ptr = read_attributes_4(att_name,Tango::DEV,dummy_cl_id);
 
 	return read_val_ptr;

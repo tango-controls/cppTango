@@ -91,7 +91,10 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
- exported(false),polled(false),poll_ring_depth(0),only_one(d_name)
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
 {
     real_ctor();
 }
@@ -103,7 +106,10 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
- exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str())
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
 {
     real_ctor();
 }
@@ -113,7 +119,10 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
- exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str())
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -127,7 +136,10 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
 #ifdef TANGO_HAS_LOG4TANGO
  logger(NULL),saved_log_level(log4tango::Level::WARN),rft(Tango::kDefaultRollingThreshold),poll_old_factor(0),idl_version(1),
 #endif
- exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str())
+ exported(false),polled(false),poll_ring_depth(0),only_one(d_name.c_str()),
+ store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
+ state_from_read(false),py_device(false),device_locked(false),
+ locker_client(NULL),old_locker_client(NULL),lock_ctr(0)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -425,6 +437,7 @@ DeviceImpl::~DeviceImpl()
 
 //
 // Clean up previously executed in extension destructor
+// Deletes memory for ring buffer used for polling
 //
 
 	for (unsigned long i = 0;i < poll_obj_list.size();i++)
@@ -440,6 +453,9 @@ DeviceImpl::~DeviceImpl()
 		logger = 0;
 	}
 #endif
+
+    delete locker_client;
+    delete old_locker_client;
 
 //
 // Delete the extension class instance
@@ -1092,7 +1108,7 @@ Tango::DevState DeviceImpl::dev_state()
 
             if (vers >= 3)
             {
-                if (ext->state_from_read == true)
+                if (state_from_read == true)
                 {
                     vector<long>::iterator ite = attr_list_2.begin();
                     while (ite != attr_list_2.end())
@@ -1135,7 +1151,7 @@ Tango::DevState DeviceImpl::dev_state()
 // Read the hardware
 //
 
-                if (ext->state_from_read == false)
+                if (state_from_read == false)
                 {
                     read_attr_hardware(attr_list);
                 }
@@ -1156,7 +1172,7 @@ Tango::DevState DeviceImpl::dev_state()
 //
 
                     long idx;
-                    if ((vers >= 3) && (ext->state_from_read == true))
+                    if ((vers >= 3) && (state_from_read == true))
                         idx = attr_list_2[i];
                     else
                         idx = attr_list[i];
@@ -1204,7 +1220,7 @@ Tango::DevState DeviceImpl::dev_state()
                         for (j = 0;j < i;j++)
                         {
                             long idx;
-                            if ((vers >= 3) && (ext->state_from_read == true))
+                            if ((vers >= 3) && (state_from_read == true))
                                 idx = attr_list_2[j];
                             else
                                 idx = attr_list[j];
@@ -1240,7 +1256,7 @@ Tango::DevState DeviceImpl::dev_state()
                 for (long i = 0;i < nb_wanted_attr;i++)
                 {
                     long idx;
-                    if ((vers >= 3) && (ext->state_from_read == true))
+                    if ((vers >= 3) && (state_from_read == true))
                         idx = attr_list_2[i];
                     else
                         idx = attr_list[i];
@@ -1386,9 +1402,9 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 // Record operation request in black box
 //
 
-		if (ext->store_in_bb == true)
+		if (store_in_bb == true)
 			blackbox_ptr->insert_cmd(in_cmd);
-		ext->store_in_bb = true;
+		store_in_bb = true;
 
 //
 // Execute command
@@ -2427,9 +2443,9 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 // Record operation request in black box
 //
 
-		if (ext->store_in_bb == true)
+		if (store_in_bb == true)
 			blackbox_ptr->insert_attr(names);
-		ext->store_in_bb = true;
+		store_in_bb = true;
 
 //
 // Return exception if the device does not have any attribute
@@ -3441,36 +3457,6 @@ void DeviceImpl::poll_lists_2_v5()
 
 }
 
-//+----------------------------------------------------------------------------
-//
-// method :		DeviceImplExt::~DeviceImplExt
-//
-// description :	DeviceImpl extension class destructor. This destructor
-//			delete memory for ring buffer used for polling.
-//
-//-----------------------------------------------------------------------------
-
-DeviceImpl::DeviceImplExt::~DeviceImplExt()
-{
-//	for (unsigned long i = 0;i < poll_obj_list.size();i++)
-//	{
-//		delete (poll_obj_list[i]);
-//	}
-
-//#ifdef TANGO_HAS_LOG4TANGO
-//	if (logger && logger != Logging::get_core_logger())
-//	{
-//		logger->remove_all_appenders();
-//		delete logger;
-//		logger = 0;
-//	}
-//#endif
-
-    delete locker_client;
-    delete old_locker_client;
-
-}
-
 
 //+-------------------------------------------------------------------------
 //
@@ -3952,11 +3938,11 @@ void DeviceImpl::lock(client_addr *cl,int validity)
 // If the lock is not valid any more, clear it
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
-			if (*cl != *(ext->locker_client))
+			if (*cl != *(locker_client))
 			{
 				TangoSys_OMemStream o;
 				o << "Device " << get_name() << " is already locked by another client" << ends;
@@ -3974,15 +3960,15 @@ void DeviceImpl::lock(client_addr *cl,int validity)
 // Lock the device
 //
 
-	ext->device_locked = true;
-	if (ext->locker_client == NULL)
+	device_locked = true;
+	if (locker_client == NULL)
 	{
-		ext->locker_client = new client_addr(*cl);
+		locker_client = new client_addr(*cl);
 	}
 
-	ext->locking_date = time(NULL);
-	ext->lock_validity = validity;
-	ext->lock_ctr++;
+	locking_date = time(NULL);
+	lock_validity = validity;
+	lock_ctr++;
 }
 
 //+-------------------------------------------------------------------------
@@ -4005,11 +3991,11 @@ void DeviceImpl::relock(client_addr *cl)
 // and if this lock is valid
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
-			if (*cl != *(ext->locker_client))
+			if (*cl != *(locker_client))
 			{
 				TangoSys_OMemStream o;
 				o << get_name() << ": ";
@@ -4018,8 +4004,8 @@ void DeviceImpl::relock(client_addr *cl)
 								(const char *)"Device_Impl::relock");
 			}
 
-			ext->device_locked = true;
-			ext->locking_date = time(NULL);
+			device_locked = true;
+			locking_date = time(NULL);
 		}
 		else
 		{
@@ -4056,7 +4042,7 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 // If the lock is not valid any more, clear it
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
@@ -4064,7 +4050,7 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 
 			if (forced == false)
 			{
-				if (*cl != *(ext->locker_client))
+				if (*cl != *(locker_client))
 				{
 					TangoSys_OMemStream o;
 					o << "Device " << get_name() << " is locked by another client, can't unlock it" << ends;
@@ -4075,12 +4061,12 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 		}
 	}
 
-	if (ext->lock_ctr > 0)
-		ext->lock_ctr--;
-	if ((ext->lock_ctr <= 0) || (forced == true))
+	if (lock_ctr > 0)
+		lock_ctr--;
+	if ((lock_ctr <= 0) || (forced == true))
 		basic_unlock(forced);
 
-	return ext->lock_ctr;
+	return lock_ctr;
 }
 
 //+-------------------------------------------------------------------------
@@ -4093,13 +4079,13 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 
 void DeviceImpl::basic_unlock(bool forced)
 {
-	ext->device_locked = false;
+	device_locked = false;
 	if (forced == true)
-		ext->old_locker_client = ext->locker_client;
+		old_locker_client = locker_client;
 	else
-		delete ext->locker_client;
-	ext->locker_client = NULL;
-	ext->lock_ctr = 0;
+		delete locker_client;
+	locker_client = NULL;
+	lock_ctr = 0;
 }
 
 //+-------------------------------------------------------------------------
@@ -4116,7 +4102,7 @@ void DeviceImpl::basic_unlock(bool forced)
 bool DeviceImpl::valid_lock()
 {
 	time_t now = time(NULL);
-	if (now > (ext->locking_date + ext->lock_validity))
+	if (now > (locking_date + lock_validity))
 		return false;
 	else
 		return true;
@@ -4152,28 +4138,28 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 // If the lock is not valid any more, clear it
 //
 
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
-			ext->lock_status = "Device " + device_name + " is locked by ";
+			lock_stat = "Device " + device_name + " is locked by ";
 			ostringstream ostr;
-			ostr << *(ext->locker_client) << ends;
-			ext->lock_status = ext->lock_status + ostr.str();
+			ostr << *(locker_client) << ends;
+			lock_stat = lock_stat + ostr.str();
 
 			dvlsa->lvalue[0] = 1;
-			dvlsa->lvalue[1] = ext->locker_client->client_pid;
-			const char *tmp = ext->locker_client->client_ip;
+			dvlsa->lvalue[1] = locker_client->client_pid;
+			const char *tmp = locker_client->client_ip;
 			dvlsa->svalue[1] = CORBA::string_dup(tmp);
-			if (ext->locker_client->client_lang == Tango::JAVA)
+			if (locker_client->client_lang == Tango::JAVA)
 			{
-				dvlsa->svalue[2] = CORBA::string_dup(ext->locker_client->java_main_class.c_str());
+				dvlsa->svalue[2] = CORBA::string_dup(locker_client->java_main_class.c_str());
 
-				Tango::DevULong64 tmp_data = ext->locker_client->java_ident[0];
+				Tango::DevULong64 tmp_data = locker_client->java_ident[0];
 				dvlsa->lvalue[2] = (DevLong)((tmp_data & 0xFFFFFFFF00000000LL) >> 32);
 				dvlsa->lvalue[3] = (DevLong)(tmp_data & 0xFFFFFFFF);
 
-				tmp_data = ext->locker_client->java_ident[1];
+				tmp_data = locker_client->java_ident[1];
 				dvlsa->lvalue[4] = (DevLong)((tmp_data & 0xFFFFFFFF00000000LL) >> 32);
 				dvlsa->lvalue[5] = (DevLong)(tmp_data & 0xFFFFFFFF);
 			}
@@ -4187,7 +4173,7 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 		else
 		{
 			basic_unlock();
-			ext->lock_status = "Device " + device_name + " is not locked";
+			lock_stat = "Device " + device_name + " is not locked";
 			dvlsa->svalue[1] = CORBA::string_dup("Not defined");
 			dvlsa->svalue[2] = CORBA::string_dup("Not defined");
 			for (long loop = 0;loop < 6;loop++)
@@ -4196,14 +4182,14 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 	}
 	else
 	{
-		ext->lock_status = "Device " + device_name + " is not locked";
+		lock_stat = "Device " + device_name + " is not locked";
 		dvlsa->svalue[1] = CORBA::string_dup("Not defined");
 		dvlsa->svalue[2] = CORBA::string_dup("Not defined");
 		for (long loop = 0;loop < 6;loop++)
 			dvlsa->lvalue[loop] = 0;
 	}
 
-	dvlsa->svalue[0] = CORBA::string_dup(ext->lock_status.c_str());
+	dvlsa->svalue[0] = CORBA::string_dup(lock_stat.c_str());
 
 	return dvlsa;
 }
@@ -4224,12 +4210,12 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 
 void DeviceImpl::set_locking_param(client_addr *cl,client_addr *old_cl,time_t date,DevLong ctr,DevLong valid)
 {
-	ext->locker_client = cl;
-	ext->old_locker_client = old_cl;
-	ext->locking_date = date;
-	ext->lock_ctr = ctr;
-	ext->device_locked = true;
-	ext->lock_validity = valid;
+	locker_client = cl;
+	old_locker_client = old_cl;
+	locking_date = date;
+	lock_ctr = ctr;
+	device_locked = true;
+	lock_validity = valid;
 }
 
 
@@ -4244,7 +4230,7 @@ void DeviceImpl::set_locking_param(client_addr *cl,client_addr *old_cl,time_t da
 
 void DeviceImpl::check_lock(const char *meth,const char *cmd)
 {
-	if (ext->device_locked == true)
+	if (device_locked == true)
 	{
 		if (valid_lock() == true)
 		{
@@ -4268,7 +4254,7 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 					throw_locked_exception(meth);
 			}
 
-			if (*cl != *(ext->locker_client))
+			if (*cl != *(locker_client))
 			{
 
 //
@@ -4295,9 +4281,9 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 	else
 	{
 		client_addr *cl = get_client_ident();
-		if (ext->old_locker_client != NULL)
+		if (old_locker_client != NULL)
 		{
-			if (*cl == (*ext->old_locker_client))
+			if (*cl == (*old_locker_client))
 			{
 				TangoSys_OMemStream o;
 				TangoSys_OMemStream o2;
@@ -4305,8 +4291,8 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 				o2 << "Device_Impl::" << meth << ends;
 				Except::throw_exception((const char *)DEVICE_UNLOCKED_REASON,o.str(),o2.str());
 			}
-			delete ext->old_locker_client;
-			ext->old_locker_client = NULL;
+			delete old_locker_client;
+			old_locker_client = NULL;
 		}
 	}
 }

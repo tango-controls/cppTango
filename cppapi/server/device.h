@@ -3407,17 +3407,17 @@ public:
 	string &get_name_lower() {return device_name_lower;}
 
 	TangoMonitor &get_dev_monitor() {return only_one;}
-	TangoMonitor &get_poll_monitor() {return ext->poll_mon;}
-	TangoMonitor &get_att_conf_monitor() {return ext->att_conf_mon;}
+	TangoMonitor &get_poll_monitor() {return poll_mon;}
+	TangoMonitor &get_att_conf_monitor() {return att_conf_mon;}
 
 	long get_dev_idl_version() {return idl_version;}
 	long get_cmd_poll_ring_depth(string &);
 	long get_attr_poll_ring_depth(string &);
-	vector<long> &get_alarmed_not_read() {return ext->alarmed_not_read;}
+	vector<long> &get_alarmed_not_read() {return alrmd_not_read;}
 	void poll_lists_2_v5();
 
-	bool is_py_device() {return ext->py_device;}
-	void set_py_device(bool py) {ext->py_device=py;}
+	bool is_py_device() {return py_device;}
+	void set_py_device(bool py) {py_device=py;}
 
 	Tango::client_addr *get_client_ident();
 	void lock(client_addr *,int);
@@ -3427,17 +3427,17 @@ public:
 	bool valid_lock();
 	Tango::DevVarLongStringArray *lock_status();
 
-	bool is_device_locked() {return ext->device_locked;}
-	client_addr *get_locker() {return ext->locker_client;}
-	client_addr *get_old_locker() {return ext->old_locker_client;}
-	time_t get_locking_date() {return ext->locking_date;}
-	Tango::DevLong get_locking_ctr() {return ext->lock_ctr;}
-	Tango::DevLong get_lock_validity() {return ext->lock_validity;}
-	void clean_locker_ptrs() {ext->locker_client=NULL;ext->old_locker_client=NULL;}
+	bool is_device_locked() {return device_locked;}
+	client_addr *get_locker() {return locker_client;}
+	client_addr *get_old_locker() {return old_locker_client;}
+	time_t get_locking_date() {return locking_date;}
+	Tango::DevLong get_locking_ctr() {return lock_ctr;}
+	Tango::DevLong get_lock_validity() {return lock_validity;}
+	void clean_locker_ptrs() {locker_client=NULL;old_locker_client=NULL;}
 	void set_locking_param(client_addr *,client_addr *,time_t,DevLong,DevLong);
 
-	void set_alias_name_lower(string &al) {ext->alias_name_lower = al;}
-	string &get_alias_name_lower() {return ext->alias_name_lower;}
+	void set_alias_name_lower(string &al) {alias_name_lower = al;}
+	string &get_alias_name_lower() {return alias_name_lower;}
 
 	void push_att_conf_event(Attribute *);
 
@@ -3476,30 +3476,8 @@ private:
     {
     public:
         DeviceImplExt(const char *d_name):
-        store_in_bb(true),poll_mon("cache"),
-        att_conf_mon("att_config"),state_from_read(false),
-        py_device(false),
-        device_locked(false),locker_client(NULL),old_locker_client(NULL),
-        lock_ctr(0),min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
-        ~DeviceImplExt();
+        min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
 
-
-        bool				store_in_bb;
-        TangoMonitor		poll_mon;		        // Polling list monitor
-        TangoMonitor		att_conf_mon;		    // Attribute config monitor
-        bool				state_from_read;
-        vector<long>		alarmed_not_read;
-
-        bool				py_device;
-        string				alias_name_lower;	    // Alias name (if any)
-
-        bool				device_locked;
-        client_addr			*locker_client;
-        client_addr			*old_locker_client;
-        DevLong				lock_validity;
-        time_t				locking_date;
-        string				lock_status;
-        DevLong				lock_ctr;
 
         long				min_poll_period;
         vector<string>		cmd_min_poll_period;
@@ -3574,6 +3552,23 @@ protected:
 
     vector<string>		cmd_poll_ring_depth;
     vector<string>		attr_poll_ring_depth;
+
+    bool				store_in_bb;
+    TangoMonitor		poll_mon;		        // Polling list monitor
+    TangoMonitor		att_conf_mon;		    // Attribute config monitor
+    bool				state_from_read;
+    vector<long>		alrmd_not_read;
+
+    bool				py_device;
+    string				alias_name_lower;	    // Alias name (if any)
+
+    bool				device_locked;
+    client_addr			*locker_client;
+    client_addr			*old_locker_client;
+    DevLong				lock_validity;
+    time_t				locking_date;
+    string				lock_stat;
+    DevLong				lock_ctr;
 
 
 private:
