@@ -59,8 +59,9 @@ namespace Tango
 Command::Command(const char *s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out)
-:name(s),in_type(in),out_type(out),ext(new CommandExt)
+:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = Tango::OPERATOR;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
@@ -68,8 +69,9 @@ Command::Command(const char *s,
 Command::Command(string &s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out)
-:name(s),in_type(in),out_type(out),ext(new CommandExt)
+:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = Tango::OPERATOR;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
@@ -79,8 +81,9 @@ Command::Command(const char *s,
 		 Tango::CmdArgType out,
 		 const char *in_desc,
 		 const char *out_desc)
-:name(s),in_type(in),out_type(out),ext(new CommandExt)
+:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = Tango::OPERATOR;
 	if (in_desc != NULL)
 		in_type_desc = in_desc;
 	if (out_desc != NULL)
@@ -95,8 +98,9 @@ Command::Command(string &s,
 		 string &in_desc,
 		 string &out_desc)
 :name(s),in_type(in),out_type(out),
-in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt)
+in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = Tango::OPERATOR;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
@@ -105,8 +109,9 @@ Command::Command(const char *s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out,
 		 Tango::DispLevel level)
-:name(s),in_type(in),out_type(out),ext(new CommandExt(level))
+:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = level;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
@@ -115,8 +120,9 @@ Command::Command(string &s,
 		 Tango::CmdArgType in,
 		 Tango::CmdArgType out,
 		 Tango::DispLevel level)
-:name(s),in_type(in),out_type(out),ext(new CommandExt(level))
+:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = level;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
@@ -127,8 +133,9 @@ Command::Command(const char *s,
 		 const char *in_desc,
 		 const char *out_desc,
 		 Tango::DispLevel level)
-:name(s),in_type(in),out_type(out),ext(new CommandExt(level))
+:name(s),in_type(in),out_type(out),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = level;
 	if (in_desc != NULL)
 		in_type_desc = in_desc;
 	if (out_desc != NULL)
@@ -144,8 +151,9 @@ Command::Command(string &s,
 		 string &out_desc,
 		 Tango::DispLevel level)
 :name(s),in_type(in),out_type(out),
-in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt(level))
+in_type_desc(in_desc),out_type_desc(out_desc),ext(new CommandExt),poll_period(0)
 {
+	cmd_disp_level = level;
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
@@ -720,228 +728,133 @@ CORBA::Any *Command::insert(Tango::DevEncoded *data)
 //--------------------------------------------------------------------------
 
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)())
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)())
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
 	allowed_ptr = NULL;
-	in_type = out_type = Tango::DEV_VOID;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &))
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &))
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	in_type = out_type = Tango::DEV_VOID;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)())
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)())
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
-	in_type = out_type = Tango::DEV_VOID;
 	allowed_ptr = NULL;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &))
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &))
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	in_type = out_type = Tango::DEV_VOID;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   const char *in_desc,const char *out_desc)
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),const char *in_desc,const char *out_desc)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
-	if (in_desc != NULL)
-		in_type_desc = in_desc;
-	if (out_desc != NULL)
-		out_type_desc = out_desc;
 	allowed_ptr = NULL;
-	in_type = out_type = Tango::DEV_VOID;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &),
-			   const char *in_desc,const char *out_desc)
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	if (in_desc != NULL)
-		in_type_desc = in_desc;
-	if (out_desc != NULL)
-		out_type_desc = out_desc;
-	in_type = out_type = Tango::DEV_VOID;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &),
-			   string &in_desc,string &out_desc)
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	in_type_desc = in_desc;
-	out_type_desc = out_desc;
-	in_type = out_type = Tango::DEV_VOID;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   string &in_desc,string &out_desc)
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),string &in_desc,string &out_desc)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
-	in_type_desc = in_desc;
-	out_type_desc = out_desc;
-	in_type = out_type = Tango::DEV_VOID;
 	allowed_ptr = NULL;
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,level),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
 	allowed_ptr = NULL;
-	in_type = out_type = Tango::DEV_VOID;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &),
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,level),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	in_type = out_type = Tango::DEV_VOID;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,level),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
-	in_type = out_type = Tango::DEV_VOID;
 	allowed_ptr = NULL;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &),
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,level),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	in_type = out_type = Tango::DEV_VOID;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   const char *in_desc,const char *out_desc,
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),const char *in_desc,const char *out_desc,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc,level),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
-	if (in_desc != NULL)
-		in_type_desc = in_desc;
-	if (out_desc != NULL)
-		out_type_desc = out_desc;
 	allowed_ptr = NULL;
-	in_type = out_type = Tango::DEV_VOID;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(const char *s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &),
-			   const char *in_desc,const char *out_desc,
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(const char *s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),const char *in_desc,const char *out_desc,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc,level),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	if (in_desc != NULL)
-		in_type_desc = in_desc;
-	if (out_desc != NULL)
-		out_type_desc = out_desc;
-	in_type = out_type = Tango::DEV_VOID;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   bool (DeviceImpl::*a)(const CORBA::Any &),
-			   string &in_desc,string &out_desc,
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),bool (DeviceImpl::*a)(const CORBA::Any &),string &in_desc,string &out_desc,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc,level),exe_ptr(f),ext(Tango_NullPtr),allowed_ptr(a)
 {
-	name = s;
-	in_type_desc = in_desc;
-	out_type_desc = out_desc;
-	in_type = out_type = Tango::DEV_VOID;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
-TemplCommand::TemplCommand(string &s,
-			   void (DeviceImpl::*f)(),
-			   string &in_desc,string &out_desc,
-			   Tango::DispLevel level)
-			   :exe_ptr(f),ext(Tango_NullPtr)
+TemplCommand::TemplCommand(string &s,void (DeviceImpl::*f)(),string &in_desc,string &out_desc,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc,level),exe_ptr(f),ext(Tango_NullPtr)
 {
-	name = s;
-	in_type_desc = in_desc;
-	out_type_desc = out_desc;
-	in_type = out_type = Tango::DEV_VOID;
 	allowed_ptr = NULL;
-	set_disp_level(level);
-	lower_name = name;
-	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+}
+
+TemplCommand::TemplCommand(const char *s)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID)
+{
+}
+
+TemplCommand::TemplCommand(string &s)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID)
+{
+}
+
+TemplCommand::TemplCommand(const char *s,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,level)
+{
+}
+
+TemplCommand::TemplCommand(string &s,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,level)
+{
+}
+
+TemplCommand::TemplCommand(const char *s,const char *in_desc,const char *out_desc)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc)
+{
+}
+
+TemplCommand::TemplCommand(string &s,string &in_desc,string &out_desc)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc)
+{
+}
+
+
+TemplCommand::TemplCommand(const char *s,const char *in_desc,const char *out_desc,Tango::DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc,level)
+{
+}
+
+TemplCommand::TemplCommand(string &s,string &in_desc,string &out_desc,DispLevel level)
+:Command(s,Tango::DEV_VOID,Tango::DEV_VOID,in_desc,out_desc,level)
+{
 }
 
 //+-------------------------------------------------------------------------
