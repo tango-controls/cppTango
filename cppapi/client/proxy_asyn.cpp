@@ -390,14 +390,6 @@ DeviceData Connection::command_inout_reply(long id)
 			{
 				try
 				{
-					DeviceProxy *dev_ptr = static_cast<DeviceProxy *>(this);
-					dev_ptr->ping();
-
-//
-// If we arrive here, this means we have to do a re-try with a synchronous
-// request
-//
-
 					DeviceData dd_out = redo_synch_cmd(req);
 
 //
@@ -502,15 +494,16 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 		for (i = 0;i < nb;i++)
 		{
+			if (req.request->poll_response() == true)
+			{
+				break;
+			}
+
 #ifdef _TG_WINDOWS_
 			Sleep(20);
 #else
 			nanosleep(&to_wait,&inter);
 #endif
-			if (req.request->poll_response() == true)
-			{
-				break;
-			}
 		}
 
 		if (i == nb)
@@ -626,7 +619,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			set_connection_state(CONNECTION_NOTOK);
 
 //
-// Re-throw all CORBA system exceptions
+// Re-throw nearly all CORBA system exceptions
 //
 
 			CORBA::NVList_ptr req_arg = req.request->arguments();
@@ -636,6 +629,34 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			char *tmp = CORBA::string_dup(cmd);
 
 			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+
+//
+// Check if the exception was a connection exception
+// If so, execute the command synchronously (tries to reconnect)
+// If successful just return, otherwise throw the first exception
+//
+
+			string ex(cb_excep_mess);
+			string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+			if (pos != string::npos)
+			{
+				try
+				{
+					DeviceData dd_out = redo_synch_cmd(req);
+
+//
+// Remove request from request global table.
+//
+
+					CORBA::string_free(tmp);
+
+					remove_asyn_request(id);
+
+					return dd_out;
+
+				}
+				catch (Tango::DevFailed &) {}
+			}
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
