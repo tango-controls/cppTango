@@ -13,7 +13,8 @@ lib_LTLIBRARIES=libtango.la
 libtango_la_LIBADD = ../client/libclient.la	\
 						../log4tango/src/liblog4tango.la \
 						jpeg/libjpeg.la \
-						jpeg_mmx/libjpeg_mmx.la
+						jpeg_mmx/libjpeg_mmx.la \
+						$(LIBZMQ_LIBS)
 
 # We need to set the -version-info for libtool so that libtool will
 # generate the correct .so version
