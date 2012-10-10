@@ -86,6 +86,14 @@ int main(int argc, char **argv)
 		assert ( str == "The device is in ON state.");
 		cout << "   Status --> OK" << endl;
 
+// Test Tango lib version
+
+		int tg_version;
+		tg_version = device->get_tango_lib_version();
+	
+		assert ( tg_version >= 810 );
+		cout << "   Tango lib version --> OK" << endl;
+
 // Test adm_name
 
 		string str_adm;
