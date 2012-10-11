@@ -1378,6 +1378,96 @@ CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,con
 	return(out_any);
 }
 
+//+----------------------------------------------------------------------------
+//
+// method : 		EventConfirmSubscriptionCmd::EventSubscriptionChangeCmd()
+//
+// description : 	constructor for the command of the .
+//
+// In : - name : The command name
+//		- in : The input parameter type
+//		- out : The output parameter type
+//		- in_desc : The input parameter description
+//		- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+EventConfirmSubscriptionCmd::EventConfirmSubscriptionCmd(const char *name,
+								Tango::CmdArgType in,
+								Tango::CmdArgType out,
+								const char *in_desc)
+:Command(name,in,out)
+{
+	set_in_type_desc(in_desc);
+}
+
+//
+//	Constructor without in/out parameters description
+//
+
+EventConfirmSubscriptionCmd::EventConfirmSubscriptionCmd(const char *name,Tango::CmdArgType in,Tango::CmdArgType out)
+:Command(name,in,out)
+{
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		EventConfirmSubscriptionCmd::is_allowed()
+//
+// description : 	method to test whether command is allowed or not in this
+//			state. In this case, the command is allowed only if
+//			the device is in ON state
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns :	boolean - true == is allowed , false == not allowed
+//
+//-----------------------------------------------------------------------------
+bool EventConfirmSubscriptionCmd::is_allowed(TANGO_UNUSED(Tango::DeviceImpl *device), TANGO_UNUSED(const CORBA::Any &in_any))
+{
+		//	End of Generated Code
+
+		//	Re-Start of Generated Code
+		return true;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		EventConfirmSubscriptionCmd::execute()
+//
+// description : 	method to trigger the execution of the command.
+//
+// in : - device : The device on which the command must be excuted
+//		- in_any : The command input data
+//
+// returns : The command output data (packed in the Any object)
+//
+//-----------------------------------------------------------------------------
+CORBA::Any *EventConfirmSubscriptionCmd::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any)
+{
+    cout4 << "EventConfirmSubscriptionCmd::execute(): arrived" << endl;
+
+//
+// Extract the input string array
+//
+
+	const Tango::DevVarStringArray *in_data;
+	extract(in_any,in_data);
+
+//
+// call DServer method which implements this command
+//
+
+	(static_cast<DServer *>(device))->event_confirm_subscription(in_data);
+
+//
+// return data to the caller
+//
+
+	CORBA::Any *ret = return_empty_any("EventConfirmSubscriptionCmd");
+	return ret;
+
+}
 
 
 DServerClass *DServerClass::_instance = NULL;
@@ -1639,6 +1729,10 @@ void DServerClass::command_factory()
 							Tango::DEVVAR_STRINGARRAY, Tango::DEVVAR_LONGSTRINGARRAY,
 							"Events consumer wants to subscribe to",
 							"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release"));
+
+	command_list.push_back(new EventConfirmSubscriptionCmd("EventConfirmSubscription",
+							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,
+							"Str[0] = dev1 name, Str[1] = att1 name, Str[2] = event name, Str[3] = dev2 name, Str[4] = att2 name, Str[5] = event name,..."));
 
 	command_list.push_back(new QueryWizardClassPropertyCmd("QueryWizardClassProperty",
 							Tango::DEV_STRING,

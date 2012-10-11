@@ -731,7 +731,7 @@ string Database::get_info()
 	{
 		ostream << (*db_info_list)[i].in() << endl;
 	}
-	ostream << ends;
+
 	string ret_str = ostream.str();
 
 	return(ret_str);
@@ -3805,18 +3805,23 @@ DbDatum Database::get_services(string &servname,string &instname)
 	DbServerCache *dsc;
 	if (au->in_server() == true)
 	{
-		try
+		if (from_env_var == false)
+			dsc = NULL;
+		else
 		{
-			Tango::Util *tg = Tango::Util::instance(false);
-			dsc = tg->get_db_cache();
-		}
-		catch (Tango::DevFailed &e)
-		{
-            string reason = e.errors[0].reason.in();
-            if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
-                dsc = db_tg->get_db_cache();
-            else
-                dsc = NULL;
+			try
+			{
+				Tango::Util *tg = Tango::Util::instance(false);
+				dsc = tg->get_db_cache();
+			}
+			catch (Tango::DevFailed &e)
+			{
+				string reason = e.errors[0].reason.in();
+				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+					dsc = db_tg->get_db_cache();
+				else
+					dsc = NULL;
+			}
 		}
 	}
 	else
@@ -3859,6 +3864,93 @@ DbDatum Database::get_services(string &servname,string &instname)
 	return db_datum;
 }
 
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_service_list() - Query database for all devices for all
+//										 instances of a specified service
+//
+//-----------------------------------------------------------------------------
+
+DbDatum Database::get_device_service_list(string &servname)
+{
+	DbData data;
+	DbDatum db_datum;
+	vector<string> services;
+	vector<string> filter_services;
+
+//
+// Get list of services
+//
+
+	ApiUtil *au = ApiUtil::instance();
+	DbServerCache *dsc;
+	if (au->in_server() == true)
+	{
+		if (from_env_var == false)
+			dsc = NULL;
+		else
+		{
+			try
+			{
+				Tango::Util *tg = Tango::Util::instance(false);
+				dsc = tg->get_db_cache();
+			}
+			catch (Tango::DevFailed &e)
+			{
+				string reason = e.errors[0].reason.in();
+				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+					dsc = db_tg->get_db_cache();
+				else
+					dsc = NULL;
+			}
+		}
+	}
+	else
+		dsc = NULL;
+
+	DbDatum db_d(SERVICE_PROP_NAME);
+	data.push_back(db_d);
+	get_property_forced(CONTROL_SYSTEM, data,dsc);
+	data[0] >> services;
+
+//
+// Filter the required service
+//
+
+	string filter = servname + "/";
+
+	transform(filter.begin(),filter.end(),filter.begin(),::tolower);
+
+	for(unsigned int i = 0;i < services.size();i++)
+	{
+		transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
+		if (strncmp(services[i].c_str(),filter.c_str(),filter.length()) == 0)
+		{
+			string::size_type pos,pos_end;
+			pos = services[i].find('/');
+			if (pos != string::npos)
+			{
+				pos_end = services[i].find(':');
+				if (pos != string::npos)
+				{
+					filter_services.push_back(services[i].substr(pos + 1,pos_end - pos - 1));
+					filter_services.push_back(services[i].substr(pos_end + 1));
+				}
+			}
+		}
+	}
+
+//
+// Build return value
+//
+
+	db_datum.name = "services";
+	db_datum.value_string.resize(filter_services.size());
+	for (unsigned int i = 0;i < filter_services.size();i++)
+		db_datum.value_string[i] = filter_services[i];
+
+	return db_datum;
+}
 //-----------------------------------------------------------------------------
 //
 // Database::register_service() - Register a new service
@@ -4387,10 +4479,7 @@ DbDevFullInfo Database::get_device_info(string &dev)
             dev_info.stopped_date = string(dev_info_db->svalue[6]);
 
         if (dev_info_db->svalue.length() > 7)
-{
-cout << "Class received in one call" << endl;
             dev_info.class_name = string(dev_info_db->svalue[7]);
-}
         else
         {
             try
@@ -4411,7 +4500,118 @@ cout << "Class received in one call" << endl;
 	}
 
 	return(dev_info);
+}
 
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_from_alias() - Get device name from an alias
+//
+//-----------------------------------------------------------------------------
+void Database::get_device_from_alias(string alias_name, string &dev_name)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= alias_name.c_str();
+
+	if (filedb != 0)
+		received = filedb->DbGetAliasDevice(send);
+	else
+		CALL_DB_SERVER("DbGetAliasDevice",send,received);
+	const char *dev_name_tmp = NULL;
+	received.inout() >>= dev_name_tmp;
+	dev_name = dev_name_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_alias_from_device() - Get alias name from a device name
+//
+//-----------------------------------------------------------------------------
+void Database::get_alias_from_device(string dev_name, string &alias_name)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= dev_name.c_str();
+
+	if (filedb != 0)
+		received = filedb->DbGetDeviceAlias(send);
+	else
+		CALL_DB_SERVER("DbGetDeviceAlias",send,received);
+	const char *dev_name_tmp = NULL;
+	received.inout() >>= dev_name_tmp;
+	alias_name = dev_name_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_attribute_from_alias() - Get attribute name from an alias
+//
+//-----------------------------------------------------------------------------
+void Database::get_attribute_from_alias(string attr_alias, string &attr_name)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= attr_alias.c_str();
+
+/*	if (filedb != 0)
+		received = filedb->DbGetAliasAttribute(send);
+	else*/
+		CALL_DB_SERVER("DbGetAliasAttribute",send,received);
+	const char* attr_name_tmp = NULL;
+	received.inout() >>= attr_name_tmp;
+
+	if (attr_name_tmp == NULL)
+	{
+		Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_attribute_from_alias()");
+	}
+	else
+		attr_name = attr_name_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_alias_from_attribute() - Get alias name from an attribute name
+//
+//-----------------------------------------------------------------------------
+void Database::get_alias_from_attribute(string attr_name, string &attr_alias)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= attr_name.c_str();
+
+/*	if (filedb != 0)
+		received = filedb->DbGetAttributeAlias2(send);
+	else*/
+		CALL_DB_SERVER("DbGetAttributeAlias2",send,received);
+	const char* attr_alias_tmp = NULL;
+	received.inout() >>= attr_alias_tmp;
+
+	if (attr_alias_tmp == NULL)
+	{
+		Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_alias_from_attribute()");
+	}
+	else
+		attr_alias = attr_alias_tmp;
 }
 
 } // End of Tango namespace

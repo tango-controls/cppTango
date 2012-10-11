@@ -88,6 +88,7 @@ public :
 
 	Tango::DevLong event_subscription_change(const Tango::DevVarStringArray *);
 	Tango::DevVarLongStringArray *zmq_event_subscription_change(const Tango::DevVarStringArray *);
+	void event_confirm_subscription(const Tango::DevVarStringArray *);
 
 	void delete_devices();
 

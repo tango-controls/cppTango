@@ -5864,14 +5864,15 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 	return ddh;
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::connect_to_adm_device() - get device polling status
+// method:
+//		DeviceProxy::connect_to_adm_device()
 //
-// Please, note that this method is called when the mutex called adm_dev_mutex
-// is locked
+// description:
+//		Create a connection to the admin device of the Tango device server process where the device is running.
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::connect_to_adm_device()
 {
@@ -7996,6 +7997,128 @@ void DeviceProxy::local_import(string &local_ior)
 			}
 		}
 	}
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method:
+//		DeviceProxy::get_tango_lib_version()
+//
+// description:
+//		Returns the Tango lib version number used by the remote device
+//
+// return:
+//		The device Tango lib version as a 3 or 4 digits number
+//		Possible return value are: 100,200,500,520,700,800,810,...
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+int DeviceProxy::get_tango_lib_version()
+{
+	int ret = 0;
+
+	check_connect_adm_device();
+
+//
+// Get admin device IDL release and command list
+//
+
+	int admin_idl_vers = adm_device->get_idl_version();
+	Tango::CommandInfoList *cmd_list;
+	cmd_list = adm_device->command_list_query();
+
+	switch (admin_idl_vers)
+	{
+	case 1:
+		ret = 100;
+		break;
+
+	case 2:
+		ret = 200;
+		break;
+
+	case 3:
+	{
+
+//
+// IDL 3 is for Tango 5 and 6. Unfortunately, there is no way from the client side to determmine if it is
+// Tango 5 or 6. The beast we can do is to get the info that it is Tango 5.2 (or above)
+//
+
+#ifdef HAS_LAMBDA_FUNC
+		auto pos = find_if((*cmd_list).begin(),(*cmd_list).end(),
+					[] (Tango::CommandInfo &cc) -> bool
+					{
+						return cc.cmd_name == "QueryWizardClassProperty";
+					});
+#else
+		vector<CommandInfo>::iterator pos,end;
+		for (pos = (*cmd_list).begin(), end = (*cmd_list).end();pos != end;++pos)
+		{
+			if (pos->cmd_name == "QueryWizardClassProperty")
+				break;
+		}
+#endif
+		if (pos != (*cmd_list).end())
+			ret = 520;
+		else
+			ret = 500;
+		break;
+	}
+
+	case 4:
+	{
+
+//
+// IDL 4 is for Tango 7 and 8.
+//
+
+		bool ecs = false;
+		bool zesc = false;
+
+#ifdef HAS_RANGE_BASE_FOR
+		for (const auto &cmd : *cmd_list)
+		{
+			if (cmd.cmd_name == "EventConfirmSubscription")
+			{
+				ecs = true;
+				break;
+			}
+
+			if (cmd.cmd_name == "ZmqEventSubscriptionChange")
+				zesc = true;
+		}
+#else
+		vector<CommandInfo>::iterator pos,pos_end;
+		for (pos = (*cmd_list).begin(), pos_end = (*cmd_list).end();pos != pos_end;++pos)
+		{
+			if (pos->cmd_name == "EventConfirmSubscription")
+			{
+				ecs = true;
+				break;
+			}
+
+			if  (pos->cmd_name == "ZmqEventSubscriptionChange")
+				zesc = true;
+		}
+#endif
+		if (ecs == true)
+			ret = 810;
+		else if (zesc == true)
+			ret = 800;
+		else
+			ret = 700;
+
+		break;
+	}
+
+	default:
+		break;
+	}
+
+	delete cmd_list;
+
+	return ret;
 }
 
 } // End of Tango namespace

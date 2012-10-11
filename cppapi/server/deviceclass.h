@@ -436,6 +436,7 @@ public:
 	void set_device_factory_done(bool val) {device_factory_done = val;}
 
 	void check_att_conf();
+	void release_devices_mon();
 
 protected:
 /// @privatesection

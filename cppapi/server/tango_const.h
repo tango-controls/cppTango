@@ -49,6 +49,7 @@ namespace Tango
 #define     build_string(s)         #s
 #define     xbuild_string(s)        build_string(s)
 #define     TgLibVers               xbuild_string(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH)
+#define		TgLibVersNb				(TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_MINOR)
 
 #define		DevVersion				4			// IDL version number
 #define		DefaultMaxSeq			20

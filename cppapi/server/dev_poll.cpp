@@ -324,6 +324,13 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
 {
     Tango::Util *tg = Tango::Util::instance();
 
+	if (tg->is_svr_shutting_down() == true)
+	{
+		Except::throw_exception((const char *)"API_NotSupported",
+								(const char *)"It's not supported to start polling on any device cmd/attr while the device is shutting down",
+								(const char *)"DeviceImpl::poll_object");
+	}
+
     if (tg->is_svr_starting() == true)
     {
 
@@ -550,30 +557,34 @@ void DeviceImpl::stop_poll_object(const string &obj_name,PollObjType type)
     else
     {
 
+		if (tg->is_device_restarting(device_name) == false)
+		{
+
 //
 // Ask the admin device to do the work (simulating the classical
 // way to tune polling)
 //
 
-        DServer *ds = tg->get_dserver_device();
-        CORBA::Any the_any;
+			DServer *ds = tg->get_dserver_device();
+			CORBA::Any the_any;
 
-        DevVarStringArray *send = new DevVarStringArray();
-        send->length(3);
+			DevVarStringArray *send = new DevVarStringArray();
+			send->length(3);
 
-        (*send)[0] = CORBA::string_dup(get_name().c_str());
-        if (type == POLL_CMD)
-            (*send)[1] = CORBA::string_dup("command");
-        else
-            (*send)[1] = CORBA::string_dup("attribute");
-        (*send)[2] = CORBA::string_dup(obj_name.c_str());
+			(*send)[0] = CORBA::string_dup(get_name().c_str());
+			if (type == POLL_CMD)
+				(*send)[1] = CORBA::string_dup("command");
+			else
+				(*send)[1] = CORBA::string_dup("attribute");
+			(*send)[2] = CORBA::string_dup(obj_name.c_str());
 
-        the_any <<= send;
+			the_any <<= send;
 
-        CORBA::Any *received_any;
+			CORBA::Any *received_any;
 
-        received_any = ds->command_inout("RemObjPolling",the_any);
-        delete received_any;
+			received_any = ds->command_inout("RemObjPolling",the_any);
+			delete received_any;
+		}
     }
 }
 

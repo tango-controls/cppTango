@@ -13,10 +13,10 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :		2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+//						BP 220, Grenoble 38043
+// 						FRANCE
 //
 // This file is part of Tango.
 //
@@ -333,7 +333,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			{
 
 				string &mem_value = att.get_mem_value();
-                if (mem_value != MemNotUsed)
+				if (mem_value != MemNotUsed)
 				{
 					nb_wr++;
 					att_val.length(nb_wr);
@@ -522,14 +522,15 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 //
 
 					if ( att.is_memorized_init() == false )
-                    {
+					{
 						nb_wr--;
 						att_val.length(nb_wr);
 						// reset memorized flag
 						att.set_memorized(true);
-                    }
+					}
 					else
-                    {
+					{
+
 //
 // Init the AttributeValue structure
 //
@@ -785,24 +786,24 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 // Wait for CORBA to call the device dtor
 //
 
-    if (device_list[idx] != NULL && exported_device == true)
-    {
+	if (device_list[idx] != NULL && exported_device == true)
+	{
 #ifdef _TG_WINDOWS_
-        while (device_list[idx] != NULL)
-        {
-            Sleep(10);
-        }
+		while (device_list[idx] != NULL)
+		{
+			Sleep(10);
+		}
 #else
-        struct timespec ts;
-        ts.tv_sec = 0;
-        ts.tv_nsec = 10000000;
+		struct timespec ts;
+		ts.tv_sec = 0;
+		ts.tv_nsec = 10000000;
 
-        while (device_list[idx] != NULL)
-        {
-            nanosleep(&ts,NULL);
-        }
+		while (device_list[idx] != NULL)
+		{
+			nanosleep(&ts,NULL);
+		}
 #endif
-    }
+	}
 
 	cout4 << "Leaving DeviceClass delete_dev" << endl;
 }
@@ -909,6 +910,16 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	{
 
 //
+// Take the Tango monitor in order to protect the device against external world access
+// until memorized attribute (in any) are set but forget the admin device
+// (which does not have any memorized attribute)
+//
+
+		string &dev_name = dev->get_name_lower();
+		if (dev_name.find("dserver") != 0)
+			dev->get_dev_monitor().get_monitor();
+
+//
 // Activate the CORBA object incarnated by the dev C++ object
 // Also call _remove_ref to give POA the full ownership of servant
 //
@@ -935,8 +946,8 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 			TangoSys_OMemStream o;
 			o << "Cant get CORBA reference Id for device " << dev->get_name() << ends;
 			Except::throw_exception((const char *)"API_CantGetDevObjectId",
-					      o.str(),
-					      (const char *)"DeviceClass::export_device");
+							o.str(),
+							(const char *)"DeviceClass::export_device");
 		}
 		dev->set_obj_id(oid);
 	}
@@ -953,10 +964,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 //
 
 		string corba_obj_name_lower(corba_obj_name);
-		transform(corba_obj_name_lower.begin(),
-			  corba_obj_name_lower.end(),
-			  corba_obj_name_lower.begin(),
-			  ::tolower);
+		transform(corba_obj_name_lower.begin(),corba_obj_name_lower.end(),corba_obj_name_lower.begin(),::tolower);
 		PortableServer::ObjectId_var id = PortableServer::string_to_ObjectId(corba_obj_name_lower.c_str());
 		try
 		{
@@ -1297,21 +1305,21 @@ void DeviceClass::device_destroyer(const string &dev_name)
 // Check that the class know this device
 //
 
-  	unsigned long k;
-  	for (k = 0;k < device_list.size();k++)
-  	{
-  		if (device_list[k]->get_name() == dev_name)
-  			break;
-  	}
+	unsigned long k;
+	for (k = 0;k < device_list.size();k++)
+	{
+		if (device_list[k]->get_name() == dev_name)
+			break;
+	}
 
-  	if (k == device_list.size())
-  	{
+	if (k == device_list.size())
+	{
 		TangoSys_OMemStream o;
 		o << "Device " << dev_name << " not in Tango class device list!" << ends;
 
-  		Tango::Except::throw_exception((const char *)"API_CantDestroyDevice",o.str(),
-  					       (const char *)"DeviceClass::device_destroyer");
-  	}
+		Tango::Except::throw_exception((const char *)"API_CantDestroyDevice",o.str(),
+							(const char *)"DeviceClass::device_destroyer");
+	}
 
 //
 // Check if the device is polled
@@ -1415,18 +1423,18 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 	vector<Command *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
-    pos = find_if(command_list.begin(),command_list.end(),
-                    [&] (Command *cmd) -> bool
-                    {
-                        if (cmd_name.size() != cmd->get_lower_name().size())
-                            return false;
-                        string tmp_name(cmd_name);
-                        transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-                        return cmd->get_lower_name() == tmp_name;
-                    });
+	pos = find_if(command_list.begin(),command_list.end(),
+					[&] (Command *cmd) -> bool
+					{
+						if (cmd_name.size() != cmd->get_lower_name().size())
+							return false;
+						string tmp_name(cmd_name);
+						transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+						return cmd->get_lower_name() == tmp_name;
+					});
 #else
 	pos = find_if(command_list.begin(),command_list.end(),
-		      bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
 #endif
 
 	if (pos == command_list.end())
@@ -1451,12 +1459,36 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 //                  exception) for all devices in the class
 //
 //-----------------------------------------------------------------------------
+
 void DeviceClass::check_att_conf()
 {
-    vector<DeviceImpl *>::iterator ite;
+	vector<DeviceImpl *>::iterator ite;
 
-    for (ite = device_list.begin();ite != device_list.end();++ite)
-        (*ite)->check_att_conf();
+	for (ite = device_list.begin();ite != device_list.end();++ite)
+		(*ite)->check_att_conf();
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceClass::release_devices_mon
+//
+// description :	Release all device(s) class monitor. This is needed in DS
+//					startup sequence. Each device monitor is taken before the
+//					device is known to CORBA and released after the memorized
+//					attributes (if any) are set
+//
+//-----------------------------------------------------------------------------
+
+void DeviceClass::release_devices_mon()
+{
+	vector<DeviceImpl *>::iterator ite;
+
+//
+// Release monitor for all devices belonging to this class
+//
+
+	for (ite = device_list.begin();ite != device_list.end();++ite)
+		(*ite)->get_dev_monitor().rel_monitor();
 }
 
 } // End of Tango namespace

@@ -353,6 +353,26 @@ public :
  */
 	DbDatum get_services(string &service_name,string &inst_name);
 /**
+ * Get services list from database
+ *
+ * Query database for specified services. The vector of strings returned in the DbDatum
+ * object contains pair of strings <instance_name> followed by<device name>
+ * @code
+ * string servicename("HdbManager");
+ *
+ * DbDatum db_datum = db->get_services(servicename);
+ *
+ * vector<string> service_device_list;
+ * db_datum >> service_device_list;
+ * @endcode
+ *
+ * @param [in] service_name The service name
+ * @return A service/device list matching the input parameter
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	DbDatum get_device_service_list(string &service_name);
+/**
  * Register a service in the database
  *
  * Register the specified service wihtin the database.
@@ -938,7 +958,33 @@ public :
 /**@name alias oriented methods */
 //@{
 /**
+ * Get device name from its alias
+ *
+ * Get the device name from its alias. The device alias is specified by alias and the device name
+ * is returned in dev_name. If there is no device defined with the given alias, a DevFailed exception is thrown.
+ *
+ * @param [in] alias The device alias
+ * @param [out] dev_name The device name
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_device_from_alias(string alias,string &dev_name);
+/**
+ * Get device alias form its name
+ *
+ * Get the device alias from its name. The device name is specified by dev_name and the device alias is
+ * returned in alias. If there is no alias defined for the device, a DevFailed exception is thrown.
+ *
+ * @param [in] dev_name The device name
+ * @param [out] alias The device alias
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_alias_from_device(string dev_name,string &alias);
+/**
  * Get device alias from its name
+ *
+ * @deprecated use get_alias_from_device()
  *
  * Get the device alias name from its name. The device name is specified by dev_name and the device alias
  * name is returned in dev_alias. If there is no alias defined for the device, a DevFailed exception is thrown.
@@ -951,6 +997,8 @@ public :
 	void get_alias(string dev_name,string &dev_alias);
 /**
  * Get device name from its alias
+ *
+ * @deprecated use get_device_from_alias()
  *
  * Get the device name from an alias. The device alias is specified by dev_alias and the device name is
  * returned in dev_name. If there is no device with the given alias, a DevFailed exception is thrown.
@@ -983,6 +1031,30 @@ public :
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	void delete_device_alias(string &dev_alias);
+/**
+ * Get attribute name from its alias
+ *
+ * Get the attribute name from its alias. The attribute alias is specified by alias and the attribute name
+ * is returned in att_name. If there is no attribute defined with the given alias, a DevFailed exception is thrown.
+ *
+ * @param [in] alias The attribute alias
+ * @param [out] att_name The attribute name
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_attribute_from_alias(string alias,string &att_name);
+/**
+ * Get attribute alias form its name
+ *
+ * Get the attribute alias from its name. The attribute name is specified by att_name and the attribute alias is
+ * returned in alias. If there is no alias defined for the attribute, a DevFailed exception is thrown.
+ *
+ * @param [in] att_name The attribute name
+ * @param [out] alias The attribute alias
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_alias_from_attribute(string att_name,string &alias);
 /**
  * Get attribute name from its alias
  *

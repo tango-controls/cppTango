@@ -447,7 +447,22 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
     call_info.setByteSwapFlag(endian);
 
     ZmqCallInfo_var c_info_var = new ZmqCallInfo;
-    (ZmqCallInfo &)c_info_var <<= call_info;
+    try
+    {
+        (ZmqCallInfo &)c_info_var <<= call_info;
+    }
+    catch (...)
+    {
+        string st("Received a malformed hertbeat event: ");
+		st = st + event_name;
+		print_error_message(st.c_str());
+        unsigned char *tmp = (unsigned char *)received_call.data();
+        for (unsigned int loop = 0;loop < received_call.size();loop++)
+        {
+           cerr << "Hertabeat event data[" << loop << "] = " << (int)tmp[loop] << endl;
+        }
+        return;
+    }
 
 //
 // Call the heartbeat method
@@ -2441,7 +2456,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 void ZmqEventConsumer::print_error_message(const char *mess)
 {
 	time_t tmp_val = time(NULL);
-					
+
 	char tmp_date[128];
 #ifdef _TG_WINDOWS_
 	ctime_s(tmp_date,128,&tmp_val);

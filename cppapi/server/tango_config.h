@@ -150,6 +150,7 @@
             #endif
             #if __GNUC_MINOR__ > 5
                 #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
             #endif
         #elif __GNUC__ > 4
                 #define HAS_UNIQUE_PTR
@@ -157,6 +158,7 @@
                 #define HAS_LAMBDA_FUNC
                 #define HAS_ISNAN_IN_STD
                 #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
         #endif
     #endif
 #else

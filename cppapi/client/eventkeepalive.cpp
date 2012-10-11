@@ -619,8 +619,18 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					// lock the event channel
 					ipos->second.channel_monitor->get_monitor();
 
+//
+// Check if it is necessary for client to confirm its subscription
+// Note that starting with Tango 8.1 (and for ZMQ), there is a new
+// command in the admin device which allows a better (optimized)
+// confirmation algorithm
+//
+
 					if ((now - ipos->second.last_subscribed) > EVENT_RESUBSCRIBE_PERIOD/3)
 					{
+						vector<string> cmd_params;
+						vector<map<string,EventCallBackStruct>::difference_type> vd;
+
 						for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 						{
 							if (epos->second.channel_name == ipos->first )
@@ -630,29 +640,103 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 									// lock the callback
 									epos->second.callback_monitor->get_monitor();
 
-									DeviceData subscriber_in;
-									vector<string> subscriber_info;
-									subscriber_info.push_back(epos->second.device->dev_name());
-									subscriber_info.push_back(epos->second.attr_name);
-									subscriber_info.push_back("subscribe");
-									subscriber_info.push_back(epos->second.event_name);
-									subscriber_in << subscriber_info;
-
 									if (ipos->second.channel_type == ZMQ)
-                                        ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
+									{
+										cmd_params.push_back(epos->second.device->dev_name());
+										cmd_params.push_back(epos->second.attr_name);
+										cmd_params.push_back(epos->second.event_name);
+
+										vd.push_back(distance(event_consumer->event_callback_map.begin(),epos));
+									}
 									else
+									{
+										DeviceData subscriber_in;
+										vector<string> subscriber_info;
+										subscriber_info.push_back(epos->second.device->dev_name());
+										subscriber_info.push_back(epos->second.attr_name);
+										subscriber_info.push_back("subscribe");
+										subscriber_info.push_back(epos->second.event_name);
+										subscriber_in << subscriber_info;
+
                                         ipos->second.adm_device_proxy->command_inout("EventSubscriptionChange",subscriber_in);
 
-									ipos->second.last_subscribed = time(NULL);
-        							epos->second.last_subscribed = time(NULL);
+										time_t ti = time(NULL);
+										ipos->second.last_subscribed = ti;
+        								epos->second.last_subscribed = ti;
 
-									epos->second.callback_monitor->rel_monitor();
+										epos->second.callback_monitor->rel_monitor();
+									}
 								}
 								catch (...)
 								{
 									epos->second.callback_monitor->rel_monitor();
 								}
 							}
+						}
+
+						if (ipos->second.channel_type == ZMQ && cmd_params.empty() == false)
+						{
+							try
+							{
+								DeviceData sub_cmd_in;
+								sub_cmd_in << cmd_params;
+
+								ipos->second.adm_device_proxy->command_inout("EventConfirmSubscription",sub_cmd_in);
+
+								time_t ti = time(NULL);
+								ipos->second.last_subscribed = ti;
+								for (unsigned int loop = 0;loop < vd.size();++loop)
+								{
+									epos = event_consumer->event_callback_map.begin();
+									advance(epos,vd[loop]);
+
+									epos->second.callback_monitor->get_monitor();
+									epos->second.last_subscribed = ti;
+									epos->second.callback_monitor->rel_monitor();
+								}
+							}
+							catch (Tango::DevFailed &e)
+							{
+							    string reason(e.errors[0].reason.in());
+							    if (reason == "API_CommandNotFound")
+                                {
+
+//
+// We are connected to a Tango 8 server which do not implement the EventConfirmSubscription command
+// Send confirmation the old way
+//
+
+                                    time_t ti = time(NULL);
+                                    ipos->second.last_subscribed = ti;
+
+                                    for (unsigned int loop = 0;loop < vd.size();++loop)
+                                    {
+										DeviceData subscriber_in;
+										vector<string> subscriber_info;
+										subscriber_info.push_back(cmd_params[(loop * 3)]);
+										subscriber_info.push_back(cmd_params[(loop * 3) + 1]);
+										subscriber_info.push_back("subscribe");
+										subscriber_info.push_back(cmd_params[(loop * 3) + 2]);
+										subscriber_in << subscriber_info;
+
+                                        try
+                                        {
+                                            ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
+                                        }
+                                        catch(...) {}
+
+                                        epos = event_consumer->event_callback_map.begin();
+                                        advance(epos,vd[loop]);
+
+                                        epos->second.callback_monitor->get_monitor();
+                                        epos->second.last_subscribed = ti;
+                                        epos->second.callback_monitor->rel_monitor();
+                                    }
+                                }
+							}
+							catch (...) {}
+
+							cmd_params.clear();
 						}
 					}
 

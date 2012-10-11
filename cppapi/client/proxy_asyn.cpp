@@ -380,8 +380,8 @@ DeviceData Connection::command_inout_reply(long id)
 
 //
 // Check if the exception was a connection exception
-// In this case, try to ping the device.
-// If successfull, just returns otherwise, throw the first exception
+// If so, execute the command synchronously (tries to reconnect)
+// If successful just return, otherwise throw the first exception
 //
 
 			string ex(cb_excep_mess);

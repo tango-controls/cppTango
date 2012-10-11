@@ -331,6 +331,14 @@ public :
  * @throws ConnectionFailed, CommunicationFailed, NonDbDevice
  */
 	virtual DbDevImportInfo import_info();
+/**
+ * Get device Tango lib version
+ *
+ * Get the version of the Tango library used by the device
+ *
+ * @return The device Tango lib version
+ */
+	virtual int get_tango_lib_version();
 //@}
 
 /** @name Synchronous command oriented methods */

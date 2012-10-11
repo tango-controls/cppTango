@@ -345,7 +345,9 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 						{
 							if ((attribute.archive_abs_change[0] == INT_MAX) &&
 					      		(attribute.archive_abs_change[1] == INT_MAX) &&
-						   	    (attribute.archive_period        == INT_MAX))
+								(attribute.archive_rel_change[0] == INT_MAX) &&
+								(attribute.archive_rel_change[1] == INT_MAX) &&
+								(attribute.archive_period        == INT_MAX))
 							{
 								TangoSys_OMemStream o;
 								o << "Archive event properties (archive_abs_change or archive_rel_change or archive_period) for attribute ";
@@ -726,5 +728,102 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
 	return ret_data;
 }
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DServer::event_confirm_subscription()
+//
+// description : 	method to execute the command EventConfirmSubscription command.
+//
+// in : - argin : The command input argument
+//
+//-----------------------------------------------------------------------------
+void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
+{
+
+//
+// Some check on argument
+//
+
+    if ((argin->length() == 0) || (argin->length()  % 3) != 0)
+    {
+		TangoSys_OMemStream o;
+		o << "Wrong number of input arguments: 3 needed per event: device name, attribute name and event name" << endl;
+
+		Except::throw_exception((const char *)"DServer_Events",o.str(),
+								(const char *)"DServer::event_confirm_subscription");
+	}
+
+//
+// If we receive this command while the DS is in its
+// shuting down sequence, do nothing
+//
+
+	Tango::Util *tg = Tango::Util::instance();
+	if (tg->get_heartbeat_thread_object() == NULL)
+	{
+		TangoSys_OMemStream o;
+		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+
+		Except::throw_exception((const char *)"DServer_Events", o.str(),
+								(const char *)"DServer::event_confirm_subscription");
+	}
+
+//
+// A loop for each event
+//
+
+    unsigned int nb_event = argin->length() / 3;
+
+	string old_dev;
+	DeviceImpl *dev = NULL;
+
+	for (unsigned int loop = 0;loop < nb_event;loop++)
+	{
+		string dev_name, attr_name, event, attr_name_lower;
+		int base = (nb_event - 1) * 3;
+		dev_name = (*argin)[base];
+		attr_name = (*argin)[base + 1];
+		event = (*argin)[base + 2];
+
+		attr_name_lower = attr_name;
+		transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
+
+		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
+
+//
+// Find device
+//
+
+		if (old_dev != dev_name)
+		{
+        	try
+        	{
+           		dev = tg->get_device_by_name(dev_name);
+        	}
+        	catch (Tango::DevFailed &e)
+        	{
+            	TangoSys_OMemStream o;
+            	o << "Device " << dev_name << " not found" << ends;
+            	Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+             	                          (const char *)"DServer::event_confirm_subscription");
+        	}
+
+			old_dev = dev_name;
+		}
+
+//
+// Call common method (common between old and new command)
+//
+
+		string mcast;
+		int rate,ivl;
+
+		string action("subscribe");
+		event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev);
+	}
+
+}
+
 
 }	// namespace
