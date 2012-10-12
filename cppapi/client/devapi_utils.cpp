@@ -315,11 +315,11 @@ void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<De
 			break;
 
 			case DEV_LONG64:
-			(*ddh)[loop].set_Long64_data(new DevVarLong64Array());
-			(*ddh)[loop].get_Long64_data()->length(data_length);
+			(*ddh)[loop].Long64Seq = new DevVarLong64Array();
+			(*ddh)[loop].Long64Seq->length(data_length);
 
 			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_Long64_data())[ll] = (*tmp_lg64)[(base - data_length) + ll];
+				(*ddh)[loop].Long64Seq[ll] = (*tmp_lg64)[(base - data_length) + ll];
 			break;
 
 			case DEV_FLOAT:
@@ -371,35 +371,35 @@ void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<De
 			break;
 
 			case DEV_ULONG:
-			(*ddh)[loop].set_ULong_data(new DevVarULongArray());
-			(*ddh)[loop].get_ULong_data()->length(data_length);
+			(*ddh)[loop].ULongSeq = new DevVarULongArray();
+			(*ddh)[loop].ULongSeq->length(data_length);
 
 			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_ULong_data())[ll] = (*tmp_ulg)[(base - data_length) + ll];
+				(*ddh)[loop].ULongSeq[ll] = (*tmp_ulg)[(base - data_length) + ll];
 			break;
 
 			case DEV_ULONG64:
-			(*ddh)[loop].set_ULong64_data(new DevVarULong64Array());
-			(*ddh)[loop].get_ULong64_data()->length(data_length);
+			(*ddh)[loop].ULong64Seq = new DevVarULong64Array();
+			(*ddh)[loop].ULong64Seq->length(data_length);
 
 			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_ULong64_data())[ll] = (*tmp_ulg64)[(base - data_length) + ll];
+				(*ddh)[loop].ULong64Seq[ll] = (*tmp_ulg64)[(base - data_length) + ll];
 			break;
 
 			case DEV_STATE:
-			(*ddh)[loop].set_State_data(new DevVarStateArray());
-			(*ddh)[loop].get_State_data()->length(data_length);
+			(*ddh)[loop].StateSeq = new DevVarStateArray();
+			(*ddh)[loop].StateSeq->length(data_length);
 
 			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_State_data())[ll] = (*tmp_state)[(base - data_length) + ll];
+				(*ddh)[loop].StateSeq[ll] = (*tmp_state)[(base - data_length) + ll];
 			break;
 
 			case DEV_ENCODED:
-			(*ddh)[loop].set_Encoded_data(new DevVarEncodedArray());
-			(*ddh)[loop].get_Encoded_data()->length(data_length);
+			(*ddh)[loop].EncodedSeq = new DevVarEncodedArray();
+			(*ddh)[loop].EncodedSeq->length(data_length);
 
 			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_Encoded_data())[ll] = (*tmp_enc)[(base - data_length) + ll];
+				(*ddh)[loop].EncodedSeq[ll] = (*tmp_enc)[(base - data_length) + ll];
 			break;
 		}
 

@@ -4839,12 +4839,12 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				attr_value_list[i].value <<= attr_list[i].LongSeq.in();
 			continue;
 		}
-		if (attr_list[i].get_Long64_data().operator->() != NULL)
+		if (attr_list[i].Long64Seq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.long64_att_value(attr_list[i].get_Long64_data().in());
+				attr_value_list_4[i].value.long64_att_value(attr_list[i].Long64Seq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_Long64_data().in();
+				attr_value_list[i].value <<= attr_list[i].Long64Seq.in();
 			continue;
 		}
 		if (attr_list[i].ShortSeq.operator->() != NULL)
@@ -4903,28 +4903,28 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				attr_value_list[i].value  <<= attr_list[i].UCharSeq.in();
 			continue;
 		}
-		if (attr_list[i].get_ULong_data().operator->() != NULL)
+		if (attr_list[i].ULongSeq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.ulong_att_value(attr_list[i].get_ULong_data().in());
+				attr_value_list_4[i].value.ulong_att_value(attr_list[i].ULongSeq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_ULong_data().in();
+				attr_value_list[i].value <<= attr_list[i].ULongSeq.in();
 			continue;
 		}
-		if (attr_list[i].get_ULong64_data().operator->() != NULL)
+		if (attr_list[i].ULong64Seq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.ulong64_att_value(attr_list[i].get_ULong64_data().in());
+				attr_value_list_4[i].value.ulong64_att_value(attr_list[i].ULong64Seq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_ULong64_data().in();
+				attr_value_list[i].value <<= attr_list[i].ULong64Seq.in();
 			continue;
 		}
-		if (attr_list[i].get_State_data().operator->() != NULL)
+		if (attr_list[i].StateSeq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.state_att_value(attr_list[i].get_State_data().in());
+				attr_value_list_4[i].value.state_att_value(attr_list[i].StateSeq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_State_data().in();
+				attr_value_list[i].value <<= attr_list[i].StateSeq.in();
 			continue;
 		}
 	}
@@ -5085,8 +5085,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 
 		if (dev_attr.LongSeq.operator->() != NULL)
 			attr_value_list_4[0].value.long_att_value(dev_attr.LongSeq.in());
-		else if (dev_attr.get_Long64_data().operator->() != NULL)
-			attr_value_list_4[0].value.long64_att_value(dev_attr.get_Long64_data().in());
+		else if (dev_attr.Long64Seq.operator->() != NULL)
+			attr_value_list_4[0].value.long64_att_value(dev_attr.Long64Seq.in());
 		else if (dev_attr.ShortSeq.operator->() != NULL)
 			attr_value_list_4[0].value.short_att_value(dev_attr.ShortSeq.in());
 		else if (dev_attr.DoubleSeq.operator->() != NULL)
@@ -5101,14 +5101,14 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			attr_value_list_4[0].value.ushort_att_value(dev_attr.UShortSeq.in());
 		else if (dev_attr.UCharSeq.operator->() != NULL)
 			attr_value_list_4[0].value.uchar_att_value(dev_attr.UCharSeq.in());
-		else if (dev_attr.get_ULong_data().operator->() != NULL)
-			attr_value_list_4[0].value.ulong_att_value(dev_attr.get_ULong_data().in());
-		else if (dev_attr.get_ULong64_data().operator->() != NULL)
-			attr_value_list_4[0].value.ulong64_att_value(dev_attr.get_ULong64_data().in());
-		else if (dev_attr.get_State_data().operator->() != NULL)
-			attr_value_list_4[0].value.state_att_value(dev_attr.get_State_data().in());
-		else if (dev_attr.get_Encoded_data().operator->() != NULL)
-			attr_value_list_4[0].value.encoded_att_value(dev_attr.get_Encoded_data().in());
+		else if (dev_attr.ULongSeq.operator->() != NULL)
+			attr_value_list_4[0].value.ulong_att_value(dev_attr.ULongSeq.in());
+		else if (dev_attr.ULong64Seq.operator->() != NULL)
+			attr_value_list_4[0].value.ulong64_att_value(dev_attr.ULong64Seq.in());
+		else if (dev_attr.StateSeq.operator->() != NULL)
+			attr_value_list_4[0].value.state_att_value(dev_attr.StateSeq.in());
+		else if (dev_attr.EncodedSeq.operator->() != NULL)
+			attr_value_list_4[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
 	}
 	else
 	{
@@ -5122,8 +5122,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 
 		if (dev_attr.LongSeq.operator->() != NULL)
 			attr_value_list[0].value <<= dev_attr.LongSeq.in();
-		else if (dev_attr.get_Long64_data().operator->() != NULL)
-			 attr_value_list[0].value <<= dev_attr.get_Long64_data().in();
+		else if (dev_attr.Long64Seq.operator->() != NULL)
+			 attr_value_list[0].value <<= dev_attr.Long64Seq.in();
 		else if (dev_attr.ShortSeq.operator->() != NULL)
 			attr_value_list[0].value <<= dev_attr.ShortSeq.in();
 		else if (dev_attr.DoubleSeq.operator->() != NULL)
@@ -5138,12 +5138,12 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			attr_value_list[0].value  <<= dev_attr.UShortSeq.in();
 		else if (dev_attr.UCharSeq.operator->() != NULL)
 			attr_value_list[0].value  <<= dev_attr.UCharSeq.in();
-		else if (dev_attr.get_ULong_data().operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.get_ULong_data().in();
-		else if (dev_attr.get_ULong64_data().operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.get_ULong64_data().in();
-		else if (dev_attr.get_State_data().operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.get_State_data().in();
+		else if (dev_attr.ULongSeq.operator->() != NULL)
+			attr_value_list[0].value <<= dev_attr.ULongSeq.in();
+		else if (dev_attr.ULong64Seq.operator->() != NULL)
+			attr_value_list[0].value <<= dev_attr.ULong64Seq.in();
+		else if (dev_attr.StateSeq.operator->() != NULL)
+			attr_value_list[0].value <<= dev_attr.StateSeq.in();
 	}
 
 	int ctr = 0;
@@ -7710,8 +7710,8 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
 	if (dev_attr.LongSeq.operator->() != NULL)
 		attr_value_list[0].value.long_att_value(dev_attr.LongSeq.in());
-	else if (dev_attr.get_Long64_data().operator->() != NULL)
-		attr_value_list[0].value.long64_att_value(dev_attr.get_Long64_data().in());
+	else if (dev_attr.Long64Seq.operator->() != NULL)
+		attr_value_list[0].value.long64_att_value(dev_attr.Long64Seq.in());
 	else if (dev_attr.ShortSeq.operator->() != NULL)
 		attr_value_list[0].value.short_att_value(dev_attr.ShortSeq.in());
 	else if (dev_attr.DoubleSeq.operator->() != NULL)
@@ -7726,14 +7726,14 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		attr_value_list[0].value.ushort_att_value(dev_attr.UShortSeq.in());
 	else if (dev_attr.UCharSeq.operator->() != NULL)
 		attr_value_list[0].value.uchar_att_value(dev_attr.UCharSeq.in());
-	else if (dev_attr.get_ULong_data().operator->() != NULL)
-		attr_value_list[0].value.ulong_att_value(dev_attr.get_ULong_data().in());
-	else if (dev_attr.get_ULong64_data().operator->() != NULL)
-		attr_value_list[0].value.ulong64_att_value(dev_attr.get_ULong64_data().in());
-	else if (dev_attr.get_State_data().operator->() != NULL)
-		attr_value_list[0].value.state_att_value(dev_attr.get_State_data().in());
-	else if (dev_attr.get_Encoded_data().operator->() != NULL)
-		attr_value_list[0].value.encoded_att_value(dev_attr.get_Encoded_data().in());
+	else if (dev_attr.ULongSeq.operator->() != NULL)
+		attr_value_list[0].value.ulong_att_value(dev_attr.ULongSeq.in());
+	else if (dev_attr.ULong64Seq.operator->() != NULL)
+		attr_value_list[0].value.ulong64_att_value(dev_attr.ULong64Seq.in());
+	else if (dev_attr.StateSeq.operator->() != NULL)
+		attr_value_list[0].value.state_att_value(dev_attr.StateSeq.in());
+	else if (dev_attr.EncodedSeq.operator->() != NULL)
+		attr_value_list[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
 
 	int ctr = 0;
 	AttributeValueList_4_var attr_value_list_4;

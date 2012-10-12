@@ -297,24 +297,16 @@ public :
 	string 				name;
 	int 				dim_x;
 	int 				dim_y;
+	int 				w_dim_x;
+	int 				w_dim_y;
 	TimeVal 			time;
 
-	DevVarEncodedArray_var &get_Encoded_data() const {return ext->EncodedSeq;}
-	DevVarLong64Array_var &get_Long64_data() const {return ext->Long64Seq;}
-	DevVarULongArray_var &get_ULong_data() const {return ext->ULongSeq;}
-	DevVarULong64Array_var &get_ULong64_data() const {return ext->ULong64Seq;}
-	DevVarStateArray_var &get_State_data() const {return ext->StateSeq;}
-    DevErrorList_var &get_error_list() {return ext->err_list;}
+    void set_w_dim_x(int val) {w_dim_x = val;}
+    void set_w_dim_y(int val) {w_dim_y = val;}
+    void set_err_list(DevErrorList *ptr) {err_list = ptr;}
 
-    void set_w_dim_x(int val) {ext->w_dim_x = val;}
-    void set_w_dim_y(int val) {ext->w_dim_y = val;}
-    void set_err_list(DevErrorList *ptr) {ext->err_list = ptr;}
-    void set_Encoded_data(DevVarEncodedArray *ptr) {ext->EncodedSeq = ptr;}
-    void set_Long64_data(DevVarLong64Array *ptr) {ext->Long64Seq = ptr;}
-    void set_ULong_data(DevVarULongArray *ptr) {ext->ULongSeq = ptr;}
-    void set_ULong64_data(DevVarULong64Array *ptr) {ext->ULong64Seq = ptr;}
-    void set_State_data(DevVarStateArray *ptr) {ext->StateSeq = ptr;}
-
+	DevVarEncodedArray_var &get_Encoded_data() {return EncodedSeq;}
+    DevErrorList_var &get_error_list() {return err_list;}
 
 	DevVarLongArray_var 	LongSeq;
 	DevVarShortArray_var 	ShortSeq;
@@ -324,6 +316,13 @@ public :
 	DevVarBooleanArray_var	BooleanSeq;
 	DevVarUShortArray_var	UShortSeq;
 	DevVarCharArray_var		UCharSeq;
+	DevVarLong64Array_var	Long64Seq;
+	DevVarULongArray_var	ULongSeq;
+	DevVarULong64Array_var	ULong64Seq;
+	DevVarStateArray_var	StateSeq;
+	DevVarEncodedArray_var	EncodedSeq;
+
+	DevErrorList_var		err_list;
 
 //
 // For the state attribute
@@ -956,7 +955,7 @@ public :
  *
  * @return A boolean set to true if the call failed
  */
-	bool has_failed() {DevErrorList *tmp;if ((tmp=ext->err_list.operator->())==NULL)return false;
+	bool has_failed() {DevErrorList *tmp;if ((tmp=err_list.operator->())==NULL)return false;
 	                   else{if (tmp->length() != 0)return true;else return false;}}
 /**
  * Get the error stack
@@ -1036,7 +1035,7 @@ public :
  *
  * @return The error stack
  */
-	const DevErrorList &get_err_stack() {return ext->err_list.in();}
+	const DevErrorList &get_err_stack() {return err_list.in();}
 //@}
 /**@name Miscellaneous methods */
 //@{
@@ -1110,7 +1109,7 @@ public :
  *
  * @return The attribute write X dimension
  */
-	int get_written_dim_x() {return ext->w_dim_x;}
+	int get_written_dim_x() {return w_dim_x;}
 /**
  * Get the attribute write Y dimension
  *
@@ -1118,7 +1117,7 @@ public :
  *
  * @return The attribute write Y dimension
  */
-	int get_written_dim_y() {return ext->w_dim_y;}
+	int get_written_dim_y() {return w_dim_y;}
 /**
  * Get the attribute read dimensions
  *
@@ -1228,20 +1227,10 @@ protected :
     class DeviceAttributeExt
     {
     public:
-        DeviceAttributeExt():w_dim_x(0),w_dim_y(0) {};
+        DeviceAttributeExt() {};
         DeviceAttributeExt & operator=(const DeviceAttributeExt &);
 
         void deep_copy(const DeviceAttributeExt &);
-
-        DevErrorList_var		err_list;
-        long 					w_dim_x;
-        long					w_dim_y;
-
-        DevVarLong64Array_var	Long64Seq;
-        DevVarULongArray_var	ULongSeq;
-        DevVarULong64Array_var	ULong64Seq;
-        DevVarStateArray_var	StateSeq;
-        DevVarEncodedArray_var	EncodedSeq;
     };
 
 #ifdef HAS_UNIQUE_PTR

@@ -348,14 +348,14 @@ ostream &operator<<(ostream &o_str,DeviceDataHistory &dh)
 DeviceAttributeHistory::DeviceAttributeHistory():DeviceAttribute(),ext_hist(Tango_NullPtr)
 {
 	fail = false;
-	ext->err_list = new DevErrorList();
+	err_list = new DevErrorList();
 }
 
 DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq):ext_hist(Tango_NullPtr)
 {
 	fail = seq[n].attr_failed;
 
-	ext->err_list = new DevErrorList(seq[n].errors);
+	err_list = new DevErrorList(seq[n].errors);
 	time = seq[n].value.time;
 	quality = seq[n].value.quality;
 	dim_x = seq[n].value.dim_x;
@@ -409,7 +409,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			max = tmp_seq_lolo->maximum();
 			len = tmp_seq_lolo->length();
 			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean)true);
-			ext->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
+			Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
 			break;
 
 		case tk_short:
@@ -473,7 +473,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			max = tmp_seq_ulo->maximum();
 			len = tmp_seq_ulo->length();
 			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
-			ext->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
+			ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
 			break;
 
 		case tk_ulonglong:
@@ -481,7 +481,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			max = tmp_seq_ulolo->maximum();
 			len = tmp_seq_ulolo->length();
 			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
-			ext->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
+			ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
 			break;
 
 		case tk_enum:
@@ -489,7 +489,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			max = tmp_seq_state->maximum();
 			len = tmp_seq_state->length();
 			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
-			ext->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
+			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 		default:
 			break;
 		}
@@ -502,13 +502,13 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 {
 	fail = seq[n].attr_failed;
 
-	ext->err_list = new DevErrorList(seq[n].value.err_list);
+	err_list = new DevErrorList(seq[n].value.err_list);
 	time = seq[n].value.time;
 	quality = seq[n].value.quality;
 	dim_x = seq[n].value.r_dim.dim_x;
 	dim_y = seq[n].value.r_dim.dim_y;
-	ext->w_dim_x = seq[n].value.w_dim.dim_x;
-	ext->w_dim_y = seq[n].value.w_dim.dim_y;
+	w_dim_x = seq[n].value.w_dim.dim_x;
+	w_dim_y = seq[n].value.w_dim.dim_y;
 	name = seq[n].value.name;
 
 	const DevVarLongArray *tmp_seq_lo;
@@ -558,7 +558,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			max = tmp_seq_lolo->maximum();
 			len = tmp_seq_lolo->length();
 			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean)true);
-			ext->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
+			Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
 			break;
 
 		case tk_short:
@@ -622,7 +622,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			max = tmp_seq_ulo->maximum();
 			len = tmp_seq_ulo->length();
 			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
-			ext->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
+			ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
 			break;
 
 		case tk_ulonglong:
@@ -630,7 +630,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			max = tmp_seq_ulolo->maximum();
 			len = tmp_seq_ulolo->length();
 			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
-			ext->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
+			ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
 			break;
 
 		case tk_enum:
@@ -638,7 +638,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			max = tmp_seq_state->maximum();
 			len = tmp_seq_state->length();
 			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
-			ext->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
+			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 		default:
 			break;
 		}
@@ -810,7 +810,7 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 // print write dim_x and dim_y
 //
 
-	o_str << "w_dim_x = " << dah.ext->w_dim_x << ", w_dim_y = " << dah.ext->w_dim_y << ", ";
+	o_str << "w_dim_x = " << dah.w_dim_x << ", w_dim_y = " << dah.w_dim_y << ", ";
 
 //
 // Print quality
@@ -846,12 +846,12 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 
 	if (dah.fail == true)
 	{
-		unsigned int nb_err = dah.ext->err_list.in().length();
+		unsigned int nb_err = dah.err_list.in().length();
 		for (unsigned long i = 0;i < nb_err;i++)
 		{
 			o_str << "Tango error stack" << endl;
 			o_str << "Severity = ";
-			switch (dah.ext->err_list[i].severity)
+			switch (dah.err_list[i].severity)
 			{
 			case Tango::WARN :
 				o_str << "WARNING ";
@@ -870,9 +870,9 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 				break;
 			}
 			o_str << endl;
-			o_str << "Error reason = " << dah.ext->err_list[i].reason.in() << endl;
-			o_str << "Desc : " << dah.ext->err_list[i].desc.in() << endl;
-			o_str << "Origin : " << dah.ext->err_list[i].origin.in();
+			o_str << "Error reason = " << dah.err_list[i].reason.in() << endl;
+			o_str << "Desc : " << dah.err_list[i].desc.in() << endl;
+			o_str << "Origin : " << dah.err_list[i].origin.in();
 			if (i != nb_err - 1)
 				o_str << endl;
 		}
@@ -899,16 +899,16 @@ ostream &operator<<(ostream &o_str,DeviceAttributeHistory &dah)
 					o_str << *(dah.UShortSeq.operator->());
 				else if (dah.UCharSeq.operator->() != NULL)
 					o_str << *(dah.UCharSeq.operator->());
-				else if (dah.ext->Long64Seq.operator->() != NULL)
-					o_str << *(dah.ext->Long64Seq.operator->());
-				else if (dah.ext->ULongSeq.operator->() != NULL)
-					o_str << *(dah.ext->ULongSeq.operator->());
-				else if (dah.ext->ULong64Seq.operator->() != NULL)
-					o_str << *(dah.ext->ULong64Seq.operator->());
-				else if (dah.ext->StateSeq.operator->() != NULL)
-					o_str << *(dah.ext->StateSeq.operator->());
-				else if (dah.ext->EncodedSeq.operator->() != NULL)
-					o_str << *(dah.ext->EncodedSeq.operator->());
+				else if (dah.Long64Seq.operator->() != NULL)
+					o_str << *(dah.Long64Seq.operator->());
+				else if (dah.ULongSeq.operator->() != NULL)
+					o_str << *(dah.ULongSeq.operator->());
+				else if (dah.ULong64Seq.operator->() != NULL)
+					o_str << *(dah.ULong64Seq.operator->());
+				else if (dah.StateSeq.operator->() != NULL)
+					o_str << *(dah.StateSeq.operator->());
+				else if (dah.EncodedSeq.operator->() != NULL)
+					o_str << *(dah.EncodedSeq.operator->());
 				else
 					o_str << *(dah.StringSeq.operator->());
 			}
