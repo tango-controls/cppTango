@@ -303,7 +303,7 @@ public :
 
     void set_w_dim_x(int val) {w_dim_x = val;}
     void set_w_dim_y(int val) {w_dim_y = val;}
-    void set_err_list(DevErrorList *ptr) {err_list = ptr;}
+    void set_error_list(DevErrorList *ptr) {err_list = ptr;}
 
 	DevVarEncodedArray_var &get_Encoded_data() {return EncodedSeq;}
     DevErrorList_var &get_error_list() {return err_list;}
