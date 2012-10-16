@@ -20,7 +20,8 @@ set REL_DIR=..\..\..\..\
 %REL_DIR%test_suite\cxx_cmd_types.cpp ^
 %REL_DIR%test_suite\cxx_group.cpp ^
 %REL_DIR%test_suite\cxx_encoded.cpp ^
-%REL_DIR%test_suite\cxx_database.cpp
+%REL_DIR%test_suite\cxx_database.cpp ^
+%REL_DIR%test_suite\cxx_mem_attr.cpp
 
 rem %REL_DIR%test_suite\cxx_signal.cpp
 rem %REL_DIR%test_suite\cxx_dserver_cmd.cpp
