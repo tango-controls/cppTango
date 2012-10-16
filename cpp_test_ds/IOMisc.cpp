@@ -688,7 +688,14 @@ CORBA::Any *IOAttrThrowEx::execute(Tango::DeviceImpl *device,const CORBA::Any &i
 		else
 			(static_cast<DevTest *>(device))->event_throw_out_of_sync = true;
 	}
-    	return insert();
+	else if ((*in)[0] == 4)
+	{
+		if ((*in)[1] == 0)
+			(static_cast<DevTest *>(device))->Short_attr_w_except = false;
+		else
+			(static_cast<DevTest *>(device))->Short_attr_w_except = true;
+	}
+    return insert();
 }
 
 //+----------------------------------------------------------------------------

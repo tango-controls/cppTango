@@ -128,6 +128,8 @@ void DevTest::init_device()
 	cout << "DevTest::DevTest() create  " << device_name << endl;
 	DEBUG_STREAM << "Creating " << device_name << endl;
 
+	Tango::Util *tg = Tango::Util::instance();
+
 	set_state(Tango::ON);
 	attr_long = 1246;
 	attr_short_rw = 66;
@@ -139,6 +141,8 @@ void DevTest::init_device()
 	PollString_spec_attr_num = 0;
 
 	Short_attr_except = false;
+	if (tg->is_svr_starting() == true)
+		Short_attr_w_except = false;
 	event_change_attr_except = false;
 	event_quality_attr_except = false;
 	event_throw_out_of_sync = false;
@@ -743,6 +747,8 @@ void DevTest::write_Short_attr_w(Tango::WAttribute &att)
 	Tango::DevShort sh;
 	att.get_write_value(sh);
 //	cout << "Attribute value = " << sh << endl;
+	if (Short_attr_w_except == true)
+		Tango::Except::throw_exception("Aaaa","Bbbb","Cccc");
 }
 
 void DevTest::write_Short_attr_w2(Tango::WAttribute &att)

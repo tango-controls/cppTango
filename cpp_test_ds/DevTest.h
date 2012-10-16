@@ -238,6 +238,7 @@ protected :
 	short array2_buffer[10];
 
 	bool Short_attr_except;
+	bool Short_attr_w_except;
 	bool event_change_attr_except;
 	bool event_quality_attr_except;
 	bool event_throw_out_of_sync;
