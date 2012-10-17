@@ -537,12 +537,30 @@ int main(int argc, char **argv)
 
 		assert (res == 0);
 		assert (mess_in_file.size() == 6);
+
+//
+// We should have 5 attributes to be read for the state computation:
+// DefUserAttr, DefClassUserAttr, DefClassAttr, LongAttr, SlowAttr
+//
+
 		string mess = base_message + "5";
 		assert (mess_in_file[0].find(mess) != string::npos);
 		assert (mess_in_file[1].find(mess) != string::npos);
+
+//
+// Now, only 3 attributes
+// DefUserAttr, DefClassUserAttr, DefClassAttr
+//
+
 		mess = base_message + "3";
 		assert (mess_in_file[2].find(mess) != string::npos);
 		assert (mess_in_file[3].find(mess) != string::npos);
+
+//
+// Now, 4 attributes
+// DefUserAttr, DefClassUserAttr, DefClassAttr, Long_attr
+//
+
 		mess = base_message + "4";
 		assert (mess_in_file[4].find(mess) != string::npos);
 		assert (mess_in_file[5].find(mess) != string::npos);
