@@ -35,6 +35,7 @@ LIB_TANGO_DIR = $(TANGO_HOME)/lib
 BIN_SUITE_DIR = $(TANGO_HOME)/bin
 else
 TANGO_HOME = /home/taurel/tango/cppapi_develop
+#TANGO_HOME = /home/taurel/tango/cppapi_900
 #LIB_TANGO_DIR = $(TANGO_HOME)/lib
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(OS)/lib/debug
 
@@ -128,7 +129,7 @@ ifeq ($(GCC_MAJOR_VERSION_GTEQ4),1)
     endif
 endif
 
-CXXFLAGS = -g $(CXX11) -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS) 
+CXXFLAGS = -g -w  $(CXX11) -DVALGRIND -D_PTHREADS -D_REENTRANT $(INCLUDE_DIRS) 
 LIB_TANGO = -ltango
 #LIB_TANGO = /home/taurel/tango/install/ubuntu1204/lib/debug/libtango.8.0.5.a -lgcov
 LFLAGS =  -g $(LIB_DIRS)  $(LIB_TANGO) -llog4tango \
@@ -187,7 +188,8 @@ runner: compare_test
 	cxx_blackbox.cpp \
 	cxx_group.cpp \
 	cxx_encoded.cpp \
-	cxx_database.cpp
+	cxx_database.cpp \
+	cxx_mem_attr.cpp
 	$(CC) $(CXXFLAGS) -c runner.cpp -o $(OBJ_DIR)/runner.o
 	$(CC) $(OBJ_DIR)/runner.o $(OBJ_DIR)/compare_test.o -o $(BIN_SUITE_DIR)/runner $(LFLAGS)
 

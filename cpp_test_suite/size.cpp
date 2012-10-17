@@ -1,5 +1,9 @@
 /* 
- * example of a client using the TANGO device api.
+ * Check size of user classes/structure (For compatibility prurpose)
+ *
+ * This test suite has to be run on a redhate4 host
+ * Otherwise, you have to change the classes/structures size
+ *
  */
 
 #include <tango.h>
@@ -61,7 +65,9 @@ int main(int argc, char **argv)
 	check_size("AttrWrittenEvent",sizeof(AttrWrittenEvent),20);
 	check_size("CallBack",sizeof(CallBack),8);
 
-	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);	
+	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);
+
+	check_size("Group",sizeof(Group),2);
 
 	check_size("MultiAttrProp<T>",sizeof(MultiAttrProp<DevShort>),284);
 	check_size("AttrProp<T>",sizeof(AttrProp<DevShort>),16);
