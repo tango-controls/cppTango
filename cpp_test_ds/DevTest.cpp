@@ -141,7 +141,7 @@ void DevTest::init_device()
 	PollString_spec_attr_num = 0;
 
 	Short_attr_except = false;
-	if (tg->is_svr_starting() == true)
+	if (tg->is_svr_starting() == true || tg->is_device_restarting(device_name) == true)
 		Short_attr_w_except = false;
 	event_change_attr_except = false;
 	event_quality_attr_except = false;
