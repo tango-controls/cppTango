@@ -174,7 +174,7 @@ public:
 		const DevVarStringArray *alarms;
 		DeviceData dout;
 
-		device->set_timeout_millis(3*def_timeout);
+		device->set_timeout_millis(4*def_timeout);
 		timeout_restored = false;
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetAlarms"));
@@ -240,7 +240,7 @@ public:
 		const DevVarStringArray *ranges;
 		DeviceData dout;
 
-		device->set_timeout_millis(3*def_timeout);
+		device->set_timeout_millis(4*def_timeout);
 		timeout_restored = false;
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetRanges"));
