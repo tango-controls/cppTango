@@ -1,14 +1,12 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//====================================================================================================================
 //
 // file :               Attribute.cpp
 //
-// description :        C++ source code for the Attribute and WAttribute classes.
-//			These classes are used to manage attribute.
-//			A Tango Device object instance has one
-//			MultiAttribute object which is an aggregate of
-//			Attribute or WAttribute objects
+// description :        C++ source code for the Attribute class. This class is used to manage attribute.
+//						A Tango Device object instance has one MultiAttribute object which is an aggregate of
+//						Attribute or WAttribute objects
 //
 // project :            TANGO
 //
@@ -21,22 +19,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//====================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -88,22 +84,24 @@ static bool WantedProp_f(AttrProperty a,const char *n)
 }
 
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::Attribute
+// method :
+//		Attribute::Attribute
 //
-// description : 	constructor for the Attribute class from the
-//			attribute property vector, its type and the device
-//			name
+// description :
+//		Constructor for the Attribute class from the attribute property vector, its type and the device name
 //
-// argument : in : 	- prop_list : The attribute property list
-//			- type : The attribute data type
+// argument :
+//		in :
+//			- prop_list : The attribute property list
+//			- tmp_attr :
 //			- dev_name : The device name
+//			- idx :
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
-Attribute::Attribute(vector<AttrProperty> &prop_list,
-		     Attr &tmp_attr,string &dev_name,long idx)
+Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx)
 :date(true),quality(Tango::ATTR_VALID),check_min_value(false),check_max_value(false),
  poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
  archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
@@ -200,15 +198,21 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,
 }
 
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::init_event_prop
+// method :
+//		Attribute::init_event_prop
 //
-// description : 	Init the event related properties
+// description :
+//		Init the event related properties
 //
-// in :			prop_list : The property vector
+// argument :
+// 		in :
+//			- prop_list : The property vector
+//			- dev_name : The device name
+//			- att : The user attribute object
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &dev_name,Attr &att)
 {
@@ -557,9 +561,8 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	prev_archive_event.inited = false;
 
 //
-// do not start sending events automatically, wait for the first
-// client to subscribe. Sending events automatically will put an
-// unnecessary load on the server because all attributes will be polled
+// do not start sending events automatically, wait for the first client to subscribe. Sending events automatically
+// will put an unnecessary load on the server because all attributes will be polled
 //
 
 	event_change_subscription = 0;
@@ -571,16 +574,20 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	event_data_ready_subscription = 0;
 }
 
-//+-------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::init_opt_prop
+// method :
+//		Attribute::init_opt_prop
 //
-// description : 	Init the optional properties
+// description :
+//		Init the optional properties
 //
-// in :			prop_list : The property vector
-//			dev_name : The device name (usefull for error)
+// argument :
+// 		in :
+//			- prop_list : The property vector
+//			- dev_name : The device name (usefull for error)
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 {
