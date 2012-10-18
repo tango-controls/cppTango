@@ -513,6 +513,7 @@ private :
     DevErrorList_var                        del;
 
     int                                     old_poll_nb;
+	omni_mutex								subscription_mutex;
 
 	void *run_undetached(void *arg);
 	void push_heartbeat_event(string &);

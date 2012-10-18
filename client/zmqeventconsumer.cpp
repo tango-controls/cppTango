@@ -2706,6 +2706,8 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             buffer[length] = ZMQ_DELAY_EVENT;
             length++;
 
+			eve_con->subscription_mutex.lock();
+
 //
 // Send command to main ZMQ thread
 //
@@ -2718,6 +2720,8 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
         }
         catch (zmq::error_t &e)
         {
+			eve_con->subscription_mutex.unlock();
+
             TangoSys_OMemStream o;
 
             o << "Failed to delay event!\n";
@@ -2735,6 +2739,8 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
 
         if (reply.size() != 2)
         {
+			eve_con->subscription_mutex.unlock();
+
             char err_mess[512];
             ::memcpy(err_mess,reply.data(),reply.size());
             err_mess[reply.size()] = '\0';
@@ -2791,9 +2797,12 @@ void DelayEvent::release()
 
             sender.recv(&reply);
             released = true;
+			eve_con->subscription_mutex.unlock();
         }
         catch (zmq::error_t &e)
         {
+			eve_con->subscription_mutex.unlock();
+
             TangoSys_OMemStream o;
 
             o << "Failed to delay event!\n";

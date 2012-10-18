@@ -960,7 +960,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												DeviceAttribute *da = NULL;
 												DevErrorList err;
 												err.length(0);
-												string domain_name = epos->second.device->dev_name() + "/" + epos->second.attr_name;
 
 												bool old_transp = epos->second.device->get_transparency_reconnection();
 												epos->second.device->set_transparency_reconnection(true);
