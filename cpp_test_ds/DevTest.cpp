@@ -328,7 +328,6 @@ void DevTest::IOSubscribeEvent()
 //	if (remote_dev == NULL)
 //	{
 //    	Tango::Util *tg = Tango::Util::instance();
-//    	tg->g
 //		vector<Tango::DeviceImpl *> &dev_list = tg->get_device_list_by_class("DevTest");
 //		if(dev_list.size() > 1) // the second device on the list is chosen
 //		{
