@@ -1,18 +1,18 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
+//=====================================================================================================================
 //
-//  file 	event.cpp
+// file :				event.cpp
 //
-//		C++ classes for implementing the event server and client
-//		singleton classes - EventSupplier and EventConsumer.
-//		These classes are used to send events from the server
-//		to the notification service and to receive events from
-//		the notification service.
+// description :		C++ classes for implementing the event system KeepAliveThread. This class cheks that the
+//						heartbeat event are well received. It also manages the stateless subscription because this
+//						is this class which will regularely re-try to subsribe to event in case it is needed.
+//						Finally, it is also this class which generates the re-connection in case a device server
+//						sending events is stopped and re-started
 //
-//		author(s) : A.Gotz (goetz@esrf.fr)
+// author(s) : 			A.Gotz (goetz@esrf.fr)
 //
-//		original : 7 April 2003
+// original : 			7 April 2003
 //
 // Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
@@ -21,28 +21,20 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
+// $Revision$
 //
-//		$Revision$
-//
-//
-//		copyright : European Synchrotron Radiation Facility
-//                         BP 220, Grenoble 38043
-//                         FRANCE
-//
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 
 #include <tango.h>
 #include <eventconsumer.h>
@@ -71,22 +63,23 @@ namespace Tango {
 
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::reconnect_to_channel()
+// method :
+//		EventConsumerKeepAliveThread::reconnect_to_channel()
 //
-// description : 	Method to reconnect the process to an event channel
-//			in case of reconnection to a notifd
+// description :
+//		Method to reconnect the process to an event channel in case of reconnection to a notifd
 //
-// argument : in :	ipos : An iterator to the EventChannel structure to
-//			       reconnect to in the Event Channel map
-//			event_consumer : Pointer to the EventConsumer
-//					 singleton
+// argument :
+//		in :
+//			- ipos : An iterator to the EventChannel structure to reconnect to in the Event Channel map
+//			- event_consumer : Pointer to the EventConsumer singleton
 //
-// This method returns true if the reconnection succeeds. Otherwise, returns
-// false
+// return :
+// 		This method returns true if the reconnection succeeds. Otherwise, returns false
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventConsumer *event_consumer)
 {
@@ -139,22 +132,24 @@ bool EventConsumerKeepAliveThread::reconnect_to_channel(EvChanIte &ipos,EventCon
 }
 
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::reconnect_to_zmq_channel()
+// method :
+//		EventConsumerKeepAliveThread::reconnect_to_zmq_channel()
 //
-// description : 	Method to reconnect the process to a ZMQ event channel
-//			in case of reconnection
+// description :
+//		Method to reconnect the process to a ZMQ event channel in case of reconnection
 //
-// argument : in :	ipos : An iterator to the EventChannel structure to
-//			       reconnect to in the Event Channel map
-//			event_consumer : Pointer to the EventConsumer
-//					 singleton
+// argument :
+//		in :
+//			- ipos : An iterator to the EventChannel structure to reconnect to in the Event Channel map
+//			- event_consumer : Pointer to the EventConsumer singleton
+//			- dd :
 //
-// This method returns true if the reconnection succeeds. Otherwise, returns
-// false
+// return :
+// 		This method returns true if the reconnection succeeds. Otherwise, returns false
 //
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,EventConsumer *event_consumer,DeviceData &dd)
 {
@@ -216,19 +211,20 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::reconnect_to_event()
+// method :
+//		EventConsumerKeepAliveThread::reconnect_to_event()
 //
-// description : 	Method to reconnect each event associated to a specific
-//			event channel to the just reconnected event channel
+// description :
+//		Method to reconnect each event associated to a specific event channel to the just reconnected event channel
 //
-// argument : in :	ipos : An iterator to the EventChannel structure in the
-//			       Event Channel map
-//			event_consumer : Pointer to the EventConsumer
-//					 singleton
+// argument :
+//		in :
+//			- ipos : An iterator to the EventChannel structure in the Event Channel map
+//			- event_consumer : Pointer to the EventConsumer singleton
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsumer *event_consumer)
 {
@@ -279,26 +275,26 @@ void EventConsumerKeepAliveThread::reconnect_to_event(EvChanIte &ipos,EventConsu
 	}
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::re_subscribe_event()
+// method :
+//		EventConsumerKeepAliveThread::re_subscribe_event()
 //
-// description : 	Method to reconnect a specific event to an
-//			event channel just reconnected
+// description :
+//		Method to reconnect a specific event to an event channel just reconnected
 //
-// argument : in :	epos : An iterator to the EventCallback structure in the
-//			       Event Callback map
-//			ipos : Pointer to the EventChannel structure in the
-//			       Event Channel map
+// argument :
+//		in :
+//			- epos : An iterator to the EventCallback structure in the Event Callback map
+//			- ipos : Pointer to the EventChannel structure in the Event Channel map
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &ipos)
 {
 
 //
-// Build a filter using the CORBA Notify constraint Language
-// (use attribute name in lowercase letters)
+// Build a filter using the CORBA Notify constraint Language (use attribute name in lowercase letters)
 //
 
 	CosNotifyFilter::FilterFactory_var ffp;
@@ -377,19 +373,21 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
   	}
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::reconnect_to_zmq_event()
+// method :
+//		EventConsumerKeepAliveThread::reconnect_to_zmq_event()
 //
-// description : 	Method to reconnect each event associated to a specific
-//			event channel to the just reconnected event channel
+// description :
+//		Method to reconnect each event associated to a specific event channel to the just reconnected event channel
 //
-// argument : in :	ipos : An iterator to the EventChannel structure in the
-//			       Event Channel map
-//			event_consumer : Pointer to the EventConsumer
-//					 singleton
+// argument :
+//		in :
+//			- ipos : An iterator to the EventChannel structure in the Event Channel map
+//			- event_consumer : Pointer to the EventConsumer singleton
+//			- dd :
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventConsumer *event_consumer,DeviceData &dd)
 {
@@ -453,13 +451,15 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 	}
 }
 
-//+----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::run_undetached
+// method :
+//		EventConsumerKeepAliveThread::run_undetached
 //
-// description : 	The main code of the KeepAliveThread
+// description :
+//		The main code of the KeepAliveThread
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 {
@@ -491,10 +491,9 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 		time_to_sleep = EVENT_HEARTBEAT_PERIOD;
 
 //
-// go to sleep until next heartbeat
-// Wait on a monitor. This allows another thread to wake-up this thread
-// before the end of the EVENT_HEARTBEAT_PERIOD time which is 10 seconds
-// Only one command can now be send to the thread. It is a stop command
+// Go to sleep until next heartbeat. Wait on a monitor. This allows another thread to wake-up this thread
+// before the end of the EVENT_HEARTBEAT_PERIOD time which is 10 seconds. Only one command can now be send to the
+// thread. It is a stop command
 //
 
 		{
@@ -529,9 +528,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 		now = time(NULL);
 
 //
-// check the list of not yet connected events and try to subscribe
-// Try first with ZMQ event consumer. If ZMQ is not used (API_CommandNotFound exception),
-// use notifd.
+// Check the list of not yet connected events and try to subscribe
+// Try first with ZMQ event consumer. If ZMQ is not used (API_CommandNotFound exception), use notifd.
 //
 
 		if ( !event_consumer->event_not_connected.empty() )
@@ -620,10 +618,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					ipos->second.channel_monitor->get_monitor();
 
 //
-// Check if it is necessary for client to confirm its subscription
-// Note that starting with Tango 8.1 (and for ZMQ), there is a new
-// command in the admin device which allows a better (optimized)
-// confirmation algorithm
+// Check if it is necessary for client to confirm its subscription. Note that starting with Tango 8.1 (and for ZMQ),
+// there is a new command in the admin device which allows a better (optimized) confirmation algorithm
 //
 
 					if ((now - ipos->second.last_subscribed) > EVENT_RESUBSCRIBE_PERIOD/3)
@@ -663,9 +659,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 										time_t ti = time(NULL);
 										ipos->second.last_subscribed = ti;
         								epos->second.last_subscribed = ti;
-
-										epos->second.callback_monitor->rel_monitor();
 									}
+									epos->second.callback_monitor->rel_monitor();
 								}
 								catch (...)
 								{
@@ -741,8 +736,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					}
 
 //
-// Check if a heartbeat have been skipped
-// If a heartbeat is missing, there are four possibilities :
+// Check if a heartbeat have been skipped. If a heartbeat is missing, there are four possibilities :
 // 1 - The notifd is dead (or the crate is rebooting or has already reboot)
 // 2 - The server is dead
 // 3 - The network was down;
@@ -766,8 +760,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
                             try
                             {
 //
-//  Check if the device server is now running on a different host.
-//  In this case we have to reconnect to another notification daemon.
+// Check if the device server is now running on a different host. In this case we have to reconnect to another
+// notification daemon.
 //
                                 DeviceInfo info;
                                 try
@@ -810,10 +804,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
                             }
 
 //
-// Re-build connection to the event channel
-// This is a two steps process. First, reconnect
-// to the new event channel, then reconnect
-// callbacks to this new event channel
+// Re-build connection to the event channel. This is a two steps process. First, reconnect to the new event channel,
+// then reconnect callbacks to this new event channel
 //
 
                             if ( ipos->second.event_system_failed == true )
@@ -1028,8 +1020,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 										{
 
 //
-// Push an event with the value just read from the
-// re-connected server
+// Push an event with the value just read from the re-connected server
 // NOT NEEDED for the Data Ready event
 //
 
@@ -1046,7 +1037,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												DeviceAttribute *da = NULL;
 												DevErrorList err;
 												err.length(0);
-												string domain_name = epos->second.device->dev_name() + "/" + epos->second.attr_name;
 
 												bool old_transp = epos->second.device->get_transparency_reconnection();
 												epos->second.device->set_transparency_reconnection(true);
@@ -1057,8 +1047,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 													*da = epos->second.device->read_attribute(epos->second.attr_name.c_str());
 
 //
-// The reconnection worked fine. The heartbeat should come back now,
-// when the notifd has not closed the connection.
+// The reconnection worked fine. The heartbeat should come back now, when the notifd has not closed the connection.
 // Increase the counter to detect when the heartbeat is not coming back.
 //
 
@@ -1080,6 +1069,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												{
 													cb_ctr++;
 													EventData *event_data;
+
 													if (cb_ctr != cb_nb)
 													{
 														da_copy = new DeviceAttribute();
@@ -1148,8 +1138,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 													*aie = epos->second.device->get_attribute_config(epos->second.attr_name);
 
 //
-// The reconnection worked fine. The heartbeat should come back now,
-// when the notifd has not closed the connection.
+// The reconnection worked fine. The heartbeat should come back now, when the notifd has not closed the connection.
 // Increase the counter to detect when the heartbeat is not coming back.
 //
 
@@ -1246,29 +1235,29 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 	}
 
 //
-// If we arrive here, this means that we have received the exit thread
-// command.
+// If we arrive here, this means that we have received the exit thread command.
 //
 
 	return (void *)NULL;
 
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumerKeepAliveThread::stateless_subscription_failed
+// method :
+//		EventConsumerKeepAliveThread::stateless_subscription_failed
 //
 // description :
 //
-// argument : in :	ipos : An iterator to the EventChannel structure to
-//			       reconnect to in the Event Channel map
-//			event_consumer : Pointer to the EventConsumer
-//					 singleton
+// argument :
+//		in :
+//			- ipos : An iterator to the EventChannel structure to reconnect to in the Event Channel map
+//			- event_consumer : Pointer to the EventConsumer singleton
 //
-// This method returns true if the reconnection succeeds. Otherwise, returns
-// false
+// return :
+// 		This method returns true if the reconnection succeeds. Otherwise, returns false
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNotConnected>::iterator &vpos,DevFailed &e,time_t &now)
 {
@@ -1280,10 +1269,8 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
     vpos->last_heartbeat = now;
 
 //
-// The event can still not be connected.
-// Send the return error message as event to the client application.
-//
-// push an event with the error message!
+// The event can still not be connected. Send the return error message as event to the client application.
+// Push an event with the error message!
 //
 
     DevErrorList err;
@@ -1325,8 +1312,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
         }
 
 //
-// no callback method, the event has to be instered
-// into the event queue
+// no callback method, the event has to be instered into the event queue
 //
         else
         {
@@ -1347,7 +1333,9 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
                                                 aie,
                                                 err);
 
-// if a callback method was specified, call it!
+//
+// If a callback method was specified, call it!
+//
 
         if (vpos->callback != NULL )
         {
@@ -1365,8 +1353,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
         }
 
 //
-// no calback method, the event has to be inserted
-// into the event queue
+// No calback method, the event has to be inserted into the event queue
 //
 
         else
@@ -1378,7 +1365,9 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
     {
         DataReadyEventData *event_data = new DataReadyEventData(vpos->device,NULL,vpos->event_name,err);
 
-// if a callback method was specified, call it!
+//
+// If a callback method was specified, call it!
+//
 
         if (vpos->callback != NULL )
         {
@@ -1394,8 +1383,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
         }
 
 //
-// no calback method, the event has to be inserted
-// into the event queue
+// No callback method, the event has to be inserted into the event queue
 //
         else
             vpos->ev_queue->insert_event(event_data);

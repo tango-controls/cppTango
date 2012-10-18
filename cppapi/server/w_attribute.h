@@ -803,6 +803,23 @@ public:
 	void set_written_date();
     bool mem_value_below_above(MinMaxValueCheck,string &);
 
+	void set_mem_exception(const DevErrorList &df)
+	{
+		mem_exception = df;
+		mem_write_failed = true;
+		att_mem_exception = true;
+	}
+	DevErrorList &get_mem_exception() {return mem_exception;}
+	void clear_mem_exception()
+	{
+		mem_exception.length(0);
+		mem_write_failed = false;
+		att_mem_exception = false;
+	}
+
+	void set_mem_write_failed(bool bo) {mem_write_failed=bo;}
+	bool get_mem_write_failed() {return mem_write_failed;}
+
 protected:
 /// @privatesection
 	virtual bool check_rds_alarm();
@@ -908,6 +925,9 @@ private:
     const Tango::DevState		*state_ptr;
 
     bool						uswv;					// User set_write_value
+	DevErrorList				mem_exception;			// Exception received at start-up in case writing the
+														// memorized att. failed
+	bool						mem_write_failed;		// Flag set to true if the memorized att setting failed
 };
 
 

@@ -1,43 +1,38 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 //
-//  file 	eventsupplier.cpp
+//  file : 				eventsupplier.cpp
 //
-//		C++ classes for implementing the event server and client
-//		singleton classes - EventSupplier and EventConsumer.
-//		These classes are used to send events from the server
-//		to the notification service and to receive events from
-//		the notification service.
+//	description : 		C++ classes for implementing the event server and client singleton classes - EventSupplier
+//						This class is used to send events from the server
 //
-//  	author(s) : E.Taurel (taurel@esrf.fr)
+//  author(s) : 		E.Taurel (taurel@esrf.fr)
 //
-//		original : 29 June 2004
+//	original : 			29 June 2004
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+//  Copyright (C) :     2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-//		$Revision$
+//	$Revision$
 //
 //
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 
 #include <tango.h>
 #include <eventsupplier.h>
@@ -49,15 +44,19 @@ omni_mutex	EventSupplier::push_mutex;
 omni_mutex	EventSupplier::detect_mutex;
 string      EventSupplier::fqdn_prefix;
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::EventSupplier()
+// method :
+//		EventSupplier::EventSupplier()
 //
-// description : 	EventSupplier class ctor
+// description :
+//		EventSupplier class ctor
 //
-// argument : in :	tg : ptr to the Util class singleton
+// argument :
+//		in :
+//			- tg : ptr to the Util class singleton
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
@@ -76,21 +75,23 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
     }
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_events()
+// method :
+//		EventSupplier::detect_and_push_events()
 //
-// description : 	Method to detect if it is necessary
-//			        to push an event
+// description :
+//		Method to detect if it is necessary to push an event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//			        attr_name : The attribute name
-//                  time_bef_attr : Exact date when the attribute has been read
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- attr_name : The attribute name
+//          - time_bef_attr : Exact date when the attribute has been read
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct AttributeData &attr_value,DevFailed *except,
                                            string &attr_name,struct timeval *time_bef_attr)
@@ -151,22 +152,24 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_change_event()
+// method :
+//		EventSupplier::detect_and_push_change_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push a change event
+// description :
+//		Method to detect if there it is necessary to push a change event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//                  user_push : Flag set to true if it is a user push
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+// 			- user_push : Flag set to true if it is a user push
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
                      Attribute &attr,string &attr_name,DevFailed *except,bool user_push)

@@ -226,20 +226,22 @@ void DeviceClass::get_class_system_resource()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::set_memorized_values()
+// method :
+//		DeviceClass::set_memorized_values()
 //
-// description : 	Write the memorized attribute with the value
-//			stored in database
+// description :
+//		Write the memorized attribute with the value stored in database
 //
-// in :			all : Flag set to true if memorized values must be
-//			      applied to all class devices
-//			idx : Index of the device in the device_list vector
-//			      of the device for which memorized values must
-//			      be applied. Used if "all" is set to false
+// argument :
+// 		in :
+//			- all : Flag set to true if memorized values must be applied to all class devices
+//			- idx : Index of the device in the device_list vector of the device for which memorized values must
+//			        be applied. Used if "all" is set to false
+//			- from_init : Flag set to true if the method is called due to a device Init command execution
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 {
@@ -309,8 +311,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 	{
 
 //
-// This feature is available only for devices implementing IDL release 3 and
-// above
+// This feature is available only for devices implementing IDL release 3 and above
 //
 
 		if (device_list[i]->get_dev_idl_version() < 3)
@@ -339,16 +340,15 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 					att_val.length(nb_wr);
 
 //
-// In order to not send
-// a new time the already memorized value into db, mark it as not memorized
-// before writing the value
+// In order to not send a new time the already memorized value into db, mark it as not memorized before writing
+// the value
 //
 
 					att.set_memorized(false);
 
 //
-// The memorized value gotten from db is a string, we need to convert this string
-// to its real type before inserting it into an Any
+// The memorized value gotten from db is a string, we need to convert this string to its real type before inserting
+// it into an Any
 //
 
 					TangoSys_MemStream str;
@@ -516,9 +516,8 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						}
 
 //
-// Check the initialisation flag for memorized attributes.
-// The the flag is false, do not add the element to the att_val
-// vector. This avoids a call to write the memorozied value to the attribute.
+// Check the initialisation flag for memorized attributes. If the flag is false, do not add the element to the att_val
+// vector. This avoids a call to write the memorized value to the attribute.
 //
 
 					if ( att.is_memorized_init() == false )
@@ -561,8 +560,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 		{
 
 //
-// Write attribute values. Re-throw exception if any but reset memorized flags before the
-// re-throw.
+// Write attribute values. Print exception if any.
 //
 
 			try
@@ -572,32 +570,22 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			}
 			catch (Tango::DevFailed &e)
 			{
-				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) " << device_list[i]->get_name() << endl;
+				cout3 << "Cannot write setpoint(s) value for any memorized attribute(s) on device " << device_list[i]->get_name() << endl;
 				Tango::Except::print_exception(e);
-
-				//for (unsigned long k = 0;k < att_val.length();k++)
-				//{
-				//	WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
-				//	att.set_memorized(true);
-				//}
-				//throw;
 			}
 			catch (Tango::MultiDevFailed &e)
 			{
-				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) " << device_list[i]->get_name() << endl;
+				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << endl;
 
+				for (unsigned long k = 0;k < e.errors.length();k++)
+				{
+					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
+					att.set_mem_exception(e.errors[k].err_list);
+				}
+				device_list[i]->set_run_att_conf_loop(true);
 				Tango::NamedDevFailedList e_list (e, device_list[i]->get_name(), (const char *)"DeviceClass::set_memorized_values()",
 					       			(const char *)"API_AttributeFailed");
 				Tango::Except::print_exception(e_list);
-
-				//for (unsigned long k = 0;k < att_val.length();k++)
-				//{
-				//	WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
-				//	att.set_memorized(true);
-				//}
-				//throw Tango::NamedDevFailedList(e,device_list[i]->get_name(),
-				//	       			(const char *)"DeviceClass::set_memorized_values()",
-				//	       			(const char *)"API_AttributeFailed");
 			}
 
 //
@@ -616,14 +604,20 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 
 }
 
-//+----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::throw_mem_value()
+// method :
+//		DeviceClass::throw_mem_value()
 //
-// description : 	Write the memorized attribute with the value
-//			stored in database
+// description :
+//		Write the memorized attribute with the value stored in database
 //
-//-----------------------------------------------------------------------------
+// argument :
+//		in :
+//			- dev: Pointer to the device
+//			- att: The attribute object
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 {
@@ -640,13 +634,15 @@ void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 				(const char *)"DeviceClass::set_memorized_values");
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::~DeviceClass(string &s)
+// method :
+//		DeviceClass::~DeviceClass(string &s)
 //
-// description :	DeviceClass destructor.
+// description :
+//		DeviceClass class destructor.
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 DeviceClass::~DeviceClass()
 {
@@ -673,8 +669,7 @@ DeviceClass::~DeviceClass()
 		{
 
 //
-// Clear vectors used to memorize info used to clean db
-// in case of devices with dyn attr removed during device
+// Clear vectors used to memorize info used to clean db in case of devices with dyn attr removed during device
 // destruction
 //
 
@@ -737,11 +732,19 @@ DeviceClass::~DeviceClass()
 }
 
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::delete_dev()
+// method :
+//		DeviceClass::delete_dev()
 //
-// description :	delete a device from the class device list
+// description :
+//		Delete a device from the class device list
+//
+// argument :
+//		in :
+//			- idx :
+//			- tg : Pointer to the Tango Util singleton
+//			- r_poa : Pointer to the CORBA POA
 //
 //-----------------------------------------------------------------------------
 
@@ -751,8 +754,7 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 	cout4 << "Entering DeviceClas::delete_dev method for device with index " << idx << endl;
 
 //
-// If the polling thread is alive and if device is polled,
-// ask polling thread to stop polling
+// If the polling thread is alive and if device is polled, ask polling thread to stop polling
 //
 
 	if ((tg->get_polling_threads_info().empty() == false) && (device_list[idx]->is_polled() == true))
@@ -772,8 +774,8 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 
 //
 // Remove the servant.
-// For C++ device, this will be automatically done by the POA when the last executing call
-// will be over even if the device is not exported
+// For C++ device, this will be automatically done by the POA when the last executing call will be over even if the
+// device is not exported
 //
 
 	if (py_dev == true)

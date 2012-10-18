@@ -781,7 +781,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 	for (unsigned int loop = 0;loop < nb_event;loop++)
 	{
 		string dev_name, attr_name, event, attr_name_lower;
-		int base = (nb_event - 1) * 3;
+		int base = loop * 3;
 		dev_name = (*argin)[base];
 		attr_name = (*argin)[base + 1];
 		event = (*argin)[base + 2];

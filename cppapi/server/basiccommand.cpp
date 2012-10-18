@@ -183,13 +183,20 @@ DevInitCmd::DevInitCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgType 
 {
 }
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		InitCmd::execute
+// method :
+//		InitCmd::execute
 //
-// description : 	Initialize a device
+// description :
+//		Initialize a device
 //
-//--------------------------------------------------------------------------
+// argument :
+//		in :
+//			- device : Pointer to the device on which the command must be eexcuted
+//			- in_any : Input data packed in a CORBA Any object
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
@@ -225,8 +232,8 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		device->init_device();
 
 //
-// Re-configure polling in device on which the Init cmd been done is the admin
-// device but only if the Init is not called during the DS startup sequence
+// Re-configure polling in device on which the Init cmd been done is the admin device but only if the Init is not
+// called during the DS startup sequence
 //
 
 		DeviceImpl *admin_dev = NULL;
@@ -243,9 +250,8 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 			lock_ptr->Release();
 
 //
-// Apply memorized values for memorized attributes (if any)
-// For Py DS, if some attributes are memorized, the write_attributes
-// call will take the Python lock
+// Apply memorized values for memorized attributes (if any). For Py DS, if some attributes are memorized,
+// the write_attributes call will take the Python lock
 //
 
 		Tango::DeviceClass *dc = device->get_device_class();

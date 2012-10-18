@@ -3455,6 +3455,7 @@ public:
     vector<string> &get_att_wrong_db_conf() {return att_wrong_db_conf;}
     void check_att_conf();
     bool is_alarm_state_forced() {return force_alarm_state;}
+    vector<string> &get_att_mem_failed() {return att_mem_failed;}
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
@@ -3561,9 +3562,18 @@ protected:
     bool                run_att_conf_loop;
     bool                force_alarm_state;
     vector<string>      att_wrong_db_conf;
-
+	vector<string>		att_mem_failed;
 
 private:
+//
+// Private enum
+//
+
+	typedef enum _AttErrorType
+	{
+		CONF = 0,
+		MEM
+	}AttErrorType;
 
 //
 // Some private methods and variables
@@ -3575,6 +3585,7 @@ private:
     void poll_object(const string &,int,PollObjType);
     void stop_poll_object(const string &,PollObjType);
     void att_conf_loop();
+    void build_att_list_in_status_mess(size_t,AttErrorType);
 
 #ifdef TANGO_HAS_LOG4TANGO
   	log4tango::Logger *get_logger_i (void);

@@ -293,12 +293,15 @@ void ApiUtil::create_orb()
 #endif
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// ApiUtil::get_db_ind() - Retrieve a Tango database object created from the
-//			   TANGO_HOST environment variable
+// method :
+// 		ApiUtil::get_db_ind()
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Retrieve a Tango database object created from the TANGO_HOST environment variable
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 int ApiUtil::get_db_ind()
 {

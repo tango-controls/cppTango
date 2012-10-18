@@ -1,43 +1,36 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
-///
-///  file 	event.cpp
-///
-///		C++ classes for implementing the event server and client
-///		singleton classes - EventSupplier and EventConsumer.
-///		These classes are used to send events from the server
-///		to the notification service and to receive events from
-///		the notification service.
-///
-///		author(s) : A.Gotz (goetz@esrf.fr)
-///
-///		original : 7 April 2003
-///
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+//====================================================================================================================
+//
+//  file :  			event.cpp
+//
+//	description : 		C++ classes for implementing the event server and client singleton classes - EventConsumer.
+//
+//	author(s) : 		A.Gotz (goetz@esrf.fr)
+//
+//	original : 			7 April 2003
+//
+//  Copyright (C) :     2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-///
-///		$Revision$
-///
-///
-////////////////////////////////////////////////////////////////////////////////
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
+//
+// $Revision$
+//
+//
+//====================================================================================================================
 
 #include <tango.h>
 #include <eventconsumer.h>
@@ -1082,11 +1075,24 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 }
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::subscribe_event()
+// method :
+//		EventConsumer::subscribe_event()
 //
-//-----------------------------------------------------------------------------
+// description :
+//
+// argument :
+//		in :
+//			- device : Pointer to the DeviceProxy instance
+//			- attribute : The attribute name
+//			- event : The event type
+//			- callback : Pointer to the callback object
+//			- ev_queue : Pointer to the eveent queue
+//			- filters : Event filter (unused starting with Tango 8)
+//			- stateless : Stateless subsription flag
+//
+//--------------------------------------------------------------------------------------------------------------------
 int EventConsumer::subscribe_event (DeviceProxy *device,
 				   const string &attribute,
 				   EventType event,
@@ -1106,12 +1112,10 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
         event_name = EventName[event];
 
 //
-// Take a writer lock right now and not in the connect_event method
-// In case of stateless subscription and if the device is not there,
-// the lock will still be valid when the data will be inserted into the
-// vector of non-connected events
-// Also ask the main ZMQ thread to delay all incoming event until this meethod
-// exit. A dead lock could happen if we don't do this (really experienced!)
+// Take a writer lock right now and not in the connect_event method. In case of stateless subscription and if the
+// device is not there, the lock will still be valid when the data will be inserted into the vector of non-connected
+// events. Also ask the main ZMQ thread to delay all incoming event until this method exit.
+// A dead lock could happen if we don't do this (really experienced!)
 //
 
     DelayEvent de(this);

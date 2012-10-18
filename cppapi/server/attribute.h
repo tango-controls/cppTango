@@ -2144,6 +2144,8 @@ public:
 	bool is_startup_exception() {return check_startup_exceptions;}
 	void throw_startup_exception(const char*);
 
+	bool is_mem_exception() {return att_mem_exception;}
+
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);
 #endif // TANGO_HAS_LOG4TANGO
@@ -2278,6 +2280,8 @@ protected:
     map<string,const DevFailed> startup_exceptions;		// Map containing exceptions related to attribute configuration raised during the server startup sequence
     bool 				check_startup_exceptions;		// Flag set to true if there is at least one exception in startup_exceptions map
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
+	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
+														// memorized and if it failed at init
 };
 
 //

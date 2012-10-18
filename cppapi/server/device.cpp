@@ -1063,17 +1063,17 @@ long DeviceImpl::get_attr_poll_ring_depth(string &attr_name)
 	return ret;
 }
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::dev_state
+// method :
+//		DeviceImpl::dev_state
 //
-// description :	The default method called by the DevState command.
-//			If the device is ON, this method checks attribute
-//			with a defined alarm and set the state to ALARM if one
-//			of these attribute is in alarm. Otherwise, simply
-//			returns device state
+// description :
+//		The default method called by the DevState command. If the device is ON, this method checks attribute
+//		with a defined alarm and set the state to ALARM if one of these attribute is in alarm. Otherwise, simply
+//		returns device state
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 Tango::DevState DeviceImpl::dev_state()
 {
@@ -1081,14 +1081,13 @@ Tango::DevState DeviceImpl::dev_state()
 
 //
 // If we need to run att. conf loop, do it.
-// If the flag to force state is true, do not call state computation method,
-// simply set it to ALARM
+// If the flag to force state is true, do not call state computation method, simply set it to ALARM
 //
 
     if (run_att_conf_loop == true)
         att_conf_loop();
 
-    if (force_alarm_state == true)
+    if (device_state != Tango::FAULT && force_alarm_state == true)
     {
         return Tango::ALARM;
     }
@@ -1171,8 +1170,7 @@ Tango::DevState DeviceImpl::dev_state()
                 {
 
 //
-// Starting with IDl 3, it is possible that some of the alarmed attribute have
-// already been read.
+// Starting with IDl 3, it is possible that some of the alarmed attribute have already been read.
 //
 
                     long idx;
@@ -1275,9 +1273,8 @@ Tango::DevState DeviceImpl::dev_state()
             }
 
 //
-// Check if one of the remaining attributes has its quality factor
-// set to ALARM or WARNING. It is not necessary to do this if we have already detected
-// that the state must switch to ALARM
+// Check if one of the remaining attributes has its quality factor set to ALARM or WARNING. It is not necessary to do
+// this if we have already detected that the state must switch to ALARM
 //
 
             if ((set_alrm == false) && (device_state != Tango::ALARM))
@@ -1293,15 +1290,16 @@ Tango::DevState DeviceImpl::dev_state()
 	return device_state;
 }
 
-//+-------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::dev_status
+// method :
+//		DeviceImpl::dev_status
 //
-// description :	The default method called by the DevStatus command.
-//			If the device is ON, this method add Attribute status
-//			for all device attribute in alarm state.
+// description :
+//		The default method called by the DevStatus command. If the device is ON, this method add Attribute status
+//		for all device attribute in alarm state.
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 Tango::ConstDevString DeviceImpl::dev_status()
 {
@@ -1311,25 +1309,34 @@ Tango::ConstDevString DeviceImpl::dev_status()
     if (run_att_conf_loop == true)
         att_conf_loop();
 
-    if (force_alarm_state == true)
+    if (device_state != Tango::FAULT && force_alarm_state == true)
     {
         alarm_status = "The device is in ALARM state.";
+
+//
+// First add message for attribute with wrong conf. in db
+//
+
         size_t nb_wrong_att = att_wrong_db_conf.size();
-        alarm_status = alarm_status + "\nAttribute";
-        if (nb_wrong_att > 1)
-            alarm_status = alarm_status + "s";
-        alarm_status = alarm_status + " ";
-        for (size_t i = 0;i < nb_wrong_att;++i)
-        {
-            alarm_status = alarm_status + att_wrong_db_conf[i];
-            if ((nb_wrong_att > 1) && (i <= nb_wrong_att - 2))
-                alarm_status = alarm_status + ", ";
-        }
-        if (nb_wrong_att == 1)
-            alarm_status = alarm_status + " has ";
-        else
-            alarm_status = alarm_status + " have ";
-        alarm_status = alarm_status + "wrong configuration in database";
+        if (nb_wrong_att != 0)
+		{
+			alarm_status = alarm_status + "\nAttribute";
+			build_att_list_in_status_mess(nb_wrong_att,DeviceImpl::CONF);
+			alarm_status = alarm_status + "wrong configuration in database";
+		}
+
+//
+// Add message for memorized attributes which failed during device startup
+//
+
+        nb_wrong_att = att_mem_failed.size();
+        if (nb_wrong_att != 0)
+		{
+			alarm_status = alarm_status + "\nMemorized attribute";
+			build_att_list_in_status_mess(nb_wrong_att,DeviceImpl::MEM);
+			alarm_status = alarm_status + "failed during device startup sequence";
+		}
+
         returned_str = alarm_status.c_str();
     }
     else
@@ -5119,61 +5126,104 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::att_conf_loop
+// method :
+//			DeviceImpl::att_conf_loop
 //
-// description : Set flags in DeviceImpl if any of the device
-//               attributes has some wrong configuration
-//               in DB generating startup exception when the server
-//               started.
-//               In DeviceImpl class , this method set the
-//               force_alarm_state flag and fills in the
-//               att_wrong_db_conf vector with attribute name(s)
-//               (for device status)
+// description :
+//			Set flags in DeviceImpl if any of the device attributes has some wrong configuration in DB generating
+//			startup exception when the server started.
+//			In DeviceImpl class, this method set the force_alarm_state flag and fills in the
+//          att_wrong_db_conf vector with attribute name(s) (for device status)
 //
-// argument: in :
-//
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::att_conf_loop()
 {
     vector<Attribute *> &att_list = get_device_attr()->get_attribute_list();
 
-    size_t i;
-    bool att_wrong_conf = false;
+//
+// Reset data before the new loop
+//
 
     vector<string> &wrong_conf_att_list = get_att_wrong_db_conf();
     wrong_conf_att_list.clear();
 
-    for (i = 0;i < att_list.size();++i)
+    vector<string> &mem_att_list = get_att_mem_failed();
+    mem_att_list.clear();
+
+    force_alarm_state = false;
+
+//
+// Run the loop for wrong attribute conf. or memorized att which failed at startup
+//
+
+    for (size_t i = 0;i < att_list.size();++i)
     {
-        if (att_list[i]->is_startup_exception() == true)
+        if (att_list[i]->is_startup_exception() == true || att_list[i]->is_mem_exception() == true)
         {
             force_alarm_state = true;
-            wrong_conf_att_list.push_back(att_list[i]->get_name());
-            att_wrong_conf = true;
+            if (att_list[i]->is_startup_exception() == true)
+				wrong_conf_att_list.push_back(att_list[i]->get_name());
+			else
+				mem_att_list.push_back(att_list[i]->get_name());
         }
     }
-
-    if (att_wrong_conf == false)
-        force_alarm_state = false;
 
     run_att_conf_loop = false;
 }
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::check_att_conf
+// method :
+//		DeviceImpl::check_att_conf
 //
 // description :
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::check_att_conf()
 {
     if (run_att_conf_loop == true)
         att_conf_loop();
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::build_att_list_in_status_mess
+//
+// description :
+//		Build device status message in case of device with some att with wrong conf. in db or if some memorized
+//		attribute failed during the startup phase
+//
+// argument:
+//		in :
+//			- nb_att : Number of attributes in error
+//			- att_type : Type of attribute error (conf or mem)
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_type)
+{
+	if (nb_att > 1)
+		alarm_status = alarm_status + "s";
+	alarm_status = alarm_status + " ";
+	for (size_t i = 0;i < nb_att;++i)
+	{
+		if (att_type == Tango::DeviceImpl::CONF)
+			alarm_status = alarm_status + att_wrong_db_conf[i];
+		else
+			alarm_status = alarm_status + att_mem_failed[i];
+
+		if ((nb_att > 1) && (i <= nb_att - 2))
+			alarm_status = alarm_status + ", ";
+	}
+	if (nb_att == 1)
+		alarm_status = alarm_status + " has ";
+	else
+		alarm_status = alarm_status + " have ";
 }
 
 } // End of Tango namespace

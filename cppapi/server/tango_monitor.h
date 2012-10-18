@@ -1,4 +1,4 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :               tango_monitor.h
 //
@@ -15,22 +15,20 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//===================================================================================================================
 
 #ifndef _TANGO_MONITOR_H
 #define _TANGO_MONITOR_H
@@ -39,16 +37,16 @@
 namespace Tango
 {
 
-//=============================================================================
+//--------------------------------------------------------------------------------------------------------------------
 //
-//			The TangoMonitor class
+// class :
+//		TangoMonitor
 //
+// description :
+//		This class is used to synchronise device access between polling thread and CORBA request. It is used only for
+//		the command_inout and read_attribute calls
 //
-// description : 	This class is used to synchronise device access between
-//			polling thread and CORBA request. It is used only for
-//			the command_inout and read_attribute calls
-//
-//=============================================================================
+//--------------------------------------------------------------------------------------------------------------------
 
 class TangoMonitor: public omni_mutex
 {
@@ -72,6 +70,7 @@ public :
 
 	int get_locking_thread_id();
 	long get_locking_ctr();
+	string &get_name() {return name;}
 
 private :
 	long 			_timeout;
@@ -82,12 +81,13 @@ private :
 };
 
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// methods : 		TangoMonitor::get_locking_thread_id
-//					TangoMonitor::get_locking_ctr
+// methods :
+//		TangoMonitor::get_locking_thread_id
+//		TangoMonitor::get_locking_ctr
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 inline int TangoMonitor::get_locking_thread_id()
@@ -104,22 +104,23 @@ inline long TangoMonitor::get_locking_ctr()
 	return locked_ctr;
 }
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		TangoMonitor::get_monitor
+// method :
+//		TangoMonitor::get_monitor
 //
-// description : 	Get a monitor. The thread will wait (with timeout) if
-//			the monitor is already locked. If the thread is already
-//			the monitor owner thread, simply increment the
-//			locking counter
+// description :
+//		Get a monitor. The thread will wait (with timeout) if the monitor is already locked. If the thread is already
+//		the monitor owner thread, simply increment the locking counter
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 inline void TangoMonitor::get_monitor()
 {
 	omni_thread *th = omni_thread::self();
 
 	omni_mutex_lock synchronized(*this);
+
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
 	cout4 << "In get_monitor() " << name << ", thread = " << th->id() << ", ctr = " << locked_ctr << endl;
 #endif
@@ -161,15 +162,16 @@ inline void TangoMonitor::get_monitor()
 }
 
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		TangoMonitor::rel_monitor
+// method :
+//		TangoMonitor::rel_monitor
 //
-// description : 	Release a monitor if the caller thread is the locking
-//			thread. Signal other threads if the locking counter
-//			goes down to zero
+// description :
+//		Release a monitor if the caller thread is the locking thread. Signal other threads if the locking counter
+//		goes down to zero
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 inline void TangoMonitor::rel_monitor()
 {

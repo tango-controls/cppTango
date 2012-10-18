@@ -1030,6 +1030,7 @@ struct ranges_const2type
  * API_InitNotPublic
  * API_InitThrowsException
  * API_JavaRuntimeSecurityException
+ * API_MemAttFailedDuringInit
  * API_MemoryAllocation
  * API_MethodArgument
  * API_MethodNotFound
