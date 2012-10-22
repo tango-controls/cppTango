@@ -257,47 +257,6 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
         }
 
 //
-// Something received by the control socket?
-//
-
-        if (items[0].revents & ZMQ_POLLIN)
-        {
-//cout << "For the control socket" << endl;
-            control_sock->recv(&received_ctrl);
-
-            string ret_str;
-            bool ret = false;
-
-            try
-            {
-                ret = process_ctrl(received_ctrl,items,nb_poll_item);
-                ret_str = "OK";
-            }
-            catch (zmq::error_t &e)
-            {
-                ret_str = e.what();
-            }
-            catch (Tango::DevFailed &e)
-            {
-                ret_str = e.errors[0].desc;
-            }
-
-            zmq::message_t reply(ret_str.size());
-            ::memcpy((void *)reply.data(),ret_str.data(),ret_str.size());
-            control_sock->send(reply);
-
-            if (ret == true)
-            {
-                delete heartbeat_sub_sock;
-                delete control_sock;
-                delete [] items;
-
-                break;
-            }
-            items[0].revents = 0;
-        }
-
-//
 // Something received by the event socket (TCP transport)?
 //
 
@@ -346,6 +305,47 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
             }
 
             items[2].revents = 0;
+        }
+
+//
+// Something received by the control socket?
+//
+
+        if (items[0].revents & ZMQ_POLLIN)
+        {
+//cout << "For the control socket" << endl;
+            control_sock->recv(&received_ctrl);
+
+            string ret_str;
+            bool ret = false;
+
+            try
+            {
+                ret = process_ctrl(received_ctrl,items,nb_poll_item);
+                ret_str = "OK";
+            }
+            catch (zmq::error_t &e)
+            {
+                ret_str = e.what();
+            }
+            catch (Tango::DevFailed &e)
+            {
+                ret_str = e.errors[0].desc;
+            }
+
+            zmq::message_t reply(ret_str.size());
+            ::memcpy((void *)reply.data(),ret_str.data(),ret_str.size());
+            control_sock->send(reply);
+
+            if (ret == true)
+            {
+                delete heartbeat_sub_sock;
+                delete control_sock;
+                delete [] items;
+
+                break;
+            }
+            items[0].revents = 0;
         }
 
 //
