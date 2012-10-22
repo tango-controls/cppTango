@@ -1489,6 +1489,8 @@ int ApiUtil::get_env_var(const char *env_var_name,string &env_var)
 
 void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 {
+	omni_mutex_lock oml(lock_th_map);
+
     if (ext->host_ip_adrs.empty() == true)
     {
 #ifndef _TG_WINDOWS_
