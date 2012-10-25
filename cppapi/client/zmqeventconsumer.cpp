@@ -255,47 +255,6 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
         }
 
 //
-// Something received by the control socket?
-//
-
-        if (items[0].revents & ZMQ_POLLIN)
-        {
-//cout << "For the control socket" << endl;
-            control_sock->recv(&received_ctrl);
-
-            string ret_str;
-            bool ret = false;
-
-            try
-            {
-                ret = process_ctrl(received_ctrl,items,nb_poll_item);
-                ret_str = "OK";
-            }
-            catch (zmq::error_t &e)
-            {
-                ret_str = e.what();
-            }
-            catch (Tango::DevFailed &e)
-            {
-                ret_str = e.errors[0].desc;
-            }
-
-            zmq::message_t reply(ret_str.size());
-            ::memcpy((void *)reply.data(),ret_str.data(),ret_str.size());
-            control_sock->send(reply);
-
-            if (ret == true)
-            {
-                delete heartbeat_sub_sock;
-                delete control_sock;
-                delete [] items;
-
-                break;
-            }
-            items[0].revents = 0;
-        }
-
-//
 // Something received by the event socket (TCP transport)?
 //
 
@@ -344,6 +303,47 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
             }
 
             items[2].revents = 0;
+        }
+
+//
+// Something received by the control socket?
+//
+
+        if (items[0].revents & ZMQ_POLLIN)
+        {
+//cout << "For the control socket" << endl;
+            control_sock->recv(&received_ctrl);
+
+            string ret_str;
+            bool ret = false;
+
+            try
+            {
+                ret = process_ctrl(received_ctrl,items,nb_poll_item);
+                ret_str = "OK";
+            }
+            catch (zmq::error_t &e)
+            {
+                ret_str = e.what();
+            }
+            catch (Tango::DevFailed &e)
+            {
+                ret_str = e.errors[0].desc;
+            }
+
+            zmq::message_t reply(ret_str.size());
+            ::memcpy((void *)reply.data(),ret_str.data(),ret_str.size());
+            control_sock->send(reply);
+
+            if (ret == true)
+            {
+                delete heartbeat_sub_sock;
+                delete control_sock;
+                delete [] items;
+
+                break;
+            }
+            items[0].revents = 0;
         }
 
 //
@@ -856,7 +856,6 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
         case ZMQ_DISCONNECT_EVENT:
         {
-
 //
 // Get event name
 //
@@ -2185,12 +2184,6 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                         EventQueue *ev_queue;
                         ev_queue = esspos->ev_queue;
 
-                        if (cb_ctr == cb_nb)
-                        {
-                            map_lock = false;
-                            map_modification_lock.readerOut();
-                        }
-
                         if ((ev_attr_conf == false) && (ev_attr_ready == false))
                         {
                             EventData *event_data;
@@ -2360,20 +2353,11 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             }
                         }
                     }
-                    else // id < 0
-                    {
-                        if (cb_ctr == cb_nb)
-                        {
-                            map_lock = false;
-                            map_modification_lock.readerOut();
-                        }
 
-                        if ((ev_attr_conf == false) && (ev_attr_ready == false))
-                            delete dev_attr;
-                        else if (ev_attr_ready == false)
-                            delete attr_info_ex;
-                    }
                 } // End of for
+
+				map_lock = false;
+				map_modification_lock.readerOut();
 
                 delete missed_event_data;
                 delete missed_conf_event_data;

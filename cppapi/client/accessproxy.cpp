@@ -122,6 +122,8 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 	bool multi_ip = true;
 	bool two_tries = false;
 
+	omni_mutex_lock oml(only_one);
+
 	while (two_tries == false)
 	{
 		try

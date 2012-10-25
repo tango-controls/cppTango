@@ -48,6 +48,7 @@ protected:
 	vector<string>					host_ips;
 	bool							forced;
 	map<string,vector<string> > 	allowed_cmd_table;
+	omni_mutex						only_one;
 
 	void get_allowed_commands(string &,vector<string> &);
 
