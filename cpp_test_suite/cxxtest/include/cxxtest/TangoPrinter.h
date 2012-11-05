@@ -28,7 +28,19 @@
 #include <string.h>
 #include <map>
 
+// Tango exceptions handling
+#undef _TS_CATCH_ABORT
 #define _TS_CATCH_ABORT(b) _TS_CATCH_TYPE( (const Tango::DevFailed &e), {cout << "\n\nException : \n" << endl; Tango::Except::print_exception(e); throw;} ) _TS_CATCH_TYPE( (const CxxTest::AbortTest &), b )
+
+// This is a trick to deal with compiler warnings while catching DevFailed multiple times
+// TODO: Remove this code when issue #53 (https://github.com/CxxTest/cxxtest/issues/53) is fixed
+#undef ___TS_ASSERT_THROWS_ASSERT
+#define ___TS_ASSERT_THROWS_ASSERT(f,l,e,t,a,m) { \
+		bool _ts_threw_expected = false, _ts_threw_else = false; \
+		_TS_TRY { _TS_TRY { e; } _TS_CATCH_TYPE( (t), { a; _ts_threw_expected = true; } ) } \
+		_TS_CATCH_ABORT( { throw; } ) \
+		_TS_LAST_CATCH( { _ts_threw_else = true; } ) \
+		if ( !_ts_threw_expected ) { CxxTest::doFailAssertThrows( (f), (l), #e, #t, _ts_threw_else, (m) ); } }
 
 namespace CxxTest
 {
@@ -123,7 +135,7 @@ namespace CxxTest
          * As the effect we get:
          * 		Testing My Suite Name :
          */
-        void enterSuite( const SuiteDescription &desc )
+        void enterSuite( const SuiteDescription & )
 		{
         	params_opt_validate.clear();
         	params_validate.clear();
