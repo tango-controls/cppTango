@@ -21,7 +21,6 @@ protected:
 	DeviceProxy *device, *dserver;
 	string device_name, dserver_name, refpath, outpath, file_name, ref_file, out_file;
 	int loglevel, dsloglevel;
-	bool logging_level_restored, logging_target_restored;
 
 public:
 	SUITE_NAME()
@@ -29,56 +28,21 @@ public:
 		// output/reference file name
 		file_name = "always_hook.out";
 
-		// clean up flags
-		logging_level_restored = true;
-		logging_target_restored = true;
 
 //
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device");
+		device_name = CxxTest::TangoPrinter::get_uarg("device");
 
-		vector<string> params; // parameters
-		params.push_back("fulldsname");
-		params.push_back("outpath");
-		params.push_back("refpath");
-		params.push_back("loglevel");
-		params.push_back("dsloglevel");
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
+		outpath = CxxTest::TangoPrinter::get_param("outpath");
+		refpath = CxxTest::TangoPrinter::get_param("refpath");
+		loglevel = atoi(CxxTest::TangoPrinter::get_param("loglevel").c_str());
+		dsloglevel = atoi(CxxTest::TangoPrinter::get_param("dsloglevel").c_str());
 
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
+		CxxTest::TangoPrinter::validate_args();
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
-
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device_name = CxxTest::TangoPrinter::get_uargv()[0];
-			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
-			outpath = CxxTest::TangoPrinter::get_param_val(params[1]);
-			refpath = CxxTest::TangoPrinter::get_param_val(params[2]);
-			loglevel = atoi(CxxTest::TangoPrinter::get_param_val(params[3]).c_str());
-			dsloglevel = atoi(CxxTest::TangoPrinter::get_param_val(params[4]).c_str());
-		}
-		else
-		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
-		}
 
 //
 // Initialization --------------------------------------------------
@@ -115,7 +79,7 @@ public:
 //
 
 		// clean up in case test suite terminates before logging level is restored to defaults
-		if(!logging_level_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("logging_level"))
 		{
 			DeviceData din;
 			DevVarLongStringArray reset_device_level;
@@ -138,7 +102,7 @@ public:
 		}
 
 		// clean up in case test suite terminates before logging targets are restored to defaults
-		if(!logging_target_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("logging_target"))
 		{
 			DeviceData din;
 			DevVarStringArray remove_logging_targets;
@@ -205,7 +169,7 @@ public:
 		device_level.svalue[1] = dserver_name.c_str();
 		din << device_level;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
-		logging_level_restored = false; // flag indicating that logging level has been modified
+		CxxTest::TangoPrinter::restore_set("logging_level");
 
 		// set logging targets for the device and device server
 		DevVarStringArray logging_targets;
@@ -216,7 +180,7 @@ public:
 		logging_targets[3] = string("file::" + out_file).c_str();
 		din << logging_targets;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddLoggingTarget", din));
-		logging_target_restored = false; // flag indicating that logging targets have been added
+		CxxTest::TangoPrinter::restore_set("logging_target");
 
 		// execute IOLong command
 		DevLong lg_in = 10, lg_out;
@@ -235,12 +199,12 @@ public:
 		reset_device_level.svalue[1] = dserver_name.c_str();
 		din << reset_device_level;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
-		logging_level_restored = true; // flag indicating that logging level has been restored to defaults (see destructor)
+		CxxTest::TangoPrinter::restore_unset("logging_level");
 
 		// remove logging targets for device and device server
 		din << logging_targets;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemoveLoggingTarget", din));
-		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
+		CxxTest::TangoPrinter::restore_unset("logging_target");
 	}
 
 // Test comparing input with output

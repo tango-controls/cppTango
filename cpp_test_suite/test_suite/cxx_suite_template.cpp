@@ -17,7 +17,7 @@ using namespace std;
 class TemplateTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
+	DeviceProxy *device1, *dserver;
 
 public:
 	SUITE_NAME()
@@ -27,40 +27,20 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device");
+		string device1_name, dserver_name;
 
-		vector<string> params; // parameters
+		// user arguments, obtained from the command line sequentially
+		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
 
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
+		// predefined mandatory parameters
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
-		string device_name;
+		// predefined optional parameters
+		CxxTest::TangoPrinter::get_param_opt("loop");
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+		// always add this line, otherwise arguments will not be parsed correctly
+		CxxTest::TangoPrinter::validate_args();
 
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device_name = CxxTest::TangoPrinter::get_uargv()[0];
-		}
-		else
-		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
-		}
 
 //
 // Initialization --------------------------------------------------
@@ -68,8 +48,10 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
-			device->ping();
+			device1 = new DeviceProxy(device1_name);
+			dserver = new DeviceProxy(dserver_name);
+			device1->ping();
+			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -81,7 +63,8 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		delete device;
+		delete device1;
+		delete dserver;
 	}
 
 	static SUITE_NAME *createSuite()

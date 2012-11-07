@@ -29,59 +29,27 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device");
-
-		vector<string> params; // parameters
-		params.push_back("fulldsname");
-		params.push_back("serverhost");
-		params.push_back("serverversion");
-		params.push_back("docurl");
-		params.push_back("devtype");
-
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
-
 		string dserver_name;
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+		device_name = CxxTest::TangoPrinter::get_uarg("device");
 
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device_name = CxxTest::TangoPrinter::get_uargv()[0];
-			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
+		full_ds_name = CxxTest::TangoPrinter::get_param("fulldsname");
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
+		server_host = CxxTest::TangoPrinter::get_param("serverhost");
+		server_version = atoi(CxxTest::TangoPrinter::get_param("serverversion").c_str());
+		doc_url = CxxTest::TangoPrinter::get_param("docurl");
+		dev_type = CxxTest::TangoPrinter::get_param("devtype");
 
-			full_ds_name = CxxTest::TangoPrinter::get_param_val(params[0]);
-			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
+		CxxTest::TangoPrinter::validate_args();
+
 // For Windows / Linux compatibility
-			string::size_type pos = server_host.find('.');
-			pos--;
-			if (server_host[pos] == 0x0d)
-			{
-				server_host.erase(pos,1);
-			}
-			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
-			doc_url = CxxTest::TangoPrinter::get_param_val(params[3]);
-			dev_type = CxxTest::TangoPrinter::get_param_val(params[4]);
-		}
-		else
+		string::size_type pos = server_host.find('.');
+		pos--;
+		if (server_host[pos] == 0x0d)
 		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
+			server_host.erase(pos,1);
 		}
+
 
 //
 // Initialization --------------------------------------------------

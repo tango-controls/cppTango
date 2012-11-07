@@ -22,7 +22,7 @@ class BlackboxTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *device3, *dserver, *dbserver;
-	string device1_name, device2_name, device3_name, fulldsname, server_host, dbserver_name;
+	string device1_name, device2_name, device3_name, fulldsname, client_host, dbserver_name;
 	DevLong server_version;
 
 public:
@@ -33,60 +33,28 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device1");
-		uargs.push_back("device2");
-		uargs.push_back("device3");
-
-		vector<string> params; // parameters
-		params.push_back("fulldsname");
-		params.push_back("serverhost");
-		params.push_back("serverversion");
-		params.push_back("dbserver");
-
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
-
 		string dserver_name;
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
+		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
+		device3_name = CxxTest::TangoPrinter::get_uarg("device3");
 
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
-			device2_name = CxxTest::TangoPrinter::get_uargv()[1];
-			device3_name = CxxTest::TangoPrinter::get_uargv()[2];
-			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
+		client_host = CxxTest::TangoPrinter::get_param("clienthost");
+		server_version = atoi(CxxTest::TangoPrinter::get_param("serverversion").c_str());
+		dbserver_name = CxxTest::TangoPrinter::get_param("dbserver");
 
-			server_host = CxxTest::TangoPrinter::get_param_val(params[1]);
+		CxxTest::TangoPrinter::validate_args();
+
+
 // For Windows / Linux compatibility
-			string::size_type pos = server_host.find('.');
-			pos--;
-			if (server_host[pos] == 0x0d)
-			{
-				server_host.erase(pos,1);
-			}
-			server_version = atoi(CxxTest::TangoPrinter::get_param_val(params[2]).c_str());
-			dbserver_name = CxxTest::TangoPrinter::get_param_val(params[3]);
-		}
-		else
+		string::size_type pos = client_host.find('.');
+		pos--;
+		if (client_host[pos] == 0x0d)
 		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
+			client_host.erase(pos,1);
 		}
+
 
 //
 // Initialization --------------------------------------------------
@@ -205,13 +173,17 @@ public:
 		ss << pid;
 		pid_str = ss.str();
 
-		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + server_host + " (CPP/Python client with PID " + pid_str + ")";
+		reference_str = "Operation command_inout" + version_str + " (cmd = IOLong) from cache_device requested from " + client_host + " (CPP/Python client with PID " + pid_str + ")";
 
 		TS_ASSERT_THROWS_NOTHING(blackbox_out = device1->black_box(3));
 		for(vector<string>::iterator it = (*blackbox_out).begin(); it != (*blackbox_out).end(); ++it)
 		{
 			out_str = *it;
 			out_str.erase(0,out_str.rfind(": ") + 2); // removes time stamp from the output
+
+			cout << "## " << out_str << endl << "## " << reference_str << endl;
+
+
 			TS_ASSERT(out_str == reference_str);
 		}
 
@@ -270,7 +242,7 @@ public:
 						&& e.errors[0].severity == Tango::ERR));
 		delete device3;
 
-		reference_str = "Operation ping requested from " + server_host;
+		reference_str = "Operation ping requested from " + client_host;
 		TS_ASSERT_THROWS_NOTHING(blackbox_out = device2->black_box(1));
 		out_str = (*blackbox_out)[0];
 		out_str.erase(0,out_str.rfind(": ") + 2);

@@ -19,58 +19,24 @@ class PollTestSuite__loop: public CxxTest::TestSuite
 protected:
 	DeviceProxy *device1, *dserver;
 	string device1_name, dserver_name;
-	bool dev1_Double_attr_polling_restored, dev1_IOStr1_polling_restored, dev1_attr_wrong_size_polling_restored, dev1_IOExcept_polling_restored;
 
 public:
 	SUITE_NAME()
 	{
 
-		// clean up flags
-		dev1_Double_attr_polling_restored = true;
-		dev1_IOStr1_polling_restored = true;
-		dev1_attr_wrong_size_polling_restored = true;
-		dev1_IOExcept_polling_restored = true;
-
 //
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device1");
+		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
 
-		vector<string> params; // parameters
-		params.push_back("fulldsname");
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
-		params_opt.push_back("suiteloop");
+		CxxTest::TangoPrinter::get_param_opt("loop");
+		CxxTest::TangoPrinter::get_param_opt("suiteloop");
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+		CxxTest::TangoPrinter::validate_args();
 
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
-
-			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
-		}
-		else
-		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
-		}
 
 //
 // Initialization --------------------------------------------------
@@ -100,7 +66,7 @@ public:
 
 		// clean up in case test suite terminates before 'Double_attr'
 		// attribute polling state is restored to defaults for device1
-		if(!dev1_Double_attr_polling_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("dev1_Double_attr_polling"))
 		{
 			DeviceData din;
 			DevVarStringArray rem_attr_poll;
@@ -122,7 +88,7 @@ public:
 
 		// clean up in case test suite terminates before 'IOStr1'
 		// command polling state is restored to defaults for device1
-		if(!dev1_IOStr1_polling_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("dev1_IOStr1_polling"))
 		{
 			DeviceData din;
 			DevVarStringArray rem_cmd_poll;
@@ -144,7 +110,7 @@ public:
 
 		// clean up in case test suite terminates before 'attr_wrong_size'
 		// attribute polling state is restored to defaults for device1
-		if(!dev1_attr_wrong_size_polling_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("dev1_attr_wrong_size_polling"))
 		{
 			DeviceData din;
 			DevVarStringArray rem_attr_poll;
@@ -166,7 +132,7 @@ public:
 
 		// clean up in case test suite terminates before 'IOExcept'
 		// command polling state is restored to defaults for device1
-		if(!dev1_IOExcept_polling_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("dev1_IOExcept_polling"))
 		{
 			DeviceData din;
 			DevVarStringArray rem_cmd_poll;
@@ -217,8 +183,8 @@ public:
 		const DevVarStringArray *polled_devices;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("PolledDevice"));
 		dout >> polled_devices;
-for (unsigned int i = 0;i < polled_devices->length();i++)
-	cout << "Polled device = " << (*polled_devices)[i] << endl;
+		for (unsigned int i = 0;i < polled_devices->length();i++)
+			cout << "Polled device = " << (*polled_devices)[i] << endl;
 		TS_ASSERT((*polled_devices).length() == 0);
 
 		// check if the data source is set to polling buffer and than device (CACHE_DEV)
@@ -301,7 +267,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		attr_poll.svalue[2] = "Double_attr";
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
-		dev1_Double_attr_polling_restored = false;
+		CxxTest::TangoPrinter::restore_set("dev1_Double_attr_polling");
 
 		// poll IOStr1
 		cmd_poll.lvalue.length(1);
@@ -312,7 +278,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		cmd_poll.svalue[2] = "IOStr1";
 		din << cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
-		dev1_IOStr1_polling_restored = false;
+		CxxTest::TangoPrinter::restore_set("dev1_IOStr1_polling");
 
 		// poll attr_wrong_size
 		attr_poll.lvalue[0] = 300;
@@ -321,7 +287,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		attr_poll.svalue[2] = "attr_wrong_size";
 		din << attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
-		dev1_attr_wrong_size_polling_restored = false;
+		CxxTest::TangoPrinter::restore_set("dev1_attr_wrong_size_polling");
 
 		// poll IOExcept
 		cmd_poll.lvalue[0] = 550;
@@ -330,7 +296,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		cmd_poll.svalue[2] = "IOExcept";
 		din << cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddObjPolling", din));
-		dev1_IOExcept_polling_restored = false;
+		CxxTest::TangoPrinter::restore_set("dev1_IOExcept_polling");
 		Tango_sleep(3);
 
 		// set the data source to polling buffer (CACHE)
@@ -452,7 +418,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		rem_attr_poll[2] = "Double_attr";
 		din << rem_attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemObjPolling", din));
-		dev1_Double_attr_polling_restored = true;
+		CxxTest::TangoPrinter::restore_unset("dev1_Double_attr_polling");
 
 		// remove IOStr1 polling
 		rem_cmd_poll[0] = device1_name.c_str();
@@ -460,7 +426,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		rem_cmd_poll[2] = "IOStr1";
 		din << rem_cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemObjPolling", din));
-		dev1_IOStr1_polling_restored = true;
+		CxxTest::TangoPrinter::restore_unset("dev1_IOStr1_polling");
 
 		// remove attr_wrong_size polling
 		rem_attr_poll[0] = device1_name.c_str();
@@ -468,7 +434,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		rem_attr_poll[2] = "attr_wrong_size";
 		din << rem_attr_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemObjPolling", din));
-		dev1_attr_wrong_size_polling_restored = true;
+		CxxTest::TangoPrinter::restore_unset("dev1_attr_wrong_size_polling");
 
 		// remove IOExcept polling
 		rem_cmd_poll[0] = device1_name.c_str();
@@ -476,7 +442,7 @@ for (unsigned int i = 0;i < polled_devices->length();i++)
 		rem_cmd_poll[2] = "IOExcept";
 		din << rem_cmd_poll;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemObjPolling", din));
-		dev1_IOExcept_polling_restored = true;
+		CxxTest::TangoPrinter::restore_unset("dev1_IOExcept_polling");
 	}
 };
 #undef cout

@@ -20,55 +20,27 @@ protected:
 	DeviceProxy *device, *dserver;
 	string device_name;
 	AttributeInfoListEx *init_attr_conf;
-	bool timeout_restored;
 	int def_timeout;
 
 public:
 	SUITE_NAME()
 	{
-		// clean up flags
-		timeout_restored = true;
+		// default timeout
 		def_timeout = 3000;
+
+
 //
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device");
-
-		vector<string> params; // parameters
-		params.push_back("fulldsname");
-
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
-
 		string dserver_name;
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
+		device_name = CxxTest::TangoPrinter::get_uarg("device");
 
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device_name = CxxTest::TangoPrinter::get_uargv()[0];
-			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
-		}
-		else
-		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
+		CxxTest::TangoPrinter::validate_args();
 
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
-		}
 
 //
 // Initialization --------------------------------------------------
@@ -134,7 +106,7 @@ public:
 //
 
 		// clean up in case test suite terminates before timeout is restored to defaults
-		if(!timeout_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("timeout"))
 		{
 			try
 			{
@@ -175,7 +147,7 @@ public:
 		DeviceData dout;
 
 		device->set_timeout_millis(4*def_timeout);
-		timeout_restored = false;
+		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetAlarms"));
 		TS_ASSERT_THROWS_NOTHING(dout >> alarms);
@@ -228,7 +200,7 @@ public:
 		TS_ASSERT(string((*alarms)[44].in()) == "30000");
 
 		device->set_timeout_millis(def_timeout);
-		timeout_restored = true;
+		CxxTest::TangoPrinter::restore_unset("timeout");
 	}
 
 //
@@ -241,7 +213,7 @@ public:
 		DeviceData dout;
 
 		device->set_timeout_millis(4*def_timeout);
-		timeout_restored = false;
+		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetRanges"));
 		TS_ASSERT_THROWS_NOTHING(dout >> ranges);
@@ -276,7 +248,7 @@ public:
 		TS_ASSERT(string((*ranges)[26].in()) == "40000");
 
 		device->set_timeout_millis(def_timeout);
-		timeout_restored = true;
+		CxxTest::TangoPrinter::restore_unset("timeout");
 	}
 
 //
@@ -289,7 +261,7 @@ public:
 		DeviceData dout;
 
 		device->set_timeout_millis(7*def_timeout);
-		timeout_restored = false;
+		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("SetGetProperties"));
 		TS_ASSERT_THROWS_NOTHING(dout >> props);
@@ -771,7 +743,7 @@ public:
 
 
 		device->set_timeout_millis(def_timeout);
-		timeout_restored = true;
+		CxxTest::TangoPrinter::restore_unset("timeout");
 	}
 
 // Test read attribute exceptions

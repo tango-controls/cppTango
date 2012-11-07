@@ -29,8 +29,10 @@
 #include <map>
 
 // Tango exceptions handling
-#undef _TS_CATCH_ABORT
-#define _TS_CATCH_ABORT(b) _TS_CATCH_TYPE( (const Tango::DevFailed &e), {cout << "\n\nException : \n" << endl; Tango::Except::print_exception(e); throw;} ) _TS_CATCH_TYPE( (const CxxTest::AbortTest &), b )
+//#undef _TS_CATCH_ABORT
+//#define _TS_CATCH_ABORT(b) _TS_CATCH_TYPE( (const Tango::DevFailed &e), {cout << "\n\nException : \n" << endl; Tango::Except::print_exception(e); throw;} ) _TS_CATCH_TYPE( (const CxxTest::AbortTest &), b )
+#undef _TS_LAST_CATCH
+#define _TS_LAST_CATCH(b) _TS_CATCH_TYPE( (const Tango::DevFailed &e), {cout << "\n\nException : \n" << endl; Tango::Except::print_exception(e); b} ) _TS_CATCH_TYPE( (...), b )
 
 // This is a trick to deal with compiler warnings while catching DevFailed multiple times
 // TODO: Remove this code when issue #53 (https://github.com/CxxTest/cxxtest/issues/53) is fixed
@@ -94,7 +96,7 @@ namespace CxxTest
          * map of predefined parameter names and their declarations (the way of usage in the command line)
          * (example: params["loop"] = "--loop=" ==> ./run_tests user_param --loop=10)
          */
-        static map<string,string> params;
+        static map<string,vector<string>> params;
         /*
          * executable name
          */
@@ -119,7 +121,7 @@ namespace CxxTest
          * set containing registered names of the methods which are to be called to restore original device settings
          * in case a test case fails before restoring these settings by itself
          */
-        static set<string> restore_set;
+        static set<string> restore_points;
 
     public:
         TangoPrinter( CXXTEST_STD(ostream) &o = CXXTEST_STD(cout), const char *preLine = ":", const char *postLine = "" ) :
@@ -140,7 +142,7 @@ namespace CxxTest
         	params_opt_validate.clear();
         	params_validate.clear();
         	uargs_validate.clear();
-        	restore_set.clear();
+        	restore_points.clear();
         	args_valid = true;
         	string suite_name = tracker().suite().suiteName();
         	size_t suffix_pos = suite_name.rfind("TestSuite");
@@ -254,7 +256,7 @@ namespace CxxTest
     	        	params_opt_validate.clear();
     	        	params_validate.clear();
     	        	uargs_validate.clear();
-    	        	restore_set.clear();
+    	        	restore_points.clear();
     	        	args_valid = true;
     				suite_counter++;
     				TestDescription *test = (const_cast<SuiteDescription &>(suite)).firstTest();
@@ -291,10 +293,11 @@ namespace CxxTest
         		string arg_tmp = argv[i];
         		bool is_param = false;
 
-        		for(map<string,string>::iterator it = params.begin(); it != params.end(); ++it)
+        		for(map<string,vector<string>>::iterator it = params.begin(); it != params.end(); ++it)
         		{
 					string param_key = it->first;
-        			string param_value = it->second;
+        			string param_value = it->second[0];
+        			string param_desc = it->second[1];
 
         			int param_value_length = param_value.length();
         			if(param_value.compare(arg_tmp.substr(0, param_value_length)) == 0)
@@ -319,10 +322,10 @@ namespace CxxTest
         	// prints out the list of all parameters if required by user ("--?" or "--help")
         	if(TangoPrinter::is_param_set("?") || TangoPrinter::is_param_set("help"))
         	{
-        		cout << "\navailable parameters:";
-        		for(map<string,string>::iterator it = TangoPrinter::params.begin(); it != TangoPrinter::params.end(); ++it)
+        		cout << "\nAll parameters:";
+        		for(map<string,vector<string>>::iterator it = TangoPrinter::params.begin(); it != TangoPrinter::params.end(); ++it)
         		{
-        			cout << " " << it->second;
+        			cout << "\n\t" << it->second[0] << " - " << it->second[1];
         		}
         		cout << "\n";
         		exit(0);
@@ -344,34 +347,34 @@ namespace CxxTest
          * registers a restore point to take up an action in TestSuite tearDown method
          * in case a test case does not restore the default device properties
          */
-        static void restore_push(const char* name)
+        static void restore_set(const char* name)
         {
-        	restore_push(string(name));
+        	restore_set(string(name));
         }
 
         /*
          * registers a restore point to take up an action in TestSuite tearDown method
          * in case a test case does not restore the default device properties
          */
-        static void restore_push(const string &name)
+        static void restore_set(const string &name)
         {
-        	restore_set.insert(name);
+        	restore_points.insert(name);
         }
 
         /*
 		 * unregisters the restore point (after the test case had successfully restored the default device properties)
 		 */
-        static void restore_pop(const char* name)
+        static void restore_unset(const char* name)
 		{
-			restore_pop(string(name));
+			restore_unset(string(name));
 		}
 
         /*
 		 * unregisters the restore point (after the test case had successfully restored the default device properties)
          */
-        static void restore_pop(const string &name)
+        static void restore_unset(const string &name)
         {
-        	restore_set.erase(name);
+        	restore_points.erase(name);
         }
 
         /*
@@ -388,8 +391,8 @@ namespace CxxTest
         static bool is_restore_set(const string &name)
         {
         	bool result = false;
-        	if(!restore_set.empty())
-        		if(restore_set.find(name) != restore_set.end())
+        	if(!restore_points.empty())
+        		if(restore_points.find(name) != restore_points.end())
         			result = true;
         	return result;
         }
@@ -461,12 +464,24 @@ namespace CxxTest
         static string get_param_def(const string &key)
 		{
 			if(params.size() > 0 && params.find(key) != params.end())
-				return params[key];
+				return params[key][0];
 			else
 				return "";
 		}
 
-        static map<string,string> &get_params(void)
+        /*
+         * returns parameter description based on it's name
+         */
+        static string get_param_desc(const string &def)
+		{
+			if(params.size())// > 0 && params.find(key) != params.end())
+				for(map<string,vector<string>>::iterator it = params.begin(); it != params.end(); ++it)
+					if(it->second[0] == def)
+						return it->second[1];
+			return "";
+		}
+
+        static map<string,vector<string>> &get_params(void)
 		{
 			return params;
 		}
@@ -543,45 +558,76 @@ namespace CxxTest
         {
         	if(!args_valid)
         	{
-    			cout << "usage: " << get_executable_name();
+    			cout << "Usage: " << get_executable_name();
 
     			for(size_t i = 0; i < uargs_validate.size(); i++)
     				cout << " " << uargs_validate[i];
 
-    			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
-    				cout << " " << *it;
+    			if(params_validate.size() != 0 || params_opt_validate.size() != 0)
+    			{
+        			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
+        				cout << " " << *it;
 
-    			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
-    				cout << " [" << *it << "]";
+        			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
+        				cout << " [" << *it << "]";
+
+    				cout << "\nParameters explanation:";
+    				if(params_validate.size() != 0)
+    				{
+    					cout << "\nMandatory:";
+            			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
+            				cout << "\n\t" << *it << " - " << get_param_desc(*it);
+    				}
+
+    				if(params_opt_validate.size() != 0)
+    				{
+    					cout << "\nOptional:";
+            			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
+            				cout << "\n\t" << *it << " - " << get_param_desc(*it);
+    				}
+    			}
 
     			cout  << "\n";
     			exit(-1);
         	}
         }
 
+
+        /*
+         * helper function to create a vector containing a parameter description
+         */
+        static vector<string> param_desc(string param, string desc)
+    	{
+        	vector<string> param_desc_tmp;
+        	param_desc_tmp.push_back(param);
+        	param_desc_tmp.push_back(desc);
+        	return param_desc_tmp;
+    	}
+
         /*
          * declare predefined parameters here
          */
-        static map<string,string> create_params()
+        static map<string,vector<string>> create_params()
 		{
-        	map<string,string> params_tmp;
-        	params_tmp["loop"] = "--loop=";
-        	params_tmp["verbose"] = "--v";
-        	params_tmp["fulldsname"] = "--fulldsname=";
-        	params_tmp["serverhost"] = "--serverhost=";
-        	params_tmp["serverversion"] = "--serverversion=";
-        	params_tmp["docurl"] = "--docurl=";
-        	params_tmp["devtype"] = "--devtype=";
-        	params_tmp["?"] = "--?";
-        	params_tmp["help"] = "--help";
-        	params_tmp["dbserver"] = "--dbserver=";
-        	params_tmp["outpath"] = "--outpath="; // device server logging target directory, e.g. /tmp/
-        	params_tmp["refpath"] = "--refpath="; // directory where the compare test reference files (*.out) are stored
-        	params_tmp["loglevel"] = "--loglevel="; // default device logging level, e.g. 0
-        	params_tmp["dsloglevel"] = "--dsloglevel="; // default device server logging level, e.g. 3
-        	params_tmp["suiteloop"] = "--suiteloop="; // executes suite in a loop
-        	params_tmp["devicealias"] = "--devicealias="; // device1 alias
-        	params_tmp["attributealias"] = "--attributealias="; // Short_attr alias
+        	map<string,vector<string> > params_tmp;
+        	params_tmp["?"] = param_desc("--?", "help, lists all possible parameters");
+        	params_tmp["help"] = param_desc("--help", "help, lists all possible parameters");
+        	params_tmp["verbose"] = param_desc("--v", "verbose mode");
+        	params_tmp["loop"] = param_desc("--loop=","execute test cases marked with '__loop' suffix the indicated number of times");
+        	params_tmp["suiteloop"] = param_desc("--suiteloop=", "execute test suites marked with '__loop' suffix the indicated number of times"); // executes suite in a loop
+        	params_tmp["fulldsname"] = param_desc("--fulldsname=", "full device server name, e.g. devTest/myserver");
+        	params_tmp["clienthost"] = param_desc("--clienthost=", "client host's fully qualified domain name, e.g. mypc.myinstitute.com (small caps)");
+        	params_tmp["serverhost"] = param_desc("--serverhost=", "fully qualified domain name of the host on which the server is running, e.g. myserver.myinstitute.com (small caps)");
+        	params_tmp["serverversion"] = param_desc("--serverversion=", "IDL version, e.g. 4");
+        	params_tmp["dbserver"] = param_desc("--dbserver=", "database server name, e.g. sys/database/2");
+        	params_tmp["loglevel"] = param_desc("--loglevel=", "default device logging level, e.g. 0"); // default device logging level, e.g. 0
+        	params_tmp["dsloglevel"] = param_desc("--dsloglevel=", "default device server logging level, e.g. 3"); // default device server logging level, e.g. 3
+        	params_tmp["devtype"] = param_desc("--devtype=", "device type, e.g. TestDevice");
+        	params_tmp["docurl"] = param_desc("--docurl=", "current documentation URL, e.g. http://www.tango-controls.org");
+        	params_tmp["outpath"] = param_desc("--outpath=", "device server logging target directory, e.g. /tmp/"); // device server logging target directory, e.g. /tmp/
+        	params_tmp["refpath"] = param_desc("--refpath=", "directory where the 'compare test' reference files (*.out) are stored"); // directory where the compare test reference files (*.out) are stored
+        	params_tmp["devicealias"] = param_desc("--devicealias=", "device1 alias"); // device1 alias
+        	params_tmp["attributealias"] = param_desc("--attributealias=", "Short_attr alias"); // Short_attr alias
         	return params_tmp;
         }
 
@@ -611,7 +657,7 @@ namespace CxxTest
     int TangoPrinter::pargc = 0;
 	map<string,string> TangoPrinter::pargv;
     int TangoPrinter::loop = 0;
-    map<string,string> TangoPrinter::params = TangoPrinter::create_params();
+    map<string,vector<string> > TangoPrinter::params = TangoPrinter::create_params();
     string TangoPrinter::executable_name = "";
     int TangoPrinter::suite_loop = 0;
     int TangoPrinter::suite_counter = 1;
@@ -621,7 +667,7 @@ namespace CxxTest
     set<string> TangoPrinter::params_opt_validate;
     bool TangoPrinter::args_valid = true;
 
-    set<string> TangoPrinter::restore_set = set<string>();
+    set<string> TangoPrinter::restore_points = set<string>();
 }
 
 #endif // __cxxtest__TangoPrinter_h__

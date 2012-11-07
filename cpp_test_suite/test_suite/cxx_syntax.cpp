@@ -28,44 +28,14 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device1");
-		uargs.push_back("device2");
+		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
+		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
 
-		vector<string> params; // parameters
-		params.push_back("devicealias");
-		params.push_back("attributealias");
+		device_alias = CxxTest::TangoPrinter::get_param("devicealias");
+		attribute_alias = CxxTest::TangoPrinter::get_param("attributealias");
 
-		vector<string> params_opt; // optional parameters
+		CxxTest::TangoPrinter::validate_args();
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
-
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
-			device2_name = CxxTest::TangoPrinter::get_uargv()[1];
-
-			device_alias = CxxTest::TangoPrinter::get_param_val(params[0]);
-			attribute_alias = CxxTest::TangoPrinter::get_param_val(params[1]);
-		}
-		else
-		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
-		}
 
 //
 // Initialization --------------------------------------------------

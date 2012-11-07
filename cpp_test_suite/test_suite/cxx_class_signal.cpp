@@ -22,7 +22,6 @@ protected:
 	DeviceProxy *device1, *dserver, *dbserver;
 	string device1_name, device2_name, dserver_name, dbserver_name, refpath, outpath, file_name, ref_file, out_file;
 	int loglevel, dsloglevel;
-	bool logging_level_restored, logging_target_restored, class_signal_unregistered;
 
 public:
 	SUITE_NAME()
@@ -30,62 +29,23 @@ public:
 		// output/reference file name
 		file_name = "class_signal.out";
 
-		// clean up flags
-		logging_level_restored = true;
-		logging_target_restored = true;
-		class_signal_unregistered = true;
 
 //
 // Arguments check -------------------------------------------------
 //
 
-		vector<string> uargs; // user arguments
-		uargs.push_back("device1");
-		uargs.push_back("device2");
+		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
+		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
 
-		vector<string> params; // parameters
-		params.push_back("fulldsname");
-		params.push_back("outpath");
-		params.push_back("refpath");
-		params.push_back("loglevel");
-		params.push_back("dsloglevel");
-		params.push_back("dbserver");
+		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
+		outpath = CxxTest::TangoPrinter::get_param("outpath");
+		refpath = CxxTest::TangoPrinter::get_param("refpath");
+		loglevel = atoi(CxxTest::TangoPrinter::get_param("loglevel").c_str());
+		dsloglevel = atoi(CxxTest::TangoPrinter::get_param("dsloglevel").c_str());
+		dbserver_name = CxxTest::TangoPrinter::get_param("dbserver");
 
-		vector<string> params_opt; // optional parameters
-		params_opt.push_back("loop");
+		CxxTest::TangoPrinter::validate_args();
 
-		bool params_ok = true;
-		for(size_t i = 0; i < params.size() && params_ok; i++)
-			params_ok = CxxTest::TangoPrinter::is_param_set(params[i]);
-
-		if(CxxTest::TangoPrinter::get_uargc() >= uargs.size() && params_ok)
-		{
-			device1_name = CxxTest::TangoPrinter::get_uargv()[0];
-			device2_name = CxxTest::TangoPrinter::get_uargv()[1];
-
-			dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param_val(params[0]);
-			outpath = CxxTest::TangoPrinter::get_param_val(params[1]);
-			refpath = CxxTest::TangoPrinter::get_param_val(params[2]);
-			loglevel = atoi(CxxTest::TangoPrinter::get_param_val(params[3]).c_str());
-			dsloglevel = atoi(CxxTest::TangoPrinter::get_param_val(params[4]).c_str());
-			dbserver_name = CxxTest::TangoPrinter::get_param_val(params[5]);
-		}
-		else
-		{
-			cout << "usage: " << CxxTest::TangoPrinter::get_executable_name();
-
-			for(size_t i = 0; i < uargs.size(); i++)
-				cout << " " << uargs[i];
-
-			for(size_t i = 0; i < params.size(); i++)
-				cout << " " << CxxTest::TangoPrinter::get_param_def(params[i]);
-
-			for(size_t i = 0; i < params_opt.size(); i++)
-				cout << " [" << CxxTest::TangoPrinter::get_param_def(params_opt[i]) << "]";
-
-			cout  << endl;
-			exit(-1);
-		}
 
 //
 // Initialization --------------------------------------------------
@@ -124,7 +84,7 @@ public:
 //
 
 		// clean up in case test suite terminates before logging level is restored to defaults
-		if(!logging_level_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("logging_level"))
 		{
 			DeviceData din;
 			DevVarLongStringArray reset_dserver_level;
@@ -149,7 +109,7 @@ public:
 		}
 
 		// clean up in case test suite terminates before logging targets are restored to defaults
-		if(!logging_target_restored)
+		if(CxxTest::TangoPrinter::is_restore_set("logging_target"))
 		{
 			DeviceData din;
 			DevVarStringArray remove_logging_target;
@@ -173,7 +133,7 @@ public:
 		}
 
 		// clean up in case test suite terminates before newly registered signals are unregistered
-		if(!class_signal_unregistered)
+		if(CxxTest::TangoPrinter::is_restore_set("class_signal_unregistered"))
 		{
 			DeviceData din;
 			DevLong sig_num = 14;
@@ -249,7 +209,7 @@ public:
 		// register class signal
 		din << sig_num;
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IORegClassSig", din));
-		class_signal_unregistered = false; // flag indicating that class signals have been registered
+		CxxTest::TangoPrinter::restore_set("class_signal_unregistered");
 		Tango_sleep(2);
 
 		// set logging level to 5
@@ -264,7 +224,7 @@ public:
 		dserver_level_in.svalue[2] = dserver_name.c_str();
 		din << dserver_level_in;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
-		logging_level_restored = false; // flag indicating that logging level has been modified
+		CxxTest::TangoPrinter::restore_set("logging_level");
 
 		// add logging target
 		DevVarStringArray logging_target;
@@ -277,7 +237,7 @@ public:
 		logging_target[5] = string("file::" + out_file).c_str();
 		din << logging_target;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddLoggingTarget", din));
-		logging_target_restored = false; // flag indicating that logging targets have been added
+		CxxTest::TangoPrinter::restore_set("logging_target");
 
 		// get device server PID and send signal
 		TangoSys_Pid pid;
@@ -303,7 +263,7 @@ public:
 		reset_dserver_level.svalue[2] = dserver_name.c_str();
 		din << reset_dserver_level;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
-		logging_level_restored = true; // flag indicating that logging level has been restored to defaults (see destructor)
+		CxxTest::TangoPrinter::restore_unset("logging_level");
 
 		// remove logging target
 		DevVarStringArray remove_logging_target;
@@ -316,12 +276,12 @@ public:
 		remove_logging_target[5] = string("file::" + out_file).c_str();
 		din << remove_logging_target;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RemoveLoggingTarget", din));
-		logging_target_restored = true; // flag indicating that logging targets have been removed (see destructor)
+		CxxTest::TangoPrinter::restore_unset("logging_target");
 
 		// unregister class signal
 		din << sig_num;
 		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOUnregClassSig", din));
-		class_signal_unregistered = true; // flag indicating that class signals have been unregistered
+		CxxTest::TangoPrinter::restore_unset("class_signal_unregistered");
 	}
 
 // Test comparing input with output

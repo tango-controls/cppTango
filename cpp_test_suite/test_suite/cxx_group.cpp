@@ -115,6 +115,7 @@ public:
 
 		// get sub group
 		sub_group_tmp = group->get_group("sub_group");
+		TS_ASSERT(sub_group_tmp != 0);
 		TS_ASSERT(sub_group_tmp->get_name() == "sub_group");
 
 		// get sub group parent
@@ -566,7 +567,7 @@ public:
 
 	void test_write_attribute_synchronously_one_value()
 	{
-		CxxTest::TangoPrinter::restore_push("double_attr_value");
+		CxxTest::TangoPrinter::restore_set("double_attr_value");
 
 		// write attribute
 		DeviceAttribute value("Double_attr_w",11.1);
@@ -600,14 +601,14 @@ public:
 			TS_ASSERT(db == 0.0);
 		}
 
-		CxxTest::TangoPrinter::restore_pop("double_attr_value");
+		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
 // Test write attribute asynchronously one value
 
 	void test_write_attribute_asynchronously_one_value()
 	{
-		CxxTest::TangoPrinter::restore_push("double_attr_value");
+		CxxTest::TangoPrinter::restore_set("double_attr_value");
 
 		// write attribute
 		DeviceAttribute value("Double_attr_w",22.2);
@@ -642,14 +643,14 @@ public:
 			TS_ASSERT(db == 0.0);
 		}
 
-		CxxTest::TangoPrinter::restore_pop("double_attr_value");
+		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
 // Test write attribute synchronously several values
 
 	void test_write_attribute_synchronously_several_values()
 	{
-		CxxTest::TangoPrinter::restore_push("double_attr_value");
+		CxxTest::TangoPrinter::restore_set("double_attr_value");
 
 		// write attribute
 		vector<DevDouble> values(3);
@@ -687,14 +688,14 @@ public:
 			TS_ASSERT(db == 0.0);
 		}
 
-		CxxTest::TangoPrinter::restore_pop("double_attr_value");
+		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
 // Test write attribute asynchronously several values
 
 	void test_write_attribute_asynchronously_several_values()
 	{
-		CxxTest::TangoPrinter::restore_push("double_attr_value");
+		CxxTest::TangoPrinter::restore_set("double_attr_value");
 
 		// write attribute
 		vector<DevDouble> values(3);
@@ -733,14 +734,14 @@ public:
 			TS_ASSERT(db == 0.0);
 		}
 
-		CxxTest::TangoPrinter::restore_pop("double_attr_value");
+		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
 // Test write attribute synchronously several DeviceAttribute values
 
 	void test_write_attribute_synchronously_several_DeviceAttribute_values()
 	{
-		CxxTest::TangoPrinter::restore_push("double_attr_value");
+		CxxTest::TangoPrinter::restore_set("double_attr_value");
 
 		// write attribute
 		DeviceAttribute da1("Double_attr_w",DevDouble(55.5)), da2("Double_attr_w",DevDouble(55.6)), da3("Double_attr_w",DevDouble(55.7));
@@ -779,14 +780,14 @@ public:
 			TS_ASSERT(db == 0.0);
 		}
 
-		CxxTest::TangoPrinter::restore_pop("double_attr_value");
+		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
 // Test write attribute asynchronously several DeviceAttribute values
 
 	void test_write_attribute_asynchronously_several_DeviceAttribute_values()
 	{
-		CxxTest::TangoPrinter::restore_push("double_attr_value");
+		CxxTest::TangoPrinter::restore_set("double_attr_value");
 
 		// write attribute
 		DeviceAttribute da1("Double_attr_w",DevDouble(66.6)), da2("Double_attr_w",DevDouble(66.7)), da3("Double_attr_w",DevDouble(66.8)), da4("Double_attr_w",DevDouble(66.9));
@@ -832,7 +833,7 @@ public:
 			TS_ASSERT(db == 0.0);
 		}
 
-		CxxTest::TangoPrinter::restore_pop("double_attr_value");
+		CxxTest::TangoPrinter::restore_unset("double_attr_value");
 	}
 
 };
