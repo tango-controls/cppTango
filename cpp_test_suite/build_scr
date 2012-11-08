@@ -28,6 +28,7 @@ do
 	if [ $i = "ubuntu10.04" ]
 	then
 		echo "Ubuntu 10.04 OS"
+		OS_TYPE="Linux"
 		OS="ubuntu1004"
 		MAKE_PATH="make"
 		DS_INST_NAME=ubuntu1004
@@ -64,6 +65,7 @@ do
 	if [ $i = "centos5" ]
 	then
 		echo "Centos 5 OS"
+		OS_TYPE="Linux"
 		OS="centos5"
 		MAKE_PATH="make"
 		DS_INST_NAME=centos5
@@ -74,6 +76,7 @@ do
 	if [ $i = "redhate4" ]
 	then
 		echo "Red Hat 4 OS"
+		OS_TYPE="Linux"
 		OS="redhate4"
 		MAKE_PATH="make"
 		DS_INST_NAME=redhate4
@@ -84,6 +87,7 @@ do
 	if [ $i = "redhate5" ]
 	then
 		echo "Red Hat 5 OS (64 bits)"
+		OS_TYPE="Linux"
 		OS="redhate5"
 		MAKE_PATH="make"
 		DS_INST_NAME=redhate5
@@ -94,6 +98,7 @@ do
 	if [ $i = "debian6" ]
 	then
 		echo "Debian 6 OS (64 bits)"
+		OS_TYPE="Linux"
 		OS="debian6"
 		MAKE_PATH="make"
 		DS_INST_NAME=debian6
@@ -190,7 +195,6 @@ fi
 
 #
 # Run make
-# Only one solution in Windows but 4 make in 4 directories for non-windows OS
 #
 
 echo $MAKE_CMD
@@ -216,7 +220,7 @@ fi
 # Now Start the first device server
 #
 
-TANGO_LIB=$INSTALL_DIR/$BIN_DIR/lib/debug
+TANGO_LIB=$INSTALL_DIR/$BIN_DIR/lib
 LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango4.0.5/$BIN_DIR/lib
 ORB_LIB=/segfs/tango/ORB/omniORB4.1.6/$BIN_DIR/lib
 ZMQ_LIB=/segfs/tango/transport/zmq/$BIN_DIR/lib
