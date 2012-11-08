@@ -149,37 +149,13 @@ else
 fi
 
 #
-# Create runner_on_demand script
-#
-
-if [ $OS_TYPE != "Windows" ]
-then
-	RUNNER_ON_DEMAND=$INSTALL_DIR/$BIN_DIR/bin/runner_on_demand
-	CURRENT_PATH=`pwd`
-	
-	if [ -f $RUNNER_ON_DEMAND ]
-	then
-		rm -f $RUNNER_ON_DEMAND
-	fi
-	
-	echo "#!/bin/bash" > $RUNNER_ON_DEMAND
-	echo "export CURRENT_DIR=\`pwd\`" >> $RUNNER_ON_DEMAND
-	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:/segfs/tango/transport/zmq/$BIN_DIR/lib:/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib:/segfs/tango/ORB/omniORB4.1.5/$BIN_DIR/lib:$LD_LIBRARY_PATH" >> $RUNNER_ON_DEMAND 
-	echo "export TANGO_HOST=kidiboo:10000" >> $RUNNER_ON_DEMAND
-	echo "export TEST_SUITE_PATH=$CURRENT_PATH/test_suite" >> $RUNNER_ON_DEMAND
-	echo "cd $CURRENT_PATH/test_suite" >> $RUNNER_ON_DEMAND
-	echo "$MAKE_PATH test_suites=\"\$*\" prefix=$INSTALL_DIR $OS_SPEC $CLEAN runner_on_demand" >> $RUNNER_ON_DEMAND
-	echo "cd \$CURRENT_DIR" >> $RUNNER_ON_DEMAND
-fi
-
-#
 # Create export_variables script
 # (exports all environmental variables necessary to execute particular tests)
 #
 
 if [ $OS_TYPE != "Windows" ]
 then
-	EXPORT_VARIABLES=$INSTALL_DIR/$BIN_DIR/bin/export_variables
+	EXPORT_VARIABLES=$INSTALL_DIR/$OS/bin/export_variables
 	
 	if [ -f $EXPORT_VARIABLES ]
 	then
@@ -187,7 +163,7 @@ then
 	fi
 	
 	echo "#!/bin/bash" > $EXPORT_VARIABLES
-	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$BIN_DIR/lib/debug:/segfs/tango/transport/zmq/$BIN_DIR/lib:/segfs/tango/tools/log4tango-release/log4tango4.0.4/$BIN_DIR/lib:/segfs/tango/ORB/omniORB4.1.5/$BIN_DIR/lib:$LD_LIBRARY_PATH" >> $EXPORT_VARIABLES 
+	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$OS/lib/debug:/segfs/tango/transport/zmq/$OS/lib:/segfs/tango/tools/log4tango-release/log4tango4.0.6/$OS/lib:/segfs/tango/ORB/omniORB4.1.6/$OS/lib:$LD_LIBRARY_PATH" >> $EXPORT_VARIABLES 
 	echo "export TANGO_HOST=kidiboo:10000" >> $EXPORT_VARIABLES
 fi
 
@@ -220,10 +196,10 @@ fi
 # Now Start the first device server
 #
 
-TANGO_LIB=$INSTALL_DIR/$BIN_DIR/lib
-LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango4.0.5/$BIN_DIR/lib
-ORB_LIB=/segfs/tango/ORB/omniORB4.1.6/$BIN_DIR/lib
-ZMQ_LIB=/segfs/tango/transport/zmq/$BIN_DIR/lib
+TANGO_LIB=$INSTALL_DIR/$OS/lib
+LOG4TANGO_LIB=/segfs/tango/tools/log4tango-release/log4tango4.0.5/$OS/lib
+ORB_LIB=/segfs/tango/ORB/omniORB4.1.6/$OS/lib
+ZMQ_LIB=/segfs/tango/transport/zmq/$OS/lib
 
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$ZMQ_LIB:$LD_LIBRARY_PATH
 export TANGO_HOST=acucentos:10000

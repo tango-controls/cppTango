@@ -96,7 +96,7 @@ namespace CxxTest
          * map of predefined parameter names and their declarations (the way of usage in the command line)
          * (example: params["loop"] = "--loop=" ==> ./run_tests user_param --loop=10)
          */
-        static map<string,vector<string>> params;
+        static map<string,vector<string> > params;
         /*
          * executable name
          */
@@ -293,7 +293,7 @@ namespace CxxTest
         		string arg_tmp = argv[i];
         		bool is_param = false;
 
-        		for(map<string,vector<string>>::iterator it = params.begin(); it != params.end(); ++it)
+        		for(map<string,vector<string> >::iterator it = params.begin(); it != params.end(); ++it)
         		{
 					string param_key = it->first;
         			string param_value = it->second[0];
@@ -323,7 +323,7 @@ namespace CxxTest
         	if(TangoPrinter::is_param_set("?") || TangoPrinter::is_param_set("help"))
         	{
         		cout << "\nAll parameters:";
-        		for(map<string,vector<string>>::iterator it = TangoPrinter::params.begin(); it != TangoPrinter::params.end(); ++it)
+        		for(map<string,vector<string> >::iterator it = TangoPrinter::params.begin(); it != TangoPrinter::params.end(); ++it)
         		{
         			cout << "\n\t" << it->second[0] << " - " << it->second[1];
         		}
@@ -475,13 +475,13 @@ namespace CxxTest
         static string get_param_desc(const string &def)
 		{
 			if(params.size())// > 0 && params.find(key) != params.end())
-				for(map<string,vector<string>>::iterator it = params.begin(); it != params.end(); ++it)
+				for(map<string,vector<string> >::iterator it = params.begin(); it != params.end(); ++it)
 					if(it->second[0] == def)
 						return it->second[1];
 			return "";
 		}
 
-        static map<string,vector<string>> &get_params(void)
+        static map<string,vector<string> > &get_params(void)
 		{
 			return params;
 		}
@@ -607,7 +607,7 @@ namespace CxxTest
         /*
          * declare predefined parameters here
          */
-        static map<string,vector<string>> create_params()
+        static map<string,vector<string> > create_params()
 		{
         	map<string,vector<string> > params_tmp;
         	params_tmp["?"] = param_desc("--?", "help, lists all possible parameters");
