@@ -28,24 +28,10 @@ do
 	if [ $i = "ubuntu10.04" ]
 	then
 		echo "Ubuntu 10.04 OS"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1 ubuntu=1"
-		BIN_DIR="ubuntu1004"
+		OS="ubuntu1004"
 		MAKE_PATH="make"
 		DS_INST_NAME=ubuntu1004
 		DS_INST_NAME_2=ubuntu1004_2
-		INSTALL_DIR=$UX_INSTALL_DIR
-	fi
-	
-	if [ $i = "solaris10" ]
-	then
-		echo "Solaris 10 OS"
-		OS_TYPE="solaris"
-		OS_SPEC="_solaris=1"
-		BIN_DIR="solaris10_CC"
-		MAKE_PATH="/usr/local/bin/make"
-		DS_INST_NAME=solaris10
-		DS_INST_NAME_2=solaris10_2
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -78,9 +64,7 @@ do
 	if [ $i = "centos5" ]
 	then
 		echo "Centos 5 OS"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1"
-		BIN_DIR="centos5"
+		OS="centos5"
 		MAKE_PATH="make"
 		DS_INST_NAME=centos5
 		DS_INST_NAME_2=centos5_2
@@ -90,9 +74,7 @@ do
 	if [ $i = "redhate4" ]
 	then
 		echo "Red Hat 4 OS"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1"
-		BIN_DIR="redhate4"
+		OS="redhate4"
 		MAKE_PATH="make"
 		DS_INST_NAME=redhate4
 		DS_INST_NAME_2=redhate4_2
@@ -102,9 +84,7 @@ do
 	if [ $i = "redhate5" ]
 	then
 		echo "Red Hat 5 OS (64 bits)"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1"
-		BIN_DIR="redhate5"
+		OS="redhate5"
 		MAKE_PATH="make"
 		DS_INST_NAME=redhate5
 		DS_INST_NAME_2=redhate5_2
@@ -114,9 +94,7 @@ do
 	if [ $i = "debian6" ]
 	then
 		echo "Debian 6 OS (64 bits)"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1"
-		BIN_DIR="debian6"
+		OS="debian6"
 		MAKE_PATH="make"
 		DS_INST_NAME=debian6
 		DS_INST_NAME_2=debian6_2
@@ -161,7 +139,7 @@ then
 	echo $PATH
 	rm -f $OUTFILE
 else
-	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $CLEAN all"
+	MAKE_CMD="$MAKE_PATH PROFILE=jenkins OS=$OS $CLEAN all"
 	cd cpp_test_suite
 fi
 
@@ -219,7 +197,7 @@ echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
 echo "Compilation done"
-echo "OS_TYPE = $OS_TYPE"
+echo "OS = $OS"
 echo "RET = $RET"
 
 if [ $OS_TYPE = "Windows" ]
@@ -232,37 +210,6 @@ if [ $RET != 0 ]
 then
 	echo "Build fail!!!"
 	exit -1
-fi
-
-if [ $OS_TYPE != "Windows" ]
-then
-	cd test_suite
-	echo $MAKE_CMD
-	$MAKE_CMD
-	RET=$?
-	if [ $RET != 0 ]
-	then
-		exit -1
-	fi
-
-	cd ../asyn
-	echo $MAKE_CMD
-	$MAKE_CMD
-	RET=$?
-	if [ $RET != 0 ]
-	then
-		exit -1
-	fi
-
-	cd ../event
-	echo $MAKE_CMD
-	$MAKE_CMD
-	RET=$?
-	if [ $RET != 0 ]
-	then
-		exit -1
-	fi
-	cd ..
 fi
 
 #
