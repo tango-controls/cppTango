@@ -181,9 +181,6 @@ public:
 			out_str = *it;
 			out_str.erase(0,out_str.rfind(": ") + 2); // removes time stamp from the output
 
-			cout << "## " << out_str << endl << "## " << reference_str << endl;
-
-
 			TS_ASSERT(out_str == reference_str);
 		}
 

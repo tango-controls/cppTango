@@ -58,22 +58,18 @@ int main(int argc, char **argv)
 
 // Test polling_status from device name
 
-		bool string_attr = false;
-		bool startpoll = false;
 		vector<string> *poll_str;
 		poll_str = device->polling_status();
 
-		long nb_polled = BASIC_NB_POLL;
+		unsigned long nb_polled = BASIC_NB_POLL;
 		for (unsigned int i = 0;i < poll_str->size();i++)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
-				string_attr = true;
 				nb_polled++;
 			}
 			if ((*poll_str)[i].find("IOStartPoll") != string::npos)
 			{
-				startpoll = true;
 				nb_polled++;
 			}
 		}
@@ -124,13 +120,11 @@ int main(int argc, char **argv)
 		{
 			if (v_str[i].find("String_attr") != string::npos)
 			{
-				string_attr = true;
 				nb_polled++;
 				continue;
 			}
 			if (v_str[i].find("IOStartPoll") != string::npos)
 			{
-				startpoll = true;
 				nb_polled++;
 			}
 		}
@@ -218,12 +212,10 @@ int main(int argc, char **argv)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
-				string_attr = true;
 				nb_polled++;
 			}
 			if ((*poll_str)[i].find("IOStartPoll") != string::npos)
 			{
-				startpoll = true;
 				nb_polled++;
 			}
 		}		
@@ -331,12 +323,10 @@ int main(int argc, char **argv)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
-				string_attr = true;
 				nb_polled++;
 			}
 			if ((*poll_str)[i].find("IOStartPoll") != string::npos)
 			{
-				startpoll = true;
 				nb_polled++;
 			}
 		}		
@@ -396,12 +386,10 @@ int main(int argc, char **argv)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
-				string_attr = true;
 				nb_polled++;
 			}
 			if ((*poll_str)[i].find("IOStartPoll") != string::npos)
 			{
-				startpoll = true;
 				nb_polled++;
 			}
 		}		
@@ -436,12 +424,10 @@ int main(int argc, char **argv)
 		{
 			if ((*poll_str)[i].find("String_attr") != string::npos)
 			{
-				string_attr = true;
 				nb_polled++;
 			}
 			if ((*poll_str)[i].find("IOStartPoll") != string::npos)
 			{
-				startpoll = true;
 				nb_polled++;
 			}
 		}		

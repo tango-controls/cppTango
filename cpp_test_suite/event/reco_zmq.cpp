@@ -72,13 +72,12 @@ int main(int argc, char **argv)
 // Subscribe to a user event
 //
 
-    	int eventID = 0;
     	const vector<string>  filters;
     	EventCallback *eventCallback = new EventCallback();
 		eventCallback->cb_executed = 0;
 		eventCallback->cb_err = 0;
 
-        eventID = device->subscribe_event(att_name,Tango::USER_EVENT,eventCallback,filters);
+        device->subscribe_event(att_name,Tango::USER_EVENT,eventCallback,filters);
 
 //
 // Fire one event

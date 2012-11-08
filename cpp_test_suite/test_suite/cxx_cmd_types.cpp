@@ -1175,7 +1175,7 @@ public:
 
 		try
 		{
-			AttrDataFormat df = db.get_data_format();
+			db.get_data_format();
 		}
 		catch (Tango::DevFailed &e)
 		{

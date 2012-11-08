@@ -69,7 +69,7 @@ void MyCallBack::cmd_ended(CmdDoneEvent *cmd)
 void MyCallBack::attr_read(AttrReadEvent *att)
 {
 	coutv << "In attr_read method for device " << att->device->dev_name() << endl;
-	for (int i = 0;i < att->attr_names.size();i++)
+	for (unsigned int i = 0;i < att->attr_names.size();i++)
 		coutv << "Attribute read = " << att->attr_names[i] << endl;
 		
 	nb_attr = att->attr_names.size();
@@ -108,7 +108,7 @@ void MyCallBack::attr_read(AttrReadEvent *att)
 void MyCallBack::attr_written(AttrWrittenEvent *att)
 {
 	coutv << "In attr_written method for device " << att->device->dev_name() << endl;
-	for (int i = 0;i < att->attr_names.size();i++)
+	for (unsigned int i = 0;i < att->attr_names.size();i++)
 		coutv << "Attribute written = " << att->attr_names[i] << endl;
 		
 	nb_attr = att->attr_names.size();
@@ -174,7 +174,6 @@ int main(int argc, char **argv)
 // Send a command to check asynchronous callback
 
 		long nb_not_arrived = 0;
-		bool finish = false;
 		
 		DeviceData din,dout;
 		vector<short> send;

@@ -45,7 +45,7 @@ ubuntu1204 )
 		$echo "For ubuntu 12.04, test should run on "$UBUNTU1204_HOST
 		exit 1
 	fi
-	DIR=bin/ubuntu1204
+	DIR=../bin
 	DEV1="dev/test/10"
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"

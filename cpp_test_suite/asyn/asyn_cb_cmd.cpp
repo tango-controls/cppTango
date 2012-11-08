@@ -94,7 +94,6 @@ int main(int argc, char **argv)
 // Send a command to check asynchronous callback
 
 		long nb_not_arrived = 0;
-		bool finish = false;
 		
 		DeviceData din,dout;
 		vector<short> send;
@@ -216,7 +215,6 @@ int main(int argc, char **argv)
 			try
 			{
 				device->get_asynch_replies(500);
-				finish = true;
 			}
 			catch (AsynReplyNotArrived )
 			{
@@ -301,7 +299,6 @@ int main(int argc, char **argv)
 			try
 			{
 				device->get_asynch_replies(500);
-				finish = true;
 			}
 			catch (AsynReplyNotArrived )
 			{

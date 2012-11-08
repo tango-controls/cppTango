@@ -9,7 +9,7 @@
 using namespace Tango;
 using namespace std;
 
-int main(int argc, char **argv)
+int main()
 {
 	Database *dbase = new Database();
 	cout << '\n' << "new Database returned" << '\n' << endl;

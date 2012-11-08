@@ -73,11 +73,11 @@ int main(int argc, char **argv)
 			device3->ping();
 			cout << "Ping on device " << device3->name() << " successfull" << endl;
 		}
-        	catch (CORBA::Exception &e)
-        	{
-              		Except::print_exception(e);
+		catch (CORBA::Exception &e)
+		{
+			Except::print_exception(e);
 			exit(1);
-        	}
+		}
 
 //
 // print db object 
@@ -85,7 +85,7 @@ int main(int argc, char **argv)
 
 		vector<Database *> dbs = ApiUtil::instance()->get_db_vect();
 		cout << "Db objects number = " << dbs.size() << endl;
-		for (int i = 0;i < dbs.size();i++)
+		for (unsigned int i = 0;i < dbs.size();i++)
 		{
 			cout << "database host = " << dbs[i]->get_db_host() << endl;
 			cout << "database port = " << dbs[i]->get_db_port() << endl;

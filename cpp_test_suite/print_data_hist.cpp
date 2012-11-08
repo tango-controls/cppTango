@@ -20,7 +20,6 @@ int main(int argc, char **argv)
 	}
 
 	string device_name = argv[1];
-	bool print = false;
 	
 	if (argc == 3)
 	{
@@ -30,19 +29,17 @@ int main(int argc, char **argv)
 			cout << "Usage: %s device [-v]" << endl;
 			exit(-1);
 		}
-		else
-			print = true;
 	}
 
 	try 
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 

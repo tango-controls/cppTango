@@ -28,7 +28,7 @@ public:
 void MyCallBack::attr_written(AttrWrittenEvent *att)
 {
 	coutv << "In attr_written method for device " << att->device->dev_name() << endl;
-	for (int i = 0;i < att->attr_names.size();i++)
+	for (unsigned int i = 0;i < att->attr_names.size();i++)
 		coutv << "Attribute written = " << att->attr_names[i] << endl;
 	
 	nb_attr = att->attr_names.size();

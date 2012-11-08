@@ -29,7 +29,7 @@ public:
 void MyCallBack::attr_read(AttrReadEvent *att)
 {
 	coutv << "In attr_read method for device " << att->device->dev_name() << endl;
-	for (int i = 0;i < att->attr_names.size();i++)
+	for (unsigned int i = 0;i < att->attr_names.size();i++)
 		coutv << "Attribute read = " << att->attr_names[i] << endl;
 		
 	nb_attr = att->attr_names.size();
@@ -77,7 +77,6 @@ void MyCallBack::attr_read(AttrReadEvent *att)
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	long loop = 10;
 	
 	if (argc == 1)
 	{
@@ -97,11 +96,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 

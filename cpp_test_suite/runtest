@@ -55,7 +55,7 @@ ubuntu1204 )
 		$echo "For ubuntu 12.04, test should run on "$UBUTU1204_HOST
 		exit 1
 	fi
-	DIR=bin/ubuntu1204
+	DIR=bin
 	DEV1="dev/test/10"
 	DEV2="dev/test/11"
 	DEV3="dev/test/12"
@@ -236,12 +236,12 @@ if [ $OS = "Windows" ]
 then
 	#WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../test_suite/out\\"
 	WIN_OUT_DIR="`cygpath -w -p $CURR_DIR`"
-	RUN_CMD="$DIR/runner $DEV1 $DEV2 $DEV3 --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
+	RUN_CMD="$DIR/runner $DEV1 $DEV2 $DEV3 --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --clienthost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\test_suite\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
 	
 	echo "runner command="$RUN_CMD
 	$RUN_CMD
 else
-	export RUN_CMD="runner $DEV1 $DEV2 $DEV3 --loop=1 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/test_suite/out/ --loglevel=0 --dsloglevel=3 --suiteloop=1 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
+	export RUN_CMD="runner $DEV1 $DEV2 $DEV3 --loop=1 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME  --clienthost=$FULL_HOSTNAME --serverversion=4 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/test_suite/out/ --loglevel=0 --dsloglevel=3 --suiteloop=1 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
 	
 	# create runner_run script
 	RUNNER_RUN=$DIR/runner_run

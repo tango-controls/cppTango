@@ -524,10 +524,10 @@ int main(int argc, char **argv)
 	catch (NamedDevFailedList &e)
 	{
 		multi_except = true;
-		for (i = 0;i < e.err_list.size();i++)
+		for (unsigned j = 0;j < e.err_list.size();j++)
 		{
-			att_in_fault.push_back(e.err_list[i].name);
-			idx_att_in_fault.push_back(e.err_list[i].idx_in_call);
+			att_in_fault.push_back(e.err_list[j].name);
+			idx_att_in_fault.push_back(e.err_list[j].idx_in_call);
 		}
 	}
 	catch (CORBA::Exception &e)

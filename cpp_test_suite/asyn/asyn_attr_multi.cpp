@@ -399,8 +399,8 @@ int main(int argc, char **argv)
 		{
 			received = device->read_attributes_reply(id,0);
 			finish = true;
-			for (i = 0;i < received->size();i++)
-				(*received)[i].reset_exceptions(DeviceAttribute::failed_flag);
+			for (unsigned int j = 0;j < received->size();j++)
+				(*received)[j].reset_exceptions(DeviceAttribute::failed_flag);
 			
 			double db;
 			if (((*received)[0] >> db) == false)

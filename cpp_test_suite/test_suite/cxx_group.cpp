@@ -393,7 +393,6 @@ public:
 
 	void test_synchronous_command_with_forwarding_and_wrong_number_of_arguments()
 	{
-		DevDouble db;
 		vector<DevDouble> arguments(2);
 		arguments[0] = 15.0;
 		arguments[1] = 25.0;

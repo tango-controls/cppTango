@@ -12,31 +12,24 @@ using namespace Tango;
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
-	bool verbose = false;
 	
 	if (argc == 1)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device" << endl;
 		exit(-1);
 	}
 
 	string device_name = argv[1];
-	
-	if (argc == 3)
-	{
-		if (strcmp(argv[2],"-v") == 0)
-			verbose = true;
-	}
 
 	try 
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	
 	try

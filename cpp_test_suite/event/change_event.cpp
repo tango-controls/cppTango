@@ -87,7 +87,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 class EventUnsubCallBack : public Tango::CallBack
 {
 public:
-	EventUnsubCallBack(DeviceProxy *d):cb_executed(0),dev(d),Tango::CallBack() {}
+	EventUnsubCallBack(DeviceProxy *d):Tango::CallBack(),cb_executed(0),dev(d) {}
 
 	void push_event(Tango::EventData*);
 	void set_ev_id(int e) {ev_id = e;}
@@ -100,7 +100,7 @@ protected:
 
 void EventUnsubCallBack::push_event(Tango::EventData* event_data)
 {
-	coutv << "EventUnsubCallBack::push_event()" << endl;
+	coutv << "EventUnsubCallBack::push_event() for attribute " << event_data->attr_name << endl;
 	cb_executed++;
 	if (cb_executed == 2)
 	{
@@ -342,18 +342,16 @@ int main(int argc, char **argv)
 		cb2.old_sec = cb2.old_usec = 0;	
 
 		bool ex = false;
-		bool already_conn = false;
+
 		try
 		{
-			int eve_id2 = device->subscribe_event(att_name,Tango::CHANGE_EVENT,(CallBack *)NULL,filters);
+			device->subscribe_event(att_name,Tango::CHANGE_EVENT,(CallBack *)NULL,filters);
 		}
 		catch (Tango::DevFailed &e)
 		{
 //			Tango::Except::print_exception(e);
 			ex = true;
 			string de(e.errors[0].desc);
-			if (de.find("Already") != string::npos)
-				already_conn = true;
 		}
 
 		device->command_inout("IOIncValue");
