@@ -234,9 +234,9 @@ then
 	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
 else
 	echo "Shared libs used by device server"
-	ldd $INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME
-	$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
-	$INSTALL_DIR/$BIN_DIR/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+	ldd $INSTALL_DIR/$OS/bin/shared/$DS_NAME
+	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
 fi
 
 #
