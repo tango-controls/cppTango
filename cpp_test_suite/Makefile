@@ -4,11 +4,11 @@
 # profile file name (the file containing custom settings - properties definitions)
 PROFILE = default
 
-# profile file extension (default *.properties)
-PROFILE_EXT = properties
+# profile file extension (default *.profile)
+PROFILE_EXT = profile
 
 # directory where the profile files are stored
-PROFILE_DIR = profiles
+PROFILE_DIR = makeprofiles
 
 # cxx test suite executable name
 RUNNER_NAME = runner
