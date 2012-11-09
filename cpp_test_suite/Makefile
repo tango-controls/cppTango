@@ -25,7 +25,7 @@ COMPILE_FILES =
 ALWAYS_RECOMPILE_CXX = 
 
 # these directories will be scanned in search for *.cpp files (test suites to be compiled)
-TEST_DIRS = . asyn event test_suite
+TEST_DIRS = asyn event old_tests new_tests 
 TEST_DIRS_EXTRA = 
 
 # compiler

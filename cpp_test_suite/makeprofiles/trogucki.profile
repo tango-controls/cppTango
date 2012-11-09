@@ -41,7 +41,7 @@
 #EXCLUDE_FILES = #att_conf.cpp #64.cpp helper.cpp cxx_group.cpp
 COMPILE_FILES = cxx_blackbox.cpp #cxx_attprop.cpp
 ALWAYS_RECOMPILE_CXX = true
-TEST_DIRS = test_suite
+TEST_DIRS = new_tests
 
 BIN_DIR = bin
 OBJ_DIR = obj
