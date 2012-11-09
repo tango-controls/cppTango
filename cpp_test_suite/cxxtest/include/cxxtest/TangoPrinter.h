@@ -320,7 +320,7 @@ namespace CxxTest
         	uargc = uargv.size();
 
         	// prints out the list of all parameters if required by user ("--?" or "--help")
-        	if(TangoPrinter::is_param_set("?") || TangoPrinter::is_param_set("help"))
+        	if(TangoPrinter::is_param_set("?") || TangoPrinter::is_param_set("help") || TangoPrinter::is_param_set("-?") || TangoPrinter::is_param_set("-help"))
         	{
         		cout << "\nAll parameters:";
         		for(map<string,vector<string> >::iterator it = TangoPrinter::params.begin(); it != TangoPrinter::params.end(); ++it)
@@ -611,7 +611,9 @@ namespace CxxTest
 		{
         	map<string,vector<string> > params_tmp;
         	params_tmp["?"] = param_desc("--?", "help, lists all possible parameters");
+        	params_tmp["-?"] = param_desc("-?", "help, lists all possible parameters");
         	params_tmp["help"] = param_desc("--help", "help, lists all possible parameters");
+        	params_tmp["-help"] = param_desc("-help", "help, lists all possible parameters");
         	params_tmp["verbose"] = param_desc("--v", "verbose mode");
         	params_tmp["loop"] = param_desc("--loop=","execute test cases marked with '__loop' suffix the indicated number of times");
         	params_tmp["suiteloop"] = param_desc("--suiteloop=", "execute test suites marked with '__loop' suffix the indicated number of times"); // executes suite in a loop
