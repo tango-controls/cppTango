@@ -1,3 +1,4 @@
+#######################################################################################################################
 # DEFAULT VALUES (do not modify) ######################################################################################
 
 # profile file name (the file containing custom settings - properties definitions)
@@ -53,7 +54,14 @@ BIN_DIR = bin
 OBJ_DIR = obj
 
 # END DEFAULT VALUES ##################################################################################################
+#######################################################################################################################
 
+
+#######################################################################################################################
+# CONFIGURATION #######################################################################################################
+
+# command line profile argument takes precedence over Makefile PROFILE variable
+PROFILE := $(if $(profile),$(profile),$(PROFILE))
 
 # load user defined profile, if not defined load the default profile
 $(if $(wildcard $(PROFILE_DIR)/$(PROFILE).$(PROFILE_EXT)),,$(error "File " $(PROFILE_DIR)/$(PROFILE).$(PROFILE_EXT) " does not exist. Make sure to create such a file."))
@@ -108,6 +116,22 @@ FILES_CXX = $(filter-out $(FILES_CPP), $(FILES_ALL))
 # detect directory in which the cxx files are stored (if empty, no cxx files are to be compiled)
 CXX_DIR = $(dir $(lastword $(FILES_CXX)))
 
+# END CONFIGURATION ###################################################################################################
+#######################################################################################################################
+
+#######################################################################################################################
+# RULES ###############################################################################################################
+
+# target names (for non cxx files)
+TARGETS = $(addprefix $(BIN_DIR)/, $(basename $(notdir $(FILES_CPP))))
+
+# these rules do not create any files (functional rules)
+.PHONY: all create_dirs clean recompile_cxx print
+
+# invoke this target to build your test suites
+all: $(if $(print_it), print) create_dirs $(if $(ALWAYS_RECOMPILE_CXX), recompile_cxx) $(TARGETS) $(if $(CXX_DIR), $(BIN_DIR)/$(RUNNER_NAME))
+	@echo "=== all built successfully ==="
+
 # compile compare_Test.cpp used in come cxx test suites
 $(OBJ_DIR)/compare_test.o: $(CXX_DIR)compare_test.cpp
 	@echo "---> compiling " $(@F)
@@ -134,16 +158,6 @@ endef
 # generate targets (for non cxx files)
 $(foreach dependency, $(FILES_CPP), $(eval $(call generate_targets, $(basename $(notdir $(dependency))), $(dependency))))
 
-# target names (for non cxx files)
-TARGETS = $(addprefix $(BIN_DIR)/, $(basename $(notdir $(FILES_CPP))))
-
-# these rules do not create any files (functional rules)
-.PHONY: all create_dirs clean recompile_cxx print
-
-# invoke this target to build your test suites
-all: $(if $(print_it), print) create_dirs $(if $(ALWAYS_RECOMPILE_CXX), recompile_cxx) $(TARGETS) $(if $(CXX_DIR), $(BIN_DIR)/$(RUNNER_NAME))
-	@echo "=== all executed successfully ==="
-
 # creates OBJ_DIR and BIN_DIR if they do not exist
 create_dirs:
 	$(shell mkdir -p $(OBJ_DIR))
@@ -161,3 +175,6 @@ print:
 # clean objects
 clean:
 	rm -f $(OBJ_DIR)/*.o core
+
+# END RULES ###########################################################################################################
+#######################################################################################################################
