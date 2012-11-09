@@ -16,7 +16,7 @@
 # 
 # Optional parameters:
 # 
-# TEST_DIRS = . asyn event test_suite - directories where test suites (*.cpp and cxx_*.cpp) are located, all files in
+# TEST_DIRS = asyn event old_tests new_tests - directories where test suites (*.cpp and cxx_*.cpp) are located, all files in
 #       these directories will be compiled (see also EXCLUDE_FILES and COMPILE_FILES); default values as in the example
 # TEST_DIRS_EXTRA = my_tests1 my_tests2... - extra directories to be scanned in search for test suites; can be used to
 #       add source directories to the default set of directories; default values - not set
@@ -28,6 +28,9 @@
 # ALWAYS_RECOMPILE_CXX = true - if set to true forces recompilation of the cxx test suite runner; useful when combined
 #       with COMPILE_FILES to select different cxx_ files to be incorporated in the runner, if ALWAYS_RECOMPILE_CXX
 #       not set runner executable will not recompile if it already exists; default values - not set
+# SORT_ALPHABETICALLY_CXX = true - has a meaning only when COMPILE_FILES is set; if set to true the cxx_ files will be
+#       alphabetically sorted within the runner, otherwise the order defined by the user is kept; default values
+#       - not set
 # 
 # CC = c++ - compiler; default value as in the example
 # CXXFLAGS = -g -Wall -Wextra -DVALGRIND -D_PTHREADS -D_REENTRANT - compiler parameters; default values
