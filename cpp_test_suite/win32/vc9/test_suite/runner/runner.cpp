@@ -26,12 +26,12 @@ int main( int argc, char **argv )
 }
 
 // The CxxTest "world"
-#include "../../../../test_suite/cxx_syntax.cpp"
+#include "../../../../new_tests/cxx_syntax.cpp"
 
 static SyntaxTestSuite *suite_SyntaxTestSuite = 0;
 
 static CxxTest::List Tests_SyntaxTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<SyntaxTestSuite> suiteDescription_SyntaxTestSuite( "../../../../test_suite/cxx_syntax.cpp", 17, "SyntaxTestSuite", Tests_SyntaxTestSuite, suite_SyntaxTestSuite, 96, 101 );
+CxxTest::DynamicSuiteDescription<SyntaxTestSuite> suiteDescription_SyntaxTestSuite( "../../../../new_tests/cxx_syntax.cpp", 17, "SyntaxTestSuite", Tests_SyntaxTestSuite, suite_SyntaxTestSuite, 96, 101 );
 
 static class TestDescription_SyntaxTestSuite_test_check_device_name_syntax_when_creating_DeviceProxy_instance : public CxxTest::RealTestDescription {
 public:
@@ -81,12 +81,12 @@ public:
  void runTest() { if ( suite_SyntaxTestSuite ) suite_SyntaxTestSuite->test_check_alias_call(); }
 } testDescription_SyntaxTestSuite_test_check_alias_call;
 
-#include "../../../../test_suite/cxx_poll.cpp"
+#include "../../../../new_tests/cxx_poll.cpp"
 
 static PollTestSuite__loop *suite_PollTestSuite__loop = 0;
 
 static CxxTest::List Tests_PollTestSuite__loop = { 0, 0 };
-CxxTest::DynamicSuiteDescription<PollTestSuite__loop> suiteDescription_PollTestSuite__loop( "../../../../test_suite/cxx_poll.cpp", 17, "PollTestSuite__loop", Tests_PollTestSuite__loop, suite_PollTestSuite__loop, 193, 198 );
+CxxTest::DynamicSuiteDescription<PollTestSuite__loop> suiteDescription_PollTestSuite__loop( "../../../../new_tests/cxx_poll.cpp", 17, "PollTestSuite__loop", Tests_PollTestSuite__loop, suite_PollTestSuite__loop, 193, 198 );
 
 static class TestDescription_PollTestSuite__loop_test_polling_exceptions : public CxxTest::RealTestDescription {
 public:
@@ -106,12 +106,12 @@ public:
  void runTest() { if ( suite_PollTestSuite__loop ) suite_PollTestSuite__loop->test_check_the_CACHE_DEV_source_parameter(); }
 } testDescription_PollTestSuite__loop_test_check_the_CACHE_DEV_source_parameter;
 
-#include "../../../../test_suite/cxx_poll_admin.cpp"
+#include "../../../../new_tests/cxx_poll_admin.cpp"
 
 static PollAdminTestSuite__loop *suite_PollAdminTestSuite__loop = 0;
 
 static CxxTest::List Tests_PollAdminTestSuite__loop = { 0, 0 };
-CxxTest::DynamicSuiteDescription<PollAdminTestSuite__loop> suiteDescription_PollAdminTestSuite__loop( "../../../../test_suite/cxx_poll_admin.cpp", 17, "PollAdminTestSuite__loop", Tests_PollAdminTestSuite__loop, suite_PollAdminTestSuite__loop, 256, 261 );
+CxxTest::DynamicSuiteDescription<PollAdminTestSuite__loop> suiteDescription_PollAdminTestSuite__loop( "../../../../new_tests/cxx_poll_admin.cpp", 17, "PollAdminTestSuite__loop", Tests_PollAdminTestSuite__loop, suite_PollAdminTestSuite__loop, 256, 261 );
 
 static class TestDescription_PollAdminTestSuite__loop_test_Start_Stop_polling : public CxxTest::RealTestDescription {
 public:
@@ -233,12 +233,12 @@ public:
  void runTest() { if ( suite_PollAdminTestSuite__loop ) suite_PollAdminTestSuite__loop->test_start_a_command_externally_triggered(); }
 } testDescription_PollAdminTestSuite__loop_test_start_a_command_externally_triggered;
 
-#include "../../../../test_suite/cxx_dserver_misc.cpp"
+#include "../../../../new_tests/cxx_dserver_misc.cpp"
 
 static DServerMiscTestSuite *suite_DServerMiscTestSuite = 0;
 
 static CxxTest::List Tests_DServerMiscTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<DServerMiscTestSuite> suiteDescription_DServerMiscTestSuite( "../../../../test_suite/cxx_dserver_misc.cpp", 17, "DServerMiscTestSuite", Tests_DServerMiscTestSuite, suite_DServerMiscTestSuite, 120, 125 );
+CxxTest::DynamicSuiteDescription<DServerMiscTestSuite> suiteDescription_DServerMiscTestSuite( "../../../../new_tests/cxx_dserver_misc.cpp", 17, "DServerMiscTestSuite", Tests_DServerMiscTestSuite, suite_DServerMiscTestSuite, 120, 125 );
 
 static class TestDescription_DServerMiscTestSuite_test_State_and_Status_commands : public CxxTest::RealTestDescription {
 public:
@@ -276,12 +276,12 @@ public:
  void runTest() { if ( suite_DServerMiscTestSuite ) suite_DServerMiscTestSuite->test_info_call(); }
 } testDescription_DServerMiscTestSuite_test_info_call;
 
-#include "../../../../test_suite/cxx_always_hook.cpp"
+#include "../../../../new_tests/cxx_always_hook.cpp"
 
 static AlwaysHookTestSuite *suite_AlwaysHookTestSuite = 0;
 
 static CxxTest::List Tests_AlwaysHookTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<AlwaysHookTestSuite> suiteDescription_AlwaysHookTestSuite( "../../../../test_suite/cxx_always_hook.cpp", 18, "AlwaysHookTestSuite", Tests_AlwaysHookTestSuite, suite_AlwaysHookTestSuite, 166, 171 );
+CxxTest::DynamicSuiteDescription<AlwaysHookTestSuite> suiteDescription_AlwaysHookTestSuite( "../../../../new_tests/cxx_always_hook.cpp", 18, "AlwaysHookTestSuite", Tests_AlwaysHookTestSuite, suite_AlwaysHookTestSuite, 166, 171 );
 
 static class TestDescription_AlwaysHookTestSuite_test_checking_OILong_command_preceding_the_test : public CxxTest::RealTestDescription {
 public:
@@ -301,12 +301,12 @@ public:
  void runTest() { if ( suite_AlwaysHookTestSuite ) suite_AlwaysHookTestSuite->test_comparing_input_with_output(); }
 } testDescription_AlwaysHookTestSuite_test_comparing_input_with_output;
 
-#include "../../../../test_suite/cxx_blackbox.cpp"
+#include "../../../../new_tests/cxx_blackbox.cpp"
 
 static BlackboxTestSuite *suite_BlackboxTestSuite = 0;
 
 static CxxTest::List Tests_BlackboxTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<BlackboxTestSuite> suiteDescription_BlackboxTestSuite( "../../../../test_suite/cxx_blackbox.cpp", 21, "BlackboxTestSuite", Tests_BlackboxTestSuite, suite_BlackboxTestSuite, 137, 142 );
+CxxTest::DynamicSuiteDescription<BlackboxTestSuite> suiteDescription_BlackboxTestSuite( "../../../../new_tests/cxx_blackbox.cpp", 21, "BlackboxTestSuite", Tests_BlackboxTestSuite, suite_BlackboxTestSuite, 137, 142 );
 
 static class TestDescription_BlackboxTestSuite_test_blackbox_device_feature : public CxxTest::RealTestDescription {
 public:
@@ -314,12 +314,12 @@ public:
  void runTest() { if ( suite_BlackboxTestSuite ) suite_BlackboxTestSuite->test_blackbox_device_feature(); }
 } testDescription_BlackboxTestSuite_test_blackbox_device_feature;
 
-#include "../../../../test_suite/cxx_attr_misc.cpp"
+#include "../../../../new_tests/cxx_attr_misc.cpp"
 
 static AttrMiscTestSuite *suite_AttrMiscTestSuite = 0;
 
 static CxxTest::List Tests_AttrMiscTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<AttrMiscTestSuite> suiteDescription_AttrMiscTestSuite( "../../../../test_suite/cxx_attr_misc.cpp", 17, "AttrMiscTestSuite", Tests_AttrMiscTestSuite, suite_AttrMiscTestSuite, 154, 159 );
+CxxTest::DynamicSuiteDescription<AttrMiscTestSuite> suiteDescription_AttrMiscTestSuite( "../../../../new_tests/cxx_attr_misc.cpp", 17, "AttrMiscTestSuite", Tests_AttrMiscTestSuite, suite_AttrMiscTestSuite, 154, 159 );
 
 static class TestDescription_AttrMiscTestSuite_test_set_get_alarms : public CxxTest::RealTestDescription {
 public:
@@ -369,12 +369,12 @@ public:
  void runTest() { if ( suite_AttrMiscTestSuite ) suite_AttrMiscTestSuite->test_alarm_on_attribute(); }
 } testDescription_AttrMiscTestSuite_test_alarm_on_attribute;
 
-#include "../../../../test_suite/cxx_attr_write.cpp"
+#include "../../../../new_tests/cxx_attr_write.cpp"
 
 static AttrWriteTestSuite *suite_AttrWriteTestSuite = 0;
 
 static CxxTest::List Tests_AttrWriteTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<AttrWriteTestSuite> suiteDescription_AttrWriteTestSuite( "../../../../test_suite/cxx_attr_write.cpp", 17, "AttrWriteTestSuite", Tests_AttrWriteTestSuite, suite_AttrWriteTestSuite, 92, 97 );
+CxxTest::DynamicSuiteDescription<AttrWriteTestSuite> suiteDescription_AttrWriteTestSuite( "../../../../new_tests/cxx_attr_write.cpp", 17, "AttrWriteTestSuite", Tests_AttrWriteTestSuite, suite_AttrWriteTestSuite, 92, 97 );
 
 static class TestDescription_AttrWriteTestSuite_test_some_exception_cases : public CxxTest::RealTestDescription {
 public:
@@ -394,12 +394,12 @@ public:
  void runTest() { if ( suite_AttrWriteTestSuite ) suite_AttrWriteTestSuite->test_memorized_attributes(); }
 } testDescription_AttrWriteTestSuite_test_memorized_attributes;
 
-#include "../../../../test_suite/cxx_attr_conf.cpp"
+#include "../../../../new_tests/cxx_attr_conf.cpp"
 
 static AttrConfTestSuite *suite_AttrConfTestSuite = 0;
 
 static CxxTest::List Tests_AttrConfTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<AttrConfTestSuite> suiteDescription_AttrConfTestSuite( "../../../../test_suite/cxx_attr_conf.cpp", 17, "AttrConfTestSuite", Tests_AttrConfTestSuite, suite_AttrConfTestSuite, 97, 102 );
+CxxTest::DynamicSuiteDescription<AttrConfTestSuite> suiteDescription_AttrConfTestSuite( "../../../../new_tests/cxx_attr_conf.cpp", 17, "AttrConfTestSuite", Tests_AttrConfTestSuite, suite_AttrConfTestSuite, 97, 102 );
 
 static class TestDescription_AttrConfTestSuite_test_some_basic_exception_cases : public CxxTest::RealTestDescription {
 public:
@@ -437,12 +437,12 @@ public:
  void runTest() { if ( suite_AttrConfTestSuite ) suite_AttrConfTestSuite->test_add_one_attribute_on_the_fly_and_get_its_config(); }
 } testDescription_AttrConfTestSuite_test_add_one_attribute_on_the_fly_and_get_its_config;
 
-#include "../../../../test_suite/cxx_attr.cpp"
+#include "../../../../new_tests/cxx_attr.cpp"
 
 static AttrTestSuite *suite_AttrTestSuite = 0;
 
 static CxxTest::List Tests_AttrTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<AttrTestSuite> suiteDescription_AttrTestSuite( "../../../../test_suite/cxx_attr.cpp", 17, "AttrTestSuite", Tests_AttrTestSuite, suite_AttrTestSuite, 105, 110 );
+CxxTest::DynamicSuiteDescription<AttrTestSuite> suiteDescription_AttrTestSuite( "../../../../new_tests/cxx_attr.cpp", 17, "AttrTestSuite", Tests_AttrTestSuite, suite_AttrTestSuite, 105, 110 );
 
 static class TestDescription_AttrTestSuite_test_one_attribute_at_a_time_for_all_SCALAR_types : public CxxTest::RealTestDescription {
 public:
@@ -486,12 +486,12 @@ public:
  void runTest() { if ( suite_AttrTestSuite ) suite_AttrTestSuite->test_attributes_written_using_the_set_value_date_and_quality_method(); }
 } testDescription_AttrTestSuite_test_attributes_written_using_the_set_value_date_and_quality_method;
 
-#include "../../../../test_suite/cxx_misc_util.cpp"
+#include "../../../../new_tests/cxx_misc_util.cpp"
 
 static MiscUtilTestSuite *suite_MiscUtilTestSuite = 0;
 
 static CxxTest::List Tests_MiscUtilTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<MiscUtilTestSuite> suiteDescription_MiscUtilTestSuite( "../../../../test_suite/cxx_misc_util.cpp", 17, "MiscUtilTestSuite", Tests_MiscUtilTestSuite, suite_MiscUtilTestSuite, 88, 93 );
+CxxTest::DynamicSuiteDescription<MiscUtilTestSuite> suiteDescription_MiscUtilTestSuite( "../../../../new_tests/cxx_misc_util.cpp", 17, "MiscUtilTestSuite", Tests_MiscUtilTestSuite, suite_MiscUtilTestSuite, 88, 93 );
 
 static class TestDescription_MiscUtilTestSuite_test_get_device_list_by_class : public CxxTest::RealTestDescription {
 public:
@@ -523,12 +523,12 @@ public:
  void runTest() { if ( suite_MiscUtilTestSuite ) suite_MiscUtilTestSuite->test_get_device_by_name_exception(); }
 } testDescription_MiscUtilTestSuite_test_get_device_by_name_exception;
 
-#include "../../../../test_suite/cxx_templ_cmd.cpp"
+#include "../../../../new_tests/cxx_templ_cmd.cpp"
 
 static TemplateCmdTestSuite *suite_TemplateCmdTestSuite = 0;
 
 static CxxTest::List Tests_TemplateCmdTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<TemplateCmdTestSuite> suiteDescription_TemplateCmdTestSuite( "../../../../test_suite/cxx_templ_cmd.cpp", 17, "TemplateCmdTestSuite", Tests_TemplateCmdTestSuite, suite_TemplateCmdTestSuite, 106, 111 );
+CxxTest::DynamicSuiteDescription<TemplateCmdTestSuite> suiteDescription_TemplateCmdTestSuite( "../../../../new_tests/cxx_templ_cmd.cpp", 17, "TemplateCmdTestSuite", Tests_TemplateCmdTestSuite, suite_TemplateCmdTestSuite, 106, 111 );
 
 static class TestDescription_TemplateCmdTestSuite_test_IOTempl : public CxxTest::RealTestDescription {
 public:
@@ -602,12 +602,12 @@ public:
  void runTest() { if ( suite_TemplateCmdTestSuite ) suite_TemplateCmdTestSuite->test_IOTemplInOutState_exception(); }
 } testDescription_TemplateCmdTestSuite_test_IOTemplInOutState_exception;
 
-#include "../../../../test_suite/cxx_exception.cpp"
+#include "../../../../new_tests/cxx_exception.cpp"
 
 static ExceptionTestSuite *suite_ExceptionTestSuite = 0;
 
 static CxxTest::List Tests_ExceptionTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<ExceptionTestSuite> suiteDescription_ExceptionTestSuite( "../../../../test_suite/cxx_exception.cpp", 17, "ExceptionTestSuite", Tests_ExceptionTestSuite, suite_ExceptionTestSuite, 105, 110 );
+CxxTest::DynamicSuiteDescription<ExceptionTestSuite> suiteDescription_ExceptionTestSuite( "../../../../new_tests/cxx_exception.cpp", 17, "ExceptionTestSuite", Tests_ExceptionTestSuite, suite_ExceptionTestSuite, 105, 110 );
 
 static class TestDescription_ExceptionTestSuite_test_throw_exception_command : public CxxTest::RealTestDescription {
 public:
@@ -633,12 +633,12 @@ public:
  void runTest() { if ( suite_ExceptionTestSuite ) suite_ExceptionTestSuite->test_command_not_allowed_in_this_state_exception(); }
 } testDescription_ExceptionTestSuite_test_command_not_allowed_in_this_state_exception;
 
-#include "../../../../test_suite/cxx_cmd_query.cpp"
+#include "../../../../new_tests/cxx_cmd_query.cpp"
 
 static CmdQueryTestSuite *suite_CmdQueryTestSuite = 0;
 
 static CxxTest::List Tests_CmdQueryTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<CmdQueryTestSuite> suiteDescription_CmdQueryTestSuite( "../../../../test_suite/cxx_cmd_query.cpp", 17, "CmdQueryTestSuite", Tests_CmdQueryTestSuite, suite_CmdQueryTestSuite, 93, 98 );
+CxxTest::DynamicSuiteDescription<CmdQueryTestSuite> suiteDescription_CmdQueryTestSuite( "../../../../new_tests/cxx_cmd_query.cpp", 17, "CmdQueryTestSuite", Tests_CmdQueryTestSuite, suite_CmdQueryTestSuite, 93, 98 );
 
 static class TestDescription_CmdQueryTestSuite_test_command_list_query : public CxxTest::RealTestDescription {
 public:
@@ -844,12 +844,12 @@ public:
  void runTest() { if ( suite_CmdQueryTestSuite ) suite_CmdQueryTestSuite->test_command_list_query_ZMQEventSubscriptionChange(); }
 } testDescription_CmdQueryTestSuite_test_command_list_query_ZMQEventSubscriptionChange;
 
-#include "../../../../test_suite/cxx_seq_vec.cpp"
+#include "../../../../new_tests/cxx_seq_vec.cpp"
 
 static SeqVecTestSuite *suite_SeqVecTestSuite = 0;
 
 static CxxTest::List Tests_SeqVecTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<SeqVecTestSuite> suiteDescription_SeqVecTestSuite( "../../../../test_suite/cxx_seq_vec.cpp", 17, "SeqVecTestSuite", Tests_SeqVecTestSuite, suite_SeqVecTestSuite, 87, 92 );
+CxxTest::DynamicSuiteDescription<SeqVecTestSuite> suiteDescription_SeqVecTestSuite( "../../../../new_tests/cxx_seq_vec.cpp", 17, "SeqVecTestSuite", Tests_SeqVecTestSuite, suite_SeqVecTestSuite, 87, 92 );
 
 static class TestDescription_SeqVecTestSuite_test_IOSeqVecChar : public CxxTest::RealTestDescription {
 public:
@@ -899,12 +899,12 @@ public:
  void runTest() { if ( suite_SeqVecTestSuite ) suite_SeqVecTestSuite->test_IOSeqVecString(); }
 } testDescription_SeqVecTestSuite_test_IOSeqVecString;
 
-#include "../../../../test_suite/cxx_test_state_on.cpp"
+#include "../../../../new_tests/cxx_test_state_on.cpp"
 
 static TestStateOnTestSuite *suite_TestStateOnTestSuite = 0;
 
 static CxxTest::List Tests_TestStateOnTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<TestStateOnTestSuite> suiteDescription_TestStateOnTestSuite( "../../../../test_suite/cxx_test_state_on.cpp", 17, "TestStateOnTestSuite", Tests_TestStateOnTestSuite, suite_TestStateOnTestSuite, 87, 92 );
+CxxTest::DynamicSuiteDescription<TestStateOnTestSuite> suiteDescription_TestStateOnTestSuite( "../../../../new_tests/cxx_test_state_on.cpp", 17, "TestStateOnTestSuite", Tests_TestStateOnTestSuite, suite_TestStateOnTestSuite, 87, 92 );
 
 static class TestDescription_TestStateOnTestSuite_test_test_state_on : public CxxTest::RealTestDescription {
 public:
@@ -912,12 +912,12 @@ public:
  void runTest() { if ( suite_TestStateOnTestSuite ) suite_TestStateOnTestSuite->test_test_state_on(); }
 } testDescription_TestStateOnTestSuite_test_test_state_on;
 
-#include "../../../../test_suite/cxx_misc.cpp"
+#include "../../../../new_tests/cxx_misc.cpp"
 
 static MiscTestSuite *suite_MiscTestSuite = 0;
 
 static CxxTest::List Tests_MiscTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<MiscTestSuite> suiteDescription_MiscTestSuite( "../../../../test_suite/cxx_misc.cpp", 17, "MiscTestSuite", Tests_MiscTestSuite, suite_MiscTestSuite, 125, 130 );
+CxxTest::DynamicSuiteDescription<MiscTestSuite> suiteDescription_MiscTestSuite( "../../../../new_tests/cxx_misc.cpp", 17, "MiscTestSuite", Tests_MiscTestSuite, suite_MiscTestSuite, 125, 130 );
 
 static class TestDescription_MiscTestSuite_test_DevState_and_DevStatus_commands : public CxxTest::RealTestDescription {
 public:
@@ -949,12 +949,12 @@ public:
  void runTest() { if ( suite_MiscTestSuite ) suite_MiscTestSuite->test_info_call(); }
 } testDescription_MiscTestSuite_test_info_call;
 
-#include "../../../../test_suite/cxx_cmd_types.cpp"
+#include "../../../../new_tests/cxx_cmd_types.cpp"
 
 static CmdTypesTestSuite *suite_CmdTypesTestSuite = 0;
 
 static CxxTest::List Tests_CmdTypesTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<CmdTypesTestSuite> suiteDescription_CmdTypesTestSuite( "../../../../test_suite/cxx_cmd_types.cpp", 17, "CmdTypesTestSuite", Tests_CmdTypesTestSuite, suite_CmdTypesTestSuite, 92, 97 );
+CxxTest::DynamicSuiteDescription<CmdTypesTestSuite> suiteDescription_CmdTypesTestSuite( "../../../../new_tests/cxx_cmd_types.cpp", 17, "CmdTypesTestSuite", Tests_CmdTypesTestSuite, suite_CmdTypesTestSuite, 92, 97 );
 
 static class TestDescription_CmdTypesTestSuite_test_Scalar_Short : public CxxTest::RealTestDescription {
 public:
@@ -1208,12 +1208,12 @@ public:
  void runTest() { if ( suite_CmdTypesTestSuite ) suite_CmdTypesTestSuite->test_Exception_Error_for_unknown_attribute_data_format(); }
 } testDescription_CmdTypesTestSuite_test_Exception_Error_for_unknown_attribute_data_format;
 
-#include "../../../../test_suite/cxx_group.cpp"
+#include "../../../../new_tests/cxx_group.cpp"
 
 static GroupTestSuite *suite_GroupTestSuite = 0;
 
 static CxxTest::List Tests_GroupTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<GroupTestSuite> suiteDescription_GroupTestSuite( "../../../../test_suite/cxx_group.cpp", 18, "GroupTestSuite", Tests_GroupTestSuite, suite_GroupTestSuite, 87, 92 );
+CxxTest::DynamicSuiteDescription<GroupTestSuite> suiteDescription_GroupTestSuite( "../../../../new_tests/cxx_group.cpp", 18, "GroupTestSuite", Tests_GroupTestSuite, suite_GroupTestSuite, 87, 92 );
 
 static class TestDescription_GroupTestSuite_test_miscellaneous : public CxxTest::RealTestDescription {
 public:
@@ -1365,12 +1365,12 @@ public:
  void runTest() { if ( suite_GroupTestSuite ) suite_GroupTestSuite->test_write_attribute_asynchronously_several_DeviceAttribute_values(); }
 } testDescription_GroupTestSuite_test_write_attribute_asynchronously_several_DeviceAttribute_values;
 
-#include "../../../../test_suite/cxx_encoded.cpp"
+#include "../../../../new_tests/cxx_encoded.cpp"
 
 static EncodedTestSuite *suite_EncodedTestSuite = 0;
 
 static CxxTest::List Tests_EncodedTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<EncodedTestSuite> suiteDescription_EncodedTestSuite( "../../../../test_suite/cxx_encoded.cpp", 18, "EncodedTestSuite", Tests_EncodedTestSuite, suite_EncodedTestSuite, 62, 67 );
+CxxTest::DynamicSuiteDescription<EncodedTestSuite> suiteDescription_EncodedTestSuite( "../../../../new_tests/cxx_encoded.cpp", 18, "EncodedTestSuite", Tests_EncodedTestSuite, suite_EncodedTestSuite, 62, 67 );
 
 static class TestDescription_EncodedTestSuite_test_Miscellaneous_inserters_and_extracters_for_DeviceData : public CxxTest::RealTestDescription {
 public:
@@ -1384,12 +1384,12 @@ public:
  void runTest() { if ( suite_EncodedTestSuite ) suite_EncodedTestSuite->test_Miscellaneous_inserters_and_extracters_for_DeviceAttribute(); }
 } testDescription_EncodedTestSuite_test_Miscellaneous_inserters_and_extracters_for_DeviceAttribute;
 
-#include "../../../../test_suite/cxx_database.cpp"
+#include "../../../../new_tests/cxx_database.cpp"
 
 static DatabaseTestSuite *suite_DatabaseTestSuite = 0;
 
 static CxxTest::List Tests_DatabaseTestSuite = { 0, 0 };
-CxxTest::DynamicSuiteDescription<DatabaseTestSuite> suiteDescription_DatabaseTestSuite( "../../../../test_suite/cxx_database.cpp", 18, "DatabaseTestSuite", Tests_DatabaseTestSuite, suite_DatabaseTestSuite, 65, 70 );
+CxxTest::DynamicSuiteDescription<DatabaseTestSuite> suiteDescription_DatabaseTestSuite( "../../../../new_tests/cxx_database.cpp", 18, "DatabaseTestSuite", Tests_DatabaseTestSuite, suite_DatabaseTestSuite, 65, 70 );
 
 static class TestDescription_DatabaseTestSuite_test_get_device_info : public CxxTest::RealTestDescription {
 public:

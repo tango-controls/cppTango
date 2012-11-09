@@ -118,7 +118,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				EnableIntrinsicFunctions="true"
-				AdditionalIncludeDirectories="..\..\..\..\cxxtest\include\;..\..\..\..\test_suite\"
+				AdditionalIncludeDirectories="..\..\..\..\cxxtest\include\;..\..\..\..\new_tests\"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -177,7 +177,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\test_suite\compare_test.cpp"
+				RelativePath="..\..\..\..\new_tests\compare_test.cpp"
 				>
 			</File>
 			<File
