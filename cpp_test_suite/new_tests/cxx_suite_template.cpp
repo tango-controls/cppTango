@@ -30,7 +30,7 @@ public:
 		string device1_name, dserver_name;
 
 		// user arguments, obtained from the command line sequentially
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
+		device1_name = CxxTest::TangoPrinter::get_uarg("device1","description of what device1 is"); // get_uarg("device1") will also work
 
 		// predefined mandatory parameters
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");

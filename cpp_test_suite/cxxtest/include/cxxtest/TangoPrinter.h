@@ -106,6 +106,10 @@ namespace CxxTest
          */
         static vector<string> uargs_validate;
         /*
+         * descriptions of expected user arguments; printed out if provided arguments do not match the expected in quantity
+         */
+        static vector<string> uargs_desc;
+        /*
          * list of expected mandatory parameters; printed out if provided arguments do not match the expected in quantity
          */
         static set<string> params_validate;
@@ -142,6 +146,7 @@ namespace CxxTest
         	params_opt_validate.clear();
         	params_validate.clear();
         	uargs_validate.clear();
+        	uargs_desc.clear();
         	restore_points.clear();
         	args_valid = true;
         	string suite_name = tracker().suite().suiteName();
@@ -481,6 +486,18 @@ namespace CxxTest
 			return "";
 		}
 
+        /*
+         * returns user argument description based on it's name
+         */
+        static string get_uarg_desc(const string &uarg)
+		{
+			if(uargs_validate.size() && uargs_validate.size() == uargs_desc.size())// > 0 && params.find(key) != params.end())
+				for(size_t i = 0; i < uargs_validate.size(); i++)
+					if(uargs_validate[i] == uarg)
+						return uargs_desc[i];
+			return "";
+		}
+
         static map<string,vector<string> > &get_params(void)
 		{
 			return params;
@@ -491,13 +508,24 @@ namespace CxxTest
         	return executable_name;
         }
 
+
         /*
-         * registers description of user argument on the list, returns its value (if set) or empty string
+         * registers user argument on the list, returns its value (if set) or empty string
          */
         static string get_uarg(const string &uarg)
         {
+        	string desc = "user defined argument";
+        	return get_uarg(uarg,desc);
+        }
+
+        /*
+         * registers user argument and its description on the list, returns its value (if set) or empty string
+         */
+        static string get_uarg(const string &uarg, const string &desc)
+        {
         	string uarg_val = "";
         	uargs_validate.push_back(uarg);
+        	uargs_desc.push_back(desc);
         	if(get_uargc() >= uargs_validate.size())
         		uarg_val = get_uargv()[uargs_validate.size()-1];
         	else
@@ -563,15 +591,27 @@ namespace CxxTest
     			for(size_t i = 0; i < uargs_validate.size(); i++)
     				cout << " " << uargs_validate[i];
 
+    			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
+    				cout << " " << *it;
+
+    			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
+    				cout << " [" << *it << "]";
+
+				cout << "\nExplanation:";
+
+    			if(uargs_validate.size() != 0)
+    			{
+    				if(uargs_validate.size() != 0 && uargs_validate.size() == uargs_desc.size())
+    				{
+						cout << "\nUser arguments:";
+            			for(size_t i = 0; i < uargs_validate.size(); i++)
+            				cout << "\n\t" << uargs_validate[i] << " - " << uargs_desc[i];
+    				}
+    			}
+
     			if(params_validate.size() != 0 || params_opt_validate.size() != 0)
     			{
-        			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
-        				cout << " " << *it;
-
-        			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
-        				cout << " [" << *it << "]";
-
-    				cout << "\nParameters explanation:";
+    				cout << "\nParameters:";
     				if(params_validate.size() != 0)
     				{
     					cout << "\nMandatory:";
@@ -665,6 +705,7 @@ namespace CxxTest
     int TangoPrinter::suite_counter = 1;
 
     vector<string> TangoPrinter::uargs_validate;
+    vector<string> TangoPrinter::uargs_desc;
     set<string> TangoPrinter::params_validate;
     set<string> TangoPrinter::params_opt_validate;
     bool TangoPrinter::args_valid = true;
