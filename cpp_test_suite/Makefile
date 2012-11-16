@@ -15,7 +15,7 @@ RUNNER_NAME = runner
 
 # files that will not be compiled (no need to provide the full path, just the filenames are sufficient)
 EXCLUDE_FILES = 
-EXCLUDE_FILES_DEFAULT = $(RUNNER_NAME).cpp compare_test.cpp cxx_suite_template.cpp #conf_devtest.cpp
+EXCLUDE_FILES_DEFAULT = $(RUNNER_NAME).cpp compare_test.cpp cxx_template.cpp #conf_devtest.cpp
 
 # compile only these files (if not set, all files from the TEST_DIRS will be compiled)
 COMPILE_FILES = 
