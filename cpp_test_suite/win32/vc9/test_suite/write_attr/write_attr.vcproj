@@ -172,7 +172,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\write_attr.cpp"
+				RelativePath="..\..\..\..\old_tests\write_attr.cpp"
 				>
 			</File>
 		</Filter>

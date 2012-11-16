@@ -170,7 +170,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\print_data.cpp"
+				RelativePath="..\..\..\..\old_tests\print_data.cpp"
 				>
 			</File>
 		</Filter>

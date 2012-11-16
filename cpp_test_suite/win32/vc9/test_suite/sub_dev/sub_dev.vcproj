@@ -171,7 +171,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\sub_dev.cpp"
+				RelativePath="..\..\..\..\old_tests\sub_dev.cpp"
 				>
 			</File>
 		</Filter>
