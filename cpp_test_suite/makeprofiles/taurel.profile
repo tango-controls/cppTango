@@ -41,7 +41,15 @@
 #
 #######################################################################################################################
 
-TANGO_BASE = 
-OMNI_BASE = 
-LOG4TANGO_BASE = 
-ZMQ_BASE = 
+EXCLUDE_FILES = 64.cpp helper.cpp
+#COMPILE_FILES = cxx_mem_attr.cpp
+
+OS_DIR = ubuntu1204
+
+TANGO_BASE = /home/taurel/tango/cppapi_develop
+TANGO_INCLUDE_DIR = $(TANGO_BASE)/client $(TANGO_BASE)/server
+TANGO_LIB_DIR = $(TANGO_BASE)/../install/$(OS_DIR)/lib/debug
+
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(OS_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(OS_DIR)
+ZMQ_BASE = /segfs/tango/transport/zmq/$(OS_DIR)
