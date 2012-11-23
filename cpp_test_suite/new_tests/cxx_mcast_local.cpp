@@ -101,7 +101,9 @@ public:
 		string device_name;
 
 		// user arguments, obtained from the command line sequentially
-		device_name = CxxTest::TangoPrinter::get_uarg("device","device name"); // get_uarg("device1") will also work
+		CxxTest::TangoPrinter::get_uarg("device1","device name");
+		CxxTest::TangoPrinter::get_uarg("device2","device name");
+		device_name = CxxTest::TangoPrinter::get_uarg("device3","device name"); // get_uarg("device1") will also work
 
 		string str = CxxTest::TangoPrinter::get_param_opt("verbose");
 //		cout << "str = " << str << endl;
