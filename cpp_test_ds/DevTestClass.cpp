@@ -424,14 +424,14 @@ void DevTestClass::command_factory()
 					      "void",
 					      "void"));
 	command_list.push_back(new IOSubscribeEvent("IOSubscribeEvent",
-					      Tango::DEV_VOID,
-					      Tango::DEV_VOID,
-					      "void",
-					      "void"));
+						  Tango::DEVVAR_STRINGARRAY,
+					      Tango::DEV_LONG,
+					      "str[0] = device name, str[1] = attribute name, str[2] = event type",
+					      "Event identifier"));
 	command_list.push_back(new IOUnSubscribeEvent("IOUnSubscribeEvent",
+					      Tango::DEV_LONG,
 					      Tango::DEV_VOID,
-					      Tango::DEV_VOID,
-					      "void",
+					      "Event identifier",
 					      "void"));
 	command_list.push_back(new IOGetCbExecuted("IOGetCbExecuted",
 					      Tango::DEV_VOID,

@@ -170,7 +170,6 @@ void DevTest::init_device()
 	attr_qua_event[1] = 2.4;
 	attr_event_qua = Tango::ATTR_VALID;
 	remote_dev = NULL;
-	eve_id = 0;
 
 	slow_actua_write.tv_sec = 0;
 	slow_actua = 0;
@@ -317,7 +316,7 @@ void DevTest::IOPushDevEncodedEvent()
 }
 
 
-void DevTest::IOSubscribeEvent()
+Tango::DevLong DevTest::IOSubscribeEvent(const Tango::DevVarStringArray *in_data)
 {
 	cout << "[DevTest::IOSubscribeEvent] received " << endl;
 
@@ -352,30 +351,53 @@ void DevTest::IOSubscribeEvent()
 
 	if (remote_dev == NULL)
 	{
-		Tango::Util *tg = Tango::Util::instance();
-		string remote_dev_name("test/");
-		remote_dev_name = remote_dev_name + tg->get_ds_inst_name() + "/20";
-		remote_dev = new Tango::DeviceProxy(remote_dev_name);
+		remote_dev = new Tango::DeviceProxy((*in_data)[0]);
 	}
-	string att_name("short_attr");
+	string att_name((*in_data)[1]);
 	cb.cb_executed = 0;
 
 	// start the polling first!
 	remote_dev->poll_attribute(att_name,1000);
-	eve_id = remote_dev->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
 
+	string eve_type((*in_data)[2]);
+	transform(eve_type.begin(),eve_type.end(),eve_type.begin(),::tolower);
+	Tango::EventType eve;
+	if (eve_type == "change")
+		eve = Tango::CHANGE_EVENT;
+	else if (eve_type == "periodic")
+		eve = Tango::PERIODIC_EVENT;
+	else if (eve_type == "archive")
+		eve = Tango::ARCHIVE_EVENT;
+	else
+	{
+		stringstream ss;
+		ss << "Event type " << (*in_data)[2] << " not recognized as a valid event type";
+		Tango::Except::throw_exception("DevTest_WrongEventType",ss.str(),"DevTest::IOSubscribeEvent");
+	}
+
+	int eve_id = remote_dev->subscribe_event(att_name,eve,&cb,filters);
+
+	event_atts.insert(make_pair(eve_id,att_name));
+
+	return eve_id;
 }
 
-void DevTest::IOUnSubscribeEvent()
+void DevTest::IOUnSubscribeEvent(Tango::DevLong &in_data)
 {
-    	cout << "[DevTest::IOUnSubscribeEvent] received " << endl;
+	cout << "[DevTest::IOUnSubscribeEvent] received " << endl;
 
-	if (eve_id != 0)
+	if (in_data != 0)
 	{
-		remote_dev->unsubscribe_event(eve_id);
+		map<int,string>::iterator ite = event_atts.find(in_data);
+		if (ite == event_atts.end())
+		{
+			Tango::Except::throw_exception("DevTest_WrongEventID",
+										   "Cant find event id in map",
+										   "DevTest::IOUnSubscribeEvent");
+		}
+		remote_dev->unsubscribe_event(in_data);
 
-		string att_name("short_attr");
-		remote_dev->stop_poll_attribute(att_name);
+		remote_dev->stop_poll_attribute(ite->second);
 	}
 
 }
@@ -1935,4 +1957,3 @@ void DevTest::read_DefClassUser_attr(Tango::Attribute &att)
       	cout << "[DevTest::read_attr] attribute name DefClassUserAttr" << endl;
       	att.set_value(&att_conf);
 }
-

@@ -39,8 +39,8 @@ public :
 	void IOTempl();
 	void IOPushEvent();
 	void IOPushDevEncodedEvent();
-	void IOSubscribeEvent();
-	void IOUnSubscribeEvent();
+	Tango::DevLong IOSubscribeEvent(const Tango::DevVarStringArray *);
+	void IOUnSubscribeEvent(Tango::DevLong &);
 	void IOFillPollBuffAttr();
 	void IOFillPollBuffEncodedAttr();
 	void IOFillPollBuffCmd();
@@ -201,70 +201,70 @@ public :
 	friend class ChangeEncodedData;
 
 protected :
-	Tango::DevDouble attr_double;
-	Tango::DevShort attr_short;
-	Tango::DevShort attr_short_rw;
-	Tango::DevLong64 attr_long64_rw;
-	Tango::DevULong attr_ulong_rw;
-	Tango::DevULong64 attr_ulong64_rw;
-	Tango::DevState attr_state_rw;
-	Tango::DevLong attr_long;
-	Tango::DevLong64 attr_long64;
-	Tango::DevDouble attr_db_array[3];
-	Tango::DevLong attr_long_array[10];
-	Tango::DevString attr_str_array[2];
+	Tango::DevDouble 	attr_double;
+	Tango::DevShort 	attr_short;
+	Tango::DevShort 	attr_short_rw;
+	Tango::DevLong64 	attr_long64_rw;
+	Tango::DevULong 	attr_ulong_rw;
+	Tango::DevULong64 	attr_ulong64_rw;
+	Tango::DevState 	attr_state_rw;
+	Tango::DevLong 		attr_long;
+	Tango::DevLong64 	attr_long64;
+	Tango::DevDouble 	attr_db_array[3];
+	Tango::DevLong 		attr_long_array[10];
+	Tango::DevString 	attr_str_array[2];
 
-	Tango::DevLong64 attr_spec_long64_rw[3];
-	Tango::DevULong attr_spec_ulong_rw[3];
-	Tango::DevULong64 attr_spec_ulong64_rw[3];
-	Tango::DevState attr_spec_state_rw[3];
+	Tango::DevLong64 	attr_spec_long64_rw[3];
+	Tango::DevULong 	attr_spec_ulong_rw[3];
+	Tango::DevULong64 	attr_spec_ulong64_rw[3];
+	Tango::DevState 	attr_spec_state_rw[3];
 
-	Tango::DevShort short_spec_attr[2];
-	Tango::DevLong long_spec_attr[3];
-	Tango::DevShort short_ima_attr[4];
+	Tango::DevShort 	short_spec_attr[2];
+	Tango::DevLong 		long_spec_attr[3];
+	Tango::DevShort 	short_ima_attr[4];
 	Tango::ConstDevString  string_spec_attr[2];
 	Tango::ConstDevString  string_ima_attr[2];
 
-	Tango::DevDouble attr_dq_double;
-	Tango::DevShort attr_dq_short;
-	Tango::DevLong attr_dq_long;
-	char attr_dq_str[80];
+	Tango::DevDouble 	attr_dq_double;
+	Tango::DevShort 	attr_dq_short;
+	Tango::DevLong 		attr_dq_long;
+	char 				attr_dq_str[80];
 
-	long PollLong_attr_num;
-	Tango::DevLong Poll_attr_long;
+	long 				PollLong_attr_num;
+	Tango::DevLong 		Poll_attr_long;
 
-	long PollString_spec_attr_num;
+	long 				PollString_spec_attr_num;
 
-	short array2_buffer[10];
+	short 				array2_buffer[10];
 
-	bool Short_attr_except;
-	bool Short_attr_w_except;
-	bool event_change_attr_except;
-	bool event_quality_attr_except;
-	bool event_throw_out_of_sync;
+	bool 				Short_attr_except;
+	bool 				Short_attr_w_except;
+	bool 				event_change_attr_except;
+	bool 				event_quality_attr_except;
+	bool 				event_throw_out_of_sync;
 
-	Tango::DevLong attr_event[10];
-	long attr_event_size;
-	Tango::DevLong64 attr_event64[4];
-	long attr_event64_size;
-	Tango::DevDouble attr_qua_event[2];
-	Tango::AttrQuality attr_event_qua;
+	Tango::DevLong 		attr_event[10];
+	long 				attr_event_size;
+	Tango::DevLong64 	attr_event64[4];
+	long 				attr_event64_size;
+	Tango::DevDouble 	attr_qua_event[2];
+	Tango::AttrQuality 	attr_event_qua;
 
-	EventCallBack cb;
-	Tango::DeviceProxy *remote_dev;
-	int eve_id;
+	EventCallBack 		cb;
+	Tango::DeviceProxy 	*remote_dev;
+	map<int,string>		event_atts;
 
-	Tango::DevFloat attr_float;
-	Tango::DevBoolean attr_boolean;
-	Tango::DevUShort attr_ushort;
-	Tango::DevUChar attr_uchar;
-	Tango::DevULong attr_ulong;
-	Tango::DevULong64 attr_ulong64;
+	Tango::DevFloat 	attr_float;
+	Tango::DevBoolean 	attr_boolean;
+	Tango::DevUShort 	attr_ushort;
+	Tango::DevUChar 	attr_uchar;
+	Tango::DevULong 	attr_ulong;
+	Tango::DevULong64 	attr_ulong64;
 
-	Tango::DevFloat attr_spec_float[3];
-	Tango::DevBoolean attr_spec_boolean[5];
-	Tango::DevUShort attr_spec_ushort[2];
-	Tango::DevUChar attr_spec_uchar[6];
+	Tango::DevFloat 	attr_spec_float[3];
+	Tango::DevBoolean 	attr_spec_boolean[5];
+	Tango::DevUShort 	attr_spec_ushort[2];
+	Tango::DevUChar 	attr_spec_uchar[6];
 
 	struct timeval		slow_actua_write;
 	Tango::DevShort		slow_actua;
