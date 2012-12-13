@@ -84,10 +84,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 	}
 /**
@@ -120,10 +117,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val = value;
 		is_value = true;
@@ -193,10 +187,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val = value;
 		is_value = true;
@@ -307,10 +298,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 	}
@@ -322,10 +310,7 @@ public:
 	DoubleAttrProp(const T &value) : is_value(true) {
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val.push_back(value);
 	}
@@ -364,10 +349,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 		val = values;
@@ -465,10 +447,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 		val = values;
@@ -486,10 +465,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val.push_back(value);
 		is_value = true;
@@ -587,6 +563,7 @@ public:
 	MultiAttrProp()
 	{
 		CmdArgType type = ranges_type2const<T>::enu; // restricts template initialisation to supported types
+		if(type){}; // prevents compiler warning about unused variable type
 	}
 //@}
 /**@name Class data members */
