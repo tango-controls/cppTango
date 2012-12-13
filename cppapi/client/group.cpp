@@ -156,7 +156,7 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 		TangoSys_OMemStream desc;
 		desc << "Wrong device name syntax in " << p << ends;
 
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+		ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 				desc.str(),
 				(const char *)"GroupElementFactory::parse_name()");
 	}
@@ -175,7 +175,7 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 			TangoSys_OMemStream desc;
 			desc << "Wrong device name syntax in " << p << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 					desc.str(),
 					(const char *)"GroupElementFactory::parse_name()");
 		}
@@ -1155,7 +1155,7 @@ long Group::command_inout_asynch_i (const std::string& c, const std::vector<Devi
          << d.size()
          << "]"
          << ends;
-    ApiDataExcept::throw_exception((const char*)"API_MethodArgument",
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::command_inout_asynch");
   }
@@ -1434,7 +1434,7 @@ long Group::write_attribute_asynch_i (const std::vector<DeviceAttribute>& d, boo
          << d.size()
          << "]"
          << ends;
-    ApiDataExcept::throw_exception((const char*)"API_MethodArgument",
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::write_attribute_asynch");
   }

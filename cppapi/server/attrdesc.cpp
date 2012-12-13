@@ -86,7 +86,7 @@ fire_dr_event(false),cl_name("Attr")
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute is not supported" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
 	}
@@ -98,7 +98,7 @@ fire_dr_event(false),cl_name("Attr")
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute not defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
 	}
@@ -133,7 +133,7 @@ ext(new AttrExt),poll_period(0)
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute is not supported" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
 	}
@@ -145,7 +145,7 @@ ext(new AttrExt),poll_period(0)
 
 		o << "Attribute : " << name << ": ";
 		o << " Associated attribute not defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::Attr");
 	}
@@ -209,7 +209,7 @@ void Attr::check_type()
 
 		o << "Attribute : " << name << ": ";
 		o << " Data type is not supported" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::check_type");
 	}
@@ -445,7 +445,7 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 	if(ranges.test(delta_val) ^ ranges.test(delta_t))
 	{
 		string err_msg = "Just one of the user default properties : delta_val or delta_t is set. Both or none of the values have to be set";
-		Except::throw_exception("API_IncoherentValues",err_msg,"Attr::set_default_properties()");
+		Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
 	}
 }
 
@@ -565,13 +565,13 @@ void Attr::validate_def_change_prop(const string &val, const char * prop)
 void Attr::throw_incoherent_def_prop(const char* min, const char* max)
 {
 	string err_msg = "User default property " + string(min) + " for attribute : " + get_name() + " is grater then or equal " + string(max);
-	Except::throw_exception("API_IncoherentValues",err_msg,"Attr::set_default_properties()");
+	Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
 }
 
 void Attr::throw_invalid_def_prop(const char* prop, const char* type)
 {
 	string err_msg = "User default property " + string(prop) + " for attribute : " + get_name() + " is defined in unsupported format. Expected " + string(type);
-	Except::throw_exception("API_IncompatibleAttrDataType",err_msg,"Attr::set_default_properties()");
+	Except::throw_exception(API_IncompatibleAttrDataType,err_msg,"Attr::set_default_properties()");
 }
 
 //+-------------------------------------------------------------------------
@@ -593,7 +593,7 @@ void Attr::set_memorized()
 
 		o << "Attribute : " << name;
 		o << " is not scalar and can not be memorized" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::set_memorized");
 	}
@@ -605,7 +605,7 @@ void Attr::set_memorized()
 
 		o << "Attribute : " << name;
 		o << " can not be memorized" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::set_memorized");
 	}
@@ -617,7 +617,7 @@ void Attr::set_memorized()
 
 		o << "Attribute : " << name;
 		o << " is not writable and therefore can not be memorized" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"Attr::set_memorized");
 	}
@@ -647,7 +647,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -659,7 +659,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
+		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
 	max_x = x;
@@ -676,7 +676,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -688,7 +688,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
+		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
 	max_x = x;
@@ -705,7 +705,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -717,7 +717,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
+		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
 	max_x = x;
@@ -734,7 +734,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum x dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"SpectrumAttr::SpectrumAttr");
 	}
@@ -746,7 +746,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 
 		o << "Attribute: " << name << ": ";
 		o << "DevEncode data type allowed only for SCALAR attribute" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",o.str(),
+		Except::throw_exception((const char *)API_AttrWrongDefined,o.str(),
 							(const char *)"SpectrumAttr::SpectrumAttr");
 	}
 	max_x = x;
@@ -772,7 +772,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
 	}
@@ -791,7 +791,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
 	}
@@ -810,7 +810,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
 	}
@@ -829,7 +829,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 
 		o << "Attribute : " << name << ": ";
 		o << " Maximum y dim. wrongly defined" << ends;
-		Except::throw_exception((const char *)"API_AttrWrongDefined",
+		Except::throw_exception((const char *)API_AttrWrongDefined,
 				      o.str(),
 				      (const char *)"ImageAttr::ImageAttr");
 	}

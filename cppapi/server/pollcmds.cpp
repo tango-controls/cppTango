@@ -128,7 +128,7 @@ CORBA::Any *DevPollStatusCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 	const char *tmp_name;
 	if ((in_any >>= tmp_name) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"DevPollStatusCmd::execute");
 	}
@@ -181,7 +181,7 @@ CORBA::Any *AddObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 	const DevVarLongStringArray *tmp_data;
 	if ((in_any >>= tmp_data) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : DevVarLongStringArray",
 				        (const char *)"AddObjPollingCmd::execute");
 	}
@@ -239,7 +239,7 @@ CORBA::Any *UpdObjPollingPeriodCmd::execute(DeviceImpl *device, const CORBA::Any
 	const DevVarLongStringArray *tmp_data;
 	if ((in_any >>= tmp_data) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : DevVarLongStringArray",
 				        (const char *)"UpdObjPollingPeriodCmd::execute");
 	}
@@ -297,7 +297,7 @@ CORBA::Any *RemObjPollingCmd::execute(DeviceImpl *device, const CORBA::Any &in_a
 	const DevVarStringArray *tmp_data;
 	if ((in_any >>= tmp_data) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
 				        (const char *)"RemObjPollingCmd::execute");
 	}

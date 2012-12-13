@@ -76,7 +76,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 	Tango::client_addr *cl = get_client_ident();
 	if (cl == NULL)
 	{
-		Except::throw_exception((const char*)"API_CantGetClientIdent",
+		Except::throw_exception((const char*)API_CantGetClientIdent,
 					       	(const char*)"Cannot retrieve client identification",
 					        (const char*)"DServer::lock_device");
 	}
@@ -108,7 +108,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 
 	if (d_name_lower == local_dev_name)
 	{
-		Except::throw_exception((const char *)"API_DeviceUnlockable",
+		Except::throw_exception((const char *)API_DeviceUnlockable,
 								(const char *)"Impossible to lock device server administration device",
 								(const char *)"DServer::lock_device");
 	}
@@ -127,7 +127,7 @@ void DServer::lock_device(const Tango::DevVarLongStringArray *in_data)
 	string &cl_name = the_dev->get_device_class()->get_name();
 	if (::strcmp(cl_name.c_str(),DATABASE_CLASS) == 0)
 	{
-		Except::throw_exception((const char *)"API_DeviceUnlockable",
+		Except::throw_exception((const char *)API_DeviceUnlockable,
 								(const char *)"Impossible to lock database device",
 								(const char *)"DServer::lock_device");
 	}
@@ -164,7 +164,7 @@ Tango::DevLong DServer::un_lock_device(const Tango::DevVarLongStringArray *in_da
 	Tango::client_addr *cl = get_client_ident();
 	if (cl == NULL)
 	{
-		Except::throw_exception((const char*)"API_CantGetClientIdent",
+		Except::throw_exception((const char*)API_CantGetClientIdent,
 					       	(const char*)"Cannot retrieve client identification",
 					        (const char*)"DServer::un_lock_device");
 	}
@@ -232,7 +232,7 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 	Tango::client_addr *cl = get_client_ident();
 	if (cl == NULL)
 	{
-		Except::throw_exception((const char*)"API_CantGetClientIdent",
+		Except::throw_exception((const char*)API_CantGetClientIdent,
 					       	(const char*)"Cannot retrieve client identification",
 					        (const char*)"DServer::re_lock_devices");
 	}

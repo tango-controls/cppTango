@@ -1095,7 +1095,7 @@ inline CORBA::Any *return_empty_any(const char *cmd)
 		TangoSys_MemStream o;
 
 		o << cmd << "::execute";
-		Tango::Except::throw_exception((const char *)"API_MemoryAllocation",
+		Tango::Except::throw_exception((const char *)API_MemoryAllocation,
 					     (const char *)"Can't allocate memory in server",
 					     o.str());
 	}
@@ -1112,7 +1112,7 @@ inline DbDevice *DeviceImpl::get_db_device()
 		desc_mess << device_name;
 		desc_mess << " which is a non database device";
 
-		Except::throw_exception((const char *)"API_NonDatabaseDevice",
+		Except::throw_exception((const char *)API_NonDatabaseDevice,
 					desc_mess.str(),
 					(const char *)"DeviceImpl::get_db_device");
 	}

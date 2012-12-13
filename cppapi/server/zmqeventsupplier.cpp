@@ -245,7 +245,7 @@ void ZmqEventSupplier::tango_bind(zmq::socket_t *sock,string &endpoint)
 
     if (port == EPHEMERAL_PORT_END)
     {
-        EventSystemExcept::throw_exception((const char*)"API_ZmqInitFailed",
+        EventSystemExcept::throw_exception((const char*)API_ZmqInitFailed,
                         (const char*)"Can't bind the ZMQ socket. All port used!",
                         (const char*)"ZmqEventSupplier::tango_bind()");
     }

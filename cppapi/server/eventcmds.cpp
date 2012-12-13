@@ -173,7 +173,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         {
             TangoSys_OMemStream o;
             o << "Device " << dev_name << " not found" << ends;
-            Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+            Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
                                        (const char *)"DServer::event_subscription");
         }
 	}
@@ -251,7 +251,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				{
 					if (attribute.is_change_event() == false)
 					{
-						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
+						Except::throw_exception((const char *)API_AttributePollingNotStarted,
 									o.str(),
 									(const char *)"DServer::event_subscription");
 					}
@@ -262,14 +262,14 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					{
 						if (attribute.is_archive_event() == false)
 						{
-							Except::throw_exception((const char *)"API_AttributePollingNotStarted",
+							Except::throw_exception((const char *)API_AttributePollingNotStarted,
 										o.str(),
 										(const char *)"DServer::event_subscription");
 						}
 					}
 					else
 					{
-						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
+						Except::throw_exception((const char *)API_AttributePollingNotStarted,
 									o.str(),
 									(const char *)"DServer::event_subscription");
 					}
@@ -304,7 +304,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 								o << attr_name;
 								o << " are not set" << ends;
 
-								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
+								Except::throw_exception((const char *)API_EventPropertiesNotSet,
 																o.str(),
 																(const char *)"DServer::event_subscription");
 							}
@@ -354,7 +354,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 								o << attr_name;
 								o << " are not set" << ends;
 
-								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
+								Except::throw_exception((const char *)API_EventPropertiesNotSet,
 															 	o.str(),
 																(const char *)"DServer::event_subscription");
 							}
@@ -603,7 +603,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         {
             TangoSys_OMemStream o;
             o << "Device " << dev_name << " not found" << ends;
-            Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+            Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
                                        (const char *)"DServer::event_subscription");
         }
 
@@ -613,7 +613,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
             o << "Device " << dev_name << " too old to use ZMQ event (it does not implement IDL 4)";
             o << "\nSimulate a CommandNotFound exception to move to notifd event system" << ends;
-            Except::throw_exception((const char *)"API_CommandNotFound",
+            Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DServer::zmq_event_subscription_change");
         }
@@ -805,7 +805,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
         	{
             	TangoSys_OMemStream o;
             	o << "Device " << dev_name << " not found" << ends;
-            	Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+            	Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
              	                          (const char *)"DServer::event_confirm_subscription");
         	}
 

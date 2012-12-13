@@ -286,7 +286,7 @@ Tango::DevVarStringArray *SubDevDiag::get_sub_devices()
 
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"SubDevDiag::get_sub_devices");
 	}

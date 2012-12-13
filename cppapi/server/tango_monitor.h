@@ -144,7 +144,7 @@ inline void TangoMonitor::get_monitor()
 #if !defined(_TG_WINDOWS_) || (defined(_MSC_VER) && _MSC_VER >= 1300)
 				cout4 << "TIME OUT for thread " << th->id() << endl;
 #endif
-				Except::throw_exception((const char *)"API_CommandTimedOut",
+				Except::throw_exception((const char *)API_CommandTimedOut,
 					        (const char *)"Not able to acquire serialization (dev, class or process) monitor",
 					        (const char *)"TangoMonitor::get_monitor");
 			}

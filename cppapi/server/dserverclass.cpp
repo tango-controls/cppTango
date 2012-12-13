@@ -92,7 +92,7 @@ CORBA::Any *DevRestartCmd::execute(DeviceImpl *device, const CORBA::Any &in_any)
 	const char *tmp_name;
 	if ((in_any >>= tmp_name) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"DevRestartCmd::execute");
 	}
@@ -207,7 +207,7 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 	{
 		cout3 << "Bad allocation while in DevQueryClassCmd::execute()" << endl;
 		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevQueryClassCmd::execute");
 	}
@@ -267,7 +267,7 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 	{
 		cout3 << "Bad allocation while in DevQueryDeviceCmd::execute()" << endl;
 		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevQueryDeviceCmd::execute");
 	}
@@ -326,7 +326,7 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 	{
 		cout3 << "Bad allocation while in DevQuerySubDeviceCmd::execute()" << endl;
 		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevQuerySubDeviceCmd::execute");
 	}
@@ -415,7 +415,7 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	cout4 << "DevSetTraceLevelCmd::execute(): arrived" << endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
-  	Except::throw_exception((const char *)"API_DeprecatedCommand",
+  	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"SetTraceLevel is no more supported, please use SetLoggingLevel",
       				(const char *)"DevSetTraceLevelCmd::execute");
 //
@@ -435,7 +435,7 @@ CORBA::Any *DevSetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 	if ((in_any >>= new_level) == false)
 	{
 		cout3 << "DevSetTraceLevelCmd::execute() --> Wrong argument type" << endl;
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				      (const char *)"Imcompatible command argument type, expected type is : long",
 				      (const char *)"DevSetTraceLevelCmd::execute");
 	}
@@ -489,7 +489,7 @@ CORBA::Any *DevGetTraceLevelCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO_
 
 #ifdef TANGO_HAS_LOG4TANGO
 
-  	Except::throw_exception((const char *)"API_DeprecatedCommand",
+  	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"GetTraceLevel is no more supported, please use GetLoggingLevel",
       				(const char *)"DevGetTraceLevelCmd::execute");
 
@@ -553,7 +553,7 @@ CORBA::Any *DevGetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	cout4 << "DevGetTraceOutputCmd::execute(): arrived" << endl;
 
 #ifdef TANGO_HAS_LOG4TANGO
-	Except::throw_exception((const char *)"API_DeprecatedCommand",
+	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"GetTraceOutput is no more supported, please use GetLoggingTarget",
       				(const char *)"DevGetTraceOutputCmd::execute");
 //
@@ -618,7 +618,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 
 #ifdef TANGO_HAS_LOG4TANGO
 
-	Except::throw_exception((const char *)"API_DeprecatedCommand",
+	Except::throw_exception((const char *)API_DeprecatedCommand,
       				(const char *)"SetTraceOutput is no more supported, please use AddLoggingTarget",
       				(const char *)"DevSetTraceOutputCmd::execute");
 //
@@ -637,7 +637,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 	const char *in_file_ptr;
 	if ((in_any >>= in_file_ptr) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				      (const char *)"Imcompatible command argument type, expected type is : string",
 				      (const char *)"DevSetTraceOutputCmd::execute");
 	}
@@ -682,7 +682,7 @@ CORBA::Any *DevSetTraceOutputCmd::execute(TANGO_UNUSED(DeviceImpl *device),TANGO
 			TangoSys_OMemStream o;
 
 			o << "Impossible to open file " << in_file << ends;
-			Except::throw_exception((const char *)"API_CannotOpenFile",
+			Except::throw_exception((const char *)API_CannotOpenFile,
 					      o.str(),
 					      (const char *)"DevSetTraceoutput::execute");
 		}
@@ -739,7 +739,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 	const char *tmp_name;
 	if ((in_any >>= tmp_name) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"QueryWizardClassPropertyCmd::execute");
 	}
@@ -763,7 +763,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 	{
 		cout3 << "Bad allocation while in QueryWizardClassPropertyCmd::execute()" << endl;
 		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"QueryWizardClassPropertyCmd::execute");
 	}
@@ -816,7 +816,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 	const char *tmp_name;
 	if ((in_any >>= tmp_name) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 				        (const char *)"Imcompatible command argument type, expected type is : string",
 				        (const char *)"QueryWizardDevPropertyCmd::execute");
 	}
@@ -840,7 +840,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 	{
 		cout3 << "Bad allocation while in QueryWizardDevPropertyCmd::execute()" << endl;
 		delete ret;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"QueryWizardDevPropertyCmd::execute");
 	}
@@ -894,7 +894,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 	{
 		cout3 << "Try to retrieve DS event channel while NotifdEventSupplier object is not yet created" << endl;
 
-		Except::throw_exception((const char *)"API_EventSupplierNotConstructed",
+		Except::throw_exception((const char *)API_EventSupplierNotConstructed,
 				      	(const char *)"Try to retrieve DS event channel while EventSupplier object is not created",
 				      	(const char *)"QueryEventChannelIORCmd::execute");
 	}
@@ -914,7 +914,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 		catch (bad_alloc)
 		{
 			cout3 << "Bad allocation while in QueryEventChannelIORCmd::execute()" << endl;
-			Except::throw_exception((const char *)"API_MemoryAllocation",
+			Except::throw_exception((const char *)API_MemoryAllocation,
 				      		(const char *)"Can't allocate memory in server",
 				      		(const char *)"QueryEventChannelIORCmd::execute");
 		}
@@ -1090,7 +1090,7 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 	catch (bad_alloc)
 	{
 		cout3 << "Bad allocation while in UnLockDeviceCmd::execute()" << endl;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"UnLockDeviceCmd::execute");
 	}
@@ -1158,7 +1158,7 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 	catch (bad_alloc)
 	{
 		cout3 << "Bad allocation while in DevLockStatusCmd::execute()" << endl;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevLockStatusCmd::execute");
 	}
@@ -1264,7 +1264,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	catch (bad_alloc)
 	{
 		cout3 << "Bad allocation while in EventSubscriptionChangeCmd::execute()" << endl;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"EventSubscriptionChangeCmd::execute");
 	}
@@ -1368,7 +1368,7 @@ CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,con
 	catch (bad_alloc)
 	{
 		cout3 << "Bad allocation while in ZmqEventSubscriptionChangeCmd::execute()" << endl;
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"ZmqEventSubscriptionChangeCmd::execute");
 	}
@@ -1563,7 +1563,7 @@ DServerClass *DServerClass::instance()
 	if (_instance == NULL)
 	{
 		cerr << "Class DServer is not initialised!" << endl;
-		Except::throw_exception((const char *)"API_DServerClassNotInitialised",
+		Except::throw_exception((const char *)API_DServerClassNotInitialised,
 				        (const char *)"The DServerClass is not yet initialised, please wait!",
 				        (const char *)"DServerClass::instance");
 		//exit(-1);

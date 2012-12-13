@@ -42,6 +42,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango_config.h>
 #include <except.h>
 #include <apiexcept.h>
+#include <tango_const.h>
 
 #include <iostream>
 #include <sstream>
@@ -523,7 +524,7 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const char *orig
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = CORBA::string_dup(origin);
-	errors[0].reason = CORBA::string_dup("API_CorbaSysException");
+	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 
 	throw Tango::DevFailed(errors);
@@ -537,7 +538,7 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,char *origin)
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = CORBA::string_dup(origin);
 	delete [] origin;
-	errors[0].reason = CORBA::string_dup("API_CorbaSysException");
+	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 
 	throw Tango::DevFailed(errors);
@@ -550,7 +551,7 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const string &or
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = CORBA::string_dup(origin.c_str());
-	errors[0].reason = CORBA::string_dup("API_CorbaSysException");
+	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 
 	throw Tango::DevFailed(errors);

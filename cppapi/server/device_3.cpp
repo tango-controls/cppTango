@@ -180,7 +180,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::read_attributes_3");
 	}
@@ -249,9 +249,9 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
        		if (nb_err != 0)
        		{
        			nb_err--;
-       			if ((strcmp((*back)[i].err_list[nb_err].reason,"API_AttrNotPolled") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NoDataYet") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NotUpdatedAnyMore") == 0) ||
+       			if ((strcmp((*back)[i].err_list[nb_err].reason,API_AttrNotPolled) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NoDataYet) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NotUpdatedAnyMore) == 0) ||
        					(strcmp((*back)[i].err_list[nb_err].origin,"DServer::add_obj_polling") == 0))
        			{
        				nb_attr++;
@@ -498,7 +498,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						o << "It is currently not allowed to read attribute ";
 						o << att.get_name() << ends;
 
-						Except::throw_exception((const char *)"API_AttrNotAllowed",
+						Except::throw_exception((const char *)API_AttrNotAllowed,
 					        			o.str(),
 					        			(const char *)"Device_3Impl::read_attributes_no_except");
 					}
@@ -533,7 +533,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						TangoSys_OMemStream o;
 						o << "Attribute " << w_att.get_name() << " is a memorized attribute.";
 						o << " It failed during the write call of the device startup sequence";
-						Tango::Except::re_throw_exception(df,"API_MemAttFailedDuringInit",o.str(),
+						Tango::Except::re_throw_exception(df,API_MemAttFailedDuringInit,o.str(),
 																"Device_3::read_attributes_no_except");
 					}
 
@@ -629,7 +629,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					TangoSys_OMemStream o;
 					o << "Attribute " << w_att.get_name() << " is a memorized attribute.";
 					o << " It failed during the write call of the device startup sequence";
-					Tango::Except::re_throw_exception(df,"API_MemAttFailedDuringInit",o.str(),
+					Tango::Except::re_throw_exception(df,API_MemAttFailedDuringInit,o.str(),
 															"Device_3::read_attributes_no_except");
 				}
 				else
@@ -858,7 +858,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						{
 							(*back)[index].err_list.length(1);
 							(*back)[index].err_list[0].severity = Tango::ERR;
-							(*back)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
+							(*back)[index].err_list[0].reason = CORBA::string_dup(API_AttrValueNotSet);
 							(*back)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
 
 							string s = o.str();
@@ -879,7 +879,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 							(*back4)[index].err_list.length(1);
 							(*back4)[index].err_list[0].severity = Tango::ERR;
-							(*back4)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
+							(*back4)[index].err_list[0].reason = CORBA::string_dup(API_AttrValueNotSet);
 							(*back4)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
 
 							string s = o.str();
@@ -1181,7 +1181,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back)[non_polled[i]].err_list.length(1);
 					(*back)[non_polled[i]].err_list[0].severity = Tango::ERR;
-					(*back)[non_polled[i]].err_list[0].reason = CORBA::string_dup("API_AttrNotPolled");
+					(*back)[non_polled[i]].err_list[0].reason = CORBA::string_dup(API_AttrNotPolled);
 					(*back)[non_polled[i]].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1194,7 +1194,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back4)[non_polled[i]].err_list.length(1);
 					(*back4)[non_polled[i]].err_list[0].severity = Tango::ERR;
-					(*back4)[non_polled[i]].err_list[0].reason = CORBA::string_dup("API_AttrNotPolled");
+					(*back4)[non_polled[i]].err_list[0].reason = CORBA::string_dup(API_AttrNotPolled);
 					(*back4)[non_polled[i]].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1265,7 +1265,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back)[i].err_list.length(1);
 				(*back)[i].err_list[0].severity = Tango::ERR;
-				(*back)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1278,7 +1278,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back4)[i].err_list.length(1);
 				(*back4)[i].err_list[0].severity = Tango::ERR;
-				(*back4)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back4)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back4)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1304,7 +1304,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back)[i].err_list.length(1);
 				(*back)[i].err_list[0].severity = Tango::ERR;
-				(*back)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1317,7 +1317,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back4)[i].err_list.length(1);
 				(*back4)[i].err_list[0].severity = Tango::ERR;
-				(*back4)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back4)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back4)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1360,7 +1360,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back)[i].err_list.length(1);
 					(*back)[i].err_list[0].severity = Tango::ERR;
-					(*back)[i].err_list[0].reason = CORBA::string_dup("API_NotUpdatedAnyMore");
+					(*back)[i].err_list[0].reason = CORBA::string_dup(API_NotUpdatedAnyMore);
 					(*back)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1373,7 +1373,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back4)[i].err_list.length(1);
 					(*back4)[i].err_list[0].severity = Tango::ERR;
-					(*back4)[i].err_list[0].reason = CORBA::string_dup("API_NotUpdatedAnyMore");
+					(*back4)[i].err_list[0].reason = CORBA::string_dup(API_NotUpdatedAnyMore);
 					(*back4)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1569,7 +1569,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 	unsigned long nb_dev_attr = dev_attr->get_attr_nb();
 	if (nb_dev_attr == 0)
 	{
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				        (const char *)"The device does not have any attribute",
 				        (const char *)"DeviceImpl::write_attributes");
 	}
@@ -1646,7 +1646,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					o << " is not writable" << ends;
 
 					updated_attr.pop_back();
-					Except::throw_exception((const char *)"API_AttrNotWritable",
+					Except::throw_exception((const char *)API_AttrNotWritable,
 					        	o.str(),
 					        	(const char *)"DeviceImpl::write_attributes");
 				}
@@ -1678,7 +1678,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						o << ends;
 
 						updated_attr.pop_back();
-						Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+						Except::throw_exception((const char *)API_WAttrOutsideLimit,
 					        	o.str(),
 					        	(const char *)"DeviceImpl::write_attributes");
 					}
@@ -1792,7 +1792,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						o << ". The device state is " << Tango::DevStateName[get_state()] << ends;
 
 
-						Except::throw_exception((const char *)"API_AttrNotAllowed",
+						Except::throw_exception((const char *)API_AttrNotAllowed,
 					        			o.str(),
 					        			(const char *)"Device_3Impl::write_attributes");
 					}
@@ -1987,7 +1987,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_AttrNotPolled",
+		Except::throw_exception((const char *)API_AttrNotPolled,
 					o.str(),
 					(const char *)"Device_3Impl::read_attribute_history_3");
 	}
@@ -2000,7 +2000,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for attribute " << attr_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_3Impl::read_attribute_history_3");
 	}
@@ -2024,7 +2024,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::read_attribute_history_3");
 	}
@@ -2072,7 +2072,7 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"Device_3Impl::info_3");
 	}
@@ -2205,7 +2205,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::get_attribute_config_3");
 	}
@@ -2294,7 +2294,7 @@ void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& ne
 	long nb_dev_attr = dev_attr->get_attr_nb();
 	if (nb_dev_attr == 0)
 	{
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				        (const char *)"The device does not have any attribute",
 				        (const char *)"Device_3Impl::set_attribute_config_3");
 	}

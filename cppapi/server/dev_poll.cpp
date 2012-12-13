@@ -326,7 +326,7 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
 
 	if (tg->is_svr_shutting_down() == true)
 	{
-		Except::throw_exception((const char *)"API_NotSupported",
+		Except::throw_exception((const char *)API_NotSupported,
 								(const char *)"It's not supported to start polling on any device cmd/attr while the device is shutting down",
 								(const char *)"DeviceImpl::poll_object");
 	}
@@ -344,7 +344,7 @@ void DeviceImpl::poll_object(const string &obj_name,int period,PollObjType type)
         {
             TangoSys_OMemStream o;
             o << period << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
-            Except::throw_exception((const char *)"API_NotSupported",o.str(),
+            Except::throw_exception((const char *)API_NotSupported,o.str(),
                         (const char *)"DeviceImpl::poll_object");
         }
 

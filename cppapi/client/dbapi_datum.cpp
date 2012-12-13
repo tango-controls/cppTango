@@ -197,7 +197,7 @@ bool DbDatum::operator >> (bool &datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a short",
 							       (const char *)"DbDatum::operator >>(short)");
 			}
@@ -258,7 +258,7 @@ bool DbDatum::operator >> (short &datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a short",
 							       (const char *)"DbDatum::operator >>(short)");
 			}
@@ -316,7 +316,7 @@ bool DbDatum::operator >> (unsigned char& datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not an unsigned short",
 							       (const char *)"DbDatum::operator >>(unsigned short)");
 			}
@@ -374,7 +374,7 @@ bool DbDatum::operator >> (unsigned short& datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not an unsigned short",
 							       (const char *)"DbDatum::operator >>(unsigned short)");
 			}
@@ -432,7 +432,7 @@ bool DbDatum::operator >> (DevLong& datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a DevLong (long 32 bits)",
 							       (const char *)"DbDatum::operator >>(DevLong)");
 			}
@@ -490,7 +490,7 @@ bool DbDatum::operator >> (DevULong& datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a DevULong (unsigned long 32 bits)",
 							       (const char *)"DbDatum::operator >>(DevULong)");
 			}
@@ -548,7 +548,7 @@ bool DbDatum::operator >> (DevLong64 &datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a DevLong64 (long 64 bits)",
 							       (const char *)"DbDatum::operator >>(DevULong)");
 			}
@@ -606,7 +606,7 @@ bool DbDatum::operator >> (DevULong64 &datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a DevULong64 (unsigned long 64 bits)",
 							       (const char *)"DbDatum::operator >>(DevULong)");
 			}
@@ -664,7 +664,7 @@ bool DbDatum::operator >> (float& datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a float",
 							       (const char *)"DbDatum::operator >>(float)");
 			}
@@ -722,7 +722,7 @@ bool DbDatum::operator >> (double& datum)
 		{
 			if (exceptions_flags.test(wrongtype_flag))
 			{
-				ApiDataExcept::throw_exception((const char *)"API_IncompatibleArgumentType",
+				ApiDataExcept::throw_exception((const char *)API_IncompatibleArgumentType,
 							       (const char *)"Cannot extract, data in DbDatum is not a double",
 							       (const char *)"DbDatum::operator >>(double)");
 			}
@@ -909,7 +909,7 @@ bool DbDatum::operator >> (vector<short>& datum)
 					desc << "Cannot extract short vector, elt number ";
 					desc << i+1 << " is not a short" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<short>)");
 				}
@@ -980,7 +980,7 @@ bool DbDatum::operator >> (vector<unsigned short>& datum)
 					desc << "Cannot extract unsigned short vector, elt number ";
 					desc << i+1 << " is not an unsigned short" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<unsigned short>)");
 				}
@@ -1052,7 +1052,7 @@ bool DbDatum::operator >> (vector<DevLong>& datum)
 					desc << "Cannot extract long vector, elt number ";
 					desc << i+1 << " is not a DevLong (long 32 bits)" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<DevLong>)");
 				}
@@ -1123,7 +1123,7 @@ bool DbDatum::operator >> (vector<DevULong>& datum)
 					desc << "Cannot extract unsigned long vector, elt number ";
 					desc << i+1 << " is not a DevULong (unsigned long 32 bits)" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<DevULong>)");
 				}
@@ -1195,7 +1195,7 @@ bool DbDatum::operator >> (vector<DevLong64>& datum)
 					desc << "Cannot extract unsigned long vector, elt number ";
 					desc << i+1 << " is not a DevLong64 (long 64 bits)" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<DevLong64>)");
 				}
@@ -1267,7 +1267,7 @@ bool DbDatum::operator >> (vector<DevULong64>& datum)
 					desc << "Cannot extract unsigned long vector, elt number ";
 					desc << i+1 << " is not a DevULong64 (unsigned long 64 bits)" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<DevULong64>)");
 				}
@@ -1339,7 +1339,7 @@ bool DbDatum::operator >> (vector<float>& datum)
 					desc << "Cannot extract float vector, elt number ";
 					desc << i+1 << " is not a float" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<float>)");
 				}
@@ -1412,7 +1412,7 @@ bool DbDatum::operator >> (vector<double>& datum)
 					desc << "Cannot extract double vector, elt number ";
 					desc << i+1 << " is not a double" << ends;
 
-					ApiDataExcept::throw_exception((const char*)"API_IncompatibleArgumentType",
+					ApiDataExcept::throw_exception((const char*)API_IncompatibleArgumentType,
 					     desc.str(),
 					     (const char*)"DbDatum::operator >>(vector<double>)");
 				}

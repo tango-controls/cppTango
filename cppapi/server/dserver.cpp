@@ -236,7 +236,7 @@ void DServer::init_device()
 						TangoSys_OMemStream o;
 						o << "Database error while trying to retrieve device list for class " << class_list[i]->get_name().c_str() << ends;
 
-						Except::throw_exception((const char *)"API_DatabaseAccess",
+						Except::throw_exception((const char *)API_DatabaseAccess,
 				                			o.str(),
 				                			(const char *)"Dserver::init_device");
 					}
@@ -396,7 +396,7 @@ void DServer::init_device()
 			class_list.erase(class_list.begin() + i,class_list.end());
 		}
 
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 						o.str(),
 						(const char *)"DServer::init_device");
 	}
@@ -637,7 +637,7 @@ Tango::DevVarStringArray *DServer::query_class()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DServer::query_class");
 	}
@@ -682,7 +682,7 @@ Tango::DevVarStringArray *DServer::query_device()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"DServer::query_device");
 	}
@@ -789,7 +789,7 @@ void DServer::restart(string &d_name)
 		cout3 << "Device " << d_name << " not found in server !" << endl;
 		TangoSys_OMemStream o;
 		o << "Device " << d_name << " not found" << ends;
-		Except::throw_exception((const char *)"API_DeviceNotFound",
+		Except::throw_exception((const char *)API_DeviceNotFound,
 				        o.str(),
 				        (const char *)"Dserver::restart()");
 	}
@@ -981,7 +981,7 @@ void DServer::restart(string &d_name)
 		cout3 << "Not able to find the new device" << endl;
 		TangoSys_OMemStream o;
 		o << "Not able to find the new device" << ends;
-		Except::throw_exception((const char *)"API_DeviceNotFound",
+		Except::throw_exception((const char *)API_DeviceNotFound,
 			        	o.str(),
 			        	(const char *)"Dserver::restart()");
 	}
@@ -1171,7 +1171,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Class " << class_name << " not found in device server" << ends;
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::query_class_prop");
 	}
 
@@ -1195,7 +1195,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DServer::query_class_prop");
 	}
@@ -1241,7 +1241,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Class " << class_name << " not found in device server" << ends;
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::query_dev_prop");
 	}
 
@@ -1265,7 +1265,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DServer::query_dev_prop");
 	}
@@ -1350,7 +1350,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << str << ends;
 		::LocalFree((HLOCAL)str);
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
@@ -1368,7 +1368,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		TangoSys_OMemStream o;
 		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << ends;
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 	cout4 << "GetProcAddress is a success" << endl;
@@ -1384,7 +1384,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		TangoSys_OMemStream o;
 		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << dlerror() << ends;
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
@@ -1404,7 +1404,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		TangoSys_OMemStream o;
 		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << ends;
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
@@ -1449,7 +1449,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 			TangoSys_OMemStream o;
 			o << "Database error while trying to retrieve device properties for device " << device_name.c_str() << ends;
 
-			Except::throw_exception((const char *)"API_DatabaseAccess",
+			Except::throw_exception((const char *)API_DatabaseAccess,
 					o.str(),
 					(const char *)"DServer::get_dev_prop");
 		}
@@ -1535,7 +1535,7 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 					o << "Device " << dev_name << " is locked by another client.";
 					o << " Your request is not allowed while a device is locked." << ends;
 					v << "DServer::" << cmd_name << ends;
-					Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
+					Except::throw_exception((const char *)API_DeviceLocked,o.str(),v.str());
 				}
 			}
 			else
@@ -1544,7 +1544,7 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 				o << "Device " << dev_name << " is locked by another client.";
 				o << " Your request is not allowed while a device is locked." << ends;
 				v << "DServer::" << cmd_name << ends;
-				Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
+				Except::throw_exception((const char *)API_DeviceLocked,o.str(),v.str());
 			}
 		}
 	}

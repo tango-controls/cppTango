@@ -501,7 +501,7 @@ void PollRing::get_delta_t(vector<double> &res,long nb)
 
 	if (nb_elt < 2)
 	{
-		Except::throw_exception((const char *)"API_PollRingBufferEmpty",
+		Except::throw_exception((const char *)API_PollRingBufferEmpty,
 				        (const char *)"Not enough data stored yet in polling ring buffer",
 				        (const char *)"PollRing::get_delta_t");
 	}

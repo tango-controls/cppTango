@@ -1130,7 +1130,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	{
 	    string reason(e.errors[0].reason.in());
 		// if the stateless flag is not true, rethrow the exception
-		if ((stateless == false) || (reason == "API_CommandNotFound"))
+		if ((stateless == false) || (reason == API_CommandNotFound))
 		{
 			throw;
 		}
@@ -1277,7 +1277,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 			o << "Can't subscribe to event for device " << device_name << "\n";
 			o << "Check that device server is running..." << ends;
-			Except::throw_exception((const char *)"API_BadConfigurationProperty",
+			Except::throw_exception((const char *)API_BadConfigurationProperty,
 				       	 	o.str(),
 				         	(const char *)"EventConsumer::connect_event()");
 		}
@@ -1290,7 +1290,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 			o << "Can't subscribe to event for device " << device_name << "\n";
 			o << "Corrupted internal map. Please report bug" << ends;
-			Except::throw_exception((const char *)"API_BadConfigurationProperty",
+			Except::throw_exception((const char *)API_BadConfigurationProperty,
 									o.str(),
 									(const char *)"EventConsumer::connect_event()");
 		}
@@ -1345,7 +1345,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		if (allocated == true)
 			delete adm_dev;
         string reason(e.errors[0].reason.in());
-        if (reason == "API_CommandNotFound")
+        if (reason == API_CommandNotFound)
             throw;
         else
             EventSystemExcept::re_throw_exception(e,(const char*)"API_DSFailedRegisteringEvent",
@@ -1383,7 +1383,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 
 			o << "Failed to connect to event channel for device " << device_name << ends;
-			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        				o.str(),
                        				(const char*)"EventConsumer::connect_event()");
 		}
@@ -1465,7 +1465,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
         TangoSys_OMemStream o;
         o << "Failed to connect to event channel for device " << device_name
           << "\nCorrupted internal map: event callback already exists. Please report bug!" << ends;
-        EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+        EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                                 o.str(),
                                 (const char*)"EventConsumer::connect_event()");
     }
@@ -1811,7 +1811,7 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 					        o.str(),
 					        (const char *)"EventConsumer::get_events()");
 				}
@@ -1843,7 +1843,7 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::get_events()");
 				}
@@ -1904,7 +1904,7 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 					        o.str(),
 					        (const char *)"EventConsumer::get_events()");
 				}
@@ -1936,7 +1936,7 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::get_events()");
 				}
@@ -1983,7 +1983,7 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 					        o.str(),
 					        (const char *)"EventConsumer::get_events()");
 				}
@@ -2015,7 +2015,7 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::get_events()");
 				}
@@ -2077,7 +2077,7 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 					        o.str(),
 					        (const char *)"EventConsumer::get_events()");
 				}
@@ -2109,7 +2109,7 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::get_events()");
 				}
@@ -2164,7 +2164,7 @@ int  EventConsumer::event_queue_size(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 					        o.str(),
 					        (const char *)"EventConsumer::event_queue_size()");
 				}
@@ -2196,7 +2196,7 @@ int  EventConsumer::event_queue_size(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::event_queue_size()");
 				}
@@ -2256,7 +2256,7 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 					        o.str(),
 					        (const char *)"EventConsumer::is_event_queue_empty()");
 				}
@@ -2287,7 +2287,7 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::is_event_queue_empty()");
 				}
@@ -2347,7 +2347,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        	o.str(),
 				        	(const char *)"EventConsumer::get_last_event_date()");
 				}
@@ -2378,7 +2378,7 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 					TangoSys_OMemStream o;
 					o << "No event queue specified during subscribe_event()\n";
 					o << "Cannot return any event data" << ends;
-					EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+					EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventConsumer::get_last_event_date()");
 				}
@@ -2612,7 +2612,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
                     TangoSys_OMemStream o;
                     o << "Can't unsubscribe to event with id " << event_id << "\n";
                     o << "Corrupted internal map. Please report bug" << ends;
-                    Except::throw_exception((const char *)"API_BadConfigurationProperty",
+                    Except::throw_exception((const char *)API_BadConfigurationProperty,
 									o.str(),
 									(const char *)"EventConsumer::get_event_system_for_event_id()");
                 }

@@ -269,7 +269,7 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 	{
 		TangoSys_OMemStream o;
 		o << "Signal number " << signo << " out of range" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				        o.str(),
 				        (const char *)"DServerSignal::register_class_signal");
 	}
@@ -278,7 +278,7 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 	{
 		TangoSys_OMemStream o;
 		o << "Signal " << sig_name[signo] << "is not authorized with your OS" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				        o.str(),
 				        (const char *)"DServerSignal::register_class_signal");
 	}
@@ -288,7 +288,7 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 	{
 		TangoSys_OMemStream o;
 		o << "Signal " << sig_name[signo] << "is not authorized using your own handler" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				        o.str(),
 				        (const char *)"DServerSignal::register_class_signal");
 	}
@@ -379,7 +379,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 	{
 		TangoSys_OMemStream o;
 		o << "Signal number " << signo << " out of range" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				      o.str(),
 				      (const char *)"DServerSignal::register_dev_signal");
 	}
@@ -388,7 +388,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 	{
 		TangoSys_OMemStream o;
 		o << "Signal " << sig_name[signo] << "is not authorized with your OS" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				      o.str(),
 				      (const char *)"DServerSignal::register_dev_signal");
 	}
@@ -398,7 +398,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 	{
 		TangoSys_OMemStream o;
 		o << "Signal " << sig_name[signo] << "is not authorized using your own handler" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				        o.str(),
 				        (const char *)"DServerSignal::register_class_signal");
 	}
@@ -486,7 +486,7 @@ void DServerSignal::unregister_class_signal(long signo,DeviceClass *cl_ptr)
 	{
 		TangoSys_OMemStream o;
 		o << "Signal number " << signo << " out of range" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				      o.str(),
 				      (const char *)"DServerSignal::register_proc_signal");
 	}
@@ -539,7 +539,7 @@ void DServerSignal::unregister_dev_signal(long signo,DeviceImpl *dev_ptr)
 	{
 		TangoSys_OMemStream o;
 		o << "Signal number " << signo << " out of range" << ends;
-		Except::throw_exception((const char *)"API_SignalOutOfRange",
+		Except::throw_exception((const char *)API_SignalOutOfRange,
 				      o.str(),
 				      (const char *)"DServerSignal::register_proc_signal");
 	}
@@ -685,7 +685,7 @@ void DServerSignal::register_handler(long signo,bool handler)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't install signal " << signo << ". OS error = " << errno << ends;
-		Except::throw_exception((const char *)"API_CantInstallSignal",
+		Except::throw_exception((const char *)API_CantInstallSignal,
 				      o.str(),
 				      (const char *)"DServerSignal::register_handler");
 	}
@@ -701,7 +701,7 @@ void DServerSignal::register_handler(long signo,bool handler)
 		{
 			TangoSys_OMemStream o;
 			o << "Can't install signal " << signo << ". OS error = " << errno << ends;
-			Except::throw_exception((const char *)"API_CantInstallSignal",
+			Except::throw_exception((const char *)API_CantInstallSignal,
 				     		o.str(),
 				      		(const char *)"DServerSignal::register_handler");
 		}
@@ -716,7 +716,7 @@ void DServerSignal::register_handler(long signo,bool handler)
 		{
 			TangoSys_OMemStream o;
 			o << "Can't install signal " << signo << ". OS error = " << errno << ends;
-			Except::throw_exception((const char *)"API_CantInstallSignal",
+			Except::throw_exception((const char *)API_CantInstallSignal,
 				     		o.str(),
 				      		(const char *)"DServerSignal::register_handler");
 		}
@@ -764,7 +764,7 @@ void DServerSignal::unregister_handler(long signo)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't install signal " << signo << ". OS error = " << errno << ends;
-		Except::throw_exception((const char *)"API_CantInstallSignal",
+		Except::throw_exception((const char *)API_CantInstallSignal,
 				      o.str(),
 				      (const char *)"DServerSignal::register_handler");
 	}
@@ -782,7 +782,7 @@ void DServerSignal::unregister_handler(long signo)
 		{
 			TangoSys_OMemStream o;
 			o << "Can't install signal " << signo << ". OS error = " << errno << ends;
-			Except::throw_exception((const char *)"API_CantInstallSignal",
+			Except::throw_exception((const char *)API_CantInstallSignal,
 				      		o.str(),
 				     		 (const char *)"DServerSignal::register_handler");
 		}

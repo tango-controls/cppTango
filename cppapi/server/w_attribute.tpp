@@ -68,7 +68,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
+		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::set_min_value()");
 	}
@@ -212,7 +212,7 @@ template <>
 inline void WAttribute::set_min_value(const Tango::DevEncoded &)
 {
 	string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
-	Except::throw_exception((const char *)"API_MethodArgument",
+	Except::throw_exception((const char *)API_MethodArgument,
 				  (const char *)err_msg.c_str(),
 				  (const char *)"WAttribute::set_min_value()");
 }
@@ -407,14 +407,14 @@ void WAttribute::get_min_value(T &min_val)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
+		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::get_min_value()");
 	}
 
 	if (check_min_value == false)
 	{
-		Except::throw_exception((const char *)"API_AttrNotAllowed",
+		Except::throw_exception((const char *)API_AttrNotAllowed,
 					(const char *)"Minimum value not defined for this attribute",
 					(const char *)"WAttribute::get_min_value()");
 	}
@@ -452,7 +452,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
+		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::set_max_value()");
 	}
@@ -596,7 +596,7 @@ template <>
 inline void WAttribute::set_max_value(const Tango::DevEncoded &)
 {
 	string err_msg = "Attribute properties cannot be set with Tango::DevEncoded data type";
-	Except::throw_exception((const char *)"API_MethodArgument",
+	Except::throw_exception((const char *)API_MethodArgument,
 				  (const char *)err_msg.c_str(),
 				  (const char *)"WAttribute::set_max_value()");
 }
@@ -791,14 +791,14 @@ void WAttribute::get_max_value(T &max_val)
 		(data_type != ranges_type2const<T>::enu))
 	{
 		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
-		Except::throw_exception((const char *)"API_IncompatibleAttrDataType",
+		Except::throw_exception((const char *)API_IncompatibleAttrDataType,
 					  (const char *)err_msg.c_str(),
 					  (const char *)"WAttribute::get_max_value()");
 	}
 
 	if (check_max_value == false)
 	{
-		Except::throw_exception((const char *)"API_AttrNotAllowed",
+		Except::throw_exception((const char *)API_AttrNotAllowed,
 					(const char *)"Minimum value not defined for this attribute",
 					(const char *)"WAttribute::get_max_value()");
 	}

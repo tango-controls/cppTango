@@ -155,7 +155,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_AttrNotPolled",
+		Except::throw_exception((const char *)API_AttrNotPolled,
 						o.str(),
 						(const char *)"Device_4Impl::read_attribute_history_4");
 	}
@@ -168,7 +168,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for attribute " << attr_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 						o.str(),
 						(const char *)"Device_4Impl::read_attribute_history_4");
 	}
@@ -192,7 +192,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 					        (const char *)"Can't allocate memory in server",
 					        (const char *)"Device_4Impl::read_attribute_history_4");
 	}
@@ -303,7 +303,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 	{
 		TangoSys_OMemStream o;
 		o << "Command " << cmd_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_CmdNotPolled",
+		Except::throw_exception((const char *)API_CmdNotPolled,
 					o.str(),
 					(const char *)"Device_4Impl::command_inout_history_4");
 	}
@@ -316,7 +316,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for command " << cmd_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_4Impl::command_inout_history_4");
 	}
@@ -340,7 +340,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_4Impl::command_inout_history_4");
 	}
@@ -362,7 +362,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 		}
 		catch (bad_alloc)
 		{
-			Except::throw_exception((const char *)"API_MemoryAllocation",
+			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
 				        	(const char *)"Device_4Impl::command_inout_history_4");
 		}
@@ -549,7 +549,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_4Impl::read_attributes_4");
 	}
@@ -622,9 +622,9 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
        		if (nb_err != 0)
        		{
        			nb_err--;
-       			if ((strcmp((*back)[i].err_list[nb_err].reason,"API_AttrNotPolled") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NoDataYet") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NotUpdatedAnyMore") == 0) ||
+       			if ((strcmp((*back)[i].err_list[nb_err].reason,API_AttrNotPolled) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NoDataYet) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NotUpdatedAnyMore) == 0) ||
        					(strcmp((*back)[i].err_list[nb_err].origin,"DServer::add_obj_polling") == 0))
        			{
        				nb_attr++;
@@ -790,7 +790,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 		TangoSys_OMemStream o;
 		o << "Attribute " << values[0].name << " is not a READ_WRITE or READ_WITH_WRITE attribute" << ends;
 
-		Except::throw_exception((const char *)"API_AttrNotWritable",o.str(),
+		Except::throw_exception((const char *)API_AttrNotWritable,o.str(),
 								(const char *)"Device_4Impl::write_read_attribute_4");
 	}
 

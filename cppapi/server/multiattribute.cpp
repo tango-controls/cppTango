@@ -147,7 +147,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 				TangoSys_OMemStream o;
 				o << "Can't get device attribute properties for device " << dev_name << ends;
 
-				Except::throw_exception((const char *)"API_DatabaseAccess",
+				Except::throw_exception((const char *)API_DatabaseAccess,
 				                	o.str(),
 				                	(const char *)"MultiAttribute::MultiAttribute");
 			}
@@ -435,7 +435,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "Device --> " << dev_name;
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is defined but this attribute data format is not SCALAR" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}*/
@@ -456,7 +456,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is set to " << assoc_name;
 			o << ", but this attribute does not exists or is not writable" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}
@@ -473,7 +473,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is set to " << assoc_name;
 			o << ", but this attribute is not of the SCALAR data format" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}*/
@@ -490,7 +490,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is set to " << assoc_name;
 			o << ", but these two attributes do not support the same data type" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}
@@ -550,7 +550,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 			TangoSys_OMemStream o;
 			o << "Can't get device attribute properties for device " << dev_name << ends;
 
-			Except::re_throw_exception(e,(const char *)"API_DatabaseAccess",
+			Except::re_throw_exception(e,(const char *)API_DatabaseAccess,
 				       		 o.str(),
 				        	(const char *)"MultiAttribute::add_attribute");
 		}
@@ -827,7 +827,7 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
 		TangoSys_OMemStream o;
 
 		o << attr_name << " attribute not found" << ends;
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				      o.str(),
 				      (const char *)"MultiAttribute::get_attr_by_name");
 	}
@@ -864,7 +864,7 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 		TangoSys_OMemStream o;
 
 		o << attr_name << " writable attribute not found" << ends;
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				      o.str(),
 				      (const char *)"MultiAttribute::get_w_attr_by_name");
 	}
@@ -910,7 +910,7 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
 		TangoSys_OMemStream o;
 
 		o << attr_name << " attribute not found" << ends;
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				      o.str(),
 				      (const char *)"MultiAttribute::get_attr_ind_by_name");
 	}

@@ -65,7 +65,7 @@ void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<De
 		(hist_4->w_dims.length() != hist_4->w_dims_array.length()) ||
 		(hist_4->errors.length() != hist_4->errors_array.length()))
 	{
-		Tango::Except::throw_exception((const char *)"API_WrongHistoryDataBuffer",
+		Tango::Except::throw_exception((const char *)API_WrongHistoryDataBuffer,
 									   (const char *)"Data buffer received from server is not valid !",
 									   (const char *)"DeviceProxy::from_hist4_2_AttHistory");
 	}
@@ -428,7 +428,7 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 	if ((hist_4->dims.length() != hist_4->dims_array.length()) ||
 		(hist_4->errors.length() != hist_4->errors_array.length()))
 	{
-		Tango::Except::throw_exception((const char *)"API_WrongHistoryDataBuffer",
+		Tango::Except::throw_exception((const char *)API_WrongHistoryDataBuffer,
 									   (const char *)"Data buffer received from server is not valid !",
 									   (const char *)"DeviceProxy::from_hist4_2_DataHistory");
 	}

@@ -92,7 +92,7 @@ Tango::DevVarStringArray *DServer::polled_device()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"DServer::polled_device");
 	}
@@ -532,7 +532,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 
 	if ((argin->svalue.length() != 3) || (argin->lvalue.length() != 1))
 	{
-		Except::throw_exception((const char *)"API_WrongNumberOfArgs",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 					(const char *)"Incorrect number of inout arguments",
 					(const char *)"DServer::add_obj_polling");
 	}
@@ -552,7 +552,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		TangoSys_OMemStream o;
 		o << "Device " << (argin->svalue)[0] << " not found" << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+		Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
 				   	   (const char *)"DServer::add_obj_polling");
 	}
 
@@ -588,7 +588,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << "Object type " << obj_type << " not supported" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::add_obj_polling");
 	}
 
@@ -602,7 +602,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		{
 			TangoSys_OMemStream o;
 			o << "It's not possible to poll the Init command!" << ends;
-			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+			Except::throw_exception((const char *)API_NotSupported,o.str(),
 						(const char *)"DServer::add_obj_polling");
 		}
 
@@ -635,7 +635,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 				else
 					o << "Attribute ";
 				o << obj_name << " already polled" << ends;
-				Except::throw_exception((const char *)"API_AlreadyPolled",
+				Except::throw_exception((const char *)API_AlreadyPolled,
 							o.str(),
 							(const char *)"DServer::add_obj_polling");
 			}
@@ -651,7 +651,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << (argin->lvalue)[0] << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::add_obj_polling");
 	}
 
@@ -756,7 +756,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 
 						mon.signal();
 					}
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 					        		(const char *)"Polling thread blocked !!!",
 					        		(const char *)"DServer::add_obj_polling");
 				}
@@ -965,7 +965,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 
 	if ((argin->svalue.length() != 3) || (argin->lvalue.length() != 1))
 	{
-		Except::throw_exception((const char *)"API_WrongNumberOfArgs",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 					(const char *)"Incorrect number of inout arguments",
 					(const char *)"DServer::upd_obj_polling_period");
 	}
@@ -985,7 +985,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		TangoSys_OMemStream o;
 		o << "Device " << (argin->svalue)[0] << " not found" << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+		Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
 				   	   (const char *)"DServer::upd_obj_polling_period");
 	}
 
@@ -998,7 +998,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		TangoSys_OMemStream o;
 		o << "Device " << (argin->svalue)[0] << " is not polled" << ends;
 
-		Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"DServer::upd_obj_polling_period");
 	}
 
@@ -1039,7 +1039,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << "Object type " << obj_type << " not supported" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling_period");
 	}
 
@@ -1072,7 +1072,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		o << " (device " << (argin->svalue)[0] << ") ";
 		o << " is externally triggered. Remove and add object to change its polling period";
 		o << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling_period");
 	}*/
 
@@ -1084,7 +1084,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << (argin->lvalue)[0] << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling");
 	}
 
@@ -1100,7 +1100,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << (argin->svalue)[0] << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling");
 	}
 
@@ -1258,7 +1258,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
 	if (argin->length() != 3)
 	{
-		Except::throw_exception((const char *)"API_WrongNumberOfArgs",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 					(const char *)"Incorrect number of inout arguments",
 					(const char *)"DServer::rem_obj_polling");
 	}
@@ -1278,7 +1278,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		TangoSys_OMemStream o;
 		o << "Device " << (*argin)[0] << " not found" << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+		Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
 				   	   (const char *)"DServer::rem_obj_polling");
 	}
 
@@ -1291,7 +1291,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		TangoSys_OMemStream o;
 		o << "Device " << (*argin)[0] << " is not polled" << ends;
 
-		Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"DServer::rem_obj_polling");
 	}
 
@@ -1326,7 +1326,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	{
 		TangoSys_OMemStream o;
 		o << "Object type " << obj_type << " not supported" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::rem_obj_polling");
 	}
 
@@ -1347,7 +1347,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		{
 			TangoSys_OMemStream o;
 			o << "Can't find a polling thread for device " << (*argin)[0] << ends;
-			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+			Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"DServer::rem_obj_polling");
 		}
 
@@ -1404,7 +1404,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 						if ((shared_cmd.cmd_pending == true) && (interupted == false))
 						{
 							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)"API_CommandTimedOut",
+							Except::throw_exception((const char *)API_CommandTimedOut,
 										(const char *)"Polling thread blocked !!!",
 										(const char *)"DServer::rem_obj_polling");
 						}
@@ -1581,7 +1581,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		{
 			TangoSys_OMemStream o;
 			o << "Can't find entry for device " << (*argin)[0] << " in polling threads pool configuration !"<< ends;
-			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+			Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"DServer::rem_obj_polling");
 		}
 
@@ -1692,7 +1692,7 @@ void DServer::stop_polling()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 						        	(const char *)"Polling thread blocked !!!",
 						        	(const char *)"DServer::stop_polling");
 				}
@@ -1756,7 +1756,7 @@ void DServer::start_polling()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 						        	(const char *)"Polling thread blocked !!!",
 						        	(const char *)"DServer::start_polling");
 				}
@@ -1796,7 +1796,7 @@ void DServer::start_polling(PollingThreadInfo *th_info)
 			if ((shared_cmd.cmd_pending == true) && (interupted == false))
 			{
 				cout4 << "TIME OUT" << endl;
-				Except::throw_exception((const char *)"API_CommandTimedOut",
+				Except::throw_exception((const char *)API_CommandTimedOut,
 						    (const char *)"Polling thread blocked while trying to start thread polling!!!",
 						    (const char *)"DServer::start_polling");
 			}
@@ -1857,7 +1857,7 @@ void DServer::add_event_heartbeat()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 					        		(const char *)"Polling thread blocked !!!",
 					        		(const char *)"DServer::add_event_heartbeat");
 				}
@@ -1920,7 +1920,7 @@ void DServer::rem_event_heartbeat()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 					        		(const char *)"Polling thread blocked !!!",
 					        		(const char *)"DServer::rem_event_heartbeat");
 				}
@@ -1974,7 +1974,7 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 			else
 				o << "attr_min_poll_period";
 			o << " for device " << dev->get_name() << " has wrong syntax" << ends;
-			Except::throw_exception((const char *)"API_BadConfigurationProperty",
+			Except::throw_exception((const char *)API_BadConfigurationProperty,
 				        			o.str(),
 				        			(const char *)"DServer::check_upd_uthorized()");
 		}
@@ -1997,7 +1997,7 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 		else
 			o << "attribute ";
 		o << obj_name << " is below the min authorized (" << min_upd << ")" << ends;
-		Except::throw_exception((const char *)"API_MethodArgument",o.str(),
+		Except::throw_exception((const char *)API_MethodArgument,o.str(),
 					(const char *)"DServer::check_upd_authorized");
 	}
 

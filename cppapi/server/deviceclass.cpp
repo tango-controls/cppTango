@@ -167,7 +167,7 @@ void DeviceClass::get_class_system_resource()
 			TangoSys_OMemStream o;
 			o << "Database error while trying to retrieve properties for class " << name.c_str() << ends;
 
-			Except::throw_exception((const char *)"API_DatabaseAccess",
+			Except::throw_exception((const char *)API_DatabaseAccess,
 					o.str(),
 					(const char *)"DeviceClass::get_class_system_resource");
 		}
@@ -199,7 +199,7 @@ void DeviceClass::get_class_system_resource()
 				TangoSys_OMemStream o;
 				o << "Database error while trying to retrieve properties for class " << name.c_str() << ends;
 
-				Except::throw_exception((const char *)"API_DatabaseAccess",
+				Except::throw_exception((const char *)API_DatabaseAccess,
 							o.str(),
 							(const char *)"DeviceClass::get_class_system_resource");
 			}
@@ -629,7 +629,7 @@ void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 	o << dev->get_name();
 	o << ") is in an incorrect format !" << ends;
 
-	Except::throw_exception((const char *)"API_AttrWrongMemValue",
+	Except::throw_exception((const char *)API_AttrWrongMemValue,
 				o.str(),
 				(const char *)"DeviceClass::set_memorized_values");
 }
@@ -947,7 +947,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		{
 			TangoSys_OMemStream o;
 			o << "Cant get CORBA reference Id for device " << dev->get_name() << ends;
-			Except::throw_exception((const char *)"API_CantGetDevObjectId",
+			Except::throw_exception((const char *)API_CantGetDevObjectId,
 							o.str(),
 							(const char *)"DeviceClass::export_device");
 		}
@@ -1086,7 +1086,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			{
 				TangoSys_OMemStream o;
 				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
-				Except::throw_exception((const char *)"API_CommandNotAllowed",
+				Except::throw_exception((const char *)API_CommandNotAllowed,
 						      o.str(),
 						      (const char *)"DeviceClass::command_handler");
 			}
@@ -1130,7 +1130,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			{
 				TangoSys_OMemStream o;
 				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
-				Except::throw_exception((const char *)"API_CommandNotAllowed",
+				Except::throw_exception((const char *)API_CommandNotAllowed,
 						o.str(),
 						(const char *)"DeviceClass::command_handler");
 			}
@@ -1153,7 +1153,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			TangoSys_OMemStream o;
 
 			o << "Command " << command << " not found" << ends;
-			Except::throw_exception((const char *)"API_CommandNotFound",
+			Except::throw_exception((const char *)API_CommandNotFound,
 					      o.str(),
 					      (const char *)"DeviceClass::command_handler");
 		}
@@ -1319,7 +1319,7 @@ void DeviceClass::device_destroyer(const string &dev_name)
 		TangoSys_OMemStream o;
 		o << "Device " << dev_name << " not in Tango class device list!" << ends;
 
-		Tango::Except::throw_exception((const char *)"API_CantDestroyDevice",o.str(),
+		Tango::Except::throw_exception((const char *)API_CantDestroyDevice,o.str(),
 							(const char *)"DeviceClass::device_destroyer");
 	}
 
@@ -1445,7 +1445,7 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 		TangoSys_OMemStream o;
 
 		o << cmd_name << " command not found" << ends;
-		Except::throw_exception((const char *)"API_CommandNotFound",
+		Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DeviceClass::get_cmd_by_name");
 	}

@@ -172,7 +172,7 @@ void Command::throw_bad_type(const char *type)
 	TangoSys_OMemStream o;
 
 	o << "Incompatible command argument type, expected type is : Tango::" << type << ends;
-	Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+	Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 			      o.str(),
 			      (const char *)"Command::extract()");
 }
@@ -344,7 +344,7 @@ void Command::alloc_any(CORBA::Any *&any_ptr)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"Command::alloc_any()");
 	}
@@ -1021,7 +1021,7 @@ void TemplCommand::set_type(const type_info &data_type,Tango::CmdArgType &type)
 		TangoSys_OMemStream o;
 
 		o << "Command " << name << " defined with an unsupported type"  << ends;
-		Except::throw_exception((const char *)"API_CmdArgumentTypeNotSupported",
+		Except::throw_exception((const char *)API_CmdArgumentTypeNotSupported,
 				      o.str(),(const char *)"TemplCommand::set_type");
 	}
 }

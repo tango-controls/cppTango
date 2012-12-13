@@ -133,7 +133,7 @@ void AttributeProxy::real_constructor (string &name)
 		delete db_attr;
 		delete dev_proxy;
 
-		if (strcmp(dfe.errors[0].reason.in(),"API_AttrNotFound") == 0)
+		if (strcmp(dfe.errors[0].reason.in(),API_AttrNotFound) == 0)
 		{
 			TangoSys_OMemStream desc;
 			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
@@ -213,7 +213,7 @@ void AttributeProxy::ctor_from_dp(const DeviceProxy *dev_ptr,string &att_name)
 		delete db_attr;
 		delete dev_proxy;
 
-		if (strcmp(dfe.errors[0].reason.in(),"API_AttrNotFound") == 0)
+		if (strcmp(dfe.errors[0].reason.in(),API_AttrNotFound) == 0)
 		{
 			TangoSys_OMemStream desc;
 			desc << "Attribute " << attr_name << " is not supported by device " << device_name << ends;
@@ -496,7 +496,7 @@ void AttributeProxy::parse_name(string &full_name)
 		pos = name_wo_db_mod.find(HOST_SEP);
 		if (pos == string::npos)
 		{
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 						(const char*)"Host and port not correctly defined in device name",
 						(const char*)"AttributeProxy::parse_name()");
 		}
@@ -505,7 +505,7 @@ void AttributeProxy::parse_name(string &full_name)
 		string::size_type tmp = name_wo_db_mod.find(PORT_SEP);
 		if (tmp == string::npos)
 		{
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 						(const char*)"Host and port not correctly defined in device name",
 						(const char*)"AttributeProxy::parse_name()");
 		}
@@ -578,7 +578,7 @@ void AttributeProxy::parse_name(string &full_name)
 		{
 			if (pos == 0)
 			{
-				ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 				(const char*)"Attribute name must have four fields separated by /'s or no /'s at all if it is an alias (e.g. my/device/name/an_attr or myalias)",
 				(const char*)"AttributeProxy::parse_name()");
 			}
@@ -586,7 +586,7 @@ void AttributeProxy::parse_name(string &full_name)
 			device_name_tmp = device_name_tmp.substr(pos+1);
 			if (device_name_tmp.size() == 0)
 			{
-				ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 				(const char*)"Attribute name must have four fields separated by /'s or no /'s at all if it is an alias (e.g. my/device/name/an_attr or myalias)",
 				(const char*)"AttributeProxy::parse_name()");
 			}
@@ -597,7 +597,7 @@ void AttributeProxy::parse_name(string &full_name)
 
 	if ((n_sep > 1) && (n_sep != 3))
 	{
-		ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+		ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 			(const char*)"Attribute name must have four fields separated by /'s or no /'s at all if it is an alias (e.g. my/device/name/an_attr or myalias)",
 			(const char*)"AttributeProxy::parse_name()");
 	}
@@ -611,7 +611,7 @@ void AttributeProxy::parse_name(string &full_name)
 	{
 		if (dbase_used == false)
 		{
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongAttributeNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongAttributeNameSyntax,
 						(const char *)"Attribute alias is not supported when not using database",
 						(const char *)"AttributeProxy::parse_name()");
 		}
@@ -623,7 +623,7 @@ void AttributeProxy::parse_name(string &full_name)
 		pos = device_name.find(HOST_SEP);
 		if (pos != string::npos)
 		{
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongAttributeNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongAttributeNameSyntax,
 			(const char *)"Wrong alias name (: not allowed in alias name)",
 			(const char *)"AttributeProxy::parse_name()");
 		}
@@ -631,7 +631,7 @@ void AttributeProxy::parse_name(string &full_name)
 		pos = device_name.find(RES_SEP);
 		if (pos != string::npos)
 		{
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongAttributeNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongAttributeNameSyntax,
 			(const char *)"Wrong alias name (-> not allowed in alias name)",
 			(const char *)"DeviceProxy::parse_name()");
 		}
@@ -731,7 +731,7 @@ void AttributeProxy::parse_name(string &full_name)
 		if (n_sep != 3)
 		{
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 				(const char*)"Attribute name must have four fields separated by /'s (check the alias entry in the database) ",
 				(const char*)"AttributeProxy::parse_name()");
 		}
@@ -758,7 +758,7 @@ void AttributeProxy::parse_name(string &full_name)
 // but the no dbase option was used. This is an error.
 // We can't have alias without db
 //
-				ApiWrongNameExcept::throw_exception((const char*)"API_WrongAttributeNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char*)API_WrongAttributeNameSyntax,
 					(const char*)"Can't use device or attribute alias without database",
 					(const char*)"AttributeProxy::parse_name()");
 
@@ -874,7 +874,7 @@ void AttributeProxy::get_property(string &property_name, DbData &user_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::get_property");
 	}
@@ -927,7 +927,7 @@ void AttributeProxy::get_property(vector<string> &property_names, DbData &user_d
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::get_property");
 	}
@@ -982,7 +982,7 @@ void AttributeProxy::get_property(DbData &user_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::get_property");
 	}
@@ -1033,7 +1033,7 @@ void AttributeProxy::put_property(DbData &user_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::put_property");
 	}
@@ -1068,7 +1068,7 @@ void AttributeProxy::delete_property(string &property_name)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::delete_property");
 	}
@@ -1101,7 +1101,7 @@ void AttributeProxy::delete_property(vector<string> &property_names)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::delete_property");
 	}
@@ -1137,7 +1137,7 @@ void AttributeProxy::delete_property(DbData &user_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"AttributeProxy::delete_property");
 	}
@@ -1359,7 +1359,7 @@ int AttributeProxy::subscribe_event (EventType event, CallBack *callback,
 	catch (DevFailed &e)
 	{
 	    string reason(e.errors[0].reason.in());
-	    if (reason == "API_CommandNotFound")
+	    if (reason == API_CommandNotFound)
 	    {
             if (ApiUtil::instance()->get_notifd_event_consumer() == NULL)
             {
@@ -1406,7 +1406,7 @@ int AttributeProxy::subscribe_event (EventType event, int event_queue_size,
     catch (DevFailed &e)
     {
         string reason(e.errors[0].reason.in());
-        if (reason == "API_CommandNotFound")
+        if (reason == API_CommandNotFound)
         {
             if (api_ptr->get_notifd_event_consumer() == NULL)
             {

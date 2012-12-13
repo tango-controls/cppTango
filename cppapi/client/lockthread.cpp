@@ -352,8 +352,8 @@ void LockThread::one_more_lock()
 
 		for (unsigned long loop = 0;loop < e.errors.length();loop++)
 		{
-			if ((::strcmp(e.errors[loop].reason.in(),"API_DeviceLocked") == 0) ||
-			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotLocked") == 0) ||
+			if ((::strcmp(e.errors[loop].reason.in(),API_DeviceLocked) == 0) ||
+			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotLocked) == 0) ||
 			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotExported") == 0))
 			{
 				string error_message(e.errors[loop].desc.in());

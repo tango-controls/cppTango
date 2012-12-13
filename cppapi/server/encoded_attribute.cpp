@@ -227,7 +227,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 {
  	if (attr->is_empty())
 	{
-    	Except::throw_exception((const char *)"API_WrongFormat",
+    	Except::throw_exception((const char *)API_WrongFormat,
                             	(const char *)"Attribute contains no data",
                             	(const char *)"EncodedAttribute::decode_gray8");
 	}
@@ -247,7 +247,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 
 	if( !isRGB && !isJPEG )
 	{
-		Except::throw_exception((const char *)"API_WrongFormat",
+		Except::throw_exception((const char *)API_WrongFormat,
                             	(const char *)"Not a color format",
                             	(const char *)"EncodedAttribute::decode_rgb32");
 	}
@@ -305,7 +305,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 		{
 	    	TangoSys_OMemStream o;
 			o << jpeg_get_error_msg(err);
-	    	Except::throw_exception((const char *)"API_DecodeErr",
+	    	Except::throw_exception((const char *)API_DecodeErr,
                               	o.str(),
                               (const char *)"EncodedAttribute::decode_rgb32");
 		}
@@ -313,7 +313,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 		if( jFormat==JPEG_GRAY_FORMAT )
 		{
       		// Should not happen
-      		Except::throw_exception((const char *)"API_WrongFormat",
+      		Except::throw_exception((const char *)API_WrongFormat,
                               		(const char *)"Not a color format",
                               		(const char *)"EncodedAttribute::decode_rgb32");
 		}
@@ -329,7 +329,7 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 
  	if (attr->is_empty())
 	{
-    	Except::throw_exception((const char *)"API_WrongFormat",
+    	Except::throw_exception((const char *)API_WrongFormat,
                             	(const char *)"Attribute contains no data",
                             	(const char *)"EncodedAttribute::decode_gray8");
 	}
@@ -349,7 +349,7 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 
 	if( !isGrey && !isJPEG )
 	{
-		Except::throw_exception((const char *)"API_WrongFormat",
+		Except::throw_exception((const char *)API_WrongFormat,
                             	(const char *)"Not a grayscale 8bit format",
                             	(const char *)"EncodedAttribute::decode_gray8");
 	}
@@ -394,7 +394,7 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 		{
 	    	TangoSys_OMemStream o;
 			o << jpeg_get_error_msg(err);
-	    	Except::throw_exception((const char *)"API_DecodeErr",
+	    	Except::throw_exception((const char *)API_DecodeErr,
                               		o.str(),
                               		(const char *)"EncodedAttribute::decode_gray8");
 
@@ -403,7 +403,7 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
     	if( jFormat!=JPEG_GRAY_FORMAT )
 		{
       // Should not happen
-      		Except::throw_exception((const char *)"API_WrongFormat",
+      		Except::throw_exception((const char *)API_WrongFormat,
                               (const char *)"Not a grayscale 8bit format",
                               (const char *)"EncodedAttribute::decode_gray8");
     	}
@@ -420,7 +420,7 @@ void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *heigh
 
  	if (attr->is_empty())
 	{
-    	Except::throw_exception((const char *)"API_WrongFormat",
+    	Except::throw_exception((const char *)API_WrongFormat,
                             	(const char *)"Attribute contains no data",
                             	(const char *)"EncodedAttribute::decode_gray16");
 	}
@@ -439,7 +439,7 @@ void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *heigh
 
 	if( !isGrey )
 	{
-    	Except::throw_exception((const char *)"API_WrongFormat",
+    	Except::throw_exception((const char *)API_WrongFormat,
                             	(const char *)"Not a grayscale 16 bits format",
                             	(const char *)"EncodedAttribute::decode_gray16");
 	}

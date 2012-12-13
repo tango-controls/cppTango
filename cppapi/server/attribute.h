@@ -2303,7 +2303,7 @@ inline void Attribute::throw_hard_coded_prop(const char *prop_name)
     TangoSys_OMemStream desc;
     desc << "Attribute property " << prop_name << " is not changeable at run time" << ends;
 
-    Except::throw_exception((const char *)"API_AttrNotAllowed",desc.str(),
+    Except::throw_exception((const char *)API_AttrNotAllowed,desc.str(),
 				      	  (const char *)"Attribute::check_hard_coded_properties()");
 }
 
@@ -2369,7 +2369,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 
 		err_msg += "\nHint : Check also class level attribute properties";
 
-		Except::throw_exception("API_AttrConfig",err_msg,origin);
+		Except::throw_exception(API_AttrConfig,err_msg,origin);
 	}
 }
 

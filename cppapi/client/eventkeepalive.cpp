@@ -310,13 +310,13 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
   	}
 	catch (CORBA::COMM_FAILURE &)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught CORBA::COMM_FAILURE exception while creating event filter (check filter)",
                        	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
   	}
 	catch (...)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while creating event filter (check filter)",
                        	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
   	}
@@ -367,7 +367,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 		catch (...) { }
 
     	filter = CosNotifyFilter::Filter::_nil();
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while creating event filter (check filter)",
                        	(const char*)"EventConsumerKeepAliveThread::re_subscribe_event()");
   	}
@@ -561,7 +561,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					catch (Tango::DevFailed &e)
 					{
 					    string reason(e.errors[0].reason.in());
-					    if (reason == "API_CommandNotFound")
+					    if (reason == API_CommandNotFound)
 					    {
                             try
                             {
@@ -693,7 +693,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 							catch (Tango::DevFailed &e)
 							{
 							    string reason(e.errors[0].reason.in());
-							    if (reason == "API_CommandNotFound")
+							    if (reason == API_CommandNotFound)
                                 {
 
 //

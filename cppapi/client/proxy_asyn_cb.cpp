@@ -1012,7 +1012,7 @@ void Connection::get_asynch_replies(long call_timeout)
 			{
 				TangoSys_OMemStream desc;
 				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
-				ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+				ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"Connection::get_asynch_replies");
 			}

@@ -1261,7 +1261,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         o << "ZMQ error code = " << e.num() << "\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_channel");
     }
@@ -1282,7 +1282,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_channel");
     }
@@ -1383,7 +1383,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event_channel");
     }
@@ -1404,7 +1404,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event_channel");
     }
@@ -1473,7 +1473,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name)
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event");
     }
@@ -1494,7 +1494,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name)
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event");
     }
@@ -1651,7 +1651,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_system");
     }
@@ -1672,7 +1672,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
         o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_system");
     }
@@ -1991,7 +1991,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     o << ev_name << ends;
 
                     errors.length(1);
-                    errors[0].reason = "API_WrongEventData";
+                    errors[0].reason = API_WrongEventData;
                     errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                     errors[0].desc = CORBA::string_dup(o.str().c_str());
                     errors[0].severity = ERR;
@@ -2020,7 +2020,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2051,7 +2051,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                         o << ev_name << ends;
 
                         errors.length(1);
-                        errors[0].reason = "API_WrongEventData";
+                        errors[0].reason = API_WrongEventData;
                         errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                         errors[0].desc = CORBA::string_dup(o.str().c_str());
                         errors[0].severity = ERR;
@@ -2076,7 +2076,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2099,7 +2099,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2122,7 +2122,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2148,7 +2148,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 {
                     DevErrorList missed_errors;
                     missed_errors.length(1);
-                    missed_errors[0].reason = "API_MissedEvents";
+                    missed_errors[0].reason = API_MissedEvents;
                     missed_errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                     missed_errors[0].desc = "Missed some events! Zmq queue has reached HWM?";
                     missed_errors[0].severity = ERR;
@@ -2378,7 +2378,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 }
 
                 string reason = e.errors[0].reason.in();
-                if (reason == "API_CommandTimedOut")
+                if (reason == API_CommandTimedOut)
 				{
                     string st("Tango::ZmqEventConsumer::push_structured_event() timeout on callback monitor of ");
 					st = st + ipos->first;
@@ -2731,7 +2731,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             o << "Error while communicating with the ZMQ main thread\n";
             o << "ZMQ message: " << e.what() << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::DelayEvent");
         }
@@ -2754,7 +2754,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             o << "Error while asking the ZMQ thread to delay events\n";
             o << "ZMQ message: " << err_mess << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::DelayEvent");
         }
@@ -2811,7 +2811,7 @@ void DelayEvent::release()
             o << "Error while communicating with the ZMQ main thread\n";
             o << "ZMQ message: " << e.what() << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::release");
         }
@@ -2832,7 +2832,7 @@ void DelayEvent::release()
             o << "Error while trying to ask the ZMQ thread to release events\n";
             o << "ZMQ message: " << err_mess << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::release");
         }

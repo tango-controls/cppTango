@@ -99,7 +99,7 @@ void W32Win::RegisterTangoClass(HINSTANCE hInstance)
 	ATOM at = RegisterClass(&wc);
 	if (at == 0)
 	{
-                Except::throw_exception((LPCSTR)"API_NtDebugWindowError",
+                Except::throw_exception((LPCSTR)API_NtDebugWindowError,
 				      (LPCSTR)"Can't register class for server main output window",
                                       (LPCSTR)"W32Win::RegisterTangoClass");
 	}
@@ -128,7 +128,7 @@ void W32Win::InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	if (!hWnd)
 	{
-                Except::throw_exception((LPCSTR)"API_NtDebugWindowError",
+                Except::throw_exception((LPCSTR)API_NtDebugWindowError,
 				      (LPCSTR)"Can't create main device server window",
                                       (LPCSTR)"W32Win::InitInstance");
 
