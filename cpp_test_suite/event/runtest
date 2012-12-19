@@ -259,10 +259,10 @@ $DIR/event_lock $DEV1
 ret=$?
 check_return_value $ret
 #
-#$echo "\nTesting server_event"
-#$DIR/server_event $DEV1
-#ret=$?
-#check_return_value $ret
+$echo "\nTesting server_event"
+$DIR/server_event $DEV1 $DEV20
+ret=$?
+check_return_value $ret
 #
 
 #

@@ -19,17 +19,17 @@ int main(int argc, char **argv)
 {
 	DeviceProxy *device;
 	
-	if (argc == 1)
+	if (argc < 3 || argc > 4)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s local_device remote_device [-v]" << endl;
 		exit(-1);
 	}
 
 	string device_name = argv[1];
 
-	if (argc == 3)
+	if (argc == 4)
 	{
-		if (strcmp(argv[2],"-v") == 0)
+		if (strcmp(argv[3],"-v") == 0)
 			verbose = true;
 	}
 	
@@ -52,7 +52,17 @@ int main(int argc, char **argv)
 // Ask the device server to subscribe to an event
 //
 
-		device->command_inout("IOSubscribeEvent");
+		vector<string> vs;
+		vs.push_back(argv[2]);
+		vs.push_back("Short_attr");
+		vs.push_back("periodic");
+
+		DeviceData dd_in,dd_out;
+		dd_in << vs;
+		dd_out = device->command_inout("IOSubscribeEvent",dd_in);
+		int eve_id;
+		dd_out >> eve_id;
+
 		cout << "   Server subscribe to event --> OK" << endl;
 
 //
@@ -76,7 +86,10 @@ int main(int argc, char **argv)
 // Ask server to unsubsribe from event
 //
 
-		device->command_inout("IOUnSubscribeEvent");
+		DeviceData dd_un;
+		dd_un << eve_id;
+
+		device->command_inout("IOUnSubscribeEvent",dd_un);
 		da = device->command_inout("IOGetCbExecuted");
 		da >> cb;
 		
