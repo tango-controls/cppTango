@@ -41,8 +41,10 @@
 #
 #######################################################################################################################
 
-EXCLUDE_FILES = 64.cpp helper.cpp
-#COMPILE_FILES = cxx_mem_attr.cpp
+EXCLUDE_FILES = 64.cpp helper.cpp cxx_mcast_simple.cpp cxx_mcast_local_remote.cpp cxx_svr_mcast_local_remote.cpp
+#COMPILE_FILES = server_event.cpp
+#COMPILE_FILES= cxx_mcast_simple.cpp cxx_mcast_local_remote.cpp cxx_svr_mcast_local_remote.cpp
+#COMPILE_FILES = cxx_mcast_simple.cpp
 
 OS_DIR = ubuntu1204
 
@@ -53,3 +55,6 @@ TANGO_LIB_DIR = $(TANGO_BASE)/../install/$(OS_DIR)/lib/debug
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(OS_DIR)
 LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(OS_DIR)
 ZMQ_BASE = /segfs/tango/transport/zmq/$(OS_DIR)
+#ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(OS_DIR)
+
+

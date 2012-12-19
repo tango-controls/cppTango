@@ -199,7 +199,7 @@ int main(int argc, char **argv)
 		dd << d_state;
 		device->command_inout("IOState",dd);
 		
-		Tango_sleep(1.5);
+		Tango_sleep(2);
 		
 		assert (cb.cb_executed == 3);
 		assert (cb.cb_err == 0);
@@ -256,7 +256,7 @@ int main(int argc, char **argv)
 		dd << d_state;
 		device->command_inout("IOState",dd);
 		
-		Tango_sleep(1.5);
+		Tango_sleep(2);
 
 		string::size_type pos = cb.status.find("ON");		
 		assert (cb.cb_executed == 3);

@@ -60,7 +60,7 @@ int main(int argc, char **argv)
 		DeviceData dd_in,dd_out;
 		dd_in << vs;
 		dd_out = device->command_inout("IOSubscribeEvent",dd_in);
-		int eve_id;
+		DevLong eve_id;
 		dd_out >> eve_id;
 
 		cout << "   Server subscribe to event --> OK" << endl;
