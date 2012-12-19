@@ -10,8 +10,6 @@ class EventCallBack : public Tango::CallBack
 public:
 	int cb_executed;
 	int cb_err;
-	int old_sec,old_usec;
-	int delta_msec;
 };
 
 #ifndef COMPAT
