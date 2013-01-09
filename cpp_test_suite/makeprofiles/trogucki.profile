@@ -42,10 +42,10 @@
 #######################################################################################################################
 
 EXCLUDE_FILES = cxx_attprop.cpp #att_conf.cpp #64.cpp helper.cpp cxx_group.cpp
-COMPILE_FILES = cxx_just_test.cpp #cxx_param_test.cpp # #cxx_blackbox.cpp #cxx_syntax.cpp cxx_attr.cpp #cxx_attprop.cpp
+COMPILE_FILES = cxx_attrprop.cpp #cxx_mcast_simple.cpp #attr_misc.cpp cxx_just_test.cpp #cxx_param_test.cpp # #cxx_blackbox.cpp #cxx_syntax.cpp cxx_attr.cpp #cxx_attprop.cpp
 #SORT_ALPHABETICALLY_CXX = TRUE
 ALWAYS_RECOMPILE_CXX = true
-TEST_DIRS = new_tests
+TEST_DIRS = new_tests old_tests
 
 BIN_DIR = bin
 OBJ_DIR = obj

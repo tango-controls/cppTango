@@ -190,7 +190,7 @@ To declare an argument and obtain its value use the following methods, e.g.:
   
 - std::string my_param_value = CxxTest::TangoPrinter::get_param("my_param");
 
-  this will declare a mandatory, predefined parameter (see the listed below); predefined parameters are those which are
+  this will declare a mandatory, predefined parameter (see the list below); predefined parameters are those which are
   common for different test suites and therefore have been treated in a different way then uargs;
   the params in the code are defined by the 'param_name' and provided by the user in the command line as
   '--param_name=param_value';
@@ -211,6 +211,13 @@ To declare an argument and obtain its value use the following methods, e.g.:
 !! -- NB -- !!
 Note that 'uargs' have to be provided by the user in the command line in the defined order whereas the 'params' and
 'params_opt' are order-independent. Moreover, 'uargs', 'params' and 'params_opt' can be mixed up in the command line.
+
+!! -- NB -- !!
+There are parameters acting as toggles to which you do not assign any value (e.g. verbose: '--v'). To check if
+a parameter has been set by the user (provided in the command line) simply add in your code:
+'bool param_set = CxxTest::TangoPrinter::is_param_set("param_name");'
+e.g.:
+'bool verbose_on = CxxTest::TangoPrinter::is_param_set("verbose");'.
 
 All of the following calls are logically equivalent:
 `./runner arg1 arg2 arg3 --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5`
