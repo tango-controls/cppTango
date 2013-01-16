@@ -49,6 +49,9 @@ The source code of the CxxTest test suites resides in:
 The source files are required to have '.cpp' extension and unique names. The files being a part of the CxxTest
 framework must have a 'cxx_' prefix.
 
+!! -- NB -- !!
+Store all files prefixed with 'cxx_' in one directory. 
+
 To compile the binaries you need to:
 - create a profile file
 - execute `make profile=myprofile`

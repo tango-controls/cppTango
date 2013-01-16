@@ -121,8 +121,7 @@ FILES_CPP := $(strip $(foreach file, $(FILES_ALL), $(if $(filter-out cxx_%, $(no
 FILES_CXX := $(filter-out $(FILES_CPP), $(FILES_ALL))
 
 # detect directory in which the cxx files are stored (if empty, no cxx files are to be compiled)
-#CXX_DIR := $(dir $(lastword $(FILES_CXX)))
-CXX_DIR := new_tests/
+CXX_DIR := $(dir $(firstword $(FILES_CXX)))
 
 # END CONFIGURATION ###################################################################################################
 #######################################################################################################################
