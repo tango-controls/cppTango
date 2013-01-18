@@ -8,7 +8,7 @@ set REL_DIR=..\..\..\..\
 %REL_DIR%new_tests\cxx_always_hook.cpp ^
 %REL_DIR%new_tests\cxx_blackbox.cpp ^
 %REL_DIR%new_tests\cxx_attr_misc.cpp ^
-%REL_DIR%new_tests\cxx_attr_prop.cpp ^
+%REL_DIR%new_tests\cxx_attrprop.cpp ^
 %REL_DIR%new_tests\cxx_attr_write.cpp ^
 %REL_DIR%new_tests\cxx_attr_conf.cpp ^
 %REL_DIR%new_tests\cxx_attr.cpp ^
