@@ -9,93 +9,46 @@
 using namespace Tango;
 using namespace std;
 
-#define coutv	if (verbose == true) cout << "\t"
+#define coutv		if (verbose == true) cout << "\t"
+#define coutv_cb 	if (parent->verbose == true) cout << "\t"
 #define cout cout << "\t"
 
 #undef SUITE_NAME
 #define SUITE_NAME McastLocalRemoteTestSuite
 
-//static bool verbose = true;
-
-class EventCallBack : public Tango::CallBack
-{
-	void push_event(Tango::EventData*);
-	
-public:
-	int 	cb_executed;
-	int 	cb_err;
-	int 	old_sec,old_usec;
-	int 	delta_msec;
-	long 	val;
-	long 	val_size;
-};
-
-void EventCallBack::push_event(Tango::EventData* event_data)
-{
-	vector<DevLong> value;
-	struct timeval now_timeval;
-
-#ifdef WIN32
-	struct _timeb before_win;
-	_ftime(&before_win);
-	now_timeval.tv_sec = (unsigned long)before_win.time;
-	now_timeval.tv_usec = (long)before_win.millitm * 1000;
-#else
-	gettimeofday(&now_timeval,NULL);
-#endif
-	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-
-	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);	
-
-	old_sec = now_timeval.tv_sec;
-	old_usec = now_timeval.tv_usec;
-	
-//	coutv << "delta_msec = " << delta_msec << endl;
-
-	cb_executed++;
-
-	try
-	{
-		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
-		if (!event_data->err)
-		{
-			*(event_data->attr_value) >> value;
-//			coutv << "CallBack value size " << value.size() << endl;
-			val = value[2];
-			val_size = value.size();
-//			coutv << "Callback value " << val << endl;
-		}
-		else
-		{
-//			coutv << "Error send to callback" << endl;
-//			Tango::Except::print_error_stack(event_data->errors);
-			if (strcmp(event_data->errors[0].reason.in(),"bbb") == 0)
-				cb_err++;
-		}
-	}
-	catch (...)
-	{
-		coutv << "EventCallBack::push_event(): could not extract data !\n";
-	}
-
-}
-
 //
 // In this test, the client subscribes to two multicast events
 // One event comes from a device running in the same host than the client
 // The other event comes from a device running in a different host (therefore using PGM to communicate)
+// These two events use the same callback object
 //
 
 class McastLocalRemoteTestSuite: public CxxTest::TestSuite
 {
+public:
+	class EventCallBack : public Tango::CallBack
+	{
+	public:
+		EventCallBack(McastLocalRemoteTestSuite *ptr):parent(ptr) {}
+		void push_event(Tango::EventData*);
+
+		int 	cb_executed;
+		int 	cb_err;
+		long 	val;
+		long 	val_size;
+
+	private:
+		McastLocalRemoteTestSuite	*parent;
+	};
+
 protected:
 	DeviceProxy 	*device_local;
 	DeviceProxy		*device_remote;
 	string 			att_name;
 	int 			eve_id_local;
 	int 			eve_id_remote;
-	EventCallBack 	cb;
+	EventCallBack 	*cb;
+	bool 			verbose;
 
 public:
 	SUITE_NAME()
@@ -113,8 +66,7 @@ public:
 		local_device_name = CxxTest::TangoPrinter::get_uarg("local_device","local device name");
 		remote_device_name = CxxTest::TangoPrinter::get_uarg("remote_device","remote device name");
 
-		string str = CxxTest::TangoPrinter::get_param_opt("verbose");
-//		cout << "str = " << str << endl;
+		verbose = CxxTest::TangoPrinter::is_param_set("verbose");
 
 		// always add this line, otherwise arguments will not be parsed correctly
 		CxxTest::TangoPrinter::validate_args();
@@ -123,6 +75,8 @@ public:
 //
 // Initialization --------------------------------------------------
 //
+
+		cb = new EventCallBack(this);
 
 		try
 		{
@@ -184,9 +138,8 @@ public:
 			device_remote = new DeviceProxy(remote_device_name);
 			Tango_sleep(1);
 
-			cb.cb_executed = 0;
-			cb.cb_err = 0;
-			cb.old_sec = cb.old_usec = 0;
+			cb->cb_executed = 0;
+			cb->cb_err = 0;
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -203,6 +156,8 @@ public:
 
 		delete device_local;
 		delete device_remote;
+
+		delete cb;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -227,10 +182,10 @@ public:
 // switch on the polling first!
 
 		device_local->poll_attribute(att_name,1000);
-		eve_id_local = device_local->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb);
+		eve_id_local = device_local->subscribe_event(att_name,Tango::CHANGE_EVENT,cb);
 
 		device_remote->poll_attribute(att_name,1000);
-		eve_id_remote = device_remote->subscribe_event(att_name,Tango::CHANGE_EVENT,&cb);
+		eve_id_remote = device_remote->subscribe_event(att_name,Tango::CHANGE_EVENT,cb);
 
 // Check that the attribute is now polled at 1000 mS
 
@@ -255,8 +210,8 @@ public:
 
 	void test_first_point_received(void)
 	{
-		TS_ASSERT (cb.cb_executed == 2);
-		TS_ASSERT (cb.val_size == 4);
+		TS_ASSERT (cb->cb_executed == 2);
+		TS_ASSERT (cb->val_size == 4);
 	}
 
 	void test_Callback_executed_after_a_change_for_both_events(void)
@@ -280,10 +235,10 @@ public:
 		Sleep(2000);
 #endif
 						
-		coutv << "cb excuted = " << cb.cb_executed << endl;
+		coutv << "cb excuted = " << cb->cb_executed << endl;
 
-		TS_ASSERT (cb.cb_executed == 4);
-		TS_ASSERT (cb.val_size == 4);
+		TS_ASSERT (cb->cb_executed == 4);
+		TS_ASSERT (cb->val_size == 4);
 	}
 
 // unsubscribe to the event
@@ -295,6 +250,35 @@ public:
 	}
 
 };
+
+void McastLocalRemoteTestSuite::EventCallBack::push_event(Tango::EventData* event_data)
+{
+	vector<DevLong> value;
+
+	cb_executed++;
+
+	try
+	{
+		coutv_cb << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
+		if (!event_data->err)
+		{
+			*(event_data->attr_value) >> value;
+			val = value[2];
+			val_size = value.size();
+		}
+		else
+		{
+			if (strcmp(event_data->errors[0].reason.in(),"bbb") == 0)
+				cb_err++;
+		}
+	}
+	catch (...)
+	{
+		coutv_cb << "EventCallBack::push_event(): could not extract data !\n";
+	}
+
+}
+
 #undef cout
 #endif // McastLocalRemoteTestSuite_h
 
