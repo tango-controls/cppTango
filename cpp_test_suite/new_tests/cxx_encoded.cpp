@@ -18,8 +18,8 @@ using namespace std;
 class EncodedTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
-	string device_name;
+	DeviceProxy *device1;
+	string device1_name;
 
 public:
 	SUITE_NAME()
@@ -29,7 +29,7 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 
 		CxxTest::TangoPrinter::validate_args();
 
@@ -39,7 +39,7 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -56,7 +56,7 @@ public:
 // Clean up --------------------------------------------------------
 //
 
-		delete device;
+		delete device1;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -88,7 +88,7 @@ public:
 		de.encoded_data[1] = 0x11;
 
 		dd_in << de;
-		dd_out = device->command_inout("IOEncoded",dd_in);
+		dd_out = device1->command_inout("IOEncoded",dd_in);
 		dd_out >> de_out;
 
 		string tmp_str(de_out.encoded_format);
@@ -106,7 +106,7 @@ public:
 		sent_data.push_back(0x22);
 
 		dd_in.insert(sent_str,sent_data);
-		dd_out = device->command_inout("IOEncoded",dd_in);
+		dd_out = device1->command_inout("IOEncoded",dd_in);
 
 		string received_str;
 		vector<unsigned char> received_data;
@@ -125,7 +125,7 @@ public:
 		dvca[0] = 0x10;
 
 		dd_in.insert("Hi",&dvca);
-		dd_out = device->command_inout("IOEncoded",dd_in);
+		dd_out = device1->command_inout("IOEncoded",dd_in);
 
 		const char *received_str_ptr;
 		const unsigned char *received_data_ptr;
@@ -150,7 +150,7 @@ public:
 		unsigned int sent_length = 4;
 
 		dd_in.insert(sent_ptr,sent_data_ptr,sent_length);
-		dd_out = device->command_inout("IOEncoded",dd_in);
+		dd_out = device1->command_inout("IOEncoded",dd_in);
 
 		delete [] sent_data_ptr;
 	}
@@ -162,13 +162,13 @@ public:
 		Tango::DeviceAttribute da_in,da_out;
 		Tango::DevEncoded att_de,att_de_out;
 
-		da_out = device->read_attribute("Encoded_attr");
+		da_out = device1->read_attribute("Encoded_attr");
 
 		da_out >> att_de_out;
 
 //-------
 
-		da_out = device->read_attribute("Encoded_attr");
+		da_out = device1->read_attribute("Encoded_attr");
 
 		string att_read_str;
 		vector<unsigned char> att_read_data;
@@ -181,7 +181,7 @@ public:
 		unsigned char *att_read_data_ptr;
 		unsigned int att_data_length;
 
-		da_out = device->read_attribute("Encoded_attr");
+		da_out = device1->read_attribute("Encoded_attr");
 		da_out.extract(att_read_ptr,att_read_data_ptr,att_data_length);
 
 		CORBA::string_free(att_read_ptr);
@@ -197,7 +197,7 @@ public:
 		da_in << att_de;
 		da_in.set_name("Encoded_attr");
 
-		device->write_attribute(da_in);
+		device1->write_attribute(da_in);
 
 		string written_str("Adios");
 		vector<unsigned char> written_data;
@@ -207,7 +207,7 @@ public:
 
 		da_in.insert(written_str,written_data);
 
-		device->write_attribute(da_in);
+		device1->write_attribute(da_in);
 
 //-------
 
@@ -219,7 +219,7 @@ public:
 
 		da_in.insert(written_str_ptr,written_ptr,written_data_length);
 
-		device->write_attribute(da_in);
+		device1->write_attribute(da_in);
 
 		delete [] written_ptr;
 
@@ -230,7 +230,7 @@ public:
 
 		da_in.insert(written_p,&dvc);
 
-		device->write_attribute(da_in);
+		device1->write_attribute(da_in);
 	}
 };
 #undef cout

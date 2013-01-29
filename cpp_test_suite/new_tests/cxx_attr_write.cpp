@@ -17,7 +17,7 @@ using namespace std;
 class AttrWriteTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device, *dserver;
+	DeviceProxy *device1, *dserver;
 
 public:
 	SUITE_NAME()
@@ -27,10 +27,9 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string device_name, dserver_name;
+		string device1_name, dserver_name;
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
 		CxxTest::TangoPrinter::validate_args();
@@ -42,9 +41,9 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 			dserver = new DeviceProxy(dserver_name);
-			device->ping();
+			device1->ping();
 			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
@@ -57,7 +56,7 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		delete device;
+		delete device1;
 		delete dserver;
 	}
 
@@ -87,7 +86,7 @@ public:
 				long_attr_w("Long_attr_w", lg);
 		vector<DeviceAttribute> attributes;
 
-		TS_ASSERT_THROWS_ASSERT(device->write_attribute(toto), Tango::DevFailed &e,
+		TS_ASSERT_THROWS_ASSERT(device1->write_attribute(toto), Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttrNotFound"
 								&& e.errors[0].severity == Tango::ERR));
 
@@ -96,7 +95,7 @@ public:
 		// unless fixed, the original object cannot be used in further tests
 		attributes.push_back(short_attr_w);
 		attributes.push_back(toto);
-		TS_ASSERT_THROWS_ASSERT(device->write_attributes(attributes), Tango::NamedDevFailedList &e,
+		TS_ASSERT_THROWS_ASSERT(device1->write_attributes(attributes), Tango::NamedDevFailedList &e,
 						TS_ASSERT(string(e.err_list[0].err_stack[0].reason.in()) == "API_AttrNotFound"
 								&& e.errors[0].severity == Tango::ERR));
 
@@ -104,7 +103,7 @@ public:
 		attributes.push_back(short_attr_w2);
 		attributes.push_back(short_attr);
 		attributes.push_back(long_attr_w);
-		TS_ASSERT_THROWS_ASSERT(device->write_attributes(attributes), Tango::NamedDevFailedList &e,
+		TS_ASSERT_THROWS_ASSERT(device1->write_attributes(attributes), Tango::NamedDevFailedList &e,
 						TS_ASSERT(string(e.err_list[0].err_stack[0].reason.in()) == "API_AttrNotWritable"
 								&& e.errors[0].severity == Tango::ERR));
 
@@ -140,17 +139,17 @@ public:
 		attributes_str.push_back("UShort_attr_w");
 		attributes_str.push_back("UChar_attr_w");
 
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(short_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(long_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(double_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(string_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(float_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(boolean_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(ushort_attr_w));
-		TS_ASSERT_THROWS_NOTHING(device->write_attribute(uchar_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(short_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(long_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(double_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(string_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(float_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(boolean_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(ushort_attr_w));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attribute(uchar_attr_w));
 
 		vector<DeviceAttribute> *attributes_vec;
-		TS_ASSERT_THROWS_NOTHING(attributes_vec = device->read_attributes(attributes_str));
+		TS_ASSERT_THROWS_NOTHING(attributes_vec = device1->read_attributes(attributes_str));
 
 		vector<DeviceAttribute> &attributes = *attributes_vec;
 		attributes[0] >> sh;
@@ -176,7 +175,7 @@ public:
 		attributes.push_back(long_attr_w);
 		attributes.push_back(double_attr_w);
 		attributes.push_back(string_attr_w);
-		TS_ASSERT_THROWS_NOTHING(device->write_attributes(attributes));
+		TS_ASSERT_THROWS_NOTHING(device1->write_attributes(attributes));
 	}
 
 // Short_attr_w, String_attr_w and Boolean_attr_w are memorized attributes
@@ -195,7 +194,7 @@ public:
 		attributes_str.push_back("Boolean_attr_w");
 
 		vector<DeviceAttribute> *attributes_vec;
-		TS_ASSERT_THROWS_NOTHING(attributes_vec = device->read_attributes(attributes_str));
+		TS_ASSERT_THROWS_NOTHING(attributes_vec = device1->read_attributes(attributes_str));
 
 		vector<DeviceAttribute> &attributes = *attributes_vec;
 		attributes[0] >> sh;

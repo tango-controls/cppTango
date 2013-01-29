@@ -17,7 +17,7 @@ using namespace std;
 class CmdQueryTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device, *dserver;
+	DeviceProxy *device1, *dserver;
 	CommandInfoList cmd_inf_list;
 
 public:
@@ -28,10 +28,9 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string device_name, dserver_name;
+		string device1_name, dserver_name;
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
 		CxxTest::TangoPrinter::validate_args();
@@ -43,9 +42,9 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 			dserver = new DeviceProxy(dserver_name);
-			device->ping();
+			device1->ping();
 			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
@@ -58,7 +57,7 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		delete device;
+		delete device1;
 		delete dserver;
 	}
 
@@ -96,7 +95,7 @@ public:
 	void test_command_Status(void)
 	{
 		CommandInfo cmd_inf;
-		TS_ASSERT_THROWS_NOTHING(cmd_inf = device->command_query("Status"));
+		TS_ASSERT_THROWS_NOTHING(cmd_inf = device1->command_query("Status"));
 		TS_ASSERT_EQUALS(cmd_inf.cmd_name,"Status");
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEV_VOID);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEV_STRING);
@@ -108,7 +107,7 @@ public:
 
 	void test_fake_command(void)
 	{
-		TS_ASSERT_THROWS_ASSERT(device->command_query("DevToto"),Tango::DevFailed &e,
+		TS_ASSERT_THROWS_ASSERT(device1->command_query("DevToto"),Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_CommandNotFound"
 						&& e.errors[0].severity == Tango::ERR));
 	}

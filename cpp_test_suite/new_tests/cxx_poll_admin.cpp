@@ -28,9 +28,8 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
-		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
+		device2_name = CxxTest::TangoPrinter::get_param("device2");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
 		CxxTest::TangoPrinter::get_param_opt("loop");

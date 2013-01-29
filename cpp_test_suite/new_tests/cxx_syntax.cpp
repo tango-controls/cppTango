@@ -28,9 +28,8 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
-		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
+		device2_name = CxxTest::TangoPrinter::get_param("device2");
 		device_alias = CxxTest::TangoPrinter::get_param("devicealias");
 		attribute_alias = CxxTest::TangoPrinter::get_param("attributealias");
 

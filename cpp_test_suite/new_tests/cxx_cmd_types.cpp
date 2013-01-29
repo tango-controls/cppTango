@@ -17,7 +17,7 @@ using namespace std;
 class CmdTypesTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
+	DeviceProxy *device1;
 
 public:
 	SUITE_NAME()
@@ -27,9 +27,9 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string device_name;
+		string device1_name;
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 
 		CxxTest::TangoPrinter::get_param_opt("loop");
 
@@ -42,8 +42,8 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
-			device->ping();
+			device1 = new DeviceProxy(device1_name);
+			device1->ping();
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -55,7 +55,7 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		delete device;
+		delete device1;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -91,7 +91,7 @@ public:
 
 		try
 		{
-			da = device->read_attribute("Short_attr");
+			da = device1->read_attribute("Short_attr");
 			TS_ASSERT(1==1);
 		}
 		catch (CORBA::Exception &e)
@@ -131,7 +131,7 @@ public:
 
 		try
 		{
-			da = device->read_attribute("Short_attr");
+			da = device1->read_attribute("Short_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -160,7 +160,7 @@ public:
 #endif
 		try
 		{
-			da = device->read_attribute("Long_attr");
+			da = device1->read_attribute("Long_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -186,7 +186,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Double_attr");
+			da = device1->read_attribute("Double_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -205,7 +205,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("String_attr");
+			da = device1->read_attribute("String_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -224,7 +224,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Float_attr");
+			da = device1->read_attribute("Float_attr");
 			float db;
 			da >> db;
 			TS_ASSERT ( db == 4.5 );
@@ -243,7 +243,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Boolean_attr");
+			da = device1->read_attribute("Boolean_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -262,7 +262,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("UShort_attr");
+			da = device1->read_attribute("UShort_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -281,7 +281,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("UChar_attr");
+			da = device1->read_attribute("UChar_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -300,7 +300,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Long64_attr_rw");
+			da = device1->read_attribute("Long64_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -326,7 +326,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("ULong_attr_rw");
+			da = device1->read_attribute("ULong_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -347,7 +347,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("ULong64_attr_rw");
+			da = device1->read_attribute("ULong64_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -371,7 +371,7 @@ public:
 #endif
 		try
 		{
-			da = device->read_attribute("State_attr_rw");
+			da = device1->read_attribute("State_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -398,7 +398,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Encoded_attr");
+			da = device1->read_attribute("Encoded_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -433,7 +433,7 @@ public:
 
 		try
 		{
-			da = device->read_attribute("Encoded_image");
+			da = device1->read_attribute("Encoded_image");
 			att.decode_gray8( &da, &width, &height, &gray8 );
 		}
 		catch (CORBA::Exception &e)
@@ -479,7 +479,7 @@ public:
 
 		try
 		{
-			received = device->read_attributes(names);
+			received = device1->read_attributes(names);
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -545,7 +545,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Short_spec_attr");
+			da = device1->read_attribute("Short_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -573,7 +573,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Long_spec_attr");
+			da = device1->read_attribute("Long_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -602,7 +602,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Double_spec_attr");
+			da = device1->read_attribute("Double_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -626,7 +626,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("String_spec_attr");
+			da = device1->read_attribute("String_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -648,7 +648,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Float_spec_attr");
+			da = device1->read_attribute("Float_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -671,7 +671,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Boolean_spec_attr");
+			da = device1->read_attribute("Boolean_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -700,7 +700,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("UShort_spec_attr");
+			da = device1->read_attribute("UShort_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -722,7 +722,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("UChar_spec_attr");
+			da = device1->read_attribute("UChar_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -748,7 +748,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Long64_spec_attr_rw");
+			da = device1->read_attribute("Long64_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -772,7 +772,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("ULong_spec_attr_rw");
+			da = device1->read_attribute("ULong_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -796,7 +796,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("ULong64_spec_attr_rw");
+			da = device1->read_attribute("ULong64_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -820,7 +820,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("State_spec_attr_rw");
+			da = device1->read_attribute("State_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -848,7 +848,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Short_spec_attr");
+			da = device1->read_attribute("Short_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -872,7 +872,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Long_spec_attr");
+			da = device1->read_attribute("Long_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -896,7 +896,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Double_spec_attr");
+			da = device1->read_attribute("Double_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -918,7 +918,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("String_spec_attr");
+			da = device1->read_attribute("String_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -940,7 +940,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Float_spec_attr");
+			da = device1->read_attribute("Float_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -963,7 +963,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Boolean_spec_attr");
+			da = device1->read_attribute("Boolean_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -991,7 +991,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("UShort_spec_attr");
+			da = device1->read_attribute("UShort_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -1013,7 +1013,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("UChar_spec_attr");
+			da = device1->read_attribute("UChar_spec_attr");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -1039,7 +1039,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Long64_spec_attr_rw");
+			da = device1->read_attribute("Long64_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -1065,7 +1065,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("ULong_spec_attr_rw");
+			da = device1->read_attribute("ULong_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -1091,7 +1091,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("ULong64_spec_attr_rw");
+			da = device1->read_attribute("ULong64_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -1117,7 +1117,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("State_spec_attr_rw");
+			da = device1->read_attribute("State_spec_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -1145,7 +1145,7 @@ public:
 		DeviceAttribute da;
 		try
 		{
-			da = device->read_attribute("Short_ima_attr_rw");
+			da = device1->read_attribute("Short_ima_attr_rw");
 		}
 		catch (CORBA::Exception &e)
 		{

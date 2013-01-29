@@ -33,10 +33,9 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
-		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
-		device3_name = CxxTest::TangoPrinter::get_uarg("device3");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
+		device2_name = CxxTest::TangoPrinter::get_param("device2");
+		device3_name = CxxTest::TangoPrinter::get_param("device3");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 		outpath = CxxTest::TangoPrinter::get_param("outpath");
 		refpath = CxxTest::TangoPrinter::get_param("refpath");

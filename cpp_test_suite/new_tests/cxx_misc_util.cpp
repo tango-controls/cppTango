@@ -17,8 +17,8 @@ using namespace std;
 class MiscUtilTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
-	string device_name, dserver_name;
+	DeviceProxy *device1;
+	string device1_name, dserver_name;
 
 public:
 	SUITE_NAME()
@@ -28,8 +28,7 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
 		CxxTest::TangoPrinter::validate_args();
@@ -41,8 +40,8 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
-			device->ping();
+			device1 = new DeviceProxy(device1_name);
+			device1->ping();
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -54,7 +53,7 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		delete device;
+		delete device1;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -82,12 +81,12 @@ public:
 		din << class_name;
 
 		string name;
-		TS_ASSERT_THROWS_NOTHING(name = device->name());
+		TS_ASSERT_THROWS_NOTHING(name = device1->name());
 		size_t rf = name.rfind('/');
 		if(rf != string::npos)
 			name.erase(rf);
 
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODevListByClass", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IODevListByClass", din));
 		dout >> dev_name;
 		TS_ASSERT(dev_name == name);
 	}
@@ -100,7 +99,7 @@ public:
 		const char *class_name = "Toto";
 		din << class_name;
 
-		TS_ASSERT_THROWS_ASSERT(device->command_inout("IODevListByClass", din), Tango::DevFailed &e,
+		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IODevListByClass", din), Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_ClassNotFound"
 								&& e.errors[0].severity == Tango::ERR));
 	}
@@ -111,7 +110,7 @@ public:
 	{
 		DeviceData dout;
 		const char *dserver_name_tmp;
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODServDevice"));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IODServDevice"));
 		dout >> dserver_name_tmp;
 		string dserver_name_tmp_str(dserver_name_tmp);
 //		transform(dserver_name_tmp_str.begin(), dserver_name_tmp_str.end(), dserver_name_tmp_str.begin(), ::tolower);
@@ -123,11 +122,11 @@ public:
 	void test_get_device_by_name(void)
 	{
 		DeviceData din, dout;
-		const char *device_name_tmp;
-		din << device_name;
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IODevByName", din));
-		dout >> device_name_tmp;
-		TS_ASSERT(device_name_tmp == device_name);
+		const char *device1_name_tmp;
+		din << device1_name;
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IODevByName", din));
+		dout >> device1_name_tmp;
+		TS_ASSERT(device1_name_tmp == device1_name);
 	}
 
 // Test get_device_by_name exception
@@ -137,7 +136,7 @@ public:
 		DeviceData din;
 		const char *fake_name = "dev/test/1000";
 		din << fake_name;
-		TS_ASSERT_THROWS_ASSERT(device->command_inout("IODevByName", din), Tango::DevFailed &e,
+		TS_ASSERT_THROWS_ASSERT(device1->command_inout("IODevByName", din), Tango::DevFailed &e,
 								TS_ASSERT(string(e.errors[0].reason.in()) == "API_DeviceNotFound"
 										&& e.errors[0].severity == Tango::ERR));
 	}

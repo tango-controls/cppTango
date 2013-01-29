@@ -27,10 +27,13 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string device1_name, dserver_name;
+		string myarg, device1_name, localparam, dserver_name;
 
 		// user arguments, obtained from the command line sequentially
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1","description of what device1 is"); // get_uarg("device1") will also work
+		myarg = CxxTest::TangoPrinter::get_uarg("myarg","description of what myarg is"); // get_uarg("device1") will also work
+
+		// local mandatory parameters
+		localparam = CxxTest::TangoPrinter::get_param_loc("localparam");
 
 		// predefined mandatory parameters
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");

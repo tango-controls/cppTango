@@ -29,9 +29,9 @@ public:
 
 		string device1_name, device2_name, device3_name;
 
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
-		device2_name = CxxTest::TangoPrinter::get_uarg("device2");
-		device3_name = CxxTest::TangoPrinter::get_uarg("device3");
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
+		device2_name = CxxTest::TangoPrinter::get_param("device2");
+		device3_name = CxxTest::TangoPrinter::get_param("device3");
 
 		CxxTest::TangoPrinter::validate_args();
 

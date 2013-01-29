@@ -18,8 +18,8 @@ using namespace std;
 class AlwaysHookTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device, *dserver;
-	string device_name, dserver_name, refpath, outpath, file_name, ref_file, out_file;
+	DeviceProxy *device1, *dserver;
+	string device1_name, dserver_name, refpath, outpath, file_name, ref_file, out_file;
 	int loglevel, dsloglevel;
 
 public:
@@ -33,8 +33,7 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 		outpath = CxxTest::TangoPrinter::get_param("outpath");
 		refpath = CxxTest::TangoPrinter::get_param("refpath");
@@ -50,9 +49,9 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 			dserver = new DeviceProxy(dserver_name);
-			device->ping();
+			device1->ping();
 			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
@@ -107,7 +106,7 @@ public:
 			DeviceData din;
 			DevVarStringArray remove_logging_targets;
 			remove_logging_targets.length(4);
-			remove_logging_targets[0] = device_name.c_str();
+			remove_logging_targets[0] = device1_name.c_str();
 			remove_logging_targets[1] = string("file::" + out_file).c_str();
 			remove_logging_targets[2] = dserver_name.c_str();
 			remove_logging_targets[3] = string("file::" + out_file).c_str();
@@ -123,7 +122,7 @@ public:
 			}
 		}
 
-		delete device;
+		delete device1;
 		delete dserver;
 	}
 
@@ -148,7 +147,7 @@ public:
 		DeviceData din, dout;
 		DevLong lg_in = 10, lg_out;
 		din << lg_in;
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLong", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
 	}
@@ -165,7 +164,7 @@ public:
 		device_level.lvalue[0] = 5;
 		device_level.lvalue[1] = 5;
 		device_level.svalue.length(2);
-		device_level.svalue[0] = device_name.c_str();
+		device_level.svalue[0] = device1_name.c_str();
 		device_level.svalue[1] = dserver_name.c_str();
 		din << device_level;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("SetLoggingLevel", din));
@@ -174,7 +173,7 @@ public:
 		// set logging targets for the device and device server
 		DevVarStringArray logging_targets;
 		logging_targets.length(4);
-		logging_targets[0] = device_name.c_str();
+		logging_targets[0] = device1_name.c_str();
 		logging_targets[1] = string("file::" + out_file).c_str();
 		logging_targets[2] = dserver_name.c_str();
 		logging_targets[3] = string("file::" + out_file).c_str();
@@ -185,7 +184,7 @@ public:
 		// execute IOLong command
 		DevLong lg_in = 10, lg_out;
 		din << lg_in;
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("IOLong", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("IOLong", din));
 		dout >> lg_out;
 		TS_ASSERT(lg_out == 20);
 
@@ -220,7 +219,7 @@ public:
 
 			map<string,string> key_val_map;
 			key_val_map["DSERVER"] = dserver_name;
-			key_val_map["DEVICE1"] = device_name;
+			key_val_map["DEVICE1"] = device1_name;
 			CmpTst::CompareTest::ref_replace_keywords(ref_file, key_val_map);
 
 			map<string,string> prefix_num_map;

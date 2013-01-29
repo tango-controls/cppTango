@@ -690,7 +690,7 @@ namespace CxxTest
     				}
     			}
 
-    			if(params_validate.size() != 0 || params_opt_validate.size() != 0)
+    			if(params_validate.size() != 0 || params_opt_validate.size() != 0 || params_loc_validate.size() != 0)
     			{
     				cout << "\nParameters:";
     				if(params_loc_validate.size() != 0)

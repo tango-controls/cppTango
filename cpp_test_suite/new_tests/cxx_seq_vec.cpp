@@ -17,7 +17,7 @@ using namespace std;
 class SeqVecTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
+	DeviceProxy *device1;
 
 public:
 	SUITE_NAME()
@@ -27,9 +27,9 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string device_name;
+		string device1_name;
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 
 		CxxTest::TangoPrinter::validate_args();
 
@@ -40,8 +40,8 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
-			device->ping();
+			device1 = new DeviceProxy(device1_name);
+			device1->ping();
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -53,7 +53,7 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
-		delete device;
+		delete device1;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -82,7 +82,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecChar", din);
+			dout = device1->command_inout("IOSeqVecChar", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -105,7 +105,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecShort", din);
+			dout = device1->command_inout("IOSeqVecShort", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -125,7 +125,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecLong", din);
+			dout = device1->command_inout("IOSeqVecLong", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -147,7 +147,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecFloat", din);
+			dout = device1->command_inout("IOSeqVecFloat", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -168,7 +168,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecDouble", din);
+			dout = device1->command_inout("IOSeqVecDouble", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -193,7 +193,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecUShort", din);
+			dout = device1->command_inout("IOSeqVecUShort", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -214,7 +214,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecULong", din);
+			dout = device1->command_inout("IOSeqVecULong", din);
 		}
 		catch(DevFailed &e)
 		{
@@ -236,7 +236,7 @@ public:
 		din << input;
 		try
 		{
-			dout = device->command_inout("IOSeqVecString", din);
+			dout = device1->command_inout("IOSeqVecString", din);
 		}
 		catch(DevFailed &e)
 		{

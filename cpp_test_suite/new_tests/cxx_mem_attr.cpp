@@ -20,8 +20,8 @@ using namespace std;
 class MemAttrTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
-	string device_name;
+	DeviceProxy *device1;
+	string device1_name;
 
 public:
 	SUITE_NAME()
@@ -31,7 +31,7 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 
 		CxxTest::TangoPrinter::validate_args();
 
@@ -41,7 +41,7 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 		}
 		catch (CORBA::Exception &e)
 		{
@@ -61,7 +61,7 @@ public:
 		din << v_s;
 		try
 		{
-			device->command_inout("IOAttrThrowEx", din);
+			device1->command_inout("IOAttrThrowEx", din);
 		}
 		catch(CORBA::Exception &e)
 		{
@@ -69,7 +69,7 @@ public:
 			Except::print_exception(e);
 			exit(-1);
 		}
-		delete device;
+		delete device1;
 	}
 
 	static SUITE_NAME *createSuite()
@@ -102,21 +102,21 @@ public:
 
 		din << v_s;
 
-		device->command_inout("IOAttrThrowEx",din);
+		device1->command_inout("IOAttrThrowEx",din);
 
 //
 // Execute init command
 //
-		device->command_inout("Init");
+		device1->command_inout("Init");
 
 //
 // Get device state and status
 //
 
-		Tango::DevState ds = device->state();
+		Tango::DevState ds = device1->state();
 		TS_ASSERT(ds == Tango::ALARM);
 
-		string d_status = device->status();
+		string d_status = device1->status();
 		string::size_type pos = d_status.find('.');
 		pos = pos + 2;
 		string sub_status = d_status.substr(pos);
@@ -126,7 +126,7 @@ public:
 // Try to read the attribute
 //
 
-		DeviceAttribute read_da = device->read_attribute("Short_attr_w");
+		DeviceAttribute read_da = device1->read_attribute("Short_attr_w");
 		short s_val;		
 		TS_ASSERT_THROWS_ASSERT(read_da >> s_val,Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "Aaaa" && e.errors[0].severity == Tango::ERR &&
@@ -142,7 +142,7 @@ public:
 
 		din << v_s;
 
-		device->command_inout("IOAttrThrowEx",din);
+		device1->command_inout("IOAttrThrowEx",din);
 
 //
 // Write the attribute
@@ -151,23 +151,23 @@ public:
 		short val = 10;
 		Tango::DeviceAttribute da("Short_attr_w",val);
 
-		device->write_attribute(da);
+		device1->write_attribute(da);
 
 //
 // Get device state and status
 //
 
-		ds = device->state();
+		ds = device1->state();
 		TS_ASSERT(ds == Tango::ON);
 
-		d_status = device->status();
+		d_status = device1->status();
 		TS_ASSERT(d_status == STATUS_ON);
 
 //
 // Read the attribute
 //
 
-		DeviceAttribute read_da_2 = device->read_attribute("Short_attr_w");
+		DeviceAttribute read_da_2 = device1->read_attribute("Short_attr_w");
 		short s_val_2;
 		read_da_2 >> s_val_2;
 		TS_ASSERT(s_val_2 == 10);			

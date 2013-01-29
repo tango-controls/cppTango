@@ -30,7 +30,7 @@ public:
 		string device1_name;
 
 		// user arguments, obtained from the command line sequentially
-		device1_name = CxxTest::TangoPrinter::get_uarg("device1");
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 
 
 		// always add this line, otherwise arguments will not be parsed correctly

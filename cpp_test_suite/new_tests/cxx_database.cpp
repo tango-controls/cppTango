@@ -18,8 +18,8 @@ using namespace std;
 class DatabaseTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device;
-	string device_name;
+	DeviceProxy *device1;
+	string device1_name;
 	string dev_alias;
 	string att_alias;
 	Database *db;
@@ -32,8 +32,7 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		dev_alias = CxxTest::TangoPrinter::get_param("devicealias");
 		att_alias = CxxTest::TangoPrinter::get_param("attributealias");
 
@@ -45,7 +44,7 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 			db = new Database();
 		}
 		catch (CORBA::Exception &e)
@@ -63,7 +62,7 @@ public:
 // Clean up --------------------------------------------------------
 //
 
-		delete device;
+		delete device1;
 		delete db;
 	}
 
@@ -86,16 +85,16 @@ public:
 
 	void test_get_device_info()
 	{
-		DbDevFullInfo dbfi = db->get_device_info(device_name);
+		DbDevFullInfo dbfi = db->get_device_info(device1_name);
 
 		DeviceData dd,dd_in;
-		dd_in << device_name;
+		dd_in << device1_name;
 		dd = db->command_inout("DbImportDevice",dd_in);
 
 		const DevVarLongStringArray *dvlsa;
 		dd >> dvlsa;
 
-		TS_ASSERT(dbfi.name == device_name);
+		TS_ASSERT(dbfi.name == device1_name);
 		TS_ASSERT(dbfi.ds_full_name == string(dvlsa->svalue[3]));
 		TS_ASSERT(dbfi.exported == 1);
 		TS_ASSERT(dbfi.class_name == string(dvlsa->svalue[5]));
@@ -109,11 +108,11 @@ public:
 	{
 		string d_alias,d_name;
 
-		db->get_alias_from_device(device_name,d_alias);
+		db->get_alias_from_device(device1_name,d_alias);
 		TS_ASSERT(d_alias == dev_alias);
 
 		db->get_device_from_alias(dev_alias,d_name);
-		TS_ASSERT(d_name == device_name);
+		TS_ASSERT(d_name == device1_name);
 	}
 
 // The attribute alias
@@ -122,7 +121,7 @@ public:
 	{
 		string a_alias,a_name;
 
-		string full_att_name(device_name);
+		string full_att_name(device1_name);
 		full_att_name = full_att_name + "/Short_attr";
 
 		db->get_alias_from_attribute(full_att_name,a_alias);

@@ -17,8 +17,8 @@ using namespace std;
 class DServerMiscTestSuite: public CxxTest::TestSuite
 {
 protected:
-	DeviceProxy *device, *dserver;
-	string device_name, dserver_name, full_ds_name, server_host, doc_url;
+	DeviceProxy *device1, *dserver;
+	string device1_name, dserver_name, full_ds_name, server_host, doc_url;
 	DevLong server_version;
 
 public:
@@ -29,8 +29,7 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		device_name = CxxTest::TangoPrinter::get_uarg("device");
-
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		full_ds_name = CxxTest::TangoPrinter::get_param("fulldsname");
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 		server_host = CxxTest::TangoPrinter::get_param("serverhost");
@@ -54,9 +53,9 @@ public:
 
 		try
 		{
-			device = new DeviceProxy(device_name);
+			device1 = new DeviceProxy(device1_name);
 			dserver = new DeviceProxy(dserver_name);
-			device->ping();
+			device1->ping();
 			dserver->ping();
 		}
 		catch (CORBA::Exception &e)
@@ -70,7 +69,7 @@ public:
 	{
 		// set the Tango::ON state on suite tearDown() in case a test fails leaving Tango::OFF status
 		DeviceData din;
-		din << device_name;
+		din << device1_name;
 		try
 		{
 			dserver->command_inout("DevRestart", din);
@@ -82,7 +81,7 @@ public:
 			exit(-1);
 		}
 
-		delete device;
+		delete device1;
 		delete dserver;
 	}
 
@@ -127,15 +126,15 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
 		Tango_sleep(3);
 
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}
@@ -156,17 +155,17 @@ public:
 
 		state_in = Tango::OFF;
 		din << state_in;
-		TS_ASSERT_THROWS_NOTHING(device->command_inout("IOState", din));
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOState", din));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::OFF);
 
-		str = device_name;
+		str = device1_name;
 		din << str;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer", din));
 		Tango_sleep(3);
 
-		TS_ASSERT_THROWS_NOTHING(dout = device->command_inout("State"));
+		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("State"));
 		dout >> state_out;
 		TS_ASSERT(state_out == Tango::ON);
 	}

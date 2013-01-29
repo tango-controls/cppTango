@@ -66,9 +66,9 @@ public:
 		cb_local = new EventCallBack(this);
 		cb_remote = new EventCallBack(this);
 
-		// user arguments, obtained from the command line sequentially
-		local_device_name = CxxTest::TangoPrinter::get_uarg("local_device","local device name");
-		remote_device_name = CxxTest::TangoPrinter::get_uarg("remote_device","remote device name");
+		// local parameters, obtained from the command line
+		local_device_name = CxxTest::TangoPrinter::get_param_loc("local_device","local device name");
+		remote_device_name = CxxTest::TangoPrinter::get_param_loc("remote_device","remote device name");
 
 		verbose = CxxTest::TangoPrinter::is_param_set("verbose");
 
