@@ -118,6 +118,10 @@ namespace CxxTest
          */
         static set<string> params_opt_validate;
         /*
+         * list of expected local parameters; printed out if provided arguments do not match the expected in quantity
+         */
+        static map<string,string> params_loc_validate;
+        /*
          * flag indicating if provided arguments are valid (in terms of quantity)
          */
         static bool args_valid;
@@ -199,7 +203,8 @@ namespace CxxTest
         		bool is_loop = false;
         		if(test_name_len >= loop_str_len)
         			is_loop = test_name.substr(test_name_len - loop_str_len, loop_str_len).compare(loop_str) == 0;
-        		if(counter > 0 && is_loop) {
+        		if(counter > 0 && is_loop)
+        		{
         			counter--;
 					(const_cast<TestDescription &>(test)).setUp();
 					(const_cast<TestDescription &>(test)).run();
@@ -442,9 +447,37 @@ namespace CxxTest
         }
 
         /*
+         * checks if local parameter of given name was used by user in command line
+         */
+        static bool is_param_loc_set(const string &key)
+        {
+        	string def = "--" + key + "=";
+        	for(vector<string>::iterator it = uargv.begin(); it != uargv.end(); ++it)
+        	{
+        		if(def == (*it).substr(0,def.size()))
+        			return true;
+        	}
+        	return false;
+        }
+
+        /*
          * returns value of the parameter of given name in the form of string
          */
         static string get_param_val(const string &key)
+        {
+        	string def = "--" + key + "=";
+        	for(vector<string>::iterator it = uargv.begin(); it != uargv.end(); ++it)
+        	{
+        		if(def == (*it).substr(0,def.size()))
+        			return (*it).substr(def.size(),(*it).size() - def.size());
+        	}
+        	return "";
+        }
+
+        /*
+         * returns value of the local parameter of given name in the form of string
+         */
+        static string get_param_loc_val(const string &key)
         {
         	if(pargv.size() > 0 && pargv.find(key) != pargv.end())
         		return pargv[key];
@@ -483,6 +516,20 @@ namespace CxxTest
 				for(map<string,vector<string> >::iterator it = params.begin(); it != params.end(); ++it)
 					if(it->second[0] == def)
 						return it->second[1];
+			return "";
+		}
+
+        /*
+         * returns local parameter description based on it's name
+         */
+        static string get_param_loc_desc(const string &param)
+		{
+			if(params_loc_validate.size())
+			{
+				map<string,string>::iterator it = params_loc_validate.find(param);
+				if(it != params_loc_validate.end())
+					return it->second;
+			}
 			return "";
 		}
 
@@ -563,6 +610,38 @@ namespace CxxTest
         	return param_val;
         }
 
+
+        /*
+         * registers description of optional parameter on the list, returns its value (if set) or empty string
+         */
+        static string get_param_loc(const string &param)
+        {
+        	string desc = "user defined parameter";
+        	return get_param_loc(param,desc);
+        }
+
+        /*
+         * registers description of optional parameter on the list, returns its value (if set) or empty string
+         */
+        static string get_param_loc(const string &param, const string &desc)
+        {
+        	string param_val = "";
+        	if(!is_param_defined(param))
+        	{
+				params_loc_validate["--" + param + "="] = desc;
+				if(!is_param_loc_set(param))
+					args_valid = false;
+				param_val = get_param_val(param);
+        	}
+        	else
+        	{
+        		// the parameter has already been defined as mandatory
+        		cout << "Parameter '" << param << "' is one of the predefined parameters.\nUse CxxTest::TangoPrinter::get_param(\"" << param << "\") method instead.\n";
+        		exit(-1);
+        	}
+        	return param_val;
+        }
+
         /*
          * registers description of optional parameter on the list, returns true if parameter has been set
          * (useful when no value for parameter is expected e.g. "--v")
@@ -591,16 +670,18 @@ namespace CxxTest
     			for(size_t i = 0; i < uargs_validate.size(); i++)
     				cout << " " << uargs_validate[i];
 
+    			for(map<string,string>::iterator it = params_loc_validate.begin(); it != params_loc_validate.end(); ++it)
+    				cout << " " << it->first;
+
     			for(set<string>::iterator it = params_validate.begin(); it != params_validate.end(); ++it)
     				cout << " " << *it;
 
     			for(set<string>::iterator it = params_opt_validate.begin(); it != params_opt_validate.end(); ++it)
     				cout << " [" << *it << "]";
 
-				cout << "\nExplanation:";
-
     			if(uargs_validate.size() != 0)
     			{
+					cout << "\nExplanation:";
     				if(uargs_validate.size() != 0 && uargs_validate.size() == uargs_desc.size())
     				{
 						cout << "\nUser arguments:";
@@ -612,6 +693,13 @@ namespace CxxTest
     			if(params_validate.size() != 0 || params_opt_validate.size() != 0)
     			{
     				cout << "\nParameters:";
+    				if(params_loc_validate.size() != 0)
+    				{
+    					cout << "\nLocal:";
+            			for(map<string,string>::iterator it = params_loc_validate.begin(); it != params_loc_validate.end(); ++it)
+            				cout << "\n\t" << it->first << " - " << get_param_loc_desc(it->first);
+    				}
+
     				if(params_validate.size() != 0)
     				{
     					cout << "\nMandatory:";
@@ -657,6 +745,9 @@ namespace CxxTest
         	params_tmp["verbose"] = param_desc("--v", "verbose mode");
         	params_tmp["loop"] = param_desc("--loop=","execute test cases marked with '__loop' suffix the indicated number of times");
         	params_tmp["suiteloop"] = param_desc("--suiteloop=", "execute test suites marked with '__loop' suffix the indicated number of times"); // executes suite in a loop
+        	params_tmp["device1"] = param_desc("--device1=", "device1 name, e.g. test/device/1");
+        	params_tmp["device2"] = param_desc("--device2=", "device2 name, e.g. test/device/2");
+        	params_tmp["device3"] = param_desc("--device3=", "device3 name, e.g. test/device/3");
         	params_tmp["fulldsname"] = param_desc("--fulldsname=", "full device server name, e.g. devTest/myserver");
         	params_tmp["clienthost"] = param_desc("--clienthost=", "client host's fully qualified domain name, e.g. mypc.myinstitute.com (small caps)");
         	params_tmp["serverhost"] = param_desc("--serverhost=", "fully qualified domain name of the host on which the server is running, e.g. myserver.myinstitute.com (small caps)");
@@ -708,6 +799,7 @@ namespace CxxTest
     vector<string> TangoPrinter::uargs_desc;
     set<string> TangoPrinter::params_validate;
     set<string> TangoPrinter::params_opt_validate;
+    map<string,string> TangoPrinter::params_loc_validate;
     bool TangoPrinter::args_valid = true;
 
     set<string> TangoPrinter::restore_points = set<string>();
