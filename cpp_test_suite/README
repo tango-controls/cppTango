@@ -13,6 +13,9 @@ Outline:
 1.1.1. ---- Create a profile file
 1.1.2. ---- Execute `make profile=myprofile`
 1.2. ~~~~~~ Execution
+1.2.1. ---- Preconditions
+1.2.1. ---- Control System configuration
+1.2.2. ---- Test Suites execution
 
 2. ======== Developer
 2.1. ~~~~~~ Create a new test suite
@@ -117,8 +120,35 @@ Executing mere `make` will load the 'default.profile' settings.
  1.2. Execution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+-----------------------------------------------------------------------------------------------------------------------
+ 1.2.1. Preconditions
+-----------------------------------------------------------------------------------------------------------------------
+
+Before running the test suite make sure that Tango Starter process is not running.
+To check if the process is running type in command line:
+- `ps -ef | grep -i starter`
+
+In your control system there has to be a test device server set up (e.g. 'devTest'), consisting of at least 3 devices
+(e.g. 'dev/test/1', 'dev/test/2' and 'dev/test/3') which derive from the 'DevTest' class.
+	
+-----------------------------------------------------------------------------------------------------------------------
+ 1.2.1. Control System configuration
+-----------------------------------------------------------------------------------------------------------------------
+
+Go to the 'bin' directory and execute 'conf_devtest' which will configure 'devTest' properties in the database. These
+properties will then be tested in the test suite. Skipping this step will cause the test suites fail.
+
+!! -- NB -- !!
+Upon execution of 'conf_devtest' a new pseudo device server is registered in the database, namely: 'DsCache/test'.
+Make sure no server of such name exists, otherwise refrain from executing 'conf_devtest'.
+
+-----------------------------------------------------------------------------------------------------------------------
+ 1.2.2. Test Suites execution
+-----------------------------------------------------------------------------------------------------------------------
+
 Use 'runtest' script to execute all test suites.
-You can also call each executable independently.
+You can also call each executable independently. Remember - the 'cxx' test suites are all embedded in one executable:
+'runner'.
 
 =======================================================================================================================
  2. Developer
@@ -150,51 +180,35 @@ on user configuration (like device names or loop repetitions).
  2.2.1. Argument types
 -----------------------------------------------------------------------------------------------------------------------
 
-Some test suites require arguments which are common for all (e.g. the database server name), for this reason they have
-been predefined; however some other test suites need custom arguments (like a device name on which to execute an
-instruction) hence there are 3 types of arguments distinguished:
-
-- uargs (user arguments) - these are the test suite custom arguments which are not predefined within the CxxTest
-  framework; read from the command line and assigned in the order of appearance, e.g.:
-  `./runner my_arg1 my_arg2 my_arg3`
+Some test suites require arguments which are common for all (e.g. the device on which to execute the test suite or the
+database server name), for this reason they have been predefined (just the definition of the argument, not its value);
+however some other test suites need custom arguments (which make sense only locally in the test suite);
+hence there are 3 types of arguments distinguished:
   
-- params (predefined parameters) - commonly used in all test suites, like database server name, full device server name
-  etc.; they are provided in the command line as follows: '--' + parameter name + '=' + parameter value, e.g.:
-  `./runner --fulldsname=devTest/myname --dbserver=sys/database/2`
+- params (predefined parameters) - commonly used in all test suites, like device1, device2 and device3 on which the
+  test suite will be executed or database server name, full device server name, etc.;
+  they are provided in the command line as follows: '--' + parameter name + '=' + parameter value, e.g.:
+  `./runner --device1=dev/test/1 --fulldsname=devTest/myname --dbserver=sys/database/2`
   
 - params_opt (optional parameters) - same as params but not required by the test suite (like a loop parameter); they
   are provided in the command line the same way as params but processed by the test suite in a different (optional) way
   `./runner --loop=5`
+
+- params_loc (local parameters) - these are the test suite custom parameters which are not predefined within the CxxTest
+  framework as they have a meaning only locally in the test suite;
+  they are read from the command line the same way as params:
+  `./runner --my_param_loc=my_param_loc_value`
 
 -----------------------------------------------------------------------------------------------------------------------
  2.2.2. Declaring arguments
 -----------------------------------------------------------------------------------------------------------------------
 
 To declare an argument and obtain its value use the following methods, e.g.:
-
-- std::string my_uarg_value = CxxTest::TangoPrinter::get_uarg("my_uarg","description of my_uarg"); or
-  std::string my_uarg_value = CxxTest::TangoPrinter::get_uarg("my_uarg");
-  
-  this will define a user argument named 'my_uarg', description of which is optional; if the user calls 'runner' with the
-  following arguments:
-  `./runner arg1 arg2 arg3`
-  'my_uarg' value will be 'arg1'; in this case, arguments 'arg2' and 'arg3' will be ignored; to obtain values of more
-  user arguments call the method multiple times, e.g.:
-  std::string my_uarg1_value = CxxTest::TangoPrinter::get_uarg("my_uarg1","description of my_uarg1");
-  std::string my_uarg2_value = CxxTest::TangoPrinter::get_uarg("my_uarg2","description of my_uarg2");
-  std::string my_uarg3_value = CxxTest::TangoPrinter::get_uarg("my_uarg3","description of my_uarg3");
-  
-  now, executing:
-  `./runner arg1 arg2 arg3`
-  will result in 'my_uarg1_value = "arg1"', 'my_uarg2_value = "arg2"' and 'my_uarg3_value = "arg3"';
-  if the user calls the 'runner' without providing sufficient number of user arguments, the 'runner' will not execute
-  and inform the user of the proper use, printing out all expected user arguments and their descriptions (if not
-  provided, the default description is printed out);
   
 - std::string my_param_value = CxxTest::TangoPrinter::get_param("my_param");
 
   this will declare a mandatory, predefined parameter (see the list below); predefined parameters are those which are
-  common for different test suites and therefore have been treated in a different way then uargs;
+  common for different test suites and therefore have been defined in the Test Framework itself (namely in TangoPrinter.h);
   the params in the code are defined by the 'param_name' and provided by the user in the command line as
   '--param_name=param_value';
   
@@ -210,10 +224,16 @@ To declare an argument and obtain its value use the following methods, e.g.:
   this will declare an optional parameter; optional parameters have the same definition, meaning and use as the
   mandatory parameters apart from that they are not obligatory. If the user does not provide some/any optional
   parameters the 'runner' will execute normally.
+  
+- std::string my_param_loc_value = CxxTest::TangoPrinter::get_param_loc("my_param_loc","description of what 'my_param_loc' is"); or
+  std::string my_param_loc_value = CxxTest::TangoPrinter::get_param_loc("my_param_loc");
+
+  this will declare a mandatory local parameter named 'my_param_loc' description of which is optional; their use in the
+  command line is the same as the use of 'params' with the only difference that their definitions (names) are not
+  registered in the global (Test Framework) scope.
 
 !! -- NB -- !!
-Note that 'uargs' have to be provided by the user in the command line in the defined order whereas the 'params' and
-'params_opt' are order-independent. Moreover, 'uargs', 'params' and 'params_opt' can be mixed up in the command line.
+Note that 'params', 'params_opt' and 'params_loc' are order-independent and can be mixed up in the command line.
 
 !! -- NB -- !!
 There are parameters acting as toggles to which you do not assign any value (e.g. verbose: '--v'). To check if
@@ -222,11 +242,18 @@ a parameter has been set by the user (provided in the command line) simply add i
 e.g.:
 'bool verbose_on = CxxTest::TangoPrinter::is_param_set("verbose");'.
 
+!! -- NB -- !!
+Note that 'params' are the commonly recognised and defined parameters like 'device1' - device nr 1 on which the test
+suite will be run or 'fulldsname' - Tango fully qualified name of the device server.
+On the contrary 'params_loc' are these parameters which have a meaning only locally in the Test Suite therefore they
+are not defined on the global (Test Framework) scope thus their description has to be provided, e.g.:
+- std::string my_param_loc_value = CxxTest::TangoPrinter::get_param_loc("my_param_loc","description of what 'my_param_loc' is");
+
+
 All of the following calls are logically equivalent:
-`./runner arg1 arg2 arg3 --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5`
-`./runner --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5 arg1 arg2 arg3`
-`./runner --fulldsname=devTest/myname arg1 --dbserver=sys/database/2 arg2 --loop=5 arg3`
-but the first form is recommended.
+`./runner --device1=dev/test/1 --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5`
+`./runner --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5 --device1=dev/test/1`
+`./runner --loop=5 --device1=dev/test/1 --dbserver=sys/database/2 --fulldsname=devTest/myname`
 
 -----------------------------------------------------------------------------------------------------------------------
  2.2.3. Predefined arguments
@@ -243,6 +270,9 @@ help			--help				help, lists all possible parameters
 verbose			--v					verbose mode
 loop			--loop=				execute test cases marked with '__loop' suffix the indicated number of times
 suiteloop		--suiteloop=		execute test suites marked with '__loop' suffix the indicated number of times
+device1			--device1=			device1 name, e.g. test/device/1
+device2			--device2=			device2 name, e.g. test/device/2
+device3			--device3=			device3 name, e.g. test/device/3
 fulldsname		--fulldsname=		full device server name, e.g. devTest/myserver
 clienthost		--clienthost=		client host's fully qualified domain name, e.g. mypc.myinstitute.com (small caps)
 serverhost		--serverhost=		fully qualified domain name of the host on which the server is running, e.g. myserver.myinstitute.com (small caps)
@@ -256,6 +286,11 @@ outpath			--outpath=			device server logging target directory, e.g. /tmp/
 refpath			--refpath=			directory where the 'compare test' reference files (*.out) are stored
 devicealias		--devicealias=		device1 alias
 attributealias	--attributealias=	Short_attr alias
+
+!! -- NB -- !!
+To the developers of the test suite. If you find a parameter fequently apparing in different test suites which is not
+on the list above, please append it to the list which can be found in the body of 'create_params()' method in the
+'TangoPrinter.h' file in 'cxxtest/include/cxxtest' directory.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  2.3. Create a test case
