@@ -112,7 +112,7 @@ public:
 		DevState state;
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("Status"));
 		dout >> str;
-		TS_ASSERT(str == "The device1 is in ON state.");
+		TS_ASSERT(str == "The device is in ON state.");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("State"));
 		dout >> state;
