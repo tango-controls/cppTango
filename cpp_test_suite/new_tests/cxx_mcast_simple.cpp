@@ -75,7 +75,6 @@ public:
 		// always add this line, otherwise arguments will not be parsed correctly
 		CxxTest::TangoPrinter::validate_args();
 
-
 //
 // Initialization --------------------------------------------------
 //
