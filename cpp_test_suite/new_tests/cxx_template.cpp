@@ -27,19 +27,21 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string myarg, device1_name, localparam, dserver_name;
+		string localparam, device1_name, dserver_name;
+		bool verbose;
 
-		// user arguments, obtained from the command line sequentially
-		myarg = CxxTest::TangoPrinter::get_uarg("myarg","description of what myarg is"); // get_uarg("device1") will also work
-
-		// local mandatory parameters
-		localparam = CxxTest::TangoPrinter::get_param_loc("localparam");
+		// locally defined (test suite scope) mandatory parameters
+		localparam = CxxTest::TangoPrinter::get_param_loc("localparam","description of what localparam is");
 
 		// predefined mandatory parameters
+		device1_name = CxxTest::TangoPrinter::get_param("device1");
+		// or
 		dserver_name = "dserver/" + CxxTest::TangoPrinter::get_param("fulldsname");
 
 		// predefined optional parameters
-		CxxTest::TangoPrinter::get_param_opt("loop");
+		CxxTest::TangoPrinter::get_param_opt("loop"); // loop parameter is then managed by the CXX framework itself
+		// or
+		verbose = CxxTest::TangoPrinter::is_param_opt_set("verbose");
 
 		// always add this line, otherwise arguments will not be parsed correctly
 		CxxTest::TangoPrinter::validate_args();

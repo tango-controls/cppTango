@@ -465,13 +465,10 @@ namespace CxxTest
          */
         static string get_param_val(const string &key)
         {
-        	string def = "--" + key + "=";
-        	for(vector<string>::iterator it = uargv.begin(); it != uargv.end(); ++it)
-        	{
-        		if(def == (*it).substr(0,def.size()))
-        			return (*it).substr(def.size(),(*it).size() - def.size());
-        	}
-        	return "";
+        	if(pargv.size() > 0 && pargv.find(key) != pargv.end())
+        		return pargv[key];
+        	else
+        		return "";
         }
 
         /*
@@ -479,10 +476,13 @@ namespace CxxTest
          */
         static string get_param_loc_val(const string &key)
         {
-        	if(pargv.size() > 0 && pargv.find(key) != pargv.end())
-        		return pargv[key];
-        	else
-        		return "";
+        	string def = "--" + key + "=";
+        	for(vector<string>::iterator it = uargv.begin(); it != uargv.end(); ++it)
+        	{
+        		if(def == (*it).substr(0,def.size()))
+        			return (*it).substr(def.size(),(*it).size() - def.size());
+        	}
+        	return "";
         }
 
         /*
@@ -631,7 +631,7 @@ namespace CxxTest
 				params_loc_validate["--" + param + "="] = desc;
 				if(!is_param_loc_set(param))
 					args_valid = false;
-				param_val = get_param_val(param);
+				param_val = get_param_loc_val(param);
         	}
         	else
         	{
