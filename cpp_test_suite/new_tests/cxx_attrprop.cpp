@@ -77,6 +77,7 @@ public:
 
 	void test_AttrProp_template_specialization_for_all_Tango_types(void)
 	{
+		// Would it make sense to make AttrProp instantiated for string compile?
 //		AttrProp<string> aps;
 
 		AttrProp<DevBoolean> apbool;
