@@ -65,6 +65,14 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 	_instance = this;
 
 //
+// Create zmq release number
+//
+
+	int zmq_major,zmq_minor,zmq_patch;
+	zmq_version(&zmq_major,&zmq_minor,&zmq_patch);
+	zmq_release = (zmq_major * 100) + (zmq_minor * 10) + zmq_patch;
+
+//
 // Create the Publisher socket for heartbeat event and bind it
 // If the user has specified one IP address on the command line,
 // re-use it in the endpoint
@@ -140,6 +148,11 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 
     endian_mess_2.copy(&endian_mess);
 
+    endian_mess_heartbeat.rebuild(1);
+    memcpy(endian_mess_heartbeat.data(),&host_endian,1);
+
+    endian_mess_heartbeat_2.copy(&endian_mess_heartbeat);
+
 //
 // Init heartbeat call info
 // Leave the OID and method name un-initialized
@@ -211,6 +224,16 @@ ZmqEventSupplier::~ZmqEventSupplier()
 
     delete heartbeat_pub_sock;
     delete event_pub_sock;
+
+    if (event_mcast.empty() == false)
+	{
+		map<string,McastSocketPub>::iterator ite,ite_stop;
+		ite = event_mcast.begin();
+		ite_stop = event_mcast.end();
+
+		for (ite = event_mcast.begin(); ite != ite_stop;++ite)
+			delete ite->second.pub_socket;
+	}
 }
 
 //+----------------------------------------------------------------------------
@@ -327,7 +350,7 @@ void ZmqEventSupplier::create_event_socket()
         tango_bind(event_pub_sock,event_endpoint);
 
 //
-// If needed, replace * by host IP address in enpoint string
+// If needed, replace * by host IP address in endpoint string
 //
 
         if (ip_specified == false)
@@ -374,11 +397,12 @@ void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_n
         }
         else
         {
-            if (ite->second.local_client == true)
+            if (ite->second.local_client == true && ite->second.pub_socket == NULL)
             {
                 create_mcast_socket(mcast_data,rate,ite->second);
             }
         }
+        ite->second.double_send = true;
     }
     else
     {
@@ -388,6 +412,7 @@ void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_n
 //
 
         McastSocketPub ms;
+        ms.double_send = true;
 
         if (local_call == true)
         {
@@ -398,7 +423,6 @@ void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_n
         }
         else
         {
-
             create_mcast_socket(mcast_data,rate,ms);
 
             ms.local_client = false;
@@ -414,7 +438,7 @@ void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_n
             o << "Can't insert multicast transport parameter for event ";
             o << ev_name << " in EventSupplier instance" << ends;
 
-            Except::throw_exception((const char *)"DServer_Events",
+            Except::throw_exception((const char *)API_InternalError,
                                 o.str(),
                                (const char *)"ZmqEventSupplier::create_mcast_event_socket");
         }
@@ -499,7 +523,7 @@ void ZmqEventSupplier::create_mcast_socket(string &mcast_data,int rate,McastSock
         o << ms.endpoint;
         o << "\nZmq error: " << zmq_strerror(zmq_errno()) << ends;
 
-        Except::throw_exception((const char *)"DServer_Events",
+        Except::throw_exception((const char *)API_ZmqFailed,
                                     o.str(),
                                    (const char *)"ZmqEventSupplier::create_mcast_event_socket");
     }
@@ -568,13 +592,13 @@ void ZmqEventSupplier::init_event_cptr(string &event_name)
     pos = event_cptr.find(event_name);
     if (pos == event_cptr.end())
     {
-        if (event_cptr.insert(make_pair(event_name,0)).second == false)
+        if (event_cptr.insert(make_pair(event_name,1)).second == false)
         {
             TangoSys_OMemStream o;
             o << "Can't insert event counter for event ";
             o << event_name << " in EventSupplier instance" << ends;
 
-            Except::throw_exception((const char *)"DServer_Events",
+            Except::throw_exception((const char *)API_InternalError,
                                     o.str(),
                                    (const char *)"ZmqEventSupplier::init_event_cptr");
         }
@@ -620,6 +644,7 @@ void ZmqEventSupplier::push_heartbeat_event()
         if (Util::_FileDb == true)
             heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
         heartbeat_event_name = heartbeat_event_name + ".heartbeat";
+		transform(heartbeat_event_name.begin(),heartbeat_event_name.end(),heartbeat_event_name.begin(),::tolower);
 	    heartbeat_name_init = true;
 	}
 
@@ -643,6 +668,8 @@ void ZmqEventSupplier::push_heartbeat_event()
             nb_event = 2;
             double_send_heartbeat = false;
         }
+
+		cout3 << "ZmqEventSupplier::push_heartbeat_event(): nb_event = " << nb_event << endl;
 
         while (nb_event != 0)
         {
@@ -682,7 +709,7 @@ void ZmqEventSupplier::push_heartbeat_event()
                             omniORB::logger log;
                             log << "ZMQ: Endianess" << '\n';
                         }
-                        omni::giopStream::dumpbuf((unsigned char *)endian_mess.data(),endian_mess.size());
+                        omni::giopStream::dumpbuf((unsigned char *)endian_mess_heartbeat.data(),endian_mess_heartbeat.size());
 
                         {
                             omniORB::logger log;
@@ -699,7 +726,7 @@ void ZmqEventSupplier::push_heartbeat_event()
                 adm_dev->last_heartbeat_zmq = now_time;
 
                 heartbeat_pub_sock->send(name_mess,ZMQ_SNDMORE);
-                heartbeat_pub_sock->send(endian_mess,ZMQ_SNDMORE);
+                heartbeat_pub_sock->send(endian_mess_heartbeat,ZMQ_SNDMORE);
                 endian_mess_sent = true;
                 heartbeat_pub_sock->send(heartbeat_call_mess,0);
                 call_mess_sent = true;
@@ -708,7 +735,7 @@ void ZmqEventSupplier::push_heartbeat_event()
 // For reference counting on zmq messages which do not have a local scope
 //
 
-                endian_mess.copy(&endian_mess_2);
+                endian_mess_heartbeat.copy(&endian_mess_heartbeat_2);
                 heartbeat_call_mess.copy(&heartbeat_call_mess_2);
 
                 nb_event--;
@@ -717,7 +744,7 @@ void ZmqEventSupplier::push_heartbeat_event()
             {
                 cout3 << "ZmqEventSupplier::push_heartbeat_event() failed !\n";
                 if (endian_mess_sent == true)
-                    endian_mess.copy(&endian_mess_2);
+                    endian_mess_heartbeat.copy(&endian_mess_heartbeat_2);
                 if (call_mess_sent == true)
                     heartbeat_call_mess.copy(&heartbeat_call_mess_2);
 
@@ -729,7 +756,7 @@ void ZmqEventSupplier::push_heartbeat_event()
                 else
                     o << ends;
 
-                Except::throw_exception((const char *)"DServer_Events",
+                Except::throw_exception((const char *)API_ZmqFailed,
                                         o.str(),
                                        (const char *)"ZmqEventSupplier::push_heartbeat_event");
             }
@@ -1016,151 +1043,197 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Get publisher socket (multicast case)
 //
 
-        int send_nb = 1;
-        zmq::socket_t *pub;
-        pub = event_pub_sock;
+		int send_nb = 1;
+		zmq::socket_t *pub;
+		pub = event_pub_sock;
 
-        zmq::message_t *name_mess_ptr = &name_mess;
-        zmq::message_t *endian_mess_ptr = &endian_mess;
-        zmq::message_t *event_call_mess_ptr = &event_call_mess;
-        zmq::message_t *data_mess_ptr = &data_mess;
+		zmq::message_t *name_mess_ptr = &name_mess;
+		zmq::message_t *endian_mess_ptr = &endian_mess;
+		zmq::message_t *event_call_mess_ptr = &event_call_mess;
+		zmq::message_t *data_mess_ptr = &data_mess;
 
-        if (event_mcast.empty() == false)
-        {
-            map<string,McastSocketPub>::iterator ite;
+		map<string,McastSocketPub>::iterator mcast_ite;
+		map<string,McastSocketPub>::iterator mcast_ite_end = event_mcast.end();
 
-            if ((ite = event_mcast.find(event_name)) != event_mcast.end())
-            {
-                if (ite->second.local_client == false)
-                {
-                   pub = ite->second.pub_socket;
-                }
-                else
-                {
-                    if (ite->second.pub_socket != NULL)
-                    {
-                        send_nb = 2;
-                        pub = ite->second.pub_socket;
-                    }
-                }
+		bool local_double_send = double_send;
+		bool mcast_event = false;
 
-            }
-        }
+		if (event_mcast.empty() == false)
+		{
+			if ((mcast_ite = event_mcast.find(event_name)) != mcast_ite_end)
+			{
+				if (mcast_ite->second.local_client == false)
+				{
+					pub = mcast_ite->second.pub_socket;
+				}
+				else
+				{
+					if (mcast_ite->second.pub_socket != NULL)
+					{
+						send_nb = 2;
+						pub = mcast_ite->second.pub_socket;
+					}
+				}
+				local_double_send = mcast_ite->second.double_send;
+				mcast_ite->second.double_send = false;
+				mcast_event = true;
+			}
+		}
 
-        if (double_send == true)
-        {
-            send_nb = 2;
-            double_send = false;
-        }
+		if (local_double_send == true)
+		{
+			send_nb = 2;
+			if (mcast_event == false)
+				double_send = false;
+		}
 
 //
 // If we have a multicast socket with also a local client
-// we are obliged to send to times the messages.
+// we are obliged to send two times the messages.
 // ZMQ does not support local client with PGM socket
 //
 
-        zmq::message_t name_mess_2;
-        zmq::message_t event_call_mess_2;
-        zmq::message_t data_mess_2;
+		zmq::message_t name_mess_cpy;
+		zmq::message_t event_call_mess_cpy;
+		zmq::message_t data_mess_cpy;
 
-        if (send_nb == 2)
-        {
-            name_mess_2.copy(&name_mess);
-            event_call_mess_2.copy(&event_call_mess);
-            data_mess_2.copy(&data_mess);
-        }
+		if (send_nb == 2)
+		{
+			name_mess_cpy.copy(&name_mess);
+			event_call_mess_cpy.copy(&event_call_mess);
+			data_mess_cpy.copy(&data_mess);
+		}
 
-        while(send_nb > 0)
-        {
+		while(send_nb > 0)
+		{
 
 //
 // Push the event
 //
 
-            bool ret;
+			bool ret;
 
-            ret = pub->send(*name_mess_ptr,ZMQ_SNDMORE);
-            if (ret == false)
-            {
-                cerr << "Name message returned false, assertion!!!!" << endl;
-                assert(false);
-            }
+			ret = pub->send(*name_mess_ptr,ZMQ_SNDMORE);
+			if (ret == false)
+			{
+				cerr << "Name message returned false, assertion!!!!" << endl;
+				assert(false);
+			}
 
-            ret = pub->send(*endian_mess_ptr,ZMQ_SNDMORE);
-            if (ret == false)
-            {
-                cerr << "Endian message returned false, assertion!!!!" << endl;
-                assert(false);
-            }
-            endian_mess_sent = true;
+			ret = pub->send(*endian_mess_ptr,ZMQ_SNDMORE);
+			if (ret == false)
+			{
+				cerr << "Endian message returned false, assertion!!!!" << endl;
+				assert(false);
+			}
+			endian_mess_sent = true;
 
-            pub->send(*event_call_mess_ptr,ZMQ_SNDMORE);
-            ret = pub->send(*data_mess_ptr,0);
-            if (ret == false)
-            {
-                cerr << "Data message returned false, assertion!!!!" << endl;
-                assert(false);
-            }
+			ret = pub->send(*event_call_mess_ptr,ZMQ_SNDMORE);
+			if (ret == false)
+			{
+				cerr << "Call message returned false, assertion!!!!" << endl;
+				assert(false);
+			}
 
-            send_nb--;
-            if (send_nb == 1)
-            {
+			ret = pub->send(*data_mess_ptr,0);
+			if (ret == false)
+			{
+				cerr << "Data message returned false, assertion!!!!" << endl;
+				assert(false);
+			}
+
+			send_nb--;
+			if (send_nb == 1)
+			{
+
+				if ((event_mcast.empty() == false) && (mcast_ite != mcast_ite_end))
+				{
 
 //
 // Case of multicast socket with a local client
+// Send the event also on the local socket
 //
 
-                pub = event_pub_sock;
+					if (mcast_ite->second.local_client == true)
+					{
+						zmq::socket_t *old_pub = pub;
+						pub = event_pub_sock;
 
-                name_mess_ptr = &name_mess_2;
-                endian_mess.copy(&endian_mess_2);
-                event_call_mess_ptr = &event_call_mess_2;
-                data_mess_ptr = &data_mess_2;
-            }
+						name_mess.copy(&name_mess_cpy);
+						endian_mess.copy(&endian_mess_2);
+						event_call_mess.copy(&event_call_mess_cpy);
+						data_mess.copy(&data_mess_cpy);
 
-        }
+						pub->send(*name_mess_ptr,ZMQ_SNDMORE);
+						pub->send(*endian_mess_ptr,ZMQ_SNDMORE);
+						endian_mess_sent = true;
+						pub->send(*event_call_mess_ptr,ZMQ_SNDMORE);
+						pub->send(*data_mess_ptr,0);
+
+						pub = old_pub;
+
+						name_mess_ptr = &name_mess_cpy;
+						endian_mess.copy(&endian_mess_2);
+						event_call_mess_ptr = &event_call_mess_cpy;
+						data_mess_ptr = &data_mess_cpy;
+					}
+					else
+					{
+						name_mess_ptr = &name_mess_cpy;
+						endian_mess.copy(&endian_mess_2);
+						event_call_mess_ptr = &event_call_mess_cpy;
+						data_mess_ptr = &data_mess_cpy;
+					}
+				}
+
+				name_mess_ptr = &name_mess_cpy;
+				endian_mess.copy(&endian_mess_2);
+				event_call_mess_ptr = &event_call_mess_cpy;
+				data_mess_ptr = &data_mess_cpy;
+			}
+		}
 
 //
 // Increment event counter
 //
 
-        if (ev_cptr_ite != event_cptr.end())
-            ev_cptr_ite->second++;
+		if (ev_cptr_ite != event_cptr.end())
+			ev_cptr_ite->second++;
 
 //
 // release mutex if we haven't use ZMQ no copy mode
 //
 
-        if (large_data == false)
-            push_mutex.unlock();
+		if (large_data == false)
+			push_mutex.unlock();
 
 //
 // For reference counting on zmq messages which do not have a local scope
 //
 
-        endian_mess.copy(&endian_mess_2);
-    }
-    catch(...)
-    {
-        cout3 << "ZmqEventSupplier::push_event() failed !!!!!!!!!!!\n";
-        if (endian_mess_sent == true)
-            endian_mess.copy(&endian_mess_2);
+		endian_mess.copy(&endian_mess_2);
+	}
+	catch(...)
+	{
+		cout3 << "ZmqEventSupplier::push_event() failed !!!!!!!!!!!\n";
+		if (endian_mess_sent == true)
+			endian_mess.copy(&endian_mess_2);
 
-        if (large_message_created == false)
-            push_mutex.unlock();
+		if (large_message_created == false)
+			push_mutex.unlock();
 
-        TangoSys_OMemStream o;
-        o << "Can't push ZMQ event for event ";
-        o << event_name;
-        if (zmq_errno() != 0)
-            o << "\nZmq error: " << zmq_strerror(zmq_errno()) << ends;
-        else
-            o << ends;
+		TangoSys_OMemStream o;
+		o << "Can't push ZMQ event for event ";
+		o << event_name;
+		if (zmq_errno() != 0)
+			o << "\nZmq error: " << zmq_strerror(zmq_errno()) << ends;
+		else
+			o << ends;
 
-        Except::throw_exception((const char *)"DServer_Events",
-                                    o.str(),
-                                   (const char *)"ZmqEventSupplier::push_event");
-    }
+		Except::throw_exception((const char *)API_ZmqFailed,
+									o.str(),
+									(const char *)"ZmqEventSupplier::push_event");
+	}
 }
 
 //+----------------------------------------------------------------------------

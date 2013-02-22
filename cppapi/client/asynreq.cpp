@@ -3,7 +3,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // cpp 	- C++ source code file for TANGO AsynReq class
 //
-// programmer 	- Emmanuel Taurel (taurel@esrf.fr)
+// programmer 	- Emmanuel Taurel
 //
 // original 	- January 2003
 //

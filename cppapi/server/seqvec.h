@@ -207,7 +207,7 @@ inline void operator<<(DevVarLong64Array &lval,const vector<DevLong64> &rval)
 inline void operator<<(vector<DevLong64> &lval,const DevVarLong64Array &rval)
 {
 	long nb_elt = rval.length();
-	if (lval.size() != 0)
+	if (lval.empty() == false)
 		lval.clear();
 	for (long i = 0;i < nb_elt;i++)
 		lval.push_back(rval[i]);
@@ -403,7 +403,7 @@ inline void operator<<(DevVarULongArray &lval,const vector<DevULong> &rval)
 inline void operator<<(vector<DevULong> &lval,const DevVarULongArray &rval)
 {
 	long nb_elt = rval.length();
-	if (lval.size() != 0)
+	if (lval.empty() == false)
 		lval.clear();
 	for (long i = 0;i < nb_elt;i++)
 		lval.push_back(rval[i]);
@@ -443,7 +443,7 @@ inline void operator<<(DevVarULong64Array &lval,const vector<DevULong64> &rval)
 inline void operator<<(vector<DevULong64> &lval,const DevVarULong64Array &rval)
 {
 	long nb_elt = rval.length();
-	if (lval.size() != 0)
+	if (lval.empty() == false)
 		lval.clear();
 	for (long i = 0;i < nb_elt;i++)
 		lval.push_back(rval[i]);

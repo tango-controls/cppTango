@@ -400,7 +400,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		} \
 		catch(CORBA::TRANSIENT &trans_ping) \
 		{ \
-			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed) \
+			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed || \
+				trans_ping.minor() == omni::TRANSIENT_CallTimedout) \
 			{ \
 				need_reconnect = true; \
 			} \

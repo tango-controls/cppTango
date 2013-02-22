@@ -1629,6 +1629,34 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
     copy(host_ip_adrs.begin(),host_ip_adrs.end(),back_inserter(ip_adr_list));
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ApiUtil::print_error_message
+//
+// description :
+//		Print error message on stderr but first print date
+//
+// argument :
+//		in :
+//			- mess : The user error message
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void ApiUtil::print_error_message(const char *mess)
+{
+	time_t tmp_val = time(NULL);
+
+	char tmp_date[128];
+#ifdef _TG_WINDOWS_
+	ctime_s(tmp_date,128,&tmp_val);
+#else
+	ctime_r(&tmp_val,tmp_date);
+#endif
+	tmp_date[strlen(tmp_date) - 1] = '\0';
+	cerr << tmp_date << ": " << mess << endl;
+}
+
 //+-------------------------------------------------------------------------
 //
 // operator overloading : 	<<

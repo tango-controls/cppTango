@@ -343,7 +343,7 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 vector<DeviceClass *>::iterator DServerSignal::find_class(long signo,DeviceClass *cl_ptr)
 {
 	vector<DeviceClass *>::iterator p;
-	for (p = reg_sig[signo].registered_classes.begin();p < reg_sig[signo].registered_classes.end();p++)
+	for (p = reg_sig[signo].registered_classes.begin();p < reg_sig[signo].registered_classes.end();++p)
 	{
 		if ((*p) == cl_ptr)
 			break;
@@ -454,7 +454,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 vector<DeviceImpl *>::iterator DServerSignal::find_device(long signo,DeviceImpl *dev_ptr)
 {
 	vector<DeviceImpl *>::iterator p;
-	for (p = reg_sig[signo].registered_devices.begin();p < reg_sig[signo].registered_devices.end();p++)
+	for (p = reg_sig[signo].registered_devices.begin();p < reg_sig[signo].registered_devices.end();++p)
 	{
 		if ((*p) == dev_ptr)
 			break;

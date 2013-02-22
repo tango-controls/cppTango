@@ -1803,7 +1803,6 @@ bool GroupAttrReply::operator>> (T& dest)
   {
     std::bitset<DeviceAttribute::numFlags> bs;
     data_m.exceptions(exception_enabled ? bs.set() : bs.reset());
-    bool result;
     try
     {
       result = data_m >> dest;

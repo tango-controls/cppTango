@@ -2205,6 +2205,9 @@ protected:
     void validate_change_properties(const string &,const char *,string &,vector<double> &,vector<bool> &,vector<bool> &);
     void validate_change_properties(const string &,const char *,string &,vector<double> &);
     bool prop_in_list(const char *,string &,size_t,vector<AttrProperty> &);
+    void set_format_notspec();
+    bool is_format_notspec(const char *);
+	void def_format_in_dbdatum(DbDatum &);
 
     void avns_in_db(const char *,string &);
     void avns_in_att(prop_type);
@@ -2420,6 +2423,21 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 		A = CORBA::string_dup(s.c_str()); \
 		B.str(""); \
 		B.clear(); \
+	} \
+	else \
+		(void)0
+
+//
+// Throw exception if pointer is null
+//
+
+#define CHECK_PTR(A,B) \
+	if (A == NULL) \
+	{ \
+		TangoSys_OMemStream o; \
+		o << "Data pointer for attribute " << B << " is NULL!" << ends; \
+		Except::throw_exception((const char *)API_AttrOptProp,o.str(), \
+                            (const char *)"Attribute::set_value()"); \
 	} \
 	else \
 		(void)0

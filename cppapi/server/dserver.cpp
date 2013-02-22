@@ -768,7 +768,7 @@ void DServer::restart(string &d_name)
 	{
 		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		ite_end = dev_list.end();
-		for (ite = dev_list.begin();ite != dev_list.end();ite++)
+		for (ite = dev_list.begin();ite != dev_list.end();++ite)
 		{
 			if ((*ite)->get_name_lower() == lower_d_name)
 			{
@@ -987,7 +987,7 @@ void DServer::restart(string &d_name)
 	}
 
 //
-// Re-set event parameters (if needed)
+// Re-set classical event parameters (if needed)
 //
 
 	for (i = 0;i < eve.size();i++)
@@ -1008,6 +1008,20 @@ void DServer::restart(string &d_name)
             att.set_use_notifd_event();
         if (eve[i].zmq == true)
             att.set_use_zmq_event();
+	}
+
+//
+// Re-set multicast event parameters
+//
+
+	vector<string> m_cast;
+	vector<Attribute *> &att_list = new_dev->get_device_attr()->get_attribute_list();
+
+	for (unsigned int j = 0;j < att_list.size();++j)
+	{
+		mcast_event_for_att(new_dev->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
+		if (m_cast.size() != 0)
+			att_list[j]->set_mcast_event(m_cast);
 	}
 
 //

@@ -293,6 +293,7 @@ public:
 	void add_state_status_attrs();
 	void read_attributes_from_cache(const Tango::DevVarStringArray&,Tango::AttributeValueList_3 *&,Tango::AttributeValueList_4 *&);
 	void delete_dev() {ext_3->delete_dev();}
+	void get_attr_props(const char *,vector<AttrProperty> &);
 
 protected:
 /// @privatesection

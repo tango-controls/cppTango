@@ -337,7 +337,10 @@ void Connection::check_and_reconnect(Tango::AccessControlType &act)
 	{
 		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
+		{
 			reconnect(dbase_used);
+			act = access;
+		}
 	}
 }
 
@@ -354,7 +357,10 @@ void Connection::check_and_reconnect(Tango::DevSource &sou,Tango::AccessControlT
 	{
 		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
+		{
 			reconnect(dbase_used);
+			act = access;
+		}
 	}
 }
 
@@ -1077,7 +1083,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 
 				vector<Database *> & v_d = au->get_db_vect();
 				Database *db;
-				if (v_d.size() == 0)
+				if (v_d.empty() == true)
 					db = static_cast<Database *>(this);
 				else
 				{
@@ -1270,7 +1276,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 
 				vector<Database *> & v_d = au->get_db_vect();
 				Database *db;
-				if (v_d.size() == 0)
+				if (v_d.empty() == true)
 					db = static_cast<Database *>(this);
 				else
 				{
@@ -1600,9 +1606,10 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 		}
 	}
 
-
+//
 // get the name of the asscociated device when connecting
 // inside a device server
+//
 
 	try
 	{
@@ -1826,7 +1833,6 @@ void DeviceProxy::parse_name(string &full_name)
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
-			exit(-1);
 		}
 		else
 		{
@@ -5936,7 +5942,7 @@ bool DeviceProxy::is_polled(polled_object obj, string &obj_name,string &upd)
 	vector<string> *poll_str;
 
 	poll_str = polling_status();
-	if (poll_str->size() == 0)
+	if (poll_str->empty() == true)
 	{
 		delete poll_str;
 		return ret;

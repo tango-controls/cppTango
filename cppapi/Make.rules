@@ -121,6 +121,7 @@ ifdef prefix
 ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
 else
 ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.2/$(BIN_DIR)
 endif
 
 ##############################################################################

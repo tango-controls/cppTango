@@ -167,6 +167,7 @@ public:
 	void set_event_buffer_hwm(DevLong val) {if (user_sub_hwm == -1)user_sub_hwm=val;}
 
 	void get_ip_from_if(vector<string> &);
+	void print_error_message(const char *);
 
 //
 // EventConsumer related methods

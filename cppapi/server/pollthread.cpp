@@ -1204,10 +1204,28 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 // Fire event
 //
 
+		SendEventType send_event;
         if (event_supplier_nd != NULL)
-            event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
+            send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
         if (event_supplier_zmq != NULL)
-            event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
+		{
+			if (event_supplier_nd != NULL)
+			{
+				vector<string> f_names;
+				vector<double> f_data;
+				vector<string> f_names_lg;
+				vector<long> f_data_lg;
+
+				if (send_event.change == true)
+					event_supplier_zmq->push_event(to_do.dev,"change",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except);
+				if (send_event.archive == true)
+					event_supplier_zmq->push_event(to_do.dev,"archive",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except);
+				if (send_event.periodic == true)
+					event_supplier_zmq->push_event(to_do.dev,"periodic",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except);
+			}
+			else
+				event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
+		}
 	}
 }
 

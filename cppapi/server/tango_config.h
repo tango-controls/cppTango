@@ -132,15 +132,15 @@
 //
 // Some C++11 feature
 // Unique_ptr -> gcc 4.3
+// rvalues -> gcc 4.3
 // Lambda function -> gcc 4.5
 // nullptr -> gcc 4.6
-// rvalues -> gcc 4.3
 //
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
         #if __GNUC__ == 4
-            #if __GNUC_MINOR__ > 2
+            #if __GNUC_MINOR__ > 3
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE
             #endif

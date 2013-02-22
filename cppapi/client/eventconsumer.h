@@ -55,6 +55,12 @@
 
 #include <zmq.hpp>
 
+#ifdef ZMQ_VERSION
+	#if ZMQ_VERSION > 30201
+		#define ZMQ_HAS_DISCONNECT
+	#endif
+#endif
+
 
 namespace Tango
 {
@@ -291,6 +297,7 @@ typedef struct event_callback_zmq
 {
     DevLong                         device_idl;
     DevULong                        ctr;
+    string							endpoint;
 }EventCallBackZmq;
 
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
@@ -313,7 +320,12 @@ typedef struct event_channel_base
 	ChannelType                     channel_type;
 } EventChannelBase;
 
-typedef struct channel_struct: public EventChannelBase
+typedef struct event_channel_zmq
+{
+    string                        	endpoint;
+}EventChannelZmq;
+
+typedef struct channel_struct: public EventChannelBase, public EventChannelZmq
 {
 	CosNotifyChannelAdmin::EventChannel_var eventChannel;
 	CosNotifyChannelAdmin::StructuredProxyPushSupplier_var structuredProxyPushSupplier;
@@ -401,9 +413,9 @@ protected :
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &);
 
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &) = 0;
-    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name)) {}
+    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint)) {}
     virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &) = 0;
-    virtual void disconnect_event(string &) {}
+    virtual void disconnect_event(string &,string &) {}
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
 };
@@ -487,9 +499,9 @@ public :
 protected :
 	ZmqEventConsumer(ApiUtil *ptr);
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
-    virtual void disconnect_event_channel(string &channel_name);
+    virtual void disconnect_event_channel(string &channel_name,string &endpoint);
     virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &);
-    virtual void disconnect_event(string &);
+    virtual void disconnect_event(string &,string &);
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = ZMQ;}
 
@@ -523,7 +535,7 @@ private :
     void process_event(zmq::message_t &,zmq::message_t &,zmq::message_t &,zmq::message_t &);
     void process_event(zmq_msg_t &,zmq_msg_t &,zmq_msg_t &,zmq_msg_t &);
     void multi_tango_host(zmq::socket_t *,SocketCmd,string &);
-	void print_error_message(const char *);
+	void print_error_message(const char *mess) {ApiUtil *au=ApiUtil::instance();au->print_error_message(mess);}
 
     friend class DelayEvent;
 };

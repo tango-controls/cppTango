@@ -111,15 +111,11 @@ public:
 	Tango::DevFailed *get_last_except_i() {return ring.get_last_except();}
 	Tango::DevErrorList &get_last_attr_error_i() {return ring.get_last_attr_error();}
 
-	inline void get_delta_t(vector<double> &vd, long nb)
-	{omni_mutex_lock(*this);get_delta_t_i(vd,nb);}
-	inline void get_delta_t_i(vector<double> &vd,long nb)
-	{ring.get_delta_t(vd,nb);}
+	void get_delta_t(vector<double> &vd, long nb) {omni_mutex_lock(*this);get_delta_t_i(vd,nb);}
+	void get_delta_t_i(vector<double> &vd,long nb) {ring.get_delta_t(vd,nb);}
 
-	inline long get_elt_nb_in_buffer()
-	{omni_mutex_lock(*this);return get_elt_nb_in_buffer_i();}
-	inline long get_elt_nb_in_buffer_i()
-	{return ring.get_nb_elt();}
+	long get_elt_nb_in_buffer() {omni_mutex_lock(*this);return get_elt_nb_in_buffer_i();}
+	long get_elt_nb_in_buffer_i() {return ring.get_nb_elt();}
 
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);
 	void get_cmd_history(long,Tango::DevCmdHistory_4 *,Tango::CmdArgType &);

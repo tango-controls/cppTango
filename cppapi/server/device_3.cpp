@@ -2566,7 +2566,8 @@ void Device_3Impl::add_state_status_attrs()
 	Tango::Attr att_state("State",Tango::DEV_STATE);
 	vector<AttrProperty> prop_list_state;
 	string att_name("State");
-	dev_attr->add_default(prop_list_state,device_name,att_name);
+	get_attr_props("State",prop_list_state);
+	dev_attr->add_default(prop_list_state,device_name,att_name,Tango::DEV_STATE);
 
 	dev_attr->add_attr(new Attribute(prop_list_state,att_state,device_name,-1));
 
@@ -2577,11 +2578,87 @@ void Device_3Impl::add_state_status_attrs()
 	Tango::Attr att_status("Status",Tango::DEV_STRING);
 	vector<AttrProperty> prop_list_status;
 	att_name = "Status";
-	dev_attr->add_default(prop_list_status,device_name,att_name);
+	get_attr_props("Status",prop_list_status);
+	dev_attr->add_default(prop_list_status,device_name,att_name,Tango::DEV_STRING);
 
 	dev_attr->add_attr(new Attribute(prop_list_status,att_status,device_name,-1));
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_3Impl::get_attr_props
+//
+// description :
+//		Add state and status in the device attribute list
+//
+// argument:
+//		in :
+//			- attr_name : The attribute name
+//		inout :
+//			- prop_list : The attribute property vector
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Device_3Impl::get_attr_props(const char *attr_name,vector<AttrProperty> &prop_list)
+{
+	Tango::Util *tg = Tango::Util::instance();
+
+	if (tg->_UseDb == true)
+	{
+		Tango::DbData db_list;
+		db_list.push_back(DbDatum(attr_name));
+
+//
+// Get attr prop from db cache
+//
+
+		try
+		{
+			tg->get_database()->get_device_attribute_property(device_name,db_list,tg->get_db_cache());
+		}
+		catch (Tango::DevFailed &)
+		{
+			cout4 << "Exception while accessing database" << endl;
+
+			TangoSys_OMemStream o;
+			o << "Can't get device attribute properties for device " << device_name << ", attribute " << attr_name << ends;
+
+			Except::throw_exception((const char *)API_DatabaseAccess,
+								o.str(),
+								(const char *)"Device_3Impl::get_attr_props");
+		}
+
+//
+// Insert AttrProperty element in suplied vector for att. properties found in DB
+//
+
+		long ind = 0;
+
+		long nb_prop = 0;
+		db_list[ind] >> nb_prop;
+		ind++;
+
+		for (long j = 0;j < nb_prop;j++)
+		{
+			if (db_list[ind].size() > 1)
+			{
+				string tmp(db_list[ind].value_string[0]);
+				long nb = db_list[ind].size();
+				for (int k = 1;k < nb;k++)
+				{
+					tmp = tmp + ",";
+					tmp = tmp + db_list[ind].value_string[k];
+				}
+				prop_list.push_back(AttrProperty(db_list[ind].name,tmp));
+			}
+			else
+				prop_list.push_back(AttrProperty(db_list[ind].name,
+								db_list[ind].value_string[0]));
+			ind++;
+		}
+	}
+}
 
 //+-------------------------------------------------------------------------------------------------------------------
 //

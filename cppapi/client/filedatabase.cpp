@@ -1121,7 +1121,7 @@ void  FileDatabase :: write_file()
 CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 {
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	char num_prop_str[256];
 	char num_vals_str[256];
 	unsigned int num_prop = 0;
@@ -1218,7 +1218,7 @@ CORBA::Any*   FileDatabase :: DbPutDeviceProperty(CORBA::Any& send)
 
 	CORBA::Any* any_ptr = new CORBA::Any;
 
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	unsigned int n_properties=0;
 	int n_values=0;
 
@@ -1277,7 +1277,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
 {
 	cout4 << "FILEDATABASE: entering DbDeleteDeviceProperty" << endl;
 
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 
 	send >>= data_in;
 
@@ -1314,7 +1314,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceProperty(CORBA::Any& send)
 CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 {
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	char num_prop_str[256];
 	char num_attr_str[256];
 	unsigned int num_attr = 0;
@@ -1407,7 +1407,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 
 CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
 {
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	unsigned int num_prop = 0;
 	unsigned int num_attr = 0;
 	unsigned int num_vals = 0;
@@ -1461,7 +1461,7 @@ CORBA::Any*   FileDatabase :: DbPutDeviceAttributeProperty(CORBA::Any& send)
 							temp_attribute_property->properties[k]->value.push_back(string((*data_in)[index])); index++;
 						}
 
-						//(*dev_it)->attribute_properties[j]->properties[k]->value.push_back( string((*data_in)[index]) );index++;
+// (*dev_it)->attribute_properties[j]->properties[k]->value.push_back( string((*data_in)[index]) );index++;
 						if (index >= data_in->length())
 						{
 							write_file();
@@ -1504,7 +1504,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
 {
 	cout4 << "FILEDATABASE: entering DbDeleteDeviceAttributeProperty" << endl;
 
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 
 	send >>= data_in;
 
@@ -1547,7 +1547,7 @@ CORBA::Any*   FileDatabase :: DbDeleteDeviceAttributeProperty(CORBA::Any& send)
 CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 {
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	char num_prop_str[256];
 	char num_vals_str[256];
 	unsigned int num_prop = 0;
@@ -1640,7 +1640,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 {
 	CORBA::Any* ret = new CORBA::Any;
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	unsigned int n_properties=0;
 	int n_values=0;
 
@@ -1710,7 +1710,7 @@ CORBA::Any*   FileDatabase :: DbDeleteClassProperty(CORBA::Any& send)
 {
 	cout4 << "FILEDATABASE: entering DbDeleteClassProperty" << endl;
 
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 
 	send >>= data_in;
 
@@ -1747,7 +1747,7 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 
 	CORBA::Any* any_ptr = new CORBA::Any();
 	Tango::DevVarStringArray* data_out = new DevVarStringArray;
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	unsigned int num_attr  = 0;
 	int num_prop = 0;
 	char num_attr_str[256];
@@ -1836,7 +1836,7 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 {
 	CORBA::Any* ret = new CORBA::Any();
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	unsigned int num_attr  = 0;
 	unsigned int num_prop = 0;
 	unsigned int num_vals = 0;
@@ -1933,7 +1933,7 @@ CORBA::Any*  FileDatabase :: DbPutClassAttributeProperty(CORBA::Any& send)
 CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = new CORBA::Any;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbDeleteClassAttributeProperty");
 	return ret;
@@ -1943,7 +1943,7 @@ CORBA::Any*   FileDatabase :: DbDeleteClassAttributeProperty(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbGetDeviceList(CORBA::Any& send)
 {
 	CORBA::Any* any_ptr = new CORBA::Any();
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	Tango::DevVarStringArray* data_out  = new DevVarStringArray;
 
 	cout4 << "FILEDATABASE: entering DbGetDeviceList" << endl;
@@ -2059,7 +2059,7 @@ CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbImportDevice");
 
@@ -2070,7 +2070,7 @@ CORBA::Any*  FileDatabase :: DbImportDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbExportDevice");
 
@@ -2081,7 +2081,7 @@ CORBA::Any*  FileDatabase :: DbExportDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbUnExportDevice");
 
@@ -2092,7 +2092,7 @@ CORBA::Any*  FileDatabase :: DbUnExportDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbAddDevice");
 
@@ -2103,7 +2103,7 @@ CORBA::Any*  FileDatabase :: DbAddDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbDeleteDevice");
 
@@ -2114,7 +2114,7 @@ CORBA::Any*  FileDatabase :: DbDeleteDevice(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbAddServer");
 
@@ -2125,7 +2125,7 @@ CORBA::Any*  FileDatabase :: DbAddServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbDeleteServer");
 
@@ -2136,7 +2136,7 @@ CORBA::Any*  FileDatabase :: DbDeleteServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbExportServer");
 
@@ -2147,7 +2147,7 @@ CORBA::Any*  FileDatabase :: DbExportServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbExportDevice");
 
@@ -2158,7 +2158,7 @@ CORBA::Any*  FileDatabase :: DbUnExportServer(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbGetServerInfo(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"Filedatabase::DbGetServerInfo");
 
@@ -2183,7 +2183,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceMemberList(CORBA::Any&)
 CORBA::Any*  FileDatabase :: DbGetDeviceExportedList(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceExportedList");
 
@@ -2223,7 +2223,7 @@ CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
 	CORBA::Any* any_ptr = new CORBA::Any();
 
 
-	const Tango::DevVarStringArray* data_in;
+	const Tango::DevVarStringArray* data_in = NULL;
 	Tango::DevVarStringArray* data_out  = new DevVarStringArray;
 	char num_attr_str[256];
 	const char* zero_str = "0";
@@ -2246,7 +2246,7 @@ CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
 CORBA::Any*  FileDatabase :: DbPutProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbPutProperty");
 	return ret;
@@ -2257,7 +2257,7 @@ CORBA::Any*  FileDatabase :: DbDeleteProperty(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbDeleteProperty");
 	return ret;
@@ -2268,7 +2268,7 @@ CORBA::Any*  FileDatabase :: DbGetAliasDevice(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAliasDevice");
 	return ret;
@@ -2279,7 +2279,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAlias(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceAlias");
 	return ret;
@@ -2290,7 +2290,7 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAlias(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAttributeAlias");
 	return ret;
@@ -2301,7 +2301,7 @@ CORBA::Any*  FileDatabase :: DbGetDeviceAliasList(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetDeviceAliasList");
 	return ret;
@@ -2312,7 +2312,7 @@ CORBA::Any*  FileDatabase :: DbGetAttributeAliasList(CORBA::Any&)
 {
 	CORBA::Any* ret = NULL;
 
-	Tango::Except::throw_exception((const char *)"Method not implemented.",
+	Tango::Except::throw_exception((const char *)API_NotSupported,
 	   				                     (const char *)"Call to a Filedatabase not implemented.",
 					                       (const char *)"DbGetAttributeAliasList");
 	return ret;

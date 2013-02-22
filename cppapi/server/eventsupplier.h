@@ -134,6 +134,7 @@ public :
 	void push_att_conf_events(DeviceImpl *device_impl,AttributeData &,DevFailed *,string &);
 
 	omni_mutex &get_push_mutex() {return push_mutex;}
+	static omni_mutex &get_event_mutex() {return event_mutex;}
 	string &get_fqdn_prefix() {return fqdn_prefix;}
 
 	bool get_one_subscription_cmd() {return one_subscription_cmd;}
@@ -273,9 +274,12 @@ public :
     bool is_event_mcast(string &);
     string &get_mcast_event_endpoint(string &);
     void init_event_cptr(string &event_name);
+    size_t get_mcast_event_nb() {return event_mcast.size();}
 
     bool update_connected_client(client_addr *);
     void set_double_send() {double_send=true;double_send_heartbeat=true;}
+
+    int get_zmq_release() {return zmq_release;}
 
 protected :
 	ZmqEventSupplier(Util *);
@@ -288,6 +292,7 @@ private :
         string                  endpoint;
         zmq::socket_t           *pub_socket;
         bool                    local_client;
+        bool					double_send;
     };
 
     struct ConnectedClient
@@ -299,7 +304,9 @@ private :
 	zmq::context_t              zmq_context;            // ZMQ context
 	zmq::socket_t               *heartbeat_pub_sock;    // heartbeat publisher socket
 	zmq::socket_t               *event_pub_sock;        // events publisher socket
-	map<string,McastSocketPub>  event_mcast;            // multicast socket(s)
+	map<string,McastSocketPub>  event_mcast;            // multicast socket(s) map
+														// The key is the full event name
+														// ie: tango://kidiboo.esrf.fr:1000/dev/test/10/att.change
 
 	string                      heartbeat_endpoint;     // heartbeat publisher endpoint
 	string                      host_ip;                // Host IP address
@@ -311,6 +318,8 @@ private :
 
     zmq::message_t              endian_mess;            // Zmq message for host endianness
     zmq::message_t              endian_mess_2;          //
+    zmq::message_t				endian_mess_heartbeat;	//
+    zmq::message_t				endian_mess_heartbeat_2;//
     zmq::message_t              heartbeat_call_mess;    //
     zmq::message_t              heartbeat_call_mess_2;  //
 
@@ -327,6 +336,8 @@ private :
 	list<ConnectedClient>       con_client;             // Connected clients
 	bool                        double_send;            // Double send flag
 	bool                        double_send_heartbeat;
+
+	int							zmq_release;			// ZMQ lib release
 
 	void tango_bind(zmq::socket_t *,string &);
 	unsigned char test_endian();

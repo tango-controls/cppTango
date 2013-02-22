@@ -2056,10 +2056,14 @@ void Attribute::get_properties_3(Tango::AttributeConfig_3 &conf)
 //
 // method : 		Attribute::set_properties
 //
-// description : 	Init the Tango::AttributeConfig with all the attribute
-//			properties value
+// description :
+//		Set the attribute properties value
 //
-//--------------------------------------------------------------------------
+// argument :
+// 		in :
+//			- conf : The new properties sent by client
+//			- d : Pointer to the device object
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_properties(const Tango::AttributeConfig &conf,Tango::DeviceImpl *d)
 {
@@ -2300,11 +2304,12 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 // The format
 //
 
-	if(TG_strcasecmp(conf.format,AlrmValueNotSpec) == 0 ||
-			(TG_strcasecmp(conf.format,FormatNotSpec) == 0))
+	bool format_not_spec = is_format_notspec(conf.format);
+
+	if(TG_strcasecmp(conf.format,AlrmValueNotSpec) == 0 || (format_not_spec == true))
 	{
 		// force library defaults (even if user defaults defined)
-		format = FormatNotSpec;
+		set_format_notspec();
 	}
 	else if(TG_strcasecmp(conf.format,NotANumber) == 0)
 	{
@@ -2315,7 +2320,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 		{
             found = prop_in_list("format",format,nb_user,def_user_prop);
             if (found == false)
-                format = FormatNotSpec;
+                set_format_notspec();
 		}
 	}
 	else if (strlen(conf.format) == 0)
@@ -2324,7 +2329,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 
         bool found = prop_in_list("format",format,nb_user,def_user_prop);
         if (found == false)
-            format = FormatNotSpec;
+            set_format_notspec();
 	}
 	else
 	{
@@ -6620,7 +6625,7 @@ void Attribute::check_str_prop(const Tango::AttributeConfig &conf,
         if (user_defaults == true || class_defaults == true)
         {
 			DbDatum desc("format");
-			desc << FormatNotSpec;
+			def_format_in_dbdatum(desc);
 			db_d.push_back(desc);
 			prop_to_update++;
         }
@@ -6639,7 +6644,7 @@ void Attribute::check_str_prop(const Tango::AttributeConfig &conf,
 			if (user_defaults)
                 desc << usr_def_val.c_str();
             else
-                desc << FormatNotSpec;
+                def_format_in_dbdatum(desc);
 			db_d.push_back(desc);
 			prop_to_update++;
         }
@@ -6678,7 +6683,7 @@ void Attribute::check_str_prop(const Tango::AttributeConfig &conf,
         db_del.push_back(del_desc);
         prop_to_delete++;
     }
-    else if (class_defaults == false && TG_strcasecmp(conf.format,FormatNotSpec) == 0)
+    else if (class_defaults == false && is_format_notspec(conf.format) == true)
     {
         DbDatum del_desc("format");
         db_del.push_back(del_desc);
@@ -6938,6 +6943,11 @@ void Attribute::event_prop_db(const char *prop_name,vector<double> &rel_change_t
 
 void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7043,6 +7053,11 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7149,6 +7164,11 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7255,6 +7275,11 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7359,6 +7384,11 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7463,6 +7493,11 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7575,6 +7610,11 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7680,6 +7720,11 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7785,6 +7830,11 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7888,6 +7938,11 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -7995,6 +8050,12 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 {
 
 //
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
+
+//
 // Throw exception if type is not correct
 //
 
@@ -8098,6 +8159,11 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -8203,6 +8269,11 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 {
+//
+// Throw exception if pointer is null
+//
+
+	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -8300,6 +8371,14 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevString *p_data_str,Tango::DevUChar *p_data,long size,bool release)
 {
+	if (p_data_str == NULL || p_data == NULL)
+	{
+		TangoSys_OMemStream o;
+		o << "Data pointer for attribute " << name << " is NULL!" << ends;
+		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
+                            (const char *)"Attribute::set_value()");
+	}
+
 	if (release == false)
 	{
 		enc_help.encoded_format = CORBA::string_dup(*p_data_str);
@@ -8318,36 +8397,36 @@ void Attribute::set_value(Tango::DevString *p_data_str,Tango::DevUChar *p_data,l
 	}
 }
 
-void Attribute::set_value(Tango::EncodedAttribute *attr) {
+void Attribute::set_value(Tango::EncodedAttribute *attr)
+{
+	CHECK_PTR(attr,name);
 
-  Tango::DevString *f    = attr->get_format();
-  Tango::DevUChar  *d    = attr->get_data();
-  long              size = attr->get_size();
+	Tango::DevString *f    = attr->get_format();
+	Tango::DevUChar  *d    = attr->get_data();
+	long              size = attr->get_size();
 
-  if( *f==NULL ) {
-
-    TangoSys_OMemStream o;
-    o << "DevEncoded format for attribute " << name << " not specified" << ends;
-    Except::throw_exception((const char *)API_AttrOptProp,o.str(),
+	if( *f==NULL )
+	{
+		TangoSys_OMemStream o;
+		o << "DevEncoded format for attribute " << name << " not specified" << ends;
+		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
                             (const char *)"Attribute::set_value()");
-  }
+	}
 
-  if( size==0 || !d ) {
+	if( size==0 || !d )
+	{
+		TangoSys_OMemStream o;
+		o << "DevEncoded data for attribute " << name << " not specified" << ends;
+		Except::throw_exception((const char *)API_AttrOptProp,o.str(),
+								(const char *)"Attribute::set_value()");
+	}
 
-    TangoSys_OMemStream o;
-    o << "DevEncoded data for attribute " << name << " not specified" << ends;
-    Except::throw_exception((const char *)API_AttrOptProp,o.str(),
-                            (const char *)"Attribute::set_value()");
-  }
+	set_value(f,d,size,false);
 
-
-  set_value(f,d,size,false);
-
-  if (attr->get_exclusion() == true)
-  {
-  	set_user_attr_mutex(attr->get_mutex());
-  }
-
+	if (attr->get_exclusion() == true)
+	{
+		set_user_attr_mutex(attr->get_mutex());
+	}
 }
 
 //+-------------------------------------------------------------------------
@@ -12487,7 +12566,7 @@ void Attribute::avns_in_db(const char *prop_name,string &dev_name)
 //
 // Arg in :			pt : Property type
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 void Attribute::avns_in_att(prop_type pt)
 {
@@ -12536,7 +12615,159 @@ void Attribute::avns_in_att(prop_type pt)
     }
 }
 
-//+-------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::set_format_notspec()
+//
+// description :
+//		Set the attribute format property to the default value which depends on attribute data type
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Attribute::set_format_notspec()
+{
+	switch (data_type)
+	{
+	case DEV_SHORT:
+	case DEV_LONG:
+	case DEV_LONG64:
+	case DEV_UCHAR:
+	case DEV_USHORT:
+	case DEV_ULONG:
+	case DEV_ULONG64:
+		format = FormatNotSpec_INT;
+		break;
+
+	case DEV_STRING:
+		format = FormatNotSpec_STR;
+		break;
+
+	case DEV_STATE:
+	case DEV_ENCODED:
+	case DEV_BOOLEAN:
+		format = AlrmValueNotSpec;
+		break;
+
+	case DEV_FLOAT:
+	case DEV_DOUBLE:
+		format = FormatNotSpec_FL;
+		break;
+
+	default:
+		break;
+	}
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::is_format_notspec()
+//
+// description :
+//		Set the attribute format property to the default value which depends on attribute data type
+//
+// argument :
+//		in :
+//			- format : The format property string
+//
+// return :
+//		This method retruns true if the format string is the default value
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+bool Attribute::is_format_notspec(const char *format)
+{
+	bool ret = false;
+
+	switch (data_type)
+	{
+	case DEV_SHORT:
+	case DEV_LONG:
+	case DEV_LONG64:
+	case DEV_UCHAR:
+	case DEV_USHORT:
+	case DEV_ULONG:
+	case DEV_ULONG64:
+		if (TG_strcasecmp(format,FormatNotSpec_INT) == 0)
+			ret = true;
+		break;
+
+	case DEV_STRING:
+		if (TG_strcasecmp(format,FormatNotSpec_STR) == 0)
+			ret = true;
+		break;
+
+	case DEV_STATE:
+	case DEV_ENCODED:
+	case DEV_BOOLEAN:
+		if (TG_strcasecmp(format,AlrmValueNotSpec) == 0)
+			ret = true;
+		break;
+
+	case DEV_FLOAT:
+	case DEV_DOUBLE:
+		if (TG_strcasecmp(format,FormatNotSpec_FL) == 0)
+			ret = true;
+		break;
+
+	default:
+		break;
+	}
+
+	return ret;
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::def_format_in_dbdatum()
+//
+// description :
+//		Insert the default format string in a DbDatum instance. This default value depends on the attribute
+//		data type
+//
+// argument :
+//		in :
+//			- db : Reference to the DbDatum object
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Attribute::def_format_in_dbdatum(DbDatum &db)
+{
+	switch (data_type)
+	{
+	case DEV_SHORT:
+	case DEV_LONG:
+	case DEV_LONG64:
+	case DEV_UCHAR:
+	case DEV_USHORT:
+	case DEV_ULONG:
+	case DEV_ULONG64:
+		db << FormatNotSpec_INT;
+		break;
+
+	case DEV_STRING:
+		db << FormatNotSpec_STR;
+		break;
+
+	case DEV_STATE:
+	case DEV_ENCODED:
+	case DEV_BOOLEAN:
+		db << AlrmValueNotSpec;
+		break;
+
+	case DEV_FLOAT:
+	case DEV_DOUBLE:
+		db << FormatNotSpec_FL;
+		break;
+
+	default:
+		break;
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<
 //

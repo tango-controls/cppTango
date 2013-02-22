@@ -436,7 +436,7 @@ void AttributeProxy::parse_name(string &full_name)
 			desc << "Taco protocol is not supported" << ends;
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
-						(const char*)"AttributeProxy::parse_name()");			exit(0);
+						(const char*)"AttributeProxy::parse_name()");
 		}
 		else
 		{

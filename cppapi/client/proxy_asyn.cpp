@@ -278,7 +278,7 @@ DeviceData Connection::command_inout_reply(long id)
 // Get received value
 //
 
-		const CORBA::Any *received;
+		const CORBA::Any *received = NULL;
 		CORBA::Any &dii_any = req.request->return_value();
 		dii_any >>= received;
 		CORBA::Any *server_any = new CORBA::Any(*received);

@@ -510,7 +510,6 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to get default Consumer admin from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
-        	exit((void*)1);
     	}
 	}
 	catch (...)

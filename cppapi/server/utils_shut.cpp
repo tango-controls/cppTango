@@ -33,31 +33,6 @@ static const char *RcsId = "$Id$";
 //
 // $Revision$
 //
-// $Log$
-// Revision 3.8  2010/09/12 12:19:21  taurel
-// - Now, the test suite seems OK
-//
-// Revision 3.7  2010/09/09 13:46:45  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.6  2010/06/21 12:38:23  taurel
-// - Implement a much faster server shutdown sequence
-//
-// Revision 3.5  2009/02/27 13:26:46  taurel
-// - Small changes for Solaris
-//
-// Revision 3.4  2009/01/21 12:49:03  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.3  2008/10/06 15:01:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.2  2008/10/03 06:53:09  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.1  2008/10/02 12:24:43  taurel
-// - The user now has the possibility to install its own event loop
-//
 //-=============================================================================
 
 #if HAVE_CONFIG_H
@@ -90,15 +65,15 @@ void Util::shutdown_ds()
 //
 // Stopping a device server means :
 //		- Mark the server as shutting down
-//  	- Send kill command to the polling thread
-//    - Join with this polling thread
-//	   - Unregister server in database
-//	   - Delete devices (except the admin one)
-//    - Stop the KeepAliveThread and the EventConsumer Thread when
-//      they have been started to receive events
-//	   - Force writing file database in case of
-//	   - Shutdown the ORB
-//	   - Cleanup Logging
+//		- Send kill command to the polling thread
+//		- Join with this polling thread
+//		- Unregister server in database
+//		- Delete devices (except the admin one)
+//		- Stop the KeepAliveThread and the EventConsumer Thread when
+//		  they have been started to receive events
+//		- Force writing file database in case of
+//		- Shutdown the ORB
+//		- Cleanup Logging
 //
 
 	set_svr_shutting_down(true);
@@ -135,7 +110,7 @@ void Util::shutdown_ds()
 	lock_ptr->Release();
 
 //
-// 	Stop the KeepAliveThread and the EventConsumer Thread when
+// 	Stop the KeepAliveThread and the EventConsumer thread when
 //  they have been started to receive events.
 //
 
@@ -165,8 +140,8 @@ void Util::shutdown_ds()
 // Delete ZmqEventSupplier
 //
 
-    ZmqEventSupplier *zev = get_zmq_event_supplier();
-    delete zev;
+	ZmqEventSupplier *zev = get_zmq_event_supplier();
+	delete zev;
 
 //
 // Close access to file database when used
@@ -194,7 +169,7 @@ void Util::shutdown_ds()
 	cout4 << "Going to shutdown ORB" << endl;
 	CORBA::ORB_ptr loc_orb = get_orb();
 	loc_orb->shutdown(true);
-//	CORBA::release(orb);
+
 	cout4 << "ORB shutdown" << endl;
 
 #ifdef TANGO_HAS_LOG4TANGO

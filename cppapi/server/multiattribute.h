@@ -280,7 +280,7 @@ public:
 	bool is_att_quality_alarmed(bool);
 	void get_event_param(vector<EventPar> &);
 	void add_alarmed_quality_factor(string &);
-	void add_default(vector<AttrProperty> &,string &,string &);
+	void add_default(vector<AttrProperty> &,string &,string &,long);
 	void add_attr(Attribute *att) {attr_list.push_back(att);}
 
 private:

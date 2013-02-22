@@ -93,7 +93,7 @@ void EncodedAttribute::encode_jpeg_gray8(unsigned char *gray8,int width,int heig
 
   SAFE_FREE(buffer_array[index]);
   buffSize_array[index] = 0;
-  format = (char *)JPEG_GRAY8;
+  format = (char *)JPEG_GRAY_8;
   jpeg_encode_gray8(width,height,gray8,quality,&(buffSize_array[index]),&(buffer_array[index]));
   INC_INDEX()
 }
@@ -141,7 +141,7 @@ void EncodedAttribute::encode_gray8(unsigned char *gray8,int width,int height) {
     buffSize_array[index] = newSize;
   }
 
-  format = (char *)GRAY8;
+  format = (char *)GRAY_8;
 
   // Store image dimension (big endian)
   unsigned char *tmp_ptr = buffer_array[index];
@@ -170,7 +170,7 @@ void EncodedAttribute::encode_gray16(unsigned short *gray16,int width,int height
     buffSize_array[index] = newSize;
   }
 
-  format = (char *)GRAY16;
+  format = (char *)GRAY_16;
 
   // Store image dimension (big endian)
   unsigned char *tmp_ptr = buffer_array[index];
@@ -207,7 +207,7 @@ void EncodedAttribute::encode_rgb24(unsigned char *rgb24,int width,int height) {
     buffSize_array[index] = newSize;
   }
 
-  format = (char *)RGB24;
+  format = (char *)RGB_24;
 
   // Store image dimension (big endian)
   unsigned char *tmp_ptr = buffer_array[index];
@@ -242,7 +242,7 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 
 	string local_format(encDataSeq.in()[0].encoded_format);
 
-	int isRGB  = (strcmp(local_format.c_str() ,RGB24 ) == 0);
+	int isRGB  = (strcmp(local_format.c_str() ,RGB_24 ) == 0);
 	int isJPEG = (strcmp(local_format.c_str() ,JPEG_RGB ) == 0);
 
 	if( !isRGB && !isJPEG )
@@ -344,8 +344,8 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 
 	string local_format(encDataSeq.in()[0].encoded_format);
 
-	int isGrey  = (strcmp(local_format.c_str() ,GRAY8 ) == 0);
-	int isJPEG = (strcmp(local_format.c_str() ,JPEG_GRAY8 ) == 0);
+	int isGrey  = (strcmp(local_format.c_str() ,GRAY_8 ) == 0);
+	int isJPEG = (strcmp(local_format.c_str() ,JPEG_GRAY_8 ) == 0);
 
 	if( !isGrey && !isJPEG )
 	{
@@ -435,7 +435,7 @@ void EncodedAttribute::decode_gray16(DeviceAttribute *attr,int *width,int *heigh
 
 	string local_format(encDataSeq.in()[0].encoded_format);
 
-	int isGrey  = (strcmp(local_format.c_str() ,GRAY16 ) == 0);
+	int isGrey  = (strcmp(local_format.c_str() ,GRAY_16 ) == 0);
 
 	if( !isGrey )
 	{
