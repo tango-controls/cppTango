@@ -42,9 +42,9 @@
 #######################################################################################################################
 
 EXCLUDE_FILES = 64.cpp helper.cpp
-#COMPILE_FILES = server_event.cpp
-COMPILE_FILES= cxx_mcast_simple.cpp cxx_mcast_local_remote.cpp cxx_svr_mcast_local_remote.cpp
-#COMPILE_FILES = cxx_mcast_simple.cpp cxx_mcast_local_remote.cpp
+COMPILE_FILES = att_conf.cpp
+#COMPILE_FILES = cxx_attr_conf.cpp
+#COMPILE_FILES = cxx_always_hook.cpp
 
 OS_DIR = ubuntu1204
 

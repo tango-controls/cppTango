@@ -129,14 +129,14 @@ To check if the process is running type in command line:
 - `ps -ef | grep -i starter`
 
 In your control system there has to be a test device server set up (e.g. 'devTest'), consisting of at least 3 devices
-(e.g. 'dev/test/1', 'dev/test/2' and 'dev/test/3') which derive from the 'DevTest' class.
+(e.g. 'dev/test/1', 'dev/test/2' and 'dev/test/3') from the 'DevTest' class.
 	
 -----------------------------------------------------------------------------------------------------------------------
  1.2.1. Control System configuration
 -----------------------------------------------------------------------------------------------------------------------
 
-Go to the 'bin' directory and execute 'conf_devtest' which will configure 'devTest' properties in the database. These
-properties will then be tested in the test suite. Skipping this step will cause the test suites fail.
+Go to the 'bin' directory and execute 'conf_devtest' which will configure the 'devTest' device server properties in the database. These
+properties will then be tested in the test suite. Skipping this step will cause the test suites to fail.
 
 !! -- NB -- !!
 Upon execution of 'conf_devtest' a new pseudo device server is registered in the database, namely: 'DsCache/test'.

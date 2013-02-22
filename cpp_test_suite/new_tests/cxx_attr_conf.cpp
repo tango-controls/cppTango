@@ -331,6 +331,25 @@ public:
 			Tango::Except::print_exception(e);
 		}
 	}
+
+// Test format prop for miscellaneous data type
+
+	void test_format_prop_for_misc_data_type(void)
+	{
+		AttributeInfoEx att_inf;
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("Double_attr"));
+		TS_ASSERT(att_inf.format == "%6.2f");
+
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("String_attr"));
+		TS_ASSERT(att_inf.format == "%s");
+
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("Short_attr_w"));
+		TS_ASSERT(att_inf.format == "%d");
+
+		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("State"));
+		TS_ASSERT(att_inf.format == "Not specified");
+	}
+
 };
 #undef cout
 #endif // AttrConfTestSuite_h
