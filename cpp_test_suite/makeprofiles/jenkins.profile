@@ -43,7 +43,7 @@
 
 EXCLUDE_FILES = 64.cpp helper.cpp cxx_mcast_simple.cpp cxx_mcast_local_remote.cpp cxx_svr_mcast_local_remote.cpp
 
-TANGO_BASE = /tmp/ci/$(OS)
+TANGO_BASE = /segfs/tango/ci/Tango/$(OS)
 
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(OS)
 LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(OS)
