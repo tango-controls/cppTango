@@ -145,7 +145,7 @@ public:
 		const DevVarStringArray *alarms;
 		DeviceData dout;
 
-		device1->set_timeout_millis(5*def_timeout);
+		device1->set_timeout_millis(7*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetAlarms"));
@@ -211,7 +211,7 @@ public:
 		const DevVarStringArray *ranges;
 		DeviceData dout;
 
-		device1->set_timeout_millis(4*def_timeout);
+		device1->set_timeout_millis(5*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetRanges"));
@@ -259,7 +259,7 @@ public:
 		const DevVarStringArray *props;
 		DeviceData dout;
 
-		device1->set_timeout_millis(7*def_timeout);
+		device1->set_timeout_millis(9*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetProperties"));
