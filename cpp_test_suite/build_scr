@@ -1,8 +1,7 @@
 #!/bin/bash
 
-UX_INSTALL_DIR=/tmp/ci
-WIN_INSTALL_DIR="C:\tango_src\ci"
-WIN_CYGWIN_INSTALL_DIR="/cygdrive/c/tango_src/ci"
+UX_INSTALL_DIR="/segfs/tango/ci/Tango"
+WIN_INSTALL_DIR="//unixhome/segfs/tango/ci/Tango"
 
 DS_NAME=devTest
 
@@ -206,8 +205,8 @@ export TANGO_HOST=acucentos:10000
 
 if [ $OS_TYPE = "Windows" ]
 then
-	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
-	$WIN_CYGWIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
+	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
+	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
 else
 	echo "Shared libs used by device server"
 	ldd $INSTALL_DIR/$OS/bin/shared/$DS_NAME
@@ -228,7 +227,7 @@ ps -ef | grep devTest
 
 if [ $OS_TYPE = "Windows" ]
 then
-	INSTALL_DIR=$WIN_CYGWIN_INSTALL_DIR
+	INSTALL_DIR=$WIN_INSTALL_DIR
 fi
 
 ./runtest jenkins $INSTALL_DIR
