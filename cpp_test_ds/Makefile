@@ -79,6 +79,7 @@ ifdef prefix
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
 else
 ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(BIN_DIR)
 endif
 
 ifdef linux
