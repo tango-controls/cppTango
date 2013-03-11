@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -87,14 +87,17 @@ CORBA::Any *DevStatusCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevStatus::execute");
 	}
 
 	try
 	{
-		(*out_any) <<= device->dev_status();
+	    if (device->is_alarm_state_forced() == true)
+            (*out_any) <<= device->DeviceImpl::dev_status();
+        else
+            (*out_any) <<= device->dev_status();
 	}
 	catch(...)
 	{
@@ -144,14 +147,18 @@ CORBA::Any *DevStateCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::A
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DevStatus::execute");
 	}
 
 	try
 	{
-		(*out_any) <<= device->dev_state();
+	    if (device->is_alarm_state_forced() == true)
+            (*out_any) <<= device->DeviceImpl::dev_state();
+        else
+            (*out_any) <<= device->dev_state();
+
 	}
 	catch(...)
 	{
@@ -176,13 +183,20 @@ DevInitCmd::DevInitCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgType 
 {
 }
 
-//+-------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		InitCmd::execute
+// method :
+//		InitCmd::execute
 //
-// description : 	Initialize a device
+// description :
+//		Initialize a device
 //
-//--------------------------------------------------------------------------
+// argument :
+//		in :
+//			- device : Pointer to the device on which the command must be eexcuted
+//			- in_any : Input data packed in a CORBA Any object
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
@@ -218,8 +232,8 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		device->init_device();
 
 //
-// Re-configure polling in device on which the Init cmd been done is the admin
-// device but only if the Init is not called during the DS startup sequence
+// Re-configure polling in device on which the Init cmd been done is the admin device but only if the Init is not
+// called during the DS startup sequence
 //
 
 		DeviceImpl *admin_dev = NULL;
@@ -236,9 +250,8 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 			lock_ptr->Release();
 
 //
-// Apply memorized values for memorized attributes (if any)
-// For Py DS, if some attributes are memorized, the write_attributes
-// call will take the Python lock
+// Apply memorized values for memorized attributes (if any). For Py DS, if some attributes are memorized,
+// the write_attributes call will take the Python lock
 //
 
 		Tango::DeviceClass *dc = device->get_device_class();
@@ -253,7 +266,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 			dc->set_memorized_values(false,loop,true);
 		else
 		{
-			Tango::Except::throw_exception((const char *)"API_DeviceNotFound",
+			Tango::Except::throw_exception((const char *)API_DeviceNotFound,
 										   (const char *)"Can't find new device in device list",
 										   (const char *)"DevInitCmd::execute()");
 		}
@@ -273,7 +286,7 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		o << "\nDevice server adm. device name = dserver/";
 		o << tg->get_ds_name().c_str() << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_InitThrowsException",o.str(),
+		Except::re_throw_exception(e,(const char *)API_InitThrowsException,o.str(),
 				           (const char *)"DevInitCmd::execute()");
 	}
 

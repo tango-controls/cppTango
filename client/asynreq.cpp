@@ -3,11 +3,11 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // cpp 	- C++ source code file for TANGO AsynReq class
 //
-// programmer 	- Emmanuel Taurel (taurel@esrf.fr)
+// programmer 	- Emmanuel Taurel
 //
 // original 	- January 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE

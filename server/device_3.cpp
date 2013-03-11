@@ -1,43 +1,37 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//====================================================================================================================
 //
 // file :               Device_3.cpp
 //
-// description :        C++ source code for the DeviceImpl and DeviceClass
-//			classes. These classes
-//			are the root class for all derived Device classes.
-//			They are abstract classes. The DeviceImpl class is the
-//			CORBA servant which is "exported" onto the network and
-//			accessed by the client.
+// description :        C++ source code for the DeviceImpl and DeviceClass classes. These classes are the root class
+//						for all derived Device classes. They are abstract classes. The DeviceImpl class is the
+//						CORBA servant which is "exported" onto the network and accessed by the client.
 //
 // project :            TANGO
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//====================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -59,18 +53,17 @@ static const char *RcsId = "$Id$\n$Name$";
 namespace Tango
 {
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::Device_3Impl
+// method :
+//		Device_3Impl::Device_3Impl
 //
-// description : 	constructors for the device_impl class from the
-//			class object pointer, the device name,
-//			the description field, the state and the status.
-//			Device_3Impl inherits from DeviceImpl. These constructors
-//			simply call the correct DeviceImpl class
-//			constructor
+// description :
+//		Constructors for the device_impl class from the class object pointer, the device name, the description field,
+//		the state and the status. Device_3Impl inherits from DeviceImpl. These constructors simply call the correct
+//		DeviceImpl class constructor
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 Device_3Impl::Device_3Impl(DeviceClass *device_class,string &dev_name):
 Device_2Impl(device_class,dev_name),ext_3(new Device_3ImplExt)
@@ -119,18 +112,18 @@ void Device_3Impl::real_ctor()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::read_attributes_3
+// method :
+//		Device_3Impl::read_attributes_3
 //
-// description : 	Method called for each read_attributes operation executed
-//			from any client on a Tango device version 3.
+// description :
+//		Method called for each read_attributes operation executed from any client on a Tango device version 3.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_3Impl::read_attributes_3 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
 
@@ -143,9 +136,8 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	ext->store_in_bb = true;
 
 //
-// Build a sequence with the names of the attribute to be read.
-// This is necessary in case of the "AllAttr" shortcut is used
-// If all attributes are wanted, build this list
+// Build a sequence with the names of the attribute to be read. This is necessary in case of the "AllAttr" shortcut is
+// used. If all attributes are wanted, build this list
 //
 
 	unsigned long nb_names = names.length();
@@ -188,15 +180,14 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::read_attributes_3");
 	}
 
 //
-// If the source parameter specifies device, call the read_attributes method
-// which does not throw exception except for major fault (cannot allocate
-// memory,....)
+// If the source parameter specifies device, call the read_attributes method which does not throw exception except for
+// major fault (cannot allocate memory,....)
 //
 	vector <long> idx_in_back;
 
@@ -230,8 +221,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	else
 	{
 //
-// It must be now CACHE_DEVICE (no other choice), first try to get
-// values from cache
+// It must be now CACHE_DEVICE (no other choice), first try to get values from cache
 //
 
 		try
@@ -247,8 +237,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 		}
 
 //
-// Now, build the list of attributes which it was not possible
-// to get their value from cache
+// Now, build the list of attributes which it was not possible to get their value from cache
 //
 
 		Tango::DevVarStringArray names_from_device(nb_names);
@@ -260,9 +249,9 @@ throw (Tango::DevFailed, CORBA::SystemException)
        		if (nb_err != 0)
        		{
        			nb_err--;
-       			if ((strcmp((*back)[i].err_list[nb_err].reason,"API_AttrNotPolled") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NoDataYet") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NotUpdatedAnyMore") == 0) ||
+       			if ((strcmp((*back)[i].err_list[nb_err].reason,API_AttrNotPolled) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NoDataYet) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NotUpdatedAnyMore) == 0) ||
        					(strcmp((*back)[i].err_list[nb_err].origin,"DServer::add_obj_polling") == 0))
        			{
        				nb_attr++;
@@ -300,22 +289,25 @@ throw (Tango::DevFailed, CORBA::SystemException)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::read_attributes_no_except
+// method :
+//		Device_3Impl::read_attributes_no_except
 //
-// description : 	Read attributes from device but do not throw exception
-//			if it fails. This method is mainly a copy of the original
-//			DeviceImpl::read_attributes method.
+// description :
+//		Read attributes from device but do not throw exception if it fails. This method is mainly a copy of the
+//		original DeviceImpl::read_attributes method.
 //
-// argument: in :	- names: The names of the attribute to read
+// arguments:
+//		in :
+//			- names: The names of the attribute to read
 //			- back : Pointer to the sequence returned to the client.
-//			- back4 : Pointer to the sequence returned to the client if
-//					  the request arrives through IDL version 4
-//				 Memory has already been allocated for
-//				 this pointer
+//			- back4 : Pointer to the sequence returned to the client if the request arrives through IDL version 4
+//				 	  Memory has already been allocated for this pointer
+//			- second_try : Flag set to true when this method is called due to a client request with source set to
+//						   CACHE_DEVICE and the reading the value from the cache failed for one reason or another
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& names,
@@ -324,12 +316,11 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					     bool second_try,
 					     vector<long> &idx)
 {
+
 //
-//  Write the device name into the per thread data for
-//  sub device diagnostics.
+//  Write the device name into the per thread data for sub device diagnostics.
 //  Keep the old name, to put it back at the end!
-//  During device access inside the same server,
-//  the thread stays the same!
+//  During device access inside the same server, the thread stays the same!
 //
 
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
@@ -337,16 +328,14 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 	sub.set_associated_device(get_name());
 
 //
-// Catch all exceptions to set back the associated device after
-// execution
+// Catch all exceptions to set back the associated device after execution
 //
 
 	try
 	{
 
 //
-// Retrieve index of wanted attributes in the device attribute list and clear
-// their value set flag
+// Retrieve index of wanted attributes in the device attribute list and clear their value set flag
 //
 
 		long nb_names = names.length();
@@ -465,8 +454,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 //
 // Read the hardware for readable attribute but not for state/status
-// Warning:  If the state is one of the wanted attribute, check and
-// eventually add all the alarmed attributes index
+// Warning:  If the state is one of the wanted attribute, check and eventually add all the alarmed attributes index
 //
 
 		if (nb_wanted_attr != 0)
@@ -510,7 +498,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						o << "It is currently not allowed to read attribute ";
 						o << att.get_name() << ends;
 
-						Except::throw_exception((const char *)"API_AttrNotAllowed",
+						Except::throw_exception((const char *)API_AttrNotAllowed,
 					        			o.str(),
 					        			(const char *)"Device_3Impl::read_attributes_no_except");
 					}
@@ -531,10 +519,23 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					}
 
 //
-// Call the user read method
+// Call the user read method except if the attribute is writable and memorized and if the write failed during the
+// device startup sequence
 //
 
-					attr_vect[att.get_attr_idx()]->read(this,att);
+					if (att.is_mem_exception() == false)
+						attr_vect[att.get_attr_idx()]->read(this,att);
+					else
+					{
+						Tango::WAttribute &w_att = static_cast<Tango::WAttribute &>(att);
+						Tango::DevFailed df(w_att.get_mem_exception());
+
+						TangoSys_OMemStream o;
+						o << "Attribute " << w_att.get_name() << " is a memorized attribute.";
+						o << " It failed during the write call of the device startup sequence";
+						Tango::Except::re_throw_exception(df,API_MemAttFailedDuringInit,o.str(),
+																"Device_3::read_attributes_no_except");
+					}
 
 				}
 				catch (Tango::DevFailed &e)
@@ -620,8 +621,22 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 			Tango::AttrWriteType w_type = att.get_writable();
 			try
 			{
-				if ((w_type == Tango::READ_WITH_WRITE) || (w_type == Tango::WRITE))
-					att.set_rvalue();
+				if (att.is_mem_exception() == true)
+				{
+					Tango::WAttribute &w_att = static_cast<Tango::WAttribute &>(att);
+					Tango::DevFailed df(w_att.get_mem_exception());
+
+					TangoSys_OMemStream o;
+					o << "Attribute " << w_att.get_name() << " is a memorized attribute.";
+					o << " It failed during the write call of the device startup sequence";
+					Tango::Except::re_throw_exception(df,API_MemAttFailedDuringInit,o.str(),
+															"Device_3::read_attributes_no_except");
+				}
+				else
+				{
+					if ((w_type == Tango::READ_WITH_WRITE) || (w_type == Tango::WRITE))
+						att.set_rvalue();
+				}
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -659,9 +674,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 //
 // If necessary, read state and/or status
-// If the device has some alarmed attributes and some of them have already been
-// read and failed, it is not necessary to read state, simply copy faulty
-// alarmed attribute error message to the state attribute error messages
+// If the device has some alarmed attributes and some of them have already been read and failed, it is not necessary
+// to read state, simply copy faulty alarmed attribute error message to the state attribute error messages
 //
 
 		Tango::DevState d_state = Tango::UNKNOWN;
@@ -678,7 +692,10 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						alarmed_not_read(wanted_attr);
 						ext->state_from_read = true;
-						d_state = dev_state();
+                        if (is_alarm_state_forced() == true)
+                            d_state = DeviceImpl::dev_state();
+                        else
+                            d_state = dev_state();
 						ext->state_from_read = false;
 					}
 					catch (Tango::DevFailed &e)
@@ -726,7 +743,10 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		{
 			try
 			{
-				d_status = dev_status();
+                if (is_alarm_state_forced() == true)
+                    d_status = DeviceImpl::dev_status();
+                else
+                    d_status = dev_status();
 			}
 			catch (Tango::DevFailed &e)
 			{
@@ -748,8 +768,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 		}
 
 //
-// Build the sequence returned to caller for readable attributes and check
-// that all the wanted attributes set value have been updated
+// Build the sequence returned to caller for readable attributes and check that all the wanted attributes set value
+// have been updated
 //
 
 		for (i = 0;i < nb_names;i++)
@@ -838,7 +858,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						{
 							(*back)[index].err_list.length(1);
 							(*back)[index].err_list[0].severity = Tango::ERR;
-							(*back)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
+							(*back)[index].err_list[0].reason = CORBA::string_dup(API_AttrValueNotSet);
 							(*back)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
 
 							string s = o.str();
@@ -859,7 +879,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 							(*back4)[index].err_list.length(1);
 							(*back4)[index].err_list[0].severity = Tango::ERR;
-							(*back4)[index].err_list[0].reason = CORBA::string_dup("API_AttrValueNotSet");
+							(*back4)[index].err_list[0].reason = CORBA::string_dup(API_AttrValueNotSet);
 							(*back4)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
 
 							string s = o.str();
@@ -1040,35 +1060,41 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 	catch (...)
 	{
-		// set back the device attribution for the thread
-		// and rethrow the exception.
+
+//
+// Set back the device attribution for the thread and rethrow the exception.
+//
 		sub.set_associated_device(last_associated_device);
 		throw;
 	}
 
-	// set back the device attribution for the thread
+//
+// Set back the device attribution for the thread
+//
+
 	sub.set_associated_device(last_associated_device);
 
 	cout4 << "Leaving Device_3Impl::read_attributes_no_except" << endl;
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::read_attributes_from_cache
+// method :
+//		Device_3Impl::read_attributes_from_cache
 //
-// description : 	Read attributes from cache but do not throw exception
-//			if it fails. This method is mainly a copy of the original
-//			DeviceImpl::read_attributes method.
+// description :
+//		Read attributes from cache but do not throw exception if it fails. This method is mainly a copy of the original
+//		DeviceImpl::read_attributes method.
 //
-// argument: in :	- names: The names of the attribute to read
-//			- back : Pointer to the sequence returned to the client.
-//				 Memory has already been allocated for
-//				 this pointer
-//			- back4 : Pointer to the equence returned to the client when called
-//					  throught the Device_4 IDL interface
+// argument:
+//		in :
+//			- names: The names of the attribute to read
+//			- back : Pointer to the sequence returned to the client. Memory has already been allocated for
+//				 	 this pointer
+//			- back4 : Pointer to the equence returned to the client when called throught the Device_4 IDL interface
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& names,
@@ -1078,8 +1104,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
     cout4 << "Reading " << nb_names << " attr in read_attributes_from_cache()" << endl;
 
 //
-// Check that device supports the wanted attribute and that the attribute
-// is polled. If some are non polled, store
+// Check that device supports the wanted attribute and that the attribute is polled. If some are non polled, store
 // their index in the real_names sequence in a vector
 //
 
@@ -1128,9 +1153,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 	}
 
 //
-// If some attributes are not polled but their polling update period is defined,
-// and the attribute is not in the device list of attr which should not be
-// polled, start to poll them
+// If some attributes are not polled but their polling update period is defined, and the attribute is not in the device
+// list of attr which should not be polled, start to poll them
 //
 
 	vector<long> poll_period;
@@ -1157,7 +1181,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back)[non_polled[i]].err_list.length(1);
 					(*back)[non_polled[i]].err_list[0].severity = Tango::ERR;
-					(*back)[non_polled[i]].err_list[0].reason = CORBA::string_dup("API_AttrNotPolled");
+					(*back)[non_polled[i]].err_list[0].reason = CORBA::string_dup(API_AttrNotPolled);
 					(*back)[non_polled[i]].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1170,7 +1194,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back4)[non_polled[i]].err_list.length(1);
 					(*back4)[non_polled[i]].err_list[0].severity = Tango::ERR;
-					(*back4)[non_polled[i]].err_list[0].reason = CORBA::string_dup("API_AttrNotPolled");
+					(*back4)[non_polled[i]].err_list[0].reason = CORBA::string_dup(API_AttrNotPolled);
 					(*back4)[non_polled[i]].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1185,8 +1209,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		}
 
 //
-// Leave method if number of attributes which should not be polled
-// is equal to the requested attribute number
+// Leave method if number of attributes which should not be polled is equal to the requested attribute number
 //
 
 		if (not_polled_attr == nb_names)
@@ -1194,8 +1217,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 	}
 
 //
-// For each attribute, check that some data are available in cache and that they
-// are not too old
+// For each attribute, check that some data are available in cache and that they are not too old
 //
 
 	for (i = 0;i < nb_names;i++)
@@ -1230,9 +1252,8 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		}
 
 //
-// In some cases where data from polling are required by a DS for devices marked as
-// polled but for which the polling is not sarted yet, polled_attr could be NULL at the
-// end of this loop. Return "No data yet" in this case
+// In some cases where data from polling are required by a DS for devices marked as polled but for which the polling
+// is not sarted yet, polled_attr could be NULL at the end of this loop. Return "No data yet" in this case
 //
 
         if (polled_attr == NULL)
@@ -1244,7 +1265,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back)[i].err_list.length(1);
 				(*back)[i].err_list[0].severity = Tango::ERR;
-				(*back)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1257,7 +1278,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back4)[i].err_list.length(1);
 				(*back4)[i].err_list[0].severity = Tango::ERR;
-				(*back4)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back4)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back4)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1283,7 +1304,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back)[i].err_list.length(1);
 				(*back)[i].err_list[0].severity = Tango::ERR;
-				(*back)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1296,7 +1317,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 			{
 				(*back4)[i].err_list.length(1);
 				(*back4)[i].err_list[0].severity = Tango::ERR;
-				(*back4)[i].err_list[0].reason = CORBA::string_dup("API_NoDataYet");
+				(*back4)[i].err_list[0].reason = CORBA::string_dup(API_NoDataYet);
 				(*back4)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 				string s = o.str();
@@ -1339,7 +1360,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back)[i].err_list.length(1);
 					(*back)[i].err_list[0].severity = Tango::ERR;
-					(*back)[i].err_list[0].reason = CORBA::string_dup("API_NotUpdatedAnyMore");
+					(*back)[i].err_list[0].reason = CORBA::string_dup(API_NotUpdatedAnyMore);
 					(*back)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1352,7 +1373,7 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 				{
 					(*back4)[i].err_list.length(1);
 					(*back4)[i].err_list[0].severity = Tango::ERR;
-					(*back4)[i].err_list[0].reason = CORBA::string_dup("API_NotUpdatedAnyMore");
+					(*back4)[i].err_list[0].reason = CORBA::string_dup(API_NotUpdatedAnyMore);
 					(*back4)[i].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
 
 					string s = o.str();
@@ -1373,14 +1394,11 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 		long type = att.get_data_type();
 
 //
-// Finally, after all these checks, get value and store it in the sequence
-// sent back to user
-// In order to avoid unnecessary copy, don't use the assignement operator of the
-// AttributeValue structure which copy each element and therefore also copy
-// the Any object. The Any assignement operator is a deep copy!
-// Create a new sequence using the attribute buffer and insert it into the
-// Any. The sequence inside the source Any has been created using the attribute
-// data buffer.
+// Finally, after all these checks, get value and store it in the sequence sent back to user
+// In order to avoid unnecessary copy, don't use the assignement operator of the AttributeValue structure which copy
+// each element and therefore also copy the Any object. The Any assignement operator is a deep copy!
+// Create a new sequence using the attribute buffer and insert it into the Any. The sequence inside the source Any has
+// been created using the attribute data buffer.
 //
 
 		try
@@ -1486,28 +1504,29 @@ void Device_3Impl::read_attributes_from_cache(const Tango::DevVarStringArray& na
 }
 
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::write_attributes_3
+// method :
+//		DeviceImpl::write_attributes_3
 //
-// description : 	CORBA operation to write attribute(s) value
+// description :
+//		CORBA operation to write attribute(s) value
 //
-// argument: in :	- values: The new attribute(s) value to be set.
+// argument:
+//		in :
+//			- values: The new attribute(s) value to be set.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::write_attributes_3(const Tango::AttributeValueList& values)
-throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_3Impl::write_attributes_3 arrived" << endl;
 
 //
-// Record operation request in black box
-// If this method is executed with the request to store info in
-// blackbox (store_in_bb == true), this means that the request arrives
-// through a Device_2 CORBA interface. Check locking feature in this
-// case. Otherwise the request has arrived through Device_4 and the check
+// Record operation request in black box. If this method is executed with the request to store info in
+// blackbox (store_in_bb == true), this means that the request arrives through a Device_2 CORBA interface.
+// Check locking feature in this case. Otherwise the request has arrived through Device_4 and the check
 // is already done
 //
 
@@ -1525,17 +1544,20 @@ throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 	write_attributes_34(&values,NULL);
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::write_attributes_34
+// method :
+//		DeviceImpl::write_attributes_34
 //
-// description : 	Method to write the attribute. This method is common to
-//					the IDL interface 3 and 4.
+// description :
+//		Method to write the attribute. This method is common to the IDL interface 3 and 4.
 //
-// argument: in :	- values_3: The new attribute(s) value to be set in IDL V3
-//					- values_4: The new attribute(s) value to be set in IDL V4
+// argument:
+//		in :
+//			- values_3: The new attribute(s) value to be set in IDL V3
+//			- values_4: The new attribute(s) value to be set in IDL V4
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3,const Tango::AttributeValueList_4 *values_4)
 {
@@ -1547,7 +1569,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 	unsigned long nb_dev_attr = dev_attr->get_attr_nb();
 	if (nb_dev_attr == 0)
 	{
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				        (const char *)"The device does not have any attribute",
 				        (const char *)"DeviceImpl::write_attributes");
 	}
@@ -1556,11 +1578,9 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 	Tango::NamedDevErrorList errs;
 
 //
-//  Write the device name into the per thread data for
-//  sub device diagnostics.
+//  Write the device name into the per thread data for sub device diagnostics.
 //  Keep the old name, to put it back at the end!
-//  During device access inside the same server,
-//  the thread stays the same!
+//  During device access inside the same server, the thread stays the same!
 //
 
 	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
@@ -1568,8 +1588,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 	sub.set_associated_device(get_name());
 
 //
-// Catch all exceptions to set back the associated device after
-// execution
+// Catch all exceptions to set back the associated device after execution
 //
 
 	try
@@ -1613,8 +1632,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 				updated_attr.push_back(idxs);
 //
 // Check that these attributes are writable.
-// For attributes which are not scalar, also check that
-// their dimensions are correct
+// For attributes which are not scalar, also check that their dimensions are correct
 //
 
 				Attribute &att = dev_attr->get_attr_by_ind(updated_attr.back().idx_in_multi_attr);
@@ -1628,7 +1646,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					o << " is not writable" << ends;
 
 					updated_attr.pop_back();
-					Except::throw_exception((const char *)"API_AttrNotWritable",
+					Except::throw_exception((const char *)API_AttrNotWritable,
 					        	o.str(),
 					        	(const char *)"DeviceImpl::write_attributes");
 				}
@@ -1660,15 +1678,15 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						o << ends;
 
 						updated_attr.pop_back();
-						Except::throw_exception((const char *)"API_WAttrOutsideLimit",
+						Except::throw_exception((const char *)API_WAttrOutsideLimit,
 					        	o.str(),
 					        	(const char *)"DeviceImpl::write_attributes");
 					}
 				}
 
 //
-// Check if there are some startup exceptions for the attribute (due to invalid
-// attribute properties configuration). If so, do not allow to write the attribute.
+// Check if there are some startup exceptions for the attribute (due to invalid attribute properties configuration).
+// If so, do not allow to write the attribute.
 //
 
 				if(att.is_startup_exception() == true)
@@ -1750,15 +1768,14 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 		}
 
 //
-// Write the hardware. Call this method one attribute at a time in order to
-// correctly initialized the MultiDevFailed exception in case one of the
-// attribute failed.
+// Write the hardware. Call this method one attribute at a time in order to correctly initialized the MultiDevFailed
+// exception in case one of the attribute failed.
 //
 
 		if (nb_failed != nb_updated_attr)
 		{
 			vector<AttIdx>::iterator ite;
-			for(ite = updated_attr.begin();ite != updated_attr.end();++ite)
+			for(ite = updated_attr.begin();ite != updated_attr.end();)
 			{
                 WAttribute &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
 				try
@@ -1775,11 +1792,24 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 						o << ". The device state is " << Tango::DevStateName[get_state()] << ends;
 
 
-						Except::throw_exception((const char *)"API_AttrNotAllowed",
+						Except::throw_exception((const char *)API_AttrNotAllowed,
 					        			o.str(),
 					        			(const char *)"Device_3Impl::write_attributes");
 					}
 					attr_vect[att.get_attr_idx()]->write(this,att);
+
+//
+// If the write call succeed and if the attribute was memorized but with an exception thrown during the device
+// startup sequence, clear the memorized exception
+//
+
+					if (att.get_mem_write_failed() == true)
+					{
+						att.clear_mem_exception();
+						set_run_att_conf_loop(true);
+					}
+
+					++ite;
 				}
 				catch (Tango::DevFailed &e)
 				{
@@ -1794,28 +1824,18 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
 					errs[nb_failed - 1].err_list = e.errors;
 					ite = updated_attr.erase(ite);
-					if (ite >= updated_attr.end())
-						break;
-					else
-					{
-						if (ite == updated_attr.begin())
-							break;
-						else
-							--ite;
-					}
 				}
 			}
 		}
 
 //
-// Copy data into Attribute object, store the memorized one in db
-// and if the attribute has a RDS alarm, set the write date
+// Copy data into Attribute object, store the memorized one in db and if the attribute has a RDS alarm, set the write
+// date
 //
-// Warning: Do not copy caller value if the user has manually set the
-// attribute written value in its write method
+// Warning: Do not copy caller value if the user has manually set the attribute written value in its write method
 //
-// WARNING: --> The DevEncoded data type is supported only as SCALAR and is not
-// memorizable. Therefore, no need to call copy_data
+// WARNING: --> The DevEncoded data type is supported only as SCALAR and is not memorizable.
+// Therefore, no need to call copy_data
 //
 
 		vector<long> att_in_db;
@@ -1873,13 +1893,19 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 	}
 	catch (...)
 	{
-		// set back the device attribution for the thread
-		// and rethrow the exception.
+
+//
+// Set back the device attribution for the thread and rethrow the exception.
+//
+
 		sub.set_associated_device(last_associated_device);
 		throw;
 	}
 
-	// set back the device attribution for the thread
+//
+// Set back the device attribution for the thread
+//
+
 	sub.set_associated_device(last_associated_device);
 
 //
@@ -1896,24 +1922,27 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::read_attribute_history_3
+// method :
+//		Device_3Impl::read_attribute_history_3
 //
-// description : 	CORBA operation to read attribute value history from
-//			the polling buffer.
+// description :
+//		CORBA operation to read attribute value history from the polling buffer.
 //
-// argument: in :	- name : attribute name
+// argument:
+//		in :
+//			- name : attribute name
 //			- n : history depth (in record number)
 //
-// This method returns a pointer to a DevAttrHistoryList with one
-// DevAttrHistory structure for each attribute record
+// return :
+// 		This method returns a pointer to a DevAttrHistoryList with one DevAttrHistory structure for each
+//		attribute record
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* name,
 								    CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -1931,8 +1960,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	long nb_poll = poll_list.size();
 
 //
-// Check that the device supports this attribute. This method returns an
-// exception in case of unsupported attribute
+// Check that the device supports this attribute. This method returns an exception in case of unsupported attribute
 //
 
 	Attribute &att = dev_attr->get_attr_by_name(name);
@@ -1959,7 +1987,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_AttrNotPolled",
+		Except::throw_exception((const char *)API_AttrNotPolled,
 					o.str(),
 					(const char *)"Device_3Impl::read_attribute_history_3");
 	}
@@ -1972,7 +2000,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for attribute " << attr_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_3Impl::read_attribute_history_3");
 	}
@@ -1996,7 +2024,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::read_attribute_history_3");
 	}
@@ -2017,17 +2045,18 @@ throw(Tango::DevFailed, CORBA::SystemException)
 }
 
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method :		Device_3Impl::info_3
+// method :
+//		Device_3Impl::info_3
 //
-// description :	CORBA operation to get device info
+// description :
+//		CORBA operation to get device info
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 Tango::DevInfo_3 *Device_3Impl::info_3()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_3Impl::info_3 arrived" << endl;
 
@@ -2043,7 +2072,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"Device_3Impl::info_3");
 	}
@@ -2104,29 +2133,29 @@ throw (Tango::DevFailed, CORBA::SystemException)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::get_attribute_config_3
+// method :
+//		Device_3Impl::get_attribute_config_3
 //
-// description : 	CORBA operation to get attribute configuration.
+// description :
+//		CORBA operation to get attribute configuration.
 //
-// argument: in :	- names: name of attribute(s)
+// 		WARNING !!!!!!!!!!!!!!!!!!
 //
-// This method returns a pointer to a AttributeConfigList_3 with one
-// AttributeConfig_3 structure for each atribute
+// 		This is the release 3 of this CORBA operation which returns much more parameter than in release 2
+// 		The code has been duplicated in order to keep it clean (avoid many "if" on version number in a common method)
 //
+// argument:
+//		in :
+//			- names: name of attribute(s)
 //
-// WARNING !!!!!!!!!!!!!!!!!!
+// return :
+// 		This method returns a pointer to a AttributeConfigList_3 with one AttributeConfig_3 structure for each atribute
 //
-// This is the release 3 of this CORBA operation which
-// returns much more parameter than in release 2
-// The code has been duplicated in order to keep it clean
-// (avoid many "if" on version number in a common method)
-//
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::DevVarStringArray& names)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_att_conf_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -2150,10 +2179,9 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	long nb_dev_attr = dev_attr->get_attr_nb();
 
 //
-// Check if the caller want to get config for all attribute
-// If the device implements IDL 3 (State and status as attributes)
-// and the client is an old one (not able to read state/status as
-// attribute), decrement attribute number
+// Check if the caller want to get config for all attribute.
+// If the device implements IDL 3 (State and status as attributes) and the client is an old one (not able to read
+// state/status as attribute), decrement attribute number
 //
 
 	string in_name(names[0]);
@@ -2177,7 +2205,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_3Impl::get_attribute_config_3");
 	}
@@ -2217,29 +2245,29 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	return back;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method :		Device_3Impl::set_attribute_config_3
+// method :
+//		Device_3Impl::set_attribute_config_3
 //
-// description :	CORBA operation to set attribute configuration locally
-//			and in the Tango database
+// description :
+//		CORBA operation to set attribute configuration locally and in the Tango database
 //
-// argument: in :	- new_conf: The new attribute(s) configuration. One
-//				    AttributeConfig structure is needed for each
-//				    attribute to update
+// argument:
+//		in :
+//			- new_conf: The new attribute(s) configuration. One AttributeConfig structure is needed for each
+//				    	attribute to update
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "DeviceImpl::set_attribute_config_3 arrived" << endl;
 
 //
-// The attribute conf. is protected by two monitors. One protects access between
-// get and set attribute conf. The second one protects access between set and
-// usage. This is the classical device monitor
+// The attribute conf. is protected by two monitors. One protects access between get and set attribute conf.
+// The second one protects access between set and usage. This is the classical device monitor
 //
 
 	TangoMonitor &mon1 = get_att_conf_monitor();
@@ -2247,12 +2275,9 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 //
 // Record operation request in black box
-// If this method is executed with the request to store info in
-// blackbox (store_in_bb == true), this means that the request arrives
-// through a Device_2 CORBA interface. Check locking feature in this
-// case. Otherwise the request has arrived through Device_4 and the check
-// is already done
-//
+// If this method is executed with the request to store info in blackbox (store_in_bb == true), this means that the
+// request arrives through a Device_2 CORBA interface. Check locking feature in this case. Otherwise the request has
+// arrived through Device_4 and the check is already done
 //
 
 	if (ext->store_in_bb == true)
@@ -2269,7 +2294,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	long nb_dev_attr = dev_attr->get_attr_nb();
 	if (nb_dev_attr == 0)
 	{
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				        (const char *)"The device does not have any attribute",
 				        (const char *)"Device_3Impl::set_attribute_config_3");
 	}
@@ -2397,19 +2422,24 @@ throw (Tango::DevFailed, CORBA::SystemException)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::write_attributes_in_db
+// method :
+//		Device_3Impl::write_attributes_in_db
 //
-// description : 	Method to write memorized attributes in database
+// description :
+//		Method to write memorized attributes in database
 //
-// argument: in :	- name : attribute name
+// argument:
+//		in :
+//			- name : attribute name
 //			- n : history depth (in record number)
 //
-// This method returns a pointer to a DevAttrHistoryList with one
-// DevAttrHistory structure for each attribute record
+// return:
+// 		This method returns a pointer to a DevAttrHistoryList with one DevAttrHistory structure for each attribute
+//		record
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx> &updated_attr)
 {
@@ -2516,13 +2546,15 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<long> &
 	write_attributes_in_db(att_in_db,v);
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::add_state_status_attrs
+// method :
+//		Device_3Impl::add_state_status_attrs
 //
-// description : 	Add state and status in the device attribute list
+// description :
+//		Add state and status in the device attribute list
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::add_state_status_attrs()
 {
@@ -2534,7 +2566,8 @@ void Device_3Impl::add_state_status_attrs()
 	Tango::Attr att_state("State",Tango::DEV_STATE);
 	vector<AttrProperty> prop_list_state;
 	string att_name("State");
-	dev_attr->add_default(prop_list_state,device_name,att_name);
+	get_attr_props("State",prop_list_state);
+	dev_attr->add_default(prop_list_state,device_name,att_name,Tango::DEV_STATE);
 
 	dev_attr->add_attr(new Attribute(prop_list_state,att_state,device_name,-1));
 
@@ -2545,23 +2578,101 @@ void Device_3Impl::add_state_status_attrs()
 	Tango::Attr att_status("Status",Tango::DEV_STRING);
 	vector<AttrProperty> prop_list_status;
 	att_name = "Status";
-	dev_attr->add_default(prop_list_status,device_name,att_name);
+	get_attr_props("Status",prop_list_status);
+	dev_attr->add_default(prop_list_status,device_name,att_name,Tango::DEV_STRING);
 
 	dev_attr->add_attr(new Attribute(prop_list_status,att_status,device_name,-1));
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_3Impl::get_attr_props
+//
+// description :
+//		Add state and status in the device attribute list
+//
+// argument:
+//		in :
+//			- attr_name : The attribute name
+//		inout :
+//			- prop_list : The attribute property vector
+//
+//--------------------------------------------------------------------------------------------------------------------
 
-//+-------------------------------------------------------------------------
+void Device_3Impl::get_attr_props(const char *attr_name,vector<AttrProperty> &prop_list)
+{
+	Tango::Util *tg = Tango::Util::instance();
+
+	if (tg->_UseDb == true)
+	{
+		Tango::DbData db_list;
+		db_list.push_back(DbDatum(attr_name));
+
 //
-// method : 		Device_3Impl::add_alarmed
+// Get attr prop from db cache
 //
-// description : 	Method to add alarmed attributes (if not already
-//			there) in the attribute list passed as argument
+
+		try
+		{
+			tg->get_database()->get_device_attribute_property(device_name,db_list,tg->get_db_cache());
+		}
+		catch (Tango::DevFailed &)
+		{
+			cout4 << "Exception while accessing database" << endl;
+
+			TangoSys_OMemStream o;
+			o << "Can't get device attribute properties for device " << device_name << ", attribute " << attr_name << ends;
+
+			Except::throw_exception((const char *)API_DatabaseAccess,
+								o.str(),
+								(const char *)"Device_3Impl::get_attr_props");
+		}
+
 //
-// argument: in :	- att_list : The attribute index in the
-//				     multi attribute instance
+// Insert AttrProperty element in suplied vector for att. properties found in DB
 //
-//--------------------------------------------------------------------------
+
+		long ind = 0;
+
+		long nb_prop = 0;
+		db_list[ind] >> nb_prop;
+		ind++;
+
+		for (long j = 0;j < nb_prop;j++)
+		{
+			if (db_list[ind].size() > 1)
+			{
+				string tmp(db_list[ind].value_string[0]);
+				long nb = db_list[ind].size();
+				for (int k = 1;k < nb;k++)
+				{
+					tmp = tmp + ",";
+					tmp = tmp + db_list[ind].value_string[k];
+				}
+				prop_list.push_back(AttrProperty(db_list[ind].name,tmp));
+			}
+			else
+				prop_list.push_back(AttrProperty(db_list[ind].name,
+								db_list[ind].value_string[0]));
+			ind++;
+		}
+	}
+}
+
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_3Impl::add_alarmed
+//
+// description :
+//		Method to add alarmed attributes (if not already there) in the attribute list passed as argument
+//
+// argument:
+//		in :
+//			- att_list : The attribute index in the multi attribute instance
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::add_alarmed(vector<long> &att_list)
 {
@@ -2597,25 +2708,24 @@ void Device_3Impl::add_alarmed(vector<long> &att_list)
 }
 
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::reading_state_necessary
+// method :
+//		Device_3Impl::reading_state_necessary
 //
-// description : 	Method to check ifi t is necessary to read
-//			state. If the device has some alarmed
-//			attribute and one of these attributes
-//			has already been read and failed, it is
-//			not necessary to read state. It will also
-//			failed.
+// description :
+//		Method to check ifi t is necessary to read state. If the device has some alarmed attribute and one of these
+//		attributes has already been read and failed, it is not necessary to read state. It will also fail.
 //
-// argument: in :	- wanted_attr : The list of attribute to
-//					be read by this call
+// argument:
+//		in :
+//			- wanted_attr : The list of attribute to be read by this call
 //
-// This  method returns -1 if reading state is possible.
-// Otherwise, it returns the index in the wanted_attr list
-// of the alarmed attribute which failed
+// return:
+// 		This  method returns -1 if reading state is possible. Otherwise, it returns the index in the wanted_attr list
+// 		of the alarmed attribute which failed
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 long Device_3Impl::reading_state_necessary(vector<AttIdx> &wanted_attr)
 {
@@ -2645,20 +2755,20 @@ long Device_3Impl::reading_state_necessary(vector<AttIdx> &wanted_attr)
 	return ret;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::alarmed_not_read
+// method :
+//		Device_3Impl::alarmed_not_read
 //
-// description : 	This method find all the attributes which
-//			will be read by the state (because alarmed)
-//			and which have been already read.
-//			It builds a vector with the list of attribute
-//			not read
+// description :
+//		This method find all the attributes which will be read by the state (because alarmed) and which have been
+//		already read. It builds a vector with the list of attribute not read
 //
-// argument: in :	- wanted_attr : The list of attribute to
-//					be read by this call
+// argument:
+//		in :
+//			- wanted_attr : The list of attribute to be read by this call
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 {
@@ -2688,16 +2798,20 @@ void Device_3Impl::alarmed_not_read(vector<AttIdx> &wanted_attr)
 }
 
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::state2attr
+// method :
+//		Device_3Impl::state2attr
 //
-// description : 	Method to send a device state as an attribute object
+// description :
+//		Method to send a device state as an attribute object
 //
-// argument: in :	- state : The device state
+// argument:
+//		in :
+//			- state : The device state
 //			- back : The AttributeValue structure
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::state2attr(Tango::DevState state,Tango::AttributeValue_3 &back)
 {
@@ -2752,17 +2866,20 @@ void Device_3Impl::state2attr(Tango::DevState state,Tango::AttributeValue_4 &bac
 	back.w_dim.dim_y = 0;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Device_3Impl::status2attr
+// method :
+//		Device_3Impl::status2attr
 //
-// description : 	Method to send a device status string as an
-//			attribute object
+// description :
+//		Method to send a device status string as an attribute object
 //
-// argument: in :	- status : The device status
+// argument:
+//		in :
+//			- status : The device status
 //			- back : The AttributeValue structure
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Device_3Impl::status2attr(Tango::ConstDevString status,Tango::AttributeValue_3 &back)
 {

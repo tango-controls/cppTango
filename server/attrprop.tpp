@@ -39,6 +39,129 @@
 namespace Tango
 {
 
+//
+// AttrProp template specialisation for DevUChar
+//
+
+template<>
+inline AttrProp<DevUChar>::AttrProp(const DevUChar &value) : val(value), is_value(true), ext(Tango_NullPtr)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	st << (short)value; // to represent the numeric value
+	str = st.str();
+}
+
+template<>
+inline AttrProp<DevUChar>& AttrProp<DevUChar>::operator=(const DevUChar &value)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	st << (short)value; // to represent the numeric value
+	str = st.str();
+	val = value;
+	is_value = true;
+	return *this;
+}
+
+template<>
+inline void AttrProp<DevUChar>::set_val(const DevUChar &value)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	st << (short)value; // to represent the numeric value
+	str = st.str();
+	val = value;
+	is_value = true;
+}
+
+//
+// DoubleAttrProp template specialisation for DevUChar
+//
+
+template<>
+inline DoubleAttrProp<DevUChar>::DoubleAttrProp(const vector<DevUChar> &values) : val(values), is_value(true)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	for(size_t i = 0; i < values.size(); i++)
+	{
+		if(i > 0)
+			st << ",";
+		st << (short)values[i]; // to represent the numeric value
+	}
+	str = st.str();
+}
+
+template<>
+inline DoubleAttrProp<DevUChar>::DoubleAttrProp(const DevUChar &value) : is_value(true) {
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	st << (short)value; // to represent the numeric value
+	str = st.str();
+	val.push_back(value);
+}
+
+template<>
+inline DoubleAttrProp<DevUChar>& DoubleAttrProp<DevUChar>::operator=(const vector<DevUChar> &values)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	for(size_t i = 0; i < values.size(); i++)
+	{
+		if(i > 0)
+			st << ",";
+		st << (short)values[i]; // to represent the numeric value
+	}
+	str = st.str();
+	val = values;
+	is_value = true;
+	return *this;
+}
+
+template<>
+inline DoubleAttrProp<DevUChar>& DoubleAttrProp<DevUChar>::operator=(const DevUChar &value)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	st << (short)value; // to represent the numeric value
+	str = st.str();
+	val.push_back(value);
+	is_value = true;
+	return *this;
+}
+
+template<>
+inline void DoubleAttrProp<DevUChar>::set_val(const vector<DevUChar> &values)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	for(size_t i = 0; i < values.size(); i++)
+	{
+		if(i > 0)
+			st << ",";
+		st << (short)values[i]; // to represent the numeric value
+	}
+	str = st.str();
+	val = values;
+	is_value = true;
+}
+
+template<>
+inline void DoubleAttrProp<DevUChar>::set_val(const DevUChar &value)
+{
+	TangoSys_MemStream st;
+	st.precision(TANGO_FLOAT_PRECISION);
+	st << (short)value; // to represent the numeric value
+	str = st.str();
+	val.push_back(value);
+	is_value = true;
+}
+
+//
+// MultiAttrProp template specialisation for DevEncoded
+//
+
 template <>
 class MultiAttrProp<DevEncoded>
 {

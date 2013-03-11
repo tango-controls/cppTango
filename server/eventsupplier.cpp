@@ -1,43 +1,38 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 //
-//  file 	eventsupplier.cpp
+//  file : 				eventsupplier.cpp
 //
-//		C++ classes for implementing the event server and client
-//		singleton classes - EventSupplier and EventConsumer.
-//		These classes are used to send events from the server
-//		to the notification service and to receive events from
-//		the notification service.
+//	description : 		C++ classes for implementing the event server and client singleton classes - EventSupplier
+//						This class is used to send events from the server
 //
-//  	author(s) : E.Taurel (taurel@esrf.fr)
+//  author(s) : 		E.Taurel (taurel@esrf.fr)
 //
-//		original : 29 June 2004
+//	original : 			29 June 2004
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+//  Copyright (C) :     2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-//		$Revision$
+//	$Revision$
 //
 //
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 
 #include <tango.h>
 #include <eventsupplier.h>
@@ -49,15 +44,19 @@ omni_mutex	EventSupplier::push_mutex;
 omni_mutex	EventSupplier::detect_mutex;
 string      EventSupplier::fqdn_prefix;
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::EventSupplier()
+// method :
+//		EventSupplier::EventSupplier()
 //
-// description : 	EventSupplier class ctor
+// description :
+//		EventSupplier class ctor
 //
-// argument : in :	tg : ptr to the Util class singleton
+// argument :
+//		in :
+//			- tg : ptr to the Util class singleton
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
@@ -65,7 +64,7 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
     if (fqdn_prefix.empty() == true)
     {
         fqdn_prefix = "tango://";
-        if (Util::_FileDb == true)
+        if (Util::_UseDb == false || Util::_FileDb == true)
             fqdn_prefix = fqdn_prefix + tg->get_host_name() + ':' + tg->get_svr_port_num() + '/';
         else
         {
@@ -76,21 +75,23 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
     }
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_events()
+// method :
+//		EventSupplier::detect_and_push_events()
 //
-// description : 	Method to detect if it is necessary
-//			        to push an event
+// description :
+//		Method to detect if it is necessary to push an event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//			        attr_name : The attribute name
-//                  time_bef_attr : Exact date when the attribute has been read
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- attr_name : The attribute name
+//          - time_bef_attr : Exact date when the attribute has been read
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct AttributeData &attr_value,DevFailed *except,
                                            string &attr_name,struct timeval *time_bef_attr)
@@ -103,9 +104,13 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
     Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
     now = time(NULL);
-    change_subscription = now - attr.ext->event_change_subscription;
-    periodic_subscription = now - attr.ext->event_periodic_subscription;
-    archive_subscription = now - attr.ext->event_archive_subscription;
+    {
+    	omni_mutex_lock oml(event_mutex);
+
+		change_subscription = now - attr.ext->event_change_subscription;
+		periodic_subscription = now - attr.ext->event_periodic_subscription;
+		archive_subscription = now - attr.ext->event_archive_subscription;
+    }
 
     cout3 << "EventSupplier::detect_and_push_events(): last subscription for change " << change_subscription << " periodic " << periodic_subscription << " archive " << archive_subscription << endl;
 
@@ -151,22 +156,24 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_change_event()
+// method :
+//		EventSupplier::detect_and_push_change_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push a change event
+// description :
+//		Method to detect if there it is necessary to push a change event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//                  user_push : Flag set to true if it is a user push
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+// 			- user_push : Flag set to true if it is a user push
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
                      Attribute &attr,string &attr_name,DevFailed *except,bool user_push)
@@ -417,24 +424,28 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 // Specify the precision interval for the archive period testing
 // 2% are used for periods < 5000 ms and
 // 100ms are used for periods > 5000 ms.
+// If the attribute archive period is INT_MAX, this means that the user does not want the periodic part of the
+// archive event
 //
 
-	if ( arch_period >= 5000 )
+	if (arch_period != INT_MAX)
 	{
-		arch_period = arch_period - DELTA_PERIODIC_LONG;
-	}
-	else
-	{
-#ifdef _TG_WINDOWS_
-		double tmp = (double)arch_period * DELTA_PERIODIC;
-		double int_part,eve_round;
-		double frac = modf(tmp,&int_part);
-		if (frac >= 0.5)
-			eve_round = ceil(tmp);
+		if ( arch_period >= 5000 )
+		{
+			arch_period = arch_period - DELTA_PERIODIC_LONG;
+		}
 		else
-			eve_round = floor(tmp);
+		{
+#ifdef _TG_WINDOWS_
+			double tmp = (double)arch_period * DELTA_PERIODIC;
+			double int_part,eve_round;
+			double frac = modf(tmp,&int_part);
+			if (frac >= 0.5)
+				eve_round = ceil(tmp);
+			else
+				eve_round = floor(tmp);
 #else
-		double eve_round = round((double)arch_period * DELTA_PERIODIC);
+			double eve_round = round((double)arch_period * DELTA_PERIODIC);
 #endif
 			arch_period = (int)eve_round;
 		}
@@ -444,6 +455,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 			is_change = true;
 			period_change = true;
 		}
+	}
 
 //
 // if no attribute of this name is registered with change then

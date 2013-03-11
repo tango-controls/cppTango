@@ -264,6 +264,17 @@ namespace zmq
                 throw error_t ();
         }
 
+// Added by ET (18/01/2013)
+#if ZMQ_VERSION > 30201
+        inline void disconnect (const char *addr_)
+        {
+            int rc = zmq_disconnect (ptr, addr_);
+            if (rc != 0)
+                throw error_t ();
+        }
+#endif
+// End of added code
+
         inline bool send (message_t &msg_, int flags_ = 0)
         {
             int nbytes = zmq_sendmsg (ptr, &(msg_.msg), flags_);

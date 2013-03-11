@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- January 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1012,7 +1012,7 @@ void Connection::get_asynch_replies(long call_timeout)
 			{
 				TangoSys_OMemStream desc;
 				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
-				ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+				ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"Connection::get_asynch_replies");
 			}

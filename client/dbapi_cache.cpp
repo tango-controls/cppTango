@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1206,7 +1206,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
 	if (imp_tac.last_idx == -1 || imp_tac.first_idx >= (int)data_list->length())
 	{
-		Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+		Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"No TAC device in Db cache",
                                        (const char *)"DbServerCache::import_tac_dev");
 	}
@@ -1217,7 +1217,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
     if (tac_dev.size() != strlen((*data_list)[imp_tac.first_idx]))
     {
-		Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+		Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"Device not available from cache",
                                        (const char *)"DbServerCache::import_tac_dev");
     }
@@ -1230,7 +1230,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
     if (local_tac_dev != cache_tac_dev)
     {
-        Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+        Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"Device not available from cache",
                                        (const char *)"DbServerCache::import_tac_dev");
     }

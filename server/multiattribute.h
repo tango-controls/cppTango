@@ -10,7 +10,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -76,6 +76,9 @@ struct EventPar
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class MultiAttribute
@@ -268,6 +271,8 @@ protected:
 //@}
 
 public:
+/// @privatesection
+
 	void add_write_value(Attribute &);
 	void add_attribute(string &,DeviceClass *,long);
 	void remove_attribute(string &,bool);
@@ -275,7 +280,7 @@ public:
 	bool is_att_quality_alarmed(bool);
 	void get_event_param(vector<EventPar> &);
 	void add_alarmed_quality_factor(string &);
-	void add_default(vector<AttrProperty> &,string &,string &);
+	void add_default(vector<AttrProperty> &,string &,string &,long);
 	void add_attr(Attribute *att) {attr_list.push_back(att);}
 
 private:

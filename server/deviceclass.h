@@ -8,7 +8,7 @@
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -67,6 +67,9 @@ class DServer;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class
@@ -156,7 +159,7 @@ public:
  * @param list Reference to the device name list
  */
 
-	virtual void device_name_factory(vector<string> &) {};
+	virtual void device_name_factory(vector<string> &list) {(void)list;};
 
 /**
  * Delete device.
@@ -397,6 +400,7 @@ protected:
 //@}
 
 public:
+/// @privatesection
 	vector<string> &get_nodb_name_list() {return ext->nodb_name_list;}
 	void set_memorized_values(bool flag, long idx = 0,bool from_init = false);
 
@@ -431,7 +435,11 @@ public:
 	bool get_device_factory_done() {return ext->device_factory_done;}
 	void set_device_factory_done(bool val) {ext->device_factory_done = val;}
 
+	void check_att_conf();
+	void release_devices_mon();
+
 protected:
+/// @privatesection
 	Command *get_default_command() {return ext->default_cmd;}
 
 private:

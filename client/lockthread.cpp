@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -352,8 +352,8 @@ void LockThread::one_more_lock()
 
 		for (unsigned long loop = 0;loop < e.errors.length();loop++)
 		{
-			if ((::strcmp(e.errors[loop].reason.in(),"API_DeviceLocked") == 0) ||
-			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotLocked") == 0) ||
+			if ((::strcmp(e.errors[loop].reason.in(),API_DeviceLocked) == 0) ||
+			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotLocked) == 0) ||
 			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotExported") == 0))
 			{
 				string error_message(e.errors[loop].desc.in());

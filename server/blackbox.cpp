@@ -16,7 +16,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1406,7 +1406,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 	{
 		sync.unlock();
 
-		Except::throw_exception((const char *)"API_BlackBoxArgument",
+		Except::throw_exception((const char *)API_BlackBoxArgument,
 				      (const char *)"Argument to read black box out of range",
 				      (const char *)"BlackBox::read");
 	}
@@ -1414,7 +1414,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 	{
 		sync.unlock();
 
-		Except::throw_exception((const char *)"API_BlackBoxEmpty",
+		Except::throw_exception((const char *)API_BlackBoxEmpty,
 				      (const char *)"Nothing stored yet in black-box",
 				      (const char *)"BlackBox::read");
 	}
@@ -1459,7 +1459,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 	{
 		sync.unlock();
 
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"BlackBox::read");
 	}

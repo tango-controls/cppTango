@@ -8,7 +8,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -60,6 +60,9 @@ namespace Tango
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class WAttribute:public Attribute
@@ -756,6 +759,8 @@ public:
 	void set_write_value(vector<Tango::DevState> &val, long x = 1, long y = 0);
 //@}
 
+/// @privatesection
+
 	void set_write_value(Tango::DevEncoded *, long x = 1,long y = 0); // Dummy method for compiler
 
 	virtual void set_rvalue();
@@ -798,7 +803,25 @@ public:
 	void set_written_date();
     bool mem_value_below_above(MinMaxValueCheck,string &);
 
+	void set_mem_exception(const DevErrorList &df)
+	{
+		w_ext->mem_exception = df;
+		w_ext->mem_write_failed = true;
+		ext->mem_exception = true;
+	}
+	DevErrorList &get_mem_exception() {return w_ext->mem_exception;}
+	void clear_mem_exception()
+	{
+		w_ext->mem_exception.length(0);
+		w_ext->mem_write_failed = false;
+		ext->mem_exception = false;
+	}
+
+	void set_mem_write_failed(bool bo) {w_ext->mem_write_failed=bo;}
+	bool get_mem_write_failed() {return w_ext->mem_write_failed;}
+
 protected:
+/// @privatesection
 	virtual bool check_rds_alarm();
 
 private:
@@ -812,7 +835,7 @@ private:
     public:
         WAttributeExt():long64_ptr(NULL),ulong_ptr(NULL),
                         ulong64_ptr(NULL),state_ptr(NULL),
-                        uswv(false)
+                        uswv(false),mem_write_failed(false)
                         {}
 
         Tango::DevLong64			long64_val;
@@ -835,6 +858,9 @@ private:
         const Tango::DevState		*state_ptr;
 
         bool						uswv;					// User set_write_value
+        DevErrorList				mem_exception;			// Exception received at start-up in case writing the
+															// memorized att. failed
+		bool						mem_write_failed;		// Flag set to true if the memorized att setting failed
     };
 
 // Defined prior to Tango IDL release 3

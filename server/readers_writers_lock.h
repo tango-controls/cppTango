@@ -5,7 +5,7 @@
 //										Emmanuel Taurel
 //
 // Copyright (C) :      1997-1999 AT&T Laboratories Cambridge
-//						2004,2005,2006,2007,2008,2009,2010,2011,2012
+//						2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
