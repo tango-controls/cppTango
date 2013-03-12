@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -145,6 +145,9 @@ public:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Util
@@ -494,10 +497,10 @@ public:
  *
  * @return The maximun number of threads in the polling threads pool
  */
-	unsigned long get_polling_threads_pool_size() {return ext->poll_pool_size;}
+    unsigned long get_polling_threads_pool_size() {return ext->poll_pool_size;}
 //@}
 
-/**@Miscellaneous methods */
+/**@name Miscellaneous methods */
 //@{
 /**
  * Check if the device server process is in its starting phase
@@ -683,8 +686,6 @@ public:
  * server started without database usage.
  */
 	TANGO_IMP static bool	_UseDb;
-
-	TANGO_IMP static bool	_FileDb;
 /**
  * A daemon process flag. If this flag is set to true, the server
  * process will not exit if it not able to connect to the database.
@@ -699,9 +700,13 @@ public:
  * value is 60 seconds.
  */
  	TANGO_IMP static long	_sleep_between_connect;
-
-
 //@}
+
+/// @privatesection
+
+	TANGO_IMP static bool	_FileDb;
+
+/// @publicsection
 
 #ifdef _TG_WINDOWS_
 /**@name Windows specific methods */
@@ -842,6 +847,7 @@ private:
     };
 
 public:
+/// @privatesection
 	void set_interceptors(Interceptors *in) {ext->inter = in;}
 	Interceptors *get_interceptors() {return ext->inter;}
 
@@ -1091,7 +1097,7 @@ inline CORBA::Any *return_empty_any(const char *cmd)
 		TangoSys_MemStream o;
 
 		o << cmd << "::execute";
-		Tango::Except::throw_exception((const char *)"API_MemoryAllocation",
+		Tango::Except::throw_exception((const char *)API_MemoryAllocation,
 					     (const char *)"Can't allocate memory in server",
 					     o.str());
 	}
@@ -1108,7 +1114,7 @@ inline DbDevice *DeviceImpl::get_db_device()
 		desc_mess << device_name;
 		desc_mess << " which is a non database device";
 
-		Except::throw_exception((const char *)"API_NonDatabaseDevice",
+		Except::throw_exception((const char *)API_NonDatabaseDevice,
 					desc_mess.str(),
 					(const char *)"DeviceImpl::get_db_device");
 	}

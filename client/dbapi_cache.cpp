@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -748,11 +748,19 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 	}
 	else
 	{
-		TangoSys_OMemStream o;
-		o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+		if (TG_strncasecmp("dserver/",(*in_param)[0],8) != 0)
+		{
+			TangoSys_OMemStream o;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
 
-		Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
-									   (const char *)"DbServerCache::get_dev_att_property");
+			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
+											(const char *)"DbServerCache::get_dev_att_property");
+		}
+		else
+		{
+			::sprintf(n_att_str,"%d",found_att);
+			ret_obj_att_prop[1] = CORBA::string_dup(n_att_str);
+		}
 	}
 
 	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << endl;
@@ -1206,7 +1214,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
 	if (imp_tac.last_idx == -1 || imp_tac.first_idx >= (int)data_list->length())
 	{
-		Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+		Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"No TAC device in Db cache",
                                        (const char *)"DbServerCache::import_tac_dev");
 	}
@@ -1217,7 +1225,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
     if (tac_dev.size() != strlen((*data_list)[imp_tac.first_idx]))
     {
-		Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+		Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"Device not available from cache",
                                        (const char *)"DbServerCache::import_tac_dev");
     }
@@ -1230,7 +1238,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
     if (local_tac_dev != cache_tac_dev)
     {
-        Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+        Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"Device not available from cache",
                                        (const char *)"DbServerCache::import_tac_dev");
     }

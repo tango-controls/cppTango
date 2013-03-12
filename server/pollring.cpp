@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -501,7 +501,7 @@ void PollRing::get_delta_t(vector<double> &res,long nb)
 
 	if (nb_elt < 2)
 	{
-		Except::throw_exception((const char *)"API_PollRingBufferEmpty",
+		Except::throw_exception((const char *)API_PollRingBufferEmpty,
 				        (const char *)"Not enough data stored yet in polling ring buffer",
 				        (const char *)"PollRing::get_delta_t");
 	}

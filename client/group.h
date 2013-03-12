@@ -8,7 +8,7 @@
 //
 // author(s) :          N.Leclercq
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -858,7 +858,6 @@ bool GroupAttrReply::operator>> (T& dest)
   {
     std::bitset<DeviceAttribute::numFlags> bs;
     data_m.exceptions(exception_enabled ? bs.set() : bs.reset());
-    bool result;
     try
     {
       result = data_m >> dest;
@@ -930,7 +929,7 @@ long Group::command_inout_asynch_i (const std::string& c, /*const*/ std::vector<
          << d.size()
          << "]"
          << ends;
-    ApiDataExcept::throw_exception((const char*)"API_MethodArgument",
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::command_inout_asynch");
   }
@@ -1004,7 +1003,7 @@ long Group::write_attribute_asynch_i (const std::string& a, /*const*/ std::vecto
          << d.size()
          << "]"
          << ends;
-    ApiDataExcept::throw_exception((const char*)"API_MethodArgument",
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::write_attribute_asynch");
   }

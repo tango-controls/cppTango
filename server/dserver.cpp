@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -236,7 +236,7 @@ void DServer::init_device()
 						TangoSys_OMemStream o;
 						o << "Database error while trying to retrieve device list for class " << class_list[i]->get_name().c_str() << ends;
 
-						Except::throw_exception((const char *)"API_DatabaseAccess",
+						Except::throw_exception((const char *)API_DatabaseAccess,
 				                			o.str(),
 				                			(const char *)"Dserver::init_device");
 					}
@@ -290,10 +290,22 @@ void DServer::init_device()
 					}
 
 //
+// Check attribute configuration
+//
+
+					class_list[i]->check_att_conf();
+
+//
 // Get mcast event parameters (in case of)
 //
 
 					class_list[i]->get_mcast_event(this);
+
+//
+// Release device(s) monitor
+//
+
+					class_list[i]->release_devices_mon();
 				}
 				else
 				{
@@ -324,12 +336,12 @@ void DServer::init_device()
 // Create all device(s)
 //
 
-                    class_list[i]->set_device_factory_done(false);
+					class_list[i]->set_device_factory_done(false);
 					{
 						AutoTangoMonitor sync(class_list[i]);
 						class_list[i]->device_factory(dev_list_nodb);
 					}
-                    class_list[i]->set_device_factory_done(true);
+					class_list[i]->set_device_factory_done(true);
 
 					delete dev_list_nodb;
 				}
@@ -357,13 +369,14 @@ void DServer::init_device()
 			o << "Can't allocate memory in server while creating class number " << class_err << ends;
 			if (class_list.empty() == false)
 			{
-
 				for (unsigned long j = 0;j < class_list.size();j++)
 				{
-					if (class_list[i]->is_py_class() == false)
-						delete class_list[i];
+					class_list[j]->release_devices_mon();
+
+					if (class_list[j]->is_py_class() == false)
+						delete class_list[j];
 					else
-						class_list[i]->delete_class();
+						class_list[j]->delete_class();
 				}
 				class_list.clear();
 			}
@@ -373,17 +386,19 @@ void DServer::init_device()
 			o << "Can't allocate memory in server while building command(s) or device(s) for class number " << i + 1 << ends;
 			for (unsigned long j = i;j < class_list.size();j++)
 			{
-				if (class_list[i]->is_py_class() == false)
-					delete class_list[i];
+				class_list[j]->release_devices_mon();
+
+				if (class_list[j]->is_py_class() == false)
+					delete class_list[j];
 				else
-					class_list[i]->delete_class();
+					class_list[j]->delete_class();
 			}
 			class_list.erase(class_list.begin() + i,class_list.end());
 		}
 
-		Except::throw_exception((const char *)"API_MemoryAllocation",
-				      o.str(),
-				      (const char *)"DServer::init_device");
+		Except::throw_exception((const char *)API_MemoryAllocation,
+						o.str(),
+						(const char *)"DServer::init_device");
 	}
 	catch (Tango::NamedDevFailedList &)
 	{
@@ -400,10 +415,12 @@ void DServer::init_device()
 			{
 				for (unsigned long j = 0;j < class_list.size();j++)
 				{
-					if (class_list[i]->is_py_class() == false)
-						delete class_list[i];
+					class_list[j]->release_devices_mon();
+
+					if (class_list[j]->is_py_class() == false)
+						delete class_list[j];
 					else
-						class_list[i]->delete_class();
+						class_list[j]->delete_class();
 				}
 				class_list.clear();
 			}
@@ -412,10 +429,12 @@ void DServer::init_device()
 		{
 			for (unsigned long j = i;j < class_list.size();j++)
 			{
-				if (class_list[i]->is_py_class() == false)
-					delete class_list[i];
+				class_list[j]->release_devices_mon();
+
+				if (class_list[j]->is_py_class() == false)
+					delete class_list[j];
 				else
-					class_list[i]->delete_class();
+					class_list[j]->delete_class();
 			}
 			class_list.erase(class_list.begin() + i,class_list.end());
 		}
@@ -618,7 +637,7 @@ Tango::DevVarStringArray *DServer::query_class()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DServer::query_class");
 	}
@@ -663,7 +682,7 @@ Tango::DevVarStringArray *DServer::query_device()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"DServer::query_device");
 	}
@@ -749,7 +768,7 @@ void DServer::restart(string &d_name)
 	{
 		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
 		ite_end = dev_list.end();
-		for (ite = dev_list.begin();ite != dev_list.end();ite++)
+		for (ite = dev_list.begin();ite != dev_list.end();++ite)
 		{
 			if ((*ite)->get_name_lower() == lower_d_name)
 			{
@@ -770,7 +789,7 @@ void DServer::restart(string &d_name)
 		cout3 << "Device " << d_name << " not found in server !" << endl;
 		TangoSys_OMemStream o;
 		o << "Device " << d_name << " not found" << ends;
-		Except::throw_exception((const char *)"API_DeviceNotFound",
+		Except::throw_exception((const char *)API_DeviceNotFound,
 				        o.str(),
 				        (const char *)"Dserver::restart()");
 	}
@@ -898,6 +917,14 @@ void DServer::restart(string &d_name)
 	dev_cl->set_memorized_values(false,dev_cl->get_device_list().size() - 1);
 
 //
+// Unlock the device (locked by export_device for memorized attribute)
+//
+
+	vector<DeviceImpl *> &dev_list = dev_cl->get_device_list();
+	DeviceImpl *last_dev = dev_list.back();
+	last_dev->get_dev_monitor().rel_monitor();
+
+//
 // Re-start device polling (if any)
 //
 
@@ -954,13 +981,13 @@ void DServer::restart(string &d_name)
 		cout3 << "Not able to find the new device" << endl;
 		TangoSys_OMemStream o;
 		o << "Not able to find the new device" << ends;
-		Except::throw_exception((const char *)"API_DeviceNotFound",
+		Except::throw_exception((const char *)API_DeviceNotFound,
 			        	o.str(),
 			        	(const char *)"Dserver::restart()");
 	}
 
 //
-// Re-set event parameters (if needed)
+// Re-set classical event parameters (if needed)
 //
 
 	for (i = 0;i < eve.size();i++)
@@ -981,6 +1008,20 @@ void DServer::restart(string &d_name)
             att.set_use_notifd_event();
         if (eve[i].zmq == true)
             att.set_use_zmq_event();
+	}
+
+//
+// Re-set multicast event parameters
+//
+
+	vector<string> m_cast;
+	vector<Attribute *> &att_list = new_dev->get_device_attr()->get_attribute_list();
+
+	for (unsigned int j = 0;j < att_list.size();++j)
+	{
+		mcast_event_for_att(new_dev->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
+		if (m_cast.size() != 0)
+			att_list[j]->set_mcast_event(m_cast);
 	}
 
 //
@@ -1144,7 +1185,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Class " << class_name << " not found in device server" << ends;
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::query_class_prop");
 	}
 
@@ -1168,7 +1209,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DServer::query_class_prop");
 	}
@@ -1214,7 +1255,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Class " << class_name << " not found in device server" << ends;
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::query_dev_prop");
 	}
 
@@ -1229,7 +1270,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	try
 	{
 		ret = new Tango::DevVarStringArray(nb_prop);
-                ret->length(nb_prop);
+		ret->length(nb_prop);
 
 		for (int i = 0;i < nb_prop;i++)
 		{
@@ -1238,7 +1279,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DServer::query_dev_prop");
 	}
@@ -1273,7 +1314,6 @@ void DServer::kill()
 	t->start();
 
 }
-
 
 void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
 {
@@ -1324,7 +1364,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << str << ends;
 		::LocalFree((HLOCAL)str);
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
@@ -1342,7 +1382,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		TangoSys_OMemStream o;
 		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << ends;
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 	cout4 << "GetProcAddress is a success" << endl;
@@ -1358,7 +1398,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		TangoSys_OMemStream o;
 		o << "Trying to load shared library " << lib_name << " failed. It returns error: " << dlerror() << ends;
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
@@ -1378,7 +1418,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 		TangoSys_OMemStream o;
 		o << "Class " << cl_name << " does not have the C creator function (_create_<Class name>_class)" << ends;
 
-		Except::throw_exception((const char *)"API_ClassNotFound",o.str(),
+		Except::throw_exception((const char *)API_ClassNotFound,o.str(),
 				        (const char *)"DServer::create_cpp_class");
 	}
 
@@ -1423,7 +1463,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 			TangoSys_OMemStream o;
 			o << "Database error while trying to retrieve device properties for device " << device_name.c_str() << ends;
 
-			Except::throw_exception((const char *)"API_DatabaseAccess",
+			Except::throw_exception((const char *)API_DatabaseAccess,
 					o.str(),
 					(const char *)"DServer::get_dev_prop");
 		}
@@ -1443,7 +1483,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 		}
 		if (db_data[1].is_empty() == false)
 		{
-            vector<string> tmp_vect;
+			vector<string> tmp_vect;
 			db_data[1] >> tmp_vect;
 
 //
@@ -1451,33 +1491,33 @@ void DServer::get_dev_prop(Tango::Util *tg)
 // max device property length of 255 chars, rebuilt a real pool conf
 //
 
-            string rebuilt_str;
-            bool ended = true;
-            vector<string>::iterator iter;
-            polling_th_pool_conf.clear();
+			string rebuilt_str;
+			bool ended = true;
+			vector<string>::iterator iter;
+			polling_th_pool_conf.clear();
 
-            for (iter = tmp_vect.begin();iter != tmp_vect.end();++iter)
-            {
-                string tmp_str = (*iter);
-                if (tmp_str[tmp_str.size() - 1] == '\\')
-                {
-                    tmp_str.resize(tmp_str.size() - 1);
-                    ended = false;
-                }
-                else
-                    ended = true;
+			for (iter = tmp_vect.begin();iter != tmp_vect.end();++iter)
+			{
+				string tmp_str = (*iter);
+				if (tmp_str[tmp_str.size() - 1] == '\\')
+				{
+					tmp_str.resize(tmp_str.size() - 1);
+					ended = false;
+				}
+				else
+					ended = true;
 
-                rebuilt_str = rebuilt_str + tmp_str;
+				rebuilt_str = rebuilt_str + tmp_str;
 
-                if (ended == true)
-                {
-                    polling_th_pool_conf.push_back(rebuilt_str);
-                    rebuilt_str.clear();
-                }
-            }
+				if (ended == true)
+				{
+					polling_th_pool_conf.push_back(rebuilt_str);
+					rebuilt_str.clear();
+				}
+			}
 		}
 		else
-            polling_th_pool_conf.clear();
+			polling_th_pool_conf.clear();
 	}
 }
 
@@ -1509,7 +1549,7 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 					o << "Device " << dev_name << " is locked by another client.";
 					o << " Your request is not allowed while a device is locked." << ends;
 					v << "DServer::" << cmd_name << ends;
-					Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
+					Except::throw_exception((const char *)API_DeviceLocked,o.str(),v.str());
 				}
 			}
 			else
@@ -1518,7 +1558,7 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 				o << "Device " << dev_name << " is locked by another client.";
 				o << " Your request is not allowed while a device is locked." << ends;
 				v << "DServer::" << cmd_name << ends;
-				Except::throw_exception((const char *)"API_DeviceLocked",o.str(),v.str());
+				Except::throw_exception((const char *)API_DeviceLocked,o.str(),v.str());
 			}
 		}
 	}
@@ -1651,58 +1691,58 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 // Multicast Hops
 //
 
-            mcast_hops = MCAST_HOPS;
-            if (db_data[1].is_empty() == false)
-                db_data[1] >> mcast_hops;
+			mcast_hops = MCAST_HOPS;
+			if (db_data[1].is_empty() == false)
+				db_data[1] >> mcast_hops;
 
 //
 // Multicast PGM rate
 //
 
-            mcast_rate = PGM_RATE;
-            if (db_data[2].is_empty() == false)
-            {
-                db_data[2] >> mcast_rate;
-                mcast_rate = mcast_rate * 1024;
-            }
+			mcast_rate = PGM_RATE;
+			if (db_data[2].is_empty() == false)
+			{
+				db_data[2] >> mcast_rate;
+				mcast_rate = mcast_rate * 1024;
+			}
 
 //
 // Multicast IVL
 //
 
-            mcast_ivl = PGM_IVL;
-            if (db_data[3].is_empty() == false)
-            {
-                db_data[3] >> mcast_ivl;
-                mcast_ivl = mcast_ivl * 1000;
-            }
+			mcast_ivl = PGM_IVL;
+			if (db_data[3].is_empty() == false)
+			{
+				db_data[3] >> mcast_ivl;
+				mcast_ivl = mcast_ivl * 1000;
+			}
 
 //
 // Publisher Hwm
 //
 
-            zmq_pub_event_hwm = PUB_HWM;
-            if (db_data[4].is_empty() == false)
-                db_data[4] >> zmq_pub_event_hwm;
+			zmq_pub_event_hwm = PUB_HWM;
+			if (db_data[4].is_empty() == false)
+				db_data[4] >> zmq_pub_event_hwm;
 
 //
 // Subscriber Hwm
 //
 
-            zmq_sub_event_hwm = SUB_HWM;
-            if (db_data[5].is_empty() == false)
-                db_data[5] >> zmq_sub_event_hwm;
+			zmq_sub_event_hwm = SUB_HWM;
+			if (db_data[5].is_empty() == false)
+				db_data[5] >> zmq_sub_event_hwm;
 
 //
 // Nan allowed in writing attribute
 //
 
-            if (db_data[6].is_empty() == false)
-            {
-                bool new_val;
-                db_data[6] >> new_val;
-                tg->set_wattr_nan_allowed(new_val);
-            }
+			if (db_data[6].is_empty() == false)
+			{
+				bool new_val;
+				db_data[6] >> new_val;
+				tg->set_wattr_nan_allowed(new_val);
+			}
 
 		}
 		catch (Tango::DevFailed &)

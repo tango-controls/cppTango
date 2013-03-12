@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -59,7 +59,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 		TangoSys_OMemStream o;
 		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
 
-		Except::throw_exception((const char *)"DServer_Events",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 								o.str(),
 								(const char *)"DServer::event_subscription_change");
 	}
@@ -87,7 +87,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
      	TangoSys_OMemStream o;
 		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
 
-		Except::throw_exception((const char *)"DServer_Events",
+		Except::throw_exception((const char *)API_ShutdownInProgress,
 									    o.str(),
 									   (const char *)"DServer::event_subscription_change");
 	}
@@ -173,7 +173,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         {
             TangoSys_OMemStream o;
             o << "Device " << dev_name << " not found" << ends;
-            Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+            Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
                                        (const char *)"DServer::event_subscription");
         }
 	}
@@ -207,6 +207,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 		if (event == "user_event")
 		{
 			cout4 << "DServer::event_subscription(): update user_event subscription\n";
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 			attribute.ext->event_user_subscription = time(NULL);
 			if (cl_release == 3)
 				attribute.ext->event_user_client_3 = true;
@@ -214,6 +216,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 		else if (event == "attr_conf")
 		{
 			cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 			attribute.ext->event_attr_conf_subscription = time(NULL);
 		}
 		else if (event == "data_ready")
@@ -230,6 +234,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 										(const char *)"DServer::event_subscription");
 			}
 			cout4 << "DServer::event_subscription(): update data_ready subscription\n";
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
 			attribute.ext->event_data_ready_subscription = time(NULL);
 		}
 		else
@@ -251,7 +257,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				{
 					if (attribute.is_change_event() == false)
 					{
-						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
+						Except::throw_exception((const char *)API_AttributePollingNotStarted,
 									o.str(),
 									(const char *)"DServer::event_subscription");
 					}
@@ -262,14 +268,14 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					{
 						if (attribute.is_archive_event() == false)
 						{
-							Except::throw_exception((const char *)"API_AttributePollingNotStarted",
+							Except::throw_exception((const char *)API_AttributePollingNotStarted,
 										o.str(),
 										(const char *)"DServer::event_subscription");
 						}
 					}
 					else
 					{
-						Except::throw_exception((const char *)"API_AttributePollingNotStarted",
+						Except::throw_exception((const char *)API_AttributePollingNotStarted,
 									o.str(),
 									(const char *)"DServer::event_subscription");
 					}
@@ -304,13 +310,15 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 								o << attr_name;
 								o << " are not set" << ends;
 
-								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
+								Except::throw_exception((const char *)API_EventPropertiesNotSet,
 																o.str(),
 																(const char *)"DServer::event_subscription");
 							}
 						}
 					}
 				}
+
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
        			attribute.ext->event_change_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_change_client_3 = true;
@@ -323,6 +331,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
       		else if (event == "periodic")
       		{
 				cout4 << "DServer::event_subscription(): update periodic subscription\n";
+
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
        			attribute.ext->event_periodic_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_periodic_client_3 = true;
@@ -354,7 +364,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 								o << attr_name;
 								o << " are not set" << ends;
 
-								Except::throw_exception((const char *)"API_EventPropertiesNotSet",
+								Except::throw_exception((const char *)API_EventPropertiesNotSet,
 															 	o.str(),
 																(const char *)"DServer::event_subscription");
 							}
@@ -363,6 +373,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				}
 
 				cout4 << "DServer::event_subscription(): update archive subscription\n";
+
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
        			attribute.ext->event_archive_subscription = time(NULL);
 				if (cl_release == 3)
 					attribute.ext->event_archive_client_3 = true;
@@ -389,10 +401,30 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         if (ct == ZMQ)
         {
             bool found = false;
+
+			ZmqEventSupplier *ev;
+			ev = tg->get_zmq_event_supplier();
+			int zmq_release = ev->get_zmq_release();
+
 			for(unsigned int i = 0;i != attribute.ext->mcast_event.size();++i)
 			{
                 if (attribute.ext->mcast_event[i].find(event) == 0)
                 {
+                	if (zmq_release < 320)
+					{
+						int zmq_major,zmq_minor,zmq_patch;
+						zmq_version(&zmq_major,&zmq_minor,&zmq_patch);
+
+						TangoSys_OMemStream o;
+						o << "Device server process is using zmq release ";
+						o << zmq_major << "." << zmq_minor << "." << zmq_patch;
+						o << "\nMulticast event(s) not available with this ZMQ release" << ends;
+
+						Except::throw_exception((const char *)API_UnsupportedFeature,
+														o.str(),
+														(const char *)"DServer::event_subscription");
+					}
+
                     string::size_type start,end;
                     start = attribute.ext->mcast_event[i].find(':');
                     start++;
@@ -451,7 +483,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			}
 
 //
-// If one of the 2 parameters are not deefined, get the default value
+// If one of the 2 parameters are not defined, get the default value
 //
 
             if (rate == 0)
@@ -502,10 +534,10 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 		TangoSys_OMemStream o;
 		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
 
-		Except::throw_exception((const char *)"DServer_Events",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 								o.str(),
 								(const char *)"DServer::zmq_event_subscription_change");
-	}
+    }
 
     Tango::DevVarLongStringArray *ret_data = new Tango::DevVarLongStringArray();
     Tango::Util *tg = Tango::Util::instance();
@@ -520,7 +552,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             TangoSys_OMemStream o;
             o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
 
-            Except::throw_exception((const char *)"DServer_Events",
+            Except::throw_exception((const char *)API_WrongNumberOfArgs,
                                     o.str(),
                                     (const char *)"DServer::zmq_event_subscription_change");
         }
@@ -539,9 +571,17 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             ret_data->svalue[0] = CORBA::string_dup(tmp_str.c_str());
 
             tmp_str = "Event: ";
-            tmp_str = tmp_str + ev->get_event_endpoint();
+            string ev_end = ev->get_event_endpoint();
+            if (ev_end.size() != 0)
+				tmp_str = "Event: " + ev_end;
+			size_t nb_mcast = ev->get_mcast_event_nb();
+			if (nb_mcast != 0)
+			{
+				if (ev_end.size() != 0)
+					tmp_str = tmp_str + "\n";
+				tmp_str = tmp_str + "Some event(s) sent using multicast protocol";
+			}
             ret_data->svalue[1] = CORBA::string_dup(tmp_str.c_str());
-
         }
         else
         {
@@ -571,7 +611,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             TangoSys_OMemStream o;
             o << "The device server is shutting down! You can no longer subscribe for events" << ends;
 
-            Except::throw_exception((const char *)"DServer_Events",
+            Except::throw_exception((const char *)API_ShutdownInProgress,
                                             o.str(),
                                            (const char *)"DServer::zmq_event_subscription_change");
         }
@@ -603,7 +643,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         {
             TangoSys_OMemStream o;
             o << "Device " << dev_name << " not found" << ends;
-            Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+            Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
                                        (const char *)"DServer::event_subscription");
         }
 
@@ -613,7 +653,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
             o << "Device " << dev_name << " too old to use ZMQ event (it does not implement IDL 4)";
             o << "\nSimulate a CommandNotFound exception to move to notifd event system" << ends;
-            Except::throw_exception((const char *)"API_CommandNotFound",
+            Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DServer::zmq_event_subscription_change");
         }
@@ -695,7 +735,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // Init data returned by command
 //
 
-        ret_data->lvalue.length(5);
+        ret_data->lvalue.length(6);
         ret_data->svalue.length(2);
 
         ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();
@@ -703,6 +743,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         ret_data->lvalue[2] = zmq_sub_event_hwm;
         ret_data->lvalue[3] = rate;
         ret_data->lvalue[4] = ivl;
+        ret_data->lvalue[5] = ev->get_zmq_release();
 
         string &heartbeat_endpoint = ev->get_heartbeat_endpoint();
         ret_data->svalue[0] = CORBA::string_dup(heartbeat_endpoint.c_str());
@@ -728,5 +769,102 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
 	return ret_data;
 }
+
+//+----------------------------------------------------------------------------
+//
+// method : 		DServer::event_confirm_subscription()
+//
+// description : 	method to execute the command EventConfirmSubscription command.
+//
+// in : - argin : The command input argument
+//
+//-----------------------------------------------------------------------------
+void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
+{
+
+//
+// Some check on argument
+//
+
+    if ((argin->length() == 0) || (argin->length()  % 3) != 0)
+    {
+		TangoSys_OMemStream o;
+		o << "Wrong number of input arguments: 3 needed per event: device name, attribute name and event name" << endl;
+
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,o.str(),
+								(const char *)"DServer::event_confirm_subscription");
+	}
+
+//
+// If we receive this command while the DS is in its
+// shuting down sequence, do nothing
+//
+
+	Tango::Util *tg = Tango::Util::instance();
+	if (tg->get_heartbeat_thread_object() == NULL)
+	{
+		TangoSys_OMemStream o;
+		o << "The device server is shutting down! You can no longer subscribe for events" << ends;
+
+		Except::throw_exception((const char *)API_ShutdownInProgress, o.str(),
+								(const char *)"DServer::event_confirm_subscription");
+	}
+
+//
+// A loop for each event
+//
+
+    unsigned int nb_event = argin->length() / 3;
+
+	string old_dev;
+	DeviceImpl *dev = NULL;
+
+	for (unsigned int loop = 0;loop < nb_event;loop++)
+	{
+		string dev_name, attr_name, event, attr_name_lower;
+		int base = loop * 3;
+		dev_name = (*argin)[base];
+		attr_name = (*argin)[base + 1];
+		event = (*argin)[base + 2];
+
+		attr_name_lower = attr_name;
+		transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
+
+		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
+
+//
+// Find device
+//
+
+		if (old_dev != dev_name)
+		{
+        	try
+        	{
+           		dev = tg->get_device_by_name(dev_name);
+        	}
+        	catch (Tango::DevFailed &e)
+        	{
+            	TangoSys_OMemStream o;
+            	o << "Device " << dev_name << " not found" << ends;
+            	Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
+             	                          (const char *)"DServer::event_confirm_subscription");
+        	}
+
+			old_dev = dev_name;
+		}
+
+//
+// Call common method (common between old and new command)
+//
+
+		string mcast;
+		int rate,ivl;
+
+		string action("subscribe");
+		event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev);
+	}
+
+}
+
 
 }	// namespace

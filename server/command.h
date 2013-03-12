@@ -10,7 +10,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -75,6 +75,9 @@ typedef bool (DeviceImpl::*ALLO_PTR)(const CORBA::Any &);
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Command
@@ -257,7 +260,7 @@ public:
  * @return A boolean set to true is the command is allowed. Otherwise, the
  * return value is false.
  */
-	virtual bool is_allowed (DeviceImpl *, const CORBA::Any &) {return true;}
+	virtual bool is_allowed (DeviceImpl *dev, const CORBA::Any &in_any) {(void)dev;(void)in_any;return true;}
 
 /**
  * Init command parameters type.
@@ -1237,6 +1240,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class TemplCommand:public Command
@@ -1618,6 +1624,9 @@ protected:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename INARG,typename OUTARG>
@@ -2285,6 +2294,9 @@ CORBA::Any *TemplCommandInOut<INARG,OUTARG>::execute(DeviceImpl *dev_ptr,const C
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 
@@ -2948,6 +2960,9 @@ CORBA::Any *TemplCommandIn<INARG>::execute(DeviceImpl *dev_ptr,const CORBA::Any 
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename OUTARG>

@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -62,7 +62,7 @@ static OptAttrProp Tango_OptAttrProp[] = {
 	{"unit",UnitNotSpec},
 	{"standard_unit",StdUnitNotSpec},
 	{"display_unit",DispUnitNotSpec},
-	{"format",FormatNotSpec},
+	{"format",FormatNotSpec_FL},
 	{"min_value",AlrmValueNotSpec},
 	{"max_value",AlrmValueNotSpec},
 	{"min_alarm",AlrmValueNotSpec},
@@ -147,7 +147,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 				TangoSys_OMemStream o;
 				o << "Can't get device attribute properties for device " << dev_name << ends;
 
-				Except::throw_exception((const char *)"API_DatabaseAccess",
+				Except::throw_exception((const char *)API_DatabaseAccess,
 				                	o.str(),
 				                	(const char *)"MultiAttribute::MultiAttribute");
 			}
@@ -210,7 +210,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 			vector<AttrProperty> prop_list;
 			concat(dev_prop,class_prop,prop_list);
 			add_user_default(prop_list,def_user_prop);
-			add_default(prop_list,dev_name,attr.get_name());
+			add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
 //
 // Create an Attribute instance
@@ -336,12 +336,13 @@ void MultiAttribute::concat(vector<AttrProperty> &dev_prop,
 // in :			prop_list : The already defined property vector
 //			dev_name : The device name
 //			att_name : The attribute name
+//			att_data_type : The attribute data type
 //
 //--------------------------------------------------------------------------
 
 void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
 				 TANGO_UNUSED(string &dev_name),
-				 string &att_name)
+				 string &att_name,long att_data_type)
 {
 
 //
@@ -350,6 +351,41 @@ void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
 //
 
 	Tango_OptAttrProp[0].default_value = att_name.c_str();
+
+//
+// Also overwrite the format attribute property according to attribute data type
+//
+
+	switch (att_data_type)
+	{
+	case DEV_SHORT:
+	case DEV_LONG:
+	case DEV_LONG64:
+	case DEV_UCHAR:
+	case DEV_USHORT:
+	case DEV_ULONG:
+	case DEV_ULONG64:
+		Tango_OptAttrProp[5].default_value = FormatNotSpec_INT;
+		break;
+
+	case DEV_STRING:
+		Tango_OptAttrProp[5].default_value = FormatNotSpec_STR;
+		break;
+
+	case DEV_FLOAT:
+	case DEV_DOUBLE:
+		Tango_OptAttrProp[5].default_value = FormatNotSpec_FL;
+		break;
+
+	case DEV_STATE:
+	case DEV_ENCODED:
+	case DEV_BOOLEAN:
+		Tango_OptAttrProp[5].default_value = AlrmValueNotSpec;
+		break;
+
+	default:
+		break;
+	}
 
 	long nb_opt_prop = sizeof(Tango_OptAttrProp)/sizeof(OptAttrProp);
 
@@ -435,7 +471,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "Device --> " << dev_name;
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is defined but this attribute data format is not SCALAR" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}*/
@@ -456,7 +492,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is set to " << assoc_name;
 			o << ", but this attribute does not exists or is not writable" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}
@@ -473,7 +509,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is set to " << assoc_name;
 			o << ", but this attribute is not of the SCALAR data format" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}*/
@@ -490,7 +526,7 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
 			o << " is set to " << assoc_name;
 			o << ", but these two attributes do not support the same data type" << ends;
-			Except::throw_exception((const char *)"API_AttrOptProp",
+			Except::throw_exception((const char *)API_AttrOptProp,
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}
@@ -550,7 +586,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 			TangoSys_OMemStream o;
 			o << "Can't get device attribute properties for device " << dev_name << ends;
 
-			Except::re_throw_exception(e,(const char *)"API_DatabaseAccess",
+			Except::re_throw_exception(e,(const char *)API_DatabaseAccess,
 				       		 o.str(),
 				        	(const char *)"MultiAttribute::add_attribute");
 		}
@@ -605,7 +641,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 	vector<AttrProperty> prop_list;
 	concat(dev_prop,class_prop,prop_list);
 	add_user_default(prop_list,def_user_prop);
-	add_default(prop_list,dev_name,attr.get_name());
+	add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
 //
 // Create an Attribute instance and insert it in the attribute list
@@ -827,7 +863,7 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
 		TangoSys_OMemStream o;
 
 		o << attr_name << " attribute not found" << ends;
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				      o.str(),
 				      (const char *)"MultiAttribute::get_attr_by_name");
 	}
@@ -864,7 +900,7 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 		TangoSys_OMemStream o;
 
 		o << attr_name << " writable attribute not found" << ends;
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				      o.str(),
 				      (const char *)"MultiAttribute::get_w_attr_by_name");
 	}
@@ -910,7 +946,7 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
 		TangoSys_OMemStream o;
 
 		o << attr_name << " attribute not found" << ends;
-		Except::throw_exception((const char *)"API_AttrNotFound",
+		Except::throw_exception((const char *)API_AttrNotFound,
 				      o.str(),
 				      (const char *)"MultiAttribute::get_attr_ind_by_name");
 	}
