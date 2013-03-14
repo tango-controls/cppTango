@@ -15,7 +15,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -507,6 +507,27 @@ public:
 	ZmqEventSubscriptionChangeCmd(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
 	ZmqEventSubscriptionChangeCmd(const char *,Tango::CmdArgType, Tango::CmdArgType);
 	~ZmqEventSubscriptionChangeCmd() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+//=============================================================================
+//
+//			The EventConfirmSubscriptionCmd class
+//
+// description :	Class to implement the EventConfirmSubscription command.
+//			This command takes a list of event for which the client confirm
+//			the subscription. This command returns nothing
+//
+//=============================================================================
+
+class EventConfirmSubscriptionCmd : public Tango::Command
+{
+public:
+	EventConfirmSubscriptionCmd(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *);
+	EventConfirmSubscriptionCmd(const char *,Tango::CmdArgType, Tango::CmdArgType);
+	~EventConfirmSubscriptionCmd() {};
 
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);

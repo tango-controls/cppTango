@@ -1,19 +1,21 @@
 #!/bin/bash
 
-UX_INSTALL_DIR="/tmp/ci"
-WIN_INSTALL_DIR="C:\tango_src\ci"
+UX_INSTALL_DIR="/segfs/tango/ci/Tango"
+WIN_INSTALL_DIR="//unixhome/segfs/tango/ci/Tango"
 
 #
 # Is clean required ?
 #
 
-if [ $# = 1 ]
+if [ $# = 2 ]
 then
-	if [ $1 = "clean" ]
+	if [ $2 = "clean" ]
 	then
 		CLEAN="clean"
 	fi
 fi
+
+BRANCH_DIR=../..
 
 #
 # Set some variables according to OS
@@ -99,6 +101,8 @@ do
 	fi
 done
 
+pwd
+
 #
 # Set library type
 #
@@ -166,11 +170,11 @@ then
 	then
 		MAKE_CMD="$MAKE_PATH $LIBNAME/$LIBNAME.vcxproj /p:Platform=x64 /t:$TARGETNAME /p:Configuration=$DEBUG_MODE /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
 		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
-		cd trunk/win64/tango_vc10
+		cd $BRANCH_DIR/win64/tango_vc10
 	else
 		MAKE_CMD="$MAKE_PATH winnt_lib.sln /project $LIBNAME $BUILD $DEBUG_MODE /projectconfig $DEBUG_MODE /out $OUTFILE"
 		export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
-		cd trunk/win32/tango_vc9
+		cd $BRANCH_DIR/win32/tango_vc9
 	fi
 	echo $PATH
 	/bin/rm -f $OUTFILE
@@ -178,7 +182,7 @@ else
 	MAKE_CMD="$MAKE_PATH prefix=$INSTALL_DIR $OS_SPEC $CPU_BUS $DEBUG_MODE $CLEAN $LIBNAME install_include install_link"
 
 # branch dependent path:
-	cd trunk
+	cd $BRANCH_DIR
 fi
 
 echo $MAKE_CMD

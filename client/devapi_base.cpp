@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -314,7 +314,10 @@ void Connection::check_and_reconnect(Tango::AccessControlType &act)
 	{
 		WriterLock guard(ext->con_to_mon);
 		if (connection_state != CONNECTION_OK)
+		{
 			reconnect(dbase_used);
+			act = access;
+		}
 	}
 }
 
@@ -331,7 +334,10 @@ void Connection::check_and_reconnect(Tango::DevSource &sou,Tango::AccessControlT
 	{
 		WriterLock guard(ext->con_to_mon);
 		if (connection_state != CONNECTION_OK)
+		{
 			reconnect(dbase_used);
+			act = access;
+		}
 	}
 }
 
@@ -1014,7 +1020,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 
 				vector<Database *> & v_d = au->get_db_vect();
 				Database *db;
-				if (v_d.size() == 0)
+				if (v_d.empty() == true)
 					db = static_cast<Database *>(this);
 				else
 				{
@@ -1071,7 +1077,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 						desc << ends;
 					}
 
-					NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+					NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 													  (const char *)"Connection::command_inout()");
 				}
 			}
@@ -1207,7 +1213,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 
 				vector<Database *> & v_d = au->get_db_vect();
 				Database *db;
-				if (v_d.size() == 0)
+				if (v_d.empty() == true)
 					db = static_cast<Database *>(this);
 				else
 				{
@@ -1263,7 +1269,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 						desc << ends;
 					}
 
-					NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+					NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 													  (const char *)"Connection::command_inout()");
 				}
 			}
@@ -1444,7 +1450,7 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (strcmp(e.errors[0].reason.in(),"API_TangoHostNotSet") == 0)
+			if (strcmp(e.errors[0].reason.in(),API_TangoHostNotSet) == 0)
 			{
 				cerr << e.errors[0].desc.in() << endl;
 			}
@@ -1537,9 +1543,10 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 		}
 	}
 
-
+//
 // get the name of the asscociated device when connecting
 // inside a device server
+//
 
 	try
 	{
@@ -1719,7 +1726,7 @@ void DeviceProxy::parse_name(string &full_name)
 		desc << "The given name is an empty string!!! " << full_name << endl;
 		desc << "Device name syntax is domain/family/member" << ends;
 
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+		ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 	}
@@ -1763,7 +1770,6 @@ void DeviceProxy::parse_name(string &full_name)
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
-			exit(-1);
 		}
 		else
 		{
@@ -1828,7 +1834,7 @@ void DeviceProxy::parse_name(string &full_name)
 			TangoSys_OMemStream desc;
 			desc << "Host and port not correctly defined in device name " << full_name << ends;
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
 		}
@@ -1840,7 +1846,7 @@ void DeviceProxy::parse_name(string &full_name)
 			TangoSys_OMemStream desc;
 			desc << "Host and port not correctly defined in device name " << full_name << ends;
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
 		}
@@ -1862,7 +1868,7 @@ void DeviceProxy::parse_name(string &full_name)
 			desc << "Wrong device name syntax (domain/family/member) in " << full_name << endl;
 			desc << "Rem: Alias are forbidden when not using a database" << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 		}
@@ -1874,7 +1880,7 @@ void DeviceProxy::parse_name(string &full_name)
 			desc << "Wrong device name syntax (domain/family/member) in " << full_name << endl;
 			desc << "Rem: Alias are forbidden when not using a database" << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 		}
@@ -1886,7 +1892,7 @@ void DeviceProxy::parse_name(string &full_name)
 			desc << "Wrong device name syntax (domain/family/member) in " << full_name << endl;
 			desc << "Rem: Alias are forbidden when not using a database" << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 		}
@@ -1916,7 +1922,7 @@ void DeviceProxy::parse_name(string &full_name)
 				TangoSys_OMemStream desc;
 				desc << "Wrong alias name syntax in " << full_name << " (: is not allowed in alias name)" << ends;
 
-				ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 			}
@@ -1927,7 +1933,7 @@ void DeviceProxy::parse_name(string &full_name)
 				TangoSys_OMemStream desc;
 				desc << "Wrong alias name syntax in " << full_name << " (-> is not allowed in alias name)" << ends;
 
-				ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 			}
@@ -1960,7 +1966,7 @@ void DeviceProxy::parse_name(string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-					ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+					ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 				}
@@ -1973,7 +1979,7 @@ void DeviceProxy::parse_name(string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-					ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+					ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 				}
@@ -1985,7 +1991,7 @@ void DeviceProxy::parse_name(string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-					ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+					ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 				}
@@ -2026,7 +2032,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong alias name syntax in " << full_name << " (: is not allowed in alias name)" << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2037,7 +2043,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong alias name syntax in " << full_name << " (-> is not allowed in alias name)" << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2064,7 +2070,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2076,7 +2082,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2208,7 +2214,7 @@ DbDevImportInfo DeviceProxy::import_info()
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					        desc.str(),
 					        (const char *)"DeviceProxy::import_info");
 	}
@@ -3177,7 +3183,7 @@ void DeviceProxy::get_property(string &property_name, DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property");
 	}
@@ -3207,7 +3213,7 @@ void DeviceProxy::get_property(vector<string> &property_names, DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property");
 	}
@@ -3240,7 +3246,7 @@ void DeviceProxy::get_property(DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property");
 	}
@@ -3267,7 +3273,7 @@ void DeviceProxy::put_property(DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::put_property");
 	}
@@ -3294,7 +3300,7 @@ void DeviceProxy::delete_property(string &property_name)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::delete_property");
 	}
@@ -3325,7 +3331,7 @@ void DeviceProxy::delete_property(vector<string> &property_names)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::delete_property");
 	}
@@ -3359,7 +3365,7 @@ void DeviceProxy::delete_property(DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::delete_property");
 	}
@@ -3387,7 +3393,7 @@ void DeviceProxy::get_property_list(const string &wildcard,vector<string> &prop_
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property_list");
 	}
@@ -4894,7 +4900,7 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"DeviceProxy::write_attributes()");
 			}
 
@@ -5111,7 +5117,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"DeviceProxy::write_attribute()");
 			}
 
@@ -5257,7 +5263,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  		(const char *)"DeviceProxy::write_attribute()");
 			}
 
@@ -5375,7 +5381,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 		desc << attr_val[0].name.in();
 		desc << ". The device does not support thi stype of data (Bad IDL release)";
 		desc << ends;
-		Tango::Except::throw_exception((const char*)"API_NotSupportedFeature",
+		Tango::Except::throw_exception((const char*)API_NotSupportedFeature,
                     	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 	}
 	int ctr = 0;
@@ -5406,7 +5412,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  		(const char *)"DeviceProxy::write_attribute()");
 			}
 
@@ -5580,7 +5586,7 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 		TangoSys_OMemStream desc;
 		desc << "Device " << device_name;
 		desc << " does not support command_history feature" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  desc.str(),
 						  (const char *)"DeviceProxy::command_history");
 	}
@@ -5694,7 +5700,7 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 		TangoSys_OMemStream desc;
 		desc << "Device " << device_name;
 		desc << " does not support attribute_history feature" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  desc.str(),
 						  (const char *)"DeviceProxy::attribute_history");
 	}
@@ -5801,14 +5807,15 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 	return ddh;
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::connect_to_adm_device() - get device polling status
+// method:
+//		DeviceProxy::connect_to_adm_device()
 //
-// Please, note that this method is called when the mutex called adm_dev_mutex
-// is locked
+// description:
+//		Create a connection to the admin device of the Tango device server process where the device is running.
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::connect_to_adm_device()
 {
@@ -5872,7 +5879,7 @@ bool DeviceProxy::is_polled(polled_object obj, string &obj_name,string &upd)
 	vector<string> *poll_str;
 
 	poll_str = polling_status();
-	if (poll_str->size() == 0)
+	if (poll_str->empty() == true)
 	{
 		delete poll_str;
 		return ret;
@@ -6470,7 +6477,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	catch (DevFailed &e)
 	{
 	    string reason(e.errors[0].reason.in());
-	    if (reason == "API_CommandNotFound")
+	    if (reason == API_CommandNotFound)
 	    {
             if (api_ptr->get_notifd_event_consumer() == NULL)
             {
@@ -6519,7 +6526,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	catch (DevFailed &e)
 	{
 	    string reason(e.errors[0].reason.in());
-	    if (reason == "API_CommandNotFound")
+	    if (reason == API_CommandNotFound)
 	    {
             if (api_ptr->get_notifd_event_consumer() == NULL)
             {
@@ -6962,7 +6969,7 @@ void DeviceProxy::lock(int lock_validity)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::lock");
 	}
@@ -6976,7 +6983,7 @@ void DeviceProxy::lock(int lock_validity)
 		TangoSys_OMemStream desc;
 		desc << "Lock validity can not be lower than " << MIN_LOCK_VALIDITY << " seconds" << ends;
 
-		Except::throw_exception((const char*)"API_MethodArgument",desc.str(),
+		Except::throw_exception((const char*)API_MethodArgument,desc.str(),
 								(const char*)"DeviceProxy::lock");
 	}
 
@@ -6991,7 +6998,7 @@ void DeviceProxy::lock(int lock_validity)
 				desc << "Device " << device_name << " is already locked with another lock validity (";
 				desc << lock_valid << " sec)" << ends;
 
-				Except::throw_exception((const char*)"API_MethodArgument",desc.str(),
+				Except::throw_exception((const char*)API_MethodArgument,desc.str(),
 									(const char*)"DeviceProxy::lock");
 			}
 		}
@@ -7084,7 +7091,7 @@ void DeviceProxy::lock(int lock_validity)
 					if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 					{
 						cout4 << "TIME OUT" << endl;
-						Except::throw_exception((const char *)"API_CommandTimedOut",
+						Except::throw_exception((const char *)API_CommandTimedOut,
 								        		(const char *)"Locking thread blocked !!!",
 								        		(const char *)"DeviceProxy::lock");
 					}
@@ -7108,7 +7115,7 @@ void DeviceProxy::lock(int lock_validity)
 					if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 					{
 						cout4 << "TIME OUT" << endl;
-						Except::throw_exception((const char *)"API_CommandTimedOut",
+						Except::throw_exception((const char *)API_CommandTimedOut,
 								        		(const char *)"Locking thread blocked !!!",
 								        		(const char *)"DeviceProxy::lock");
 					}
@@ -7138,7 +7145,7 @@ void DeviceProxy::unlock(bool force)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::unlock");
 	}
@@ -7204,7 +7211,7 @@ void DeviceProxy::unlock(bool force)
 //				TangoSys_OMemStream o;
 
 //				o << "Can't find the locking thread for device " << device_name << " and admin device " << adm_dev_name << ends;
-//				Tango::Except::throw_exception((const char *)"API_CantFindLockingThread",o.str(),
+//				Tango::Except::throw_exception((const char *)API_CantFindLockingThread,o.str(),
 //                                           		(const char *)"DeviceProxy::unlock()");
 			}
 			else
@@ -7227,7 +7234,7 @@ void DeviceProxy::unlock(bool force)
 						if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 						{
 							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)"API_CommandTimedOut",
+							Except::throw_exception((const char *)API_CommandTimedOut,
 								        		(const char *)"Locking thread blocked !!!",
 								        		(const char *)"DeviceProxy::unlock");
 						}
@@ -7247,7 +7254,7 @@ void DeviceProxy::unlock(bool force)
 						if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 						{
 							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)"API_CommandTimedOut",
+							Except::throw_exception((const char *)API_CommandTimedOut,
 										        		(const char *)"Locking thread blocked !!!",
 										        		(const char *)"DeviceProxy::unlock");
 						}
@@ -7278,7 +7285,7 @@ void DeviceProxy::create_locking_thread(ApiUtil *au,DevLong dl)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't create the locking thread for device " << device_name << " and admin device " << adm_dev_name << ends;
-		Tango::Except::throw_exception((const char *)"API_CantCreateLockingThread",o.str(),
+		Tango::Except::throw_exception((const char *)API_CantCreateLockingThread,o.str(),
 	                               (const char *)"DeviceProxy::create_locking_thread()");
 	}
 	else
@@ -7507,7 +7514,7 @@ void DeviceProxy::ask_locking_status(vector<string> &v_str,vector<DevLong> &v_l)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::locking_status");
 	}
@@ -7561,14 +7568,14 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 		string::size_type pos;
 		if ((pos = f_addr.find(':')) == string::npos)
 		{
-			Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+			Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 		}
 		pos++;
 		if ((pos = f_addr.find(':',pos)) == string::npos)
 		{
-			Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+			Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 		}
@@ -7579,7 +7586,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 			pos = pos + 3;
 			if ((pos = f_addr.find(':',pos)) == string::npos)
 			{
-				Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+				Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 			}
@@ -7587,7 +7594,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 			string ip_str = f_addr.substr(pos);
 			if ((pos = ip_str.find(']')) == string::npos)
 			{
-				Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+				Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 			}
@@ -7598,7 +7605,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 			string ip_str = f_addr.substr(pos);
 			if ((pos = ip_str.find(':')) == string::npos)
 			{
-				Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+				Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 			}
@@ -7625,7 +7632,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		TangoSys_OMemStream desc;
 		desc << "Device " << device_name;
 		desc << " does not support write_read_attribute feature" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  desc.str(),
 						  (const char *)"DeviceProxy::write_read_attribute");
 	}
@@ -7700,7 +7707,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"DeviceProxy::write_read_attribute()");
 			}
 
@@ -7933,6 +7940,128 @@ void DeviceProxy::local_import(string &local_ior)
 			}
 		}
 	}
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method:
+//		DeviceProxy::get_tango_lib_version()
+//
+// description:
+//		Returns the Tango lib version number used by the remote device
+//
+// return:
+//		The device Tango lib version as a 3 or 4 digits number
+//		Possible return value are: 100,200,500,520,700,800,810,...
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+int DeviceProxy::get_tango_lib_version()
+{
+	int ret = 0;
+
+	check_connect_adm_device();
+
+//
+// Get admin device IDL release and command list
+//
+
+	int admin_idl_vers = adm_device->get_idl_version();
+	Tango::CommandInfoList *cmd_list;
+	cmd_list = adm_device->command_list_query();
+
+	switch (admin_idl_vers)
+	{
+	case 1:
+		ret = 100;
+		break;
+
+	case 2:
+		ret = 200;
+		break;
+
+	case 3:
+	{
+
+//
+// IDL 3 is for Tango 5 and 6. Unfortunately, there is no way from the client side to determmine if it is
+// Tango 5 or 6. The beast we can do is to get the info that it is Tango 5.2 (or above)
+//
+
+#ifdef HAS_LAMBDA_FUNC
+		auto pos = find_if((*cmd_list).begin(),(*cmd_list).end(),
+					[] (Tango::CommandInfo &cc) -> bool
+					{
+						return cc.cmd_name == "QueryWizardClassProperty";
+					});
+#else
+		vector<CommandInfo>::iterator pos,end;
+		for (pos = (*cmd_list).begin(), end = (*cmd_list).end();pos != end;++pos)
+		{
+			if (pos->cmd_name == "QueryWizardClassProperty")
+				break;
+		}
+#endif
+		if (pos != (*cmd_list).end())
+			ret = 520;
+		else
+			ret = 500;
+		break;
+	}
+
+	case 4:
+	{
+
+//
+// IDL 4 is for Tango 7 and 8.
+//
+
+		bool ecs = false;
+		bool zesc = false;
+
+#ifdef HAS_RANGE_BASE_FOR
+		for (const auto &cmd : *cmd_list)
+		{
+			if (cmd.cmd_name == "EventConfirmSubscription")
+			{
+				ecs = true;
+				break;
+			}
+
+			if (cmd.cmd_name == "ZmqEventSubscriptionChange")
+				zesc = true;
+		}
+#else
+		vector<CommandInfo>::iterator pos,pos_end;
+		for (pos = (*cmd_list).begin(), pos_end = (*cmd_list).end();pos != pos_end;++pos)
+		{
+			if (pos->cmd_name == "EventConfirmSubscription")
+			{
+				ecs = true;
+				break;
+			}
+
+			if  (pos->cmd_name == "ZmqEventSubscriptionChange")
+				zesc = true;
+		}
+#endif
+		if (ecs == true)
+			ret = 810;
+		else if (zesc == true)
+			ret = 800;
+		else
+			ret = 700;
+
+		break;
+	}
+
+	default:
+		break;
+	}
+
+	delete cmd_list;
+
+	return ret;
 }
 
 } // End of Tango namespace

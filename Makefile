@@ -180,6 +180,7 @@ CLIENT_OBJS = 	$(OBJS_DIR)/dbapi_base.o \
 		$(OBJS_DIR)/dbapi_device.o \
 		$(OBJS_DIR)/dbapi_server.o \
 		$(OBJS_DIR)/dbapi_cache.o \
+		$(OBJS_DIR)/dbapi_serverdata.o \
 		$(OBJS_DIR)/devapi_attr.o \
 		$(OBJS_DIR)/devapi_base.o \
 		$(OBJS_DIR)/devapi_data.o \
@@ -268,6 +269,7 @@ CLIENT_OBJS_SL = $(OBJS_DIR_SL)/dbapi_base.so.o \
 		$(OBJS_DIR_SL)/dbapi_device.so.o \
 		$(OBJS_DIR_SL)/dbapi_server.so.o \
 		$(OBJS_DIR_SL)/dbapi_cache.so.o \
+		$(OBJS_DIR_SL)/dbapi_serverdata.so.o \
 		$(OBJS_DIR_SL)/devapi_attr.so.o \
 		$(OBJS_DIR_SL)/devapi_base.so.o \
 		$(OBJS_DIR_SL)/devapi_data.so.o \

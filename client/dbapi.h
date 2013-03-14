@@ -2,7 +2,7 @@
 // dbapi.h -	include file for TANGO database api
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -28,7 +28,6 @@
 
 #include <vector>
 #include <errno.h>
-
 #include <devapi.h>
 
 
@@ -44,6 +43,7 @@ class DbDevInfo;
 class DbDevImportInfo;
 class DbDevExportInfo;
 class DbServerInfo;
+class DbDevFullInfo;
 class DbHistory;
 
 class FileDatabase;
@@ -51,10 +51,10 @@ class DbServerCache;
 class Util;
 class AccessProxy;
 
-typedef vector<DbDatum> DbData;
 typedef vector<DbDevInfo> DbDevInfos;
 typedef vector<DbDevExportInfo> DbDevExportInfos;
 typedef vector<DbDevImportInfo> DbDevImportInfos;
+typedef vector<DbDatum> DbData;
 
 #define		POGO_DESC	"Description"
 #define		POGO_TITLE	"ProjectTitle"
@@ -164,6 +164,7 @@ public :
 	DbDatum get_host_list();
 	DbDatum get_host_list(string &);
 	DbDatum get_services(string &,string &);
+	DbDatum get_device_service_list(string &);
 	void register_service(string &,string &,string &);
 	void unregister_service(string &,string &);
 	CORBA::Any *fill_server_cache(string &,string &);
@@ -177,6 +178,7 @@ public :
 	DbDevImportInfo import_device(string &);
 	void export_device(DbDevExportInfo &);
 	void unexport_device(string);
+    DbDevFullInfo get_device_info(string &);
 
 	DbDatum get_device_name(string &, string &,DbServerCache *dsc);
 	DbDatum get_device_name(string &, string &);
@@ -200,6 +202,7 @@ public :
 	void delete_server(string &);
 	void export_server(DbDevExportInfos &);
 	void unexport_server(string &);
+	void rename_server(const string &,const string &);
 
 	DbServerInfo get_server_info(string &);
 	void put_server_info(DbServerInfo &);
@@ -239,6 +242,7 @@ public :
 	void delete_device_attribute_property(string, DbData &);
 	void delete_all_device_attribute_property(string, DbData &);
 	vector<DbHistory> get_device_attribute_property_history(string &,string &,string &);
+	void get_device_attribute_list(string &,vector<string> &);
 
 	void get_class_property(string, DbData &, DbServerCache *dsc);
 	void get_class_property(string st,DbData &db) {get_class_property(st,db,NULL);}
@@ -269,6 +273,12 @@ public :
 	void unexport_event(string &);
 	CORBA::Any *import_event(string &);
 
+// alias methods
+
+	void get_device_from_alias(string, string &);
+	void get_alias_from_device(string, string &);
+	void get_attribute_from_alias(string, string &);
+	void get_alias_from_attribute(string, string &);
 };
 
 //
@@ -696,12 +706,32 @@ public :
 	string ior;
 	string version;
 };
+
+/****************************************************************
+ *                                                              *
+ *                  DbDevFullInfo                               *
+ *                                                              *
+ ****************************************************************/
+
+
+class DbDevFullInfo: public DbDevImportInfo
+{
+public :
+    string  class_name;
+	string  ds_full_name;
+	string  host;
+	string  started_date;
+	string  stopped_date;
+	long    pid;
+};
+
 //
 // DbDevExportInfo
 //
+
 class DbDevExportInfo
 {
-public :
+public:
 	string name;
 	string ior;
 	string host;
@@ -709,9 +739,11 @@ public :
 	int pid;
 
 };
+
 //
 // DbServerInfo
 //
+
 class DbServerInfo
 {
 public :
@@ -832,6 +864,88 @@ private:
 	DevVarStringArray		ret_dev_list;
 	DevVarStringArray		ret_obj_att_prop;
 	DevVarStringArray		ret_prop_list;
+};
+
+/****************************************************************************************
+ * 																						*
+ * 					The DbServerData class												*
+ * 					----------------													*
+ * 																						*
+ ***************************************************************************************/
+
+//
+// DbServerData object to implement the features required to move a complete device server proces
+// configuration from one database to another one
+//
+
+class DbServerData
+{
+private:
+    struct TangoProperty
+    {
+        string   		name;
+        vector<string> 	values;
+
+        TangoProperty(string &na, vector<string> &val):name(na),values(val) {}
+	};
+
+    struct TangoAttribute: vector<TangoProperty>
+    {
+        string   				name;
+
+        TangoAttribute(string na):name(na) {}
+    };
+
+	struct TangoDevice: DeviceProxy
+	{
+        string 	name;
+        vector<TangoProperty>   properties;
+        vector<TangoAttribute>  attributes;
+
+        TangoDevice(string &);
+
+		string get_name() {return name;}
+        vector<TangoProperty> &get_properties() {return properties;}
+        vector<TangoAttribute> &get_attributes() {return attributes;}
+
+		void put_properties(Database *);
+        void put_attribute_properties(Database *);
+	};
+
+	struct TangoClass: vector<TangoDevice>
+	{
+        string  name;
+        vector<TangoProperty>   	properties;
+        vector<TangoAttribute>   	attributes;
+
+		TangoClass(const string &,const string &,Database *);
+
+		string get_name() {return name;}
+        vector<TangoProperty> &get_properties() {return properties;}
+        vector<TangoAttribute> &get_attributes() {return attributes;}
+
+		void put_properties(Database *);
+        void put_attribute_properties(Database *);
+        void remove_properties(Database *);
+	};
+
+	void create_server(Database *);
+	void put_properties(Database *);
+
+	string   			full_server_name;
+    vector<TangoClass>  classes;
+
+public:
+	DbServerData(const string &,const string &);
+	~DbServerData() {}
+
+	const string &get_name() {return full_server_name;}
+	vector<TangoClass> &get_classes() {return classes;}
+
+	void put_in_database(const string &);
+	bool already_exist(const string &);
+	void remove();
+	void remove(const string &);
 };
 
 } // End of Tango namespace

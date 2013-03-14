@@ -3,7 +3,7 @@
 // devapi.h - include file for TANGO device api
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -321,6 +321,7 @@ public:
 	void set_event_buffer_hwm(DevLong val) {if (ext->user_sub_hwm == -1)ext->user_sub_hwm=val;}
 
 	void get_ip_from_if(vector<string> &);
+	void print_error_message(const char *);
 
 //
 // EventConsumer related methods
@@ -479,6 +480,7 @@ public :
 
 	void insert(const string &,vector<unsigned char>&);
 	void insert(const char *,DevVarCharArray *);
+	void insert(const char *,unsigned char *,unsigned int);
 
 //
 // insert methods for TANGO CORBA sequence types
@@ -539,6 +541,9 @@ public :
 	bool operator >> (DevState&);
 	bool extract(vector<DevLong>&, vector<string>&);
 	bool extract(vector<double>&, vector<string>&);
+
+    bool extract(const char *&,const unsigned char *&,unsigned int &);
+    bool extract(string &,vector<unsigned char> &);
 
 //
 // extract methods for TANGO CORBA sequence types
@@ -740,6 +745,7 @@ public :
     void set_w_dim_x(int val) {ext->w_dim_x = val;}
     void set_w_dim_y(int val) {ext->w_dim_y = val;}
     void set_err_list(DevErrorList *ptr) {ext->err_list = ptr;}
+    void set_error_list(DevErrorList *ptr) {ext->err_list = ptr;}
     void set_Encoded_data(DevVarEncodedArray *ptr) {ext->EncodedSeq = ptr;}
     void set_Long64_data(DevVarLong64Array *ptr) {ext->Long64Seq = ptr;}
     void set_ULong_data(DevVarULongArray *ptr) {ext->ULongSeq = ptr;}
@@ -870,8 +876,11 @@ public :
 	void insert(DevVarULong64Array *datum,int,int);
 	void insert(DevVarStateArray *datum,int,int);
 
-	void insert(char *&,unsigned char *&,unsigned int);
-	void insert(string &,vector<unsigned char> &);
+	void insert(char *&,unsigned char *&,unsigned int);     // Deprecated. For compatibility purpose
+	void insert(const char *,unsigned char *,unsigned int);
+	void insert(const string &,vector<unsigned char> &);
+	void insert(string &,vector<unsigned char> &);         // Deprecated. For compatibility purpose
+	void insert(const char *,DevVarCharArray *);
 
 //
 // Extract operators for  C++ types
@@ -950,6 +959,7 @@ public :
 	bool extract_set  (vector<DevState>&);
 	bool extract_set  (string &,vector<unsigned char> &);
 
+	bool extract(char *&,unsigned char *&,unsigned int &);          // Deprecated, for compatibility purpose
 	bool extract(const char *&,unsigned char *&,unsigned int &);
 	bool extract(string &,vector<unsigned char> &);
 
@@ -1380,6 +1390,8 @@ public :
 	virtual string description();
 	virtual string name();
 	virtual string alias();
+
+	int get_tango_lib_version();
 
 	virtual int ping();
 	virtual vector<string> *black_box(int);

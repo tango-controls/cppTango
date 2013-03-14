@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -56,12 +56,17 @@ namespace Tango
 
 #define NOSPACEINDOC_EXCEPT
 
+
 /**
  * Container class for all exception related methods. Most of these methods are
  * static methods
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
+ * @ingroup Client
  */
 
 class Except
@@ -1717,10 +1722,13 @@ public:
 
 //@}
 
+/// @privatesection
+
 	static char *print_CORBA_SystemException(const CORBA::SystemException *);
 	static omni_mutex the_mutex;
 
 protected:
+/// @privatesection
 	static char mess[256];
 };
 

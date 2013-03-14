@@ -9,7 +9,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -132,15 +132,15 @@
 //
 // Some C++11 feature
 // Unique_ptr -> gcc 4.3
+// rvalues -> gcc 4.3
 // Lambda function -> gcc 4.5
 // nullptr -> gcc 4.6
-// rvalues -> gcc 4.3
 //
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
         #if __GNUC__ == 4
-            #if __GNUC_MINOR__ > 2
+            #if __GNUC_MINOR__ > 3
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE
             #endif
@@ -150,6 +150,7 @@
             #endif
             #if __GNUC_MINOR__ > 5
                 #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
             #endif
         #elif __GNUC__ > 4
                 #define HAS_UNIQUE_PTR
@@ -157,6 +158,7 @@
                 #define HAS_LAMBDA_FUNC
                 #define HAS_ISNAN_IN_STD
                 #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
         #endif
     #endif
 #else
