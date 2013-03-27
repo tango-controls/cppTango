@@ -139,7 +139,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
-				AdditionalIncludeDirectories="&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(LOG4TANGO_BASE)\win32\include&quot;;C:\tango_src\cppapi_7_0\client;C:\tango_src\cppapi_7_0\server"
+				AdditionalIncludeDirectories="&quot;$(PREFIX)/win32/include&quot;;..;&quot;$(OMNI_BASE)\win32\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include\vc9&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE;_WINSTATIC"
 				StringPooling="true"
 				RuntimeLibrary="0"
@@ -165,11 +165,11 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="tango.lib log4tango.lib omniORB4.lib omniDynamic4.lib omnithread.lib COS4.lib comctl32.lib ws2_32.lib mswsock.lib odbc32.lib odbccp32.lib"
+				AdditionalDependencies="tango.lib log4tango.lib omniORB4.lib omniDynamic4.lib omnithread.lib COS4.lib zmq.lib comctl32.lib ws2_32.lib mswsock.lib odbc32.lib odbccp32.lib"
 				OutputFile="Release/devTest.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="C:\tango_src\cppapi_7_0\win32\tango_vc9\tango_static\lib;&quot;$(OMNI_BASE)\win32\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib&quot;"
+				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\win32\lib&quot;;&quot;$(ZMQ_BASE)\win32\lib\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib\vc9&quot;;&quot;$(PREFIX)\win32\lib\vc9&quot;;Z:\tango\release\win32\lib\vc9"
 				ProgramDatabaseFile=".\Release/devTest.pdb"
 				SubSystem="1"
 				RandomizedBaseAddress="1"
