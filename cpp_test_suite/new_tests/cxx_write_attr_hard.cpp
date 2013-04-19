@@ -71,10 +71,17 @@ public:
 			din << (short)0;
 			device->command_inout("WriteAttrHardwareThrow",din);
 
+			vector<Tango::DeviceAttribute> attr_in;
 			Tango::DevLong64 lg64_attr = 0x800000000LL;
-			Tango::DeviceAttribute da(att1_name,lg64_attr);
+			Tango::DevState sta_attr = Tango::FAULT;
+			vector<Tango::DevLong64> lg64_arr_attr;
+			lg64_arr_attr.push_back(0);
 
-			device->write_attribute(da);
+			attr_in.push_back(Tango::DeviceAttribute(att1_name,lg64_attr));
+			attr_in.push_back(Tango::DeviceAttribute(att2_name,sta_attr));
+			attr_in.push_back(Tango::DeviceAttribute(att3_name,lg64_arr_attr));
+
+			device->write_attributes(attr_in);
 		}
 
 		delete device;
