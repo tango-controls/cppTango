@@ -70,6 +70,11 @@ public:
 			Tango::DeviceData din;
 			din << (short)0;
 			device->command_inout("WriteAttrHardwareThrow",din);
+
+			Tango::DevLong64 lg64_attr = 0x800000000LL;
+			Tango::DeviceAttribute da(att1_name,lg64_attr);
+
+			device->write_attribute(da);
 		}
 
 		delete device;
