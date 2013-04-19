@@ -23,7 +23,8 @@ set REL_DIR=..\..\..\..\
 %REL_DIR%new_tests\cxx_group.cpp ^
 %REL_DIR%new_tests\cxx_encoded.cpp ^
 %REL_DIR%new_tests\cxx_database.cpp ^
-%REL_DIR%new_tests\cxx_mem_attr.cpp
+%REL_DIR%new_tests\cxx_mem_attr.cpp ^
+%REL_DIR%new_tests\cxx_write_attr_hard.cpp
 
 rem %REL_DIR%new_tests\cxx_signal.cpp
 rem %REL_DIR%new_tests\cxx_dserver_cmd.cpp

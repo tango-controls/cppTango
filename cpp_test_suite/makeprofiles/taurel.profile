@@ -42,8 +42,8 @@
 #######################################################################################################################
 
 EXCLUDE_FILES = 64.cpp helper.cpp
-COMPILE_FILES = att_conf.cpp
-#COMPILE_FILES = cxx_attr_conf.cpp
+#COMPILE_FILES = att_conf.cpp
+COMPILE_FILES = cxx_write_attr_hard.cpp
 #COMPILE_FILES = cxx_always_hook.cpp
 
 OS_DIR = ubuntu1204
