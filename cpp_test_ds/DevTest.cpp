@@ -179,6 +179,7 @@ void DevTest::init_device()
 #endif
 
     att_conf = 10;
+    wattr_throw = 0;
 }
 
 
@@ -1139,6 +1140,31 @@ void DevTest::write_DefClass_attr(Tango::WAttribute &att)
 void DevTest::write_DefClassUser_attr(Tango::WAttribute &att)
 {
 	cout << "In write_DefClassUser_attr for attribute " << att.get_name() << endl;
+}
+
+void DevTest::write_attr_hardware(vector<long> &att_idx)
+{
+	switch (wattr_throw)
+	{
+	case 0:
+	default:
+		break;
+
+	case 1:
+		Tango::Except::throw_exception("DevTest_WriteAttrHardware","DevFailed from write_attr_hardware","DevTest::write_attr_hardware");
+		break;
+
+	case 2:
+		if (att_idx.empty() == false)
+			Tango::Except::throw_named_exception(get_device_attr()->get_attr_by_ind(att_idx[0]).get_name().c_str(),
+												"DevTest_WriteAttrHardware","aaa","DevTest::write_attr_hardware");
+		break;
+
+	case 3:
+		if (att_idx.size() >= 2)
+			Tango::Except::throw_named_exception(this,att_idx[2],"DevTest_WriteAttrHardware","bbb","DevTest::write_attr_hardware");
+		break;
+	}
 }
 
 //+----------------------------------------------------------------------------

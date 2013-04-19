@@ -558,6 +558,11 @@ void DevTestClass::command_factory()
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling in device test outputs"));
+	command_list.push_back(new WriteAttrHardwareThrow("WriteAttrHardwareThrow",
+					    Tango::DEV_SHORT,
+					    Tango::DEV_VOID,
+					    "Type of exception to be thrown by write_attr_hardware() method",
+					    "void"));
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 

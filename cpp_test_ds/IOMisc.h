@@ -358,3 +358,12 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
+
+class WriteAttrHardwareThrow : public Tango::Command {
+public:
+	WriteAttrHardwareThrow(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~WriteAttrHardwareThrow() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};

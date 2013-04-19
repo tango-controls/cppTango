@@ -1777,6 +1777,47 @@ CORBA::Any *PollingInDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::
 
 //+----------------------------------------------------------------------------
 //
+// method : 		WriteAttrHardwareThrow::WriteAttrHardwareThrow()
+//
+// description : 	constructor for the WriteAttrHardwareThrow command of the
+//					DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+WriteAttrHardwareThrow::WriteAttrHardwareThrow(const char *name, Tango::CmdArgType in,
+									   Tango::CmdArgType out, const char *in_desc,
+									   const char *out_desc)
+	: Tango::Command(name, in, out, in_desc, out_desc)
+{
+}
+
+bool WriteAttrHardwareThrow::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+//
+// command always allowed
+//
+	return(true);
+}
+
+CORBA::Any *WriteAttrHardwareThrow::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	Tango::DevShort in_data;
+	extract(in_any, in_data);
+
+	(static_cast<DevTest *>(device))->set_wattr_throw(in_data);
+
+	return insert();
+}
+
+
+//+----------------------------------------------------------------------------
+//
 // method : 		SetGetAlarms::SetGetAlarms()
 //
 // description : 	constructor for the IOSetGetAlarms command of the

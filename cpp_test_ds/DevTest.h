@@ -51,6 +51,7 @@ public :
 	Tango::DevVarDoubleArray *IOTemplInOut(Tango::DevDouble);
 
 	void set_attr_long(Tango::DevLong l) {attr_long = l;}
+	void set_wattr_throw(Tango::DevShort in) {wattr_throw = in;}
 
 	Tango::DevVarStringArray *IOPollingInDevice();
 
@@ -188,6 +189,8 @@ public :
 	void write_DefClass_attr(Tango::WAttribute &att);
 	void write_DefClassUser_attr(Tango::WAttribute &att);
 
+	virtual void write_attr_hardware(vector<long> &);
+
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
 	friend class IORemoveOneElt;
@@ -270,6 +273,8 @@ protected :
 
 	Tango::DevBoolean   attr_sub_device_tst;
 	Tango::DevDouble    attr_slow;
+
+	Tango::DevShort		wattr_throw;
 
 #ifndef COMPAT
 	Tango::EncodedAttribute jpeg;
