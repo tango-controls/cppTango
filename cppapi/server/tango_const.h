@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -44,7 +44,7 @@ namespace Tango
 
 #define     TANGO_VERSION_MAJOR     9
 #define     TANGO_VERSION_MINOR     0
-#define     TANGO_VERSION_PATCH     0
+#define     TANGO_VERSION_PATCH     2
 
 #define     build_string(s)         #s
 #define     xbuild_string(s)        build_string(s)

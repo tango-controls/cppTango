@@ -327,6 +327,17 @@ public :
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
  */
 	void unexport_server(string &ds_name);
+/**
+ * Rename a device server in the database.
+ *
+ * Rename a device server process in the database.
+ *
+ * @param [in] old_ds_name The old device server process name
+ * @param [in] new_ds_name The new device server process name
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device (DB_SQLError)
+ */
+	void rename_server(const string &old_ds_name,const string &new_ds_name);
 //@}
 
 /**@name services oriented methods */
@@ -735,6 +746,19 @@ public :
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	vector<DbHistory> get_device_attribute_property_history(string &dev_name,string &prop_name,string &att_name);
+/**
+ * Get list of attribute with data in database for a specific device
+ *
+ * Get the list of attribute(s) with some data defined in database for a specified device.
+ * Note that this is not the list of all device attributes because not all attribute(s) have 
+ * some data in database
+ *
+ * @param [in] dev_name The device name
+ * @param [in] att_list The attribute name list
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_device_attribute_list(string &dev_name,vector<string> &att_list);
 //@}
 
 /**@name class property oriented methods */

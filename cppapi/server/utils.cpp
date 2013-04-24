@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -698,6 +698,8 @@ void Util::check_args(int argc,char *argv[])
 							print_usage(argv[0]);
 						_UseDb = false;
 						ind++;
+
+						check_orb_endpoint(argc,argv);
 					}
 					break;
 
@@ -726,28 +728,7 @@ void Util::check_args(int argc,char *argv[])
 // Try to find the ORB endPoint option
 //
 
-						long arg_nb;
-						for (arg_nb = 2;arg_nb < argc;arg_nb++)
-						{
-							if (::strcmp(argv[arg_nb],"-ORBendPoint") == 0)
-							{
-								arg_nb++;
-								string endpoint = argv[arg_nb];
-								string::size_type pos;
-								if ((pos = endpoint.rfind(':')) == string::npos)
-								{
-									cerr << "Strange ORB endPoint specification" << endl;
-									print_usage(argv[0]);
-								}
-								svr_port_num = endpoint.substr(++pos);
-								break;
-							}
-						}
-						if (arg_nb == argc)
-						{
-							cerr << "Missing ORB endPoint specification" << endl;
-							print_usage(argv[0]);
-						}
+						check_orb_endpoint(argc,argv);
 					}
 					break;
 
@@ -1340,22 +1321,15 @@ void Util::create_notifd_event_supplier()
 
 void Util::create_zmq_event_supplier()
 {
-	if (_UseDb == true)
+	try
 	{
-		try
-		{
-			zmq_event_supplier = ZmqEventSupplier::create(this);
-		}
-		catch (...)
-		{
-			zmq_event_supplier = NULL;
-			if (_FileDb == true)
-				cerr << "Can't create zmq event supplier. Zmq event not available" << endl;
-		}
+		zmq_event_supplier = ZmqEventSupplier::create(this);
 	}
-	else
+	catch (...)
 	{
 		zmq_event_supplier = NULL;
+		if (_FileDb == true)
+			cerr << "Can't create zmq event supplier. Zmq event not available" << endl;
 	}
 }
 
@@ -1970,11 +1944,15 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 	if (ret_ptr == NULL)
 	{
 		string d_name;
-		try
+
+		if (_UseDb == true)
 		{
-			db->get_device_alias(dev_name_lower,d_name);
+			try
+			{
+				db->get_device_alias(dev_name_lower,d_name);
+			}
+			catch (Tango::DevFailed &) {}
 		}
-		catch (Tango::DevFailed &) {}
 
 		if (d_name.size() != 0)
 		{
@@ -2043,6 +2021,7 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 		{
 			string name(dev_list[j]->get_name());
 			transform(name.begin(),name.end(),name.begin(),::tolower);
+
 			if (name == dev_name)
 			{
 				found = true;
@@ -2331,11 +2310,7 @@ void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxTyp
 	}
 #else
 	cerr << err_mess << endl;
-#ifdef __linux
 	_exit(-1);
-#else
-	exit(-1);
-#endif
 #endif
 }
 

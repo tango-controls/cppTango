@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -35,40 +35,6 @@ static const char *RcsId = "$Id$\n$Name$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
-//
-// $Log$
-// Revision 3.7  2010/09/09 13:43:38  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.6  2009/01/21 12:45:15  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.5  2008/10/06 15:02:16  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.4  2008/10/02 16:09:25  taurel
-// - Add some licensing information in each files...
-//
-// Revision 3.3  2007/04/20 14:38:33  taurel
-// - Ported to Windows 64 bits x64 architecture
-//
-// Revision 3.2  2007/04/16 14:55:16  taurel
-// - Added 3 new attributes data types (DevULong, DevULong64 and DevState)
-// - Ported to omniORB4.1
-// - Increased the MAX_TRANSFER_SIZE to 256 MBytes
-// - Added a new filterable field in the archive event
-//
-// Revision 3.1  2004/07/07 08:39:55  taurel
-//
-// - Fisrt commit after merge between Trunk and release 4 branch
-// - Add EventData copy ctor, asiignement operator and dtor
-// - Add Database and DeviceProxy::get_alias() method
-// - Add AttributeProxy ctor from "device_alias/attribute_name"
-// - Exception thrown when subscribing two times for exactly yhe same event
-//
-// Revision 3.0  2003/08/21 06:58:41  taurel
-// Initial commit
-//
 //
 //-============================================================================
 

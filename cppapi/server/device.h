@@ -8,7 +8,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -954,7 +954,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeConfigList* get_attribute_config(const Tango::DevVarStringArray& names);
+	virtual Tango::AttributeConfigList* get_attribute_config(const Tango::DevVarStringArray& names);
 
 /**
  * Set attribute(s) configuration.
@@ -971,7 +971,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void set_attribute_config(const Tango::AttributeConfigList& new_conf);
+	virtual void set_attribute_config(const Tango::AttributeConfigList& new_conf);
 
 /**
  * Read attribute(s) value.
@@ -989,7 +989,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeValueList* read_attributes(const Tango::DevVarStringArray& names);
+	virtual Tango::AttributeValueList* read_attributes(const Tango::DevVarStringArray& names);
 
 /**
  * Write attribute(s) value.
@@ -1006,7 +1006,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void write_attributes(const Tango::AttributeValueList& values);
+	virtual void write_attributes(const Tango::AttributeValueList& values);
 
 //@}
 
@@ -3260,7 +3260,7 @@ public:
 /**@name Signal related methods
  * These methods allow a signal management at device level */
 //@{
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 /**
  * Register a signal to be executed in a signal handler.
  *

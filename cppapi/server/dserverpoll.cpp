@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -911,21 +911,6 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	cout4 << "Polling properties updated" << endl;
 
 //
-// Update info in Attribute/Command object
-//
-
-    if (type == POLL_ATTR)
-    {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name(argin->svalue[2]);
-        att.set_polling_period(upd);
-    }
-    else
-    {
-        Command &cmd = dev->get_device_class()->get_cmd_by_name(argin->svalue[2].in());
-        cmd.set_polling_period(upd);
-    }
-
-//
 // Mark the device as polled
 //
 
@@ -1211,20 +1196,6 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		dev->get_db_device()->put_property(send_data);
 	}
 
-//
-// Update info in Attribute/Command object
-//
-
-    if (type == POLL_ATTR)
-    {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name(argin->svalue[2]);
-        att.set_polling_period(upd);
-    }
-    else
-    {
-        Command &cmd = dev->get_device_class()->get_cmd_by_name(argin->svalue[2].in());
-        cmd.set_polling_period(upd);
-    }
 }
 
 
@@ -1547,21 +1518,6 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			cout4 << "Database polling properties updated" << endl;
 		}
 	}
-
-//
-// Update info in Attribute/Command object
-//
-
-    if (type == POLL_ATTR)
-    {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
-        att.set_polling_period(0);
-    }
-    else
-    {
-        Command &cmd = dev->get_device_class()->get_cmd_by_name((*argin)[2].in());
-        cmd.set_polling_period(0);
-    }
 
 //
 // If the device is not polled any more, update the pool conf first locally.

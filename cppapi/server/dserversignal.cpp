@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -217,10 +217,8 @@ DServerSignal::DServerSignal():TangoMonitor("signal")
 	sigdelset(&sigs_to_block,SIGSTOP);
 
 	sigdelset(&sigs_to_block,SIGTSTP);
-#if (defined __linux)
 	sigdelset(&sigs_to_block,SIGUSR1);
 	sigdelset(&sigs_to_block,SIGUSR2);
-#endif
 	sigprocmask(SIG_BLOCK,&sigs_to_block,NULL);
 #else /* _TG_WINDOWS_ */
 	win_ev = CreateEvent(NULL,FALSE,FALSE,NULL);
@@ -254,7 +252,7 @@ DServerSignal::DServerSignal():TangoMonitor("signal")
 //
 //-----------------------------------------------------------------------------
 
-#if !(defined __linux)
+#if defined _TG_WINDOWS_
 void DServerSignal::register_class_signal(long signo,DeviceClass *cl_ptr)
 #else
 void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *cl_ptr)
@@ -283,7 +281,7 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 				        (const char *)"DServerSignal::register_class_signal");
 	}
 
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 	if ((auto_signal(signo) == true) && (handler == true))
 	{
 		TangoSys_OMemStream o;
@@ -303,8 +301,8 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 		if ((reg_sig[signo].registered_devices.empty() == true) &&
 		    (reg_sig[signo].registered_classes.empty() == true))
 		{
-#if !(defined __linux)
-	    		register_handler(signo);
+#ifdef _TG_WINDOWS_
+			register_handler(signo);
 #else
 			register_handler(signo,handler);
 #endif
@@ -321,7 +319,7 @@ void DServerSignal::register_class_signal(long signo,bool handler,DeviceClass *c
 	if (f == reg_sig[signo].registered_classes.end())
 	{
 		reg_sig[signo].registered_classes.push_back(cl_ptr);
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 		reg_sig[signo].own_handler = handler;
 #endif
 	}
@@ -364,7 +362,7 @@ vector<DeviceClass *>::iterator DServerSignal::find_class(long signo,DeviceClass
 //
 //-----------------------------------------------------------------------------
 
-#if !(defined __linux)
+#ifdef _TG_WINDOWS_
 void DServerSignal::register_dev_signal(long signo,DeviceImpl *dev_ptr)
 #else
 void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_ptr)
@@ -393,7 +391,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 				      (const char *)"DServerSignal::register_dev_signal");
 	}
 
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 	if ((auto_signal(signo) == true) && (handler == true))
 	{
 		TangoSys_OMemStream o;
@@ -413,7 +411,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 		if ((reg_sig[signo].registered_devices.empty() == true) &&
 		    (reg_sig[signo].registered_classes.empty() == true))
 		{
-#if !(defined __linux)
+#ifdef  _TG_WINDOWS_
             register_handler(signo);
 #else
 			register_handler(signo,handler);
@@ -432,7 +430,7 @@ void DServerSignal::register_dev_signal(long signo,bool handler,DeviceImpl *dev_
 	if (f == reg_sig[signo].registered_devices.end())
 	{
 		reg_sig[signo].registered_devices.push_back(dev_ptr);
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 		reg_sig[signo].own_handler = handler;
 #endif
 	}
@@ -672,7 +670,7 @@ void DServerSignal::unregister_class_signal(DeviceClass *cl_ptr)
 //
 //-----------------------------------------------------------------------------
 
-#if !(defined __linux)
+#ifdef _TG_WINDOWS_
 void DServerSignal::register_handler(long signo)
 #else
 void DServerSignal::register_handler(long signo,bool handler)
@@ -690,7 +688,6 @@ void DServerSignal::register_handler(long signo,bool handler)
 				      (const char *)"DServerSignal::register_handler");
 	}
 #else
-	#if (defined __linux)
 	if (handler == true)
 	{
 		sigset_t sigs_to_unblock;
@@ -723,8 +720,6 @@ void DServerSignal::register_handler(long signo,bool handler)
 	}
 	else
 	{
-	#endif
-	{
 		omni_mutex_lock sy(*this);
 
 		while(sig_to_install == true)
@@ -736,9 +731,6 @@ void DServerSignal::register_handler(long signo,bool handler)
 	}
 
 	pthread_kill(sig_th->my_thread,SIGINT);
-	#if (defined __linux)
-	}
-	#endif
 #endif
 
 }
@@ -769,7 +761,6 @@ void DServerSignal::unregister_handler(long signo)
 				      (const char *)"DServerSignal::register_handler");
 	}
 #else
-	#if (defined __linux)
 	if (reg_sig[signo].own_handler == true)
 	{
 		struct sigaction sa;
@@ -789,8 +780,6 @@ void DServerSignal::unregister_handler(long signo)
 	}
 	else
 	{
-	#endif
-	{
 		omni_mutex_lock sy(*this);
 
 		while(sig_to_remove == true)
@@ -802,13 +791,10 @@ void DServerSignal::unregister_handler(long signo)
 	}
 	pthread_kill(sig_th->my_thread,SIGINT);
 
-	#if (defined __linux)
-	}
-	#endif
 #endif
 }
 
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 pid_t DServerSignal::get_sig_thread_pid()
 {
 	omni_mutex_lock syn(*this);
@@ -834,7 +820,6 @@ pid_t DServerSignal::get_sig_thread_pid()
 //-----------------------------------------------------------------------------
 
 #ifndef _TG_WINDOWS_
-	#if (defined __linux)
 void DServerSignal::main_sig_handler(int signo)
 {
 	cout4 << "In main sig_handler !!!!" << endl;
@@ -867,12 +852,6 @@ void DServerSignal::main_sig_handler(int signo)
 		}
 	}
 }
-	#else
-void DServerSignal::main_sig_handler(int signo)
-{
-	cout4 << "In main sig_handler !!!!" << endl;
-}
-	#endif
 #else
 void DServerSignal::main_sig_handler(int signo)
 {

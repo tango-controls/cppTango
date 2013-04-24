@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -195,7 +195,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeValueList_3 *read_attributes_3(const Tango::DevVarStringArray& names,
+	virtual Tango::AttributeValueList_3 *read_attributes_3(const Tango::DevVarStringArray& names,
 							     Tango::DevSource source);
 
 /**
@@ -213,7 +213,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void write_attributes_3(const Tango::AttributeValueList& values);
+	virtual void write_attributes_3(const Tango::AttributeValueList& values);
 
 /**
  * Read attribute value history.
@@ -268,7 +268,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeConfigList_3 *get_attribute_config_3(const Tango::DevVarStringArray& names);
+	virtual Tango::AttributeConfigList_3 *get_attribute_config_3(const Tango::DevVarStringArray& names);
 
 /**
  * Set attribute(s) configuration.
@@ -285,7 +285,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf);
+	virtual void set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf);
 //@}
 
 /// @privatesection

@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -2333,7 +2333,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 				event_exceptions.push_back(it->first);
 			else
 				opt_exceptions.push_back(it->first);
-			for(size_t i = 0 ; i < it->second.errors.length(); i++)
+			for(CORBA::ULong i = 0 ; i < it->second.errors.length(); i++)
 			{
 				string tmp_msg = string(it->second.errors[i].desc);
 				size_t pos = tmp_msg.rfind('\n');

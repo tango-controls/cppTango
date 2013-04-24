@@ -8,7 +8,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -955,6 +955,7 @@ private:
 	void check_args(int, char *[]);
 	void display_help_message();
 	DeviceImpl *find_device_name_core(string &);
+	void check_orb_endpoint(int,char **);
 
 	bool  							display_help;	// display help message flag
 	const vector<DeviceClass *>		*cl_list_ptr;	// Ptr to server device class list
@@ -1029,7 +1030,7 @@ private:
 //
 //***************************************************************************
 
-//+----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 //
 // method : 		Util::is_device_restarting()
 //
@@ -1055,6 +1056,45 @@ inline bool Util::is_device_restarting(string &d_name)
     }
 
     return ret;
+}
+
+//-----------------------------------------------------------------------------
+//
+// method : 		Util::is_device_restarting()
+//
+// description : 	Return a boolean if the device with name given as parameter
+//                  is actually executing a RestartDevice command
+//
+// args: - d_name : - The device name
+//
+// Returns true if the devce is restarting. False otherwise
+//
+//-----------------------------------------------------------------------------
+
+inline void Util::check_orb_endpoint(int argc, char *argv[])
+{
+	long arg_nb;
+	for (arg_nb = 2;arg_nb < argc;arg_nb++)
+	{
+		if (::strcmp(argv[arg_nb],"-ORBendPoint") == 0)
+		{
+			arg_nb++;
+			string endpoint = argv[arg_nb];
+			string::size_type pos;
+			if ((pos = endpoint.rfind(':')) == string::npos)
+			{
+				cerr << "Strange ORB endPoint specification" << endl;
+				print_usage(argv[0]);
+			}
+			svr_port_num = endpoint.substr(++pos);
+			break;
+		}
+	}
+	if (arg_nb == argc)
+	{
+		cerr << "Missing ORB endPoint specification" << endl;
+		print_usage(argv[0]);
+	}
 }
 
 //+-------------------------------------------------------------------------

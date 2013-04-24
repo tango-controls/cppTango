@@ -2,7 +2,7 @@
 // dbapi.h -	include file for TANGO database api
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -959,6 +959,89 @@ private:
 	DevVarStringArray		ret_dev_list;
 	DevVarStringArray		ret_obj_att_prop;
 	DevVarStringArray		ret_prop_list;
+};
+
+
+/****************************************************************************************
+ * 																						*
+ * 					The DbServerData class												*
+ * 					----------------													*
+ * 																						*
+ ***************************************************************************************/
+
+//
+// DbServerData object to implement the features required to move a complete device server proces
+// configuration from one database to another one
+//
+
+class DbServerData
+{
+private:
+    struct TangoProperty
+    {
+        string   		name;
+        vector<string> 	values;
+
+        TangoProperty(string &na, vector<string> &val):name(na),values(val) {}
+	};
+
+    struct TangoAttribute: vector<TangoProperty>
+    {
+        string   				name;
+
+        TangoAttribute(string na):name(na) {}
+    };
+
+	struct TangoDevice: DeviceProxy
+	{
+        string 	name;
+        vector<TangoProperty>   properties;
+        vector<TangoAttribute>  attributes;
+
+        TangoDevice(string &);
+
+		string get_name() {return name;}
+        vector<TangoProperty> &get_properties() {return properties;}
+        vector<TangoAttribute> &get_attributes() {return attributes;}
+
+		void put_properties(Database *);
+        void put_attribute_properties(Database *);
+	};
+
+	struct TangoClass: vector<TangoDevice>
+	{
+        string  name;
+        vector<TangoProperty>   	properties;
+        vector<TangoAttribute>   	attributes;
+
+		TangoClass(const string &,const string &,Database *);
+
+		string get_name() {return name;}
+        vector<TangoProperty> &get_properties() {return properties;}
+        vector<TangoAttribute> &get_attributes() {return attributes;}
+
+		void put_properties(Database *);
+        void put_attribute_properties(Database *);
+        void remove_properties(Database *);
+	};
+
+	void create_server(Database *);
+	void put_properties(Database *);
+
+	string   			full_server_name;
+    vector<TangoClass>  classes;
+
+public:
+	DbServerData(const string &,const string &);
+	~DbServerData() {}
+
+	const string &get_name() {return full_server_name;}
+	vector<TangoClass> &get_classes() {return classes;}
+
+	void put_in_database(const string &);
+	bool already_exist(const string &);
+	void remove();
+	void remove(const string &);
 };
 
 /*

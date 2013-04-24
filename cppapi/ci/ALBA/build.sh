@@ -31,7 +31,7 @@ JENKINS_JOB=${JOB_NAME%%\/*}
 
 
 # Define directory where Tango Library will be installed
-INSTALL_DIR="/tmp/jenkins/jobs/$JENKINS_JOB"
+INSTALL_DIR="/siciliarep/jenkins/$NODE_NAME/jobs/$JENKINS_JOB"
 
 
 # Set library type

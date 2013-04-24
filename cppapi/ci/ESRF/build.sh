@@ -1,7 +1,7 @@
 #!/bin/bash
 
-UX_INSTALL_DIR="/tmp/ci"
-WIN_INSTALL_DIR="C:\tango_src\ci"
+UX_INSTALL_DIR="/segfs/tango/ci/Tango"
+WIN_INSTALL_DIR="//unixhome/segfs/tango/ci/Tango"
 
 #
 # Is clean required ?

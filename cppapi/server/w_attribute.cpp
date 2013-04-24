@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1294,7 +1294,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 	unsigned int i;
 
 //
-// If the server is in ints starting phase, gives a NULL ptr
+// If the server is in its starting phase, gives a NULL ptr
 // to the AutoLock object
 //
 

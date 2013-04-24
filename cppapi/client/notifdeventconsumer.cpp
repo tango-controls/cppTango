@@ -479,7 +479,6 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		}
 		catch (...)
 		{
-                        //cerr << "Failed to narrow EventChannel from notification daemon (hint: make sure the notifd process is running on this host)" << endl;
          	EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                         	(const char*)"Failed to narrow EventChannel from notification daemon (hint: make sure the notifd process is running on this host)",
                         	(const char*)"NotifdEventConsumer::connect_event_channel()");

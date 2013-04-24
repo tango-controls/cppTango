@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -721,7 +721,7 @@ PortableServer::POA_ptr DeviceImpl::_default_POA()
 //
 //--------------------------------------------------------------------------
 
-#if (defined __linux)
+#ifndef  _TG_WINDOWS_
 void DeviceImpl::register_signal(long signo,bool hand)
 {
 	cout4 << "DeviceImpl::register_signal() arrived for signal " << signo << endl;

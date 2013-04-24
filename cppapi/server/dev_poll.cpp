@@ -127,8 +127,66 @@ void DeviceImpl::init_poll_no_db()
 
 bool DeviceImpl::is_attribute_polled(const string &att_name)
 {
+	string att = att_name;
+	transform(att.begin(),att.end(),att.begin(),::tolower);
+
+	vector<string> &att_list = get_polled_attr();
+	for (unsigned int i = 0;i < att_list.size();i = i+2)
+	{
+
+//
+//	Convert to lower case before comparison
+//
+
+		string name_lowercase(att_list[i]);
+		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		if ( att == name_lowercase )
+		{
+
+//
+// when the polling buffer is externally filled (polling period == 0)
+// mark the attribute as not polled! No events can be send by the polling thread!
+//
+
+			if ( att_list[i+1] == "0" )
+			{
+				return false;
+			}
+			else
+				return true;
+		}
+	}
+
+//
+// now check wether a polling period is set (for example by pogo)
+//
+
     Tango::Attribute &the_att = dev_attr->get_attr_by_name(att_name.c_str());
-    return the_att.is_polled(this);
+	if ( the_att.get_polling_period() > 0 )
+	{
+
+//
+// check the list of non_auto_polled attributes to verify wether
+// the polling was disabled
+//
+
+		vector<string> &napa = get_non_auto_polled_attr();
+		for (unsigned int j = 0;j < napa.size();j++)
+		{
+#ifdef _TG_WINDOWS_
+			if (_stricmp(napa[j].c_str(), att_name.c_str()) == 0)
+#else
+			if (strcasecmp(napa[j].c_str(), att_name.c_str()) == 0)
+#endif
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	return false;
 }
 
 //+-------------------------------------------------------------------------
@@ -217,8 +275,44 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 
 int DeviceImpl::get_attribute_poll_period(const string &att_name)
 {
-    Tango::Attribute &the_att = dev_attr->get_attr_by_name(att_name.c_str());
-    return the_att.get_polling_period();
+    int per = 0;
+
+	string att = att_name;
+	transform(att.begin(),att.end(),att.begin(),::tolower);
+
+    bool found = false;
+	vector<string> &att_list = get_polled_attr();
+	for (unsigned int i = 0;i < att_list.size();i = i+2)
+	{
+
+//
+//	Convert to lower case before comparison
+//
+
+		string name_lowercase(att_list[i]);
+		transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+		if ( att == name_lowercase )
+		{
+            stringstream ss;
+            ss << att_list[i + 1];
+            ss >> per;
+            found = true;
+
+            break;
+		}
+	}
+
+//
+// now check wether a polling period is set (for example by pogo)
+//
+
+    if (found == false)
+    {
+    	Tango::Attribute &the_att = dev_attr->get_attr_by_name(att_name.c_str());
+    	per = the_att.get_polling_period();
+	}
+
+	return per;
 }
 
 //+-------------------------------------------------------------------------

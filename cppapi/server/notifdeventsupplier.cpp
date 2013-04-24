@@ -240,7 +240,6 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 					db->unexport_event(d_name);
 				}
 				catch (...) {}
-			}
 
 //
 // There is a cout and a cerr here to have the message displayed on the console
@@ -248,8 +247,9 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // compiled with -D_TANGO_LIB)
 //
 
-			cerr << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
-			cout << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
+				cerr << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
+				cout << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
+			}
 
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 				(const char*)"Failed to import the EventChannelFactory from the Tango database",
@@ -272,10 +272,13 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		}
 		catch (Tango::DevFailed &)
 		{
-			cerr << "Failed to import EventChannelFactory from the Device Server property file" << endl;
-			cerr << "Notifd event will not be generated" << endl;
-			cout << "Failed to import EventChannelFactory from the Device Server property file" << endl;
-			cout << "Notifd event will not be generated" << endl;
+			if (tg->is_svr_starting() == true)
+			{
+				cerr << "Failed to import EventChannelFactory from the Device Server property file" << endl;
+				cerr << "Notifd event will not be generated" << endl;
+				cout << "Failed to import EventChannelFactory from the Device Server property file" << endl;
+				cout << "Notifd event will not be generated" << endl;
+			}
 
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 				(const char*)"Failed to import the EventChannelFactory from the Device Server property file",
@@ -339,10 +342,14 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // There is a cout and a cerr here to have the message displayed on the console
 // AND sent to the logging system (cout is redirected to the logging when
 // compiled with -D_TANGO_LIB)
+// Print these messages only during DS startup sequence
 //
 
-		cerr << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
-		cout << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
+		if (tg->is_svr_starting() == true)
+		{
+			cerr << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
+			cout << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
+		}
 
 		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
 			(const char*)"Failed to narrow the EventChannelFactory, make sure the notifd process is running on this host",

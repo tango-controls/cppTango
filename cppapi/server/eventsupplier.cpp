@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$";
 //
 //	original : 			29 June 2004
 //
-//  Copyright (C) :     2004,2005,2006,2007,2008,2009,2010,2011,2012
+//  Copyright (C) :     2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -64,7 +64,7 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
     if (fqdn_prefix.empty() == true)
     {
         fqdn_prefix = "tango://";
-        if (Util::_FileDb == true)
+        if (Util::_UseDb == false || Util::_FileDb == true)
             fqdn_prefix = fqdn_prefix + tg->get_host_name() + ':' + tg->get_svr_port_num() + '/';
         else
         {

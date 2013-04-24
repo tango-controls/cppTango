@@ -2,7 +2,7 @@
 // apiexcept.h - include file for TANGO device api exceptions
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -26,7 +26,6 @@
 #ifndef _APIEXCEPT_H
 #define _APIEXCEPT_H
 
-//#include <tango.h>
 #include <except.h>
 #include <vector>
 

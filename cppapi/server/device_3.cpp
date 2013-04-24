@@ -12,7 +12,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1775,9 +1775,13 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 		if (nb_failed != nb_updated_attr)
 		{
 			vector<AttIdx>::iterator ite;
+			vector<long> att_idx;
+
 			for(ite = updated_attr.begin();ite != updated_attr.end();)
 			{
                 WAttribute &att = dev_attr->get_w_attr_by_ind((*ite).idx_in_multi_attr);
+                att_idx.push_back(ite->idx_in_multi_attr);
+
 				try
 				{
 					att.set_value_flag(false);
@@ -1811,6 +1815,21 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 
 					++ite;
 				}
+				catch (Tango::MultiDevFailed &e)
+				{
+					nb_failed++;
+					if (att.get_data_format() == SCALAR)
+                        att.rollback();
+					errs.length(nb_failed);
+					if (values_3 != NULL)
+						errs[nb_failed - 1].name = CORBA::string_dup((*values_3)[(*ite).idx_in_names].name);
+					else
+						errs[nb_failed - 1].name = CORBA::string_dup((*values_4)[(*ite).idx_in_names].name);
+					errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
+					errs[nb_failed - 1].err_list = e.errors[0].err_list;
+					ite = updated_attr.erase(ite);
+					att_idx.pop_back();
+				}
 				catch (Tango::DevFailed &e)
 				{
 					nb_failed++;
@@ -1824,6 +1843,74 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 					errs[nb_failed - 1].index_in_call = (*ite).idx_in_names;
 					errs[nb_failed - 1].err_list = e.errors;
 					ite = updated_attr.erase(ite);
+					att_idx.pop_back();
+				}
+			}
+
+//
+// Call the write_attr_hardware method
+// If it throws DevFailed exception, mark all attributes has failure
+// If it throws NamedDevFailedList exception, mark only referenced attributes as faulty
+//
+
+			long vers = get_dev_idl_version();
+			if (vers >= 4)
+			{
+				try
+				{
+					write_attr_hardware(att_idx);
+				}
+				catch (Tango::MultiDevFailed &e)
+				{
+					for (unsigned long loop = 0;loop < e.errors.length();loop++)
+					{
+						nb_failed++;
+						errs.length(nb_failed);
+
+						vector<AttIdx>::iterator ite_att;
+
+						for(ite_att = updated_attr.begin();ite_att != updated_attr.end();++ite_att)
+						{
+							if (TG_strcasecmp(dev_attr->get_w_attr_by_ind(ite_att->idx_in_multi_attr).get_name().c_str(),e.errors[loop].name) == 0)
+							{
+								errs[nb_failed - 1].index_in_call = ite_att->idx_in_names;
+								errs[nb_failed - 1].name = CORBA::string_dup(e.errors[loop].name);
+								errs[nb_failed - 1].err_list = e.errors[loop].err_list;
+
+								WAttribute &att = dev_attr->get_w_attr_by_ind(ite_att->idx_in_multi_attr);
+								if (att.get_data_format() == SCALAR)
+									att.rollback();
+								break;
+							}
+						}
+						updated_attr.erase(ite_att);
+					}
+				}
+				catch (Tango::DevFailed &e)
+				{
+					vector<long>::iterator ite;
+					for(ite = att_idx.begin();ite != att_idx.end();++ite)
+					{
+						WAttribute &att = dev_attr->get_w_attr_by_ind(*ite);
+						nb_failed++;
+						if (att.get_data_format() == SCALAR)
+							att.rollback();
+						errs.length(nb_failed);
+						errs[nb_failed - 1].name = CORBA::string_dup(att.get_name().c_str());
+
+						vector<AttIdx>::iterator ite_att;
+						for(ite_att = updated_attr.begin();ite_att != updated_attr.end();++ite_att)
+						{
+							if (ite_att->idx_in_multi_attr == *ite)
+							{
+								errs[nb_failed - 1].index_in_call = ite_att->idx_in_names;
+								break;
+							}
+						}
+
+						errs[nb_failed - 1].err_list = e.errors;
+					}
+					updated_attr.clear();
 				}
 			}
 		}
@@ -2590,7 +2677,7 @@ void Device_3Impl::add_state_status_attrs()
 //		Device_3Impl::get_attr_props
 //
 // description :
-//		Add state and status in the device attribute list
+//		Get attribute properties. This method is used to retrieve properties for state and status.
 //
 // argument:
 //		in :

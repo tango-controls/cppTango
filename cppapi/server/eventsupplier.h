@@ -12,7 +12,7 @@
 ///
 /// 		original : 7 April 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -316,7 +316,7 @@ private :
     TangoCdrMemoryStream        data_call_cdr;
     string                      event_name;
 
-    zmq::message_t              endian_mess;            // Zmq message for host endianness
+    zmq::message_t              endian_mess;            // Zmq messages
     zmq::message_t              endian_mess_2;          //
     zmq::message_t				endian_mess_heartbeat;	//
     zmq::message_t				endian_mess_heartbeat_2;//

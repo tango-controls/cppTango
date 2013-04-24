@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- September 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -4612,6 +4612,57 @@ void Database::get_alias_from_attribute(string attr_name, string &attr_alias)
 	}
 	else
 		attr_alias = attr_alias_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_attribute_list() - Get list of attributes with dat ain db
+// for a specified device
+//
+//-----------------------------------------------------------------------------
+void Database::get_device_attribute_list(string &dev_name, vector<string> &att_list)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *sent_names = new DevVarStringArray;
+	sent_names->length(2);
+	(*sent_names)[0] = string_dup(dev_name.c_str());
+	(*sent_names)[1] = string_dup("*");
+
+	send <<= sent_names;
+
+	CALL_DB_SERVER("DbGetDeviceAttributeList",send,received);
+
+	const DevVarStringArray *recv_names = NULL;
+	received.inout() >>= recv_names;
+
+	att_list << *recv_names;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::rename_server() - Rename a device server process
+//
+//-----------------------------------------------------------------------------
+void Database::rename_server(const string &old_ds_name, const string &new_ds_name)
+{
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *sent_names = new DevVarStringArray;
+	sent_names->length(2);
+	(*sent_names)[0] = string_dup(old_ds_name.c_str());
+	(*sent_names)[1] = string_dup(new_ds_name.c_str());
+
+	send <<= sent_names;
+
+	CALL_DB_SERVER_NO_RET("DbRenameServer",send);
 }
 
 } // End of Tango namespace

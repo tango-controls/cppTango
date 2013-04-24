@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :		2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :		2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //						BP 220, Grenoble 38043
 // 						FRANCE
@@ -834,7 +834,7 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 //
 //--------------------------------------------------------------------------
 
-#if !(defined __linux)
+#if defined _TG_WINDOWS_
 void DeviceClass::register_signal(long signo)
 {
 	cout4 << "DeviceClass::register_signal() arrived for signal " << signo << endl;
@@ -923,12 +923,13 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 
 //
 // Take the Tango monitor in order to protect the device against external world access
-// until memorized attribute (in any) are set but forget the admin device
+// until memorized attribute (if any) are set but forget the admin device
 // (which does not have any memorized attribute)
+// But don't do this for dynamic devices which are not created in the DServer::init_device method class loop
 //
 
 		string &dev_name = dev->get_name_lower();
-		if (dev_name.find("dserver") != 0)
+		if ((get_device_factory_done() == false) && (dev_name.find("dserver") != 0))
 			dev->get_dev_monitor().get_monitor();
 
 //
