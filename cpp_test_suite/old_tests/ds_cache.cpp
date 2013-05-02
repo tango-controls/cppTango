@@ -5,7 +5,7 @@
 #include <tango.h>
 #include <assert.h>
 
-#define	BASE	62
+#define	BASE	64
 #define	coutv	if (verbose == true) cout
 bool verbose = false;
 
@@ -47,8 +47,8 @@ int main(int argc, char **argv)
 
 		dout >> res;
 
-		if(res->svalue.length() > 0)
-			h_name = res->svalue[0].in();
+/*		if(res->svalue.length() > 0)
+			h_name = res->svalue[0].in();*/
 
 		int notifd_size = 6;
 		if(h_name == "")
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 		const DbServerCache::PropEltIdx &DServer_prop = dsc->get_DServer_class_prop();
 		coutv << "DServer class prop data between " << DServer_prop.first_idx << " and " << DServer_prop.last_idx << endl;
 		first = last + 1;
-		last = first + 12;
+		last = first + 14;
 		assert(DServer_prop.first_idx == first);
 		assert(DServer_prop.last_idx == last);
 
@@ -236,8 +236,8 @@ int main(int argc, char **argv)
 		db_prop[0] >> vs;
 
 		coutv << "Prop nb = " << vs.size() << ", first value = " << vs[0] << endl;
-		assert(vs.size() == 9);
-		assert(vs[0] == "QueryClass");
+		assert(vs.size() == 11);
+		assert(vs[0] == "DevPollStatus");
 
 		cout << "   Getting class property --> OK" << endl;
 
