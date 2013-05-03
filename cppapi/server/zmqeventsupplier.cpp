@@ -81,7 +81,18 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
     heartbeat_pub_sock = new zmq::socket_t(zmq_context,ZMQ_PUB);
 
     int linger = 0;
-    heartbeat_pub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
+	int reconnect_ivl = -1;
+
+	heartbeat_pub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
+	try
+	{
+		heartbeat_pub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+	}
+	catch (zmq::error_t &)
+	{
+		reconnect_ivl = 30000;
+		heartbeat_pub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+	}
 
     heartbeat_endpoint = "tcp://";
 
@@ -323,7 +334,18 @@ void ZmqEventSupplier::create_event_socket()
 
         event_pub_sock = new zmq::socket_t(zmq_context,ZMQ_PUB);
         int linger = 0;
+		int reconnect_ivl = -1;
         event_pub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
+
+		try
+		{
+			event_pub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+		}
+		catch (zmq::error_t &)
+		{
+			reconnect_ivl = 30000;
+			event_pub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+		}
 
         event_endpoint = "tcp://";
 

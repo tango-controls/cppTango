@@ -1770,10 +1770,11 @@ public:
 	static inline void throw_named_exception(vector<string> &atts,const char *reason,
 					   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR)
 	{
-		Tango::NamedDevErrorList errors(atts.size());
+		unsigned int a_size = (unsigned int)atts.size();
+		Tango::NamedDevErrorList errors(a_size);
 
-		errors.length(atts.size());
-		for (size_t loop = 0;loop < atts.size();loop++)
+		errors.length(a_size);
+		for (unsigned int loop = 0;loop < a_size;loop++)
 		{
 			errors[loop].name = CORBA::string_dup(atts[loop].c_str());
 			errors[loop].index_in_call = 999;

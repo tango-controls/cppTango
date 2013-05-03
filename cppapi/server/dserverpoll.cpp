@@ -1921,7 +1921,7 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 		++ite;
 		TangoSys_MemStream s;
 		s << *ite;
-		if ((s >> min_upd) == false)
+		if (!(s >> min_upd))
 		{
 			TangoSys_OMemStream o;
 			o << "System property ";

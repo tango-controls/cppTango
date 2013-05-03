@@ -21,6 +21,7 @@ libclient_la_SOURCES = dbapi_class.cpp     	\
 					   dbapi_history.cpp   	\
 					   dbapi_attribute.cpp 	\
 					   dbapi_cache.cpp		\
+					   dbapi_serverdata.cpp \
                        devapi_attr.cpp     	\
                        devapi_base.cpp     	\
                        devapi_data.cpp     	\

@@ -99,10 +99,8 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  dserversignal.h	\
 				  encoded_attribute.h \
 				  encoded_format.h	\
-		  		  eventcmds.h		\
 		  		  eventsupplier.h	\
 		  		  except.h			\
-				  locked_att_value.h \
 		  		  log4tango.h		\
 		  		  logcmds.h			\
 		  		  logging.h			\

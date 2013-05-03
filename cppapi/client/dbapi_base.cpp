@@ -4616,7 +4616,7 @@ void Database::get_alias_from_attribute(string attr_name, string &attr_alias)
 
 //-----------------------------------------------------------------------------
 //
-// Database::get_device_attribute_list() - Get list of attributes with dat ain db
+// Database::get_device_attribute_list() - Get list of attributes with data in db
 // for a specified device
 //
 //-----------------------------------------------------------------------------

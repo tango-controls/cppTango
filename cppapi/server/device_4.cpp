@@ -695,7 +695,6 @@ void Device_4Impl::write_attributes_4(const Tango::AttributeValueList_4 & values
 // Call the Device_3Impl write_attributes
 //
 
-	store_in_bb = false;
 	return write_attributes_34(NULL,&values);
 }
 
