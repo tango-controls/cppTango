@@ -28,7 +28,7 @@ public:
 
 void EventCallback::push_event( Tango::EventData *ed )
 {
-	coutv << "In callback with error flag = " << ed->err << endl;
+	coutv << "In callback with error flag = " << std::boolalpha << ed->err << endl;
     if(ed->err == false)
 		cb_executed++;
     else
@@ -166,7 +166,7 @@ int main(int argc, char **argv)
 
 		device->command_inout("IOPushEvent");
 		
-		Tango_sleep(1);
+		Tango_sleep(2);
 
 		coutv << "Callback execution after second re-connection and event = " << eventCallback->cb_executed << endl;
 		coutv << "Callback error after second re-connection and event = " << eventCallback->cb_err << endl;

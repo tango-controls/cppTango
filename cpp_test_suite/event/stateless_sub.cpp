@@ -28,7 +28,7 @@ public:
 
 void EventCallback::push_event( Tango::EventData *ed )
 {
-	coutv << "In callback with error flag = " << ed->err << endl;
+	coutv << "In callback with error flag = " << std::boolalpha << ed->err << endl;
     if(ed->err == false)
 		cb_executed++;
     else
