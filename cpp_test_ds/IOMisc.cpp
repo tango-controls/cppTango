@@ -1143,7 +1143,7 @@ bool IOGetCbExecuted::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in
 
 CORBA::Any *IOGetCbExecuted::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
-	cout << "[IOGetCbExecuted::execute] received number " << endl;
+	cout << "[IOGetCbExecuted::execute] received, returned value = " << (static_cast<DevTest *>(device))->cb.cb_executed << endl;
 
 	long exec = (static_cast<DevTest *>(device))->cb.cb_executed;
 	return insert(exec);
