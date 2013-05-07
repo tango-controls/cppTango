@@ -212,7 +212,7 @@ public:
 cout << "da = " << da << endl;
 		Tango::DevLong cb = 0;
 		da >> cb;
-		coutv << "Remote event ctr = " << cb << endl;
+		cout << "Remote event ctr = " << cb << endl;
 		TS_ASSERT (cb == 1);
 	}
 
