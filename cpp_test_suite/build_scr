@@ -228,7 +228,7 @@ fi
 #
 
 val=$RANDOM % 30
-cout << "Sleeping for $val"
+echo "Sleeping for $val"
 sleep $val
 ps -ef | grep devTest
 
