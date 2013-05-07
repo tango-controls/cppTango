@@ -259,6 +259,7 @@ do
 	let IND=IND+1
 	if [ $IND == 2 ]
 		break
+	fi
 done
 
 exit $RET
