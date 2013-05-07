@@ -195,6 +195,9 @@ if [ $1 != "0" ]
 then
 	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
 	echo "Leaving test suite, try to fix it"
+	date
+	sleep 30
+	date
 	$DIR/StopPoll $DEV1 --kill $DEV_MCAST
 	exit -1
 fi
