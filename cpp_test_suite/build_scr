@@ -249,14 +249,16 @@ RET=$?
 # kill the servers
 #
 
-BID="ps -e | grep $DS_NAME | grep -v grep"
-echo "BID=$BID"
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | grep -v $MCAST_INST_NAME | awk '{print $1}'`
+IND=0
 echo "PIDS = $PIDS"
 for pid in $PIDS
 do
 	echo "Killing process with PID $pid"
 	kill $pid
+	let IND=IND+1
+	if [ $IND == 2 ]
+		break
 done
 
 exit $RET
