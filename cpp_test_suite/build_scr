@@ -248,7 +248,7 @@ RET=$?
 # kill the servers
 #
 
-PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
+PIDS=`ps -e | grep $DS_NAME | grep -v grep | grep -v $MCAST_INST_NAME | awk '{print $1}'`
 echo "PIDS = $PIDS"
 for pid in $PIDS
 do
