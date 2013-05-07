@@ -196,7 +196,7 @@ then
 	echo "Test Suite FAILED !!!!!!!!!!!!!!!!!!"
 	echo "Leaving test suite, try to fix it"
 	date
-	sleep 30
+	sleep 60
 	date
 	$DIR/StopPoll $DEV1 --kill $DEV_MCAST
 	exit -1
