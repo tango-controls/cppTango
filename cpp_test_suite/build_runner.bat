@@ -24,6 +24,9 @@ set REL_DIR=..\..\..\..\
 %REL_DIR%new_tests\cxx_encoded.cpp ^
 %REL_DIR%new_tests\cxx_database.cpp ^
 %REL_DIR%new_tests\cxx_mem_attr.cpp ^
+%REL_DIR%new_tests\cxx_mcast01_simple.cpp ^
+%REL_DIR%new_tests\cxx_mcast02_local_remote.cpp ^
+%REL_DIR%new_tests\cxx_mcast03_svr_local_remote.cpp ^
 %REL_DIR%new_tests\cxx_write_attr_hard.cpp
 
 rem %REL_DIR%new_tests\cxx_signal.cpp

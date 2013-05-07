@@ -32,6 +32,7 @@ do
 		MAKE_PATH="make"
 		DS_INST_NAME=ubuntu1004
 		DS_INST_NAME_2=ubuntu1004_2
+		MCAST_INST_NAME=ubuntu1004_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -43,6 +44,7 @@ do
 		MAKE_PATH="devenv"
 		DS_INST_NAME=win32_vc9
 		DS_INST_NAME_2=win32_vc9_2
+		MCAST_INST_NAME=win32_vc9_mcast
 		INSTALL_DIR=$WIN_INSTALL_DIR
 		BIN_DIR="win32"
 		OUTFILE="devenv_suite"
@@ -56,6 +58,7 @@ do
 		MAKE_PATH="MSBuild.exe"
 		DS_INST_NAME=win64_vc10
 		DS_INST_NAME_2=win64_vc10_2
+		MCAST_INST_NAME=win64_vc10_mcast
 		INSTALL_DIR=$WIN_INSTALL_DIR
 		BIN_DIR="win64"
 		OUTFILE="msbuild_suite"
@@ -69,6 +72,7 @@ do
 		MAKE_PATH="make"
 		DS_INST_NAME=centos5
 		DS_INST_NAME_2=centos5_2
+		MCAST_INST_NAME=centos5_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -80,6 +84,7 @@ do
 		MAKE_PATH="make"
 		DS_INST_NAME=redhate4
 		DS_INST_NAME_2=redhate4_2
+		MCAST_INST_NAME=redhate4_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -91,6 +96,7 @@ do
 		MAKE_PATH="make"
 		DS_INST_NAME=redhate5
 		DS_INST_NAME_2=redhate5_2
+		MCAST_INST_NAME=redhate5_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -102,6 +108,7 @@ do
 		MAKE_PATH="make"
 		DS_INST_NAME=debian6
 		DS_INST_NAME_2=debian6_2
+		MCAST_INST_NAME=debian6_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 done
@@ -207,11 +214,13 @@ if [ $OS_TYPE = "Windows" ]
 then
 	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
 	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
+	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME  1>/dev/null 2>&1 &
 else
 	echo "Shared libs used by device server"
 	ldd $INSTALL_DIR/$OS/bin/shared/$DS_NAME
 	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $MCAST_INST_NAME 1>/dev/null 2>&1 &
 fi
 
 #
