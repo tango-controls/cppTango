@@ -227,7 +227,9 @@ fi
 # Wait before starting test
 #
 
-sleep 7
+val=$RANDOM % 30
+cout << "Sleeping for $val"
+sleep $val
 ps -ef | grep devTest
 
 #
