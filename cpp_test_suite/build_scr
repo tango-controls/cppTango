@@ -249,6 +249,8 @@ RET=$?
 # kill the servers
 #
 
+BID="ps -e | grep $DS_NAME | grep -v grep"
+echo "BID=$BID"
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | grep -v $MCAST_INST_NAME | awk '{print $1}'`
 echo "PIDS = $PIDS"
 for pid in $PIDS
