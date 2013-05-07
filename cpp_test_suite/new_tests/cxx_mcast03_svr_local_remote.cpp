@@ -209,6 +209,7 @@ public:
 
 		DeviceData da;
 		da = device_remote->command_inout("IOGetCbExecuted");
+cout << "da = " << da << endl;
 		Tango::DevLong cb = 0;
 		da >> cb;
 		coutv << "Remote event ctr = " << cb << endl;
