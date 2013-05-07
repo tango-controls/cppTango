@@ -258,6 +258,7 @@ do
 	kill $pid
 	let IND=IND+1
 	if [ $IND == 2 ]
+	then
 		break
 	fi
 done

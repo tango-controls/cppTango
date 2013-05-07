@@ -48,8 +48,8 @@ protected:
 	DeviceProxy		*device_remote;
 	string 			att_name;
 	string			local_device_name;
-	int 			eve_id_local;
-	int 			eve_id_remote;
+	Tango::DevLong 	eve_id_local;
+	Tango::DevLong 	eve_id_remote;
 	EventCallBack 	*cb;
 
 	bool 			verbose;
