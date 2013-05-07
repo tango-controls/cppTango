@@ -10,7 +10,8 @@ using namespace Tango;
 using namespace std;
 
 #define coutv		if (verbose == true) cout << "\t"
-#define coutv_cb 	if (parent->verbose == true) cout << "\t"
+//#define coutv_cb 	if (parent->verbose == true) cout << "\t"
+#define cout_cb cout
 #define cout cout << "\t"
 
 #undef SUITE_NAME
