@@ -147,7 +147,7 @@ jenkins )
 			DEV1="test/redhate4/10"
 			DEV2="test/redhate4/11"
 			DEV3="test/redhate4/12"
-			DEV_MCAST="test/debian6/30"
+			DEV_MCAST="no/mcast/test"
 			DEV1_ALIAS="redhate4_alias"
 			ATTR_ALIAS="redhate4_attr_alias"
 			INST_NAME=redhate4
@@ -175,7 +175,7 @@ jenkins )
 			DEV1="test/debian6/10"
 			DEV2="test/debian6/11"
 			DEV3="test/debian6/12"
-			DEV_MCAST="test/redhate4/30"
+			DEV_MCAST="no/mcast/test"
 			DEV1_ALIAS="debian6_alias"
 			ATTR_ALIAS="debian6_attr_alias"
 			INST_NAME=debian6
