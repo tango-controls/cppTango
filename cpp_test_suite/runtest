@@ -161,7 +161,7 @@ jenkins )
 			DEV1="test/redhate5/10"
 			DEV2="test/redhate5/11"
 			DEV3="test/redhate5/12"
-			DEV_MCAST="a/a/a"
+			DEV_MCAST="no/mcast/test"
 			DEV1_ALIAS="redhate5_alias"
 			ATTR_ALIAS="redhate5_attr_alias"
 			INST_NAME=redhate5
@@ -211,9 +211,37 @@ then
 	ldd $DIR/misc_devproxy
 fi
 
+#
+# Due to different host CPU power and in case of test suites compilation,
+# the DS used for mcast test could be started at very different time ccording to host
+# Wait for mcast test device to be ready before starting test
+#
+
+if [ $DEV_MCAST != "no/mcast/test" ]
+then
+	$DIR/wait_mcast_dev $DEV_MCAST 10
+	if [ $? != "0" ]
+	then
+		echo "It seems that the remote DS to test multicast feature is not started"
+		echo "Exit test suite !!!!!!!!!!!!!!!!!!"
+		exit -1
+	fi
+fi
 
 #
-# First run the CXX test suite
+# Wait of a random value before starting test (Spread database load)
+#
+
+val=$RANDOM
+let "val=$val % 30"
+echo "Random sleeping of $val seconds"
+sleep $val
+ps -ef | grep devTest
+n=`date`
+echo "Starting test at $n"
+
+#
+# Run the CXX test suite
 #
 
 $echo "Running the new Test Suite"
@@ -221,7 +249,7 @@ CURR_DIR="`pwd`"
 
 #
 # Don't know why but when running this script from Jenkins on windows,
-# the HOST string has 9 characters instead of 8. There is a \013 (carriage retrun)
+# the HOST string has 9 characters instead of 8. There is a \013 (carriage return)
 # appended at the end
 #
 

@@ -229,16 +229,6 @@ else
 fi
 
 #
-# Wait before starting test
-#
-
-val=$RANDOM
-let "val=$val % 30"
-echo "Sleeping for $val"
-sleep $val
-ps -ef | grep devTest
-
-#
 # Start test
 #
 
