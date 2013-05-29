@@ -41,15 +41,18 @@ int main(int argc, char **argv)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			Except::print_exception(e);
 			string reason(e.errors[0].reason.in());
 			if (reason != "API_DeviceNotExported")
+			{
+				Except::print_exception(e);
 				exit(-1);
+			}
 			else
 			{
 				ctr--;
 				if (ctr == 0)
 					exit(-1);
+				cout << "Multicast device not ready, waiting for 30 sec" << endl;
 				sleep(30);
 			}
 		}
