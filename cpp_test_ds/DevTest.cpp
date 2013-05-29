@@ -51,24 +51,24 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 //-----------------------------------------------------------------------------
 
 #ifndef COMPAT
-DevTest::DevTest(Tango::DeviceClass *cl,string &s):Tango::Device_4Impl(cl,s.c_str())
+DevTest::DevTest(Tango::DeviceClass *cl,string &s):TANGO_BASE_CLASS(cl,s.c_str())
 {
 	init_device();
 }
 
-DevTest::DevTest(Tango::DeviceClass *cl,const char *s):Tango::Device_4Impl(cl,s)
+DevTest::DevTest(Tango::DeviceClass *cl,const char *s):TANGO_BASE_CLASS(cl,s)
 {
 	init_device();
 }
 
 DevTest::DevTest(Tango::DeviceClass *cl,const char *s,const char *d)
-:Tango::Device_4Impl(cl,s,d)
+:TANGO_BASE_CLASS(cl,s,d)
 {
 	init_device();
 }
 
 DevTest::DevTest(Tango::DeviceClass *cl,const char *s,const char *d, Tango::DevState state, const char *status )
-:Tango::Device_4Impl(cl,s,d, state, status)
+:TANGO_BASE_CLASS(cl,s,d, state, status)
 {
 	init_device();
 }

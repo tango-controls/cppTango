@@ -13,7 +13,7 @@ public:
 };
 
 #ifndef COMPAT
-class DevTest : public Tango::Device_4Impl {
+class DevTest : public TANGO_BASE_CLASS {
 #else
 class DevTest : public Tango::Device_3Impl {
 #endif
