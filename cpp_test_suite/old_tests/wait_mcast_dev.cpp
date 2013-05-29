@@ -53,7 +53,7 @@ int main(int argc, char **argv)
 				if (ctr == 0)
 					exit(-1);
 				cout << "Multicast device not ready, waiting for 30 sec" << endl;
-				sleep(30);
+				Tango_sleep(30);
 			}
 		}
 	}
