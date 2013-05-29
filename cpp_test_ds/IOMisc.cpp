@@ -1145,7 +1145,7 @@ CORBA::Any *IOGetCbExecuted::execute(Tango::DeviceImpl *device, const CORBA::Any
 {
 	cout << "[IOGetCbExecuted::execute] received, returned value = " << (static_cast<DevTest *>(device))->cb.cb_executed << endl;
 
-	long exec = (static_cast<DevTest *>(device))->cb.cb_executed;
+	Tango::DevLong exec = (static_cast<DevTest *>(device))->cb.cb_executed;
 	return insert(exec);
 }
 
