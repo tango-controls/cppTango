@@ -88,7 +88,7 @@ do
 		DS_INST_NAME_2=redhate4_2
 		MCAST_INST_NAME=redhate4_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 
 	if [ $i = "redhate5" ]
@@ -114,7 +114,7 @@ do
 		DS_INST_NAME_2=debian6_2
 		MCAST_INST_NAME=debian6_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 done
 
