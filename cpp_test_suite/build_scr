@@ -34,6 +34,7 @@ do
 		DS_INST_NAME_2=ubuntu1004_2
 		MCAST_INST_NAME=ubuntu1004_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins
 	fi
 
 	if [ $i = "Windows_VC9" ]
@@ -74,6 +75,7 @@ do
 		DS_INST_NAME_2=centos5_2
 		MCAST_INST_NAME=centos5_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins
 	fi
 
 	if [ $i = "redhate4" ]
@@ -86,6 +88,7 @@ do
 		DS_INST_NAME_2=redhate4_2
 		MCAST_INST_NAME=redhate4_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins
 	fi
 
 	if [ $i = "redhate5" ]
@@ -98,6 +101,7 @@ do
 		DS_INST_NAME_2=redhate5_2
 		MCAST_INST_NAME=redhate5_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins_no_mcast
 	fi
 
 	if [ $i = "debian6" ]
@@ -110,6 +114,7 @@ do
 		DS_INST_NAME_2=debian6_2
 		MCAST_INST_NAME=debian6_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins
 	fi
 done
 
@@ -150,7 +155,7 @@ then
 	echo $PATH
 	rm -f $OUTFILE
 else
-	MAKE_CMD="$MAKE_PATH PROFILE=jenkins OS=$OS $CLEAN all"
+	MAKE_CMD="$MAKE_PATH PROFILE=$PROF OS=$OS $CLEAN all"
 	cd cpp_test_suite
 fi
 
