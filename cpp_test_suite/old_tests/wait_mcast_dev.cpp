@@ -35,14 +35,14 @@ int main(int argc, char **argv)
 	while (ctr > 0)
 	{
 		try
-		{	
+		{
 			device->state();
 			ctr = 0;
 		}
 		catch (Tango::DevFailed &e)
 		{
 			string reason(e.errors[0].reason.in());
-			if (reason != "API_DeviceNotExported")
+			if (reason != "API_DeviceNotExported" && reason != "API_CorbaException")
 			{
 				Except::print_exception(e);
 				exit(-1);
