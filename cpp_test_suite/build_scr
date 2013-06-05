@@ -217,9 +217,21 @@ export TANGO_HOST=acucentos:10000
 
 if [ $OS_TYPE = "Windows" ]
 then
-	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
-	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
-	$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME  1>/dev/null 2>&1 &
+	if [ $OS_SPEC = "Windows_64_VC10" ]
+	then
+#
+# Since VMWare has been installed on the Windows 64 bits host, the host addresses
+# are first local addresses (192.168.X.Y). Force server to listen and publish
+# the real IP address until this problem is analysed.
+#
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+	else
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME  1>/dev/null 2>&1 &
+	fi
 else
 	echo "Shared libs used by device server"
 	ldd $INSTALL_DIR/$OS/bin/shared/$DS_NAME
