@@ -217,25 +217,28 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(device3 = new DeviceProxy(device3_name));
 
-//		try
-//		{
-//			vector<string> *bb = device3->black_box(5);
-//			cout << endl << "===> blackbox size: " << (*bb).size() << endl;
-//			if((*bb).size() > 0)
-//					cout << "===> first element: " << (*bb)[0] << endl;
-//		}
-//		catch(DevFailed &e)
-//		{
-//			cout << "===> Nothing yet stored in blackbox" << endl;
-//		}
-//		catch(...)
-//		{
-//			cout << "===> Error in checking blackbox size" << endl;
-//		}
+		try
+		{
+			vector<string> *bb = device3->black_box(5);
+			cout << endl << "===> blackbox size: " << (*bb).size() << endl;
+			if((*bb).size() > 0)
+					cout << "===> first element: " << (*bb)[0] << endl;
+		}
+		catch(DevFailed &e)
+		{
+			string reas(e.errors[0].reason.in());
+			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
+			assert (reas == "API_BlackBoxEmpty");
+		}
+		catch(...)
+		{
+			cout << "===> Error in checking blackbox size" << endl;
+			assert(false);
+		}
 
-		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
+/*		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
 				TS_ASSERT(string(e.errors[0].reason.in()) == "API_BlackBoxEmpty"
-						&& e.errors[0].severity == Tango::ERR));
+						&& e.errors[0].severity == Tango::ERR));*/
 		delete device3;
 
 		reference_str = "Operation ping requested from " + client_host;
