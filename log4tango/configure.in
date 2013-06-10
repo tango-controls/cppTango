@@ -1,4 +1,4 @@
-AC_INIT(log4tango, 4.0.8, nicolas.leclercq@synchrotron-soleil.fr)
+AC_INIT(log4tango, 5.0.0, nicolas.leclercq@synchrotron-soleil.fr)
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE
