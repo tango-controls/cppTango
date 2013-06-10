@@ -226,6 +226,7 @@ public:
 		}
 		catch(DevFailed &e)
 		{
+			Tango::Except::print_exception(e);
 			string reas(e.errors[0].reason.in());
 			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
 			assert (reas == "API_BlackBoxEmpty");
