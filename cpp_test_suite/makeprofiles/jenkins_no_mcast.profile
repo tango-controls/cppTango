@@ -41,7 +41,7 @@
 #
 #######################################################################################################################
 
-EXCLUDE_FILES = 64.cpp helper.cpp cxx_mcast01_simple.cpp cxx_mcast02_local_remote.cpp cxx_mcast03_svr_local_remote.cpp
+EXCLUDE_FILES = 64.cpp helper.cpp cxx_zmcast01_simple.cpp cxx_zmcast02_local_remote.cpp cxx_zmcast03_svr_local_remote.cpp
 
 TANGO_BASE = /segfs/tango/ci/Tango/$(OS)
 
