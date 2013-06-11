@@ -224,9 +224,12 @@ then
 # are first local addresses (192.168.X.Y). Force server to listen and publish
 # the real IP address until this problem is analysed.
 #
-		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
-		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
-		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+#		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+#		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+#		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME  -ORBendPoint giop:tcp:160.103.5.4 1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
+		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $MCAST_INST_NAME 1>/dev/null 2>&1 &
 	else
 		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME  1>/dev/null 2>&1 &
 		$WIN_INSTALL_DIR/$BIN_DIR/bin/archive/$DS_NAME $DS_INST_NAME_2  1>/dev/null 2>&1 &
