@@ -231,12 +231,12 @@ cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
 			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
-			assert (reas == "API_BlackBoxEmpty");
+			TS_ASSERT (reas == "API_BlackBoxEmpty");
 		}
 		catch(...)
 		{
 			cout << "===> Error in checking blackbox size" << endl;
-			assert(false);
+			TS_ASSERT (false);
 		}
 
 /*		TS_ASSERT_THROWS_ASSERT(device3->black_box(2), Tango::DevFailed &e,
