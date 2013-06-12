@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 		
 		DeviceData da;
 		da = device->command_inout("IOGetCbExecuted");
-		long cb;
+		Tango::DevLong cb;
 		da >> cb;
 
 		coutv << "cb executed = " << cb << endl;		
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 		
 		Tango_sleep(2);
 		da = device->command_inout("IOGetCbExecuted");
-		long cb2;
+		Tango::DevLong cb2;
 		da >> cb2;
 		
 		assert (cb2 == cb);

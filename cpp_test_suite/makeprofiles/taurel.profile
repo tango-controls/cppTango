@@ -43,9 +43,9 @@
 
 EXCLUDE_FILES = 64.cpp helper.cpp
 #COMPILE_FILES = cxx_blackbox.cpp
-COMPILE_FILES = cxx_zmcast01_simple.cpp cxx_zmcast02_local_remote.cpp cxx_zmcast03_svr_local_remote.cpp
+#COMPILE_FILES = cxx_zmcast01_simple.cpp cxx_zmcast02_local_remote.cpp cxx_zmcast03_svr_local_remote.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
-#COMPILE_FILES = cxx_always_hook.cpp
+COMPILE_FILES = server_event.cpp
 
 OS_DIR = ubuntu1204
 
