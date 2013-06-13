@@ -525,7 +525,7 @@ public:
 		TS_ASSERT_EQUALS(cmd_inf.in_type,Tango::DEVVAR_STRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.out_type,Tango::DEVVAR_LONGSTRINGARRAY);
 		TS_ASSERT_EQUALS(cmd_inf.in_type_desc,"Events consumer wants to subscribe to");
-		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release");
+		TS_ASSERT_EQUALS(cmd_inf.out_type_desc,"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\nLg[0] = Tango lib release - Lg[1] = Device IDL release\nLg[2] = Subscriber HWM - Lg[3] = Multicast rate\nLg[4] = Multicast IVL - Lg[5] = ZMQ release");
 	}
 
 };
