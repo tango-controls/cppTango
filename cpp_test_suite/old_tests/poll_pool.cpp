@@ -112,13 +112,13 @@ int main(int argc, char **argv)
 // Change polling thread number and add 2 more devices
 
 		string new_dev1_th2 = "test/";
-		new_dev1_th2 = new_dev1_th2 + inst_name + "/100";
+		new_dev1_th2 = new_dev1_th2 + inst_name + "/800";
 
 		my_device_info.name = new_dev1_th2.c_str();
 		db->add_device(my_device_info);
 
 		string new_dev2_th2 = "test/";
-		new_dev2_th2 = new_dev2_th2 + inst_name + "/101";
+		new_dev2_th2 = new_dev2_th2 + inst_name + "/801";
 
 		my_device_info.name = new_dev2_th2.c_str();
 		db->add_device(my_device_info);
@@ -161,7 +161,7 @@ int main(int argc, char **argv)
 // Change polling thread number to 3 and add 1 more device
 
 		string new_dev1_th3 = "test/";
-		new_dev1_th3 = new_dev1_th3 + inst_name + "/1000";
+		new_dev1_th3 = new_dev1_th3 + inst_name + "/9000";
 
 		my_device_info.name = new_dev1_th3.c_str();
 		db->add_device(my_device_info);
@@ -282,13 +282,13 @@ void reset_device_server(Database *db,vector<string> &polling_pool_conf,string &
 	string dev_name = base_name + "/77";
 	del_device_no_error(db,dev_name.c_str());
 
-	dev_name = base_name + "/100";
+	dev_name = base_name + "/800";
 	del_device_no_error(db,dev_name.c_str());
 
-	dev_name = base_name + "/101";
+	dev_name = base_name + "/801";
 	del_device_no_error(db,dev_name.c_str());
 
-	dev_name = base_name + "/1000";
+	dev_name = base_name + "/9000";
 	del_device_no_error(db,dev_name.c_str());
 
 	DbDatum pool_conf("polling_threads_pool_conf");
