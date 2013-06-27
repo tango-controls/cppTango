@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -379,9 +379,7 @@ int DeviceData::get_type()
 
 bool DeviceData::operator >> (bool& datum)
 {
-	bool ret = true;
-
-	ret = any >>= CORBA::Any::to_boolean(datum);
+	bool ret = any >>= CORBA::Any::to_boolean(datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -390,7 +388,7 @@ bool DeviceData::operator >> (bool& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not a boolean",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -406,9 +404,7 @@ bool DeviceData::operator >> (bool& datum)
 
 bool DeviceData::operator >> (short& datum)
 {
-	bool ret = true;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -417,7 +413,7 @@ bool DeviceData::operator >> (short& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not a short",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -434,9 +430,7 @@ bool DeviceData::operator >> (short& datum)
 
 bool DeviceData::operator >> (unsigned short& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -445,7 +439,7 @@ bool DeviceData::operator >> (unsigned short& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not an unsigned short",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -461,9 +455,7 @@ bool DeviceData::operator >> (unsigned short& datum)
 
 bool DeviceData::operator >> (DevLong& datum)
 {
-	bool ret;
-
-	ret = (any >>= datum);
+	bool ret = (any >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -472,7 +464,7 @@ bool DeviceData::operator >> (DevLong& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not a DevLong (long 32 bits)",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -488,9 +480,7 @@ bool DeviceData::operator >> (DevLong& datum)
 
 bool DeviceData::operator >> (DevULong& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -499,7 +489,7 @@ bool DeviceData::operator >> (DevULong& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not an DevULong (unsigned long 32 bits)",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -515,9 +505,7 @@ bool DeviceData::operator >> (DevULong& datum)
 
 bool DeviceData::operator >> (DevLong64 & datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -526,7 +514,7 @@ bool DeviceData::operator >> (DevLong64 & datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not a DevLong64 (64 bits long)",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -542,9 +530,7 @@ bool DeviceData::operator >> (DevLong64 & datum)
 
 bool DeviceData::operator >> (DevULong64 & datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -553,7 +539,7 @@ bool DeviceData::operator >> (DevULong64 & datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 					       	(const char*)"Cannot extract, data in DeviceData object is not a DevULong64 (unsigned 64 bits long)",
 					        (const char*)"DeviceData::operator>>");
 		}
@@ -569,9 +555,7 @@ bool DeviceData::operator >> (DevULong64 & datum)
 
 bool DeviceData::operator >> (float& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -580,7 +564,7 @@ bool DeviceData::operator >> (float& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				     		(const char*)"Cannot extract, data in DeviceData object is not a float",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -597,9 +581,7 @@ bool DeviceData::operator >> (float& datum)
 
 bool DeviceData::operator >> (double& datum)
 {
-	bool ret = true;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -608,7 +590,7 @@ bool DeviceData::operator >> (double& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a double",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -624,10 +606,8 @@ bool DeviceData::operator >> (double& datum)
 
 bool DeviceData::operator >> (string& datum)
 {
-	bool ret;
-
 	const char *c_string = NULL;
-	ret = (any >>= c_string);
+	bool ret = (any >>= c_string);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -636,7 +616,7 @@ bool DeviceData::operator >> (string& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a string",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -656,9 +636,7 @@ bool DeviceData::operator >> (string& datum)
 
 bool DeviceData::operator >> (const char*& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -667,7 +645,7 @@ bool DeviceData::operator >> (const char*& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of char",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -683,9 +661,7 @@ bool DeviceData::operator >> (const char*& datum)
 
 bool DeviceData::operator >> (DevState& datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -694,7 +670,7 @@ bool DeviceData::operator >> (DevState& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a DevState",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -710,10 +686,8 @@ bool DeviceData::operator >> (DevState& datum)
 
 bool DeviceData::operator >> (vector<unsigned char>& datum)
 {
-	bool ret;
-
 	const DevVarCharArray *char_array = NULL;
-	ret = (any.inout() >>= char_array);
+	bool ret = (any.inout() >>= char_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -722,7 +696,7 @@ bool DeviceData::operator >> (vector<unsigned char>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of char",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -731,7 +705,7 @@ bool DeviceData::operator >> (vector<unsigned char>& datum)
 	{
 	    if (char_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -757,9 +731,7 @@ bool DeviceData::operator >> (vector<unsigned char>& datum)
 
 bool DeviceData::operator >> (const DevVarCharArray* &datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -768,7 +740,7 @@ bool DeviceData::operator >> (const DevVarCharArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of char",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -784,10 +756,8 @@ bool DeviceData::operator >> (const DevVarCharArray* &datum)
 
 bool DeviceData::operator >> (vector<short>& datum)
 {
-	bool ret;
-
 	const DevVarShortArray *short_array = NULL;
-	ret = (any.inout() >>= short_array);
+	bool ret = (any.inout() >>= short_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -796,7 +766,7 @@ bool DeviceData::operator >> (vector<short>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of short",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -805,7 +775,7 @@ bool DeviceData::operator >> (vector<short>& datum)
 	{
 	    if (short_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -831,9 +801,7 @@ bool DeviceData::operator >> (vector<short>& datum)
 
 bool DeviceData::operator >> (const DevVarShortArray* &datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 
 	if (ret == false)
 	{
@@ -843,7 +811,7 @@ bool DeviceData::operator >> (const DevVarShortArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of short",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -859,10 +827,8 @@ bool DeviceData::operator >> (const DevVarShortArray* &datum)
 
 bool DeviceData::operator >> (vector<unsigned short>& datum)
 {
-	bool ret = true;
-
 	const DevVarUShortArray *ushort_array = NULL;
-	ret = (any.inout() >>= ushort_array);
+	bool ret = (any.inout() >>= ushort_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -871,7 +837,7 @@ bool DeviceData::operator >> (vector<unsigned short>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of unsigned short",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -880,7 +846,7 @@ bool DeviceData::operator >> (vector<unsigned short>& datum)
 	{
 	    if (ushort_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -906,9 +872,7 @@ bool DeviceData::operator >> (vector<unsigned short>& datum)
 
 bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -917,7 +881,7 @@ bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of unusigned short",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -933,11 +897,9 @@ bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 
 bool DeviceData::operator >> (vector<DevLong>& datum)
 {
-	bool ret = true;
-
 	const DevVarLongArray *long_array = NULL;
 
-	ret = (any.inout() >>= long_array);
+	bool ret = (any.inout() >>= long_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -946,7 +908,7 @@ bool DeviceData::operator >> (vector<DevLong>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of DevLong (long 32 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -955,7 +917,7 @@ bool DeviceData::operator >> (vector<DevLong>& datum)
 	{
 	    if (long_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -981,9 +943,7 @@ bool DeviceData::operator >> (vector<DevLong>& datum)
 
 bool DeviceData::operator >> (const DevVarLongArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -992,7 +952,7 @@ bool DeviceData::operator >> (const DevVarLongArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of long (32 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1008,11 +968,9 @@ bool DeviceData::operator >> (const DevVarLongArray* &datum)
 
 bool DeviceData::operator >> (vector<DevULong>& datum)
 {
-	bool ret = true;
-
 	const DevVarULongArray *ulong_array = NULL;
 
-	ret = (any.inout() >>= ulong_array);
+	bool ret = (any.inout() >>= ulong_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1021,7 +979,7 @@ bool DeviceData::operator >> (vector<DevULong>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of DevULong (unsigned long 32 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1030,7 +988,7 @@ bool DeviceData::operator >> (vector<DevULong>& datum)
 	{
 	    if (ulong_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1056,9 +1014,7 @@ bool DeviceData::operator >> (vector<DevULong>& datum)
 
 bool DeviceData::operator >> (const DevVarULongArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1067,7 +1023,7 @@ bool DeviceData::operator >> (const DevVarULongArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of unsigned long (32 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1085,9 +1041,7 @@ bool DeviceData::operator >> (const DevVarULongArray* &datum)
 
 bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1096,7 +1050,7 @@ bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of long (64 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1113,9 +1067,7 @@ bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 
 bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1124,7 +1076,7 @@ bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of unsigned long (64 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1140,10 +1092,8 @@ bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 
 bool DeviceData::operator >> (vector<DevLong64>& datum)
 {
-	bool ret = true;
-
 	const DevVarLong64Array *ll_array = NULL;
-	ret = (any.inout() >>= ll_array);
+	bool ret = (any.inout() >>= ll_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1152,7 +1102,7 @@ bool DeviceData::operator >> (vector<DevLong64>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of DevLong64 (64 bits long)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1161,7 +1111,7 @@ bool DeviceData::operator >> (vector<DevLong64>& datum)
 	{
 	    if (ll_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1185,10 +1135,8 @@ bool DeviceData::operator >> (vector<DevLong64>& datum)
 
 bool DeviceData::operator >> (vector<DevULong64>& datum)
 {
-	bool ret = true;
-
 	const DevVarULong64Array *ull_array = NULL;
-	ret = (any.inout() >>= ull_array);
+	bool ret = (any.inout() >>= ull_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1197,7 +1145,7 @@ bool DeviceData::operator >> (vector<DevULong64>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of DevULong64 (unsigned 64 bits long)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1206,7 +1154,7 @@ bool DeviceData::operator >> (vector<DevULong64>& datum)
 	{
 	    if (ull_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1230,10 +1178,8 @@ bool DeviceData::operator >> (vector<DevULong64>& datum)
 
 bool DeviceData::operator >> (vector<float>& datum)
 {
-	bool ret = true;
-
 	const DevVarFloatArray *float_array = NULL;
-	ret = (any.inout() >>= float_array);
+	bool ret = (any.inout() >>= float_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1242,7 +1188,7 @@ bool DeviceData::operator >> (vector<float>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of float",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1251,7 +1197,7 @@ bool DeviceData::operator >> (vector<float>& datum)
 	{
 	    if (float_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1277,9 +1223,7 @@ bool DeviceData::operator >> (vector<float>& datum)
 
 bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1288,7 +1232,7 @@ bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of float",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1304,10 +1248,9 @@ bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 
 bool DeviceData::operator >> (vector<double>& datum)
 {
-	bool ret = true;
 	const DevVarDoubleArray *double_array = NULL;
 
-	ret = (any.inout() >>= double_array);
+	bool ret = (any.inout() >>= double_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1316,7 +1259,7 @@ bool DeviceData::operator >> (vector<double>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of double",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1325,7 +1268,7 @@ bool DeviceData::operator >> (vector<double>& datum)
 	{
 	    if (double_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1351,9 +1294,7 @@ bool DeviceData::operator >> (vector<double>& datum)
 
 bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1362,7 +1303,7 @@ bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of double",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1378,10 +1319,9 @@ bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 
 bool DeviceData::operator >> (vector<string>& datum)
 {
-	bool ret;
 	const DevVarStringArray *string_array = NULL;
 
-	ret = (any.inout() >>= string_array);
+	bool ret = (any.inout() >>= string_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1390,7 +1330,7 @@ bool DeviceData::operator >> (vector<string>& datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of string",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1399,7 +1339,7 @@ bool DeviceData::operator >> (vector<string>& datum)
 	{
 	    if (string_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1424,8 +1364,7 @@ bool DeviceData::operator >> (vector<string>& datum)
 
 bool DeviceData::operator >> (const DevVarStringArray* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1434,7 +1373,7 @@ bool DeviceData::operator >> (const DevVarStringArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not an array of string",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1451,8 +1390,7 @@ bool DeviceData::operator >> (const DevVarStringArray* &datum)
 
 bool DeviceData::operator >> (const DevEncoded* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1461,7 +1399,7 @@ bool DeviceData::operator >> (const DevEncoded* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a DevEncoded",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1478,9 +1416,8 @@ bool DeviceData::operator >> (const DevEncoded* &datum)
 
 bool DeviceData::operator >> (DevEncoded &datum)
 {
-    bool ret = true;
     const DevEncoded *tmp_enc = NULL;
-	ret = (any.inout() >>= tmp_enc);
+	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1489,7 +1426,7 @@ bool DeviceData::operator >> (DevEncoded &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a DevEncoded",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1498,7 +1435,7 @@ bool DeviceData::operator >> (DevEncoded &datum)
 	{
 	    if (tmp_enc == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1733,7 +1670,7 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_dat
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a structure with sequences of string(s) and long(s) (32 bits)",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1742,7 +1679,7 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_dat
 	{
 	    if (long_string_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1773,8 +1710,7 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_dat
 
 bool DeviceData::operator >> (const DevVarLongStringArray* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1783,7 +1719,7 @@ bool DeviceData::operator >> (const DevVarLongStringArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a structure with sequences of string(s) and long(s) (32 bits) ",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1837,7 +1773,7 @@ bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_d
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a boolean",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1846,7 +1782,7 @@ bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_d
 	{
 	    if (double_string_array == NULL)
 	    {
-            ApiDataExcept::throw_exception((const char *)"API_IncoherentDevData",
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
 	    }
@@ -1877,8 +1813,7 @@ bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_d
 
 bool DeviceData::operator >> (const DevVarDoubleStringArray* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1887,7 +1822,7 @@ bool DeviceData::operator >> (const DevVarDoubleStringArray* &datum)
 		}
 		if (exceptions_flags.test(wrongtype_flag))
 		{
-			ApiDataExcept::throw_exception((const char*)"API_IncompatibleCmdArgumentType",
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
 				       		(const char*)"Cannot extract, data in DeviceData object is not a structure with sequences of string(s) and double(s) ",
 				        	(const char*)"DeviceData::operator>>");
 		}
@@ -1927,6 +1862,109 @@ void DeviceData::insert (const char *str_datum, DevVarCharArray *char_datum)
 	any.inout() <<= the_enc;
 }
 
+//-----------------------------------------------------------------------------
+//
+// DeviceData::insert (const char *&, DevVarCharArray *) - insert a pair of
+//             char *,DevVarCharArray into DeviceData
+//
+//-----------------------------------------------------------------------------
+
+void DeviceData::insert (const char *str_datum,unsigned char *data,unsigned int length)
+{
+	DevEncoded *the_enc = new DevEncoded();
+	the_enc->encoded_format = CORBA::string_dup(str_datum);
+
+	the_enc->encoded_data.replace(length,length,data,false);
+	any.inout() <<= the_enc;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceData::extract(const char *&,unsigned char *&,unsigned int &)
+//
+// - extract data for the DevEncoded data type
+//
+//-----------------------------------------------------------------------------
+
+bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigned int &data_size)
+{
+    const DevEncoded *tmp_enc = NULL;
+	bool ret = (any.inout() >>= tmp_enc);
+	if (ret == false)
+	{
+		if (exceptions_flags.test(isempty_flag))
+		{
+			any_is_null();
+		}
+		if (exceptions_flags.test(wrongtype_flag))
+		{
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
+				       		(const char*)"Cannot extract, data in DeviceData object is not a DevEncoded",
+				        	(const char*)"DeviceData::extract");
+		}
+	}
+	else
+	{
+	    if (tmp_enc == NULL)
+	    {
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
+                                       (const char *)"Incoherent data received from server",
+                                       (const char *)"DeviceData::extract");
+	    }
+        else
+        {
+            str = tmp_enc->encoded_format;
+            data_size = tmp_enc->encoded_data.length();
+            data_ptr = tmp_enc->encoded_data.get_buffer();
+        }
+	}
+	return ret;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceData::extract(const char *&,unsigned char *&,unsigned int &)
+//
+// - extract data for the DevEncoded data type
+//
+//-----------------------------------------------------------------------------
+
+bool DeviceData::extract(string &str,vector<unsigned char> &datum)
+{
+    const DevEncoded *tmp_enc = NULL;
+	bool ret = (any.inout() >>= tmp_enc);
+	if (ret == false)
+	{
+		if (exceptions_flags.test(isempty_flag))
+		{
+			any_is_null();
+		}
+		if (exceptions_flags.test(wrongtype_flag))
+		{
+			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
+				       		(const char*)"Cannot extract, data in DeviceData object is not a DevEncoded",
+				        	(const char*)"DeviceData::extract");
+		}
+	}
+	else
+	{
+	    if (tmp_enc == NULL)
+	    {
+            ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
+                                       (const char *)"Incoherent data received from server",
+                                       (const char *)"DeviceData::extract");
+	    }
+        else
+        {
+			str = tmp_enc->encoded_format;
+
+			unsigned long length = tmp_enc->encoded_data.length();
+			datum.resize(length);
+			datum.assign(tmp_enc->encoded_data.get_buffer(),tmp_enc->encoded_data.get_buffer() + length);
+        }
+	}
+	return ret;
+}
 
 //+-------------------------------------------------------------------------
 //

@@ -1,16 +1,15 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
-///
-///  file 	zmqeventconsumer.cpp
-///
-///		C++ classes for implementing the event consumer
-///		singleton class when used with zmq
-///
-///		author(s) : E.Taurel
-///
-///		original : 16 August 2011
-///
+//=====================================================================================================================
+//
+// file :				zmqeventconsumer.cpp
+//
+// description : 		C++ classes for implementing the event consumer singleton class when used with zmq
+//
+// author(s) : 			E.Taurel
+//
+// original : 			16 August 2011
+//
 // Copyright (C) :      2011,2012
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
@@ -18,23 +17,21 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
-///
-///		$Revision$
-///
-///
-////////////////////////////////////////////////////////////////////////////////
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
+//
+// $Revision$
+//
+//
+//====================================================================================================================
 
 #include <tango.h>
 #include <eventconsumer.h>
@@ -78,12 +75,12 @@ ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),omni_threa
 // Initialize the var references
 //
 
-    av = new AttributeValue();
-    av3 = new AttributeValue_3();
-    ac2 = new AttributeConfig_2();
-    ac3 = new AttributeConfig_3();
-    adr = new AttDataReady();
-    del = new DevErrorList();
+	av = new AttributeValue();
+	av3 = new AttributeValue_3();
+	ac2 = new AttributeConfig_2();
+	ac3 = new AttributeConfig_3();
+	adr = new AttDataReady();
+	del = new DevErrorList();
 
 	start_undetached();
 }
@@ -109,300 +106,312 @@ ZmqEventConsumer *ZmqEventConsumer::create()
 	return new ZmqEventConsumer(ptr);
 }
 
-//+----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::run_undetached()
+// method :
+//		ZmqEventConsumer::run_undetached()
 //
-// description :    Main method for the ZMQ event system reciving thread
+// description :
+//		Main method for the ZMQ event system reciving thread
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 {
 
-    int linger = 0;
-    int reconnect_ivl = -1;
+	int linger = 0;
+	int reconnect_ivl = -1;
+	int send_hwm = SUB_SEND_HWM;
 
 //
-// Create the subscriber socket used to receive heartbeats coming from different DS
-// This socket subscribe to everything because dedicated publishers are used to
-// send the heartbeat events. This socket will be connected to all needed publishers
+// Create the subscriber socket used to receive heartbeats coming from different DS. This socket subscribe to
+// everything because dedicated publishers are used to send the heartbeat events. This socket will be connected
+// to all needed publishers
 //
 
-    heartbeat_sub_sock = new zmq::socket_t(zmq_context,ZMQ_SUB);
-    heartbeat_sub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
-    try
-    {
-        heartbeat_sub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
-    }
-    catch (zmq::error_t &)
-    {
-        reconnect_ivl = 15000;
-        heartbeat_sub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
-    }
+	heartbeat_sub_sock = new zmq::socket_t(zmq_context,ZMQ_SUB);
+	heartbeat_sub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
+	try
+	{
+		heartbeat_sub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+	}
+	catch (zmq::error_t &)
+	{
+		reconnect_ivl = 30000;
+		heartbeat_sub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+	}
+	heartbeat_sub_sock->setsockopt(ZMQ_SNDHWM,&send_hwm,sizeof(send_hwm));
 
 //
-// Create the subscriber socket used to receive events coming from different DS
-// This socket subscribe to everything because dedicated publishers are used to
-// send the heartbeat events. This socket will be connected to all needed publishers
+// Create the subscriber socket used to receive events coming from different DS. This socket subscribe to everything
+// because dedicated publishers are used to send the heartbeat events. This socket will be connected to all needed
+// publishers
 //
 
-    event_sub_sock = new zmq::socket_t(zmq_context,ZMQ_SUB);
-    event_sub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
-    event_sub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+	event_sub_sock = new zmq::socket_t(zmq_context,ZMQ_SUB);
+	event_sub_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
+	event_sub_sock->setsockopt(ZMQ_RECONNECT_IVL,&reconnect_ivl,sizeof(reconnect_ivl));
+	event_sub_sock->setsockopt(ZMQ_SNDHWM,&send_hwm,sizeof(send_hwm));
 
 //
 // Create the control socket (REQ/REP pattern) and binds it
 //
 
-    control_sock = new zmq::socket_t(zmq_context,ZMQ_REP);
-    control_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
-    control_sock->bind(CTRL_SOCK_ENDPOINT);
+	control_sock = new zmq::socket_t(zmq_context,ZMQ_REP);
+	control_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
+	control_sock->bind(CTRL_SOCK_ENDPOINT);
 
 //
 // Initialize poll set
 //
 
-    zmq::pollitem_t *items = new zmq::pollitem_t [MAX_SOCKET_SUB];
-    int nb_poll_item = 3;
+	zmq::pollitem_t *items = new zmq::pollitem_t [MAX_SOCKET_SUB];
+	int nb_poll_item = 3;
 
-    items[0].socket = *control_sock;
-    items[1].socket = *heartbeat_sub_sock;
-    items[2].socket = *event_sub_sock;
+	items[0].socket = *control_sock;
+	items[1].socket = *heartbeat_sub_sock;
+	items[2].socket = *event_sub_sock;
 
-    for (int loop = 0;loop < nb_poll_item;loop++)
-    {
-        items[loop].fd = 0;
-        items[loop].events = ZMQ_POLLIN;
-        items[loop].revents = 0;
-    }
+	for (int loop = 0;loop < nb_poll_item;loop++)
+	{
+		items[loop].fd = 0;
+		items[loop].events = ZMQ_POLLIN;
+		items[loop].revents = 0;
+	}
 
 //
 // Enter the infinite loop
 //
 
-    while(1)
-    {
-        zmq::message_t received_event_name,received_endian;
-        zmq::message_t received_call,received_event_data;
-        zmq::message_t received_ctrl;
+	while(1)
+	{
+		zmq::message_t received_event_name,received_endian;
+		zmq::message_t received_call,received_event_data;
+		zmq::message_t received_ctrl;
 
 //
 // Init messages used by multicast event
 //
 
-        zmq_msg_t mcast_received_event_name;
-        zmq_msg_t mcast_received_endian;
-        zmq_msg_t mcast_received_call;
-        zmq_msg_t mcast_received_event_data;
+		zmq_msg_t mcast_received_event_name;
+		zmq_msg_t mcast_received_endian;
+		zmq_msg_t mcast_received_call;
+		zmq_msg_t mcast_received_event_data;
 
 //
-// Wait for message
-// The try/catch is usefull when the process is running under gdb control
+// Wait for message. The try/catch is usefull when the process is running under gdb control
 //
 
-        try
-        {
-            zmq::poll(items,nb_poll_item,-1);
+		try
+		{
+			zmq::poll(items,nb_poll_item,-1);
 //cout << "Awaken !!!!!!!!" << endl;
-        }
-        catch(zmq::error_t &e)
-        {
-            if (e.num() == EINTR)
-                continue;
-        }
+		}
+		catch(zmq::error_t &e)
+		{
+			if (e.num() == EINTR)
+				continue;
+		}
 
 //
 // Something received by the heartbeat socket ?
 //
 
-        if (items[1].revents & ZMQ_POLLIN)
-        {
+		if (items[1].revents & ZMQ_POLLIN)
+		{
 //cout << "For the heartbeat socket" << endl;
-            bool res;
-            try
-            {
-                res = heartbeat_sub_sock->recv(&received_event_name,ZMQ_DONTWAIT);
-                if (res == false)
-                {
+			bool res;
+			try
+			{
+				res = heartbeat_sub_sock->recv(&received_event_name,ZMQ_DONTWAIT);
+				if (res == false)
+				{
 					print_error_message("First Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
-                    continue;
-                }
+					items[1].revents = 0;
+					continue;
+				}
 
-                res = heartbeat_sub_sock->recv(&received_endian,ZMQ_DONTWAIT);
-                if (res == false)
-                {
-                    print_error_message("Second Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
-                    continue;
-                }
+				res = heartbeat_sub_sock->recv(&received_endian,ZMQ_DONTWAIT);
+				if (res == false)
+				{
+					print_error_message("Second Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
+					items[1].revents = 0;
+					continue;
+				}
 
-                res = heartbeat_sub_sock->recv(&received_call,ZMQ_DONTWAIT);
-                if (res == false)
-                {
-                    print_error_message("Third Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
-                    continue;
-                }
+				res = heartbeat_sub_sock->recv(&received_call,ZMQ_DONTWAIT);
+				if (res == false)
+				{
+					print_error_message("Third Zmq recv call on heartbeat socket returned false! De-synchronized event system?");
+					items[1].revents = 0;
+					continue;
+				}
 
-                process_heartbeat(received_event_name,received_endian,received_call);
-            }
-            catch (zmq::error_t &e)
-            {
-                print_error_message("Zmq exception while receiving heartbeat data!");
-                cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
-                items[1].revents = 0;
-                continue;
-            }
+				process_heartbeat(received_event_name,received_endian,received_call);
+			}
+			catch (zmq::error_t &e)
+			{
+				print_error_message("Zmq exception while receiving heartbeat data!");
+				cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
+				items[1].revents = 0;
+				continue;
+			}
 
-            items[1].revents = 0;
-        }
+			items[1].revents = 0;
+		}
 
 //
 // Something received by the event socket (TCP transport)?
 //
 
-        if (items[2].revents & ZMQ_POLLIN)
-        {
+		if (items[2].revents & ZMQ_POLLIN)
+		{
 //cout << "For the event socket" << endl;
-            bool res;
-            try
-            {
-                res = event_sub_sock->recv(&received_event_name,ZMQ_DONTWAIT);
-                if (res == false)
-                {
-                    print_error_message("First Zmq recv call on event socket returned false! De-synchronized event system?");
-                    continue;
-                }
+			bool res;
+			try
+			{
+				res = event_sub_sock->recv(&received_event_name,ZMQ_DONTWAIT);
+				if (res == false)
+				{
+					print_error_message("First Zmq recv call on event socket returned false! De-synchronized event system?");
+					items[2].revents = 0;
+					continue;
+				}
 
-                res = event_sub_sock->recv(&received_endian,ZMQ_DONTWAIT);
-                if (res == false)
-                {
-                    print_error_message("Second Zmq recv call on event socket returned false! De-synchronized event system?");
-                    continue;
-                }
+				res = event_sub_sock->recv(&received_endian,ZMQ_DONTWAIT);
+				if (res == false)
+				{
+					print_error_message("Second Zmq recv call on event socket returned false! De-synchronized event system?");
+					items[2].revents = 0;
+					continue;
+				}
 
-                res = event_sub_sock->recv(&received_call,ZMQ_DONTWAIT);
-                if (res == false)
-                {
-                    print_error_message("Third Zmq recv call on event socket returned false! De-synchronized event system?");
-                    continue;
-                }
+				res = event_sub_sock->recv(&received_call,ZMQ_DONTWAIT);
+				if (res == false)
+				{
+					print_error_message("Third Zmq recv call on event socket returned false! De-synchronized event system?");
+					items[2].revents = 0;
+					continue;
+				}
 
-                res = event_sub_sock->recv(&received_event_data,ZMQ_DONTWAIT);
-                if (res == false)
-                {
-                    print_error_message("Forth Zmq recv call on event socket returned false! De-synchronized event system?");
-                    continue;
-                }
+				res = event_sub_sock->recv(&received_event_data,ZMQ_DONTWAIT);
+				if (res == false)
+				{
+					print_error_message("Forth Zmq recv call on event socket returned false! De-synchronized event system?");
+					items[2].revents = 0;
+					continue;
+				}
 
-                process_event(received_event_name,received_endian,received_call,received_event_data);
-            }
-            catch (zmq::error_t &e)
-            {
-                print_error_message("Zmq exception while receiving event data!");
-                cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
-                items[2].revents = 0;
-                continue;
-            }
+				process_event(received_event_name,received_endian,received_call,received_event_data);
+			}
+			catch (zmq::error_t &e)
+			{
+				print_error_message("Zmq exception while receiving event data!");
+				cerr << "Error number: " << e.num() << ", error message: " << e.what() << endl;
+				items[2].revents = 0;
+				continue;
+			}
 
-            items[2].revents = 0;
-        }
+			items[2].revents = 0;
+		}
 
 //
 // Something received by the control socket?
 //
 
-        if (items[0].revents & ZMQ_POLLIN)
-        {
+		if (items[0].revents & ZMQ_POLLIN)
+		{
 //cout << "For the control socket" << endl;
-            control_sock->recv(&received_ctrl);
+			control_sock->recv(&received_ctrl);
 
-            string ret_str;
-            bool ret = false;
+			string ret_str;
+			bool ret = false;
 
-            try
-            {
-                ret = process_ctrl(received_ctrl,items,nb_poll_item);
-                ret_str = "OK";
-            }
-            catch (zmq::error_t &e)
-            {
-                ret_str = e.what();
-            }
-            catch (Tango::DevFailed &e)
-            {
-                ret_str = e.errors[0].desc;
-            }
+			try
+			{
+				ret = process_ctrl(received_ctrl,items,nb_poll_item);
+				ret_str = "OK";
+			}
+			catch (zmq::error_t &e)
+			{
+				ret_str = e.what();
+			}
+			catch (Tango::DevFailed &e)
+			{
+				ret_str = e.errors[0].desc;
+			}
 
-            zmq::message_t reply(ret_str.size());
-            ::memcpy((void *)reply.data(),ret_str.data(),ret_str.size());
-            control_sock->send(reply);
+			zmq::message_t reply(ret_str.size());
+			::memcpy((void *)reply.data(),ret_str.data(),ret_str.size());
+			control_sock->send(reply);
 
-            if (ret == true)
-            {
-                delete heartbeat_sub_sock;
-                delete control_sock;
-                delete [] items;
+			if (ret == true)
+			{
+				delete heartbeat_sub_sock;
+				delete control_sock;
+				delete [] items;
 
-                break;
-            }
-            items[0].revents = 0;
-        }
+				break;
+			}
+
+			items[0].revents = 0;
+		}
+
 
 //
 // Something received by the event socket (mcast transport)?
-// What is stored in the zmq::pollitem_t structure is the real C
-// zmq socket, not the C++ zmq::socket_t class instance
-// There is no way to create a zmq::socket_t class instance
-// from a C zmq socket.
-// Only in 11/2012, some C++11 move ctor/assignment operator
-// has been added to the socket_t class allowing creation
-// of zmq::socket_t class from C zmq socket
-// Nevertheless, today (11/2012), it is still not official
+//
+// What is stored in the zmq::pollitem_t structure is the real C zmq socket, not the C++ zmq::socket_t class instance.
+// There is no way to create a zmq::socket_t class instance from a C zmq socket. Only in 11/2012, some C++11 move
+// ctor/assignment operator has been added to the socket_t class allowing creation of zmq::socket_t class from C zmq
+// socket. Nevertheless, today (11/2012), it is still not official
 //
 
-        for (int loop = 3;loop < nb_poll_item;loop++)
-        {
-            if (items[loop].revents & ZMQ_POLLIN)
-            {
-                zmq_msg_init(&mcast_received_event_name);
-                zmq_msg_init(&mcast_received_endian);
-                zmq_msg_init(&mcast_received_call);
-                zmq_msg_init(&mcast_received_event_data);
+		for (int loop = 3;loop < nb_poll_item;loop++)
+		{
+			if (items[loop].revents & ZMQ_POLLIN)
+			{
+				zmq_msg_init(&mcast_received_event_name);
+				zmq_msg_init(&mcast_received_endian);
+				zmq_msg_init(&mcast_received_call);
+				zmq_msg_init(&mcast_received_event_data);
 
-                zmq_recvmsg(items[loop].socket,&mcast_received_event_name,0);
-                zmq_recvmsg(items[loop].socket,&mcast_received_endian,0);
-                zmq_recvmsg(items[loop].socket,&mcast_received_call,0);
-                zmq_recvmsg(items[loop].socket,&mcast_received_event_data,0);
+				zmq_recvmsg(items[loop].socket,&mcast_received_event_name,0);
+				zmq_recvmsg(items[loop].socket,&mcast_received_endian,0);
+				zmq_recvmsg(items[loop].socket,&mcast_received_call,0);
+				zmq_recvmsg(items[loop].socket,&mcast_received_event_data,0);
 
-                process_event(mcast_received_event_name,mcast_received_endian,mcast_received_call,mcast_received_event_data);
+				process_event(mcast_received_event_name,mcast_received_endian,mcast_received_call,mcast_received_event_data);
 
-                zmq_msg_close(&mcast_received_event_name);
-                zmq_msg_close(&mcast_received_endian);
-                zmq_msg_close(&mcast_received_call);
-                zmq_msg_close(&mcast_received_event_data);
+				zmq_msg_close(&mcast_received_event_name);
+				zmq_msg_close(&mcast_received_endian);
+				zmq_msg_close(&mcast_received_call);
+				zmq_msg_close(&mcast_received_event_data);
 
-                items[loop].revents = 0;
-            }
-        }
-
-    }
+				items[loop].revents = 0;
+			}
+		}
+	}
 
 	return (void *)NULL;
 }
 
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::process_heartbeat()
+// method :
+//		ZmqEventConsumer::process_heartbeat()
 //
-// description : 	Process execution when a message has been received by the
-//                  heartbeat socket
+// description :
+//		Process execution when a message has been received by the heartbeat socket
 //
-// args: in : - received_event_name : The full event name
-//            - received_endian : The sender endianess
-//            - received_call : The call informations (oid - method name...)
+// argument :
+//		in :
+//			- received_event_name : The full event name
+//			- received_endian : The sender endianess
+//			- received_call : The call informations (oid - method name...)
 //
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq::message_t &received_endian,zmq::message_t &received_call)
 {
@@ -447,7 +456,22 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
     call_info.setByteSwapFlag(endian);
 
     ZmqCallInfo_var c_info_var = new ZmqCallInfo;
-    (ZmqCallInfo &)c_info_var <<= call_info;
+    try
+    {
+        (ZmqCallInfo &)c_info_var <<= call_info;
+    }
+    catch (...)
+    {
+        string st("Received a malformed heartbeat event: ");
+		st = st + event_name;
+		print_error_message(st.c_str());
+        unsigned char *tmp = (unsigned char *)received_call.data();
+        for (unsigned int loop = 0;loop < received_call.size();loop++)
+        {
+           cerr << "Heartbeat event data[" << loop << "] = " << hex << (int)tmp[loop] << dec << endl;
+        }
+        return;
+    }
 
 //
 // Call the heartbeat method
@@ -457,19 +481,22 @@ void ZmqEventConsumer::process_heartbeat(zmq::message_t &received_event_name,zmq
 
 }
 
-//+----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::process_event()
+// method :
+//		ZmqEventConsumer::process_event()
 //
-// description : 	Process execution when a message has been received by the
-//                  event socket
+// description :
+//		Process execution when a message has been received by the event socket
 //
-// args: in : - received_event_name : The full event name
-//            - received_endian : The sender endianess
-//            - received_call : The call informations (oid - method name...)
-//            - event_data : The event data !
+// argument :
+//		in :
+//			- received_event_name : The full event name
+//			- received_endian : The sender endianess
+//			- received_call : The call informations (oid - method name...)
+//			- event_data : The event data !
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::message_t &received_endian,zmq::message_t &received_call,zmq::message_t &event_data)
 {
@@ -534,7 +561,7 @@ void ZmqEventConsumer::process_event(zmq::message_t &received_event_name,zmq::me
         unsigned char *tmp = (unsigned char *)received_call.data();
         for (unsigned int loop = 0;loop < received_call.size();loop++)
         {
-           cerr << "Event data[" << loop << "] = " << (int)tmp[loop] << endl;
+           cerr << "Event data[" << loop << "] = " << hex << (int)tmp[loop] << dec << endl;
         }
         return;
     }
@@ -612,7 +639,7 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
         unsigned char *tmp = (unsigned char *)zmq_msg_data(&received_call);
         for (unsigned int loop = 0;loop < zmq_msg_size(&received_call);loop++)
         {
-           cerr << "Event data[" << loop << "] = " << (int)tmp[loop] << endl;
+           cerr << "Event data[" << loop << "] = " << hex << (int)tmp[loop] << dec << endl;
         }
         return;
     }
@@ -629,21 +656,25 @@ void ZmqEventConsumer::process_event(zmq_msg_t &received_event_name,zmq_msg_t &r
 
 }
 
-//+----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::process_ctrl()
+// method :
+//		ZmqEventConsumer::process_ctrl()
 //
-// description : 	Process task when something has been received by the control
-//                  socket
+// description :
+//		Process task when something has been received by the control socket
 //
-// args: - received_ctrl :  The received data
-//       - poll_list :      The ZMQ poll ed item list
-//       - poll_nb :        The item number in previous list
+// argument :
+//		in :
+//			- received_ctrl :  The received data
+//       	- poll_list :      The ZMQ poll ed item list
+//       	- poll_nb :        The item number in previous list
 //
-// This method returns true if the calling thread has to exit (because a
-// ZMQ_END command has been received). Otherwise, it returns false
+// return :
+// 		This method returns true if the calling thread has to exit (because a ZMQ_END command has been received).
+//		Otherwise, it returns false
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_t *poll_list,int &poll_nb)
 {
@@ -698,7 +729,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
             const char *event_name = &(tmp_ptr[start]);
 
 //
-// Connect the heartbeat socket to the new publisher
+// Connect the heartbeat socket to the new publisher if not already done
 //
 
             bool connect_heart = false;
@@ -706,7 +737,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
             if (connected_heartbeat.empty() == false)
             {
                 if (force_connect == 1)
-                    connect_heart = true;
+					connect_heart = true;
                 else
                 {
                     vector<string>::iterator pos;
@@ -714,7 +745,6 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     if (pos == connected_heartbeat.end())
                         connect_heart = true;
                 }
-
             }
             else
                 connect_heart = true;
@@ -726,7 +756,6 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     connected_heartbeat.push_back(endpoint);
             }
 
-
 //
 // Subscribe to the new heartbeat event
 //
@@ -734,8 +763,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
             heartbeat_sub_sock->setsockopt(ZMQ_SUBSCRIBE,event_name,::strlen(event_name));
 
 //
-// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute
-// following code.
+// Most of the time, we have only one TANGO_HOST to take into account and we dont need to execute following code.
 // But there are some control system where several TANGO_HOST are defined
 //
 
@@ -750,10 +778,13 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
         case ZMQ_DISCONNECT_HEARTBEAT:
         {
 //
-// Get event name
+// Get event name and endpoint name
 //
 
             const char *event_name = &(tmp_ptr[1]);
+#ifdef ZMQ_HAS_DISCONNECT
+            const char *endpoint = &(tmp_ptr[1 + ::strlen(event_name) + 1]);
+#endif
 
 //
 // Unsubscribe this event from the heartbeat socket
@@ -762,8 +793,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
             heartbeat_sub_sock->setsockopt(ZMQ_UNSUBSCRIBE,event_name,::strlen(event_name));
 
 //
-// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute
-// following code.
+// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute following code.
 // But there are some control system where several TANGO_HOST are defined
 //
 
@@ -772,6 +802,20 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                 string base_name(event_name);
                 multi_tango_host(heartbeat_sub_sock,UNSUBSCRIBE,base_name);
             }
+
+#ifdef ZMQ_HAS_DISCONNECT
+//
+// Remove the endpoint in the vector of already connected heartbeat and disconnect the socket to this endpoint
+//
+
+			vector<string>::iterator pos;
+			string endpoint_str(endpoint);
+			pos = find(connected_heartbeat.begin(),connected_heartbeat.end(),endpoint_str);
+			if (pos != connected_heartbeat.end())
+				connected_heartbeat.erase(pos);
+
+			heartbeat_sub_sock->disconnect(endpoint);
+#endif
         }
         break;
 
@@ -826,8 +870,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
             event_sub_sock->setsockopt(ZMQ_SUBSCRIBE,event_name,::strlen(event_name));
 
 //
-// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute
-// following code.
+// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute following code.
 // But there are some control system where several TANGO_HOST are defined
 //
 
@@ -841,13 +884,15 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
         case ZMQ_DISCONNECT_EVENT:
         {
-
 //
 // Get event name
 //
 
             const char *event_name = &(tmp_ptr[1]);
             string ev_name(event_name);
+
+			const char *endpoint = &(tmp_ptr[1 + ::strlen(event_name) + 1]);
+            string endpoint_str(endpoint);
 
 //
 // Check if it is a multicast event
@@ -872,8 +917,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                 event_sub_sock->setsockopt(ZMQ_UNSUBSCRIBE,event_name,::strlen(event_name));
 
 //
-// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute
-// following code.
+// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute following code.
 // But there are some control system where several TANGO_HOST are defined
 //
 
@@ -882,11 +926,25 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     string base_name(event_name);
                     multi_tango_host(event_sub_sock,UNSUBSCRIBE,base_name);
                 }
+
+#ifdef ZMQ_HAS_DISCONNECT
+//
+// Remove the endpoint in the vector of already connected event and disconnect the socket to this endpoint
+//
+
+				vector<string>::iterator pos;
+				pos = find(connected_pub.begin(),connected_pub.end(),endpoint_str);
+				if (pos != connected_pub.end())
+					connected_pub.erase(pos);
+
+				event_sub_sock->disconnect(endpoint);
+#endif
             }
             else
             {
                 delete pos->second;
                 event_mcast.erase(pos);
+                old_poll_nb--;
             }
         }
         break;
@@ -897,8 +955,8 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // First extract the endpoint and the event name from received buffer
 //
 
-            const char *endpoint = &(tmp_ptr[1]);
-            int start = ::strlen(endpoint) + 2;
+            const char *endpoint = &(tmp_ptr[2]);
+            int start = ::strlen(endpoint) + 3;
             const char *event_name = &(tmp_ptr[start]);
             start = start + ::strlen(event_name) + 1;
             Tango::DevLong sub_hwm,rate,ivl;
@@ -932,7 +990,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
                 if (poll_nb == MAX_SOCKET_SUB)
                 {
-                    Except::throw_exception((const char *)"DServer_Events",
+                    Except::throw_exception((const char *)API_InternalError,
                                             (const char *)"Array to store sockets for zmq poll() call is already full",
                                             (const char *)"ZmqEventConsumer::process_control");
                 }
@@ -979,7 +1037,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     delete tmp_sock;
                     print_error_message("Error while inserting pair<event name,mcast socket> in map!");
 
-                    Except::throw_exception((const char *)"DServer_Events",
+                    Except::throw_exception((const char *)API_InternalError,
                                             (const char *)"Error while inserting pair<event name,multicast socket> in map",
                                             (const char *)"ZmqEventConsumer::process_control");
                 }
@@ -988,12 +1046,12 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Update poll item list
 //
 
-                poll_list[poll_nb].socket = *tmp_sock;
-                poll_list[poll_nb].fd = 0;
-                poll_list[poll_nb].events = ZMQ_POLLIN;
-                poll_list[poll_nb].revents = 0;
+                poll_list[old_poll_nb].socket = *tmp_sock;
+                poll_list[old_poll_nb].fd = 0;
+                poll_list[old_poll_nb].events = ZMQ_POLLIN;
+                poll_list[old_poll_nb].revents = 0;
 
-                poll_nb++;
+                old_poll_nb++;
             }
         }
         break;
@@ -1019,19 +1077,22 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::multi_tango_host()
+// method :
+//		ZmqEventConsumer::multi_tango_host()
 //
-// description : 	Method to execute a ZMQ socket command (actually only SUBSCRIBE
-//                  or UNSUBSCRIBE) when several TANGO_HOST is used in a control
-//                  system
+// description :
+//		Method to execute a ZMQ socket command (actually only SUBSCRIBE or UNSUBSCRIBE) when several TANGO_HOST is
+//		used in a control system
 //
-// Args in : - sock : The ZMQ socket
-//           - cmd : The command to be done on socket
-//           - event_name: Event name
+// argument :
+//		in :
+//			- sock : The ZMQ socket
+//         	- cmd : The command to be done on socket
+//			- event_name: Event name
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::multi_tango_host(zmq::socket_t *sock,SocketCmd cmd,string &event_name)
 {
@@ -1054,15 +1115,16 @@ void ZmqEventConsumer::multi_tango_host(zmq::socket_t *sock,SocketCmd cmd,string
     }
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::cleanup_EventChannel_map()
+// method :
+//		ZmqEventConsumer::cleanup_EventChannel_map()
 //
-// description : 	Method to destroy the DeviceProxy objects
-//					stored in the EventChannel map.
-//                  It also destroys some allocated objects (to make valgrind happy)
+// description :
+//		Method to destroy the DeviceProxy objects stored in the EventChannel map.
+//      It also destroys some allocated objects (to make valgrind happy)
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::cleanup_EventChannel_map()
 {
@@ -1086,7 +1148,7 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
     }
 
 //
-// Delete a Tango moniotr in Callback structs
+// Delete a Tango monitor in Callback structs
 //
 
     EvCbIte cb_it;
@@ -1098,8 +1160,7 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
     }
 
 //
-// Create and connect the REQ socket used to send message to the
-// ZMQ main thread
+// Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
     zmq::message_t reply;
@@ -1110,8 +1171,7 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
         sender.connect(CTRL_SOCK_ENDPOINT);
 
 //
-// Build message sent to ZMQ main thread
-// In this case, this is only a command code
+// Build message sent to ZMQ main thread. In this case, this is only a command code
 //
 
         char buffer[10];
@@ -1133,25 +1193,25 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
     catch(zmq::error_t) {}
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::connect_event_channel()
+// method :
+//		ZmqEventConsumer::connect_event_channel()
 //
-// description :    Connect to the event channel
-//                  This means connect to the heartbeat event
+// description :
+//		Connect to the event channel. This means connect to the heartbeat event
 //
-// Args in : - channel name : The event channel name (DS admin name)
-//           - db : Database object
-//           - reconnect: Flag set to true in case this method is called for
-//                        event reconnection purpose
-//           - dd : The DS admin device command returned data
-//                  (ZmqEventSubscriptionChange command)
+// argument :
+//		in :
+//			- channel name : The event channel name (DS admin name)
+//			- db : Database object
+//			- reconnect: Flag set to true in case this method is called for event reconnection purpose
+//			- dd : The DS admin device command returned data (ZmqEventSubscriptionChange command)
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(Database *db),bool reconnect,DeviceData &dd)
 {
-
 //
 // Extract server command result
 //
@@ -1160,8 +1220,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
     dd >> ev_svr_data;
 
 //
-// Create and connect the REQ socket used to send message to the
-// ZMQ main thread
+// Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
     zmq::message_t reply;
@@ -1170,14 +1229,11 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         zmq::socket_t sender(zmq_context,ZMQ_REQ);
 
 //
-// In case this thread runs before the main ZMQ thread, it is possible
-// to call connect before the main ZMQ thread has binded its socket.
-// In such a case, error code is set to ECONNREFUSED.
-// If this happens, give the main ZMQ thread a chance to run and
-// retry the connect call
-// I have tried with a yield call but it still failed in some cases
-// (when running the DS with a file as database  for instance)
-// Replace the yield with a 10 mS sleep !!!
+// In case this thread runs before the main ZMQ thread, it is possible to call connect before the main ZMQ thread has
+// binded its socket. In such a case, error code is set to ECONNREFUSED.
+// If this happens, give the main ZMQ thread a chance to run and retry the connect call
+// I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
+// instance). Replace the yield with a 10 mS sleep !!!
 //
 
         try
@@ -1205,8 +1261,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 //
 // Build message sent to ZMQ main thread
-// In this case, this is the command code, the publisher endpoint
-// and the event name
+// In this case, this is the command code, the publisher endpoint and the event name
 //
 
         char buffer[1024];
@@ -1215,10 +1270,14 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         buffer[length] = ZMQ_CONNECT_HEARTBEAT;
         length++;
 
+#ifdef ZMQ_HAS_DISCONNECT
+		buffer[length] = 0;
+#else
         if (reconnect == true)
             buffer[length] = 1;
         else
             buffer[length] = 0;
+#endif
         length++;
 
         ::strcpy(&(buffer[length]),ev_svr_data->svalue[0].in());
@@ -1250,7 +1309,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         o << "ZMQ error code = " << e.num() << "\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_channel");
     }
@@ -1271,11 +1330,10 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_channel");
     }
-
 
 //
 // Init (or create) EventChannelStruct
@@ -1289,6 +1347,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		evt_ch.last_heartbeat = time(NULL);
 		evt_ch.heartbeat_skipped = false;
 		evt_ch.event_system_failed = false;
+		evt_ch.endpoint = ev_svr_data->svalue[0].in();
 	}
 	else
 	{
@@ -1298,38 +1357,41 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
 		// create a channel monitor
-		new_event_channel_struct.channel_monitor = new TangoMonitor();
-		// set the timeout for the channel monitor to 500ms not to block the event consumer for to long.
-		new_event_channel_struct.channel_monitor->timeout(500);
+		new_event_channel_struct.channel_monitor = new TangoMonitor(channel_name.c_str());
+		// set the timeout for the channel monitor to 1000ms not to block the event consumer for to long.
+		new_event_channel_struct.channel_monitor->timeout(1000);
 
 		new_event_channel_struct.event_system_failed = false;
 		set_channel_type(new_event_channel_struct);
+		new_event_channel_struct.endpoint = ev_svr_data->svalue[0].in();
 
 		channel_map[channel_name] = new_event_channel_struct;
 	}
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::disconnect_event_channel()
+// method :
+//		ZmqEventConsumer::disconnect_event_channel()
 //
-// description :    Disconnect to the event channel
-//                  This means that the process should not receive
-//                  the heartbeat event for this channel
-//                  It will be filtered out by ZMQ
+// description :
+//		Disconnect to the event channel. This means that the process should not receive the heartbeat event for this
+//		channel. It will be filtered out by ZMQ
 //
-// Args in : - channel name : The event channel name (DS admin name)
+// argument :
+//		in :
+//			- channel name : The event channel name (DS admin name)
+//			- endpoint : The ZMQ endpoint for the heartbeat publisher socket
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
+void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &endpoint)
 {
     string unsub(channel_name);
     unsub = unsub + '.' + HEARTBEAT_EVENT_NAME;
 
 //
-// Create and connect the REQ socket used to send message to the
-// ZMQ main thread
+// Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
     zmq::message_t reply;
@@ -1341,8 +1403,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
 
 //
 // Build message sent to ZMQ main thread
-// In this case, this is the command code, the publisher endpoint
-// and the event name
+// In this case, this is the command code, the publisher endpoint and the event name
 //
 
         char buffer[1024];
@@ -1353,6 +1414,9 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
 
         ::strcpy(&(buffer[length]),unsub.c_str());
         length = length + unsub.size() + 1;
+
+        ::strcpy(&(buffer[length]),endpoint.c_str());
+        length = length + endpoint.size() + 1;
 
 //
 // Send command to main ZMQ thread
@@ -1372,7 +1436,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event_channel");
     }
@@ -1393,7 +1457,7 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event_channel");
     }
@@ -1401,25 +1465,26 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name)
 }
 
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::disconnect_event()
+// method :
+//		ZmqEventConsumer::disconnect_event()
 //
-// description :    Disconnect to the event
-//                  This means that the process should not receive
-//                  the event any more
-//                  It will be filtered out by ZMQ
+// description :
+//		Disconnect to the event. This means that the process should not receive the event any more
+//		It will be filtered out by ZMQ
 //
-// Args in : - event_name : The event name
+// argument :
+//		in :
+//			- event_name : The event name
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::disconnect_event(string &event_name)
+void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 {
 
 //
-// Create and connect the REQ socket used to send message to the
-// ZMQ main thread
+// Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
     zmq::message_t reply;
@@ -1431,8 +1496,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name)
 
 //
 // Build message sent to ZMQ main thread
-// In this case, this is the command code, the publisher endpoint
-// and the event name
+// In this case, this is the command code, the publisher endpoint and the event name
 //
 
         char buffer[1024];
@@ -1443,6 +1507,9 @@ void ZmqEventConsumer::disconnect_event(string &event_name)
 
         ::strcpy(&(buffer[length]),event_name.c_str());
         length = length + event_name.size() + 1;
+
+		::strcpy(&(buffer[length]),endpoint.c_str());
+        length = length + endpoint.size() + 1;
 
 //
 // Send command to main ZMQ thread
@@ -1462,7 +1529,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name)
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event");
     }
@@ -1483,30 +1550,31 @@ void ZmqEventConsumer::disconnect_event(string &event_name)
         o << "Error while trying to unsubscribe the heartbeat ZMQ socket from the channel heartbeat publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::disconnect_event");
     }
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::connect_event_system()
+// method :
+//		ZmqEventConsumer::connect_event_system()
 //
-// description :    Connect to the real event (change, archive,...)
+// description :
+//		Connect to the real event (change, archive,...)
 //
-// argument : in :	- device_name : The device fqdn (lower case)
-//                  - att_name : The attribute name
-//                  - event_name : The event name
-//                  - filters : The event filters given by the user
-//                  - evt_it : Iterator pointing to the event channel entry
-//                             in channel_map map
-//                  - new_event_callback : Structure used for the event callback
-//                                         entry in the event_callback_map
-//                  - dd : The data returned by the DS admin device
-//                         xxxSubscriptionChange command
+// argument :
+//		in :
+//			- device_name : The device fqdn (lower case)
+//			- att_name : The attribute name
+//			- event_name : The event name
+//			- filters : The event filters given by the user
+//			- evt_it : Iterator pointing to the event channel entry in channel_map map
+//			- new_event_callback : Structure used for the event callback entry in the event_callback_map
+//			- dd : The data returned by the DS admin device xxxSubscriptionChange command
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
                                             TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
@@ -1538,8 +1606,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
     dd >> ev_svr_data;
 
 //
-// Create and connect the REQ socket used to send message to the
-// ZMQ main thread
+// Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
     zmq::message_t reply;
@@ -1577,8 +1644,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
 
 //
 // Build message sent to ZMQ main thread
-// In this case, this is the command code, the publisher endpoint,
-// the event name and the sub hwm
+// In this case, this is the command code, the publisher endpoint, the event name and the sub hwm
 //
 
         char buffer[1024];
@@ -1590,10 +1656,14 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
             buffer[length] = ZMQ_CONNECT_EVENT;
         length++;
 
+#ifdef ZMQ_HAS_DISCONNECT
+		buffer[length] = 0;
+#else
         if (filters.size() == 1 && filters[0] == "reconnect")
             buffer[length] = 1;
         else
             buffer[length] = 0;
+#endif
         length++;
 
         ::strcpy(&(buffer[length]),endpoint.c_str());
@@ -1641,7 +1711,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_system");
     }
@@ -1662,23 +1732,26 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
         o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)"API_ZmqFailed",
+        Except::throw_exception((const char *)API_ZmqFailed,
                         o.str(),
                         (const char *)"ZmqEventConsumer::connect_event_system");
     }
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::push_heartbeat_event()
+// method :
+//		ZmqEventConsumer::push_heartbeat_event()
 //
-// description :    Method called when the heartbeat event is received
-//                  This method retrieve the channel entry in the channel_map
-//                  and update the last heartbeat date.
+// description :
+//		Method called when the heartbeat event is received. This method retrieve the channel entry in the channel_map
+//		and update the last heartbeat date.
 //
-// argument(s) : in : - ev_name : The fully qualifed event name
+// argument :
+//		in :
+//			- ev_name : The fully qualifed event name
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
 {
@@ -1765,22 +1838,24 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
     map_modification_lock.readerOut();
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::push_zmq_event()
+// method :
+//		ZmqEventConsumer::push_zmq_event()
 //
-// description :    Method called when the event is received
-//                  This method retrieve the channel entry in the channel_map
-//                  and update the last heartbeat date.
+// description :
+//		Method called when the event is received. This method retrieve the channel entry in the channel_map
+//		and update the last heartbeat date.
 //
-// argument(s) : in : - ev_name : The fully qualifed event name
-//                    - endian : The sender host endianess
-//                    - event_data : The event data still in a ZMQ message
-//                    - error : Flag set to true if the event data is an error
-//                              stack
-//                    - ctr : Event counter as received from server
+// argument :
+//		in :
+//			- ev_name : The fully qualifed event name
+//			- endian : The sender host endianess
+//			- event_data : The event data still in a ZMQ message
+//			- error : Flag set to true if the event data is an error stack
+//			- ctr : Event counter as received from server
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::message_t &event_data,bool error,const DevULong &ds_ctr)
 {
@@ -1789,26 +1864,33 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
     bool map_lock = true;
 
 //
-// Search for entry within the event_callback map using the event
-// name received in the event
+// Search for entry within the event_callback map using the event name received in the event
 //
 
     map<std::string,EventCallBackStruct>::iterator ipos;
     unsigned int loop;
+    bool no_db_dev = false;
 
     size_t pos = ev_name.find('/',8);
     string base_tango_host = ev_name.substr(0,pos + 1);
     string canon_ev_name = ev_name.substr(pos + 1);
+    if (ev_name.find(MODIFIER_DBASE_NO) != string::npos)
+		no_db_dev = true;
 
     for (loop = 0;loop < env_var_fqdn_prefix.size();loop++)
     {
 
 //
-// Test different fully qualified event name depending on different TANGO_HOST defined
-// for the control system
+// Test different fully qualified event name depending on different TANGO_HOST defined for the control system
 //
 
-        string new_tango_host = env_var_fqdn_prefix[loop] + canon_ev_name;
+		string new_tango_host;
+
+		if (no_db_dev == true)
+			new_tango_host = ev_name;
+		else
+			new_tango_host = env_var_fqdn_prefix[loop] + canon_ev_name;
+
         ipos = event_callback_map.find(new_tango_host);
 
         if (ipos != event_callback_map.end())
@@ -1835,11 +1917,17 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //
 
             bool err_missed_event = false;
-            DevLong missed_event = 1;
-            if (evt_cb.ctr != 1)
-                missed_event = ds_ctr - evt_cb.ctr;
+			if (ds_ctr != 1 && evt_cb.ctr == 0)
+				evt_cb.ctr = ds_ctr - 1;
 
-            if (missed_event >= 2)
+			DevLong missed_event = ds_ctr - evt_cb.ctr;
+
+			if (missed_event < 0)
+			{
+				missed_event = (UINT_MAX + missed_event) + 1;
+			}
+
+			if (missed_event >= 2)
             {
                 err_missed_event = true;
             }
@@ -1978,7 +2066,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     o << ev_name << ends;
 
                     errors.length(1);
-                    errors[0].reason = "API_WrongEventData";
+                    errors[0].reason = API_WrongEventData;
                     errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                     errors[0].desc = CORBA::string_dup(o.str().c_str());
                     errors[0].severity = ERR;
@@ -2007,7 +2095,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2038,7 +2126,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                         o << ev_name << ends;
 
                         errors.length(1);
-                        errors[0].reason = "API_WrongEventData";
+                        errors[0].reason = API_WrongEventData;
                         errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                         errors[0].desc = CORBA::string_dup(o.str().c_str());
                         errors[0].severity = ERR;
@@ -2063,7 +2151,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2086,7 +2174,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2109,7 +2197,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             o << ev_name << ends;
 
                             errors.length(1);
-                            errors[0].reason = "API_WrongEventData";
+                            errors[0].reason = API_WrongEventData;
                             errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                             errors[0].desc = CORBA::string_dup(o.str().c_str());
                             errors[0].severity = ERR;
@@ -2128,15 +2216,14 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 AutoTangoMonitor _mon(evt_cb.callback_monitor);
 
 //
-// In case we have missed some event, prepare srtucture to send to callback
-// to inform user of this bad behavior
+// In case we have missed some event, prepare structure to send to callback to inform user of this bad behavior
 //
 
                 if (err_missed_event == true)
                 {
                     DevErrorList missed_errors;
                     missed_errors.length(1);
-                    missed_errors[0].reason = "API_MissedEvents";
+                    missed_errors[0].reason = API_MissedEvents;
                     missed_errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
                     missed_errors[0].desc = "Missed some events! Zmq queue has reached HWM?";
                     missed_errors[0].severity = ERR;
@@ -2177,8 +2264,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             EventData *event_data;
 
 //
-// In case we have several callbacks on the same event
-// or if the event has to be stored in a queue, copy
+// In case we have several callbacks on the same event or if the event has to be stored in a queue, copy
 // the event data (Event data are in the ZMQ message)
 //
 
@@ -2252,7 +2338,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             else
                             {
                                 if (err_missed_event == true)
-                                    ev_queue->insert_event(missed_event_data);
+                                {
+									EventData *missed_event_data_copy = new EventData;
+									*missed_event_data_copy = *missed_event_data;
+
+                                    ev_queue->insert_event(missed_event_data_copy);
+								}
                                 ev_queue->insert_event(event_data);
                                 if (vers == 4 && cb_ctr == cb_nb)
                                     delete dev_attr;
@@ -2305,8 +2396,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             // into the event queue
                             else
                             {
-                               if (err_missed_event == true)
-                                    ev_queue->insert_event(missed_conf_event_data);
+								if (err_missed_event == true)
+								{
+									AttrConfEventData *missed_conf_event_data_copy = new AttrConfEventData;
+									*missed_conf_event_data_copy = *missed_conf_event_data;
+
+                                    ev_queue->insert_event(missed_conf_event_data_copy);
+								}
                                 ev_queue->insert_event(event_data);
                             }
                         }
@@ -2337,11 +2433,17 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             else
                             {
                                 if (err_missed_event == true)
-                                    ev_queue->insert_event(missed_ready_event_data);
+                                {
+									DataReadyEventData *missed_ready_event_data_copy = new DataReadyEventData;
+									*missed_ready_event_data_copy = *missed_ready_event_data;
+
+                                    ev_queue->insert_event(missed_ready_event_data_copy);
+								}
                                 ev_queue->insert_event(event_data);
                             }
                         }
                     }
+
                 } // End of for
 
 				map_lock = false;
@@ -2366,7 +2468,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 }
 
                 string reason = e.errors[0].reason.in();
-                if (reason == "API_CommandTimedOut")
+                if (reason == API_CommandTimedOut)
 				{
                     string st("Tango::ZmqEventConsumer::push_structured_event() timeout on callback monitor of ");
 					st = st + ipos->first;
@@ -2412,53 +2514,119 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
     }
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventConsumer::print_error_message
+// method :
+//		ZmqEventConsumer::zmq_specific()
 //
-// description :    Print error message on stderr but first print date
+// description :
+//		Do some ZMQ specific tasks like checking release compatibility or lower case the admin device name
+//		which is used in the heartbeat event name.
 //
-// argument(s) : in : mess : The user error message
+// argument :
+//		in :
+//			- dd : The result of the event subscription command
+//			- adm_name : The admin device name used in the heartbeat event
+//			- device : The device proxy pointer (for error message)
+//			- attribute : The attribute name (for error message)
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::print_error_message(const char *mess)
+void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy *device,const string &attribute)
 {
-	time_t tmp_val = time(NULL);
-					
-	char tmp_date[128];
-#ifdef _TG_WINDOWS_
-	ctime_s(tmp_date,128,&tmp_val);
-#else
-	ctime_r(&tmp_val,tmp_date);
-#endif
-	tmp_date[strlen(tmp_date) - 1] = '\0';
-	cerr << tmp_date << ": " << mess << endl;
+	const DevVarLongStringArray *ev_svr_data;
+	dd >> ev_svr_data;
+
+//
+// For event coming from server still using Tango 8.0.x, do not lowercase the adm_name
+//
+
+	if (ev_svr_data->lvalue[0] >= 810)
+		transform(adm_name.begin(),adm_name.end(),adm_name.begin(),::tolower);
+
+//
+// If the event is configured to use multicast, check ZMQ release
+//
+
+	string endpoint(ev_svr_data->svalue[1].in());
+	int ds_zmq_release = 0;
+
+	if (ev_svr_data->lvalue.length() >= 6)
+		ds_zmq_release = (ev_svr_data->lvalue[5]);
+
+	int zmq_major,zmq_minor,zmq_patch;
+	zmq_version(&zmq_major,&zmq_minor,&zmq_patch);
+
+//
+// Check for ZMQ compatible release
+//
+
+	if (ds_zmq_release == 310 || ds_zmq_release == 0)
+	{
+		if (zmq_major != 3 || zmq_minor != 1 || zmq_patch != 0)
+		{
+			Except::throw_exception((const char *)API_UnsupportedFeature,
+									(const char *)"Incompatibility between ZMQ releases between client and server!",
+									(const char *)"EventConsumer::connect_event");
+		}
+	}
+
+	if (zmq_major == 3 && zmq_minor == 1 && zmq_patch == 0)
+	{
+		if (ds_zmq_release != 0 && ds_zmq_release != 310)
+		{
+			Except::throw_exception((const char *)API_UnsupportedFeature,
+									(const char *)"Incompatibility between ZMQ releases between client and server!",
+									(const char *)"EventConsumer::connect_event");
+		}
+	}
+
+//
+// Check if multicasting is available (requires zmq 3.2.x)
+//
+
+	if (endpoint.find(MCAST_PROT) != string::npos)
+	{
+		if (zmq_major == 3 && zmq_minor < 2)
+		{
+			TangoSys_OMemStream o;
+			o << "The process is using zmq release ";
+			o << zmq_major << "." << zmq_minor << "." << zmq_patch;
+			o << "\nThe event on attribute " << attribute << " for device " << device->dev_name();
+			o << " is configured to use multicasting";
+			o << "\nMulticast event(s) not available with this ZMQ release" << ends;
+
+			Except::throw_exception((const char *)API_UnsupportedFeature,
+											o.str(),
+											(const char *)"EventConsumer::connect_event");
+		}
+	}
 }
 
-//+----------------------------------------------------------------------------
+
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqAttrValUnion::operator<<=()
+// method :
+//		ZmqAttrValUnion::operator<<=()
 //
-// description :    Write our own unmarshalling method. The omniORB one
-//                  allocate memory and copy data. We already have memory
-//                  allocated in the ZMQ message. No need to allocate once
-//                  more and to copy data.
-//                  We are doinng this only for attribute data.
-//                  For the remaining, keep using omniORB stuff
+// description :
+//		Write our own unmarshalling method. The omniORB one allocate memory and copy data. We already have memory
+//		allocated in the ZMQ message. No need to allocate once more and to copy data. We are doing this only for
+//		attribute data. For the remaining, keep using omniORB stuff
 //
-// argument(s) : in :
+// argument :
+//		in :
+//			- n :
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 {
     char *data_ptr = (char *)_n.bufPtr();
 
 //
-// Get union discriminator from cdr and if data type is string or device_state
-// let omniORB do its stuff. Don't forget to rewind memory
-// ptr before returning to omniORB
+// Get union discriminator from cdr and if data type is string or device_state let omniORB do its stuff.
+// Don't forget to rewind memory ptr before returning to omniORB
 //
 
     AttributeDataType _pd__d = ATT_BOOL;
@@ -2557,8 +2725,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
             break;
 
 //
-// We have special cases for DevEncoded (a structure)
-// and NO_DATA
+// We have special cases for DevEncoded (a structure) and NO_DATA
 //
 
             case ATT_ENCODED:
@@ -2596,15 +2763,17 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
     }
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqAttributeValue_4::operator<<=()
+// method :
+//		ZmqAttributeValue_4::operator<<=()
 //
 // description :
 //
-// argument(s) : in :
+// argument :
+//		in :
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Tango::ZmqAttributeValue_4::operator<<= (TangoCdrMemoryStream &_n)
 {
@@ -2618,23 +2787,29 @@ void Tango::ZmqAttributeValue_4::operator<<= (TangoCdrMemoryStream &_n)
     (DevErrorList&)err_list <<= _n;
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DelayEvent::DelayEvent
+// method :
+//		DelayEvent::DelayEvent
 //
-// description : A class to ask the ZMQ main thread to stop receiving
-//               external event. This is necessary to prevent a possible
-//               deadlock which could happen if an event is received while
-//               a user is calling subscribe or unsubscribe event
+// description :
+//		A class to ask the ZMQ main thread to stop receiving external event. This is necessary to prevent a possible
+//      deadlock which could happen if an event is received while a user is calling subscribe or unsubscribe event
 //
-// argument(s) : in : ec : Event consumer pointer
+// argument :
+//		in :
+//			- ec : Event consumer pointer
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
 {
     string str;
     ec->get_subscription_command_name(str);
+
+//
+// Do something only for ZMQ event system
+//
 
     if (str[0] == 'Z')
     {
@@ -2646,14 +2821,11 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             zmq::socket_t sender(eve_con->zmq_context,ZMQ_REQ);
 
 //
-// In case this thread runs before the main ZMQ thread, it is possible
-// to call connect before the main ZMQ thread has binded its socket.
-// In such a case, error code is set to ECONNREFUSED.
-// If this happens, give the main ZMQ thread a chance to run and
-// retry the connect call
-// I have tried with a yield call but it still failed in some cases
-// (when running the DS with a file as database  for instance)
-// Replace the yield with a 15 mS sleep !!!
+// In case this thread runs before the main ZMQ thread, it is possible to call connect before the main ZMQ thread has
+// binded its socket. In such a case, error code is set to ECONNREFUSED. If this happens, give the main ZMQ thread a
+// chance to run and retry the connect call.
+// I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
+// instance). Replace the yield with a 15 mS sleep !!!
 //
 
             try
@@ -2680,8 +2852,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             }
 
 //
-// Build message sent to ZMQ main thread
-// In this case, this is only a command code
+// Build message sent to ZMQ main thread. In this case, this is only a command code
 //
 
             char buffer[10];
@@ -2712,7 +2883,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             o << "Error while communicating with the ZMQ main thread\n";
             o << "ZMQ message: " << e.what() << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::DelayEvent");
         }
@@ -2735,7 +2906,7 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
             o << "Error while asking the ZMQ thread to delay events\n";
             o << "ZMQ message: " << err_mess << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::DelayEvent");
         }
@@ -2761,8 +2932,7 @@ void DelayEvent::release()
             sender.connect(CTRL_SOCK_ENDPOINT);
 
 //
-// Build message sent to ZMQ main thread
-// In this case, this is only a command code
+// Build message sent to ZMQ main thread. In this case, this is only a command code
 //
 
             char buffer[10];
@@ -2793,7 +2963,7 @@ void DelayEvent::release()
             o << "Error while communicating with the ZMQ main thread\n";
             o << "ZMQ message: " << e.what() << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::release");
         }
@@ -2814,7 +2984,7 @@ void DelayEvent::release()
             o << "Error while trying to ask the ZMQ thread to release events\n";
             o << "ZMQ message: " << err_mess << ends;
 
-            Except::throw_exception((const char *)"API_ZmqFailed",
+            Except::throw_exception((const char *)API_ZmqFailed,
                             o.str(),
                             (const char *)"DelayEvent::release");
         }

@@ -12,7 +12,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -59,6 +59,9 @@ namespace Tango
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -81,10 +84,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 	}
 /**
@@ -100,15 +100,6 @@ public:
  */
 	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_NullPtr) {}
 //@}
-
-	operator string()
-	{
-		return str;
-	}
-	operator const char *()
-	{
-		return str.c_str();
-	}
 
 /**@name Assignment operators
  * These operators allow to assign the value of the property by providing
@@ -126,10 +117,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val = value;
 		is_value = true;
@@ -178,7 +166,7 @@ public:
 		if(is_value == false)
 		{
 			string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
-			Tango::Except::throw_exception("API_AttrPropValueNotSet",err_msg,"AttrProp::get_val",Tango::ERR);
+			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
 		}
 		return val;
 	}
@@ -199,10 +187,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val = value;
 		is_value = true;
@@ -235,6 +220,17 @@ public:
  */
 	bool is_val() {return is_value;}
 //@}
+
+/// @privatesection
+
+	operator string()
+	{
+		return str;
+	}
+	operator const char *()
+	{
+		return str.c_str();
+	}
 
 private:
 	T val;
@@ -272,6 +268,9 @@ private:
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -299,10 +298,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 	}
@@ -314,10 +310,7 @@ public:
 	DoubleAttrProp(const T &value) : is_value(true) {
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val.push_back(value);
 	}
@@ -334,15 +327,6 @@ public:
  */
 	DoubleAttrProp(const string &value_str) : str(value_str), is_value(false) {}
 //@}
-
-	operator string()
-	{
-		return str;
-	}
-	operator const char *()
-	{
-		return str.c_str();
-	}
 
 /**@name Assignment operators
  * These operators allow to assign the values of the compound attribute property
@@ -365,10 +349,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 		val = values;
@@ -441,7 +422,7 @@ public:
 		if(is_value == false)
 		{
 			string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
-			Tango::Except::throw_exception("API_AttrPropValueNotSet",err_msg,"AttrProp::get_val",Tango::ERR);
+			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
 		}
 		return val;
 	}
@@ -466,10 +447,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 		val = values;
@@ -487,10 +465,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val.push_back(value);
 		is_value = true;
@@ -524,6 +499,17 @@ public:
  */
 	bool is_val() {return is_value;}
 //@}
+
+/// @privatesection
+
+	operator string()
+	{
+		return str;
+	}
+	operator const char *()
+	{
+		return str.c_str();
+	}
 
 private:
         vector<T> val;
@@ -559,6 +545,9 @@ private:
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -574,6 +563,7 @@ public:
 	MultiAttrProp()
 	{
 		CmdArgType type = ranges_type2const<T>::enu; // restricts template initialisation to supported types
+		if(type){}; // prevents compiler warning about unused variable type
 	}
 //@}
 /**@name Class data members */

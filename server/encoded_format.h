@@ -46,21 +46,21 @@ namespace Tango
 // Jpeg encoding
 //
 
-#define 		JPEG_GRAY8		"JPEG_GRAY8"
+#define 		JPEG_GRAY_8		"JPEG_GRAY8"
 #define			JPEG_RGB  		"JPEG_RGB"
 
 //
 // Gray encoding
 //
 
-#define			GRAY8			"GRAY8"
-#define			GRAY16			"GRAY16"
+#define			GRAY_8			"GRAY8"
+#define			GRAY_16			"GRAY16"
 
 //
 // RGB
 //
 
-#define			RGB24			"RGB24"
+#define			RGB_24			"RGB24"
 
 } // End of Tango namespace
 

@@ -13,7 +13,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1010,7 +1010,21 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 
 //
 // Now build a new tuned list
+// Warning: On Windows 64 bits, long are 32 bits data. Convert everything to DevULong64 to be sure
+// that we will have computation on unsigned 64 bits data
 //
+// To tune the list
+// - Take obj j and compute when it should be polled (next_work)
+// - Compute when object j-1 should be polled (prev_obj_work)
+// - Compute the number of poll between these two dates (n)
+// - Compute date of previous object polling just before "next_work"
+// - Assign next_work to this date and add
+//       the time needed to execute previous object polling
+//		 the delta computed from the smallest upd and the obj number
+//
+
+		Tango::DevULong64 now_us = ((Tango::DevULong64)now.tv_sec * 1000000LL) + (Tango::DevULong64)now.tv_usec;
+		Tango::DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (Tango::DevULong64)min_upd);
 
 		list<WorkItem> new_works;
 		new_works.push_front(works.front());
@@ -1020,10 +1034,21 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 
 		for (++ite;ite != works.end();++ite,++ite_prev)
 		{
-			long needed_time_usec = (ite_prev->needed_time.tv_sec * 1000000) + ite_prev->needed_time.tv_usec;
+			Tango::DevULong64 needed_time_usec = ((Tango::DevULong64)ite_prev->needed_time.tv_sec * 1000000) + (Tango::DevULong64)ite_prev->needed_time.tv_usec;
 			WorkItem wo = *ite;
-			wo.wake_up_date = ite_prev->wake_up_date;
-			T_ADD(wo.wake_up_date,needed_time_usec + max_delta_needed);
+			Tango::DevULong64 next_work = ((Tango::DevULong64)wo.wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)wo.wake_up_date.tv_usec;
+
+			if (next_work < next_tuning)
+			{
+				Tango::DevULong64 prev_obj_work = ((Tango::DevULong64)ite_prev->wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)ite_prev->wake_up_date.tv_usec;
+				Tango::DevULong64 n = (next_work - prev_obj_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
+				Tango::DevULong64 next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
+
+				wo.wake_up_date.tv_sec = (long)(next_prev / 1000000LL);
+				wo.wake_up_date.tv_usec = (long)(next_prev % 1000000LL);
+
+				T_ADD(wo.wake_up_date,needed_time_usec + max_delta_needed);
+			}
 			new_works.push_back(wo);
 		}
 
@@ -1204,10 +1229,28 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 // Fire event
 //
 
+		SendEventType send_event;
         if (event_supplier_nd != NULL)
-            event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
+            send_event = event_supplier_nd->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
         if (event_supplier_zmq != NULL)
-            event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
+		{
+			if (event_supplier_nd != NULL)
+			{
+				vector<string> f_names;
+				vector<double> f_data;
+				vector<string> f_names_lg;
+				vector<long> f_data_lg;
+
+				if (send_event.change == true)
+					event_supplier_zmq->push_event(to_do.dev,"change",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except);
+				if (send_event.archive == true)
+					event_supplier_zmq->push_event(to_do.dev,"archive",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except);
+				if (send_event.periodic == true)
+					event_supplier_zmq->push_event(to_do.dev,"periodic",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except);
+			}
+			else
+				event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
+		}
 	}
 }
 

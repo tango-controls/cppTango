@@ -81,16 +81,16 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango805 release\*.obj</Command>
+      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango812 release\*.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>log4tango.lib;omniorb416_rt.lib;omnidynamic416_rt.lib;omnithread34_rt.lib;COS416_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango805.dll</OutputFile>
-      <Version>8.0.5</Version>
+      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango812.dll</OutputFile>
+      <Version>8.1.2</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OMNI_BASE)\win32_dll\lib;$(ZMQ_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
-      <ProgramDatabaseFile>.\Release/tango805.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Release/tango812.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -120,7 +120,7 @@
       <PrecompiledHeaderOutputFile>.\Debug/tango_dll.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>$(PREFIX)\win32\lib\vc10_dll\tangod.8.0.5.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(PREFIX)\win32\lib\vc10_dll\tangod.8.1.2.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -132,17 +132,17 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango805d debug\*.obj</Command>
+      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango812d debug\*.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>log4tangod.lib;omniORB416_rtd.lib;omniDynamic416_rtd.lib;COS416_rtd.lib;omnithread34_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
-      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango805d.dll</OutputFile>
-      <Version>8.0.5</Version>
+      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango812d.dll</OutputFile>
+      <Version>8.1.2</Version>
       <AdditionalLibraryDirectories>$(ZMQ_BASE)\win32\lib\vc9_dll;$(OMNI_BASE)\win32_dll\lib;$(LOG4TANGO_BASE)\win32\lib\vc9_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/tango805d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Debug/tango812d.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>

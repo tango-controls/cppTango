@@ -11,7 +11,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -72,7 +72,7 @@ public :
 	TANGO_IMP_EXP static DServerSignal *instance();
 	~DServerSignal() {};
 
-#if (defined __GLIBC__)
+#ifndef _TG_WINDOWS_
 	void register_class_signal(long, bool, DeviceClass *);
 	void register_dev_signal(long, bool, DeviceImpl *);
 

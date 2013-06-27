@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          J. Meyer
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -385,7 +385,7 @@ TimeVal EventQueue::get_last_event_date()
 				TangoSys_OMemStream o;
 				o << "No new events available!\n";
 				o << "Cannot return any event date" << ends;
-				EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+				EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventQueue::get_last_event_date()");
 			}
@@ -612,7 +612,7 @@ void EventQueue::get_events(CallBack *cb)
 		TangoSys_OMemStream o;
 		o << "No callback object given!\n";
 		o << "Cannot return any event data" << ends;
-		EventSystemExcept::throw_exception((const char *)"API_EventQueues",
+		EventSystemExcept::throw_exception((const char *)API_EventQueues,
 				        o.str(),
 				        (const char *)"EventQueue::get_events()");
 		}

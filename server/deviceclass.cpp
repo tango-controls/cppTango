@@ -13,10 +13,10 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :		2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+//						BP 220, Grenoble 38043
+// 						FRANCE
 //
 // This file is part of Tango.
 //
@@ -166,7 +166,7 @@ void DeviceClass::get_class_system_resource()
 			TangoSys_OMemStream o;
 			o << "Database error while trying to retrieve properties for class " << name.c_str() << ends;
 
-			Except::throw_exception((const char *)"API_DatabaseAccess",
+			Except::throw_exception((const char *)API_DatabaseAccess,
 					o.str(),
 					(const char *)"DeviceClass::get_class_system_resource");
 		}
@@ -198,7 +198,7 @@ void DeviceClass::get_class_system_resource()
 				TangoSys_OMemStream o;
 				o << "Database error while trying to retrieve properties for class " << name.c_str() << ends;
 
-				Except::throw_exception((const char *)"API_DatabaseAccess",
+				Except::throw_exception((const char *)API_DatabaseAccess,
 							o.str(),
 							(const char *)"DeviceClass::get_class_system_resource");
 			}
@@ -225,20 +225,22 @@ void DeviceClass::get_class_system_resource()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::set_memorized_values()
+// method :
+//		DeviceClass::set_memorized_values()
 //
-// description : 	Write the memorized attribute with the value
-//			stored in database
+// description :
+//		Write the memorized attribute with the value stored in database
 //
-// in :			all : Flag set to true if memorized values must be
-//			      applied to all class devices
-//			idx : Index of the device in the device_list vector
-//			      of the device for which memorized values must
-//			      be applied. Used if "all" is set to false
+// argument :
+// 		in :
+//			- all : Flag set to true if memorized values must be applied to all class devices
+//			- idx : Index of the device in the device_list vector of the device for which memorized values must
+//			        be applied. Used if "all" is set to false
+//			- from_init : Flag set to true if the method is called due to a device Init command execution
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 {
@@ -308,8 +310,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 	{
 
 //
-// This feature is available only for devices implementing IDL release 3 and
-// above
+// This feature is available only for devices implementing IDL release 3 and above
 //
 
 		if (device_list[i]->get_dev_idl_version() < 3)
@@ -332,22 +333,21 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			{
 
 				string &mem_value = att.get_mem_value();
-                if (mem_value != MemNotUsed)
+				if (mem_value != MemNotUsed)
 				{
 					nb_wr++;
 					att_val.length(nb_wr);
 
 //
-// In order to not send
-// a new time the already memorized value into db, mark it as not memorized
-// before writing the value
+// In order to not send a new time the already memorized value into db, mark it as not memorized before writing
+// the value
 //
 
 					att.set_memorized(false);
 
 //
-// The memorized value gotten from db is a string, we need to convert this string
-// to its real type before inserting it into an Any
+// The memorized value gotten from db is a string, we need to convert this string to its real type before inserting
+// it into an Any
 //
 
 					TangoSys_MemStream str;
@@ -460,8 +460,10 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						case Tango::DEV_UCHAR:
 							if (from_init == false)
 							{
-								if (!(str >> uch))
+								short tmp_sh;
+								if (!(str >> tmp_sh))
 									throw_mem_value(device_list[i],att);
+								uch = (DevUChar)tmp_sh;
 								att.set_write_value(uch);
 							}
 							else
@@ -515,20 +517,20 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						}
 
 //
-// Check the initialisation flag for memorized attributes.
-// The the flag is false, do not add the element to the att_val
-// vector. This avoids a call to write the memorozied value to the attribute.
+// Check the initialisation flag for memorized attributes. If the flag is false, do not add the element to the att_val
+// vector. This avoids a call to write the memorized value to the attribute.
 //
 
 					if ( att.is_memorized_init() == false )
-                    {
+					{
 						nb_wr--;
 						att_val.length(nb_wr);
 						// reset memorized flag
 						att.set_memorized(true);
-                    }
+					}
 					else
-                    {
+					{
+
 //
 // Init the AttributeValue structure
 //
@@ -559,8 +561,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 		{
 
 //
-// Write attribute values. Re-throw exception if any but reset memorized flags before the
-// re-throw.
+// Write attribute values. Print exception if any.
 //
 
 			try
@@ -570,32 +571,30 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 			}
 			catch (Tango::DevFailed &e)
 			{
-				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) " << device_list[i]->get_name() << endl;
+				cout3 << "Cannot write setpoint(s) value for any memorized attribute(s) on device " << device_list[i]->get_name() << endl;
 				Tango::Except::print_exception(e);
-
-				//for (unsigned long k = 0;k < att_val.length();k++)
-				//{
-				//	WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
-				//	att.set_memorized(true);
-				//}
-				//throw;
 			}
 			catch (Tango::MultiDevFailed &e)
 			{
-				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) " << device_list[i]->get_name() << endl;
+				cout3 << "Cannot write setpoint(s) value for memorized attribute(s) of device " << device_list[i]->get_name() << endl;
 
+				for (unsigned long k = 0;k < e.errors.length();k++)
+				{
+					WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[e.errors[k].index_in_call].name.in());
+					att.set_mem_exception(e.errors[k].err_list);
+					log4tango::Logger *log = device_list[i]->get_logger();
+					if (log->is_warn_enabled())
+					{
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "Writing set_point for attribute " << att.get_name() << " failed" << endl;
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException desc = " << e.errors[k].err_list[0].desc.in() << endl;
+						log->warn_stream() << log4tango::LogInitiator::_begin_log << "\tException reason = " << e.errors[k].err_list[0].reason.in() << endl;
+					}
+
+				}
+				device_list[i]->set_run_att_conf_loop(true);
 				Tango::NamedDevFailedList e_list (e, device_list[i]->get_name(), (const char *)"DeviceClass::set_memorized_values()",
 					       			(const char *)"API_AttributeFailed");
 				Tango::Except::print_exception(e_list);
-
-				//for (unsigned long k = 0;k < att_val.length();k++)
-				//{
-				//	WAttribute &att = device_list[i]->get_device_attr()->get_w_attr_by_name(att_val[k].name.in());
-				//	att.set_memorized(true);
-				//}
-				//throw Tango::NamedDevFailedList(e,device_list[i]->get_name(),
-				//	       			(const char *)"DeviceClass::set_memorized_values()",
-				//	       			(const char *)"API_AttributeFailed");
 			}
 
 //
@@ -614,14 +613,20 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 
 }
 
-//+----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::throw_mem_value()
+// method :
+//		DeviceClass::throw_mem_value()
 //
-// description : 	Write the memorized attribute with the value
-//			stored in database
+// description :
+//		Throw API_AttrWrongMemValue exception
 //
-//-----------------------------------------------------------------------------
+// argument :
+//		in :
+//			- dev: Pointer to the device
+//			- att: The attribute object
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 {
@@ -633,18 +638,20 @@ void DeviceClass::throw_mem_value(DeviceImpl *dev,Attribute &att)
 	o << dev->get_name();
 	o << ") is in an incorrect format !" << ends;
 
-	Except::throw_exception((const char *)"API_AttrWrongMemValue",
+	Except::throw_exception((const char *)API_AttrWrongMemValue,
 				o.str(),
 				(const char *)"DeviceClass::set_memorized_values");
 }
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::~DeviceClass(string &s)
+// method :
+//		DeviceClass::~DeviceClass(string &s)
 //
-// description :	DeviceClass destructor.
+// description :
+//		DeviceClass class destructor.
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 DeviceClass::~DeviceClass()
 {
@@ -671,8 +678,7 @@ DeviceClass::~DeviceClass()
 		{
 
 //
-// Clear vectors used to memorize info used to clean db
-// in case of devices with dyn attr removed during device
+// Clear vectors used to memorize info used to clean db in case of devices with dyn attr removed during device
 // destruction
 //
 
@@ -735,11 +741,19 @@ DeviceClass::~DeviceClass()
 }
 
 
-//+----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::delete_dev()
+// method :
+//		DeviceClass::delete_dev()
 //
-// description :	delete a device from the class device list
+// description :
+//		Delete a device from the class device list
+//
+// argument :
+//		in :
+//			- idx :
+//			- tg : Pointer to the Tango Util singleton
+//			- r_poa : Pointer to the CORBA POA
 //
 //-----------------------------------------------------------------------------
 
@@ -749,8 +763,7 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 	cout4 << "Entering DeviceClas::delete_dev method for device with index " << idx << endl;
 
 //
-// If the polling thread is alive and if device is polled,
-// ask polling thread to stop polling
+// If the polling thread is alive and if device is polled, ask polling thread to stop polling
 //
 
 	if ((tg->get_polling_threads_info().empty() == false) && (device_list[idx]->is_polled() == true))
@@ -770,8 +783,8 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 
 //
 // Remove the servant.
-// For C++ device, this will be automatically done by the POA when the last executing call
-// will be over even if the device is not exported
+// For C++ device, this will be automatically done by the POA when the last executing call will be over even if the
+// device is not exported
 //
 
 	if (py_dev == true)
@@ -784,24 +797,24 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 // Wait for CORBA to call the device dtor
 //
 
-    if (device_list[idx] != NULL && exported_device == true)
-    {
+	if (device_list[idx] != NULL && exported_device == true)
+	{
 #ifdef _TG_WINDOWS_
-        while (device_list[idx] != NULL)
-        {
-            Sleep(10);
-        }
+		while (device_list[idx] != NULL)
+		{
+			Sleep(10);
+		}
 #else
-        struct timespec ts;
-        ts.tv_sec = 0;
-        ts.tv_nsec = 10000000;
+		struct timespec ts;
+		ts.tv_sec = 0;
+		ts.tv_nsec = 10000000;
 
-        while (device_list[idx] != NULL)
-        {
-            nanosleep(&ts,NULL);
-        }
+		while (device_list[idx] != NULL)
+		{
+			nanosleep(&ts,NULL);
+		}
 #endif
-    }
+	}
 
 	cout4 << "Leaving DeviceClass delete_dev" << endl;
 }
@@ -820,7 +833,7 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 //
 //--------------------------------------------------------------------------
 
-#if !(defined __linux)
+#if defined _TG_WINDOWS_
 void DeviceClass::register_signal(long signo)
 {
 	cout4 << "DeviceClass::register_signal() arrived for signal " << signo << endl;
@@ -908,6 +921,17 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	{
 
 //
+// Take the Tango monitor in order to protect the device against external world access
+// until memorized attribute (if any) are set but forget the admin device
+// (which does not have any memorized attribute)
+// But don't do this for dynamic devices which are not created in the DServer::init_device method class loop
+//
+
+		string &dev_name = dev->get_name_lower();
+		if ((get_device_factory_done() == false) && (dev_name.find("dserver") != 0))
+			dev->get_dev_monitor().get_monitor();
+
+//
 // Activate the CORBA object incarnated by the dev C++ object
 // Also call _remove_ref to give POA the full ownership of servant
 //
@@ -933,9 +957,9 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		{
 			TangoSys_OMemStream o;
 			o << "Cant get CORBA reference Id for device " << dev->get_name() << ends;
-			Except::throw_exception((const char *)"API_CantGetDevObjectId",
-					      o.str(),
-					      (const char *)"DeviceClass::export_device");
+			Except::throw_exception((const char *)API_CantGetDevObjectId,
+							o.str(),
+							(const char *)"DeviceClass::export_device");
 		}
 		dev->set_obj_id(oid);
 	}
@@ -952,10 +976,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 //
 
 		string corba_obj_name_lower(corba_obj_name);
-		transform(corba_obj_name_lower.begin(),
-			  corba_obj_name_lower.end(),
-			  corba_obj_name_lower.begin(),
-			  ::tolower);
+		transform(corba_obj_name_lower.begin(),corba_obj_name_lower.end(),corba_obj_name_lower.begin(),::tolower);
 		PortableServer::ObjectId_var id = PortableServer::string_to_ObjectId(corba_obj_name_lower.c_str());
 		try
 		{
@@ -967,7 +988,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 		{
 			TangoSys_OMemStream o;
 			o << "Can't get CORBA reference Id for device " << dev->get_name() << ends;
-			Except::throw_exception((const char *)"API_CantGetDevObjId",
+			Except::throw_exception((const char *)API_CantGetDevObjectId,
 						o.str(),
 						(const char *)"DeviceClass::export_device");
 		}
@@ -1075,7 +1096,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			{
 				TangoSys_OMemStream o;
 				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
-				Except::throw_exception((const char *)"API_CommandNotAllowed",
+				Except::throw_exception((const char *)API_CommandNotAllowed,
 						      o.str(),
 						      (const char *)"DeviceClass::command_handler");
 			}
@@ -1119,7 +1140,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			{
 				TangoSys_OMemStream o;
 				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
-				Except::throw_exception((const char *)"API_CommandNotAllowed",
+				Except::throw_exception((const char *)API_CommandNotAllowed,
 						o.str(),
 						(const char *)"DeviceClass::command_handler");
 			}
@@ -1142,7 +1163,7 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 			TangoSys_OMemStream o;
 
 			o << "Command " << command << " not found" << ends;
-			Except::throw_exception((const char *)"API_CommandNotFound",
+			Except::throw_exception((const char *)API_CommandNotFound,
 					      o.str(),
 					      (const char *)"DeviceClass::command_handler");
 		}
@@ -1194,7 +1215,7 @@ void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc,string &def)
 		TangoSys_OMemStream o;
 		o << "Device property " << p_name;
 		o << " for class " << name << " is already defined in the wizard" << ends;
-		Except::throw_exception((const char *)"API_WizrdConfError",
+		Except::throw_exception((const char *)API_WizardConfError,
 					o.str(),
 					(const char *)"DeviceClass::add_wiz_dev_prop");
 	}
@@ -1257,7 +1278,7 @@ void DeviceClass::add_wiz_class_prop(string &p_name,string &desc,string &def)
 		TangoSys_OMemStream o;
 		o << "Class property " << p_name;
 		o << " for class " << name << " is already defined in the wizard" << ends;
-		Except::throw_exception((const char *)"API_WizrdConfError",
+		Except::throw_exception((const char *)API_WizardConfError,
 					o.str(),
 					(const char *)"DeviceClass::add_wiz_dev_prop");
 	}
@@ -1296,21 +1317,21 @@ void DeviceClass::device_destroyer(const string &dev_name)
 // Check that the class know this device
 //
 
-  	unsigned long k;
-  	for (k = 0;k < device_list.size();k++)
-  	{
-  		if (device_list[k]->get_name() == dev_name)
-  			break;
-  	}
+	unsigned long k;
+	for (k = 0;k < device_list.size();k++)
+	{
+		if (device_list[k]->get_name() == dev_name)
+			break;
+	}
 
-  	if (k == device_list.size())
-  	{
+	if (k == device_list.size())
+	{
 		TangoSys_OMemStream o;
 		o << "Device " << dev_name << " not in Tango class device list!" << ends;
 
-  		Tango::Except::throw_exception((const char *)"API_CantDestroyDevice",o.str(),
-  					       (const char *)"DeviceClass::device_destroyer");
-  	}
+		Tango::Except::throw_exception((const char *)API_CantDestroyDevice,o.str(),
+							(const char *)"DeviceClass::device_destroyer");
+	}
 
 //
 // Check if the device is polled
@@ -1393,7 +1414,7 @@ void DeviceClass::get_mcast_event(DServer *dserv)
 		for (unsigned int j = 0;j < att_list.size();++j)
 		{
 			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
-			if (m_cast.size() != 0)
+			if (m_cast.empty() == false)
 				att_list[j]->set_mcast_event(m_cast);
 		}
 	}
@@ -1414,18 +1435,18 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 	vector<Command *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
-    pos = find_if(command_list.begin(),command_list.end(),
-                    [&] (Command *cmd) -> bool
-                    {
-                        if (cmd_name.size() != cmd->get_lower_name().size())
-                            return false;
-                        string tmp_name(cmd_name);
-                        transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
-                        return cmd->get_lower_name() == tmp_name;
-                    });
+	pos = find_if(command_list.begin(),command_list.end(),
+					[&] (Command *cmd) -> bool
+					{
+						if (cmd_name.size() != cmd->get_lower_name().size())
+							return false;
+						string tmp_name(cmd_name);
+						transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+						return cmd->get_lower_name() == tmp_name;
+					});
 #else
 	pos = find_if(command_list.begin(),command_list.end(),
-		      bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
 #endif
 
 	if (pos == command_list.end())
@@ -1434,12 +1455,52 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 		TangoSys_OMemStream o;
 
 		o << cmd_name << " command not found" << ends;
-		Except::throw_exception((const char *)"API_CommandNotFound",
+		Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DeviceClass::get_cmd_by_name");
 	}
 
 	return *(*pos);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceClass::check_att_conf
+//
+// description :	Check attribute configuration (for wrong conf. in db
+//                  exception) for all devices in the class
+//
+//-----------------------------------------------------------------------------
+
+void DeviceClass::check_att_conf()
+{
+	vector<DeviceImpl *>::iterator ite;
+
+	for (ite = device_list.begin();ite != device_list.end();++ite)
+		(*ite)->check_att_conf();
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceClass::release_devices_mon
+//
+// description :	Release all device(s) class monitor. This is needed in DS
+//					startup sequence. Each device monitor is taken before the
+//					device is known to CORBA and released after the memorized
+//					attributes (if any) are set
+//
+//-----------------------------------------------------------------------------
+
+void DeviceClass::release_devices_mon()
+{
+	vector<DeviceImpl *>::iterator ite;
+
+//
+// Release monitor for all devices belonging to this class
+//
+
+	for (ite = device_list.begin();ite != device_list.end();++ite)
+		(*ite)->get_dev_monitor().rel_monitor();
 }
 
 } // End of Tango namespace

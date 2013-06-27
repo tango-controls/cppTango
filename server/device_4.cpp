@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -36,70 +36,6 @@ static const char *RcsId = "$Id$";
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
-//
-// $Log$
-// Revision 3.12  2010/09/09 13:45:22  taurel
-// - Add year 2010 in Copyright notice
-//
-// Revision 3.11  2009/11/09 12:04:31  taurel
-// - The attribute mutex management is in the AttributeValue_4 struct
-//
-// Revision 3.10  2009/09/17 08:28:06  taurel
-// - Add a mutual exclusion to protect attribute buffer
-//
-// Revision 3.9  2009/01/21 12:49:04  taurel
-// - Change CopyRights for 2009
-//
-// Revision 3.8  2009/01/08 14:58:03  taurel
-// - The read_attribute_4 also transfer the client authentification
-//
-// Revision 3.7  2008/12/17 09:50:59  taurel
-// - First implementation of attributes sent on the wire using IDL Union
-// instead of IDL Any
-//
-// Revision 3.6  2008/11/18 09:28:56  taurel
-// - Ported to gcc 4.3
-// - Removed some cout messages
-//
-// Revision 3.5  2008/10/06 15:00:36  taurel
-// - Changed the licensing info from GPL to LGPL
-//
-// Revision 3.4  2008/10/03 06:51:36  taurel
-// - Add some licensing info in each files
-//
-// Revision 3.3  2008/09/23 14:59:33  taurel
-// - Commit after the end of DevEncoded data type implementation
-// - The new test suite is also now running fine
-//
-// Revision 3.2  2008/06/10 07:52:14  taurel
-// - Add code for the DevEncoded attribute data type
-//
-// Revision 3.1  2008/05/20 12:44:10  taurel
-// - Commit after merge with release 7 branch
-//
-// Revision 1.1.2.7  2008/05/20 06:17:44  taurel
-// - Last commit before merge with trunk
-// (start the implementation of the new DevEncoded data type)
-//
-// Revision 1.1.2.6  2008/02/07 15:58:13  taurel
-// - First implementation of the Controlled Access done
-//
-// Revision 1.1.2.5  2007/12/20 14:29:01  taurel
-// - Some more work on locking
-//
-// Revision 1.1.2.4  2007/12/19 15:54:47  taurel
-// - Still some work going on for the locking feature
-//
-// Revision 1.1.2.3  2007/11/22 12:33:10  taurel
-// - First part of the device locking implementation
-//
-// Revision 1.1.2.2  2007/11/20 14:40:19  taurel
-// - Add the new way to retrieve command history from polling buffer
-// implemented in Tango V7
-//
-// Revision 1.1.2.1  2007/11/16 14:12:35  taurel
-// - Added a new IDL interface (Device_4)
-// - Added a new way to get attribute history from polling buffer (must faster)
 //
 //-============================================================================
 
@@ -174,7 +110,6 @@ Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(Tango_NullPt
 //--------------------------------------------------------------------------
 
 Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name,CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -220,7 +155,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_AttrNotPolled",
+		Except::throw_exception((const char *)API_AttrNotPolled,
 						o.str(),
 						(const char *)"Device_4Impl::read_attribute_history_4");
 	}
@@ -233,7 +168,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for attribute " << attr_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 						o.str(),
 						(const char *)"Device_4Impl::read_attribute_history_4");
 	}
@@ -257,7 +192,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 					        (const char *)"Can't allocate memory in server",
 					        (const char *)"Device_4Impl::read_attribute_history_4");
 	}
@@ -300,7 +235,6 @@ throw(Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* command,CORBA::Long n)
-throw(Tango::DevFailed, CORBA::SystemException)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -369,7 +303,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "Command " << cmd_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_CmdNotPolled",
+		Except::throw_exception((const char *)API_CmdNotPolled,
 					o.str(),
 					(const char *)"Device_4Impl::command_inout_history_4");
 	}
@@ -382,7 +316,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for command " << cmd_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_4Impl::command_inout_history_4");
 	}
@@ -406,7 +340,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_4Impl::command_inout_history_4");
 	}
@@ -428,7 +362,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		}
 		catch (bad_alloc)
 		{
-			Except::throw_exception((const char *)"API_MemoryAllocation",
+			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
 				        	(const char *)"Device_4Impl::command_inout_history_4");
 		}
@@ -507,7 +441,6 @@ CORBA::Any *Device_4Impl::command_inout_4(const char *in_cmd,
 					  const CORBA::Any &in_data,
 					  Tango::DevSource source,
 					  const Tango::ClntIdent &cl_id)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_4Impl::command_inout_4 arrived, source = " << source << ", command = " << in_cmd << endl;
 
@@ -555,7 +488,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source,const Tango::ClntIdent &cl_id)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_4Impl::read_attributes_4 arrived for dev " << get_name() << ", att[0] = " << names[0] << endl;
 
@@ -617,7 +549,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_4Impl::read_attributes_4");
 	}
@@ -690,9 +622,9 @@ throw (Tango::DevFailed, CORBA::SystemException)
        		if (nb_err != 0)
        		{
        			nb_err--;
-       			if ((strcmp((*back)[i].err_list[nb_err].reason,"API_AttrNotPolled") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NoDataYet") == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,"API_NotUpdatedAnyMore") == 0) ||
+       			if ((strcmp((*back)[i].err_list[nb_err].reason,API_AttrNotPolled) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NoDataYet) == 0) ||
+       					(strcmp((*back)[i].err_list[nb_err].reason,API_NotUpdatedAnyMore) == 0) ||
        					(strcmp((*back)[i].err_list[nb_err].origin,"DServer::add_obj_polling") == 0))
        			{
        				nb_attr++;
@@ -741,7 +673,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 void Device_4Impl::write_attributes_4(const Tango::AttributeValueList_4 & values,
 									  const Tango::ClntIdent &cl_id)
-throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_4Impl::write_attributes_4 arrived" << endl;
@@ -764,7 +695,6 @@ throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 // Call the Device_3Impl write_attributes
 //
 
-	ext->store_in_bb = false;
 	return write_attributes_34(NULL,&values);
 }
 
@@ -784,7 +714,6 @@ throw (Tango::MultiDevFailed, Tango::DevFailed, CORBA::SystemException)
 
 void Device_4Impl::set_attribute_config_4(const Tango::AttributeConfigList_3& new_conf,
 										  const Tango::ClntIdent &cl_id)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_4Impl::set_attribute_config_4 arrived" << endl;
@@ -833,7 +762,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::AttributeValueList_4& values,
 									  const Tango::ClntIdent &cl_id)
-throw (Tango::MultiDevFailed,Tango::DevFailed, CORBA::SystemException)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_4Impl::write_read_attributes_4 arrived" << endl;
@@ -861,7 +789,7 @@ throw (Tango::MultiDevFailed,Tango::DevFailed, CORBA::SystemException)
 		TangoSys_OMemStream o;
 		o << "Attribute " << values[0].name << " is not a READ_WRITE or READ_WITH_WRITE attribute" << ends;
 
-		Except::throw_exception((const char *)"API_AttrNotWritable",o.str(),
+		Except::throw_exception((const char *)API_AttrNotWritable,o.str(),
 								(const char *)"Device_4Impl::write_read_attribute_4");
 	}
 

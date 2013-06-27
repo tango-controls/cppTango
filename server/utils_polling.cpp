@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :         	E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -120,7 +120,7 @@ void Util::polling_configure()
 			{
 				TangoSys_OMemStream o;
 				o << "System property polled_cmd for device " << dev_list[j]->get_name() << " has wrong syntax" << ends;
-				Except::throw_exception((const char *)"API_BadConfigurationProperty",
+				Except::throw_exception((const char *)API_BadConfigurationProperty,
 				        		o.str(),
 				        		(const char *)"Util::polling_configure");
 			}
@@ -129,7 +129,7 @@ void Util::polling_configure()
 			{
 				TangoSys_OMemStream o;
 				o << "System property polled_attr for device " << dev_list[j]->get_name() << " has wrong syntax" << ends;
-				Except::throw_exception((const char *)"API_BadConfigurationProperty",
+				Except::throw_exception((const char *)API_BadConfigurationProperty,
 				        		o.str(),
 				        		(const char *)"Util::polling_configure");
 			}
@@ -174,8 +174,8 @@ void Util::polling_configure()
 				s.str("");
 				send->lvalue[0] = upd;
 
-                if (upd < 0)
-                    upd = -upd;
+				if (upd < 0)
+					upd = -upd;
 
 				if (first_loop == true)
 				{
@@ -216,8 +216,8 @@ void Util::polling_configure()
 				s.str("");
 				send->lvalue[0] = upd;
 
-                if (upd < 0)
-                    upd = -upd;
+				if (upd < 0)
+					upd = -upd;
 
 				if (first_loop == true)
 				{
@@ -271,7 +271,7 @@ void Util::polling_configure()
 		int sleeping_time = ext->poll_ths[loop]->smallest_upd / nb_cmd;
 		int delta_time = 0;
 
-		long delta_os = 15;
+		long delta_os = 5;
 		if (delta_os < sleeping_time)
 			sleeping_time = sleeping_time - delta_os;
 
@@ -283,20 +283,20 @@ void Util::polling_configure()
 		{
 			try
 			{
-			    bool upd_db = false;
-			    int upd = ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->lvalue[0];
-			    if (upd < 0)
-			    {
-			        ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->lvalue[0] = -upd;
-                    upd_db = true;
-			    }
+				bool upd_db = false;
+				int upd = ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->lvalue[0];
+				if (upd < 0)
+				{
+					ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->lvalue[0] = -upd;
+					upd_db = true;
+				}
 				admin_dev->add_obj_polling(ext->poll_ths[loop]->v_poll_cmd[cmd_loop],upd_db,delta_time);
 			}
 			catch (Tango::DevFailed &e)
 			{
 				bool throw_ex = true;
 
-				if (::strcmp(e.errors[0].reason.in(),"API_AlreadyPolled") == 0)
+				if (::strcmp(e.errors[0].reason.in(),API_AlreadyPolled) == 0)
 				{
 					try
 					{
@@ -315,7 +315,7 @@ void Util::polling_configure()
 					else
 						o << ", attr = ";
 					o << ext->poll_ths[loop]->v_poll_cmd[cmd_loop]->svalue[2].in() << ends;
-					Except::re_throw_exception(e,(const char *)"API_BadConfigurationProperty",
+					Except::re_throw_exception(e,(const char *)API_BadConfigurationProperty,
 												o.str(),
 													(const char *)"Util::polling_configure");
 				}
@@ -355,13 +355,13 @@ void Util::polling_configure()
 	}
 	else
 	{
-	    vector<string> tmp_pool_conf;
-	    build_first_pool_conf(tmp_pool_conf);
-	    if (tmp_pool_conf != ext->poll_pool_conf)
-	    {
-	        ext->poll_pool_conf = tmp_pool_conf;
-	        ext->conf_needs_db_upd = true;
-	    }
+		vector<string> tmp_pool_conf;
+		build_first_pool_conf(tmp_pool_conf);
+		if (tmp_pool_conf != ext->poll_pool_conf)
+		{
+			ext->poll_pool_conf = tmp_pool_conf;
+			ext->conf_needs_db_upd = true;
+		}
 	}
 
 	if (((dev_db_upd.empty() == false) || (ext->conf_needs_db_upd == true)) && (_UseDb == true))
@@ -394,7 +394,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 		TangoSys_OMemStream o;
 		o << "Device " << dev->get_name() << " is not polled" << ends;
 
-		Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"Util::trigger_attr_polling");
 	}
 
@@ -422,7 +422,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 		o << " (device " << dev->get_name() << ") ";
 		o << " is not externally triggered.";
 		o << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"Util::trigger_attr_polling");
 	}
 
@@ -437,7 +437,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << dev->get_name() << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"Util::trigger_cmd_polling");
 	}
 
@@ -515,7 +515,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 			if ((shared_cmd.trigger == true) && (interupted == 0))
 			{
 				cout4 << "TIME OUT" << endl;
-				Except::throw_exception((const char *)"API_CommandTimedOut",
+				Except::throw_exception((const char *)API_CommandTimedOut,
 					        	(const char *)"Polling thread blocked !!!",
 					        	(const char *)"Util::trigger_attr_polling");
 			}
@@ -548,7 +548,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 		TangoSys_OMemStream o;
 		o << "Device " << dev->get_name() << " is not polled" << ends;
 
-		Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"Util::trigger_cmd_polling");
 	}
 
@@ -576,7 +576,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 		o << " (device " << dev->get_name() << ") ";
 		o << " is not externally triggered.";
 		o << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"Util::trigger_cmd_polling");
 	}
 
@@ -591,7 +591,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << dev->get_name() << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"Util::trigger_cmd_polling");
 	}
 
@@ -669,7 +669,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 			if ((shared_cmd.trigger == true) && (interupted == 0))
 			{
 				cout4 << "TIME OUT" << endl;
-				Except::throw_exception((const char *)"API_CommandTimedOut",
+				Except::throw_exception((const char *)API_CommandTimedOut,
 					        	(const char *)"Polling thread blocked !!!",
 					        	(const char *)"Util::trigger_cmd_polling");
 			}
@@ -700,7 +700,8 @@ void Util::clean_attr_polled_prop()
 			if (ite_attr != ext->polled_att_list.end())
 			{
 				ite_attr = ext->polled_att_list.erase(ite_attr);
-				ext->polled_att_list.erase(ite_attr);
+				if (ite_attr != ext->polled_att_list.end())
+					ext->polled_att_list.erase(ite_attr);
 			}
 			else
 			{
@@ -709,7 +710,7 @@ void Util::clean_attr_polled_prop()
 				o << "Polling properties for attribute " << ext->polled_dyn_attr_names[loop] << " on device " << ext->dyn_att_dev_name;
 				o << " not found device in polled attribute list!" << ends;
 
-				Except::throw_exception((const char *)"API_MethodArgument",o.str(),
+				Except::throw_exception((const char *)API_MethodArgument,o.str(),
 										(const char *)"Util::clean_attr_polling_prop");
 			}
 		}
@@ -801,9 +802,9 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 				if ((ite = ext->dev_poll_th_map.find(*it)) != ext->dev_poll_th_map.end())
 				{
 					ext->dev_poll_th_map.insert(make_pair(local_dev_name,ite->second));
-                    PollingThreadInfo *th_info = get_polling_thread_info_by_id(ite->second);
-                    th_info->polled_devices.push_back(local_dev_name);
-                    th_info->nb_polled_objects++;
+					PollingThreadInfo *th_info = get_polling_thread_info_by_id(ite->second);
+					th_info->polled_devices.push_back(local_dev_name);
+					th_info->nb_polled_objects++;
 					if (smallest_upd != -1)
 					{
 						if (smallest_upd < th_info->smallest_upd)
@@ -865,8 +866,8 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 					if (smallest_upd != -1)
 					{
 						PollingThreadInfo *th_info = get_polling_thread_info_by_id(ite->second);
-                        th_info->polled_devices.push_back(local_dev_name);
-                        th_info->nb_polled_objects++;
+						th_info->polled_devices.push_back(local_dev_name);
+						th_info->nb_polled_objects++;
 						if (smallest_upd < th_info->smallest_upd)
 							th_info->smallest_upd = smallest_upd;
 					}
@@ -917,7 +918,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 			o << "Device " << dev_name << " should be polled by the thread already polling " << d_name;
 			o << " but this device is not defined in the polled device map!!" << ends;
 
-			Except::throw_exception((const char *)"API_PolledDeviceNotInPoolMap",o.str(),
+			Except::throw_exception((const char *)API_PolledDeviceNotInPoolMap,o.str(),
 									(const char *)"Util::create_poll_thread");
 		}
 
@@ -931,7 +932,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 			o << "Device " << dev_name << " should be polled by the thread already polling " << d_name;
 			o << " but this device is not defined in the pool configuration!!" << ends;
 
-			Except::throw_exception((const char *)"API_PolledDeviceNotInPoolConf",o.str(),
+			Except::throw_exception((const char *)API_PolledDeviceNotInPoolConf,o.str(),
 									(const char *)"Util::create_poll_thread");
 		}
 
@@ -1083,7 +1084,7 @@ PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 
 		o << "There is no polling thread with ID = " << th_id << " in the polling threads pool"<< ends;
 
-		Except::throw_exception((const char *)"API_PollingThreadNotFound",o.str(),
+		Except::throw_exception((const char *)API_PollingThreadNotFound,o.str(),
 								(const char *)"Util::get_polling_thread_info_by_id");
 	}
 
@@ -1219,12 +1220,12 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 			iter = mod_conf.erase(iter);
 			if (iter == mod_conf.end())
 				break;
-            else
-            {
-                if (iter == mod_conf.begin())
-                    --stop;
-                --iter;
-            }
+			else
+			{
+				if (iter == mod_conf.begin())
+					--stop;
+				--iter;
+			}
 		}
 		else if (mod_entry != *iter)
 			*iter = mod_entry;
@@ -1448,7 +1449,7 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 
 		if ((upd_devs[i].mod_prop == -1) || (upd_devs[i].mod_prop == -3))
 		{
-			if (poll_cmd_list.size() == 0)
+			if (poll_cmd_list.empty() == true)
 				del_prop.push_back(DbDatum("polled_cmd"));
 			else
 			{
@@ -1459,7 +1460,7 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 
 		if ((upd_devs[i].mod_prop == -2) || (upd_devs[i].mod_prop == -3))
 		{
-			if (poll_attr_list.size() == 0)
+			if (poll_attr_list.empty() == true)
 				del_prop.push_back(DbDatum("polled_attr"));
 			else
 			{
@@ -1559,32 +1560,32 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 // using the \ characters at the end of each sub-entries
 //
 
-                    vector<string>::iterator iter;
-                    vector<string> new_vect;
+					vector<string>::iterator iter;
+					vector<string> new_vect;
 
-                    for (iter = ext->poll_pool_conf.begin();iter != ext->poll_pool_conf.end();++iter)
-                    {
-                        string v_entry = *iter;
-                        unsigned int length = v_entry.size();
-                        int nb_lines = (length / MaxDevPropLength) + 1;
-                        if (nb_lines > 1)
-                        {
-                            string::size_type start;
-                            start = 0;
+					for (iter = ext->poll_pool_conf.begin();iter != ext->poll_pool_conf.end();++iter)
+					{
+						string v_entry = *iter;
+						unsigned int length = v_entry.size();
+						int nb_lines = (length / MaxDevPropLength) + 1;
+						if (nb_lines > 1)
+						{
+							string::size_type start;
+							start = 0;
 
-                            for (int i = 0;i < nb_lines;i++)
-                            {
-                                string sub = v_entry.substr(start,MaxDevPropLength);
-                                if (i < (nb_lines - 1))
-                                    sub = sub + '\\';
-                                cout << "Sub string = " << sub << endl;
-                                start = start + MaxDevPropLength;
-                                new_vect.push_back(sub);
-                            }
-                        }
-                        else
-                            new_vect.push_back(v_entry);
-                    }
+							for (int i = 0;i < nb_lines;i++)
+							{
+								string sub = v_entry.substr(start,MaxDevPropLength);
+								if (i < (nb_lines - 1))
+									sub = sub + '\\';
+								cout << "Sub string = " << sub << endl;
+								start = start + MaxDevPropLength;
+								new_vect.push_back(sub);
+							}
+						}
+						else
+							new_vect.push_back(v_entry);
+					}
 
 					upd_conf[0] << new_vect;
 					get_database()->put_device_property(admin_dev->get_name(),upd_conf);
@@ -1634,16 +1635,16 @@ int Util::get_th_polled_devs(string &dev,vector<string> &th_polled_devs)
 		pos = tmp.find(dev);
 		if (pos != string::npos)
 		{
-            end_pos = tmp.find(',',pos);
-            if (end_pos != string::npos)
-                pool_dev_nb_char = end_pos - pos;
-            else
-                pool_dev_nb_char = tmp.size() - pos;
-            if (dev_nb_char == pool_dev_nb_char)
-            {
-                split_string(tmp,',',th_polled_devs);
-                break;
-            }
+			end_pos = tmp.find(',',pos);
+			if (end_pos != string::npos)
+				pool_dev_nb_char = end_pos - pos;
+			else
+				pool_dev_nb_char = tmp.size() - pos;
+			if (dev_nb_char == pool_dev_nb_char)
+			{
+				split_string(tmp,',',th_polled_devs);
+				break;
+			}
 		}
 	}
 
@@ -1747,15 +1748,15 @@ int Util::get_dev_entry_in_pool_conf(string &dev_name)
 		pos = tmp.find(dev_name);
 		if (pos != string::npos)
 		{
-           end_pos = tmp.find(',',pos);
-            if (end_pos != string::npos)
-                pool_dev_nb_char = end_pos - pos;
-            else
-                pool_dev_nb_char = tmp.size() - pos;
-            if (dev_nb_char == pool_dev_nb_char)
-            {
-                break;
-            }
+			end_pos = tmp.find(',',pos);
+			if (end_pos != string::npos)
+				pool_dev_nb_char = end_pos - pos;
+			else
+				pool_dev_nb_char = tmp.size() - pos;
+			if (dev_nb_char == pool_dev_nb_char)
+			{
+				break;
+			}
 		}
 	}
 
@@ -1812,7 +1813,7 @@ void Util::remove_polling_thread_info_by_id(int th_id)
 
 		o << "There is no polling thread with ID = " << th_id << " in the polling threads pool"<< ends;
 
-		Except::throw_exception((const char *)"API_PollingThreadNotFound",o.str(),
+		Except::throw_exception((const char *)API_PollingThreadNotFound,o.str(),
 								(const char *)"Util::remove_polling_thread_info_by_id");
 	}
 

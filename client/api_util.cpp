@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // programmer 	- Emmanuel Taurel (taurel@esrf.fr)
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -46,6 +46,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <sys/ioctl.h>
 #include <netdb.h>
 #include <signal.h>
+#include <ifaddrs.h>
 
 // There is a NO_DATA defined in netdb.h
 
@@ -291,12 +292,15 @@ void ApiUtil::create_orb()
 #endif
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// ApiUtil::get_db_ind() - Retrieve a Tango database object created from the
-//			   TANGO_HOST environment variable
+// method :
+// 		ApiUtil::get_db_ind()
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Retrieve a Tango database object created from the TANGO_HOST environment variable
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 int ApiUtil::get_db_ind()
 {
@@ -575,7 +579,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 			{
 				TangoSys_OMemStream desc;
 				desc << "Still some reply(ies) for asynchronous callback call(s) to be received" << ends;
-				ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+				ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"ApiUtil::get_asynch_replies");
 			}
@@ -1451,7 +1455,7 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue &att
 		TangoSys_OMemStream desc;
 		desc << "Device " << d_name;
 		desc << " does not support DevEncoded data type" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  	desc.str(),
 						  	(const char *)"DeviceProxy::device_to_attr");
 	}
@@ -1494,94 +1498,69 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
     if (ext->host_ip_adrs.empty() == true)
     {
 #ifndef _TG_WINDOWS_
-		int sock = socket(AF_INET,SOCK_STREAM,0);
+        struct ifaddrs *ifaddr, *ifa;
+        int family, s;
+        char host[NI_MAXHOST];
 
-		int lastlen = 0;
-		int len = 100 * sizeof(struct ifreq);
-		struct ifconf ifc;
+        if (getifaddrs(&ifaddr) == -1)
+        {
+            cerr << "ApiUtil::get_ip_from_if: getifaddrs() failed: "  << strerror(errno) << endl;
 
-//
-// There is no way to know for sure the buffer is big enough to get
-// the info for all the interfaces. We work around this by calling
-// the ioctl 2 times and increases the buffer size in the 2nd call.
-// If both calls return the info with the same size, we know we have
-// got all the interfaces.
-//
-
-		while (true)
-		{
-			ifc.ifc_buf = new char[len];
-			ifc.ifc_len = len;
-
-			if (ioctl(sock,SIOCGIFCONF,&ifc) < 0)
-			{
-				if (errno != EINVAL || lastlen != 0)
-				{
-					delete[] ifc.ifc_buf;
-					close(sock);
-
-					cerr << "Warning: ioctl SIOCGICONF failed" << endl;
-					cerr << "Unable to obtain the list of all interface addresses." << endl;
-
-					Tango::Except::throw_exception((const char *)"API_SystemCallFailed",
-												   (const char *)"Can't retrieve list of all interfaces addresses (ioctl - SIOCGICONF)!",
-												   (const char *)"ApiUtil::get_ip_from_if()");
-				}
-			}
-			else
-			{
-				if (ifc.ifc_len == lastlen)
-					break; // Success, len has not changed.
-				lastlen = ifc.ifc_len;
-			}
-			len += 10 * sizeof(struct ifreq);
-			delete[] ifc.ifc_buf;
-		}
-
-		close(sock);
+            Tango::Except::throw_exception((const char *)API_SystemCallFailed,
+                                            (const char *) strerror(errno),
+                                            (const char *)"ApiUtil::get_ip_from_if()");
+        }
 
 //
-// Convert IP addresses to string
+// Walk through linked list, maintaining head pointer so we can free list later
+// The ifa_addr field points to a structure containing the interface address.
+// (The sa_family subfield should be consulted to determine the format of the
+// address structure.)
 //
 
-		int total = ifc.ifc_len / sizeof(struct ifreq);
-		struct ifreq *ifr = ifc.ifc_req;
+        for (ifa = ifaddr;ifa != NULL;ifa = ifa->ifa_next)
+        {
+            if (ifa->ifa_addr != NULL)
+            {
+                family = ifa->ifa_addr->sa_family;
 
-		for (int i = 0; i < total; i++)
-		{
-			if ( ifr[i].ifr_addr.sa_family == AF_INET || ifr[i].ifr_addr.sa_family == AF_INET6 )
-			{
-				struct sockaddr_in *iaddr = (struct sockaddr_in *)&ifr[i].ifr_addr;
-				struct sockaddr *addr = (struct sockaddr *)&ifr[i].ifr_addr;
+//
+// Only get IP V4 addresses
+//
 
-				if ( iaddr->sin_addr.s_addr != 0 )
-				{
-					char dest[NI_MAXHOST];
-					socklen_t addrlen = sizeof(sockaddr);
+/*              if(family == AF_INET || family == AF_INET6)
+                {
+                    s = getnameinfo(ifa->ifa_addr,(family == AF_INET) ? sizeof(struct sockaddr_in) : sizeof(struct sockaddr_in6),
+                                    host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);*/
 
-					int result = getnameinfo(addr, addrlen, dest, sizeof(dest),0,0,NI_NUMERICHOST);
-					if (result != 0)
-					{
-						delete[] ifc.ifc_buf;
+                if (family == AF_INET)
+                {
+                    s = getnameinfo(ifa->ifa_addr,sizeof(struct sockaddr_in),host,NI_MAXHOST,NULL,0,NI_NUMERICHOST);
 
-						cerr << "Warning: getnameinfo failed" << endl;
-						cerr << "Unable to convert IP address to string (getnameinfo)." << endl;
+                    if (s != 0)
+                    {
+                        cerr << "ApiUtil::get_ip_from_if: getnameinfo() failed: " << gai_strerror(s);
+                        cerr << "ApiUtil::get_ip_from_if: not getting info from remaining ifaddrs";
 
-						Tango::Except::throw_exception((const char *)"API_SystemCallFailed",
-												   (const char *)"Can't convert IP address to string (getnameinfo)!",
-												   (const char *)"ApiUtil::get_ip_from_if()");
-					}
-					string tmp_str(dest);
-					ext->host_ip_adrs.push_back(tmp_str);
-				}
-			}
-		}
+                        freeifaddrs(ifaddr);
 
-		delete[] ifc.ifc_buf;
+                        Tango::Except::throw_exception((const char *)API_SystemCallFailed,
+                                                        (const char *) gai_strerror(s),
+                                                        (const char *)"ApiUtil::get_ip_from_if()");
+                    }
+                    else
+                    {
+                        ext->host_ip_adrs.push_back(string(host));
+                    }
+                }
+            }
+        }
+
+        freeifaddrs(ifaddr);
 #else
 
 //
-// Get address from intrerfaces
+// Get address from interfaces
 //
 
 		int sock = socket(AF_INET,SOCK_STREAM,0);
@@ -1600,7 +1579,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 			TangoSys_OMemStream desc;
 			desc << "Can't retrieve list of all interfaces addresses (WSAIoctl)! Error = " << err << ends;
 
-			Tango::Except::throw_exception((const char*)"API_SystemCallFailed",
+			Tango::Except::throw_exception((const char*)API_SystemCallFailed,
 										   (const char *)desc.str().c_str(),
 										   (const char *)"ApiUtil::get_ip_from_if()");
 		}
@@ -1628,7 +1607,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 						cerr << "Warning: getnameinfo failed" << endl;
 						cerr << "Unable to convert IP address to string (getnameinfo)." << endl;
 
-						Tango::Except::throw_exception((const char *)"API_SystemCallFailed",
+						Tango::Except::throw_exception((const char *)API_SystemCallFailed,
 												   (const char *)"Can't convert IP address to string (getnameinfo)!",
 												   (const char *)"ApiUtil::get_ip_from_if()");
 					}
@@ -1646,7 +1625,36 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 //
 
     ip_adr_list.clear();
+
     copy(ext->host_ip_adrs.begin(),ext->host_ip_adrs.end(),back_inserter(ip_adr_list));
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ApiUtil::print_error_message
+//
+// description :
+//		Print error message on stderr but first print date
+//
+// argument :
+//		in :
+//			- mess : The user error message
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void ApiUtil::print_error_message(const char *mess)
+{
+	time_t tmp_val = time(NULL);
+
+	char tmp_date[128];
+#ifdef _TG_WINDOWS_
+	ctime_s(tmp_date,128,&tmp_val);
+#else
+	ctime_r(&tmp_val,tmp_date);
+#endif
+	tmp_date[strlen(tmp_date) - 1] = '\0';
+	cerr << tmp_date << ": " << mess << endl;
 }
 
 //+-------------------------------------------------------------------------

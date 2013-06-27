@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :	  N.Leclercq
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -120,7 +120,7 @@ CORBA::Any *AddLoggingTarget::execute (DeviceImpl *device, const CORBA::Any &in_
 	const DevVarStringArray *targets;
 	if ((in_any >>= targets) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 					(const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
 					(const char *)"AddLoggingTarget::execute");
 	}
@@ -172,7 +172,7 @@ CORBA::Any *RemoveLoggingTarget::execute (DeviceImpl *device, const CORBA::Any &
 	const DevVarStringArray *targets;
 	if ((in_any >>= targets) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 					(const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
 					(const char *)"RemoveLoggingTarget::execute");
 	}
@@ -226,7 +226,7 @@ CORBA::Any *GetLoggingTarget::execute (DeviceImpl *device, const CORBA::Any &in_
 	const char* tmp_str;
 	if ((in_any >>= tmp_str) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 					(const char *)"Imcompatible command argument type, expected type is : DevString",
 					(const char *)"GetLoggingTarget::execute");
 	}
@@ -272,7 +272,7 @@ CORBA::Any *SetLoggingLevel::execute (DeviceImpl *device, const CORBA::Any &in_a
 	const DevVarLongStringArray *argin;
 	if ((in_any >>= argin) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 					(const char *)"Imcompatible command argument type, expected type is : DevVarLongStringArray",
 					(const char *)"SetLoggingLevel::execute");
 	}
@@ -325,7 +325,7 @@ CORBA::Any *GetLoggingLevel::execute (DeviceImpl *device, const CORBA::Any &in_a
 	const DevVarStringArray *argin;
 	if ((in_any >>= argin) == false)
 	{
-		Except::throw_exception((const char *)"API_IncompatibleCmdArgumentType",
+		Except::throw_exception((const char *)API_IncompatibleCmdArgumentType,
 					(const char *)"Imcompatible command argument type, expected type is : DevVarStringArray",
 					(const char *)"GetLoggingLevel::execute");
 	}

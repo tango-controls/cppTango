@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -158,12 +158,16 @@ class EventSupplier;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Attribute
 {
 public:
 
+/// @privatesection
 	enum alarm_flags
 	{
 		min_level,
@@ -173,6 +177,7 @@ public:
 		max_warn,
 		numFlags
 	};
+/// @publicsection
 
 /**@name Constructors
  * Miscellaneous constructors */
@@ -2032,6 +2037,7 @@ protected:
 //@}
 
 public:
+/// @privatesection
 
 //
 // methods not usable for the external world (outside the lib)
@@ -2138,6 +2144,8 @@ public:
 	bool is_startup_exception() {return ext->check_startup_exceptions;}
 	void throw_startup_exception(const char*);
 
+	bool is_mem_exception() {return ext->mem_exception;}
+
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);
 #endif // TANGO_HAS_LOG4TANGO
@@ -2157,6 +2165,7 @@ private:
 	DevEncoded			enc_help;
 
 protected:
+/// @privatesection
 
 //
 // The extension class
@@ -2173,7 +2182,9 @@ protected:
                          event_periodic_client_3(false),event_change_client_3(false),event_archive_client_3(false),
                          event_user_client_3(false),user_attr_mutex(NULL),dr_event_implmented(false),
                          scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
-                         check_startup_exceptions(false), startup_exceptions_clear(true) {}
+                         check_startup_exceptions(false), startup_exceptions_clear(true),
+                         mem_exception(false)
+                         {}
 
         Tango::DispLevel 	disp_level;						// Display level
         long				poll_period;					// Polling period
@@ -2204,7 +2215,7 @@ protected:
         bool				change_event_implmented;		// Flag true if a manual fire change event is implemented.
         bool				archive_event_implmented;		// Flag true if a manual fire archive event is implemented.
         bool				check_change_event_criteria;	// True if change event criteria should be checked when sending the event
-        bool				check_archive_event_criteria;	// True if change event criteria should be checked when sending the event
+        bool				check_archive_event_criteria;	// True if archive event criteria should be checked when sending the event
         bool				event_periodic_client_3;		// True if at least one periodic event client is using IDL 3
         bool				event_change_client_3;			// True if at least one periodic event client is using IDL 3
         bool				event_archive_client_3;			// True if at least one periodic event client is using IDL 3
@@ -2226,6 +2237,8 @@ protected:
         map<string,const DevFailed> startup_exceptions;		// Map containing exceptions related to attribute configuration raised during the server startup sequence
         bool 				check_startup_exceptions;		// Flag set to true if there is at least one exception in startup_exceptions map
         bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
+        bool				mem_exception;					// Flag set to true if the attribute is writable and
+															// memorized and if it failed at init
     };
 
 	AttributeExt		*ext;
@@ -2253,6 +2266,9 @@ protected:
     void validate_change_properties(const string &,const char *,string &,vector<double> &,vector<bool> &,vector<bool> &);
     void validate_change_properties(const string &,const char *,string &,vector<double> &);
     bool prop_in_list(const char *,string &,size_t,vector<AttrProperty> &);
+    void set_format_notspec();
+    bool is_format_notspec(const char *);
+	void def_format_in_dbdatum(DbDatum &);
 
     void avns_in_db(const char *,string &);
     void avns_in_att(prop_type);
@@ -2295,7 +2311,7 @@ inline void Attribute::throw_hard_coded_prop(const char *prop_name)
     TangoSys_OMemStream desc;
     desc << "Attribute property " << prop_name << " is not changeable at run time" << ends;
 
-    Except::throw_exception((const char *)"API_AttrNotAllowed",desc.str(),
+    Except::throw_exception((const char *)API_AttrNotAllowed,desc.str(),
 				      	  (const char *)"Attribute::check_hard_coded_properties()");
 }
 
@@ -2322,7 +2338,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 				event_exceptions.push_back(it->first);
 			else
 				opt_exceptions.push_back(it->first);
-			for(size_t i = 0 ; i < it->second.errors.length(); i++)
+			for(CORBA::ULong i = 0 ; i < it->second.errors.length(); i++)
 			{
 				string tmp_msg = string(it->second.errors[i].desc);
 				size_t pos = tmp_msg.rfind('\n');
@@ -2361,7 +2377,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 
 		err_msg += "\nHint : Check also class level attribute properties";
 
-		Except::throw_exception("API_AttrConfig",err_msg,origin);
+		Except::throw_exception(API_AttrConfig,err_msg,origin);
 	}
 }
 
@@ -2412,6 +2428,21 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 		A = CORBA::string_dup(s.c_str()); \
 		B.str(""); \
 		B.clear(); \
+	} \
+	else \
+		(void)0
+
+//
+// Throw exception if pointer is null
+//
+
+#define CHECK_PTR(A,B) \
+	if (A == NULL) \
+	{ \
+		TangoSys_OMemStream o; \
+		o << "Data pointer for attribute " << B << " is NULL!" << ends; \
+		Except::throw_exception((const char *)API_AttrOptProp,o.str(), \
+                            (const char *)"Attribute::set_value()"); \
 	} \
 	else \
 		(void)0

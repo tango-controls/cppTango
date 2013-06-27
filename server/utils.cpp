@@ -2,16 +2,16 @@ static const char *RcsId = "$Id$\n$Name$";
 
 //+=============================================================================
 //
-// file :               Tango_utils.cpp
+// file :				Tango_utils.cpp
 //
-// description :        C++ source for all the utilities used by Tango device
-//			server and mainly for the Tango class
+// description :		C++ source for all the utilities used by Tango device
+//						server and mainly for the Tango class
 //
 // project :            TANGO
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -51,6 +51,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <assert.h>
 #include <sys/time.h>
 #include <netdb.h>
+#include <sys/socket.h>
 #else
 #include <sys/timeb.h>
 #include <process.h>
@@ -135,12 +136,12 @@ Util *Util::instance(bool exit)
 	if (_instance == NULL)
 	{
 		if (exit == true)
-                	Util::print_err_message("Tango is not initialised !!!\nExiting");
+			Util::print_err_message("Tango is not initialised !!!\nExiting");
 		else
 		{
 			Except::throw_exception((const char*)"API_UtilSingletonNotCreated",
                         		   	(const char*)"Util singleton not created",
-					   	(const char*)"Util::instance");
+									(const char*)"Util::instance");
 		}
 	}
 	return _instance;
@@ -229,16 +230,16 @@ void Util::effective_job(int argc,char *argv[])
 			{
 				set_endpoint_specified(true);
 
-                string endPoint(argv[i + 1]);
-                string::size_type start,stop;
-                start = endPoint.find(':');
-                ++start;
-                start = endPoint.find(':',start);
-                stop = endPoint.find(':',start + 1);
-                ++start;
-                string ip = endPoint.substr(start,stop - start);
+				string endPoint(argv[i + 1]);
+				string::size_type start,stop;
+				start = endPoint.find(':');
+				++start;
+				start = endPoint.find(':',start);
+				stop = endPoint.find(':',start + 1);
+				++start;
+				string ip = endPoint.substr(start,stop - start);
 
-                set_specified_ip(ip);
+				set_specified_ip(ip);
 				break;
 			}
 
@@ -252,15 +253,15 @@ void Util::effective_job(int argc,char *argv[])
 			{
 				set_endpoint_specified(true);
 
-                string::size_type start,stop;
-                start = env_var.find(':');
-                ++start;
-                start = env_var.find(':',start);
-                stop = env_var.find(':',start + 1);
-                ++start;
-                string ip = env_var.substr(start,stop - start);
+				string::size_type start,stop;
+				start = env_var.find(':');
+				++start;
+				start = env_var.find(':',start);
+				stop = env_var.find(':',start + 1);
+				++start;
+				string ip = env_var.substr(start,stop - start);
 
-                set_specified_ip(ip);
+				set_specified_ip(ip);
 			}
 		}
 
@@ -268,14 +269,14 @@ void Util::effective_job(int argc,char *argv[])
 // Destroy the ORB created as a client (in case there is one)
 //
 
-        ApiUtil *au = Tango::ApiUtil::instance();
-        CORBA::ORB_ptr orb_clnt  = au->get_orb();
-        if (CORBA::is_nil(orb_clnt) == false)
-        {
-            orb_clnt->destroy();
-            CORBA::release(orb_clnt);
-            au->set_orb(CORBA::ORB::_nil());
-        }
+		ApiUtil *au = Tango::ApiUtil::instance();
+		CORBA::ORB_ptr orb_clnt  = au->get_orb();
+		if (CORBA::is_nil(orb_clnt) == false)
+		{
+			orb_clnt->destroy();
+			CORBA::release(orb_clnt);
+			au->set_orb(CORBA::ORB::_nil());
+		}
 
 //
 // Initialise CORBA ORB
@@ -685,6 +686,8 @@ void Util::check_args(int argc,char *argv[])
 							print_usage(argv[0]);
 						_UseDb = false;
 						ind++;
+
+						check_orb_endpoint(argc,argv);
 					}
 					break;
 
@@ -713,28 +716,7 @@ void Util::check_args(int argc,char *argv[])
 // Try to find the ORB endPoint option
 //
 
-						long arg_nb;
-						for (arg_nb = 2;arg_nb < argc;arg_nb++)
-						{
-							if (::strcmp(argv[arg_nb],"-ORBendPoint") == 0)
-							{
-								arg_nb++;
-								string endpoint = argv[arg_nb];
-								string::size_type pos;
-								if ((pos = endpoint.rfind(':')) == string::npos)
-								{
-									cerr << "Strange ORB endPoint specification" << endl;
-									print_usage(argv[0]);
-								}
-								ext->svr_port_num = endpoint.substr(++pos);
-								break;
-							}
-						}
-						if (arg_nb == argc)
-						{
-							cerr << "Missing ORB endPoint specification" << endl;
-							print_usage(argv[0]);
-						}
+						check_orb_endpoint(argc,argv);
 					}
 					break;
 
@@ -845,9 +827,9 @@ void Util::check_args(int argc,char *argv[])
 
 	if (ds_name.size() > MaxServerNameLength)
 	{
-                TangoSys_OMemStream o;
+		TangoSys_OMemStream o;
 
-	        o << "The device server name is too long! Max length is " << MaxServerNameLength << " characters" << ends;
+		o << "The device server name is too long! Max length is " << MaxServerNameLength << " characters" << ends;
 		print_err_message(o.str(),Tango::INFO);
 	}
 }
@@ -895,9 +877,9 @@ void Util::display_help_message()
 	}
 	catch (Tango::DevFailed &e)
 	{
-        string reason(e.errors[0].reason.in());
-        if (reason == "API_ReadOnlyMode")
-            o << "\n\nWarning: Control System configured with AccessControl but can't communicate with AccessControl server";
+		string reason(e.errors[0].reason.in());
+		if (reason == API_ReadOnlyMode)
+			o << "\n\nWarning: Control System configured with AccessControl but can't communicate with AccessControl server";
 		o << ends;
 		print_err_message(o.str(),Tango::INFO);
 	}
@@ -989,7 +971,7 @@ void Util::connect_db()
 			}
 			catch (Tango::DevFailed &e)
 			{
-				if (strcmp(e.errors[0].reason.in(),"API_TangoHostNotSet") == 0)
+				if (strcmp(e.errors[0].reason.in(),API_TangoHostNotSet) == 0)
 				{
 					print_err_message(e.errors[0].desc.in());
 				}
@@ -1009,8 +991,8 @@ void Util::connect_db()
 	}
 	else
 	{
-       	try
-        {
+		try
+		{
 #ifdef _TG_WINDOWS_
 			if (_service == true)
 				db = new Database(orb.in(),
@@ -1229,16 +1211,16 @@ void Util::init_host_name()
 
 		if (pos == string::npos)
 		{
-  			struct addrinfo hints;
+			struct addrinfo hints;
 
 			memset(&hints,0,sizeof(struct addrinfo));
 
-  			hints.ai_family    = AF_UNSPEC;		// supports both IPv4 and IPv6
-  			hints.ai_socktype  = SOCK_STREAM;
-  			hints.ai_flags = AI_NUMERICHOST;	// inhibits resolution of node parameter if it is not a numeric network address
-  			hints.ai_flags |= AI_ADDRCONFIG;
+			hints.ai_family    = AF_UNSPEC;		// supports both IPv4 and IPv6
+			hints.ai_socktype  = SOCK_STREAM;
+			hints.ai_flags = AI_NUMERICHOST;	// inhibits resolution of node parameter if it is not a numeric network address
+			hints.ai_flags |= AI_ADDRCONFIG;
 
-  			struct addrinfo	*info, *ptr;
+			struct addrinfo	*info, *ptr;
 			char tmp_host[NI_MAXHOST];
 			bool host_found = false;
 
@@ -1327,22 +1309,15 @@ void Util::create_notifd_event_supplier()
 
 void Util::create_zmq_event_supplier()
 {
-	if (_UseDb == true)
+	try
 	{
-		try
-		{
-			ext->zmq_event_supplier = ZmqEventSupplier::create(this);
-		}
-		catch (...)
-		{
-			ext->zmq_event_supplier = NULL;
-			if (_FileDb == true)
-				cerr << "Can't create zmq event supplier. Zmq event not available" << endl;
-		}
+		ext->zmq_event_supplier = ZmqEventSupplier::create(this);
 	}
-	else
+	catch (...)
 	{
 		ext->zmq_event_supplier = NULL;
+		if (_FileDb == true)
+			cerr << "Can't create zmq event supplier. Zmq event not available" << endl;
 	}
 }
 
@@ -1436,7 +1411,7 @@ void Util::server_already_running()
 				TangoSys_OMemStream o;
 				o << "Database error while trying to import " << dev_name << ends;
 
-				Except::throw_exception((const char *)"API_DatabaseAccess",
+				Except::throw_exception((const char *)API_DatabaseAccess,
 				                o.str(),
 				                (const char *)"Util::server_already_running");
 			}
@@ -1870,7 +1845,7 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 
 	if (cl_list_ptr == NULL)
 	{
-		Except::throw_exception((const char *)"API_DeviceNotFound",
+		Except::throw_exception((const char *)API_DeviceNotFound,
 				        (const char *)"It's too early to call this method. Devices are not created yet!",
 				        (const char *)"Util::get_device_list_by_class()");
 	}
@@ -1914,7 +1889,7 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Class " << class_name << " not found" << ends;
-		Except::throw_exception((const char *)"API_ClassNotFound",
+		Except::throw_exception((const char *)API_ClassNotFound,
 				        o.str(),
 				        (const char *)"Util::get_device_list_by_class()");
 	}
@@ -1955,11 +1930,15 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 	if (ret_ptr == NULL)
 	{
 		string d_name;
-		try
+
+		if (_UseDb == true)
 		{
-			db->get_device_alias(dev_name_lower,d_name);
+			try
+			{
+				db->get_device_alias(dev_name_lower,d_name);
+			}
+			catch (Tango::DevFailed &) {}
 		}
-		catch (Tango::DevFailed &) {}
 
 		if (d_name.size() != 0)
 		{
@@ -1989,7 +1968,7 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 	{
 		TangoSys_OMemStream o;
 		o << "Device " << dev_name << " not found" << ends;
-		Except::throw_exception((const char *)"API_DeviceNotFound",
+		Except::throw_exception((const char *)API_DeviceNotFound,
 				        o.str(),
 				        (const char *)"Util::get_device_by_name()");
 	}
@@ -2028,6 +2007,7 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 		{
 			string name(dev_list[j]->get_name());
 			transform(name.begin(),name.end(),name.begin(),::tolower);
+
 			if (name == dev_name)
 			{
 				found = true;
@@ -2061,7 +2041,6 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 		transform(name.begin(),name.end(),name.begin(),::tolower);
 		if (name == dev_name)
 		{
-			found = true;
 			ret_ptr = devlist[0];
 			j--;
 		}
@@ -2162,7 +2141,7 @@ std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 			temp_dl = dcl[i]->get_device_list();
 			dl.insert(dl.end(), temp_dl.begin(), temp_dl.end());
 		}
-     		return dl;
+		return dl;
 	}
 
 //
@@ -2293,34 +2272,30 @@ void Util::unregister_server()
 void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxType type))
 {
 #ifdef _TG_WINDOWS_
-        if (_win == true)
-        {
-                switch (type)
-                {
-                case Tango::STOP:
-                        MessageBox((HWND)NULL,err_mess,MessBoxTitle,MB_ICONSTOP);
-                        break;
+	if (_win == true)
+	{
+		switch (type)
+		{
+		case Tango::STOP:
+			MessageBox((HWND)NULL,err_mess,MessBoxTitle,MB_ICONSTOP);
+			break;
 
-                case Tango::INFO:
-                        MessageBox((HWND)NULL,err_mess,MessBoxTitle,MB_ICONINFORMATION);
-                        break;
-                }
-                Except::throw_exception((const char *)"API_StartupSequence",
-				        (const char *)"Error in device server startup sequence",
-                                        (const char *)"Util::print_err_mess");
-        }
-        else
-        {
-                cerr << err_mess << endl;
+		case Tango::INFO:
+			MessageBox((HWND)NULL,err_mess,MessBoxTitle,MB_ICONINFORMATION);
+			break;
+		}
+		Except::throw_exception((const char *)API_StartupSequence,
+					(const char *)"Error in device server startup sequence",
+					(const char *)"Util::print_err_mess");
+	}
+	else
+	{
+		cerr << err_mess << endl;
 		exit(-1);
-        }
+	}
 #else
-        cerr << err_mess << endl;
-#ifdef __linux
+	cerr << err_mess << endl;
 	_exit(-1);
-#else
-        exit(-1);
-#endif
 #endif
 }
 
@@ -2376,9 +2351,9 @@ void Util::clean_dyn_attr_prop()
 
 void Util::delete_restarting_device(string &d_name)
 {
-    vector<string>::iterator pos;
-    pos = remove(ext->restarting_devices.begin(),ext->restarting_devices.end(),d_name);
-    ext->restarting_devices.erase(pos,ext->restarting_devices.end());
+	vector<string>::iterator pos;
+	pos = remove(ext->restarting_devices.begin(),ext->restarting_devices.end(),d_name);
+	ext->restarting_devices.erase(pos,ext->restarting_devices.end());
 }
 
 #ifdef _TG_WINDOWS_

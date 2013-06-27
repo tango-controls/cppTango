@@ -10,7 +10,7 @@ INCLUDES = -I$(top_srcdir)/lib/cpp/server \
 # therefore the automake noinst variable
 noinst_LTLIBRARIES = libclient.la
 
-AM_CXXFLAGS=-D_TANGO_LIB @CPP_ELEVEN@
+AM_CXXFLAGS=-D_TANGO_LIB
 
 # These are the sources for the library.
 libclient_la_SOURCES = dbapi_class.cpp     	\
@@ -21,6 +21,7 @@ libclient_la_SOURCES = dbapi_class.cpp     	\
 					   dbapi_history.cpp   	\
 					   dbapi_attribute.cpp 	\
 					   dbapi_cache.cpp		\
+					   dbapi_serverdata.cpp \
                        devapi_attr.cpp     	\
                        devapi_base.cpp     	\
                        devapi_data.cpp     	\
@@ -43,7 +44,7 @@ libclient_la_SOURCES = dbapi_class.cpp     	\
 					   notifdeventconsumer.cpp \
 					   zmqeventconsumer.cpp
 
-					   
+
 
 tangoincludedir = $(includedir)/tango
 
