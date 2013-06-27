@@ -102,8 +102,8 @@ static unsigned char val_dc_luminance[] =
 
 static unsigned char bits_dc_chrominance[17] =
   { 0, 0, 3, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0 };
-static unsigned char val_dc_chrominance[] =
-  { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
+//static unsigned char val_dc_chrominance[] =
+//  { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 };
 
 static unsigned char bits_ac_luminance[17] =
   { 0, 0, 2, 1, 3, 3, 2, 4, 3, 5, 5, 4, 4, 0, 0, 1, 0x7d };
@@ -132,7 +132,7 @@ static unsigned char val_ac_luminance[] =
 
 static unsigned char bits_ac_chrominance[17] =
   { 0, 0, 2, 1, 2, 4, 4, 3, 4, 7, 5, 4, 4, 0, 1, 2, 0x77 };
-static unsigned char val_ac_chrominance[] =
+/*static unsigned char val_ac_chrominance[] =
   { 0x00, 0x01, 0x02, 0x03, 0x11, 0x04, 0x05, 0x21,
     0x31, 0x06, 0x12, 0x41, 0x51, 0x07, 0x61, 0x71,
     0x13, 0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91,
@@ -153,7 +153,7 @@ static unsigned char val_ac_chrominance[] =
     0xd3, 0xd4, 0xd5, 0xd6, 0xd7, 0xd8, 0xd9, 0xda,
     0xe2, 0xe3, 0xe4, 0xe5, 0xe6, 0xe7, 0xe8, 0xe9,
     0xea, 0xf2, 0xf3, 0xf4, 0xf5, 0xf6, 0xf7, 0xf8,
-    0xf9, 0xfa };
+    0xf9, 0xfa };*/
 
 // color conversion declaration (jpeg_color.cpp)
 void jpeg_init_color();

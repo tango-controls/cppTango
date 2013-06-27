@@ -1728,7 +1728,7 @@ void DServerClass::command_factory()
 	command_list.push_back(new ZmqEventSubscriptionChangeCmd("ZmqEventSubscriptionChange",
 							Tango::DEVVAR_STRINGARRAY, Tango::DEVVAR_LONGSTRINGARRAY,
 							"Events consumer wants to subscribe to",
-							"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint - Lg[0] = Tango lib release - Lg[1] = Device IDL release"));
+							"Str[0] = Heartbeat pub endpoint - Str[1] = Event pub endpoint\nLg[0] = Tango lib release - Lg[1] = Device IDL release\nLg[2] = Subscriber HWM - Lg[3] = Multicast rate\nLg[4] = Multicast IVL - Lg[5] = ZMQ release"));
 
 	command_list.push_back(new EventConfirmSubscriptionCmd("EventConfirmSubscription",
 							Tango::DEVVAR_STRINGARRAY, Tango::DEV_VOID,

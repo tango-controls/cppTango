@@ -72,7 +72,7 @@ public :
 	TANGO_IMP_EXP static DServerSignal *instance();
 	~DServerSignal() {};
 
-#if (defined __GLIBC__)
+#ifndef _TG_WINDOWS_
 	void register_class_signal(long, bool, DeviceClass *);
 	void register_dev_signal(long, bool, DeviceImpl *);
 

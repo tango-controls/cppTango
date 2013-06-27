@@ -20,7 +20,7 @@ libtango_la_LIBADD = ../client/libclient.la	\
 # generate the correct .so version
 libtango_la_LDFLAGS=-version-info $(VERSION_INFO)
 
-AM_CXXFLAGS=-D_TANGO_LIB @CPP_ELEVEN@
+AM_CXXFLAGS=-D_TANGO_LIB
 
 if DARWIN_ENABLED
 AM_LDFLAGS=-flat_namespace --disable-dependency-tracking

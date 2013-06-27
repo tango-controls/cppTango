@@ -171,13 +171,12 @@ std::vector<std::string>& makeStringArray(const std::string& input, vector<strin
 
 	std::string delimiter = "\n";
   int iPos = 0;
-  int newPos = -1;
   int sizeS2 = delimiter.size();
   int isize = input.size();
 
   std::vector<int> positions;
 
-  newPos = input.find (delimiter, 0);
+  int newPos = input.find (delimiter, 0);
 
   if( newPos < 0 ) { return results; }
 
@@ -1137,7 +1136,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 	data_out->length(2);
 	(*data_out)[0] = CORBA::string_dup( (*data_in)[0] ); index++;
 	num_prop = data_in->length() - 1;
-	sprintf(num_prop_str,"%d",num_prop);
+	sprintf(num_prop_str,"%ud",num_prop);
 	(*data_out)[index] = CORBA::string_dup(num_prop_str); index++;
 
 	if (data_in->length() >= 2)
@@ -1333,7 +1332,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 	data_out->length(2);
 	(*data_out)[0] = CORBA::string_dup( (*data_in)[0] ); index++;
 	num_attr = data_in->length() - 1;
-	sprintf(num_attr_str, "%d", num_attr);
+	sprintf(num_attr_str, "%ud", num_attr);
 	(*data_out)[index] = CORBA::string_dup( num_attr_str ); index++;
 
 
@@ -1356,7 +1355,7 @@ CORBA::Any*   FileDatabase :: DbGetDeviceAttributeProperty(CORBA::Any& send)
 
 					//cout << "Proprieta' " << (*dev_it)->attribute_properties[j]->attribute_name << " trovata." << endl;
 					num_prop = (*dev_it)->attribute_properties[j]->properties.size();
-					sprintf(num_prop_str, "%d", num_prop);
+					sprintf(num_prop_str, "%ud", num_prop);
 					//cout << "num proprieta'= " << num_prop_str << endl;
 					num_attr_find++;
 
@@ -1565,7 +1564,7 @@ CORBA::Any*   FileDatabase :: DbGetClassProperty(CORBA::Any& send)
 	data_out->length(2);
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]); index++;
 	num_prop = data_in->length() - 1;
-	sprintf(num_prop_str,"%d",num_prop);
+	sprintf(num_prop_str,"%ud",num_prop);
 	(*data_out)[index] = CORBA::string_dup(num_prop_str); index++;
 
 	unsigned long nb_classes_defined = m_server.classes.size();
@@ -1761,7 +1760,7 @@ CORBA::Any*   FileDatabase :: DbGetClassAttributeProperty(CORBA::Any& send)
 	data_out->length(2);
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]); index++;
 	num_attr = data_in->length() - 1;
-	sprintf(num_attr_str,"%d",num_attr);
+	sprintf(num_attr_str,"%ud",num_attr);
 	(*data_out)[1] = CORBA::string_dup(num_attr_str); index++;
 
 	std::vector<t_tango_class*>::iterator it;
@@ -2233,7 +2232,7 @@ CORBA::Any*  FileDatabase :: DbGetProperty(CORBA::Any& send)
 	send >>= data_in;
 
 	data_out->length(2);
-	sprintf(num_attr_str,"%lud",data_in->length()-1);
+	sprintf(num_attr_str,"%ud",data_in->length()-1);
 	(*data_out)[0] = CORBA::string_dup((*data_in)[0]);
 	(*data_out)[1] = CORBA::string_dup(zero_str);
 

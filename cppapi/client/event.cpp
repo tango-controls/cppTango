@@ -357,7 +357,6 @@ void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData 
 	if (ipos == channel_map.end())
 	{
 		connect_event_channel(channel_name,device_proxy->get_device_db(),false,dd);
-		ipos = channel_map.find(channel_name);
 	}
 
 

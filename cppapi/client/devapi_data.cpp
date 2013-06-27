@@ -379,9 +379,7 @@ int DeviceData::get_type()
 
 bool DeviceData::operator >> (bool& datum)
 {
-	bool ret = true;
-
-	ret = any >>= CORBA::Any::to_boolean(datum);
+	bool ret = any >>= CORBA::Any::to_boolean(datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -406,9 +404,7 @@ bool DeviceData::operator >> (bool& datum)
 
 bool DeviceData::operator >> (short& datum)
 {
-	bool ret = true;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -434,9 +430,7 @@ bool DeviceData::operator >> (short& datum)
 
 bool DeviceData::operator >> (unsigned short& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -461,9 +455,7 @@ bool DeviceData::operator >> (unsigned short& datum)
 
 bool DeviceData::operator >> (DevLong& datum)
 {
-	bool ret;
-
-	ret = (any >>= datum);
+	bool ret = (any >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -488,9 +480,7 @@ bool DeviceData::operator >> (DevLong& datum)
 
 bool DeviceData::operator >> (DevULong& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -515,9 +505,7 @@ bool DeviceData::operator >> (DevULong& datum)
 
 bool DeviceData::operator >> (DevLong64 & datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -542,9 +530,7 @@ bool DeviceData::operator >> (DevLong64 & datum)
 
 bool DeviceData::operator >> (DevULong64 & datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -569,9 +555,7 @@ bool DeviceData::operator >> (DevULong64 & datum)
 
 bool DeviceData::operator >> (float& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -597,9 +581,7 @@ bool DeviceData::operator >> (float& datum)
 
 bool DeviceData::operator >> (double& datum)
 {
-	bool ret = true;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -624,10 +606,8 @@ bool DeviceData::operator >> (double& datum)
 
 bool DeviceData::operator >> (string& datum)
 {
-	bool ret;
-
 	const char *c_string = NULL;
-	ret = (any >>= c_string);
+	bool ret = (any >>= c_string);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -656,9 +636,7 @@ bool DeviceData::operator >> (string& datum)
 
 bool DeviceData::operator >> (const char*& datum)
 {
-	bool ret;
-
-	ret = any >>= datum;
+	bool ret = any >>= datum;
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -683,9 +661,7 @@ bool DeviceData::operator >> (const char*& datum)
 
 bool DeviceData::operator >> (DevState& datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -710,10 +686,8 @@ bool DeviceData::operator >> (DevState& datum)
 
 bool DeviceData::operator >> (vector<unsigned char>& datum)
 {
-	bool ret;
-
 	const DevVarCharArray *char_array = NULL;
-	ret = (any.inout() >>= char_array);
+	bool ret = (any.inout() >>= char_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -757,9 +731,7 @@ bool DeviceData::operator >> (vector<unsigned char>& datum)
 
 bool DeviceData::operator >> (const DevVarCharArray* &datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -784,10 +756,8 @@ bool DeviceData::operator >> (const DevVarCharArray* &datum)
 
 bool DeviceData::operator >> (vector<short>& datum)
 {
-	bool ret;
-
 	const DevVarShortArray *short_array = NULL;
-	ret = (any.inout() >>= short_array);
+	bool ret = (any.inout() >>= short_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -831,9 +801,7 @@ bool DeviceData::operator >> (vector<short>& datum)
 
 bool DeviceData::operator >> (const DevVarShortArray* &datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 
 	if (ret == false)
 	{
@@ -859,10 +827,8 @@ bool DeviceData::operator >> (const DevVarShortArray* &datum)
 
 bool DeviceData::operator >> (vector<unsigned short>& datum)
 {
-	bool ret = true;
-
 	const DevVarUShortArray *ushort_array = NULL;
-	ret = (any.inout() >>= ushort_array);
+	bool ret = (any.inout() >>= ushort_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -906,9 +872,7 @@ bool DeviceData::operator >> (vector<unsigned short>& datum)
 
 bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -933,11 +897,9 @@ bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 
 bool DeviceData::operator >> (vector<DevLong>& datum)
 {
-	bool ret = true;
-
 	const DevVarLongArray *long_array = NULL;
 
-	ret = (any.inout() >>= long_array);
+	bool ret = (any.inout() >>= long_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -981,9 +943,7 @@ bool DeviceData::operator >> (vector<DevLong>& datum)
 
 bool DeviceData::operator >> (const DevVarLongArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1008,11 +968,9 @@ bool DeviceData::operator >> (const DevVarLongArray* &datum)
 
 bool DeviceData::operator >> (vector<DevULong>& datum)
 {
-	bool ret = true;
-
 	const DevVarULongArray *ulong_array = NULL;
 
-	ret = (any.inout() >>= ulong_array);
+	bool ret = (any.inout() >>= ulong_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1056,9 +1014,7 @@ bool DeviceData::operator >> (vector<DevULong>& datum)
 
 bool DeviceData::operator >> (const DevVarULongArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1085,9 +1041,7 @@ bool DeviceData::operator >> (const DevVarULongArray* &datum)
 
 bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1113,9 +1067,7 @@ bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 
 bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1140,10 +1092,8 @@ bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 
 bool DeviceData::operator >> (vector<DevLong64>& datum)
 {
-	bool ret = true;
-
 	const DevVarLong64Array *ll_array = NULL;
-	ret = (any.inout() >>= ll_array);
+	bool ret = (any.inout() >>= ll_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1185,10 +1135,8 @@ bool DeviceData::operator >> (vector<DevLong64>& datum)
 
 bool DeviceData::operator >> (vector<DevULong64>& datum)
 {
-	bool ret = true;
-
 	const DevVarULong64Array *ull_array = NULL;
-	ret = (any.inout() >>= ull_array);
+	bool ret = (any.inout() >>= ull_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1230,10 +1178,8 @@ bool DeviceData::operator >> (vector<DevULong64>& datum)
 
 bool DeviceData::operator >> (vector<float>& datum)
 {
-	bool ret = true;
-
 	const DevVarFloatArray *float_array = NULL;
-	ret = (any.inout() >>= float_array);
+	bool ret = (any.inout() >>= float_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1277,9 +1223,7 @@ bool DeviceData::operator >> (vector<float>& datum)
 
 bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 {
-	bool ret = true;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1304,10 +1248,9 @@ bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 
 bool DeviceData::operator >> (vector<double>& datum)
 {
-	bool ret = true;
 	const DevVarDoubleArray *double_array = NULL;
 
-	ret = (any.inout() >>= double_array);
+	bool ret = (any.inout() >>= double_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1351,9 +1294,7 @@ bool DeviceData::operator >> (vector<double>& datum)
 
 bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 {
-	bool ret;
-
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1378,10 +1319,9 @@ bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 
 bool DeviceData::operator >> (vector<string>& datum)
 {
-	bool ret;
 	const DevVarStringArray *string_array = NULL;
 
-	ret = (any.inout() >>= string_array);
+	bool ret = (any.inout() >>= string_array);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1424,8 +1364,7 @@ bool DeviceData::operator >> (vector<string>& datum)
 
 bool DeviceData::operator >> (const DevVarStringArray* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1451,8 +1390,7 @@ bool DeviceData::operator >> (const DevVarStringArray* &datum)
 
 bool DeviceData::operator >> (const DevEncoded* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1478,9 +1416,8 @@ bool DeviceData::operator >> (const DevEncoded* &datum)
 
 bool DeviceData::operator >> (DevEncoded &datum)
 {
-    bool ret = true;
     const DevEncoded *tmp_enc = NULL;
-	ret = (any.inout() >>= tmp_enc);
+	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1773,8 +1710,7 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_dat
 
 bool DeviceData::operator >> (const DevVarLongStringArray* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1877,8 +1813,7 @@ bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_d
 
 bool DeviceData::operator >> (const DevVarDoubleStringArray* &datum)
 {
-	bool ret = true;
-	ret = (any.inout() >>= datum);
+	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1953,9 +1888,8 @@ void DeviceData::insert (const char *str_datum,unsigned char *data,unsigned int 
 
 bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigned int &data_size)
 {
-    bool ret = true;
     const DevEncoded *tmp_enc = NULL;
-	ret = (any.inout() >>= tmp_enc);
+	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))
@@ -1997,9 +1931,8 @@ bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigne
 
 bool DeviceData::extract(string &str,vector<unsigned char> &datum)
 {
-    bool ret = true;
     const DevEncoded *tmp_enc = NULL;
-	ret = (any.inout() >>= tmp_enc);
+	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
 		if (exceptions_flags.test(isempty_flag))

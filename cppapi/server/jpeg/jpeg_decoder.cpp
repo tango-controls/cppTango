@@ -701,7 +701,7 @@ int jpeg_decode(int jpegSize,unsigned char *jpegData,
   errCode = jpeg_process_marker(&decoder,bs);ERROR(errCode);
   errCode = jpeg_decoder_init(&decoder);ERROR(errCode);
 
-  int nbMCU   = decoder.mcuNbCol * decoder.mcuNbRow;
+//  int nbMCU   = decoder.mcuNbCol * decoder.mcuNbRow;
   int rWidth  = decoder.mcuNbRow * decoder.mcuWidth;
   int rHeight = decoder.mcuNbCol * decoder.mcuHeight;
   int mcuSize = decoder.mcuNbBlock*64;

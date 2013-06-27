@@ -1415,7 +1415,7 @@ void DeviceClass::get_mcast_event(DServer *dserv)
 		for (unsigned int j = 0;j < att_list.size();++j)
 		{
 			dserv->mcast_event_for_att(device_list[i]->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
-			if (m_cast.size() != 0)
+			if (m_cast.empty() == false)
 				att_list[j]->set_mcast_event(m_cast);
 		}
 	}

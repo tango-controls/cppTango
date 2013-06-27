@@ -271,7 +271,7 @@ void Util::polling_configure()
 		int sleeping_time = poll_ths[loop]->smallest_upd / nb_cmd;
 		int delta_time = 0;
 
-		long delta_os = 15;
+		long delta_os = 5;
 		if (delta_os < sleeping_time)
 			sleeping_time = sleeping_time - delta_os;
 
@@ -700,7 +700,8 @@ void Util::clean_attr_polled_prop()
 			if (ite_attr != polled_att_list.end())
 			{
 				ite_attr = polled_att_list.erase(ite_attr);
-				polled_att_list.erase(ite_attr);
+				if (ite_attr != polled_att_list.end())
+					polled_att_list.erase(ite_attr);
 			}
 			else
 			{

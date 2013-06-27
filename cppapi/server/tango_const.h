@@ -46,6 +46,8 @@ namespace Tango
 #define     TANGO_VERSION_MINOR     0
 #define     TANGO_VERSION_PATCH     2
 
+#define		TANGO_BASE_CLASS		Tango::Device_5Impl
+
 #define     build_string(s)         #s
 #define     xbuild_string(s)        build_string(s)
 #define     TgLibVers               xbuild_string(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH)
@@ -75,7 +77,7 @@ namespace Tango
 #define		PollCommand				"command"
 #define		PollAttribute			"attribute"
 
-#define		MIN_POLL_PERIOD			20
+#define		MIN_POLL_PERIOD			5
 #define		DELTA_T					1002000000
 #define		MIN_DELTA_WORK			20000
 #define		TIME_HEARTBEAT			2000
@@ -933,6 +935,7 @@ typedef struct _SendEventType
 #define		FormatNotSpec_FL	"%6.2f"
 #define		FormatNotSpec_INT	"%d"
 #define		FormatNotSpec_STR	"%s"
+#define		FormatNotSpec		FormatNotSpec_FL
 
 #define		NotANumber			"NaN"
 

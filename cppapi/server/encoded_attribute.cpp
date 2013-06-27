@@ -253,11 +253,10 @@ void EncodedAttribute::decode_rgb32(DeviceAttribute *attr,int *width,int *height
 	}
 
 	unsigned char *rawBuff = NULL;
-	int size = -1;
 
     DevVarEncodedArray &encData = encDataSeq.inout();
     DevVarCharArray &encBuff = encData[0].encoded_data;
-    size = encBuff.length();
+    int size = encBuff.length();
     rawBuff = encBuff.get_buffer(false);
 
 	if( isRGB )
@@ -355,11 +354,10 @@ void EncodedAttribute::decode_gray8(DeviceAttribute *attr,int *width,int *height
 	}
 
 	unsigned char *rawBuff = NULL;
-	int size = -1;
 
     DevVarEncodedArray &encData = encDataSeq.inout();
     DevVarCharArray &encBuff = encData[0].encoded_data;
-    size = encBuff.length();
+    int size = encBuff.length();
     rawBuff = encBuff.get_buffer(false);
 
 	if( isGrey )

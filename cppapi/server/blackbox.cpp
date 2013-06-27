@@ -1194,12 +1194,12 @@ void BlackBox::build_info_as_str(long index)
 // Return in case of badly formed address
 //
 
-	bool ipv6=false;
 	if ((box[index].host_ip_str[0] != '\0') &&
 	    (box[index].host_ip_str[0] != 'p') &&
 		(box[index].host_ip_str[5] != 'u') &&
         (box[index].host_ip_str[0] != 'i'))
 	{
+		bool ipv6=false;
 		string omni_addr = box[index].host_ip_str;
 		string::size_type pos;
 		if ((pos = omni_addr.find(':')) == string::npos)

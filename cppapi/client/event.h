@@ -86,8 +86,9 @@ class EventData
 {
 public :
 ///@privatesection
-	EventData(DeviceProxy *dev,string &nam,string &evt,Tango::DeviceAttribute *attr_value_in,
-	DevErrorList &errors_in);
+	EventData() {}
+	EventData(DeviceProxy *dev,string &nam,string &evt,Tango::DeviceAttribute *attr_value_in,DevErrorList &errors_in);
+
 	~EventData();
 	EventData(const EventData &);
 	EventData & operator=(const EventData &);
@@ -169,6 +170,7 @@ class AttrConfEventData
 {
 public :
 ///@privatesection
+	AttrConfEventData() {}
 	AttrConfEventData(DeviceProxy *dev,string &nam,string &evt,
 	                  Tango::AttributeInfoEx *attr_conf_in,
 	                  DevErrorList &errors_in);
@@ -252,6 +254,7 @@ class DataReadyEventData
 {
 public :
 ///@privatesection
+	DataReadyEventData() {}
 	DataReadyEventData(DeviceProxy *,AttDataReady *,string &evt,DevErrorList &);
 	~DataReadyEventData() {};
 	DataReadyEventData(const DataReadyEventData &);

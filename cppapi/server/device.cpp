@@ -262,7 +262,7 @@ void DeviceImpl::stop_polling(bool with_db_upd)
 //
 
 	vector<PollingThreadInfo *> &v_th_info = tg->get_polling_threads_info();
-	if (v_th_info.size() == 0)
+	if (v_th_info.empty() == true)
 		return;
 
 //
@@ -2194,7 +2194,7 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
 				attr.get_properties((*back)[i]);
 			}
 		}
-		catch (Tango::DevFailed e)
+		catch (Tango::DevFailed &e)
 		{
 			delete back;
 			throw;
@@ -3014,7 +3014,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList& values)
 					att.set_written_date();
 			}
 
-			if ((Tango::Util::_UseDb == true) && (att_in_db.size() != 0))
+			if ((Tango::Util::_UseDb == true) && (att_in_db.empty() == false))
 			{
 				try
 				{

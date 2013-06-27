@@ -62,7 +62,6 @@ void Except::print_exception(const CORBA::Exception &e)
 {
 
 	const CORBA::SystemException *se;
-	const CORBA::UserException *ue;
 
 //
 // For a CORBA::SystemException, use the OB function
@@ -77,7 +76,7 @@ void Except::print_exception(const CORBA::Exception &e)
 // If it is a CORBA::UserException
 //
 
-	else if ((ue = dynamic_cast<const CORBA::UserException *>(&e)) != NULL)
+	else if (dynamic_cast<const CORBA::UserException *>(&e) != NULL)
 	{
 		const Tango::DevFailed *te;
 		const Tango::NamedDevFailedList *mdf;
@@ -221,7 +220,6 @@ void Except::print_exception(const CORBA::Exception &e)
 
 char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 {
-	const CORBA::UNKNOWN *unk;
 	const CORBA::BAD_PARAM *bad;
 	const CORBA::NO_MEMORY *mem;
 	const CORBA::IMP_LIMIT *lim;
@@ -248,7 +246,7 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 // We are using CORBA _downcast() method !!!
 //
 
-	if ((unk = CORBA::UNKNOWN::_downcast(e)) != 0)
+	if (CORBA::UNKNOWN::_downcast(e) != 0)
 	{
 		::strcpy(mess,"UNKNOWN CORBA system exception");
 	}

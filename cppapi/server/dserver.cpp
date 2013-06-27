@@ -80,7 +80,7 @@ ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 //-----------------------------------------------------------------------------
 
 DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState s,const char *st)
-:Device_5Impl(cl_ptr,n,d,s,st)
+:TANGO_BASE_CLASS(cl_ptr,n,d,s,st)
 {
 	process_name = Tango::Util::instance()->get_ds_exec_name();
 	instance_name = Tango::Util::instance()->get_ds_inst_name();
@@ -1036,7 +1036,7 @@ void DServer::restart(string &d_name)
 	for (unsigned int j = 0;j < att_list.size();++j)
 	{
 		mcast_event_for_att(new_dev->get_name_lower(),att_list[j]->get_name_lower(),m_cast);
-		if (m_cast.size() != 0)
+		if (m_cast.empty() == false)
 			att_list[j]->set_mcast_event(m_cast);
 	}
 

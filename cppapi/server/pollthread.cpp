@@ -1013,9 +1013,19 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 // Warning: On Windows 64 bits, long are 32 bits data. Convert everything to DevULong64 to be sure
 // that we will have computation on unsigned 64 bits data
 //
+// To tune the list
+// - Take obj j and compute when it should be polled (next_work)
+// - Compute when object j-1 should be polled (prev_obj_work)
+// - Compute the number of poll between these two dates (n)
+// - Compute date of previous object polling just before "next_work"
+// - Assign next_work to this date and add
+//       the time needed to execute previous object polling
+//		 the delta computed from the smallest upd and the obj number
+//
 
 		Tango::DevULong64 now_us = ((Tango::DevULong64)now.tv_sec * 1000000LL) + (Tango::DevULong64)now.tv_usec;
 		Tango::DevULong64 next_tuning = now_us + (POLL_LOOP_NB * (Tango::DevULong64)min_upd);
+
 		list<WorkItem> new_works;
 		new_works.push_front(works.front());
 
@@ -1030,9 +1040,9 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 
 			if (next_work < next_tuning)
 			{
-				Tango::DevULong64 prev_work = ((Tango::DevULong64)ite_prev->wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)ite_prev->wake_up_date.tv_usec;
-				Tango::DevULong64 n = (next_work - prev_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
-				Tango::DevULong64 next_prev = prev_work + (n * (ite_prev->update * 1000LL));
+				Tango::DevULong64 prev_obj_work = ((Tango::DevULong64)ite_prev->wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)ite_prev->wake_up_date.tv_usec;
+				Tango::DevULong64 n = (next_work - prev_obj_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
+				Tango::DevULong64 next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
 
 				wo.wake_up_date.tv_sec = (long)(next_prev / 1000000LL);
 				wo.wake_up_date.tv_usec = (long)(next_prev % 1000000LL);

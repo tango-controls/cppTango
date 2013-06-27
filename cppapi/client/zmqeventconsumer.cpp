@@ -2338,7 +2338,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             else
                             {
                                 if (err_missed_event == true)
-                                    ev_queue->insert_event(missed_event_data);
+                                {
+									EventData *missed_event_data_copy = new EventData;
+									*missed_event_data_copy = *missed_event_data;
+
+                                    ev_queue->insert_event(missed_event_data_copy);
+								}
                                 ev_queue->insert_event(event_data);
                                 if (vers == 4 && cb_ctr == cb_nb)
                                     delete dev_attr;
@@ -2391,8 +2396,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             // into the event queue
                             else
                             {
-                               if (err_missed_event == true)
-                                    ev_queue->insert_event(missed_conf_event_data);
+								if (err_missed_event == true)
+								{
+									AttrConfEventData *missed_conf_event_data_copy = new AttrConfEventData;
+									*missed_conf_event_data_copy = *missed_conf_event_data;
+
+                                    ev_queue->insert_event(missed_conf_event_data_copy);
+								}
                                 ev_queue->insert_event(event_data);
                             }
                         }
@@ -2423,7 +2433,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             else
                             {
                                 if (err_missed_event == true)
-                                    ev_queue->insert_event(missed_ready_event_data);
+                                {
+									DataReadyEventData *missed_ready_event_data_copy = new DataReadyEventData;
+									*missed_ready_event_data_copy = *missed_ready_event_data;
+
+                                    ev_queue->insert_event(missed_ready_event_data_copy);
+								}
                                 ev_queue->insert_event(event_data);
                             }
                         }
