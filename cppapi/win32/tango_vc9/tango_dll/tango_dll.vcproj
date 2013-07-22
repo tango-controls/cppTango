@@ -738,6 +738,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\client\dbapi_serverdata.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\dev_event.cpp"
 				>
 			</File>
@@ -1999,11 +2003,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
