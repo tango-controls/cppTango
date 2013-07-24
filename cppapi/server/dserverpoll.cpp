@@ -902,8 +902,37 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		{
 			DbData send_data;
 			send_data.push_back(DbDatum("polling_threads_pool_conf"));
-			send_data[0] << tg->get_poll_pool_conf();
 
+			vector<string> &ppc = tg->get_poll_pool_conf();
+
+			vector<string>::iterator iter;
+			vector<string> new_ppc;
+
+			for (iter = ppc.begin();iter != ppc.end();++iter)
+			{
+				string v_entry = *iter;
+				unsigned int length = v_entry.size();
+				int nb_lines = (length / MaxDevPropLength) + 1;
+
+				if (nb_lines > 1)
+				{
+					string::size_type start;
+					start = 0;
+
+					for (int i = 0;i < nb_lines;i++)
+					{
+						string sub = v_entry.substr(start,MaxDevPropLength);
+						if (i < (nb_lines - 1))
+							sub = sub + '\\';
+						start = start + MaxDevPropLength;
+						new_ppc.push_back(sub);
+					}
+				}
+				else
+					new_ppc.push_back(v_entry);
+			}
+
+			send_data[0] << new_ppc;
 			tg->get_dserver_device()->get_db_device()->put_property(send_data);
 		}
 	}

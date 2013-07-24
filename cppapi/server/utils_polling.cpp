@@ -1578,7 +1578,6 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 								string sub = v_entry.substr(start,MaxDevPropLength);
 								if (i < (nb_lines - 1))
 									sub = sub + '\\';
-								cout << "Sub string = " << sub << endl;
 								start = start + MaxDevPropLength;
 								new_vect.push_back(sub);
 							}
