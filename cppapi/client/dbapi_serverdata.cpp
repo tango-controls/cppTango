@@ -444,13 +444,14 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 	for (size_t loop = 0; loop < att_list.size();loop++)
 	{
 		DbData db_data;
-		db->get_device_attribute_property(att_list[loop],db_data);
-		for (size_t lo = 0;lo < db_data.size();lo++)
+		db_data.push_back(DbDatum(att_list[loop]));
+		db->get_device_attribute_property(na,db_data);
+		for (size_t lo = 1;lo < db_data.size();lo++)
 		{
 			if (db_data[lo].is_empty() == false)
 			{
 				TangoAttribute ta(att_list[loop]);
-				ta.push_back(TangoProperty(db_data[loop].name,db_data[loop].value_string));
+				ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
 				attributes.push_back(ta);
 			}
 		}
