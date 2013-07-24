@@ -2,7 +2,7 @@
 // dbapi.h -	include file for TANGO database api
 //
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -750,7 +750,7 @@ public :
  * Get list of attribute with data in database for a specific device
  *
  * Get the list of attribute(s) with some data defined in database for a specified device.
- * Note that this is not the list of all device attributes because not all attribute(s) have 
+ * Note that this is not the list of all device attributes because not all attribute(s) have
  * some data in database
  *
  * @param [in] dev_name The device name

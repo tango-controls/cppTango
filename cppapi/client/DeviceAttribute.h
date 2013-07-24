@@ -3,7 +3,7 @@
 // DeviceAttribute.h - include file for TANGO device api class DeviceAttribute
 //
 //
-// Copyright (C) :      2012
+// Copyright (C) :      2012,2013
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE

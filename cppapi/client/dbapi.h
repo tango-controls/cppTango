@@ -974,6 +974,13 @@ private:
 // configuration from one database to another one
 //
 
+/**
+ * Class used to move/copy a complete device server process database configuration
+ * from one Tango host to another
+ *
+ * @headerfile tango.h
+ * @ingroup DBase
+ */
 class DbServerData
 {
 private:
@@ -1032,16 +1039,58 @@ private:
     vector<TangoClass>  classes;
 
 public:
-	DbServerData(const string &,const string &);
+/**
+ * Create a DbServerData instance.
+ *
+ * A constructor for a DbServerData object for a device server process defined in the TANGO database specified by
+ * the TANGO_HOST environment variable
+ *
+ * @param [in] ds_exec_name	The device server process executable name
+ * @param [in] ds_inst_name The device server process instance name
+ *
+ */
+	DbServerData(const string &ds_exec_name,const string &ds_inst_name);
+/**
+ * Check if device(s) already defined
+ *
+ * Return true if one of the device defined in the device server process with configuration in this instance is
+ * already defined in the database defined by the Tango host given as parameter
+ *
+ * @param [in] tg_host The tango host
+ * @return Boolean set to true if one of the device server device is defined in the Tango host given as parameter
+ */
+	bool already_exist(const string &tg_host);
+/**
+ * Put device server database configuration in new Tango host
+ *
+ * Store the device server process database configuration in the database specified by the given Tango host parameter
+ *
+ * @param [in] tg_host The tango host
+ */
+	void put_in_database(const string &tg_host);
+/**
+ * Remove device server database configuration from Tango host
+ *
+ * Remove the device server process database configuration from the database specified by the given Tango host parameter
+ *
+ * @param [in] tg_host The tango host
+ */
+	void remove(const string &tg_host);
+/**
+ * Remove device server database configuration from default Tango host
+ *
+ * Remove the device server process database configuration from the database specified by the environment variable
+ * TANGO_HOST
+ *
+ * @param [in] tg_host The tango host
+ */
+	void remove();
+
+///@privatesection
 	~DbServerData() {}
 
 	const string &get_name() {return full_server_name;}
 	vector<TangoClass> &get_classes() {return classes;}
-
-	void put_in_database(const string &);
-	bool already_exist(const string &);
-	void remove();
-	void remove(const string &);
 };
 
 /*
