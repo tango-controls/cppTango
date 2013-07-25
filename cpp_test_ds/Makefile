@@ -51,9 +51,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(BIN_DIR)
 else
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(BIN_DIR)
 endif
 
 ##############################################################################
@@ -63,9 +63,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
 else
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
 endif
 
 ##############################################################################
@@ -76,10 +76,11 @@ endif
 
 
 ifdef prefix
-ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(BIN_DIR)
 else
-ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
-#ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(BIN_DIR)
+#ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
+ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(BIN_DIR)
 endif
 
 ifdef linux
