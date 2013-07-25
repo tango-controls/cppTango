@@ -133,13 +133,13 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_NullP
 	if (nc_source.Long64Seq.operator->() != NULL)
 		Long64Seq = nc_source.Long64Seq._retn();
 	if (nc_source.ULongSeq.operator->() != NULL)
-		Long64Seq = nc_source.ULongSeq._retn();
+		ULongSeq = nc_source.ULongSeq._retn();
 	if (nc_source.ULong64Seq.operator->() != NULL)
-		Long64Seq = nc_source.ULong64Seq._retn();
+		ULong64Seq = nc_source.ULong64Seq._retn();
 	if (nc_source.StateSeq.operator->() != NULL)
-		Long64Seq = nc_source.StateSeq._retn();
+		StateSeq = nc_source.StateSeq._retn();
 	if (nc_source.EncodedSeq.operator->() != NULL)
-		Long64Seq = nc_source.EncodedSeq._retn();
+		EncodedSeq = nc_source.EncodedSeq._retn();
 #endif
 
 	d_state = source.d_state;
