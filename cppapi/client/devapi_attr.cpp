@@ -346,30 +346,69 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         DeviceAttribute &nc_rval = const_cast<DeviceAttribute &>(rval);
         if (nc_rval.LongSeq.operator->() != NULL)
             LongSeq = nc_rval.LongSeq._retn();
+		else
+			LongSeq = NULL;
+
         if (nc_rval.ShortSeq.operator->() != NULL)
             ShortSeq = nc_rval.ShortSeq._retn();
+		else
+			ShortSeq = NULL;
+
         if (nc_rval.DoubleSeq.operator->() != NULL)
             DoubleSeq = nc_rval.DoubleSeq._retn();
+		else
+			DoubleSeq = NULL;
+
         if (nc_rval.StringSeq.operator->() != NULL)
             StringSeq = nc_rval.StringSeq._retn();
+		else
+			StringSeq = NULL;
+
         if (nc_rval.FloatSeq.operator->() != NULL)
             FloatSeq = nc_rval.FloatSeq._retn();
+		else
+			FloatSeq = NULL;
+
         if (nc_rval.BooleanSeq.operator->() != NULL)
             BooleanSeq = nc_rval.BooleanSeq._retn();
+		else
+			BooleanSeq = NULL;
+
         if (nc_rval.UShortSeq.operator->() != NULL)
             UShortSeq = nc_rval.UShortSeq._retn();
+		else
+			UShortSeq = NULL;
+
         if (nc_rval.UCharSeq.operator->() != NULL)
             UCharSeq = nc_rval.UCharSeq._retn();
+		else
+			UCharSeq = NULL;
+
         if (nc_rval.Long64Seq.operator->() != NULL)
             Long64Seq = nc_rval.Long64Seq._retn();
+		else
+			Long64Seq = NULL;
+
         if (nc_rval.ULongSeq.operator->() != NULL)
             ULongSeq = nc_rval.ULongSeq._retn();
+		else
+			ULongSeq = NULL;
+
         if (nc_rval.ULong64Seq.operator->() != NULL)
             ULong64Seq = nc_rval.ULong64Seq._retn();
+		else
+			ULong64Seq = NULL;
+
         if (nc_rval.StateSeq.operator->() != NULL)
             StateSeq = nc_rval.StateSeq._retn();
+		else
+			StateSeq = NULL;
+
         if (nc_rval.EncodedSeq.operator->() != NULL)
             EncodedSeq = nc_rval.EncodedSeq._retn();
+		else
+			EncodedSeq = NULL;
+
 #endif
 
         d_state = rval.d_state;
@@ -420,30 +459,68 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 
 	if (rval.LongSeq.operator->() != NULL)
 		LongSeq = rval.LongSeq._retn();
+	else
+		LongSeq = nullptr;
+
 	if (rval.ShortSeq.operator->() != NULL)
 		ShortSeq = rval.ShortSeq._retn();
+	else
+		ShortSeq = nullptr;
+
 	if (rval.DoubleSeq.operator->() != NULL)
 		DoubleSeq = rval.DoubleSeq._retn();
+	else
+		DoubleSeq = nullptr;
+
 	if (rval.StringSeq.operator->() != NULL)
 		StringSeq = rval.StringSeq._retn();
+	else
+		StringSeq = nullptr;
+
 	if (rval.FloatSeq.operator->() != NULL)
 		FloatSeq = rval.FloatSeq._retn();
+	else
+		FloatSeq = nullptr;
+
 	if (rval.BooleanSeq.operator->() != NULL)
 		BooleanSeq = rval.BooleanSeq._retn();
+	else
+		BooleanSeq = nullptr;
+
 	if (rval.UShortSeq.operator->() != NULL)
 		UShortSeq = rval.UShortSeq._retn();
+	else
+		UShortSeq = nullptr;
+
 	if (rval.UCharSeq.operator->() != NULL)
 		UCharSeq = rval.UCharSeq._retn();
+	else
+		UCharSeq = nullptr;
+
 	if (rval.Long64Seq.operator->() != NULL)
 		Long64Seq = rval.Long64Seq._retn();
+	else
+		Long64Seq = nullptr;
+
 	if (rval.ULongSeq.operator->() != NULL)
 		ULongSeq = rval.ULongSeq._retn();
+	else
+		ULongSeq = nullptr;
+
 	if (rval.ULong64Seq.operator->() != NULL)
 		ULong64Seq = rval.ULong64Seq._retn();
+	else
+		ULong64Seq = nullptr;
+
 	if (rval.StateSeq.operator->() != NULL)
 		StateSeq = rval.StateSeq._retn();
+	else
+		StateSeq = nullptr;
+
 	if (rval.EncodedSeq.operator->() != NULL)
 		EncodedSeq = rval.EncodedSeq._retn();
+	else
+		EncodedSeq = nullptr;
 
 	d_state = rval.d_state;
 	d_state_filled = rval.d_state_filled;
@@ -6036,21 +6113,28 @@ bool DeviceAttribute::check_wrong_type_exception()
 	return false;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method name : 	check_set_value_size
+// method name :
+//		check_set_value_size
 //
-// description : 	checks wether set value data is available and
-//                calculates the index of the first set value
-//                element.
+// description :
+//		checks wether set value data is available and calculates the index of the first set value element.
 //
-// arg(s) : - seq_length : the length of the attribute data array
-// ret    :   the index of the first set value element.
+// arg(s) :
+//		in:
+//			- seq_length : the length of the attribute data array
 //
-//--------------------------------------------------------------------------
+// return :
+//		The index of the first set value element.
+//
+//----------------------------------------------------------------------------------------------------------------
 int DeviceAttribute::check_set_value_size(int seq_length)
 {
-	// check if the attribute data contains a set value
+
+//
+// check if the attribute data contains a set value
+//
 
 	if ( get_nb_written() == 0 )
 	{
@@ -6062,9 +6146,10 @@ int DeviceAttribute::check_set_value_size(int seq_length)
 
 	}
 
-	// For Tango::WRITE attributes, the read and set value are identical!
-	// In this case the number of set values is the same as the number
-	// of data elements in the returned sequence.
+//
+// For Tango::WRITE attributes, the read and set value are identical! In this case the number of set values is the
+// same as the number of data elements in the returned sequence.
+//
 
 	if ( get_nb_written() == seq_length )
 	{
@@ -6076,19 +6161,19 @@ int DeviceAttribute::check_set_value_size(int seq_length)
 	}
 }
 
-
-
-
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method name : 	del_mem
+// method name :
+//		DeviceAttribute::del_mem
 //
-// description : 	Delete already allocated memory except for the data
-//					just inserted
+// description :
+//		Delete already allocated memory except for the data just inserted
 //
-// arg(s) : - data_type : The data type just inserted
+// arg(s) :
+//		in :
+//			- data_type : The data type just inserted
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void DeviceAttribute::del_mem(int data_type)
 {
@@ -6120,14 +6205,15 @@ void DeviceAttribute::del_mem(int data_type)
 		delete EncodedSeq._retn();
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// operator overloading : 	<<
+// function name :
+// 		operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//			DeviceAttribute class
+// description :
+//		Friend function to ease printing instance of the DeviceAttribute class
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 {

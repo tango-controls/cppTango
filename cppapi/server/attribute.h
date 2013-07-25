@@ -2109,11 +2109,13 @@ public:
 	void set_upd_properties(const Tango::AttributeConfig_3 &);
 	void set_upd_properties(const Tango::AttributeConfig_3 &,string &);
 
-	bool change_event_subscribed() {if (event_change_subscription != 0)return true;else return false;}
-	bool periodic_event_subscribed() {if (event_periodic_subscription != 0)return true;else return false;}
-	bool archive_event_subscribed() {if (event_archive_subscription != 0)return true;else return false;}
-	bool quality_event_subscribed() {if (event_quality_subscription != 0)return true;else return false;}
-	bool user_event_subscribed() {if (event_user_subscription != 0)return true;else return false;}
+	bool change_event_subscribed();
+	bool periodic_event_subscribed();
+	bool archive_event_subscribed();
+	bool quality_event_subscribed();
+	bool user_event_subscribed();
+	bool attr_conf_event_subscribed();
+	bool data_ready_event_subscribed();
 
 	bool use_notifd_event() {return notifd_event;}
 	bool use_zmq_event() {return zmq_event;}
@@ -2291,15 +2293,19 @@ protected:
 // Some inline methods
 //
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		Attribute::throw_hard_coded_prop
+// method :
+//		Attribute::throw_hard_coded_prop
 //
-// description : Throw a "Hard coded properties can't be changed" exception
+// description :
+//		Throw a "Hard coded properties can't be changed" exception
 //
-// args: in : - prop_name : The name of the property which should be modified
+// args:
+//		in :
+//			- prop_name : The name of the property which should be modified
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 inline void Attribute::throw_hard_coded_prop(const char *prop_name)
 {
@@ -2310,15 +2316,19 @@ inline void Attribute::throw_hard_coded_prop(const char *prop_name)
 				      	  (const char *)"Attribute::check_hard_coded_properties()");
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method :		Attribute::throw_startup_exception
+// method :
+//		Attribute::throw_startup_exception
 //
-// description : Throw a startup exception
+// description :
+//		Throw a startup exception
 //
-// args: in : - origin : The method name where this method is called from
+// args:
+//		in :
+//			- origin : The method name where this method is called from
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 inline void Attribute::throw_startup_exception(const char* origin)
 {
@@ -2376,18 +2386,23 @@ inline void Attribute::throw_startup_exception(const char* origin)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		Attribute::prop_in_list
+// method :
+//		Attribute::prop_in_list
 //
-// description : Search for a property in a list
+// description :
+//		Search for a property in a list
 //
-// args: in : - prop_name : The property name
-//            - list_size : The size list
-//            - list : The list
-//       out : - prop_str : String initialized with prop. value (if found)
+// args:
+//		in :
+//			- prop_name : The property name
+//          - list_size : The size list
+//          - list : The list
+//      out :
+//			- prop_str : String initialized with prop. value (if found)
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 
 inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_t list_size,vector<AttrProperty> &list)

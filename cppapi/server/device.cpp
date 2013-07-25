@@ -1,15 +1,12 @@
 static const char *RcsId = "$Id$";
 
-//+============================================================================
+//+==================================================================================================================
 //
 // file :		Device.cpp
 //
-// description :	C++ source code for the DeviceImpl
-//			class. This class
-//			is the root class for all derived Device classes.
-//			It is an abstract class. The DeviceImpl class is the
-//			CORBA servant which is "exported" onto the network and
-//			accessed by the client.
+// description :	C++ source code for the DeviceImpl class. This class is the root class for all derived Device
+//					classes. It is an abstract class. The DeviceImpl class is the CORBA servant which is "exported"
+//					onto the network and accessed by the client.
 //
 // project :		TANGO
 //
@@ -22,22 +19,19 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -62,8 +56,7 @@ namespace Tango
 {
 
 //
-// The per thread data storage key (The client identification is stored in thread specific storage)
-// defined in utils.cpp
+// The per thread data storage key (The client identification is stored in thread specific storage) defined in utils.cpp
 //
 
 extern omni_thread::key_t key;
@@ -3714,17 +3707,17 @@ void DeviceImpl::init_attr_poll_ext_trig(string attr_name)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::init_attr_poll_period
+// method :
+//		DeviceImpl::init_attr_poll_period
 //
-// description : 	Checks the specified polling period for all attributes of the device.
-//			If a polling period is specified for an attribute the
-//			attribute name and the period are written to the list of polled
-//			attributes in the database.
-//			This happens only if the attribute is not yet in the list of polled attributes.
+// description :
+//		Checks the specified polling period for all attributes of the device. If a polling period is specified for an
+//		attribute the attribute name and the period are written to the list of polled attributes in the database.
+//		This happens only if the attribute is not yet in the list of polled attributes.
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::init_attr_poll_period()
 {
@@ -3758,11 +3751,9 @@ void DeviceImpl::init_attr_poll_period()
 			string &attr_name = attr_list[i]->get_name_lower();
 
 //
-// Special case for state and status attributes
-// They are polled as attribute but they are managed by Pogo as
-// commands (historical reasons). If the polling is set in the
-// state or status defined as command, report this info when they
-// are defined as attributes
+// Special case for state and status attributes. They are polled as attribute but they are managed by Pogo as
+// commands (historical reasons). If the polling is set in the state or status defined as command, report this info
+// when they are defined as attributes
 //
 
             if (attr_name == "state")
@@ -3789,8 +3780,7 @@ void DeviceImpl::init_attr_poll_period()
 			poll_period = attr_list[i]->get_polling_period();
 
 //
-//check the validity of the polling period.
-// must be longer than 20ms
+// check the validity of the polling period. must be longer than 20ms
 //
 
 			if ( poll_period < MIN_POLL_PERIOD )
@@ -3864,15 +3854,19 @@ void DeviceImpl::init_attr_poll_period()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::push_att_conf_event
+// method :
+//		DeviceImpl::push_att_conf_event
 //
-// description : 	Push an attribute configuration event
+// description :
+//		Push an attribute configuration event
 //
-// args : in : - attr : The attribute
+// args :
+//		in :
+//			- attr : The attribute
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_att_conf_event(Attribute *attr)
 {
@@ -3914,15 +3908,15 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::get_client_ident()
+// method :
+//		DeviceImpl::get_client_ident()
 //
-// description : 	Get client identification
+// description :
+//		Get client identification. This method returns a pointer to the client identification
 //
-// This method returns a pointer to the client identification
-//
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::client_addr *DeviceImpl::get_client_ident()
 {
@@ -3930,23 +3924,26 @@ Tango::client_addr *DeviceImpl::get_client_ident()
 	return (client_addr *)ip;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::lock
+// method :
+//		DeviceImpl::lock
 //
-// description : 	Lock the device
+// description :
+//		Lock the device
 //
-// args : in : - cl : The client identification
-//			   - validity : The lock validity
+// args :
+//		in :
+//			- cl : The client identification
+//			- validity : The lock validity
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::lock(client_addr *cl,int validity)
 {
 
 //
-// Check if the device is already locked and if it is a valid lock
-// If the lock is not valid any more, clear it
+// Check if the device is already locked and if it is a valid lock. If the lock is not valid any more, clear it
 //
 
 	if (device_locked == true)
@@ -3982,24 +3979,26 @@ void DeviceImpl::lock(client_addr *cl,int validity)
 	lock_ctr++;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::relock
+// method :
+//		DeviceImpl::relock
 //
-// description : 	ReLock the device
+// description :
+//		ReLock the device
 //
-// args : in : - cl : The client identification
-//			   - th_period : The lock validity time
+// args :
+//		in :
+//			- cl : The client identification
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::relock(client_addr *cl)
 {
 
 //
-// Check if the device is already locked and if it is a valid lock
-// A ReLock is valid only if the device is already locked by the same client
-// and if this lock is valid
+// Check if the device is already locked and if it is a valid lock. A ReLock is valid only if the device is already
+// locked by the same client and if this lock is valid
 //
 
 	if (device_locked == true)
@@ -4037,20 +4036,26 @@ void DeviceImpl::relock(client_addr *cl)
 	}
 
 }
-//+-------------------------------------------------------------------------
+
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::unlock
+// method :
+//		DeviceImpl::unlock
 //
-// description : 	Unlock the device
+// description :
+//		Unlock the device
 //
-//--------------------------------------------------------------------------
+// args :
+//		in :
+//			- forced : Flag set to true if the unlock is forced
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::DevLong DeviceImpl::unlock(bool forced)
 {
 
 //
-// Check if the device is already locked and if it is a valid lock
-// If the lock is not valid any more, clear it
+// Check if the device is already locked and if it is a valid lock. If the lock is not valid any more, clear it
 //
 
 	if (device_locked == true)
@@ -4080,13 +4085,19 @@ Tango::DevLong DeviceImpl::unlock(bool forced)
 	return lock_ctr;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::basic_unlock
+// method :
+//		DeviceImpl::basic_unlock
 //
-// description : 	Mark the device as unlocked
+// description :
+//		Mark the device as unlocked
 //
-//--------------------------------------------------------------------------
+// args :
+//		in :
+//			- forced : Flag set to true if the unlock is forced
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::basic_unlock(bool forced)
 {
@@ -4099,16 +4110,16 @@ void DeviceImpl::basic_unlock(bool forced)
 	lock_ctr = 0;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::valid_lock
+// method :
+//		DeviceImpl::valid_lock
 //
-// description : 	Check lock validity (according to lock validity time)
+// description :
+//		Check lock validity (according to lock validity time). This method returns true if the lock is still valid.
+//		Otherwise, returns false
 //
-// This method returns true if the lock is still valid. Otherwise, returns
-// false
-//
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 bool DeviceImpl::valid_lock()
 {
@@ -4119,24 +4130,23 @@ bool DeviceImpl::valid_lock()
 		return true;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::lock_status
+// method :
+//		DeviceImpl::lock_status
 //
-// description : 	Build a device locking status
+// description :
+//		Build a device locking status
+//		This method returns a sequence with longs and strings. The strings contain:
+//			1 - The locker process hostname
+//			2 - The java main class (in case of Java locker)
+//			3 - A string which summarizes the locking status
+// 		The longs contain:
+//			1 - A locked flag (0 means not locked, 1 means locked)
+//			2 - The locker process PID (C++ client)
+//			3 - The locker UUID (Java client) which needs 4 longs
 //
-// This method returns a sequence with longs and strings
-//
-// The strings contain:
-//	1 - The locker process hostname
-//	2 - The java main class (in case of Java locker)
-//	3 - A string which summarizes the locking status
-// The longs contain:
-//	1 - A locked flag (0 means not locked, 1 means locked)
-//	2 - The locker process PID (C++ client)
-//	3 - The locker UUID (Java client) which needs 4 longs
-//
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 {
@@ -4145,8 +4155,7 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 	dvlsa->svalue.length(3);
 
 //
-// Check if the device is already locked and if it is a valid lock
-// If the lock is not valid any more, clear it
+// Check if the device is already locked and if it is a valid lock. If the lock is not valid any more, clear it
 //
 
 	if (device_locked == true)
@@ -4205,19 +4214,23 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 	return dvlsa;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::set_locking_param
+// method :
+//		DeviceImpl::set_locking_param
 //
-// description : 	Restore device locking parameter
+// description :
+//		Restore device locking parameter
 //
-// args : - cl : Locker
-//		  - old_cl : Previous locker
-//		  - date : Locking date
-//		  - ctr : Locking counter
-//		  - valid : Locking validity
+// args :
+//		in :
+//			- cl : Locker
+//		  	- old_cl : Previous locker
+//		  	- date : Locking date
+//		  	- ctr : Locking counter
+//		  	- valid : Locking validity
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::set_locking_param(client_addr *cl,client_addr *old_cl,time_t date,DevLong ctr,DevLong valid)
 {
@@ -4230,14 +4243,20 @@ void DeviceImpl::set_locking_param(client_addr *cl,client_addr *old_cl,time_t da
 }
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::check_lock
+// method :
+//		DeviceImpl::check_lock
 //
-// description : 	Method called for each command_inout operation executed
-//			from any client on a Tango device.
+// description :
+//		Method called for each command_inout operation executed from any client on a Tango device.
 //
-//--------------------------------------------------------------------------
+// argument:
+//		in :
+//			- meth : Method name (for error message)
+//			- cmd : Command name
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::check_lock(const char *meth,const char *cmd)
 {
@@ -4250,8 +4269,8 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 			{
 
 //
-// Old client, before throwing the exception, in case the CORBA operation is
-// a command_inout, checks if the command is an "allowed" one
+// Old client, before throwing the exception, in case the CORBA operation is a command_inout, checks if the command
+// is an "allowed" one
 //
 
 				if (cmd != NULL)
@@ -4269,8 +4288,8 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 			{
 
 //
-// Wrong client, before throwing the exception, in case the CORBA operation is
-// a command_inout, checks if the command is an "allowed" one
+// Wrong client, before throwing the exception, in case the CORBA operation is a command_inout, checks if the command
+// is an "allowed" one
 //
 
 				if (cmd != NULL)
@@ -4308,13 +4327,19 @@ void DeviceImpl::check_lock(const char *meth,const char *cmd)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::throw_locked_exception()
+// method :
+//		DeviceImpl::throw_locked_exception()
 //
-// description : 	Throw a DeviceLocked exception
+// description :
+//		Throw a DeviceLocked exception
 //
-//--------------------------------------------------------------------------
+// argument:
+//		in :
+//			- meth : Method name
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::throw_locked_exception(const char *meth)
 {
@@ -4325,17 +4350,25 @@ void DeviceImpl::throw_locked_exception(const char *meth)
 	Except::throw_exception((const char *)API_DeviceLocked,o.str(),o2.str());
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::data_into_net_obj
+// method :
+//		DeviceImpl::data_into_net_obj
 //
-// description : 	Put the attribute data within the object used on the
-//					wire to transfer the attribute. For IDL release <= 3,
-//					it's an Any object. Then, it is an IDL union
+// description :
+//		Put the attribute data within the object used on the wire to transfer the attribute. For IDL release <= 3,
+//		it's an Any object. Then, it is an IDL union
 //
-// argument: in :
+// argument:
+//		in :
+//			- att :
+//			- back :
+//			- back4 :
+//			- index :
+//			- w_type :
+//			- del_seq :
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 										AttributeValueList_4 *back4,
@@ -4660,17 +4693,26 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceImpl::polled_data_into_net_obj
+// method :
+//		DeviceImpl::polled_data_into_net_obj
 //
-// description : 	Put the attribute data within the object used on the
-//					wire to transfer the attribute. For IDL release <= 3,
-//					it's an Any object. Then, it is an IDL union
+// description :
+//		Put the attribute data within the object used on the wire to transfer the attribute. For IDL release <= 3,
+//		it's an Any object. Then, it is an IDL union
 //
-// argument: in :
+// argument:
+//		in :
+//			- back :
+//			- back4 :
+//			- index :
+//			- type :
+//			- vers : Device IDl version
+//			- polled_att :
+//			- names :
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 										AttributeValueList_4 *back4,
@@ -5224,6 +5266,64 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 		alarm_status = alarm_status + " has ";
 	else
 		alarm_status = alarm_status + " have ";
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::is_there_subscriber
+//
+// description :
+//		Returns true if there is some subscriber(s) listening on the event
+//
+// argument:
+//		in :
+//			- att_name : The attribute name
+//			- event_type : The event type
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+bool DeviceImpl::is_there_subscriber(const string &att_name,EventType event_type)
+{
+	Attribute &att = dev_attr->get_attr_by_name(att_name.c_str());
+
+	bool ret = false;
+
+	switch(event_type)
+	{
+	case CHANGE_EVENT:
+		ret = att.change_event_subscribed();
+		break;
+
+	case QUALITY_EVENT:
+		ret = att.quality_event_subscribed();
+		break;
+
+	case PERIODIC_EVENT:
+		ret = att.periodic_event_subscribed();
+		break;
+
+	case ARCHIVE_EVENT:
+		ret = att.archive_event_subscribed();
+		break;
+
+	case USER_EVENT:
+		ret = att.user_event_subscribed();
+		break;
+
+	case ATTR_CONF_EVENT:
+		ret = att.attr_conf_event_subscribed();
+		break;
+
+	case DATA_READY_EVENT:
+		ret = att.data_ready_event_subscribed();
+		break;
+
+	default:
+		break;
+	}
+
+	return ret;
 }
 
 } // End of Tango namespace

@@ -12752,6 +12752,130 @@ void Attribute::def_format_in_dbdatum(DbDatum &db)
 	}
 }
 
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::xxx_event_subscribed()
+//
+// description :
+//		Returns true if there are some subscriber listening for event. This is a method family. There is one method
+//		for each event type
+//		Cannot replce this methods family by one method with event type as parameter for compatibility reason
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+bool Attribute::change_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_change_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_change_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
+bool Attribute::periodic_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_periodic_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_periodic_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
+bool Attribute::archive_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_archive_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_archive_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
+bool Attribute::quality_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_quality_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_quality_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
+bool Attribute::user_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_user_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_user_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
+bool Attribute::attr_conf_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_attr_conf_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_attr_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
+bool Attribute::data_ready_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_data_ready_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_data_ready_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
 //-------------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<
@@ -12759,7 +12883,7 @@ void Attribute::def_format_in_dbdatum(DbDatum &db)
 // description : 	Friend function to ease printing instance of the
 //			Attribute class
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 #ifndef TANGO_HAS_LOG4TANGO
 ostream &operator<<(ostream &o_str,Attribute &p)

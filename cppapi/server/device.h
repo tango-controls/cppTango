@@ -610,6 +610,21 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	vector<PollObj *>::iterator get_polled_obj_by_type_name(Tango::PollObjType obj_type,const string &obj_name);
+/**
+ * Check if there is subscriber listening  for one event
+ *
+ * This method returns a boolean set to true if there are some subscriber(s) listening on the event specified
+ * by the two method arguments. Be aware that there is some delay between this method returning false and the last
+ * subscriber unsubscription or crash...
+ *
+ * @param att_name The attribute name
+ * @param event_type The event type
+ * @return A boolean set to true if there are some subscriber listening on this event
+ * @exception DevFailed Thrown if the attribute is not found.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	bool is_there_subscriber(const string &att_name,EventType event_type);
 //@}
 
 
@@ -783,231 +798,6 @@ public:
 	{
 		return new Tango::DevVarStringArray(length,length,ptr,false);
 	}
-//@}
-
-
-/**@name CORBA attribute methods
- * Method defined to implement TANGO device CORBA attribute */
-//@{
-/**
- * Get device name.
- *
- * It's the master method executed when the device name is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device name
- *
- * @return The device name
- */
-	virtual char *name();
-
-/**
- * Get administrator device name.
- *
- * It's the master method executed when the administrator device name is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * administrator device name
- *
- * @return The device name
- */
-	virtual char *adm_name();
-
-/**
- * Get device description.
- *
- * It's the master method executed when the device description is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device description field
- *
- * @return The device description
- */
-	virtual char *description();
-
-/**
- * Get device status.
- *
- * It's the master method executed when the device status is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device state. This method calls the <i>status_cmd</i> device method but
- * catch all the execption and does not re-throw them because exception can't
- * be thrown to a client for CORBA attribute
- *
- * @return The device status
- */
-	virtual char *status();
-
-/**
- * Get device state.
- *
- * It's the master method executed when the device state is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device state. This method calls the <i>state_cmd</i> device method but
- * catch all the execption and does not re-throw them because exception can't
- * be thrown to a client for CORBA attribute
- *
- * @return The device state
- */
-	virtual Tango::DevState state();
-//@}
-
-
-/**@name CORBA operation methods
- * Method defined to implement TANGO device CORBA operation */
-//@{
-/**
- * Execute a command.
- *
- * It's the master method executed when a "command_inout" CORBA operation is
- * requested by a client. It updates the device black-box, call the
- * TANGO command handler and returned the output Any
- *
- * @param in_cmd The command name
- * @param in_data The command input data packed in a CORBA Any
- * @return The command output data packed in a CORBA Any object
- * @exception DevFailed Re-throw of the exception thrown by the command_handler
- * method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual CORBA::Any *command_inout(const char *in_cmd,
-					  const CORBA::Any &in_data);
-
-/**
- * Get device black box.
- *
- * It's the master method executed when the device black box is requested.
- * It reads the device black box, update it and return black-box data to the
- * client
- *
- * @param n The number of actions description which must be returned to the
- * client. The number of returned element is limited to the number of elements
- * stored in the black-box or to the complete black-box depth if it is full.
- * @return The device black box with one String for each action requested on
- * the device
- * @exception DevFailed If it is not possible to read the device black box.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual Tango::DevVarStringArray *black_box(CORBA::Long n);
-
-/**
- * Get device command list.
- *
- * Invoked when the client request the command_list_query CORBA operation.
- * It updates the device black box and returns an array of DevCmdInfo object
- * with one object for each command.
- *
- * @return The device command list. One DevCmdInfo is initialised for each
- * device command
- */
-	virtual Tango::DevCmdInfoList *command_list_query();
-
-/**
- * Get command info.
- *
- * Invoked when the client request the command_query CORBA operation.
- * It updates the device black box and returns a DevCmdInfo object for the
- * command with name passed
- * to the method as parameter.
- *
- * @param command The command name
- * @return A DevCmdInfo initialised for the wanted command
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual Tango::DevCmdInfo *command_query(const char *command);
-
-/**
- * Get device info.
- *
- * Invoked when the client request the info CORBA operation.
- * It updates the black box and returns a DevInfo object
- * with miscellaneous device info
- *
- * @return A DevInfo object
- */
-	virtual Tango::DevInfo *info();
-
-/**
- * Ping the device to check if it is still alive.
- *
- * Invoked when the client request the ping CORBA operation.
- * It updates the device black box and simply returns
- *
- */
-	virtual void ping();
-
-/**
- * Get attribute(s) configuration.
- *
- * Invoked when the client request the get_attribute_config CORBA operation.
- * It returns to the client one AttributeConfig structure for each wanted
- * attribute. All the attribute properties value are returned in this
- * AttributeConfig structure.
- *
- * @param names The attribute(s) name list
- * @return A sequence of AttributeConfig structure. One structure is initialised
- * for each wanted attribute. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig">here</a>
- * to read <b>AttributeConfig</b> structure specification.
- *
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual Tango::AttributeConfigList* get_attribute_config(const Tango::DevVarStringArray& names);
-
-/**
- * Set attribute(s) configuration.
- *
- * Invoked when the client request the set_attribute_config CORBA operation.
- * It updates the device attribute configuration actually used by the device but
- * this method also updates the Tango database. One structure of the
- * AttributeConfig type is needed for each attribute to update configuration.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig">here</a>
- * to read <b>AttributeConfig</b> structure specification.
- *
- * @param new_conf The attribute(s) new configuration structure sequence
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual void set_attribute_config(const Tango::AttributeConfigList& new_conf);
-
-/**
- * Read attribute(s) value.
- *
- * Invoked when the client request the read_attributes CORBA operation.
- * It returns to the client one AttributeValue structure for each wanted
- * attribute.
- *
- * @param names The attribute(s) name list
- * @return A sequence of AttributeValue structure. One structure is initialised
- * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue">here</a>
- * to read <b>AttributeValue</b> structure definition.
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual Tango::AttributeValueList* read_attributes(const Tango::DevVarStringArray& names);
-
-/**
- * Write attribute(s) value.
- *
- * Invoked when the client request the write_attributes CORBA operation.
- * It sets the attribute(s) with the new value(s) passed as parameter.
- *
- * @param values The attribute(s) new value(s). One structure is initialised
- * for each wanted attribute with the attribute value. The attribute quality and
- * date are not used by this method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue">here</a>
- * to read <b>AttributeValue</b> structure definition.
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual void write_attributes(const Tango::AttributeValueList& values);
-
 //@}
 
 
@@ -3380,6 +3170,25 @@ protected:
 
 public:
 /// @privatesection
+
+
+	virtual char *name();
+	virtual char *adm_name();
+	virtual char *description();
+	virtual char *status();
+	virtual Tango::DevState state();
+
+	virtual CORBA::Any *command_inout(const char *in_cmd,const CORBA::Any &in_data);
+	virtual Tango::DevVarStringArray *black_box(CORBA::Long n);
+	virtual Tango::DevCmdInfoList *command_list_query();
+	virtual Tango::DevCmdInfo *command_query(const char *command);
+	virtual Tango::DevInfo *info();
+	virtual void ping();
+	virtual Tango::AttributeConfigList* get_attribute_config(const Tango::DevVarStringArray& names);
+	virtual void set_attribute_config(const Tango::AttributeConfigList& new_conf);
+	virtual Tango::AttributeValueList* read_attributes(const Tango::DevVarStringArray& names);
+	virtual void write_attributes(const Tango::AttributeValueList& values);
+
 
 	void set_exported_flag(bool exp) {exported = exp;}
 	bool get_exported_flag() {return exported;}

@@ -1082,7 +1082,6 @@ public:
  * Remove the device server process database configuration from the database specified by the environment variable
  * TANGO_HOST
  *
- * @param [in] tg_host The tango host
  */
 	void remove();
 
