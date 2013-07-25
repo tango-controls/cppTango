@@ -361,13 +361,13 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         if (nc_rval.UCharSeq.operator->() != NULL)
             UCharSeq = nc_rval.UCharSeq._retn();
         if (nc_rval.Long64Seq.operator->() != NULL)
-            UCharSeq = nc_rval.Long64Seq._retn();
+            Long64Seq = nc_rval.Long64Seq._retn();
         if (nc_rval.ULongSeq.operator->() != NULL)
             ULongSeq = nc_rval.ULongSeq._retn();
         if (nc_rval.ULong64Seq.operator->() != NULL)
             ULong64Seq = nc_rval.ULong64Seq._retn();
         if (nc_rval.StateSeq.operator->() != NULL)
-            UStateSeq = nc_rval.StateSeq._retn();
+            StateSeq = nc_rval.StateSeq._retn();
         if (nc_rval.EncodedSeq.operator->() != NULL)
             EncodedSeq = nc_rval.EncodedSeq._retn();
 #endif
