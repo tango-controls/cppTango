@@ -319,7 +319,8 @@ CLIENT_INCLUDE =	apiexcept.h \
 			DeviceAttribute.h \
 			Connection.h \
 			DeviceProxy.h \
-			AttributeProxy.h
+			AttributeProxy.h \
+			doc.h
 
 SERVER_INCLUDE =	attrdesc.h \
 			attribute.h \

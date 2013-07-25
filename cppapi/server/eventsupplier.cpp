@@ -93,8 +93,8 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct AttributeData &attr_value,DevFailed *except,
-                                           string &attr_name,struct timeval *time_bef_attr)
+SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct AttributeData &attr_value,
+												DevFailed *except,string &attr_name,struct timeval *time_bef_attr)
 {
     string event, domain_name;
     time_t now, change_subscription, periodic_subscription, archive_subscription;
@@ -205,8 +205,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     omni_mutex_lock l(event_mutex);
 
 //
-// if no attribute of this name is registered with change then
-// insert the current value
+// if no attribute of this name is registered with change then insert the current value
 //
 
     if (!attr.prev_change_event.inited)
@@ -236,7 +235,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     {
 
 //
-// determine delta_change in percent compared with previous event sent
+// Determine delta_change in percent compared with previous event sent
 //
 
         is_change = detect_change(attr,attr_value,false,delta_change_rel,delta_change_abs,except,force_change,device_impl);
@@ -244,8 +243,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     }
 
 //
-// check whether the data quality has changed.
-// Fire event on a quality change.
+// Check whether the data quality has changed. Fire event on a quality change.
 //
 
     if ((except == NULL) && (attr.prev_change_event.quality != the_quality ))
@@ -339,21 +337,25 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_archive_event()
+// method :
+//		EventSupplier::detect_and_push_archive_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push an archive event
+// description :
+//		Method to detect if there it is necessary to push an archive event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- time_bef_attr : Date before the attribute was read
+//			- user_push : Flag set to true if it's the user who fires the event
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,AttributeData &attr_value,
                     Attribute &attr,string &attr_name,DevFailed *except,struct timeval *time_bef_attr,
@@ -403,10 +405,9 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 
 //
 // Do not get time now. This method is executed after the attribute has been read.
-// For some device, reading one attribute could be long and even worse could have an
-// unstable reading time. If we takes time now, it will also be unstable.
-// Use the time taken in the polling thread before the attribute was read. This one is much
-// more stable
+// For some device, reading one attribute could be long and even worse could have an unstable reading time.
+// If we takes time now, it will also be unstable.
+// Use the time taken in the polling thread before the attribute was read. This one is much more stable
 //
 
 	if (time_bef_attr != NULL)
@@ -422,8 +423,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 	mon1.rel_monitor();
 
 //
-// Specify the precision interval for the archive period testing
-// 2% are used for periods < 5000 ms and
+// Specify the precision interval for the archive period testing 2% are used for periods < 5000 ms and
 // 100ms are used for periods > 5000 ms.
 // If the attribute archive period is INT_MAX, this means that the user does not want the periodic part of the
 // archive event
@@ -459,8 +459,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 	}
 
 //
-// if no attribute of this name is registered with change then
-// insert the current value
+// if no attribute of this name is registered with change then insert the current value
 //
 
 
@@ -503,8 +502,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 	}
 
 //
-// check whether the data quality has changed.
-// Fire event on a quality change.
+// check whether the data quality has changed. Fire event on a quality change.
 //
 
 	if ( except == NULL &&
@@ -541,8 +539,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 		}
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent
-// using an AttributeValue_3 data type
+// If one of the subscribed client is still using IDL 3, the attribute value has to be sent using an AttributeValue_3
+// data type
 //
 
 		bool need_free = false;
@@ -612,21 +610,24 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_periodic_event()
+// method :
+//		EventSupplier::detect_and_push_periodic_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push a periodic event
+// description :
+//		Method to detect if there it is necessary to push a periodic event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- time_bef_attr : Date before the attribute was read
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
                     Attribute &attr,string &attr_name,DevFailed *except,struct timeval *time_bef_attr)
@@ -680,8 +681,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 	mon1.rel_monitor();
 
 //
-// Specify the precision interval for the event period testing
-// 2% are used for periods < 5000 ms and
+// Specify the precision interval for the event period testing 2% are used for periods < 5000 ms and
 // 100ms are used for periods > 5000 ms.
 //
 
@@ -708,6 +708,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 //
 // calculate the time
 //
+
 	ms_since_last_periodic = now_ms - attr.last_periodic;
 	cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic " << ms_since_last_periodic << " event_period " << eve_period << " for " << device_impl->get_name()+"/"+attr_name << endl;
 
@@ -716,8 +717,8 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 		bool need_free = false;
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent
-// using an AttributeValue_3 data type
+// If one of the subscribed client is still using IDL 3, the attribute value has to be sent using an AttributeValue_3
+// data type
 //
 
         if ((attr.event_periodic_client_3 == true) && (attr_value.attr_val_3 == NULL))
@@ -766,28 +767,28 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_change()
+// method :
+//		EventSupplier::detect_change()
 //
-// description : 	Method to detect if there is a change according to the
-//			        criterions and return a boolean set to true if a change
-//			        is detected
+// description :
+//		Method to detect if there is a change according to the criterions and return a boolean set to true if a change
+//		is detected
 //
-// argument : in :	attr : The attribute object
-//			        attr_value : The current attribute value
-//			        archive :
-//			        delta_change_rel :
-//			        delta_change_abs :
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//			        force_change : A flag set to true if the change
-//				            is due to a non mathematical reason
-//				       (    array size change, from exception to
-//					        classic...)
-//			        dev : Pointer to the device
+// argument :
+//		in :
+//			- attr : The attribute object
+//			- attr_value : The current attribute value
+//			- archive :
+//			- delta_change_rel :
+//			- delta_change_abs :
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- force_change : A flag set to true if the change is due to a non mathematical reason
+//				       (array size change, from exception to classic...)
+//			- dev : Pointer to the device
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_value,bool archive,
               double &delta_change_rel,double &delta_change_abs,DevFailed *except,
@@ -820,8 +821,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     omni_mutex_lock l(detect_mutex);
 
 //
-// Send event, if the read_attribute failed or if it is the first time
-// that the read_attribute succeed after a failure.
+// Send event, if the read_attribute failed or if it is the first time that the read_attribute succeed after a failure.
 // Same thing if the attribute quality factor changes to INVALID
 //
 
@@ -829,8 +829,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     {
 
 //
-// force an event only when the last reading was not returning an exception or
-// not returning the same exception
+// force an event only when the last reading was not returning an exception or not returning the same exception
 //
 
         if (except != NULL)
@@ -859,8 +858,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
         }
 
 //
-// check wether the quality is invalid
-// Force an event only if the last reading was valid
+// check wether the quality is invalid. Force an event only if the last reading was valid
 //
 
         if (the_new_quality == Tango::ATTR_INVALID)
@@ -889,8 +887,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     {
 
 //
-// force an event only when the last reading was not returning an exception or
-// not returning the same exception
+// force an event only when the last reading was not returning an exception or not returning the same exception
 //
 
         if (except != NULL)
@@ -919,8 +916,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
         }
 
 //
-// check wether the quality is invalid
-// Force an event only if the last reading was valid
+// check wether the quality is invalid. Force an event only if the last reading was valid
 //
 
         if (the_new_quality == Tango::ATTR_INVALID)
@@ -1882,13 +1878,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 }
 
 
-//+----------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::push_att_data_ready_event()
+// method :
+//		EventSupplier::push_att_data_ready_event()
 //
-// description :    Push a data ready event
+// description :
+//		Push a data ready event
 //
-//-----------------------------------------------------------------------------
+// argument :
+//		in :
+//			- device_impl : Pointer to device
+//			- attr_name : Attribute name
+//			- data_type : Attribute data type
+//			- ctr : Counter sent in event
+//
+//-------------------------------------------------------------------------------------------------------------
 
 void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const string &attr_name,long data_type,DevLong ctr)
 {
@@ -1922,19 +1927,22 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::push_att_conf_event()
+// method :
+//		EventSupplier::push_att_conf_event()
 //
-// description : 	Method to push attribute configration event
+// description :
+//		Method to push attribute configration event
 //
-// argument : in :	device_impl : The device
-//			        attr_conf : The attribute configuration
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//                  attr_name : The attribute name
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_conf : The attribute configuration
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//          - attr_name : The attribute name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &attr_conf,DevFailed *except,string &attr_name)
 {
