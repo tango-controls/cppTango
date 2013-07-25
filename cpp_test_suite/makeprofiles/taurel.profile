@@ -53,8 +53,8 @@ TANGO_BASE = /home/taurel/tango/cppapi_develop
 TANGO_INCLUDE_DIR = $(TANGO_BASE)/client $(TANGO_BASE)/server
 TANGO_LIB_DIR = $(TANGO_BASE)/../install/$(OS_DIR)/lib/debug
 
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.6/$(OS_DIR)
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.6/$(OS_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(OS_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.7/$(OS_DIR)
 #ZMQ_BASE = /segfs/tango/transport/zmq/$(OS_DIR)
 ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(OS_DIR)
 
