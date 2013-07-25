@@ -45,11 +45,11 @@ EXCLUDE_FILES = 64.cpp helper.cpp
 #COMPILE_FILES = cxx_cmd_query.cpp
 #COMPILE_FILES = cxx_zmcast01_simple.cpp cxx_zmcast02_local_remote.cpp cxx_zmcast03_svr_local_remote.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
-#COMPILE_FILES = poll_pool.cpp
+COMPILE_FILES = poll_attr.cpp Poll.cpp StopPoll.cpp
 
 OS_DIR = ubuntu1204
 
-TANGO_BASE = /home/taurel/tango/cppapi_develop
+TANGO_BASE = /home/taurel/tango/cppapi_900
 TANGO_INCLUDE_DIR = $(TANGO_BASE)/client $(TANGO_BASE)/server
 TANGO_LIB_DIR = $(TANGO_BASE)/../install/$(OS_DIR)/lib/debug
 

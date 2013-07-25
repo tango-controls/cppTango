@@ -50,6 +50,8 @@ int main(int argc, char **argv)
 // Test getting a long 64 attribute from polling buffer
 
 		DeviceAttribute da;
+		int data_type;
+
 		try
 		{	
 			da = device->read_attribute("Long64_attr_rw");
@@ -61,7 +63,7 @@ int main(int argc, char **argv)
 		}
 		DevLong64 lo;
 		da >> lo;
-		int data_type = da.get_type();
+		data_type = da.get_type();
 		coutv << "64 bits attribute data = " << hex << lo << dec << endl;
 		assert ( lo == 0x800000000LL );
 		assert ( data_type == Tango::DEV_LONG64 );
@@ -88,7 +90,7 @@ int main(int argc, char **argv)
 		assert ( data_type_ulo == Tango::DEV_ULONG64 );
 		
 		cout << "   Scalar unsigned long 64 bits from CACHE buffer --> OK" << endl;
-		
+	
 // Test getting a unsigned long spectrum attribute from polling buffer
 
 		bool ret;		
@@ -133,7 +135,7 @@ int main(int argc, char **argv)
 		
 // Test getting a DevEncoded attribute from polling buffer
 
-#ifndef COMPAT		
+#ifndef COMPAT
 		try
 		{	
 			da = device->read_attribute("Encoded_attr");
