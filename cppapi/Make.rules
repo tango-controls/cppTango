@@ -93,9 +93,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.6/$(BIN_DIR)
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.7/$(BIN_DIR)
 else
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.6/$(BIN_DIR)
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.7/$(BIN_DIR)
 endif
 
 ##############################################################################
