@@ -3392,16 +3392,16 @@ void DeviceImpl::remove_attribute(string &rem_attr_name, bool free_it,bool clean
 }
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::poll_lists_2_v5
+// method :
+//		DeviceImpl::poll_lists_2_v5
 //
-// description :	Started from Tango V5, state and status are polled
-//			as attributes. Previously, they were polled as commands.
-//			If state or status are polled as commands, move them
-//			to the list of polled attributes
+// description :
+//		Started from Tango V5, state and status are polled as attributes. Previously, they were polled as commands.
+//		If state or status are polled as commands, move them to the list of polled attributes
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::poll_lists_2_v5()
 {
@@ -3414,8 +3414,7 @@ void DeviceImpl::poll_lists_2_v5()
 	vector<string>::iterator ite_status;
 
 //
-// Try to find state in list of polled command(s). If found,
-// remove it from poll cmd and move it to poll attr
+// Try to find state in list of polled command(s). If found, remove it from poll cmd and move it to poll attr
 //
 
 	ite_state = find(poll_cmd.begin(),poll_cmd.end(),"state");
@@ -3462,23 +3461,30 @@ void DeviceImpl::poll_lists_2_v5()
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::init_cmd_poll_ext_trig
+// method :
+//		Attribute::init_cmd_poll_ext_trig
 //
-// description : 	Write the command name to the list of polled commands in the database.
-//			The polling period is set to 0 to indicate that the polling buffer
-//			is filled externally from the device server code.
+// description :
+//		Write the command name to the list of polled commands in the database. The polling period is set to 0 to
+//		indicate that the polling buffer is filled externally from the device server code.
 //
-//--------------------------------------------------------------------------
+// args :
+//		in :
+//			- cmd_name : The command name
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
 {
 	string  cmd_lowercase(cmd_name);
    	transform(cmd_lowercase.begin(),cmd_lowercase.end(),cmd_lowercase.begin(),::tolower);
 
-	// never do the for the state or status commands, they are
-	// handled as attributes!
+//
+// never do the for the state or status commands, they are handled as attributes!
+//
+
 	if ( cmd_name == "state" || cmd_name == "status" )
 	{
 		TangoSys_OMemStream o;
@@ -3489,11 +3495,16 @@ void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
 				      (const char *)"DeviceImpl::init_poll_ext_trig");
 	}
 
-	// check whether the command exists for the device and can be polled
+//
+// check whether the command exists for the device and can be polled
+//
+
 	check_command_exists (cmd_lowercase);
 
+//
+// check wether the database is used
+//
 
-	// check wether the database is used
 	Tango::Util *tg = Tango::Util::instance();
 	if ( tg->_UseDb == true )
 	{
@@ -3503,20 +3514,17 @@ void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
 
 		poll_data.push_back(Tango::DbDatum("polled_cmd"));
 
-		// read the polling configuration from the database
-		//		tg->get_database()->get_device_property(device_name, poll_data);
-
-		//		if (poll_data[0].is_empty()==false)
 		if (poll_list.empty() == false)
 		{
-			//poll_data[0] >> poll_list;
 
-			// search the attribute in the list of polled attributes
+//
+// search the attribute in the list of polled attributes
+//
+
 			for (unsigned int i = 0;i < poll_list.size();i = i+2)
 			{
-            //      Convert to lower case before comparison
-          			string  name_lowercase(poll_list[i]);
-            			transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+				string  name_lowercase(poll_list[i]);
+				transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 
 				if ( name_lowercase ==  cmd_lowercase)
 				{
@@ -3537,21 +3545,25 @@ void DeviceImpl::init_cmd_poll_ext_trig(string cmd_name)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::init_cmd_poll_period
+// method :
+//		Attribute::init_cmd_poll_period
 //
-// description : 	Checks the specified polling period for all commands of the device.
-//			If a polling period is specified for a command the
-//			command name and the period are written to the list of polled
-//			commands in the database.
-//			This happens only if the command is not yet in the list of polled commands.
+// description :
+//		Checks the specified polling period for all commands of the device. If a polling period is specified for a
+//		command the command name and the period are written to the list of polled commands in the database.
+//		This happens only if the command is not yet in the list of polled commands.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::init_cmd_poll_period()
 {
-	// check wether the database is used
+
+//
+// check wether the database is used
+//
+
 	Tango::Util *tg = Tango::Util::instance();
 	if ( tg->_UseDb == true )
 	{
@@ -3560,17 +3572,16 @@ void DeviceImpl::init_cmd_poll_period()
 
 		poll_data.push_back(Tango::DbDatum("polled_cmd"));
 
-		// read the polling configuration from the database
-		//		tg->get_database()->get_device_property(device_name, poll_data);
-		//		if (poll_data[0].is_empty()==false)
-		//		{
-		//			poll_data[0] >> poll_list;
-		//		}
+//
+// get the command list
+//
 
-		// get the command list
 		vector<Command *> &cmd_list = device_class->get_command_list();
 
-		// loop over the command list
+//
+// loop over the command list
+//
+
 		unsigned long added_cmd = 0;
 		unsigned long i;
 		for (i = 0;i < cmd_list.size();i++)
@@ -3578,32 +3589,41 @@ void DeviceImpl::init_cmd_poll_period()
 			long poll_period;
 			poll_period = cmd_list[i]->get_polling_period();
 
-			//check the validity of the polling period.
-			// must be longer than 20ms
+//
+// check the validity of the polling period. must be longer than min polling period
+//
+
 			if ( poll_period < MIN_POLL_PERIOD )
 			{
 				continue;
 			}
 
-			// never do the for the state or status commands, they are
-			// handled as attributes!
+//
+// never do the for the state or status commands, they are handled as attributes!
+//
+
 			string cmd_name = cmd_list[i]->get_lower_name();
 			if ( cmd_name == "state" || cmd_name == "status" )
 			{
 				continue;
 			}
 
-			// Can only handle commands without input argument
+//
+// Can only handle commands without input argument
+//
+
 			if (cmd_list[i]->get_in_type() != Tango::DEV_VOID)
 			{
 				continue;
 			}
 
-			// search the command in the list of polled commands
+//
+// search the command in the list of polled commands
+//
+
 			bool found = false;
 			for (unsigned int i = 0;i < poll_list.size();i = i+2)
 			{
-            //      Convert to lower case before comparison
            		string  name_lowercase(poll_list[i]);
             	transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 
@@ -3627,7 +3647,10 @@ void DeviceImpl::init_cmd_poll_period()
 			}
 		}
 
-		// only write to the database when a polling need to be added
+//
+// only write to the database when a polling need to be added
+//
+
 		if ( added_cmd > 0 )
 		{
 			poll_data[0] << poll_list;
@@ -3636,26 +3659,35 @@ void DeviceImpl::init_cmd_poll_period()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::init_attr_poll_ext_trig
+// method :
+//		Attribute::init_attr_poll_ext_trig
 //
-// description : 	Write the attribute name to the list of polled attributes in the database.
-//			The polling period is set to 0 to indicate that the polling buffer
-//			is filled externally from the device server code.
+// description :
+//		Write the attribute name to the list of polled attributes in the database. The polling period is set to 0
+//		to indicate that the polling buffer is filled externally from the device server code.
 //
-//--------------------------------------------------------------------------
+// args :
+//		in :
+//			- attr_name : The attribute name
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::init_attr_poll_ext_trig(string attr_name)
 {
 	string  attr_lowercase(attr_name);
    	transform(attr_lowercase.begin(),attr_lowercase.end(),attr_lowercase.begin(),::tolower);
 
+//
 // check whether the attribute exists for the device and can be polled
+//
 
 	dev_attr->get_attr_by_name (attr_lowercase.c_str());
 
+//
 // check wether the database is used
+//
 
 	Tango::Util *tg = Tango::Util::instance();
 	if ( tg->_UseDb == true )
@@ -3666,25 +3698,36 @@ void DeviceImpl::init_attr_poll_ext_trig(string attr_name)
 
 		poll_data.push_back(Tango::DbDatum("polled_attr"));
 
+//
 // read the polling configuration from the database
+//
 
 		if (poll_list.empty() == false)
 		{
 
-			// search the attribute in the list of polled attributes
+//
+// search the attribute in the list of polled attributes
+//
 
 			for (unsigned int i = 0;i < poll_list.size();i = i+2)
 			{
 
+//
 // Convert to lower case before comparison
-          			string  name_lowercase(poll_list[i]);
-            			transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
+//
+
+				string  name_lowercase(poll_list[i]);
+				transform(name_lowercase.begin(),name_lowercase.end(),name_lowercase.begin(),::tolower);
 
 				if ( name_lowercase ==  attr_lowercase)
 				{
 					if ( poll_list[i+1] == "0" )
                     {
+
+//
 // The configuration is already correct, no need for further action
+//
+
 						return;
                     }
 					else

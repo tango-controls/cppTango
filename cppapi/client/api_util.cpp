@@ -1,8 +1,8 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//-----------------------------------------------------------------------------
+//+==================================================================================================================
 //
-// cpp 	- C++ source code file for TANGO api class ApiUtil
+// C++ source code file for TANGO api class ApiUtil
 //
 // programmer 	- Emmanuel Taurel (taurel@esrf.fr)
 //
@@ -13,24 +13,21 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Lesser Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Lesser Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // original 	- May 2002
 //
 // $Revision$
 //
-//-----------------------------------------------------------------------------
+//+==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -66,13 +63,15 @@ namespace Tango
 ApiUtil *ApiUtil::_instance = NULL;
 omni_mutex ApiUtil::inst_mutex;
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::ApiUtil()
+// method :
+//		ApiUtil::ApiUtil()
 //
-// description : 	Constructor of the ApiUtil class.
+// description :
+//		Constructor of the ApiUtil class.
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
 notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
@@ -146,13 +145,15 @@ notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consume
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::~ApiUtil()
+// method :
+//		ApiUtil::~ApiUtil()
 //
-// description : 	Destructor of the ApiUtil class.
+// description :
+//		Destructor of the ApiUtil class.
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 ApiUtil::~ApiUtil()
 {
@@ -226,11 +227,15 @@ ApiUtil::~ApiUtil()
 
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// ApiUtil::create_orb() - create a CORBA orb object
+// method :
+//		ApiUtil::create_orb()
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Create the CORBA orb object
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::create_orb()
 {
@@ -238,8 +243,7 @@ void ApiUtil::create_orb()
 	char **_argv;
 
 //
-// pass dummy arguments to init() because we don't have access to
-// argc and argv
+// pass dummy arguments to init() because we don't have access to argc and argv
 //
 
 	_argc = 1;
@@ -247,9 +251,8 @@ void ApiUtil::create_orb()
 	_argv[0] = (char*)"dummy";
 
 //
-// Get user signal handler for SIGPIPE
-// (ORB_init call install a SIG_IGN for SIGPIPE. This
-// could be annoying in case the user uses SIGPIPE)
+// Get user signal handler for SIGPIPE (ORB_init call install a SIG_IGN for SIGPIPE. This could be annoying in case
+// the user uses SIGPIPE)
 //
 
 #ifndef _TG_WINDOWS_
@@ -347,16 +350,16 @@ int ApiUtil::get_db_ind(string &host,int port)
 }
 
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::get_asynch_replies()
+// method :
+//		ApiUtil::get_asynch_replies()
 //
-// description : 	Try to obtain data returned by a command asynchronously
-//			requested. This method does not block if the reply is
-//			not yet arrived. Fire callback for replies alaredy
-//			arrived
+// description :
+//		Try to obtain data returned by a command asynchronously requested. This method does not block if the reply is
+//		not yet arrived. Fire callback for replies already arrived
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::get_asynch_replies()
 {
@@ -446,16 +449,18 @@ void ApiUtil::get_asynch_replies()
 }
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::get_asynch_replies()
+// method :
+//		ApiUtil::get_asynch_replies()
 //
-// description : 	Try to obtain data returned by a command asynchronously
-//			requested. This method does not block if the reply is
-//			not yet arrived. Fire callback for replies alaredy
-//			arrived
+// description :
+//		Try to obtain data returned by a command asynchronously requested. This method does not block if the reply is
+//		not yet arrived. Fire callback for replies already arrived
 //
-// argin(s) :		call_timeout : The timeout value in mS
+// arg(s) :
+//		in :
+//			- call_timeout : The timeout value in mS
 //
 //-----------------------------------------------------------------------------
 
@@ -503,10 +508,10 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 
 		if (call_timeout != 0)
 		{
+
 //
-// A timeout has been specified. Wait if there are still request without
-// replies but not more than the specified timeout. Leave method if the
-// timeout is not arrived but there is no more request without reply
+// A timeout has been specified. Wait if there are still request without replies but not more than the specified
+// timeout. Leave method if the timeout is not arrived but there is no more request without reply
 //
 
 			long nb = call_timeout / 20;
@@ -572,8 +577,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 			}
 
 //
-// Throw exception if the timeout has expired but there are still request
-// without replies
+// Throw exception if the timeout has expired but there are still request without replies
 //
 
 			if ((nb == 0) && (asyn_p_table->get_cb_request_nb() != 0))
@@ -588,8 +592,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 		else
 		{
 //
-// If timeout is set to 0, this means wait until all the requests sent to this
-// device has sent their replies
+// If timeout is set to 0, this means wait until all the requests sent to this device has sent their replies
 //
 
 			while (asyn_p_table->get_cb_request_nb() != 0)
@@ -641,16 +644,19 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::set_asynch_cb_sub_model()
+// method :
+//		ApiUtil::set_asynch_cb_sub_model()
 //
-// description : 	Set the callback automatic mode (Fired by dedicated call
-//			or automatically fired by a separate thread)
+// description :
+//		Set the callback automatic mode (Fired by dedicated call or automatically fired by a separate thread)
 //
-// argin(s) :		mode : The new callback mode
+// arg(s) :
+//		in :
+//			- mode : The new callback mode
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 {
@@ -661,8 +667,7 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 		{
 
 //
-// In this case, delete the old object in case it is needed, create a new
-// thread and start it
+// In this case, delete the old object in case it is needed, create a new thread and start it
 //
 
             delete cb_thread_ptr;
@@ -692,17 +697,16 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 
 }
 
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::create_xxx_event_consumer()
+// method :
+//		ApiUtil::create_xxx_event_consumer()
 //
-// description : 	Create the event consumer. This will automatically
-//			        start a new thread which is waiting in a CORBA::run()
-//			        indefintely for events. It will then trigger the events.
+// description :
+//		Create the event consumer. This will automatically start a new thread which is waiting in a CORBA::run()
+//		indefintely for events. It will then trigger the events.
 //
-// argin(s) :		none
-//
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::create_notifd_event_consumer()
 {
@@ -724,13 +728,19 @@ ZmqEventConsumer *ApiUtil::get_zmq_event_consumer()
 	return zmq_event_consumer;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::clean_locking_threads()
+// method :
+//		ApiUtil::clean_locking_threads()
 //
-// description : 	Ask all remaining locking threads to exit
+// description :
+//		Ask all remaining locking threads to exit
 //
-//-----------------------------------------------------------------------------
+// args :
+//		in :
+//			- clean :
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::clean_locking_threads(bool clean)
 {
@@ -774,17 +784,16 @@ void ApiUtil::clean_locking_threads(bool clean)
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::attr_to_device()
+// method :
+//		ApiUtil::attr_to_device()
 //
-// description : 	Create the event consumer. This will automatically
-//			start a new thread which is waiting in a CORBA::run()
-//			indefintely for events. It will then trigger the events.
+// description :
+//		Create the event consumer. This will automatically start a new thread which is waiting in a CORBA::run()
+//		indefintely for events. It will then trigger the events.
 //
-// argin(s) :		none
-//
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::attr_to_device(const AttributeValue *attr_value,
 			     const AttributeValue_3 *attr_value_3,
@@ -1371,15 +1380,21 @@ void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4,TANGO_UNUSED(l
 	}
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::device_to_attr()
+// method :
+//		ApiUtil::device_to_attr()
 //
 // description :
+//		initialize one AttributeValue instance from a DeviceAttribute one
 //
-// argin(s) :		none
+// arg(s) :
+//		in :
+//			- dev_attr : The DeviceAttribute instance taken as source
+//		out :
+//			- att : The AttributeValue used as destination
 //
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue_4 &att)
 {
@@ -1462,19 +1477,24 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue &att
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::get_env_var()
+// method :
+//		ApiUtil::get_env_var()
 //
 // description :
+//		Get environment variable
 //
-// argin(s) :		- env_var_name : The environment variable name
-//					- env_var : Reference to the string initialised with
-//								the env. variable value (if found)
+// arg(s) :
+//		in :
+//			- env_var_name : The environment variable name
+//		out :
+//			- env_var : Reference to the string initialised with the env. variable value (if found)
 //
-// This method returns 0 if the env. variable is found and -1 otherwise
+// return :
+//		0 if the env. variable is found and -1 otherwise
 //
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 int ApiUtil::get_env_var(const char *env_var_name,string &env_var)
 {
@@ -1482,15 +1502,19 @@ int ApiUtil::get_env_var(const char *env_var_name,string &env_var)
 	return d.get_env_var(env_var_name,env_var);
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------
 //
-// method : 		ApiUtil::get_ip_from_if()
+// method :
+//		ApiUtil::get_ip_from_if()
 //
-// description : Get host IP address from its network interface
+// description :
+//		Get host IP address from its network interface
 //
-// argin(s) : out : - ip_adr_list : Host IP address
+// arg(s) :
+//		out :
+//			- ip_adr_list : Host IP address
 //
-//-----------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 {
@@ -1513,10 +1537,9 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
         }
 
 //
-// Walk through linked list, maintaining head pointer so we can free list later
-// The ifa_addr field points to a structure containing the interface address.
-// (The sa_family subfield should be consulted to determine the format of the
-// address structure.)
+// Walk through linked list, maintaining head pointer so we can free list later. The ifa_addr field points to a
+// structure containing the interface address. (The sa_family subfield should be consulted to determine the format
+// of the address structure.)
 //
 
         for (ifa = ifaddr;ifa != NULL;ifa = ifa->ifa_next)
@@ -1587,8 +1610,7 @@ void ApiUtil::get_ip_from_if(vector<string> &ip_adr_list)
 		closesocket(sock);
 
 //
-// Converts addresses to string
-// Only for running interfaces
+// Converts addresses to string. Only for running interfaces
 //
 
 		int numAddresses = retlen / sizeof(INTERFACE_INFO);
@@ -1657,14 +1679,15 @@ void ApiUtil::print_error_message(const char *mess)
 	cerr << tmp_date << ": " << mess << endl;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// operator overloading : 	<<
+// function
+// 		operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//			AttributeInfo class
+// description :
+//		Friend function to ease printing instance of the AttributeInfo class
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 ostream &operator<<(ostream &o_str,AttributeInfo &p)
 {
@@ -1753,14 +1776,15 @@ ostream &operator<<(ostream &o_str,AttributeInfo &p)
 	return o_str;
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// operator overloading : 	=
+// function :
+// 		operator overloading : 	=
 //
-// description : 	Assignement operator for the AttributeInfoEx class
-//					from a AttributeConfig_2 pointer
+// description :
+//		Assignement operator for the AttributeInfoEx class from a AttributeConfig_2 pointer
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_2 *att_2)
 {
@@ -1791,14 +1815,15 @@ AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_2 *att_2)
 	return *this;
 }
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// operator overloading : 	=
+// function :
+// 		operator overloading : 	=
 //
-// description : 	Assignement operator for the AttributeInfoEx class
-//					from a AttributeConfig_3 pointer
+// description :
+//		Assignement operator for the AttributeInfoEx class from a AttributeConfig_3 pointer
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_3 *att_3)
 {
@@ -1865,14 +1890,15 @@ AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_3 *att_3)
 	return *this;
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// operator overloading : 	<<
+// function :
+// 		operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//			AttributeInfo class
+// description :
+//		Friend function to ease printing instance of the AttributeInfo class
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 {
