@@ -898,22 +898,24 @@ vector<PollObj *>::iterator DeviceImpl::get_polled_obj_by_type_name(
 #endif
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::get_cmd_poll_ring_depth
+// method :
+//		DeviceImpl::get_cmd_poll_ring_depth
 //
-// description :	This method returns the polling buffer depth.
-//			Most of the times, this is defined at device level
-//			via the device "poll_ring_depth" property.
-//			nevertheless, in some cases, this value cab be
-//			overwritten via the device "cmd_poll_ring_depth"
-//			property.
+// description :
+//		This method returns the polling buffer depth. Most of the times, this is defined at device level
+//		via the device "poll_ring_depth" property. Nevertheless, in some cases, this value can be overwritten via the
+//		device "cmd_poll_ring_depth" property.
 //
-// in : 		cmd_name : The command name
+// args :
+// 		in :
+//			- cmd_name : The command name
 //
-// This method returns the polling buffer depth
+// return :
+// 		This method returns the polling buffer depth
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 {
@@ -969,20 +971,22 @@ long DeviceImpl::get_cmd_poll_ring_depth(string &cmd_name)
 	return ret;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::get_attr_poll_ring_depth
+// method :
+//		DeviceImpl::get_attr_poll_ring_depth
 //
-// description :	This method returns the polling buffer depth.
-//			Most of the times, this is defined at device level
-//			via the device "poll_ring_depth" property.
-//			Nevertheless, in some cases, this value can be
-//			overwritten via the device "attr_poll_ring_depth"
-//			property.
+// description :
+//		This method returns the polling buffer depth. Most of the times, this is defined at device level
+//		via the device "poll_ring_depth" property. Nevertheless, in some cases, this value can be overwritten via the
+//		device "attr_poll_ring_depth" property.
 //
-// in : 		attr_name : The attribute name
+// args :
+// 		in :
+//			- attr_name : The attribute name
 //
-// This method returns the polling buffer depth
+// return :
+// 		This method returns the polling buffer depth
 //
 //--------------------------------------------------------------------------
 

@@ -1,14 +1,12 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+=============================================================================
+//+==================================================================================================================
 //
 // file :               DServer.cpp
 //
-// description :        C++ source for the DServer class and its commands.
-//			The class is derived from Device. It represents the
-//			CORBA servant object which will be accessed from the
-//			network. All commands which can be executed on a
-//			DServer object are implemented in this file.
+// description :        C++ source for the DServer class and its commands. The class is derived from Device. It
+//						represents the CORBA servant object which will be accessed from the network.
+//						All commands which can be executed on a DServer object are implemented in this file.
 //
 // project :            TANGO
 //
@@ -21,22 +19,19 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-=============================================================================
+//-=================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -56,16 +51,18 @@ static const char *RcsId = "$Id$\n$Name$";
 namespace Tango
 {
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::polled_device()
+// method :
+//		DServer::polled_device()
 //
-// description : 	command to read all the devices actually polled by the
-//			device server
+// description :
+//		command to read all the devices actually polled by the device server
 //
-// out :		The device name list in a strings sequence
+// retrun :
+//		The device name list in a strings sequence
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::polled_device()
 {
@@ -123,15 +120,22 @@ Tango::DevVarStringArray *DServer::polled_device()
 
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::dev_polled_status()
+// method :
+//		DServer::dev_polled_status()
 //
-// description : 	command to read device polling status
+// description :
+//		command to read device polling status
 //
-// out :		The device polling status as a string (multiple lines)
+// args :
+//		in :
+//			- dev_name : The device name
 //
-//-----------------------------------------------------------------------------
+// return :
+//		The device polling status as a string (multiple lines)
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 {
@@ -167,10 +171,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 	long i,nb_cmd,nb_attr;
 
 //
-// Compute how many cmds and/or attributes are polled
-// Since IDL V3, state and status are polled as attributes
-// For compatibility, if one of these "attributes" is polled,
-// also returned the info as the command is polled
+// Compute how many cmds and/or attributes are polled. Since IDL V3, state and status are polled as attributes
+// For compatibility, if one of these "attributes" is polled, also returned the info as the command is polled
 //
 
 	nb_cmd = nb_attr = 0;
@@ -303,9 +305,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 		{
 
 //
-// Take polled object ownership in order to have coherent info returned to caller
-// We don't want the polling thread to insert a new elt in polling ring while
-// we are getting these data. Therefore, use the xxx_i methods
+// Take polled object ownership in order to have coherent info returned to caller. We don't want the polling thread
+// to insert a new elt in polling ring while we are getting these data. Therefore, use the xxx_i methods
 //
 
 			{
@@ -475,9 +476,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 			attr_ind++;
 
 //
-// If the attribute is state or status, also add the string in command list
-// after replacing all occurences of "attributes" by "command" in the returned
-// string
+// If the attribute is state or status, also add the string in command list after replacing all occurences of
+// "attributes" by "command" in the returned string
 //
 
 			if (duplicate == true)
@@ -500,22 +500,27 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::add_obj_polling()
+// method :
+//		DServer::add_obj_polling()
 //
-// description : 	command to add one object to be polled
+// description :
+//		command to add one object to be polled
 //
-// in :			The polling parameters :
-//				device name
-//				object type (command or attribute)
-//				object name
-//				update period in mS (in the long array)
+// args :
+// 		in :
+//			- argin : The polling parameters :
+//						device name
+//						object type (command or attribute)
+//						object name
+//						update period in mS (in the long array)
+//			- with_db_upd : set to true if db has to be updated
+//			- delta_ms :
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
-void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
-			      bool with_db_upd,int delta_ms)
+void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool with_db_upd,int delta_ms)
 {
 	NoSyncModelTangoMonitor nosyn_mon(this);
 
@@ -557,15 +562,13 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	}
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev,"add_obj_polling",(argin->svalue)[0]);
 
 //
-// Check that the command (or the attribute) exists. For command, also checks
-// that it does not need input value.
+// Check that the command (or the attribute) exists. For command, also checks that it does not need input value.
 //
 
 	string obj_type((argin->svalue)[1]);
@@ -607,8 +610,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		}
 
 //
-// Since IDl release 3, state and status command must be polled
-// as attributes to be able to generate event on state or
+// Since IDl release 3, state and status command must be polled as attributes to be able to generate event on state or
 // status.
 //
 
@@ -656,8 +658,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	}
 
 //
-// Check that the requested polling period is not below the one authorized
-// (if defined)
+// Check that the requested polling period is not below the one authorized (if defined)
 // 0 as polling period is always authorized for polling buffer externally filled
 //
 
@@ -665,9 +666,8 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		check_upd_authorized(dev,upd,type,obj_name);
 
 //
-// Create a new PollObj instance for this object
-// Protect this code by a monitor in case of the polling thread using one of
-// the vector element.
+// Create a new PollObj instance for this object. Protect this code by a monitor in case of the polling thread using
+// one of the vector element.
 //
 
 	long depth;
@@ -681,8 +681,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	dev->get_poll_monitor().rel_monitor();
 
 //
-// Find out which thread is in charge of the device.
-// If none exists already, create one
+// Find out which thread is in charge of the device. If none exists already, create one
 //
 
 	PollingThreadInfo *th_info;
@@ -700,8 +699,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	th_info = tg->get_polling_thread_info_by_id(poll_th_id);
 
 //
-// Send command to the polling thread but wait in case of previous cmd
-// still not executed
+// Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
 	cout4 << "Sending cmd to polling thread" << endl;
@@ -728,8 +726,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 		omni_thread *th = omni_thread::self();
@@ -781,9 +778,8 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	th_info->nb_polled_objects++;
 
 //
-// Update polling parameters in database (if wanted and possible)
-// If the property is already there (it should not but...), only update its
-// polling period
+// Update polling parameters in database (if wanted and possible). If the property is already there
+// (it should not but...), only update its polling period
 //
 
 	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
@@ -947,22 +943,26 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::upd_obj_polling_period()
+// method :
+//		DServer::upd_obj_polling_period()
 //
-// description : 	command to upadte an already polled object update period
+// description :
+//		command to upadte an already polled object update period
 //
-// in :			The polling parameters :
-//				device name
-//				object type (command or attribute)
-//				object name
-//				update period in mS (in the long array)
+// args :
+// 		in :
+//			- argin : The polling parameters :
+//						device name
+//						object type (command or attribute)
+//						object name
+//						update period in mS (in the long array)
+//			- with_db_upd : Flag set to true if db has to be updated
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
-void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
-				     bool with_db_upd)
+void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,bool with_db_upd)
 {
 	NoSyncModelTangoMonitor nosync_mon(this);
 
@@ -1017,8 +1017,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	}
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev,"upd_obj_polling_period",(argin->svalue)[0]);
@@ -1037,8 +1036,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		type = Tango::POLL_CMD;
 //
-// Since IDl release 3, state and status command must be polled
-// as attributes to be able to generate event on state or
+// Since IDl release 3, state and status command must be polled as attributes to be able to generate event on state or
 // status.
 //
 
@@ -1060,16 +1058,14 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type,obj_name);
 
 //
-// Check that the requested polling period is not below the one authorized
-// (if defined)
+// Check that the requested polling period is not below the one authorized (if defined)
 //
 
 	int upd = (argin->lvalue)[0];
 	check_upd_authorized(dev,upd,type,obj_name);
 
 //
-// Check that it is not an externally triggered polling object. In this
-// case, throw exception
+// Check that it is not an externally triggered polling object. In this case, throw exception
 //
 
 /*	long tmp_upd = (*ite)->get_upd();
@@ -1103,8 +1099,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	}
 
 //
-// Find out which thread is in charge of the device.
-// If none exists already, create one
+// Find out which thread is in charge of the device. If none exists already, create one
 //
 
 	PollingThreadInfo *th_info;
@@ -1169,9 +1164,8 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	}
 
 //
-// Update database property --> Update polling period if this object is already
-// defined in the polling property. Add object name and update period if the
-// object is not known in the property
+// Update database property --> Update polling period if this object is already defined in the polling property.
+// Add object name and update period if the object is not known in the property
 //
 
 	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
@@ -1228,20 +1222,23 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::rem_obj_polling()
+// method :
+//		DServer::rem_obj_polling()
 //
-// description : 	command to remove an already polled object from the device
-//			        polled object list
+// description :
+//		command to remove an already polled object from the device polled object list
 //
-// in :	- argin: The polling parameters :
+// args :
+// 		in :
+//			- argin: The polling parameters :
 //				    device name
 //				    object type (command or attribute)
 //				    object name
-//      - with_db_upd : Update db flag
+//      	- with_db_upd : Update db flag
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db_upd)
 {
@@ -1296,8 +1293,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	}
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev,"rem_obj_polling",(*argin)[0]);
@@ -1391,8 +1387,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 				cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 				int th_id = omni_thread::self()->id();
@@ -1455,9 +1450,8 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		dev->is_polled(false);
 
 //
-// Update database property. This means remove object entry in the polling
-// properties if they exist or add it to the list of device not polled
-// for automatic polling defined at command/attribute level.
+// Update database property. This means remove object entry in the polling properties if they exist or add it to the
+// list of device not polled for automatic polling defined at command/attribute level.
 // Do this if possible and wanted.
 //
 
@@ -1549,10 +1543,8 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	}
 
 //
-// If the device is not polled any more, update the pool conf first locally.
-// Also update the map<device name,thread id>
-// If this device was the only one for a polling thread, kill the thread
-// Then in Db if possible
+// If the device is not polled any more, update the pool conf first locally. Also update the map<device name,thread id>
+// If this device was the only one for a polling thread, kill the thread then in Db if possible
 //
 
 	bool kill_thread = false;
@@ -1630,13 +1622,15 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::stop_polling()
+// method :
+//		DServer::stop_polling()
 //
-// description : 	command to stop the polling thread
+// description :
+//		command to stop the polling thread
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DServer::stop_polling()
 {
@@ -1695,13 +1689,15 @@ void DServer::stop_polling()
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::start_polling()
+// method :
+//		DServer::start_polling()
 //
-// description : 	command to start the polling thread
+// description :
+//		command to start the polling thread
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::start_polling()
 {
@@ -1789,14 +1785,15 @@ void DServer::start_polling(PollingThreadInfo *th_info)
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::add_event_heartbeat()
+// method :
+//		DServer::add_event_heartbeat()
 //
-// description : 	command to ask the heartbeat thread to send
-//			the event heartbeat every 10 seconds
+// description :
+//		command to ask the heartbeat thread to send the event heartbeat every 9 seconds
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DServer::add_event_heartbeat()
 {
@@ -1805,8 +1802,7 @@ void DServer::add_event_heartbeat()
 	cout4 << "In add_event_heartbeat method" << endl;
 
 //
-// Send command to the heartbeat thread but wait in case of previous cmd
-// still not executed
+// Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
 	cout4 << "Sending cmd to polling thread" << endl;
@@ -1829,8 +1825,7 @@ void DServer::add_event_heartbeat()
 		cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 		int th_id = omni_thread::self()->id();
@@ -1853,14 +1848,15 @@ void DServer::add_event_heartbeat()
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::rem_event_heartbeat()
+// method :
+//		DServer::rem_event_heartbeat()
 //
-// description : 	command to ask the heartbeat thread to stop sending
-//			the event heartbeat
+// description :
+//		command to ask the heartbeat thread to stop sending the event heartbeat
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DServer::rem_event_heartbeat()
 {
@@ -1869,8 +1865,7 @@ void DServer::rem_event_heartbeat()
 	cout4 << "In rem_event_heartbeat method" << endl;
 
 //
-// Send command to the heartbeat thread but wait in case of previous cmd
-// still not executed
+// Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
 	cout4 << "Sending cmd to polling thread" << endl;
@@ -1892,8 +1887,7 @@ void DServer::rem_event_heartbeat()
 		cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 		int th_id = omni_thread::self()->id();
@@ -1915,20 +1909,23 @@ void DServer::rem_event_heartbeat()
 	cout4 << "Thread cmd normally executed" << endl;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::check_upd_authorized()
+// method :
+//		DServer::check_upd_authorized()
 //
-// description : 	In case a minimun update polling period is defined (via the
-//					min_poll_period, cmd_min_poll_period,attr_min_poll_period)
-//					check if the requested period is not smaller
+// description :
+//		In case a minimun update polling period is defined (via the min_poll_period, cmd_min_poll_period,
+//		attr_min_poll_period) check if the requested period is not smaller
 //
-// argin: dev : The device
-//		  upd : The requested update period
-//		  type : The polled object type (cmd / attr)
-//		  obj_name : The polled object name
+// args :
+// 		in:
+//			- dev : The device
+//		  	- upd : The requested update period
+//		  	- type : The polled object type (cmd / attr)
+//		  	- obj_name : The polled object name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,string &obj_name)
 {
