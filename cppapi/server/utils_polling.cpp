@@ -1,11 +1,10 @@
 static const char *RcsId = "$Id$";
 
-//+=============================================================================
+//+==================================================================================================================
 //
 // file :               utils_polling.cpp
 //
-// description :        C++ source for all the methods of the Util class related
-//						to polling
+// description :        C++ source for all the methods of the Util class related to polling
 //
 // project :            TANGO
 //
@@ -18,22 +17,20 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-=============================================================================
+//-==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -46,17 +43,17 @@ static const char *RcsId = "$Id$";
 
 namespace Tango
 {
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::polling_configure()
+// method :
+//		Util::polling_configure()
 //
-// description : 	This method sends command to the polling thread for
-//			all cmd/attr with polling configuration stored in db.
-//			This is done in separate thread in order to equally
-//			spread all the polled objects polling time on the
-//			smallest polling period.
+// description :
+//		This method sends command to the polling thread for all cmd/attr with polling configuration stored in db.
+//		This is done in separate thread in order to equally spread all the polled objects polling time on the
+//		smallest polling period.
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::polling_configure()
 {
@@ -88,8 +85,7 @@ void Util::polling_configure()
 	TangoSys_MemStream s;
 
 //
-// Create the structure used to send data to the polling thread
-// and store them in a vector
+// Create the structure used to send data to the polling thread and store them in a vector
 //
 
 	vector<DevVarLongStringArray *> v_poll_cmd;
@@ -136,8 +132,7 @@ void Util::polling_configure()
 
 //
 // Check the device polling definition (existing polled cmd/attr ?)
-// If the polling needs to be modified, memorize the index in class and
-// device loop to re-find it later.
+// If the polling needs to be modified, memorize the index in class and device loop to re-find it later.
 //
 
 			int ret;
@@ -256,10 +251,8 @@ void Util::polling_configure()
 	}
 
 //
-// Send command to polling thread one by one for each threads
-// In the following computation , I try to take into account the
-// non real time aspect of our OS. I remove 15 mS from each
-// sleeping time due to thread wake-up time
+// Send command to polling thread one by one for each threads. In the following computation , I try to take into
+// account the non real time aspect of our OS. I remove 15 mS from each sleeping time due to thread wake-up time
 //
 
 	unsigned long nb_thread = poll_ths.size();
@@ -342,10 +335,9 @@ void Util::polling_configure()
 	admin_dev->start_polling();
 
 //
-// If some polling related prop. (polling conf or dev conf) has to be
-// updated in db, do it now
-// Add a check to verify that it is possible to store polling pool
-// conf in database. Property length cannot be longer than 256 characters
+// If some polling related prop. (polling conf or dev conf) has to be updated in db, do it now
+// Add a check to verify that it is possible to store polling pool conf in database.
+// Property length cannot be longer than 256 characters
 //
 
 	if (poll_pool_conf.empty() == true)
@@ -371,15 +363,21 @@ void Util::polling_configure()
 
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::trigger_attr_polling()
+// method :
+//		Util::trigger_attr_polling()
 //
-// description : 	Trigger the polling thread for polled attributes
-//			registered with a polling update period set as
-//			"externally triggered" (0 mS)
+// description :
+//		Trigger the polling thread for polled attributes registered with a polling update period set as
+//		"externally triggered" (0 mS)
 //
-//-----------------------------------------------------------------------------
+// args :
+// 		in :
+//			- dev : The device pointer
+//			- name : The polled attribute name
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 {
@@ -408,8 +406,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_ATTR,obj_name);
 
 //
-// Check that it is an externally triggered polling object. If it is not the
-// case, throw exception
+// Check that it is an externally triggered polling object. If it is not the case, throw exception
 //
 
 	long tmp_upd = (*ite)->get_upd();
@@ -444,8 +441,7 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 	th_info = get_polling_thread_info_by_id(poll_th_id);
 
 //
-// Send command to the polling thread but wait in case of previous cmd
-// still not executed
+// Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
 	TangoMonitor &mon = th_info->poll_mon;
@@ -525,15 +521,21 @@ void Util::trigger_attr_polling(Tango::DeviceImpl *dev,const string &name)
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::trigger_cmd_polling()
+// method :
+//		Util::trigger_cmd_polling()
 //
-// description : 	Trigger the polling thread for polled command
-//			registered with a polling update period set as
-//			"externally triggered" (0 mS)
+// description :
+//		Trigger the polling thread for polled command registered with a polling update period set as
+//		"externally triggered" (0 mS)
 //
-//-----------------------------------------------------------------------------
+// args :
+// 		in :
+//			- dev : The device pointer
+//			- name : The polled attribute name
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 {
@@ -562,8 +564,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(Tango::POLL_CMD,obj_name);
 
 //
-// Check that it is an externally triggered polling object. If it is not the
-// case, throw exception
+// Check that it is an externally triggered polling object. If it is not the case, throw exception
 //
 
 	long tmp_upd = (*ite)->get_upd();
@@ -598,8 +599,7 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 	th_info = get_polling_thread_info_by_id(poll_th_id);
 
 //
-// Send command to the polling thread but wait in case of previous cmd
-// still not executed
+// Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
 	TangoMonitor &mon = th_info->poll_mon;
@@ -678,14 +678,15 @@ void Util::trigger_cmd_polling(Tango::DeviceImpl *dev,const string &name)
 	cout4 << "Thread cmd normally executed" << endl;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::clean_attr_polled_prop()
+// method :
+//		Util::clean_attr_polled_prop()
 //
-// description : 	Clean in database the prop used to memorized which attribute
-//					are polled
+// description :
+//		Clean in database the prop used to memorized which attribute are polled
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void Util::clean_attr_polled_prop()
 {
@@ -726,26 +727,28 @@ void Util::clean_attr_polled_prop()
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::create_poll_thread()
+// method :
+//		Util::create_poll_thread()
 //
-// description : 	Create a polling thread for the device specified as parameter
-//					If the thread already exist, do nothing
-//					If the pool is full, associate this device to an already existing
-//					thread
+// description :
+//		Create a polling thread for the device specified as parameter. If the thread already exist, do nothing
+//		If the pool is full, associate this device to an already existing thread
 //
-// argin : - dev_name : The device name
-//		   - startup : True if this method is called during DS startup.
-//					   In such a case, some exception should not be thrown
-//		   - smallest_upd : The smallest upd !
+// args :
+// 		in :
+// 			- dev_name : The device name
+//		   	- startup : True if this method is called during DS startup. In such a case, some exception should not
+//						be thrown
+//		   	- smallest_upd : The smallest upd !
 //
-// This method returns -2 if the pool conf. does not need any update
-// It returns -1 if a new thread has been created
-// It returns the index in the pool conf of the entry which has to be modified
-// when the device is associated to an already existing thread
+// return :
+// 		This method returns -2 if the pool conf. does not need any update. It returns -1 if a new thread has been
+//		created. It returns the index in the pool conf of the entry which has to be modified when the device is
+//		associated to an already existing thread
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 {
@@ -790,8 +793,8 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 			vector<string>::iterator it;
 
 //
-// If we find a thread for one of the associated device, no need to create a new one
-// simply add the device entry in the map <dev_name,thread id>
+// If we find a thread for one of the associated device, no need to create a new one. Simply add the device entry
+// in the map <dev_name,thread id>
 //
 
 			for (it = asso_devs.begin();it != asso_devs.end();++it)
@@ -851,8 +854,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 			vector<string>::iterator it;
 
 //
-// If we find a thread for one of the associated device,
-// simply add the device entry in the map <dev_name,thread id>
+// If we find a thread for one of the associated device, simply add the device entry in the map <dev_name,thread id>
 //
 
 			for (it = asso_devs.begin();it != asso_devs.end();++it)
@@ -895,8 +897,7 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 		}
 
 //
-// Find a device already assigned to this thread and then get the device entry in
-// the thread pool
+// Find a device already assigned to this thread and then get the device entry in the thread pool
 //
 
 		string d_name;
@@ -954,13 +955,15 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::stop_all_polling_threads()
+// method :
+//		Util::stop_all_polling_threads()
 //
-// description : 	Stop all polling threads used in the polling thread pool
+// description :
+//		Stop all polling threads used in the polling thread pool
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::stop_all_polling_threads()
 {
@@ -993,13 +996,15 @@ void Util::stop_all_polling_threads()
 	poll_ths.clear();
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::stop_heartbeat_thread()
+// method :
+//		Util::stop_heartbeat_thread()
 //
-// description : 	Stop the heartbeat thread
+// description :
+//		Stop the heartbeat thread
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::stop_heartbeat_thread()
 {
@@ -1023,17 +1028,22 @@ void Util::stop_heartbeat_thread()
 	heartbeat_th->join(&dummy_ptr);
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_poll_th_id_by_name()
+// method :
+//		Util::get_poll_th_id_by_name()
 //
-// description : 	Get the ID of the thread in charge of the device polling
+// description :
+//		Return the ID of the thread in charge of the device polling
 //
-// argin() : dev_name : The device name
+// args :
+// 		in :
+// 			- dev_name : The device name
 //
-// If there is no thread dedicated to the device, the return value is 0
+// return :
+// 		If there is no thread dedicated to the device, the return value is 0
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 int Util::get_polling_thread_id_by_name(const char *dev_name)
 {
@@ -1051,18 +1061,22 @@ int Util::get_polling_thread_id_by_name(const char *dev_name)
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_polling_thread_info_by_id()
+// method :
+//		Util::get_polling_thread_info_by_id()
 //
-// description : 	Return the PollingThreadInfo for the thread with the ID
-//					specified as the input argument
+// description :
+//		Return the PollingThreadInfo for the thread with the ID specified as the input argument
 //
-// argin() : id : The polling thread identifier
+// args :
+//		in :
+// 			- id : The polling thread identifier
 //
-// If there is no polling thread with this ID, throws an exception
+// return :
+// 		If there is no polling thread with this ID, throws an exception
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 {
@@ -1091,21 +1105,23 @@ PollingThreadInfo *Util::get_polling_thread_info_by_id(int th_id)
 	return ret_ptr;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::check_poll_conf()
+// method :
+//		Util::check_poll_conf()
 //
-// description : 	Check the pool configuration coherency.
-//					This means:
-//					- All devices defined in the pool conf has to be created
-//					  in the DS
-//					- All objects to be polled has to be coherent
-//					- The pool size must be coherent with the conf
+// description :
+//		Check the pool configuration coherency. This means:
+//		- All devices defined in the pool conf has to be created in the DS
+//		- All objects to be polled has to be coherent
+//		- The pool size must be coherent with the conf
 //
-// argin() : - admin_dev : The DS admin device
-//			 - pool_size : The pool size (max number of thread)
+// args :
+//		in :
+// 			- admin_dev : The DS admin device
+//			- pool_size : The pool size (max number of thread)
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 {
@@ -1121,8 +1137,8 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 	vector<string> mod_conf = poll_pool_conf;
 
 //
-// First, get the list of devices instanciated in this server and check if the polled
-// devices are defined within the server
+// First, get the list of devices instanciated in this server and check if the polled devices are defined within
+// the server
 //
 
 	Tango::DevVarStringArray *dev_list = admin_dev->query_device();
@@ -1173,8 +1189,7 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 			}
 
 //
-// The device is not defined in the DS, remove it from the conf.
-// (Do not copy it in the new conf built by this method)
+// The device is not defined in the DS, remove it from the conf. (Do not copy it in the new conf built by this method)
 //
 
 			if (loop == nb_dev)
@@ -1243,8 +1258,8 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 		cout << "The pool configuration will be automatically updated" << endl;
 
 //
-// If we have more threads in the conf than in the pool, distribute the extra thread
-// devices to the still existing threads
+// If we have more threads in the conf than in the pool, distribute the extra thread devices to the still existing
+// threads
 //
 
 		long nb_extra_th = mod_conf.size() - pool_size;
@@ -1280,22 +1295,26 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::check_dev_poll()
+// method :
+//		Util::check_dev_poll()
 //
-// description : 	Check if all the cmd/attr to be polled for a device are
-//					really supported by the device
+// description :
+//		Check if all the cmd/attr to be polled for a device are really supported by the device
 //
-// argin() : - poll_cmd_list : The polled command(s)
-//			 - poll_attr_list : The polled attr(s)
-//			 - dev : The device pointer
+// args :
+//		in :
+// 			- poll_cmd_list : The polled command(s)
+//			- poll_attr_list : The polled attr(s)
+//			- dev : The device pointer
 //
-// This method returns 0 if no polling conf has been modified.
-// Otherwise, it returns -1 if only the command list has been modified,
-// -2 if the only the attribute list has been modified and -3 if both
-// of them have been modified
-//-----------------------------------------------------------------------------
+// return :
+// 		This method returns 0 if no polling conf has been modified. Otherwise, it returns -1 if only the command list
+//		has been modified, -2 if the only the attribute list has been modified and -3 if both of them have been
+// 		modified
+//
+//------------------------------------------------------------------------------------------------------------------
 
 int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr_list,DeviceImpl *dev)
 {
@@ -1381,17 +1400,21 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::split_string()
+// method :
+//		Util::split_string()
 //
-// description : 	Split a string according to a delimiter
+// description :
+//		Split a string according to a delimiter
 //
-// argin() : - the_str : ref to the string to be plitted
-//			 - delim : The delimiter character
-//			 - plited_str : The splitted string returned in a vector of individual elt
+// args :
+//		in :
+// 			- the_str : ref to the string to be plitted
+//			- delim : The delimiter character
+//			- splited_str : The splitted string returned in a vector of individual elt
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::split_string(string &the_str,char delim,vector<string> &splitted_str)
 {
@@ -1412,17 +1435,20 @@ void Util::split_string(string &the_str,char delim,vector<string> &splitted_str)
 	splitted_str.push_back(the_str.substr(start));
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::upd_polling_prop()
+// method :
+//		Util::upd_polling_prop()
 //
-// description : 	Update polling related properties in Db
+// description :
+//		Update polling related properties in Db
 //
-// argin() : - upd_devs : ref to a vector with one elt for each dev with polling
-//						  prop. to be updated
-//			 - admin_dev : The DS admin device
+// args :
+//		in :
+// 			- upd_devs : ref to a vector with one elt for each dev with polling prop. to be updated
+//			- admin_dev : The DS admin device
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 {
@@ -1500,8 +1526,7 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 		}
 
 //
-// If now the device does not have any objects polled (no cmd, no attr), it must
-// be removed from the pool conf.
+// If now the device does not have any objects polled (no cmd, no attr), it must be removed from the pool conf.
 //
 
 		if ((poll_attr_list.empty() == true) && (poll_cmd_list.empty() == true))
@@ -1555,9 +1580,8 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 
 //
 // The max device property size in db is limited to 255.
-// If we have only one thread, it is easy to catch this threshold.
-// In case this threshold is reached, split entry in several sub-entries
-// using the \ characters at the end of each sub-entries
+// If we have only one thread, it is easy to catch this threshold. In case this threshold is reached, split entry in
+// several sub-entries using the \ characters at the end of each sub-entries
 //
 
 					vector<string>::iterator iter;
@@ -1606,18 +1630,21 @@ void Util::upd_polling_prop(vector<DevDbUpd> &upd_devs,DServer *admin_dev)
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_th_polled_devs()
+// method :
+//		Util::get_th_polled_devs()
 //
-// description : 	Get from the polling pool configuration which devices should
-//					be polled by the thread which is in charge of device dev
+// description :
+//		Get from the polling pool configuration which devices should be polled by the thread which is in charge of
+//		device dev
 //
-// argin() : - dev : The device name
-//			 - th_polled_devs : List of devices also polled by the thread in
-//								charge of dev
+// args :
+//		in :
+// 			- dev : The device name
+//			- th_polled_devs : List of devices also polled by the thread in charge of dev
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 int Util::get_th_polled_devs(string &dev,vector<string> &th_polled_devs)
 {
@@ -1658,14 +1685,19 @@ void Util::get_th_polled_devs(long i,vector<string> &th_polled_devs)
 	split_string(tmp,',',th_polled_devs);
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::build_first_pool_conf()
+// method :
+//		Util::build_first_pool_conf()
 //
-// description : 	Create a polling tread pool configuration when this data is
-//					not defined
+// description :
+//		Create a polling tread pool configuration when this data is not defined
 //
-//-----------------------------------------------------------------------------
+// args :
+//		out :
+// 			- pool_conf : The polling threads pool configuration
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::build_first_pool_conf(vector<string> &pool_conf)
 {
@@ -1686,20 +1718,24 @@ void Util::build_first_pool_conf(vector<string> &pool_conf)
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::is_dev_already_in_pool_conf()
+// method :
+//		Util::is_dev_already_in_pool_conf()
 //
-// description : 	Check if a device is already defined in the pool conf
+// description :
+//		Check if a device is already defined in the pool conf
 //
-// args() : - dev_name : The device name
+// args :
+//		in :
+// 			- dev_name : The device name
 //			- pool : The polling threads pool configuration
 //          - stop : The index in poll conf where the search should be stopped
 //
-// This method returns true if the device is already defined in the pool.
-// Otherwise, returns false (amazing no!)
+// return :
+// 		This method returns true if the device is already defined in the pool. Otherwise, returns false (amazing no!)
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool Util::is_dev_already_in_pool_conf(string &dev_name,vector<string>& pool,int stop)
 {
@@ -1721,18 +1757,22 @@ bool Util::is_dev_already_in_pool_conf(string &dev_name,vector<string>& pool,int
 	return false;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_dev_entry_in_pool_conf()
+// method :
+//		Util::get_dev_entry_in_pool_conf()
 //
-// description : 	Get in which entry a device is used in the pool conf
+// description :
+//		Get in which entry a device is used in the pool conf
 //
-// args() : - dev_name : The device name
+// args :
+//		in :
+// 			- dev_name : The device name
 //
-// This method returns the index in the pool conf if the device has been
-// found. Otherwise, it returns -1
+// return :
+// 		This method returns the index in the pool conf if the device has been found. Otherwise, it returns -1
 //
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 int Util::get_dev_entry_in_pool_conf(string &dev_name)
 {
@@ -1765,13 +1805,19 @@ int Util::get_dev_entry_in_pool_conf(string &dev_name)
 		return -1;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::remove_dev_from_polling_map()
+// method :
+//		Util::remove_dev_from_polling_map()
 //
-// description : 	Remove the device from the polled device map
+// description :
+//		Remove the device from the polled device map
 //
-//-----------------------------------------------------------------------------
+// args :
+//		in :
+// 			- dev_name : The device name
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::remove_dev_from_polling_map(string &dev_name)
 {
@@ -1781,16 +1827,19 @@ void Util::remove_dev_from_polling_map(string &dev_name)
 		dev_poll_th_map.erase(iter);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::remove_polling_thread_info_by_id()
+// method :
+//		Util::remove_polling_thread_info_by_id()
 //
-// description : 	Remove all the polling thread info from the vector of
-//					polling thread info for a specific thread
+// description :
+//		Remove all the polling thread info from the vector of polling thread info for a specific thread
 //
-// argin(s) : - id : The polling thread id
+// args :
+//		in :
+//			- th_id : The polling thread id
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::remove_polling_thread_info_by_id(int th_id)
 {

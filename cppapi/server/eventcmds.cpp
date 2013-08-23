@@ -541,8 +541,8 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 								(const char *)"DServer::zmq_event_subscription_change");
 	}
 
-    Tango::DevVarLongStringArray *ret_data = new Tango::DevVarLongStringArray();
     Tango::Util *tg = Tango::Util::instance();
+	Tango::DevVarLongStringArray *ret_data;
 
     if (argin->length() == 1)
     {
@@ -563,6 +563,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // It's just the call to help debugging. Returns event configuration
 //
 
+		ret_data = new Tango::DevVarLongStringArray();
         ret_data->svalue.length(2);
 
         ZmqEventSupplier *ev;
@@ -737,6 +738,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // Init data returned by command
 //
 
+		ret_data = new Tango::DevVarLongStringArray();
         ret_data->lvalue.length(6);
         ret_data->svalue.length(2);
 
