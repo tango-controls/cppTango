@@ -258,6 +258,7 @@ fi
 
 val=$RANDOM
 let "val=$val % 30"
+let val=$val+5
 echo "Random sleeping of $val seconds"
 sleep $val
 ps -ef | grep devTest
