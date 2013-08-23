@@ -38,7 +38,7 @@ do
 	then
 		echo "Ubuntu 12.04 OS"
 		OS_TYPE="linux"
-		OS_SPEC="linux=1 ubuntu=1"
+		OS_SPEC="linux=1 ubuntu=1 dev=1"
 		CPU_BUS="64bits=1"
 		MAKE_PATH="make"
 		INSTALL_DIR=$UX_INSTALL_DIR
