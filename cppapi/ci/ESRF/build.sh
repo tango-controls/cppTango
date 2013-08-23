@@ -33,6 +33,16 @@ do
 		MAKE_PATH="make"
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
+
+	if [ $i = "ubuntu12.04" ]
+	then
+		echo "Ubuntu 12.04 OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1 ubuntu=1"
+		CPU_BUS="64bits=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
 	
 	if [ $i = "solaris10" ]
 	then

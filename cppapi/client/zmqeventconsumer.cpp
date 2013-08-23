@@ -2558,10 +2558,10 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 	zmq_version(&zmq_major,&zmq_minor,&zmq_patch);
 
 //
-// Check for ZMQ compatible release
+// Check for ZMQ compatible release. Impossible to check if server does not send which ZMQ release it is using.
 //
 
-	if (ds_zmq_release == 310 || ds_zmq_release == 0)
+	if (ds_zmq_release == 310)
 	{
 		if (zmq_major != 3 || zmq_minor != 1 || zmq_patch != 0)
 		{

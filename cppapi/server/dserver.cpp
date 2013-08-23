@@ -1504,7 +1504,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 
 //
 // If the polling threads pool conf. has been splitted due to the
-// max device property length of 255 chars, rebuilt a real pool conf
+// max device property length of 255 chars, rebuild a real pool conf
 //
 
 			string rebuilt_str;
