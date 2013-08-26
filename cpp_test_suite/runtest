@@ -147,7 +147,7 @@ jenkins )
 			DEV1="test/centos5/10"
 			DEV2="test/centos5/11"
 			DEV3="test/centos5/12"
-			DEV_MCAST="test/ubuntu1004/30"
+			DEV_MCAST="test/ubuntu1204/30"
 			DEV1_ALIAS="centos5_alias"
 			ATTR_ALIAS="centos5_attr_alias"
 			INST_NAME=centos5
