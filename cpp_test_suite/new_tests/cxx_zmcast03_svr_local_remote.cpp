@@ -209,10 +209,9 @@ public:
 
 		DeviceData da;
 		da = device_remote->command_inout("IOGetCbExecuted");
-cout << "da = " << da << endl;
 		Tango::DevLong cb = 0;
 		da >> cb;
-		cout << "Remote event ctr = " << cb << endl;
+		coutv << "Remote event ctr = " << cb << endl;
 		TS_ASSERT (cb == 1);
 	}
 
@@ -272,8 +271,7 @@ void SvrMcastLocalRemoteTestSuite::EventCallBack::push_event(Tango::EventData* e
 
 	try
 	{
-//		coutv_cb 
-		cout << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
+		coutv_cb << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
 			*(event_data->attr_value) >> value;

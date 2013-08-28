@@ -1,5 +1,5 @@
-#ifndef TestWriteAttrHardwareSuite_h
-#define TestWriteAttrHardwareSuite_h
+#ifndef WriteAttrHardware_h
+#define WriteAttrHardware_h
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
@@ -12,9 +12,9 @@ using namespace std;
 #define cout cout << "\t"
 
 #undef SUITE_NAME
-#define SUITE_NAME TestWriteAttrHardwareSuite
+#define SUITE_NAME WriteAttrHardware
 
-class TestWriteAttrHardwareSuite: public CxxTest::TestSuite
+class WriteAttrHardware: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy 	*device;
@@ -280,4 +280,4 @@ public:
 	}
 };
 #undef cout
-#endif // TestWriteAttrHardwareSuite_h
+#endif // WriteAttrHardware_h

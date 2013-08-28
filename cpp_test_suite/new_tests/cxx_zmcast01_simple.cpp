@@ -271,7 +271,7 @@ void McastSimpleTestSuite::EventCallBack::push_event(Tango::EventData* event_dat
 
 	try
 	{
-		coutv_cb << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
+		coutv_cb << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << endl;
 		if (!event_data->err)
 		{
 			*(event_data->attr_value) >> value;

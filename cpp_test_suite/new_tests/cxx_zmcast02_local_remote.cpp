@@ -259,8 +259,7 @@ void McastLocalRemoteTestSuite::EventCallBack::push_event(Tango::EventData* even
 
 	try
 	{
-//		coutv_cb 
-		cout << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
+		coutv_cb << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
 			*(event_data->attr_value) >> value;
