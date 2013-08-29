@@ -510,5 +510,6 @@ $echo "\nTesting resetting attribute configuration (to user default, to class de
 #
 #	Now, test events
 #
-cd ../event;./runtest $*
+#cd ../event;./runtest $*
+cd event;,/runtest $*
 
