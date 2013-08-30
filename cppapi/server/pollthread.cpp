@@ -1,13 +1,12 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+=================================================================================================================
 //
 // file :               PollThread.cpp
 //
-// description :        C++ source code for the PollThread class.
-//			This class is used for the polling thread. The rule of
-//			this thread is to regulary exceute command on device or
-//			read attribute and store result in a ring buffer.
+// description :        C++ source code for the PollThread class. This class is used for the polling thread. The rule
+//						of this thread is to regulary exceute command on device or read attribute and store result
+//						in a ring buffer.
 //
 // project :            TANGO
 //
@@ -20,22 +19,19 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -61,13 +57,21 @@ DeviceImpl *PollThread::dev_to_del = NULL;
 string PollThread::name_to_del = "";
 PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::Pollthread
+// method :
+//		PollThread::Pollthread
 //
-// description : 	The polling thread constructor.
+// description :
+//		The polling thread constructor.
 //
-//--------------------------------------------------------------------------
+// args :
+//		in :
+// 			- cmd : The buffer used to pass command to the polling thread
+//			- m : The mutex used to protect the previous buffer
+//			- heartbeat : Flag set to true if this polling thread is the thread used to send the heartbeat event
+//
+//------------------------------------------------------------------------------------------------------------------
 
 PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cmd(cmd),p_mon(m),
 					    sleep(1),polling_stop(true),
@@ -96,13 +100,15 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::run_undetached
+// method :
+//		PollThread::run_undetached
 //
-// description : 	The polling thread main code
+// description :
+//		The polling thread main code
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 
@@ -112,10 +118,8 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 	bool per_thread_data_created = false;
 
 //
-// If the thread is the event heartbeat thread,
-// use it also for the storage of sub device properties.
-// Declare a work item to check the for new sub devices
-// regularly.
+// If the thread is the event heartbeat thread, use it also for the storage of sub device properties.
+// Declare a work item to check the for new sub devices regularly.
 //
 
 	if ( send_heartbeat == true )
@@ -238,22 +242,24 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::get_command
+// method :
+//		PollThread::get_command
 //
-// description : 	This method wait on the shared monitor for a new
-//			command to be sent to the polling thread. The
-//			thread waits with a timeout. If the thread is
-//			awaken due to the timeout, false is returned.
-//			If the work list is empty, the thread waits for ever.
+// description :
+//		This method wait on the shared monitor for a new command to be sent to the polling thread. The thread waits
+//		with a timeout. If the thread is awaken due to the timeout, false is returned.
+//		If the work list is empty, the thread waits for ever.
 //
-// argument : in : 	tout : The timeout in mS
+// args :
+//		in :
+// 			- tout : Timeout to be used when waiting on monitor
 //
-// The method returns true if the thread has been awaken due to a new
-// command sent by the main thread
+// returns :
+// 		The method returns true if the thread has been awaken due to a new command sent by the main thread
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 PollCmdType PollThread::get_command(long tout)
 {
@@ -295,14 +301,19 @@ PollCmdType PollThread::get_command(long tout)
 	return ret;
 }
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::execute_cmd and two unary predicates
+// method :
+//		PollThread::execute_cmd and two unary predicates
 //
-// description : 	This method is called when a command has been received
-//			It exceute the command!
+// description :
+//		This method is called when a command has been received. It execute the command!
 //
-//--------------------------------------------------------------------------
+// args :
+//		in :
+// 			- w : The work item
+//
+//------------------------------------------------------------------------------------------------------------------
 
 bool pred(const WorkItem &w)
 {
@@ -428,8 +439,7 @@ void PollThread::execute_cmd()
 
 //
 // Remove all objects belonging to a device.
-// Take care, the same device could have several objects --> No break after
-// the successfull if in loop
+// Take care, the same device could have several objects --> No break after the successfull if in loop
 //
 
 	case Tango::POLL_REM_DEV :
@@ -534,8 +544,7 @@ void PollThread::execute_cmd()
 			{
 
 //
-// First, remove object from polling list and insert it in externally
-// triggered list
+// First, remove object from polling list and insert it in externally triggered list
 //
 
 #ifdef _TG_WINDOWS_
@@ -576,12 +585,9 @@ void PollThread::execute_cmd()
 		{
 
 //
-// If not found in work list, it should be in the externally
-// triggered object. Therefore, remove it from externally
-// triggered list and insert it in work list
-// If not found in work list and in trig list, we are in case
-// 2-2 as desribed above (polling thread updateing itself polling
-// period of the object it actually polls)
+// If not found in work list, it should be in the externally triggered object. Therefore, remove it from externally
+// triggered list and insert it in work list. If not found in work list and in trig list, we are in case
+// 2-2 as desribed above (polling thread updateing itself polling period of the object it actually polls)
 //
 
 			bool found = false;
@@ -701,19 +707,21 @@ void PollThread::execute_cmd()
 
 }
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::add_random_delay
+// method :
+//		PollThread::add_random_delay
 //
-// description : 	Add a random number of microsecond (between 0 and
-//			500000) in order to spread the date where polling
-//			should happens. This is necessary especially at device
-//			process startup when each command in send to the
-//			polling thread in a loop
+// description :
+//		Add a random number of microsecond (between 0 and 500000) in order to spread the date where polling
+//		should happens. This is necessary especially at device process startup when each command in send to the
+//		polling thread in a loop
 //
-// argument : in : t : The timeval structure reference
+// args :
+//		in :
+// 			- t : The timeval structure reference
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void PollThread::add_random_delay(struct timeval &t)
 {
@@ -728,15 +736,14 @@ void PollThread::add_random_delay(struct timeval &t)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::one_more_poll
+// method :
+//		PollThread::one_more_poll
 //
 // description :
 //
-// argument : in :
-//
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void PollThread::one_more_poll()
 {
@@ -766,8 +773,7 @@ void PollThread::one_more_poll()
 	}
 
 //
-// For case where the polling thread itself modify the polling
-// period of the object it already polls
+// For case where the polling thread itself modify the polling period of the object it already polls
 //
 
 	if (auto_upd != -1)
@@ -785,14 +791,15 @@ void PollThread::one_more_poll()
 	tune_ctr--;
 }
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::one_more_trigg
+// method :
+//		PollThread::one_more_trigg
 //
-// description : 	This method is called when a trigger command has been
-//			received
+// description :
+//		This method is called when a trigger command has been received
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 
 void PollThread::one_more_trigg()
@@ -812,10 +819,8 @@ void PollThread::one_more_trigg()
 
 
 //
-// Check that the object to poll has been installed.
-// If not, simply returns. This case should never happens because it is
-// tested in the Util::trigger_polling() method before the trigger is
-// effectively sent to this thread.
+// Check that the object to poll has been installed. If not, simply returns. This case should never happens because
+// it is tested in the Util::trigger_polling() method before the trigger is effectively sent to this thread.
 //
 
 	if (et_ite == ext_trig_works.end())
@@ -854,13 +859,15 @@ void PollThread::one_more_trigg()
 }
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::print_list
+// method :
+//		PollThread::print_list
 //
-// description : 	To print work list
+// description :
+//		To print work list
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void PollThread::print_list()
 {
@@ -900,16 +907,19 @@ void PollThread::print_list()
 }
 
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::insert_in_list
+// method :
+//		PollThread::insert_in_list
 //
-// description : 	To insert (at the correct place) a new Work Item in
-//			the work list
+// description :
+//		To insert (at the correct place) a new Work Item in the work list
 //
-// argument: In :	- new_work : The new work item
+// args :
+//		in :
+// 			- new_work : The new work item
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void PollThread::insert_in_list(WorkItem &new_work)
 {
@@ -938,19 +948,21 @@ void PollThread::insert_in_list(WorkItem &new_work)
 		works.push_back(new_work);
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::tune_list
+// method :
+//		PollThread::tune_list
 //
-// description : 	This method tunes the work list.
+// description :
+//		This method tunes the work list.
 //
-// argument: In :	- from_needed : Set to true if the delta between
-//					work should be at least equal to the
-//					time needed to execute the previous work
-//			        - min_delta : Min. delta between polling works
-//				      when from_needed is false
+// args :
+//		in :
+// 			- from_needed : Set to true if the delta between work should be at least equal to the
+//							time needed to execute the previous work
+//			- min_delta : Min. delta between polling works when from_needed is false
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void PollThread::tune_list(bool from_needed, long min_delta)
 {
@@ -967,8 +979,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 		return;
 
 //
-// If we try to tune the list with respect to works needed
-// time, compute works needed time sum and find minimun update
+// If we try to tune the list with respect to works needed time, compute works needed time sum and find minimun update
 // period
 //
 
@@ -1038,11 +1049,17 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 			WorkItem wo = *ite;
 			Tango::DevULong64 next_work = ((Tango::DevULong64)wo.wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)wo.wake_up_date.tv_usec;
 
+			Tango::DevULong64 next_prev;
 			if (next_work < next_tuning)
 			{
 				Tango::DevULong64 prev_obj_work = ((Tango::DevULong64)ite_prev->wake_up_date.tv_sec * 1000000LL) + (Tango::DevULong64)ite_prev->wake_up_date.tv_usec;
-				Tango::DevULong64 n = (next_work - prev_obj_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
-				Tango::DevULong64 next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
+				if (next_work > prev_obj_work)
+				{
+					Tango::DevULong64 n = (next_work - prev_obj_work) / ((Tango::DevULong64)ite_prev->update * 1000LL);
+					next_prev = prev_obj_work + (n * (ite_prev->update * 1000LL));
+				}
+				else
+					next_prev = prev_obj_work;
 
 				wo.wake_up_date.tv_sec = (long)(next_prev / 1000000LL);
 				wo.wake_up_date.tv_usec = (long)(next_prev % 1000000LL);
@@ -1070,8 +1087,7 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 			T_DIFF(ite->wake_up_date,ite_next->wake_up_date,diff);
 
 //
-// If delta time between works is less than min,
-// shift following work
+// If delta time between works is less than min, shift following work
 //
 
 			if (diff < min_delta)
@@ -1086,16 +1102,20 @@ void PollThread::tune_list(bool from_needed, long min_delta)
 	print_list();
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::compute_new_date
+// method :
+//		PollThread::compute_new_date
 //
-// description : 	This method computes the new poll date.
+// description :
+//		This method computes the new poll date.
 //
-// argument: In :	- time : The actual date
-//					- upd : The polling update period (mS)
+// args :
+//		in :
+// 			- time : The actual date
+//			- upd : The polling update period (mS)
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void PollThread::compute_new_date(struct timeval &time,int upd)
 {
@@ -1118,16 +1138,16 @@ void PollThread::time_diff(struct timeval &before,
 }
 
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::compute_sleep_time
+// method :
+//		PollThread::compute_sleep_time
 //
-// description : 	This method computes how many mS the thread should
-//			sleep before the next poll time. If this time is
-//			negative and greater than a pre-defined threshold,
-//			the polling is discarded.
+// description :
+//		This method computes how many mS the thread should sleep before the next poll time. If this time is
+//		negative and greater than a pre-defined threshold, the polling is discarded.
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void PollThread::compute_sleep_time()
 {
@@ -1175,16 +1195,19 @@ void PollThread::compute_sleep_time()
 }
 
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::err_out_of_sync
+// method :
+//		PollThread::err_out_of_sync
 //
-// description : 	To force one event if the polling thread has
-//			discarded one work item because it is late
+// description :
+//		To force one event if the polling thread has discarded one work item because it is late
 //
-// argument : in :	- to_do : The work item
+// args :
+//		in :
+// 			- to_do : The work item
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void PollThread::err_out_of_sync(WorkItem &to_do)
 {
@@ -1255,16 +1278,19 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 }
 
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::poll_cmd
+// method :
+//		PollThread::poll_cmd
 //
-// description : 	Execute a command and store the result in the device
-//			ring buffer
+// description :
+//		Execute a command and store the result in the device ring buffer
 //
-// argument : in :	- to_do : The work item
+// args :
+//		in :
+// 			- to_do : The work item
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void PollThread::poll_cmd(WorkItem &to_do)
 {
@@ -1360,8 +1386,8 @@ void PollThread::poll_cmd(WorkItem &to_do)
 	}
 
 //
-// Insert result in polling buffer and simply forget this command if it is
-// not possible to insert the result in polling buffer
+// Insert result in polling buffer and simply forget this command if it is not possible to insert the result in
+// polling buffer
 //
 
 	try
@@ -1384,16 +1410,19 @@ void PollThread::poll_cmd(WorkItem &to_do)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::poll_attr
+// method :
+//		PollThread::poll_attr
 //
-// description : 	Read attribute and store the result in the device
-//			ring buffer
+// description :
+//		Read attribute and store the result in the device ring buffer
 //
-// argument : in :	- to_do : The work item
+// args :
+//		in :
+// 			- to_do : The work item
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void PollThread::poll_attr(WorkItem &to_do)
 {
@@ -1499,10 +1528,8 @@ void PollThread::poll_attr(WorkItem &to_do)
 	}
 
 //
-// Starting with IDl release 3, an attribute in error is not an exception
-// any more. Re-create one.
-// Don't forget that it is still possible to receive classical exception
-// (in case of Monitor timeout for instance)
+// Starting with IDl release 3, an attribute in error is not an exception any more. Re-create one.
+// Don't forget that it is still possible to receive classical exception (in case of Monitor timeout for instance)
 //
 
 	if (idl_vers >= 3)
@@ -1528,11 +1555,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 	}
 
 //
-// Events - for each event call the detect_and_push() method
-// this method will fire events if there are clients registered
-// and if there is an event (on_change, on_alarm or periodic)
-// We also have to retrieve which kind of clients made the
-// subscription (zmq or notifd) and send the event accordingly
+// Events - for each event call the detect_and_push() method this method will fire events if there are clients
+// registered and if there is an event (on_change, on_alarm or periodic)
+// We also have to retrieve which kind of clients made the subscription (zmq or notifd) and send the event accordingly
 //
 
 	EventSupplier *event_supplier_nd = NULL;
@@ -1560,10 +1585,8 @@ void PollThread::poll_attr(WorkItem &to_do)
                 ad.attr_val = &dummy_att;
 
 //
-// Eventually push the event (if detected)
-// When we have both notifd and zmq event supplier, do not detect the event
-// two times. The detect_and_push_events() method returns true if the event
-// is detected.
+// Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
+// two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
             SendEventType send_event;
@@ -1602,10 +1625,8 @@ void PollThread::poll_attr(WorkItem &to_do)
                 ad.attr_val = &((*argout)[0]);
 
 //
-// Eventually push the event (if detected)
-// When we have both notifd and zmq event supplier, do not detect the event
-// two times. The detect_and_push_events() method returns true if the event
-// is detected.
+// Eventually push the event (if detected). When we have both notifd and zmq event supplier, do not detect the event
+// two times. The detect_and_push_events() method returns true if the event is detected.
 //
 
             SendEventType send_event;
@@ -1648,8 +1669,8 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 
 //
-// Insert result in polling buffer and simply forget this attribute if it is
-// not possible to insert the result in polling buffer
+// Insert result in polling buffer and simply forget this attribute if it is not possible to insert the result in
+// polling buffer
 //
 
 	try
@@ -1687,15 +1708,15 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::eve_heartbeat
+// method :
+//		PollThread::eve_heartbeat
 //
-// description : 	Send the event heartbeat
+// description :
+//		Send the event heartbeat
 //
-// argument : in :	- to_do : The work item
-//
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void PollThread::eve_heartbeat()
 {
@@ -1717,16 +1738,15 @@ void PollThread::eve_heartbeat()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		PollThread::store_subdev
+// method :
+//		PollThread::store_subdev
 //
-// description : 	Store the sub device properties when
-//                  needed.
+// description :
+//		Store the sub device properties when needed.
 //
-// argument : in :	- to_do : The work item
-//
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void PollThread::store_subdev()
 {

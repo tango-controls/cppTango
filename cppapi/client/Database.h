@@ -684,23 +684,25 @@ public :
  * velocity and properties min, max for attribute acceleration of device id11/motor/1 into the database using
  * this method :
  * @code
- * DbDatum velocity("velocity"), vel_min("min"), vel_max("max");
- * DbDatum acceleration("acceleration"), acc_min("min"), acc_max("max");
+ * DbDatum vel("velocity");                // We want to put properties for attribute "velocity"
+ * DbDatum vel_min("min"), vel_max("max");
+ * DbDatum acc("acceleration")             // We want to put properties for attribute "acceleration"
+ * DbDatum acc_min("min"), acc_max("max");
  * DbData db_data;
  *
- * velocity << 2;
- * vel_min << 0.0;
- * vel_max << 1000000.0;
+ * vel << 2;                               // Two properties for attribute "velocity"
+ * vel_min << 0.0;                         // Value for property min
+ * vel_max << 1000000.0;                   // Value for property max
  *
- * db_data.push_back(velocity);
+ * db_data.push_back(vel);
  * db_data.push_back(vel_min);
  * db_data.push_back(vel_max);
  *
- * acceleration << 2;
- * acc_min << 0.0;
- * acc_max << 8000000;
+ * acc << 2;                               // Two properties for attribute "acceleration"
+ * acc_min << 0.0;                         // Value for property min
+ * acc_max << 8000000;                     // Value for property max
  *
- * db_data.push_back(acceleration);
+ * db_data.push_back(acc);
  * db_data.push_back(acc_min);
  * db_data.push_back(acc_max);
  *
