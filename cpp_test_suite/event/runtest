@@ -305,11 +305,6 @@ sleep 6
 $echo "\nTesting event re-connection (takes time...)"
 sleep 18 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 sleep 62 &&  $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
-PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
-echo "Testing 1: PIDS = $PIDS"
-PIDS=`ps -e | grep sleep | grep -v grep | awk '{print $1}'`
-echo "Testing 1 sleep: PIDS = $PIDS"
-date
 $DIR/reco_zmq $DEV1 -v
 ret=$?
 check_return_value $ret
@@ -336,8 +331,6 @@ echo "PIDS = $PIDS"
 
 $echo "\nTesting stateless event connection (takes time...)"
 sleep 24 &&  $DS_PATH/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
-PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
-echo "Testing 2: PIDS = $PIDS"
 $DIR/stateless_sub $DEV20 -v
 ret=$?
 check_return_value $ret

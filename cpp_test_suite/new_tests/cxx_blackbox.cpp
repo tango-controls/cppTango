@@ -231,7 +231,31 @@ cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
 			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
-			TS_ASSERT (reas == "API_BlackBoxEmpty");
+//			TS_ASSERT (reas == "API_BlackBoxEmpty");
+			if (reas == "API_CorbaException")
+			{
+cout << "Too early, sleeping 2 more seconds...." << endl;
+				Tango_sleep(2);
+
+				try
+				{
+					vector<string> *bb = device3->black_box(5);
+					cout << endl << "===> blackbox size: " << (*bb).size() << endl;
+					if((*bb).size() > 0)
+							cout << "===> first element: " << (*bb)[0] << endl;
+				}
+				catch(DevFailed &e)
+				{
+					string reas(e.errors[0].reason.in());
+cout << "Exception reason = " << reas << endl;
+cout << "Exception desc = " << e.errors[0].desc.in() << endl;
+cout << "Exception origin = " << e.errors[0].origin.in() << endl;
+					cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
+					TS_ASSERT (reas == "API_BlackBoxEmpty");
+				}
+			}
+			else
+				TS_ASSERT (reas == "API_BlackBoxEmpty");
 		}
 		catch(...)
 		{

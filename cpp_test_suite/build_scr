@@ -286,7 +286,4 @@ do
 	fi
 done
 
-PIDS=`ps -e | grep sleep | grep -v grep | awk '{print $1}'`
-echo "End of build_scr sleep: PIDS = $PIDS"
-date
 exit $RET
