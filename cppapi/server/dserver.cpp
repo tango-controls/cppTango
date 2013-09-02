@@ -1,14 +1,12 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+=============================================================================
+//+==================================================================================================================
 //
 // file :               DServer.cpp
 //
-// description :        C++ source for the DServer class and its commands.
-//			The class is derived from Device. It represents the
-//			CORBA servant object which will be accessed from the
-//			network. All commands which can be executed on a
-//			DServer object are implemented in this file.
+// description :        C++ source for the DServer class and its commands. The class is derived from Device.
+//						It represents the CORBA servant object which will be accessed from the network. All commands
+//						which can be executed on a DServer object are implemented in this file.
 //
 // project :            TANGO
 //
@@ -21,22 +19,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-=============================================================================
+//-=================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -65,19 +61,23 @@ namespace Tango
 
 ClassFactoryFuncPtr DServer::class_factory_func_ptr = NULL;
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::DServer(string &s)
+// method :
+//		DServer::DServer(string &s)
 //
-// description : 	constructor for DServer object
+// description :
+//		constructor for DServer object
 //
-// in :			- cp_ptr : The class object pointer
+// args :
+// 		in :
+//			- cp_ptr : The class object pointer
 //			- n : The device name
 //			- d : The device description (default to "not initialised")
 //			- s : The device state (default to UNKNOWN)
 //			- st : The device status (default to "Not initialised")
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 DServer::DServer(DeviceClass *cl_ptr,const char *n,const char *d,Tango::DevState s,const char *st)
 :TANGO_BASE_CLASS(cl_ptr,n,d,s,st)
@@ -217,9 +217,8 @@ void DServer::init_device()
 				c_attr->init_class_attribute(class_list[i]->get_name());
 
 //
-// Retrieve device(s) name list from the database. No need to implement
-// a retry here (in case of db server restart) because the db reconnection
-// is forced by the get_property call executed during xxxClass construction
+// Retrieve device(s) name list from the database. No need to implement a retry here (in case of db server restart)
+// because the db reconnection is forced by the get_property call executed during xxxClass construction
 // before we reach this code.
 //
 
@@ -262,12 +261,9 @@ void DServer::init_device()
                     class_list[i]->set_device_factory_done(true);
 
 //
-// Set value for each device with memorized writable attr
-// This is necessary only if db is used
-// For Python device server, writing the attribute will tak the Python lock.
-// If we already have it --> dead lock.
-// Release the python lock if we already have it before calling the set_memorized_values
-// method
+// Set value for each device with memorized writable attr. This is necessary only if db is used
+// For Python device server, writing the attribute will tak the Python lock. If we already have it --> dead lock.
+// Release the python lock if we already have it before calling the set_memorized_values method
 //
 
 					PyLock *lock_ptr = NULL;
@@ -356,9 +352,8 @@ void DServer::init_device()
 	catch (bad_alloc)
 	{
 //
-// If the class_factory method have not been successfully executed, erase
-// all classes already built. If the error occurs during the command or device
-// factories, erase only the following classes
+// If the class_factory method have not been successfully executed, erase all classes already built. If the error
+// occurs during the command or device factories, erase only the following classes
 //
 
 		TangoSys_OMemStream o;
@@ -404,9 +399,8 @@ void DServer::init_device()
 	{
 
 //
-// If the class_factory method have not been successfully executed, erase
-// all classes already built. If the error occurs during the command or device
-// factories, erase only the following classes
+// If the class_factory method have not been successfully executed, erase all classes already built. If the error
+// occurs during the command or device factories, erase only the following classes
 //
 
 		if (class_factory_done == false)
@@ -444,9 +438,8 @@ void DServer::init_device()
 	{
 
 //
-// If the class_factory method have not been successfully executed, erase
-// all classes already built. If the error occurs during the command or device
-// factories, erase only the following classes
+// If the class_factory method have not been successfully executed, erase all classes already built. If the error
+// occurs during the command or device factories, erase only the following classes
 //
 
 		if (class_factory_done == false)
@@ -479,13 +472,15 @@ void DServer::init_device()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::~DServer
+// method :
+//		DServer::~DServer
 //
-// description : 	destructor for DServer object
+// description :
+//		destructor for DServer object
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 DServer::~DServer()
 {
@@ -508,18 +503,18 @@ DServer::~DServer()
 		}
 		class_list.clear();
 	}
-
-
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::delete_devices
+// method :
+//		DServer::delete_devices
 //
-// description : 	Call destructor for all objects registered in the server
+// description :
+//		Call destructor for all objects registered in the server
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::delete_devices()
 {
@@ -539,8 +534,7 @@ void DServer::delete_devices()
 				{
 
 //
-// Clear vectors used to memorize info used to clean db
-// in case of devices with dyn attr removed during device
+// Clear vectors used to memorize info used to clean db in case of devices with dyn attr removed during device
 // destruction
 //
 
@@ -565,8 +559,7 @@ void DServer::delete_devices()
 						tg->clean_dyn_attr_prop();
 
 //
-// Wait for POA to destroy the object before going to the next one
-// Limit this waiting time to 200 mS
+// Wait for POA to destroy the object before going to the next one. Limit this waiting time to 200 mS
 //
 
 					vector<DeviceImpl *>::iterator it = devs.begin();
@@ -589,15 +582,19 @@ void DServer::delete_devices()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::add_class()
+// method :
+//		DServer::add_class()
 //
-// description : 	To add a new class to the class list vector
+// description :
+//		To add a new class to the class list vector
 //
-// out :		class_ptr : pointer to DeviceClass object
+// args :
+// 		out :
+//			- class_ptr : pointer to DeviceClass object
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::add_class(DeviceClass *class_ptr)
 {
@@ -605,16 +602,18 @@ void DServer::add_class(DeviceClass *class_ptr)
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::query_class()
+// method :
+//		DServer::query_class()
 //
-// description : 	command to read all the classes used in a device server
-//			process
-////
-// out :		The class name list in a strings sequence
+// description :
+//		command to read all the classes used in a device server process
 //
-//-----------------------------------------------------------------------------
+// returns :
+//		The class name list in a strings sequence
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::query_class()
 {
@@ -645,16 +644,18 @@ Tango::DevVarStringArray *DServer::query_class()
 
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::query_device()
+// method :
+//		DServer::query_device()
 //
-// description : 	command to read all the devices implemented by a device
-//			server process
-////
-// out :		The device name list in a strings sequence
+// description :
+//		command to read all the devices implemented by a device server process
 //
-//-----------------------------------------------------------------------------
+// returns :
+//		The device name list in a strings sequence
+//
+//------------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::query_device()
 {
@@ -696,16 +697,18 @@ Tango::DevVarStringArray *DServer::query_device()
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :         DServer::query_sub_device()
+// method :
+//		DServer::query_sub_device()
 //
-// description :    command to read all the sub devices used by a device
-//                  server process
-////
-// out :            The sub device name list in a sequence of strings
+// description :
+//		command to read all the sub devices used by a device server process
 //
-//-----------------------------------------------------------------------------
+// returns :
+//		The sub device name list in a sequence of strings
+//
+//------------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::query_sub_device()
 {
@@ -723,15 +726,19 @@ Tango::DevVarStringArray *DServer::query_sub_device()
 
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::restart()
+// method :
+//		DServer::restart()
 //
-// description : 	command to restart a device
-////
-// out :		The device name to be re-started
+// description :
+//		command to restart a device
 //
-//-----------------------------------------------------------------------------
+// args :
+//		in :
+// 			- d_name : The device name to be re-started
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 void DServer::restart(string &d_name)
 {
@@ -740,10 +747,7 @@ void DServer::restart(string &d_name)
 	cout4 << "In restart method" << endl;
 
 //
-// Change device name to lower case letters
-// and remove extra field in name in case of
-// (#dbase=xxx or protocol specif)
-//
+// Change device name to lower case letters and remove extra field in name in case of (#dbase=xxx or protocol specif)
 // Check if the wanted device exists in each class
 //
 
@@ -797,8 +801,7 @@ void DServer::restart(string &d_name)
 	DeviceImpl *dev_to_del = *ite;
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev_to_del,"restart",d_name.c_str());
@@ -891,8 +894,7 @@ void DServer::restart(string &d_name)
         CORBA::release(r_poa);
 
 //
-// Re-create device. Take the monitor in case of class or process serialisation
-// model
+// Re-create device. Take the monitor in case of class or process serialisation model
 //
 
         dev_cl->set_device_factory_done(false);
@@ -1049,14 +1051,15 @@ void DServer::restart(string &d_name)
 
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::restart_server()
+// method :
+//		DServer::restart_server()
 //
-// description : 	command to restart a server (all devices embedded
-//			within the server)
+// description :
+//		command to restart a server (all devices embedded within the server)
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::restart_server()
 {
@@ -1092,8 +1095,8 @@ void ServRestartThread::run(void *ptr)
 	tg->get_sub_dev_diag().remove_sub_devices();
 
 //
-// Change the POA manager to discarding state. This is necessary to discard all
-// request arriving while the server restart.
+// Change the POA manager to discarding state. This is necessary to discard all request arriving while the server
+// restart.
 //
 
 	PortableServer::POA_var poa = Util::instance()->get_poa();
@@ -1164,14 +1167,15 @@ void ServRestartThread::run(void *ptr)
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::query_class_prop()
+// method :
+//		DServer::query_class_prop()
 //
-// description : 	command to return the list of property device at class
-//			level for the specified class
+// description :
+//		command to return the list of property device at class level for the specified class
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 {
@@ -1234,14 +1238,15 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::query_dev_prop()
+// method :
+//		DServer::query_dev_prop()
 //
-// description : 	command to return the list of property device at device
-//			level for the specified class
+// description :
+//		command to return the list of property device at device level for the specified class
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 {
@@ -1304,16 +1309,16 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::kill()
+// method :
+//		DServer::kill()
 //
-// description : 	command to kill the device server process. This is done
-//			by starting a thread which will kill the process.
-//			Starting a thread allows the client to receive
-//			something from the server before it is killed
+// description :
+//		command to kill the device server process. This is done by starting a thread which will kill the process.
+//		Starting a thread allows the client to receive something from the server before it is killed
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DServer::kill()
 {
@@ -1348,13 +1353,15 @@ void *KillThread::run_undetached(TANGO_UNUSED(void *ptr))
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::create_cpp_class()
+// method :
+//		DServer::create_cpp_class()
 //
-// description : 	Create a Cpp Tango class from its name
+// description :
+//		Create a Cpp Tango class from its name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 
 void DServer::create_cpp_class(const char *cl_name,const char *par_name)
@@ -1446,15 +1453,19 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 	add_class(dc);
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::get_dev_prop()
+// method :
+//		DServer::get_dev_prop()
 //
-// description : 	Retrieve device properties
+// description :
+//		Retrieve device properties
 //
-// argin: tg : Tango Util object ptr
+// args :
+//		in :
+// 			- tg : Tango Util object ptr
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::get_dev_prop(Tango::Util *tg)
 {
@@ -1485,8 +1496,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 		}
 
 //
-// If the prop is not defined in db and if the user has defined it in the Util class,
-// takes the user definition
+// If the prop is not defined in db and if the user has defined it in the Util class, takes the user definition
 //
 
 		if (db_data[0].is_empty() == false)
@@ -1503,8 +1513,8 @@ void DServer::get_dev_prop(Tango::Util *tg)
 			db_data[1] >> tmp_vect;
 
 //
-// If the polling threads pool conf. has been splitted due to the
-// max device property length of 255 chars, rebuild a real pool conf
+// If the polling threads pool conf. has been splitted due to the max device property length of 255 chars,
+// rebuild a real pool conf
 //
 
 			string rebuilt_str;
@@ -1537,18 +1547,21 @@ void DServer::get_dev_prop(Tango::Util *tg)
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::check_lock_owner()
+// method :
+//		DServer::check_lock_owner()
 //
-// description : 	Check in case the device is locked if the client is the
-//					lock owner
+// description :
+//		Check in case the device is locked if the client is the lock owner
 //
-// argin: dev : The device
-//		  cmd_name : The DServer device command name
-//		  dev_name : The device name
+// args :
+//		in :
+// 			- dev : The device
+//		  	- cmd_name : The DServer device command name
+//		  	- dev_name : The device name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *dev_name)
 {
@@ -1580,17 +1593,20 @@ void DServer::check_lock_owner(DeviceImpl *dev,const char *cmd_name,const char *
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::get_event_misc_prop()
+// method :
+//		DServer::get_event_misc_prop()
 //
-// description : 	Get the properties defining which event has to be transported
-//					using multicast protocol
-//                  Also retrieve property for Nan allowed in writing attribute
+// description :
+//		Get the properties defining which event has to be transported using multicast protocol. Also retrieve
+//		property for Nan allowed in writing attribute
 //
-// argin: tg : Tango Util instance pointer
+// args :
+// 		in :
+// 			- tg : Tango Util instance pointer
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::get_event_misc_prop(Tango::Util *tg)
 {
@@ -1676,8 +1692,7 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
                     }
 
 //
-// If the property is uncoherent, clear it but inform user
-// No event will use multicasting in this case
+// If the property is uncoherent, clear it but inform user. No event will use multicasting in this case
 //
 
 					if (uncoherent == true)
@@ -1773,24 +1788,25 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::mcast_event_for_att()
+// method :
+//		DServer::mcast_event_for_att()
 //
-// description : 	Return in m_event vector, list of mcast event for the
-//					specified device/attribute.
-//					For each event, the returned string in the vector
-//					follow the syntax
+// description :
+//		Return in m_event vector, list of mcast event for the specified device/attribute.
+//		For each event, the returned string in the vector follows the syntax
 //						event_name:ip_adr:port:rate:ivl
-//					The last two are optionals
-//					Please note that the same dev/att may have several event
-//					using multicasting
+//		The last two are optionals. Please note that the same dev/att may have several event using multicasting
 //
-// argin: dev_name : The device name
-//		  att_name : The attribute name
-// argout: m_event : The multicast event definition
+// args :
+//		in :
+// 			- dev_name : The device name
+//		  	- att_name : The attribute name
+//		out :
+// 			- m_event : The multicast event definition
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<string> &m_event)
 {

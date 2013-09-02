@@ -1,10 +1,9 @@
 static const char *RcsId = "$Id$";
-//+=============================================================================
+//+===================================================================================================================
 //
 // file :        eventcmds.cpp
 //
-// description : C++ source for the event commands which are part of
-//		 the DServer class.
+// description : C++ source for the event commands which are part of the DServer class.
 //
 // project :     TANGO events
 //
@@ -17,22 +16,20 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-=============================================================================
+//-=================================================================================================================
 
 #include <tango.h>
 #include <eventsupplier.h>
@@ -41,17 +38,22 @@ namespace Tango
 {
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::event_subscription_change()
+// method :
+//		DServer::event_subscription_change()
 //
-// description : 	method to execute the command EventSubscriptionChange command.
+// description :
+//		method to execute the command EventSubscriptionChange command.
 //
-// in : - argin : The command input argument
+// args :
+//		in :
+// 			- argin : The command input argument
 //
-// returns : The command output data (Tango lib release number)
+// returns :
+//		The command output data (Tango lib release number)
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin)
 {
     if (argin->length() < 4)
@@ -78,8 +80,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	Tango::Util *tg = Tango::Util::instance();
 
 //
-// If we receive this command while the DS is in its
-// shuting down sequence, do nothing
+// If we receive this command while the DS is in its shuting down sequence, do nothing
 //
 
 	if (tg->get_heartbeat_thread_object() == NULL)
@@ -133,25 +134,28 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::event_subscription()
+// method :
+//		DServer::event_subscription()
 //
-// description : 	method to do all the necessary checks on attribute config
-//                  to generate events
+// description :
+//		method to do all the necessary checks on attribute config to generate events
 //
-// in : - dev_name : The device name
-//      - attr_name : The attribute name
-//      - action : What the user want to do
-//      - event : The event type
-//      - attr_name_lower : The attribute name in lower case letters
-//      - ct : The channel type (notifd or zmq)
-//      - mcast_data : The multicast transport data
-//      - rate : PGM rate parameter
-//      - ivl : PGM ivl paramteter
-//      - dev : The device pointer
+// args :
+// 		in :
+//			- dev_name : The device name
+//      	- attr_name : The attribute name
+//      	- action : What the user want to do
+//      	- event : The event type
+//      	- attr_name_lower : The attribute name in lower case letters
+//      	- ct : The channel type (notifd or zmq)
+//      	- mcast_data : The multicast transport data
+//      	- rate : PGM rate parameter
+//      	- ivl : PGM ivl paramteter
+//      	- dev : The device pointer
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DServer::event_subscription(string &dev_name,string &attr_name,string &action,string &event,string &attr_name_lower,ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev)
 {
@@ -185,8 +189,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 //
 // Check if the request comes from a Tango 6 client (without client identification)
 // If true, the event has to be sent using AttributeValue_3 data structure
-// If cl is NULL, this means that the call is local (Two tango classes within the
-// same process and with events between device from class 1 and device from classs 2)
+// If cl is NULL, this means that the call is local (Two tango classes within the same process and with events between
+// device from class 1 and device from classs 2)
 //
 
 	client_addr *cl = get_client_ident();
@@ -243,8 +247,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 		{
 
 //
-// If the polling is necessary to send events, check whether the polling is
-// started for the requested attribute.
+// If the polling is necessary to send events, check whether the polling is started for the requested attribute.
 //
 
 			if (attribute.is_polled() == false )
@@ -393,10 +396,9 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
             attribute.set_use_notifd_event();
 
 //
-// Check if multicast has to be used for event transport
-// (only for ZMQ event)
+// Check if multicast has to be used for event transport (only for ZMQ event)
 // Don't forget syntax in attribute mcast_event string:
-// event_name:ip_address:port:rate:ivl
+// 			event_name:ip_address:port:rate:ivl
 // The last two are not optionals
 //
 
@@ -500,8 +502,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         }
 
 //
-// Ask polling thread in charge of heartbeat to send them
-// (if not already done)
+// Ask polling thread in charge of heartbeat to send them (if not already done)
 //
 
 		try
@@ -518,15 +519,20 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::zmq_event_subscription_change()
+// method :
+//		DServer::zmq_event_subscription_change()
 //
-// description : 	method to execute the command ZmqEventSubscriptionChange command.
+// description :
+//		method to execute the command ZmqEventSubscriptionChange command.
 //
-// in : - argin : The command input argument
+// args :
+// 		in :
+//			- argin : The command input argument
 //
-// returns : The command output data (Tango lib release number)
+// returns :
+//		The command output data (Tango lib release number)
 //
 //-----------------------------------------------------------------------------
 DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVarStringArray *argin)
@@ -605,8 +611,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
 
 //
-// If we receive this command while the DS is in its
-// shuting down sequence, do nothing
+// If we receive this command while the DS is in its shuting down sequence, do nothing
 //
 
         if (tg->get_heartbeat_thread_object() == NULL)
@@ -631,9 +636,8 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         }
 
 //
-// Get device pointer and check which IDL release it implements
-// If it is less than IDL 4, refuse to use ZMQ event. To do so,
-// simulate a Tango 7 DS (throw command not exist exception)
+// Get device pointer and check which IDL release it implements. If it is less than IDL 4, refuse to use ZMQ event.
+// To do so, simulate a Tango 7 DS (throw command not exist exception)
 //
 
         DeviceImpl *dev = NULL;
@@ -679,8 +683,8 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
             ev->set_double_send();
 
 //
-// Create the event publisher socket (if not already done)
-// Take care for case where the device is running with db in a file
+// Create the event publisher socket (if not already done). Take care for case where the device is running with db
+// in a file
 //
 
         string ev_name = ev->get_fqdn_prefix();
@@ -774,15 +778,19 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 	return ret_data;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::event_confirm_subscription()
+// method :
+//		DServer::event_confirm_subscription()
 //
-// description : 	method to execute the command EventConfirmSubscription command.
+// description :
+//		method to execute the command EventConfirmSubscription command.
 //
-// in : - argin : The command input argument
+// args :
+// 		in :
+//			- argin : The command input argument
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 {
 
@@ -800,8 +808,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 	}
 
 //
-// If we receive this command while the DS is in its
-// shuting down sequence, do nothing
+// If we receive this command while the DS is in its shuting down sequence, do nothing
 //
 
 	Tango::Util *tg = Tango::Util::instance();
