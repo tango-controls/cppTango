@@ -1,11 +1,10 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+==================================================================================================================
 //
 // file :		dev_event.cpp
 //
-// description :	C++ source code for the DeviceImpl
-//			class methods related to manually firing events.
+// description :	C++ source code for the DeviceImpl class methods related to manually firing events.
 //
 // project :		TANGO
 //
@@ -18,22 +17,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-=================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -58,20 +55,23 @@ namespace Tango
 //////////////////// Push user event methods!!! //////////////////////////////////////
 
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_event
+// method :
+//		DeviceImpl::push_event
 //
-// description :	Push a user event to the Notification service
-//			Should be used to push user events for the state and status
-//			attributes as well as pushing an exception as change event.
+// description :
+//		Push a user event to the Notification service. Should be used to push user events for the state and status
+//		attributes as well as pushing an exception as change event.
 //
-// argument: in :	attr_name : name of the attribute
-//			filt_names : The filterable fields name
-//			filt_vals : The filterable fields value (as double)
-//			*except   : Tango exception to be pushed as a user event for the attribute.
+// args :
+//  	in :
+//			- attr_name : name of the attribute
+//			- filt_names : The filterable fields name
+//			- filt_vals : The filterable fields value (as double)
+//			- except   : Tango exception to be pushed as a user event for the attribute.
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_event(string attr_name, vector<string> &filt_names,vector<double> &filt_vals,DevFailed *except)
 {
@@ -86,21 +86,26 @@ void DeviceImpl::push_event(string attr_name, vector<string> &filt_names,vector<
 	attr.fire_event (filt_names,filt_vals,except);
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_event
+// method :
+//		DeviceImpl::push_event
 //
-// description :	Push an attribute change event with valid data to the notification service
+// description :
+//		Push an attribute change event with valid data to the notification service
 //
-// argument: in :	attr_name : name of the attribute
-//			filt_names : The filterable fields name
-//			filt_vals : The filterable fields value (as double)
-//			*p_data	 : pointer to attribute data
-//			x : The attribute x length. Default value is 1
-//			y : The attribute y length. Default value is 0
-//			release   : The release flag. If true, memory pointed to by p_data will be
-// 				    freed after being send to the client. Default value is false.
-//--------------------------------------------------------------------------
+// args :
+//  	in :
+//			- attr_name : name of the attribute
+//			- filt_names : The filterable fields name
+//			- filt_vals : The filterable fields value (as double)
+//			- p_data	 : pointer to attribute data
+//			- x : The attribute x length. Default value is 1
+//			- y : The attribute y length. Default value is 0
+//			- release   : The release flag. If true, memory pointed to by p_data will be freed after being send to the
+//						  client. Default value is false.
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
 			     Tango::DevShort *p_data, long x,long y ,bool release)
@@ -338,24 +343,28 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 	attr.fire_event(filt_names,filt_vals);
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::push_event
+// method :
+//		DeviceImpl::push_event
 //
-// description :	Push an attribute change event with data, time stamp and a quality
-//			factor to the notification service.
+// description :
+//		Push an attribute change event with data, time stamp and a quality factor to the notification service.
 //
-// argument: in :	attr_name : name of the attribute
-//			filt_names : The filterable fields name
-//			filt_vals : The filterable fields value (as double)
-//			t : the time stamp
-//			qual : the attribute quality factor
-//			*p_data	: pointer to attribute data
-//			x : The attribute x length. Default value is 1
-//			y : The attribute y length. Default value is 0
-//		 	release : The release flag. If true, memory pointed to by p_data will be
-// 				  freed after being send to the client. Default value is false.
-//--------------------------------------------------------------------------
+// args :
+// 		in :
+//			- attr_name : name of the attribute
+//			- filt_names : The filterable fields name
+//			- filt_vals : The filterable fields value (as double)
+//			- t : the time stamp
+//			- qual : the attribute quality factor
+//			- p_data	: pointer to attribute data
+//			- x : The attribute x length. Default value is 1
+//			- y : The attribute y length. Default value is 0
+//		 	- release : The release flag. If true, memory pointed to by p_data will be freed after being send to the
+//						client. Default value is false.
+//
+//----------------------------------------------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
 void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<double> &filt_vals,
 			     Tango::DevShort *p_data,struct _timeb &t, Tango::AttrQuality qual,
@@ -682,19 +691,23 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 
 
 
-//+-------------------------------------------------------------------------
-// method :			DeviceImpl::set_change_event
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// description :	Set a flag to indicate that the server pushes change events manually, without
-// 					the polling to be started for the attribute.
-// 					If the detect parameter is set to true, the criteria specified for the change
-// 					event are verified and the event is only pushed if they are fullfilled.
-// 					If detect is set to false the event is fired without any value checking!
+// method :
+//		DeviceImpl::set_change_event
 //
-//  argument: in : implemented  : True when the server fires change events manually.
-//  					 detect       : Triggers the verification of the change event
-//											 properties when set to true.
-//--------------------------------------------------------------------------
+// description :
+//		Set a flag to indicate that the server pushes change events manually, without the polling to be started for
+//		the attribute. If the detect parameter is set to true, the criteria specified for the change event are
+//		verified and the event is only pushed if they are fullfilled. If detect is set to false the event is fired
+//		without any value checking!
+//
+//	args :
+//		in :
+//  		- implemented  : True when the server fires change events manually.
+//  		- detect : Triggers the verification of the change event properties when set to true.
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::set_change_event  (string attr_name, bool implemented, bool detect)
 {
@@ -706,18 +719,21 @@ void DeviceImpl::set_change_event  (string attr_name, bool implemented, bool det
 }
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_change_event
+// method :
+//		DeviceImpl::push_change_event
 //
-// description :	Push an attribute change event to the Notification service
-//						Should be used to push change events for the state and status
-//						attributes as well as pushing an exception as change event.
+// description :
+//		Push an attribute change event to the Notification service. Should be used to push change events for the
+//		state and status attributes as well as pushing an exception as change event.
 //
-// argument: in :	attr_name : name of the attribute
-//						*except   : Tango exception to be pushed as a change event for the attribute.
+// args :
+//		in :
+// 			- attr_name : name of the attribute
+//			- except   : Tango exception to be pushed as a change event for the attribute.
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_change_event(string attr_name, DevFailed *except)
 {
@@ -732,19 +748,24 @@ void DeviceImpl::push_change_event(string attr_name, DevFailed *except)
 	attr.fire_change_event (except);
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_change_event
+// method :
+//		DeviceImpl::push_change_event
 //
-// description :	Push an attribute change event with valid data to the notification service
+// description :
+//		Push an attribute change event with valid data to the notification service
 //
-// argument: in :	attr_name : name of the attribute
-//						*p_data	 : pointer to attribute data
-//						x 			 : The attribute x length. Default value is 1
-//					   y 			 : The attribute y length. Default value is 0
-//					   release   : The release flag. If true, memory pointed to by p_data will be
-// 									freed after being send to the client. Default value is false.
-//--------------------------------------------------------------------------
+// args:
+//		in :
+//			- attr_name : name of the attribute
+//			- p_data : pointer to attribute data
+//			- x : The attribute x length. Default value is 1
+//			- y : The attribute y length. Default value is 0
+//			- release : The release flag. If true, memory pointed to by p_data will be
+// 						freed after being send to the client. Default value is false.
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data, long x,long y ,bool release)
 {
@@ -966,22 +987,26 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_da
 	// push the event
 	attr.fire_change_event();
 }
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_change_event
+// method :
+//		DeviceImpl::push_change_event
 //
-// description :	Push an attribute change event with data, time stamp and a quality
-//						factor to the notification service.
+// description :
+//		Push an attribute change event with data, time stamp and a quality factor to the notification service.
 //
-// argument: in :	attr_name : name of the attribute
-//						t			 : the time stamp
-//						qual      : the attribute quality factor
-//						*p_data	 : pointer to attribute data
-//						x 			 : The attribute x length. Default value is 1
-//					   y 			 : The attribute y length. Default value is 0
-//					   release   : The release flag. If true, memory pointed to by p_data will be
-// 									freed after being send to the client. Default value is false.
-//--------------------------------------------------------------------------
+// args:
+//		in :
+//			- attr_name : name of the attribute
+//			- t	: the time stamp
+//			- qual : the attribute quality factor
+//			- p_data : pointer to attribute data
+//			- x : The attribute x length. Default value is 1
+//			- y : The attribute y length. Default value is 0
+//			- release  : The release flag. If true, memory pointed to by p_data will be
+// 						 freed after being send to the client. Default value is false.
+//
+//-----------------------------------------------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
 void DeviceImpl::push_change_event (string attr_name, Tango::DevShort *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
@@ -1310,19 +1335,23 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_da
 
 
 
-//+-------------------------------------------------------------------------
-// method :			DeviceImpl::set_archive_event
+//+---------------------------------------------------------------------------------------------------------------
 //
-// description :	Set a flag to indicate that the server pushes archive events manually, without
-// 					the polling to be started for the attribute.
-// 					If the detect parameter is set to true, the criteria specified for the archive
-// 					event are verified and the event is only pushed if they are fullfilled.
-// 					If detect is set to false the event is fired without any value checking!
+// method :
+//		DeviceImpl::set_archive_event
 //
-//  argument: in : implemented  : True when the server fires archive events manually.
-//  					 detect       : Triggers the verification of the archive event
-//											 properties when set to true.
-//--------------------------------------------------------------------------
+// description :
+//		Set a flag to indicate that the server pushes archive events manually, without the polling to be started
+//		for the attribute. If the detect parameter is set to true, the criteria specified for the archive
+// 		event are verified and the event is only pushed if they are fullfilled. If detect is set to false the event
+//		is fired without any value checking!
+//
+// args :
+//  	in :
+//			- implemented  : True when the server fires archive events manually.
+//  		- detect       : Triggers the verification of the archive event properties when set to true.
+//
+//----------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::set_archive_event  (string attr_name, bool implemented, bool detect)
 {
@@ -1334,18 +1363,21 @@ void DeviceImpl::set_archive_event  (string attr_name, bool implemented, bool de
 }
 
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_archive_event
+// method :
+//		DeviceImpl::push_archive_event
 //
-// description :	Push an attribute archive event to the Notification service
-//						Should be used to push archive events for the state and status
-//						attributes as well as pushing an exception as archive event.
+// description :
+//		Push an attribute archive event to the Notification service. Should be used to push archive events for the
+//		state and status attributes as well as pushing an exception as archive event.
 //
-// argument: in :	attr_name : name of the attribute
-//						*except   : Tango exception to be pushed as a archive event for the attribute.
+// args :
+//		in :
+// 			- attr_name : name of the attribute
+//			- except   : Tango exception to be pushed as a archive event for the attribute.
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_archive_event(string attr_name, DevFailed *except)
 {
@@ -1360,19 +1392,24 @@ void DeviceImpl::push_archive_event(string attr_name, DevFailed *except)
 	attr.fire_archive_event (except);
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_archive_event
+// method :
+//		DeviceImpl::push_archive_event
 //
-// description :	Push an attribute archive event with valid data to the notification service
+// description :
+//		Push an attribute archive event with valid data to the notification service
 //
-// argument: in :	attr_name : name of the attribute
-//						*p_data	 : pointer to attribute data
-//						x 			 : The attribute x length. Default value is 1
-//					   y 			 : The attribute y length. Default value is 0
-//					   release   : The release flag. If true, memory pointed to by p_data will be
-// 									freed after being send to the client. Default value is false.
-//--------------------------------------------------------------------------
+// args :
+//		in :
+// 			- attr_name : name of the attribute
+//			- p_data : pointer to attribute data
+//			- x : The attribute x length. Default value is 1
+//			- y : The attribute y length. Default value is 0
+//			- release  : The release flag. If true, memory pointed to by p_data will be
+// 						 freed after being send to the client. Default value is false.
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data, long x,long y ,bool release)
 {
@@ -1594,22 +1631,26 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_d
 	attr.fire_archive_event();
 }
 
-//+-------------------------------------------------------------------------
+//+---------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_archive_event
+// method :
+//		DeviceImpl::push_archive_event
 //
-// description :	Push an attribute archive event with data, time stamp and a quality
-//						factor to the notification service.
+// description :
+//		Push an attribute archive event with data, time stamp and a quality factor to the notification service.
 //
-// argument: in :	attr_name : name of the attribute
-//						t			 : the time stamp
-//						qual      : the attribute quality factor
-//						*p_data	 : pointer to attribute data
-//						x 			 : The attribute x length. Default value is 1
-//					   y 			 : The attribute y length. Default value is 0
-//					   release   : The release flag. If true, memory pointed to by p_data will be
-// 									freed after being send to the client. Default value is false.
-//--------------------------------------------------------------------------
+//	args :
+//		in :
+// 			- attr_name : name of the attribute
+//			- t	: the time stamp
+//			- qual  : the attribute quality factor
+//			- p_data : pointer to attribute data
+//			- x : The attribute x length. Default value is 1
+//			- y : The attribute y length. Default value is 0
+//			- release   : The release flag. If true, memory pointed to by p_data will be
+// 						  freed after being send to the client. Default value is false.
+//
+//-----------------------------------------------------------------------------------------------------------------
 #ifdef _TG_WINDOWS_
 void DeviceImpl::push_archive_event (string attr_name, Tango::DevShort *p_data,
 											  struct _timeb &t, Tango::AttrQuality qual,
@@ -1935,16 +1976,20 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_d
 
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :			DeviceImpl::push_data_ready_event
+// method :
+//		DeviceImpl::push_data_ready_event
 //
-// description :	Push an attribute data ready event
+// description :
+//		Push an attribute data ready event
 //
-// argument: in :	attr_name : name of the attribute
-//					ctr : user counter (optional)
+// args:
+//		in :
+//			- attr_name : name of the attribute
+//			- ctr : user counter (optional)
 //
-//--------------------------------------------------------------------------
+//----------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::push_data_ready_event (const string &attr_name, Tango::DevLong ctr)
 {
