@@ -1930,12 +1930,21 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 			if (missed_event >= 2)
             {
                 err_missed_event = true;
+				evt_cb.discarded_event = false;
             }
             else if (missed_event == 0)
             {
-                map_modification_lock.readerOut();
-                return;
+				if (evt_cb.discarded_event == false)
+				{
+					evt_cb.discarded_event = true;
+					map_modification_lock.readerOut();
+					return;
+				}
+				else
+					evt_cb.discarded_event = false;
             }
+			else
+				evt_cb.discarded_event = false;
 
             evt_cb.ctr = ds_ctr;
 

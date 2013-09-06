@@ -1441,6 +1441,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
             new_event_callback.device_idl = 0;
     }
     new_event_callback.ctr = 0;
+    new_event_callback.discarded_event = false;
     if (zmq_used == true)
 		new_event_callback.endpoint = dvlsa->svalue[1].in();
 

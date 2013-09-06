@@ -298,6 +298,7 @@ typedef struct event_callback_zmq
     DevLong                         device_idl;
     DevULong                        ctr;
     string							endpoint;
+    bool							discarded_event;
 }EventCallBackZmq;
 
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
