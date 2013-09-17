@@ -82,7 +82,7 @@ const int   MIN_DELTA_WORK                 = 20000;
 const int   TIME_HEARTBEAT                 = 2000;
 const int   POLL_LOOP_NB                   = 500;
 const int   ONE_SECOND                     = 1000000;
-const int   DISCARD_THRESHOLD              = 0.02;
+const double   DISCARD_THRESHOLD           = 0.02;
 
 const int   DEFAULT_TIMEOUT                = 3200;
 const int   DEFAULT_POLL_OLD_FACTOR        = 4;
@@ -103,7 +103,7 @@ const int   TANGO_FLOAT_PRECISION          = 15;
 const int   EVENT_HEARTBEAT_PERIOD         = 10;
 const int   EVENT_RESUBSCRIBE_PERIOD       = 600;
 const int   DEFAULT_EVENT_PERIOD           = 1000;
-const int   DELTA_PERIODIC                 = 0.98;  // Using a delta of 2% only for times < 5000 ms
+const double   DELTA_PERIODIC              = 0.98;  // Using a delta of 2% only for times < 5000 ms
 const int   DELTA_PERIODIC_LONG            = 100;   // For times > 5000ms only keep a delta of 100ms
 const char* const HEARTBEAT                = "Event heartbeat";
 
@@ -369,7 +369,6 @@ const char* const API_WrongLockingStatus           = "API_WrongLockingStatus";
 const char* const API_WrongNumberOfArgs            = "API_WrongNumberOfArgs";
 const char* const API_ZmqFailed                    = "API_ZmqFailed";
 const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
-
 
 //
 // A short inline function to hide the CORBA::string_dup function

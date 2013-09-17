@@ -471,7 +471,6 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 		add_startup_exception("archive_abs_change",e);
 	}
 
-
 //
 // Init period for periodic event
 //
