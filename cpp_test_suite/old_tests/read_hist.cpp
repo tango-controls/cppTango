@@ -183,7 +183,7 @@ int main(int argc, char **argv)
 
 		if (d_hist->size() < 4)
 		{
-			cout << "Not enought data in polling buffer, restart later" << endl;
+			cout << "Not enought data in polling buffer, retry later" << endl;
 			exit(-1);
 		}
 		
@@ -313,7 +313,7 @@ int main(int argc, char **argv)
 
 		if (d_hist->size() < 4)
 		{
-			cout << "Not enought data in polling buffer, restart later" << endl;
+			cout << "Not enought data in polling buffer, retry later" << endl;
 			exit(-1);
 		}
 		

@@ -37,7 +37,7 @@ int main(int argc, char **argv)
 		device->poll_command("IOPollStr1",500);
 		device->poll_command("IOPollArray2",500);
 		device->poll_command("IOExcept",2000);
-		device->poll_command("OEncoded",2000);
+		device->poll_command("OEncoded",500);
 		device->poll_command("State",2000);
 		device->poll_command("Status",2000);
 
