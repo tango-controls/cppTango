@@ -713,6 +713,7 @@ void EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4,Devic
 	dev_attr->set_w_dim_x(attr_value_4->w_dim.dim_x);
 	dev_attr->set_w_dim_y(attr_value_4->w_dim.dim_y);
 	dev_attr->err_list = new DevErrorList(attr_value_4->err_list);
+	dev_attr->data_format = attr_value_4->data_format;
 
 	if (dev_attr->quality != Tango::ATTR_INVALID)
 	{

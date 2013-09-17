@@ -35,142 +35,135 @@
 namespace Tango
 {
 
+
 //
 // Some general interest define
 //
 
-#define     TANGO_VERSION_MAJOR     9
-#define     TANGO_VERSION_MINOR     0
-#define     TANGO_VERSION_PATCH     2
+#define   TANGO_VERSION_MAJOR        9
+#define   TANGO_VERSION_MINOR        0
+#define   TANGO_VERSION_PATCH        2
 
-#define		TANGO_BASE_CLASS		Tango::Device_4Impl
+#define   TANGO_BASE_CLASS           Tango::Device_4Impl
 
-#define     build_string(s)         #s
-#define     xbuild_string(s)        build_string(s)
-#define     TgLibVers               xbuild_string(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH)
-#define		TgLibVersNb				(TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_MINOR)
+#define   __tango_build_string__(s)  #s
+const char * const TgLibVers               = __tango_build_string__(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH);
+#undef    __tango_build_string__
 
-#define		DevVersion				4			// IDL version number
-#define		DefaultMaxSeq			20
-#define		DefaultBlackBoxDepth	50
-#define 	DefaultPollRingDepth	10
+const int   TgLibVersNb                    = TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_MINOR;
 
-#define		InitialOutput			"Initial Output"
-#define		DSDeviceDomain  		"dserver"
-#define		DefaultDocUrl			"http://www.tango-controls.org"
-#define		EnvVariable				"TANGO_HOST"
-#define		WindowsEnvVariable		"TANGO_ROOT"
-#define		DbObjName				"database"
-#define		NotSet					"Uninitialised"
-#define		ResNotDefined			"0"
-#define		MessBoxTitle			"Tango Device Server"
-#define		StatusNotSet			"Not initialised"
-#define		TangoHostNotSet			"Undef"
+const int   DevVersion                     = 4;           // IDL version number
+const int   DefaultMaxSeq                  = 20;
+const int   DefaultBlackBoxDepth           = 50;
+const int   DefaultPollRingDepth           = 10;
 
-#define		DefaultWritAttrProp		false
-#define		AllAttr 				"All attributes"
-#define		AllAttr_3 				"All attributes_3"
+const char* const InitialOutput            = "Initial Output";
+const char* const DSDeviceDomain           = "dserver";
+const char* const DefaultDocUrl            = "http://www.tango-controls.org";
+const char* const EnvVariable              = "TANGO_HOST";
+const char* const WindowsEnvVariable       = "TANGO_ROOT";
+const char* const DbObjName                = "database";
+const char* const NotSet                   = "Uninitialised";
+const char* const ResNotDefined            = "0";
+const char* const MessBoxTitle             = "Tango Device Server";
+const char* const StatusNotSet             = "Not initialised";
+const char* const TangoHostNotSet          = "Undef";
 
-#define		PollCommand				"command"
-#define		PollAttribute			"attribute"
+const bool  DefaultWritAttrProp            = false;
+const char* const AllAttr                  = "All attributes";
+const char* const AllAttr_3                = "All attributes_3";
 
-#define		MIN_POLL_PERIOD			5
-#define		DELTA_T					1002000000
-#define		MIN_DELTA_WORK			20000
-#define		TIME_HEARTBEAT			2000
-#define		POLL_LOOP_NB			500
-#define		ONE_SECOND				1000000
-#define		DISCARD_THRESHOLD		0.02
+const char* const PollCommand              = "command";
+const char* const PollAttribute            = "attribute";
 
-#define		DEFAULT_TIMEOUT			3200
-#define		DEFAULT_POLL_OLD_FACTOR	4
+const int   MIN_POLL_PERIOD                = 5;
+const int   DELTA_T                        = 1002000000;
+const int   MIN_DELTA_WORK                 = 20000;
+const int   TIME_HEARTBEAT                 = 2000;
+const int   POLL_LOOP_NB                   = 500;
+const int   ONE_SECOND                     = 1000000;
+const int   DISCARD_THRESHOLD              = 0.02;
 
-#define		TG_IMP_MINOR_TO			10
-#define		TG_IMP_MINOR_DEVFAILED	11
-#define		TG_IMP_MINOR_NON_DEVFAILED	12
+const int   DEFAULT_TIMEOUT                = 3200;
+const int   DEFAULT_POLL_OLD_FACTOR        = 4;
 
-#define		TANGO_PY_MOD_NAME		"_PyTango.pyd"
-#define		DATABASE_CLASS			"DataBase"
+const int   TG_IMP_MINOR_TO                = 10;
+const int   TG_IMP_MINOR_DEVFAILED         = 11;
+const int   TG_IMP_MINOR_NON_DEVFAILED	   = 12;
 
-#define		TANGO_FLOAT_PRECISION	15
+const char* const TANGO_PY_MOD_NAME        = "_PyTango.pyd";
+const char* const DATABASE_CLASS           = "DataBase";
+
+const int   TANGO_FLOAT_PRECISION          = 15;
 
 //
 // Event related define
 //
 
-#define 	EVENT_HEARTBEAT_PERIOD 		10
-#define 	EVENT_RESUBSCRIBE_PERIOD 	600
-#define		DEFAULT_EVENT_PERIOD		1000
-#define		DELTA_PERIODIC				0.98  // Using a delta of 2% only for times < 5000 ms
-#define     DELTA_PERIODIC_LONG			100   // For times > 5000ms only keep a delta of 100ms
-#define		HEARTBEAT					"Event heartbeat"
+const int   EVENT_HEARTBEAT_PERIOD         = 10;
+const int   EVENT_RESUBSCRIBE_PERIOD       = 600;
+const int   DEFAULT_EVENT_PERIOD           = 1000;
+const int   DELTA_PERIODIC                 = 0.98;  // Using a delta of 2% only for times < 5000 ms
+const int   DELTA_PERIODIC_LONG            = 100;   // For times > 5000ms only keep a delta of 100ms
+const char* const HEARTBEAT                = "Event heartbeat";
 
 //
 // ZMQ event system related define
 //
 
-#define     EPHEMERAL_PORT_BEGIN        55555
-#define     EPHEMERAL_PORT_END          65535
-#define     ZMQ_EVENT_PROT_VERSION      1
-#define     HEARTBEAT_METHOD_NAME       "push_heartbeat_event"
-#define     EVENT_METHOD_NAME           "push_zmq_event"
-#define     HEARTBEAT_EVENT_NAME        "heartbeat"
-#define     CTRL_SOCK_ENDPOINT          "inproc://control"
-#define     MCAST_PROT                  "epgm://"
-#define     MCAST_HOPS                  5
-#define     PGM_RATE                    80 * 1024
-#define     PGM_IVL                     20 * 1000
-#define     MAX_SOCKET_SUB              10
-#define     PUB_HWM                     1000
-#define     SUB_HWM                     1000
-#define		SUB_SEND_HWM				10000
-
-#define     ZMQ_END                     0
-#define     ZMQ_CONNECT_HEARTBEAT       1
-#define     ZMQ_DISCONNECT_HEARTBEAT    2
-#define     ZMQ_CONNECT_EVENT           3
-#define     ZMQ_DISCONNECT_EVENT        4
-#define     ZMQ_CONNECT_MCAST_EVENT     5
-#define     ZMQ_DELAY_EVENT             6
-#define     ZMQ_RELEASE_EVENT           7
+const int   EPHEMERAL_PORT_BEGIN           = 55555;
+const int   EPHEMERAL_PORT_END             = 65535;
+const int   ZMQ_EVENT_PROT_VERSION         = 1;
+const char* const HEARTBEAT_METHOD_NAME    = "push_heartbeat_event";
+const char* const EVENT_METHOD_NAME        = "push_zmq_event";
+const char* const HEARTBEAT_EVENT_NAME     = "heartbeat";
+const char* const CTRL_SOCK_ENDPOINT       = "inproc://control";
+const char* const MCAST_PROT               = "epgm://";
+const int   MCAST_HOPS                     = 5;
+const int   PGM_RATE                       = 80 * 1024;
+const int   PGM_IVL                        = 20 * 1000;
+const int   MAX_SOCKET_SUB                 = 10;
+const int   PUB_HWM                        = 1000;
+const int   SUB_HWM                        = 1000;
+const int   SUB_SEND_HWM                   = 10000;
 
 //
 // Event when using a file as database stuff
 //
 
-#define		NOTIFD_CHANNEL				"notifd_channel"
+const char* const NOTIFD_CHANNEL           = "notifd_channel";
 
 //
 // Locking feature related defines
 //
 
-#define		DEFAULT_LOCK_VALIDITY	10
-#define		DEVICE_UNLOCKED_REASON	API_DeviceUnlocked
-#define		MIN_LOCK_VALIDITY		2
-#define		LOCAL_HOST				"localhost"
+const int   DEFAULT_LOCK_VALIDITY          = 10;
+const char* const DEVICE_UNLOCKED_REASON   = "API_DeviceUnlocked";
+const int   MIN_LOCK_VALIDITY              = 2;
+const char* const LOCAL_HOST               = "localhost";
 
 //
 // Client timeout as defined by omniORB4.0.0
 //
 
-#define		CLNT_TIMEOUT_STR		"3000"
-#define		CLNT_TIMEOUT			3000
-#define		NARROW_CLNT_TIMEOUT		100
+const char* const CLNT_TIMEOUT_STR         = "3000";
+const int   CLNT_TIMEOUT                   = 3000;
+const int   NARROW_CLNT_TIMEOUT            = 100;
 
 //
 // Connection and call timeout for database device
 //
 
-#define		DB_CONNECT_TIMEOUT		25000
-#define		DB_RECONNECT_TIMEOUT	20000
-#define		DB_TIMEOUT				13000
-#define		DB_START_PHASE_RETRIES	3
+const int   DB_CONNECT_TIMEOUT             = 25000;
+const int   DB_RECONNECT_TIMEOUT           = 20000;
+const int   DB_TIMEOUT                     = 13000;
+const int   DB_START_PHASE_RETRIES         = 3;
 
 //
 // Time to wait before trying to reconnect after
 // a connevtion failure
 //
-#define 	RECONNECTION_DELAY		1000   //ms. Only try to reconnect every second
+const int   RECONNECTION_DELAY             = 1000;   //ms. Only try to reconnect every second
 
 //
 // Access Control related defines
@@ -179,39 +172,204 @@ namespace Tango
 // also update the stored procedure
 //
 
-#define		CONTROL_SYSTEM			"CtrlSystem"
-#define		SERVICE_PROP_NAME		"Services"
-#define		ACCESS_SERVICE			"AccessControl"
+const char* const CONTROL_SYSTEM           = "CtrlSystem";
+const char* const SERVICE_PROP_NAME        = "Services";
+const char* const ACCESS_SERVICE           = "AccessControl";
 
 //
 // Polling threads pool related defines
 //
 
-#define		DEFAULT_POLLING_THREADS_POOL_SIZE	1
+const int DEFAULT_POLLING_THREADS_POOL_SIZE = 1;
 
 //
 // Max transfer size 256 MBytes (in byte). Needed by omniORB
 //
 
-#define		MAX_TRANSFER_SIZE		"268435456"
+const char* const MAX_TRANSFER_SIZE        = "268435456";
 
 //
 // Tango name length
 //
 
-#define		MaxServerNameLength		255
-#define     MaxDevPropLength        254
+const unsigned int MaxServerNameLength     = 255;
+const int   MaxDevPropLength               = 255;
 
 //
 // Files used to retrieve env. variables
 //
 
-#define		USER_ENV_VAR_FILE		".tangorc"
+const char* const USER_ENV_VAR_FILE        = ".tangorc";
 
 #ifndef HAVE_CONFIG_H
-#define		TANGO_RC_FILE			"/etc/tangorc"
+const char* const TANGO_RC_FILE            = "/etc/tangorc";
 #endif
-#define		WINDOWS_ENV_VAR_FILE	"tangorc"
+const char* const WINDOWS_ENV_VAR_FILE     = "tangorc";
+
+
+#ifdef TANGO_HAS_LOG4TANGO
+
+//
+// Logging targets (as string)
+//
+
+const char* const kLogTargetConsole        = "console";
+const char* const kLogTargetFile           = "file";
+const char* const kLogTargetDevice         = "device";
+
+//
+// Logging target [type/name] separator
+//
+
+const char* const kLogTargetSep            = "::";
+
+//
+// TANGO <rolling log files> threshold
+//
+
+// Min RollingFileAppender threshold (~500kB)
+const size_t kMinRollingThreshold          = 500;
+// Default RollingFileAppender threshold (~2MB)
+const size_t kDefaultRollingThreshold      = 2 * 1024;
+// Max RollingFileAppender threshold (~20MB)
+const size_t kMaxRollingThreshold          = 20 * 1024;
+
+#endif // TANGO_HAS_LOG4TANGO
+
+//
+// The optional attribute properties
+//
+
+const char* const AlrmValueNotSpec         = "Not specified";
+const char* const AssocWritNotSpec         = "None";
+const char* const LabelNotSpec             = "No label";
+const char* const DescNotSpec              = "No description";
+const char* const UnitNotSpec              = "No unit";
+const char* const StdUnitNotSpec           = "No standard unit";
+const char* const DispUnitNotSpec          = "No display unit";
+const char* const FormatNotSpec_FL         = "%6.2f";
+const char* const FormatNotSpec_INT        = "%d";
+const char* const FormatNotSpec_STR        = "%s";
+const char* const FormatNotSpec            = FormatNotSpec_FL;
+
+const char* const NotANumber               = "NaN";
+
+const char* const MemNotUsed               = "Not used yet";
+const char* const MemAttrPropName          = "__value";
+
+/*
+ * List of strings used by the API as the DevError reason field.
+ * This list is given here only for API writers to re-use (if possible)
+ * strings already used.
+ *
+ */
+
+const char* const API_AlreadyPolled                = "API_AlreadyPolled";
+const char* const API_AsynReplyNotArrived          = "API_AsynReplyNotArrived";
+const char* const API_AttrConfig                   = "API_AttrConfig";
+const char* const API_AttrEventProp                = "API_AttrEventProp";
+const char* const API_AttributePollingNotStarted   = "API_AttributePollingNotStarted";
+const char* const API_AttrIncorrectDataNumber      = "API_AttrIncorrectDataNumber";
+const char* const API_AttrNoAlarm                  = "API_AttrNoAlarm";
+const char* const API_AttrNotAllowed               = "API_AttrNotAllowed";
+const char* const API_AttrNotFound                 = "API_AttrNotFound";
+const char* const API_AttrNotPolled                = "API_AttrNotPolled";
+const char* const API_AttrNotWritable              = "API_AttrNotWritable";
+const char* const API_AttrOptProp                  = "API_AttrOptProp";
+const char* const API_AttrPropValueNotSet          = "API_AttrPropValueNotSet";
+const char* const API_AttrValueNotSet              = "API_AttrValueNotSet";
+const char* const API_AttrWrongDefined             = "API_AttrWrongDefined";
+const char* const API_AttrWrongMemValue            = "API_AttrWrongMemValue";
+const char* const API_BadAsynReqType               = "API_BadAsynReqType";
+const char* const API_BadConfigurationProperty     = "API_BadConfigurationProperty";
+const char* const API_BlackBoxArgument             = "API_BlackBoxArgument";
+const char* const API_BlackBoxEmpty                = "API_BlackBoxEmpty";
+const char* const API_CannotCheckAccessControl     = "API_CannotCheckAccessControl";
+const char* const API_CannotOpenFile               = "API_CannotOpenFile";
+const char* const API_CantActivatePOAManager       = "API_CantActivatePOAManager";
+const char* const API_CantCreateClassPoa           = "API_CantCreateClassPoa";
+const char* const API_CantCreateLockingThread      = "API_CantCreateLockingThread";
+const char* const API_CantDestroyDevice            = "API_CantDestroyDevice";
+const char* const API_CantFindLockingThread        = "API_CantFindLockingThread";
+const char* const API_CantGetClientIdent           = "API_CantGetClientIdent";
+const char* const API_CantGetDevObjectId           = "API_CantGetDevObjectId";
+const char* const API_CantInstallSignal            = "API_CantInstallSignal";
+const char* const API_CantRetrieveClass            = "API_CantRetrieveClass";
+const char* const API_CantRetrieveClassList        = "API_CantRetrieveClassList";
+const char* const API_CantStoreDeviceClass         = "API_CantStoreDeviceClass";
+const char* const API_ClassNotFound                = "API_ClassNotFound";
+const char* const API_CmdArgumentTypeNotSupported  = "API_CmdArgumentTypeNotSupported";
+const char* const API_CmdNotPolled                 = "API_CmdNotPolled";
+const char* const API_CommandNotAllowed            = "API_CommandNotAllowed";
+const char* const API_CommandNotFound              = "API_CommandNotFound";
+const char* const API_CommandTimedOut              = "API_CommandTimedOut";
+const char* const API_ConnectionFailed             = "API_ConnectionFailed";
+const char* const API_CorbaSysException            = "API_CorbaSysException";
+const char* const API_CorruptedDatabase            = "API_CorruptedDatabase";
+const char* const API_DatabaseAccess               = "API_DatabaseAccess";
+const char* const API_DatabaseCacheAccess          = "API_DatabaseCacheAccess";
+const char* const API_DatabaseFileError            = "API_DatabaseFileError";
+const char* const API_DecodeErr                    = "API_DecodeErr";
+const char* const API_DeprecatedCommand            = "API_DeprecatedCommand";
+const char* const API_DeviceLocked                 = "API_DeviceLocked";
+const char* const API_DeviceNotFound               = "API_DeviceNotFound";
+const char* const API_DeviceNotLocked              = "API_DeviceNotLocked";
+const char* const API_DeviceNotPolled              = "API_DeviceNotPolled";
+const char* const API_DeviceUnlockable             = "API_DeviceUnlockable";
+const char* const API_DeviceUnlocked               = "API_DeviceUnlocked";
+const char* const API_DServerClassNotInitialised   = "API_DServerClassNotInitialised";
+const char* const API_EventPropertiesNotSet        = "API_EventPropertiesNotSet";
+const char* const API_EventQueues                  = "API_EventQueues";
+const char* const API_EventSupplierNotConstructed  = "API_EventSupplierNotConstructed";
+const char* const API_IncoherentDbData             = "API_IncoherentDbData";
+const char* const API_IncoherentDevData            = "API_IncoherentDevData";
+const char* const API_IncoherentValues             = "API_IncoherentValues";
+const char* const API_IncompatibleArgumentType     = "API_IncompatibleArgumentType";
+const char* const API_IncompatibleAttrDataType     = "API_IncompatibleAttrDataType";
+const char* const API_IncompatibleCmdArgumentType  = "API_IncompatibleCmdArgumentType";
+const char* const API_InitMethodNotFound           = "API_InitMethodNotFound";
+const char* const API_InitNotPublic                = "API_InitNotPublic";
+const char* const API_InitThrowsException          = "API_InitThrowsException";
+const char* const API_InternalError                = "API_InternalError";
+const char* const API_JavaRuntimeSecurityException = "API_JavaRuntimeSecurityException";
+const char* const API_MemAttFailedDuringInit       = "API_MemAttFailedDuringInit";
+const char* const API_MemoryAllocation             = "API_MemoryAllocation";
+const char* const API_MethodArgument               = "API_MethodArgument";
+const char* const API_MethodNotFound               = "API_MethodNotFound";
+const char* const API_MissedEvents                 = "API_MissedEvents";
+const char* const API_NoDataYet                    = "API_NoDataYet";
+const char* const API_NonDatabaseDevice            = "API_NonDatabaseDevice";
+const char* const API_NotificationServiceFailed    = "API_NotificationServiceFailed";
+const char* const API_NotSupported                 = "API_NotSupported";
+const char* const API_NotSupportedFeature          = "API_NotSupportedFeature";
+const char* const API_NotUpdatedAnyMore            = "API_NotUpdatedAnyMore";
+const char* const API_NtDebugWindowError           = "API_NtDebugWindowError";
+const char* const API_OverloadingNotSupported      = "API_OverloadingNotSupported";
+const char* const API_PolledDeviceNotInPoolConf    = "API_PolledDeviceNotInPoolConf";
+const char* const API_PolledDeviceNotInPoolMap     = "API_PolledDeviceNotInPoolMap";
+const char* const API_PollingThreadNotFound        = "API_PollingThreadNotFound";
+const char* const API_PollObjNotFound              = "API_PollObjNotFound";
+const char* const API_PollRingBufferEmpty          = "API_PollRingBufferEmpty";
+const char* const API_ReadOnlyMode                 = "API_ReadOnlyMode";
+const char* const API_ShutdownInProgress           = "API_ShutdownInProgress";
+const char* const API_SignalOutOfRange             = "API_SignalOutOfRange";
+const char* const API_StartupSequence              = "API_StartupSequence";
+const char* const API_StdException                 = "API_StdException";
+const char* const API_SystemCallFailed             = "API_SystemCallFailed";
+const char* const API_TangoHostNotSet              = "API_TangoHostNotSet";
+const char* const API_UnsupportedFeature           = "API_UnsupportedFeature";
+const char* const API_WAttrOutsideLimit            = "API_WAttrOutsideLimit";
+const char* const API_WizardConfError              = "API_WizardConfError";
+const char* const API_WrongAttributeNameSyntax     = "API_WrongAttributeNameSyntax";
+const char* const API_WrongDeviceNameSyntax        = "API_WrongDeviceNameSyntax";
+const char* const API_WrongEventData               = "API_WrongEventData";
+const char* const API_WrongFormat                  = "API_WrongFormat";
+const char* const API_WrongHistoryDataBuffer       = "API_WrongHistoryDataBuffer";
+const char* const API_WrongLockingStatus           = "API_WrongLockingStatus";
+const char* const API_WrongNumberOfArgs            = "API_WrongNumberOfArgs";
+const char* const API_ZmqFailed                    = "API_ZmqFailed";
+const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
+
 
 //
 // A short inline function to hide the CORBA::string_dup function
@@ -655,7 +813,7 @@ typedef DevState *(DeviceImpl::*Sta_CmdMethPtr_Sta)(DevState);
 
 
 //
-// Some enum
+// Some enum and structures
 //
 
 enum CmdArgType {
@@ -767,31 +925,6 @@ enum LogTarget {
   	LOG_FILE,
   	LOG_DEVICE
 };
-
-//
-// Logging targets (as string)
-//
-
-#define kLogTargetConsole "console"
-#define kLogTargetFile	  "file"
-#define kLogTargetDevice  "device"
-
-//
-// Logging target [type/name] separator
-//
-
-#define kLogTargetSep "::"
-
-//
-// TANGO <rolling log files> threshold
-//
-
-// Min RollingFileAppender threshold (~500kB)
-const size_t kMinRollingThreshold = 500;
-// Default RollingFileAppender threshold (~2MB)
-const size_t kDefaultRollingThreshold = 2 * 1024;
-// Max RollingFileAppender threshold (~20MB)
-const size_t kMaxRollingThreshold = 20 * 1024;
 
 #endif // TANGO_HAS_LOG4TANGO
 
@@ -906,8 +1039,19 @@ enum MinMaxValueCheck
 
 enum ChannelType
 {
-    ZMQ = 0,
+	ZMQ = 0,
     NOTIFD
+};
+
+enum ZmqCmdCode {
+	ZMQ_END = 0,
+	ZMQ_CONNECT_HEARTBEAT,
+	ZMQ_DISCONNECT_HEARTBEAT,
+	ZMQ_CONNECT_EVENT,
+	ZMQ_DISCONNECT_EVENT,
+	ZMQ_CONNECT_MCAST_EVENT,
+	ZMQ_DELAY_EVENT,
+	ZMQ_RELEASE_EVENT,
 };
 
 typedef struct _SendEventType
@@ -917,27 +1061,6 @@ typedef struct _SendEventType
 	bool archive;
 	bool periodic;
 }SendEventType;
-
-//
-// The optional attribute properties
-//
-
-#define		AlrmValueNotSpec	"Not specified"
-#define		AssocWritNotSpec	"None"
-#define		LabelNotSpec	  	"No label"
-#define		DescNotSpec			"No description"
-#define		UnitNotSpec			"No unit"
-#define		StdUnitNotSpec		"No standard unit"
-#define		DispUnitNotSpec		"No display unit"
-#define		FormatNotSpec_FL	"%6.2f"
-#define		FormatNotSpec_INT	"%d"
-#define		FormatNotSpec_STR	"%s"
-#define		FormatNotSpec		FormatNotSpec_FL
-
-#define		NotANumber			"NaN"
-
-#define		MemNotUsed			"Not used yet"
-#define		MemAttrPropName		"__value"
 
 typedef struct _OptAttrProp
 {
@@ -977,193 +1100,6 @@ struct ranges_const2type
 		static string str; \
 	}; \
 	string ranges_const2type<Tango::constant>::str = #type;
-
-/*
- * List of strings used by the API as the DevError reason field.
- * This list is given here only for API writers to re-use (if possible)
- * strings already used.
- *
- */
-
-#define API_AlreadyPolled 					"API_AlreadyPolled"
-#define API_AsynReplyNotArrived 			"API_AsynReplyNotArrived"
-#define API_AttrConfig 						"API_AttrConfig"
-#define API_AttrEventProp 					"API_AttrEventProp"
-#define API_AttributePollingNotStarted 		"API_AttributePollingNotStarted"
-#define API_AttrIncorrectDataNumber 		"API_AttrIncorrectDataNumber"
-#define API_AttrNoAlarm 					"API_AttrNoAlarm"
-#define API_AttrNotAllowed 					"API_AttrNotAllowed"
-#define API_AttrNotFound 					"API_AttrNotFound"
-#define API_AttrNotPolled 					"API_AttrNotPolled"
-#define API_AttrNotWritable 				"API_AttrNotWritable"
-#define API_AttrOptProp 					"API_AttrOptProp"
-#define API_AttrPropValueNotSet 			"API_AttrPropValueNotSet"
-#define API_AttrValueNotSet 				"API_AttrValueNotSet"
-#define API_AttrWrongDefined 				"API_AttrWrongDefined"
-#define API_AttrWrongMemValue 				"API_AttrWrongMemValue"
-#define API_BadAsynReqType 					"API_BadAsynReqType"
-#define API_BadConfigurationProperty 		"API_BadConfigurationProperty"
-#define API_BlackBoxArgument 				"API_BlackBoxArgument"
-#define API_BlackBoxEmpty 					"API_BlackBoxEmpty"
-#define API_CannotCheckAccessControl 		"API_CannotCheckAccessControl"
-#define API_CannotOpenFile 					"API_CannotOpenFile"
-#define API_CantActivatePOAManager 			"API_CantActivatePOAManager"
-#define API_CantCreateClassPoa 				"API_CantCreateClassPoa"
-#define API_CantCreateLockingThread 		"API_CantCreateLockingThread"
-#define API_CantDestroyDevice 				"API_CantDestroyDevice"
-#define API_CantFindLockingThread 			"API_CantFindLockingThread"
-#define API_CantGetClientIdent 				"API_CantGetClientIdent"
-#define API_CantGetDevObjectId 				"API_CantGetDevObjectId"
-#define API_CantInstallSignal 				"API_CantInstallSignal"
-#define API_CantRetrieveClass 				"API_CantRetrieveClass"
-#define API_CantRetrieveClassList 			"API_CantRetrieveClassList"
-#define API_CantStoreDeviceClass 			"API_CantStoreDeviceClass"
-#define API_ClassNotFound 					"API_ClassNotFound"
-#define API_CmdArgumentTypeNotSupported 	"API_CmdArgumentTypeNotSupported"
-#define API_CmdNotPolled 					"API_CmdNotPolled"
-#define API_CommandNotAllowed 				"API_CommandNotAllowed"
-#define API_CommandNotFound 				"API_CommandNotFound"
-#define API_CommandTimedOut 				"API_CommandTimedOut"
-#define API_ConnectionFailed 				"API_ConnectionFailed"
-#define API_CorbaSysException 				"API_CorbaSysException"
-#define API_CorruptedDatabase 				"API_CorruptedDatabase"
-#define API_DatabaseAccess 					"API_DatabaseAccess"
-#define API_DatabaseCacheAccess 			"API_DatabaseCacheAccess"
-#define API_DatabaseFileError 				"API_DatabaseFileError"
-#define API_DecodeErr 						"API_DecodeErr"
-#define API_DeprecatedCommand 				"API_DeprecatedCommand"
-#define API_DeviceLocked 					"API_DeviceLocked"
-#define API_DeviceNotFound 					"API_DeviceNotFound"
-#define API_DeviceNotLocked 				"API_DeviceNotLocked"
-#define API_DeviceNotPolled 				"API_DeviceNotPolled"
-#define API_DeviceUnlockable 				"API_DeviceUnlockable"
-#define API_DeviceUnlocked 					"API_DeviceUnlocked"
-#define API_DServerClassNotInitialised 		"API_DServerClassNotInitialised"
-#define API_EventPropertiesNotSet 			"API_EventPropertiesNotSet"
-#define API_EventQueues 					"API_EventQueues"
-#define API_EventSupplierNotConstructed 	"API_EventSupplierNotConstructed"
-#define API_IncoherentDbData 				"API_IncoherentDbData"
-#define API_IncoherentDevData 				"API_IncoherentDevData"
-#define API_IncoherentValues 				"API_IncoherentValues"
-#define API_IncompatibleArgumentType 		"API_IncompatibleArgumentType"
-#define API_IncompatibleAttrDataType 		"API_IncompatibleAttrDataType"
-#define API_IncompatibleCmdArgumentType 	"API_IncompatibleCmdArgumentType"
-#define API_InitMethodNotFound 				"API_InitMethodNotFound"
-#define API_InitNotPublic 					"API_InitNotPublic"
-#define API_InitThrowsException 			"API_InitThrowsException"
-#define API_InternalError 					"API_InternalError"
-#define API_JavaRuntimeSecurityException 	"API_JavaRuntimeSecurityException"
-#define API_MemAttFailedDuringInit 			"API_MemAttFailedDuringInit"
-#define API_MemoryAllocation 				"API_MemoryAllocation"
-#define API_MethodArgument 					"API_MethodArgument"
-#define API_MethodNotFound 					"API_MethodNotFound"
-#define API_MissedEvents 					"API_MissedEvents"
-#define API_NoDataYet 						"API_NoDataYet"
-#define API_NonDatabaseDevice 				"API_NonDatabaseDevice"
-#define API_NotificationServiceFailed 		"API_NotificationServiceFailed"
-#define API_NotSupported 					"API_NotSupported"
-#define API_NotSupportedFeature 			"API_NotSupportedFeature"
-#define API_NotUpdatedAnyMore 				"API_NotUpdatedAnyMore"
-#define API_NtDebugWindowError 				"API_NtDebugWindowError"
-#define API_OverloadingNotSupported 		"API_OverloadingNotSupported"
-#define API_PolledDeviceNotInPoolConf 		"API_PolledDeviceNotInPoolConf"
-#define API_PolledDeviceNotInPoolMap 		"API_PolledDeviceNotInPoolMap"
-#define API_PollingThreadNotFound 			"API_PollingThreadNotFound"
-#define API_PollObjNotFound 				"API_PollObjNotFound"
-#define API_PollRingBufferEmpty 			"API_PollRingBufferEmpty"
-#define API_ReadOnlyMode 					"API_ReadOnlyMode"
-#define API_ShutdownInProgress				"API_ShutdownInProgress"
-#define API_SignalOutOfRange 				"API_SignalOutOfRange"
-#define API_StartupSequence 				"API_StartupSequence"
-#define API_StdException 					"API_StdException"
-#define API_SystemCallFailed 				"API_SystemCallFailed"
-#define API_TangoHostNotSet 				"API_TangoHostNotSet"
-#define API_UnsupportedFeature 				"API_UnsupportedFeature"
-#define API_WAttrOutsideLimit 				"API_WAttrOutsideLimit"
-#define API_WizardConfError 				"API_WizardConfError"
-#define API_WrongAttributeNameSyntax 		"API_WrongAttributeNameSyntax"
-#define API_WrongDeviceNameSyntax 			"API_WrongDeviceNameSyntax"
-#define API_WrongEventData 					"API_WrongEventData"
-#define API_WrongFormat 					"API_WrongFormat"
-#define API_WrongHistoryDataBuffer 			"API_WrongHistoryDataBuffer"
-#define API_WrongLockingStatus 				"API_WrongLockingStatus"
-#define API_WrongNumberOfArgs 				"API_WrongNumberOfArgs"
-#define API_ZmqFailed 						"API_ZmqFailed"
-#define API_ZmqInitFailed 					"API_ZmqInitFailed"
-
-/*
- * Formerly maintained list of DevError reason fields, kept for reference.
- *
- * API_AttrConfig
- * API_AttrEventProp
- * API_AttrIncorrectDataNumber
- * API_AttrNoAlarm
- * API_AttrNotAllowed
- * API_AttrNotFound
- * API_AttrNotWritable
- * API_AttrOptProp
- * API_AttrPropValueNotSet
- * API_AttrValueNotSet
- * API_AttrWrongDefined
- * API_AttrWrongMemValue
- * API_BadConfigurationProperty
- * API_BlackBoxArgument
- * API_BlackBoxEmpty
- * API_CannotCheckAccessControl
- * API_CannotOpenFile
- * API_CantActivatePOAManager
- * API_CantCreateClassPoa
- * API_CantCreateLockingThread
- * API_CantFindLockingThread
- * API_CantGetClientIdent
- * API_CantGetDevObjectId
- * API_CantInstallSignal
- * API_CantRetrieveClass
- * API_CantRetrieveClassList
- * API_CantStoreDeviceClass
- * API_ClassNotFound
- * API_CmdArgumentTypeNotSupported
- * API_CommandNotAllowed
- * API_CommandNotFound
- * API_CorbaSysException
- * API_CorruptedDatabase
- * API_DatabaseAccess
- * API_DeviceLocked
- * API_DeviceNotFound
- * API_DeviceNotLocked
- * API_DeviceUnlockable
- * API_DeviceUnlocked
- * API_EventSupplierNotConstructed
- * API_IncoherentDbData
- * API_IncoherentDevData
- * API_IncoherentValues
- * API_IncompatibleAttrDataType
- * API_IncompatibleCmdArgumentType
- * API_InitMethodNotFound
- * API_InitNotPublic
- * API_InitThrowsException
- * API_JavaRuntimeSecurityException
- * API_MemAttFailedDuringInit
- * API_MemoryAllocation
- * API_MethodArgument
- * API_MethodNotFound
- * API_MissedEvents
- * API_NotSupportedFeature
- * API_NtDebugWindowError
- * API_OverloadingNotSupported
- * API_PolledDeviceNotInPoolConf
- * API_PolledDeviceNotInPoolMap
- * API_PollingThreadNotFound
- * API_ReadOnlyMode
- * API_SignalOutOfRange
- * API_SystemCallFailed
- * API_WAttrOutsideLimit
- * API_WizardConfError
- * API_WrongEventData
- * API_WrongHistoryDataBuffer
- * API_WrongLockingStatus
- * API_ZmqInitFailed
- */
 
 } // End of Tango namespace
 
