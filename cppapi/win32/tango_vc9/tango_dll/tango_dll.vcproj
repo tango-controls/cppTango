@@ -1686,6 +1686,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\templ_inst.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\thsig.cpp"
 				>
 				<FileConfiguration
@@ -2003,11 +2007,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
