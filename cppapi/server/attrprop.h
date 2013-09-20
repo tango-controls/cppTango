@@ -512,9 +512,9 @@ public:
 	}
 
 private:
-        vector<T> val;
-        string str;
-        bool is_value;
+	vector<T> val;
+	string str;
+	bool is_value;
 
 //
 // The extension class

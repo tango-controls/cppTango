@@ -127,7 +127,7 @@
 	#include <device_5.h>
 	#include <command.h>
 	#include <dserver.h>
-	#include <attribute.tpp>
+	#include <attribute_spec.tpp>
 	#include <w_attribute.tpp>
 	#include <attrprop.tpp>
 #endif

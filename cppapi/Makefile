@@ -136,6 +136,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/blackbox.o \
 		$(OBJS_DIR)/classattribute.o \
 		$(OBJS_DIR)/multiattribute.o \
+		$(OBJS_DIR)/templ_inst.o \
 		$(OBJS_DIR)/attribute.o \
 		$(OBJS_DIR)/w_attribute.o \
 		$(OBJS_DIR)/attrdesc.o \
@@ -225,6 +226,7 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/class_factory.so.o \
 		$(OBJS_DIR_SL)/blackbox.so.o \
 		$(OBJS_DIR_SL)/classattribute.so.o \
+		$(OBJS_DIR_SL)/templ_inst.so.o \
 		$(OBJS_DIR_SL)/attribute.so.o \
 		$(OBJS_DIR_SL)/w_attribute.so.o \
 		$(OBJS_DIR_SL)/multiattribute.so.o \
