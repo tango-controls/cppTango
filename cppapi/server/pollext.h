@@ -874,8 +874,8 @@ public:
 	bool		    release;
 
 #ifdef _TG_WINDOWS_
-	TimedCmdData(T *p,struct _timeb t): ptr(p),release(false);
-	TimedCmdData(T *p,bool rel,struct _timeb t): ptr(p),release(rel);
+	TimedCmdData(T *p,struct _timeb t);
+	TimedCmdData(T *p,bool rel,struct _timeb t);
 #endif
 };
 
