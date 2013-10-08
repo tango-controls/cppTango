@@ -357,6 +357,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			ntservice.h \
 			pollcmds.h \
 			pollext.h \
+			pollext.tpp \
 			pollobj.h \
 			pollring.h \
 			pollthread.h \
@@ -370,9 +371,11 @@ SERVER_INCLUDE =	attrdesc.h \
 			tangorollingfileappender.h \
 			utils.h \
 			utils.tpp \
+			utils_spec.tpp \
 			w32win.h \
 			w_attribute.h \
 			w_attribute.tpp \
+			w_attribute_spec.tpp \
 			subdev_diag.h \
 			encoded_attribute.h \
 			encoded_format.h

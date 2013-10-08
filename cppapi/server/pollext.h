@@ -96,70 +96,34 @@ public:
 	long				wr_y;
 	const T 			*wr_ptr;
 
-	AttrData(const T *p): ptr(p),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{qual=Tango::ATTR_VALID;x=1;y=0;release=false;}
-
-	AttrData(const T *p,Tango::AttrQuality q): ptr(p),qual(q),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{x=1;y=0;release=false;}
-
-	AttrData(const T *p,Tango::AttrQuality q,bool rel): ptr(p),qual(q),release(rel),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{x=1;y=0;}
-
-	AttrData(const T *p,const T *wr_p): ptr(p),wr_y(0),wr_ptr(wr_p)
-	{qual=Tango::ATTR_VALID;x=1;y=0;wr_x=1;release=false;}
-
-	AttrData(const T *p,const T *wr_p,Tango::AttrQuality q): ptr(p),qual(q),wr_y(0),wr_ptr(wr_p)
-	{x=1;y=0;wr_x=1;release=false;}
-
-	AttrData(const T *p,const T *wr_p,Tango::AttrQuality q,bool rel): ptr(p),qual(q),release(rel),wr_y(0),wr_ptr(wr_p)
-	{x=1;y=0;wr_x=1;}
+	AttrData(const T *);
+	AttrData(const T *,Tango::AttrQuality);
+	AttrData(const T *,Tango::AttrQuality,bool);
+	AttrData(const T *,const T *);
+	AttrData(const T *,const T *,Tango::AttrQuality);
+	AttrData(const T *,const T *,Tango::AttrQuality,bool);
 
 // For spectrum
 
-	AttrData(const T *p,long nb): ptr(p),x(nb),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{__CHECK_DIM_X();qual=Tango::ATTR_VALID;y=0;release=false;}
-
-	AttrData(const T *p,long nb,Tango::AttrQuality q): ptr(p),qual(q),x(nb),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{__CHECK_DIM_X();y=0;release=false;}
-
-	AttrData(const T *p,long nb,Tango::AttrQuality q,bool rel): ptr(p),qual(q),x(nb),release(rel),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{__CHECK_DIM_X();y=0;}
-
-	AttrData(const T *p,long nb,const T *wr_p,long wr_nb): ptr(p),x(nb),wr_x(wr_nb),wr_y(0),wr_ptr(wr_p)
-	{__CHECK_DIM_X();qual=Tango::ATTR_VALID;y=0;release=false;}
-
-	AttrData(const T *p,long nb,const T *wr_p,long wr_nb,Tango::AttrQuality q): ptr(p),qual(q),x(nb),wr_x(wr_nb),wr_y(0),wr_ptr(wr_p)
-	{__CHECK_DIM_X();y=0;release=false;}
-
-	AttrData(const T *p,long nb,const T *wr_p,long wr_nb,Tango::AttrQuality q,bool rel): ptr(p),qual(q),x(nb),release(rel),wr_x(wr_nb),wr_y(0),wr_ptr(wr_p)
-	{__CHECK_DIM_X();y=0;}
+	AttrData(const T *,long);
+	AttrData(const T *,long,Tango::AttrQuality);
+	AttrData(const T *,long,Tango::AttrQuality,bool);
+	AttrData(const T *,long,const T *,long);
+	AttrData(const T *,long,const T *,long,Tango::AttrQuality);
+	AttrData(const T *,long,const T *,long,Tango::AttrQuality,bool);
 
 // For image
 
-	AttrData(const T *p,long nb,long nb2): ptr(p),x(nb),y(nb2),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{__CHECK_DIM();qual=Tango::ATTR_VALID;release=false;}
-
-	AttrData(const T *p,long nb,long nb2,Tango::AttrQuality q): ptr(p),qual(q),x(nb),y(nb2),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{__CHECK_DIM();release=false;}
-
-	AttrData(const T *p,long nb,long nb2,Tango::AttrQuality q,bool rel): ptr(p),qual(q),
-									     x(nb),y(nb2),release(rel),wr_x(0),wr_y(0),wr_ptr(NULL)
-	{__CHECK_DIM();}
-
-	AttrData(const T *p,long nb,long nb2,const T *wr_p,long wr_nb,long wr_nb2): ptr(p),x(nb),y(nb2),wr_x(wr_nb),wr_y(wr_nb2),wr_ptr(wr_p)
-	{__CHECK_DIM();qual=Tango::ATTR_VALID;release=false;}
-
-	AttrData(const T *p,long nb,long nb2,const T *wr_p,long wr_nb,long wr_nb2,Tango::AttrQuality q): ptr(p),qual(q),x(nb),y(nb2),wr_x(wr_nb),wr_y(wr_nb2),wr_ptr(wr_p)
-	{__CHECK_DIM();release=false;}
-
-	AttrData(const T *p,long nb,long nb2,const T *wr_p,long wr_nb,long wr_nb2,Tango::AttrQuality q,bool rel): ptr(p),qual(q),
-									     x(nb),y(nb2),release(rel),wr_x(wr_nb),wr_y(wr_nb2),wr_ptr(wr_p)
-	{__CHECK_DIM();}
+	AttrData(const T *,long,long);
+	AttrData(const T *,long,long,Tango::AttrQuality);
+	AttrData(const T *,long,long,Tango::AttrQuality,bool);
+	AttrData(const T *,long,long,const T *,long,long);
+	AttrData(const T *,long,long,const T *,long,long,Tango::AttrQuality);
+	AttrData(const T *,long,long,const T *,long,long,Tango::AttrQuality,bool);
 
 // For error
 
-	AttrData(DevErrorList &e): ptr(NULL),x(0),y(0),release(false),err(e),
-                               wr_x(0),wr_y(0),wr_ptr(NULL) {}
+	AttrData(DevErrorList &e): ptr(NULL),x(0),y(0),release(false),err(e),wr_x(0),wr_y(0),wr_ptr(NULL) {}
 };
 
 
@@ -201,7 +165,7 @@ public:
  * @param p_data Pointer to the attribute value
  * @param when The date
  */
-	TimedAttrData(const T *p_data,time_t when): AttrData<T>(p_data) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -213,7 +177,7 @@ public:
  * @param p_wr_data Pointer to the written part of the attribute value
  * @param when The date
  */
-	TimedAttrData(const T *p_data,const T *p_wr_data,time_t when): AttrData<T>(p_data,p_wr_data) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,const T *p_wr_data,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -224,7 +188,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,Tango::AttrQuality qual,time_t when): AttrData<T>(p_data,qual) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,Tango::AttrQuality qual,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -236,7 +200,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,time_t when): AttrData<T>(p_data,p_wr_data,qual) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -246,8 +210,73 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,Tango::AttrQuality qual,bool rel,time_t when): AttrData<T>(p_data,qual,rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,Tango::AttrQuality qual,bool rel,time_t when);
+/**
+ * Create a new TimedAttrData object for a R/W attribute.
+ *
+ * @param p_data Pointer to the attribute value
+ * @param p_wr_data Pointer to the written part of the attribute value
+ * @param qual The attribute quality factor
+ * @param rel Set to true if the memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters must be freed
+ * @param when The date
+ */
+	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,bool rel,time_t when);
+
+/**
+ * Create a new TimedAttrData object.
+ *
+ * The memory pointed to by the <i>p_data</i> parameter will not be freed
+ * The attribute quality factor will be set to ATTR_VALID
+ *
+ * @param p_data Pointer to the attribute value
+ * @param when The date
+ */
+	TimedAttrData(const T *p_data,struct timeval when);
+
+/**
+ * Create a new TimedAttrData object for a R/W attribute.
+ *
+ * The memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters will not be freed
+ * The attribute quality factor will be set to ATTR_VALID
+ *
+ * @param p_data Pointer to the attribute value
+ * @param p_wr_data Pointer to the written part of the attribute value
+ * @param when The date
+ */
+	TimedAttrData(const T *p_data,const T *p_wr_data,struct timeval when);
+
+/**
+ * Create a new TimedAttrData object.
+ *
+ * The memory pointed to by the <i>p_data</i> parameter will not be freed
+ *
+ * @param p_data Pointer to the attribute value
+ * @param qual The attribute quality factor
+ * @param when The date
+ */
+	TimedAttrData(const T *p_data,Tango::AttrQuality qual,struct timeval when);
+
+/**
+ * Create a new TimedAttrData object for a R/W attribute.
+ *
+ * The memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters will not be freed
+ *
+ * @param p_data Pointer to the attribute value
+ * @param p_wr_data Pointer to the written part of the attribute value
+ * @param qual The attribute quality factor
+ * @param when The date
+ */
+	TimedAttrData(const T *p_data,TANGO_UNUSED(const T *p_wr_data),Tango::AttrQuality qual,struct timeval when);
+
+/**
+ * Create a new TimedAttrData object.
+ *
+ * @param p_data Pointer to the attribute value
+ * @param qual The attribute quality factor
+ * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
+ * @param when The date
+ */
+	TimedAttrData(const T *p_data,Tango::AttrQuality qual,bool rel,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -258,77 +287,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,bool rel,time_t when): AttrData<T>(p_data,p_wr_data,qual,rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
-
-/**
- * Create a new TimedAttrData object.
- *
- * The memory pointed to by the <i>p_data</i> parameter will not be freed
- * The attribute quality factor will be set to ATTR_VALID
- *
- * @param p_data Pointer to the attribute value
- * @param when The date
- */
-	TimedAttrData(const T *p_data,struct timeval when): AttrData<T>(p_data),t_val(when) {}
-
-/**
- * Create a new TimedAttrData object for a R/W attribute.
- *
- * The memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters will not be freed
- * The attribute quality factor will be set to ATTR_VALID
- *
- * @param p_data Pointer to the attribute value
- * @param p_wr_data Pointer to the written part of the attribute value
- * @param when The date
- */
-	TimedAttrData(const T *p_data,const T *p_wr_data,struct timeval when): AttrData<T>(p_data,p_wr_data),t_val(when) {}
-
-/**
- * Create a new TimedAttrData object.
- *
- * The memory pointed to by the <i>p_data</i> parameter will not be freed
- *
- * @param p_data Pointer to the attribute value
- * @param qual The attribute quality factor
- * @param when The date
- */
-	TimedAttrData(const T *p_data,Tango::AttrQuality qual,struct timeval when): AttrData<T>(p_data,qual),t_val(when) {}
-
-/**
- * Create a new TimedAttrData object for a R/W attribute.
- *
- * The memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters will not be freed
- *
- * @param p_data Pointer to the attribute value
- * @param p_wr_data Pointer to the written part of the attribute value
- * @param qual The attribute quality factor
- * @param when The date
- */
-	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,struct timeval when): AttrData<T>(p_data,qual),t_val(when) {}
-
-/**
- * Create a new TimedAttrData object.
- *
- * @param p_data Pointer to the attribute value
- * @param qual The attribute quality factor
- * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
- * @param when The date
- */
-	TimedAttrData(const T *p_data,Tango::AttrQuality qual,bool rel,struct timeval when): AttrData<T>(p_data,qual,rel),t_val(when)
-	{}
-
-/**
- * Create a new TimedAttrData object for a R/W attribute.
- *
- * @param p_data Pointer to the attribute value
- * @param p_wr_data Pointer to the written part of the attribute value
- * @param qual The attribute quality factor
- * @param rel Set to true if the memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters must be freed
- * @param when The date
- */
-	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,bool rel,struct timeval when): AttrData<T>(p_data,p_wr_data,qual,rel),t_val(when)
-	{}
+	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,bool rel,struct timeval when);
 //@}
 
 
@@ -348,8 +307,7 @@ public:
  * @param x The attribute x length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,time_t when): AttrData<T>(p_data,x)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -363,8 +321,7 @@ public:
  * @param x_wr The attribute written part x length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,time_t when): AttrData<T>(p_data,x,p_wr_data,x_wr)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -376,8 +333,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,time_t when): AttrData<T>(p_data,x,qual)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -391,8 +347,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,time_t when): AttrData<T>(p_data,x,p_wr_data,x_wr,qual)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -403,8 +358,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,bool rel,time_t when): AttrData<T>(p_data,x,qual,rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,bool rel,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -417,8 +371,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,bool rel,time_t when): AttrData<T>(p_data,x,p_wr_data,x_wr,qual,rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,bool rel,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -430,7 +383,7 @@ public:
  * @param x The attribute x length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,struct timeval when): AttrData<T>(p_data,x),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -444,7 +397,7 @@ public:
  * @param x_wr The attribute written part x length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,struct timeval when): AttrData<T>(p_data,x,p_wr_data,x_wr),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,struct timeval when);
 
 /**
  * Create a new TimedAttrData object.
@@ -456,7 +409,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,struct timeval when): AttrData<T>(p_data,x,qual),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -470,7 +423,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,struct timeval when): AttrData<T>(p_data,x,p_wr_data,x_wr,qual),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,struct timeval when);
 
 /**
  * Create a new TimedAttrData object.
@@ -481,8 +434,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,bool rel,struct timeval when): AttrData<T>(p_data,x,qual,rel),t_val(when)
-	{}
+	TimedAttrData(const T *p_data,long x,Tango::AttrQuality qual,bool rel,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -495,8 +447,8 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,bool rel,struct timeval when): AttrData<T>(p_data,x,p_wr_data,x_wr,qual,rel),t_val(when)
-	{}
+	TimedAttrData(const T *p_data,long x,const T *p_wr_data,long x_wr,Tango::AttrQuality qual,bool rel,struct timeval when);
+
 //@}
 
 
@@ -517,7 +469,7 @@ public:
  * @param y The attribute y length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,time_t when): AttrData<T>(p_data,x,y) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,long y,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -533,7 +485,7 @@ public:
  * @param y_wr The attribute written part y length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,time_t when): AttrData<T>(p_data,x,y,p_wr_data,x_wr,y_wr) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -546,8 +498,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,time_t when): AttrData<T>(p_data,x,y,qual)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -563,8 +514,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,time_t when): AttrData<T>(p_data,x,y,p_wr_data,x_wr,y_wr,qual)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -576,8 +526,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,bool rel,time_t when): AttrData<T>(p_data,x,y,qual,rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,bool rel,time_t when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -592,8 +541,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> and <i>p_wr_data</i> parameters must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,bool rel,time_t when): AttrData<T>(p_data,x,y,p_wr_data,x_wr,y_wr,qual,rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,bool rel,time_t when);
 
 /**
  * Create a new TimedAttrData object.
@@ -606,7 +554,7 @@ public:
  * @param y The attribute y length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,struct timeval when): AttrData<T>(p_data,x,y),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,long y,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -622,7 +570,7 @@ public:
  * @param y_wr The attribute written part y length
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,struct timeval when): AttrData<T>(p_data,x,y,p_wr_data,x_wr,y_wr),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,struct timeval when);
 
 /**
  * Create a new TimedAttrData object.
@@ -635,7 +583,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,struct timeval when): AttrData<T>(p_data,x,y,qual),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -651,7 +599,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,struct timeval when): AttrData<T>(p_data,x,y,p_wr_data,x_wr,y_wr,qual),t_val(when) {}
+	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,struct timeval when);
 
 /**
  * Create a new TimedAttrData object.
@@ -663,8 +611,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,bool rel,struct timeval when): AttrData<T>(p_data,x,y,qual,rel),t_val(when)
-	{}
+	TimedAttrData(const T *p_data,long x,long y,Tango::AttrQuality qual,bool rel,struct timeval when);
 
 /**
  * Create a new TimedAttrData object for a R/W attribute.
@@ -679,8 +626,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> abd <i>p_wr_data</i> parameters must be freed
  * @param when The date
  */
-	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,bool rel,struct timeval when): AttrData<T>(p_data,x,y,p_wr_data,x_wr,y_wr,qual,rel),t_val(when)
-	{}
+	TimedAttrData(const T *p_data,long x,long y,const T *p_wr_data,long x_wr,long y_wr,Tango::AttrQuality qual,bool rel,struct timeval when);
 //@}
 
 
@@ -700,7 +646,7 @@ public:
  * @param errs The error stack
  * @param when The date
  */
-	TimedAttrData(DevErrorList &errs,time_t when): AttrData<T>(errs) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedAttrData(DevErrorList &errs,time_t when);
 
 /**
  * Create a new TimedAttrData object for errors.
@@ -711,7 +657,7 @@ public:
  * @param errs The error stack
  * @param when The date
  */
-	TimedAttrData(DevErrorList &errs,timeval when): AttrData<T>(errs),t_val(when) {}
+	TimedAttrData(DevErrorList &errs,timeval when);
 //@}
 
 /// @privatesection
@@ -719,35 +665,29 @@ public:
 
 #ifdef _TG_WINDOWS_
 
-	TimedAttrData(const T *p,struct _timeb t): AttrData<T>(p) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,Tango::AttrQuality q,struct _timeb t): AttrData<T>(p,q) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,Tango::AttrQuality q,bool rel,struct _timeb t): AttrData<T>(p,q,rel)
-	{t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedAttrData(const T *p,struct _timeb t);
+	TimedAttrData(const T *p,Tango::AttrQuality q,struct _timeb t);
+	TimedAttrData(const T *p,Tango::AttrQuality q,bool rel,struct _timeb t);
 
-	TimedAttrData(const T *p,const T *p_wr_data,struct _timeb t): AttrData<T>(p,p_wr_data) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,const T *p_wr_data,Tango::AttrQuality q,struct _timeb t): AttrData<T>(p,p_wr_data,q) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,const T *p_wr_data,Tango::AttrQuality q,bool rel,struct _timeb t): AttrData<T>(p,p_wr_data,q,rel)
-	{t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedAttrData(const T *p,const T *p_wr_data,struct _timeb t);
+	TimedAttrData(const T *p,const T *p_wr_data,Tango::AttrQuality q,struct _timeb t);
+	TimedAttrData(const T *p,const T *p_wr_data,Tango::AttrQuality q,bool rel,struct _timeb t);
 
-	TimedAttrData(const T *p,long nb,struct _timeb t): AttrData<T>(p,nb) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,Tango::AttrQuality q,struct _timeb t): AttrData<T>(p,nb,q) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,Tango::AttrQuality q,bool rel,struct _timeb t): AttrData<T>(p,nb,q,rel)
-	{t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedAttrData(const T *p,long nb,struct _timeb t);
+	TimedAttrData(const T *p,long nb,Tango::AttrQuality q,struct _timeb t);
+	TimedAttrData(const T *p,long nb,Tango::AttrQuality q,bool rel,struct _timeb t);
 
-	TimedAttrData(const T *p,long nb,const T *p_wr_data,long nb_wr,struct _timeb t): AttrData<T>(p,nb,p_wr_data,nb_wr) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,const T *p_wr_data,long nb_wr,Tango::AttrQuality q,struct _timeb t): AttrData<T>(p,nb,p_wr_data,nb_wr,q) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,const T *p_wr_data,long nb_wr,Tango::AttrQuality q,bool rel,struct _timeb t): AttrData<T>(p,nb,p_wr_data,nb_wr,q,rel)
-	{t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedAttrData(const T *p,long nb,const T *p_wr_data,long nb_wr,struct _timeb t);
+	TimedAttrData(const T *p,long nb,const T *p_wr_data,long nb_wr,Tango::AttrQuality q,struct _timeb t);
+	TimedAttrData(const T *p,long nb,const T *p_wr_data,long nb_wr,Tango::AttrQuality q,bool rel,struct _timeb t);
 
-	TimedAttrData(const T *p,long nb,long nb2,struct _timeb t): AttrData<T>(p,nb,nb2) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,long nb2,Tango::AttrQuality q,struct _timeb t): AttrData<T>(p,nb,nb2,q) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,long nb2,Tango::AttrQuality q,bool rel,struct _timeb t): AttrData<T>(p,nb,nb2,q,rel)
-	{t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedAttrData(const T *p,long nb,long nb2,struct _timeb t);
+	TimedAttrData(const T *p,long nb,long nb2,Tango::AttrQuality q,struct _timeb t);
+	TimedAttrData(const T *p,long nb,long nb2,Tango::AttrQuality q,bool rel,struct _timeb t);
 
-	TimedAttrData(const T *p,long nb,long nb2,const T *p_wr_data,long nb_wr,long nb2_wr,struct _timeb t): AttrData<T>(p,nb,nb2,p_wr_data,nb_wr,nb2_wr) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,long nb2,const T *p_wr_data,long nb_wr,long nb2_wr,Tango::AttrQuality q,struct _timeb t): AttrData<T>(p,nb,nb2,p_wr_data,nb_wr,nb2_wr,q) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedAttrData(const T *p,long nb,long nb2,const T *p_wr_data,long nb_wr,long nb2_wr,Tango::AttrQuality q,bool rel,struct _timeb t): AttrData<T>(p,nb,nb2,p_wr_data,nb_wr,nb2_wr,q,rel)
-	{t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedAttrData(const T *p,long nb,long nb2,const T *p_wr_data,long nb_wr,long nb2_wr,struct _timeb t);
+	TimedAttrData(const T *p,long nb,long nb2,const T *p_wr_data,long nb_wr,long nb2_wr,Tango::AttrQuality q,struct _timeb t);
+	TimedAttrData(const T *p,long nb,long nb2,const T *p_wr_data,long nb_wr,long nb2_wr,Tango::AttrQuality q,bool rel,struct _timeb t);
 
 #endif
 
@@ -790,7 +730,7 @@ public:
  *
  * @param elt The new element
  */
-	void push(TimedAttrData<T> const &elt) {hist.push_back(elt);}
+	void push(TimedAttrData<T> const &elt);
 
 /**
  * Get stack depth
@@ -816,7 +756,7 @@ public:
  *
  * @return The stack itself
  */
-	vector<TimedAttrData<T> > &get_data() {return hist;}
+	vector<TimedAttrData<T> > &get_data();
 
 /// @privatesection
 	AttrHistoryStack() {};
@@ -872,7 +812,7 @@ public:
  * @param p_data Pointer to the command result data
  * @param when The date
  */
-	TimedCmdData(T *p_data,time_t when): ptr(p_data),release(false) {t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedCmdData(T *p_data,time_t when);
 
 /**
  * Create a new TimedCmdData object with memory management.
@@ -882,8 +822,7 @@ public:
  * @param when The date
  */
 
-	TimedCmdData(T *p_data,bool rel,time_t when): ptr(p_data),release(rel)
-	{t_val.tv_sec = time_t_2_long(when);t_val.tv_usec = 0;}
+	TimedCmdData(T *p_data,bool rel,time_t when);
 
 /**
  * Create a new TimedCmdData object.
@@ -893,7 +832,7 @@ public:
  * @param p_data Pointer to the command result data
  * @param when The date
  */
-	TimedCmdData(T *p_data,struct timeval when): ptr(p_data),t_val(when),release(false) {}
+	TimedCmdData(T *p_data,struct timeval when);
 
 /**
  * Create a new TimedCmdData object with memory management.
@@ -902,7 +841,7 @@ public:
  * @param rel Set to true if the memory pointed to by the <i>p_data</i> parameter must be freed
  * @param when The date
  */
-	TimedCmdData(T *p_data,bool rel,struct timeval when): ptr(p_data),t_val(when),release(rel) {}
+	TimedCmdData(T *p_data,bool rel,struct timeval when);
 
 
 /**
@@ -935,8 +874,8 @@ public:
 	bool		    release;
 
 #ifdef _TG_WINDOWS_
-	TimedCmdData(T *p,struct _timeb t): ptr(p),release(false) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
-	TimedCmdData(T *p,bool rel,struct _timeb t): ptr(p),release(rel) {t_val.tv_sec = t.time;t_val.tv_usec = t.millitm*1000;}
+	TimedCmdData(T *p,struct _timeb t): ptr(p),release(false);
+	TimedCmdData(T *p,bool rel,struct _timeb t): ptr(p),release(rel);
 #endif
 };
 
@@ -978,7 +917,7 @@ public:
  *
  * @param elt The new element
  */
-	void push(Tango::TimedCmdData<T> const &elt) {hist.push_back(elt);}
+	void push(Tango::TimedCmdData<T> const &elt);
 
 /**
  * Get stack depth
@@ -1004,7 +943,7 @@ public:
  *
  * @return The stack itself
  */
-	vector<TimedCmdData<T> > &get_data() {return hist;}
+	vector<TimedCmdData<T> > &get_data();
 
 /// @privatesection
 

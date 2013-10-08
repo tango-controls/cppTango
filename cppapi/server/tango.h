@@ -128,7 +128,8 @@
 	#include <command.h>
 	#include <dserver.h>
 	#include <attribute_spec.tpp>
-	#include <w_attribute.tpp>
+	#include <utils_spec.tpp>
+	#include <w_attribute_spec.tpp>
 	#include <attrprop.tpp>
 #endif
 

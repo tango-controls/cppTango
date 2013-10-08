@@ -1,9 +1,8 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :               utils.tpp
 //
-// description :        C++ source code for the Attribute class template
-//                      methods
+// description :        C++ source code for the Attribute class template methods
 //
 // project :            TANGO
 //
@@ -16,31 +15,45 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//==================================================================================================================
 
 #ifndef _UTILS_TPP
 #define _UTILS_TPP
 
+namespace Tango
+{
+
+//+---------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::fill_attr_polling_buffer
+//
+// description :
+//		Fill attribute polling buffer with your own data
+//
+// args :
+//		in :
+// 			- dev : The device
+//			- att_name : The attribute name
+//			- data : The attribute data to be stored in the polling buffer
+//
+//----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Util::fill_attr_polling_buffer(DeviceImpl *dev,
-				      string &att_name,
-				      AttrHistoryStack<T>  &data)
+void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistoryStack<T>  &data)
 {
 //
 // Check that the device is polled
@@ -200,8 +213,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 
 //
 // Take the device monitor before the loop
-// In case of large element number, it is time cousuming to take/release
-// the monitor in the loop
+// In case of large element number, it is time cousuming to take/release the monitor in the loop
 //
 
     dev->get_poll_monitor().get_monitor();
@@ -425,11 +437,24 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
     dev->get_poll_monitor().rel_monitor();
 }
 
+//+---------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::fill_cmd_polling_buffer
+//
+// description :
+//		Fill command polling buffer with your own data
+//
+// args :
+//		in :
+// 			- dev : The device
+//			- cmd_name : The command name
+//			- data : The command data to be stored in the polling buffer
+//
+//----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
-                 string &cmd_name,
-                 CmdHistoryStack<T>  &data)
+void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistoryStack<T>  &data)
 {
 
 //
@@ -475,8 +500,8 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
 
 //
 // Take the device monitor before the loop
-// In case of large element number, it is time cousuming to take/release
-// the monitor in the loop
+// In case of large element number, it is time cousuming to take/release the monitor in the loop
+// In case of large element number, it is time cousuming to take/release the monitor in the loop
 //
 
     dev->get_poll_monitor().get_monitor();
@@ -534,18 +559,13 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
 
 //
 // Set command value in Any object
-// If the Any insertion is by pointer, with omniORB, it copy data into the Any
-// and delete memory. Therefore, no need to delete memory if release is
-// true. If release is false, uses the insertion by reference which only
-// copy data.
 //
 
             T *tmp_ptr = (data.get_data())[i].ptr;
-            if ((data.get_data())[i].release == true)
-                (*any_ptr) <<= tmp_ptr;
-            else
-                (*any_ptr) <<= (*tmp_ptr);
+			(*any_ptr) <<= (*tmp_ptr);
 
+			if ((data.get_data())[i].release == true)
+				delete tmp_ptr;
         }
 
 //
@@ -575,6 +595,6 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
     dev->get_poll_monitor().rel_monitor();
 }
 
-
+} // End of Tango namespace
 
 #endif /* UTILS_TPP */

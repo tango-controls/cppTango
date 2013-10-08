@@ -48,7 +48,6 @@
 	#include <w32win.h>
 #endif /* _TG_WINDOWS_ */
 
-
 //
 // For debug purpose
 //
@@ -1019,10 +1018,6 @@ private:
 	vector<string>              restarting_devices;     // Restarting devices name
 	bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
 };
-
-// Add template methods definitions
-
-#include <utils.tpp>
 
 //***************************************************************************
 //
