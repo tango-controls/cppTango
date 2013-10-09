@@ -42,6 +42,7 @@
 #######################################################################################################################
 
 EXCLUDE_FILES = 64.cpp helper.cpp
+COMPILE_FILES = cxx_blackbox.cpp
 
 TANGO_BASE = /segfs/tango/ci/Tango/$(OS)
 
