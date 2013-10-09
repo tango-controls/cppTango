@@ -251,8 +251,8 @@ cout << "Again exception when talking to adm device!!!" << endl;
 //			TS_ASSERT (reas == "API_BlackBoxEmpty");
 			if (reas == "API_CorbaException")
 			{
-cout << "Too early, sleeping 2 more seconds...." << endl;
-				Tango_sleep(2);
+cout << "Too early, sleeping 4 more seconds...." << endl;
+				Tango_sleep(4);
 
 				try
 				{
