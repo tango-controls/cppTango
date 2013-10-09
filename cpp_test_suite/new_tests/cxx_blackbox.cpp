@@ -231,7 +231,7 @@ cout << "Exception errors length = " << e.errors.length() << endl;
 cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
-if (e.errors.length() >= 1)
+if (e.errors.length() > 1)
 {
 cout << "Exception 1 reason = " << e.errors[1].reason.in() << endl;
 cout << "Exception 1 desc = " << e.errors[1].desc.in() << endl;
@@ -267,7 +267,7 @@ cout << "Too early, sleeping 2 more seconds...." << endl;
 cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
-if (e.errors.length() >= 1)
+if (e.errors.length() > 1)
 {
 cout << "Exception 1 reason = " << e.errors[1].reason.in() << endl;
 cout << "Exception 1 desc = " << e.errors[1].desc.in() << endl;
