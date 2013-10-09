@@ -22,7 +22,7 @@ class BlackboxTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy *device1, *device2, *device3, *dserver, *dbserver;
-	string device1_name, device2_name, device3_name, fulldsname, client_host, dbserver_name;
+	string device1_name, device2_name, device3_name, fulldsname, client_host, dbserver_name, dserver_name;
 	DevLong server_version;
 
 public:
@@ -33,7 +33,6 @@ public:
 // Arguments check -------------------------------------------------
 //
 
-		string dserver_name;
 
 		device1_name = CxxTest::TangoPrinter::get_param("device1");
 		device2_name = CxxTest::TangoPrinter::get_param("device2");
@@ -230,6 +229,12 @@ public:
 cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
+if (e.errors.length() >= 1)
+{
+cout << "Exception 1 reason = " << e.errors[1].reason.in() << endl;
+cout << "Exception 1 desc = " << e.errors[1].desc.in() << endl;
+cout << "Exception 1 origin = " << e.errors[1].origin.in() << endl;
+}
 			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
 //			TS_ASSERT (reas == "API_BlackBoxEmpty");
 			if (reas == "API_CorbaException")
@@ -250,6 +255,22 @@ cout << "Too early, sleeping 2 more seconds...." << endl;
 cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
+if (e.errors.length() >= 1)
+{
+cout << "Exception 1 reason = " << e.errors[1].reason.in() << endl;
+cout << "Exception 1 desc = " << e.errors[1].desc.in() << endl;
+cout << "Exception 1 origin = " << e.errors[1].origin.in() << endl;
+}
+Tango::DeviceProxy *dev = new Tango::DeviceProxy(dserver_name);
+try
+{
+Tango::DeviceData dd = dev->command_inout("QueryDevice");
+cout << "Device list = " << dd << endl;
+}
+catch (Tango::DevFailed &e)
+{
+cout << "Again exception when talking to adm device!!!" << endl;
+}
 					cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
 					TS_ASSERT (reas == "API_BlackBoxEmpty");
 				}

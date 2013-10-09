@@ -26,34 +26,34 @@ int main(int argc, char **argv)
 			verbose = true;
 	}
 
-	check_size("Attr",sizeof(Attr),56);  // Was 52 in V4
-	check_size("SpectrumAttr",sizeof(SpectrumAttr),64);	// Was 60 in V4	
-	check_size("ImageAttr",sizeof(ImageAttr),72);	// Was 68 in V4
+	check_size("Attr",sizeof(Attr),76);  // Was 52 in V4
+	check_size("SpectrumAttr",sizeof(SpectrumAttr),84);	// Was 60 in V4	
+	check_size("ImageAttr",sizeof(ImageAttr),92);	// Was 68 in V4
 		
-	check_size("DeviceImpl",sizeof(DeviceImpl),296);
-	check_size("Device_2Impl",sizeof(Device_2Impl),304);
+	check_size("DeviceImpl",sizeof(DeviceImpl),804);
+	check_size("Device_2Impl",sizeof(Device_2Impl),812);
 	
-	check_size("DeviceClass",sizeof(DeviceClass),88);  	// Was 48 in V4
-	check_size("Util",sizeof(Util),72);	// Was 68 in V4
+	check_size("DeviceClass",sizeof(DeviceClass),220);  	// Was 48 in V4
+	check_size("Util",sizeof(Util),560);	// Was 68 in V4
 
-	check_size("Attribute",sizeof(Attribute),332);		// Was 208 in V4
-	check_size("WAttribute",sizeof(WAttribute),616);	// Was 252 in V4
+	check_size("Attribute",sizeof(Attribute),1448);		// Was 208 in V4
+	check_size("WAttribute",sizeof(WAttribute),1884);	// Was 252 in V4
 	check_size("MultiAttribute",sizeof(MultiAttribute),40);
 	
-	check_size("Command",sizeof(Command),32);
-	check_size("TemplCommand",sizeof(TemplCommand),52);
-	check_size("TemplCommandIn",sizeof(TemplCommandIn<int>),64);
-	check_size("TemplCommandOut",sizeof(TemplCommandOut<void>),64);
-	check_size("TemplCommandInOut",sizeof(TemplCommandInOut<int,int>),64);
+	check_size("Command",sizeof(Command),40);
+	check_size("TemplCommand",sizeof(TemplCommand),60);
+	check_size("TemplCommandIn",sizeof(TemplCommandIn<int>),72);
+	check_size("TemplCommandOut",sizeof(TemplCommandOut<void>),72);
+	check_size("TemplCommandInOut",sizeof(TemplCommandInOut<int,int>),72);
 
-	check_size("DeviceProxy",sizeof(DeviceProxy),164);	// Was 100 in V4
+	check_size("DeviceProxy",sizeof(DeviceProxy),360);	// Was 100 in V4
 	check_size("DeviceData",sizeof(DeviceData),12);
 	check_size("DeviceDataHistory",sizeof(DeviceDataHistory),44);
-	check_size("DeviceAttribute",sizeof(DeviceAttribute),80);	// Was 52 in V4
-	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),104);   // Was 76 in V4
+	check_size("DeviceAttribute",sizeof(DeviceAttribute),112);	// Was 52 in V4
+	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),136);   // Was 76 in V4
 
-	check_size("ApiUtil",sizeof(ApiUtil),144);				
-	check_size("Database",sizeof(Database),180);    // Was 108 in V4
+	check_size("ApiUtil",sizeof(ApiUtil),176);				
+	check_size("Database",sizeof(Database),380);    // Was 108 in V4
 	check_size("DbDevice",sizeof(DbDevice),20);
 	check_size("DbClass",sizeof(DbClass),20);
 	check_size("DbServer",sizeof(DbServer),20);
@@ -67,7 +67,7 @@ int main(int argc, char **argv)
 
 	check_size("EncodedAttribute",sizeof(EncodedAttribute),32);
 
-	check_size("Group",sizeof(Group),2);
+	check_size("Group",sizeof(Group),80);
 
 	check_size("MultiAttrProp<T>",sizeof(MultiAttrProp<DevShort>),284);
 	check_size("AttrProp<T>",sizeof(AttrProp<DevShort>),16);
