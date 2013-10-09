@@ -397,7 +397,7 @@ ret=$?
 check_return_value $ret
 #
 $echo "\nTesting polling of new attribute data types"
-$DIR/poll_attr $DEV1
+#$DIR/poll_attr $DEV1
 ret=$?
 check_return_value $ret
 #
