@@ -240,17 +240,17 @@ else
 	LOOP=35
 fi
 
-if [ $DEV_MCAST != "no/mcast/test" ]
-then
-	$DIR/wait_mcast_dev $DEV_MCAST $LOOP
-	if [ $? != "0" ]
-	then
-		echo "It seems that the remote DS to test multicast feature is not started"
-		echo "Exit test suite !!!!!!!!!!!!!!!!!!"
-		date
-		exit -1
-	fi
-fi
+#if [ $DEV_MCAST != "no/mcast/test" ]
+#then
+#	$DIR/wait_mcast_dev $DEV_MCAST $LOOP
+#	if [ $? != "0" ]
+#	then
+#		echo "It seems that the remote DS to test multicast feature is not started"
+#		echo "Exit test suite !!!!!!!!!!!!!!!!!!"
+#		date
+#		exit -1
+#	fi
+#fi
 
 #
 # Wait of a random value before starting test (Spread database load)
