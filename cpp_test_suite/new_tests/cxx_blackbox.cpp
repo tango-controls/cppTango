@@ -145,7 +145,7 @@ public:
 		vector<string> *blackbox_out;
 		string out_str, version_str, reference_str, pid_str;
 
-		// sets the "command_ionout" suffix (refer to blackbox.cpp build_info_as_str())
+		// sets the "command_inout" suffix (refer to blackbox.cpp build_info_as_str())
 		switch(server_version)
 		{
 		case 2:
@@ -216,6 +216,7 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(device3 = new DeviceProxy(device3_name));
 
+cout << "Start of strange test" << endl;
 		try
 		{
 			vector<string> *bb = device3->black_box(5);
@@ -234,6 +235,16 @@ if (e.errors.length() >= 1)
 cout << "Exception 1 reason = " << e.errors[1].reason.in() << endl;
 cout << "Exception 1 desc = " << e.errors[1].desc.in() << endl;
 cout << "Exception 1 origin = " << e.errors[1].origin.in() << endl;
+}
+Tango::DeviceProxy *dev = new Tango::DeviceProxy(dserver_name);
+try
+{
+Tango::DeviceData dd = dev->command_inout("QueryDevice");
+cout << "Device list = " << dd << endl;
+}
+catch (Tango::DevFailed &e)
+{
+cout << "Again exception when talking to adm device!!!" << endl;
 }
 			cout << "===> Nothing yet stored in blackbox, error reason = " << reas << endl;
 //			TS_ASSERT (reas == "API_BlackBoxEmpty");
