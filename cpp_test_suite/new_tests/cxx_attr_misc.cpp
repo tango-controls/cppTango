@@ -259,7 +259,7 @@ public:
 		const DevVarStringArray *props;
 		DeviceData dout;
 
-		device1->set_timeout_millis(9*def_timeout);
+		device1->set_timeout_millis(11*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetProperties"));
