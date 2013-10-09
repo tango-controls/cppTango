@@ -227,6 +227,7 @@ cout << "Start of strange test" << endl;
 		catch(DevFailed &e)
 		{
 			string reas(e.errors[0].reason.in());
+cout << "Exception errors length = " << e.errors.length() << endl;
 cout << "Exception reason = " << reas << endl;
 cout << "Exception desc = " << e.errors[0].desc.in() << endl;
 cout << "Exception origin = " << e.errors[0].origin.in() << endl;
