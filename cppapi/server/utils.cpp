@@ -280,6 +280,8 @@ void Util::effective_job(int argc,char *argv[])
 
 //
 // Destroy the ORB created as a client (in case there is one)
+// Also destroy database objsect stored in the ApiUtil object. This is needed in case of CS running TAC
+// because the TAC device is stored in the db object and it references the destroyed ORB
 //
 
 		ApiUtil *au = Tango::ApiUtil::instance();
@@ -289,6 +291,11 @@ void Util::effective_job(int argc,char *argv[])
 			orb_clnt->destroy();
 			CORBA::release(orb_clnt);
 			au->set_orb(CORBA::ORB::_nil());
+
+			size_t nb_db = au->get_db_vect().size();
+			for (size_t ctr = 0;ctr < nb_db;ctr++)
+				delete au->get_db_vect()[ctr];
+			au->get_db_vect().clear();
 		}
 
 //
