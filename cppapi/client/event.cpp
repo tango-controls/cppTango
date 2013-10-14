@@ -202,13 +202,13 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
                         {
                             break;
                         }
+					}
 
-                        if (j == env_var_fqdn_prefix.size())
-                        {
-                            string prefix = "tango://" + vs[i] + '/';
-                            env_var_fqdn_prefix.push_back(prefix);
-                        }
-                    }
+					if (j == env_var_fqdn_prefix.size())
+					{
+						string prefix = "tango://" + vs[i] + '/';
+						env_var_fqdn_prefix.push_back(prefix);
+					}
 #endif
                 }
             }
