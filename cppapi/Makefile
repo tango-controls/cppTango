@@ -138,8 +138,13 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/multiattribute.o \
 		$(OBJS_DIR)/templ_inst.o \
 		$(OBJS_DIR)/attribute.o \
+		$(OBJS_DIR)/attrsetval.o \
+		$(OBJS_DIR)/attrgetsetprop.o \
 		$(OBJS_DIR)/w_attribute.o \
 		$(OBJS_DIR)/attrdesc.o \
+		$(OBJS_DIR)/fwdattrdesc.o \
+		$(OBJS_DIR)/fwdattribute.o \
+		$(OBJS_DIR)/rootattreg.o \
 		$(OBJS_DIR)/except.o \
 		$(OBJS_DIR)/attrmanip.o \
 		$(OBJS_DIR)/seqvec.o \
@@ -228,9 +233,14 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/classattribute.so.o \
 		$(OBJS_DIR_SL)/templ_inst.so.o \
 		$(OBJS_DIR_SL)/attribute.so.o \
+		$(OBJS_DIR_SL)/attrsetval.so.o \
+		$(OBJS_DIR_SL)/attrgetsetprop.so.o \
 		$(OBJS_DIR_SL)/w_attribute.so.o \
 		$(OBJS_DIR_SL)/multiattribute.so.o \
 		$(OBJS_DIR_SL)/attrdesc.so.o \
+		$(OBJS_DIR_SL)/fwdattrdesc.so.o \
+		$(OBJS_DIR_SL)/fwdattribute.so.o \
+		$(OBJS_DIR_SL)/rootattreg.so.o \
 		$(OBJS_DIR_SL)/except.so.o \
 		$(OBJS_DIR_SL)/attrmanip.so.o \
 		$(OBJS_DIR_SL)/seqvec.so.o \
@@ -349,6 +359,8 @@ SERVER_INCLUDE =	attrdesc.h \
 			dserversignal.h \
 			eventsupplier.h \
 			except.h \
+			fwdattrdesc.h \
+			fwdattribute.h \
 			log4tango.h \
 			logcmds.h \
 			logging.h \
@@ -362,6 +374,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			pollring.h \
 			pollthread.h \
 			readers_writers_lock.h \
+			rootattreg.h \
 			seqvec.h \
 			tango.h \
 			tango_config.h \

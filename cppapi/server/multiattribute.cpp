@@ -197,8 +197,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 						dev_prop.push_back(AttrProperty(db_list[ind].name,tmp));
 					}
 					else
-						dev_prop.push_back(AttrProperty(db_list[ind].name,
-										db_list[ind].value_string[0]));
+						dev_prop.push_back(AttrProperty(db_list[ind].name,db_list[ind].value_string[0]));
 					ind++;
 				}
 			}
@@ -209,8 +208,22 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 
 			vector<AttrProperty> prop_list;
 			concat(dev_prop,class_prop,prop_list);
-			add_user_default(prop_list,def_user_prop);
-			add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
+
+			if (attr.is_fwd() == false)
+			{
+				add_user_default(prop_list,def_user_prop);
+				add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
+			}
+			else
+			{
+				bool fwd_ok = static_cast<FwdAttr &>(attr).validate_fwd_att(prop_list);
+				if (fwd_ok == true)
+				{
+					static_cast<FwdAttr &>(attr).get_root_conf(dev_name);
+					add_user_default(prop_list,def_user_prop);
+					add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
+				}
+			}
 
 //
 // Create an Attribute instance
@@ -218,33 +231,48 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 
 			if ((attr.get_writable() == Tango::WRITE) ||
 			    (attr.get_writable() == Tango::READ_WRITE))
-				attr_list.push_back(new WAttribute(prop_list,attr,dev_name,i));
+			{
+/*				if (attr.is_fwd() == true)
+					attr_list.push_back(new FwdWAttribute(prop_list,attr,dev_name,i));
+				else*/
+					attr_list.push_back(new WAttribute(prop_list,attr,dev_name,i));
+			}
 			else
-				attr_list.push_back(new Attribute(prop_list,attr,dev_name,i));
+			{
+				if (attr.is_fwd() == true)
+					attr_list.push_back(new FwdAttribute(prop_list,attr,dev_name,i));
+				else
+					attr_list.push_back(new Attribute(prop_list,attr,dev_name,i));
+			}
+
+
+			if (attr_list[i]->is_fwd_wrongly_conf() == false)
+			{
 
 //
 // If it is writable, add it to the writable attribute list
 //
 
-			Tango::AttrWriteType w_type = attr_list[i]->get_writable();
-			if ((w_type == Tango::WRITE) ||
-			    (w_type == Tango::READ_WRITE))
-			{
-				writable_attr_list.push_back(i);
-			}
+				Tango::AttrWriteType w_type = attr_list[i]->get_writable();
+				if ((w_type == Tango::WRITE) ||
+					(w_type == Tango::READ_WRITE))
+				{
+					writable_attr_list.push_back(i);
+				}
 
 //
 // If one of the alarm properties is defined, add it to the alarmed attribute
 // list
 //
 
-			if (attr_list[i]->is_alarmed().any() == true)
-			{
-				if (w_type != Tango::WRITE)
-					alarm_attr_list.push_back(i);
-			}
+				if (attr_list[i]->is_alarmed().any() == true)
+				{
+					if (w_type != Tango::WRITE)
+						alarm_attr_list.push_back(i);
+				}
 
-			cout4 << *(attr_list[i]) << endl;
+				cout4 << *(attr_list[i]) << endl;
+			}
 		}
 	}
 
@@ -463,19 +491,6 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 	if ((attr_list[index]->get_writable() == Tango::READ_WITH_WRITE) ||
 	    (attr_list[index]->get_writable() == Tango::READ_WRITE))
 	{
-
-/*		if (attr_list[index]->get_data_format() != Tango::SCALAR)
-		{
-			TangoSys_OMemStream o;
-
-			o << "Device --> " << dev_name;
-			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
-			o << " is defined but this attribute data format is not SCALAR" << ends;
-			Except::throw_exception((const char *)API_AttrOptProp,
-						o.str(),
-						(const char *)"MultiAttribute::MultiAttribute");
-		}*/
-
 		unsigned long j;
 		string &assoc_name = attr_list[index]->get_assoc_name();
 		transform(assoc_name.begin(),assoc_name.end(),assoc_name.begin(),::tolower);
@@ -496,23 +511,6 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 						o.str(),
 						(const char *)"MultiAttribute::MultiAttribute");
 		}
-
-//
-// Also check if the associated write attribute is a scalar one
-//
-
-/*		if (attr_list[writable_attr_list[j]]->get_data_format() != Tango::SCALAR)
-		{
-			TangoSys_OMemStream o;
-
-			o << "Device --> " << dev_name;
-			o << "\nProperty writable_attr_name for attribute " << attr_list[index]->get_name();
-			o << " is set to " << assoc_name;
-			o << ", but this attribute is not of the SCALAR data format" << ends;
-			Except::throw_exception((const char *)API_AttrOptProp,
-						o.str(),
-						(const char *)"MultiAttribute::MultiAttribute");
-		}*/
 
 //
 // Check that the two associated attributes have the same data type

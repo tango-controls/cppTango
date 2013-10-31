@@ -935,9 +935,10 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 				vector<string>::iterator pos;
 				pos = find(connected_pub.begin(),connected_pub.end(),endpoint_str);
 				if (pos != connected_pub.end())
+				{
 					connected_pub.erase(pos);
-
-				event_sub_sock->disconnect(endpoint);
+					event_sub_sock->disconnect(endpoint);
+				}
 #endif
             }
             else

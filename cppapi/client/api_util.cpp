@@ -45,6 +45,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <signal.h>
 #include <ifaddrs.h>
 
+#include <netinet/in.h> 	// FreeBSD
+
 // There is a NO_DATA defined in netdb.h
 
 #ifdef NO_DATA

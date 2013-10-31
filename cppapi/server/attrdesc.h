@@ -1,9 +1,8 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :		attrdesc.h
 //
-// description :	Include file for the Attr classes hierarchy.
-//			Three classes are declared in this file :
+// description :	Include file for the Attr classes hierarchy. Three classes are declared in this file :
 //				The Attr class
 //				The SpectrumAttr class
 //				The ImageAttr class
@@ -19,22 +18,20 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//===================================================================================================================
 
 #ifndef _ATTRDESC_H
 #define _ATTRDESC_H
@@ -396,6 +393,8 @@ public:
 	Attr(const char *name,long data_type,Tango::DispLevel disp,
 	     Tango::AttrWriteType w_type = Tango::READ,
 	     const char *assoc = AssocWritNotSpec);
+
+	Attr(const char *name,Tango::DispLevel disp = Tango::OPERATOR);
 //@}
 
 /**@name Destructor
@@ -528,6 +527,8 @@ public:
 	void set_class_properties(vector<AttrProperty> &in_prop) {class_properties=in_prop;}
 	void check_type();
 
+	virtual bool is_fwd() {return false;}
+
 	virtual void read(DeviceImpl *,Attribute &) {};
 	virtual void write(DeviceImpl *,WAttribute &) {};
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
@@ -546,6 +547,19 @@ protected:
 	string					assoc_name;
 	bool					mem;
 	bool					mem_init;
+
+//
+// Ported from the extension class
+//
+
+    Tango::DispLevel		disp_level;			// Display  level
+    long					poll_period;		// Polling period
+
+    bool					fire_change_event;
+    bool					fire_archive_event;
+    bool					check_change_event;
+    bool					check_archive_event;
+    bool					fire_dr_event;
 
 	vector<AttrProperty>	class_properties;
 	vector<AttrProperty>	user_default_properties;
@@ -568,19 +582,6 @@ private:
 #else
 	AttrExt					*ext;
 #endif
-
-//
-// Ported from the extension class
-//
-
-    Tango::DispLevel	disp_level;			// Display  level
-    long				poll_period;		// Polling period
-
-    bool				fire_change_event;
-    bool				fire_archive_event;
-    bool				check_change_event;
-    bool				check_archive_event;
-    bool				fire_dr_event;
 
     string				cl_name;
 };

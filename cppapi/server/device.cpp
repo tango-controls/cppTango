@@ -1334,6 +1334,18 @@ Tango::ConstDevString DeviceImpl::dev_status()
 			alarm_status = alarm_status + "failed during device startup sequence";
 		}
 
+//
+// Add message for forwarded attributes wrobgly configured
+//
+
+        nb_wrong_att = fwd_att_conf.size();
+        if (nb_wrong_att != 0)
+		{
+			alarm_status = alarm_status + "\nForwarded attribute";
+			build_att_list_in_status_mess(nb_wrong_att,DeviceImpl::FWD);
+			alarm_status = alarm_status + "not correctly configured (missing or incorrect root attribute)";
+		}
+
         returned_str = alarm_status.c_str();
     }
     else
@@ -5250,13 +5262,17 @@ void DeviceImpl::att_conf_loop()
 
     for (size_t i = 0;i < att_list.size();++i)
     {
-        if (att_list[i]->is_startup_exception() == true || att_list[i]->is_mem_exception() == true)
+        if (att_list[i]->is_startup_exception() == true ||
+            att_list[i]->is_mem_exception() == true ||
+            att_list[i]->is_fwd_wrongly_conf() == true)
         {
             force_alarm_state = true;
             if (att_list[i]->is_startup_exception() == true)
 				wrong_conf_att_list.push_back(att_list[i]->get_name());
-			else
+			else if (att_list[i]->is_mem_exception() == true)
 				mem_att_list.push_back(att_list[i]->get_name());
+			else
+				fwd_att_conf.push_back(att_list[i]->get_name());
         }
     }
 
@@ -5301,18 +5317,39 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 	alarm_status = alarm_status + " ";
 	for (size_t i = 0;i < nb_att;++i)
 	{
-		if (att_type == Tango::DeviceImpl::CONF)
+		switch (att_type)
+		{
+		case Tango::DeviceImpl::CONF:
 			alarm_status = alarm_status + att_wrong_db_conf[i];
-		else
+			break;
+
+		case Tango::DeviceImpl::MEM:
 			alarm_status = alarm_status + att_mem_failed[i];
+			break;
+
+		case Tango::DeviceImpl::FWD:
+			alarm_status = alarm_status + fwd_att_conf[i];
+			break;
+		}
 
 		if ((nb_att > 1) && (i <= nb_att - 2))
 			alarm_status = alarm_status + ", ";
 	}
-	if (nb_att == 1)
-		alarm_status = alarm_status + " has ";
+
+	if (att_type == Tango::DeviceImpl::FWD)
+	{
+		if (nb_att == 1)
+			alarm_status = alarm_status + " is ";
+		else
+			alarm_status = alarm_status + " are ";
+	}
 	else
-		alarm_status = alarm_status + " have ";
+	{
+		if (nb_att == 1)
+			alarm_status = alarm_status + " has ";
+		else
+			alarm_status = alarm_status + " have ";
+	}
 }
 
 //----------------------------------------------------------------------------------------------------------------------

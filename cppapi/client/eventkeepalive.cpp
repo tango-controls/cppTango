@@ -186,7 +186,6 @@ cout << "Entering KeepAliveThread::reconnect_to_zmq_channel()" << endl;
                     subscriber_info.push_back(epos->second.event_name);
                     subscriber_in << subscriber_info;
 
-cout << "Calling ZmqEventSubscriptionChange from reconnect_to__zmq_channel" << endl;
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
 
 					string adm_name = ipos->second.full_adm_name;
@@ -407,7 +406,6 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 #endif
 
 	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_event()" << endl;
-cout << "Entering KeepAliveThread::reconnect_to_zmq_event()" << endl;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
@@ -456,7 +454,6 @@ cout << "Entering KeepAliveThread::reconnect_to_zmq_event()" << endl;
 						event_consumer->connect_event_system(d_name,epos->second.attr_name,epos->second.event_name,vs,ipos,ecbs,dd);
 
 						cout3 << "Reconnected to ZMQ event" << endl;
-cout << "Reconnected to ZMQ event" << endl;
 					}
 					catch(...)
 					{
@@ -744,7 +741,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 
                                         try
                                         {
-cout << "Calling ZmqEventSubscriptionChaneg from KeepAliveThread::run_undetached" << endl;
                                             ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
                                         }
                                         catch(...) {}
@@ -1047,7 +1043,6 @@ cout << "Calling ZmqEventSubscriptionChaneg from KeepAliveThread::run_undetached
 
 										try
 										{
-cout << "Calling ZmqEventSubscriptionChaneg from KeepAliveThread::run_undetached 2!!!" << endl;
 										    if (ipos->second.channel_type == ZMQ)
                                                 ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
 										    else

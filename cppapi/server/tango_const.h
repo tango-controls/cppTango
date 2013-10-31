@@ -68,6 +68,7 @@ const char* const ResNotDefined            = "0";
 const char* const MessBoxTitle             = "Tango Device Server";
 const char* const StatusNotSet             = "Not initialised";
 const char* const TangoHostNotSet          = "Undef";
+const char* const RootAttNotDef			   = "Not defined";
 
 const bool  DefaultWritAttrProp            = false;
 const char* const AllAttr                  = "All attributes";
@@ -321,6 +322,8 @@ const char* const API_DServerClassNotInitialised   = "API_DServerClassNotInitial
 const char* const API_EventPropertiesNotSet        = "API_EventPropertiesNotSet";
 const char* const API_EventQueues                  = "API_EventQueues";
 const char* const API_EventSupplierNotConstructed  = "API_EventSupplierNotConstructed";
+const char* const API_FwdAttrNotConfigured		   = "API_FwdAttrNotConfigured";
+const char* const API_FwdAttrInconsistency		   = "API_FwdAttrInconsistancy";
 const char* const API_IncoherentDbData             = "API_IncoherentDbData";
 const char* const API_IncoherentDevData            = "API_IncoherentDevData";
 const char* const API_IncoherentValues             = "API_IncoherentValues";
@@ -844,7 +847,8 @@ enum CmdArgType {
 	DEVVAR_LONG64ARRAY,
 	DEVVAR_ULONG64ARRAY,
 	DEV_INT,
-	DEV_ENCODED
+	DEV_ENCODED,
+	DATA_TYPE_UNKNOWN
 };
 
 enum MessBoxType {
@@ -960,7 +964,8 @@ const char * const CmdArgTypeName[] = {
 	"DevVarLong64Array",
 	"DevVarULong64Array",
 	"DevInt",
-	"DevEncoded"
+	"DevEncoded",
+	"Unknown"
 };
 
 //

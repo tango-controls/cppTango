@@ -35,6 +35,7 @@
 
 #include <tango.h>
 #include <attrdesc.h>
+#include <fwdattrdesc.h>
 #include <encoded_attribute.h>
 #include <functional>
 #include <time.h>
@@ -195,9 +196,9 @@ public:
  */
 //@{
 /**
- * The attribute desctructor.
+ * The attribute destructor.
  */
-	virtual ~Attribute() {try{delete ext;}catch(omni_thread_fatal &){}}
+	virtual ~Attribute();
 //@}
 
 /**@name Check attribute methods
@@ -2142,6 +2143,8 @@ public:
 	void throw_startup_exception(const char*);
 
 	bool is_mem_exception() {return att_mem_exception;}
+	virtual bool is_fwd_wrongly_conf() {return false;}
+	virtual bool is_fwd_att() {return false;}
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);

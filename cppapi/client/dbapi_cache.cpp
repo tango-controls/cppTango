@@ -454,9 +454,9 @@ void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,boo
 	::sprintf(n_prop_str,"%d",found_prop);
 	ret_obj_prop[1] = CORBA::string_dup(n_prop_str);
 
-	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << endl;
-	for (unsigned int ll=0;ll< ret_obj_prop.length();ll++)
-		cout4 << "    DbCache --> Returned string = " << ret_obj_prop[ll] << endl;
+//	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned string = " << ret_obj_prop[ll] << endl;
 }
 
 //-----------------------------------------------------------------------------
@@ -666,9 +666,9 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 										   (const char *)"DbServerCache::get_dev_property");
 	}
 
-	cout4 << "DbCache --> Returned data for a get_class_att_property for class " << (*in_param)[0] << endl;
-	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
-		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
+//	cout4 << "DbCache --> Returned data for a get_class_att_property for class " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
 
 	return &ret_obj_att_prop;
 }
@@ -763,9 +763,9 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 		}
 	}
 
-	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << endl;
-	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
-		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
+//	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
 
 	return &ret_obj_att_prop;
 }

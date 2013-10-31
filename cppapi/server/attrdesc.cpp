@@ -62,9 +62,9 @@ namespace Tango
 Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
            const char *assoc)
 :name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),
-mem(false),mem_init(true),ext(new AttrExt),poll_period(0),fire_change_event(false),
+mem(false),mem_init(true),poll_period(0),fire_change_event(false),
 fire_archive_event(false),check_change_event(false),check_archive_event(false),
-fire_dr_event(false),cl_name("Attr")
+fire_dr_event(false),ext(new AttrExt),cl_name("Attr")
 {
 	format = Tango::SCALAR;
 
@@ -111,7 +111,7 @@ fire_dr_event(false),cl_name("Attr")
 Attr::Attr(const char *att_name,long att_type,DispLevel level,
 	   AttrWriteType att_writable, const char *assoc)
 :name(att_name),writable(att_writable),type(att_type),assoc_name(assoc),mem(false),
-ext(new AttrExt),poll_period(0)
+poll_period(0),ext(new AttrExt)
 {
 	format = Tango::SCALAR;
 
@@ -153,6 +153,16 @@ ext(new AttrExt),poll_period(0)
 	if (writable == READ_WRITE)
 		assoc_name = name;
 
+}
+
+Attr::Attr(const char *att_name,Tango::DispLevel disp)
+:name(att_name),mem(false),disp_level(disp),poll_period(0),ext(new AttrExt)
+{
+	fire_change_event = false;
+	check_change_event = true;
+	fire_archive_event = false;
+	check_archive_event = true;
+	fire_dr_event = false;
 }
 
 Attr::~Attr()

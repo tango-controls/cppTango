@@ -40,6 +40,7 @@
 #include <pollext.h>
 #include <subdev_diag.h>
 #include <new>
+#include <rootattreg.h>
 
 #ifndef _TG_WINDOWS_
 	#include <unistd.h>
@@ -883,6 +884,8 @@ public:
     bool is_wattr_nan_allowed() {return wattr_nan_allowed;}
 	void set_wattr_nan_allowed(bool val) {wattr_nan_allowed=val;}
 
+	RootAttRegistry &get_root_att_reg() {return root_att_reg;}
+
 private:
 	TANGO_IMP static Util	*_instance;
 	static bool				_constructed;
@@ -1017,6 +1020,7 @@ private:
 
 	vector<string>              restarting_devices;     // Restarting devices name
 	bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
+	RootAttRegistry				root_att_reg;			// Root attribute(s) registry
 };
 
 //***************************************************************************

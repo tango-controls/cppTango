@@ -38,6 +38,7 @@
 #include <classattribute.h>
 #include <attrdesc.h>
 #include <attribute.h>
+#include <fwdattribute.h>
 #include <w_attribute.h>
 #include <multiattribute.h>
 #include <pollobj.h>
@@ -3370,6 +3371,7 @@ protected:
     bool                force_alarm_state;
     vector<string>      att_wrong_db_conf;
 	vector<string>		att_mem_failed;
+	vector<string>		fwd_att_conf;
 
 private:
 //
@@ -3379,7 +3381,8 @@ private:
 	typedef enum _AttErrorType
 	{
 		CONF = 0,
-		MEM
+		MEM,
+		FWD
 	}AttErrorType;
 
 //
