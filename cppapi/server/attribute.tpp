@@ -54,86 +54,99 @@ namespace Tango
 template <typename T>
 void Attribute::check_hard_coded_properties(const T &user_conf)
 {
-	if (is_fwd_att() == false)
-	{
 //
 // Check attribute name
 //
 
-		string user_att_name(user_conf.name.in());
-		transform(user_att_name.begin(),user_att_name.end(),user_att_name.begin(),::tolower);
-		if (user_att_name != get_name_lower())
-		{
-			throw_hard_coded_prop("name");
-		}
+	string user_att_name(user_conf.name.in());
+	transform(user_att_name.begin(),user_att_name.end(),user_att_name.begin(),::tolower);
+	if (user_att_name != get_name_lower())
+	{
+		throw_hard_coded_prop("name");
+	}
 
 //
 // Check data type
 //
 
-		if (user_conf.data_type != data_type)
-		{
-			throw_hard_coded_prop("data_type");
-		}
+	if (user_conf.data_type != data_type)
+	{
+		throw_hard_coded_prop("data_type");
+	}
 
 //
 // Check data format
 //
 
-		if (user_conf.data_format != data_format)
-		{
-			throw_hard_coded_prop("data_format");
-		}
+	if (user_conf.data_format != data_format)
+	{
+		throw_hard_coded_prop("data_format");
+	}
 
 //
 // Check writable
 //
 
-		if (user_conf.writable != writable)
-		{
-			throw_hard_coded_prop("writable");
-		}
+	if (user_conf.writable != writable)
+	{
+		throw_hard_coded_prop("writable");
+	}
 
 //
 // Check max_dim_x
 //
 
-		if (user_conf.max_dim_x != max_x)
-		{
-			throw_hard_coded_prop("max_dim_x");
-		}
+	if (user_conf.max_dim_x != max_x)
+	{
+		throw_hard_coded_prop("max_dim_x");
+	}
 
 //
 // Check max_dim_y
 //
 
-		if (user_conf.max_dim_y != max_y)
-		{
-			throw_hard_coded_prop("max_dim_y");
-		}
+	if (user_conf.max_dim_y != max_y)
+	{
+		throw_hard_coded_prop("max_dim_y");
+	}
 
 //
 // Check writable_attr_name
 //
 
-		string local_w_name(writable_attr_name);
-		transform(local_w_name.begin(),local_w_name.end(),local_w_name.begin(),::tolower);
-		string user_w_name(user_conf.writable_attr_name.in());
-		transform(user_w_name.begin(),user_w_name.end(),user_w_name.begin(),::tolower);
-		if (user_w_name != local_w_name)
-		{
-			throw_hard_coded_prop("writable_attr_name");
-		}
-	}
-	else
+	string local_w_name(writable_attr_name);
+	transform(local_w_name.begin(),local_w_name.end(),local_w_name.begin(),::tolower);
+	string user_w_name(user_conf.writable_attr_name.in());
+	transform(user_w_name.begin(),user_w_name.end(),user_w_name.begin(),::tolower);
+	if (user_w_name != local_w_name)
 	{
-		data_type = user_conf.data_type;
-		data_format = user_conf.data_format;
-		writable = user_conf.writable;
-		max_x = user_conf.max_dim_x;
-		max_y = user_conf.max_dim_y;
-		writable_attr_name = user_conf.writable_attr_name;
+		throw_hard_coded_prop("writable_attr_name");
 	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::set_hard_coded_properties()
+//
+// description :
+//		Set some "hard coded" attribute properties. This method is used only in case of forwarded attribute
+//
+// args :
+// 		in :
+//			- user_conf : The attribute configuration sent by the user
+//
+//------------------------------------------------------------------------------------------------------------------
+
+template <typename T>
+void Attribute::set_hard_coded_properties(const T &user_conf)
+{
+	data_type = user_conf.data_type;
+	data_format = user_conf.data_format;
+	writable = user_conf.writable;
+	max_x = user_conf.max_dim_x;
+	max_y = user_conf.max_dim_y;
+	writable_attr_name = user_conf.writable_attr_name;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

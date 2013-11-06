@@ -114,7 +114,7 @@ public:
 
 	vector<Tango::Attr *> &get_attr_list() {return attr_list;}
 	Attr &get_attr(string &attr_name);
-	void remove_attr(string &,const string &);
+	void remove_attr(const string &,const string &);
 
 protected:
 	vector<Tango::Attr *>			attr_list;

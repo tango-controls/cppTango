@@ -54,6 +54,7 @@ public:
 	void add_root_att(string &,string &,string &,string &,FwdAttr *);
 	void remove_root_att(string &,string &);
 	DeviceProxy *get_root_att_dp(string &);
+	string get_local_att_name(string &_s) {return cbp.get_local_att_name(_s);}
 
 	void clear_attrdesc(string &,string &);
 
@@ -72,6 +73,7 @@ private:
 		void clear_attrdesc(string &);
         bool is_root_att_in_map(string &);
         int count_root_dev(string &);
+		string get_local_att_name(string &);
 	private:
 		omni_mutex							the_lock;
 		map<string,struct NameFwdAttr>		map_attrdesc;		// Key is root attribute device_name/att_name

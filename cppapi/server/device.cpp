@@ -194,7 +194,7 @@ void DeviceImpl::real_ctor()
 
 	try
 	{
-		dev_attr = new MultiAttribute(device_name,device_class);
+		dev_attr = new MultiAttribute(device_name,device_class,this);
 	}
 	catch (Tango::DevFailed)
 	{
@@ -1319,7 +1319,7 @@ Tango::ConstDevString DeviceImpl::dev_status()
 		{
 			alarm_status = alarm_status + "\nAttribute";
 			build_att_list_in_status_mess(nb_wrong_att,DeviceImpl::CONF);
-			alarm_status = alarm_status + "wrong configuration in database";
+			alarm_status = alarm_status + "wrong configuration (wrong root attribute)";
 		}
 
 //
@@ -1335,15 +1335,13 @@ Tango::ConstDevString DeviceImpl::dev_status()
 		}
 
 //
-// Add message for forwarded attributes wrobgly configured
+// Add message for forwarded attributes wrongly configured
 //
 
-        nb_wrong_att = fwd_att_conf.size();
+        nb_wrong_att = fwd_att_wrong_conf.size();
         if (nb_wrong_att != 0)
 		{
-			alarm_status = alarm_status + "\nForwarded attribute";
 			build_att_list_in_status_mess(nb_wrong_att,DeviceImpl::FWD);
-			alarm_status = alarm_status + "not correctly configured (missing or incorrect root attribute)";
 		}
 
         returned_str = alarm_status.c_str();
@@ -3134,6 +3132,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 	bool need_free = false;
 	long i;
+
 	for (i = 0;i < old_attr_nb;i++)
 	{
 		if ((attr_list[i]->get_name() == attr_name) && (attr_list[i]->get_cl_name() == new_attr->get_cl_name()))
@@ -3142,6 +3141,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 			break;
 		}
 	}
+
 	if (i == old_attr_nb)
 	{
 		attr_list.push_back(new_attr);
@@ -3181,7 +3181,10 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 // Add the attribute to the MultiAttribute object
 //
 
-	dev_attr->add_attribute(device_name,device_class,i);
+	if (new_attr->is_fwd() == true)
+		dev_attr->add_fwd_attribute(device_name,device_class,i);
+	else
+		dev_attr->add_attribute(device_name,device_class,i);
 
 //
 // Free memory if needed
@@ -5263,18 +5266,18 @@ void DeviceImpl::att_conf_loop()
     for (size_t i = 0;i < att_list.size();++i)
     {
         if (att_list[i]->is_startup_exception() == true ||
-            att_list[i]->is_mem_exception() == true ||
-            att_list[i]->is_fwd_wrongly_conf() == true)
+            att_list[i]->is_mem_exception() == true)
         {
             force_alarm_state = true;
             if (att_list[i]->is_startup_exception() == true)
 				wrong_conf_att_list.push_back(att_list[i]->get_name());
-			else if (att_list[i]->is_mem_exception() == true)
-				mem_att_list.push_back(att_list[i]->get_name());
 			else
-				fwd_att_conf.push_back(att_list[i]->get_name());
+				mem_att_list.push_back(att_list[i]->get_name());
         }
     }
+
+	if (force_alarm_state == false && fwd_att_wrong_conf.empty() == false)
+		force_alarm_state = true;
 
     run_att_conf_loop = false;
 }
@@ -5300,8 +5303,10 @@ void DeviceImpl::check_att_conf()
 //		DeviceImpl::build_att_list_in_status_mess
 //
 // description :
-//		Build device status message in case of device with some att with wrong conf. in db or if some memorized
-//		attribute failed during the startup phase
+//		Build device status message in case of device with some
+//			- att with wrong conf. in db
+//			- some memorized attribute failed during the startup phase
+//			- some wrongly configured forwarded attributes
 //
 // argument:
 //		in :
@@ -5312,39 +5317,87 @@ void DeviceImpl::check_att_conf()
 
 void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_type)
 {
-	if (nb_att > 1)
-		alarm_status = alarm_status + "s";
-	alarm_status = alarm_status + " ";
-	for (size_t i = 0;i < nb_att;++i)
-	{
-		switch (att_type)
-		{
-		case Tango::DeviceImpl::CONF:
-			alarm_status = alarm_status + att_wrong_db_conf[i];
-			break;
 
-		case Tango::DeviceImpl::MEM:
-			alarm_status = alarm_status + att_mem_failed[i];
-			break;
-
-		case Tango::DeviceImpl::FWD:
-			alarm_status = alarm_status + fwd_att_conf[i];
-			break;
-		}
-
-		if ((nb_att > 1) && (i <= nb_att - 2))
-			alarm_status = alarm_status + ", ";
-	}
+//
+// First, the wrongly configured forwarded attributes case
+//
 
 	if (att_type == Tango::DeviceImpl::FWD)
 	{
-		if (nb_att == 1)
-			alarm_status = alarm_status + " is ";
-		else
-			alarm_status = alarm_status + " are ";
+		for (size_t i = 0;i < nb_att;++i)
+		{
+			alarm_status = alarm_status + "\nForwarded attribute " + fwd_att_wrong_conf[i].att_name;
+			if (fwd_att_wrong_conf[i].fae != FWD_ROOT_DEV_NOT_STARTED)
+				alarm_status = alarm_status + " is not correctly configured! ";
+			else
+				alarm_status = alarm_status + " not reachable! ";
+
+			alarm_status = alarm_status + "Root attribute name = ";
+			alarm_status = alarm_status + fwd_att_wrong_conf[i].full_root_att_name;
+			alarm_status = alarm_status + "\nError: ";
+			switch(fwd_att_wrong_conf[i].fae)
+			{
+			case FWD_WRONG_ATTR:
+				alarm_status = alarm_status + "Attribute not found in root device";
+				break;
+
+			case FWD_WRONG_DEV:
+				alarm_status = alarm_status + "Wrong root device";
+				break;
+
+			case FWD_MISSING_ROOT:
+				alarm_status = alarm_status + "Missing root attribute definition";
+				break;
+
+			case FWD_ROOT_DEV_LOCAL_DEV:
+				alarm_status = alarm_status + "Root device is local device";
+				break;
+
+			case FWD_WRONG_SYNTAX:
+				alarm_status = alarm_status + "Wrong syntax in root attribute definition";
+				break;
+
+			case FWD_ROOT_DEV_NOT_STARTED:
+				alarm_status = alarm_status + "Root device not started yet";
+				break;
+
+			case FWD_DOUBLE_USED:
+			{
+				alarm_status = alarm_status + "Root attribute already used in this device server process for attribute ";
+				Util *tg = Util::instance();
+				string root_name(fwd_att_wrong_conf[i].full_root_att_name);
+				transform(root_name.begin(),root_name.end(),root_name.begin(),::tolower);
+				string local_att_name = tg->get_root_att_reg().get_local_att_name(root_name);
+				alarm_status = alarm_status + local_att_name;
+				break;
+			}
+
+			default:
+				break;
+			}
+		}
 	}
 	else
 	{
+
+//
+// For wrong conf. in db or memorized attributes which failed at startup
+//
+
+		if (nb_att > 1)
+			alarm_status = alarm_status + "s";
+		alarm_status = alarm_status + " ";
+		for (size_t i = 0;i < nb_att;++i)
+		{
+			if (att_type == Tango::DeviceImpl::CONF)
+				alarm_status = alarm_status + att_wrong_db_conf[i];
+			else
+				alarm_status = alarm_status + att_mem_failed[i];
+
+			if ((nb_att > 1) && (i <= nb_att - 2))
+				alarm_status = alarm_status + ", ";
+		}
+
 		if (nb_att == 1)
 			alarm_status = alarm_status + " has ";
 		else
@@ -5408,6 +5461,36 @@ bool DeviceImpl::is_there_subscriber(const string &att_name,EventType event_type
 	}
 
 	return ret;
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::rem_wrong_fwd_att
+//
+// description :
+//		Remove one forwarded attribute from the list of errored forwarded attribute
+//
+// argument:
+//		in :
+//			- root_att_name : The root attribute name to be removed
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::rem_wrong_fwd_att(const string &root_att_name)
+{
+	vector<FwdWrongConf>::iterator ite;
+	for (ite = fwd_att_wrong_conf.begin();ite != fwd_att_wrong_conf.end();++ite)
+	{
+cout << "rem_wrong_fwd_att : loop = " << ite->full_root_att_name << ", in = " << root_att_name << endl;
+		string local_name(ite->full_root_att_name);
+		transform(local_name.begin(),local_name.end(),local_name.begin(),::tolower);
+		if (local_name == root_att_name)
+		{
+			fwd_att_wrong_conf.erase(ite);
+			break;
+		}
+	}
 }
 
 } // End of Tango namespace

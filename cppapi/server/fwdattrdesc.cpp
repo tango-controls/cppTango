@@ -59,11 +59,12 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 
-FwdAttr::FwdAttr(const char *att_name,const string &root_attribute):
-Attr(att_name),full_root_att(root_attribute),fwd_wrongly_conf(false),ext(Tango_NullPtr)
+FwdAttr::FwdAttr(const string &att_name,const string &root_attribute):
+Attr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_NullPtr)
 {
 	writable = Tango::READ;			// Difficult to switch it to WT_UNKNOWN
-	type = DATA_TYPE_UNKNOWN;
+//	type = DATA_TYPE_UNKNOWN;
+	type = DEV_DOUBLE;
 	format = Tango::FMT_UNKNOWN;
 	disp_level = OPERATOR;
 	assoc_name = AssocWritNotSpec;
@@ -76,6 +77,8 @@ Attr(att_name),full_root_att(root_attribute),fwd_wrongly_conf(false),ext(Tango_N
     check_change_event = false;
     check_archive_event = false;
     fire_dr_event = false;
+
+    set_cl_name("FwdAttr");
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -89,13 +92,14 @@ Attr(att_name),full_root_att(root_attribute),fwd_wrongly_conf(false),ext(Tango_N
 // argument :
 //		in :
 //			- prop_list : The attribute property list
+//			- dev_name : The device name
 //
 // return:
 //		True if we have the required info to build a forwarded attribute
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list)
+bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev_name)
 {
 	bool ret = true;
 
@@ -121,47 +125,52 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list)
 		{
 			root_att_db = pos->get_value();
 			root_att_db_defined = true;
-cout << "Root att defined in Db: " << root_att_db << endl;
 		}
 	}
 	catch (...) {}
 
-	string r_att;
 	if (root_att_db_defined == true)
-		r_att = root_att_db;
-	else
-{
-		r_att = full_root_att;
-cout << "Root att defined in code: " << r_att << endl;
-}
+		full_root_att = root_att_db;
 
 //
 // Check root att syntax
 //
 
-	if (r_att != RootAttNotDef)
+	if (full_root_att != RootAttNotDef)
 	{
-		int nb_sep = count(r_att.begin(),r_att.end(),'/');
+		int nb_sep = count(full_root_att.begin(),full_root_att.end(),'/');
 
 		if (nb_sep == 3)
 		{
-			string::size_type pos = r_att.find_last_of('/');
-			fwd_root_att = r_att.substr(pos + 1);
-			fwd_dev_name = r_att.substr(0,pos);
+			string::size_type pos = full_root_att.find_last_of('/');
+			fwd_root_att = full_root_att.substr(pos + 1);
+			fwd_dev_name = full_root_att.substr(0,pos);
 
 			transform(fwd_dev_name.begin(),fwd_dev_name.end(),fwd_dev_name.begin(),::tolower);
 			transform(fwd_root_att.begin(),fwd_root_att.end(),fwd_root_att.begin(),::tolower);
-cout << fwd_root_att << ", " << fwd_dev_name << endl;
 		}
 		else
 		{
 			fwd_wrongly_conf = true;
+			err_kind = FWD_WRONG_SYNTAX;
 			ret = false;
 		}
 	}
 	else
 	{
 		fwd_wrongly_conf = true;
+		err_kind = FWD_MISSING_ROOT;
+		ret = false;
+	}
+
+//
+// Check that the root device is not the local device
+//
+
+	if (fwd_dev_name == dev_name)
+	{
+		fwd_wrongly_conf = true;
+		err_kind = FWD_ROOT_DEV_LOCAL_DEV;
 		ret = false;
 	}
 
@@ -192,6 +201,7 @@ void FwdAttr::get_root_conf(string &dev_name)
 	catch (Tango::DevFailed &)
 	{
 		fwd_wrongly_conf = true;
+		throw;
 	}
 }
 
@@ -215,14 +225,6 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
 //
-
-	if (attr.is_fwd_wrongly_conf() == true)
-	{
-		stringstream ss;
-		ss << attr.get_name() << " is a forwarded attribute but it's root attribute is not defined!";
-
-		Tango::Except::throw_exception(API_FwdAttrNotConfigured,ss.str(),"FwdAttr::read");
-	}
 
 	if (attr.get_data_type() == DATA_TYPE_UNKNOWN)
 	{
@@ -272,17 +274,6 @@ attr.set_value(&db);
 void FwdAttr::write(DeviceImpl *dev,WAttribute &attr)
 {
 
-//
-// Throw exception in case of fwd att wrongly configured
-//
-
-	if (attr.is_fwd_wrongly_conf() == true)
-	{
-		stringstream ss;
-		ss << attr.get_name() << " is a forwarded attribute but it's root attribute is not defined!";
-
-		Tango::Except::throw_exception(API_FwdAttrNotConfigured,ss.str(),"FwdAttr::write");
-	}
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -337,7 +328,26 @@ cout << "In FwdAttr::init_conf()" << endl;
 	udap.set_delta_t(root_conf->alarms.delta_t.c_str());
 	udap.set_delta_val(root_conf->alarms.delta_val.c_str());
 
-	this->set_default_properties(udap);
+	this->Attr::set_default_properties(udap);
+}
+
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		FwdAttr::set_default_properties
+//
+// description :
+//		This method set the default user properties in the Attr object. At this level, each attribute property is
+//		represented by one instance of the Attrproperty class.
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void FwdAttr::set_default_properties(UserDefaultFwdAttrProp &prop_list)
+{
+	if ((prop_list.label.empty() == false) &&
+		(TG_strcasecmp(prop_list.label.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.label.c_str(),NotANumber) != 0))
+		user_default_properties.push_back(AttrProperty("label",prop_list.label));
 }
 
 } // End of Tango namespace

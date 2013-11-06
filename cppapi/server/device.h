@@ -54,6 +54,7 @@ class NoSyncModelTangoMonitor;
 class EventSupplier;
 class EventSubscriptionChangeCmd;
 class Util;
+class FwdWrongConf;
 
 /** @defgroup Server Server classes */
 
@@ -3170,6 +3171,12 @@ protected:
 public:
 /// @privatesection
 
+	typedef struct _FwdWrongConf
+	{
+		string 			att_name;
+		string 			full_root_att_name;
+		FwdAttError		fae;
+	}FwdWrongConf;
 
 	virtual char *name();
 	virtual char *adm_name();
@@ -3265,6 +3272,9 @@ public:
     bool is_alarm_state_forced() {return force_alarm_state;}
     vector<string> &get_att_mem_failed() {return att_mem_failed;}
 
+    vector<FwdWrongConf> &get_fwd_att_wrong_conf() {return fwd_att_wrong_conf;}
+    void rem_wrong_fwd_att(const string &);
+
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
@@ -3317,61 +3327,63 @@ protected:
 	DevVarStateArray			dummy_state_att_value;
 	DevVarEncodedArray			dummy_encoded_att_value;
 
+
+
 //
 // Ported from the extension class
 //
 
 #ifdef TANGO_HAS_LOG4TANGO
-        log4tango::Logger* 	logger;
-        log4tango::Level::Value saved_log_level;
-        size_t              rft;
+	log4tango::Logger* 			logger;
+	log4tango::Level::Value 	saved_log_level;
+	size_t              		rft;
 #endif
 
-    long				poll_old_factor;
-    long				idl_version;
+    long						poll_old_factor;
+    long						idl_version;
 
-    bool				exported;
-    bool				polled;
-    long				poll_ring_depth;
-    vector<string>		polled_cmd;
-    vector<string>		polled_attr;
-    vector<string>		non_auto_polled_cmd;
-    vector<string>		non_auto_polled_attr;
-    vector<PollObj *>	poll_obj_list;
+    bool						exported;
+    bool						polled;
+    long						poll_ring_depth;
+    vector<string>				polled_cmd;
+    vector<string>				polled_attr;
+    vector<string>				non_auto_polled_cmd;
+    vector<string>				non_auto_polled_attr;
+    vector<PollObj *>			poll_obj_list;
 
-    TangoMonitor		only_one;		        // Device monitor
-    Tango::DevState		device_prev_state;	    // Device previous state
-    string				device_name_lower;
+    TangoMonitor				only_one;		        // Device monitor
+    Tango::DevState				device_prev_state;	    // Device previous state
+    string						device_name_lower;
 
-    vector<string>		cmd_poll_ring_depth;
-    vector<string>		attr_poll_ring_depth;
+    vector<string>				cmd_poll_ring_depth;
+    vector<string>				attr_poll_ring_depth;
 
-    bool				store_in_bb;
-    TangoMonitor		poll_mon;		        // Polling list monitor
-    TangoMonitor		att_conf_mon;		    // Attribute config monitor
-    bool				state_from_read;
-    vector<long>		alrmd_not_read;
+    bool						store_in_bb;
+    TangoMonitor				poll_mon;		        // Polling list monitor
+    TangoMonitor				att_conf_mon;		    // Attribute config monitor
+    bool						state_from_read;
+    vector<long>				alrmd_not_read;
 
-    bool				py_device;
-    string				alias_name_lower;	    // Alias name (if any)
+    bool						py_device;
+    string						alias_name_lower;	    // Alias name (if any)
 
-    bool				device_locked;
-    client_addr			*locker_client;
-    client_addr			*old_locker_client;
-    DevLong				lock_validity;
-    time_t				locking_date;
-    string				lock_stat;
-    DevLong				lock_ctr;
+    bool						device_locked;
+    client_addr					*locker_client;
+    client_addr					*old_locker_client;
+    DevLong						lock_validity;
+    time_t						locking_date;
+    string						lock_stat;
+    DevLong						lock_ctr;
 
-    long				min_poll_period;
-    vector<string>		cmd_min_poll_period;
-    vector<string>		attr_min_poll_period;
+    long						min_poll_period;
+    vector<string>				cmd_min_poll_period;
+    vector<string>				attr_min_poll_period;
 
-    bool                run_att_conf_loop;
-    bool                force_alarm_state;
-    vector<string>      att_wrong_db_conf;
-	vector<string>		att_mem_failed;
-	vector<string>		fwd_att_conf;
+    bool                		run_att_conf_loop;
+    bool                		force_alarm_state;
+    vector<string>      		att_wrong_db_conf;
+	vector<string>				att_mem_failed;
+	vector<FwdWrongConf>		fwd_att_wrong_conf;
 
 private:
 //

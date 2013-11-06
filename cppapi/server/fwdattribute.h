@@ -44,14 +44,11 @@ public:
 	FwdAttribute(vector<AttrProperty> &,Attr &,string &,long);
 	~FwdAttribute();
 
-	virtual bool is_fwd_wrongly_conf() {return fwd_wrongly_conf;}
 	virtual bool is_fwd_att() {return true;}
 	string &get_fwd_dev_name() {return fwd_dev_name;}
 	string &get_fwd_att_name() {return fwd_att_name;}
 
 protected:
-	bool				fwd_wrongly_conf;				// Flag set to true if the att is forwarded and wrongly conf.
-
 	string				fwd_dev_name;					// Root dev name for fwd attribute
 	string				fwd_att_name;					// Root att name for fwd attribute
 };

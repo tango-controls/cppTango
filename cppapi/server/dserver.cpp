@@ -1126,7 +1126,7 @@ void ServRestartThread::run(void *ptr)
 	MultiAttribute *tmp_ptr;
 	try
 	{
-		tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class());
+		tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class(),dev);
 	}
 	catch (Tango::DevFailed)
 	{

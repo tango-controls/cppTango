@@ -157,7 +157,6 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 	EvCbIte epos;
 
 	cout3 << "Entering KeepAliveThread::reconnect_to_zmq_channel()" << endl;
-cout << "Entering KeepAliveThread::reconnect_to_zmq_channel()" << endl;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{

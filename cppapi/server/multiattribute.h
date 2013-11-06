@@ -95,11 +95,12 @@ public:
  *
  * @param dev_name The device name
  * @param dev_class Reference to the device DeviceClass object
+ * @param dev The device pointer
  * @exception DevFailed If the command sent to the database failed.
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	MultiAttribute(string &dev_name,DeviceClass *dev_class);
+	MultiAttribute(string &dev_name,DeviceClass *dev_class,DeviceImpl *dev);
 //@}
 
 /**@name Destructor
@@ -275,6 +276,7 @@ public:
 
 	void add_write_value(Attribute &);
 	void add_attribute(string &,DeviceClass *,long);
+	void add_fwd_attribute(string &,DeviceClass *,long);
 	void remove_attribute(string &,bool);
 	vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed(bool);

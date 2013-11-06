@@ -1,14 +1,12 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+==================================================================================================================
 //
 // file :               MultiAttribute.cpp
 //
-// description :        C++ source code for the MultiAttribute class. This class
-//			is used to manage attribute.
-//			A Tango Device object instance has one
-//			MultiAttribute object which is an aggregate of
-//			Attribute or WAttribute objects
+// description :        C++ source code for the MultiAttribute class. This class is used to manage attribute.
+//						A Tango Device object instance has one MultiAttribute object which is an aggregate of
+//						Attribute or WAttribute objects
 //
 // project :            TANGO
 //
@@ -21,22 +19,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -75,20 +71,23 @@ static OptAttrProp Tango_OptAttrProp[] = {
 };
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::MultiAttribute
+// method :
+//		MultiAttribute::MultiAttribute
 //
-// description : 	constructor for the MultiAttribute class from the
-//			device device name and a pointer to the DeviceClass
-//			object
+// description :
+//		Constructor for the MultiAttribute class from the device device name and a pointer to the DeviceClass object
 //
-// argument : in : 	- dev_name : The device name
+// argument :
+//		in :
+//			- dev_name : The device name
 //			- dev_class_ptr : Pointer to the DeviceClass object
+//			- dev : Device pointer
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
-MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
+MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,DeviceImpl *dev)
 :ext(Tango_NullPtr)
 {
 	long i;
@@ -103,10 +102,8 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 
 //
 // Get device attribute properties
-// No need to implement
-// a retry here (in case of db server restart) because the db reconnection
-// is forced by the get_property call executed during xxxClass construction
-// before we reach this code.
+// No need to implement a retry here (in case of db server restart) because the db reconnection
+// is forced by the get_property call executed during xxxClass construction before we reach this code.
 //
 
     cout4 << nb_attr << " attribute(s)" << endl;
@@ -122,9 +119,8 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 				db_list.push_back(DbDatum(tmp_attr_list[i]->get_name()));
 
 //
-// On some small and old computers, this request could take time if at the same time
-// some other processes also access the device attribute properties table.
-// This has been experimented at ESRF. Increase timeout to cover this case
+// On some small and old computers, this request could take time if at the same time some other processes also access
+// the device attribute properties table. This has been experimented at ESRF. Increase timeout to cover this case
 //
 
 
@@ -171,8 +167,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 			vector<AttrProperty> &def_user_prop = attr.get_user_default_properties();
 
 //
-// If the attribute has some properties defined at device level, build a vector
-// of these properties
+// If the attribute has some properties defined at device level, build a vector of these properties
 //
 
 			vector<AttrProperty> dev_prop;
@@ -207,6 +202,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 //
 
 			vector<AttrProperty> prop_list;
+			bool fwd_ok = true;
 			concat(dev_prop,class_prop,prop_list);
 
 			if (attr.is_fwd() == false)
@@ -216,12 +212,41 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 			}
 			else
 			{
-				bool fwd_ok = static_cast<FwdAttr &>(attr).validate_fwd_att(prop_list);
+				FwdAttr &fwdattr = static_cast<FwdAttr &>(attr);
+				fwd_ok = fwdattr.validate_fwd_att(prop_list,dev_name);
 				if (fwd_ok == true)
 				{
-					static_cast<FwdAttr &>(attr).get_root_conf(dev_name);
-					add_user_default(prop_list,def_user_prop);
-					add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
+					try
+					{
+						fwdattr.get_root_conf(dev_name);
+						add_user_default(prop_list,def_user_prop);
+						add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
+					}
+					catch (Tango::DevFailed &e)
+					{
+						fwd_ok = false;
+
+						vector<DeviceImpl::FwdWrongConf> &fwd_wrong_conf = dev->get_fwd_att_wrong_conf();
+						DeviceImpl::FwdWrongConf fwc;
+						fwc.att_name = attr.get_name();
+						fwc.full_root_att_name = fwdattr.get_full_root_att();
+						fwc.fae = fwdattr.get_err_kind();
+						fwd_wrong_conf.push_back(fwc);
+
+						if (fwc.fae == FWD_ROOT_DEV_NOT_STARTED)
+						{
+							dev_class_ptr->get_class_attr()->remove_attr(fwdattr.get_name(),fwdattr.get_cl_name());
+						}
+					}
+				}
+				else
+				{
+					vector<DeviceImpl::FwdWrongConf> &fwd_wrong_conf = dev->get_fwd_att_wrong_conf();
+					DeviceImpl::FwdWrongConf fwc;
+					fwc.att_name = attr.get_name();
+					fwc.full_root_att_name = static_cast<FwdAttr &>(attr).get_full_root_att();
+					fwc.fae = static_cast<FwdAttr &>(attr).get_err_kind();
+					fwd_wrong_conf.push_back(fwc);
 				}
 			}
 
@@ -229,25 +254,23 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 // Create an Attribute instance
 //
 
-			if ((attr.get_writable() == Tango::WRITE) ||
-			    (attr.get_writable() == Tango::READ_WRITE))
+			if (fwd_ok == true)
 			{
-/*				if (attr.is_fwd() == true)
-					attr_list.push_back(new FwdWAttribute(prop_list,attr,dev_name,i));
-				else*/
-					attr_list.push_back(new WAttribute(prop_list,attr,dev_name,i));
-			}
-			else
-			{
-				if (attr.is_fwd() == true)
-					attr_list.push_back(new FwdAttribute(prop_list,attr,dev_name,i));
+				if ((attr.get_writable() == Tango::WRITE) ||
+					(attr.get_writable() == Tango::READ_WRITE))
+				{
+/*					if (attr.is_fwd() == true)
+						attr_list.push_back(new FwdWAttribute(prop_list,attr,dev_name,i));
+					else*/
+						attr_list.push_back(new WAttribute(prop_list,attr,dev_name,i));
+				}
 				else
-					attr_list.push_back(new Attribute(prop_list,attr,dev_name,i));
-			}
-
-
-			if (attr_list[i]->is_fwd_wrongly_conf() == false)
-			{
+				{
+					if (attr.is_fwd() == true)
+						attr_list.push_back(new FwdAttribute(prop_list,attr,dev_name,i));
+					else
+						attr_list.push_back(new Attribute(prop_list,attr,dev_name,i));
+				}
 
 //
 // If it is writable, add it to the writable attribute list
@@ -261,8 +284,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 				}
 
 //
-// If one of the alarm properties is defined, add it to the alarmed attribute
-// list
+// If one of the alarm properties is defined, add it to the alarmed attribute list
 //
 
 				if (attr_list[i]->is_alarmed().any() == true)
@@ -277,10 +299,11 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 	}
 
 //
-// For each attribute, check if the writable_attr_name is set and in this
-// case, check if the associated attribute exists and is writable
+// For each attribute, check if the writable_attr_name is set and in this case, check if the associated attribute
+// exists and is writable
 //
 
+	nb_attr = attr_list.size();
 	for (i = 0;i < nb_attr;i++)
 	{
 		check_associated(i,dev_name);
@@ -289,15 +312,16 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr)
 	cout4 << "Leaving MultiAttribute class constructor" << endl;
 }
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::~MultiAttribute
+// method :
+//		MultiAttribute::~MultiAttribute
 //
-// description : 	destructor for the MultiAttribute class. It simply
-//			delete all the Attribute object stored in its
-//			attr_list data member
+// description :
+//		Destructor for the MultiAttribute class. It simply delete all the Attribute object stored in its
+//		attr_list data member
 //
-//--------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 MultiAttribute::~MultiAttribute()
 {
@@ -305,25 +329,28 @@ MultiAttribute::~MultiAttribute()
 		delete attr_list[i];
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::concat
+// method :
+//		MultiAttribute::concat
 //
-// description : 	Concatenate porperties defined at the class level and
-//			at the device level. Prperties defined at the device
-//			level have the highest level
+// description :
+//		Concatenate porperties defined at the class level and at the device level. Prperties defined at the device
+//		level have the highest level
 //
-// in :			dev_prop : The device properties
-//			class_prop : The class properties
+// arguments:
+// 		in :
+//			- dev_prop : The device properties
+//			- class_prop : The class properties
+// 		out :
+//			- result : The resulting vector
 //
-// out :		result : The resulting vector
-//
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 
 void MultiAttribute::concat(vector<AttrProperty> &dev_prop,
-			    vector<AttrProperty> &class_prop,
-			    vector<AttrProperty> &result)
+						    vector<AttrProperty> &class_prop,
+							vector<AttrProperty> &result)
 {
 
 //
@@ -354,28 +381,28 @@ void MultiAttribute::concat(vector<AttrProperty> &dev_prop,
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
 // method : 		MultiAttribute::add_default
 //
-// description : 	Add default value for optional property if they
-//			are not defined
+// description :
+//		Add default value for optional property if they are not defined
 //
-// in :			prop_list : The already defined property vector
-//			dev_name : The device name
-//			att_name : The attribute name
-//			att_data_type : The attribute data type
+// argument :
+// 		in :
+//			- prop_list : The already defined property vector
+//			- dev_name : The device name
+//			- att_name : The attribute name
+//			- att_data_type : The attribute data type
 //
 //--------------------------------------------------------------------------
 
-void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
-				 TANGO_UNUSED(string &dev_name),
+void MultiAttribute::add_default(vector<AttrProperty> &prop_list, TANGO_UNUSED(string &dev_name),
 				 string &att_name,long att_data_type)
 {
 
 //
-// Overwrite the label attribute property in order to be set to the
-// attribute name
+// Overwrite the label attribute property in order to be set to the attribute name
 //
 
 	Tango_OptAttrProp[0].default_value = att_name.c_str();
@@ -408,6 +435,7 @@ void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
 	case DEV_STATE:
 	case DEV_ENCODED:
 	case DEV_BOOLEAN:
+	case DATA_TYPE_UNKNOWN:
 		Tango_OptAttrProp[5].default_value = AlrmValueNotSpec;
 		break;
 
@@ -418,9 +446,8 @@ void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
 	long nb_opt_prop = sizeof(Tango_OptAttrProp)/sizeof(OptAttrProp);
 
 //
-// For all the optional attribute properties, search in the already built
-// vector of attributes if they are defined. If yes, continue. Otherwise,
-// add a new property with the default value
+// For all the optional attribute properties, search in the already built vector of attributes if they are defined.
+// If yes, continue. Otherwise, add a new property with the default value
 //
 
 	for (long i = 0;i < nb_opt_prop;i++)
@@ -436,20 +463,22 @@ void MultiAttribute::add_default(vector<AttrProperty> &prop_list,
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::add_user_default
+// method :
+//		MultiAttribute::add_user_default
 //
-// description : 	Add default value for optional property if they
-//			are not defined
+// description :
+//		Add default value for optional property if they are not defined
 //
-// in :			prop_list : The already defined property vector
-//			user_default : The user defined default property values
+// argument :
+// 		in :
+//			- prop_list : The already defined property vector
+//			- user_default : The user defined default property values
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::add_user_default(vector<AttrProperty> &prop_list,
-				      vector<AttrProperty> &user_default)
+void MultiAttribute::add_user_default(vector<AttrProperty> &prop_list,vector<AttrProperty> &user_default)
 {
 
 //
@@ -471,20 +500,21 @@ void MultiAttribute::add_user_default(vector<AttrProperty> &prop_list,
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::check_associated
+// method :
+//		MultiAttribute::check_associated
 //
-// description :	Check if the writable_attr_name property is set and
-//			in this case, check if the associated attribute exists
-//			and is writable. This is necessary only for attribute
-//			of the READ_WITH_WRITE or READ_WRITE types
+// description :
+//		Check if the writable_attr_name property is set and in this case, check if the associated attribute exists
+//		and is writable. This is necessary only for attribute of the READ_WITH_WRITE or READ_WRITE types
 //
-// argument : in : 	- index : The index of the attribute to checked in the
-//				  attr vector
+// argument :
+//		in :
+//			- index : The index of the attribute to checked in the attr vector
 //			- dev_name : The device name
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void MultiAttribute::check_associated(long index,string &dev_name)
 {
@@ -534,23 +564,23 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::add_attribute
+// method :
+//		MultiAttribute::add_attribute
 //
-// description : 	Construct a new attribute object and add it to the
-//			device attribute list
+// description :
+//		Construct a new attribute object and add it to the device attribute list
 //
-// argument : in : 	- dev_name : The device name
+// argument :
+//		in :
+//			- dev_name : The device name
 //			- dev_class_ptr : Pointer to the DeviceClass object
-//			- index : Index in class attribute list of the new
-//				  device attribute
+//			- index : Index in class attribute list of the new device attribute
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::add_attribute(string &dev_name,
-				   DeviceClass *dev_class_ptr,
-				   long index)
+void MultiAttribute::add_attribute(string &dev_name,DeviceClass *dev_class_ptr,long index)
 {
 	cout4 << "Entering MultiAttribute::add_attribute" << endl;
 
@@ -562,10 +592,8 @@ void MultiAttribute::add_attribute(string &dev_name,
 
 //
 // Get device attribute properties
-// No need to implement
-// a retry here (in case of db server restart) because the db reconnection
-// is forced by the get_property call executed during xxxClass construction
-// before we reach this code.
+// No need to implement a retry here (in case of db server restart) because the db reconnection
+// is forced by the get_property call executed during xxxClass construction before we reach this code.
 //
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -599,8 +627,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 	vector<AttrProperty> &def_user_prop = attr.get_user_default_properties();
 
 //
-// If the attribute has some properties defined at device level, build a vector
-// of these properties
+// If the attribute has some properties defined at device level, build a vector of these properties
 //
 
 	vector<AttrProperty> dev_prop;
@@ -642,9 +669,8 @@ void MultiAttribute::add_attribute(string &dev_name,
 	add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
 //
-// Create an Attribute instance and insert it in the attribute list
-// If the device implement IDL 3 (with state and status as attributes),
-// add it at the end of the list but before state and status.
+// Create an Attribute instance and insert it in the attribute list. If the device implement IDL 3
+// (with state and status as attributes), add it at the end of the list but before state and status.
 //
 
 	bool idl_3 = false;
@@ -696,8 +722,7 @@ void MultiAttribute::add_attribute(string &dev_name,
 	}
 
 //
-// If one of the alarm properties is defined, add it to the alarmed attribute
-// list
+// If one of the alarm properties is defined, add it to the alarmed attribute list
 //
 
 	if (attr_list[index]->is_alarmed().any() == true)
@@ -707,8 +732,8 @@ void MultiAttribute::add_attribute(string &dev_name,
 	}
 
 //
-// Check if the writable_attr_name property is set and in this
-// case, check if the associated attribute exists and is writable
+// Check if the writable_attr_name property is set and in this case, check if the associated attribute exists and is
+// writable
 //
 
 	check_associated(index,dev_name);
@@ -716,21 +741,107 @@ void MultiAttribute::add_attribute(string &dev_name,
 	cout4 << "Leaving MultiAttribute::add_attribute" << endl;
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		MultiAttribute::add_fwd_attribute
+//
+// description :
+//		Construct a new forwarded attribute object and add it to the device attribute list
+//
+// argument :
+//		in :
+//			- dev_name : The device name
+//			- dev_class_ptr : Pointer to the DeviceClass object
+//			- index : Index in class attribute list of the new device attribute
+//
+//-------------------------------------------------------------------------------------------------------------------
 
-//+-------------------------------------------------------------------------
+void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_ptr,long index)
+{
+	cout4 << "Entering MultiAttribute::add_fwd_attribute" << endl;
+
 //
-// method : 		MultiAttribute::remove_attribute
+// Retrieve device class attribute list
 //
-// description : 	Remove one  attribute object from the
-//			device attribute list
+
+	vector<Attr *> &tmp_attr_list = dev_class_ptr->get_class_attr()->get_attr_list();
+
 //
-// argument : in : 	- attr_name : The attribute name
-//					- update_idx : Flag set to true if the attributes object index
-//								   used to retrieve the corresponding Attr object
-//								   has to be updated (because one Attr object
-//								   has been removed)
+// Get attribute class properties
 //
-//--------------------------------------------------------------------------
+
+	Attr &attr = dev_class_ptr->get_class_attr()->get_attr(tmp_attr_list[index]->get_name());
+	vector<AttrProperty> &def_user_prop = attr.get_user_default_properties();
+
+//
+// Concatenate these two attribute properties levels
+//
+
+	vector<AttrProperty> prop_list;
+	add_user_default(prop_list,def_user_prop);
+	add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
+
+//
+// Create an Attribute instance and insert it in the attribute list. If the device implement IDL 3
+// (with state and status as attributes), add it at the end of the list but before state and status.
+//
+
+	vector<Attribute *>::iterator ite;
+	ite = attr_list.end() - 2;
+
+	if ((attr.get_writable() == Tango::WRITE) ||
+	    (attr.get_writable() == Tango::READ_WRITE))
+	{
+		attr_list.insert(ite,new WAttribute(prop_list,attr,dev_name,index));
+		index = attr_list.size() - 3;
+	}
+	else
+	{
+
+		attr_list.insert(ite,new FwdAttribute(prop_list,attr,dev_name,index));
+		index = attr_list.size() - 3;
+	}
+
+//
+// If it is writable, add it to the writable attribute list
+//
+
+	Tango::AttrWriteType w_type = attr_list[index]->get_writable();
+	if ((w_type == Tango::WRITE) ||
+	    (w_type == Tango::READ_WRITE))
+	{
+		writable_attr_list.push_back(index);
+	}
+
+//
+// If one of the alarm properties is defined, add it to the alarmed attribute list
+//
+
+	if (attr_list[index]->is_alarmed().any() == true)
+	{
+		if (w_type != Tango::WRITE)
+			alarm_attr_list.push_back(index);
+	}
+
+	cout4 << "Leaving MultiAttribute::add_fwd_attribute" << endl;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		MultiAttribute::remove_attribute
+//
+// description :
+//		Remove one  attribute object from the device attribute list
+//
+// argument :
+//		in :
+//			- attr_name : The attribute name
+//			- update_idx : Flag set to true if the attributes object index used to retrieve the corresponding Attr
+//						   object has to be updated (because one Attr object has been removed)
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 {
@@ -789,8 +900,7 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 	}
 
 //
-// Clear the writable attribute index vector and rebuild it
-// This is necessary because this vector containd index in
+// Clear the writable attribute index vector and rebuild it. This is necessary because this vector containd index in
 // the main attribute list which has been modified
 //
 
@@ -834,19 +944,22 @@ void MultiAttribute::remove_attribute(string &attr_name,bool update_idx)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::get_attr_by_name
+// method :
+//		MultiAttribute::get_attr_by_name
 //
-// description : 	Return a reference to the the Attribute object for
-//			the wanted attribue
+// description :
+//		Return a reference to the the Attribute object for the wanted attribue
 //
-// in :			attr_name : The attribute name
+// argument :
+// 		in :
+//			- attr_name : The attribute name
 //
-// This method returns a reference to the wanted attribute or throws an
-// exception id the attribute is not found
+// return :
+// 		A reference to the wanted attribute or throws an exception id the attribute is not found
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
 {
@@ -869,19 +982,22 @@ Attribute &MultiAttribute::get_attr_by_name(const char *attr_name)
 	return *(*pos);
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::get_w_attr_by_name
+// method :
+//		MultiAttribute::get_w_attr_by_name
 //
-// description : 	Return a reference to the the Attribute object for
-//			the wanted attribue
+// description :
+//		Return a reference to the the Attribute object for the wanted attribue
 //
-// in :			attr_name : The attribute name
+// argument :
+// 		in :
+//			- attr_name : The attribute name
 //
-// This method returns a reference to the wanted attribute or throws an
-// exception id the attribute is not found
+// return :
+//		A reference to the wanted attribute or throws an exception id the attribute is not found
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 {
@@ -908,19 +1024,22 @@ WAttribute &MultiAttribute::get_w_attr_by_name(const char *attr_name)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::get_attr_ind_by_name
+// method :
+//		MultiAttribute::get_attr_ind_by_name
 //
-// description : 	Return the index in the Attribute object vector of
-//			a specified attribute
+// description :
+//		Return the index in the Attribute object vector of a specified attribute
 //
-// in :			attr_name : The attribute name
+// argument :
+// 		in :
+//			- attr_name : The attribute name
 //
-// This method returns the index of the wanted attribute or throws an
-// exception id the attribute is not found
+// return :
+//		The index of the wanted attribute or throws an exception id the attribute is not found
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
 {
@@ -952,17 +1071,18 @@ long MultiAttribute::get_attr_ind_by_name(const char *attr_name)
 	return i;
 }
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::check_alarm
+// method :
+//		MultiAttribute::check_alarm
 //
-// description : 	check alarm on all the attribute where one alarm is
-//			        defined
+// description :
+//		check alarm on all the attribute where one alarm is defined
 //
-// This method returns a boolen set to true if one of the attribute with
-// an alarm defined is in alarm state
+// return :
+//		A boolen set to true if one of the attribute with an alarm defined is in alarm state
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool MultiAttribute::check_alarm()
 {
@@ -983,8 +1103,8 @@ bool MultiAttribute::check_alarm()
 		{
 
 //
-// If the attribute is polled, the check_alarm method has already been called when
-// the polling thread has read the attribute.
+// If the attribute is polled, the check_alarm method has already been called when the polling thread has read the
+// attribute.
 //
 
 		    Attribute &att = get_attr_by_ind(alarm_attr_list[i]);
@@ -1000,16 +1120,19 @@ bool MultiAttribute::check_alarm()
 	return ret;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::read_alarm
+// method :
+//		MultiAttribute::read_alarm
 //
-// description : 	Add a message in the device status string if one of
-//			        the device attribute is in the alarm state
+// description :
+//		Add a message in the device status string if one of the device attribute is in the alarm state
 //
-// in :			status : The device status
+// argument :
+// 		in :
+//			- status : The device status
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void MultiAttribute::read_alarm(string &status)
 {
@@ -1127,17 +1250,19 @@ void MultiAttribute::read_alarm(string &status)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::get_event_param
+// method :
+//		MultiAttribute::get_event_param
 //
-// description : 	Return event info for each attribute with events
-//			        subscribed
+// description :
+//		Return event info for each attribute with events subscribed
 //
-// in :			eve : One structure in this vector for each attribute
-//			          with events subscribed
+// argument :
+// 		in :
+//			- eve : One structure in this vector for each attribute with events subscribed
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void MultiAttribute::get_event_param(vector<EventPar> &eve)
 {
@@ -1209,19 +1334,20 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::add_write_value
+// method :
+//		MultiAttribute::add_write_value
 //
-// description : 	For scalar attribute with an associated write
-//			attribute, the read_attributes CORBA operation also
-//			returns the write value. This method gets the associated
-//			write attribute value and adds it to the read
-//			attribute
+// description :
+//		For scalar attribute with an associated write attribute, the read_attributes CORBA operation also returns
+//		the write value. This method gets the associated write attribute value and adds it to the read attribute
 //
-// in :			att : Reference to the attribute which must be read
+// argument :
+// 		in :
+//			- att : Reference to the attribute which must be read
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void MultiAttribute::add_write_value(Attribute &att)
 {
@@ -1311,18 +1437,20 @@ void MultiAttribute::add_write_value(Attribute &att)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::is_att_quality_alarmed()
+// method :
+//		MultiAttribute::is_att_quality_alarmed()
 //
-// description : 	Check for all attribute if one of them has its
-//			quality factor set to ALARM.
-//			Returns true in this case. Otherwise, returns false
+// description :
+//		Check for all attribute if one of them has its quality factor set to ALARM.
+//		Returns true in this case. Otherwise, returns false
 //
-// in :			all_att : Flag set to false if the search must exclude
-//				  all attributes with alarm levels set
+// argument :
+// 		in :
+//			- all_att : Flag set to false if the search must exclude all attributes with alarm levels set
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 bool MultiAttribute::is_att_quality_alarmed(bool all_att)
 {
@@ -1360,14 +1488,15 @@ bool MultiAttribute::is_att_quality_alarmed(bool all_att)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiAttribute::add_alarmed_quality_factor()
+// method :
+//		MultiAttribute::add_alarmed_quality_factor()
 //
-// description : 	Add to the status string name of attributes with
-//			a quality factor set to alarm
+// description :
+//		Add to the status string name of attributes with a quality factor set to alarm
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void MultiAttribute::add_alarmed_quality_factor(string &status)
 {

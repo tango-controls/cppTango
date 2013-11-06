@@ -70,12 +70,11 @@ FwdAttribute::FwdAttribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string
 // Init forwarded attribute specific data
 //
 
-	fwd_wrongly_conf = attr.is_correctly_configured();
 	fwd_dev_name = attr.get_fwd_dev_name();
 	fwd_att_name = attr.get_fwd_root_att();
 
 //
-// Move this object in root attributes registry from Attrdesc to Attribute
+// Clear Attrdesc in Root attribute registry
 //
 
 	RootAttRegistry &fdp = Util::instance()->get_root_att_reg();

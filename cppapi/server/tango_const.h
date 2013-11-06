@@ -323,7 +323,7 @@ const char* const API_EventPropertiesNotSet        = "API_EventPropertiesNotSet"
 const char* const API_EventQueues                  = "API_EventQueues";
 const char* const API_EventSupplierNotConstructed  = "API_EventSupplierNotConstructed";
 const char* const API_FwdAttrNotConfigured		   = "API_FwdAttrNotConfigured";
-const char* const API_FwdAttrInconsistency		   = "API_FwdAttrInconsistancy";
+const char* const API_FwdAttrInconsistency		   = "API_FwdAttrInconsistency";
 const char* const API_IncoherentDbData             = "API_IncoherentDbData";
 const char* const API_IncoherentDevData            = "API_IncoherentDevData";
 const char* const API_IncoherentValues             = "API_IncoherentValues";
@@ -1072,6 +1072,17 @@ typedef struct _OptAttrProp
 	const char *default_value;
 }OptAttrProp;
 
+typedef enum _FwdAttError
+{
+	FWD_WRONG_ATTR = 0,
+	FWD_WRONG_DEV,
+	FWD_ROOT_DEV_LOCAL_DEV,
+	FWD_MISSING_ROOT,
+	FWD_WRONG_SYNTAX,
+	FWD_ROOT_DEV_NOT_STARTED,
+	FWD_DOUBLE_USED,
+	FWD_ERR_UNKNOWN
+}FwdAttError;
 
 // Ranges type-enum-string conversions
 

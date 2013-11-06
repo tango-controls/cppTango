@@ -184,6 +184,9 @@ template void Attribute::set_properties(MultiAttrProp<DevEncoded> &);
 template void Attribute::check_hard_coded_properties(const AttributeConfig &);
 template void Attribute::check_hard_coded_properties(const AttributeConfig_3 &);
 
+template void Attribute::set_hard_coded_properties(const AttributeConfig &);
+template void Attribute::set_hard_coded_properties(const AttributeConfig_3 &);
+
 //+----------------------------------------------------------------------------
 //
 // Instanciate Util::fill_XXX_polling buffers methods and associate template classes

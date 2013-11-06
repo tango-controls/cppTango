@@ -2143,7 +2143,6 @@ public:
 	void throw_startup_exception(const char*);
 
 	bool is_mem_exception() {return att_mem_exception;}
-	virtual bool is_fwd_wrongly_conf() {return false;}
 	virtual bool is_fwd_att() {return false;}
 
 #ifndef TANGO_HAS_LOG4TANGO
@@ -2194,6 +2193,9 @@ protected:
 
 	template <typename T>
     void check_hard_coded_properties(const T &);
+
+	template <typename T>
+    void set_hard_coded_properties(const T &);
 
 	void add_startup_exception(string,const DevFailed &);
 	void delete_startup_exception(string);

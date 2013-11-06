@@ -1,7 +1,7 @@
 
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+=================================================================================================================
 //
 // file :               ClassAttribute.cpp
 //
@@ -9,10 +9,8 @@ static const char *RcsId = "$Id$\n$Name$";
 //				AttrProperty
 //				ClassAttribute and
 //				MultiClassAttribute
-//			classes. These classes
-//			are used to manage attribute properties defined at the
-//			class level. A Tango DeviceClass class instance has one
-//			MultiClassAttribute object which is an aggregate of
+//			classes. These classes are used to manage attribute properties defined at the class level. A Tango
+//			DeviceClass class instance has one MultiClassAttribute object which is an aggregate of
 //			ClassAttribute objects
 //
 // project :            TANGO
@@ -26,22 +24,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -54,20 +50,21 @@ static const char *RcsId = "$Id$\n$Name$";
 namespace Tango
 {
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		AttrProperty::AttrProperty
+// method :
+//		AttrProperty::AttrProperty
 //
-// description : 	Constructors for the AttrProperty class.
-//			These constructor change the property name to
-//			lowercase letters and also change the property
-//			value to lowercase letters for the data_format and
-//			data_type property
+// description :
+//		Constructors for the AttrProperty class. These constructor change the property name to lowercase letters and
+//		also change the property value to lowercase letters for the data_format and data_type property
 //
-// argument : in : 	- name : The property name
+// argument :
+//		in :
+//			- name : The property name
 //			- value : The property value
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 AttrProperty::AttrProperty(string &name,string &value):attr_name(name),
 						       attr_value(value)
@@ -81,8 +78,7 @@ AttrProperty::AttrProperty(string &name,string &value):attr_name(name),
 	transform(attr_name.begin(),attr_name.end(),attr_name.begin(),::tolower);
 
 //
-// For data_type or data_format properties, also change property value to
-// lowercase letters
+// For data_type or data_format properties, also change property value to lowercase letters
 //
 
 	if ((attr_name == "data_type") || (attr_name == "data_format"))
@@ -104,8 +100,7 @@ AttrProperty::AttrProperty(const char *name,const char *value):attr_name(name),
 	transform(attr_name.begin(),attr_name.end(),attr_name.begin(),::tolower);
 
 //
-// For data_type or data_format properties, also change property value to
-// lowercase letters
+// For data_type or data_format properties, also change property value to lowercase letters
 //
 
 	if ((attr_name == "data_type") || (attr_name == "data_format"))
@@ -123,14 +118,15 @@ AttrProperty::AttrProperty(const char *name,string &value):attr_name(name),attr_
 {
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		AttrProperty::convert
+// method :
+//		AttrProperty::convert
 //
-// description : 	Convert the property value into a long. The long data
-//			is also stored in the AttrProperty class
+// description :
+//		Convert the property value into a long. The long data is also stored in the AttrProperty class
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void AttrProperty::convert()
 {
@@ -144,14 +140,14 @@ void AttrProperty::convert()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//			AttrProperty class
+// description :
+//		Friend function to ease printing instance of the AttrProperty class
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 #ifndef TANGO_HAS_LOG4TANGO
 
 ostream &operator<<(ostream &o_str,const AttrProperty &p)
@@ -162,14 +158,15 @@ ostream &operator<<(ostream &o_str,const AttrProperty &p)
 
 #endif // TANGO_HAS_LOG4TANGO
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiClassAttribute::MultiClassAttribute
+// method :
+//		MultiClassAttribute::MultiClassAttribute
 //
-// description : 	constructor for the MultiClassAttribute class from the
-//			device class name
+// description :
+//		constructor for the MultiClassAttribute class from the device class name
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 MultiClassAttribute::~MultiClassAttribute()
 {
@@ -179,31 +176,35 @@ MultiClassAttribute::~MultiClassAttribute()
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiClassAttribute::MultiClassAttribute
+// method :
+//		MultiClassAttribute::MultiClassAttribute
 //
-// description : 	constructor for the MultiClassAttribute class from the
-//			device class name
+// description :
+//		Constructor for the MultiClassAttribute class from the device class name
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 MultiClassAttribute::MultiClassAttribute()
 {
 	cout4 << "Entering MultiClassAttribute constructor" << endl;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiClassAttribute::init_class_attribute
+// method :
+//		MultiClassAttribute::init_class_attribute
 //
-// description : 	Ask the database for prperties defined at class
-//			level and build the ClassAttribute object for
-//			each attribute with defined properties
+// description :
+//		Ask the database for prperties defined at class level and build the ClassAttribute object for each attribute
+//		with defined properties
 //
-// argument : in : 	- class_name : The device class name
+// argument :
+//		in :
+//			- class_name : The device class name
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 {
@@ -220,10 +221,8 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 		nb_attr = 1;
 
 //
-// Get class attribute(s) properties stored in DB
-// No need to implement
-// a retry here (in case of db server restart) because the db reconnection
-// is forced by the get_property call executed during xxxClass construction
+// Get class attribute(s) properties stored in DB. No need to implement a retry here (in case of db server restart)
+// because the db reconnection is forced by the get_property call executed during xxxClass construction
 // before we reach this code.
 //
 
@@ -249,8 +248,7 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 		}
 
 //
-// Sort property for each attribute and create a ClassAttribute object for each
-// of them
+// Sort property for each attribute and create a ClassAttribute object for each of them
 //
 
 		long ind = 0;
@@ -321,19 +319,22 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiClassAttribute::get_attr
+// method :
+//		MultiClassAttribute::get_attr
 //
-// description : 	Get the Attr object for the attribute with
-//			name passed as parameter
+// description :
+//		Get the Attr object for the attribute with name passed as parameter
 //
-// in :			attr_name : The attribute name
+// argument :
+// 		in :
+//			- attr_name : The attribute name
 //
-// This method returns a reference to the ClassAttribute object or throw
-// an exceptionif the attribute is not found
+// return :
+//		Reference to the ClassAttribute object or throw an exceptionif the attribute is not found
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 Attr &MultiClassAttribute::get_attr(string &attr_name)
@@ -360,20 +361,23 @@ Attr &MultiClassAttribute::get_attr(string &attr_name)
 	return *(*pos);
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		MultiClassAttribute::remove_attr
+// method :
+//		MultiClassAttribute::remove_attr
 //
-// description : 	Remove the Attr object for the attribute with
-//			name passed as parameter
+// description :
+//		Remove the Attr object for the attribute with name passed as parameter
 //
-// in :			attr_name : The attribute name
-//				cl_name : The attribute class name
+// argument :
+// 		in :
+//			- attr_name : The attribute name
+//			- cl_name : The attribute class name
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
-void MultiClassAttribute::remove_attr(string &attr_name,const string &cl_name)
+void MultiClassAttribute::remove_attr(const string &attr_name,const string &cl_name)
 {
 	vector<Tango::Attr *>::iterator ite;
 	for (ite = attr_list.begin();ite != attr_list.end();++ite)
@@ -387,15 +391,15 @@ void MultiClassAttribute::remove_attr(string &attr_name,const string &cl_name)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//			Attr class. It prints all the attribute
-//			property(ies) name and value defined in DB
+// description :
+//		Friend function to ease printing instance of the Attr class. It prints all the attribute property(ies) name
+// 		and value defined in DB
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 #ifndef TANGO_HAS_LOG4TANGO
 
 ostream &operator<<(ostream &o_str,const Attr &c)

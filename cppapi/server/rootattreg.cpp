@@ -61,9 +61,9 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-		cout << "One attribute configuration change event received" << endl;
-		cout << "Event name = " << ev->event << endl;
-		cout << "Attr name = " << ev->attr_name << endl;
+cout << "One attribute configuration change event received" << endl;
+cout << "Attr name = " << ev->attr_name << endl;
+
 		if (ev->err == true)
 			cout << "The att change event is an error" << endl;
 		else
@@ -84,6 +84,10 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 				ite = map_attrdesc.find(att_name);
 				if (ite != map_attrdesc.end())
 				{
+
+//
+// Classical event
+//
 					if (ite->second.fwd_attr == nullptr)
 					{
 						cout << "Change in Attribute config..........." << endl;
@@ -91,7 +95,8 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 						ite3 = local_dps.find(ite->second.local_name);
 						if (ite3 == local_dps.end())
 						{
-// TODO: What to do here ???
+							cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
+							cerr << ite->second.local_name << " not found in map (local_dps)! Map corrupted?" << endl;
 						}
 						else
 						{
@@ -100,24 +105,43 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 
 							aile[0].name = ite->second.local_att_name;
 
-cout <<  "Calling set_attribute_config on device " << ite3->second->name() << endl;
 							ite3->second->set_attribute_config(aile);
 						}
 					}
 					else
+					{
+//
+// Synchronous event due to subscription or event received after a successfull re-connection if the server
+// was started while the root device was off
+//
+
 						ite->second.fwd_attr->init_conf(ev->attr_conf);
+
+						if (ite->second.fwd_attr->get_err_kind() == FWD_ROOT_DEV_NOT_STARTED)
+						{
+							cout << "After re-connection" << endl;
+							Util *tg = Util::instance();
+							DeviceImpl *dev = tg->get_device_by_name(ite->second.local_name);
+							dev->add_attribute(ite->second.fwd_attr);
+							ite->second.fwd_attr = nullptr;
+
+							dev->rem_wrong_fwd_att(att_name);
+							dev->set_run_att_conf_loop(true);
+						}
+					}
 				}
 				else
 				{
-// TODO: What to do here ????
+					cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): " ;
+					cerr << "Root attribute " << att_name << " not found in map (map_attrdesc)! Map corrupted?" << endl;
 				}
 			}
 		}
 	}
 	catch (Tango::DevFailed &e)
 	{
+		cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Exception!" ;
 		Tango::Except::print_exception(e);
-// TODO: What to do here ??? Is exception possible???
 	}
 }
 
@@ -213,20 +237,19 @@ void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
 // corresponding Deviceproxy entry
 //
 
-for (const auto &elem:local_dps)
-	cout << "Local dps key = " << elem.first << endl;
 		if (used_elsewhere == false)
 		{
 			map<string,DeviceProxy *>::iterator ite_dp = local_dps.find(local_dev_name);
-cout << "Deleting DP for " << ite_dp->first << endl;
  			delete ite_dp->second;
 			local_dps.erase(ite_dp);
 		}
-
 	}
 	else
 	{
-// TODO: What to do here??
+		string desc("Root attribute ");
+		desc = desc + root_att_name + " not found in class map!";
+
+		Except::throw_exception(API_AttrNotFound,desc,"RootAttConfCallBack::remove_att");
 	}
 }
 
@@ -254,7 +277,10 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(string &root_att_name)
 	}
 	else
 	{
-// TODO: What to do here ????????
+		string desc("Root attribute ");
+		desc = desc + root_att_name + " not found in class map!";
+
+		Except::throw_exception(API_AttrNotFound,desc,"RootAttConfCallBack::clear_attrdesc");
 	}
 }
 
@@ -345,35 +371,57 @@ int RootAttRegistry::RootAttConfCallBack::count_root_dev(string &root_dev_name)
 void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &local_dev_name,string &local_att_name,
 								   FwdAttr *attdesc)
 {
-	try
+	DeviceProxy *the_dev;
+	map<string,DeviceProxy *>::iterator ite;
+	ite = dps.find(device_name);
+	if (ite == dps.end())
 	{
-		DeviceProxy *the_dev;
-		map<string,DeviceProxy *>::iterator ite;
-		ite = dps.find(device_name);
-		if (ite == dps.end())
-		{
-			the_dev = new DeviceProxy(device_name);
-			dps.insert({device_name,the_dev});
-		}
-		else
-			the_dev = ite->second;
+		the_dev = new DeviceProxy(device_name);
+		dps.insert({device_name,the_dev});
+	}
+	else
+		the_dev = ite->second;
 
-		string a_name = device_name + '/' + att_name;
-		bool already_there = cbp.is_root_att_in_map(a_name);
-		if (already_there == false)
+//
+// When the device is not there, subscribing to att change event throws one exception
+// and it does call the callback with error flag set. Because we want to know that the root device is not yet
+// ready, implement a two steps subscription
+//
+
+	string a_name = device_name + '/' + att_name;
+	bool already_there = cbp.is_root_att_in_map(a_name);
+	if (already_there == false)
+	{
+		cbp.add_att(a_name,local_dev_name,local_att_name,attdesc);
+		int event_id;
+
+		try
 		{
-			cbp.add_att(a_name,local_dev_name,local_att_name,attdesc);
-			int event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp,true);
+			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp);
 			map_event_id.insert({a_name,event_id});
 		}
-		else
+		catch (Tango::DevFailed &e)
 		{
-// TODO: What to do here ???
+			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
+				attdesc->set_err_kind(FWD_WRONG_ATTR);
+			else if (::strcmp(e.errors[0].reason.in(),API_BadConfigurationProperty) == 0)
+				attdesc->set_err_kind(FWD_ROOT_DEV_NOT_STARTED);
+			else
+				attdesc->set_err_kind(FWD_WRONG_DEV);
+
+			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp,true);
+			map_event_id.insert({a_name,event_id});
+
+			Tango::Except::re_throw_exception(e,"API_DummyException","nothing","RootAttRegistry::add_root_att");
 		}
 	}
-	catch (DevFailed &e)
+	else
 	{
-// TODO: What to do here ???
+		attdesc->set_err_kind(FWD_DOUBLE_USED);
+
+		string desc("It's not supported to have in the same device server process two times the same root attribute (");
+		desc = desc + a_name + ")";
+		Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 	}
 }
 
@@ -450,10 +498,15 @@ cout << "Deleting DP for " << pos->first << endl;
 //		RootAttRegistry::get_root_att_dp
 //
 // description :
+//		Get the DeviceProxy instance used in forwarded attribute from a root device name
+//		Throws exception in case of not
 //
 // argument :
 //		in :
 //			- device_name : The device name
+//
+// return :
+//		The DeviceProxy pointer.
 //
 //--------------------------------------------------------------------------------------------------------------------
 
@@ -469,6 +522,38 @@ DeviceProxy *RootAttRegistry::get_root_att_dp(string &device_name)
 	}
 
 	return ite->second;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		RootAttRegistry::RootAttConfCallBack::get_local_att_name
+//
+// description :
+//		Get the local attribute name from a root attribute name
+//
+// argument :
+//		in :
+//			- root_name : The device name
+//
+// return :
+//		The local attribute name
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+string RootAttRegistry::RootAttConfCallBack::get_local_att_name(string &root_name)
+{
+	map<string,struct NameFwdAttr>::iterator ite;
+	ite = map_attrdesc.find(root_name);
+	if (ite == map_attrdesc.end())
+	{
+		stringstream ss;
+		ss << root_name << " not registered in map of root attribute!";
+		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::get_local_att_name");
+	}
+
+	string loc_name = ite->second.local_name + '/' + ite->second.local_att_name;
+	return loc_name;
 }
 
 } // End of Tango namespace

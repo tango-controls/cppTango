@@ -135,6 +135,7 @@ void Attribute::get_properties_2(Tango::AttributeConfig_2 &conf)
 
 void Attribute::get_properties_3(Tango::AttributeConfig_3 &conf)
 {
+
 //
 // Throw exception in case of Fwd attribute and the att configuration is not yet received
 //
@@ -355,7 +356,10 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 // Check if the caller try to change "hard coded" properties. Throw exception in case of
 //
 
-    check_hard_coded_properties(conf);
+	if (is_fwd_att() == true)
+		set_hard_coded_properties(conf);
+	else
+		check_hard_coded_properties(conf);
 
 //
 // Copy only a sub-set of the new properties
@@ -1443,7 +1447,10 @@ cout << "Entering Attribute::set_properties" << endl;
 // Display level is available only in AttributeConfig_3
 //
 
-	check_hard_coded_properties(conf);
+	if (is_fwd_att() == true)
+		set_hard_coded_properties(conf);
+	else
+		check_hard_coded_properties(conf);
 
 	if (conf.level != get_disp_level())
 	{
