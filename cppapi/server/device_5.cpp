@@ -234,10 +234,22 @@ void Device_5Impl::set_attribute_config_5(const Tango::AttributeConfigList_5& ne
 	AutoTangoMonitor sync1(&mon1);
 
 //
+// Is it from the fwd attribute callback ?
+//
+
+	bool from_fwd_cb = false;
+	Tango::LockerLanguage cl_lang = cl_id._d();
+	if (cl_lang == Tango::CPP && cl_id.cpp_clnt() == 0)
+	{
+		from_fwd_cb = true;
+	}
+
+//
 // Record operation request in black box
 //
 
-	blackbox_ptr->insert_op(Op_Set_Attr_Config_5,cl_id);
+	if (from_fwd_cb == false)
+		blackbox_ptr->insert_op(Op_Set_Attr_Config_5,cl_id);
 
 //
 // Check if the device is locked and by who
@@ -250,7 +262,7 @@ void Device_5Impl::set_attribute_config_5(const Tango::AttributeConfigList_5& ne
 //
 
 	store_in_bb = false;
-	return set_attribute_config_3_local(new_conf,new_conf[0]);
+	return set_attribute_config_3_local(new_conf,new_conf[0],from_fwd_cb);
 }
 
 } // End of Tango namespace
