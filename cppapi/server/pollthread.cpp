@@ -1534,7 +1534,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 	if (idl_vers >= 3)
 	{
-		if (idl_vers == 4)
+		if (idl_vers >= 4)
 		{
 			if ((attr_failed == false) && ((*argout_4)[0].err_list.length() != 0))
 			{

@@ -67,7 +67,8 @@ static OptAttrProp Tango_OptAttrProp[] = {
 	{"min_warning",AlrmValueNotSpec},
 	{"max_warning",AlrmValueNotSpec},
 	{"delta_t","0"},
-	{"delta_val",AlrmValueNotSpec}
+	{"delta_val",AlrmValueNotSpec},
+	{"root_attr_name",AssocWritNotSpec}
 };
 
 

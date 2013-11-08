@@ -1901,6 +1901,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             const ZmqAttributeValue_4 *z_attr_value_4 = NULL;
             const AttributeConfig_2 *attr_conf_2 = NULL;
             const AttributeConfig_3 *attr_conf_3 = NULL;
+            const AttributeConfig_5 *attr_conf_5 = NULL;
             const AttDataReady *att_ready = NULL;
             const DevErrorList *err_ptr;
             DevErrorList errors;
@@ -2087,7 +2088,31 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 switch (data_type)
                 {
                     case ATT_CONF:
-                    if (evt_cb.device_idl > 2)
+                    if (evt_cb.device_idl > 4)
+                    {
+						try
+                        {
+                            (AttributeConfig_5 &)ac5 <<= event_data_cdr;
+                            attr_conf_5 = &ac5.in();
+                            vers = 5;
+                            attr_info_ex = new AttributeInfoEx();
+                            *attr_info_ex = const_cast<AttributeConfig_5 *>(attr_conf_5);
+                            ev_attr_conf = true;
+                        }
+                        catch(...)
+                        {
+                            TangoSys_OMemStream o;
+                            o << "Received malformed data for event ";
+                            o << ev_name << ends;
+
+                            errors.length(1);
+                            errors[0].reason = API_WrongEventData;
+                            errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+                            errors[0].desc = CORBA::string_dup(o.str().c_str());
+                            errors[0].severity = ERR;
+                        }
+                    }
+                    else if (evt_cb.device_idl > 2)
                     {
                         try
                         {
@@ -2281,7 +2306,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             if (cb_ctr != cb_nb)
                             {
                                 DeviceAttribute *dev_attr_copy = NULL;
-                                if (dev_attr != NULL || (callback == NULL && vers == 4))
+                                if (dev_attr != NULL || (callback == NULL && vers >= 4))
                                 {
                                     dev_attr_copy = new DeviceAttribute();
                                     dev_attr_copy->deep_copy(*dev_attr);
@@ -2295,7 +2320,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             }
                             else
                             {
-                                if (callback == NULL && vers == 4)
+                                if (callback == NULL && vers >= 4)
                                 {
                                     DeviceAttribute *dev_attr_copy = NULL;
                                     if (dev_attr != NULL)
@@ -2355,7 +2380,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                     ev_queue->insert_event(missed_event_data_copy);
 								}
                                 ev_queue->insert_event(event_data);
-                                if (vers == 4 && cb_ctr == cb_nb)
+                                if (vers >= 4 && cb_ctr == cb_nb)
                                     delete dev_attr;
                             }
                         }

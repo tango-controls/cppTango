@@ -103,6 +103,7 @@ public :
         const AttributeValue_4    *attr_val_4;
         const AttributeConfig_2   *attr_conf_2;
         const AttributeConfig_3   *attr_conf_3;
+        const AttributeConfig_5	  *attr_conf_5;
         const AttDataReady        *attr_dat_ready;
     };
 

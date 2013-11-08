@@ -732,7 +732,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 		names[i] = attr_names[i].c_str();
 
 	CORBA::Request_ptr request;
-	if (version == 4)
+	if (version >= 4)
 	{
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();

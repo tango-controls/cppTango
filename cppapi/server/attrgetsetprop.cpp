@@ -324,6 +324,65 @@ void Attribute::get_properties_3(Tango::AttributeConfig_3 &conf)
 	}
 }
 
+void Attribute::get_properties_5(Tango::AttributeConfig_5 &conf)
+{
+
+//
+// Get config
+//
+
+	Tango::AttributeConfig_3 conf3;
+	get_properties_3(conf3);
+
+	conf.name = conf3.name;
+	conf.writable = conf3.writable;
+	conf.data_format = conf3.data_format;
+	conf.data_type = conf3.data_type;
+	conf.max_dim_x = conf3.max_dim_x;
+	conf.max_dim_y = conf3.max_dim_y;
+	conf.description = conf3.description;
+	conf.label = conf3.label;
+	conf.unit = conf3.unit;
+	conf.standard_unit = conf3.standard_unit;
+	conf.display_unit = conf3.display_unit;
+	conf.format = conf3.format;
+	conf.min_value = conf3.min_value;
+	conf.max_value = conf3.max_value;
+	conf.writable_attr_name = conf3.writable_attr_name;
+	conf.level = conf3.level;
+	conf.att_alarm = conf3.att_alarm;
+	conf.event_prop = conf3.event_prop;
+	conf.extensions = conf3.extensions;
+	conf.sys_extensions = conf3.sys_extensions;
+
+//
+// Add AttributeConfig_5 specific data
+//
+
+	if (is_fwd_att() == true)
+	{
+		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
+		string str(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
+		conf.root_attr_name = CORBA::string_dup(str.c_str());
+	}
+	else
+		conf.root_attr_name = CORBA::string_dup(AlrmValueNotSpec);
+
+	if (writable == WRITE || writable == READ_WRITE)
+	{
+		WAttribute *watt = static_cast<WAttribute *>(this);
+		conf.memorized = watt->is_memorized();
+		conf.mem_init = watt->is_memorized_init();
+	}
+	else
+	{
+		conf.memorized = false;
+		conf.mem_init = false;
+	}
+
+//TODO:	conf.enum_labels;
+}
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -2666,10 +2725,6 @@ cout << "Entering Attribute::set_properties" << endl;
 	delete_startup_exception("archive_period");
 }
 
-void Attribute::set_upd_properties(const AttributeConfig_3 &conf)
-{
-	set_upd_properties(conf,d_name);
-}
 
 void Attribute::set_upd_properties(const AttributeConfig_3 &conf,string &dev_name)
 {
@@ -2957,6 +3012,46 @@ void Attribute::set_upd_properties(const AttributeConfig_3 &conf,string &dev_nam
 		throw;
 	}
 }
+
+void Attribute::set_upd_properties(const AttributeConfig_5 &conf,string &dev_name)
+{
+
+//
+// First check that the user does not require to change new hard coded params. defind in IDL 5
+//
+
+	check_hard_coded(conf);
+
+//
+// Build a temporary conf 3 and set attribute properties
+//
+
+	AttributeConfig_3 conf3;
+
+	conf3.name = conf.name;
+	conf3.writable = conf.writable;
+	conf3.data_format = conf.data_format;
+	conf3.data_type = conf.data_type;
+	conf3.max_dim_x = conf.max_dim_x;
+	conf3.max_dim_y = conf.max_dim_y;
+	conf3.description = conf.description;
+	conf3.label = conf.label;
+	conf3.unit = conf.unit;
+	conf3.standard_unit = conf.standard_unit;
+	conf3.display_unit = conf.display_unit;
+	conf3.format = conf.format;
+	conf3.min_value = conf.min_value;
+	conf3.max_value = conf.max_value;
+	conf3.writable_attr_name = conf.writable_attr_name;
+	conf3.level = conf.level;
+	conf3.att_alarm = conf.att_alarm;
+	conf3.event_prop = conf.event_prop;
+	conf3.extensions = conf.extensions;
+	conf3.sys_extensions = conf.sys_extensions;
+
+	set_upd_properties(conf3,dev_name);
+}
+
 
 void Attribute::set_min_alarm(char *new_min_alarm_str)
 {
@@ -5208,6 +5303,56 @@ void Attribute::event_prop_db(const char *prop_name,vector<double> &rel_change_t
         db_d.push_back(relchange);
         prop_to_update++;
     }
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::check_hard_coded()
+//
+// description :
+//		Check if the user tries to change attribute properties considered as hard coded added by IDL 5
+//      Throw exception in case of
+//
+// args :
+// 		in :
+//			- user_conf : The attribute configuration sent by the user
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void Attribute::check_hard_coded(const  AttributeConfig_5 &user_conf)
+{
+
+//
+// Check root attribute name
+//
+
+	if (is_fwd_att() == true)
+	{
+		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
+		string root_attr_name(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
+		string user_root_att_name(user_conf.root_attr_name.in());
+		transform(user_root_att_name.begin(),user_root_att_name.end(),user_root_att_name.begin(),::tolower);
+		if (user_root_att_name != root_attr_name)
+		{
+			throw_hard_coded_prop("root_attr_name");
+		}
+	}
+
+//
+// Memorized config
+//
+
+	if (writable == WRITE || writable == READ_WRITE)
+	{
+		WAttribute *watt = static_cast<WAttribute *>(this);
+		if (watt->is_memorized() != user_conf.memorized || watt->is_memorized_init() != user_conf.mem_init)
+		{
+			throw_hard_coded_prop("memorized");
+		}
+	}
+
+// TODO: enum_labels
 }
 
 } // End of Tango namespace

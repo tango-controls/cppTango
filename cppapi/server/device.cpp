@@ -2334,7 +2334,8 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
                 EventSupplier::AttributeData ad;
                 ::memset(&ad,0,sizeof(ad));
 
-				if (get_dev_idl_version() <= 2)
+				long vers = get_dev_idl_version();
+				if (vers <= 2)
 				{
 					Tango::AttributeConfig_2 attr_conf_2;
 					attr.get_properties_2(attr_conf_2);
@@ -2344,11 +2345,21 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
                     if (event_supplier_zmq != NULL)
                         event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 				}
-				else
+				else if (vers <= 4)
 				{
 					Tango::AttributeConfig_3 attr_conf_3;
 					attr.get_properties_3(attr_conf_3);
 					ad.attr_conf_3 = &attr_conf_3;
+					if (event_supplier_nd != NULL)
+                        event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+					if (event_supplier_zmq != NULL)
+                        event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+				}
+				else
+				{
+					Tango::AttributeConfig_5 attr_conf_5;
+					attr.get_properties_5(attr_conf_5);
+					ad.attr_conf_5 = &attr_conf_5;
 					if (event_supplier_nd != NULL)
                         event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 					if (event_supplier_zmq != NULL)
@@ -3947,7 +3958,8 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 	    EventSupplier::AttributeData ad;
 	    ::memset(&ad,0,sizeof(ad));
 
-		if (get_dev_idl_version() <= 2)
+		long vers = get_dev_idl_version();
+		if (vers <= 2)
 		{
 			Tango::AttributeConfig_2 attr_conf_2;
 			attr->get_properties_2(attr_conf_2);
@@ -3957,11 +3969,21 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
             if (event_supplier_zmq != NULL)
                 event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
 		}
-		else
+		else if (vers <= 4)
 		{
 			Tango::AttributeConfig_3 attr_conf_3;
 			attr->get_properties_3(attr_conf_3);
             ad.attr_conf_3 = &attr_conf_3;
+            if (event_supplier_nd != NULL)
+                event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
+            if (event_supplier_zmq != NULL)
+                event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
+		}
+		else
+		{
+			Tango::AttributeConfig_5 attr_conf_5;
+			attr->get_properties_5(attr_conf_5);
+            ad.attr_conf_5 = &attr_conf_5;
             if (event_supplier_nd != NULL)
                 event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
             if (event_supplier_zmq != NULL)

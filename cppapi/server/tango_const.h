@@ -44,7 +44,7 @@ namespace Tango
 #define   TANGO_VERSION_MINOR        0
 #define   TANGO_VERSION_PATCH        2
 
-#define   TANGO_BASE_CLASS           Tango::Device_4Impl
+#define   TANGO_BASE_CLASS           Tango::Device_5Impl
 
 #define   __tango_build_string__(s)  #s
 const char * const TgLibVers               = __tango_build_string__(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH);

@@ -86,8 +86,10 @@ cout << "Attr name = " << ev->attr_name << endl;
 				{
 
 //
-// Classical event
+// Classical event: Use the DeviceProxy to the local device to set the att. environment but do not change att name
+// and do not change att label if locally defined
 //
+
 					if (ite->second.fwd_attr == nullptr)
 					{
 						cout << "Change in Attribute config..........." << endl;
@@ -104,12 +106,19 @@ cout << "Attr name = " << ev->attr_name << endl;
 							aile.push_back(*(ev->attr_conf));
 
 							aile[0].name = ite->second.local_att_name;
+							if (ite->second.local_label.empty() == false)
+								aile[0].label = ite->second.local_label;
 
 							ite3->second->set_attribute_config(aile);
+
+//							AttributeConfigList_5 conf_list;
+//							conf_list.length(1);
+
 						}
 					}
 					else
 					{
+
 //
 // Synchronous event due to subscription or event received after a successfull re-connection if the server
 // was started while the root device was off
@@ -174,6 +183,17 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 		nf.local_name = local_dev_name;
 		nf.local_att_name = local_att_name;
 		nf.fwd_attr = att;
+
+		vector<AttrProperty> &def_user_prop = att->get_user_default_properties();
+		vector<AttrProperty>::iterator pos;
+		for (pos = def_user_prop.begin();pos != def_user_prop.end();++pos)
+		{
+            if (pos->get_name() == "label")
+            {
+				nf.local_label = pos->get_value();
+                break;
+			}
+		}
 
 		map<string,DeviceProxy *>::iterator ite;
 		ite = local_dps.find(local_dev_name);

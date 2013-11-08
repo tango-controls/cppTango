@@ -858,6 +858,7 @@ Tango::AttributeConfig_5::operator>>= (cdrStream &_n) const
   data_format >>= _n;
   data_type >>= _n;
   _n.marshalBoolean(memorized);
+  _n.marshalBoolean(mem_init);
   max_dim_x >>= _n;
   max_dim_y >>= _n;
   _n.marshalString(description,0);
@@ -870,6 +871,7 @@ Tango::AttributeConfig_5::operator>>= (cdrStream &_n) const
   _n.marshalString(max_value,0);
   _n.marshalString(writable_attr_name,0);
   level >>= _n;
+  _n.marshalString(root_attr_name,0);
   (const DevVarStringArray&) enum_labels >>= _n;
   (const AttributeAlarm&) att_alarm >>= _n;
   (const EventProperties&) event_prop >>= _n;
@@ -886,6 +888,7 @@ Tango::AttributeConfig_5::operator<<= (cdrStream &_n)
   (AttrDataFormat&)data_format <<= _n;
   (::CORBA::Long&)data_type <<= _n;
   memorized = _n.unmarshalBoolean();
+  mem_init = _n.unmarshalBoolean();
   (::CORBA::Long&)max_dim_x <<= _n;
   (::CORBA::Long&)max_dim_y <<= _n;
   description = _n.unmarshalString(0);
@@ -898,6 +901,7 @@ Tango::AttributeConfig_5::operator<<= (cdrStream &_n)
   max_value = _n.unmarshalString(0);
   writable_attr_name = _n.unmarshalString(0);
   (DispLevel&)level <<= _n;
+  root_attr_name = _n.unmarshalString(0);
   (DevVarStringArray&)enum_labels <<= _n;
   (AttributeAlarm&)att_alarm <<= _n;
   (EventProperties&)event_prop <<= _n;

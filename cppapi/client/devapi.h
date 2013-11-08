@@ -203,6 +203,9 @@ typedef struct _AttributeAlarmInfo
 	string			delta_t;        ///< Delta t RDS
 	string			delta_val;      ///< Delta val RDS
 	vector<string>	extensions;     ///< Future extensions
+
+/// @privatesection
+	bool operator==(const _AttributeAlarmInfo &);
 }AttributeAlarmInfo;
 
 /**
@@ -255,6 +258,9 @@ typedef struct _AttributeEventInfo
 	ChangeEventInfo		ch_event;       ///< Attribute change event info
 	PeriodicEventInfo	per_event;      ///< Attribute periodic event info
 	ArchiveEventInfo	arch_event;     ///< Attribute archive event info
+
+/// @privatesection
+	bool operator==(const _AttributeEventInfo &);
 }AttributeEventInfo;
 
 /**
@@ -265,6 +271,10 @@ typedef struct _AttributeEventInfo
  */
 typedef struct _AttributeInfoEx : public AttributeInfo
 {
+	string				root_attr_name;		///< Root attribute name
+	bool				memorized;			///< Memorized attribute flag
+	bool				mem_init;			///< Write memorized valur at initialisation
+	vector<string>		enum_labels;		///< Enumerated attribute labels
 	AttributeAlarmInfo 	alarms;             ///< Attribute alarms
 	AttributeEventInfo	events;             ///< Attribute events configuration
 	vector<string>		sys_extensions;     ///< Future extensions
@@ -272,6 +282,7 @@ typedef struct _AttributeInfoEx : public AttributeInfo
 /// @privatesection
 	_AttributeInfoEx & operator=(AttributeConfig_2 *);
 	_AttributeInfoEx & operator=(AttributeConfig_3 *);
+	_AttributeInfoEx & operator=(AttributeConfig_5 *);
 
 	friend ostream &operator<<(ostream &,_AttributeInfoEx &);
 	bool operator==(const _AttributeInfoEx &);
@@ -811,6 +822,70 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
                         			      desc.str(), \
 						      (const char*)"DeviceProxy::read_attribute()"); \
 		}
+
+
+#define	COPY_BASE_CONFIG(A) \
+	(*dev_attr_config)[i].name = A[i].name; \
+	(*dev_attr_config)[i].writable = A[i].writable; \
+	(*dev_attr_config)[i].data_format = A[i].data_format; \
+	(*dev_attr_config)[i].data_type = A[i].data_type; \
+	(*dev_attr_config)[i].max_dim_x = A[i].max_dim_x; \
+	(*dev_attr_config)[i].max_dim_y = A[i].max_dim_y; \
+	(*dev_attr_config)[i].description = A[i].description; \
+	(*dev_attr_config)[i].label = A[i].label; \
+	(*dev_attr_config)[i].unit = A[i].unit; \
+	(*dev_attr_config)[i].standard_unit = A[i].standard_unit; \
+	(*dev_attr_config)[i].display_unit = A[i].display_unit; \
+	(*dev_attr_config)[i].format = A[i].format; \
+	(*dev_attr_config)[i].min_value = A[i].min_value; \
+	(*dev_attr_config)[i].max_value = A[i].max_value; \
+	(*dev_attr_config)[i].writable_attr_name = A[i].writable_attr_name; \
+	(*dev_attr_config)[i].extensions.resize(A[i].extensions.length()); \
+	for (size_t j=0; j<A[i].extensions.length(); j++) \
+	{ \
+		(*dev_attr_config)[i].extensions[j] = A[i].extensions[j]; \
+	}
+
+
+#define	COPY_ALARM_CONFIG(A) \
+	(*dev_attr_config)[i].alarms.min_alarm = A[i].att_alarm.min_alarm; \
+	(*dev_attr_config)[i].alarms.max_alarm = A[i].att_alarm.max_alarm; \
+	(*dev_attr_config)[i].alarms.min_warning = A[i].att_alarm.min_warning; \
+	(*dev_attr_config)[i].alarms.max_warning = A[i].att_alarm.max_warning; \
+	(*dev_attr_config)[i].alarms.delta_t = A[i].att_alarm.delta_t; \
+	(*dev_attr_config)[i].alarms.delta_val = A[i].att_alarm.delta_val; \
+	(*dev_attr_config)[i].alarms.extensions.resize(A[i].att_alarm.extensions.length()); \
+	for (size_t j=0; j<A[i].att_alarm.extensions.length(); j++) \
+	{ \
+		(*dev_attr_config)[i].alarms.extensions[j] = A[i].att_alarm.extensions[j]; \
+	}
+
+
+#define	COPY_EVENT_CONFIG(A) \
+	(*dev_attr_config)[i].events.ch_event.rel_change = A[i].event_prop.ch_event.rel_change; \
+	(*dev_attr_config)[i].events.ch_event.abs_change = A[i].event_prop.ch_event.abs_change; \
+	(*dev_attr_config)[i].events.ch_event.extensions.resize(A[i].event_prop.ch_event.extensions.length()); \
+	for (size_t j=0; j<A[i].event_prop.ch_event.extensions.length(); j++) \
+	{ \
+		(*dev_attr_config)[i].events.ch_event.extensions[j] = A[i].event_prop.ch_event.extensions[j]; \
+	} \
+\
+	(*dev_attr_config)[i].events.per_event.period = A[i].event_prop.per_event.period; \
+	(*dev_attr_config)[i].events.per_event.extensions.resize(A[i].event_prop.per_event.extensions.length()); \
+	for (size_t j=0; j<A[i].event_prop.per_event.extensions.length(); j++) \
+	{ \
+		(*dev_attr_config)[i].events.per_event.extensions[j] = A[i].event_prop.per_event.extensions[j]; \
+	} \
+\
+	(*dev_attr_config)[i].events.arch_event.archive_rel_change = A[i].event_prop.arch_event.rel_change; \
+	(*dev_attr_config)[i].events.arch_event.archive_abs_change = A[i].event_prop.arch_event.abs_change; \
+	(*dev_attr_config)[i].events.arch_event.archive_period = A[i].event_prop.arch_event.period; \
+	(*dev_attr_config)[i].events.arch_event.extensions.resize(A[i].event_prop.arch_event.extensions.length()); \
+	for (size_t j=0; j<A[i].event_prop.arch_event.extensions.length(); j++) \
+	{ \
+		(*dev_attr_config)[i].events.arch_event.extensions[j] = A[i].event_prop.arch_event.extensions[j]; \
+	}
+
 
 ///
 /// 				Small utility classes

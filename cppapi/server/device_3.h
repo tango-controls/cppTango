@@ -309,6 +309,9 @@ protected:
 
 	void write_attributes_34(const Tango::AttributeValueList *,const Tango::AttributeValueList_4 *);
 
+	template <typename T,typename V>
+	void set_attribute_config_3_local(const T &,const V &);
+
 private:
 
     class Device_3ImplExt

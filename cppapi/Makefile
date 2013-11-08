@@ -351,6 +351,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			device.h \
 			device_2.h \
 			device_3.h \
+			device_3.tpp \
 			device_4.h \
 			device_5.h \
 			deviceclass.h \

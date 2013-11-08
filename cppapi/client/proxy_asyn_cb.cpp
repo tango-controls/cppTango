@@ -1119,7 +1119,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 	for (int i = 0;i < nb_names;i++)
 		names[i] = attr_names[i].c_str();
 
-	if (version == 4)
+	if (version >= 4)
 	{
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();

@@ -307,6 +307,8 @@ cout << "In FwdAttr::init_conf()" << endl;
 	if (type == READ_WRITE)
 		assoc_name = name;
 	disp_level = root_conf->disp_level;
+	mem = root_conf->memorized;
+	mem_init = root_conf->mem_init;
 
 //
 // Set configuration

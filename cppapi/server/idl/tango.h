@@ -3238,6 +3238,8 @@ omni_mutex *mut_ptr;
 
     ::CORBA::Boolean memorized;
 
+    ::CORBA::Boolean mem_init;
+
     ::CORBA::Long max_dim_x;
 
     ::CORBA::Long max_dim_y;
@@ -3261,6 +3263,8 @@ omni_mutex *mut_ptr;
     ::CORBA::String_member writable_attr_name;
 
     DispLevel level;
+
+    ::CORBA::String_member root_attr_name;
 
     DevVarStringArray enum_labels;
 

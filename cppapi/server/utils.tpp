@@ -253,7 +253,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
             try
             {
-                if (idl_vers == 4)
+                if (idl_vers >= 4)
                 {
                     back_4 = new Tango::AttributeValueList_4(1);
                     back_4->length(1);
@@ -364,7 +364,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 // Init remaining fields
 //
 
-                if (idl_vers == 4)
+                if (idl_vers >= 4)
                 {
                     (*back_4)[0].r_dim.dim_x = (data.get_data())[i].x;
                     (*back_4)[0].r_dim.dim_y = (data.get_data())[i].y;
@@ -401,7 +401,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
             if (attr_failed == false)
             {
-                if (idl_vers == 4)
+                if (idl_vers >= 4)
                 {
                     when.tv_sec  = (*back_4)[0].time.tv_sec - DELTA_T;
                     when.tv_usec = (*back_4)[0].time.tv_usec;
@@ -424,7 +424,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         catch (Tango::DevFailed &)
         {
             if (attr_failed == false)
-                if (idl_vers == 4)
+                if (idl_vers >= 4)
                     delete back_4;
             else
                     delete back_3;

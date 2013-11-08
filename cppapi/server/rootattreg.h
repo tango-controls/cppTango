@@ -43,6 +43,7 @@ struct NameFwdAttr
 {
 	string			local_name;			// Local device name
 	string			local_att_name;		// Local attribute name
+	string			local_label;		// Local attribute label
 	FwdAttr			*fwd_attr;
 };
 

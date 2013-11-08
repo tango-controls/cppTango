@@ -1135,6 +1135,7 @@ static CORBA::PR_structMember _0RL_structmember_Tango_mAttributeConfig__5[] = {
   {"data_format", _0RL_tc_Tango_mAttrDataFormat},
   {"data_type", CORBA::TypeCode::PR_long_tc()},
   {"memorized", CORBA::TypeCode::PR_boolean_tc()},
+  {"mem_init", CORBA::TypeCode::PR_boolean_tc()},
   {"max_dim_x", CORBA::TypeCode::PR_long_tc()},
   {"max_dim_y", CORBA::TypeCode::PR_long_tc()},
   {"description", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
@@ -1147,6 +1148,7 @@ static CORBA::PR_structMember _0RL_structmember_Tango_mAttributeConfig__5[] = {
   {"max_value", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"writable_attr_name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"level", _0RL_tc_Tango_mDispLevel},
+  {"root_attr_name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"enum_labels", _0RL_tc_Tango_mDevVarStringArray},
   {"att_alarm", _0RL_tc_Tango_mAttributeAlarm},
   {"event_prop", _0RL_tc_Tango_mEventProperties},
@@ -1157,7 +1159,7 @@ static CORBA::PR_structMember _0RL_structmember_Tango_mAttributeConfig__5[] = {
 #ifdef _0RL_tc_Tango_mAttributeConfig__5
 #  undef _0RL_tc_Tango_mAttributeConfig__5
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mAttributeConfig__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/AttributeConfig_5:1.0", "AttributeConfig_5", _0RL_structmember_Tango_mAttributeConfig__5, 22, &_0RL_tcTrack);
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mAttributeConfig__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/AttributeConfig_5:1.0", "AttributeConfig_5", _0RL_structmember_Tango_mAttributeConfig__5, 24, &_0RL_tcTrack);
 
 
 

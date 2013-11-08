@@ -2039,12 +2039,13 @@ public:
 // methods not usable for the external world (outside the lib)
 //
 
-    void get_properties(Tango::AttributeConfig &conf);
-	void get_properties_2(Tango::AttributeConfig_2 &conf);
-	void get_properties_3(Tango::AttributeConfig_3 &conf);
-	void set_properties(const Tango::AttributeConfig_3 &conf);
-	void set_properties(const Tango::AttributeConfig &conf,Tango::DeviceImpl *d);
-	void set_properties(const Tango::AttributeConfig_3 &conf,Tango::DeviceImpl *d);
+    void get_properties(Tango::AttributeConfig &);
+	void get_properties_2(Tango::AttributeConfig_2 &);
+	void get_properties_3(Tango::AttributeConfig_3 &);
+	void get_properties_5(Tango::AttributeConfig_5 &);
+	void set_properties(const Tango::AttributeConfig_3 &);
+	void set_properties(const Tango::AttributeConfig &,Tango::DeviceImpl *);
+	void set_properties(const Tango::AttributeConfig_3 &,Tango::DeviceImpl *);
 
 	virtual void set_rvalue() {};
 	void delete_seq();
@@ -2102,8 +2103,10 @@ public:
 	void set_properties(const Tango::AttributeConfig_3 &,string &);
 	void upd_database(const Tango::AttributeConfig &,string &);
 	void upd_database(const Tango::AttributeConfig_3 &,string &);
-	void set_upd_properties(const Tango::AttributeConfig_3 &);
+	void set_upd_properties(const Tango::AttributeConfig_3 &_c) {set_upd_properties(_c,d_name);}
 	void set_upd_properties(const Tango::AttributeConfig_3 &,string &);
+	void set_upd_properties(const Tango::AttributeConfig_5 &_c) {set_upd_properties(_c,d_name);}
+	void set_upd_properties(const Tango::AttributeConfig_5 &,string &);
 
 	bool change_event_subscribed();
 	bool periodic_event_subscribed();
@@ -2196,6 +2199,8 @@ protected:
 
 	template <typename T>
     void set_hard_coded_properties(const T &);
+
+    void check_hard_coded(const AttributeConfig_5 &);
 
 	void add_startup_exception(string,const DevFailed &);
 	void delete_startup_exception(string);

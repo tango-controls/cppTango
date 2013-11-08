@@ -39,9 +39,10 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <device_3.h>
+#include <eventsupplier.h>
+#include <device_3.tpp>
 #include <new>
 
-#include <eventsupplier.h>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -2374,138 +2375,7 @@ void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& ne
 	}
 	store_in_bb = true;
 
-//
-// Return exception if the device does not have any attribute
-//
-
-	long nb_dev_attr = dev_attr->get_attr_nb();
-	if (nb_dev_attr == 0)
-	{
-		Except::throw_exception((const char *)API_AttrNotFound,
-				        (const char *)"The device does not have any attribute",
-				        (const char *)"Device_3Impl::set_attribute_config_3");
-	}
-
-//
-// Get some event related data
-//
-
-	EventSupplier *event_supplier_nd = NULL;
-	EventSupplier *event_supplier_zmq = NULL;
-
-	Tango::Util *tg = Tango::Util::instance();
-
-//
-// Update attribute config first locally then in database
-//
-
-	long nb_attr = new_conf.length();
-	long i;
-
-    EventSupplier::AttributeData ad;
-    ::memset(&ad,0,sizeof(ad));
-
-	try
-	{
-		for (i = 0;i < nb_attr;i++)
-		{
-			Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
-			bool old_alarm = attr.is_alarmed().any();
-
-			attr.set_upd_properties(new_conf[i],device_name);
-
-//
-// In case the attribute quality factor was set to ALARM, reset it to VALID
-//
-
-			if ((attr.get_quality() == Tango::ATTR_ALARM) &&
-			    (old_alarm == true) &&
-			    (attr.is_alarmed().any() == false))
-				attr.set_quality(Tango::ATTR_VALID);
-
-//
-// Send the event
-//
-
-            if (attr.use_notifd_event() == true)
-                event_supplier_nd = tg->get_notifd_event_supplier();
-            else
-                event_supplier_nd = NULL;
-
-            if (attr.use_zmq_event() == true)
-                event_supplier_zmq = tg->get_zmq_event_supplier();
-            else
-                event_supplier_zmq = NULL;
-
-			if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
-			{
-				string tmp_name(new_conf[i].name);
-				ad.attr_conf_3 = &(new_conf[i]);
-				if (event_supplier_nd != NULL)
-                    event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
-                if (event_supplier_zmq != NULL)
-                    event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
-			}
-		}
-
-	}
-	catch (Tango::DevFailed &e)
-	{
-
-//
-// Re build the list of "alarmable" attribute
-//
-
-		dev_attr->get_alarm_list().clear();
-		for (long j = 0;j < nb_dev_attr;j++)
-		{
-			Attribute &att = dev_attr->get_attr_by_ind(j);
-			if (att.is_alarmed().any() == true)
-			{
-				if (att.get_writable() != Tango::WRITE)
-					dev_attr->get_alarm_list().push_back(j);
-			}
-		}
-
-//
-// Change the exception reason flag
-//
-
-		TangoSys_OMemStream o;
-
-		o << e.errors[0].reason;
-		if (i != 0)
-			o << "\nAll previous attribute(s) have been successfully updated";
-		if (i != (nb_attr - 1))
-			o << "\nAll remaining attribute(s) have not been updated";
-		o << ends;
-
-		string s = o.str();
-		e.errors[0].reason = CORBA::string_dup(s.c_str());
-		throw;
-	}
-
-//
-// Re build the list of "alarmable" attribute
-//
-
-	dev_attr->get_alarm_list().clear();
-	for (i = 0;i < nb_dev_attr;i++)
-	{
-		Tango::Attribute &attr = dev_attr->get_attr_by_ind(i);
-		Tango::AttrWriteType w_type = attr.get_writable();
-		if (attr.is_alarmed().any() == true)
-		{
-			if (w_type != Tango::WRITE)
-				dev_attr->get_alarm_list().push_back(i);
-		}
-	}
-
-//
-// Return to caller
-//
-
-	cout4 << "Leaving Device_3Impl::set_attribute_config_3" << endl;
+	return set_attribute_config_3_local(new_conf,new_conf[0]);
 }
 
 

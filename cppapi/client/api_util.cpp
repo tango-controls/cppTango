@@ -1892,6 +1892,88 @@ AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_3 *att_3)
 	return *this;
 }
 
+//+---------------------------------------------------------------------------------------------------------------
+//
+// function :
+// 		operator overloading : 	=
+//
+// description :
+//		Assignement operator for the AttributeInfoEx class from a AttributeConfig_5 pointer
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_5 *att_5)
+{
+	name = att_5->name;
+	writable = att_5->writable;
+	data_format = att_5->data_format;
+	data_type = att_5->data_type;
+	max_dim_x = att_5->max_dim_x;
+	max_dim_y = att_5->max_dim_y;
+	description = att_5->description;
+	label = att_5->label;
+	unit = att_5->unit;
+	standard_unit = att_5->standard_unit;
+	display_unit = att_5->display_unit;
+	format = att_5->format;
+	min_value = att_5->min_value;
+	max_value = att_5->max_value;
+	min_alarm = att_5->att_alarm.min_alarm;
+	max_alarm = att_5->att_alarm.max_alarm;
+	writable_attr_name = att_5->writable_attr_name;
+	extensions.resize(att_5->sys_extensions.length());
+	for (unsigned int j=0; j<att_5->sys_extensions.length(); j++)
+	{
+		extensions[j] = att_5->sys_extensions[j];
+	}
+	disp_level = att_5->level;
+	root_attr_name = att_5->root_attr_name;
+	memorized = att_5->memorized;
+	mem_init = att_5->mem_init;
+	for (unsigned int j=0; j<att_5->enum_labels.length(); j++)
+	{
+		enum_labels[j] = att_5->enum_labels[j];
+	}
+
+	alarms.min_alarm = att_5->att_alarm.min_alarm;
+	alarms.max_alarm = att_5->att_alarm.max_alarm;
+	alarms.min_warning = att_5->att_alarm.min_warning;
+	alarms.max_warning = att_5->att_alarm.max_warning;
+	alarms.delta_t = att_5->att_alarm.delta_t;
+	alarms.delta_val = att_5->att_alarm.delta_val;
+	alarms.extensions.resize(att_5->att_alarm.extensions.length());
+	for (unsigned int j=0; j<att_5->att_alarm.extensions.length(); j++)
+	{
+		alarms.extensions[j] = att_5->att_alarm.extensions[j];
+	}
+
+	events.ch_event.abs_change = att_5->event_prop.ch_event.abs_change;
+	events.ch_event.rel_change = att_5->event_prop.ch_event.rel_change;
+	events.ch_event.extensions.resize(att_5->event_prop.ch_event.extensions.length());
+	for (unsigned int j=0; j<att_5->event_prop.ch_event.extensions.length(); j++)
+	{
+		events.ch_event.extensions[j] = att_5->event_prop.ch_event.extensions[j];
+	}
+
+	events.per_event.period = att_5->event_prop.per_event.period;
+	events.per_event.extensions.resize(att_5->event_prop.per_event.extensions.length());
+	for (unsigned int j=0; j<att_5->event_prop.per_event.extensions.length(); j++)
+	{
+		events.per_event.extensions[j] = att_5->event_prop.per_event.extensions[j];
+	}
+
+	events.arch_event.archive_abs_change = att_5->event_prop.arch_event.abs_change;
+	events.arch_event.archive_rel_change = att_5->event_prop.arch_event.rel_change;
+	events.arch_event.archive_period = att_5->event_prop.arch_event.period;
+	events.arch_event.extensions.resize(att_5->event_prop.arch_event.extensions.length());
+	for (unsigned int j=0; j<att_5->event_prop.arch_event.extensions.length(); j++)
+	{
+		events.arch_event.extensions[j] = att_5->event_prop.arch_event.extensions[j];
+	}
+
+	return *this;
+}
+
 //+----------------------------------------------------------------------------------------------------------------
 //
 // function :
@@ -1971,7 +2053,17 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	}
 
 	if ((p.writable == Tango::WRITE) || (p.writable == Tango::READ_WRITE))
+	{
 		o_str << "Attribute is writable" << endl;
+		if (p.memorized == true)
+		{
+			o_str << "Attribute is memorized" << endl;
+			if (p.mem_init == true)
+				o_str << "Attribute is written with memorized value at initialisation" << endl;
+		}
+		else
+			o_str << "Attribute is not memorized" << endl;
+	}
 	else
 		o_str << "Attribute is not writable" << endl;
 	o_str << "Attribute label = " << p.label << endl;
@@ -1983,6 +2075,7 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	o_str << "Attribute min value = " << p.min_value << endl;
 	o_str << "Attribute max value = " << p.max_value << endl;
 	o_str << "Attribute writable_attr_name = " << p.writable_attr_name << endl;
+	o_str << "Root attribute name = " << p.root_attr_name << endl;
 
 	unsigned int i;
 	for (i = 0;i < p.extensions.size();i++)

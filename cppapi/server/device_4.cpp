@@ -45,6 +45,9 @@ static const char *RcsId = "$Id$";
 
 #include <tango.h>
 #include <device_4.h>
+#include <eventsupplier.h>
+#include <device_3.tpp>
+
 
 namespace Tango
 {
@@ -744,7 +747,7 @@ void Device_4Impl::set_attribute_config_4(const Tango::AttributeConfigList_3& ne
 //
 
 	store_in_bb = false;
-	return set_attribute_config_3(new_conf);
+	return set_attribute_config_3_local(new_conf,new_conf[0]);
 }
 
 //+-------------------------------------------------------------------------

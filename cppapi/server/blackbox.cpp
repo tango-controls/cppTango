@@ -1147,6 +1147,15 @@ void BlackBox::build_info_as_str(long index)
 			elt_str = elt_str + ") ";
 			break;
 
+		case Op_Get_Attr_Config_5 :
+			elt_str = elt_str + "get_attribute_config_5 ";
+			break;
+
+		case Op_Set_Attr_Config_5 :
+			elt_str = elt_str + "set_attribute_config_5 ";
+			break;
+
+
 		case Op_Unknown :
 			elt_str = elt_str + "unknown operation !!!!!";
 			return;

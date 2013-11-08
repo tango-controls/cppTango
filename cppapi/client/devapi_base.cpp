@@ -3652,6 +3652,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 	AttributeConfigList_var attr_config_list;
 	AttributeConfigList_2_var attr_config_list_2;
 	AttributeConfigList_3_var attr_config_list_3;
+	AttributeConfigList_5_var attr_config_list_5;
 	AttributeInfoListEx *dev_attr_config = new AttributeInfoListEx();
 	DevVarStringArray attr_list;
 	int ctr = 0;
@@ -3683,147 +3684,87 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 		{
 			check_and_reconnect();
 
-			if (version == 1)
+			switch (version)
 			{
+			case 1:
 				attr_config_list = device->get_attribute_config(attr_list);
-
 				dev_attr_config->resize(attr_config_list->length());
 
-				for (unsigned int i=0; i<attr_config_list->length(); i++)
+				for (size_t i=0; i<attr_config_list->length(); i++)
 				{
-					(*dev_attr_config)[i].name = attr_config_list[i].name;
-					(*dev_attr_config)[i].writable = attr_config_list[i].writable;
-					(*dev_attr_config)[i].data_format = attr_config_list[i].data_format;
-					(*dev_attr_config)[i].data_type = attr_config_list[i].data_type;
-					(*dev_attr_config)[i].max_dim_x = attr_config_list[i].max_dim_x;
-					(*dev_attr_config)[i].max_dim_y = attr_config_list[i].max_dim_y;
-					(*dev_attr_config)[i].description = attr_config_list[i].description;
-					(*dev_attr_config)[i].label = attr_config_list[i].label;
-					(*dev_attr_config)[i].unit = attr_config_list[i].unit;
-					(*dev_attr_config)[i].standard_unit = attr_config_list[i].standard_unit;
-					(*dev_attr_config)[i].display_unit = attr_config_list[i].display_unit;
-					(*dev_attr_config)[i].format = attr_config_list[i].format;
-					(*dev_attr_config)[i].min_value = attr_config_list[i].min_value;
-					(*dev_attr_config)[i].max_value = attr_config_list[i].max_value;
+					COPY_BASE_CONFIG(attr_config_list)
 					(*dev_attr_config)[i].min_alarm = attr_config_list[i].min_alarm;
 					(*dev_attr_config)[i].max_alarm = attr_config_list[i].max_alarm;
-					(*dev_attr_config)[i].writable_attr_name = attr_config_list[i].writable_attr_name;
-					(*dev_attr_config)[i].extensions.resize(attr_config_list[i].extensions.length());
-					for (unsigned int j=0; j<attr_config_list[i].extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].extensions[j] = attr_config_list[i].extensions[j];
-					}
 					(*dev_attr_config)[i].disp_level = Tango::OPERATOR;
 				}
-			}
-			else if (version == 2)
-			{
-				attr_config_list_2 = device_2->get_attribute_config_2(attr_list);
+				break;
 
+
+			case 2:
+				attr_config_list_2 = device_2->get_attribute_config_2(attr_list);
 				dev_attr_config->resize(attr_config_list_2->length());
 
-				for (unsigned int i=0; i<attr_config_list_2->length(); i++)
+				for (size_t i=0; i<attr_config_list_2->length(); i++)
 				{
-					(*dev_attr_config)[i].name = attr_config_list_2[i].name;
-					(*dev_attr_config)[i].writable = attr_config_list_2[i].writable;
-					(*dev_attr_config)[i].data_format = attr_config_list_2[i].data_format;
-					(*dev_attr_config)[i].data_type = attr_config_list_2[i].data_type;
-					(*dev_attr_config)[i].max_dim_x = attr_config_list_2[i].max_dim_x;
-					(*dev_attr_config)[i].max_dim_y = attr_config_list_2[i].max_dim_y;
-					(*dev_attr_config)[i].description = attr_config_list_2[i].description;
-					(*dev_attr_config)[i].label = attr_config_list_2[i].label;
-					(*dev_attr_config)[i].unit = attr_config_list_2[i].unit;
-					(*dev_attr_config)[i].standard_unit = attr_config_list_2[i].standard_unit;
-					(*dev_attr_config)[i].display_unit = attr_config_list_2[i].display_unit;
-					(*dev_attr_config)[i].format = attr_config_list_2[i].format;
-					(*dev_attr_config)[i].min_value = attr_config_list_2[i].min_value;
-					(*dev_attr_config)[i].max_value = attr_config_list_2[i].max_value;
+					COPY_BASE_CONFIG(attr_config_list_2)
 					(*dev_attr_config)[i].min_alarm = attr_config_list_2[i].min_alarm;
 					(*dev_attr_config)[i].max_alarm = attr_config_list_2[i].max_alarm;
-					(*dev_attr_config)[i].writable_attr_name = attr_config_list_2[i].writable_attr_name;
-					(*dev_attr_config)[i].extensions.resize(attr_config_list_2[i].extensions.length());
-					for (unsigned int j=0; j<attr_config_list_2[i].extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].extensions[j] = attr_config_list_2[i].extensions[j];
-					}
 					(*dev_attr_config)[i].disp_level = attr_config_list_2[i].level;
 				}
 
 				get_remaining_param(dev_attr_config);
-			}
-			else
-			{
-				attr_config_list_3 = device_3->get_attribute_config_3(attr_list);
+				break;
 
+			case 3:
+			case 4:
+				attr_config_list_3 = device_3->get_attribute_config_3(attr_list);
 				dev_attr_config->resize(attr_config_list_3->length());
 
-				for (unsigned int i=0; i<attr_config_list_3->length(); i++)
+				for (size_t i=0; i<attr_config_list_3->length(); i++)
 				{
-					unsigned int j;
-					(*dev_attr_config)[i].name = attr_config_list_3[i].name;
-					(*dev_attr_config)[i].writable = attr_config_list_3[i].writable;
-					(*dev_attr_config)[i].data_format = attr_config_list_3[i].data_format;
-					(*dev_attr_config)[i].data_type = attr_config_list_3[i].data_type;
-					(*dev_attr_config)[i].max_dim_x = attr_config_list_3[i].max_dim_x;
-					(*dev_attr_config)[i].max_dim_y = attr_config_list_3[i].max_dim_y;
-					(*dev_attr_config)[i].description = attr_config_list_3[i].description;
-					(*dev_attr_config)[i].label = attr_config_list_3[i].label;
-					(*dev_attr_config)[i].unit = attr_config_list_3[i].unit;
-					(*dev_attr_config)[i].standard_unit = attr_config_list_3[i].standard_unit;
-					(*dev_attr_config)[i].display_unit = attr_config_list_3[i].display_unit;
-					(*dev_attr_config)[i].format = attr_config_list_3[i].format;
-					(*dev_attr_config)[i].min_value = attr_config_list_3[i].min_value;
-					(*dev_attr_config)[i].max_value = attr_config_list_3[i].max_value;
-					(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
-					(*dev_attr_config)[i].writable_attr_name = attr_config_list_3[i].writable_attr_name;
-					(*dev_attr_config)[i].extensions.resize(attr_config_list_3[i].extensions.length());
-					for (j=0; j<attr_config_list_3[i].extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].extensions[j] = attr_config_list_3[i].extensions[j];
-					}
-					for (j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
+					COPY_BASE_CONFIG(attr_config_list_3)
+
+					for (size_t j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
 					{
 						(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_3[i].sys_extensions[j];
 					}
+					(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
+					(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
 					(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
 
-					(*dev_attr_config)[i].alarms.min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
-					(*dev_attr_config)[i].alarms.max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
-					(*dev_attr_config)[i].alarms.min_warning = attr_config_list_3[i].att_alarm.min_warning;
-					(*dev_attr_config)[i].alarms.max_warning = attr_config_list_3[i].att_alarm.max_warning;
-					(*dev_attr_config)[i].alarms.delta_t = attr_config_list_3[i].att_alarm.delta_t;
-					(*dev_attr_config)[i].alarms.delta_val = attr_config_list_3[i].att_alarm.delta_val;
-					(*dev_attr_config)[i].alarms.extensions.resize(attr_config_list_3[i].att_alarm.extensions.length());
-					for (j=0; j<attr_config_list_3[i].att_alarm.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].alarms.extensions[j] = attr_config_list_3[i].att_alarm.extensions[j];
-					}
+					COPY_ALARM_CONFIG(attr_config_list_3)
 
-					(*dev_attr_config)[i].events.ch_event.rel_change = attr_config_list_3[i].event_prop.ch_event.rel_change;
-					(*dev_attr_config)[i].events.ch_event.abs_change = attr_config_list_3[i].event_prop.ch_event.abs_change;
-					(*dev_attr_config)[i].events.ch_event.extensions.resize(attr_config_list_3[i].event_prop.ch_event.extensions.length());
-					for (j=0; j<attr_config_list_3[i].event_prop.ch_event.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].events.ch_event.extensions[j] = attr_config_list_3[i].event_prop.ch_event.extensions[j];
-					}
-
-					(*dev_attr_config)[i].events.per_event.period = attr_config_list_3[i].event_prop.per_event.period;
-					(*dev_attr_config)[i].events.per_event.extensions.resize(attr_config_list_3[i].event_prop.per_event.extensions.length());
-					for (j=0; j<attr_config_list_3[i].event_prop.per_event.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].events.per_event.extensions[j] = attr_config_list_3[i].event_prop.per_event.extensions[j];
-					}
-
-					(*dev_attr_config)[i].events.arch_event.archive_rel_change = attr_config_list_3[i].event_prop.arch_event.rel_change;
-					(*dev_attr_config)[i].events.arch_event.archive_abs_change = attr_config_list_3[i].event_prop.arch_event.abs_change;
-					(*dev_attr_config)[i].events.arch_event.archive_period = attr_config_list_3[i].event_prop.arch_event.period;
-					(*dev_attr_config)[i].events.arch_event.extensions.resize(attr_config_list_3[i].event_prop.arch_event.extensions.length());
-					for (j=0; j<attr_config_list_3[i].event_prop.arch_event.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].events.arch_event.extensions[j] = attr_config_list_3[i].event_prop.arch_event.extensions[j];
-					}
+					COPY_EVENT_CONFIG(attr_config_list_3)
 				}
+				break;
+
+			case 5:
+				attr_config_list_5 = device_5->get_attribute_config_5(attr_list);
+				dev_attr_config->resize(attr_config_list_5->length());
+
+				for (size_t i=0; i<attr_config_list_5->length(); i++)
+				{
+					COPY_BASE_CONFIG(attr_config_list_5)
+
+					for (size_t j=0; j<attr_config_list_5[i].sys_extensions.length(); j++)
+					{
+						(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_5[i].sys_extensions[j];
+					}
+					(*dev_attr_config)[i].disp_level = attr_config_list_5[i].level;
+					(*dev_attr_config)[i].min_alarm = attr_config_list_5[i].att_alarm.min_alarm;
+					(*dev_attr_config)[i].max_alarm = attr_config_list_5[i].att_alarm.max_alarm;
+					(*dev_attr_config)[i].root_attr_name = attr_config_list_5[i].root_attr_name;
+					(*dev_attr_config)[i].memorized = attr_config_list_5[i].memorized;
+					(*dev_attr_config)[i].mem_init = attr_config_list_5[i].mem_init;
+
+					COPY_ALARM_CONFIG(attr_config_list_5)
+
+					COPY_EVENT_CONFIG(attr_config_list_5)
+				}
+				break;
+
+			default:
+				break;
 			}
 
 			ctr = 2;

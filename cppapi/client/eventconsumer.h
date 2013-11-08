@@ -525,6 +525,7 @@ private :
     ZmqAttributeValue_4                     zav4;
     AttributeConfig_2_var                   ac2;
     AttributeConfig_3_var                   ac3;
+    AttributeConfig_5_var					ac5;
     AttDataReady_var                        adr;
     DevErrorList_var                        del;
 

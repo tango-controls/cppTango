@@ -1,9 +1,9 @@
 static const char *RcsId = "$Id$";
 
-//
+//+==================================================================================================================
 // devapi_utils.cpp 	- C++ source code file for TANGO device api
 //
-// programmer(s)	-Emmanuel Taurel(taurel@esrf.fr)
+// programmer(s)	- Emmanuel Taurel(taurel@esrf.fr)
 //
 // original 		- November 2007
 //
@@ -14,22 +14,20 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Lesser Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//
+//+==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -44,14 +42,15 @@ namespace Tango
 {
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::from_hist4_2_AttHistory()
+// method :
+// 		DeviceProxy::from_hist4_2_AttHistory()
 //
-// Convert the attribute history as returned by a IDL 4 device to the classical
-// DeviceAttributeHistory format
+// description :
+// 		Convert the attribute history as returned by a IDL 4 device to the classical DeviceAttributeHistory format
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<DeviceAttributeHistory> *ddh)
 {
@@ -409,14 +408,15 @@ void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<De
 
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::from_hist4_2_DataHistory()
+// method :
+// 		DeviceProxy::from_hist4_2_DataHistory()
 //
-// Convert the command history as returned by a IDL 4 device to the classical
-// DeviceDataHistory format
+// description :
+// 		Convert the command history as returned by a IDL 4 device to the classical DeviceDataHistory format
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<DeviceDataHistory> *ddh)
 {
@@ -912,11 +912,11 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
 // Some operator method definition to make Python binding development easier
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 bool _DevCommandInfo::operator==(const _DevCommandInfo &dci)
 {
@@ -955,9 +955,40 @@ bool _AttributeInfo::operator==(const _AttributeInfo &ai)
 	return DeviceAttributeConfig::operator==(ai) && disp_level == ai.disp_level;
 }
 
+bool _AttributeAlarmInfo::operator==(const _AttributeAlarmInfo &aai)
+{
+	return min_alarm == aai.min_alarm &&
+		   max_alarm == aai.max_alarm &&
+		   min_warning == aai.min_warning &&
+		   max_warning == aai.max_warning &&
+		   delta_t == aai.delta_t &&
+		   delta_val == aai.delta_val &&
+		   extensions == aai.extensions;
+}
+
+bool _AttributeEventInfo::operator==(const _AttributeEventInfo &aei)
+{
+	return ch_event.rel_change == aei.ch_event.rel_change &&
+		   ch_event.abs_change == aei.ch_event.abs_change &&
+		   ch_event.extensions == aei.ch_event.extensions &&
+		   per_event.period == aei.per_event.period &&
+		   per_event.extensions == aei.per_event.extensions &&
+		   arch_event.archive_abs_change == aei.arch_event.archive_abs_change &&
+		   arch_event.archive_rel_change == aei.arch_event.archive_rel_change &&
+		   arch_event.archive_period == aei.arch_event.archive_period &&
+		   arch_event.extensions == aei.arch_event.extensions;
+}
+
 bool _AttributeInfoEx::operator==(const _AttributeInfoEx &aie)
 {
-	return AttributeInfo::operator==(aie) && sys_extensions == aie.sys_extensions;
+	return AttributeInfo::operator==(aie) &&
+		   alarms.AttributeAlarmInfo::operator==(aie.alarms) &&
+		   events.AttributeEventInfo::operator==(aie.events) &&
+		   sys_extensions == aie.sys_extensions &&
+		   root_attr_name == aie.root_attr_name &&
+		   memorized == aie.memorized &&
+		   mem_init == aie.mem_init &&
+		   enum_labels == aie.enum_labels;
 }
 
 
