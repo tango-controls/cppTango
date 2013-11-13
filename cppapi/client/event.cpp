@@ -61,19 +61,19 @@ vector<string> EventConsumer::env_var_fqdn_prefix;
 
 KeepAliveThCmd EventConsumer::cmd;
 
-/************************************************************************/
-/*		       															*/
-/* 		(client_)leavefunc function 									*/
-/*		------------------								    			*/
-/*		       															*/
-/* This function will be executed at process exit or when the main      */
-/* returned.  It has to be executed to properly shutdown and destroy    */
-/* the ORB used by as a server by the event system. The ORB loop is in  */
-/* EventConsumer thread. Therefore, get a reference to it, shutdown the */
-/* ORB and wait until the thread exit.				        			*/
-/* It also destroys the heartbeat filters								*/
-/*																		*/
-/************************************************************************/
+//+--------------------------------------------------------------------------------------------------------------------
+//
+// function :
+//		client_leavefunc and leavefunc
+//
+// description :
+//		This function will be executed at process exit or when the main returned.  It has to be executed to properly
+//		shutdown and destroy the ORB used by as a server by the event system. The ORB loop is in EventConsumer thread.
+//		Therefore, get a reference to it, shutdown the ORB and wait until the thread exit. It also destroys the
+//		heartbeat filters
+//
+//--------------------------------------------------------------------------------------------------------------------
+
 void client_leavefunc()
 {
 	leavefunc();
@@ -105,9 +105,9 @@ void leavefunc()
 	{
 		notifd_ec->shutdown();
 
-		//
-		// Shut-down the ORB and wait for the thread to exit
-		//
+//
+// Shut-down the ORB and wait for the thread to exit
+//
 
 		int *rv;
 		notifd_ec->orb_->shutdown(true);
@@ -127,19 +127,21 @@ void leavefunc()
 }
 
 
-
-/************************************************************************/
-/*		       															*/
-/* 			EventConsumer class 										*/
-/*			-------------------											*/
-/*		       															*/
-/************************************************************************/
+//+--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::EventConsumer
+//
+// description :
+//		Constructor for the EventConsumer class
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 EventConsumer::EventConsumer(ApiUtil *api_ptr)
 {
+
 //
-// Build and store the fqdn prefix for devices in the TANGO_HOST
-// environment variable (in lower case letters)
+// Build and store the fqdn prefix for devices in the TANGO_HOST environment variable (in lower case letters)
 //
 
     if (env_var_fqdn_prefix.empty() == true)
@@ -228,9 +230,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
         subscribe_event_id = 0;
 
 //
-// Install a function to be executed at exit
-// This is the only way I found to properly
-// shutdown and destroy the ORB.
+// Install a function to be executed at exit. This is the only way I found to properly shutdown and destroy the ORB.
 // Don't do this for windows DLL.
 //
 // Is this necessary when events are used within a server ?
@@ -253,8 +253,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
         api_ptr->need_reset_already_flag(true);
 
 //
-// Create and start the EventConsumerKeepAliveThread
-// Do this at the method's end because the keep_alive_thread
+// Create and start the EventConsumerKeepAliveThread. Do this at the method's end because the keep_alive_thread
 // ptr is also used as a "init done" flag.
 //
 
@@ -265,14 +264,15 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
     }
 }
 
-//+----------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::shutdown()
+// method :
+//		EventConsumer::shutdown()
 //
-// description : 	Method to stop the keep alive thread and to
-//                  disconnect from all used event channels
+// description :
+//		Method to stop the keep alive thread and to disconnect from all used event channels
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 void EventConsumer::shutdown()
 {
 	cout3 << "calling Tango::EventConsumer::shutdown() \n";
@@ -324,19 +324,22 @@ void EventConsumer::shutdown_keep_alive_thread()
     }
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::connect()
+// method :
+//		EventConsumer::connect()
 //
-// description :    This method is a wrapper around the connection
-//                  to the event channel (heartbeat event)
+// description :
+//		This method is a wrapper around the connection to the event channel (heartbeat event)
 //
-// argument : in :  device_proxy : The device handle
-//                  d_name : The FQDN (lower case)
-//                  dd : The server command result (Used by ZMQ event system only)
-//                  adm_name : The admin device name
+// argument :
+//		in :
+//			- device_proxy : The device handle
+//          - d_name : The FQDN (lower case)
+//          - dd : The server command result (Used by ZMQ event system only)
+//          - adm_name : The admin device name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData &dd,string &adm_name)
 {
@@ -347,10 +350,8 @@ void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData 
 	}
 
 //
-// If no connection exists to this channel then connect to it.
-// Sometimes, this method is called in order to reconnect
-// to the notifd. In such a case, the lock is already
-// locked before the method is called
+// If no connection exists to this channel then connect to it. Sometimes, this method is called in order to reconnect
+// to the notifd. In such a case, the lock is already locked before the method is called
 //
 
 	std::map<std::string,EventChannelStruct>::iterator ipos = channel_map.find(channel_name);
@@ -379,6 +380,24 @@ void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData 
 }
 
 
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::attr_to_device()
+//
+// description :
+//		Method to initialize in the DeviceAttribute instance given to the user the attribute value which are received
+//      in a AttrValUnion (or in a class inheriting from)
+//
+// argument :
+//		in :
+//			- attr_value :
+//			- attr_value_3 :
+//			- vers :
+//		out :
+//			- dev_attr :
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 				   const AttributeValue_3 *attr_value_3,
@@ -721,19 +740,22 @@ void EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4,Devic
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::att_union_to_device()
+// method :
+//		EventConsumer::att_union_to_device()
 //
-// description : 	Method to initialize in the DeviceAttribute instance
-//                  given to the user the attribute value which are received
-//                  in a AttrValUnion (or in a class inheriting from)
+// description :
+//		Method to initialize in the DeviceAttribute instance given to the user the attribute value which are received
+//      in a AttrValUnion (or in a class inheriting from)
 //
-// argument : in :  union_ptr : Pointer to the received union
-//			        dev_attr  : Pointer to the DeviceAttribute which will be given
-//                              to the user
+// argument :
+//		in :
+//			- union_ptr : Pointer to the received union
+//		out :
+//			- dev_attr  : Pointer to the DeviceAttribute which will be given to the user
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr)
 {
@@ -1001,22 +1023,26 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
     }
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::subscribe_event()
+// method :
+//		EventConsumer::subscribe_event()
 //
-// description : 	Method to subscribe to an event with the callback mechanism.
-//                  Can be called in a stateless way, that it even works
-//                  when the attribute is not available.
+// description :
+//		Method to subscribe to an event with the callback mechanism. Can be called in a stateless way, that it even
+//		works when the attribute is not available.
 //
-// argument : in :  device    : The device handle
-//			        attribute : The name of the attribute
-//			        event     : The type of event to subscribe for
-//			        callback  : A pointer to the callback object
-//			        filters   : Eventual event filter strings
-//                  stateless : Flag to enable the stateless connection when set to true
+// argument :
+//		in :
+//			- device    : The device handle
+//			- attribute : The name of the attribute
+//			- event     : The type of event to subscribe for
+//			- callback  : A pointer to the callback object
+//			- filters   : Eventual event filter strings
+//          - stateless : Flag to enable the stateless connection when set to true
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
+
 int EventConsumer::subscribe_event (DeviceProxy *device,
 				   const string &attribute,
 				   EventType event,
@@ -1035,23 +1061,25 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::subscribe_event()
+// method :
+//		EventConsumer::subscribe_event()
 //
-// description : 	Method to subscribe to an event with the event_queue mechanism.
-//                  Can be called in a stateless way, that it even works
-//                  when the attribute is not available.
+// description :
+//		Method to subscribe to an event with the event_queue mechanism. Can be called in a stateless way, that it even
+//		works when the attribute is not available.
 //
-// argument : in :  device    : The device handle
-//			        attribute : The name of the attribute
-//			        event     : The type of event to subscribe for
-//			        event_queue_size:  The size of the circular buffer for incoming
-//                                     events
-//			        filters   : Eventual event filter strings
-//                  stateless : Flag to enable the stateless connection when set to true
+// argument :
+//		in :
+//			- device    : The device handle
+//			- attribute : The name of the attribute
+//			- event     : The type of event to subscribe for
+//			- event_queue_size:  The size of the circular buffer for incoming events
+//			- filters   : Eventual event filter strings
+//          - stateless : Flag to enable the stateless connection when set to true
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 int EventConsumer::subscribe_event (DeviceProxy *device,
 				   const string &attribute,
 				   EventType event,
@@ -1160,22 +1188,26 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 }
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::connect_event()
+// method :
+//		EventConsumer::connect_event()
 //
-// description : 	Main nethod called by the subsccribe_event call
+// description :
+//		Main nethod called by the subsccribe_event call
 //
-// argument : in :	device : The device handle
-//			        attribute : The name of the attribute
-//			        event : The type of event to subscribe for
-//			        callback : A pointer to the callback object
-//					ev_queue : A pointer to the event queue
-//			        filters : Eventual event filter strings
-//					event_name : The event name
-//                  event_id  : the unique event ID
+// argument :
+//		in :
+//			- device : The device handle
+//			- attribute : The name of the attribute
+//			- event : The type of event to subscribe for
+//			- callback : A pointer to the callback object
+//			- ev_queue : A pointer to the event queue
+//			- filters : Eventual event filter strings
+//			- event_name : The event name
+//          - event_id  : the unique event ID
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 int EventConsumer::connect_event(DeviceProxy *device,
 				   const string &attribute,
@@ -1228,8 +1260,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	callback_key = local_callback_key;
 
 //
-// Do we already have this event in the callback map?
-// If yes, simply add this new callback to the event callback list
+// Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
 //
 
 	EvCbIte iter = event_callback_map.find(local_callback_key);
@@ -1242,8 +1273,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 //
 // Inform server that we want to subscribe (we cannot use the asynchronous fire-and-forget
-// request so as not to block the client because it does not reconnect if the device is
-// down !)
+// request so as not to block the client because it does not reconnect if the device is down !)
 // To do this, we need to build DS adm device proxy. If it is not the first call for this
 // DS, we should find it in map. Otherwise, get it.
 //
@@ -1317,8 +1347,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 //
 // DS before Tango 7.1 does not send their Tango_host in the event
-// Refuse to subscribe to an event from a DS before Tango 7.1 if the device
-// is in another CS than the one defined by the TANGO_HOST env. variable
+// Refuse to subscribe to an event from a DS before Tango 7.1 if the device is in another CS than the one defined by
+// the TANGO_HOST env. variable
 //
 
 		if (dd.is_empty() == true)
@@ -1484,16 +1514,14 @@ int EventConsumer::connect_event(DeviceProxy *device,
     iter = ret.first;
 
 //
-// Read the attribute by a simple synchronous call
-// This is necessary for the first point in "change" mode
+// Read the attribute by a simple synchronous call.This is necessary for the first point in "change" mode
 // Force callback execution when it is done
 //
 
 	get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second);
 
 //
-// Sleep for some mS (20) in order to give to ZMQ some times to propagate the subscription
-// to the publisher
+// Sleep for some mS (20) in order to give to ZMQ some times to propagate the subscription to the publisher
 //
 
 #ifndef _TG_WINDOWS_
@@ -1509,15 +1537,19 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	return ret_event_id;
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventConsumer::unsubscribe_event()
+// method :
+//		EventConsumer::unsubscribe_event()
 //
-// description : 	Method to unsubscribe from an event
+// description :
+//		Method to unsubscribe from an event
 //
-// argument : in :	event_id : The event identifier
+// argument :
+//		in :
+//			- event_id : The event identifier
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void EventConsumer::unsubscribe_event(int event_id)
 {
@@ -1533,8 +1565,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 
 //
 // First, we need to check if the unsubscribe is not done within a callback
-// Do not take a WriterLock because the push_structured_event method already holds
-// a Reader lock
+// Do not take a WriterLock because the push_structured_event method already holds a Reader lock
 // In such a case, the real unsubscribe will be done later via a thread
 //
 
@@ -1568,8 +1599,8 @@ void EventConsumer::unsubscribe_event(int event_id)
 	}
 
 //
-// Ask the main ZMQ thread to delay all incoming event until this meethod
-// exit. A dead lock could happen if we don't do this (really experienced!)
+// Ask the main ZMQ thread to delay all incoming event until this method exit. A dead lock could happen if we don't
+// do this (really experienced!)
 //
 
     DelayEvent de(this);
@@ -1777,19 +1808,24 @@ void DelayedEventUnsubThread::run(TANGO_UNUSED(void *ptr))
 	catch(...) {}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::get_events()
+// method :
+//		EventConsumer::get_events()
 //
-// description :  Return a vector with all events stored in the event queue.
-//                Events are kept in the buffer since the last extraction
-//                with get_events().
-//                After returning the event data, the event queue gets
-//                emptied!
+// description :
+//		Return a vector with all events stored in the event queue. Events are kept in the buffer since the last
+//		extraction with get_events().
+//      After returning the event data, the event queue gets emptied!
 //
-// argument : in  : event_id   : The event identifier
-// argument : out : event_list : A reference to an event data list to be filled
-//-----------------------------------------------------------------------------
+// argument :
+//		in  :
+//			- event_id   : The event identifier
+// 		out :
+//			- event_list : A reference to an event data list to be filled
+//
+//-------------------------------------------------------------------------------------------------------------------
+
 void EventConsumer::get_events (int event_id, EventDataList &event_list)
 {
 
@@ -1798,9 +1834,10 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -1831,9 +1868,9 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -1870,20 +1907,24 @@ void EventConsumer::get_events (int event_id, EventDataList &event_list)
 			(const char*)"EventConsumer::get_events()");
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::get_events()
+// method :
+//		EventConsumer::get_events()
 //
-// description :  Return a vector with all attribute configuration events
-//                stored in the event queue.
-//                Events are kept in the buffer since the last extraction
-//                with get_events().
-//                After returning the event data, the event queue gets
-//                emptied!
+// description :
+//		Return a vector with all attribute configuration events stored in the event queue.
+//      Events are kept in the buffer since the last extraction with get_events().
+//      After returning the event data, the event queue gets emptied!
 //
-// argument : in  : event_id   : The event identifier
-// argument : out : event_list : A reference to an event data list to be filled
-//-----------------------------------------------------------------------------
+// argument :
+//		in  :
+//			- event_id   : The event identifier
+// 		out :
+//			- event_list : A reference to an event data list to be filled
+//
+//------------------------------------------------------------------------------------------------------------------
+
 void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 {
 	cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
@@ -1891,9 +1932,10 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -1924,9 +1966,9 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -1970,9 +2012,10 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -2003,9 +2046,9 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -2042,20 +2085,24 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 			(const char*)"EventConsumer::get_events()");
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::get_events()
+// method :
+//		EventConsumer::get_events()
 //
-// description :  Call the callback method for all events stored
-//                in the event queue.
-//                Events are kept in the buffer since the last extraction
-//                with get_events().
-//                After returning the event data, the event queue gets
-//                emptied!
+// description :
+//		Call the callback method for all events stored in the event queue.
+//      Events are kept in the buffer since the last extraction with get_events().
+//      After returning the event data, the event queue gets emptied!
 //
-// argument : in  : event_id   : The event identifier
-// argument : out : event_list : A reference to an event data list to be filled
-//-----------------------------------------------------------------------------
+// argument :
+//		in  :
+//			- event_id   : The event identifier
+// 		out :
+//			- event_list : A reference to an event data list to be filled
+//
+//-------------------------------------------------------------------------------------------------------------------
+
 void EventConsumer::get_events (int event_id, CallBack *cb)
 {
 
@@ -2064,9 +2111,10 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -2097,9 +2145,9 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -2136,15 +2184,20 @@ void EventConsumer::get_events (int event_id, CallBack *cb)
 			(const char*)"EventConsumer::get_events()");
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::event_queue_size()
+// method :
+//		EventConsumer::event_queue_size()
 //
-// description :  Returns the number of events stored in the event queue
+// description :
+//		Returns the number of events stored in the event queue
 //
-// argument : in : event_id   : The event identifier
+// argument :
+//		in :
+//			- event_id   : The event identifier
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
+
 int  EventConsumer::event_queue_size(int event_id)
 {
 	cout3 << "EventConsumer::event_queue_size() : event_id = " << event_id << endl;
@@ -2152,9 +2205,10 @@ int  EventConsumer::event_queue_size(int event_id)
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -2184,9 +2238,9 @@ int  EventConsumer::event_queue_size(int event_id)
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -2228,15 +2282,20 @@ int  EventConsumer::event_queue_size(int event_id)
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::is_event_queue_empty()
+// method :
+//		EventConsumer::is_event_queue_empty()
 //
-// description :  Returns true when the event queue is empty
+// description :
+//		Returns true when the event queue is empty
 //
-// argument : in : event_id   : The event identifier
+// argument :
+//		in :
+//			- event_id   : The event identifier
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
+
 bool EventConsumer::is_event_queue_empty(int event_id)
 {
 	cout3 << "EventConsumer::is_event_queue_empty() : event_id = " << event_id << endl;
@@ -2244,9 +2303,10 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -2276,9 +2336,9 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -2319,15 +2379,20 @@ bool EventConsumer::is_event_queue_empty(int event_id)
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::get_last_event_date()
+// method :
+//		EventConsumer::get_last_event_date()
 //
-// description :  Get the time stamp of the last inserted event
+// description :
+//		Get the time stamp of the last inserted event
 //
-// argument : in : event_id   : The event identifier
+// argument :
+//		in :
+//			- event_id   : The event identifier
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
+
 TimeVal EventConsumer::get_last_event_date(int event_id)
 {
 	cout3 << "EventConsumer::get_last_event_date() : event_id = " << event_id << endl;
@@ -2335,9 +2400,10 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 	// lock the maps
 	ReaderLock l(map_modification_lock);
 
-	//
-	// First search the event entry in the callback map
-	//
+//
+// First search the event entry in the callback map
+//
+
 	std::map<std::string,EventCallBackStruct>::iterator epos;
 	std::vector<EventSubscribeStruct>::iterator esspos;
 
@@ -2367,9 +2433,9 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 		}
 	}
 
-	//
-	// check also the vector of not yet connected events
-	//
+//
+// check also the vector of not yet connected events
+//
 
 	if ( event_not_connected.empty() == false )
 	{
@@ -2411,19 +2477,22 @@ TimeVal EventConsumer::get_last_event_date(int event_id)
 	return tv;
 }
 
-//+----------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::add_new_callback()
+// method :
+//		EventConsumer::add_new_callback()
 //
-// description :  Add a new callback to an already existing event entry
-//				  in the callback map
+// description :
+//		Add a new callback to an already existing event entry in the callback map
 //
-// argument : in : iter : Iterator in the callback map
-//				   callback : Pointer to the Callback object
-//				   ev_queue : Pointer to the event queue
-//				   event_id : The event identifier
+// argument :
+//		in :
+//			- iter : Iterator in the callback map
+//			- callback : Pointer to the Callback object
+//			- ev_queue : Pointer to the event queue
+//			- event_id : The event identifier
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 int EventConsumer::add_new_callback(EvCbIte &iter,CallBack *callback,EventQueue *ev_queue,int event_id)
 {
@@ -2445,22 +2514,27 @@ int EventConsumer::add_new_callback(EvCbIte &iter,CallBack *callback,EventQueue 
 	return ret_event_id;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::get_fire_sync_event()
+// method :
+//		EventConsumer::get_fire_sync_event()
 //
-// description :  Get event data and fire a synchronous event
+// description :
+//		Get event data and fire a synchronous event
 //
-// argument : in : - device : The device pointer
-//				   - callback : The callback pointer
-//				   - ev_queue : The event queue
-//				   - event : The event type
-//				   - event_name : The event name
-//				   - attribute : The attribute name
+// argument :
+//		in :
+//			- device : The device pointer
+//			- callback : The callback pointer
+//			- ev_queue : The event queue
+//			- event : The event type
+//			- event_name : The event name
+//			- attribute : The attribute name
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
-void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,EventQueue *ev_queue,EventType event,string &event_name,const string &attribute,EventCallBackStruct &cb)
+void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,EventQueue *ev_queue,EventType event,
+										string &event_name,const string &attribute,EventCallBackStruct &cb)
 {
 	if ((event == CHANGE_EVENT) ||
 	    (event == QUALITY_EVENT) ||
@@ -2582,18 +2656,22 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :       EventConsumer::get_event_system_for_event_id()
+// method :
+//		EventConsumer::get_event_system_for_event_id()
 //
-// description :  Get which event system is used by one event from its id
+// description :
+//		Get which event system is used by one event from its id
 //
-// argument : in : - event_id : The event id
+// argument :
+//		in :
+//			- event_id : The event id
 //
-// This methods returns which is the event system type used by the
-// event with the specified event id
+// returns :
+//		Event system type used by the event with the specified event id
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
 {
@@ -2638,8 +2716,7 @@ ChannelType EventConsumer::get_event_system_for_event_id(int event_id)
     }
 
 //
-// Also search in the not connected event vector
-// The returned value in this case is not relevant
+// Also search in the not connected event vector. The returned value in this case is not relevant
 //
 
     if (found == false && event_not_connected.empty() == false)
