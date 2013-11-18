@@ -452,6 +452,10 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 
 						event_consumer->connect_event_system(d_name,epos->second.attr_name,epos->second.event_name,vs,ipos,ecbs,dd);
 
+						const DevVarLongStringArray *dvlsa;
+						dd >> dvlsa;
+						epos->second.endpoint = dvlsa->svalue[1].in();
+
 						cout3 << "Reconnected to ZMQ event" << endl;
 					}
 					catch(...)
@@ -588,6 +592,11 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 					    {
                             try
                             {
+								if (notifd_event_consumer == NULL)
+								{
+									ApiUtil::instance()->create_notifd_event_consumer();
+									notifd_event_consumer = ApiUtil::instance()->get_notifd_event_consumer();
+								}
                                 notifd_event_consumer->connect_event(vpos->device,vpos->attribute,vpos->event_type,
 																					vpos->callback,
 																					vpos->ev_queue,
