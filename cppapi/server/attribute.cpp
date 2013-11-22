@@ -142,7 +142,6 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_
 	alarm_conf.reset();
 	alarm.reset();
 
-
 //
 // Init the remaining attribute main characteristic
 //
@@ -5698,6 +5697,10 @@ ostream &operator<<(ostream &o_str,Attribute &p)
 	case Tango::Dev_ENCODED :
 		cout << "Tango::DevEncoded" << endl;
 		break;
+
+	case Tango::DATA_TYPE_UNKNOWN :
+		cout << "Unknown" << endl;
+		break;
 	}
 
 	cout << "Attribute data_format = ";
@@ -5713,6 +5716,10 @@ ostream &operator<<(ostream &o_str,Attribute &p)
 
 	case Tango::IMAGE :
 		cout << "image, max_dim_x = " << conf.max_dim_x << ", max_dim_y = " << conf.max_dim_y << endl;
+		break;
+
+	case Tango::FMT_UNKNOWN :
+		cout << "Unknown" << endl;
 		break;
 	}
 

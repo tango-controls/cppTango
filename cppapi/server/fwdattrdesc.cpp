@@ -60,14 +60,17 @@ namespace Tango
 
 
 FwdAttr::FwdAttr(const string &att_name,const string &root_attribute):
-Attr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_NullPtr)
+ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_NullPtr)
 {
 	writable = Tango::READ;			// Difficult to switch it to WT_UNKNOWN
 //	type = DATA_TYPE_UNKNOWN;
 	type = DEV_DOUBLE;
 	format = Tango::FMT_UNKNOWN;
-	disp_level = OPERATOR;
+	disp_level = OPERATOR;			// Should be UNKNOWN as well
 	assoc_name = AssocWritNotSpec;
+
+	max_x = 1;
+	max_y = 0;
 
 	mem = false;
 	mem_init = false;
@@ -188,15 +191,16 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 // argument :
 //		in :
 //			- dev_name : The local device name
+//			- dev : Device pointer
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::get_root_conf(string &dev_name)
+void FwdAttr::get_root_conf(string &dev_name,DeviceImpl *dev)
 {
 	try
 	{
 		RootAttRegistry &dps = Tango::Util::instance()->get_root_att_reg();
-		dps.add_root_att(fwd_dev_name,fwd_root_att,dev_name,name,this);
+		dps.add_root_att(fwd_dev_name,fwd_root_att,dev_name,name,this,dev);
 	}
 	catch (Tango::DevFailed &)
 	{
@@ -287,48 +291,86 @@ void FwdAttr::write(DeviceImpl *dev,WAttribute &attr)
 //
 // argument :
 //		in :
-//			- root_conf : The root attribute configuration
+//			- ev_data : The event data
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::init_conf(AttributeInfoEx *root_conf)
+void FwdAttr::init_conf(AttrConfEventData *ev_data)
 {
-cout << "In FwdAttr::init_conf()" << endl;
+
 //
 // Set main data
 //
 
-	type = root_conf->data_type;
-	writable = root_conf->writable;
-	format = root_conf->data_format;
-//	max_x = root_conf->max_dim_x;
-//	max_y = root_conf->max_dim_y;
-	assoc_name = root_conf->writable_attr_name;
-	if (type == READ_WRITE)
+	type = ev_data->attr_conf->data_type;
+	writable = ev_data->attr_conf->writable;
+	format = ev_data->attr_conf->data_format;
+	max_x = ev_data->attr_conf->max_dim_x;
+	max_y = ev_data->attr_conf->max_dim_y;
+	assoc_name = ev_data->attr_conf->writable_attr_name;
+	if (writable == READ_WRITE)
 		assoc_name = name;
-	disp_level = root_conf->disp_level;
-	mem = root_conf->memorized;
-	mem_init = root_conf->mem_init;
+	disp_level = ev_data->attr_conf->disp_level;
+	switch (ev_data->attr_conf->memorized)
+	{
+	case NOT_KNOWN:
+	case NONE:
+		mem = false;
+		mem_init = false;
+		break;
+
+	case MEMORIZED:
+		mem = true;
+		mem_init = false;
+		break;
+
+	case MEMORIZED_WRITE_INIT:
+		mem = true;
+		mem_init = true;
+		break;
+
+	default:
+		break;
+	}
 
 //
 // Set configuration
+// If we already have a labelin our conf, save it and reapply it
 //
 
+	string local_label;
+	try
+	{
+		local_label = get_label_from_default_properties();
+	}
+	catch (Tango::DevFailed &e)
+	{
+	}
+
 	UserDefaultAttrProp udap;
-	udap.set_label(root_conf->label.c_str());
-	udap.set_description(root_conf->description.c_str());
-	udap.set_unit(root_conf->unit.c_str());
-	udap.set_standard_unit(root_conf->standard_unit.c_str());
-	udap.set_display_unit(root_conf->display_unit.c_str());
-	udap.set_format(root_conf->format.c_str());
-	udap.set_min_alarm(root_conf->alarms.min_alarm.c_str());
-	udap.set_max_alarm(root_conf->alarms.max_alarm.c_str());
-	udap.set_min_value(root_conf->min_value.c_str());
-	udap.set_max_value(root_conf->max_value.c_str());
-	udap.set_min_warning(root_conf->alarms.min_warning.c_str());
-	udap.set_max_warning(root_conf->alarms.max_warning.c_str());
-	udap.set_delta_t(root_conf->alarms.delta_t.c_str());
-	udap.set_delta_val(root_conf->alarms.delta_val.c_str());
+	if (local_label.empty() == false)
+		udap.set_label(local_label.c_str());
+	udap.set_description(ev_data->attr_conf->description.c_str());
+	udap.set_unit(ev_data->attr_conf->unit.c_str());
+	udap.set_standard_unit(ev_data->attr_conf->standard_unit.c_str());
+	udap.set_display_unit(ev_data->attr_conf->display_unit.c_str());
+	udap.set_format(ev_data->attr_conf->format.c_str());
+	udap.set_min_value(ev_data->attr_conf->min_value.c_str());
+	udap.set_max_value(ev_data->attr_conf->max_value.c_str());
+
+	udap.set_min_alarm(ev_data->attr_conf->alarms.min_alarm.c_str());
+	udap.set_max_alarm(ev_data->attr_conf->alarms.max_alarm.c_str());
+	udap.set_min_warning(ev_data->attr_conf->alarms.min_warning.c_str());
+	udap.set_max_warning(ev_data->attr_conf->alarms.max_warning.c_str());
+	udap.set_delta_val(ev_data->attr_conf->alarms.delta_val.c_str());
+	udap.set_delta_t(ev_data->attr_conf->alarms.delta_t.c_str());
+
+	udap.set_event_abs_change(ev_data->attr_conf->events.ch_event.abs_change.c_str());
+	udap.set_event_rel_change(ev_data->attr_conf->events.ch_event.rel_change.c_str());
+	udap.set_event_period(ev_data->attr_conf->events.per_event.period.c_str());
+	udap.set_archive_event_abs_change(ev_data->attr_conf->events.arch_event.archive_abs_change.c_str());
+	udap.set_archive_event_rel_change(ev_data->attr_conf->events.arch_event.archive_rel_change.c_str());
+	udap.set_archive_event_period(ev_data->attr_conf->events.arch_event.archive_period.c_str());
 
 	this->Attr::set_default_properties(udap);
 }
@@ -350,6 +392,38 @@ void FwdAttr::set_default_properties(UserDefaultFwdAttrProp &prop_list)
 		(TG_strcasecmp(prop_list.label.c_str(),AlrmValueNotSpec) != 0) &&
 		(TG_strcasecmp(prop_list.label.c_str(),NotANumber) != 0))
 		user_default_properties.push_back(AttrProperty("label",prop_list.label));
+}
+
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		FwdAttr::get_label_from_default_properties
+//
+// description :
+//		Get the label property from the user default properties list. Throw exception if not in list
+//
+// return :
+//		The label property value
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+string &FwdAttr::get_label_from_default_properties()
+{
+	size_t nb_prop = user_default_properties.size();
+	size_t ctr;
+	for (ctr = 0;ctr < nb_prop;ctr++)
+	{
+		if (user_default_properties[ctr].get_name() == "label")
+			break;
+	}
+
+	if (ctr == nb_prop)
+	{
+		Except::throw_exception(API_AttrOptProp,"Property label not defined in list",
+								"FwdAttr::get_label_from_default_properties");
+	}
+
+	return user_default_properties[ctr].get_value();
 }
 
 } // End of Tango namespace

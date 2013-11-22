@@ -3731,6 +3731,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 					(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
 					(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
 					(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
+					(*dev_attr_config)[i].memorized = NOT_KNOWN;
 
 					COPY_ALARM_CONFIG(attr_config_list_3)
 
@@ -3754,8 +3755,15 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 					(*dev_attr_config)[i].min_alarm = attr_config_list_5[i].att_alarm.min_alarm;
 					(*dev_attr_config)[i].max_alarm = attr_config_list_5[i].att_alarm.max_alarm;
 					(*dev_attr_config)[i].root_attr_name = attr_config_list_5[i].root_attr_name;
-					(*dev_attr_config)[i].memorized = attr_config_list_5[i].memorized;
-					(*dev_attr_config)[i].mem_init = attr_config_list_5[i].mem_init;
+					if (attr_config_list_5[i].memorized == false)
+						(*dev_attr_config)[i].memorized	= NONE;
+					else
+					{
+						if (attr_config_list_5[i].mem_init == false)
+							(*dev_attr_config)[i].memorized	= MEMORIZED;
+						else
+							(*dev_attr_config)[i].memorized	= MEMORIZED_WRITE_INIT;
+					}
 
 					COPY_ALARM_CONFIG(attr_config_list_5)
 
@@ -4182,11 +4190,100 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 {
 	AttributeConfigList attr_config_list;
 	AttributeConfigList_3 attr_config_list_3;
+	AttributeConfigList_5 attr_config_list_5;
 	DevVarStringArray attr_list;
 	int ctr = 0;
 	unsigned int i,j;
 
-	if (version >= 3)
+
+	if (version >= 5)
+	{
+		attr_config_list_5.length(dev_attr_list.size());
+
+		for (i=0; i<attr_config_list_5.length(); i++)
+		{
+			attr_config_list_5[i].name = dev_attr_list[i].name.c_str();
+			attr_config_list_5[i].writable = dev_attr_list[i].writable;
+			attr_config_list_5[i].data_format = dev_attr_list[i].data_format;
+			attr_config_list_5[i].data_type = dev_attr_list[i].data_type;
+			attr_config_list_5[i].max_dim_x = dev_attr_list[i].max_dim_x;
+			attr_config_list_5[i].max_dim_y = dev_attr_list[i].max_dim_y;
+			attr_config_list_5[i].description = dev_attr_list[i].description.c_str();
+			attr_config_list_5[i].label = dev_attr_list[i].label.c_str();
+			attr_config_list_5[i].unit = dev_attr_list[i].unit.c_str();
+			attr_config_list_5[i].standard_unit = dev_attr_list[i].standard_unit.c_str();
+			attr_config_list_5[i].display_unit = dev_attr_list[i].display_unit.c_str();
+			attr_config_list_5[i].format = dev_attr_list[i].format.c_str();
+			attr_config_list_5[i].min_value = dev_attr_list[i].min_value.c_str();
+			attr_config_list_5[i].max_value = dev_attr_list[i].max_value.c_str();
+			attr_config_list_5[i].writable_attr_name = dev_attr_list[i].writable_attr_name.c_str();
+			attr_config_list_5[i].level = dev_attr_list[i].disp_level;
+			attr_config_list_5[i].root_attr_name = dev_attr_list[i].root_attr_name.c_str();
+			switch(dev_attr_list[i].memorized)
+			{
+			case NOT_KNOWN:
+			case NONE:
+				attr_config_list_5[i].memorized = false;
+				attr_config_list_5[i].mem_init = false;
+				break;
+
+			case MEMORIZED:
+				attr_config_list_5[i].memorized = true;
+				attr_config_list_5[i].mem_init = false;
+				break;
+
+			case MEMORIZED_WRITE_INIT:
+				attr_config_list_5[i].memorized = true;
+				attr_config_list_5[i].mem_init = true;
+				break;
+
+			default:
+				break;
+			}
+			attr_config_list_5[i].extensions.length(dev_attr_list[i].extensions.size());
+			for (j=0; j<dev_attr_list[i].extensions.size(); j++)
+			{
+				attr_config_list_5[i].extensions[j] = string_dup(dev_attr_list[i].extensions[j].c_str());
+			}
+			for (j=0; j<dev_attr_list[i].sys_extensions.size(); j++)
+			{
+				attr_config_list_5[i].sys_extensions[j] = string_dup(dev_attr_list[i].sys_extensions[j].c_str());
+			}
+
+			attr_config_list_5[i].att_alarm.min_alarm = dev_attr_list[i].alarms.min_alarm.c_str();
+			attr_config_list_5[i].att_alarm.max_alarm = dev_attr_list[i].alarms.max_alarm.c_str();
+			attr_config_list_5[i].att_alarm.min_warning = dev_attr_list[i].alarms.min_warning.c_str();
+			attr_config_list_5[i].att_alarm.max_warning = dev_attr_list[i].alarms.max_warning.c_str();
+			attr_config_list_5[i].att_alarm.delta_t = dev_attr_list[i].alarms.delta_t.c_str();
+			attr_config_list_5[i].att_alarm.delta_val = dev_attr_list[i].alarms.delta_val.c_str();
+			for (j=0; j<dev_attr_list[i].alarms.extensions.size(); j++)
+			{
+				attr_config_list_5[i].att_alarm.extensions[j] = string_dup(dev_attr_list[i].alarms.extensions[j].c_str());
+			}
+
+			attr_config_list_5[i].event_prop.ch_event.rel_change = dev_attr_list[i].events.ch_event.rel_change.c_str();
+			attr_config_list_5[i].event_prop.ch_event.abs_change = dev_attr_list[i].events.ch_event.abs_change.c_str();
+			for (j=0; j<dev_attr_list[i].events.ch_event.extensions.size(); j++)
+			{
+				attr_config_list_5[i].event_prop.ch_event.extensions[j] = string_dup(dev_attr_list[i].events.ch_event.extensions[j].c_str());
+			}
+
+			attr_config_list_5[i].event_prop.per_event.period = dev_attr_list[i].events.per_event.period.c_str();
+			for (j=0; j<dev_attr_list[i].events.per_event.extensions.size(); j++)
+			{
+				attr_config_list_5[i].event_prop.per_event.extensions[j] = string_dup(dev_attr_list[i].events.per_event.extensions[j].c_str());
+			}
+
+			attr_config_list_5[i].event_prop.arch_event.rel_change = dev_attr_list[i].events.arch_event.archive_rel_change.c_str();
+			attr_config_list_5[i].event_prop.arch_event.abs_change = dev_attr_list[i].events.arch_event.archive_abs_change.c_str();
+			attr_config_list_5[i].event_prop.arch_event.period = dev_attr_list[i].events.arch_event.archive_period.c_str();
+			for (j=0; j<dev_attr_list[i].events.ch_event.extensions.size(); j++)
+			{
+				attr_config_list_5[i].event_prop.arch_event.extensions[j] = string_dup(dev_attr_list[i].events.arch_event.extensions[j].c_str());
+			}
+		}
+	}
+	else if (version >= 3)
 	{
 		attr_config_list_3.length(dev_attr_list.size());
 
@@ -4294,7 +4391,10 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				device_4->set_attribute_config_4(attr_config_list_3,ci);
+				if (version == 5)
+					device_5->set_attribute_config_5(attr_config_list_5,ci);
+				else
+					device_4->set_attribute_config_4(attr_config_list_3,ci);
 			}
 			else if (version == 3)
 				device_3->set_attribute_config_3(attr_config_list_3);
@@ -6460,12 +6560,15 @@ void DeviceProxy::set_logging_level (int level)
 
 
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::subscribe_event - Subscribe to an event
-//                                Old interface for compatibility
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Subscribe to an event - Old interface for compatibility
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
                                  CallBack *callback, const vector<string> &filters)
@@ -6473,13 +6576,15 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	return subscribe_event (attr_name, event, callback, filters, false);
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::subscribe_event - Subscribe to an event
-//                                Adds the statless flag for stateless
-//                                event subscription.
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Subscribe to an event- Adds the statless flag for stateless event subscription.
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
                                  CallBack *callback, const vector<string> &filters,
@@ -6492,8 +6597,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	}
 
 //
-// First, try using zmq. If it fails with the error "Command Not Found",
-// try using notifd
+// First, try using zmq. If it fails with the error "Command Not Found", try using notifd
 //
 
     int ret;
@@ -6520,15 +6624,16 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	return ret;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::subscribe_event - Subscribe to an event with the usage of
-//                                the event queue for data reception.
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//                                Adds the statless flag for stateless
-//                                event subscription.
+// description :
+//		Subscribe to an event with the usage of the event queue for data reception. Adds the statless flag for
+//		stateless event subscription.
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
                                  int event_queue_size, const vector<string> &filters,
@@ -6541,8 +6646,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	}
 
 //
-// First, try using zmq. If it fails with the error "Command Not Found",
-// try using notifd
+// First, try using zmq. If it fails with the error "Command Not Found", try using notifd
 //
 
     int ret;
@@ -6570,11 +6674,15 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 }
 
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::unsubscribe_event - Unsubscribe to an event
+// method :
+// 		DeviceProxy::unsubscribe_event
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Unsubscribe to an event
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::unsubscribe_event (int event_id)
 {

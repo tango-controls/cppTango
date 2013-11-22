@@ -262,7 +262,7 @@ void Device_5Impl::set_attribute_config_5(const Tango::AttributeConfigList_5& ne
 //
 
 	store_in_bb = false;
-	return set_attribute_config_3_local(new_conf,new_conf[0],from_fwd_cb);
+	return set_attribute_config_3_local(new_conf,new_conf[0],from_fwd_cb,5);
 }
 
 } // End of Tango namespace

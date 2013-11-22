@@ -3066,15 +3066,19 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList& values)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::add_attribute
+// method :
+//		DeviceImpl::add_attribute
 //
-// description :	Add attribute to the device attribute(s) list
+// description :
+//		Add attribute to the device attribute(s) list
 //
-// argument: in :	- new_attr: The new attribute to be added.
+// argument:
+//		in :
+//			- new_attr: The new attribute to be added.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 {
@@ -3088,11 +3092,9 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	long old_attr_nb = attr_list.size();
 
 //
-// Check that this attribute is not already defined for this device.
-// If it is already there, immediately returns.
-// Trick : If you add an attribute to a device, this attribute will be
-// inserted in the device class attribute list. Therefore, all devices
-// created after this attribute addition will also have this attribute.
+// Check that this attribute is not already defined for this device. If it is already there, immediately returns.
+// Trick : If you add an attribute to a device, this attribute will be inserted in the device class attribute list.
+// Therefore, all devices created after this attribute addition will also have this attribute.
 //
 
 	string &attr_name = new_attr->get_name();
@@ -3114,8 +3116,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	}
 
 //
-// Throw exception if the device already have an attribute with the same name
-// but with a different definition
+// Throw exception if the device already have an attribute with the same name but with a different definition
 //
 
 	if (throw_ex == true)
@@ -3137,8 +3138,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	}
 
 //
-// Add this attribute in the MultiClassAttribute attr_list vector if it does not
-// already exist
+// Add this attribute in the MultiClassAttribute attr_list vector if it does not already exist
 //
 
 	bool need_free = false;
@@ -3169,8 +3169,8 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	{
 
 //
-// An attribute with the same name is already defined within the class
-// Check if the data type, data format and write type are the same
+// An attribute with the same name is already defined within the class. Check if the data type, data format and
+// write type are the same
 //
 
 		if ((attr_list[i]->get_type() != new_attr->get_type()) ||
@@ -3193,7 +3193,9 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 //
 
 	if (new_attr->is_fwd() == true)
+	{
 		dev_attr->add_fwd_attribute(device_name,device_class,i);
+	}
 	else
 		dev_attr->add_attribute(device_name,device_class,i);
 
@@ -3207,17 +3209,21 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::remove_attribute
+// method :
+//		DeviceImpl::remove_attribute
 //
-// description :	Remove attribute to the device attribute(s) list
+// description :
+//		Remove attribute to the device attribute(s) list
 //
-// argument: in :	- rem_attr: The attribute to be deleted.
-//                  - free_it : Free Attr object flag
-//                  - clean_db : Clean attribute related info in db
+// argument:
+//		in :
+//			- rem_attr: The attribute to be deleted.
+//          - free_it : Free Attr object flag
+//          - clean_db : Clean attribute related info in db
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean_db)
 {
@@ -3261,7 +3267,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 	transform(attr_name_low.begin(),attr_name_low.end(),attr_name_low.begin(),::tolower);
 
 //
-// try to find the attribute in the list of polled attributes
+// Try to find the attribute in the list of polled attributes
 //
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -3283,8 +3289,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 		{
 
 //
-// There is no need to stop the polling because we are
-// in the server shutdown sequence and the polling is
+// There is no need to stop the polling because we are in the server shutdown sequence and the polling is
 // already stopped.
 //
 
@@ -3292,8 +3297,8 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 			{
 
 //
-// Memorize the fact that the dynamic polling properties has to be removed from
-// db. The classical attribute properties as well
+// Memorize the fact that the dynamic polling properties has to be removed from db.
+// The classical attribute properties as well
 //
 
                 tg->get_polled_dyn_attr_names().push_back(attr_name_low);
@@ -3306,13 +3311,13 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 		}
 		else
 		{
-			adm_dev->rem_obj_polling(&send, clean_db);
+			if (tg->is_device_restarting(get_name()) == false)
+				adm_dev->rem_obj_polling(&send, clean_db);
 		}
 	}
 
 //
-// Now remove all configured attribute properties from the database
-// Do it in one go if the Db server support this
+// Now remove all configured attribute properties from the database. Do it in one go if the Db server support this
 //
 
     if (clean_db == true)
@@ -3332,8 +3337,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
     }
 
 //
-// Remove attribute in MultiClassAttribute in case there is
-// only one device in the class or it is the last device
+// Remove attribute in MultiClassAttribute in case there is only one device in the class or it is the last device
 // in this class with this attribute
 //
 
@@ -3387,17 +3391,21 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceImpl::remove_attribute
+// method :
+//		DeviceImpl::remove_attribute
 //
-// description :	Remove attribute to the device attribute(s) list
+// description :
+//		Remove attribute to the device attribute(s) list
 //
-// argument: in :	- rem_attr: The name of the attribute to be deleted.
-//                  - free_it : Free Attr object flag
-//                  - clean_db : Clean attribute related info in db
+// argument:
+//		in :
+//			- rem_attr: The name of the attribute to be deleted.
+//          - free_it : Free Attr object flag
+//          - clean_db : Clean attribute related info in db
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceImpl::remove_attribute(string &rem_attr_name, bool free_it,bool clean_db)
 {

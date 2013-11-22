@@ -106,7 +106,7 @@ void DServer::class_factory()
 	{
 		if ((mod = GetModuleHandle(exe_name.c_str())) == NULL)
 		{
-			cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+			cerr << "Oops, no class defined in this server. Exiting ..." << endl;
 			exit(-1);
 		}
 	}
@@ -114,7 +114,7 @@ void DServer::class_factory()
 	{
 		if ((mod = GetModuleHandle(TANGO_PY_MOD_NAME)) == NULL)
 		{
-			cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+			cerr << "Oops, no class defined in this server. Exiting ..." << endl;
 			exit(-1);
 		}
 	}
@@ -132,7 +132,7 @@ void DServer::class_factory()
 	if ((proc = GetProcAddress(mod,"?class_factory@DServer@Tango@@AAEXXZ")) == NULL)
 #endif
 	{
-		cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+		cerr << "Oops, no class defined in this server. Exiting ..." << endl;
 		exit(-1);
 	}
 	else
@@ -158,7 +158,7 @@ void DServer::class_factory()
 	{
 		if ((mod = dlopen (exe_name.c_str(), RTLD_LAZY )) == NULL)
 		{
-			cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+			cerr << "Oops, no class defined in this server. Exiting ..." << endl;
 			exit(-1);
 		}
 	}
@@ -183,7 +183,7 @@ void DServer::class_factory()
 	if ((proc = dlsym (mod,"_ZN5Tango7DServer13class_factoryEv")) == NULL)
 	{
 		cerr << "error : " << dlerror() << endl;
-		cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+		cerr << "Oops, no class defined in this server. Exiting ..." << endl;
 		exit(-1);
 	}
 	else
@@ -195,7 +195,7 @@ void DServer::class_factory()
 		(this->*tmp)();
 	}
 #else
-		cerr << "Oups, no class defined in this server. Exiting ..." << endl;
+		cerr << "Oops, no class defined in this server. Exiting ..." << endl;
 		exit(-1);
 #endif
 

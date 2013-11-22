@@ -391,6 +391,7 @@ void DServer::init_device()
 			class_list.erase(class_list.begin() + i,class_list.end());
 		}
 
+		Tango::Util::instance()->set_svr_shutting_down(true);
 		Except::throw_exception((const char *)API_MemoryAllocation,
 						o.str(),
 						(const char *)"DServer::init_device");
@@ -432,11 +433,12 @@ void DServer::init_device()
 			}
 			class_list.erase(class_list.begin() + i,class_list.end());
 		}
+
+		Tango::Util::instance()->set_svr_shutting_down(true);
 		throw;
 	}
 	catch (Tango::DevFailed)
 	{
-
 //
 // If the class_factory method have not been successfully executed, erase all classes already built. If the error
 // occurs during the command or device factories, erase only the following classes
@@ -468,6 +470,8 @@ void DServer::init_device()
 			}
 			class_list.erase(class_list.begin() + i,class_list.end());
 		}
+
+		Tango::Util::instance()->set_svr_shutting_down(true);
 		throw;
 	}
 }

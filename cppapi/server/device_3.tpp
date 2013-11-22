@@ -47,14 +47,17 @@ namespace Tango
 // args :
 //		in :
 // 			- new_conf : The new attribute configuration
-//			- dummy_arg :
+//			- dummy_arg : Dummy and unnused arg. Just to help template coding
 //			- fwd_cb : Set to true if called from fwd att call back
+//			- caller_idl : IDL release used by caller
 //
 //----------------------------------------------------------------------------------------------------------------
 
 template <typename T,typename V>
-void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(const V &dummy_arg),bool fwd_cb)
+void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(const V &dummy_arg),
+												bool fwd_cb,int caller_idl)
 {
+	cout4 << "Entering Device_3Impl::set_attribute_config_3_local" << endl;
 
 //
 // Return exception if the device does not have any attribute
@@ -98,55 +101,69 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 // TODO::Special case for forwarded attributes
 //
 
-			if (attr.is_fwd_att() == true && fwd_cb == false)
+			if (attr.is_fwd_att() == true)
 			{
-//
-// TODO::Special case for forwarded attributes except when called from the fwd att event cb
-//
-
+				FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+				if (fwd_cb == true)
+					fwd_attr.set_att_config(new_conf[i]);
+				else
+					fwd_attr.upd_att_config(new_conf[i]);
 			}
 			else
 			{
-
 				attr.set_upd_properties(new_conf[i],device_name);
+			}
 
 //
 // In case the attribute quality factor was set to ALARM, reset it to VALID
 //
 
-				if ((attr.get_quality() == Tango::ATTR_ALARM) &&
-					(old_alarm == true) &&
-					(attr.is_alarmed().any() == false))
-					attr.set_quality(Tango::ATTR_VALID);
+			if ((attr.get_quality() == Tango::ATTR_ALARM) &&
+				(old_alarm == true) &&
+				(attr.is_alarmed().any() == false))
+				attr.set_quality(Tango::ATTR_VALID);
 
 //
 // Send the event
 //
 
-				if (attr.use_notifd_event() == true)
-					event_supplier_nd = tg->get_notifd_event_supplier();
-				else
-					event_supplier_nd = NULL;
+			if (attr.use_notifd_event() == true)
+				event_supplier_nd = tg->get_notifd_event_supplier();
+			else
+				event_supplier_nd = NULL;
 
-				if (attr.use_zmq_event() == true)
-					event_supplier_zmq = tg->get_zmq_event_supplier();
-				else
-					event_supplier_zmq = NULL;
+			if (attr.use_zmq_event() == true)
+				event_supplier_zmq = tg->get_zmq_event_supplier();
+			else
+				event_supplier_zmq = NULL;
 
-				if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+			if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
+			{
+				string tmp_name(new_conf[i].name);
+				const V *tmp_ptr = &(new_conf)[i];
+
+				Tango::AttributeConfig_5 conf5;
+
+				if (get_dev_idl_version() > 4)
 				{
-					string tmp_name(new_conf[i].name);
-					const V *tmp_ptr = &(new_conf)[i];
-					if (get_dev_idl_version() >= 4)
-						::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
+					if (caller_idl <= 4)
+					{
+// TODO: Implement a faster way to get AttributeConfig_5 from the caller AttributeConfig_3
+						attr.get_properties_5(conf5);
+						ad.attr_conf_5 = &conf5;
+					}
 					else
-						::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
-
-					if (event_supplier_nd != NULL)
-						event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
-					if (event_supplier_zmq != NULL)
-						event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+						::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
 				}
+				else
+				{
+					::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
+				}
+
+				if (event_supplier_nd != NULL)
+					event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+				if (event_supplier_zmq != NULL)
+					event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 			}
 		}
 

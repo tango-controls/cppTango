@@ -987,7 +987,6 @@ bool _AttributeInfoEx::operator==(const _AttributeInfoEx &aie)
 		   sys_extensions == aie.sys_extensions &&
 		   root_attr_name == aie.root_attr_name &&
 		   memorized == aie.memorized &&
-		   mem_init == aie.mem_init &&
 		   enum_labels == aie.enum_labels;
 }
 

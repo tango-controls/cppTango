@@ -52,10 +52,12 @@ class RootAttRegistry
 public:
 	RootAttRegistry() {}
 
-	void add_root_att(string &,string &,string &,string &,FwdAttr *);
+	void add_root_att(string &,string &,string &,string &,FwdAttr *,DeviceImpl *);
 	void remove_root_att(string &,string &);
 	DeviceProxy *get_root_att_dp(string &);
 	string get_local_att_name(string &_s) {return cbp.get_local_att_name(_s);}
+	void null_device_impl(string &_s) {cbp.null_device_impl(_s);}
+	void update_label(string &_d,string &_a,string &_l) {string s(_d+'/'+_a);cbp.update_label(s,_l);}
 
 	void clear_attrdesc(string &,string &);
 
@@ -65,20 +67,23 @@ private:
 	class RootAttConfCallBack: public Tango::CallBack
 	{
 	public:
-		RootAttConfCallBack():Tango::CallBack() {}
+		RootAttConfCallBack():Tango::CallBack() {ci.cpp_clnt(0);}
 
 		virtual void push_event(Tango::AttrConfEventData *);
 
-		void add_att(string &,string &,string &,FwdAttr *);
+		void add_att(string &,string &,string &,FwdAttr *,DeviceImpl *);
 		void remove_att(string &);
 		void clear_attrdesc(string &);
         bool is_root_att_in_map(string &);
         int count_root_dev(string &);
 		string get_local_att_name(string &);
+		void null_device_impl(string &);
+		void update_label(string &,string &);
 	private:
+		ClntIdent 							ci;
 		omni_mutex							the_lock;
 		map<string,struct NameFwdAttr>		map_attrdesc;		// Key is root attribute device_name/att_name
-		map<string,DeviceProxy *>			local_dps;			// Key is local device name
+		map<string,DeviceImpl *>			local_dis;			// Key is local device name
 	};
 
 	map<string,DeviceProxy *>		dps;				// Key is root attribute device name

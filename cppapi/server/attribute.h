@@ -2218,6 +2218,8 @@ protected:
 
     void avns_in_db(const char *,string &);
     void avns_in_att(prop_type);
+	
+	void convert_prop_value(const char *,string &,Attr_CheckVal &,string &);
 
 	bitset<numFlags>	alarm_conf;
 	bitset<numFlags>	alarm;

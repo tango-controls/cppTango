@@ -82,7 +82,7 @@ private:
 #endif
 };
 
-class FwdAttr: public Attr
+class FwdAttr: public ImageAttr
 {
 public:
 	FwdAttr(const string &,const string &root_attribute=RootAttNotDef);
@@ -100,11 +100,12 @@ public:
 	virtual void write(DeviceImpl *,WAttribute &);
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
-	void init_conf(AttributeInfoEx *);
+	virtual void init_conf(AttrConfEventData *);
 	bool validate_fwd_att(vector<AttrProperty> &,const string &);
-	void get_root_conf(string &);
+	void get_root_conf(string &,DeviceImpl *);
 
  	void set_default_properties(UserDefaultFwdAttrProp &prop);
+ 	string &get_label_from_default_properties();
 
 protected:
 	string				full_root_att;			// Root att (dev_name/att_name)
@@ -124,6 +125,7 @@ private:
 	FwdAttrExt		        	*ext;
 #endif
 };
+
 
 } // End of Tango namespace
 

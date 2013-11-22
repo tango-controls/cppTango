@@ -1788,7 +1788,7 @@ ostream &operator<<(ostream &o_str,AttributeInfo &p)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_2 *att_2)
+AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_2 *att_2)
 {
 	name = att_2->name;
 	writable = att_2->writable;
@@ -1827,7 +1827,7 @@ AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_2 *att_2)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_3 *att_3)
+AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_3 *att_3)
 {
 	name = att_3->name;
 	writable = att_3->writable;
@@ -1902,7 +1902,7 @@ AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_3 *att_3)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_5 *att_5)
+AttributeInfoEx &AttributeInfoEx::operator=(const AttributeConfig_5 *att_5)
 {
 	name = att_5->name;
 	writable = att_5->writable;
@@ -1928,8 +1928,15 @@ AttributeInfoEx &AttributeInfoEx::operator=(AttributeConfig_5 *att_5)
 	}
 	disp_level = att_5->level;
 	root_attr_name = att_5->root_attr_name;
-	memorized = att_5->memorized;
-	mem_init = att_5->mem_init;
+	if (att_5->memorized == false)
+		memorized = NONE;
+	else
+	{
+		if (att_5->mem_init == false)
+			memorized = MEMORIZED;
+		else
+			memorized = MEMORIZED_WRITE_INIT;
+	}
 	for (unsigned int j=0; j<att_5->enum_labels.length(); j++)
 	{
 		enum_labels[j] = att_5->enum_labels[j];
@@ -2031,12 +2038,29 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	case Tango::DEV_STATE :
 		o_str << "Tango::DevState" << endl;
 		break;
+
+	case Tango::DEV_ULONG :
+		o_str << "Tango::DevULong" << endl;
+		break;
+
+	case Tango::DEV_ULONG64 :
+		o_str << "Tango::DevULong64" << endl;
+		break;
+
+	case Tango::DEV_ENCODED :
+		o_str << "Tango::DevEncoded" << endl;
+		break;
+
+	case Tango::DATA_TYPE_UNKNOWN :
+		o_str << "Unknown" << endl;
+		break;
 	}
 
 	o_str << "Attribute data_format = ";
 	switch (p.data_format)
 	{
 	case Tango::FMT_UNKNOWN:
+		o_str << " Unknown" << endl;
 		break;
 
 	case Tango::SCALAR :
@@ -2055,14 +2079,27 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	if ((p.writable == Tango::WRITE) || (p.writable == Tango::READ_WRITE))
 	{
 		o_str << "Attribute is writable" << endl;
-		if (p.memorized == true)
+		switch(p.memorized)
 		{
-			o_str << "Attribute is memorized" << endl;
-			if (p.mem_init == true)
-				o_str << "Attribute is written with memorized value at initialisation" << endl;
-		}
-		else
+		case NOT_KNOWN:
+			o_str << "Device too old to send attribute memorisation information" << endl;
+			break;
+
+		case NONE:
 			o_str << "Attribute is not memorized" << endl;
+			break;
+
+		case MEMORIZED:
+			o_str << "Attribute is memorized" << endl;
+			break;
+
+		case MEMORIZED_WRITE_INIT:
+			o_str << "Attribute is memorized and the memorized value is written at initialisation" << endl;
+			break;
+
+		default:
+			break;
+		}
 	}
 	else
 		o_str << "Attribute is not writable" << endl;

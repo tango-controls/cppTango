@@ -750,78 +750,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			str.str("");
-			str.clear();
-			str << min_value_str;
-			if (!(str >> min_value.db && str.eof()))
-				throw_err_format("min_value",dev_name,"Attribute::set_properties()");
-			switch (data_type)
-			{
-			case Tango::DEV_SHORT:
-				min_value.sh = (DevShort)min_value.db;
-				str.str("");
-				str.clear();
-				str << min_value.sh;
-				break;
-
-			case Tango::DEV_LONG:
-				min_value.lg = (DevLong)min_value.db;
-				str.str("");
-				str.clear();
-				str << min_value.lg;
-				break;
-
-			case Tango::DEV_LONG64:
-				min_value.lg64 = (DevLong64)min_value.db;
-				str.str("");
-				str.clear();
-				str << min_value.lg64;
-				break;
-
-			case Tango::DEV_DOUBLE:
-				break;
-
-			case Tango::DEV_FLOAT:
-				min_value.fl = (DevFloat)min_value.db;
-				break;
-
-			case Tango::DEV_USHORT:
-				(min_value.db < 0.0) ? min_value.ush = (DevUShort)(-min_value.db) : min_value.ush = (DevUShort)min_value.db;
-				str.str("");
-				str.clear();
-				str << min_value.ush;
-				break;
-
-			case Tango::DEV_UCHAR:
-				(min_value.db < 0.0) ? min_value.uch = (DevUChar)(-min_value.db) : min_value.uch = (DevUChar)min_value.db;
-				str.str("");
-				str.clear();
-				str << (short)min_value.uch;
-				break;
-
-			case Tango::DEV_ULONG:
-				(min_value.db < 0.0) ? min_value.ulg = (DevULong)(-min_value.db) : min_value.ulg = (DevULong)min_value.db;
-				str.str("");
-				str.clear();
-				str << min_value.ulg;
-				break;
-
-			case Tango::DEV_ULONG64:
-				(min_value.db < 0.0) ? min_value.ulg64 = (DevULong64)(-min_value.db) : min_value.ulg64 = (DevULong64)min_value.db;
-				str.str("");
-				str.clear();
-				str << min_value.ulg64;
-				break;
-
-			case Tango::DEV_ENCODED:
-				(min_value.db < 0.0) ? min_value.uch = (DevUChar)(-min_value.db) : min_value.uch = (DevUChar)min_value.db;
-				str.str("");
-				str.clear();
-				str << (short)min_value.uch;
-				break;
-			}
-			if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-                min_value_str = str.str();
+			convert_prop_value("min_value",min_value_str,min_value,dev_name);
 			check_min_value = true;
 
 //
@@ -944,79 +873,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			str.str("");
-			str.clear();
-
-			str << max_value_str;
-			if (!(str >> max_value.db && str.eof()))
-				throw_err_format("max_value",dev_name,"Attribute::set_properties()");
-			switch (data_type)
-			{
-			case Tango::DEV_SHORT:
-				max_value.sh = (DevShort)max_value.db;
-				str.str("");
-				str.clear();
-				str << max_value.sh;
-				break;
-
-			case Tango::DEV_LONG:
-				max_value.lg = (DevLong)max_value.db;
-				str.str("");
-				str.clear();
-				str << max_value.lg;
-				break;
-
-			case Tango::DEV_LONG64:
-				max_value.lg64 = (DevLong64)max_value.db;
-				str.str("");
-				str.clear();
-				str << max_value.lg64;
-				break;
-
-			case Tango::DEV_DOUBLE:
-				break;
-
-			case Tango::DEV_FLOAT:
-				max_value.fl = (DevFloat)max_value.db;
-				break;
-
-			case Tango::DEV_USHORT:
-				(max_value.db < 0.0) ? max_value.ush = (DevUShort)(-max_value.db) : max_value.ush = (DevUShort)max_value.db;
-				str.str("");
-				str.clear();
-				str << max_value.ush;
-				break;
-
-			case Tango::DEV_UCHAR:
-				(max_value.db < 0.0) ? max_value.uch = (DevUChar)(-max_value.db) : max_value.uch = (DevUChar)max_value.db;
-				str.str("");
-				str.clear();
-				str << (short)max_value.uch;
-				break;
-
-			case Tango::DEV_ULONG:
-				(max_value.db < 0.0) ? max_value.ulg = (DevULong)(-max_value.db) : max_value.ulg = (DevULong)max_value.db;
-				str.str("");
-				str.clear();
-				str << max_value.ulg;
-				break;
-
-			case Tango::DEV_ULONG64:
-				(max_value.db < 0.0) ? max_value.ulg64 = (DevULong64)(-max_value.db) : max_value.ulg64 = (DevULong64)max_value.db;
-				str.str("");
-				str.clear();
-				str << max_value.ulg64;
-				break;
-
-			case Tango::DEV_ENCODED:
-				(max_value.db < 0.0) ? max_value.uch = (DevUChar)(-max_value.db) : max_value.uch = (DevUChar)max_value.db;
-				str.str("");
-				str.clear();
-				str << (short)max_value.uch;
-				break;
-			}
-			if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-                max_value_str = str.str();
+			convert_prop_value("max_value",max_value_str,max_value,dev_name);
 			check_max_value = true;
 
 //
@@ -1139,79 +996,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			str.str("");
-			str.clear();
-
-			str << min_alarm_str;
-			if (!(str >> min_alarm.db && str.eof()))
-				throw_err_format("min_alarm",dev_name,"Attribute::set_properties()");
-			switch (data_type)
-			{
-			case Tango::DEV_SHORT:
-				min_alarm.sh = (DevShort)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << min_alarm.sh;
-				break;
-
-			case Tango::DEV_LONG:
-				min_alarm.lg = (DevLong)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << min_alarm.lg;
-				break;
-
-			case Tango::DEV_LONG64:
-				min_alarm.lg64 = (DevLong64)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << min_alarm.lg64;
-				break;
-
-			case Tango::DEV_DOUBLE:
-				break;
-
-			case Tango::DEV_FLOAT:
-				min_alarm.fl = (DevFloat)min_alarm.db;
-				break;
-
-			case Tango::DEV_USHORT:
-				(min_alarm.db < 0.0) ? min_alarm.ush = (DevUShort)(-min_alarm.db) : min_alarm.ush = (DevUShort)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << min_alarm.ush;
-				break;
-
-			case Tango::DEV_UCHAR:
-				(min_alarm.db < 0.0) ? min_alarm.uch = (DevUChar)(-min_alarm.db) : min_alarm.uch = (DevUChar)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << (short)min_alarm.uch;
-				break;
-
-			case Tango::DEV_ULONG:
-				(min_alarm.db < 0.0) ? min_alarm.ulg = (DevULong)(-min_alarm.db) : min_alarm.ulg = (DevULong)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << min_alarm.ulg;
-				break;
-
-			case Tango::DEV_ULONG64:
-				(min_alarm.db < 0.0) ? min_alarm.ulg64 = (DevULong64)(-min_alarm.db) : min_alarm.ulg64 = (DevULong64)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << min_alarm.ulg64;
-				break;
-
-			case Tango::DEV_ENCODED:
-				(min_alarm.db < 0.0) ? min_alarm.uch = (DevUChar)(-min_alarm.db) : min_alarm.uch = (DevUChar)min_alarm.db;
-				str.str("");
-				str.clear();
-				str << (short)min_alarm.uch;
-				break;
-			}
-			if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-                min_alarm_str = str.str();
+			convert_prop_value("min_alarm",min_alarm_str,min_alarm,dev_name);
 			alarm_conf.set(min_level);
 
 //
@@ -1334,79 +1119,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			str.str("");
-			str.clear();
-
-			str << max_alarm_str;
-			if (!(str >> max_alarm.db && str.eof()))
-				throw_err_format("max_alarm",dev_name,"Attribute::set_properties()");
-			switch (data_type)
-			{
-			case Tango::DEV_SHORT:
-				max_alarm.sh = (DevShort)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << max_alarm.sh;
-				break;
-
-			case Tango::DEV_LONG:
-				max_alarm.lg = (DevLong)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << max_alarm.lg;
-				break;
-
-			case Tango::DEV_LONG64:
-				max_alarm.lg64 = (DevLong64)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << max_alarm.lg64;
-				break;
-
-			case Tango::DEV_DOUBLE:
-				break;
-
-			case Tango::DEV_FLOAT:
-				max_alarm.fl = (DevFloat)max_alarm.db;
-				break;
-
-			case Tango::DEV_USHORT:
-				(max_alarm.db < 0.0) ? max_alarm.ush = (DevUShort)(-max_alarm.db) : max_alarm.ush = (DevUShort)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << max_alarm.ush;
-				break;
-
-			case Tango::DEV_UCHAR:
-				(max_alarm.db < 0.0) ? max_alarm.uch = (DevUChar)(-max_alarm.db) : max_alarm.uch = (DevUChar)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << (short)max_alarm.uch;
-				break;
-
-			case Tango::DEV_ULONG:
-				(max_alarm.db < 0.0) ? max_alarm.ulg = (DevULong)(-max_alarm.db) : max_alarm.ulg = (DevULong)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << max_alarm.ulg;
-				break;
-
-			case Tango::DEV_ULONG64:
-				(max_alarm.db < 0.0) ? max_alarm.ulg64 = (DevULong64)(-max_alarm.db) : max_alarm.ulg64 = (DevULong64)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << max_alarm.ulg64;
-				break;
-
-			case Tango::DEV_ENCODED:
-				(max_alarm.db < 0.0) ? max_alarm.uch = (DevUChar)(-max_alarm.db) : max_alarm.uch = (DevUChar)max_alarm.db;
-				str.str("");
-				str.clear();
-				str << (short)max_alarm.uch;
-				break;
-			}
-			if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-                max_alarm_str = str.str();
+			convert_prop_value("max_alarm",max_alarm_str,max_alarm,dev_name);
 			alarm_conf.set(max_level);
 
 //
@@ -1625,79 +1338,7 @@ cout << "Entering Attribute::set_properties" << endl;
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				str.str("");
-				str.clear();
-
-				str << min_warning_str;
-				if (!(str >> min_warning.db && str.eof()))
-					throw_err_format("min_warning",dev_name,"Attribute::set_properties()");
-				switch (data_type)
-				{
-				case Tango::DEV_SHORT:
-					min_warning.sh = (DevShort)min_warning.db;
-					str.str("");
-					str.clear();
-					str << min_warning.sh;
-					break;
-
-				case Tango::DEV_LONG:
-					min_warning.lg = (DevLong)min_warning.db;
-					str.str("");
-					str.clear();
-					str << min_warning.lg;
-					break;
-
-				case Tango::DEV_LONG64:
-					min_warning.lg64 = (DevLong64)min_warning.db;
-					str.str("");
-					str.clear();
-					str << min_warning.lg64;
-					break;
-
-				case Tango::DEV_DOUBLE:
-					break;
-
-				case Tango::DEV_FLOAT:
-					min_warning.fl = (DevFloat)min_warning.db;
-					break;
-
-				case Tango::DEV_USHORT:
-					(min_warning.db < 0.0) ? min_warning.ush = (DevUShort)(-min_warning.db) : min_warning.ush = (DevUShort)min_warning.db;
-					str.str("");
-					str.clear();
-					str << min_warning.ush;
-					break;
-
-				case Tango::DEV_UCHAR:
-					(min_warning.db < 0.0) ? min_warning.uch = (DevUChar)(-min_warning.db) : min_warning.uch = (DevUChar)min_warning.db;
-					str.str("");
-					str.clear();
-					str << (short)min_warning.uch;
-					break;
-
-				case Tango::DEV_ULONG:
-					(min_warning.db < 0.0) ? min_warning.ulg = (DevULong)(-min_warning.db) : min_warning.ulg = (DevULong)min_warning.db;
-					str.str("");
-					str.clear();
-					str << min_warning.ulg;
-					break;
-
-				case Tango::DEV_ULONG64:
-					(min_warning.db < 0.0) ? min_warning.ulg64 = (DevULong64)(-min_warning.db) : min_warning.ulg64 = (DevULong64)min_warning.db;
-					str.str("");
-					str.clear();
-					str << min_warning.ulg64;
-					break;
-
-				case Tango::DEV_ENCODED:
-					(min_warning.db < 0.0) ? min_warning.uch = (DevUChar)(-min_warning.db) : min_warning.uch = (DevUChar)min_warning.db;
-					str.str("");
-					str.clear();
-					str << (short)min_warning.uch;
-					break;
-				}
-				if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-					min_warning_str = str.str();
+				convert_prop_value("min_warning",min_warning_str,min_warning,dev_name);
 				alarm_conf.set(min_warn);
 			}
 			else
@@ -1806,79 +1447,7 @@ cout << "Entering Attribute::set_properties" << endl;
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				str.str("");
-				str.clear();
-
-				str << max_warning_str;
-				if (!(str >> max_warning.db && str.eof()))
-					throw_err_format("max_warning",dev_name,"Attribute::set_properties()");
-				switch (data_type)
-				{
-				case Tango::DEV_SHORT:
-					max_warning.sh = (DevShort)max_warning.db;
-					str.str("");
-					str.clear();
-					str << max_warning.sh;
-					break;
-
-				case Tango::DEV_LONG:
-					max_warning.lg = (DevLong)max_warning.db;
-					str.str("");
-					str.clear();
-					str << max_warning.lg;
-					break;
-
-				case Tango::DEV_LONG64:
-					max_warning.lg64 = (DevLong64)max_warning.db;
-					str.str("");
-					str.clear();
-					str << max_warning.lg64;
-					break;
-
-				case Tango::DEV_DOUBLE:
-					break;
-
-				case Tango::DEV_FLOAT:
-					max_warning.fl = (DevFloat)max_warning.db;
-					break;
-
-				case Tango::DEV_USHORT:
-					(max_warning.db < 0.0) ? max_warning.ush = (DevUShort)(-max_warning.db) : max_warning.ush = (DevUShort)max_warning.db;
-					str.str("");
-					str.clear();
-					str << max_warning.ush;
-					break;
-
-				case Tango::DEV_UCHAR:
-					(max_warning.db < 0.0) ? max_warning.uch = (DevUChar)(-max_warning.db) : max_warning.uch = (DevUChar)max_warning.db;
-					str.str("");
-					str.clear();
-					str << (short)max_warning.uch;
-					break;
-
-				case Tango::DEV_ULONG:
-					(max_warning.db < 0.0) ? max_warning.ulg = (DevULong)(-max_warning.db) : max_warning.ulg = (DevULong)max_warning.db;
-					str.str("");
-					str.clear();
-					str << max_warning.ulg;
-					break;
-
-				case Tango::DEV_ULONG64:
-					(max_warning.db < 0.0) ? max_warning.ulg64 = (DevULong64)(-max_warning.db) : max_warning.ulg64 = (DevULong64)max_warning.db;
-					str.str("");
-					str.clear();
-					str << max_warning.ulg64;
-					break;
-
-				case Tango::DEV_ENCODED:
-					(max_warning.db < 0.0) ? max_warning.uch = (DevUChar)(-max_warning.db) : max_warning.uch = (DevUChar)max_warning.db;
-					str.str("");
-					str.clear();
-					str << (short)max_warning.uch;
-					break;
-				}
-				if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-					max_warning_str = str.str();
+				convert_prop_value("max_warning_value",max_warning_str,max_warning,dev_name);
 				alarm_conf.set(max_warn);
 			}
 			else
@@ -1986,79 +1555,7 @@ cout << "Entering Attribute::set_properties" << endl;
 				(data_type != Tango::DEV_BOOLEAN) &&
 				(data_type != Tango::DEV_STATE))
 			{
-				str.str("");
-				str.clear();
-
-				str << delta_val_str;
-				if (!(str >> delta_val.db && str.eof()))
-					throw_err_format("delta_val",dev_name,"Attribute::set_properties()");
-				switch (data_type)
-				{
-				case Tango::DEV_SHORT:
-					delta_val.sh = (DevShort)delta_val.db;
-					str.str("");
-					str.clear();
-					str << delta_val.sh;
-					break;
-
-				case Tango::DEV_LONG:
-					delta_val.lg = (DevLong)delta_val.db;
-					str.str("");
-					str.clear();
-					str << delta_val.lg;
-					break;
-
-				case Tango::DEV_LONG64:
-					delta_val.lg64 = (DevLong64)delta_val.db;
-					str.str("");
-					str.clear();
-					str << delta_val.lg64;
-					break;
-
-				case Tango::DEV_DOUBLE:
-					break;
-
-				case Tango::DEV_FLOAT:
-					delta_val.fl = (DevFloat)delta_val.db;
-					break;
-
-				case Tango::DEV_USHORT:
-					(delta_val.db < 0.0) ? delta_val.ush = (DevUShort)(-delta_val.db) : delta_val.ush = (DevUShort)delta_val.db;
-					str.str("");
-					str.clear();
-					str << delta_val.ush;
-					break;
-
-				case Tango::DEV_UCHAR:
-					(delta_val.db < 0.0) ? delta_val.uch = (DevUChar)(-delta_val.db) : delta_val.uch = (DevUChar)delta_val.db;
-					str.str("");
-					str.clear();
-					str << (short)delta_val.uch;
-					break;
-
-				case Tango::DEV_ULONG:
-					(delta_val.db < 0.0) ? delta_val.ulg = (DevULong)(-delta_val.db) : delta_val.ulg = (DevULong)delta_val.db;
-					str.str("");
-					str.clear();
-					str << delta_val.ulg;
-					break;
-
-				case Tango::DEV_ULONG64:
-					(delta_val.db < 0.0) ? delta_val.ulg64 = (DevULong64)(-delta_val.db) : delta_val.ulg64 = (DevULong64)delta_val.db;
-					str.str("");
-					str.clear();
-					str << delta_val.ulg64;
-					break;
-
-				case Tango::DEV_ENCODED:
-					(delta_val.db < 0.0) ? delta_val.uch = (DevUChar)(-delta_val.db) : delta_val.uch = (DevUChar)delta_val.db;
-					str.str("");
-					str.clear();
-					str << (short)delta_val.uch;
-					break;
-				}
-				if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
-					delta_val_str = str.str();
+				convert_prop_value("delta_val",delta_val_str,delta_val,dev_name);
 				delta_val_defined = true;
 			}
 			else
@@ -5353,6 +4850,100 @@ void Attribute::check_hard_coded(const  AttributeConfig_5 &user_conf)
 	}
 
 // TODO: enum_labels
+}
+
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::check_hard_coded()
+//
+// description :
+//		Check if the user tries to change attribute properties considered as hard coded added by IDL 5
+//      Throw exception in case of
+//
+// args :
+// 		in :
+//			- user_conf : The attribute configuration sent by the user
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_CheckVal &val,string &dev_name)
+{
+	TangoSys_MemStream str;
+	str.precision(TANGO_FLOAT_PRECISION);
+	
+
+	str << value_str;
+	if (!(str >> val.db && str.eof()))
+		throw_err_format(prop_name,dev_name,"Attribute::convert_prop_value()");
+	switch (data_type)
+	{
+	case Tango::DEV_SHORT:
+		val.sh = (DevShort)val.db;
+		str.str("");
+		str.clear();
+		str << val.sh;
+		break;
+
+		case Tango::DEV_LONG:
+			val.lg = (DevLong)val.db;
+			str.str("");
+			str.clear();
+			str << val.lg;
+			break;
+
+		case Tango::DEV_LONG64:
+			val.lg64 = (DevLong64)val.db;
+			str.str("");
+			str.clear();
+			str << val.lg64;
+			break;
+
+		case Tango::DEV_DOUBLE:
+			break;
+
+		case Tango::DEV_FLOAT:
+			val.fl = (DevFloat)val.db;
+			break;
+
+		case Tango::DEV_USHORT:
+			(val.db < 0.0) ? val.ush = (DevUShort)(-val.db) : val.ush = (DevUShort)val.db;
+			str.str("");
+			str.clear();
+			str << val.ush;
+			break;
+
+		case Tango::DEV_UCHAR:
+			(val.db < 0.0) ? val.uch = (DevUChar)(-val.db) : val.uch = (DevUChar)val.db;
+			str.str("");
+			str.clear();
+			str << (short)val.uch;
+			break;
+
+		case Tango::DEV_ULONG:
+			(val.db < 0.0) ? val.ulg = (DevULong)(-val.db) : val.ulg = (DevULong)val.db;
+			str.str("");
+			str.clear();
+			str << val.ulg;
+			break;
+
+		case Tango::DEV_ULONG64:
+			(val.db < 0.0) ? val.ulg64 = (DevULong64)(-val.db) : val.ulg64 = (DevULong64)val.db;
+			str.str("");
+			str.clear();
+			str << val.ulg64;
+			break;
+
+		case Tango::DEV_ENCODED:
+			(val.db < 0.0) ? val.uch = (DevUChar)(-val.db) : val.uch = (DevUChar)val.db;
+			str.str("");
+			str.clear();
+			str << (short)val.uch;
+			break;
+	}
+	if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
+        	value_str = str.str();
 }
 
 } // End of Tango namespace

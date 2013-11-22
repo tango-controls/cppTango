@@ -133,12 +133,12 @@ typedef vector<CommandInfo> CommandInfoList;
 
 struct _DeviceInfo
 {
-	string dev_class;
-	string server_id;
-	string server_host;
-	long server_version;
-	string doc_url;
-	string dev_type;
+	string 	dev_class;
+	string 	server_id;
+	string 	server_host;
+	long 	server_version;
+	string 	doc_url;
+	string 	dev_type;
 };
 
 typedef _DeviceInfo DeviceInfo;
@@ -264,6 +264,21 @@ typedef struct _AttributeEventInfo
 }AttributeEventInfo;
 
 /**
+ * Possible memorized attribute type
+ *
+ * @ingroup Client
+ * @headerfile tango.h
+ */
+typedef enum _AttrMemorizedType
+{
+	NOT_KNOWN,        		///< Device too old to  get this info
+	NONE,      				///< Attribute not memorized
+	MEMORIZED,      		///< Memorized attribute
+	MEMORIZED_WRITE_INIT	///< Memorized attribute with memorized value writen at initialization
+}AttrMemorizedType;
+
+
+/**
  * Extended attribute configuration data
  *
  * @headerfile tango.h
@@ -272,17 +287,16 @@ typedef struct _AttributeEventInfo
 typedef struct _AttributeInfoEx : public AttributeInfo
 {
 	string				root_attr_name;		///< Root attribute name
-	bool				memorized;			///< Memorized attribute flag
-	bool				mem_init;			///< Write memorized valur at initialisation
+	AttrMemorizedType	memorized;			///< Attribute memorization type
 	vector<string>		enum_labels;		///< Enumerated attribute labels
 	AttributeAlarmInfo 	alarms;             ///< Attribute alarms
 	AttributeEventInfo	events;             ///< Attribute events configuration
 	vector<string>		sys_extensions;     ///< Future extensions
 
 /// @privatesection
-	_AttributeInfoEx & operator=(AttributeConfig_2 *);
-	_AttributeInfoEx & operator=(AttributeConfig_3 *);
-	_AttributeInfoEx & operator=(AttributeConfig_5 *);
+	_AttributeInfoEx & operator=(const AttributeConfig_2 *);
+	_AttributeInfoEx & operator=(const AttributeConfig_3 *);
+	_AttributeInfoEx & operator=(const AttributeConfig_5 *);
 
 	friend ostream &operator<<(ostream &,_AttributeInfoEx &);
 	bool operator==(const _AttributeInfoEx &);

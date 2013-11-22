@@ -86,34 +86,45 @@ cout << "Attr name = " << ev->attr_name << endl;
 				{
 
 //
-// Classical event: Use the DeviceProxy to the local device to set the att. environment but do not change att name
+// Classical event: Use the DeviceImpl ptr to the local device to set the att. environment but do not change att name
 // and do not change att label if locally defined
 //
 
 					if (ite->second.fwd_attr == nullptr)
 					{
 						cout << "Change in Attribute config..........." << endl;
-						map<string,DeviceProxy *>::iterator ite3;
-						ite3 = local_dps.find(ite->second.local_name);
-						if (ite3 == local_dps.end())
+						map<string,DeviceImpl *>::iterator ite3;
+						ite3 = local_dis.find(ite->second.local_name);
+						if (ite3 == local_dis.end())
 						{
 							cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
-							cerr << ite->second.local_name << " not found in map (local_dps)! Map corrupted?" << endl;
+							cerr << ite->second.local_name << " not found in map (local_dis)! Map corrupted?" << endl;
 						}
 						else
 						{
-							AttributeInfoListEx aile;
-							aile.push_back(*(ev->attr_conf));
+							Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
+							if (the_dev != nullptr)
+							{
+								FwdAttrConfEventData *ev_fwd = static_cast<FwdAttrConfEventData *>(ev);
+								AttributeConfigList_5 conf_list(1,1,const_cast<AttributeConfig_5 *>(ev_fwd->get_fwd_attr_conf()));
 
-							aile[0].name = ite->second.local_att_name;
-							if (ite->second.local_label.empty() == false)
-								aile[0].label = ite->second.local_label;
+//
+// The attribute name, root_attr_name and label are local values
+//
 
-							ite3->second->set_attribute_config(aile);
+								conf_list[0].name = ite->second.local_att_name.c_str();
+								conf_list[0].root_attr_name = ite->first.c_str();
+								if (ite->second.local_label.empty() == false)
+									conf_list[0].label = ite->second.local_label.c_str();
 
-//							AttributeConfigList_5 conf_list;
-//							conf_list.length(1);
-
+cout << "Calling set_attribute_config_5" << endl;
+								the_dev->set_attribute_config_5(conf_list,ci);
+							}
+							else
+							{
+								cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
+								cerr << ite->second.local_name << " has a null pointer in DeviceImpl * map (local_dis)" << endl;
+							}
 						}
 					}
 					else
@@ -124,18 +135,37 @@ cout << "Attr name = " << ev->attr_name << endl;
 // was started while the root device was off
 //
 
-						ite->second.fwd_attr->init_conf(ev->attr_conf);
-
 						if (ite->second.fwd_attr->get_err_kind() == FWD_ROOT_DEV_NOT_STARTED)
 						{
 							cout << "After re-connection" << endl;
-							Util *tg = Util::instance();
-							DeviceImpl *dev = tg->get_device_by_name(ite->second.local_name);
-							dev->add_attribute(ite->second.fwd_attr);
-							ite->second.fwd_attr = nullptr;
+							map<string,DeviceImpl *>::iterator ite3;
+							ite3 = local_dis.find(ite->second.local_name);
+							if (ite3 == local_dis.end())
+							{
+								cerr << "RootAttRegistry::RootAttConfCallBack::push_event(): Device " ;
+								cerr << ite->second.local_name << " not found in map (local_dis)! Map corrupted?" << endl;
+							}
+							else
+							{
+								if (ite->second.local_label.empty() == false)
+									ev->attr_conf->label = ite->second.local_label;
 
-							dev->rem_wrong_fwd_att(att_name);
-							dev->set_run_att_conf_loop(true);
+								Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
+								Attribute &the_fwd_att = the_dev->get_device_attr()->get_attr_by_name(ite->second.local_att_name.c_str());
+								static_cast<FwdAttribute &>(the_fwd_att).set_att_config(ev->attr_conf);
+
+/*								DeviceImpl *the_dev = ite3->second;
+								the_dev->add_attribute(ite->second.fwd_attr); */
+								ite->second.fwd_attr = nullptr;
+
+								the_dev->rem_wrong_fwd_att(att_name);
+								the_dev->set_run_att_conf_loop(true);
+							}
+						}
+						else
+						{
+							ite->second.fwd_attr->init_conf(ev);
+							ite->second.fwd_attr = nullptr;
 						}
 					}
 				}
@@ -168,13 +198,14 @@ cout << "Attr name = " << ev->attr_name << endl;
 //			- local_dev_name : The local device name
 //			- local_att_name : The local attribute name
 //			- att: The attribute pointer when still a FwdAttr object
+//			- dev : The local device pointer (DeviceImpl *)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
 void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string &local_dev_name,
-													string &local_att_name,FwdAttr *att)
+													string &local_att_name,FwdAttr *att,DeviceImpl *dev)
 {
-	DeviceProxy *the_local_dev;
+	DeviceImpl *the_local_dev;
 	try
 	{
 		the_local_dev = nullptr;
@@ -195,16 +226,16 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 			}
 		}
 
-		map<string,DeviceProxy *>::iterator ite;
-		ite = local_dps.find(local_dev_name);
-		if (ite == local_dps.end())
-			the_local_dev = new DeviceProxy(local_dev_name);
+		map<string,DeviceImpl *>::iterator ite;
+		ite = local_dis.find(local_dev_name);
+		if (ite == local_dis.end())
+			the_local_dev = dev;
 
 		{
 			omni_mutex_lock oml(the_lock);
 			map_attrdesc.insert({root_att_name,nf});
 			if (the_local_dev != nullptr)
-				local_dps.insert({local_dev_name,the_local_dev});
+				local_dis.insert({local_dev_name,the_local_dev});
 		}
 	}
 	catch (DevFailed &e) {}
@@ -254,14 +285,13 @@ void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
 
 //
 // If the local device name is not referenced in any entry in the map_attrdesc map, we can remove the
-// corresponding Deviceproxy entry
+// corresponding DeviceImpl entry
 //
 
 		if (used_elsewhere == false)
 		{
-			map<string,DeviceProxy *>::iterator ite_dp = local_dps.find(local_dev_name);
- 			delete ite_dp->second;
-			local_dps.erase(ite_dp);
+			map<string,DeviceImpl *>::iterator ite_dp = local_dis.find(local_dev_name);
+			local_dis.erase(ite_dp);
 		}
 	}
 	else
@@ -341,7 +371,8 @@ bool RootAttRegistry::RootAttConfCallBack::is_root_att_in_map(string &root_att_n
 //		RootAttRegistry::RootAttConfCallBack::count_root_dev
 //
 // description :
-//		Count how many times the root device with name given as parameter is used as root device name
+//		Count how many times the root device with name given as parameter is used as root device name by all the
+//		registred forwarded attributes
 //
 // argument :
 //		in :
@@ -372,6 +403,25 @@ int RootAttRegistry::RootAttConfCallBack::count_root_dev(string &root_dev_name)
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		RootAttRegistry::RootAttConfCallBack::null_device_impl
+//
+// description :
+//
+//
+// argument :
+//		in :
+//			- local_dev_name : The local device name
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void RootAttRegistry::RootAttConfCallBack::null_device_impl(string &local_dev_name)
+{
+
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		RootAttRegistry::add_root_att
 //
 // description :
@@ -385,11 +435,12 @@ int RootAttRegistry::RootAttConfCallBack::count_root_dev(string &root_dev_name)
 //			- local_dev_name : The local device name
 //			- local_att_name : The local attribute name
 //			- attdesc : The attribute object when still a FwdAttr object
+//			- dev : Device pointer
 //
 //--------------------------------------------------------------------------------------------------------------------
 
 void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &local_dev_name,string &local_att_name,
-								   FwdAttr *attdesc)
+								   FwdAttr *attdesc,DeviceImpl *dev)
 {
 	DeviceProxy *the_dev;
 	map<string,DeviceProxy *>::iterator ite;
@@ -412,7 +463,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 	bool already_there = cbp.is_root_att_in_map(a_name);
 	if (already_there == false)
 	{
-		cbp.add_att(a_name,local_dev_name,local_att_name,attdesc);
+		cbp.add_att(a_name,local_dev_name,local_att_name,attdesc,dev);
 		int event_id;
 
 		try
@@ -574,6 +625,38 @@ string RootAttRegistry::RootAttConfCallBack::get_local_att_name(string &root_nam
 
 	string loc_name = ite->second.local_name + '/' + ite->second.local_att_name;
 	return loc_name;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		RootAttRegistry::RootAttConfCallBack::update_label
+//
+// description :
+//		Update the attribute label stored in map_attrdesc map
+//
+// argument :
+//		in :
+//			- root_name : The full root attribute name
+//			- new_label : The new label
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void RootAttRegistry::RootAttConfCallBack::update_label(string &root_name,string &new_label)
+{
+	map<string,struct NameFwdAttr>::iterator ite;
+	ite = map_attrdesc.find(root_name);
+
+	if (ite != map_attrdesc.end())
+	{
+		ite->second.local_label = new_label;
+	}
+	else
+	{
+		stringstream ss;
+		ss << root_name << " not registered in map of root attribute!";
+		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::update_label");
+	}
 }
 
 } // End of Tango namespace

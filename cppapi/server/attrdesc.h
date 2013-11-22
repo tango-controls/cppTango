@@ -655,6 +655,7 @@ public:
  */
 	SpectrumAttr(const char *name,long data_type,Tango::AttrWriteType w_type,long max_x,DispLevel level);
 
+	SpectrumAttr(const char *_n):Attr(_n) {}
 //@}
 
 /**@name Destructor
@@ -762,6 +763,7 @@ public:
 	ImageAttr(const char *name,long data_type,Tango::AttrWriteType w_type,
 		  long max_x, long max_y, Tango::DispLevel level);
 
+	ImageAttr(const char *name):SpectrumAttr(name) {}
 //@}
 
 /**@name Destructor

@@ -823,7 +823,7 @@ public:
 /**
  * Push a change event for a state or status attribute or return an exception as change
  * event for any attribute.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name as input.
  * For the state and status attributes the actual state and status values are pushed.
@@ -836,7 +836,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -859,7 +859,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -882,7 +882,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -905,7 +905,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -928,7 +928,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -951,7 +951,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -974,7 +974,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -997,7 +997,7 @@ public:
 
 /**void push_change_event (string attr_name, Tango::DevBoolea
  * Push a change event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1020,7 +1020,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1043,7 +1043,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1066,7 +1066,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1089,7 +1089,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1112,7 +1112,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1136,7 +1136,7 @@ public:
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type
  * when the DevEncoded data are specified by two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1159,7 +1159,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1186,7 +1186,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1214,7 +1214,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1242,7 +1242,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1269,7 +1269,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1296,7 +1296,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1323,7 +1323,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1350,7 +1350,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1377,7 +1377,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1405,7 +1405,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1433,7 +1433,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1461,7 +1461,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1489,7 +1489,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1518,7 +1518,7 @@ public:
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type
  * when the data rea specified with two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1570,7 +1570,7 @@ public:
 /**
  * Push an archive event for a state or status attribute or return an exception as archive
  * event for any attribute.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name as input.
  * For the state and status attributes the actual state and status values are pushed.
@@ -1583,7 +1583,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1606,7 +1606,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1629,7 +1629,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1652,7 +1652,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1675,7 +1675,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1698,7 +1698,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1721,7 +1721,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1744,7 +1744,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1767,7 +1767,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1790,7 +1790,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1813,7 +1813,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1836,7 +1836,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1859,7 +1859,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1883,7 +1883,7 @@ public:
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type
  * when the data are specified using two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1906,7 +1906,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1933,7 +1933,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1960,7 +1960,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1987,7 +1987,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2014,7 +2014,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2041,7 +2041,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2068,7 +2068,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2095,7 +2095,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2122,7 +2122,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2149,7 +2149,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2176,7 +2176,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2203,7 +2203,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2231,7 +2231,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2260,7 +2260,7 @@ public:
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type
  * when it is specified using two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2299,7 +2299,7 @@ public:
 /**
  * Push a user event for a state or status attribute or return an exception as user
  * event for any attribute.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name as input.
  * For the state and status attributes the actual state and status values are pushed.
@@ -2314,7 +2314,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2337,7 +2337,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2360,7 +2360,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2383,7 +2383,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2406,7 +2406,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2429,7 +2429,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2452,7 +2452,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2475,7 +2475,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2498,7 +2498,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2521,7 +2521,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2544,7 +2544,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2567,7 +2567,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2590,7 +2590,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2614,7 +2614,7 @@ public:
 /**
  * Push a user event for an attribute with Tango::DevEncoded attribute data type
  * when the attribute data are specified with 2 pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2637,7 +2637,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2664,7 +2664,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2692,7 +2692,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2720,7 +2720,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2747,7 +2747,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2774,7 +2774,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2801,7 +2801,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2828,7 +2828,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2855,7 +2855,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2883,7 +2883,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2911,7 +2911,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2939,7 +2939,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2967,7 +2967,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2997,7 +2997,7 @@ public:
  * Push a user event for an attribute with Tango::DevEncoded attribute data type
  * when the string part and the data part of the DevEncoded data are specified
  * separately.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3031,7 +3031,7 @@ public:
 /**
  * Push a data ready event for the attribute with name specified as the first
  * parameter.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs only the attribue name and an optional "counter" which
  * will be passed unchanged within the event

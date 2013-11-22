@@ -169,57 +169,12 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
 // Also get Db server defined in DB but not in the user TANGO_HOST env. variable
 //
 
-            try
-            {
-                DeviceData dd;
-                dd = db->command_inout("DbGetCSDbServerList");
-                vector<string> vs;
-                dd >> vs;
-
-                vector<string>::iterator pos;
-
-                for (unsigned int i = 0;i < vs.size();i++)
-                {
-                    transform(vs[i].begin(),vs[i].end(),vs[i].begin(),::tolower);
-#ifdef HAS_LAMBDA_FUNC
-                    pos = find_if(env_var_fqdn_prefix.begin(),env_var_fqdn_prefix.end(),
-                            [&] (string str) -> bool
-                            {
-                                if (str.find(vs[i]) != string::npos)
-                                    return true;
-                                else
-                                    return false;
-                            });
-
-                    if (pos == env_var_fqdn_prefix.end())
-                    {
-                        string prefix = "tango://" + vs[i] + '/' ;
-                        env_var_fqdn_prefix.push_back(prefix);
-                    }
-#else
-                    unsigned int j;
-                    for (j = 0;j < env_var_fqdn_prefix.size();++j)
-                    {
-                        if (env_var_fqdn_prefix[j].find(vs[i]) != string::npos)
-                        {
-                            break;
-                        }
-					}
-
-					if (j == env_var_fqdn_prefix.size())
-					{
-						string prefix = "tango://" + vs[i] + '/';
-						env_var_fqdn_prefix.push_back(prefix);
-					}
-#endif
-                }
-            }
-            catch(...) {}
-        }
-        catch (Tango::DevFailed)
-        {
-            env_var_fqdn_prefix.push_back(TangoHostNotSet);
-        }
+			get_cs_tango_host(db);
+		}
+		catch (Tango::DevFailed)
+		{
+			env_var_fqdn_prefix.push_back(TangoHostNotSet);
+		}
     }
 
 //
@@ -262,6 +217,70 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
         keep_alive_thread = new EventConsumerKeepAliveThread(cmd);
         keep_alive_thread->start();
     }
+}
+
+//+--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::get_cs_tango_host()
+//
+// description :
+//		Get from a Tango control system which TANGO_HOST are available/ This info comes from teh Tango CS database
+//
+// argument :
+//		in :
+//			- db : Control system database pointer
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void EventConsumer::get_cs_tango_host(Database *db)
+{
+	try
+	{
+		DeviceData dd;
+		dd = db->command_inout("DbGetCSDbServerList");
+		vector<string> vs;
+		dd >> vs;
+
+		vector<string>::iterator pos;
+
+		for (unsigned int i = 0;i < vs.size();i++)
+		{
+			transform(vs[i].begin(),vs[i].end(),vs[i].begin(),::tolower);
+#ifdef HAS_LAMBDA_FUNC
+			pos = find_if(env_var_fqdn_prefix.begin(),env_var_fqdn_prefix.end(),
+					[&] (string str) -> bool
+					{
+						if (str.find(vs[i]) != string::npos)
+							return true;
+						else
+							return false;
+					});
+
+			if (pos == env_var_fqdn_prefix.end())
+			{
+				string prefix = "tango://" + vs[i] + '/' ;
+				env_var_fqdn_prefix.push_back(prefix);
+			}
+#else
+			unsigned int j;
+			for (j = 0;j < env_var_fqdn_prefix.size();++j)
+			{
+				if (env_var_fqdn_prefix[j].find(vs[i]) != string::npos)
+				{
+					break;
+				}
+			}
+
+			if (j == env_var_fqdn_prefix.size())
+			{
+				string prefix = "tango://" + vs[i] + '/';
+				env_var_fqdn_prefix.push_back(prefix);
+			}
+#endif
+		}
+	}
+	catch(...) {}
 }
 
 //+--------------------------------------------------------------------------------------------------------------------
@@ -1132,7 +1151,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	if (event == QUALITY_EVENT)
 	{
         EventSystemExcept::throw_exception((const char*)"API_InvalidArgs",
-            (const char*)"The quality change event does`nt exist any more. A change event is fired on a qaulity change!",
+            (const char*)"The quality change event does not exist any more. A change event is fired on a qaulity change!",
             (const char*)"EventConsumer::subscribe_event()");
 	}
     else
@@ -2603,8 +2622,6 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			ev_queue->insert_event(event_data);
 		}
 	}
-
-
 	else if (event == ATTR_CONF_EVENT)
 	{
 		DevErrorList err;
@@ -2623,7 +2640,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			err = e.errors;
 		}
 
-		AttrConfEventData *event_data = new AttrConfEventData(device,
+		FwdAttrConfEventData *event_data = new FwdAttrConfEventData(device,
 						      domain_name,
 						      event_name,
 						      aie,
@@ -2974,6 +2991,16 @@ void AttrConfEventData::set_time()
 #endif
 }
 
+FwdAttrConfEventData::FwdAttrConfEventData():AttrConfEventData(),fwd_attr_conf(nullptr)
+{
+}
+
+
+FwdAttrConfEventData::FwdAttrConfEventData(DeviceProxy *dev,string &nam,string &evt,
+                  Tango::AttributeInfoEx *attr_conf_in,DevErrorList &errors_in) :
+                  AttrConfEventData(dev,nam,evt,attr_conf_in,errors_in),fwd_attr_conf(nullptr)
+{
+}
 
 /************************************************************************/
 /*		       															*/

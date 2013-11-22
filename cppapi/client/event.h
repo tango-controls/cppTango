@@ -196,6 +196,18 @@ private:
 };
 
 
+class FwdAttrConfEventData: public AttrConfEventData
+{
+public:
+	FwdAttrConfEventData();
+	FwdAttrConfEventData(DeviceProxy *,string &,string &,Tango::AttributeInfoEx *,DevErrorList &);
+
+	void set_fwd_attr_conf(const AttributeConfig_5 *_p) {fwd_attr_conf = _p;}
+	const AttributeConfig_5 *get_fwd_attr_conf() {return fwd_attr_conf;}
+
+private:
+	const AttributeConfig_5	*fwd_attr_conf;
+};
 
 /********************************************************************************
  * 																				*

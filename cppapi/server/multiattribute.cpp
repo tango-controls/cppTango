@@ -219,13 +219,16 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 				{
 					try
 					{
-						fwdattr.get_root_conf(dev_name);
+						fwdattr.get_root_conf(dev_name,dev);
 						add_user_default(prop_list,def_user_prop);
 						add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 					}
 					catch (Tango::DevFailed &e)
 					{
-						fwd_ok = false;
+//						fwd_ok = false;
+
+						add_user_default(prop_list,def_user_prop);
+						add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
 						vector<DeviceImpl::FwdWrongConf> &fwd_wrong_conf = dev->get_fwd_att_wrong_conf();
 						DeviceImpl::FwdWrongConf fwc;
@@ -234,10 +237,10 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 						fwc.fae = fwdattr.get_err_kind();
 						fwd_wrong_conf.push_back(fwc);
 
-						if (fwc.fae == FWD_ROOT_DEV_NOT_STARTED)
-						{
-							dev_class_ptr->get_class_attr()->remove_attr(fwdattr.get_name(),fwdattr.get_cl_name());
-						}
+//						if (fwc.fae == FWD_ROOT_DEV_NOT_STARTED)
+//						{
+//							dev_class_ptr->get_class_attr()->remove_attr(fwdattr.get_name(),fwdattr.get_cl_name());
+//						}
 					}
 				}
 				else
@@ -245,8 +248,8 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 					vector<DeviceImpl::FwdWrongConf> &fwd_wrong_conf = dev->get_fwd_att_wrong_conf();
 					DeviceImpl::FwdWrongConf fwc;
 					fwc.att_name = attr.get_name();
-					fwc.full_root_att_name = static_cast<FwdAttr &>(attr).get_full_root_att();
-					fwc.fae = static_cast<FwdAttr &>(attr).get_err_kind();
+					fwc.full_root_att_name = fwdattr.get_full_root_att();
+					fwc.fae = fwdattr.get_err_kind();
 					fwd_wrong_conf.push_back(fwc);
 				}
 			}

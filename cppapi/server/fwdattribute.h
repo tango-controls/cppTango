@@ -48,7 +48,19 @@ public:
 	string &get_fwd_dev_name() {return fwd_dev_name;}
 	string &get_fwd_att_name() {return fwd_att_name;}
 
+	void set_att_config(const Tango::AttributeConfig_5 &);
+	void set_att_config(const Tango::AttributeConfig_3 &) {}
+	void set_att_config(AttributeInfoEx *);
+
+	void upd_att_config(const Tango::AttributeConfig_5 &);
+	void upd_att_config(const Tango::AttributeConfig_3 &) {}
+
+	void upd_att_label(const char *);
+	bool new_att_conf(const Tango::AttributeConfig_5 &);
+
 protected:
+	void convert_event_prop(string &,double *);
+
 	string				fwd_dev_name;					// Root dev name for fwd attribute
 	string				fwd_att_name;					// Root att name for fwd attribute
 };

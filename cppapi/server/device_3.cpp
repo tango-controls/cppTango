@@ -2375,7 +2375,7 @@ void Device_3Impl::set_attribute_config_3(const Tango::AttributeConfigList_3& ne
 	}
 	store_in_bb = true;
 
-	return set_attribute_config_3_local(new_conf,new_conf[0],false);
+	return set_attribute_config_3_local(new_conf,new_conf[0],false,3);
 }
 
 

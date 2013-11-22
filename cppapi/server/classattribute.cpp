@@ -339,7 +339,6 @@ void MultiClassAttribute::init_class_attribute(string &class_name,long base)
 
 Attr &MultiClassAttribute::get_attr(string &attr_name)
 {
-
 //
 // Search for the wanted attribute in the attr_list vector from its name
 //
