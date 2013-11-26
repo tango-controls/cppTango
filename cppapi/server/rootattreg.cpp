@@ -153,6 +153,8 @@ cout << "Calling set_attribute_config_5" << endl;
 								Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
 								Attribute &the_fwd_att = the_dev->get_device_attr()->get_attr_by_name(ite->second.local_att_name.c_str());
 								static_cast<FwdAttribute &>(the_fwd_att).set_att_config(ev->attr_conf);
+								MultiAttribute *m_att = the_dev->get_device_attr();
+								m_att->update(the_fwd_att);
 
 /*								DeviceImpl *the_dev = ite3->second;
 								the_dev->add_attribute(ite->second.fwd_attr); */
@@ -422,6 +424,32 @@ void RootAttRegistry::RootAttConfCallBack::null_device_impl(string &local_dev_na
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		RootAttRegistry::RootAttConfCallBack::update_device_impl
+//
+// description :
+//		Update local device pointer in map
+//
+// argument :
+//		in :
+//			- local_dev_name : The local device name
+//			- local_dev : The new local device pointer
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void RootAttRegistry::RootAttConfCallBack::update_device_impl(string &local_dev_name,DeviceImpl *local_dev)
+{
+	omni_mutex_lock oml(the_lock);
+	map<string,DeviceImpl *>::iterator ite;
+	ite = local_dis.find(local_dev_name);
+	if (ite != local_dis.end())
+	{
+		ite->second = local_dev;
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		RootAttRegistry::add_root_att
 //
 // description :
@@ -448,6 +476,15 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 	if (ite == dps.end())
 	{
 		the_dev = new DeviceProxy(device_name);
+		if (the_dev->get_idl_version() < 5)
+		{
+			attdesc->set_err_kind(FWD_TOO_OLD_ROOT_DEVICE);
+			delete the_dev;
+
+			string desc("The root device ");
+			desc = desc + device_name + " is too old to support forwarded attribute. It requires IDL >= 5";
+			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+		}
 		dps.insert({device_name,the_dev});
 	}
 	else
@@ -537,24 +574,25 @@ void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_nam
 	int co = cbp.count_root_dev(root_dev_name);
 cout << "Root dev name " << root_dev_name << " used " << co << " times" << endl;
 	string full_root_att_name = root_dev_name + '/' + root_att_name;
-	cbp.remove_att(full_root_att_name);
+	if (co != 0)
+		cbp.remove_att(full_root_att_name);
 
 //
 // If the root device is used only once, unsubscribe from the event and remove its device proxy
 //
 
-	if (co == 1)
+	map<string,int>::iterator ite = map_event_id.find(full_root_att_name);
+	if (ite != map_event_id.end())
 	{
-		map<string,int>::iterator ite = map_event_id.find(full_root_att_name);
-		if (ite != map_event_id.end())
+		map<string,DeviceProxy *>::iterator pos = dps.find(root_dev_name);
+		if (pos != dps.end())
 		{
-			map<string,DeviceProxy *>::iterator pos = dps.find(root_dev_name);
-			if (pos != dps.end())
-			{
 cout << "Calling unsubscribe_event" << endl;
-				pos->second->unsubscribe_event(ite->second);
+			pos->second->unsubscribe_event(ite->second);
 
-				map_event_id.erase(ite);
+			map_event_id.erase(ite);
+			if (co == 1)
+			{
 cout << "Deleting DP for " << pos->first << endl;
 				delete pos->second;
 				dps.erase(pos);

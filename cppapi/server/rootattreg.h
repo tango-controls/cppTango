@@ -58,6 +58,7 @@ public:
 	string get_local_att_name(string &_s) {return cbp.get_local_att_name(_s);}
 	void null_device_impl(string &_s) {cbp.null_device_impl(_s);}
 	void update_label(string &_d,string &_a,string &_l) {string s(_d+'/'+_a);cbp.update_label(s,_l);}
+	void update_device_impl(string &_n,DeviceImpl *_d) {cbp.update_device_impl(_n,_d);}
 
 	void clear_attrdesc(string &,string &);
 
@@ -79,6 +80,8 @@ private:
 		string get_local_att_name(string &);
 		void null_device_impl(string &);
 		void update_label(string &,string &);
+		void update_device_impl(string &,DeviceImpl *);
+
 	private:
 		ClntIdent 							ci;
 		omni_mutex							the_lock;

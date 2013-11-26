@@ -4872,7 +4872,7 @@ void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_
 {
 	TangoSys_MemStream str;
 	str.precision(TANGO_FLOAT_PRECISION);
-	
+
 
 	str << value_str;
 	if (!(str >> val.db && str.eof()))

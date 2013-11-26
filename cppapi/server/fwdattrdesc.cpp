@@ -66,10 +66,10 @@ ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false
 //	type = DATA_TYPE_UNKNOWN;
 	type = DEV_DOUBLE;
 	format = Tango::FMT_UNKNOWN;
-	disp_level = OPERATOR;			// Should be UNKNOWN as well
+	disp_level = DL_UNKNOWN;
 	assoc_name = AssocWritNotSpec;
 
-	max_x = 1;
+	max_x = 0;
 	max_y = 0;
 
 	mem = false;
@@ -335,7 +335,7 @@ void FwdAttr::init_conf(AttrConfEventData *ev_data)
 
 //
 // Set configuration
-// If we already have a labelin our conf, save it and reapply it
+// If we already have a label in our conf, save it and reapply it
 //
 
 	string local_label;

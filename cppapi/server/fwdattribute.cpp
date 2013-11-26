@@ -62,7 +62,7 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 
 FwdAttribute::FwdAttribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx)
-:Attribute(prop_list,tmp_attr,dev_name,idx)
+:WAttribute(prop_list,tmp_attr,dev_name,idx)
 {
 	FwdAttr &attr = static_cast<FwdAttr &>(tmp_attr);
 
@@ -194,8 +194,9 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 }
 
 //
-// Same method than previous but the argument is not the same and this one is called when a fowrwarded
-// attribute configuration is written via a set_attribute_config
+// Same method than previous but the argument is not the same and this one is called when a forwarded
+// attribute configuration is written via a call in the Forwarded attribute callback in the case of
+// root attribute not available when the DS was started
 //
 
 void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
@@ -204,9 +205,30 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 	writable = aie_ptr->writable;
 	data_type = aie_ptr->data_type;
 	disp_level = aie_ptr->disp_level;
-//	a_ptr->get_memorized();			For WAttribute
-//	a_ptr->get_memorized_init();	For WAttribute
-//	a_ptr->get_assoc();
+
+	switch (aie_ptr->memorized)
+	{
+	case NOT_KNOWN:
+	case NONE:
+		set_memorized(false);
+		set_memorized_init(false);
+		break;
+
+	case MEMORIZED:
+		set_memorized(true);
+		set_memorized_init(false);
+		break;
+
+	case MEMORIZED_WRITE_INIT:
+		set_memorized(true);
+		set_memorized_init(true);
+		break;
+
+	default:
+		break;
+	}
+	writable_attr_name = aie_ptr->writable_attr_name;
+
 	max_x = aie_ptr->max_dim_x;
 	max_y = aie_ptr->max_dim_y;
 
@@ -395,7 +417,11 @@ bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_5 &conf)
 	if (conf.data_type != data_type)
 		return true;
 
-// TODO: memorized, mem_init
+	if (conf.memorized != is_memorized())
+		return true;
+
+	if (conf.mem_init != is_memorized_init())
+		return true;
 
 	if (string(conf.description.in()) != description)
 		return true;

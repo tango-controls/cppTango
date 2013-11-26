@@ -184,7 +184,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeConfigList_5 *get_attribute_config_5(const Tango::DevVarStringArray& names);
+	virtual Tango::AttributeConfigList_5 *get_attribute_config_5(const Tango::DevVarStringArray& names);
 
 /**
  * Set attribute(s) configuration.
@@ -203,8 +203,8 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void set_attribute_config_5(const Tango::AttributeConfigList_5& new_conf,
-    										const Tango::ClntIdent &cl_ident);
+	virtual void set_attribute_config_5(const Tango::AttributeConfigList_5& new_conf,
+										const Tango::ClntIdent &cl_ident);
 
 //@}
 

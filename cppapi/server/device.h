@@ -38,8 +38,8 @@
 #include <classattribute.h>
 #include <attrdesc.h>
 #include <attribute.h>
-#include <fwdattribute.h>
 #include <w_attribute.h>
+#include <fwdattribute.h>
 #include <multiattribute.h>
 #include <pollobj.h>
 #include <deviceclass.h>

@@ -263,6 +263,10 @@ void ApiUtil::create_orb()
 
 	if (sigaction(SIGPIPE,NULL,&sa) == -1)
 		sa.sa_handler = NULL;
+#else
+	WORD rel = 0x0202;
+	WSADATA dat;
+	WSAStartup(rel,&dat);
 #endif
 
 //
@@ -2076,9 +2080,31 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 		break;
 	}
 
+	o_str << "Attribute writable type = ";
+	switch (p.writable)
+	{
+	case Tango::WRITE:
+		o_str << "Write" << endl;
+		break;
+
+	case Tango::READ:
+		o_str << "Read" << endl;
+		break;
+
+	case Tango::READ_WRITE:
+		o_str << "Read/Write" << endl;
+		break;
+
+	case Tango::READ_WITH_WRITE:
+		o_str << "Read with write" << endl;
+		break;
+
+	default:
+		break;
+	}
+
 	if ((p.writable == Tango::WRITE) || (p.writable == Tango::READ_WRITE))
 	{
-		o_str << "Attribute is writable" << endl;
 		switch(p.memorized)
 		{
 		case NOT_KNOWN:
@@ -2101,8 +2127,25 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 			break;
 		}
 	}
-	else
-		o_str << "Attribute is not writable" << endl;
+
+	o_str << "Attribute display level = ";
+	switch(p.disp_level)
+	{
+	case DL_UNKNOWN :
+		o_str << "Unknown" << endl;
+		break;
+
+	case OPERATOR:
+		o_str << "Operator" << endl;
+		break;
+
+	case EXPERT:
+		o_str << "Expert" << endl;
+		break;
+
+	default:
+		break;
+	}
 	o_str << "Attribute label = " << p.label << endl;
 	o_str << "Attribute description = " << p.description << endl;
 	o_str << "Attribute unit = " << p.unit;

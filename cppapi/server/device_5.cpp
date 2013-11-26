@@ -65,26 +65,26 @@ Device_4Impl(device_class,dev_name),ext_5(Tango_NullPtr)
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
-			   string &dev_name,
-			   string &desc):
+				string &dev_name,
+				string &desc):
 Device_4Impl(device_class,dev_name,desc),ext_5(Tango_NullPtr)
 {
 	idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
-	           	   string &dev_name,string &desc,
-	           	   Tango::DevState dev_state,string &dev_status):
+				string &dev_name,string &desc,
+				Tango::DevState dev_state,string &dev_status):
 Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_NullPtr)
 {
 	idl_version = 5;
 }
 
 Device_5Impl::Device_5Impl(DeviceClass *device_class,
-	           	   const char *dev_name,
-			   const char *desc,
-	           	   Tango::DevState dev_state,
-	           	   const char *dev_status):
+				const char *dev_name,
+				const char *desc,
+				Tango::DevState dev_state,
+				const char *dev_status):
 Device_4Impl(device_class,dev_name,desc,dev_state,dev_status),ext_5(Tango_NullPtr)
 {
 	idl_version = 5;

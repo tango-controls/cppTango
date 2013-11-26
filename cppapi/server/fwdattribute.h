@@ -38,7 +38,7 @@
 namespace Tango
 {
 
-class FwdAttribute: public Attribute
+class FwdAttribute: public WAttribute
 {
 public:
 	FwdAttribute(vector<AttrProperty> &,Attr &,string &,long);

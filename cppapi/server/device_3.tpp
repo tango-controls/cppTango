@@ -98,7 +98,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 			bool old_alarm = attr.is_alarmed().any();
 
 //
-// TODO::Special case for forwarded attributes
+// Special case for forwarded attributes
 //
 
 			if (attr.is_fwd_att() == true)

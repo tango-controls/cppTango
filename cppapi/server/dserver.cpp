@@ -825,7 +825,7 @@ void DServer::restart(string &d_name)
 	class_list[i]->get_device_list().erase(ite);
 
 //
-// Get device name, class pointer, polled object list and event parameter
+// Get device name, class pointer, polled object list and event parameters
 //
 
 	DeviceClass *dev_cl = dev_to_del->get_device_class();
@@ -1045,6 +1045,13 @@ void DServer::restart(string &d_name)
 		if (m_cast.empty() == false)
 			att_list[j]->set_mcast_event(m_cast);
 	}
+
+//
+// Re-set device pointer in the RootAttRegistry (if needed)
+//
+
+	RootAttRegistry &rar = tg->get_root_att_reg();
+	rar.update_device_impl(lower_d_name,new_dev);
 
 //
 // Re-lock device if necessary

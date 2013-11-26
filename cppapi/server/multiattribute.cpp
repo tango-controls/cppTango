@@ -263,9 +263,9 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 				if ((attr.get_writable() == Tango::WRITE) ||
 					(attr.get_writable() == Tango::READ_WRITE))
 				{
-/*					if (attr.is_fwd() == true)
-						attr_list.push_back(new FwdWAttribute(prop_list,attr,dev_name,i));
-					else*/
+					if (attr.is_fwd() == true)
+						attr_list.push_back(new FwdAttribute(prop_list,attr,dev_name,i));
+					else
 						attr_list.push_back(new WAttribute(prop_list,attr,dev_name,i));
 				}
 				else
@@ -794,18 +794,8 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 	vector<Attribute *>::iterator ite;
 	ite = attr_list.end() - 2;
 
-	if ((attr.get_writable() == Tango::WRITE) ||
-	    (attr.get_writable() == Tango::READ_WRITE))
-	{
-		attr_list.insert(ite,new WAttribute(prop_list,attr,dev_name,index));
-		index = attr_list.size() - 3;
-	}
-	else
-	{
-
-		attr_list.insert(ite,new FwdAttribute(prop_list,attr,dev_name,index));
-		index = attr_list.size() - 3;
-	}
+	attr_list.insert(ite,new FwdAttribute(prop_list,attr,dev_name,index));
+	index = attr_list.size() - 3;
 
 //
 // If it is writable, add it to the writable attribute list
@@ -1552,6 +1542,55 @@ void MultiAttribute::add_alarmed_quality_factor(string &status)
 		}
 	}
 
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		MultiAttribute::update()
+//
+// description :
+//		Update attribute lists when a forwarded attribute conf. is now completely known (after a device with fwd
+//		attributes started before the device with root attribute(s))
+//
+// argument:
+//		in :
+//			- att : The newly configured attribute
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void MultiAttribute::update(Attribute &att)
+{
+	long ind = get_attr_ind_by_name(att.get_name().c_str());
+
+//
+// If it is writable, add it to the writable attribute list if not there already
+//
+
+	Tango::AttrWriteType w_type = att.get_writable();
+	if ((w_type == Tango::WRITE) ||
+		(w_type == Tango::READ_WRITE))
+	{
+		vector<long>::iterator pos;
+		pos = find(writable_attr_list.begin(),writable_attr_list.end(),ind);
+		if (pos == writable_attr_list.end())
+			writable_attr_list.push_back(ind);
+	}
+
+//
+// If one of the alarm properties is defined, add it to the alarmed attribute list
+//
+
+	if (att.is_alarmed().any() == true)
+	{
+		if (w_type != Tango::WRITE)
+		{
+			vector<long>::iterator pos;
+			pos = find(alarm_attr_list.begin(),alarm_attr_list.end(),ind);
+			if (pos == alarm_attr_list.end())
+				alarm_attr_list.push_back(ind);
+		}
+	}
 }
 
 } // End of Tango namespace

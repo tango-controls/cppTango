@@ -1728,7 +1728,7 @@ _CORBA_MODULE_BEG
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevState;
 
-  enum DispLevel { OPERATOR, EXPERT /*, __max_DispLevel=0xffffffff */ };
+  enum DispLevel { OPERATOR, EXPERT, DL_UNKNOWN /*, __max_DispLevel=0xffffffff */ };
   typedef DispLevel& DispLevel_out;
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DispLevel;
@@ -6131,7 +6131,7 @@ inline void operator >>=(Tango::DispLevel _e, cdrStream& s) {
 inline void operator <<= (Tango::DispLevel& _e, cdrStream& s) {
   ::CORBA::ULong _0RL_e;
   ::operator<<=(_0RL_e,s);
-  if (_0RL_e <= Tango::EXPERT) {
+  if (_0RL_e <= Tango::DL_UNKNOWN) {
     _e = (Tango::DispLevel) _0RL_e;
   }
   else {

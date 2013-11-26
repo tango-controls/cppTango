@@ -380,7 +380,6 @@ public :
 	TimeVal get_last_event_date(int event_id);
 	bool is_event_queue_empty(int event_id);
 
-
 	static KeepAliveThCmd                                   cmd;
 	static EventConsumerKeepAliveThread 	                *keep_alive_thread;
 

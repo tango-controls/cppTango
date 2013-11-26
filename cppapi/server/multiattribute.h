@@ -284,6 +284,7 @@ public:
 	void add_alarmed_quality_factor(string &);
 	void add_default(vector<AttrProperty> &,string &,string &,long);
 	void add_attr(Attribute *att) {attr_list.push_back(att);}
+	void update(Attribute &);
 
 private:
     class MultiAttributeExt

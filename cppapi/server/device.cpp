@@ -5391,6 +5391,14 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 				alarm_status = alarm_status + "Root device not started yet";
 				break;
 
+			case FWD_TOO_OLD_LOCAL_DEVICE:
+				alarm_status = alarm_status + "Local device too old (IDL 4 or less)";
+				break;
+
+			case FWD_TOO_OLD_ROOT_DEVICE:
+				alarm_status = alarm_status + "Root device too old (IDL 4 or less)";
+				break;
+
 			case FWD_DOUBLE_USED:
 			{
 				alarm_status = alarm_status + "Root attribute already used in this device server process for attribute ";

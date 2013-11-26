@@ -489,8 +489,8 @@ namespace Tango {
 const ::CORBA::TypeCode_ptr Tango::_tc_DevState = _0RL_tc_Tango_mDevState;
 #endif
 
-static const char* _0RL_enumMember_Tango_mDispLevel[] = { "OPERATOR", "EXPERT" };
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDispLevel = CORBA::TypeCode::PR_enum_tc("IDL:Tango/DispLevel:1.0", "DispLevel", _0RL_enumMember_Tango_mDispLevel, 2, &_0RL_tcTrack);
+static const char* _0RL_enumMember_Tango_mDispLevel[] = { "OPERATOR", "EXPERT", "DL_UNKNOWN" };
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDispLevel = CORBA::TypeCode::PR_enum_tc("IDL:Tango/DispLevel:1.0", "DispLevel", _0RL_enumMember_Tango_mDispLevel, 3, &_0RL_tcTrack);
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
 namespace Tango { 
