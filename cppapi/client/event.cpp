@@ -1303,7 +1303,6 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	subscriber_info.push_back(att_name_lower);
 	subscriber_info.push_back("subscribe");
 	subscriber_info.push_back(event_name);
-	subscriber_in << subscriber_info;
 
 	DeviceProxy *adm_dev = NULL;
 	bool allocated = false;
@@ -1358,8 +1357,14 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	    get_subscription_command_name(cmd_name);
 
 	    if (cmd_name.find("Zmq") != string::npos)
+	    {
 			zmq_used = true;
+// TODO : Check why the following line does not work
+//			subscriber_info.push_back(string(TgLibMajorVers));
+			subscriber_info.push_back("9");
+		}
 
+		subscriber_in << subscriber_info;
     	dd = adm_dev->command_inout(cmd_name,subscriber_in);
 
 		dd.reset_exceptions(DeviceData::isempty_flag);

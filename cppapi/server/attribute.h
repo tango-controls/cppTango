@@ -2135,6 +2135,9 @@ public:
 	void Attribute_2_AttributeValue(Tango::AttributeValue_4 *,DeviceImpl *);
 	void AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *,Tango::AttributeValue_3 *);
 
+	void AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_5 &,Tango::AttributeConfig_3 &);
+	void AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_3 &,Tango::AttributeConfig_3 &) {}
+
 	void set_mcast_event(vector<string> &vs) {mcast_event.clear();copy(vs.begin(),vs.end(),back_inserter(mcast_event));}
 
 	bool is_polled(DeviceImpl *);
@@ -2147,6 +2150,9 @@ public:
 
 	bool is_mem_exception() {return att_mem_exception;}
 	virtual bool is_fwd_att() {return false;}
+
+	void set_client_lib(int _l) {if (_l < client_lib)client_lib = _l;}
+	int get_client_lib() {return client_lib;}
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);
@@ -2218,8 +2224,8 @@ protected:
 
     void avns_in_db(const char *,string &);
     void avns_in_att(prop_type);
-	
-	void convert_prop_value(const char *,string &,Attr_CheckVal &,string &);
+
+	void convert_prop_value(const char *,string &,Attr_CheckVal &,const string &);
 
 	bitset<numFlags>	alarm_conf;
 	bitset<numFlags>	alarm;
@@ -2294,6 +2300,7 @@ protected:
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
 														// memorized and if it failed at init
+	int					client_lib;						// Lowest clients lib used
 };
 
 //
@@ -2852,7 +2859,20 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 	else \
 		(void)0
 
-// Add template methods definitions
+//
+// Again a macro for clean pointer delete
+//
+
+#define SAFE_DELETE(ptr) \
+	if (release == true) \
+	{ \
+		if (is_fwd_att() == true) \
+			delete [] ptr; \
+		else \
+			delete ptr; \
+	} \
+	else \
+		(void)0
 
 } // End of Tango namespace
 

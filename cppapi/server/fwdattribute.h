@@ -58,11 +58,20 @@ public:
 	void upd_att_label(const char *);
 	bool new_att_conf(const Tango::AttributeConfig_5 &);
 
+	Attr_Value &get_root_ptr() {return r_val;}
+
+	template<typename T>
+	void set_local_attribute(DeviceAttribute &, T* &);
+
 protected:
 	void convert_event_prop(string &,double *);
 
 	string				fwd_dev_name;					// Root dev name for fwd attribute
 	string				fwd_att_name;					// Root att name for fwd attribute
+
+	AttrQuality 		qual;
+	timeval 			tv;
+	Attr_Value			r_val;
 };
 
 } // End of Tango namespace

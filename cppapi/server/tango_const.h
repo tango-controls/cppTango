@@ -48,11 +48,12 @@ namespace Tango
 
 #define   __tango_build_string__(s)  #s
 const char * const TgLibVers               = __tango_build_string__(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH);
+const char * const TgLibMajorVers		   = __tango_build_string__(TANGO_VERSION_MAJOR);
 #undef    __tango_build_string__
 
 const int   TgLibVersNb                    = TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_MINOR;
 
-const int   DevVersion                     = 4;           // IDL version number
+const int   DevVersion                     = 5;           // IDL version number
 const int   DefaultMaxSeq                  = 20;
 const int   DefaultBlackBoxDepth           = 50;
 const int   DefaultPollRingDepth           = 10;
@@ -269,6 +270,7 @@ const char* const API_AlreadyPolled                = "API_AlreadyPolled";
 const char* const API_AsynReplyNotArrived          = "API_AsynReplyNotArrived";
 const char* const API_AttrConfig                   = "API_AttrConfig";
 const char* const API_AttrEventProp                = "API_AttrEventProp";
+const char* const API_AttributeFailed			   = "API_AttributeFailed";
 const char* const API_AttributePollingNotStarted   = "API_AttributePollingNotStarted";
 const char* const API_AttrIncorrectDataNumber      = "API_AttrIncorrectDataNumber";
 const char* const API_AttrNoAlarm                  = "API_AttrNoAlarm";

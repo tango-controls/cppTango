@@ -1483,6 +1483,106 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue &att
 	}
 }
 
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ApiUtil::AttributeInfoEx_to_AttributeConfig()
+//
+// description :
+//		Initialize one AttributeConfig instance from a AttributeInfoEx one
+//
+// arg(s) :
+//		in :
+//			- aie : The AttributeInfoEx instance taken as source
+//		out :
+//			- att_conf_5 : The AttributeConfig used as destination
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void ApiUtil::AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *aie,AttributeConfig_5 *att_conf_5)
+{
+	att_conf_5->name = aie->name.c_str();
+	att_conf_5->writable = aie->writable;
+	att_conf_5->data_format = aie->data_format;
+	att_conf_5->data_type = aie->data_type;
+	att_conf_5->max_dim_x = aie->max_dim_x;
+	att_conf_5->max_dim_y = aie->max_dim_y;
+	att_conf_5->description = aie->description.c_str();
+	att_conf_5->label = aie->label.c_str();
+	att_conf_5->unit = aie->unit.c_str();
+	att_conf_5->standard_unit = aie->standard_unit.c_str();
+	att_conf_5->display_unit = aie->display_unit.c_str();
+	att_conf_5->format = aie->format.c_str();
+	att_conf_5->min_value = aie->min_value.c_str();
+	att_conf_5->max_value = aie->max_value.c_str();
+	att_conf_5->writable_attr_name = aie->writable_attr_name.c_str();
+	att_conf_5->level = aie->disp_level;
+	att_conf_5->root_attr_name = aie->root_attr_name.c_str();
+	switch(aie->memorized)
+	{
+	case NOT_KNOWN:
+	case NONE:
+		att_conf_5->memorized = false;
+		att_conf_5->mem_init = false;
+		break;
+
+	case MEMORIZED:
+		att_conf_5->memorized = true;
+		att_conf_5->mem_init = false;
+		break;
+
+	case MEMORIZED_WRITE_INIT:
+		att_conf_5->memorized = true;
+		att_conf_5->mem_init = true;
+		break;
+
+	default:
+		break;
+	}
+	att_conf_5->extensions.length(aie->extensions.size());
+	for (size_t j=0; j<aie->extensions.size(); j++)
+	{
+		att_conf_5->extensions[j] = string_dup(aie->extensions[j].c_str());
+	}
+	for (size_t j=0; j<aie->sys_extensions.size(); j++)
+	{
+		att_conf_5->sys_extensions[j] = string_dup(aie->sys_extensions[j].c_str());
+	}
+
+	att_conf_5->att_alarm.min_alarm = aie->alarms.min_alarm.c_str();
+	att_conf_5->att_alarm.max_alarm = aie->alarms.max_alarm.c_str();
+	att_conf_5->att_alarm.min_warning = aie->alarms.min_warning.c_str();
+	att_conf_5->att_alarm.max_warning = aie->alarms.max_warning.c_str();
+	att_conf_5->att_alarm.delta_t = aie->alarms.delta_t.c_str();
+	att_conf_5->att_alarm.delta_val = aie->alarms.delta_val.c_str();
+	for (size_t j=0; j<aie->alarms.extensions.size(); j++)
+	{
+		att_conf_5->att_alarm.extensions[j] = string_dup(aie->alarms.extensions[j].c_str());
+	}
+
+	att_conf_5->event_prop.ch_event.rel_change = aie->events.ch_event.rel_change.c_str();
+	att_conf_5->event_prop.ch_event.abs_change = aie->events.ch_event.abs_change.c_str();
+	for (size_t j=0; j<aie->events.ch_event.extensions.size(); j++)
+	{
+		att_conf_5->event_prop.ch_event.extensions[j] = string_dup(aie->events.ch_event.extensions[j].c_str());
+	}
+
+	att_conf_5->event_prop.per_event.period = aie->events.per_event.period.c_str();
+	for (size_t j=0; j<aie->events.per_event.extensions.size(); j++)
+	{
+		att_conf_5->event_prop.per_event.extensions[j] = string_dup(aie->events.per_event.extensions[j].c_str());
+	}
+
+	att_conf_5->event_prop.arch_event.rel_change = aie->events.arch_event.archive_rel_change.c_str();
+	att_conf_5->event_prop.arch_event.abs_change = aie->events.arch_event.archive_abs_change.c_str();
+	att_conf_5->event_prop.arch_event.period = aie->events.arch_event.archive_period.c_str();
+	for (size_t j=0; j<aie->events.ch_event.extensions.size(); j++)
+	{
+		att_conf_5->event_prop.arch_event.extensions[j] = string_dup(aie->events.arch_event.extensions[j].c_str());
+	}
+}
+
+
 //-------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -2108,7 +2208,7 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 		switch(p.memorized)
 		{
 		case NOT_KNOWN:
-			o_str << "Device too old to send attribute memorisation information" << endl;
+			o_str << "Device/Appli too old to send/receive attribute memorisation information" << endl;
 			break;
 
 		case NONE:
@@ -2155,7 +2255,8 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	o_str << "Attribute min value = " << p.min_value << endl;
 	o_str << "Attribute max value = " << p.max_value << endl;
 	o_str << "Attribute writable_attr_name = " << p.writable_attr_name << endl;
-	o_str << "Root attribute name = " << p.root_attr_name << endl;
+	if (p.root_attr_name.empty() == false)
+		o_str << "Root attribute name = " << p.root_attr_name << endl;
 
 	unsigned int i;
 	for (i = 0;i < p.extensions.size();i++)

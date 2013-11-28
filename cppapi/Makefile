@@ -362,6 +362,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			except.h \
 			fwdattrdesc.h \
 			fwdattribute.h \
+			fwdattribute.tpp \
 			log4tango.h \
 			logcmds.h \
 			logging.h \

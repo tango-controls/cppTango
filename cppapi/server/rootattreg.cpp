@@ -92,7 +92,6 @@ cout << "Attr name = " << ev->attr_name << endl;
 
 					if (ite->second.fwd_attr == nullptr)
 					{
-						cout << "Change in Attribute config..........." << endl;
 						map<string,DeviceImpl *>::iterator ite3;
 						ite3 = local_dis.find(ite->second.local_name);
 						if (ite3 == local_dis.end())
@@ -105,8 +104,21 @@ cout << "Attr name = " << ev->attr_name << endl;
 							Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
 							if (the_dev != nullptr)
 							{
+
+//
+// If the callback is executed due to a re-connection (ptr null), the info we received do not contain a AttributeConfig
+// structure. In this case, create one from the AttributeInfoEx
+//
+
 								FwdAttrConfEventData *ev_fwd = static_cast<FwdAttrConfEventData *>(ev);
-								AttributeConfigList_5 conf_list(1,1,const_cast<AttributeConfig_5 *>(ev_fwd->get_fwd_attr_conf()));
+								AttributeConfig_5 *ptr = const_cast<AttributeConfig_5 *>(ev_fwd->get_fwd_attr_conf());
+								if (ptr == nullptr)
+								{
+									ptr = new AttributeConfig_5();
+									ApiUtil::AttributeInfoEx_to_AttributeConfig(ev->attr_conf,ptr);
+								}
+
+								AttributeConfigList_5 conf_list(1,1,ptr);
 
 //
 // The attribute name, root_attr_name and label are local values
@@ -117,7 +129,6 @@ cout << "Attr name = " << ev->attr_name << endl;
 								if (ite->second.local_label.empty() == false)
 									conf_list[0].label = ite->second.local_label.c_str();
 
-cout << "Calling set_attribute_config_5" << endl;
 								the_dev->set_attribute_config_5(conf_list,ci);
 							}
 							else
@@ -227,6 +238,8 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
                 break;
 			}
 		}
+		if (pos == def_user_prop.end())
+			nf.local_label = local_att_name;
 
 		map<string,DeviceImpl *>::iterator ite;
 		ite = local_dis.find(local_dev_name);
@@ -405,25 +418,6 @@ int RootAttRegistry::RootAttConfCallBack::count_root_dev(string &root_dev_name)
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		RootAttRegistry::RootAttConfCallBack::null_device_impl
-//
-// description :
-//
-//
-// argument :
-//		in :
-//			- local_dev_name : The local device name
-//
-//--------------------------------------------------------------------------------------------------------------------
-
-void RootAttRegistry::RootAttConfCallBack::null_device_impl(string &local_dev_name)
-{
-
-}
-
-//--------------------------------------------------------------------------------------------------------------------
-//
-// method :
 //		RootAttRegistry::RootAttConfCallBack::update_device_impl
 //
 // description :
@@ -476,7 +470,8 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 	if (ite == dps.end())
 	{
 		the_dev = new DeviceProxy(device_name);
-		if (the_dev->get_idl_version() < 5)
+		int idl_vers = the_dev->get_idl_version();
+		if (idl_vers > 0 && idl_vers < 5)
 		{
 			attdesc->set_err_kind(FWD_TOO_OLD_ROOT_DEVICE);
 			delete the_dev;
@@ -572,7 +567,6 @@ void RootAttRegistry::clear_attrdesc(string &dev_name,string &att_name)
 void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_name)
 {
 	int co = cbp.count_root_dev(root_dev_name);
-cout << "Root dev name " << root_dev_name << " used " << co << " times" << endl;
 	string full_root_att_name = root_dev_name + '/' + root_att_name;
 	if (co != 0)
 		cbp.remove_att(full_root_att_name);
@@ -587,13 +581,11 @@ cout << "Root dev name " << root_dev_name << " used " << co << " times" << endl;
 		map<string,DeviceProxy *>::iterator pos = dps.find(root_dev_name);
 		if (pos != dps.end())
 		{
-cout << "Calling unsubscribe_event" << endl;
 			pos->second->unsubscribe_event(ite->second);
 
 			map_event_id.erase(ite);
 			if (co == 1)
 			{
-cout << "Deleting DP for " << pos->first << endl;
 				delete pos->second;
 				dps.erase(pos);
 			}

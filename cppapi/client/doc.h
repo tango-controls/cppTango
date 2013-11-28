@@ -310,7 +310,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * </TR>
  * <TR>
  *    <TD ALIGN="CENTER">1</TD>
- *    <TD ALIGN="CENTER">API_CantConnectToDatabase</TD>
+ *    <TD ALIGN="CENTER">API_CantConnectToDevice</TD>
  * </TR>
  * <TR>
  *    <TD ALIGN="CENTER">2</TD>

@@ -189,7 +189,7 @@ public:
 	AsynReq	*get_pasyn_table() {return asyn_p_table;}
 
 //
-// Conv, between AttributeValuexxx and DeviceAttribute
+// Conv. between AttributeValuexxx and DeviceAttribute
 //
 
 	static void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
@@ -197,6 +197,12 @@ public:
 
 	static void device_to_attr(const DeviceAttribute &,AttributeValue_4 &);
 	static void device_to_attr(const DeviceAttribute &,AttributeValue &,string &);
+
+//
+// Conv. between AttributeConfig and AttributeInfoEx
+//
+
+	static void AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *,AttributeConfig_5 *);
 
 protected:
 /// @privatesection

@@ -183,6 +183,8 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     subscriber_info.push_back(epos->second.attr_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
+// TODO : To be replaced
+					subscriber_info.push_back("9");
                     subscriber_in << subscriber_info;
 
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
@@ -745,6 +747,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 										subscriber_info.push_back(cmd_params[(loop * 3) + 1]);
 										subscriber_info.push_back("subscribe");
 										subscriber_info.push_back(cmd_params[(loop * 3) + 2]);
+// TODO : Replace 9 !!
+										subscriber_info.push_back("9");
 										subscriber_in << subscriber_info;
 
                                         try
@@ -1045,6 +1049,9 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
        									subscriber_info.push_back(epos->second.attr_name);
        									subscriber_info.push_back("subscribe");
        									subscriber_info.push_back(epos->second.event_name);
+// TODO : Remove fllowing 9
+       									if (ipos->second.channel_type == ZMQ)
+											subscriber_info.push_back("9");
        									subscriber_in << subscriber_info;
 
 										bool ds_failed = false;
@@ -1177,6 +1184,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												DevErrorList err;
 												err.length(0);
 												string domain_name = epos->second.device->dev_name() + "/" + epos->second.attr_name;
+domain_name.insert(0,"tango://acucentos.esrf.fr:10000/");
+cout << "domain_name = " << domain_name << endl;
 
 												bool old_transp = epos->second.device->get_transparency_reconnection();
 												epos->second.device->set_transparency_reconnection(true);
@@ -1212,7 +1221,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 													{
 														aie_copy = new AttributeInfoEx;
 														*aie_copy = *aie;
-														event_data = new AttrConfEventData(epos->second.device,
+														event_data = new FwdAttrConfEventData(epos->second.device,
 													      				domain_name,
 													      				epos->second.event_name,
 													      				aie_copy,
@@ -1220,7 +1229,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 													}
 													else
 													{
-														event_data = new AttrConfEventData(epos->second.device,
+														event_data = new FwdAttrConfEventData(epos->second.device,
 													      				domain_name,
 													      				epos->second.event_name,
 													      				aie,

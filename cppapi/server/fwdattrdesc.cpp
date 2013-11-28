@@ -39,6 +39,8 @@ static const char *RcsId = "$Id$";
 #include <tango.h>
 #include <fwdattrdesc.h>
 
+#include <fwdattribute.tpp>
+
 namespace Tango
 {
 
@@ -224,7 +226,7 @@ void FwdAttr::get_root_conf(string &dev_name,DeviceImpl *dev)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
+void FwdAttr::read(TANGO_UNUSED(DeviceImpl *dev),Attribute &attr)
 {
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
@@ -248,17 +250,83 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 	DeviceProxy *root_att_dev = rar.get_root_att_dp(fwd_attr.get_fwd_dev_name());
 
 //
-// Read the attribute
+// Read the ŕoot attribute
 //
 
-static DevDouble db;
+	try
+	{
+		DeviceAttribute da = root_att_dev->read_attribute(fwd_attr.get_fwd_att_name());
 
-	DeviceAttribute da = root_att_dev->read_attribute(fwd_attr.get_fwd_att_name());
-da >> db;
+//
+// Set the local attribute from the result of the previous read
+//
 
-attr.set_value(&db);
+		switch(fwd_attr.get_data_type())
+		{
+		case DEV_SHORT:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().sh_seq);
+			break;
+
+		case DEV_LONG:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().lg_seq);
+			break;
+
+		case DEV_FLOAT:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().fl_seq);
+			break;
+
+		case DEV_DOUBLE:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().db_seq);
+			break;
+
+		case DEV_STRING:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().str_seq);
+			break;
+
+		case DEV_USHORT:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().ush_seq);
+			break;
+
+		case DEV_BOOLEAN:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().boo_seq);
+			break;
+
+		case DEV_UCHAR:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().cha_seq);
+			break;
+
+		case DEV_LONG64:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().lg64_seq);
+			break;
+
+		case DEV_ULONG:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().ulg_seq);
+			break;
+
+		case DEV_ULONG64:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().ulg64_seq);
+			break;
+
+		case DEV_STATE:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().state_seq);
+			break;
+
+		case DEV_ENCODED:
+			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().enc_seq);
+			break;
+
+		default:
+			break;
+		}
+	}
+	catch (Tango::DevFailed &e)
+	{
+		stringstream ss;
+		ss << "Reading root attribute " << fwd_root_att << " on device " << fwd_dev_name << " failed!";
+		Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"FwdAttr::read");
+	}
+
 }
-
 
 //--------------------------------------------------------------------------------------------------------------------
 //
@@ -343,9 +411,7 @@ void FwdAttr::init_conf(AttrConfEventData *ev_data)
 	{
 		local_label = get_label_from_default_properties();
 	}
-	catch (Tango::DevFailed &e)
-	{
-	}
+	catch (Tango::DevFailed &e) {}
 
 	UserDefaultAttrProp udap;
 	if (local_label.empty() == false)

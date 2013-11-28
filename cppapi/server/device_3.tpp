@@ -143,22 +143,27 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 				const V *tmp_ptr = &(new_conf)[i];
 
 				Tango::AttributeConfig_5 conf5;
+				Tango::AttributeConfig_3 conf3;
+				AttributeConfig_3 *tmp_conf_ptr;
 
 				if (get_dev_idl_version() > 4)
 				{
 					if (caller_idl <= 4)
-					{
-// TODO: Implement a faster way to get AttributeConfig_5 from the caller AttributeConfig_3
-						attr.get_properties_5(conf5);
-						ad.attr_conf_5 = &conf5;
-					}
+						::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
 					else
-						::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
+					{
+						if (attr.get_client_lib() == 8)
+						{
+							attr.AttributeConfig_5_2_AttributeConfig_3(new_conf[i],conf3);
+							tmp_conf_ptr = &conf3;
+							::memcpy(&(ad.attr_conf_3),&(tmp_conf_ptr),sizeof(V *));
+						}
+						else
+							::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
+					}
 				}
 				else
-				{
 					::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
-				}
 
 				if (event_supplier_nd != NULL)
 					event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);

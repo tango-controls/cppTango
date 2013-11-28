@@ -154,10 +154,13 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 //      	- rate : PGM rate parameter
 //      	- ivl : PGM ivl paramteter
 //      	- dev : The device pointer
+//			- client_lib : Major Tango release number used by client
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DServer::event_subscription(string &dev_name,string &attr_name,string &action,string &event,string &attr_name_lower,ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev)
+void DServer::event_subscription(string &dev_name,string &attr_name,string &action,string &event,string &attr_name_lower,
+								 ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev,
+								 int client_lib)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -205,6 +208,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         else
             cl_release = 3;
     }
+
+	attribute.set_client_lib(client_lib);
 
 	if (action == "subscribe")
 	{
@@ -540,7 +545,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     if (argin->length() > 1 && argin->length() < 4)
     {
 		TangoSys_OMemStream o;
-		o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
+		o << "Not enough input arguments, needs at least 4 i.e. device name, attribute name, action, event name, <Tango lib release>" << ends;
 
 		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 								o.str(),
@@ -608,7 +613,15 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         attr_name_lower = attr_name;
         transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
-        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+        int client_major_release = 8;
+        if (argin->length() == 5)
+        {
+			stringstream ss;
+			ss << (*argin)[4];
+			ss >> client_major_release;
+        }
+
+        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_major_release << endl;
 
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
@@ -672,7 +685,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         string mcast;
         int rate,ivl;
 
-        event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev);
+        event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_major_release);
 
 //
 // Check if the client is a new one

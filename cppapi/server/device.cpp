@@ -1167,7 +1167,7 @@ Tango::DevState DeviceImpl::dev_state()
                 {
 
 //
-// Starting with IDl 3, it is possible that some of the alarmed attribute have already been read.
+// Starting with IDL 3, it is possible that some of the alarmed attribute have already been read.
 //
 
                     long idx;

@@ -2112,9 +2112,15 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     case ATT_CONF:
                     if (evt_cb.device_idl > 4)
                     {
+
+//
+// Event if the device sending the event is IDL 5, if one of the client is not Tango 9, the event has to be sent
+// using AttributeConfig_3 instead of AttributeConfig_5. Try first as AttributeConfig_5 and if it fails, try
+// with AttributeConfig_3
+//
+
 						try
                         {
-cout << "Eevent received with AttributeConfig_5" << endl;
                             (AttributeConfig_5 &)ac5 <<= event_data_cdr;
                             attr_conf_5 = &ac5.in();
                             vers = 5;
@@ -2124,15 +2130,28 @@ cout << "Eevent received with AttributeConfig_5" << endl;
                         }
                         catch(...)
                         {
-                            TangoSys_OMemStream o;
-                            o << "Received malformed data for event ";
-                            o << ev_name << ends;
+							try
+							{
+								event_data_cdr.rewindPtrs();
+								(AttributeConfig_3 &)ac3 <<= event_data_cdr;
+								attr_conf_3 = &ac3.in();
+								vers = 3;
+								attr_info_ex = new AttributeInfoEx();
+								*attr_info_ex = const_cast<AttributeConfig_3 *>(attr_conf_3);
+								ev_attr_conf = true;
+							}
+							catch (...)
+							{
+								TangoSys_OMemStream o;
+								o << "Received malformed data for event ";
+								o << ev_name << ends;
 
-                            errors.length(1);
-                            errors[0].reason = API_WrongEventData;
-                            errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                            errors[0].desc = CORBA::string_dup(o.str().c_str());
-                            errors[0].severity = ERR;
+								errors.length(1);
+								errors[0].reason = API_WrongEventData;
+								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].severity = ERR;
+							}
                         }
                     }
                     else if (evt_cb.device_idl > 2)

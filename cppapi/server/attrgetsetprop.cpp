@@ -4856,27 +4856,30 @@ void Attribute::check_hard_coded(const  AttributeConfig_5 &user_conf)
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		Attribute::check_hard_coded()
+//		Attribute::convert_prop_value()
 //
 // description :
-//		Check if the user tries to change attribute properties considered as hard coded added by IDL 5
-//      Throw exception in case of
+//
 //
 // args :
 // 		in :
-//			- user_conf : The attribute configuration sent by the user
+//			- prop_name : The attribute property name
+//			- dev_name : The device name
+//			- value_str : Attribute property value stored as a string
+//		out :
+//			- val : Attribute property value stored as a number
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_CheckVal &val,string &dev_name)
+void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_CheckVal &val,const string &dev_name)
 {
 	TangoSys_MemStream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
-
 	str << value_str;
 	if (!(str >> val.db && str.eof()))
 		throw_err_format(prop_name,dev_name,"Attribute::convert_prop_value()");
+
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT:
@@ -4886,61 +4889,61 @@ void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_
 		str << val.sh;
 		break;
 
-		case Tango::DEV_LONG:
-			val.lg = (DevLong)val.db;
-			str.str("");
-			str.clear();
-			str << val.lg;
-			break;
+	case Tango::DEV_LONG:
+		val.lg = (DevLong)val.db;
+		str.str("");
+		str.clear();
+		str << val.lg;
+		break;
 
-		case Tango::DEV_LONG64:
-			val.lg64 = (DevLong64)val.db;
-			str.str("");
-			str.clear();
-			str << val.lg64;
-			break;
+	case Tango::DEV_LONG64:
+		val.lg64 = (DevLong64)val.db;
+		str.str("");
+		str.clear();
+		str << val.lg64;
+		break;
 
-		case Tango::DEV_DOUBLE:
-			break;
+	case Tango::DEV_DOUBLE:
+		break;
 
-		case Tango::DEV_FLOAT:
-			val.fl = (DevFloat)val.db;
-			break;
+	case Tango::DEV_FLOAT:
+		val.fl = (DevFloat)val.db;
+		break;
 
-		case Tango::DEV_USHORT:
-			(val.db < 0.0) ? val.ush = (DevUShort)(-val.db) : val.ush = (DevUShort)val.db;
-			str.str("");
-			str.clear();
-			str << val.ush;
-			break;
+	case Tango::DEV_USHORT:
+		(val.db < 0.0) ? val.ush = (DevUShort)(-val.db) : val.ush = (DevUShort)val.db;
+		str.str("");
+		str.clear();
+		str << val.ush;
+		break;
 
-		case Tango::DEV_UCHAR:
-			(val.db < 0.0) ? val.uch = (DevUChar)(-val.db) : val.uch = (DevUChar)val.db;
-			str.str("");
-			str.clear();
-			str << (short)val.uch;
-			break;
+	case Tango::DEV_UCHAR:
+		(val.db < 0.0) ? val.uch = (DevUChar)(-val.db) : val.uch = (DevUChar)val.db;
+		str.str("");
+		str.clear();
+		str << (short)val.uch;
+		break;
 
-		case Tango::DEV_ULONG:
-			(val.db < 0.0) ? val.ulg = (DevULong)(-val.db) : val.ulg = (DevULong)val.db;
-			str.str("");
-			str.clear();
-			str << val.ulg;
-			break;
+	case Tango::DEV_ULONG:
+		(val.db < 0.0) ? val.ulg = (DevULong)(-val.db) : val.ulg = (DevULong)val.db;
+		str.str("");
+		str.clear();
+		str << val.ulg;
+		break;
 
-		case Tango::DEV_ULONG64:
-			(val.db < 0.0) ? val.ulg64 = (DevULong64)(-val.db) : val.ulg64 = (DevULong64)val.db;
-			str.str("");
-			str.clear();
-			str << val.ulg64;
-			break;
+	case Tango::DEV_ULONG64:
+		(val.db < 0.0) ? val.ulg64 = (DevULong64)(-val.db) : val.ulg64 = (DevULong64)val.db;
+		str.str("");
+		str.clear();
+		str << val.ulg64;
+		break;
 
-		case Tango::DEV_ENCODED:
-			(val.db < 0.0) ? val.uch = (DevUChar)(-val.db) : val.uch = (DevUChar)val.db;
-			str.str("");
-			str.clear();
-			str << (short)val.uch;
-			break;
+	case Tango::DEV_ENCODED:
+		(val.db < 0.0) ? val.uch = (DevUChar)(-val.db) : val.uch = (DevUChar)val.db;
+		str.str("");
+		str.clear();
+		str << (short)val.uch;
+		break;
 	}
 	if (data_type != Tango::DEV_FLOAT && data_type != Tango::DEV_DOUBLE)
         	value_str = str.str();

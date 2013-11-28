@@ -984,17 +984,14 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
         }
         else if (attr_value.attr_conf_2 != NULL)
         {
-cout << "Send AttrConf 2" << endl;
             *(attr_value.attr_conf_2) >>= data_call_cdr;
         }
         else if (attr_value.attr_conf_3 != NULL)
         {
-cout << "Send AttrConf 3" << endl;
             *(attr_value.attr_conf_3) >>= data_call_cdr;
         }
         else if (attr_value.attr_conf_5 != NULL)
         {
-cout << "Send AttrConf 5" << endl;
             *(attr_value.attr_conf_5) >>= data_call_cdr;
         }
         else

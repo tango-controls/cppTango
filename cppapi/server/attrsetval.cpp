@@ -86,8 +86,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 
 	if (data_type != Tango::DEV_SHORT)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -103,8 +102,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -141,8 +139,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_sh[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -161,7 +158,10 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 				Tango::DevShort *tmp_ptr = new Tango::DevShort[1];
 				*tmp_ptr = *p_data;
 				value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,p_data,release);
@@ -196,8 +196,7 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 
 	if (data_type != Tango::DEV_LONG)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -213,8 +212,7 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -251,8 +249,7 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_lo[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -271,7 +268,10 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 				Tango::DevLong *tmp_ptr = new Tango::DevLong[1];
 				*tmp_ptr = *p_data;
 				value.lg_seq = new Tango::DevVarLongArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.lg_seq = new Tango::DevVarLongArray(data_size,data_size,p_data,release);
@@ -307,8 +307,7 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 
 	if (data_type != Tango::DEV_LONG64)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -324,8 +323,7 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -362,8 +360,7 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_lo64[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -382,7 +379,10 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 				Tango::DevLong64 *tmp_ptr = new Tango::DevLong64[1];
 				*tmp_ptr = *p_data;
 				value.lg64_seq = new Tango::DevVarLong64Array(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.lg64_seq = new Tango::DevVarLong64Array(data_size,data_size,p_data,release);
@@ -418,8 +418,7 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_FLOAT)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -434,8 +433,7 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -472,8 +470,7 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_fl[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -492,7 +489,10 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 				Tango::DevFloat *tmp_ptr = new Tango::DevFloat[1];
 				*tmp_ptr = *p_data;
 				value.fl_seq = new Tango::DevVarFloatArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.fl_seq = new Tango::DevVarFloatArray(data_size,data_size,p_data,release);
@@ -527,8 +527,7 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_DOUBLE)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -543,8 +542,7 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -581,8 +579,7 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_db[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -601,7 +598,10 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 				Tango::DevDouble *tmp_ptr = new Tango::DevDouble[1];
 				*tmp_ptr = *p_data;
 				value.db_seq = new Tango::DevVarDoubleArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.db_seq = new Tango::DevVarDoubleArray(data_size,data_size,p_data,release);
@@ -636,8 +636,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_STRING)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -652,8 +651,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -699,8 +697,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_str[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 				scalar_str_attr_release = release;
 			}
 			else
@@ -753,8 +750,7 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_USHORT)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -769,8 +765,7 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -807,8 +802,7 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_ush[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -827,7 +821,10 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 				Tango::DevUShort *tmp_ptr = new Tango::DevUShort[1];
 				*tmp_ptr = *p_data;
 				value.ush_seq = new Tango::DevVarUShortArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.ush_seq = new Tango::DevVarUShortArray(data_size,data_size,p_data,release);
@@ -863,8 +860,7 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_BOOLEAN)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -879,8 +875,7 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -917,8 +912,7 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_boo[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -937,7 +931,10 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 				Tango::DevBoolean *tmp_ptr = new Tango::DevBoolean[1];
 				*tmp_ptr = *p_data;
 				value.boo_seq = new Tango::DevVarBooleanArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.boo_seq = new Tango::DevVarBooleanArray(data_size,data_size,p_data,release);
@@ -973,8 +970,7 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_UCHAR)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -989,8 +985,7 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1026,8 +1021,7 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_cha[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -1046,7 +1040,10 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 				Tango::DevUChar *tmp_ptr = new Tango::DevUChar[1];
 				*tmp_ptr = *p_data;
 				value.cha_seq = new Tango::DevVarCharArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.cha_seq = new Tango::DevVarCharArray(data_size,data_size,p_data,release);
@@ -1081,8 +1078,7 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 
 	if (data_type != Tango::DEV_ULONG)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1098,8 +1094,7 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1136,8 +1131,7 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_ulo[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -1156,7 +1150,10 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 				Tango::DevULong *tmp_ptr = new Tango::DevULong[1];
 				*tmp_ptr = *p_data;
 				value.ulg_seq = new Tango::DevVarULongArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.ulg_seq = new Tango::DevVarULongArray(data_size,data_size,p_data,release);
@@ -1192,8 +1189,7 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 
 	if (data_type != Tango::DEV_ULONG64)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1209,8 +1205,7 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1247,8 +1242,7 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_ulo64[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -1267,7 +1261,10 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 				Tango::DevULong64 *tmp_ptr = new Tango::DevULong64[1];
 				*tmp_ptr = *p_data;
 				value.ulg64_seq = new Tango::DevVarULong64Array(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete [] p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.ulg64_seq = new Tango::DevVarULong64Array(data_size,data_size,p_data,release);
@@ -1302,8 +1299,7 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 
 	if (data_type != Tango::DEV_STATE)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1319,8 +1315,7 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1357,8 +1352,7 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 			if (data_format == Tango::SCALAR)
 			{
 				tmp_state[0] = *p_data;
-				if (release == true)
-					delete p_data;
+				SAFE_DELETE(p_data);
 			}
 			else
 			{
@@ -1377,7 +1371,10 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 				Tango::DevState *tmp_ptr = new Tango::DevState[1];
 				*tmp_ptr = *p_data;
 				value.state_seq = new Tango::DevVarStateArray(data_size,data_size,tmp_ptr,release);
-				delete p_data;
+				if (is_fwd_att() == true)
+					delete p_data;
+				else
+					delete p_data;
 			}
 			else
 				value.state_seq = new Tango::DevVarStateArray(data_size,data_size,p_data,release);
@@ -1412,8 +1409,7 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 
 	if (data_type != Tango::DEV_ENCODED)
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1428,8 +1424,7 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 
 	if ((x > max_x) || (y > max_y))
 	{
-		if (release == true)
-			delete p_data;
+		SAFE_DELETE(p_data);
 
 		TangoSys_OMemStream o;
 
@@ -1463,8 +1458,7 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 		if ((is_writ_associated() == true))
 		{
 			tmp_enc[0] = *p_data;
-			if (release == true)
-				delete p_data;
+			SAFE_DELETE(p_data);
 		}
 		else
 		{

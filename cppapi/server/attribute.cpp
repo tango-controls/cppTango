@@ -111,7 +111,7 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_
  event_change_client_3(false),event_archive_client_3(false),
  event_user_client_3(false),dr_event_implmented(false),
  scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
- check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false)
+ check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false),client_lib(TANGO_VERSION_MAJOR)
 {
 
 //
@@ -1913,9 +1913,9 @@ bool Attribute::check_alarm()
 // If no alarms levels are specified, just return without alarm.
 //
 
-	if ( quality != Tango::ATTR_VALID )
+	if (is_fwd_att() == false &&  quality != Tango::ATTR_VALID )
 	{
-	    log_quality();
+		log_quality();
 		return returned;
 	}
 
@@ -3839,6 +3839,84 @@ void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_
 	ptr_3->err_list = ptr_4->err_list;
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::AttributeConfig_5_2_AttributeConfig_3
+//
+// description :
+//		Build an AttributeConfig_3 object from the AttributeConfig_5 object. This method is used in case an event is
+//		requested by a client knowing only IDL release 4
+//
+// argument:
+// 		in :
+//			- conf5 : Reference to the AttributeConfig_5 object
+//			- conf3 : Reference to the AttributeConfig_3 object to be filled in
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Attribute::AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_5 &conf5,Tango::AttributeConfig_3 &conf3)
+{
+	size_t j;
+
+	conf3.name = conf5.name;
+	conf3.writable = conf5.writable;
+	conf3.data_format = conf5.data_format;
+	conf3.data_type = conf5.data_type;
+	conf3.max_dim_x = conf5.max_dim_x;
+	conf3.max_dim_y = conf5.max_dim_y;
+	conf3.description = conf5.description;
+	conf3.label = conf5.label;
+	conf3.unit = conf5.unit;
+	conf3.standard_unit = conf5.standard_unit;
+	conf3.display_unit = conf5.display_unit;
+	conf3.format = conf5.format;
+	conf3.min_value = conf5.min_value;
+	conf3.max_value = conf5.max_value;
+	conf3.writable_attr_name = conf5.writable_attr_name;
+	conf3.level = conf5.level;
+	conf3.extensions.length(conf5.extensions.length());
+	for (j=0; j<conf5.extensions.length(); j++)
+	{
+		conf3.extensions[j] = string_dup(conf5.extensions[j]);
+	}
+	for (j=0; j<conf5.sys_extensions.length(); j++)
+	{
+		conf3.sys_extensions[j] = string_dup(conf5.sys_extensions[j]);
+	}
+
+	conf3.att_alarm.min_alarm = conf5.att_alarm.min_alarm;
+	conf3.att_alarm.max_alarm = conf5.att_alarm.max_alarm;
+	conf3.att_alarm.min_warning = conf5.att_alarm.min_warning;
+	conf3.att_alarm.max_warning = conf5.att_alarm.max_warning;
+	conf3.att_alarm.delta_t = conf5.att_alarm.delta_t;
+	conf3.att_alarm.delta_val = conf5.att_alarm.delta_val;
+	for (j=0; j<conf5.att_alarm.extensions.length(); j++)
+	{
+		conf3.att_alarm.extensions[j] = string_dup(conf5.att_alarm.extensions[j]);
+	}
+
+	conf3.event_prop.ch_event.rel_change = conf5.event_prop.ch_event.rel_change;
+	conf3.event_prop.ch_event.abs_change = conf5.event_prop.ch_event.abs_change;
+	for (j=0; j<conf5.event_prop.ch_event.extensions.length(); j++)
+	{
+		conf3.event_prop.ch_event.extensions[j] = string_dup(conf5.event_prop.ch_event.extensions[j]);
+	}
+
+	conf3.event_prop.per_event.period = conf5.event_prop.per_event.period;
+	for (j=0; j<conf5.event_prop.per_event.extensions.length(); j++)
+	{
+		conf3.event_prop.per_event.extensions[j] = string_dup(conf5.event_prop.per_event.extensions[j]);
+	}
+
+	conf3.event_prop.arch_event.rel_change = conf5.event_prop.arch_event.rel_change;
+	conf3.event_prop.arch_event.abs_change = conf5.event_prop.arch_event.abs_change;
+	conf3.event_prop.arch_event.period = conf5.event_prop.arch_event.period;
+	for (j=0; j<conf5.event_prop.ch_event.extensions.length(); j++)
+	{
+		conf3.event_prop.arch_event.extensions[j] = string_dup(conf5.event_prop.arch_event.extensions[j]);
+	}
+}
 
 //+-------------------------------------------------------------------------
 //
