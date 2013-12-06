@@ -1185,7 +1185,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,Tango::Devic
 
 void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_name)
 {
-cout << "Entering Attribute::set_properties" << endl;
+
 //
 // First, do all the job done by old set_property(ies)
 //
@@ -4817,7 +4817,7 @@ void Attribute::event_prop_db(const char *prop_name,vector<double> &rel_change_t
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void Attribute::check_hard_coded(const  AttributeConfig_5 &user_conf)
+void Attribute::check_hard_coded(const AttributeConfig_5 &user_conf)
 {
 
 //

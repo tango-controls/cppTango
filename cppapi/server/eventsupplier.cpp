@@ -1950,27 +1950,56 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &
     time_t now, att_conf_subscription;
 
     cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << endl;
+cout << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << endl;
 
     Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
 //
-// Return if there is no client
+// Called for AttributeConfig_3 or AttributeConfig_5 ?
 //
 
-    if (attr.event_attr_conf_subscription == 0)
+	bool conf5 = false;
+	if (attr_conf.attr_conf_5 != NULL)
+		conf5 = true;
+
+//
+// Return if there is no client or if the last client subscription is more than 10 mins ago
+//
+
+	if (conf5 == true && attr.event_attr_conf5_subscription == 0)
+		return;
+
+    if (conf5 == false && attr.event_attr_conf_subscription == 0)
         return;
 
     now = time(NULL);
-    att_conf_subscription = now - attr.event_attr_conf_subscription;
+    if (conf5 == true)
+		att_conf_subscription = now - attr.event_attr_conf5_subscription;
+	else
+		att_conf_subscription = now - attr.event_attr_conf_subscription;
 
-    cout3 << "EventSupplier::push_att_conf_events(): last subscription " << att_conf_subscription << endl;
+    cout3 << "EventSupplier::push_att_conf_events(): delta since last subscription " << att_conf_subscription << endl;
+
+    if (att_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
+	{
+cout << "Returning from EventSupplier::push_att_conf_events due to too old subscription" << endl;
+		return;
+	}
+
+//
+// Push event
+//
 
     vector<string> filterable_names;
     vector<double> filterable_data;
     vector<string> filterable_names_lg;
     vector<long> filterable_data_lg;
 
-    string ev_type(CONF_TYPE_EVENT);
+    string ev_type;
+    if (conf5 == true)
+		ev_type = CONF5_TYPE_EVENT;
+	else
+		ev_type = CONF_TYPE_EVENT;
 
     push_event(device_impl,
            ev_type,

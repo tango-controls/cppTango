@@ -84,14 +84,13 @@ cout << "Attr name = " << ev->attr_name << endl;
 				ite = map_attrdesc.find(att_name);
 				if (ite != map_attrdesc.end())
 				{
-
-//
-// Classical event: Use the DeviceImpl ptr to the local device to set the att. environment but do not change att name
-// and do not change att label if locally defined
-//
-
 					if (ite->second.fwd_attr == nullptr)
 					{
+
+//
+// Event received while everything is OK for the fwd attribute
+//
+
 						map<string,DeviceImpl *>::iterator ite3;
 						ite3 = local_dis.find(ite->second.local_name);
 						if (ite3 == local_dis.end())
@@ -106,8 +105,8 @@ cout << "Attr name = " << ev->attr_name << endl;
 							{
 
 //
-// If the callback is executed due to a re-connection (ptr null), the info we received do not contain a AttributeConfig
-// structure. In this case, create one from the AttributeInfoEx
+// If the callback is executed due to a synchronous call after a re-connection (ptr null), the info we received do
+// not contain a AttributeConfig structure. In this case, create one from the AttributeInfoEx
 //
 
 								FwdAttrConfEventData *ev_fwd = static_cast<FwdAttrConfEventData *>(ev);
@@ -158,25 +157,45 @@ cout << "Attr name = " << ev->attr_name << endl;
 							}
 							else
 							{
-								if (ite->second.local_label.empty() == false)
-									ev->attr_conf->label = ite->second.local_label;
+								string::size_type pos = att_name.rfind('/');
+								string root_dev_name = att_name.substr(0,pos);
+
+								bool rel_ok = rar->check_root_dev_release(root_dev_name);
 
 								Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
-								Attribute &the_fwd_att = the_dev->get_device_attr()->get_attr_by_name(ite->second.local_att_name.c_str());
-								static_cast<FwdAttribute &>(the_fwd_att).set_att_config(ev->attr_conf);
-								MultiAttribute *m_att = the_dev->get_device_attr();
-								m_att->update(the_fwd_att);
+								if (rel_ok == true)
+								{
+									if (ite->second.local_label.empty() == false)
+										ev->attr_conf->label = ite->second.local_label;
 
-/*								DeviceImpl *the_dev = ite3->second;
-								the_dev->add_attribute(ite->second.fwd_attr); */
-								ite->second.fwd_attr = nullptr;
+									Attribute &the_fwd_att = the_dev->get_device_attr()->get_attr_by_name(ite->second.local_att_name.c_str());
+									static_cast<FwdAttribute &>(the_fwd_att).set_att_config(ev->attr_conf);
 
-								the_dev->rem_wrong_fwd_att(att_name);
-								the_dev->set_run_att_conf_loop(true);
+									MultiAttribute *m_att = the_dev->get_device_attr();
+									m_att->update(the_fwd_att,ite->second.local_name);
+
+/*									DeviceImpl *the_dev = ite3->second;
+									the_dev->add_attribute(ite->second.fwd_attr); */
+									ite->second.fwd_attr = nullptr;
+
+									the_dev->rem_wrong_fwd_att(att_name);
+									the_dev->set_run_att_conf_loop(true);
+								}
+								else
+								{
+									string root_att_name = att_name.substr(pos + 1);
+									the_dev->update_wrong_conf_att(att_name,FWD_TOO_OLD_ROOT_DEVICE);
+									the_dev->set_run_att_conf_loop(true);
+								}
 							}
 						}
 						else
 						{
+
+//
+// Classical event due to synchronous call during subscription
+//
+
 							ite->second.fwd_attr->init_conf(ev);
 							ite->second.fwd_attr = nullptr;
 						}
@@ -272,12 +291,12 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 
 void RootAttRegistry::RootAttConfCallBack::remove_att(string &root_att_name)
 {
+	omni_mutex_lock oml(the_lock);
 
 //
 // Get local dev name and check if the same local dev name is used for other forwarded att
 //
 
-	omni_mutex_lock oml(the_lock);
 	map<string,NameFwdAttr>::iterator ite;
 	ite = map_attrdesc.find(root_att_name);
 
@@ -471,7 +490,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 	{
 		the_dev = new DeviceProxy(device_name);
 		int idl_vers = the_dev->get_idl_version();
-		if (idl_vers > 0 && idl_vers < 5)
+		if (idl_vers > 0 && idl_vers < MIN_IDL_CONF5)
 		{
 			attdesc->set_err_kind(FWD_TOO_OLD_ROOT_DEVICE);
 			delete the_dev;
@@ -687,6 +706,35 @@ void RootAttRegistry::RootAttConfCallBack::update_label(string &root_name,string
 		ss << root_name << " not registered in map of root attribute!";
 		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::update_label");
 	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		RootAttRegistry::check_root_dev_release
+//
+// description :
+//		Check if the root device support IDL 5 or more
+//
+// argument :
+//		in :
+//			- root_dev_name : The root device name
+//
+// returns :
+//		True if the root device is IDL 5 or more
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+bool RootAttRegistry::check_root_dev_release(string &root_dev_name)
+{
+	bool ret = true;
+
+	DeviceProxy *dp = get_root_att_dp(root_dev_name);
+	int idl_vers = dp->get_idl_version();
+	if (idl_vers < MIN_IDL_CONF5)
+		ret = false;
+
+	return ret;
 }
 
 } // End of Tango namespace

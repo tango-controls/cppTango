@@ -70,9 +70,6 @@ void *CallBackThread::run_undetached(TANGO_UNUSED(void *ptr))
 	{
 		try
 		{
-//			sleep(2);
-//			cout << "In the automatic callback thread" << endl;
-
 			{
 				omni_mutex_lock sync(*asyn_ptr);
 				if (asyn_ptr->get_cb_request_nb_i() == 0)

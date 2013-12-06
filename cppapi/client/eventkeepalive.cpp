@@ -183,8 +183,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     subscriber_info.push_back(epos->second.attr_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
-// TODO : To be replaced
-					subscriber_info.push_back("9");
+					subscriber_info.push_back(TgLibMajorVers);
                     subscriber_in << subscriber_info;
 
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
@@ -447,7 +446,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 #ifdef ZMQ_HAS_DISCONNECT
 						if (disconnect_called == false)
 						{
-							event_consumer->disconnect_event(epos->second.event_name,epos->second.endpoint);
+							event_consumer->disconnect_event(epos->second.fully_qualified_event_name,epos->second.endpoint);
 							disconnect_called = true;
 						}
 #endif
@@ -747,8 +746,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 										subscriber_info.push_back(cmd_params[(loop * 3) + 1]);
 										subscriber_info.push_back("subscribe");
 										subscriber_info.push_back(cmd_params[(loop * 3) + 2]);
-// TODO : Replace 9 !!
-										subscriber_info.push_back("9");
+										subscriber_info.push_back(TgLibMajorVers);
 										subscriber_in << subscriber_info;
 
                                         try
@@ -930,6 +928,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 									{
 										domain_name = epos->first.substr(0,pos);
 										event_name = epos->first.substr(pos + 1);
+										if (event_name == CONF5_TYPE_EVENT)
+											event_name = CONF_TYPE_EVENT;
 									}
 
 									for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
@@ -941,13 +941,13 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 // Push an event with error set
 //
 
-										if (event_name == CONF_TYPE_EVENT)
+										if (event_name == CONF_TYPE_EVENT || event_name == CONF5_TYPE_EVENT)
 										{
-											AttrConfEventData *event_data = new AttrConfEventData(epos->second.device,
+											AttrConfEventData *event_data = new FwdAttrConfEventData(epos->second.device,
 											      												domain_name,
 											      												event_name,
 											      												dev_attr_conf,
-																									errors);
+																								errors);
 											// if a callback method was specified, call it!
 											if (callback != NULL )
 											{
@@ -1049,9 +1049,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
        									subscriber_info.push_back(epos->second.attr_name);
        									subscriber_info.push_back("subscribe");
        									subscriber_info.push_back(epos->second.event_name);
-// TODO : Remove fllowing 9
        									if (ipos->second.channel_type == ZMQ)
-											subscriber_info.push_back("9");
+											subscriber_info.push_back(TgLibMajorVers);
        									subscriber_in << subscriber_info;
 
 										bool ds_failed = false;
@@ -1173,7 +1172,8 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												}
 											}
 
-											else if (epos->second.event_name == CONF_TYPE_EVENT)
+											else if (epos->second.event_name == CONF_TYPE_EVENT ||
+													 epos->second.event_name == CONF5_TYPE_EVENT)
 											{
 
 //
@@ -1183,9 +1183,12 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												AttributeInfoEx *aie = NULL;
 												DevErrorList err;
 												err.length(0);
-												string domain_name = epos->second.device->dev_name() + "/" + epos->second.attr_name;
-domain_name.insert(0,"tango://acucentos.esrf.fr:10000/");
-cout << "domain_name = " << domain_name << endl;
+												string prefix;
+												if (ipos->second.channel_type == NOTIFD)
+													prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
+												else
+													prefix = event_consumer->env_var_fqdn_prefix[0];
+												string domain_name = prefix + epos->second.device->dev_name() + "/" + epos->second.attr_name;
 
 												bool old_transp = epos->second.device->get_transparency_reconnection();
 												epos->second.device->set_transparency_reconnection(true);
@@ -1217,13 +1220,17 @@ cout << "domain_name = " << domain_name << endl;
 												{
 													cb_ctr++;
 													AttrConfEventData *event_data;
+													string ev_name(epos->second.event_name);
+													if (ev_name == CONF5_TYPE_EVENT)
+														ev_name = CONF_TYPE_EVENT;
+
 													if (cb_ctr != cb_nb)
 													{
 														aie_copy = new AttributeInfoEx;
 														*aie_copy = *aie;
 														event_data = new FwdAttrConfEventData(epos->second.device,
 													      				domain_name,
-													      				epos->second.event_name,
+													      				ev_name,
 													      				aie_copy,
 													      				err);
 													}
@@ -1231,7 +1238,7 @@ cout << "domain_name = " << domain_name << endl;
 													{
 														event_data = new FwdAttrConfEventData(epos->second.device,
 													      				domain_name,
-													      				epos->second.event_name,
+													      				ev_name,
 													      				aie,
 													      				err);
 													}

@@ -3274,6 +3274,7 @@ public:
 
     vector<FwdWrongConf> &get_fwd_att_wrong_conf() {return fwd_att_wrong_conf;}
     void rem_wrong_fwd_att(const string &);
+	void update_wrong_conf_att(const string &,FwdAttError);
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)

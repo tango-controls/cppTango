@@ -84,7 +84,7 @@ WAttribute::WAttribute(vector<AttrProperty> &prop_list,
 long_ptr(NULL),double_ptr(NULL),str_ptr(NULL),float_ptr(NULL),
 boolean_ptr(NULL),ushort_ptr(NULL),uchar_ptr(NULL),encoded_ptr(NULL),
 string_allocated(false),memorized(false),memorized_init(true),w_ext(new WAttributeExt),
-long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false)
+long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false),mem_write_failed(false)
 {
 
 //

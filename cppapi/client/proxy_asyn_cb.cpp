@@ -76,7 +76,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
 		desc << ", command " << command << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"Connection::command_inout_asynch()");
 	}
 
@@ -372,7 +372,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			string st = desc.str();
 			errors[nb_err].desc = CORBA::string_dup(st.c_str());
 			errors[nb_err].origin = CORBA::string_dup("Connection::Cb_Cmd_Request()");
-			errors[nb_err].reason = CORBA::string_dup("API_CommandFailed");
+			errors[nb_err].reason = CORBA::string_dup(API_CommandFailed);
 		}
 		else if (((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL) &&
 			 (to_except == false))
@@ -509,7 +509,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 					desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 					err_list.inout().length(nb_except + 1);
-					err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+					err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 					err_list[nb_except].origin = CORBA::string_dup("Connection::Cb_ReadAttr_Request");
 					string st = desc.str();
 					err_list[nb_except].desc = CORBA::string_dup(st.c_str());
@@ -602,7 +602,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			string st = desc.str();
 			errors[nb_err].desc = CORBA::string_dup(st.c_str());
 			errors[nb_err].origin = CORBA::string_dup("Connection::Cb_ReadAttr_Request()");
-			errors[nb_err].reason = CORBA::string_dup("API_AttributeFailed");
+			errors[nb_err].reason = CORBA::string_dup(API_AttributeFailed);
 		}
 		else if (((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL) &&
 			 (to_except == false))
@@ -776,7 +776,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 				string st = desc.str();
 				err_3.errors[0].desc = CORBA::string_dup(st.c_str());
 				err_3.errors[0].origin = CORBA::string_dup("Connection::Cb_WriteAttr_Request()");
-				err_3.errors[0].reason = CORBA::string_dup("API_AttributeFailed");
+				err_3.errors[0].reason = CORBA::string_dup(API_AttributeFailed);
 
 				err_3.err_list.resize(1);
 				err_3.err_list[0].err_stack = serv_ex->errors;
@@ -791,7 +791,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 					err_3 = Tango::NamedDevFailedList(m_ex,
 					       dev_name(),
 					       (const char *)"Connection::Cb_WriteAttr_Request()",
-					       (const char *)"API_AttributeFailed");
+					       (const char *)API_AttributeFailed);
 				}
 				else
 				{
@@ -816,7 +816,7 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 					string st = desc.str();
 					err_3.errors[0].desc = CORBA::string_dup(st.c_str());
 					err_3.errors[0].origin = CORBA::string_dup("Connection::Cb_WriteAttr_Request()");
-					err_3.errors[0].reason = CORBA::string_dup("API_AttributeFailed");
+					err_3.errors[0].reason = CORBA::string_dup(API_AttributeFailed);
 
 					err_3.err_list.resize(1);
 					err_3.err_list[0].err_stack = serv_ex->errors;
@@ -1096,7 +1096,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
 
@@ -1201,7 +1201,7 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
 	}
 
@@ -1303,7 +1303,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
 	}
 

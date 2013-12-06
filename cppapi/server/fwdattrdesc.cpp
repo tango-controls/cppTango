@@ -68,7 +68,7 @@ ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false
 //	type = DATA_TYPE_UNKNOWN;
 	type = DEV_DOUBLE;
 	format = Tango::FMT_UNKNOWN;
-	disp_level = DL_UNKNOWN;
+//	disp_level = DL_UNKNOWN;
 	assoc_name = AssocWritNotSpec;
 
 	max_x = 0;
@@ -343,9 +343,117 @@ void FwdAttr::read(TANGO_UNUSED(DeviceImpl *dev),Attribute &attr)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::write(DeviceImpl *dev,WAttribute &attr)
+void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 {
+//
+// Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
+//
 
+	if (attr.get_data_type() == DATA_TYPE_UNKNOWN)
+	{
+		string desc("Attribute ");
+		desc = desc + name + " is a forwarded attribute and its root device (";
+		desc = desc + fwd_dev_name;
+		desc = desc + ") is not yet available";
+		Tango::Except::throw_exception(API_AttrConfig,desc,"FwdAttr::write");
+	}
+
+//
+// Retrieve root attribute device proxy object
+//
+
+	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
+	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+	DeviceProxy *root_att_dev = rar.get_root_att_dp(fwd_attr.get_fwd_dev_name());
+
+//
+// Write the ŕoot attribute
+//
+
+	DeviceAttribute da;
+	da.set_name(fwd_attr.get_fwd_att_name());
+
+	switch(fwd_attr.get_data_type())
+	{
+	case DEV_SHORT:
+		DevShort *ptr_sh;
+		fwd_attr.propagate_writen_data(da,attr,ptr_sh,fwd_attr.get_root_ptr().sh_seq);
+		break;
+
+	case DEV_LONG:
+		DevLong *ptr_lo;
+		fwd_attr.propagate_writen_data(da,attr,ptr_lo,fwd_attr.get_root_ptr().lg_seq);
+		break;
+
+	case DEV_FLOAT:
+		DevFloat *ptr_fl;
+		fwd_attr.propagate_writen_data(da,attr,ptr_fl,fwd_attr.get_root_ptr().fl_seq);
+		break;
+
+	case DEV_DOUBLE:
+		DevDouble *ptr_db;
+		fwd_attr.propagate_writen_data(da,attr,ptr_db,fwd_attr.get_root_ptr().db_seq);
+		break;
+
+	case DEV_STRING:
+		ConstDevString *ptr_str;
+		fwd_attr.propagate_writen_data(da,attr,ptr_str,fwd_attr.get_root_ptr().str_seq);
+		break;
+
+	case DEV_USHORT:
+		DevUShort *ptr_ush;
+		fwd_attr.propagate_writen_data(da,attr,ptr_ush,fwd_attr.get_root_ptr().ush_seq);
+		break;
+
+	case DEV_BOOLEAN:
+		DevBoolean *ptr_bo;
+		fwd_attr.propagate_writen_data(da,attr,ptr_bo,fwd_attr.get_root_ptr().boo_seq);
+		break;
+
+	case DEV_UCHAR:
+		DevUChar *ptr_uch;
+		fwd_attr.propagate_writen_data(da,attr,ptr_uch,fwd_attr.get_root_ptr().cha_seq);
+		break;
+
+	case DEV_LONG64:
+		DevLong64 *ptr_lg64;
+		fwd_attr.propagate_writen_data(da,attr,ptr_lg64,fwd_attr.get_root_ptr().lg64_seq);
+		break;
+
+	case DEV_ULONG:
+		DevULong *ptr_ulg;
+		fwd_attr.propagate_writen_data(da,attr,ptr_ulg,fwd_attr.get_root_ptr().ulg_seq);
+		break;
+
+	case DEV_ULONG64:
+		DevULong64 *ptr_ulg64;
+		fwd_attr.propagate_writen_data(da,attr,ptr_ulg64,fwd_attr.get_root_ptr().ulg64_seq);
+		break;
+
+	case DEV_STATE:
+		DevState *ptr_sta;
+		fwd_attr.propagate_writen_data(da,attr,ptr_sta,fwd_attr.get_root_ptr().state_seq);
+		break;
+
+	case DEV_ENCODED:
+		DevEncoded *ptr_enc;
+		fwd_attr.propagate_writen_data(da,attr,ptr_enc,fwd_attr.get_root_ptr().enc_seq);
+		break;
+
+	default:
+		break;
+	}
+
+	try
+	{
+		 root_att_dev->write_attribute(da);
+	}
+	catch (Tango::DevFailed &e)
+	{
+		stringstream ss;
+		ss << "Writing root attribute " << fwd_root_att << " on device " << fwd_dev_name << " failed!";
+		Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"FwdAttr::write");
+	}
 }
 
 //---------------------------------------------------------------------------------------------------------------------

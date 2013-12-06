@@ -320,7 +320,10 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 	default:
 		break;
 	}
+
 	writable_attr_name = aie_ptr->writable_attr_name;
+	if (writable == READ_WRITE)
+		writable_attr_name = name;
 
 	max_x = aie_ptr->max_dim_x;
 	max_y = aie_ptr->max_dim_y;

@@ -64,7 +64,7 @@ KeepAliveThCmd EventConsumer::cmd;
 //+--------------------------------------------------------------------------------------------------------------------
 //
 // function :
-//		client_leavefunc and leavefunc
+//		leavefunc
 //
 // description :
 //		This function will be executed at process exit or when the main returned.  It has to be executed to properly
@@ -74,14 +74,9 @@ KeepAliveThCmd EventConsumer::cmd;
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void client_leavefunc()
-{
-	leavefunc();
-}
-
 void leavefunc()
 {
-	// flag to avoid calling client_leavefunc twice
+	// flag to avoid calling leavefunc twice
 	static bool already_executed = false;
 
 	Tango::ApiUtil *au = ApiUtil::instance();
@@ -93,7 +88,8 @@ void leavefunc()
 // Kill locking threads (if any)
 //
 
-	au->clean_locking_threads();
+	if (already_executed == false)
+		au->clean_locking_threads();
 
 //
 // Manage event stuff
@@ -1276,17 +1272,30 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		local_callback_key.erase(pos);
 		local_callback_key = local_callback_key + "/" + att_name_lower + MODIFIER_DBASE_NO + '.' + event_name;
 	}
-	callback_key = local_callback_key;
 
 //
 // Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
+// If it's a ATTR_CONF_EVENT, don forget to look for the two different event kinds
 //
 
 	EvCbIte iter = event_callback_map.find(local_callback_key);
+	string mod_local_callback_key(local_callback_key);
+
+	if (iter == event_callback_map.end() && event == ATTR_CONF_EVENT)
+	{
+		string::size_type pos = mod_local_callback_key.rfind('.');
+		if (event_name == CONF_TYPE_EVENT)
+			mod_local_callback_key.replace(pos + 1,20,string(CONF5_TYPE_EVENT));
+		else
+			mod_local_callback_key.replace(pos + 1,20,string(CONF_TYPE_EVENT));
+
+		iter = event_callback_map.find(mod_local_callback_key);
+	}
+
 	if (iter != event_callback_map.end())
 	{
 		int new_event_id = add_new_callback(iter,callback,ev_queue,event_id);
-		get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second);
+		get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second,local_callback_key);
 		return new_event_id;
 	}
 
@@ -1359,9 +1368,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	    if (cmd_name.find("Zmq") != string::npos)
 	    {
 			zmq_used = true;
-// TODO : Check why the following line does not work
-//			subscriber_info.push_back(string(TgLibMajorVers));
-			subscriber_info.push_back("9");
+			subscriber_info.push_back(TgLibMajorVers);
 		}
 
 		subscriber_in << subscriber_info;
@@ -1418,6 +1425,26 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 //	if (allocated == true)
 //		delete adm_dev;
+
+//
+// Change event name if it is IDl 5 compatible:
+// This code is Tango 9 or more. If the remote device is IDL 5 (or more, use attr5_conf event instead of
+// attr_conf
+//
+
+	const DevVarLongStringArray *dvlsa;
+	bool dd_extract_ok = true;
+
+	if ((dd >> dvlsa) == false)
+		dd_extract_ok = false;
+
+	if (dd_extract_ok == true && event == ATTR_CONF_EVENT
+		&& dvlsa->lvalue[1] >= MIN_IDL_CONF5 && event_name != string(CONF5_TYPE_EVENT))
+	{
+		event_name = CONF5_TYPE_EVENT;
+		string::size_type pos = local_callback_key.rfind('.');
+		local_callback_key.replace(pos + 1,20,string(CONF5_TYPE_EVENT));
+	}
 
 //
 // Search (or create) entry for channel map
@@ -1484,9 +1511,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.channel_name = evt_it->first;
     new_event_callback.fully_qualified_event_name = device_name + '/' + att_name_lower + '.' + event_name;
 
-    const DevVarLongStringArray *dvlsa;
-
-    if ((dd >> dvlsa) == false)
+    if (dd_extract_ok == false)
         new_event_callback.device_idl = 0;
     else
     {
@@ -1542,7 +1567,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Force callback execution when it is done
 //
 
-	get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second);
+	get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second,local_callback_key);
 
 //
 // Sleep for some mS (20) in order to give to ZMQ some times to propagate the subscription to the publisher
@@ -1641,7 +1666,6 @@ void EventConsumer::unsubscribe_event(int event_id)
 		{
 			if(esspos->id == event_id)
 			{
-//				cout << "Tango::EventConsumer::unsubscribe_event() - found event id " << event_id << " going to remove_filter()\n";
 
 //
 // delete the event queue when used
@@ -2554,11 +2578,14 @@ int EventConsumer::add_new_callback(EvCbIte &iter,CallBack *callback,EventQueue 
 //			- event : The event type
 //			- event_name : The event name
 //			- attribute : The attribute name
+//			- cb :
+//			- callback_key :
 //
 //-------------------------------------------------------------------------------------------------------------------
 
 void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,EventQueue *ev_queue,EventType event,
-										string &event_name,const string &attribute,EventCallBackStruct &cb)
+										string &event_name,const string &attribute,EventCallBackStruct &cb,
+										string &callback_key)
 {
 	if ((event == CHANGE_EVENT) ||
 	    (event == QUALITY_EVENT) ||
@@ -2634,6 +2661,10 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		string domain_name = device_name + "/" + att_name_lower;
 		//AttributeInfoEx aie;
 		AttributeInfoEx *aie = NULL;
+		string local_event_name = event_name;
+
+		if (event_name.size() != 9)
+			local_event_name = EventName[event];
 
 		try
 		{
@@ -2647,7 +2678,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 
 		FwdAttrConfEventData *event_data = new FwdAttrConfEventData(device,
 						      domain_name,
-						      event_name,
+						      local_event_name,
 						      aie,
 						      err);
 		AutoTangoMonitor _mon(cb.callback_monitor);

@@ -594,7 +594,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 				}
 				device_list[i]->set_run_att_conf_loop(true);
 				Tango::NamedDevFailedList e_list (e, device_list[i]->get_name(), (const char *)"DeviceClass::set_memorized_values()",
-					       			(const char *)"API_AttributeFailed");
+					       			(const char *)API_AttributeFailed);
 				Tango::Except::print_exception(e_list);
 			}
 

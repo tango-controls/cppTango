@@ -46,10 +46,11 @@ namespace Tango
 
 #define   TANGO_BASE_CLASS           Tango::Device_5Impl
 
-#define   __tango_build_string__(s)  #s
-const char * const TgLibVers               = __tango_build_string__(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH);
-const char * const TgLibMajorVers		   = __tango_build_string__(TANGO_VERSION_MAJOR);
-#undef    __tango_build_string__
+#define   TBS(s)  	#s
+#define   XTBS(s)	TBS(s)
+
+const char * const TgLibVers               = XTBS(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH);
+const char * const TgLibMajorVers		   = XTBS(TANGO_VERSION_MAJOR);
 
 const int   TgLibVersNb                    = TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_MINOR;
 
@@ -198,6 +199,17 @@ const unsigned int MaxServerNameLength     = 255;
 const int   MaxDevPropLength               = 255;
 
 //
+// For forwarded attribute implementation
+//
+
+const int	MIN_IDL_CONF5			       = 5;
+const char* const CONF_TYPE_EVENT		   = "attr_conf";
+const char* const CONF5_TYPE_EVENT		   = "attr_5_conf";
+const char* const DATA_READY_TYPE_EVENT	   = "data_ready";
+const int  ALL_EVENTS					   = 0;
+
+
+//
 // Files used to retrieve env. variables
 //
 
@@ -303,6 +315,7 @@ const char* const API_CantStoreDeviceClass         = "API_CantStoreDeviceClass";
 const char* const API_ClassNotFound                = "API_ClassNotFound";
 const char* const API_CmdArgumentTypeNotSupported  = "API_CmdArgumentTypeNotSupported";
 const char* const API_CmdNotPolled                 = "API_CmdNotPolled";
+const char* const API_CommandFailed				   = "API_CommandFailed";
 const char* const API_CommandNotAllowed            = "API_CommandNotAllowed";
 const char* const API_CommandNotFound              = "API_CommandNotFound";
 const char* const API_CommandTimedOut              = "API_CommandTimedOut";

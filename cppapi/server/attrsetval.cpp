@@ -707,7 +707,12 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 				for (int k = 0;k < data_size;k++)
 					(*value.str_seq)[k] = CORBA::string_dup(p_data[k]);
 				if (release == true)
-					delete [] p_data;
+				{
+					if (is_fwd_att() == true)
+						Tango::DevVarStringArray::freebuf(p_data);
+					else
+						delete [] p_data;
+				}
 			}
 		}
 		else

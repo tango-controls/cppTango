@@ -222,7 +222,7 @@ ApiUtil::~ApiUtil()
 			{
 				_orb->destroy();
 			}
-			catch (...) {cout << "In the exception handler"<<endl;}
+			catch (...) {}
 		}
 		CORBA::release(_orb);
 	}
@@ -263,10 +263,6 @@ void ApiUtil::create_orb()
 
 	if (sigaction(SIGPIPE,NULL,&sa) == -1)
 		sa.sa_handler = NULL;
-#else
-	WORD rel = 0x0202;
-	WSADATA dat;
-	WSAStartup(rel,&dat);
 #endif
 
 //
@@ -1523,7 +1519,7 @@ void ApiUtil::AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *aie,Attr
 	case NOT_KNOWN:
 	case NONE:
 		att_conf_5->memorized = false;
-		att_conf_5->mem_init = false;
+		att_conf_5->mem_init = true;
 		break;
 
 	case MEMORIZED:
@@ -2208,7 +2204,7 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 		switch(p.memorized)
 		{
 		case NOT_KNOWN:
-			o_str << "Device/Appli too old to send/receive attribute memorisation information" << endl;
+			o_str << "Device/Appli too old to send/receive attribute memorisation data" << endl;
 			break;
 
 		case NONE:

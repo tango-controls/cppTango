@@ -63,6 +63,9 @@ public:
 	template<typename T>
 	void set_local_attribute(DeviceAttribute &, T* &);
 
+	template<typename T,typename V>
+	void propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T *&,V *&);
+
 protected:
 	void convert_event_prop(string &,double *);
 

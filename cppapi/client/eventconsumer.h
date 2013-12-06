@@ -45,6 +45,7 @@
 
 #include <attribute.h>
 #include <except.h>
+#include <tango_const.h>
 #include <COS/CosNotification.hh>
 #include <COS/CosNotifyChannelAdmin.hh>
 #include <COS/CosNotifyComm.hh>
@@ -70,14 +71,9 @@ extern "C"
 {
 #endif
 void leavefunc();
-void client_leavefunc();
 #ifndef _USRDLL
 }
 #endif
-
-#define 	CONF_TYPE_EVENT			"attr_conf"
-#define		DATA_READY_TYPE_EVENT	"data_ready"
-#define     ALL_EVENTS				0
 
 
 /********************************************************************************
@@ -408,10 +404,9 @@ protected :
 
 	string													device_name;
 	string 													att_name_lower;
-	string													callback_key;
 
 	int add_new_callback(EvCbIte &,CallBack *,EventQueue *,int);
-	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &);
+	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);
 
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &) = 0;
     virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint)) {}

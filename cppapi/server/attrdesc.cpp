@@ -464,8 +464,6 @@ void Attr::convert_def_prop(const string &val, double &db)
 	TangoSys_MemStream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
-	str.str("");
-	str.clear();
 	str << val;
 	str >> db;
 }

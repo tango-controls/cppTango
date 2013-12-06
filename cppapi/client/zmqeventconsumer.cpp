@@ -868,11 +868,12 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Subscribe to the new event
 //
 
+cout << "Subscribing to event " << event_name << endl;
             event_sub_sock->setsockopt(ZMQ_SUBSCRIBE,event_name,::strlen(event_name));
 
 //
-// Most of the time, we have only one TANGO_HOST to take into account and we don need to execute following code.
-// But there are some control system where several TANGO_HOST are defined
+// Most of the time, we have only one TANGO_HOST to take into account and we don't need to execute following code.
+// But there are some control system where several TANGO_HOST are defined!
 //
 
             if (env_var_fqdn_prefix.size() > 1)
@@ -915,6 +916,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 
             if (mcast == false)
             {
+cout << "Unsubscribing to event " << event_name << endl;
                 event_sub_sock->setsockopt(ZMQ_UNSUBSCRIBE,event_name,::strlen(event_name));
 
 //
@@ -1881,7 +1883,9 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
 
 void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::message_t &event_data,bool error,const DevULong &ds_ctr)
 {
-
+cout << "Received event name = " << ev_name << endl;
+for (const auto &elem:event_callback_map)
+	cout << "In map = " << elem.first << endl;
     map_modification_lock.readerIn();
     bool map_lock = true;
 
@@ -1982,7 +1986,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
             UserDataEventType data_type;
 
-            if (event_name == CONF_TYPE_EVENT)
+            if (event_name == CONF_TYPE_EVENT || event_name == CONF5_TYPE_EVENT)
                 data_type = ATT_CONF;
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;
@@ -2612,6 +2616,10 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //			- adm_name : The admin device name used in the heartbeat event
 //			- device : The device proxy pointer (for error message)
 //			- attribute : The attribute name (for error message)
+//			- ev_type : Event type
+//			- ev_name : Event name
+//		out:
+//			- mod_ev_name : Boolean set to true if the event name is modified
 //
 //--------------------------------------------------------------------------------------------------------------------
 

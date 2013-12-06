@@ -125,7 +125,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
 		desc << ", command " << command << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"Connection::command_inout_asynch()");
 	}
 
@@ -353,7 +353,7 @@ DeviceData Connection::command_inout_reply(long id)
 			remove_asyn_request(id);
 
 			Except::re_throw_exception(ex,
-					   (const char*)"API_CommandFailed",
+					   (const char*)API_CommandFailed,
 					   desc.str(),
 					   (const char*)"Connection::command_inout_reply()");
 
@@ -605,7 +605,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			remove_asyn_request(id);;
 
 			Except::re_throw_exception(ex,
-						   (const char*)"API_CommandFailed",
+						   (const char*)API_CommandFailed,
                         			   desc.str(),
 						   (const char*)"Connection::command_inout_reply()");
 
@@ -711,7 +711,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
 
@@ -912,7 +912,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 					desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 					err_list.inout().length(nb_except + 1);
-					err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+					err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 					err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
 
 					string st = desc.str();
@@ -1056,7 +1056,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 				desc << ", attribute " << dev_attr->name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute_reply()");
 
 				string st = desc.str();
@@ -1250,7 +1250,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 				desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attributes_reply()");
 
 				string st = desc.str();
@@ -1428,7 +1428,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 			desc << ", attribute " << dev_attr->name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute_reply()");
 
 			string st = desc.str();
@@ -1545,12 +1545,12 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
 		if (type == SIMPLE)
 	        	Except::re_throw_exception(ex,
-						   (const char*)"API_AttributeFailed",
+						   (const char*)API_AttributeFailed,
                         		   	   desc.str(),
 						   (const char*)"DeviceProxy::read_attribute_reply()");
 		else
 	        	Except::re_throw_exception(ex,
-						   (const char*)"API_AttributeFailed",
+						   (const char*)API_AttributeFailed,
                         		   	   desc.str(),
 						   (const char*)"DeviceProxy::read_attributes_reply()");
 
@@ -1661,7 +1661,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
 	}
 
@@ -1750,7 +1750,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attribute_asynch()");
 	}
 
@@ -2138,7 +2138,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
 		if (version < 3)
 		{
-			Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
 						   desc.str(),
 						   (const char*)"DeviceProxy::write_attributes_reply()");
 		}
@@ -2146,7 +2146,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 		{
 			if (serv_ex != NULL)
 			{
-				Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+				Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
 							   desc.str(),
 							   (const char*)"DeviceProxy::write_attributes_reply()");
 			}
@@ -2155,7 +2155,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 				throw Tango::NamedDevFailedList(m_ex,
 					       			device_name,
 					       			(const char *)"DeviceProxy::write_attributes_reply()",
-					       			(const char *)"API_AttributeFailed");
+					       			(const char *)API_AttributeFailed);
 			else
 			{
 
@@ -2164,7 +2164,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 //
 
 				Tango::DevFailed ex(m_ex.errors[0].err_list);
-				Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+				Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         				   desc.str(), (const char*)"DeviceProxy::write_attributes_reply()");
 
 			}

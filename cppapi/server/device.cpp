@@ -5520,12 +5520,41 @@ void DeviceImpl::rem_wrong_fwd_att(const string &root_att_name)
 	vector<FwdWrongConf>::iterator ite;
 	for (ite = fwd_att_wrong_conf.begin();ite != fwd_att_wrong_conf.end();++ite)
 	{
-cout << "rem_wrong_fwd_att : loop = " << ite->full_root_att_name << ", in = " << root_att_name << endl;
 		string local_name(ite->full_root_att_name);
 		transform(local_name.begin(),local_name.end(),local_name.begin(),::tolower);
 		if (local_name == root_att_name)
 		{
 			fwd_att_wrong_conf.erase(ite);
+			break;
+		}
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::update_wrong_fwd_att
+//
+// description :
+//		Update error code for one forwarded attribute in the list of errored forwarded attribute
+//
+// argument:
+//		in :
+//			- root_att_name : The root attribute name to be removed
+//			- err : The new error code
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::update_wrong_conf_att(const string &root_att_name,FwdAttError err)
+{
+	vector<FwdWrongConf>::iterator ite;
+	for (ite = fwd_att_wrong_conf.begin();ite != fwd_att_wrong_conf.end();++ite)
+	{
+		string local_name(ite->full_root_att_name);
+		transform(local_name.begin(),local_name.end(),local_name.begin(),::tolower);
+		if (local_name == root_att_name)
+		{
+			ite->fae = err;
 			break;
 		}
 	}

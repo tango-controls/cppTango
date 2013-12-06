@@ -303,9 +303,21 @@ void Util::effective_job(int argc,char *argv[])
 //
 
 #ifdef _TG_WINDOWS_
-		WORD rel = 0x0202;
+		WORD rel = MAKEWORD(2,2);
 		WSADATA dat;
-		WSAStartup(rel,&dat);
+		int err = WSAStartup(rel,&dat);
+		if (err != 0)
+		{
+			stringstream ss;
+			ss << "WSAStartup function failed with error " << err;
+			print_err_message(ss.str());
+		}
+
+		if (LOBYTE(dat.wVersion) != 2 || HIBYTE(dat.wVersion) != 2)
+		{
+			WSACleanup();
+			print_err_message("Could not find a usable version of Winsock.dll");
+		}
 #endif
 
 		if (get_endpoint_specified() == true)

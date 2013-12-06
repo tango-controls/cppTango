@@ -1556,10 +1556,11 @@ void MultiAttribute::add_alarmed_quality_factor(string &status)
 // argument:
 //		in :
 //			- att : The newly configured attribute
+//			- dev_name : The device name
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::update(Attribute &att)
+void MultiAttribute::update(Attribute &att,string &dev_name)
 {
 	long ind = get_attr_ind_by_name(att.get_name().c_str());
 
@@ -1591,6 +1592,12 @@ void MultiAttribute::update(Attribute &att)
 				alarm_attr_list.push_back(ind);
 		}
 	}
+
+//
+// If if there is one associated att
+//
+
+	check_associated(ind,dev_name);
 }
 
 } // End of Tango namespace

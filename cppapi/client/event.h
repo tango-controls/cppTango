@@ -46,23 +46,10 @@
 
 #include <attribute.h>
 #include <except.h>
+#include <tango_const.h>
 
 namespace Tango
 {
-
-#ifndef _USRDLL
-extern "C"
-{
-#endif
-void leavefunc();
-void client_leavefunc();
-#ifndef _USRDLL
-}
-#endif
-
-#define 	CONF_TYPE_EVENT			"attr_conf"
-#define		DATA_READY_TYPE_EVENT	"data_ready"
-#define     ALL_EVENTS				0
 
 /********************************************************************************
  * 																				*

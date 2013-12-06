@@ -5699,8 +5699,7 @@ bool Attribute::data_ready_event_subscribed()
 //
 // operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//			Attribute class
+// description : 	Friend function to ease printing Attribute class instance
 //
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -5720,102 +5719,102 @@ ostream &operator<<(ostream &o_str,Attribute &p)
 //
 
 
-	cout << "Attribute name = " << conf.name.in() << endl;
-	cout << "Attribute data_type = ";
+	o_str << "Attribute name = " << conf.name.in() << endl;
+	o_str << "Attribute data_type = ";
 	switch (conf.data_type)
 	{
 	case Tango::DEV_SHORT :
-		cout << "Tango::DevShort" << endl;
+		o_str << "Tango::DevShort" << endl;
 		break;
 
 	case Tango::DEV_LONG :
-		cout << "Tango::DevLong" << endl;
+		o_str << "Tango::DevLong" << endl;
 		break;
 
 	case Tango::DEV_LONG64 :
-		cout << "Tango::DevLong64" << endl;
+		o_str << "Tango::DevLong64" << endl;
 		break;
 
 	case Tango::DEV_DOUBLE :
-		cout << "Tango::DevDouble" << endl;
+		o_str << "Tango::DevDouble" << endl;
 		break;
 
 	case Tango::DEV_STRING :
-		cout << "Tango::DevString" << endl;
+		o_str << "Tango::DevString" << endl;
 		break;
 
 	case Tango::DEV_FLOAT :
-		cout << "Tango::DevFloat" << endl;
+		o_str << "Tango::DevFloat" << endl;
 		break;
 
 	case Tango::DEV_USHORT :
-		cout << "Tango::DevUShort" << endl;
+		o_str << "Tango::DevUShort" << endl;
 		break;
 
 	case Tango::DEV_UCHAR :
-		cout << "Tango::DevUChar" << endl;
+		o_str << "Tango::DevUChar" << endl;
 		break;
 
 	case Tango::DEV_BOOLEAN :
-		cout << "Tango::DevBoolean" << endl;
+		o_str << "Tango::DevBoolean" << endl;
 		break;
 
 	case Tango::DEV_STATE :
-		cout << "Tango::DevState" << endl;
+		o_str << "Tango::DevState" << endl;
 		break;
 
 	case Tango::DEV_ULONG :
-		cout << "Tango::DevULong" << endl;
+		o_str << "Tango::DevULong" << endl;
 		break;
 
 	case Tango::DEV_ULONG64 :
-		cout << "Tango::DevULong64" << endl;
+		o_str << "Tango::DevULong64" << endl;
 		break;
 
 	case Tango::Dev_ENCODED :
-		cout << "Tango::DevEncoded" << endl;
+		o_str << "Tango::DevEncoded" << endl;
 		break;
 
 	case Tango::DATA_TYPE_UNKNOWN :
-		cout << "Unknown" << endl;
+		o_str << "Unknown" << endl;
 		break;
 	}
 
-	cout << "Attribute data_format = ";
+	o_str << "Attribute data_format = ";
 	switch (conf.data_format)
 	{
 	case Tango::SCALAR :
-		cout << "scalar" << endl;
+		o_str << "scalar" << endl;
 		break;
 
 	case Tango::SPECTRUM :
-		cout << "spectrum, max_dim_x = " << conf.max_dim_x << endl;
+		o_str << "spectrum, max_dim_x = " << conf.max_dim_x << endl;
 		break;
 
 	case Tango::IMAGE :
-		cout << "image, max_dim_x = " << conf.max_dim_x << ", max_dim_y = " << conf.max_dim_y << endl;
+		o_str << "image, max_dim_x = " << conf.max_dim_x << ", max_dim_y = " << conf.max_dim_y << endl;
 		break;
 
 	case Tango::FMT_UNKNOWN :
-		cout << "Unknown" << endl;
+		o_str << "Unknown" << endl;
 		break;
 	}
 
 	if ((conf.writable == Tango::WRITE) || (conf.writable == Tango::READ_WRITE))
-		cout << "Attribute is writable" << endl;
+		o_str << "Attribute is writable" << endl;
 	else
-		cout << "Attribute is not writable" << endl;
-	cout << "Attribute label = " << conf.label.in() << endl;
-	cout << "Attribute description = " << conf.description.in() << endl;
-	cout << "Attribute unit = " << conf.unit.in();
-	cout << ", standard unit = " << conf.standard_unit.in();
-	cout << ", display unit = " << conf.display_unit.in() << endl;
-	cout << "Attribute format = " << conf.format.in() << endl;
-	cout << "Attribute min value = " << conf.min_value.in() << endl;
-	cout << "Attribute max value = " << conf.max_value.in() << endl;
-	cout << "Attribute min alarm = " << conf.min_alarm.in() << endl;
-	cout << "Attribute max alarm = " << conf.max_alarm.in() << endl;
-	cout << "Attribute writable_attr_name = " << conf.writable_attr_name.in() << endl;
+		o_str << "Attribute is not writable" << endl;
+	o_str << "Attribute label = " << conf.label.in() << endl;
+	o_str << "Attribute description = " << conf.description.in() << endl;
+	o_str << "Attribute unit = " << conf.unit.in();
+	o_str << ", standard unit = " << conf.standard_unit.in();
+	o_str << ", display unit = " << conf.display_unit.in() << endl;
+	o_str << "Attribute format = " << conf.format.in() << endl;
+	o_str << "Attribute min value = " << conf.min_value.in() << endl;
+	o_str << "Attribute max value = " << conf.max_value.in() << endl;
+	o_str << "Attribute min alarm = " << conf.min_alarm.in() << endl;
+	o_str << "Attribute max alarm = " << conf.max_alarm.in() << endl;
+	o_str << "Attribute writable_attr_name = " << conf.writable_attr_name.in() << endl;
 
 	return o_str;
 }

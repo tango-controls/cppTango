@@ -389,8 +389,6 @@ void SubDevDiag::store_sub_devices()
 				// not initialised.
 				if ( Tango::Util::_UseDb == true )
 				{
-					// cout << "Storing sub device list for " << ipos->first << endl;
-
 					if ( ipos->first.empty() )
 					{
 						DServer *adm_dev = tg->get_dserver_device();
@@ -448,16 +446,12 @@ void SubDevDiag::get_sub_devices_from_cache()
 		// get all devices served
 		vector<DeviceImpl *> dev_list = tg->get_device_list("*");
 
-		//cout << "devices served :" << endl;
-
 		for (unsigned int k=0; k<dev_list.size(); k++)
 		{
 			string dev_name = dev_list[k]->get_name();
 			// be sure that all names are lower case letters
 			std::transform(dev_name.begin(), dev_name.end(),
 			               dev_name.begin(), ::tolower);
-
-			//cout << dev_name << endl;
 
 			DevVarStringArray *property_names = new DevVarStringArray;
 			property_names->length(2);
@@ -478,7 +472,6 @@ void SubDevDiag::get_sub_devices_from_cache()
 
 					for (unsigned int i=4; i<property_values->length(); i++)
 					{
-						//cout << "sub_dev = " << (*property_values)[i].in() << endl;
 						sub_device_startup_map[dev_name].sub_devices.push_back((*property_values)[i].in());
 					}
 				}

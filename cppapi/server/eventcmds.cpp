@@ -76,7 +76,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
 	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
-
+cout << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
 	Tango::Util *tg = Tango::Util::instance();
 
 //
@@ -223,12 +223,21 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			if (cl_release == 3)
 				attribute.event_user_client_3 = true;
 		}
-		else if (event == "attr_conf")
+		else if (event == CONF_TYPE_EVENT)
 		{
 			cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+cout << "Updating event_attr_conf_subscription" << endl;
 			attribute.event_attr_conf_subscription = time(NULL);
+		}
+		else if (event == CONF5_TYPE_EVENT)
+		{
+			cout4 << "DServer::event_subscription(): update attr_5_conf subscription\n";
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+cout << "Updating event_attr5_conf5_subscription" << endl;
+			attribute.event_attr_conf5_subscription = time(NULL);
 		}
 		else if (event == "data_ready")
 		{
@@ -622,7 +631,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         }
 
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_major_release << endl;
-
+cout << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_major_release << endl;
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //
@@ -651,6 +660,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 //
 // Get device pointer and check which IDL release it implements. If it is less than IDL 4, refuse to use ZMQ event.
 // To do so, simulate a Tango 7 DS (throw command not exist exception)
+// Also change event name if both device and client supports IDl5 and lib 9 (For attribute conf. change event)
 //
 
         DeviceImpl *dev = NULL;
@@ -667,7 +677,8 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
                                        (const char *)"DServer::event_subscription");
         }
 
-        if (dev->get_dev_idl_version() < 4)
+		long idl_vers = dev->get_dev_idl_version();
+        if (idl_vers < 4)
         {
             TangoSys_OMemStream o;
 
@@ -677,6 +688,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 				      o.str(),
 				      (const char *)"DServer::zmq_event_subscription_change");
         }
+
+        if (idl_vers >= MIN_IDL_CONF5 && client_major_release >= 9 && event == CONF_TYPE_EVENT)
+			event = CONF5_TYPE_EVENT;
 
 //
 // Call common method (common between old and new command)
@@ -855,7 +869,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 		transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
 		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
-
+cout << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
 //
 // Find device
 //

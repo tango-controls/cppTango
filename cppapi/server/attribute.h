@@ -2270,6 +2270,7 @@ protected:
     time_t				event_archive_subscription; 	// Last time() a subscription was made
     time_t				event_user_subscription; 		// Last time() a subscription was made
     time_t				event_attr_conf_subscription;	// Last time() a subscription was made
+    time_t				event_attr_conf5_subscription;	// Last time() a subscription was made
     time_t				event_data_ready_subscription;	// Last time() a subscription was made
     double				archive_last_event;				// Last time an archive event was detected (periodic or not)
     long				idx_in_attr;					// Index in MultiClassAttribute vector

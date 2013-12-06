@@ -142,7 +142,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 				string tmp_name(new_conf[i].name);
 				const V *tmp_ptr = &(new_conf)[i];
 
-				Tango::AttributeConfig_5 conf5;
 				Tango::AttributeConfig_3 conf3;
 				AttributeConfig_3 *tmp_conf_ptr;
 
@@ -157,9 +156,16 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 							attr.AttributeConfig_5_2_AttributeConfig_3(new_conf[i],conf3);
 							tmp_conf_ptr = &conf3;
 							::memcpy(&(ad.attr_conf_3),&(tmp_conf_ptr),sizeof(V *));
+
+cout << "Pushing AttributeConfig_3 event" << endl;
+							if (event_supplier_nd != NULL)
+								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+							if (event_supplier_zmq != NULL)
+								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+							ad.attr_conf_3 = NULL;
 						}
-						else
-							::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
+cout << "Pushing AttributeConfig_5 event" << endl;
+						::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
 					}
 				}
 				else
