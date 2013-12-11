@@ -1109,7 +1109,8 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 				{
 					try
 					{
-						device->ping();
+						Device_var dev = Device::_duplicate(device);
+						dev->ping();
 					}
 					catch(...)
 					{
@@ -1152,12 +1153,19 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				received = device_4->command_inout_4(command.c_str(),data_in.any,local_source,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				received = dev->command_inout_4(command.c_str(),data_in.any,local_source,ci);
 			}
 			else if (version >= 2)
-				received = device_2->command_inout_2(command.c_str(),data_in.any,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				received = dev->command_inout_2(command.c_str(),data_in.any,local_source);
+			}
 			else
-				received = device->command_inout(command.c_str(),data_in.any);
+			{
+				Device_var dev = Device::_duplicate(device);
+				received = dev->command_inout(command.c_str(),data_in.any);
+			}
 
 			ctr = 2;
 			data_out.any = received;
@@ -1301,7 +1309,8 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 				{
 					try
 					{
-						device->ping();
+						Device_var dev = Device::_duplicate(device);
+						dev->ping();
 					}
 					catch(...)
 					{
@@ -1339,12 +1348,19 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				return (device_4->command_inout_4(command.c_str(),any,local_source,ci));
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				return (dev->command_inout_4(command.c_str(),any,local_source,ci));
 			}
 			else if (version >= 2)
-				return (device_2->command_inout_2(command.c_str(),any,local_source));
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				return (dev->command_inout_2(command.c_str(),any,local_source));
+			}
 			else
-				return (device->command_inout(command.c_str(),any));
+			{
+				Device_var dev = Device::_duplicate(device);
+				return (dev->command_inout(command.c_str(),any));
+			}
 			ctr = 2;
 		}
 		catch (Tango::ConnectionFailed &e)
@@ -2354,7 +2370,8 @@ int DeviceProxy::ping()
 		{
 			check_and_reconnect();
 
-			device->ping();
+			Device_var dev = Device::_duplicate(device);
+			dev->ping();
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -2437,7 +2454,8 @@ string DeviceProxy::name()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var n = device->name();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var n = dev->name();
 			ctr = 2;
 			na = n;
 		}
@@ -2536,7 +2554,8 @@ DevState DeviceProxy::state()
 		{
 			check_and_reconnect();
 
-			sta = device->state();
+			Device_var dev = Device::_duplicate(device);
+			sta = dev->state();
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &transp)
@@ -2610,7 +2629,8 @@ string DeviceProxy::status()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var st = device->status();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var st = dev->status();
 			ctr = 2;
 			status_str = st;
 		}
@@ -2685,7 +2705,8 @@ string DeviceProxy::adm_name()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var st = device->adm_name();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var st = dev->adm_name();
 			ctr = 2;
 			adm_name_str = st;
 
@@ -2774,7 +2795,8 @@ string DeviceProxy::description()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var st = device->description();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var st = dev->description();
 			ctr = 2;
 			description_str = st;
 		}
@@ -2850,7 +2872,8 @@ vector<string> *DeviceProxy::black_box(int last_n_commands)
 		{
 			check_and_reconnect();
 
-			last_commands = device->black_box(last_n_commands);
+			Device_var dev = Device::_duplicate(device);
+			last_commands = dev->black_box(last_n_commands);
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -2935,7 +2958,8 @@ DeviceInfo const &DeviceProxy::info()
 
 			if (version >= 3)
 			{
-				dev_info_3 = device_3->info_3();
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev_info_3 = dev->info_3();
 
 				_info.dev_class = dev_info_3->dev_class;
 				_info.server_id = dev_info_3->server_id;
@@ -2946,7 +2970,8 @@ DeviceInfo const &DeviceProxy::info()
 			}
 			else
 			{
-				dev_info = device->info();
+				Device_var dev = Device::_duplicate(device);
+				dev_info = dev->info();
 
 				_info.dev_class = dev_info->dev_class;
 				_info.server_id = dev_info->server_id;
@@ -3033,7 +3058,8 @@ CommandInfo DeviceProxy::command_query(string cmd)
 
 			if (version == 1)
 			{
-				cmd_info = device->command_query(cmd.c_str());
+				Device_var dev = Device::_duplicate(device);
+				cmd_info = dev->command_query(cmd.c_str());
 
 				command_info.cmd_name = cmd_info->cmd_name;
 				command_info.cmd_tag = cmd_info->cmd_tag;
@@ -3045,7 +3071,8 @@ CommandInfo DeviceProxy::command_query(string cmd)
 			}
 			else
 			{
-				cmd_info_2 = device_2->command_query_2(cmd.c_str());
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				cmd_info_2 = dev->command_query_2(cmd.c_str());
 
 				command_info.cmd_name = cmd_info_2->cmd_name;
 				command_info.cmd_tag = cmd_info_2->cmd_tag;
@@ -3135,7 +3162,8 @@ CommandInfoList *DeviceProxy::command_list_query()
 
 			if (version == 1)
 			{
-				cmd_info_list = device->command_list_query();
+				Device_var dev = Device::_duplicate(device);
+				cmd_info_list = dev->command_list_query();
 
 				command_info_list = new CommandInfoList(cmd_info_list->length());
 //				command_info_list->resize(cmd_info_list->length());
@@ -3153,7 +3181,8 @@ CommandInfoList *DeviceProxy::command_list_query()
 			}
 			else
 			{
-				cmd_info_list_2 = device_2->command_list_query_2();
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				cmd_info_list_2 = dev->command_list_query_2();
 
 				command_info_list = new CommandInfoList(cmd_info_list_2->length());
 //				command_info_list->resize(cmd_info_list_2->length());
@@ -3516,7 +3545,8 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 
 			if (version == 1)
 			{
-				attr_config_list = device->get_attribute_config(attr_list);
+				Device_var dev = Device::_duplicate(device);
+				attr_config_list = dev->get_attribute_config(attr_list);
 
 				dev_attr_config->resize(attr_config_list->length());
 
@@ -3549,7 +3579,8 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 			}
 			else
 			{
-				attr_config_list_2 = device_2->get_attribute_config_2(attr_list);
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_config_list_2 = dev->get_attribute_config_2(attr_list);
 
 				dev_attr_config->resize(attr_config_list_2->length());
 
@@ -3687,87 +3718,99 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 			switch (version)
 			{
 			case 1:
-				attr_config_list = device->get_attribute_config(attr_list);
-				dev_attr_config->resize(attr_config_list->length());
-
-				for (size_t i=0; i<attr_config_list->length(); i++)
 				{
-					COPY_BASE_CONFIG(attr_config_list)
-					(*dev_attr_config)[i].min_alarm = attr_config_list[i].min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list[i].max_alarm;
-					(*dev_attr_config)[i].disp_level = Tango::OPERATOR;
+					Device_var dev = Device::_duplicate(device);
+					attr_config_list = dev->get_attribute_config(attr_list);
+					dev_attr_config->resize(attr_config_list->length());
+
+					for (size_t i=0; i<attr_config_list->length(); i++)
+					{
+						COPY_BASE_CONFIG(attr_config_list)
+						(*dev_attr_config)[i].min_alarm = attr_config_list[i].min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list[i].max_alarm;
+						(*dev_attr_config)[i].disp_level = Tango::OPERATOR;
+					}
 				}
 				break;
 
 
 			case 2:
-				attr_config_list_2 = device_2->get_attribute_config_2(attr_list);
-				dev_attr_config->resize(attr_config_list_2->length());
-
-				for (size_t i=0; i<attr_config_list_2->length(); i++)
 				{
-					COPY_BASE_CONFIG(attr_config_list_2)
-					(*dev_attr_config)[i].min_alarm = attr_config_list_2[i].min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list_2[i].max_alarm;
-					(*dev_attr_config)[i].disp_level = attr_config_list_2[i].level;
-				}
+					Device_2_var dev = Device_2::_duplicate(device_2);
+					attr_config_list_2 = dev->get_attribute_config_2(attr_list);
+					dev_attr_config->resize(attr_config_list_2->length());
 
-				get_remaining_param(dev_attr_config);
+					for (size_t i=0; i<attr_config_list_2->length(); i++)
+					{
+						COPY_BASE_CONFIG(attr_config_list_2)
+						(*dev_attr_config)[i].min_alarm = attr_config_list_2[i].min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list_2[i].max_alarm;
+						(*dev_attr_config)[i].disp_level = attr_config_list_2[i].level;
+					}
+
+					get_remaining_param(dev_attr_config);
+				}
 				break;
 
 			case 3:
 			case 4:
-				attr_config_list_3 = device_3->get_attribute_config_3(attr_list);
-				dev_attr_config->resize(attr_config_list_3->length());
-
-				for (size_t i=0; i<attr_config_list_3->length(); i++)
 				{
-					COPY_BASE_CONFIG(attr_config_list_3)
+					Device_3_var dev = Device_3::_duplicate(device_3);
+					attr_config_list_3 = dev->get_attribute_config_3(attr_list);
+					dev_attr_config->resize(attr_config_list_3->length());
 
-					for (size_t j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
+					for (size_t i=0; i<attr_config_list_3->length(); i++)
 					{
-						(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_3[i].sys_extensions[j];
+						COPY_BASE_CONFIG(attr_config_list_3)
+
+						for (size_t j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
+						{
+							(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_3[i].sys_extensions[j];
+						}
+						(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
+						(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
+						(*dev_attr_config)[i].memorized = NOT_KNOWN;
+
+						COPY_ALARM_CONFIG(attr_config_list_3)
+
+						COPY_EVENT_CONFIG(attr_config_list_3)
 					}
-					(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
-					(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
-					(*dev_attr_config)[i].memorized = NOT_KNOWN;
-
-					COPY_ALARM_CONFIG(attr_config_list_3)
-
-					COPY_EVENT_CONFIG(attr_config_list_3)
 				}
 				break;
 
 			case 5:
-				attr_config_list_5 = device_5->get_attribute_config_5(attr_list);
-				dev_attr_config->resize(attr_config_list_5->length());
-
-				for (size_t i=0; i<attr_config_list_5->length(); i++)
 				{
-					COPY_BASE_CONFIG(attr_config_list_5)
+					Device_5_var dev = Device_5::_duplicate(device_5);
+					attr_config_list_5 = dev->get_attribute_config_5(attr_list);
+					dev_attr_config->resize(attr_config_list_5->length());
 
-					for (size_t j=0; j<attr_config_list_5[i].sys_extensions.length(); j++)
+					for (size_t i=0; i<attr_config_list_5->length(); i++)
 					{
-						(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_5[i].sys_extensions[j];
-					}
-					(*dev_attr_config)[i].disp_level = attr_config_list_5[i].level;
-					(*dev_attr_config)[i].min_alarm = attr_config_list_5[i].att_alarm.min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list_5[i].att_alarm.max_alarm;
-					(*dev_attr_config)[i].root_attr_name = attr_config_list_5[i].root_attr_name;
-					if (attr_config_list_5[i].memorized == false)
-						(*dev_attr_config)[i].memorized	= NONE;
-					else
-					{
-						if (attr_config_list_5[i].mem_init == false)
-							(*dev_attr_config)[i].memorized	= MEMORIZED;
+						COPY_BASE_CONFIG(attr_config_list_5)
+
+						for (size_t j=0; j<attr_config_list_5[i].sys_extensions.length(); j++)
+						{
+							(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_5[i].sys_extensions[j];
+						}
+						(*dev_attr_config)[i].disp_level = attr_config_list_5[i].level;
+						(*dev_attr_config)[i].min_alarm = attr_config_list_5[i].att_alarm.min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list_5[i].att_alarm.max_alarm;
+						(*dev_attr_config)[i].root_attr_name = attr_config_list_5[i].root_attr_name;
+						if (attr_config_list_5[i].memorized == false)
+							(*dev_attr_config)[i].memorized	= NONE;
 						else
-							(*dev_attr_config)[i].memorized	= MEMORIZED_WRITE_INIT;
+						{
+							if (attr_config_list_5[i].mem_init == false)
+								(*dev_attr_config)[i].memorized	= MEMORIZED;
+							else
+								(*dev_attr_config)[i].memorized	= MEMORIZED_WRITE_INIT;
+						}
+
+						COPY_ALARM_CONFIG(attr_config_list_5)
+
+						COPY_EVENT_CONFIG(attr_config_list_5)
 					}
-
-					COPY_ALARM_CONFIG(attr_config_list_5)
-
-					COPY_EVENT_CONFIG(attr_config_list_5)
 				}
 				break;
 
@@ -4113,7 +4156,8 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 		{
 			check_and_reconnect();
 
-			device->set_attribute_config(attr_config_list);
+			Device_var dev = Device::_duplicate(device);
+			dev->set_attribute_config(attr_config_list);
 			ctr = 2;
 
 		}
@@ -4314,14 +4358,26 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 				ci.cpp_clnt(au->get_client_pid());
 
 				if (version == 5)
-					device_5->set_attribute_config_5(attr_config_list_5,ci);
+				{
+					Device_5_var dev = Device_5::_duplicate(device_5);
+					dev->set_attribute_config_5(attr_config_list_5,ci);
+				}
 				else
-					device_4->set_attribute_config_4(attr_config_list_3,ci);
+				{
+					Device_4_var dev = Device_4::_duplicate(device_4);
+					dev->set_attribute_config_4(attr_config_list_3,ci);
+				}
 			}
 			else if (version == 3)
-				device_3->set_attribute_config_3(attr_config_list_3);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->set_attribute_config_3(attr_config_list_3);
+			}
 			else
+			{
+				Device_var dev = Device::_duplicate(device);
 				device->set_attribute_config(attr_config_list);
+			}
 			ctr = 2;
 
 		}
@@ -4412,9 +4468,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 
 	same_att_name(attr_string_list,"Deviceproxy::read_attributes()");
 
-
 	unsigned long i;
-	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
 
 	attr_list.length(attr_string_list.size());
 	for (i = 0;i < attr_string_list.size();i++)
@@ -4424,7 +4478,6 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 
 	int ctr = 0;
 	Tango::DevSource local_source;
-	bool already_deleted = false;
 
 	while (ctr < 2)
 	{
@@ -4438,25 +4491,29 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				attr_value_list_4 = device_4->read_attributes_4(attr_list,local_source,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = device_3->read_attributes_3(attr_list,local_source);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				attr_value_list_3 = dev->read_attributes_3(attr_list,local_source);
+			}
 			else if (version == 2)
-				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_value_list = dev->read_attributes_2(attr_list,local_source);
+			}
 			else
-				attr_value_list = device->read_attributes(attr_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				attr_value_list = dev->read_attributes(attr_list);
+			}
 
 			ctr = 2;
 		}
 		catch (Tango::ConnectionFailed &e)
 		{
-			if (already_deleted == false)
-			{
-				delete dev_attr;
-				already_deleted = true;
-			}
-
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
 			desc << ", attributes ";
@@ -4473,12 +4530,6 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (already_deleted == false)
-			{
-				delete dev_attr;
-				already_deleted = true;
-			}
-
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
 			desc << ", attributes ";
@@ -4495,35 +4546,16 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			if ((trans.minor() == omni::TRANSIENT_CallTimedout) || (ctr == 1))
-			{
-				if (already_deleted == false)
-				{
-					delete dev_attr;
-					already_deleted = true;
-				}
-			}
 			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attributes");
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				if (ctr == 1 && already_deleted == false)
-				{
-					delete dev_attr;
-					already_deleted = true;
-				}
 				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attributes");
 			}
 			else
 			{
-				if (already_deleted == false)
-				{
-					delete dev_attr;
-					already_deleted = true;
-				}
-
 				set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Failed to execute read_attributes on device " << device_name << ends;
@@ -4537,21 +4569,10 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				if (ctr == 1 && already_deleted == false)
-				{
-					delete dev_attr;
-					already_deleted = true;
-				}
 				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attributes");
 			}
 			else
 			{
-				if (already_deleted == false)
-				{
-					delete dev_attr;
-					already_deleted = true;
-				}
-
 				set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Failed to execute read_attributes on device " << device_name << ends;
@@ -4563,12 +4584,6 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
         catch (CORBA::SystemException &ce)
         {
-			if (already_deleted == false)
-			{
-				delete dev_attr;
-				already_deleted = true;
-			}
-
 			set_connection_state(CONNECTION_NOTOK);
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute read_attributes on device " << device_name << ends;
@@ -4586,6 +4601,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		nb_received = attr_value_list_3->length();
 	else
 		nb_received = attr_value_list_4->length();
+
+	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
 	dev_attr->resize(nb_received);
 
 	for (i=0; i < nb_received; i++)
@@ -4658,14 +4675,24 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 				ClntIdent ci;
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
-				attr_value_list_4 = device_4->read_attributes_4(attr_list,local_source,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = device_3->read_attributes_3(attr_list,local_source);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				attr_value_list_3 = dev->read_attributes_3(attr_list,local_source);
+			}
 			else if (version == 2)
-				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_value_list = dev->read_attributes_2(attr_list,local_source);
+			}
 			else
-				attr_value_list = device->read_attributes(attr_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				attr_value_list = dev->read_attributes(attr_list);
+			}
 			ctr = 2;
 		}
 		READ_ATT_EXCEPT(attr_string)
@@ -4732,14 +4759,24 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				attr_value_list_4 = device_4->read_attributes_4(attr_list,local_source,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = device_3->read_attributes_3(attr_list,local_source);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				attr_value_list_3 = dev->read_attributes_3(attr_list,local_source);
+			}
 			else if (version == 2)
-				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_value_list = dev->read_attributes_2(attr_list,local_source);
+			}
 			else
-				attr_value_list = device->read_attributes(attr_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				attr_value_list = dev->read_attributes(attr_list);
+			}
 			ctr = 2;
 		}
 		READ_ATT_EXCEPT(attr_str)
@@ -4938,7 +4975,8 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -4963,12 +5001,19 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				device_4->write_attributes_4(attr_value_list_4,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				dev->write_attributes_4(attr_value_list_4,ci);
 			}
 			else if (version == 3)
-				device_3->write_attributes_3(attr_value_list);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->write_attributes_3(attr_value_list);
+			}
 			else
-				device->write_attributes(attr_value_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				dev->write_attributes(attr_value_list);
+			}
 			ctr = 2;
 		}
 		catch (Tango::MultiDevFailed &e)
@@ -5155,7 +5200,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -5180,12 +5226,19 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				device_4->write_attributes_4(attr_value_list_4,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				dev->write_attributes_4(attr_value_list_4,ci);
 			}
 			else if (version == 3)
-				device_3->write_attributes_3(attr_value_list);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->write_attributes_3(attr_value_list);
+			}
 			else
-				device->write_attributes(attr_value_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				dev->write_attributes(attr_value_list);
+			}
 			ctr = 2;
 
 		}
@@ -5301,7 +5354,8 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -5322,9 +5376,15 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 
 
 			if (version >= 3)
-				device_3->write_attributes_3(attr_val);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->write_attributes_3(attr_val);
+			}
 			else
-				device->write_attributes(attr_val);
+			{
+				Device_var dev = Device::_duplicate(device);
+				dev->write_attributes(attr_val);
+			}
 			ctr = 2;
 
 		}
@@ -5450,7 +5510,8 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -5473,7 +5534,8 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			device_4->write_attributes_4(attr_val,ci);
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			dev->write_attributes_4(attr_val,ci);
 			ctr = 2;
 
 		}
@@ -5652,9 +5714,15 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 			check_and_reconnect();
 
 			if (version <= 3)
-				hist = device_2->command_inout_history_2(cmd_name.c_str(),depth);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				hist = dev->command_inout_history_2(cmd_name.c_str(),depth);
+			}
 			else
-				hist_4 = device_4->command_inout_history_4(cmd_name.c_str(),depth);
+			{
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				hist_4 = dev->command_inout_history_4(cmd_name.c_str(),depth);
+			}
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -5767,13 +5835,22 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 			check_and_reconnect();
 
 			if (version == 2)
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
 				hist = device_2->read_attribute_history_2(cmd_name.c_str(),depth);
+			}
 			else
 			{
 				if (version == 3)
-					hist_3 = device_3->read_attribute_history_3(cmd_name.c_str(),depth);
+				{
+					Device_3_var dev = Device_3::_duplicate(device_3);
+					hist_3 = dev->read_attribute_history_3(cmd_name.c_str(),depth);
+				}
 				else
-					hist_4 = device_4->read_attribute_history_4(cmd_name.c_str(),depth);
+				{
+					Device_4_var dev = Device_4::_duplicate(device_4);
+					hist_4 = dev->read_attribute_history_4(cmd_name.c_str(),depth);
+				}
 			}
 			ctr = 2;
 		}
@@ -7753,7 +7830,8 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -7776,7 +7854,8 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			attr_value_list_4 = device_4->write_read_attributes_4(attr_value_list,ci);
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			attr_value_list_4 = dev->write_read_attributes_4(attr_value_list,ci);
 
 			ctr = 2;
 
@@ -8111,6 +8190,10 @@ int DeviceProxy::get_tango_lib_version()
 
 		break;
 	}
+
+	case 5:
+		ret = 902;
+		break;
 
 	default:
 		break;

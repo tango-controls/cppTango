@@ -359,6 +359,25 @@ void Attribute::get_properties_5(Tango::AttributeConfig_5 &conf)
 // Add AttributeConfig_5 specific data
 //
 
+	add_config_5_specific(conf);
+
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::add_config_5_specific
+//
+// description :
+//		Add into the received structure configuration release 5 specific data (root att, mem info,...)
+//
+// argument :
+// 		out :
+//			- conf : The attribute config. structure
+
+//--------------------------------------------------------------------------------------------------------------------
+void Attribute::add_config_5_specific(AttributeConfig_5 &conf)
+{
 	if (is_fwd_att() == true)
 	{
 		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);

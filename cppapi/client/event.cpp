@@ -2053,6 +2053,24 @@ void EventConsumer::get_events (int event_id, AttrConfEventDataList &event_list)
 			(const char*)"EventConsumer::get_events()");
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::get_events()
+//
+// description :
+//		Return a vector with all data ready events stored in the event queue.
+//      Events are kept in the buffer since the last extraction with get_events().
+//      After returning the event data, the event queue gets emptied!
+//
+// argument :
+//		in  :
+//			- event_id   : The event identifier
+// 		out :
+//			- event_list : A reference to an event data list to be filled
+//
+//------------------------------------------------------------------------------------------------------------------
+
 void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list)
 {
 	cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;

@@ -1698,6 +1698,8 @@ public :
 	virtual void parse_name(string &);
 	virtual Database *get_device_db();
 
+	DeviceProxy *get_adm_device() {return adm_device;}
+
 //
 // attribute methods
 //

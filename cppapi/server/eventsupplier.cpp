@@ -1966,6 +1966,7 @@ cout << "EventSupplier::push_att_conf_events(): called for attribute " << attr_n
 // Return if there is no client or if the last client subscription is more than 10 mins ago
 //
 
+cout << "conf5 = " << conf5 << ", event_attr_conf5_sub = " << attr.event_attr_conf5_subscription << ", event_attr_conf_sub = " << attr.event_attr_conf_subscription << endl;
 	if (conf5 == true && attr.event_attr_conf5_subscription == 0)
 		return;
 

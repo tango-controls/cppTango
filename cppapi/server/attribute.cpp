@@ -3851,6 +3851,7 @@ void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_
 // argument:
 // 		in :
 //			- conf5 : Reference to the AttributeConfig_5 object
+//		out :
 //			- conf3 : Reference to the AttributeConfig_3 object to be filled in
 //
 //-------------------------------------------------------------------------------------------------------------------
@@ -3915,6 +3916,86 @@ void Attribute::AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConf
 	for (j=0; j<conf5.event_prop.ch_event.extensions.length(); j++)
 	{
 		conf3.event_prop.arch_event.extensions[j] = string_dup(conf5.event_prop.arch_event.extensions[j]);
+	}
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::AttributeConfig_3_2_AttributeConfig_5
+//
+// description :
+//		Build an AttributeConfig_3 object from the AttributeConfig_5 object. This method is used in case an event is
+//		requested by a client knowing only IDL release 4
+//
+// argument:
+// 		in :
+//			- conf3 : Reference to the AttributeConfig_3 object
+//		out :
+//			- conf5 : Reference to the AttributeConfig_5 object to be filled in
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Attribute::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConfig_3 &conf3,Tango::AttributeConfig_5 &conf5)
+{
+	size_t j;
+
+	conf5.name = conf3.name;
+	conf5.writable = conf3.writable;
+	conf5.data_format = conf3.data_format;
+	conf5.data_type = conf3.data_type;
+	conf5.max_dim_x = conf3.max_dim_x;
+	conf5.max_dim_y = conf3.max_dim_y;
+	conf5.description = conf3.description;
+	conf5.label = conf3.label;
+	conf5.unit = conf3.unit;
+	conf5.standard_unit = conf3.standard_unit;
+	conf5.display_unit = conf3.display_unit;
+	conf5.format = conf3.format;
+	conf5.min_value = conf3.min_value;
+	conf5.max_value = conf3.max_value;
+	conf5.writable_attr_name = conf3.writable_attr_name;
+	conf5.level = conf3.level;
+	conf5.extensions.length(conf3.extensions.length());
+	for (j=0; j<conf3.extensions.length(); j++)
+	{
+		conf5.extensions[j] = string_dup(conf3.extensions[j]);
+	}
+	for (j=0; j<conf3.sys_extensions.length(); j++)
+	{
+		conf5.sys_extensions[j] = string_dup(conf3.sys_extensions[j]);
+	}
+
+	conf5.att_alarm.min_alarm = conf3.att_alarm.min_alarm;
+	conf5.att_alarm.max_alarm = conf3.att_alarm.max_alarm;
+	conf5.att_alarm.min_warning = conf3.att_alarm.min_warning;
+	conf5.att_alarm.max_warning = conf3.att_alarm.max_warning;
+	conf5.att_alarm.delta_t = conf3.att_alarm.delta_t;
+	conf5.att_alarm.delta_val = conf3.att_alarm.delta_val;
+	for (j=0; j<conf3.att_alarm.extensions.length(); j++)
+	{
+		conf5.att_alarm.extensions[j] = string_dup(conf3.att_alarm.extensions[j]);
+	}
+
+	conf5.event_prop.ch_event.rel_change = conf3.event_prop.ch_event.rel_change;
+	conf5.event_prop.ch_event.abs_change = conf3.event_prop.ch_event.abs_change;
+	for (j=0; j<conf3.event_prop.ch_event.extensions.length(); j++)
+	{
+		conf5.event_prop.ch_event.extensions[j] = string_dup(conf3.event_prop.ch_event.extensions[j]);
+	}
+
+	conf5.event_prop.per_event.period = conf3.event_prop.per_event.period;
+	for (j=0; j<conf3.event_prop.per_event.extensions.length(); j++)
+	{
+		conf5.event_prop.per_event.extensions[j] = string_dup(conf3.event_prop.per_event.extensions[j]);
+	}
+
+	conf5.event_prop.arch_event.rel_change = conf3.event_prop.arch_event.rel_change;
+	conf5.event_prop.arch_event.abs_change = conf3.event_prop.arch_event.abs_change;
+	conf5.event_prop.arch_event.period = conf3.event_prop.arch_event.period;
+	for (j=0; j<conf3.event_prop.ch_event.extensions.length(); j++)
+	{
+		conf5.event_prop.arch_event.extensions[j] = string_dup(conf3.event_prop.arch_event.extensions[j]);
 	}
 }
 

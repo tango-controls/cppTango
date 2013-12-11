@@ -395,7 +395,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT); \
 		try \
 		{ \
-			device->ping(); \
+			Device_var dev = Device::_duplicate(device); \
+			dev->ping(); \
 		} \
 		catch(CORBA::TRANSIENT &trans_ping) \
 		{ \
@@ -447,7 +448,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT); \
 		try \
 		{ \
-			device->ping(); \
+			Device_var dev = Device::_duplicate(device); \
+			dev->ping(); \
 		} \
 		catch(CORBA::TRANSIENT &trans_ping) \
 		{ \

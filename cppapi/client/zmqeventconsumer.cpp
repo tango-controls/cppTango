@@ -1987,7 +1987,11 @@ for (const auto &elem:event_callback_map)
             UserDataEventType data_type;
 
             if (event_name == CONF_TYPE_EVENT || event_name == CONF5_TYPE_EVENT)
-                data_type = ATT_CONF;
+			{
+				data_type = ATT_CONF;
+				if (event_name == CONF5_TYPE_EVENT)
+					event_name = CONF_TYPE_EVENT;
+			}
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;
             else

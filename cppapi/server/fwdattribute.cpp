@@ -135,16 +135,20 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 // min alarm
 //
 
-	min_alarm_str = conf.att_alarm.min_alarm.in();
-	if (min_alarm_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(conf.att_alarm.min_alarm,AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(conf.att_alarm.min_alarm,NotANumber) == 0)
+	{
+		min_alarm_str = AlrmValueNotSpec;
 		alarm_conf.reset(min_level);
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("min_alarm",min_alarm_str,min_alarm,"dummy/dev/name");
+			min_alarm_str = conf.att_alarm.min_alarm.in();
+			convert_prop_value("min_alarm",min_alarm_str,min_alarm,d_name);
 			alarm_conf.set(min_level);
 		}
 	}
@@ -153,16 +157,20 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 // max alarm
 //
 
-	max_alarm_str = conf.att_alarm.max_alarm;
-	if (max_alarm_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(conf.att_alarm.max_alarm,AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(conf.att_alarm.max_alarm,NotANumber) == 0)
+	{
+		max_alarm_str = AlrmValueNotSpec;
 		alarm_conf.reset(max_level);
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("max_alarm",max_alarm_str,max_alarm,"dummy/dev/name");
+			max_alarm_str = conf.att_alarm.max_alarm.in();
+			convert_prop_value("max_alarm",max_alarm_str,max_alarm,d_name);
 			alarm_conf.set(max_level);
 		}
 	}
@@ -171,16 +179,20 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 // min warning
 //
 
-	min_warning_str = conf.att_alarm.min_warning.in();
-	if (min_warning_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(conf.att_alarm.min_warning,AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(conf.att_alarm.min_warning,NotANumber) == 0)
+	{
 		alarm_conf.reset(min_warn);
+		min_warning_str = AlrmValueNotSpec;
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("min_warning",min_warning_str,min_warning,"dummy/dev/name");
+			min_warning_str = conf.att_alarm.min_warning.in();
+			convert_prop_value("min_warning",min_warning_str,min_warning,d_name);
 			alarm_conf.set(min_warn);
 		}
 	}
@@ -189,16 +201,20 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 // max warning
 //
 
-	max_warning_str = conf.att_alarm.max_warning.in();
-	if (max_warning_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(conf.att_alarm.max_warning,AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(conf.att_alarm.max_warning,NotANumber) == 0)
+	{
 		alarm_conf.reset(max_warn);
+		max_warning_str = AlrmValueNotSpec;
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("max_warning",max_warning_str,max_warning,"dummy/dev/name");
+			max_warning_str = conf.att_alarm.max_warning.in();
+			convert_prop_value("max_warning",max_warning_str,max_warning,d_name);
 			alarm_conf.set(max_warn);
 		}
 	}
@@ -208,14 +224,17 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 //
 
 	bool delta_val_defined = false;
-	delta_val_str = conf.att_alarm.delta_val.in();
-	if (delta_val_str != AlrmValueNotSpec)
+	if (TG_strcasecmp(conf.att_alarm.delta_val,AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(conf.att_alarm.delta_val,NotANumber) == 0)
+			delta_val_str = AlrmValueNotSpec;
+	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("min_warning",min_warning_str,min_warning,"dummy/dev/name");
+			delta_val_str = conf.att_alarm.delta_val.in();
+			convert_prop_value("delta_val",delta_val_str,delta_val,d_name);
 			delta_val_defined = true;
 		}
 	}
@@ -227,7 +246,7 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 	bool delta_t_defined = true;
 	stringstream ss;
 	string tmp_prop = conf.att_alarm.delta_t.in();
-	if (tmp_prop == AlrmValueNotSpec)
+	if (tmp_prop == AlrmValueNotSpec || tmp_prop == NotANumber)
 	{
 		delta_t_str = "0";
 		delta_t = 0;
@@ -343,16 +362,20 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 // min alarm
 //
 
-	min_alarm_str = aie_ptr->alarms.min_alarm;
-	if (min_alarm_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(aie_ptr->alarms.min_alarm.c_str(),AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(aie_ptr->alarms.min_alarm.c_str(),NotANumber) == 0)
+	{
 		alarm_conf.reset(min_level);
+		min_alarm_str = AlrmValueNotSpec;
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("min_alarm",min_alarm_str,min_alarm,"dummy/dev/name");
+			min_alarm_str = aie_ptr->alarms.min_alarm;
+			convert_prop_value("min_alarm",min_alarm_str,min_alarm,d_name);
 			alarm_conf.set(min_level);
 		}
 	}
@@ -361,16 +384,20 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 // max alarm
 //
 
-	max_alarm_str = aie_ptr->alarms.max_alarm;
-	if (max_alarm_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(aie_ptr->alarms.max_alarm.c_str(),AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(aie_ptr->alarms.max_alarm.c_str(),NotANumber) == 0)
+	{
 		alarm_conf.reset(max_level);
+		max_alarm_str = AlrmValueNotSpec;
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("max_alarm",max_alarm_str,max_alarm,"dummy/dev/name");
+			max_alarm_str = aie_ptr->alarms.max_alarm;
+			convert_prop_value("max_alarm",max_alarm_str,max_alarm,d_name);
 			alarm_conf.set(max_level);
 		}
 	}
@@ -379,16 +406,20 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 // min warning
 //
 
-	min_warning_str = aie_ptr->alarms.min_warning;
-	if (min_warning_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(aie_ptr->alarms.min_warning.c_str(),AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(aie_ptr->alarms.min_warning.c_str(),NotANumber) == 0)
+	{
 		alarm_conf.reset(min_warn);
+		min_warning_str = AlrmValueNotSpec;
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("min_warning",min_warning_str,min_warning,"dummy/dev/name");
+			min_warning_str = aie_ptr->alarms.min_warning;
+			convert_prop_value("min_warning",min_warning_str,min_warning,d_name);
 			alarm_conf.set(min_warn);
 		}
 	}
@@ -397,16 +428,20 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 // max warning
 //
 
-	max_warning_str = aie_ptr->alarms.max_warning;
-	if (max_warning_str == AlrmValueNotSpec)
+	if (TG_strcasecmp(aie_ptr->alarms.max_warning.c_str(),AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(aie_ptr->alarms.max_warning.c_str(),NotANumber) == 0)
+	{
 		alarm_conf.reset(max_warn);
+		max_warning_str = AlrmValueNotSpec;
+	}
 	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("max_warning",max_warning_str,max_warning,"dummy/dev/name");
+			max_warning_str = aie_ptr->alarms.max_warning;
+			convert_prop_value("max_warning",max_warning_str,max_warning,d_name);
 			alarm_conf.set(max_warn);
 		}
 	}
@@ -416,14 +451,20 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 //
 
 	bool delta_val_defined = false;
-	delta_val_str = aie_ptr->alarms.delta_val;
-	if (delta_val_str != AlrmValueNotSpec)
+
+	if (TG_strcasecmp(aie_ptr->alarms.delta_val.c_str(),AlrmValueNotSpec) == 0 ||
+		TG_strcasecmp(aie_ptr->alarms.delta_val.c_str(),NotANumber) == 0)
+	{
+		delta_val_str = AlrmValueNotSpec;
+	}
+	else
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
 		    (data_type != Tango::DEV_STATE))
 		{
-			convert_prop_value("min_warning",min_warning_str,min_warning,"dummy/dev/name");
+			delta_val_str = aie_ptr->alarms.delta_val;
+			convert_prop_value("delta_val",delta_val_str,delta_val,d_name);
 			delta_val_defined = true;
 		}
 	}
@@ -556,6 +597,19 @@ void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
 void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 {
 	cout4 << "Entering FwdAttribute::upd_att_config for attribute " << conf.name << endl;
+
+//
+// Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
+//
+
+	if (get_data_type() == DATA_TYPE_UNKNOWN)
+	{
+		string desc("Attribute ");
+		desc = desc + name + " is a forwarded attribute and its root device (";
+		desc = desc + fwd_dev_name;
+		desc = desc + ") is not yet available";
+		Tango::Except::throw_exception(API_AttrConfig,desc,"FwdAttribute::upd_att_config");
+	}
 
 //
 // A new label (the only att property stored locally)

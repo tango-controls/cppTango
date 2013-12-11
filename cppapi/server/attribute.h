@@ -2136,7 +2136,10 @@ public:
 	void AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *,Tango::AttributeValue_3 *);
 
 	void AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_5 &,Tango::AttributeConfig_3 &);
-	void AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_3 &,Tango::AttributeConfig_3 &) {}
+	void AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConfig_3 &,Tango::AttributeConfig_5 &);
+
+	void AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_3 &,Tango::AttributeConfig_3 &) {} // Templ
+	void AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConfig_5 &,Tango::AttributeConfig_5 &) {} // Templ
 
 	void set_mcast_event(vector<string> &vs) {mcast_event.clear();copy(vs.begin(),vs.end(),back_inserter(mcast_event));}
 
@@ -2153,6 +2156,8 @@ public:
 
 	void set_client_lib(int _l) {if (_l < client_lib)client_lib = _l;}
 	int get_client_lib() {return client_lib;}
+
+	void add_config_5_specific(AttributeConfig_5 &);
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);

@@ -58,6 +58,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 												bool fwd_cb,int caller_idl)
 {
 	cout4 << "Entering Device_3Impl::set_attribute_config_3_local" << endl;
+cout << "Entering set_attribute_config_3_local" << endl;
 
 //
 // Return exception if the device does not have any attribute
@@ -143,12 +144,35 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 				const V *tmp_ptr = &(new_conf)[i];
 
 				Tango::AttributeConfig_3 conf3;
+				Tango::AttributeConfig_5 conf5;
 				AttributeConfig_3 *tmp_conf_ptr;
+				AttributeConfig_5 *tmp_conf_ptr5;
 
+cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " << caller_idl << endl;
 				if (get_dev_idl_version() > 4)
 				{
 					if (caller_idl <= 4)
+					{
+
+//
+// Even if device is IDL 5, the chage has been done from one old client, thus with AttributeConfig_3.
+// If a new client is listening to event, don't forget to send it.
+//
+
+						if (attr.get_client_lib() == 8)
+						{
+							attr.AttributeConfig_3_2_AttributeConfig_5(new_conf[i],conf5);
+							attr.add_config_5_specific(conf5);
+							tmp_conf_ptr5 = &conf5;
+							::memcpy(&(ad.attr_conf_5),&(tmp_conf_ptr5),sizeof(V *));
+							if (event_supplier_nd != NULL)
+								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+							if (event_supplier_zmq != NULL)
+								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+							ad.attr_conf_5 = NULL;
+						}
 						::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
+					}
 					else
 					{
 						if (attr.get_client_lib() == 8)

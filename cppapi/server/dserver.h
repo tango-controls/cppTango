@@ -163,6 +163,11 @@ private:
 	bool is_event_name(string &);
 	bool is_ip_address(string &);
 
+	void add_fwd_att_polling(int,FwdAttribute *);
+	void rem_fwd_att_polling(FwdAttribute &);
+	vector<string> get_fwd_att_polling_status(FwdAttribute &);
+	void upd_fwd_att_polling(int,FwdAttribute *);
+
 	bool			from_constructor;
 	vector<string>	mcast_event_prop;
 
