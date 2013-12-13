@@ -247,8 +247,14 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
 		if (i == nb_poll_obj - 1)
 		{
+#ifdef HAS_RANGE_BASE_FOR
 			for (auto &elem:root_dev_poll_status)
 				delete elem.second;
+#else
+			map<string,vector<string> *>::iterator pos;
+			for (pos = root_dev_poll_status.begin();pos != root_dev_poll_status.end();++pos)
+				delete pos->second;
+#endif
 		}
 
 //
@@ -2268,10 +2274,11 @@ vector<string> DServer::get_fwd_att_polling_status(FwdAttribute &attr,vector<str
 	string str;
 	vector<string> v_str;
 
-	for (const auto &elem:*str_ptr)
+	vector<string>::iterator ite;
+	for (ite = str_ptr->begin();ite != str_ptr->end();++ite)
 	{
-		string::size_type pos = elem.find('\n',0);
-		string tmp = elem.substr(0,pos);
+		string::size_type pos = ite->find('\n',0);
+		string tmp = ite->substr(0,pos);
 		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
 		pos = tmp.find(attr.get_fwd_att_name());
 
@@ -2280,14 +2287,14 @@ vector<string> DServer::get_fwd_att_polling_status(FwdAttribute &attr,vector<str
 			pos = 0;
 			string::size_type old_pos = 0;
 
-			while ((pos = elem.find('\n',pos)) != string::npos)
+			while ((pos = ite->find('\n',pos)) != string::npos)
 			{
-				string st = elem.substr(old_pos,pos - old_pos);
+				string st = ite->substr(old_pos,pos - old_pos);
 				v_str.push_back(st);
 				pos = pos + 1;
 				old_pos = pos;
 			}
-			string st = elem.substr(old_pos);
+			string st = ite->substr(old_pos);
 			v_str.push_back(st);
 			break;
 		}

@@ -975,7 +975,7 @@ void FwdAttribute::upd_att_label(const char *new_label)
 		DbDatum db_prop(name);
 		DbDatum db_lab("label");
 
-		db_prop << 1;
+		db_prop << 1L;
 		db_lab << new_label;
 
 		DbData db_dat;

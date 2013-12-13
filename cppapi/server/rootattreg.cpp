@@ -84,7 +84,7 @@ cout << "Attr name = " << ev->attr_name << endl;
 				ite = map_attrdesc.find(att_name);
 				if (ite != map_attrdesc.end())
 				{
-					if (ite->second.fwd_attr == nullptr)
+					if (ite->second.fwd_attr == Tango_nullptr)
 					{
 
 //
@@ -101,7 +101,7 @@ cout << "Attr name = " << ev->attr_name << endl;
 						else
 						{
 							Device_5Impl *the_dev = static_cast<Device_5Impl *>(ite3->second);
-							if (the_dev != nullptr)
+							if (the_dev != Tango_nullptr)
 							{
 
 //
@@ -111,7 +111,7 @@ cout << "Attr name = " << ev->attr_name << endl;
 
 								FwdAttrConfEventData *ev_fwd = static_cast<FwdAttrConfEventData *>(ev);
 								AttributeConfig_5 *ptr = const_cast<AttributeConfig_5 *>(ev_fwd->get_fwd_attr_conf());
-								if (ptr == nullptr)
+								if (ptr == Tango_nullptr)
 								{
 									ptr = new AttributeConfig_5();
 									ApiUtil::AttributeInfoEx_to_AttributeConfig(ev->attr_conf,ptr);
@@ -176,7 +176,7 @@ cout << "Attr name = " << ev->attr_name << endl;
 
 /*									DeviceImpl *the_dev = ite3->second;
 									the_dev->add_attribute(ite->second.fwd_attr); */
-									ite->second.fwd_attr = nullptr;
+									ite->second.fwd_attr = Tango_nullptr;
 
 									the_dev->rem_wrong_fwd_att(att_name);
 									the_dev->set_run_att_conf_loop(true);
@@ -197,7 +197,7 @@ cout << "Attr name = " << ev->attr_name << endl;
 //
 
 							ite->second.fwd_attr->init_conf(ev);
-							ite->second.fwd_attr = nullptr;
+							ite->second.fwd_attr = Tango_nullptr;
 						}
 					}
 				}
@@ -240,7 +240,7 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 	DeviceImpl *the_local_dev;
 	try
 	{
-		the_local_dev = nullptr;
+		the_local_dev = Tango_nullptr;
 
 		struct NameFwdAttr nf;
 		nf.local_name = local_dev_name;
@@ -267,9 +267,15 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 
 		{
 			omni_mutex_lock oml(the_lock);
+#ifdef INIT_LIST
 			map_attrdesc.insert({root_att_name,nf});
 			if (the_local_dev != nullptr)
 				local_dis.insert({local_dev_name,the_local_dev});
+#else
+			map_attrdesc.insert(make_pair(root_att_name,nf));
+			if (the_local_dev != Tango_nullptr)
+				local_dis.insert(make_pair(local_dev_name,the_local_dev));
+#endif
 		}
 	}
 	catch (DevFailed &e) {}
@@ -357,7 +363,7 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(string &root_att_name)
 	ite = map_attrdesc.find(root_att_name);
 	if (ite != map_attrdesc.end())
 	{
-		ite->second.fwd_attr = nullptr;
+		ite->second.fwd_attr = Tango_nullptr;
 	}
 	else
 	{
@@ -499,7 +505,11 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 			desc = desc + device_name + " is too old to support forwarded attribute. It requires IDL >= 5";
 			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
 		}
+#ifdef INIT_LIST
 		dps.insert({device_name,the_dev});
+#else
+		dps.insert(make_pair(device_name,the_dev));
+#endif
 	}
 	else
 		the_dev = ite->second;
@@ -520,7 +530,11 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		try
 		{
 			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp);
+#ifdef INIT_LIST
 			map_event_id.insert({a_name,event_id});
+#else
+			map_event_id.insert(make_pair(a_name,event_id));
+#endif
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -532,7 +546,11 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 				attdesc->set_err_kind(FWD_WRONG_DEV);
 
 			event_id = the_dev->subscribe_event(att_name,Tango::ATTR_CONF_EVENT,&cbp,true);
+#ifdef INIT_LIST
 			map_event_id.insert({a_name,event_id});
+#else
+			map_event_id.insert(make_pair(a_name,event_id));
+#endif
 
 			Tango::Except::re_throw_exception(e,"API_DummyException","nothing","RootAttRegistry::add_root_att");
 		}

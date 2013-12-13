@@ -125,6 +125,12 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 						return ap.get_name() == "__root_att";
 					});
 #else
+		vector<AttrProperty>::iterator pos;
+		for (pos = prop_list.begin();pos != prop_list.end();++pos)
+		{
+			if (pos->get_name() == "__root_att")
+				break;
+		}
 #endif
 		if (pos != prop_list.end())
 		{
