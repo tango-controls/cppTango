@@ -3045,14 +3045,14 @@ void AttrConfEventData::set_time()
 #endif
 }
 
-FwdAttrConfEventData::FwdAttrConfEventData():AttrConfEventData(),fwd_attr_conf(nullptr)
+FwdAttrConfEventData::FwdAttrConfEventData():AttrConfEventData(),fwd_attr_conf(Tango_nullptr)
 {
 }
 
 
 FwdAttrConfEventData::FwdAttrConfEventData(DeviceProxy *dev,string &nam,string &evt,
                   Tango::AttributeInfoEx *attr_conf_in,DevErrorList &errors_in) :
-                  AttrConfEventData(dev,nam,evt,attr_conf_in,errors_in),fwd_attr_conf(nullptr)
+                  AttrConfEventData(dev,nam,evt,attr_conf_in,errors_in),fwd_attr_conf(Tango_nullptr)
 {
 }
 

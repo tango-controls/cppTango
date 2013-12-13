@@ -1227,6 +1227,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 	string prefix = channel_name.substr(0,channel_name.find('/',8) + 1);
 	bool found = false;
+#ifdef HAS_RANGE_BASE_FOR
 	for (const auto &elem:env_var_fqdn_prefix)
 	{
 		if (elem == prefix)
@@ -1235,6 +1236,17 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 			break;
 		}
 	}
+#else
+	vector<string>::iterator ite;
+	for (ite = env_var_fqdn_prefix.begin();ite != env_var_fqdn_prefix.end();++ite)
+	{
+		if (*ite == prefix)
+		{
+			found = true;
+			break;
+		}
+	}
+#endif
 
 	if (found == false)
 	{
