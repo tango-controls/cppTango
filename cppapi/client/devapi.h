@@ -771,7 +771,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 ///					-----------
 ///
 
-#define READ_ATT_EXCEPT(NAME_CHAR) \
+#define READ_ATT_EXCEPT(NAME_CHAR,OBJ) \
 		catch (Tango::ConnectionFailed &e) \
 		{ \
 			TangoSys_OMemStream desc; \
@@ -790,13 +790,13 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 		} \
 		catch (CORBA::TRANSIENT &trans) \
 		{ \
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attribute"); \
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attribute",OBJ); \
 		} \
 		catch (CORBA::OBJECT_NOT_EXIST &one) \
 		{ \
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0) \
 			{ \
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attribute"); \
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attribute",OBJ); \
 			} \
 			else \
 			{ \
@@ -813,7 +813,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 		{ \
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply) \
 			{ \
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attribute"); \
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attribute",OBJ); \
 			} \
 			else \
 			{ \

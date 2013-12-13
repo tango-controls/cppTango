@@ -107,13 +107,21 @@ PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd,long
 	max_delta_t = (double)(user_upd / 1000.0) * dev->get_poll_old_factor();
 }
 
-PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na)
-:dev(d),type(ty),name(na),ring(0),fwd(true)
+PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd,bool _f)
+:dev(d),type(ty),name(na),ring(0),fwd(_f)
 {
 	needed_time.tv_sec = 0;
 	needed_time.tv_usec = 0;
-	upd.tv_sec = 0;
-	upd.tv_usec = 0;
+	if (user_upd < 1000)
+	{
+		upd.tv_usec = user_upd * 1000;
+		upd.tv_sec = 0;
+	}
+	else
+	{
+		upd.tv_sec = user_upd / 1000;
+		upd.tv_usec = (user_upd - (upd.tv_sec * 1000)) * 1000;
+	}
 	max_delta_t = 0.0;
 }
 

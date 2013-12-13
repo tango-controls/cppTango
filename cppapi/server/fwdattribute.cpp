@@ -1018,4 +1018,102 @@ void FwdAttribute::upd_att_label(const char *new_label)
 
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		FwdAttribute::read_root_att_history
+//
+// description :
+//		Get attribute polling history from the root attribute.
+//		Note that we do not use the classical API DeviceProxy class instance. This is because for this call, the
+//		network transfer uses RLE algorithm and the API is doing the decoding. In our case, we want data from
+//		root attribute in RLE and directly transfer them in RLE to our client.
+//
+// argument :
+//		in :
+//			- n : Required history depth
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
+{
+
+//
+// Get CORBA object reference
+//
+
+	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+	DeviceProxy *dp = rar.get_root_att_dp(get_fwd_dev_name());
+	Device_4_var dev = dp->get_device_4();
+
+//
+// Get data from root device (Reminder: we don use the classical API. See above)
+//
+
+	DevAttrHistory_4 *hist_4;
+	int ctr = 0;
+
+	while (ctr < 2)
+	{
+		try
+		{
+			dp->check_and_reconnect();
+
+			hist_4 = dev->read_attribute_history_4(get_fwd_att_name().c_str(),n);
+
+			ctr = 2;
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"FwdAttribute","read_root_att_history",dp);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"FwdAttribute","read_root_att_history",dp);
+			}
+			else
+			{
+				dp->set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Attribute_history failed on device " << get_fwd_dev_name() << ends;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",
+								         desc.str(),"FwdAttribute::read_root_att_history()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"FwdAttribute","read_root_att_history",dp);
+			}
+			else
+			{
+				dp->set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Attribute_history failed on device " << get_fwd_dev_name() << ends;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",
+											desc.str(),"FwdAttribute::read_root_att_history()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			dp->set_connection_state(CONNECTION_NOTOK);
+			TangoSys_OMemStream desc;
+			desc << "Attribute_history failed on device " << get_fwd_dev_name() << ends;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",
+                        			      desc.str(),"FwdAttribute::read_root_att_history()");
+		}
+	}
+
+//
+// Update attribute name in returned data
+//
+
+	hist_4->name = get_fwd_att_name().c_str();
+
+	return hist_4;
+}
+
 } // End of Tango namespace

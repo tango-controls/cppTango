@@ -66,6 +66,8 @@ public:
 	template<typename T,typename V>
 	void propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T *&,V *&);
 
+	DevAttrHistory_4 *read_root_att_history(long n);
+
 protected:
 	void convert_event_prop(string &,double *);
 

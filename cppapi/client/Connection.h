@@ -94,6 +94,7 @@ protected :
 	int get_env_var_from_file(string &,const char *,string &);
 
 	void set_connection_state(int);
+
 	void check_and_reconnect();
 	void check_and_reconnect(Tango::DevSource &);
 	void check_and_reconnect(Tango::AccessControlType &);
@@ -536,6 +537,7 @@ public :
 	bool is_connected();
 
 	Tango::Device_var &get_device() {return device;} 	// For CORBA expert !!
+	Tango::Device_4_ptr get_device_4() {return Device_4::_duplicate(device_4);}
 
 	virtual CORBA::Any_var command_inout(string &, CORBA::Any&);
 	virtual CORBA::Any_var command_inout(const char *co, CORBA::Any &d) {string str(co);return command_inout(str,d);}
@@ -557,6 +559,7 @@ public :
 	void set_access_control(AccessControlType acc) {access=acc;}
 	AccessControlType get_access_right() {return get_access_control();}
 
+	friend class FwdAttribute;
 };
 
 

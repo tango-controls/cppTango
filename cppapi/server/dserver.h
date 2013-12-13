@@ -164,8 +164,9 @@ private:
 	bool is_ip_address(string &);
 
 	void add_fwd_att_polling(int,FwdAttribute *);
-	void rem_fwd_att_polling(FwdAttribute &);
-	vector<string> get_fwd_att_polling_status(FwdAttribute &);
+	void rem_fwd_att_polling(FwdAttribute *);
+	vector<string> *get_fwd_dev_polling_status(FwdAttribute &);
+	vector<string> get_fwd_att_polling_status(FwdAttribute &,vector<string> *);
 	void upd_fwd_att_polling(int,FwdAttribute *);
 
 	bool			from_constructor;

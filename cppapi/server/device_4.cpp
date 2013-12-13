@@ -164,47 +164,59 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	}
 
 //
+// If it is a forwarded attribute, get data from the root attribute
+//
+
+	if (att.is_fwd_att() == true)
+	{
+		FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
+		back = fwd_att.read_root_att_history(n);
+	}
+	else
+	{
+
+//
 // Check that some data is available in cache
 //
 
-	if (polled_attr->is_ring_empty() == true)
-	{
-		TangoSys_OMemStream o;
-		o << "No data available in cache for attribute " << attr_str << ends;
-		Except::throw_exception((const char *)API_NoDataYet,
-						o.str(),
-						(const char *)"Device_4Impl::read_attribute_history_4");
-	}
+		if (polled_attr->is_ring_empty() == true)
+		{
+			TangoSys_OMemStream o;
+			o << "No data available in cache for attribute " << attr_str << ends;
+			Except::throw_exception((const char *)API_NoDataYet,
+							o.str(),
+							(const char *)"Device_4Impl::read_attribute_history_4");
+		}
 
 //
 // Set the number of returned records
 //
 
-	long in_buf = polled_attr->get_elt_nb_in_buffer();
-	if (n > in_buf)
-		n = in_buf;
+		long in_buf = polled_attr->get_elt_nb_in_buffer();
+		if (n > in_buf)
+			n = in_buf;
 
 //
 // Allocate memory for the returned value
 //
 
-	try
-	{
-		back = new Tango::DevAttrHistory_4;
-		back->dates.length(n);
-	}
-	catch (bad_alloc)
-	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
-					        (const char *)"Can't allocate memory in server",
-					        (const char *)"Device_4Impl::read_attribute_history_4");
-	}
+		try
+		{
+			back = new Tango::DevAttrHistory_4;
+			back->dates.length(n);
+		}
+		catch (bad_alloc)
+		{
+			Except::throw_exception((const char *)API_MemoryAllocation,
+								(const char *)"Can't allocate memory in server",
+								(const char *)"Device_4Impl::read_attribute_history_4");
+		}
 
 //
 // Init attribute name in the returned structure
 //
 
-	back->name = CORBA::string_dup(name);
+		back->name = CORBA::string_dup(name);
 
 //
 // Get attribute value history
@@ -212,10 +224,11 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 // DEV_STATE, use DEV_VOID for state as data type.
 //
 
-	if (att.get_name_lower() == "state")
-		polled_attr->get_attr_history(n,back,Tango::DEV_VOID);
-	else
-		polled_attr->get_attr_history(n,back,att.get_data_type());
+		if (att.get_name_lower() == "state")
+			polled_attr->get_attr_history(n,back,Tango::DEV_VOID);
+		else
+			polled_attr->get_attr_history(n,back,att.get_data_type());
+	}
 
 	cout4 << "Leaving Device_4Impl::read_attribute_history_4 method" << endl;
 	return back;

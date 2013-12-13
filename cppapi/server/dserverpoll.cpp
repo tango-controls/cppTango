@@ -207,6 +207,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 	long cmd_ind = 0;
 	long attr_ind = nb_cmd;
 	string returned_info;
+	map<string,vector<string> *> root_dev_poll_status;
 
 	for(i = 0;i < nb_poll_obj;i++)
 	{
@@ -222,16 +223,32 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
 		if (fwd_att == true)
 		{
-			try
-			{
-				Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
-				FwdAttribute &fwd = static_cast<FwdAttribute &>(att);
-				fwd_stat = get_fwd_att_polling_status(fwd);
-			}
-			catch (Tango::DevFailed &e)
-			{
+			Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+			FwdAttribute &fwd = static_cast<FwdAttribute &>(att);
 
+			string &root_dev = fwd.get_fwd_dev_name();
+			map<string,vector<string> *>::iterator pos = root_dev_poll_status.find(root_dev);
+			if (pos == root_dev_poll_status.end())
+			{
+				try
+				{
+					vector<string> *fwd_dev_stat = get_fwd_dev_polling_status(fwd);
+					root_dev_poll_status.insert(make_pair(root_dev,fwd_dev_stat));
+					fwd_stat = get_fwd_att_polling_status(fwd,fwd_dev_stat);
+				}
+				catch (Tango::DevFailed &e)
+				{
+
+				}
 			}
+			else
+				fwd_stat = get_fwd_att_polling_status(fwd,pos->second);
+		}
+
+		if (i == nb_poll_obj - 1)
+		{
+			for (auto &elem:root_dev_poll_status)
+				delete elem.second;
 		}
 
 //
@@ -723,10 +740,13 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 
 	dev->get_poll_monitor().get_monitor();
 	if (fwd_att == true)
-		poll_list.push_back(new PollObj(dev,type,obj_name));
+		poll_list.push_back(new PollObj(dev,type,obj_name,upd,true));
 	else
 		poll_list.push_back(new PollObj(dev,type,obj_name,upd,depth));
 	dev->get_poll_monitor().rel_monitor();
+
+	PollingThreadInfo *th_info;
+	int thread_created = -2;
 
 //
 // In case of forwarded attribute, forward the request to the root attribute
@@ -734,9 +754,9 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 
 	if (fwd_att == true)
 	{
+		FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
 		try
 		{
-			FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
 			add_fwd_att_polling(upd,fwd);
 		}
 		catch(Tango::DevFailed &e)
@@ -745,6 +765,12 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 			delete poll_list.back();
 			poll_list.pop_back();
 			dev->get_poll_monitor().rel_monitor();
+
+			stringstream ss;
+			ss << "Attribute " << attr_ptr->get_name() << " is a forwarded attribute and one exception was thrown while accessing its root attribute(";
+			ss << fwd->get_fwd_dev_name() + "/" + fwd->get_fwd_att_name() + ")";
+
+			Tango::Except::re_throw_exception(e,API_RootAttrFailed,ss.str(),"DServer::add_obj_polling");
 		}
 	}
 	else
@@ -753,9 +779,6 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 //
 // Find out which thread is in charge of the device. If none exists already, create one
 //
-
-		PollingThreadInfo *th_info;
-		int thread_created = -2;
 
 		int poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
 		if (poll_th_id == 0)
@@ -846,100 +869,103 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 
 		cout4 << "Thread cmd normally executed" << endl;
 		th_info->nb_polled_objects++;
+	}
 
 //
 // Update polling parameters in database (if wanted and possible). If the property is already there
 // (it should not but...), only update its polling period
 //
 
-		if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
+	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
+	{
+		TangoSys_MemStream s;
+		string upd_str;
+		s << upd;
+		s >> upd_str;
+		bool found = false;
+
+		DbDatum db_info("polled_cmd");
+		if (type == Tango::POLL_CMD)
 		{
-			TangoSys_MemStream s;
-			string upd_str;
-			s << upd;
-			s >> upd_str;
-			bool found = false;
-
-			DbDatum db_info("polled_cmd");
-			if (type == Tango::POLL_CMD)
+			vector<string> &non_auto_list = dev->get_non_auto_polled_cmd();
+			vector<string>::iterator ite;
+			for (ite = non_auto_list.begin();ite < non_auto_list.end();++ite)
 			{
-				vector<string> &non_auto_list = dev->get_non_auto_polled_cmd();
-				vector<string>::iterator ite;
-				for (ite = non_auto_list.begin();ite < non_auto_list.end();++ite)
+				if (TG_strcasecmp((*ite).c_str(),obj_name.c_str()) == 0)
 				{
-					if (TG_strcasecmp((*ite).c_str(),obj_name.c_str()) == 0)
+					non_auto_list.erase(ite);
+					db_info.name = "non_auto_polled_cmd";
+					db_info << non_auto_list;
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				vector<string> &cmd_list = dev->get_polled_cmd();
+				for (i = 0;i < cmd_list.size();i = i+2)
+				{
+					if (TG_strcasecmp(cmd_list[i].c_str(),obj_name.c_str()) == 0)
 					{
-						non_auto_list.erase(ite);
-						db_info.name = "non_auto_polled_cmd";
-						db_info << non_auto_list;
-						found = true;
+						cmd_list[i + 1] = upd_str;
 						break;
 					}
 				}
-				if (found == false)
+				if (i == cmd_list.size())
 				{
-					vector<string> &cmd_list = dev->get_polled_cmd();
-					for (i = 0;i < cmd_list.size();i = i+2)
-					{
-						if (TG_strcasecmp(cmd_list[i].c_str(),obj_name.c_str()) == 0)
-						{
-							cmd_list[i + 1] = upd_str;
-							break;
-						}
-					}
-					if (i == cmd_list.size())
-					{
-						cmd_list.push_back(obj_name);
-						cmd_list.push_back(upd_str);
-					}
-					db_info << cmd_list;
+					cmd_list.push_back(obj_name);
+					cmd_list.push_back(upd_str);
 				}
+				db_info << cmd_list;
 			}
-			else
-			{
-				vector<string> &non_auto_list = dev->get_non_auto_polled_attr();
-				vector<string>::iterator ite;
-				for (ite = non_auto_list.begin();ite < non_auto_list.end();++ite)
-				{
-					if (TG_strcasecmp((*ite).c_str(),obj_name.c_str()) == 0)
-					{
-						non_auto_list.erase(ite);
-						db_info.name = "non_auto_polled_attr";
-						db_info << non_auto_list;
-						found = true;
-						break;
-					}
-				}
-				if (found == false)
-				{
-					db_info.name = "polled_attr";
-					vector<string> &attr_list = dev->get_polled_attr();
-					for (i = 0;i < attr_list.size();i = i+2)
-					{
-						if (TG_strcasecmp(attr_list[i].c_str(),obj_name.c_str()) == 0)
-						{
-							attr_list[i + 1] = upd_str;
-							break;
-						}
-					}
-					if (i == attr_list.size())
-					{
-						attr_list.push_back(obj_name);
-						attr_list.push_back(upd_str);
-					}
-					db_info << attr_list;
-				}
-			}
-
-			DbData send_data;
-			send_data.push_back(db_info);
-			dev->get_db_device()->put_property(send_data);
 		}
+		else
+		{
+			vector<string> &non_auto_list = dev->get_non_auto_polled_attr();
+			vector<string>::iterator ite;
+			for (ite = non_auto_list.begin();ite < non_auto_list.end();++ite)
+			{
+				if (TG_strcasecmp((*ite).c_str(),obj_name.c_str()) == 0)
+				{
+					non_auto_list.erase(ite);
+					db_info.name = "non_auto_polled_attr";
+					db_info << non_auto_list;
+					found = true;
+					break;
+				}
+			}
+			if (found == false)
+			{
+				db_info.name = "polled_attr";
+				vector<string> &attr_list = dev->get_polled_attr();
+				for (i = 0;i < attr_list.size();i = i+2)
+				{
+					if (TG_strcasecmp(attr_list[i].c_str(),obj_name.c_str()) == 0)
+					{
+						attr_list[i + 1] = upd_str;
+						break;
+					}
+				}
+				if (i == attr_list.size())
+				{
+					attr_list.push_back(obj_name);
+					attr_list.push_back(upd_str);
+				}
+				db_info << attr_list;
+			}
+		}
+
+		DbData send_data;
+		send_data.push_back(db_info);
+		dev->get_db_device()->put_property(send_data);
+	}
 
 //
 // If a polling thread has just been created, ask it to poll
 //
 
+	if (fwd_att == false)
+	{
 		if (thread_created == -1)
 		{
 			start_polling(th_info);
@@ -1103,6 +1129,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
 	Attribute *attr_ptr;
+	bool fwd_att = false;
 
 	if (obj_type == PollCommand)
 	{
@@ -1120,6 +1147,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 		type = Tango::POLL_ATTR;
 		Attribute &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
 		attr_ptr = &att;
+		fwd_att = att.is_fwd_att();
 	}
 	else
 	{
@@ -1176,16 +1204,21 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 // If the polled object is a forwarded attribute, ask root device to update polling
 //
 
-	if (type == POLL_ATTR && attr_ptr->is_fwd_att() == true)
+	if (fwd_att == true)
 	{
 		FwdAttribute *fwd_attr = static_cast<FwdAttribute *>(attr_ptr);
 		try
 		{
 			upd_fwd_att_polling(upd,fwd_attr);
+			(*ite)->update_upd(upd);
 		}
 		catch (Tango::DevFailed &e)
 		{
+			stringstream ss;
+			ss << "Attribute " << attr_ptr->get_name() << " is a forwarded attribute and one exception was thrown while accessing its root attribute(";
+			ss << fwd_attr->get_fwd_dev_name() << "/" << fwd_attr->get_fwd_att_name() << ")";
 
+			Tango::Except::re_throw_exception(e,API_RootAttrFailed,ss.str(),"DServer::upd_obj_polling_period");
 		}
 	}
 	else
@@ -1212,7 +1245,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 // Update polling period
 //
 
-		(*ite)->update_upd((argin->lvalue)[0]);
+		(*ite)->update_upd(upd);
 
 //
 // Send command to the polling thread
@@ -1255,62 +1288,62 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 			poll_th->set_local_cmd(shared_cmd);
 			poll_th->execute_cmd();
 		}
+	}
 
 //
 // Update database property --> Update polling period if this object is already defined in the polling property.
 // Add object name and update period if the object is not known in the property
 //
 
-		if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
+	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
+	{
+		TangoSys_MemStream s;
+		string upd_str;
+		s << (argin->lvalue)[0] << ends;
+		s >> upd_str;
+
+		DbDatum db_info("polled_attr");
+		if (type == Tango::POLL_CMD)
 		{
-			TangoSys_MemStream s;
-			string upd_str;
-			s << (argin->lvalue)[0] << ends;
-			s >> upd_str;
-
-			DbDatum db_info("polled_attr");
-			if (type == Tango::POLL_CMD)
+			db_info.name = "polled_cmd";
+			vector<string> &cmd_list = dev->get_polled_cmd();
+			for (i = 0;i < cmd_list.size();i = i+2)
 			{
-				db_info.name = "polled_cmd";
-				vector<string> &cmd_list = dev->get_polled_cmd();
-				for (i = 0;i < cmd_list.size();i = i+2)
+				if (TG_strcasecmp(cmd_list[i].c_str(),obj_name.c_str()) == 0)
 				{
-					if (TG_strcasecmp(cmd_list[i].c_str(),obj_name.c_str()) == 0)
-					{
-						cmd_list[i + 1] = upd_str;
-						break;
-					}
+					cmd_list[i + 1] = upd_str;
+					break;
 				}
-				if (i == cmd_list.size())
-				{
-					cmd_list.push_back(obj_name);
-					cmd_list.push_back(upd_str);
-				}
-				db_info << cmd_list;
 			}
-			else
+			if (i == cmd_list.size())
 			{
-				vector<string> &attr_list = dev->get_polled_attr();
-				for (i = 0;i < attr_list.size();i = i+2)
-				{
-					if (TG_strcasecmp(attr_list[i].c_str(),obj_name.c_str()) == 0)
-					{
-						attr_list[i + 1] = upd_str;
-						break;
-					}
-				}
-				if (i == attr_list.size())
-				{
-					attr_list.push_back(obj_name);
-					attr_list.push_back(upd_str);
-				}
-				db_info << attr_list;
+				cmd_list.push_back(obj_name);
+				cmd_list.push_back(upd_str);
 			}
-
-			DbData send_data;
-			send_data.push_back(db_info);
-			dev->get_db_device()->put_property(send_data);
+			db_info << cmd_list;
 		}
+		else
+		{
+			vector<string> &attr_list = dev->get_polled_attr();
+			for (i = 0;i < attr_list.size();i = i+2)
+			{
+				if (TG_strcasecmp(attr_list[i].c_str(),obj_name.c_str()) == 0)
+				{
+					attr_list[i + 1] = upd_str;
+					break;
+				}
+			}
+			if (i == attr_list.size())
+			{
+				attr_list.push_back(obj_name);
+				attr_list.push_back(upd_str);
+			}
+			db_info << attr_list;
+		}
+
+		DbData send_data;
+		send_data.push_back(db_info);
+		dev->get_db_device()->put_property(send_data);
 	}
 }
 
@@ -1401,6 +1434,9 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
 
+	bool fwd_att = false;
+	Attribute *att_ptr;
+
 	if (obj_type == PollCommand)
 	{
 		type = Tango::POLL_CMD;
@@ -1410,6 +1446,9 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	else if (obj_type == PollAttribute)
 	{
 		type = Tango::POLL_ATTR;
+		Attribute &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
+		fwd_att = att.is_fwd_att();
+		att_ptr = &att;
 	}
 	else
 	{
@@ -1429,20 +1468,21 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 // In case of attribute, check if it is a forwarded one. If true, forward request
 //
 
-	Attribute &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
-	bool fwd_att = false;
-
-	if (att.is_fwd_att() == true)
+	if (fwd_att == true)
 	{
 		fwd_att = true;
-		FwdAttribute &fwd = static_cast<FwdAttribute &>(att);
+		FwdAttribute *fwd = static_cast<FwdAttribute *>(att_ptr);
 		try
 		{
 			rem_fwd_att_polling(fwd);
 		}
 		catch(Tango::DevFailed &e)
 		{
-            throw;
+			stringstream ss;
+			ss << "Attribute " << att_ptr->get_name() << " is a forwarded attribute and one exception was thrown while accessing its root attribute(";
+			ss << fwd->get_fwd_dev_name() << "/" << fwd->get_fwd_att_name() << ")";
+
+			Tango::Except::re_throw_exception(e,API_RootAttrFailed,ss.str(),"DServer::rem_obj_polling");
 		}
 	}
 	else
@@ -1566,101 +1606,101 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	if (poll_list.empty() == true)
 		dev->is_polled(false);
 
-	if (fwd_att == false)
-	{
-
 //
 // Update database property. This means remove object entry in the polling properties if they exist or add it to the
 // list of device not polled for automatic polling defined at command/attribute level.
 // Do this if possible and wanted.
 //
 
-		if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
+	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
+	{
+		DbData send_data;
+		DbDatum db_info("polled_attr");
+		bool update_needed = false;
+
+		if (type == Tango::POLL_CMD)
 		{
-			DbData send_data;
-			DbDatum db_info("polled_attr");
-			bool update_needed = false;
-
-			if (type == Tango::POLL_CMD)
+			db_info.name = "polled_cmd";
+			vector<string> &cmd_list = dev->get_polled_cmd();
+			vector<string>::iterator s_ite;
+			for (s_ite = cmd_list.begin();s_ite < cmd_list.end();++s_ite)
 			{
-				db_info.name = "polled_cmd";
-				vector<string> &cmd_list = dev->get_polled_cmd();
-				vector<string>::iterator s_ite;
-				for (s_ite = cmd_list.begin();s_ite < cmd_list.end();++s_ite)
+				if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
+				{
+					s_ite = cmd_list.erase(s_ite);
+					cmd_list.erase(s_ite);
+					db_info << cmd_list;
+					update_needed = true;
+					break;
+				}
+				++s_ite;
+			}
+			if (update_needed == false)
+			{
+				vector<string> &non_auto_cmd = dev->get_non_auto_polled_cmd();
+				for (s_ite = non_auto_cmd.begin();s_ite < non_auto_cmd.end();++s_ite)
 				{
 					if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
-					{
-						s_ite = cmd_list.erase(s_ite);
-						cmd_list.erase(s_ite);
-						db_info << cmd_list;
-						update_needed = true;
 						break;
-					}
-					++s_ite;
 				}
-				if (update_needed == false)
+				if (s_ite == non_auto_cmd.end())
 				{
-					vector<string> &non_auto_cmd = dev->get_non_auto_polled_cmd();
-					for (s_ite = non_auto_cmd.begin();s_ite < non_auto_cmd.end();++s_ite)
-					{
-						if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
-							break;
-					}
-					if (s_ite == non_auto_cmd.end())
-					{
-						non_auto_cmd.push_back(obj_name);
-						db_info.name = "non_auto_polled_cmd";
-						db_info << non_auto_cmd;
-						update_needed = true;
-					}
+					non_auto_cmd.push_back(obj_name);
+					db_info.name = "non_auto_polled_cmd";
+					db_info << non_auto_cmd;
+					update_needed = true;
 				}
-			}
-			else
-			{
-				vector<string> &attr_list = dev->get_polled_attr();
-				vector<string>::iterator s_ite;
-				for (s_ite = attr_list.begin();s_ite < attr_list.end();++s_ite)
-				{
-					if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
-					{
-						s_ite = attr_list.erase(s_ite);
-						attr_list.erase(s_ite);
-						db_info << attr_list;
-						update_needed = true;
-						break;
-					}
-					++s_ite;
-				}
-				if (update_needed == false)
-				{
-					vector<string> &non_auto_attr = dev->get_non_auto_polled_attr();
-					for (s_ite = non_auto_attr.begin();s_ite < non_auto_attr.end();++s_ite)
-					{
-						if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
-							break;
-					}
-					if (s_ite == non_auto_attr.end())
-					{
-						non_auto_attr.push_back(obj_name);
-						db_info.name = "non_auto_polled_attr";
-						db_info << non_auto_attr;
-						update_needed = true;
-					}
-				}
-			}
-
-			if (update_needed == true)
-			{
-				DbData send_data;
-				send_data.push_back(db_info);
-				if (db_info.size() == 0)
-					dev->get_db_device()->delete_property(send_data);
-				else
-					dev->get_db_device()->put_property(send_data);
-
-				cout4 << "Database polling properties updated" << endl;
 			}
 		}
+		else
+		{
+			vector<string> &attr_list = dev->get_polled_attr();
+			vector<string>::iterator s_ite;
+			for (s_ite = attr_list.begin();s_ite < attr_list.end();++s_ite)
+			{
+				if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
+				{
+					s_ite = attr_list.erase(s_ite);
+					attr_list.erase(s_ite);
+					db_info << attr_list;
+					update_needed = true;
+					break;
+				}
+				++s_ite;
+			}
+			if (update_needed == false)
+			{
+				vector<string> &non_auto_attr = dev->get_non_auto_polled_attr();
+				for (s_ite = non_auto_attr.begin();s_ite < non_auto_attr.end();++s_ite)
+				{
+					if (TG_strcasecmp((*s_ite).c_str(),obj_name.c_str()) == 0)
+						break;
+				}
+				if (s_ite == non_auto_attr.end())
+				{
+					non_auto_attr.push_back(obj_name);
+					db_info.name = "non_auto_polled_attr";
+					db_info << non_auto_attr;
+					update_needed = true;
+				}
+			}
+		}
+
+		if (update_needed == true)
+		{
+			DbData send_data;
+			send_data.push_back(db_info);
+			if (db_info.size() == 0)
+				dev->get_db_device()->delete_property(send_data);
+			else
+				dev->get_db_device()->put_property(send_data);
+
+			cout4 << "Database polling properties updated" << endl;
+		}
+	}
+
+	if (fwd_att == false)
+	{
 
 //
 // If the device is not polled any more, update the pool conf first locally. Also update the map<device name,thread id>
@@ -2149,7 +2189,38 @@ void DServer::add_fwd_att_polling(int upd,FwdAttribute *attr_ptr)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void DServer::rem_fwd_att_polling(FwdAttribute &attr)
+void DServer::rem_fwd_att_polling(FwdAttribute *attr)
+{
+
+//
+// Get proxy from root att registry
+//
+
+	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+	DeviceProxy *root_dev = rar.get_root_att_dp(attr->get_fwd_dev_name());
+
+	root_dev->stop_poll_attribute(attr->get_fwd_att_name());
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DServer::get_fwd_dev_polling_status()
+//
+// description :
+//		Get polling status the device to which the root attribute belongs. This means asks the root attribute
+//		on the root device to be polled
+//
+// args :
+// 		in:
+//			- attr : The fwd attribute object
+//
+// returns :
+//		The device polling status in a vector of strings
+//
+//------------------------------------------------------------------------------------------------------------------
+
+vector<string> *DServer::get_fwd_dev_polling_status(FwdAttribute &attr)
 {
 
 //
@@ -2159,7 +2230,13 @@ void DServer::rem_fwd_att_polling(FwdAttribute &attr)
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *root_dev = rar.get_root_att_dp(attr.get_fwd_dev_name());
 
-	root_dev->stop_poll_attribute(attr.get_fwd_att_name());
+//
+// Get polling status
+//
+
+	vector<string> *str_ptr = root_dev->polling_status();
+
+	return str_ptr;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -2174,26 +2251,15 @@ void DServer::rem_fwd_att_polling(FwdAttribute &attr)
 // args :
 // 		in:
 //			- attr : The fwd attribute object
+//			- str_ptr : The root device polling vector
 //
 // returns :
 //		The attribute polling status in a vector of strings
 //
 //------------------------------------------------------------------------------------------------------------------
 
-vector<string> DServer::get_fwd_att_polling_status(FwdAttribute &attr)
+vector<string> DServer::get_fwd_att_polling_status(FwdAttribute &attr,vector<string> *str_ptr)
 {
-//
-// Get proxy from root att registry
-//
-
-	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
-	DeviceProxy *root_dev = rar.get_root_att_dp(attr.get_fwd_dev_name());
-
-//
-// Get polling status
-//
-
-	vector<string> *str_ptr = root_dev->polling_status();
 
 //
 // Isolate polling status for the attribute we are interested in and return it as a vector<string>
@@ -2226,8 +2292,6 @@ vector<string> DServer::get_fwd_att_polling_status(FwdAttribute &attr)
 			break;
 		}
 	}
-
-	delete str_ptr;
 
 	return v_str;
 }
@@ -2287,7 +2351,7 @@ void DServer::upd_fwd_att_polling(int upd,FwdAttribute *attr)
 	DeviceData dd;
 	dd << dvlsa;
 
-	adm_dev->command_inout("UpdObjPolling",dd);
+	adm_dev->command_inout("UpdObjPollingPeriod",dd);
 
 	if (need_del == true)
 		delete adm_dev;

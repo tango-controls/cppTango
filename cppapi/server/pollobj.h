@@ -66,7 +66,7 @@ class PollObj: public omni_mutex
 public:
 	PollObj(DeviceImpl *,PollObjType,const string &,int);
 	PollObj(DeviceImpl *,PollObjType,const string &,int,long);
-	PollObj(DeviceImpl *,PollObjType,const string &);
+	PollObj(DeviceImpl *,PollObjType,const string &,int,bool);
 
 	void insert_data(CORBA::Any *,struct timeval &,struct timeval &);
 	void insert_data(Tango::AttributeValueList *,struct timeval &,struct timeval &);

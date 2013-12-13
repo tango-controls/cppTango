@@ -89,6 +89,7 @@ void Util::polling_configure()
 //
 
 	vector<DevVarLongStringArray *> v_poll_cmd;
+	vector<DevVarLongStringArray *> v_poll_cmd_fwd;
 	vector<DevDbUpd> dev_db_upd;
 
 //
@@ -214,18 +215,26 @@ void Util::polling_configure()
 				if (upd < 0)
 					upd = -upd;
 
-				if (first_loop == true)
+				Attribute &att = dev_list[j]->get_device_attr()->get_attr_by_name(poll_attr_list[k].c_str());
+				if (att.is_fwd_att() == true)
 				{
-					smallest_upd = upd;
-					first_loop = false;
+					v_poll_cmd_fwd.push_back(send);
 				}
 				else
 				{
-					if (upd < smallest_upd)
+					if (first_loop == true)
+					{
 						smallest_upd = upd;
+						first_loop = false;
+					}
+					else
+					{
+						if (upd < smallest_upd)
+							smallest_upd = upd;
+					}
+					v_poll_cmd.push_back(send);
 				}
 
-				v_poll_cmd.push_back(send);
 				k++;
 			}
 
@@ -327,6 +336,57 @@ void Util::polling_configure()
 		for (unsigned long l = 0;l < nb_cmd;l++)
 			delete poll_ths[loop]->v_poll_cmd[l];
 	}
+
+//
+// Send command to start polling for all forwarded attributes
+//
+
+	for (size_t loop = 0;loop < v_poll_cmd_fwd.size();loop++)
+	{
+		try
+		{
+			bool upd_db = false;
+			int upd = v_poll_cmd_fwd[loop]->lvalue[0];
+			if (upd < 0)
+			{
+				v_poll_cmd_fwd[loop]->lvalue[0] = -upd;
+				upd_db = true;
+			}
+			admin_dev->add_obj_polling(v_poll_cmd_fwd[loop],upd_db,0);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			bool throw_ex = true;
+
+			if (::strcmp(e.errors[0].reason.in(),API_AlreadyPolled) == 0)
+			{
+				try
+				{
+					admin_dev->upd_obj_polling_period(v_poll_cmd_fwd[loop],false);
+					throw_ex = false;
+				}
+				catch (Tango::DevFailed &) {}
+			}
+
+			if (throw_ex == true)
+			{
+				TangoSys_OMemStream o;
+				o << "Error when configuring polling for device " << v_poll_cmd_fwd[loop]->svalue[0].in();
+				o << ", attr = ";
+				o << v_poll_cmd_fwd[loop]->svalue[2].in() << ends;
+				Except::re_throw_exception(e,(const char *)API_BadConfigurationProperty,
+											o.str(),
+												(const char *)"Util::polling_configure");
+			}
+		}
+	}
+
+//
+// Delete allocated memory
+//
+
+	for (size_t l = 0;l < v_poll_cmd_fwd.size();l++)
+		delete v_poll_cmd_fwd[l];
 
 //
 // Now, start the real polling
@@ -1132,7 +1192,6 @@ void Util::check_pool_conf(DServer *admin_dev,unsigned long pool_size)
 
 	if (poll_pool_conf.empty() == true)
 		return;
-
 
 	vector<string> mod_conf = poll_pool_conf;
 

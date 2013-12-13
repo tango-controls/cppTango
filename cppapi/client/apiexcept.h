@@ -387,7 +387,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 // Define macros for the management of the Corba TRANSIENT exception
 //
 
-#define TRANSIENT_NOT_EXIST_EXCEPT(E,CLASS,NAME) \
+#define TRANSIENT_NOT_EXIST_EXCEPT(E,CLASS,NAME,OBJ) \
 	if (E.minor() == omni::TRANSIENT_CallTimedout) \
 	{ \
 \
@@ -395,7 +395,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT); \
 		try \
 		{ \
-			Device_var dev = Device::_duplicate(device); \
+			Device_var dev = Device::_duplicate(OBJ->device); \
 			dev->ping(); \
 		} \
 		catch(CORBA::TRANSIENT &trans_ping) \
@@ -412,7 +412,7 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		if (need_reconnect == false) \
 		{ \
 			TangoSys_OMemStream desc; \
-			desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name(); \
+			desc << "Timeout (" << OBJ->timeout << " mS) exceeded on device " << OBJ->dev_name(); \
 			desc << ends; \
 			TangoSys_OMemStream ori; \
 			ori << CLASS << ":" << NAME << ends; \
@@ -422,15 +422,15 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		}\
 	} \
 \
-	set_connection_state(CONNECTION_NOTOK); \
+	OBJ->set_connection_state(CONNECTION_NOTOK); \
 	ctr++; \
 \
-	if ((tr_reco == false) || \
-	   ((ctr == 2) && (tr_reco == true))) \
+	if ((OBJ->tr_reco == false) || \
+	   ((ctr == 2) && (OBJ->tr_reco == true))) \
 	{ \
 \
 		TangoSys_OMemStream desc; \
-		desc << "Failed to execute " << NAME << " on device " << dev_name(); \
+		desc << "Failed to execute " << NAME << " on device " << OBJ->dev_name(); \
 		desc << ends; \
 		TangoSys_OMemStream ori; \
 		ori << CLASS << ":" << NAME << ends; \

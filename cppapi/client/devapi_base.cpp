@@ -2376,13 +2376,13 @@ int DeviceProxy::ping()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","ping");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","ping",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","ping");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","ping",this);
 			}
 			else
 			{
@@ -2399,7 +2399,7 @@ int DeviceProxy::ping()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","ping");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","ping",this);
 			}
 			else
 			{
@@ -2461,13 +2461,13 @@ string DeviceProxy::name()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","name");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","name",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","name");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","name",this);
 			}
 			else
 			{
@@ -2484,7 +2484,7 @@ string DeviceProxy::name()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","name");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","name",this);
 			}
 			else
 			{
@@ -2560,13 +2560,13 @@ DevState DeviceProxy::state()
 		}
 		catch (CORBA::TRANSIENT &transp)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","state");
+			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","state",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","state");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","state",this);
 			}
 			else
 			{
@@ -2583,7 +2583,7 @@ DevState DeviceProxy::state()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","state");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","state",this);
 			}
 			else
 			{
@@ -2636,13 +2636,13 @@ string DeviceProxy::status()
 		}
 		catch (CORBA::TRANSIENT &transp)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","status");
+			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","status",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","status");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","status",this);
 			}
 			else
 			{
@@ -2659,7 +2659,7 @@ string DeviceProxy::status()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","status");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","status",this);
 			}
 			else
 			{
@@ -2726,13 +2726,13 @@ string DeviceProxy::adm_name()
 		}
 		catch (CORBA::TRANSIENT &transp)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","adm_name");
+			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","adm_name",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","adm_name");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","adm_name",this);
 			}
 			else
 			{
@@ -2749,7 +2749,7 @@ string DeviceProxy::adm_name()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","adm_name");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","adm_name",this);
 			}
 			else
 			{
@@ -2802,13 +2802,13 @@ string DeviceProxy::description()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","description");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","description",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","description");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","description",this);
 			}
 			else
 			{
@@ -2825,7 +2825,7 @@ string DeviceProxy::description()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","description");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","description",this);
 			}
 			else
 			{
@@ -2878,13 +2878,13 @@ vector<string> *DeviceProxy::black_box(int last_n_commands)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","black_box");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","black_box",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","black_box");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","black_box",this);
 			}
 			else
 			{
@@ -2901,7 +2901,7 @@ vector<string> *DeviceProxy::black_box(int last_n_commands)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","black_box");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","black_box",this);
 			}
 			else
 			{
@@ -2984,13 +2984,13 @@ DeviceInfo const &DeviceProxy::info()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","info");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","info",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","info");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","info",this);
 			}
 			else
 			{
@@ -3007,7 +3007,7 @@ DeviceInfo const &DeviceProxy::info()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","info");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","info",this);
 			}
 			else
 			{
@@ -3086,13 +3086,13 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_query");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_query",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_query",this);
 			}
 			else
 			{
@@ -3109,7 +3109,7 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_query",this);
 			}
 			else
 			{
@@ -3202,13 +3202,13 @@ CommandInfoList *DeviceProxy::command_list_query()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_list_query");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_list_query",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_list_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_list_query",this);
 			}
 			else
 			{
@@ -3225,7 +3225,7 @@ CommandInfoList *DeviceProxy::command_list_query()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_list_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_list_query",this);
 			}
 			else
 			{
@@ -3615,13 +3615,13 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -3638,7 +3638,7 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -3822,13 +3822,13 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -3845,7 +3845,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -4176,13 +4176,13 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4199,7 +4199,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4396,13 +4396,13 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4419,7 +4419,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4546,13 +4546,13 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attributes");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attributes",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attributes",this);
 			}
 			else
 			{
@@ -4569,7 +4569,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attributes",this);
 			}
 			else
 			{
@@ -4695,7 +4695,7 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 			}
 			ctr = 2;
 		}
-		READ_ATT_EXCEPT(attr_string)
+		READ_ATT_EXCEPT(attr_string,this)
 	}
 
 	if (version >= 3)
@@ -4779,7 +4779,7 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 			}
 			ctr = 2;
 		}
-		READ_ATT_EXCEPT(attr_str)
+		READ_ATT_EXCEPT(attr_str,this)
 	}
 
 	if (version >= 3)
@@ -5046,13 +5046,13 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attributes");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attributes",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attributes",this);
 			}
 			else
 			{
@@ -5069,7 +5069,7 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attributes",this);
 			}
 			else
 			{
@@ -5276,13 +5276,13 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5299,7 +5299,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5422,13 +5422,13 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5445,7 +5445,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5573,13 +5573,13 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5596,7 +5596,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5727,13 +5727,13 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_history");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_history",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_history",this);
 			}
 			else
 			{
@@ -5750,7 +5750,7 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_history",this);
 			}
 			else
 			{
@@ -5856,13 +5856,13 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","attribute_history");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","attribute_history",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","attribute_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","attribute_history",this);
 			}
 			else
 			{
@@ -5879,7 +5879,7 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","attribute_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","attribute_history",this);
 			}
 			else
 			{
@@ -6236,8 +6236,9 @@ void DeviceProxy::poll_attribute(string &attr_name, int period)
 	{
 
 //
-// If object is polled and the polling period is the same, simply retruns
+// If object is polled and the polling period is the same, simply returns
 //
+
 		TangoSys_MemStream stream;
 		int per;
 
@@ -7894,13 +7895,13 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_attribute",this);
 			}
 			else
 			{
@@ -7917,7 +7918,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_attribute",this);
 			}
 			else
 			{

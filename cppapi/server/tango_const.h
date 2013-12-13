@@ -369,6 +369,7 @@ const char* const API_PollingThreadNotFound        = "API_PollingThreadNotFound"
 const char* const API_PollObjNotFound              = "API_PollObjNotFound";
 const char* const API_PollRingBufferEmpty          = "API_PollRingBufferEmpty";
 const char* const API_ReadOnlyMode                 = "API_ReadOnlyMode";
+const char* const API_RootAttrFailed			   = "API_RootAttrFailed";
 const char* const API_ShutdownInProgress           = "API_ShutdownInProgress";
 const char* const API_SignalOutOfRange             = "API_SignalOutOfRange";
 const char* const API_StartupSequence              = "API_StartupSequence";

@@ -868,7 +868,6 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 // Subscribe to the new event
 //
 
-cout << "Subscribing to event " << event_name << endl;
             event_sub_sock->setsockopt(ZMQ_SUBSCRIBE,event_name,::strlen(event_name));
 
 //
@@ -916,7 +915,6 @@ cout << "Subscribing to event " << event_name << endl;
 
             if (mcast == false)
             {
-cout << "Unsubscribing to event " << event_name << endl;
                 event_sub_sock->setsockopt(ZMQ_UNSUBSCRIBE,event_name,::strlen(event_name));
 
 //
@@ -1883,9 +1881,6 @@ void ZmqEventConsumer::push_heartbeat_event(string &ev_name)
 
 void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::message_t &event_data,bool error,const DevULong &ds_ctr)
 {
-cout << "Received event name = " << ev_name << endl;
-for (const auto &elem:event_callback_map)
-	cout << "In map = " << elem.first << endl;
     map_modification_lock.readerIn();
     bool map_lock = true;
 
