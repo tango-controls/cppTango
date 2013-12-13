@@ -122,7 +122,7 @@ Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 
 
 
-Connection::Connection(bool dummy):ext(Tango_NullPtr),tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
+Connection::Connection(bool dummy):ext(Tango_nullptr),tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
 				    user_connect_timeout(-1),tango_host_localhost(false)
 {
 	if (dummy)
@@ -154,7 +154,7 @@ Connection::~Connection()
 //
 //-----------------------------------------------------------------------------
 
-Connection::Connection(const Connection &sou):ext(Tango_NullPtr)
+Connection::Connection(const Connection &sou):ext(Tango_nullptr)
 {
 	dbase_used = sou.dbase_used;
 	from_env_var = sou.from_env_var;
@@ -266,7 +266,7 @@ Connection &Connection::operator=(const Connection &rval)
         *(ext.get()) = *(rval.ext.get());
     }
     else
-        ext.reset(Tango_NullPtr);
+        ext.reset(Tango_nullptr);
 #else
 	if (rval.ext != NULL)
 	{
@@ -1647,7 +1647,7 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 //
 //-----------------------------------------------------------------------------
 
-DeviceProxy::DeviceProxy(const DeviceProxy &sou):Connection(sou),ext_proxy(Tango_NullPtr)
+DeviceProxy::DeviceProxy(const DeviceProxy &sou):Connection(sou),ext_proxy(Tango_nullptr)
 {
 
 //

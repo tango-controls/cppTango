@@ -46,7 +46,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbServer::DbServer(string server_name, Database *server_dbase):ext(Tango_NullPtr)
+DbServer::DbServer(string server_name, Database *server_dbase):ext(Tango_nullptr)
 {
 	name = string(server_name);
 	dbase = server_dbase;
@@ -61,7 +61,7 @@ DbServer::DbServer(string server_name, Database *server_dbase):ext(Tango_NullPtr
 //
 //-----------------------------------------------------------------------------
 
-DbServer::DbServer(string server_name):ext(Tango_NullPtr)
+DbServer::DbServer(string server_name):ext(Tango_nullptr)
 {
 	name = string(server_name);
 	db_ind = ApiUtil::instance()->get_db_ind();

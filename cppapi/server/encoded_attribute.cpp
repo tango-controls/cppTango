@@ -42,7 +42,7 @@ using namespace Tango;
 
 // ----------------------------------------------------------------------------
 
-EncodedAttribute::EncodedAttribute():manage_exclusion(false),ext(Tango_NullPtr) {
+EncodedAttribute::EncodedAttribute():manage_exclusion(false),ext(Tango_nullptr) {
 
   buffer_array = (unsigned char **)calloc(1,sizeof(unsigned char *));
   buffer_array[0] = NULL;
@@ -54,7 +54,7 @@ EncodedAttribute::EncodedAttribute():manage_exclusion(false),ext(Tango_NullPtr) 
   buf_elt_nb = 1;
 }
 
-EncodedAttribute::EncodedAttribute(int si,bool excl):manage_exclusion(excl),ext(Tango_NullPtr) {
+EncodedAttribute::EncodedAttribute(int si,bool excl):manage_exclusion(excl),ext(Tango_nullptr) {
 
   buffer_array = (unsigned char **)calloc(si,sizeof(unsigned char *));
   buffSize_array = (int *)calloc(si,sizeof(int));

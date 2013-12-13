@@ -74,13 +74,13 @@ public:
 /**
  * Default constructor.
  */
-	AttrProp() : is_value(false),ext(Tango_NullPtr) {}
+	AttrProp() : is_value(false),ext(Tango_nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value The attribute property value.
  */
-	AttrProp(const T &value) : val(value), is_value(true), ext(Tango_NullPtr)
+	AttrProp(const T &value) : val(value), is_value(true), ext(Tango_nullptr)
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
@@ -92,13 +92,13 @@ public:
  *
  * @param value_str The 'C string' representation of attribute property.
  */
-	AttrProp(const char *value_str) : str(string(value_str)), is_value(false), ext(Tango_NullPtr) {}
+	AttrProp(const char *value_str) : str(string(value_str)), is_value(false), ext(Tango_nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value_str The string representation of attribute property value.
  */
-	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_NullPtr) {}
+	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_nullptr) {}
 //@}
 
 /**@name Assignment operators

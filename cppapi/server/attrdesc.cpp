@@ -645,7 +645,7 @@ void Attr::set_memorized()
 //--------------------------------------------------------------------------
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
-:Attr(att_name,att_type),ext(Tango_NullPtr)
+:Attr(att_name,att_type),ext(Tango_nullptr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -674,7 +674,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 }
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,long x)
-:Attr(att_name,att_type,w_type),ext(Tango_NullPtr)
+:Attr(att_name,att_type,w_type),ext(Tango_nullptr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -703,7 +703,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 }
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel level)
-:Attr(att_name,att_type,level),ext(Tango_NullPtr)
+:Attr(att_name,att_type,level),ext(Tango_nullptr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -732,7 +732,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x,DispLevel l
 }
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,long x,DispLevel level)
-:Attr(att_name,att_type,level,w_type),ext(Tango_NullPtr)
+:Attr(att_name,att_type,level,w_type),ext(Tango_nullptr)
 {
 	format = Tango::SPECTRUM;
 	if (x <= 0)
@@ -770,7 +770,7 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 //--------------------------------------------------------------------------
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
-:SpectrumAttr(att_name,att_type,x),ext(Tango_NullPtr)
+:SpectrumAttr(att_name,att_type,x),ext(Tango_nullptr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -789,7 +789,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,
 		     long x,long y)
-:SpectrumAttr(att_name,att_type,w_type,x),ext(Tango_NullPtr)
+:SpectrumAttr(att_name,att_type,w_type,x),ext(Tango_nullptr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -808,7 +808,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 		     long y,DispLevel level)
-:SpectrumAttr(att_name,att_type,x,level),ext(Tango_NullPtr)
+:SpectrumAttr(att_name,att_type,x,level),ext(Tango_nullptr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)
@@ -827,7 +827,7 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,long x,
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_type,
 		     long x, long y,DispLevel level)
-:SpectrumAttr(att_name,att_type,w_type,x,level),ext(Tango_NullPtr)
+:SpectrumAttr(att_name,att_type,w_type,x,level),ext(Tango_nullptr)
 {
 	format = Tango::IMAGE;
 	if (y <= 0)

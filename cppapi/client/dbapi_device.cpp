@@ -47,7 +47,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_NullPtr)
+DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_nullptr)
 {
 	name = dev_name;
 	dbase = dev_dbase;
@@ -62,7 +62,7 @@ DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_NullPtr)
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name):ext(Tango_NullPtr)
+DbDevice::DbDevice(string &dev_name):ext(Tango_nullptr)
 {
 	name = dev_name;
 	db_ind = ApiUtil::instance()->get_db_ind();
@@ -77,7 +77,7 @@ DbDevice::DbDevice(string &dev_name):ext(Tango_NullPtr)
 //
 //-----------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_NullPtr)
+DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_nullptr)
 {
 	name = dev_name;
 

@@ -680,7 +680,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 //
 
 		Tango::DevState d_state = Tango::UNKNOWN;
-		Tango::ConstDevString d_status = Tango_NullPtr;
+		Tango::ConstDevString d_status = Tango_nullptr;
 
 		if (state_wanted == true)
 		{

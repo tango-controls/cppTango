@@ -71,7 +71,7 @@ public:
 /**
  * Constructs a newly allocated UserDefaultAttrProp object.
  */
-	UserDefaultAttrProp():ext(Tango_NullPtr) {}
+	UserDefaultAttrProp():ext(Tango_nullptr) {}
 //@}
 
 /**@name Set default property methods */

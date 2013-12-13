@@ -208,9 +208,9 @@
 //
 
 #ifdef HAS_NULLPTR
-    #define Tango_NullPtr   nullptr
+    #define Tango_nullptr   nullptr
 #else
-    #define Tango_NullPtr   NULL
+    #define Tango_nullptr   NULL
 #endif
 
 //

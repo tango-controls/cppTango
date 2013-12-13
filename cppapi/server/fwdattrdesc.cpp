@@ -62,7 +62,7 @@ namespace Tango
 
 
 FwdAttr::FwdAttr(const string &att_name,const string &root_attribute):
-ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_NullPtr)
+ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false),err_kind(FWD_ERR_UNKNOWN),ext(Tango_nullptr)
 {
 	writable = Tango::READ;			// Difficult to switch it to WT_UNKNOWN
 //	type = DATA_TYPE_UNKNOWN;

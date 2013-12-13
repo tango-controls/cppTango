@@ -44,7 +44,7 @@ namespace Tango
 //
 
 template<>
-inline AttrProp<DevUChar>::AttrProp(const DevUChar &value) : val(value), is_value(true), ext(Tango_NullPtr)
+inline AttrProp<DevUChar>::AttrProp(const DevUChar &value) : val(value), is_value(true), ext(Tango_nullptr)
 {
 	TangoSys_MemStream st;
 	st.precision(TANGO_FLOAT_PRECISION);
