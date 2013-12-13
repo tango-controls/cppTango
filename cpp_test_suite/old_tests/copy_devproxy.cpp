@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 		
 		assert (dev2.name() == device1_name);
 #ifndef COMPAT
-		assert (dev2.get_idl_version() == 4);
+		assert (dev2.get_idl_version() == 5);
 #endif
 						
 	}
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	
 	assert (dev3.name() == device1_name);
 #ifndef COMPAT
-	assert (dev3.get_idl_version() == 4);
+	assert (dev3.get_idl_version() == 5);
 #endif
 	
 	cout << "   Assignement operator --> OK" << endl;

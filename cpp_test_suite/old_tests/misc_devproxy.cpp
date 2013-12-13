@@ -290,7 +290,7 @@ int main(int argc, char **argv)
 
 #ifndef COMPAT
 		int vers = device->get_idl_version();
-		assert (vers == 4);
+		assert (vers == 5);
 		
 		cout << "   Get IDL version --> OK" << endl;
 #endif

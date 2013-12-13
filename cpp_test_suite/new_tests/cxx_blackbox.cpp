@@ -155,6 +155,7 @@ public:
 			version_str = "_2";
 			break;
 		case 4:
+		case 5:
 			version_str = "_4";
 			break;
 		default:
