@@ -520,7 +520,7 @@ void DevTest::IOFillPollBuffEncodedAttr()
 
 void DevTest::IOFillPollBuffCmd()
 {
-    	cout << "[DevTest::IOFillPollBuffCmd] received " << endl;
+    cout << "[DevTest::IOFillPollBuffCmd] received " << endl;
 
 	Tango::CmdHistoryStack<Tango::DevVarLongArray> chs;
 	chs.length(3);
@@ -544,9 +544,10 @@ void DevTest::IOFillPollBuffCmd()
 		Tango::TimedCmdData<Tango::DevVarLongArray> tad(&dvla_array[k],when);
 		chs.push(tad);
 	}
-	tg->fill_cmd_polling_buffer(this,cmd_name,chs);
-	cout << "Command Polling buffer filled" << endl;
 
+	tg->fill_cmd_polling_buffer(this,cmd_name,chs);
+
+	cout << "Command Polling buffer filled" << endl;
 }
 
 
