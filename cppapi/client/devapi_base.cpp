@@ -4824,6 +4824,60 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 
 }
 
+void DeviceProxy::read_attribute(const char *attr_str,AttributeValue_4 *&av_4)
+{
+	DevVarStringArray attr_list;
+	int ctr = 0;
+	Tango::DevSource local_source;
+
+	if (version < 4)
+	{
+		Except::throw_exception();
+	}
+	
+	attr_list.length(1);
+	attr_list[0] = CORBA::string_dup(attr_str);
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect(local_source);
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			av_4 = dev->read_attributes_4(attr_list,local_source,ci);
+
+			ctr = 2;
+		}
+		READ_ATT_EXCEPT(attr_str,this)
+	}
+
+//
+// Add an error in the error stack in case there is one
+//
+
+	DevErrorList_var &err_list = dev_attr.get_error_list();
+	long nb_except = err_list.in().length();
+	if (nb_except != 0)
+	{
+		TangoSys_OMemStream desc;
+		desc << "Failed to read_attribute on device " << device_name;
+		desc << ", attribute " << dev_attr.name << ends;
+
+		err_list.inout().length(nb_except + 1);
+		err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
+		err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+
+		string st = desc.str();
+		err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		err_list[nb_except].severity = Tango::ERR;
+	}
+}
+
 //-----------------------------------------------------------------------------
 //
 // DeviceProxy::write_attributes() - write a list of attributes
