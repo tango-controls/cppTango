@@ -49,8 +49,6 @@ static const char *RcsId = "$Id$";
 #include <sys/time.h>
 #endif
 
-#include <chrono>
-
 using namespace CORBA;
 
 namespace Tango {
