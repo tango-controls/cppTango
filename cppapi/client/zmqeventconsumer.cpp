@@ -49,6 +49,8 @@ static const char *RcsId = "$Id$";
 #include <sys/time.h>
 #endif
 
+#include <chrono>
+
 using namespace CORBA;
 
 namespace Tango {
@@ -1935,7 +1937,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             const AttributeConfig_2 *attr_conf_2 = NULL;
             const AttributeConfig_3 *attr_conf_3 = NULL;
             const AttributeConfig_5 *attr_conf_5 = NULL;
-            const AttDataReady *att_ready = NULL;
+            AttDataReady *att_ready = NULL;
             const DevErrorList *err_ptr;
             DevErrorList errors;
             AttributeInfoEx *attr_info_ex = NULL;
@@ -1989,7 +1991,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
             string::size_type pos = ev_name.rfind('.');
             string event_name = ev_name.substr(pos + 1);
-            string att_name = ev_name.substr(0,pos);
+            string full_att_name = ev_name.substr(0,pos);
+            pos = full_att_name.rfind('/');
+            string att_name = full_att_name.substr(pos + 1);
 
             UserDataEventType data_type;
 
@@ -2010,6 +2014,14 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
             long vers = 0;
             DeviceAttribute *dev_attr = NULL;
+            bool no_unmarshalling = false;
+
+			if (evt_cb.fwd_att == true && data_type != ATT_CONF && error == false)
+			{
+				no_unmarshalling = true;
+			}
+			else
+			{
 
 //
 // For 64 bits data (double, long64 and ulong64), omniORB unmarshalling
@@ -2032,101 +2044,101 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // 8 bytes boundary
 //
 
-            char *data_ptr = (char *)event_data.data();
-            size_t data_size = (size_t)event_data.size();
+				char *data_ptr = (char *)event_data.data();
+				size_t data_size = (size_t)event_data.size();
 
-            bool data64 = false;
-            if (data_type == ATT_VALUE && error == false)
-            {
-                int disc = ((int *)data_ptr)[1];
-                if (disc == ATT_DOUBLE || disc == ATT_LONG64 || disc == ATT_ULONG64)
-                    data64 = true;
-            }
+				bool data64 = false;
+				if (data_type == ATT_VALUE && error == false)
+				{
+					int disc = ((int *)data_ptr)[1];
+					if (disc == ATT_DOUBLE || disc == ATT_LONG64 || disc == ATT_ULONG64)
+						data64 = true;
+				}
 
-            bool buffer_aligned64 = false;
-            if (data64 == true)
-            {
-                if (((unsigned long)data_ptr & 0x7) == 0)
-                    buffer_aligned64 = true;
-            }
+				bool buffer_aligned64 = false;
+				if (data64 == true)
+				{
+					if (((unsigned long)data_ptr & 0x7) == 0)
+						buffer_aligned64 = true;
+				}
 
 //
 // Shift buffer if required
 //
 
-            if (data64 == true && buffer_aligned64 == true)
-            {
-                int nb_loop = (data_size >> 2) - 1;
-                int remaining = data_size & 0x3;
+				if (data64 == true && buffer_aligned64 == true)
+				{
+					int nb_loop = (data_size >> 2) - 1;
+					int remaining = data_size & 0x3;
 
-                if (omniORB::trace(30))
-                {
-                    {
-                        omniORB::logger log;
-                        log << "ZMQ: Shifting received buffer!!!" << '\n';
-                    }
-                }
+					if (omniORB::trace(30))
+					{
+						{
+							omniORB::logger log;
+							log << "ZMQ: Shifting received buffer!!!" << '\n';
+						}
+					}
 
-                int *src,*dest;
-                dest = (int *)data_ptr;
-                src = dest + 1;
-                for (int loop = 0;loop < nb_loop;++loop)
-                {
-                    *dest = *src;
-                    ++dest;
-                    ++src;
-                }
+					int *src,*dest;
+					dest = (int *)data_ptr;
+					src = dest + 1;
+					for (int loop = 0;loop < nb_loop;++loop)
+					{
+						*dest = *src;
+						++dest;
+						++src;
+					}
 
-                for (int loop = 0;loop < remaining;++loop)
-                {
-                    *dest = *src;
-                    ++dest;
-                    ++src;
-                }
+					for (int loop = 0;loop < remaining;++loop)
+					{
+						*dest = *src;
+						++dest;
+						++src;
+					}
 
-                data_size = data_size - 4;
-            }
-            else
-            {
-                data_ptr = data_ptr + sizeof(CORBA::Long);
-                data_size = data_size - sizeof(CORBA::Long);
-            }
+					data_size = data_size - 4;
+				}
+				else
+				{
+					data_ptr = data_ptr + sizeof(CORBA::Long);
+					data_size = data_size - sizeof(CORBA::Long);
+				}
 
-            TangoCdrMemoryStream event_data_cdr(data_ptr,data_size);
-            event_data_cdr.setByteSwapFlag(endian);
+				TangoCdrMemoryStream event_data_cdr(data_ptr,data_size);
+				event_data_cdr.setByteSwapFlag(endian);
 
 //
 // Unmarshall the data
 //
 
-            if (error == true)
-            {
-                try
-                {
-                    (DevErrorList &)del <<= event_data_cdr;
-                    err_ptr = &del.in();
-                    errors = *err_ptr;
-                }
-                catch(...)
-                {
-                    TangoSys_OMemStream o;
-                    o << "Received malformed data for event ";
-                    o << ev_name << ends;
+				if (error == true)
+				{
+					try
+					{
+						(DevErrorList &)del <<= event_data_cdr;
+						err_ptr = &del.in();
+						errors = *err_ptr;
+					}
+					catch(...)
+					{
+						TangoSys_OMemStream o;
+						o << "Received malformed data for event ";
+						o << ev_name << ends;
 
-                    errors.length(1);
-                    errors[0].reason = API_WrongEventData;
-                    errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                    errors[0].desc = CORBA::string_dup(o.str().c_str());
-                    errors[0].severity = ERR;
-                }
-            }
-            else
-            {
-                switch (data_type)
-                {
-                    case ATT_CONF:
-                    if (evt_cb.device_idl > 4)
-                    {
+						errors.length(1);
+						errors[0].reason = API_WrongEventData;
+						errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+						errors[0].desc = CORBA::string_dup(o.str().c_str());
+						errors[0].severity = ERR;
+					}
+				}
+				else
+				{
+					switch (data_type)
+					{
+						case ATT_CONF:
+						if (evt_cb.device_idl > 4)
+						{
 
 //
 // Event if the device sending the event is IDL 5, if one of the client is not Tango 9, the event has to be sent
@@ -2134,20 +2146,45 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // with AttributeConfig_3
 //
 
-						try
-                        {
-                            (AttributeConfig_5 &)ac5 <<= event_data_cdr;
-                            attr_conf_5 = &ac5.in();
-                            vers = 5;
-                            attr_info_ex = new AttributeInfoEx();
-                            *attr_info_ex = const_cast<AttributeConfig_5 *>(attr_conf_5);
-                            ev_attr_conf = true;
-                        }
-                        catch(...)
-                        {
 							try
 							{
-								event_data_cdr.rewindPtrs();
+								(AttributeConfig_5 &)ac5 <<= event_data_cdr;
+								attr_conf_5 = &ac5.in();
+								vers = 5;
+								attr_info_ex = new AttributeInfoEx();
+								*attr_info_ex = const_cast<AttributeConfig_5 *>(attr_conf_5);
+								ev_attr_conf = true;
+							}
+							catch(...)
+							{
+								try
+								{
+									event_data_cdr.rewindPtrs();
+									(AttributeConfig_3 &)ac3 <<= event_data_cdr;
+									attr_conf_3 = &ac3.in();
+									vers = 3;
+									attr_info_ex = new AttributeInfoEx();
+									*attr_info_ex = const_cast<AttributeConfig_3 *>(attr_conf_3);
+									ev_attr_conf = true;
+								}
+								catch (...)
+								{
+									TangoSys_OMemStream o;
+									o << "Received malformed data for event ";
+									o << ev_name << ends;
+
+									errors.length(1);
+									errors[0].reason = API_WrongEventData;
+									errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+									errors[0].desc = CORBA::string_dup(o.str().c_str());
+									errors[0].severity = ERR;
+								}
+							}
+						}
+						else if (evt_cb.device_idl > 2)
+						{
+							try
+							{
 								(AttributeConfig_3 &)ac3 <<= event_data_cdr;
 								attr_conf_3 = &ac3.in();
 								vers = 3;
@@ -2155,7 +2192,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								*attr_info_ex = const_cast<AttributeConfig_3 *>(attr_conf_3);
 								ev_attr_conf = true;
 							}
-							catch (...)
+							catch(...)
 							{
 								TangoSys_OMemStream o;
 								o << "Received malformed data for event ";
@@ -2167,139 +2204,124 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 								errors[0].desc = CORBA::string_dup(o.str().c_str());
 								errors[0].severity = ERR;
 							}
-                        }
-                    }
-                    else if (evt_cb.device_idl > 2)
-                    {
-                        try
-                        {
-                            (AttributeConfig_3 &)ac3 <<= event_data_cdr;
-                            attr_conf_3 = &ac3.in();
-                            vers = 3;
-                            attr_info_ex = new AttributeInfoEx();
-                            *attr_info_ex = const_cast<AttributeConfig_3 *>(attr_conf_3);
-                            ev_attr_conf = true;
-                        }
-                        catch(...)
-                        {
-                            TangoSys_OMemStream o;
-                            o << "Received malformed data for event ";
-                            o << ev_name << ends;
+						}
+						else if (evt_cb.device_idl == 2)
+						{
+							(AttributeConfig_2 &)ac2 <<= event_data_cdr;
+							attr_conf_2 = &ac2.in();
+							vers = 2;
+							attr_info_ex = new AttributeInfoEx();
+							*attr_info_ex = const_cast<AttributeConfig_2 *>(attr_conf_2);
+							ev_attr_conf = true;
+						}
+						break;
 
-                            errors.length(1);
-                            errors[0].reason = API_WrongEventData;
-                            errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                            errors[0].desc = CORBA::string_dup(o.str().c_str());
-                            errors[0].severity = ERR;
-                        }
-                    }
-                    else if (evt_cb.device_idl == 2)
-                    {
-                        (AttributeConfig_2 &)ac2 <<= event_data_cdr;
-                        attr_conf_2 = &ac2.in();
-                        vers = 2;
-                        attr_info_ex = new AttributeInfoEx();
-                        *attr_info_ex = const_cast<AttributeConfig_2 *>(attr_conf_2);
-                        ev_attr_conf = true;
-                    }
-                    break;
+						case ATT_READY:
+						try
+						{
+							(AttDataReady &)adr <<= event_data_cdr;
+							att_ready = &adr.inout();
+							ev_attr_ready = true;
+							att_ready->name = full_att_name.c_str();
+						}
+						catch(...)
+						{
+							TangoSys_OMemStream o;
+							o << "Received malformed data for event ";
+							o << ev_name << ends;
 
-                    case ATT_READY:
-                    try
-                    {
-                        (AttDataReady &)adr <<= event_data_cdr;
-                        att_ready = &adr.in();
-                        ev_attr_ready = true;
-                    }
-                    catch(...)
-                    {
-                        TangoSys_OMemStream o;
-                        o << "Received malformed data for event ";
-                        o << ev_name << ends;
+							errors.length(1);
+							errors[0].reason = API_WrongEventData;
+							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].severity = ERR;
+						}
+						break;
 
-                        errors.length(1);
-                        errors[0].reason = API_WrongEventData;
-                        errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                        errors[0].desc = CORBA::string_dup(o.str().c_str());
-                        errors[0].severity = ERR;
-                    }
-                    break;
+						case ATT_VALUE:
+						if (evt_cb.device_idl > 3)
+						{
+							try
+							{
+								vers = 4;
+								zav4.operator<<=(event_data_cdr);
+								z_attr_value_4 = &zav4;
+								dev_attr = new (DeviceAttribute);
+								attr_to_device(z_attr_value_4,dev_attr);
 
-                    case ATT_VALUE:
-                    if (evt_cb.device_idl > 3)
-                    {
-                        try
-                        {
-                            vers = 4;
-                            zav4.operator<<=(event_data_cdr);
-                            z_attr_value_4 = &zav4;
-                            dev_attr = new (DeviceAttribute);
-                            attr_to_device(z_attr_value_4,dev_attr);
-                        }
-                        catch(...)
-                        {
-                            TangoSys_OMemStream o;
-                            o << "Received malformed data for event ";
-                            o << ev_name << ends;
+//
+// Update name in DeviceAttribute in case it is not coherent with name received in first ZMQ message part.
+// This happens in case of forwarded attribute
+//
 
-                            errors.length(1);
-                            errors[0].reason = API_WrongEventData;
-                            errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                            errors[0].desc = CORBA::string_dup(o.str().c_str());
-                            errors[0].severity = ERR;
-                        }
-                    }
-                    else if (evt_cb.device_idl == 3)
-                    {
-                        try
-                        {
-                            vers = 3;
-                            (AttributeValue_3 &)av3 <<= event_data_cdr;
-                            attr_value_3 = &av3.in();
-                            dev_attr = new (DeviceAttribute);
-                            attr_to_device(attr_value,attr_value_3,vers,dev_attr);
-                        }
-                        catch(...)
-                        {
-                            TangoSys_OMemStream o;
-                            o << "Received malformed data for event (AttributeValue_3 -> Device_3Impl....) ";
-                            o << ev_name << ends;
+								if (att_name != dev_attr->get_name())
+									dev_attr->set_name(att_name);
+							}
+							catch(...)
+							{
+								TangoSys_OMemStream o;
+								o << "Received malformed data for event ";
+								o << ev_name << ends;
 
-                            errors.length(1);
-                            errors[0].reason = API_WrongEventData;
-                            errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                            errors[0].desc = CORBA::string_dup(o.str().c_str());
-                            errors[0].severity = ERR;
-                        }
-                    }
-                    else if (evt_cb.device_idl < 3)
-                    {
-                        try
-                        {
-                            vers = 2;
-                            (AttributeValue &)av <<= event_data_cdr;
-                            attr_value = &av.in();
-                            dev_attr = new (DeviceAttribute);
-                            attr_to_device(attr_value,attr_value_3,vers,dev_attr);
-                        }
-                        catch(...)
-                        {
-                            TangoSys_OMemStream o;
-                            o << "Received malformed data for event (AttributeValue -> Device_2Impl....) ";
-                            o << ev_name << ends;
+								errors.length(1);
+								errors[0].reason = API_WrongEventData;
+								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].severity = ERR;
+							}
+						}
+						else if (evt_cb.device_idl == 3)
+						{
+							try
+							{
+								vers = 3;
+								(AttributeValue_3 &)av3 <<= event_data_cdr;
+								attr_value_3 = &av3.in();
+								dev_attr = new (DeviceAttribute);
+								attr_to_device(attr_value,attr_value_3,vers,dev_attr);
+							}
+							catch(...)
+							{
+								TangoSys_OMemStream o;
+								o << "Received malformed data for event (AttributeValue_3 -> Device_3Impl....) ";
+								o << ev_name << ends;
 
-                            errors.length(1);
-                            errors[0].reason = API_WrongEventData;
-                            errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-                            errors[0].desc = CORBA::string_dup(o.str().c_str());
-                            errors[0].severity = ERR;
-                        }
-                    }
-                    break;
-                }
-            }
+								errors.length(1);
+								errors[0].reason = API_WrongEventData;
+								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].severity = ERR;
+							}
+						}
+						else if (evt_cb.device_idl < 3)
+						{
+							try
+							{
+								vers = 2;
+								(AttributeValue &)av <<= event_data_cdr;
+								attr_value = &av.in();
+								dev_attr = new (DeviceAttribute);
+								attr_to_device(attr_value,attr_value_3,vers,dev_attr);
+							}
+							catch(...)
+							{
+								TangoSys_OMemStream o;
+								o << "Received malformed data for event (AttributeValue -> Device_2Impl....) ";
+								o << ev_name << ends;
 
-            EventData *missed_event_data = NULL;
+								errors.length(1);
+								errors[0].reason = API_WrongEventData;
+								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].severity = ERR;
+							}
+						}
+						break;
+					}
+				}
+			}
+
+            FwdEventData *missed_event_data = NULL;
             FwdAttrConfEventData *missed_conf_event_data = NULL;
             DataReadyEventData *missed_ready_event_data = NULL;
 
@@ -2321,11 +2343,11 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     missed_errors[0].severity = ERR;
 
                     if ((ev_attr_conf == false) && (ev_attr_ready == false))
-                        missed_event_data = new EventData (event_callback_map[ev_name].device,
-                                                        att_name,event_name,NULL,missed_errors);
+                        missed_event_data = new FwdEventData (event_callback_map[ev_name].device,
+                                                        full_att_name,event_name,NULL,missed_errors);
                     else if (ev_attr_ready == false)
                         missed_conf_event_data = new FwdAttrConfEventData(event_callback_map[ev_name].device,
-                                                                    att_name,event_name,
+                                                                    full_att_name,event_name,
                                                                     NULL,missed_errors);
                     else
                         missed_ready_event_data = new DataReadyEventData(event_callback_map[ev_name].device,
@@ -2353,7 +2375,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                         if ((ev_attr_conf == false) && (ev_attr_ready == false))
                         {
-                            EventData *event_data;
+                            FwdEventData *event_dat;
 
 //
 // In case we have several callbacks on the same event or if the event has to be stored in a queue, copy
@@ -2366,40 +2388,62 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 if (dev_attr != NULL || (callback == NULL && vers >= 4))
                                 {
                                     dev_attr_copy = new DeviceAttribute();
-                                    dev_attr_copy->deep_copy(*dev_attr);
+                                    if (no_unmarshalling == false)
+										dev_attr_copy->deep_copy(*dev_attr);
                                 }
 
-                                event_data = new EventData(event_callback_map[new_tango_host].device,
-                                                                    att_name,
+								if (no_unmarshalling == false)
+									event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
+                                                                    full_att_name,
                                                                     event_name,
                                                                     dev_attr_copy,
                                                                     errors);
+								else
+									event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
+                                                                    full_att_name,
+                                                                    event_name,
+                                                                    dev_attr_copy,
+                                                                    errors,
+																    &event_data);
                             }
                             else
                             {
-                                if (callback == NULL && vers >= 4)
-                                {
-                                    DeviceAttribute *dev_attr_copy = NULL;
-                                    if (dev_attr != NULL)
-                                    {
-                                        dev_attr_copy = new DeviceAttribute();
-                                        dev_attr_copy->deep_copy(*dev_attr);
-                                    }
+                            	if (no_unmarshalling == true)
+								{
+									DeviceAttribute *dummy = new DeviceAttribute();
+									event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
+																		full_att_name,
+																		event_name,
+																		dummy,
+																		errors,
+																		&event_data);
+								}
+								else
+								{
+									if (callback == NULL && vers >= 4)
+									{
+										DeviceAttribute *dev_attr_copy = NULL;
+										if (dev_attr != NULL)
+										{
+											dev_attr_copy = new DeviceAttribute();
+											dev_attr_copy->deep_copy(*dev_attr);
+										}
 
-									event_data = new EventData(event_callback_map[new_tango_host].device,
-                                                                    att_name,
-                                                                    event_name,
-                                                                    dev_attr_copy,
-                                                                    errors);
+										event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
+																		full_att_name,
+																		event_name,
+																		dev_attr_copy,
+																		errors);
 
-                                }
-                                else
-                                {
-									event_data = new EventData(event_callback_map[new_tango_host].device,
-                                                                  att_name,
-                                                                  event_name,
-                                                                  dev_attr,
-                                                                  errors);
+									}
+									else
+									{
+										event_dat = new FwdEventData(event_callback_map[new_tango_host].device,
+																	  full_att_name,
+																	  event_name,
+																	  dev_attr,
+																	  errors);
+									}
 								}
                             }
 
@@ -2413,7 +2457,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 {
                                     if (err_missed_event == true)
                                         callback->push_event(missed_event_data);
-                                    callback->push_event(event_data);
+                                    callback->push_event(event_dat);
                                 }
                                 catch (...)
                                 {
@@ -2422,7 +2466,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 									print_error_message(st.c_str());
                                 }
 
-                                delete event_data;
+                                delete event_dat;
                             }
 
 //
@@ -2433,12 +2477,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             {
                                 if (err_missed_event == true)
                                 {
-									EventData *missed_event_data_copy = new EventData;
+									EventData *missed_event_data_copy = new FwdEventData;
 									*missed_event_data_copy = *missed_event_data;
 
                                     ev_queue->insert_event(missed_event_data_copy);
 								}
-                                ev_queue->insert_event(event_data);
+                                ev_queue->insert_event(event_dat);
                                 if (vers >= 4 && cb_ctr == cb_nb)
                                     delete dev_attr;
                             }
@@ -2452,7 +2496,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 AttributeInfoEx *attr_info_copy = new AttributeInfoEx();
                                 *attr_info_copy = *attr_info_ex;
                                 event_data = new FwdAttrConfEventData(event_callback_map[new_tango_host].device,
-                                                                  att_name,
+                                                                  full_att_name,
                                                                   event_name,
                                                                   attr_info_copy,
                                                                   errors);
@@ -2462,7 +2506,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             else
                             {
                                 event_data = new FwdAttrConfEventData(event_callback_map[new_tango_host].device,
-                                                                  att_name,
+                                                                  full_att_name,
                                                                   event_name,
                                                                   attr_info_ex,
                                                                   errors);
@@ -2705,7 +2749,6 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 	}
 }
 
-
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -2747,7 +2790,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 //
 
        _CORBA_ULong length;
-        if (_pd__d != NO_DATA)
+        if (_pd__d != ATT_NO_DATA)
         {
             length <<= _n;
             if (length == 0)
@@ -2827,7 +2870,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
             break;
 
 //
-// We have special cases for DevEncoded (a structure) and NO_DATA
+// We have special cases for DevEncoded (a structure) and ATT_NO_DATA
 //
 
             case ATT_ENCODED:
@@ -2850,7 +2893,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
             }
             break;
 
-            case NO_DATA:
+            case ATT_NO_DATA:
             {
                 DevBoolean bo;
                 bo = _n.unmarshalBoolean();

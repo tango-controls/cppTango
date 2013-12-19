@@ -215,6 +215,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 			{
 				FwdAttr &fwdattr = static_cast<FwdAttr &>(attr);
 				fwd_ok = fwdattr.validate_fwd_att(prop_list,dev_name);
+				dev->set_with_fwd_att(true);
 				if (fwd_ok == true)
 				{
 					try

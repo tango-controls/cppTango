@@ -105,6 +105,7 @@ public :
         const AttributeConfig_3   *attr_conf_3;
         const AttributeConfig_5	  *attr_conf_5;
         const AttDataReady        *attr_dat_ready;
+        zmq::message_t	  		  *zmq_mess;
     };
 
 	SendEventType detect_and_push_events(DeviceImpl *,struct AttributeData &,DevFailed *,string &,struct timeval *);

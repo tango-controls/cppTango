@@ -3276,6 +3276,12 @@ public:
     void rem_wrong_fwd_att(const string &);
 	void update_wrong_conf_att(const string &,FwdAttError);
 
+	void set_with_fwd_att(bool _b) {with_fwd_att=_b;}
+	bool get_with_fwd_att() {return with_fwd_att;}
+
+	void set_call_source(DevSource _s) {call_source=_s;}
+	DevSource get_call_source() {return call_source;}
+
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
@@ -3385,6 +3391,8 @@ protected:
     vector<string>      		att_wrong_db_conf;
 	vector<string>				att_mem_failed;
 	vector<FwdWrongConf>		fwd_att_wrong_conf;
+	bool						with_fwd_att;
+	DevSource					call_source;
 
 private:
 //

@@ -278,7 +278,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 //
 
             Tango::AttrQuality qu = (data.get_data())[i].qual;
-            if (idl_vers==4)
+            if (idl_vers >= 4)
             {
                 (*back_4)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
                 (*back_4)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;

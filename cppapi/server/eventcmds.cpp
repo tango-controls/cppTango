@@ -76,7 +76,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
 	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
-cout << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+
 	Tango::Util *tg = Tango::Util::instance();
 
 //
@@ -228,7 +228,6 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 			omni_mutex_lock oml(EventSupplier::get_event_mutex());
-cout << "Updating event_attr_conf_subscription" << endl;
 			attribute.event_attr_conf_subscription = time(NULL);
 		}
 		else if (event == CONF5_TYPE_EVENT)
@@ -236,12 +235,11 @@ cout << "Updating event_attr_conf_subscription" << endl;
 			cout4 << "DServer::event_subscription(): update attr_5_conf subscription\n";
 
 			omni_mutex_lock oml(EventSupplier::get_event_mutex());
-cout << "Updating event_attr5_conf5_subscription" << endl;
 			attribute.event_attr_conf5_subscription = time(NULL);
 		}
 		else if (event == "data_ready")
 		{
-			if (attribute.is_data_ready_event() == false)
+			if (attribute.is_fwd_att() == false && attribute.is_data_ready_event() == false)
 			{
 				TangoSys_OMemStream o;
 				o << "The attribute ";
@@ -273,7 +271,7 @@ cout << "Updating event_attr5_conf5_subscription" << endl;
 
 				if ( event == "change")
 				{
-					if (attribute.is_change_event() == false)
+					if (attribute.is_fwd_att() == false && attribute.is_change_event() == false)
 					{
 						Except::throw_exception((const char *)API_AttributePollingNotStarted,
 									o.str(),
@@ -284,7 +282,7 @@ cout << "Updating event_attr5_conf5_subscription" << endl;
 				{
 					if ( event == "archive")
 					{
-						if (attribute.is_archive_event() == false)
+						if (attribute.is_fwd_att() == false && attribute.is_archive_event() == false)
 						{
 							Except::throw_exception((const char *)API_AttributePollingNotStarted,
 										o.str(),
@@ -631,7 +629,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         }
 
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_major_release << endl;
-cout << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_major_release << endl;
+
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //
@@ -766,6 +764,25 @@ cout << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name <<
             ev->set_one_subscription_cmd(true);
 
 //
+// For forwarded attribute, eventually subscribe to events coming from root attribute
+//
+
+		Attribute &attribute = dev->get_device_attr()->get_attr_by_name(attr_name.c_str());
+		EventType et;
+		tg->event_name_2_event_type(event,et);
+
+		if (attribute.is_fwd_att() == true && et != ATTR_CONF_EVENT)
+		{
+			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(attribute);
+			string root_name = fwd_att.get_fwd_dev_name() + "/" + fwd_att.get_fwd_att_name();
+			RootAttRegistry &rar = tg->get_root_att_reg();
+			bool already_there = rar.is_event_subscribed(root_name,et);
+
+			if (already_there == false)
+				rar.subscribe_user_event(fwd_att.get_fwd_dev_name(),fwd_att.get_fwd_att_name(),et);
+		}
+
+//
 // Init data returned by command
 //
 
@@ -869,7 +886,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 		transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
 		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
-cout << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
+
 //
 // Find device
 //

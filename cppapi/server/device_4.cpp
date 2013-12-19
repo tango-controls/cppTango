@@ -169,8 +169,17 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 
 	if (att.is_fwd_att() == true)
 	{
-		FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
-		back = fwd_att.read_root_att_history(n);
+		try
+		{
+			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
+			back = fwd_att.read_root_att_history(n);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream ss;
+			ss << "Reading history for attribute " << attr_str << " on device " << get_name() << " failed!";
+			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_4Impl::read_attribute_history_4");
+		}
 	}
 	else
 	{
@@ -571,6 +580,12 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 	}
 
 //
+// Store source parameter
+//
+
+	set_call_source(source);
+
+//
 // If the source parameter specifies device, call the read_attributes method
 // which does not throw exception except for major fault (cant allocate
 // memory,....)
@@ -592,16 +607,88 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 	}
 	else if (source == Tango::CACHE)
 	{
-		try
+
+//
+// If the device has some forwarded attribute, do not try to get data from the local cache but get it
+// from the root device
+// Create two arrays with local attribute names and fwd attribute names
+//
+
+		bool fwd_att_in_call = false;
+		Tango::DevVarStringArray local_names(nb_names);
+		Tango::DevVarStringArray fwd_names(nb_names);
+
+		if (with_fwd_att == true)
 		{
-			TangoMonitor &mon = get_poll_monitor();
-			AutoTangoMonitor sync(&mon);
-			read_attributes_from_cache(real_names,back3,back);
+			for (size_t loop = 0;loop < nb_names;loop++)
+			{
+				Attribute &att = dev_attr->get_attr_by_name(real_names[loop]);
+				size_t nb_fwd = 0;
+				size_t nb_local = 0;
+
+				if (att.is_fwd_att() == true)
+				{
+					fwd_att_in_call = true;
+					nb_fwd++;
+					fwd_names.length(nb_fwd);
+					fwd_names[nb_fwd - 1] = real_names[loop];
+					idx_in_back.push_back(loop);
+				}
+				else
+				{
+					nb_local++;
+					local_names.length(nb_local);
+					local_names[nb_local - 1] = real_names[loop];
+				}
+			}
 		}
-		catch (...)
+
+		if (fwd_att_in_call == false)
 		{
-			delete back;
-			throw;
+
+//
+// No fwd attributes in call, get values from local cache
+//
+
+			try
+			{
+				TangoMonitor &mon = get_poll_monitor();
+				AutoTangoMonitor sync(&mon);
+				read_attributes_from_cache(real_names,back3,back);
+			}
+			catch (...)
+			{
+				delete back;
+				throw;
+			}
+		}
+		else
+		{
+
+//
+// Some fwd attributes in call: First get data for local attributes then get data for forwarded attributes from
+// root devices
+//
+
+			try
+			{
+				TangoMonitor &mon = get_poll_monitor();
+				{
+					AutoTangoMonitor sync(&mon);
+					read_attributes_from_cache(local_names,back3,back);
+				}
+
+				{
+					AutoTangoMonitor sync(this);
+					read_attributes_no_except(fwd_names,back3,back,true,idx_in_back);
+					idx_in_back.clear();
+				}
+			}
+			catch (...)
+			{
+				delete back;
+				throw;
+			}
 		}
 	}
 	else
@@ -809,26 +896,49 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 								(const char *)"Device_4Impl::write_read_attribute_4");
 	}
 
+	Tango::AttributeValueList_4 *read_val_ptr;
+
+//
+// Check if the attribute is a forwarded one. If yes, do special stuff
+//
+
+	if (att.is_fwd_att() == true)
+	{
+		try
+		{
+			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
+			read_val_ptr = fwd_att.write_read_root_att(const_cast<AttributeValueList_4 &>(values));
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream ss;
+			ss << "Write_read_attribute on attribute " << att.get_name() << " on device " << get_name() << " failed!";
+			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_4Impl::write_read_attribute_4");
+		}
+	}
+	else
+	{
 //
 // First, write the attribute
 //
 
-	store_in_bb = false;
-	write_attributes_4(values,cl_id);
+		store_in_bb = false;
+		write_attributes_4(values,cl_id);
 
 //
 // Now, read the attribute
 //
 
-	Tango::DevVarStringArray att_name(1);
-	att_name.length(1);
-	att_name[0] = CORBA::string_dup(values[0].name);
-	Tango::ClntIdent dummy_cl_id;
-	Tango::CppClntIdent cci = 0;
-	dummy_cl_id.cpp_clnt(cci);
+		Tango::DevVarStringArray att_name(1);
+		att_name.length(1);
+		att_name[0] = CORBA::string_dup(values[0].name);
+		Tango::ClntIdent dummy_cl_id;
+		Tango::CppClntIdent cci = 0;
+		dummy_cl_id.cpp_clnt(cci);
 
-	store_in_bb = false;
-	Tango::AttributeValueList_4 *read_val_ptr = read_attributes_4(att_name,Tango::DEV,dummy_cl_id);
+		store_in_bb = false;
+		read_val_ptr = read_attributes_4(att_name,Tango::DEV,dummy_cl_id);
+	}
 
 	return read_val_ptr;
 }

@@ -1,17 +1,14 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
+//+==================================================================================================================
 //
-//  file 	zmqeventsupplier.cpp
+//  zmqeventsupplier.cpp : C++ classes for implementing the event server and client singleton classes -ZmqEventSupplier
+//						   This class is used to send events from the server to the client(s) when zmq is used to
+//						   transport the events
 //
-//		C++ classes for implementing the event server and client
-//		singleton classes - ZmqEventSupplier.
-//		This class is used to send events from the server
-//		to the client(s) when zmq is used to transport the events
+//  author(s) : 		  E.Taurel (taurel@esrf.fr)
 //
-//  	author(s) : E.Taurel (taurel@esrf.fr)
-//
-//		original : August 2011
+//	original : 			  August 2011
 //
 // Copyright (C) :      2011,2012,2013
 //						European Synchrotron Radiation Facility
@@ -20,23 +17,20 @@ static const char *RcsId = "$Id$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-//		$Revision: 17240 $
+// $Revision: 17240 $
 //
-//
-////////////////////////////////////////////////////////////////////////////////
+//+==================================================================================================================
 
 #include <tango.h>
 #include <eventsupplier.h>
@@ -74,8 +68,7 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 
 //
 // Create the Publisher socket for heartbeat event and bind it
-// If the user has specified one IP address on the command line,
-// re-use it in the endpoint
+// If the user has specified one IP address on the command line, re-use it in the endpoint
 //
 
     heartbeat_pub_sock = new zmq::socket_t(zmq_context,ZMQ_PUB);
@@ -154,8 +147,7 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
     }
 
 //
-// Find out the host endianness and
-// create the zmq message used to pass it
+// Find out the host endianness and create the zmq message used to pass it
 //
 
     host_endian = test_endian();
@@ -172,8 +164,7 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 
 //
 // Init heartbeat call info
-// Leave the OID and method name un-initialized
-// Marshall the structure into CORBA CDR
+// Leave the OID and method name un-initialized. Marshall the structure into CORBA CDR
 //
 
     heartbeat_call.version = ZMQ_EVENT_PROT_VERSION;
@@ -222,16 +213,17 @@ ZmqEventSupplier *ZmqEventSupplier::create(Util *tg)
 	return _event_supplier;
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::~ZmqEventSupplier()
+// method :
+//		ZmqEventSupplier::~ZmqEventSupplier()
 //
-// description : 	ZmqEventSupplier destructor.
-//                  This dtor delete the zmq socket. The ZMQ context will be
-//                  deleted (then calling zmq_term) when the object is
-//                  destroyed
+// description :
+//		ZmqEventSupplier destructor.
+//      This dtor delete the zmq socket. The ZMQ context will be deleted (then calling zmq_term) when the object is
+//      destroyed
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 ZmqEventSupplier::~ZmqEventSupplier()
 {
@@ -253,56 +245,62 @@ ZmqEventSupplier::~ZmqEventSupplier()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::tango_bind()
+// method :
+//		ZmqEventSupplier::tango_bind()
 //
-// description : 	Choose a free port to bind ZMQ socket
+// description :
+//		Choose a free port to bind ZMQ socket. Ask ZMQ to give us a port number
 //
-// argument : in : - sock : The ZMQ socket
-//                 - endpoint : The beginning of the ZMQ endpoint
+// argument :
+//		in :
+//		- sock : The ZMQ socket
+//      - endpoint : The beginning of the ZMQ endpoint
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventSupplier::tango_bind(zmq::socket_t *sock,string &endpoint)
 {
-    stringstream ss;
     string base_endpoint(endpoint);
-    string tmp_endpoint;
+    base_endpoint = base_endpoint + "*";
 
-    int port;
-    for (port = EPHEMERAL_PORT_BEGIN; port < EPHEMERAL_PORT_END; port++)
-    {
-        ss << port;
-        tmp_endpoint = base_endpoint + ss.str();
+    char buf[80];
+    size_t buf_len = sizeof(buf);
 
-        if (zmq_bind(*sock, tmp_endpoint.c_str()) == 0)
-        {
-            break;
-        }
-        ss.str("");
-    }
+	try
+	{
+		sock->bind(base_endpoint.c_str());
 
-    if (port == EPHEMERAL_PORT_END)
-    {
+		sock->getsockopt(ZMQ_LAST_ENDPOINT,buf,&buf_len);
+
+		string str(buf);
+		string::size_type pos = str.rfind(':');
+		string port_str = str.substr(pos + 1);
+		endpoint = endpoint + port_str;
+	}
+	catch(...)
+	{
         EventSystemExcept::throw_exception((const char*)API_ZmqInitFailed,
-                        (const char*)"Can't bind the ZMQ socket. All port used!",
+                        (const char*)"Can't bind the ZMQ socket!",
                         (const char*)"ZmqEventSupplier::tango_bind()");
-    }
-    endpoint = tmp_endpoint;
+	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::test_endian()
+// method :
+//		ZmqEventSupplier::test_endian()
 //
-// description : 	Get the host endianness
+// description :
+//		Get the host endianness
 //
-// This method returns the host endianness
-//      0 -> Big endian
-//      1 -> Little endian
+// return:
+// 		This method returns the host endianness
+//     		0 -> Big endian
+//      	1 -> Little endian
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 unsigned char ZmqEventSupplier::test_endian()
 {
@@ -311,14 +309,15 @@ unsigned char ZmqEventSupplier::test_endian()
     return (!(cptr[0] == 0));
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::create_event_socket()
+// method :
+//		ZmqEventSupplier::create_event_socket()
 //
-// description : 	Create and bind the publisher socket used to publish the
-//                  real events
+// description :
+//		Create and bind the publisher socket used to publish the real events
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventSupplier::create_event_socket()
 {
@@ -328,8 +327,7 @@ void ZmqEventSupplier::create_event_socket()
 
 //
 // Create the Publisher socket for real events and bind it
-// If the user has specified one IP address on the command line,
-// re-use it in the endpoint
+// If the user has specified one IP address on the command line, re-use it in the endpoint
 //
 
         event_pub_sock = new zmq::socket_t(zmq_context,ZMQ_PUB);
@@ -388,19 +386,22 @@ void ZmqEventSupplier::create_event_socket()
     }
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::create_mcast_event_socket()
+// method :
+//		ZmqEventSupplier::create_mcast_event_socket()
 //
-// description : 	Create and bind the publisher socket used to publish the
-//                  real events when multicast transport is required
+// description :
+//		Create and bind the publisher socket used to publish the real events when multicast transport is required
 //
-// argument : in :	mcast_data : The multicast addr and port (mcast_adr:port)
-//                  ev_name : The event name (dev_name/attr_name.event_type)
-//                  rate: The user defined PGM rate (O if undefined)
-//                  local_call: True if the caller is on the same host
+// argument :
+//		in :
+//			- mcast_data : The multicast addr and port (mcast_adr:port)
+//          - ev_name : The event name (dev_name/attr_name.event_type)
+//          - rate: The user defined PGM rate (O if undefined)
+//          - local_call: True if the caller is on the same host
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_name,int rate,bool local_call)
 {
@@ -408,8 +409,7 @@ void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_n
     map<string,McastSocketPub>::iterator ite;
 
 //
-// If the event is already in the mcast event map, check if it is
-// already used by local clients
+// If the event is already in the mcast event map, check if it is already used by local clients
 //
 
     if ((ite = event_mcast.find(ev_name)) != event_mcast.end())
@@ -473,26 +473,28 @@ void ZmqEventSupplier::create_mcast_event_socket(string &mcast_data,string &ev_n
     }
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::create_mcast_socket()
+// method :
+//		ZmqEventSupplier::create_mcast_socket()
 //
-// description : 	Create and bind the publisher socket used to publish the
-//                  real events when multicast transport is required
+// description :
+//		Create and bind the publisher socket used to publish the real events when multicast transport is required
 //
-// argument : in :	mcast_data : The multicast addr and port (mcast_adr:port)
-//                  rate: The user defined PGM rate (O if undefined)
-//                  ms: Reference to the structure to be stored in the macst map
+// argument :
+//		in :
+//			- mcast_data : The multicast addr and port (mcast_adr:port)
+//          - rate: The user defined PGM rate (O if undefined)
+//          - ms: Reference to the structure to be stored in the macst map
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventSupplier::create_mcast_socket(string &mcast_data,int rate,McastSocketPub &ms)
 {
 
 //
 // Create the Publisher socket for real events and bind it
-// If the user has specified one IP address on the command line,
-// re-use it in the endpoint
+// If the user has specified one IP address on the command line, re-use it in the endpoint
 //
 
     ms.pub_socket = new zmq::socket_t(zmq_context,ZMQ_PUB);
@@ -564,17 +566,22 @@ void ZmqEventSupplier::create_mcast_socket(string &mcast_data,int rate,McastSock
 
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::is_event_mcast()
+// method :
+//		ZmqEventSupplier::is_event_mcast()
 //
-// description : 	This method checks if the event is already defined
-//                  in the map of multicast event.
+// description :
+//		This method checks if the event is already defined in the map of multicast event.
 //
-// argument : in :	ev_name : The event name (device/attr.event_type)
+// argument :
+//		in :
+//			- ev_name : The event name (device/attr.event_type)
 //
-// This method returns true if the event is in the map and false otherwise
-//-----------------------------------------------------------------------------
+// returns :
+// 		This method returns true if the event is in the map and false otherwise
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 bool ZmqEventSupplier::is_event_mcast(string &ev_name)
 {
@@ -586,32 +593,41 @@ bool ZmqEventSupplier::is_event_mcast(string &ev_name)
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::get_mcast_event_endpoint()
+// method :
+//		ZmqEventSupplier::get_mcast_event_endpoint()
 //
-// description : 	This method returns the multicast socket endpoint for the
-//                  event passed as parameter
+// description :
+//		This method returns the multicast socket endpoint for the event passed as parameter
 //
-// argument : in :	event_name : The event name (device/attr.event_type)
+// argument :
+//		in :
+//			- event_name : The event name (device/attr.event_type)
 //
-// This method returns a reference to the enpoint string
-//-----------------------------------------------------------------------------
+// return :
+// 		This method returns a reference to the enpoint string
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 string &ZmqEventSupplier::get_mcast_event_endpoint(string &ev_name)
 {
     return event_mcast.find(ev_name)->second.endpoint;
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::init_event_cptr()
+// method :
+//		ZmqEventSupplier::init_event_cptr()
 //
-// description : 	Method to initialize event counter for a specific event
+// description :
+//		Method to initialize event counter for a specific event
 //
-// argument : in :	event_name : The event name (device/attr.event_type)
+// argument :
+//		in :
+//			- event_name : The event name (device/attr.event_type)
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventSupplier::init_event_cptr(string &event_name)
 {
@@ -633,13 +649,15 @@ void ZmqEventSupplier::init_event_cptr(string &event_name)
     }
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::push_heartbeat_event()
+// method :
+//		ZmqEventSupplier::push_heartbeat_event()
 //
-// description : 	Method to push the hearbeat event
+// description :
+//		Method to push the hearbeat event
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventSupplier::push_heartbeat_event()
 {
@@ -647,9 +665,8 @@ void ZmqEventSupplier::push_heartbeat_event()
 	time_t now_time;
 
 //
-// Heartbeat - check wether a heartbeat event has been sent recently
-// if not then send it. A heartbeat contains no data, it is used by the
-// consumer to know that the supplier is still alive.
+// Heartbeat - check wether a heartbeat event has been sent recently. If not then send it.
+// A heartbeat contains no data, it is used by the consumer to know that the supplier is still alive.
 //
 
 	Tango::Util *tg = Tango::Util::instance();
@@ -678,9 +695,8 @@ void ZmqEventSupplier::push_heartbeat_event()
 
 //
 // We here compare delta_time to 8 and not to 10.
-// This is necessary because, sometimes the polling thread is some
-// milli second in advance. The computation here is done in seconds
-// So, if the polling thread is in advance, delta_time computed in
+// This is necessary because, sometimes the polling thread is some milli second in advance.
+// The computation here is done in seconds. So, if the polling thread is in advance, delta_time computed in
 // seconds will be 9 even if in reality it is 9,9
 //
 
@@ -792,21 +808,25 @@ void ZmqEventSupplier::push_heartbeat_event()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::push_event()
+// method :
+//		ZmqEventSupplier::push_event()
 //
-// description : 	Method to send the event to the event channel
+// description :
+//		Method to send the event to the event channel
 //
-// argument : in :	device_impl : The device
-//			        event_type : The event type (change, periodic....)
-//			        filterable_names :
-//			        filterable_data :
-//			        attr_value : The attribute value
-//			        except : The exception thrown during the last
-//				             attribute reading. NULL if no exception
+// argument :
+//		in :
+//			- device_impl : The device
+//			- event_type : The event type (change, periodic....)
+//			- filterable_names :
+//			- filterable_data :
+//			- attr_value : The attribute value
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 {
@@ -855,8 +875,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 //
 // Create zmq messages
 // Use memcpy here. Don't use message with no-copy option because
-// it does not give any performance improvement in this case
-// (too small amount of data)
+// it does not give any performance improvement in this case (too small amount of data)
 //
 
     zmq::message_t name_mess(event_name.size());
@@ -927,104 +946,119 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
     zmq::message_t event_call_mess(event_call_cdr.bufSize());
     memcpy(event_call_mess.data(),event_call_cdr.bufPtr(),event_call_cdr.bufSize());
 
+	bool large_data = false;
+	bool large_message_created = false;
+	size_t mess_size;
+	void *mess_ptr;
+    zmq::message_t data_mess;
+
+	if (attr_value.zmq_mess != NULL)
+	{
+
+//
+// It's a forwarded attribute, therefore, use the already marshalled message
+//
+
+		mess_ptr = attr_value.zmq_mess->data();
+		mess_size = attr_value.zmq_mess->size();
+
+		data_mess.move(attr_value.zmq_mess);
+	}
+	else
+	{
+
 //
 // Marshall the event data
 //
 
-    size_t mess_size;
-    void *mess_ptr;
+		CORBA::Long padding = 0XDEC0DEC0;
+		data_call_cdr.rewindPtrs();
+		padding >>= data_call_cdr;
+		padding >>= data_call_cdr;
 
-	CORBA::Long padding = 0XDEC0DEC0;
-	data_call_cdr.rewindPtrs();
-	padding >>= data_call_cdr;
-	padding >>= data_call_cdr;
-	bool large_data = false;
-	bool large_message_created = false;
-
-    if (except == NULL)
-    {
-        if (attr_value.attr_val != NULL)
-        {
-            *(attr_value.attr_val) >>= data_call_cdr;
-        }
-        else if (attr_value.attr_val_3 != NULL)
-        {
-            *(attr_value.attr_val_3) >>= data_call_cdr;
-        }
-        else if (attr_value.attr_val_4 != NULL)
-        {
+		if (except == NULL)
+		{
+			if (attr_value.attr_val != NULL)
+			{
+				*(attr_value.attr_val) >>= data_call_cdr;
+			}
+			else if (attr_value.attr_val_3 != NULL)
+			{
+				*(attr_value.attr_val_3) >>= data_call_cdr;
+			}
+			else if (attr_value.attr_val_4 != NULL)
+			{
 
 //
-// Get number of data exchanged by this event
-// If this value is greater than a threashold, set a flag
+// Get number of data exchanged by this event. If this value is greater than a threashold, set a flag
 // In such a case, we will use ZMQ no-copy message call
 //
 
-            *(attr_value.attr_val_4) >>= data_call_cdr;
+				*(attr_value.attr_val_4) >>= data_call_cdr;
 
-            mess_ptr = data_call_cdr.bufPtr();
-            mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
+				mess_ptr = data_call_cdr.bufPtr();
+				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
 
-            int nb_data;
-            int data_discr = ((int *)mess_ptr)[0];
+				int nb_data;
+				int data_discr = ((int *)mess_ptr)[0];
 
-            if (data_discr == ATT_ENCODED)
-            {
-                const DevVarEncodedArray &dvea = attr_value.attr_val_4->value.encoded_att_value();
-                nb_data = dvea.length();
-                if (nb_data > LARGE_DATA_THRESHOLD_ENCODED)
-                    large_data = true;
-            }
-            else
-            {
-                nb_data = ((int *)mess_ptr)[1];
-                if (nb_data >= LARGE_DATA_THRESHOLD)
-                    large_data = true;
-            }
-        }
-        else if (attr_value.attr_conf_2 != NULL)
-        {
-            *(attr_value.attr_conf_2) >>= data_call_cdr;
-        }
-        else if (attr_value.attr_conf_3 != NULL)
-        {
-            *(attr_value.attr_conf_3) >>= data_call_cdr;
-        }
-        else if (attr_value.attr_conf_5 != NULL)
-        {
-            *(attr_value.attr_conf_5) >>= data_call_cdr;
-        }
-        else
-        {
-            *(attr_value.attr_dat_ready) >>= data_call_cdr;
-        }
-    }
-    else
-    {
-        except->errors >>= data_call_cdr;
-    }
+				if (data_discr == ATT_ENCODED)
+				{
+					const DevVarEncodedArray &dvea = attr_value.attr_val_4->value.encoded_att_value();
+					nb_data = dvea.length();
+					if (nb_data > LARGE_DATA_THRESHOLD_ENCODED)
+						large_data = true;
+				}
+				else
+				{
+					nb_data = ((int *)mess_ptr)[1];
+					if (nb_data >= LARGE_DATA_THRESHOLD)
+						large_data = true;
+				}
+			}
+			else if (attr_value.attr_conf_2 != NULL)
+			{
+				*(attr_value.attr_conf_2) >>= data_call_cdr;
+			}
+			else if (attr_value.attr_conf_3 != NULL)
+			{
+				*(attr_value.attr_conf_3) >>= data_call_cdr;
+			}
+			else if (attr_value.attr_conf_5 != NULL)
+			{
+				*(attr_value.attr_conf_5) >>= data_call_cdr;
+			}
+			else
+			{
+				*(attr_value.attr_dat_ready) >>= data_call_cdr;
+			}
+		}
+		else
+		{
+			except->errors >>= data_call_cdr;
+		}
 
-    mess_size = data_call_cdr.bufSize() - sizeof(CORBA::Long);
-    mess_ptr = (char *)data_call_cdr.bufPtr() + sizeof(CORBA::Long);
+		mess_size = data_call_cdr.bufSize() - sizeof(CORBA::Long);
+		mess_ptr = (char *)data_call_cdr.bufPtr() + sizeof(CORBA::Long);
 
 //
-// For event with small amount of data, use memcpy to initialize
-// the zmq message. For large amount of data, use zmq message
-// with no-copy option
+// For event with small amount of data, use memcpy to initialize the zmq message. For large amount of data, use
+// zmq message with no-copy option
 //
 
-    zmq::message_t data_mess;
 
-    if (large_data == true)
-    {
-        data_mess.rebuild(mess_ptr,mess_size,tg_unlock,(void *)this);
-        large_message_created = true;
-    }
-    else
-    {
-        data_mess.rebuild(mess_size);
-        memcpy(data_mess.data(),mess_ptr,mess_size);
-    }
+
+		if (large_data == true)
+		{
+			data_mess.rebuild(mess_ptr,mess_size,tg_unlock,(void *)this);
+			large_message_created = true;
+		}
+		else
+		{
+			data_mess.rebuild(mess_size);
+			memcpy(data_mess.data(),mess_ptr,mess_size);
+		}
+	}
 
 //
 // Send the data
@@ -1120,8 +1154,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		}
 
 //
-// If we have a multicast socket with also a local client
-// we are obliged to send two times the messages.
+// If we have a multicast socket with also a local client we are obliged to send two times the messages.
 // ZMQ does not support local client with PGM socket
 //
 
@@ -1182,8 +1215,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 				{
 
 //
-// Case of multicast socket with a local client
-// Send the event also on the local socket
+// Case of multicast socket with a local client. Send the event also on the local socket
 //
 
 					if (mcast_ite->second.local_client == true)
@@ -1268,13 +1300,14 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ZmqEventSupplier::update_connected_client
+// method :
+//		ZmqEventSupplier::update_connected_client
 //
 // description :
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 bool ZmqEventSupplier::update_connected_client(client_addr *cl)
@@ -1282,8 +1315,7 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
     bool ret = false;
 
 //
-// Immediately return if client identification not possible
-// (Very old client....)
+// Immediately return if client identification not possible. (Very old client....)
 //
 
     if (cl == NULL)

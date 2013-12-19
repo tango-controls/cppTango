@@ -449,7 +449,7 @@ void Connection::connect(string &corba_name)
                                 TangoSys_OMemStream desc;
                                 desc << "Failed to connect to device " << dev_name();
                                 desc << " (device nil after _narrowing)" << ends;
-                                ApiConnExcept::throw_exception((const char*)"API_CantConnectToDevice",
+                                ApiConnExcept::throw_exception((const char*)API_CantConnectToDevice,
                                                         desc.str(),
                                                         (const char*)"Connection::connect()");
                             }
@@ -513,7 +513,7 @@ void Connection::connect(string &corba_name)
 			if (pos == string::npos)
 			{
 				desc << "device " << dev_name() << ends;
-				reason << "API_CantConnectToDevice" << ends;
+				reason << API_CantConnectToDevice << ends;
 			}
 			else
 			{
@@ -542,19 +542,19 @@ void Connection::connect(string &corba_name)
 							else if (CORBA::TRANSIENT::_downcast(&ce) != 0)
 								reason << "API_ServerNotRunning" << ends;
 							else
-								reason << "API_CantConnectToDevice" << ends;
+								reason << API_CantConnectToDevice << ends;
 						}
 					}
 					else
 					{
 						desc << "device " << dev_name() << ends;
-						reason << "API_CantConnectToDevice" << ends;
+						reason << API_CantConnectToDevice << ends;
 					}
 				}
 				else
 				{
 					desc << "device " << dev_name() << ends;
-					reason << "API_CantConnectToDevice" << ends;
+					reason << API_CantConnectToDevice << ends;
 				}
 			}
 
@@ -599,7 +599,7 @@ void Connection::reconnect(bool db_used)
 			desc << "The connection request was delayed." << endl;
 			desc << "The last connection request was done less than " << RECONNECTION_DELAY << " ms ago" << ends;
 
-			Tango::Except::throw_exception ( (const char *)"API_CantConnectToDevice",
+			Tango::Except::throw_exception ( (const char *)API_CantConnectToDevice,
 													desc.str(),
 													(const char *)"Connection::reconnect");
 		}
@@ -671,7 +671,7 @@ void Connection::reconnect(bool db_used)
 				desc << "Failed to connect to device " << dev_name() << ends;
 
 				ApiConnExcept::re_throw_exception(ce,
-						  (const char *)"API_CantConnectToDevice",
+						  (const char *)API_CantConnectToDevice,
 						  desc.str(),
 					     (const char *)"Connection::reconnect");
 			}
@@ -4824,7 +4824,7 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 
 }
 
-void DeviceProxy::read_attribute(const char *attr_str,AttributeValue_4 *&av_4)
+void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_4 *&av_4)
 {
 	DevVarStringArray attr_list;
 	int ctr = 0;
@@ -4832,11 +4832,13 @@ void DeviceProxy::read_attribute(const char *attr_str,AttributeValue_4 *&av_4)
 
 	if (version < 4)
 	{
-		Except::throw_exception();
+		stringstream ss;
+		ss << "Device " << dev_name() << " is too old to support this call. Please, update to IDL 4 (Tango 7.x or more)";
+		Except::throw_exception(API_NotSupported,ss.str(),"DeviceProxy::read_attribute");
 	}
-	
+
 	attr_list.length(1);
-	attr_list[0] = CORBA::string_dup(attr_str);
+	attr_list[0] = CORBA::string_dup(attr_str.c_str());
 
 	while (ctr < 2)
 	{
@@ -4849,7 +4851,9 @@ void DeviceProxy::read_attribute(const char *attr_str,AttributeValue_4 *&av_4)
 			ci.cpp_clnt(au->get_client_pid());
 
 			Device_4_var dev = Device_4::_duplicate(device_4);
-			av_4 = dev->read_attributes_4(attr_list,local_source,ci);
+			AttributeValueList_4 *attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
+			av_4 = attr_value_list_4->get_buffer(true);
+			delete attr_value_list_4;
 
 			ctr = 2;
 		}
@@ -4860,14 +4864,14 @@ void DeviceProxy::read_attribute(const char *attr_str,AttributeValue_4 *&av_4)
 // Add an error in the error stack in case there is one
 //
 
-	long nb_except = av_4->err_list.in().length();
+	long nb_except = av_4->err_list.length();
 	if (nb_except != 0)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to read_attribute on device " << device_name;
-		desc << ", attribute " << dev_attr.name << ends;
+		desc << ", attribute " << attr_str << ends;
 
-		av_4->err_list.inout().length(nb_except + 1);
+		av_4->err_list.length(nb_except + 1);
 		av_4->err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 		av_4->err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
 

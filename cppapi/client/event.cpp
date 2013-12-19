@@ -1015,7 +1015,7 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             dev_attr->d_state = sta_dev;
         break;
 
-        case NO_DATA:
+        case ATT_NO_DATA:
         break;
 
         case ATT_ENCODED:
@@ -1190,7 +1190,8 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 		conn_params.ev_queue         = ev_queue;
 		conn_params.filters          = filters;
 		conn_params.last_heartbeat   = time(NULL);
-
+		if (env_var_fqdn_prefix.empty() == false)
+		conn_params.prefix			 = env_var_fqdn_prefix[0];
 		// protect the vector as the other maps!
 
 		// create and save the unique event ID
@@ -1275,7 +1276,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 //
 // Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
-// If it's a ATTR_CONF_EVENT, don forget to look for the two different event kinds
+// If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
 //
 
 	EvCbIte iter = event_callback_map.find(local_callback_key);
@@ -1333,9 +1334,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 			o << "Can't subscribe to event for device " << device_name << "\n";
 			o << "Check that device server is running..." << ends;
-			Except::throw_exception((const char *)API_BadConfigurationProperty,
-				       	 	o.str(),
-				         	(const char *)"EventConsumer::connect_event()");
+			Except::throw_exception(API_CantConnectToDevice,o.str(),"EventConsumer::connect_event()");
 		}
 	}
 	else
@@ -1346,9 +1345,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			TangoSys_OMemStream o;
 			o << "Can't subscribe to event for device " << device_name << "\n";
 			o << "Corrupted internal map. Please report bug" << ends;
-			Except::throw_exception((const char *)API_BadConfigurationProperty,
-									o.str(),
-									(const char *)"EventConsumer::connect_event()");
+			Except::throw_exception(API_BadConfigurationProperty,o.str(),"EventConsumer::connect_event()");
 		}
 		const EventChannelStruct &evt_ch = evt_it->second;
 		{
@@ -1529,6 +1526,25 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_ess.ev_queue = ev_queue;
 
 	connect_event_system(device_name,att_name_lower,event_name,filters,evt_it,new_event_callback,dd);
+
+//
+// Check if this subscription if for a fwd attribute root attribute
+//
+
+	ApiUtil *au = ApiUtil::instance();
+	if (au->in_server() == true)
+	{
+		RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+
+		string root_att_name = local_device_name;
+		transform(root_att_name.begin(),root_att_name.end(),root_att_name.begin(),::tolower);
+		root_att_name = root_att_name + '/' + att_name_lower;
+
+		if (rar.is_root_attribute(root_att_name) == true)
+			new_event_callback.fwd_att = true;
+	}
+	else
+		new_event_callback.fwd_att = false;
 
 //
 // if an event ID was passed to the method, reuse it!
@@ -2610,8 +2626,6 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	    (event == ARCHIVE_EVENT) ||
 	    (event == USER_EVENT))
 	{
-		//DeviceAttribute da;
-		DeviceAttribute *da = NULL;
 		DevErrorList err;
 		err.length(0);
 
@@ -2627,14 +2641,30 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		else
             domain_name = device_name + '/' + att_name_lower;
 
+		AttributeValue_4 *av = Tango_nullptr;
+		DeviceAttribute *da = Tango_nullptr;
+		FwdEventData *event_data;
+
 		try
 		{
-			da = new DeviceAttribute();
-			*da = device->read_attribute(attribute.c_str());
-			if (da->has_failed() == true)
+			if (cb.fwd_att == true)
 			{
-				err = da->get_err_stack();
-				err.length(err.length() - 1);
+				device->read_attribute(attribute.c_str(),av);
+				if (av->err_list.length() != 0)
+				{
+					err = av->err_list;
+					err.length(err.length() - 1);
+				}
+			}
+			else
+			{
+				da = new DeviceAttribute();
+				*da = device->read_attribute(attribute.c_str());
+				if (da->has_failed() == true)
+				{
+					err = da->get_err_stack();
+					err.length(err.length() - 1);
+				}
 			}
 		}
 		catch (DevFailed &e)
@@ -2642,11 +2672,17 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			err = e.errors;
 		}
 
-		EventData *event_data = new EventData(device,
-						      domain_name,
-						      event_name,
-						      da,
-						      err);
+		if (cb.fwd_att == true)
+		{
+			da = new DeviceAttribute();
+			event_data = new FwdEventData(device,domain_name,event_name,da,err);
+			event_data->set_av_4(av);
+		}
+		else
+		{
+			event_data = new FwdEventData(device,domain_name,event_name,da,err);
+		}
+
 		AutoTangoMonitor _mon(cb.callback_monitor);
 
 		// if a callback method was specified, call it!
@@ -2663,6 +2699,8 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 
 			//event_data->attr_value = NULL;
 			delete event_data;
+			if (cb.fwd_att == true)
+				delete [] av;
 		}
 
 		// no calback method, the event has to be instered
@@ -2723,7 +2761,6 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			ev_queue->insert_event(event_data);
 		}
 	}
-
 }
 
 
@@ -2928,7 +2965,19 @@ void EventData::set_time()
 #endif
 }
 
+FwdEventData::FwdEventData():EventData(),av_4(Tango_nullptr),event_data(Tango_nullptr)
+{
+}
 
+FwdEventData::FwdEventData(DeviceProxy *dev,string &_s1,string &_s2,Tango::DeviceAttribute *_da,DevErrorList &_del) :
+                  EventData(dev,_s1,_s2,_da,_del),av_4(Tango_nullptr),event_data(Tango_nullptr)
+{
+}
+
+FwdEventData::FwdEventData(DeviceProxy *dev,string &_s1,string &_s2,Tango::DeviceAttribute *_da,DevErrorList &_del,zmq::message_t *_m) :
+                  EventData(dev,_s1,_s2,_da,_del),av_4(Tango_nullptr),event_data(_m)
+{
+}
 /************************************************************************/
 /*		       															*/
 /* 			AttrConfEventData class 									*/

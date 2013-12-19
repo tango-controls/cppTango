@@ -76,7 +76,7 @@ PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cmd(cmd),p_mon(m),
 					    sleep(1),polling_stop(true),
 					    attr_names(1),tune_ctr(1),
-					    need_two_tuning(false),auto_upd(-1),send_heartbeat(heartbeat)
+					    need_two_tuning(false),auto_upd(-1),send_heartbeat(heartbeat),heartbeat_ctr(0)
 {
     local_cmd.cmd_pending = false;
 
@@ -122,7 +122,7 @@ void *PollThread::run_undetached(TANGO_UNUSED(void *ptr))
 // Declare a work item to check the for new sub devices regularly.
 //
 
-	if ( send_heartbeat == true )
+	if (send_heartbeat == true)
 	{
 		WorkItem wo;
 
@@ -764,6 +764,9 @@ void PollThread::one_more_poll()
 
 		case Tango::EVENT_HEARTBEAT:
 			eve_heartbeat();
+			heartbeat_ctr++;
+			if (heartbeat_ctr % 3 == 0)
+				auto_unsub();
 			break;
 
 		case Tango::STORE_SUBDEV:
@@ -1652,19 +1655,6 @@ void PollThread::poll_attr(WorkItem &to_do)
                     event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name,&before_cmd);
             }
 		}
-
-//
-// Heartbeat - check to see if it is time to send a heartbeat event
-//
-
-		if (send_heartbeat == true)
-		{
-		    if (event_supplier_nd != NULL)
-                event_supplier_nd->push_heartbeat_event();
-            if (event_supplier_zmq != NULL)
-                event_supplier_zmq->push_heartbeat_event();
-		}
-
 	}
 
 
@@ -1768,6 +1758,22 @@ void PollThread::store_subdev()
 		// device server start-up.
 		ignore_call = false;
 	}
+}
+
+//+----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		PollThread::auto_unsub
+//
+// description :
+//		Check if we can unsubscribe on user events on forwarded attribute(s)
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+void PollThread::auto_unsub()
+{
+	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+	rar.auto_unsub();
 }
 
 } // End of Tango namespace

@@ -883,7 +883,7 @@ const ::CORBA::TypeCode_ptr Tango::_tc_AttributeValue_3 = _0RL_tc_Tango_mAttribu
 #endif
 
 
-static const char* _0RL_enumMember_Tango_mAttributeDataType[] = { "ATT_BOOL", "ATT_SHORT", "ATT_LONG", "ATT_LONG64", "ATT_FLOAT", "ATT_DOUBLE", "ATT_UCHAR", "ATT_USHORT", "ATT_ULONG", "ATT_ULONG64", "ATT_STRING", "ATT_STATE", "DEVICE_STATE", "ATT_ENCODED", "NO_DATA" };
+static const char* _0RL_enumMember_Tango_mAttributeDataType[] = { "ATT_BOOL", "ATT_SHORT", "ATT_LONG", "ATT_LONG64", "ATT_FLOAT", "ATT_DOUBLE", "ATT_UCHAR", "ATT_USHORT", "ATT_ULONG", "ATT_ULONG64", "ATT_STRING", "ATT_STATE", "DEVICE_STATE", "ATT_ENCODED", "ATT_NO_DATA" };
 static CORBA::TypeCode_ptr _0RL_tc_Tango_mAttributeDataType = CORBA::TypeCode::PR_enum_tc("IDL:Tango/AttributeDataType:1.0", "AttributeDataType", _0RL_enumMember_Tango_mAttributeDataType, 15, &_0RL_tcTrack);
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
@@ -910,7 +910,7 @@ static CORBA::PR_unionMember _0RL_unionMember_Tango_mAttrValUnion[] = {
   {"state_att_value", _0RL_tc_Tango_mDevVarStateArray, Tango::ATT_STATE},
   {"dev_state_att", _0RL_tc_Tango_mDevState, Tango::DEVICE_STATE},
   {"encoded_att_value", _0RL_tc_Tango_mDevVarEncodedArray, Tango::ATT_ENCODED},
-  {"union_no_data", _0RL_tc_Tango_mDevBoolean, Tango::NO_DATA}
+  {"union_no_data", _0RL_tc_Tango_mDevBoolean, Tango::ATT_NO_DATA}
 };
 #ifdef _0RL_tc_Tango_mAttrValUnion
 #  undef _0RL_tc_Tango_mAttrValUnion

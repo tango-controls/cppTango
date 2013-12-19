@@ -108,7 +108,10 @@ cout << "Entering set_attribute_config_3_local" << endl;
 				if (fwd_cb == true)
 					fwd_attr.set_att_config(new_conf[i]);
 				else
+				{
+					fwd_attr.upd_att_config_base(new_conf[i].label.in());
 					fwd_attr.upd_att_config(new_conf[i]);
+				}
 			}
 			else
 			{

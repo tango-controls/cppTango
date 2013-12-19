@@ -40,6 +40,7 @@ static const char *RcsId = "$Id$";
 #include <fwdattrdesc.h>
 
 #include <fwdattribute.tpp>
+#include <fwdattribute_spec.tpp>
 
 namespace Tango
 {
@@ -261,6 +262,7 @@ void FwdAttr::read(TANGO_UNUSED(DeviceImpl *dev),Attribute &attr)
 
 	try
 	{
+		root_att_dev->set_source(dev->get_call_source());
 		DeviceAttribute da = root_att_dev->read_attribute(fwd_attr.get_fwd_att_name());
 
 //

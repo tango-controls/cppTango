@@ -388,7 +388,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 			break;
 
 			case DEVICE_STATE:
-			case NO_DATA:
+			case ATT_NO_DATA:
 			break;
 
 			case ATT_ENCODED:

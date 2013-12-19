@@ -307,6 +307,8 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 //				 	  Memory has already been allocated for this pointer
 //			- second_try : Flag set to true when this method is called due to a client request with source set to
 //						   CACHE_DEVICE and the reading the value from the cache failed for one reason or another
+//			- idx : Vector with index in back array for which we have to read data (to store error at the right
+//					place in the array for instance)
 //
 //-------------------------------------------------------------------------------------------------------------------
 

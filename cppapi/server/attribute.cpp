@@ -588,6 +588,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	event_periodic_subscription = 0;
 	event_user_subscription = 0;
 	event_attr_conf_subscription = 0;
+	event_attr_conf5_subscription = 0;
 	event_data_ready_subscription = 0;
 }
 
@@ -3820,7 +3821,7 @@ void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_
 			}
 			break;
 
-			case NO_DATA:
+			case ATT_NO_DATA:
 			break;
 		}
 	}

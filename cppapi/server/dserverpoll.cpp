@@ -772,11 +772,21 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 			poll_list.pop_back();
 			dev->get_poll_monitor().rel_monitor();
 
-			stringstream ss;
-			ss << "Attribute " << attr_ptr->get_name() << " is a forwarded attribute and one exception was thrown while accessing its root attribute(";
-			ss << fwd->get_fwd_dev_name() + "/" + fwd->get_fwd_att_name() + ")";
+//
+// Do not re-throw the exception in case of CantConnectToDevice error. This error is sent in case the root device
+// is not yet available. We don't want to abort the DS in such a case. The polling will be re-started when the
+// root device will be available
+//
 
-			Tango::Except::re_throw_exception(e,API_RootAttrFailed,ss.str(),"DServer::add_obj_polling");
+			string reason(e.errors[0].reason.in());
+			if (reason != API_CantConnectToDevice)
+			{
+				stringstream ss;
+				ss << "Attribute " << attr_ptr->get_name() << " is a forwarded attribute and one exception was thrown while accessing its root attribute (";
+				ss << fwd->get_fwd_dev_name() + "/" + fwd->get_fwd_att_name() + ")";
+
+				Tango::Except::re_throw_exception(e,API_RootAttrFailed,ss.str(),"DServer::add_obj_polling");
+			}
 		}
 	}
 	else

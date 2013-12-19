@@ -38,6 +38,7 @@
 
 #include <tango.h>
 #include <pollobj.h>
+#include <utils.h>
 
 #include <list>
 
@@ -121,6 +122,7 @@ protected:
 	void poll_attr(WorkItem &);
 	void eve_heartbeat();
 	void store_subdev();
+	void auto_unsub();
 
 	void print_list();
 	void insert_in_list(WorkItem &);
@@ -156,6 +158,7 @@ private:
 	bool				need_two_tuning;
 	long				auto_upd;
 	bool				send_heartbeat;
+	u_int				heartbeat_ctr;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
@@ -165,7 +168,6 @@ public:
 	static string	   	name_to_del;
 	static PollObjType	type_to_del;
 };
-
 
 //
 // Three macros

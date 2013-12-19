@@ -1016,16 +1016,21 @@ void DServer::restart(string &d_name)
 	{
 		Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
 		Tango::Attribute &att = m_attr->get_attr_by_ind(eve[i].attr_id);
-		if (eve[i].change == true)
-			att.set_change_event_sub();
-		if (eve[i].periodic == true)
-			att.set_periodic_event_sub();
-		if (eve[i].quality == true)
-			att.set_quality_event_sub();
-		if (eve[i].archive == true)
-			att.set_archive_event_sub();
-		if (eve[i].user == true)
-			att.set_user_event_sub();
+
+		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			if (eve[i].change == true)
+				att.set_change_event_sub();
+			if (eve[i].periodic == true)
+				att.set_periodic_event_sub();
+			if (eve[i].quality == true)
+				att.set_quality_event_sub();
+			if (eve[i].archive == true)
+				att.set_archive_event_sub();
+			if (eve[i].user == true)
+				att.set_user_event_sub();
+		}
+
         if (eve[i].notifd == true)
             att.set_use_notifd_event();
         if (eve[i].zmq == true)

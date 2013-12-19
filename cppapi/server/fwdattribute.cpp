@@ -40,6 +40,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <fwdattribute.h>
+#include <fwdattribute.tpp>
 
 namespace Tango
 {
@@ -582,6 +583,46 @@ void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		FwdAttribute::upd_att_config_base
+//
+// description :
+//
+//
+// argument :
+//		in :
+//			- conf : The attribute new configuration
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void FwdAttribute::upd_att_config_base(const char *new_label)
+{
+	cout4 << "Entering FwdAttribute::upd_att_config_base" << endl;
+
+//
+// Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
+//
+
+	if (get_data_type() == DATA_TYPE_UNKNOWN)
+	{
+		string desc("Attribute ");
+		desc = desc + name + " is a forwarded attribute and its root device (";
+		desc = desc + fwd_dev_name;
+		desc = desc + ") is not yet available";
+		Tango::Except::throw_exception(API_AttrConfig,desc,"FwdAttribute::upd_att_config_base");
+	}
+
+//
+// A new label (the only att property stored locally)
+//
+
+	if (string(new_label) != label)
+		upd_att_label(new_label);
+
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		FwdAttribute::upd_att_config
 //
 // description :
@@ -596,33 +637,12 @@ void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
 
 void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 {
-	cout4 << "Entering FwdAttribute::upd_att_config for attribute " << conf.name << endl;
-
-//
-// Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
-//
-
-	if (get_data_type() == DATA_TYPE_UNKNOWN)
-	{
-		string desc("Attribute ");
-		desc = desc + name + " is a forwarded attribute and its root device (";
-		desc = desc + fwd_dev_name;
-		desc = desc + ") is not yet available";
-		Tango::Except::throw_exception(API_AttrConfig,desc,"FwdAttribute::upd_att_config");
-	}
-
-//
-// A new label (the only att property stored locally)
-//
-
-	if (string(conf.label.in()) != label)
-		upd_att_label(conf.label.in());
 
 //
 // Send new config to root attribute if received configuration if different than the one we already have
 //
 
-	if (new_att_conf(conf) == true)
+	if (new_att_conf(Tango_nullptr,&conf) == true)
 	{
 		AttributeInfoListEx aile;
 		AttributeInfoEx aie;
@@ -640,6 +660,30 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 	}
 }
 
+void FwdAttribute::upd_att_config(const Tango::AttributeConfig_3 &conf)
+{
+
+//
+// Send new config to root attribute if received configuration if different than the one we already have
+//
+
+	if (new_att_conf(&conf,Tango_nullptr) == true)
+	{
+		AttributeInfoListEx aile;
+		AttributeInfoEx aie;
+		aie = &conf;
+		aie.label = LabelNotSpec;
+
+		RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+		DeviceProxy *dev = rar.get_root_att_dp(fwd_dev_name);
+
+		aie.name = fwd_att_name;
+		aile.push_back(aie);
+
+		cout4 << "Sending att conf to root device " << fwd_dev_name << endl;
+		dev->set_attribute_config(aile);
+	}
+}
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -657,224 +701,27 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_5 &conf)
+bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tango::AttributeConfig_5 *conf5)
 {
-	if (string(conf.name.in()) != name)
-		return true;
+	bool ret = false;
 
-	if (conf.writable != writable)
-		return true;
-
-	if (conf.data_format != data_format)
-		return true;
-
-	if (conf.data_type != data_type)
-		return true;
-
-	if (conf.memorized != is_memorized())
-		return true;
-
-	if (conf.mem_init != is_memorized_init())
-		return true;
-
-	if (string(conf.description.in()) != description)
-		return true;
-
-	if (string(conf.unit.in()) != unit)
-		return true;
-
-	if (string(conf.standard_unit.in()) != standard_unit)
-		return true;
-
-	if (string(conf.display_unit.in()) != display_unit)
-		return true;
-
-	if (string(conf.format.in()) != format)
-		return true;
-
-	if (string(conf.min_value.in()) != min_value_str)
-		return true;
-
-	if (string(conf.max_value.in()) != max_value_str)
-		return true;
-
-	if (conf.level != disp_level)
-		return true;
-
-	if (conf.writable_attr_name.in() != writable_attr_name)
-		return true;
-
-	if (string(conf.att_alarm.min_alarm.in()) != min_alarm_str)
-		return true;
-
-	if (string(conf.att_alarm.max_alarm.in()) != max_alarm_str)
-		return true;
-
-	if (string(conf.att_alarm.min_warning.in()) != min_warning_str)
-		return true;
-
-	if (string(conf.att_alarm.max_warning.in()) != max_warning_str)
-		return true;
-
-	string tmp_prop(conf.att_alarm.delta_t);
-	if (tmp_prop == AlrmValueNotSpec)
+	if (conf3 != Tango_nullptr)
 	{
-		if (delta_t_str != "0")
-			return true;
+		ret = new_att_conf_base(*conf3);
 	}
 	else
 	{
-		if (tmp_prop != delta_t_str)
-			return true;
-	}
-
-	tmp_prop = conf.att_alarm.delta_val;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (delta_val_str != AlrmValueNotSpec)
-			return true;
-	}
-	else
-	{
-		if (tmp_prop != delta_val_str)
-			return true;
-	}
-
-	double tmp_array[2];
-
-//
-// rel_change
-//
-
-	tmp_prop = conf.event_prop.ch_event.rel_change;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (rel_change[0] != INT_MAX || rel_change[1] != INT_MAX)
-			return true;
-	}
-	else
-	{
-		if (rel_change[0] == INT_MAX && rel_change[1] == INT_MAX)
-			return true;
-		else
+		ret = new_att_conf_base(*conf5);
+		if (ret == false)
 		{
-			convert_event_prop(tmp_prop,tmp_array);
-			if (tmp_array[0] != rel_change[0] || tmp_array[1] != rel_change[1])
-				return true;
+			if (conf5->memorized != is_memorized())
+				ret = true;
+			else if (conf5->mem_init != is_memorized_init())
+				ret = true;
 		}
 	}
 
-//
-// abs_change
-//
-
-	tmp_prop = conf.event_prop.ch_event.abs_change;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (abs_change[0] != INT_MAX || abs_change[1] != INT_MAX)
-			return true;
-	}
-	else
-	{
-		if (abs_change[0] == INT_MAX && abs_change[1] == INT_MAX)
-			return true;
-		else
-		{
-			convert_event_prop(tmp_prop,tmp_array);
-			if (tmp_array[0] != abs_change[0] || tmp_array[1] != abs_change[1])
-				return true;
-		}
-	}
-
-//
-// archive rel_change
-//
-
-	tmp_prop = conf.event_prop.arch_event.rel_change;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (archive_rel_change[0] != INT_MAX || archive_rel_change[1] != INT_MAX)
-			return true;
-	}
-	else
-	{
-		if (archive_rel_change[0] == INT_MAX && archive_rel_change[1] == INT_MAX)
-			return true;
-		else
-		{
-			convert_event_prop(tmp_prop,tmp_array);
-			if (tmp_array[0] != archive_rel_change[0] || tmp_array[1] != archive_rel_change[1])
-				return true;
-		}
-	}
-
-//
-// archive abs_change
-//
-
-	tmp_prop = conf.event_prop.arch_event.abs_change;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (archive_abs_change[0] != INT_MAX || archive_abs_change[1] != INT_MAX)
-			return true;
-	}
-	else
-	{
-		if (archive_abs_change[0] == INT_MAX && archive_abs_change[1] == INT_MAX)
-			return true;
-		else
-		{
-			convert_event_prop(tmp_prop,tmp_array);
-			if (tmp_array[0] != archive_abs_change[0] || tmp_array[1] != archive_abs_change[1])
-				return true;
-		}
-	}
-
-//
-// event period
-//
-
-	tmp_prop = conf.event_prop.per_event.period;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (event_period != DEFAULT_EVENT_PERIOD)
-			return true;
-	}
-	else
-	{
-		stringstream ss;
-		int tmp_per;
-
-		ss << tmp_prop;
-		ss >> tmp_per;
-
-		if (tmp_per != event_period)
-			return true;
-	}
-
-//
-// archive event period
-//
-
-	tmp_prop = conf.event_prop.arch_event.period;
-	if (tmp_prop == AlrmValueNotSpec)
-	{
-		if (archive_period != INT_MAX)
-			return true;
-	}
-	else
-	{
-		stringstream ss;
-		int tmp_per;
-
-		ss << tmp_prop;
-		ss >> tmp_per;
-
-		if  (tmp_per != archive_period)
-			return true;
-	}
-
-	return false;
+	return ret;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -1111,9 +958,180 @@ DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
 // Update attribute name in returned data
 //
 
-	hist_4->name = get_fwd_att_name().c_str();
+	hist_4->name = get_name().c_str();
 
 	return hist_4;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		FwdAttribute::write_read_root_att
+//
+// description :
+//		Get attribute polling history from the root attribute.
+//		Note that we do not use the classical API DeviceProxy class instance. This is because for this call, the
+//		network transfer uses RLE algorithm and the API is doing the decoding. In our case, we want data from
+//		root attribute in RLE and directly transfer them in RLE to our client.
+//
+// argument :
+//		in :
+//			- n : Required history depth
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+AttributeValueList_4 *FwdAttribute::write_read_root_att(Tango::AttributeValueList_4& values)
+{
+//
+// Get CORBA object reference
+//
+
+	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+	DeviceProxy *dp = rar.get_root_att_dp(get_fwd_dev_name());
+	Device_4_var dev4 = dp->get_device_4();
+
+//
+// Update attribute name
+//
+
+	values[0].name = get_fwd_att_name().c_str();
+
+	int ctr = 0;
+	AttributeValueList_4 *attr_value_list_4;
+	Tango::AccessControlType local_act;
+
+	while (ctr < 2)
+	{
+		try
+		{
+			dp->check_and_reconnect(local_act);
+
+//
+// Throw exception if caller not allowed to write_attribute
+//
+
+			if (local_act == ACCESS_READ)
+			{
+				try
+				{
+					Device_var dev = Device::_duplicate(dp->device);
+					dev->ping();
+				}
+				catch(...)
+				{
+					dp->set_connection_state(CONNECTION_NOTOK);
+					throw;
+				}
+
+				TangoSys_OMemStream desc;
+				desc << "Writing attribute(s) on device " << get_fwd_dev_name() << " is not authorized" << ends;
+
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
+											  	  (const char *)"FwdAttribute::write_read_root_att()");
+			}
+
+//
+// Now, call the root device server
+//
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			attr_value_list_4 = dev4->write_read_attributes_4(values,ci);
+
+			ctr = 2;
+
+		}
+		catch (Tango::MultiDevFailed &e)
+		{
+
+//
+// Transfer this exception into a DevFailed exception
+//
+
+			Tango::DevFailed ex(e.errors[0].err_list);
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attribute on device " << get_fwd_dev_name();
+			desc << ", attribute ";
+			desc << values[0].name.in();
+			desc << ends;
+			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
+                        	desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
+
+		}
+		catch (Tango::DevFailed &e)
+		{
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attribute on device " << get_fwd_dev_name();
+			desc << ", attribute ";
+			desc << values[0].name.in();
+			desc << ends;
+
+			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
+				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
+							desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
+			else
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
+                        	desc.str(), (const char*)"FwdAttribute::write_read_root_att()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"FwdAttribute","write_read_root_att()",dp);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"FwdAttribute","write_read_root_att",dp);
+			}
+			else
+			{
+				dp->set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute write_read_attribute on device " << get_fwd_dev_name() << ends;
+				ApiCommExcept::re_throw_exception(one,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"FwdAttribute::write_read_root_att()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"FwdAttribute","write_read_root_att",dp);
+			}
+			else
+			{
+				dp->set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute write_attribute on device " << get_fwd_dev_name() << ends;
+				ApiCommExcept::re_throw_exception(comm,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"FwdAttribute::write_read_root_att");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			dp->set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute write_attributes on device " << get_fwd_dev_name() << ends;
+			ApiCommExcept::re_throw_exception(ce,
+						      (const char*)"API_CommunicationFailed",
+                        			      desc.str(),
+						      (const char*)"FwdAttribute::write_read_root_att()");
+		}
+	}
+
+//
+// Init the returned DeviceAttribute instance
+//
+
+	(*attr_value_list_4)[0].name = get_name().c_str();
+	return attr_value_list_4;
 }
 
 } // End of Tango namespace

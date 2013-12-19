@@ -37,6 +37,7 @@
 #include <attrdesc.h>
 #include <fwdattrdesc.h>
 #include <encoded_attribute.h>
+
 #include <functional>
 #include <time.h>
 #include <iterator>
@@ -2119,11 +2120,29 @@ public:
 	bool use_notifd_event() {return notifd_event;}
 	bool use_zmq_event() {return zmq_event;}
 
+//
+// Warning, methods below are not protected !
+//
+
 	void set_change_event_sub() {event_change_subscription=time(NULL);}
+	time_t get_change_event_sub() {return event_change_subscription;}
+
 	void set_periodic_event_sub() {event_periodic_subscription=time(NULL);}
+	time_t get_periodic_event_sub() {return event_periodic_subscription;}
+
 	void set_archive_event_sub() {event_archive_subscription=time(NULL);}
+	time_t get_archive_event_sub() {return event_archive_subscription;}
+
 	void set_quality_event_sub() {event_quality_subscription=time(NULL);}
+	time_t get_quality_event_sub() {return event_quality_subscription;}
+
 	void set_user_event_sub() {event_user_subscription=time(NULL);}
+	time_t get_user_event_sub() {return event_user_subscription;}
+
+	time_t get_data_ready_event_sub() {return event_data_ready_subscription;}
+
+// End of warning
+
 	void set_use_notifd_event() {notifd_event = true;}
 	void set_use_zmq_event() {zmq_event = true;}
 

@@ -2686,7 +2686,7 @@ _CORBA_MODULE_BEG
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_AttributeValue_3;
 
-  enum AttributeDataType { ATT_BOOL, ATT_SHORT, ATT_LONG, ATT_LONG64, ATT_FLOAT, ATT_DOUBLE, ATT_UCHAR, ATT_USHORT, ATT_ULONG, ATT_ULONG64, ATT_STRING, ATT_STATE, DEVICE_STATE, ATT_ENCODED, NO_DATA /*, __max_AttributeDataType=0xffffffff */ };
+  enum AttributeDataType { ATT_BOOL, ATT_SHORT, ATT_LONG, ATT_LONG64, ATT_FLOAT, ATT_DOUBLE, ATT_UCHAR, ATT_USHORT, ATT_ULONG, ATT_ULONG64, ATT_STRING, ATT_STATE, DEVICE_STATE, ATT_ENCODED, ATT_NO_DATA /*, __max_AttributeDataType=0xffffffff */ };
   typedef AttributeDataType& AttributeDataType_out;
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_AttributeDataType;
@@ -2733,7 +2733,7 @@ _CORBA_MODULE_BEG
 
         case ATT_ENCODED: encoded_att_value(_value._pd_encoded_att_value); break;
 
-        case NO_DATA: union_no_data(_value._pd_union_no_data); break;
+        case ATT_NO_DATA: union_no_data(_value._pd_union_no_data); break;
 
           default: break;
 
@@ -2776,7 +2776,7 @@ _CORBA_MODULE_BEG
 
         case ATT_ENCODED: encoded_att_value(_value._pd_encoded_att_value); break;
 
-        case NO_DATA: union_no_data(_value._pd_union_no_data); break;
+        case ATT_NO_DATA: union_no_data(_value._pd_union_no_data); break;
 
           default: break;
 
@@ -2810,7 +2810,7 @@ _CORBA_MODULE_BEG
         case ATT_STATE: goto fail;
         case DEVICE_STATE: goto fail;
         case ATT_ENCODED: goto fail;
-        case NO_DATA: goto fail;
+        case ATT_NO_DATA: goto fail;
         default: goto fail;
 
       };
@@ -2953,7 +2953,7 @@ _CORBA_MODULE_BEG
     DevBoolean union_no_data () const { return _pd_union_no_data; }
     void union_no_data (DevBoolean  _value) {
       _pd__initialised = 1;
-      _pd__d = NO_DATA;
+      _pd__d = ATT_NO_DATA;
       _pd__default = 0;
       _pd_union_no_data = _value;
     }
@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;  
+omni_mutex *mut_ptr;    
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -6233,7 +6233,7 @@ inline void operator >>=(Tango::AttributeDataType _e, cdrStream& s) {
 inline void operator <<= (Tango::AttributeDataType& _e, cdrStream& s) {
   ::CORBA::ULong _0RL_e;
   ::operator<<=(_0RL_e,s);
-  if (_0RL_e <= Tango::NO_DATA) {
+  if (_0RL_e <= Tango::ATT_NO_DATA) {
     _e = (Tango::AttributeDataType) _0RL_e;
   }
   else {

@@ -590,7 +590,7 @@ Tango::AttrValUnion::operator>>= (cdrStream& _n) const
     case ATT_ENCODED:
       (const DevVarEncodedArray&) _pd_encoded_att_value >>= _n;
       break;
-    case NO_DATA:
+    case ATT_NO_DATA:
       _n.marshalBoolean(_pd_union_no_data);
       break;
     default: break;
@@ -663,7 +663,7 @@ Tango::AttrValUnion::operator<<= (cdrStream& _n)
       _pd__default = 0;
       (DevVarEncodedArray&)_pd_encoded_att_value <<= _n;
       break;
-    case NO_DATA:
+    case ATT_NO_DATA:
       _pd__default = 0;
       _pd_union_no_data = _n.unmarshalBoolean();
       break;

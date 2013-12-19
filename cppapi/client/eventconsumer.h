@@ -1,44 +1,33 @@
-////////////////////////////////////////////////////////////////////////////////
-///
-///  file       eventconsumer.h
-///
-/// 	        C++ include file for implementing the TANGO event related
-///		        client classes - EventConsumer and others.
-///             These classes are used to receive events from the server
-///             and from the notification service.
-///
-///  author(s) : E.Taurel (taurel@esrf.fr)
+//====================================================================================================================
 //
-// Copyright (C) :      2011,2012,2013
-//						European Synchrotron Radiation Facility
-//                      BP 220, Grenoble 38043
-//                      FRANCE
+// file :      		eventconsumer.h
+//
+// description :  	C++ include file for implementing the TANGO event related client classes - EventConsumer and others.
+//             		These classes are used to receive events from the server and from the notification service.
+//
+// author(s) : 		E.Taurel (taurel@esrf.fr)
+//
+// Copyright (C) :  2011,2012,2013
+//					European Synchrotron Radiation Facility
+//                  BP 220, Grenoble 38043
+//                  FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-///
-/// 		original : 7 November 2011
-///
-/// 		$Revision$
-///
-/// 		copyright : European Synchrotron Radiation Facility
-///                         BP 220, Grenoble 38043
-///                         FRANCE
-///
-////////////////////////////////////////////////////////////////////////////////
+// $Revision$
+//
+//====================================================================================================================
 
 #ifndef _EVENTCONSUMER_H
 #define _EVENTCONSUMER_H
@@ -266,6 +255,7 @@ typedef struct event_not_connected
 	EventQueue                  	*ev_queue;
 	vector<string> 					filters;
 	time_t 							last_heartbeat;
+	string							prefix;
 } EventNotConnected;
 
 typedef struct event_subscribe
@@ -295,6 +285,7 @@ typedef struct event_callback_zmq
     DevULong                        ctr;
     string							endpoint;
     bool							discarded_event;
+    bool							fwd_att;
 }EventCallBackZmq;
 
 typedef struct event_callback: public EventCallBackBase, public EventCallBackZmq
@@ -600,7 +591,6 @@ private:
 	EventConsumer 	*ev_cons;
 	TangoMonitor	*the_mon;
 };
-
 
 } // End of namespace
 

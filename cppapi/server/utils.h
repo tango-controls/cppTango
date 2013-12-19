@@ -36,11 +36,11 @@
 #define _UTILS_H
 
 #include <tango.h>
-#include <pollthread.h>
 #include <pollext.h>
 #include <subdev_diag.h>
 #include <new>
 #include <rootattreg.h>
+#include <pollthread.h>
 
 #ifndef _TG_WINDOWS_
 	#include <unistd.h>
@@ -885,6 +885,7 @@ public:
 	void set_wattr_nan_allowed(bool val) {wattr_nan_allowed=val;}
 
 	RootAttRegistry &get_root_att_reg() {return root_att_reg;}
+	void event_name_2_event_type(string &,EventType &);
 
 private:
 	TANGO_IMP static Util	*_instance;
@@ -1094,6 +1095,24 @@ inline void Util::check_orb_endpoint(int argc, char *argv[])
 		cerr << "Missing ORB endPoint specification" << endl;
 		print_usage(argv[0]);
 	}
+}
+
+inline void Util::event_name_2_event_type(string &event_name,EventType &et)
+{
+	if (event_name == "change")
+		et = CHANGE_EVENT;
+	else if (event_name == "quality")
+		et = QUALITY_EVENT;
+	else if (event_name == "periodic")
+		et = PERIODIC_EVENT;
+	else if (event_name == "archive")
+		et = ARCHIVE_EVENT;
+	else if (event_name == "user_event")
+		et = USER_EVENT;
+	else if (event_name == "attr_conf" || event_name == "attr_conf_5")
+		et = ATTR_CONF_EVENT;
+	else
+		et = DATA_READY_EVENT;
 }
 
 //+-------------------------------------------------------------------------

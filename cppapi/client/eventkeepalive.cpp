@@ -191,8 +191,10 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 					string adm_name = ipos->second.full_adm_name;
 
 #ifdef ZMQ_HAS_DISCONNECT
+cerr << "Calling disconnect_event_channel()" << endl;
 					event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint);
 #endif
+cerr << "Calling connect_event_channel()" << endl;
 					event_consumer->connect_event_channel(adm_name,
 									      epos->second.device->get_device_db(),
 									      true,subscriber_out);
@@ -206,6 +208,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 				catch(...)
 				{
 					ret = false;
+cerr << "Exception in KeepAliveThread::reconnect_to_zmq_channel()" << endl;
 				}
 
 				break;
@@ -446,11 +449,12 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 #ifdef ZMQ_HAS_DISCONNECT
 						if (disconnect_called == false)
 						{
+cerr << "Calling disconnect_event()" << endl;
 							event_consumer->disconnect_event(epos->second.fully_qualified_event_name,epos->second.endpoint);
 							disconnect_called = true;
 						}
 #endif
-
+cerr << "Calling connect_event_system()" << endl;
 						event_consumer->connect_event_system(d_name,epos->second.attr_name,epos->second.event_name,vs,ipos,ecbs,dd);
 
 						const DevVarLongStringArray *dvlsa;
@@ -459,9 +463,18 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 
 						cout3 << "Reconnected to ZMQ event" << endl;
 					}
+catch(Tango::DevFailed &e)
+{
+epos->second.filter_ok = false;
+cerr << "DevFailed Exception in KeepAliveThread::reconnect_to_zmq_event()" << endl;
+string reas(e.errors[0].reason.in());
+string desc(e.errors[0].desc.in());
+cerr << "Exception reason = " << reas << ", desc = " << desc << endl;
+}
 					catch(...)
 					{
 						epos->second.filter_ok = false;
+cerr << "Exception in KeepAliveThread::reconnect_to_zmq_event()" << endl;
 					}
 
 					epos->second.callback_monitor->rel_monitor();
@@ -943,7 +956,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 
 										if (event_name == CONF_TYPE_EVENT || event_name == CONF5_TYPE_EVENT)
 										{
-											AttrConfEventData *event_data = new FwdAttrConfEventData(epos->second.device,
+											FwdAttrConfEventData *event_data = new FwdAttrConfEventData(epos->second.device,
 											      												domain_name,
 											      												event_name,
 											      												dev_attr_conf,
@@ -1006,7 +1019,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 										}
 										else
 										{
-											EventData *event_data = new EventData(epos->second.device,
+											FwdEventData *event_data = new FwdEventData(epos->second.device,
 											      			domain_name,
 											      			event_name,
 											      			dev_attr,
@@ -1119,14 +1132,14 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 												{
 													cb_ctr++;
-													EventData *event_data;
+													FwdEventData *event_data;
 
 													if (cb_ctr != cb_nb)
 													{
 														da_copy = new DeviceAttribute();
 														da_copy->deep_copy(*da);
 
-														event_data = new EventData(epos->second.device,
+														event_data = new FwdEventData(epos->second.device,
 													      				domain_name,
 													      				epos->second.event_name,
 													      				da_copy,
@@ -1134,7 +1147,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 													}
 													else
 													{
-														event_data = new EventData(epos->second.device,
+														event_data = new FwdEventData(epos->second.device,
 													      				domain_name,
 													      				epos->second.event_name,
 													      				da,
@@ -1219,7 +1232,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
 												{
 													cb_ctr++;
-													AttrConfEventData *event_data;
+													FwdAttrConfEventData *event_data;
 													string ev_name(epos->second.event_name);
 													if (ev_name == CONF5_TYPE_EVENT)
 														ev_name = CONF_TYPE_EVENT;
@@ -1338,7 +1351,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
 {
 
 //
-// subscribe has not worked, try again in the next hearbeat period
+// Subscribe has not worked, try again in the next hearbeat period
 //
 
     vpos->last_heartbeat = now;
@@ -1350,7 +1363,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
 
     DevErrorList err;
     err.length(0);
-    string domain_name = vpos->device->dev_name() + "/" + vpos->attribute;
+    string domain_name = vpos->prefix + vpos->device->dev_name() + "/" + vpos->attribute;
     err = e.errors;
 
 //
@@ -1364,7 +1377,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
     {
 
         DeviceAttribute *da = NULL;
-        EventData *event_data = new EventData(vpos->device,
+        FwdEventData *event_data = new FwdEventData(vpos->device,
                                                 domain_name,
                                                 vpos->event_name,
                                                 da,

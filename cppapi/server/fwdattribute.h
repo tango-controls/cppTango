@@ -52,11 +52,12 @@ public:
 	void set_att_config(const Tango::AttributeConfig_3 &) {}
 	void set_att_config(AttributeInfoEx *);
 
+	void upd_att_config_base(const char *);
 	void upd_att_config(const Tango::AttributeConfig_5 &);
-	void upd_att_config(const Tango::AttributeConfig_3 &) {}
+	void upd_att_config(const Tango::AttributeConfig_3 &);
 
 	void upd_att_label(const char *);
-	bool new_att_conf(const Tango::AttributeConfig_5 &);
+	bool new_att_conf(const Tango::AttributeConfig_3 *,const Tango::AttributeConfig_5 *);
 
 	Attr_Value &get_root_ptr() {return r_val;}
 
@@ -66,7 +67,11 @@ public:
 	template<typename T,typename V>
 	void propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T *&,V *&);
 
+	template<typename T>
+	bool new_att_conf_base(const T&);
+
 	DevAttrHistory_4 *read_root_att_history(long n);
+	AttributeValueList_4 *write_read_root_att(AttributeValueList_4&);
 
 protected:
 	void convert_event_prop(string &,double *);

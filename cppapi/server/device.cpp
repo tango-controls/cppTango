@@ -88,7 +88,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
 {
     real_ctor();
 }
@@ -104,7 +104,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
 {
     real_ctor();
 }
@@ -118,7 +118,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -136,7 +136,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -5388,7 +5388,7 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 				break;
 
 			case FWD_ROOT_DEV_NOT_STARTED:
-				alarm_status = alarm_status + "Root device not started yet";
+				alarm_status = alarm_status + "Root device not started yet. Polling (if any) for this attribute not available";
 				break;
 
 			case FWD_TOO_OLD_LOCAL_DEVICE:

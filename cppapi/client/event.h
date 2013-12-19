@@ -1,14 +1,13 @@
-////////////////////////////////////////////////////////////////////////////////
-///
-///  file       event.h
-///
-/// 	        C++ include file for implementing the TANGO event server and
-///		        client singleton classes - EventSupplier and EventConsumer.
-///             These classes are used to send events from the server
-///             to the notification service and to receive events from
-///             the notification service.
-///
-/// 		author(s) : A.Gotz (goetz@esrf.fr)
+//===================================================================================================================
+//
+//  file :      	event.h
+//
+// 	description :   C++ include file for implementing the TANGO event server and client singleton classes -
+//					EventSupplier and EventConsumer.
+//             		These classes are used to send events from the server to the notification service and to receive
+//					events from the notification service.
+//
+//  author(s) : 	A.Gotz (goetz@esrf.fr)
 //
 // Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013
 //						European Synchrotron Radiation Facility
@@ -17,29 +16,20 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-///
-/// 		original : 7 April 2003
-///
-/// 		$Revision$
-///
-/// 		copyright : European Synchrotron Radiation Facility
-///                         BP 220, Grenoble 38043
-///                         FRANCE
-///
-////////////////////////////////////////////////////////////////////////////////
+// $Revision$
+//
+//===================================================================================================================
 
 #ifndef _EVENTAPI_H
 #define _EVENTAPI_H
@@ -47,6 +37,8 @@
 #include <attribute.h>
 #include <except.h>
 #include <tango_const.h>
+
+#include <zmq.hpp>
 
 namespace Tango
 {
@@ -97,6 +89,21 @@ private:
 	void set_time();
 };
 
+class FwdEventData: public EventData
+{
+public:
+	FwdEventData();
+	FwdEventData(DeviceProxy *,string &,string &,Tango::DeviceAttribute *,DevErrorList &);
+	FwdEventData(DeviceProxy *,string &,string &,Tango::DeviceAttribute *,DevErrorList &,zmq::message_t *);
+
+	void set_av_4(const AttributeValue_4 *_p) {av_4 = _p;}
+	const AttributeValue_4 *get_av_4() {return av_4;}
+	zmq::message_t *get_zmq_mess_ptr() {return event_data;}
+
+private:
+	const AttributeValue_4	*av_4;
+	zmq::message_t			*event_data;
+};
 
 /********************************************************************************
  * 																				*

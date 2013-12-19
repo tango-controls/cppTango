@@ -114,8 +114,6 @@ const char* const HEARTBEAT                = "Event heartbeat";
 // ZMQ event system related define
 //
 
-const int   EPHEMERAL_PORT_BEGIN           = 55555;
-const int   EPHEMERAL_PORT_END             = 65535;
 const int   ZMQ_EVENT_PROT_VERSION         = 1;
 const char* const HEARTBEAT_METHOD_NAME    = "push_heartbeat_event";
 const char* const EVENT_METHOD_NAME        = "push_zmq_event";
@@ -302,6 +300,7 @@ const char* const API_BlackBoxEmpty                = "API_BlackBoxEmpty";
 const char* const API_CannotCheckAccessControl     = "API_CannotCheckAccessControl";
 const char* const API_CannotOpenFile               = "API_CannotOpenFile";
 const char* const API_CantActivatePOAManager       = "API_CantActivatePOAManager";
+const char* const API_CantConnectToDevice		   = "API_CantConnectToDevice";
 const char* const API_CantCreateClassPoa           = "API_CantCreateClassPoa";
 const char* const API_CantCreateLockingThread      = "API_CantCreateLockingThread";
 const char* const API_CantDestroyDevice            = "API_CantDestroyDevice";

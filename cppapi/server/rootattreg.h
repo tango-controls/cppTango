@@ -47,20 +47,33 @@ struct NameFwdAttr
 	FwdAttr			*fwd_attr;
 };
 
+struct UserEvent
+{
+	EventType		event_type;			// Event type
+	int				event_id;			//
+};
+
 class RootAttRegistry
 {
 public:
-	RootAttRegistry():cbp(this) {}
+	RootAttRegistry():cbp(this),cbu(this) {}
 
 	void add_root_att(string &,string &,string &,string &,FwdAttr *,DeviceImpl *);
 	void remove_root_att(string &,string &);
 	DeviceProxy *get_root_att_dp(string &);
-	string get_local_att_name(string &_s) {return cbp.get_local_att_name(_s);}
+	DeviceImpl *get_local_dev(string &_s) {return cbp.get_local_dev(_s);}
+	string get_local_att_name(const string &_s) {return cbp.get_local_att_name(_s);}
 	void update_label(string &_d,string &_a,string &_l) {string s(_d+'/'+_a);cbp.update_label(s,_l);}
 	void update_device_impl(string &_n,DeviceImpl *_d) {cbp.update_device_impl(_n,_d);}
 
 	void clear_attrdesc(string &,string &);
 	bool check_root_dev_release(string &);
+
+	bool is_event_subscribed(string &,EventType);
+	void subscribe_user_event(string &,string &,EventType);
+	void auto_unsub();
+
+	bool is_root_attribute(string &_s) {return cbp.is_root_att_in_map(_s);}
 
 protected:
 
@@ -77,7 +90,8 @@ private:
 		void clear_attrdesc(string &);
         bool is_root_att_in_map(string &);
         int count_root_dev(string &);
-		string get_local_att_name(string &);
+		string get_local_att_name(const string &);
+		DeviceImpl *get_local_dev(string &);
 		void update_label(string &,string &);
 		void update_device_impl(string &,DeviceImpl *);
 
@@ -89,9 +103,29 @@ private:
 		RootAttRegistry						*rar;
 	};
 
+	class RootAttUserCallBack: public Tango::CallBack
+	{
+	public:
+		RootAttUserCallBack(RootAttRegistry *_r):Tango::CallBack(),rar(_r) {}
+
+		virtual void push_event(Tango::EventData *);
+		virtual void push_archive_event(Tango::DataReadyEventData *);
+
+	private:
+		RootAttRegistry						*rar;
+
+		vector<string>						dummy_vs;
+		vector<double>						dummy_vd;
+		vector<long>						dummy_vl;
+	};
+
 	map<string,DeviceProxy *>		dps;				// Key is root attribute device name
-	map<string,int>					map_event_id;		// key id root attribute device_name/att_name
+	map<string,int>					map_event_id;		// Key is root attribute device_name/att_name
+	map<string,vector<UserEvent> >	map_event_id_user;	// Key is root attribute device name/att_name
+	ReadersWritersLock				id_user_lock;
+
 	RootAttConfCallBack				cbp;
+	RootAttUserCallBack				cbu;
 };
 
 } // End of Tango namespace

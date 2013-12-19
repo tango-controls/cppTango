@@ -47,12 +47,6 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <netinet/in.h> 	// FreeBSD
 
-// There is a NO_DATA defined in netdb.h
-
-#ifdef NO_DATA
-#undef NO_DATA
-#endif
-
 #else
 #include <ws2tcpip.h>
 #include <process.h>
@@ -1376,7 +1370,7 @@ void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4,TANGO_UNUSED(l
 			}
 			break;
 
-			case NO_DATA:
+			case ATT_NO_DATA:
 			break;
 		}
 	}

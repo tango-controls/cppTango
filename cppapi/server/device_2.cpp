@@ -1781,7 +1781,7 @@ void Device_2Impl::Polled_2_Live(TANGO_UNUSED(long data_type),Tango::AttrValUnio
 		break;
 
 		case ATT_ENCODED:
-		case NO_DATA:
+		case ATT_NO_DATA:
 		break;
 	}
 }
