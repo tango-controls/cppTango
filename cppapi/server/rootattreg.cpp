@@ -767,10 +767,18 @@ void RootAttRegistry::remove_root_att(string &root_dev_name,string &root_att_nam
 
 		if (it != map_event_id_user.end())
 		{
+#ifdef HAS_RANGE_BASE_FOR
 			for (const auto &elem:it->second)
 			{
 				pos->second->unsubscribe_event(elem.event_id);
 			}
+#else
+			vector<UserEvent>::iterator posi;
+			for (posi = it->second.begin();posi != it->second.end();++posi)
+			{
+				pos->second->unsubscribe_event(posi->event_id);
+			}
+#endif
 			map_event_id_user.erase(it);
 		}
 	}
@@ -987,6 +995,7 @@ bool RootAttRegistry::is_event_subscribed(string &ev,EventType et)
 		pos = map_event_id_user.find(ev);
 		if (pos != map_event_id_user.end())
 		{
+#ifdef HAS_RANGE_BASE_FOR
 			for (const auto &elem:pos->second)
 			{
 				if (elem.event_type == et)
@@ -995,6 +1004,17 @@ bool RootAttRegistry::is_event_subscribed(string &ev,EventType et)
 					break;
 				}
 			}
+#else
+			vector<UserEvent>::iterator posi;
+			for (posi = pos->second.begin();posi != pos->second.end();++posi)
+			{
+				if (posi->event_type == et)
+				{
+					ret = true;
+					break;
+				}
+			}
+#endif
 		}
 	}
 
