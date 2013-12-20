@@ -47,6 +47,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP2"
 				Optimization="4"
 				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;&quot;$(OMNI_BASE)\win32_dll\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include\vc9&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;"
@@ -72,19 +73,19 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango900 release\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango902 release\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="log4tango.lib omniorb416_rt.lib omnidynamic416_rt.lib omnithread34_rt.lib COS416_rt.lib zmq.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(PREFIX)\win32\lib\vc9_dll\tango900.dll"
-				Version="9.0.0"
+				OutputFile="$(PREFIX)\win32\lib\vc9_dll\tango902.dll"
+				Version="9.0.2"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\win32_dll\lib&quot;;&quot;$(ZMQ_BASE)\win32\lib\vc9_dll&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib\vc9_dll&quot;"
 				ModuleDefinitionFile="tango.def"
-				ProgramDatabaseFile=".\Release/tango900.pdb"
+				ProgramDatabaseFile=".\Release/tango902.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(PREFIX)\win32\lib\vc9_dll\tango.lib"
@@ -145,6 +146,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP2"
 				Optimization="0"
 				AdditionalIncludeDirectories="..;..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;&quot;$(OMNI_BASE)\win32_dll\include&quot;;&quot;$(ZMQ_BASE)\win32\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win32\include\vc9&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL;JPG_USE_ASM;_CRT_SECURE_NO_DEPRECATE"
@@ -155,7 +157,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_dll.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName="$(PREFIX)\win32\lib\vc9_dll\tangod.9.0.0.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win32\lib\vc9_dll\tangod.9.0.2.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -172,20 +174,20 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango900d debug\*.obj"
+				CommandLine="C:\perl\bin\perl ..\..\makedef.pl tango.def tango902d debug\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="log4tangod.lib omniORB416_rtd.lib omniDynamic416_rtd.lib COS416_rtd.lib omnithread34_rtd.lib zmqd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
 				ShowProgress="2"
-				OutputFile="$(PREFIX)\win32\lib\vc9_dll\tango900d.dll"
-				Version="9.0.0"
+				OutputFile="$(PREFIX)\win32\lib\vc9_dll\tango902d.dll"
+				Version="9.0.2"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(ZMQ_BASE)\win32\lib\vc9_dll&quot;;&quot;$(OMNI_BASE)\win32_dll\lib&quot;;&quot;$(LOG4TANGO_BASE)\win32\lib\vc9_dll&quot;"
 				ModuleDefinitionFile="tango.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/tango900d.pdb"
+				ProgramDatabaseFile=".\Debug/tango902d.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(PREFIX)\win32\lib\vc9_dll\tangod.lib"
@@ -346,6 +348,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\attrgetsetprop.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\attribute.cpp"
 				>
 				<FileConfiguration
@@ -392,6 +398,10 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attrsetval.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\basiccommand.cpp"
@@ -926,6 +936,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\device_5.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\deviceclass.cpp"
 				>
 				<FileConfiguration
@@ -1228,6 +1242,14 @@
 						BasicRuntimeChecks="3"
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattrdesc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\client\group.cpp"
@@ -1562,6 +1584,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\rootattreg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\seqvec.cpp"
 				>
 				<FileConfiguration
@@ -1823,7 +1849,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\attribute.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attribute_spec.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\attrmanip.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attrprop.tpp"
 				>
 			</File>
 			<File
@@ -1883,7 +1921,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\device_3.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\device_4.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\device_5.h"
 				>
 			</File>
 			<File
@@ -1928,6 +1974,22 @@
 			</File>
 			<File
 				RelativePath="..\..\..\client\filedatabase.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattrdesc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute_spec.tpp"
 				>
 			</File>
 			<File
@@ -1987,6 +2049,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pollext.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollobj.h"
 				>
 			</File>
@@ -1996,6 +2062,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\pollthread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\rootattreg.h"
 				>
 			</File>
 			<File
@@ -2039,11 +2109,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\utils.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\utils_spec.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\w32win.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\w_attribute.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_attribute.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_attribute_spec.tpp"
 				>
 			</File>
 		</Filter>
