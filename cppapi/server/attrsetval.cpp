@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2013
+// Copyright (C) :      2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -74,11 +74,6 @@ namespace Tango
 
 void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -120,6 +115,15 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data_size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -185,12 +189,6 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 {
 //
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
-
-//
 // Throw exception if type is not correct
 //
 
@@ -230,6 +228,15 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data_size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -295,11 +302,6 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -341,6 +343,15 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data_size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -406,11 +417,6 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -451,6 +457,15 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data_size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -515,11 +530,6 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -560,6 +570,15 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data_size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -624,11 +643,6 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -669,6 +683,15 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -743,11 +766,6 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -788,6 +806,15 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -853,11 +880,6 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -898,6 +920,15 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -963,11 +994,6 @@ void Attribute::set_value(Tango::DevBoolean *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -1007,6 +1033,15 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -1071,11 +1106,6 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 
 void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -1117,6 +1147,15 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -1183,12 +1222,6 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 {
 
 //
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
-
-//
 // Throw exception if type is not correct
 //
 
@@ -1228,6 +1261,15 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -1292,11 +1334,6 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -1338,6 +1375,15 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
@@ -1402,11 +1448,6 @@ void Attribute::set_value(Tango::DevState *p_data,long x,long y,bool release)
 
 void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 {
-//
-// Throw exception if pointer is null
-//
-
-	CHECK_PTR(p_data,name);
 
 //
 // Throw exception if type is not correct
@@ -1446,6 +1487,15 @@ void Attribute::set_value(Tango::DevEncoded *p_data,long x, long y,bool release)
 	dim_y = y;
 	set_data_size();
 	quality = Tango::ATTR_VALID;
+
+//
+// Throw exception if pointer is null and data size != 0
+//
+
+	if (data_size != 0)
+	{
+		CHECK_PTR(p_data,name);
+	}
 
 //
 // If the data is wanted from the DevState command, store it in a sequence.
