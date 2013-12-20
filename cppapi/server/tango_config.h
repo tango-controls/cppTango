@@ -79,8 +79,10 @@
             #define WIN32_VC8
         #elif ((_MSC_VER >= 1500) && (_MSC_VER < 1600))
             #define WIN32_VC9
-        #elif (_MSC_VER >= 1600)
+        #elif ((_MSC_VER >= 1600) && (_MSC_VER < 1700))
             #define WIN32_VC10
+		#elif (_MSC_VER >= 1700)
+			#define WIN32_VC11
         #endif   // VC8+/VC9/VC10
     #endif
 #endif
@@ -166,7 +168,13 @@
         #define HAS_LAMBDA_FUNC
         #define HAS_NULLPTR
         #define HAS_RVALUE
-		#define INIT_LIST
+    #endif
+    #ifdef WIN32_VC11
+        #define HAS_UNIQUE_PTR
+        #define HAS_LAMBDA_FUNC
+        #define HAS_NULLPTR
+        #define HAS_RVALUE
+		#define HAS_RANGE_BASE_FOR
     #endif
 #endif
 

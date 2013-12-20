@@ -119,6 +119,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP8"
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\..\server\jpeg;..\..\..\server;..\..\..\client;..\..\..\win32\resources;&quot;$(OMNI_BASE)\win64\include&quot;;&quot;$(ZMQ_BASE)\win64\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win64\include&quot;"
@@ -267,6 +268,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP8"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\..\win32\resources;&quot;$(OMNI_BASE)\win64\include&quot;;&quot;$(ZMQ_BASE)\win64\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win64\include&quot;"
 				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;STATIC_EXPORT"
@@ -275,7 +277,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName="$(PREFIX)\win64\lib\vc9\tangod.9.0.0.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win64\lib\vc9\tangod.9.0.2.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -338,7 +340,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\attribute.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attribute_spec.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\attrmanip.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attrprop.tpp"
 				>
 			</File>
 			<File
@@ -398,7 +412,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\device_3.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\device_4.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\device_5.h"
 				>
 			</File>
 			<File
@@ -443,6 +465,22 @@
 			</File>
 			<File
 				RelativePath="..\..\..\client\filedatabase.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattrdesc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute_spec.tpp"
 				>
 			</File>
 			<File
@@ -502,6 +540,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pollext.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollobj.h"
 				>
 			</File>
@@ -511,6 +553,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\pollthread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\rootattreg.h"
 				>
 			</File>
 			<File
@@ -554,11 +600,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\utils.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\utils_spec.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\w32win.h"
 				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\w_attribute.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_attribute.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_attribute_spec.tpp"
 				>
 			</File>
 		</Filter>
@@ -791,6 +853,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\attrgetsetprop.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\attribute.cpp"
 				>
 				<FileConfiguration
@@ -877,6 +943,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attrsetval.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\basiccommand.cpp"
@@ -1503,6 +1573,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\client\dbapi_serverdata.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\dev_event.cpp"
 				>
 			</File>
@@ -1824,6 +1898,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\device_4.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\device_5.cpp"
 				>
 			</File>
 			<File
@@ -2329,6 +2407,14 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattrdesc.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\fwdattribute.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\client\group.cpp"
@@ -2903,6 +2989,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\rootattreg.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\seqvec.cpp"
 				>
 				<FileConfiguration
@@ -3127,6 +3217,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\templ_inst.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\thsig.cpp"
 				>
 				<FileConfiguration
@@ -3319,10 +3413,6 @@
 				>
 			</File>
 		</Filter>
-		<File
-			RelativePath="..\..\..\client\dbapi_serverdata.cpp"
-			>
-		</File>
 		<File
 			RelativePath="..\..\..\win32\resources\tango.ico"
 			>
