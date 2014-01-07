@@ -451,7 +451,7 @@ void Util::effective_job(int argc,char *argv[])
 		heartbeat_th = new PollThread(shared_data,poll_mon,true);
 		heartbeat_th->start();
 		heartbeat_th_id = heartbeat_th->id();
-		cout4 << "Heartbeat thread Id = " << heartbeat_th_id;
+		cout4 << "Heartbeat thread Id = " << heartbeat_th_id << endl;
 
 		cout4 << "Tango object singleton constructed" << endl;
 

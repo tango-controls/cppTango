@@ -105,9 +105,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango5.0.1/$(BIN_DIR)
 else
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango5.0.1/$(BIN_DIR)
 endif
 
 ##############################################################################
@@ -119,10 +119,10 @@ endif
 
 ifdef prefix
 #ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.2/$(BIN_DIR)
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
 else
 #ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.2/$(BIN_DIR)
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
 endif
 
 ##############################################################################

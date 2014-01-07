@@ -193,7 +193,7 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 
 ZmqEventSupplier *ZmqEventSupplier::create(Util *tg)
 {
-	cout4 << "calling Tango::ZmqEventSupplier::create() \n";
+	cout4 << "calling Tango::ZmqEventSupplier::create()" << endl;
 
 //
 // Does the ZmqEventSupplier singleton exist already ? if so simply return it
