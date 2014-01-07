@@ -145,7 +145,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\..\win32\resources;$(OMNI_BASE)\include\vc11;$(ZMQ_BASE)\win64\include\vc11;$(LOG4TANGO_BASE)\win64_dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\..\win32\resources;$(OMNI_BASE)\include\vc11;$(ZMQ_BASE)\win64\include\vc11;$(LOG4TANGO_BASE)\win64\include\vc11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;_64BITS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -173,7 +173,7 @@
       <OutputFile>$(PREFIX)\win64\lib\vc11_dll\tango902.dll</OutputFile>
       <Version>9.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OMNI_BASE)\lib\vc11_dll;$(ZMQ_BASE)\win64\lib\vc11_dll;$(LOG4TANGO_BASE)\win64_dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OMNI_BASE)\lib\vc11_dll;$(ZMQ_BASE)\win64\lib\vc11_dll;$(LOG4TANGO_BASE)\win64\lib\vc11_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <ProgramDatabaseFile>.\Release/tango812.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -245,7 +245,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\..\win32\resources;$(OMNI_BASE)\include\vc11;$(ZMQ_BASE)\win64\include\vc11;$(LOG4TANGO_BASE)\win64_dll\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\..\win32\resources;$(OMNI_BASE)\include\vc11;$(ZMQ_BASE)\win64\include\vc11;$(LOG4TANGO_BASE)\win64\include\vc11;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL;_64BITS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -274,7 +274,7 @@
       <AdditionalDependencies>log4tangod.lib;omniORB417_rtd.lib;omniDynamic417_rtd.lib;COS417_rtd.lib;omnithread34_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>NotSet</ShowProgress>
       <OutputFile>$(PREFIX)\win64\lib\vc11_dll\tango902d.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(ZMQ_BASE)\win64\lib\vc11_dll;$(OMNI_BASE)\lib\vc11_dll;$(LOG4TANGO_BASE)\win64_dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ZMQ_BASE)\win64\lib\vc11_dll;$(OMNI_BASE)\lib\vc11_dll;$(LOG4TANGO_BASE)\win64\lib\vc11_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/tango812d.pdb</ProgramDatabaseFile>
