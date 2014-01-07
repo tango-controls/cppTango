@@ -49,7 +49,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>..\..\..\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;$(OMNI_BASE)\win32\include;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;$(OMNI_BASE)\win32\include\vc10;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;STATIC_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -76,7 +76,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32\include;$(ZMQ_BASE)\win32\include\vc9;$(LOG4TANGO_BASE)\win32\include\vc9;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32\include\vc10;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;STATIC_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
