@@ -41,10 +41,10 @@
 #
 #######################################################################################################################
 
-EXCLUDE_FILES = 64.cpp helper.cpp
+EXCLUDE_FILES = 64.cpp helper.cpp zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
 #COMPILE_FILES = cxx_cmd_query.cpp
 #COMPILE_FILES = cxx_zmcast01_simple.cpp cxx_zmcast02_local_remote.cpp cxx_zmcast03_svr_local_remote.cpp
-COMPILE_FILES = cxx_blackbox.cpp
+#COMPILE_FILES = cxx_blackbox.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
 #COMPILE_FILES = poll_attr.cpp Poll.cpp StopPoll.cpp
 
@@ -55,8 +55,8 @@ TANGO_INCLUDE_DIR = $(TANGO_BASE)/client $(TANGO_BASE)/server
 TANGO_LIB_DIR = $(TANGO_BASE)/../install/$(OS_DIR)/lib/debug
 
 OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(OS_DIR)
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.7/$(OS_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango5.0.1/$(OS_DIR)
 #ZMQ_BASE = /segfs/tango/transport/zmq/$(OS_DIR)
-ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(OS_DIR)
+ZMQ_BASE = /segfs/tango/transport/zmq3.2.4/$(OS_DIR)
 
 
