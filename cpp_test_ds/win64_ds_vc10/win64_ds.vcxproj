@@ -80,6 +80,9 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.\Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.1A\Include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.1A\Lib\x64;$(LibraryPath)</LibraryPath>
+    <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.1A\Bin;$(ExecutablePath)</ExecutablePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -133,7 +136,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(PREFIX)/win64/include;..;$(OMNI_BASE)\win64\include;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PREFIX)/win64/include;..;$(OMNI_BASE)\include\vc10;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_WINSTATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -154,7 +157,7 @@
       <AdditionalDependencies>tangod.lib;log4tangod.lib;omniORB4d.lib;omniDynamic4d.lib;omnithreadd.lib;COS4d.lib;zmqd.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(PREFIX)/win64/bin/archive/devTest.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\win64\lib;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\lib\vc10;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>.\Debug/devTest.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
@@ -219,7 +222,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(PREFIX)/win64/include;..;$(OMNI_BASE)\win64\include;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PREFIX)/win64/include;..;$(OMNI_BASE)\include\vc10;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WINSTATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -240,7 +243,7 @@
       <AdditionalDependencies>tango.lib;log4tango.lib;omniORB4.lib;omniDynamic4.lib;omnithread.lib;COS4.lib;zmq.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>Release/devTest.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\win64\lib;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\lib\vc10;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\Release/devTest.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
