@@ -38,8 +38,8 @@ else
 BIN_TANGO_DIR = $(TANGO_HOME)/bin/archive
 endif
 else
-TANGO_HOME = /home/taurel/tango/cppapi_develop
-#TANGO_HOME = /home/taurel/tango/cppapi_900
+#TANGO_HOME = /home/taurel/tango/cppapi_develop
+TANGO_HOME = /home/taurel/tango/cppapi_900
 LIB_TANGO_DIR = $(TANGO_HOME)/../install/$(BIN_DIR)/lib/debug
 BIN_TANGO_DIR = bin/$(BIN_DIR)
 endif
@@ -63,9 +63,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango5.0.1/$(BIN_DIR)
 else
-LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango4.0.7/$(BIN_DIR)
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango5.0.1/$(BIN_DIR)
 endif
 
 ##############################################################################
@@ -77,10 +77,10 @@ endif
 
 ifdef prefix
 #ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(BIN_DIR)
+ZMQ_BASE = /segfs/tango/transport/zmq3.2.4/$(BIN_DIR)
 else
 #ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = /segfs/tango/transport/zmq3.2.2/$(BIN_DIR)
+ZMQ_BASE = /segfs/tango/transport/zmq3.2.4/$(BIN_DIR)
 endif
 
 ifdef linux
