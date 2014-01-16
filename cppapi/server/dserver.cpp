@@ -1120,10 +1120,6 @@ void ServRestartThread::run(void *ptr)
 	map<string,vector<EventPar> > map_events;
 	dev->mem_event_par(map_events);
 
-cout << map_events.size() << " devices with events" << endl;
-for( const auto &elem:map_events)
-	cout << "device " << elem.first << endl;
-
 //
 // Destroy and recreate the multi attribute object
 //
