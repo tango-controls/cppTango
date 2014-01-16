@@ -116,7 +116,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 									ApiUtil::AttributeInfoEx_to_AttributeConfig(ev->attr_conf,ptr);
 								}
 
-								AttributeConfigList_5 conf_list(1,1,ptr,true);
+								AttributeConfigList_5 conf_list(1,1,ptr,false);
 
 //
 // The attribute name, root_attr_name and label are local values

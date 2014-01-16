@@ -4862,9 +4862,16 @@ void Attribute::check_hard_coded(const AttributeConfig_5 &user_conf)
 	if (writable == WRITE || writable == READ_WRITE)
 	{
 		WAttribute *watt = static_cast<WAttribute *>(this);
-		if (watt->is_memorized() != user_conf.memorized || watt->is_memorized_init() != user_conf.mem_init)
+		if (watt->is_memorized() != user_conf.memorized)
 		{
 			throw_hard_coded_prop("memorized");
+		}
+		if (watt->is_memorized() == true)
+		{
+			if (watt->is_memorized_init() != user_conf.mem_init)
+			{
+				throw_hard_coded_prop("memorized");
+			}
 		}
 	}
 

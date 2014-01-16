@@ -353,10 +353,11 @@ void EventConsumer::shutdown_keep_alive_thread()
 //          - d_name : The FQDN (lower case)
 //          - dd : The server command result (Used by ZMQ event system only)
 //          - adm_name : The admin device name
+//			- necm :
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData &dd,string &adm_name)
+void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData &dd,string &adm_name,bool &necm)
 {
 	string channel_name = adm_name;
 	if (device_proxy->get_from_env_var() == true)
@@ -385,7 +386,11 @@ void EventConsumer::connect(DeviceProxy *device_proxy,string &d_name,DeviceData 
 // Init adm device name in channel map entry
 //
 
-	channel_map[channel_name].full_adm_name = adm_name;
+	if (ipos == channel_map.end())
+	{
+		channel_map[channel_name].full_adm_name = adm_name;
+		necm = true;
+	}
 
 //
 // Add entry in device_channel_map map
@@ -1316,6 +1321,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	DeviceProxy *adm_dev = NULL;
 	bool allocated = false;
+
 	map<std::string,std::string>::iterator ipos = device_channel_map.find(device_name);
 	EvChanIte evt_it = channel_map.end();
 
@@ -1450,9 +1456,11 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	if (ipos == device_channel_map.end())
 	{
 		cout3 << "device " << device_name << " is not connected, going to connect to the event channel !\n";
+		bool new_entry_in_channel_map = false;
+
 		try
 		{
-            connect(device,device_name,dd,adm_name);
+            connect(device,device_name,dd,adm_name,new_entry_in_channel_map);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -1479,6 +1487,14 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		{
 			evt_it = channel_map.find(ipos->second);
 			evt_it->second.last_subscribed = time(NULL);
+
+			if (new_entry_in_channel_map == true)
+			{
+				AutoTangoMonitor _mon(evt_it->second.channel_monitor);
+				evt_it->second.adm_device_proxy = adm_dev;
+			}
+			else
+				delete adm_dev;
 		}
 	}
 	else
@@ -1490,10 +1506,10 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Init device proxy in channel event map
 //
 
-    {
-        AutoTangoMonitor _mon(evt_it->second.channel_monitor);
-        evt_it->second.adm_device_proxy = adm_dev;
-    }
+/*	{
+		AutoTangoMonitor _mon(evt_it->second.channel_monitor);
+		evt_it->second.adm_device_proxy = adm_dev;
+	}*/
 
 //
 // Now, connect to the event system

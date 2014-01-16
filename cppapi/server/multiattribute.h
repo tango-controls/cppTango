@@ -54,6 +54,9 @@ struct EventPar
 	bool		quality;
 	bool		periodic;
 	bool		user;
+	bool		att_conf;
+	bool		att_conf5;
+	bool		data_ready;
 	bool        notifd;
 	bool        zmq;
 };
@@ -281,6 +284,7 @@ public:
 	vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed(bool);
 	void get_event_param(vector<EventPar> &);
+	void set_event_param(vector<EventPar> &);
 	void add_alarmed_quality_factor(string &);
 	void add_default(vector<AttrProperty> &,string &,string &,long);
 	void add_attr(Attribute *att) {attr_list.push_back(att);}

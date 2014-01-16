@@ -1012,30 +1012,8 @@ void DServer::restart(string &d_name)
 // Re-set classical event parameters (if needed)
 //
 
-	for (i = 0;i < eve.size();i++)
-	{
-		Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
-		Tango::Attribute &att = m_attr->get_attr_by_ind(eve[i].attr_id);
-
-		{
-			omni_mutex_lock oml(EventSupplier::get_event_mutex());
-			if (eve[i].change == true)
-				att.set_change_event_sub();
-			if (eve[i].periodic == true)
-				att.set_periodic_event_sub();
-			if (eve[i].quality == true)
-				att.set_quality_event_sub();
-			if (eve[i].archive == true)
-				att.set_archive_event_sub();
-			if (eve[i].user == true)
-				att.set_user_event_sub();
-		}
-
-        if (eve[i].notifd == true)
-            att.set_use_notifd_event();
-        if (eve[i].zmq == true)
-            att.set_use_zmq_event();
-	}
+	Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
+	m_attr->set_event_param(eve);
 
 //
 // Re-set multicast event parameters
@@ -1136,6 +1114,17 @@ void ServRestartThread::run(void *ptr)
 	dev->set_status("The device is ON");
 
 //
+// Memorize event parameters
+//
+
+	map<string,vector<EventPar> > map_events;
+	dev->mem_event_par(map_events);
+
+cout << map_events.size() << " devices with events" << endl;
+for( const auto &elem:map_events)
+	cout << "device " << elem.first << endl;
+
+//
 // Destroy and recreate the multi attribute object
 //
 
@@ -1172,6 +1161,12 @@ void ServRestartThread::run(void *ptr)
 //
 
 	tg->polling_configure();
+
+//
+// Reset event params
+//
+
+	dev->apply_event_par(map_events);
 
 //
 // Exit thread
@@ -1857,6 +1852,68 @@ void DServer::mcast_event_for_att(string &dev_name,string &att_name,vector<strin
 				}
 				m_event.push_back(tmp);
 			}
+		}
+	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DServer::mem_event_par()
+//
+// description :
+//		Store event parameters for all class/devices in a DS. This is necessary in case of command RestartServer
+//
+// args :
+//		out :
+// 			- _map : The map where these info are stored
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
+{
+	for (size_t i = 0;i < class_list.size();i++)
+	{
+		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		for (size_t j = 0;j < dev_list.size();j++)
+		{
+			vector<EventPar> eve;
+			dev_list[j]->get_device_attr()->get_event_param(eve);
+			if (eve.size() != 0)
+			{
+				_map.insert(make_pair(dev_list[j]->get_name(),eve));
+			}
+		}
+	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DServer::apply_event_par()
+//
+// description :
+//		Apply event parameters for all class/devices in a DS. This is necessary in case of command RestartServer
+//
+// args :
+//		in :
+// 			- _map : The map where these info are stored
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
+{
+	for (size_t i = 0;i < class_list.size();i++)
+	{
+		vector<DeviceImpl *> &dev_list = class_list[i]->get_device_list();
+		for (size_t j = 0;j < dev_list.size();j++)
+		{
+			string &dev_name = dev_list[j]->get_name();
+			map<string,vector<EventPar> >::iterator ite;
+			ite = _map.find(dev_name);
+
+			if (ite != _map.end())
+				dev_list[j]->get_device_attr()->set_event_param(ite->second);
 		}
 	}
 }

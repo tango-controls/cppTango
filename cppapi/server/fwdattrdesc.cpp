@@ -123,13 +123,13 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 		auto pos = find_if(prop_list.begin(),prop_list.end(),
 					[] (AttrProperty &ap) -> bool
 					{
-						return ap.get_name() == "__root_att";
+						return ap.get_name() == RootAttrPropName;
 					});
 #else
 		vector<AttrProperty>::iterator pos;
 		for (pos = prop_list.begin();pos != prop_list.end();++pos)
 		{
-			if (pos->get_name() == "__root_att")
+			if (pos->get_name() == RootAttrPropName)
 				break;
 		}
 #endif
@@ -353,6 +353,7 @@ void FwdAttr::read(TANGO_UNUSED(DeviceImpl *dev),Attribute &attr)
 
 void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 {
+
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
 //

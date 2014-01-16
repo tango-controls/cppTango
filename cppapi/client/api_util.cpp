@@ -1513,7 +1513,7 @@ void ApiUtil::AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *aie,Attr
 	case NOT_KNOWN:
 	case NONE:
 		att_conf_5->memorized = false;
-		att_conf_5->mem_init = true;
+		att_conf_5->mem_init = false;
 		break;
 
 	case MEMORIZED:

@@ -5761,6 +5761,22 @@ bool Attribute::attr_conf_event_subscribed()
 	return ret;
 }
 
+bool Attribute::attr_conf5_event_subscribed()
+{
+	bool ret = false;
+
+	if (event_attr_conf5_subscription != 0)
+	{
+		time_t now = time(NULL);
+		if (now - event_attr_conf5_subscription > EVENT_RESUBSCRIBE_PERIOD)
+			ret = false;
+		else
+			ret = true;
+	}
+
+	return ret;
+}
+
 bool Attribute::data_ready_event_subscribed()
 {
 	bool ret = false;

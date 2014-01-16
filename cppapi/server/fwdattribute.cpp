@@ -121,6 +121,7 @@ FwdAttribute::~FwdAttribute()
 
 void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 {
+cout << "Att name = " << get_name() << ", received description = " << conf.description.in() << endl;
 	description = conf.description.in();
 	unit = conf.unit.in();
 	standard_unit = conf.standard_unit.in();
@@ -653,6 +654,8 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 		DeviceProxy *dev = rar.get_root_att_dp(fwd_dev_name);
 
 		aie.name = fwd_att_name;
+		if (aie.writable_attr_name != AssocWritNotSpec)
+			aie.writable_attr_name = fwd_att_name;
 		aile.push_back(aie);
 
 		cout4 << "Sending att conf to root device " << fwd_dev_name << endl;
@@ -716,8 +719,11 @@ bool FwdAttribute::new_att_conf(const Tango::AttributeConfig_3 *conf3,const Tang
 		{
 			if (conf5->memorized != is_memorized())
 				ret = true;
-			else if (conf5->mem_init != is_memorized_init())
-				ret = true;
+			else if (conf5->memorized == true)
+			{
+				if (conf5->mem_init != is_memorized_init())
+					ret = true;
+			}
 		}
 	}
 

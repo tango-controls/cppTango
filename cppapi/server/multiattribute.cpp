@@ -39,6 +39,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
+#include <eventsupplier.h>
 #include <multiattribute.h>
 #include <classattribute.h>
 
@@ -252,6 +253,8 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 					fwc.full_root_att_name = fwdattr.get_full_root_att();
 					fwc.fae = fwdattr.get_err_kind();
 					fwd_wrong_conf.push_back(fwc);
+
+					fwd_ok = true;
 				}
 			}
 
@@ -1271,6 +1274,9 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 		bool qu = false;
 		bool pe = false;
 		bool us = false;
+		bool ac = false;
+		bool ac5 = false;
+		bool dr = false;
 
 		if (attr_list[i]->change_event_subscribed() == true)
 		{
@@ -1302,6 +1308,24 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 			us = true;
 		}
 
+		if (attr_list[i]->attr_conf_event_subscribed() == true)
+		{
+			once_more = true;
+			ac = true;
+		}
+
+		if (attr_list[i]->attr_conf5_event_subscribed() == true)
+		{
+			once_more = true;
+			ac5 = true;
+		}
+
+		if (attr_list[i]->data_ready_event_subscribed() == true)
+		{
+			once_more = true;
+			dr = true;
+		}
+
 		if (once_more == true)
 		{
 			EventPar ep;
@@ -1322,12 +1346,61 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 			ep.archive = ar;
 			ep.periodic = pe;
 			ep.user = us;
+			ep.att_conf = ac;
+			ep.att_conf5 = ac5;
+			ep.data_ready = dr;
 
 			eve.push_back(ep);
 		}
 	}
 }
 
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		MultiAttribute::set_event_param
+//
+// description :
+//		Set event info for each attribute with events subscribed
+//
+// argument :
+// 		in :
+//			- eve : One structure in this vector for each attribute with events subscribed
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void MultiAttribute::set_event_param(vector<EventPar> &eve)
+{
+	for (size_t i = 0;i < eve.size();i++)
+	{
+		Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
+
+		{
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			if (eve[i].change == true)
+				att.set_change_event_sub();
+			if (eve[i].periodic == true)
+				att.set_periodic_event_sub();
+			if (eve[i].quality == true)
+				att.set_quality_event_sub();
+			if (eve[i].archive == true)
+				att.set_archive_event_sub();
+			if (eve[i].user == true)
+				att.set_user_event_sub();
+			if (eve[i].att_conf == true)
+				att.set_att_conf_event_sub();
+			if (eve[i].att_conf5 == true)
+				att.set_att_conf5_event_sub();
+			if (eve[i].data_ready == true)
+				att.set_data_ready_event_sub();
+		}
+
+        if (eve[i].notifd == true)
+            att.set_use_notifd_event();
+        if (eve[i].zmq == true)
+            att.set_use_zmq_event();
+	}
+}
 
 //+------------------------------------------------------------------------------------------------------------------
 //

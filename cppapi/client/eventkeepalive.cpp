@@ -191,10 +191,8 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 					string adm_name = ipos->second.full_adm_name;
 
 #ifdef ZMQ_HAS_DISCONNECT
-cerr << "Calling disconnect_event_channel()" << endl;
 					event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint);
 #endif
-cerr << "Calling connect_event_channel()" << endl;
 					event_consumer->connect_event_channel(adm_name,
 									      epos->second.device->get_device_db(),
 									      true,subscriber_out);
@@ -208,7 +206,6 @@ cerr << "Calling connect_event_channel()" << endl;
 				catch(...)
 				{
 					ret = false;
-cerr << "Exception in KeepAliveThread::reconnect_to_zmq_channel()" << endl;
 				}
 
 				break;
@@ -449,12 +446,10 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 #ifdef ZMQ_HAS_DISCONNECT
 						if (disconnect_called == false)
 						{
-cerr << "Calling disconnect_event()" << endl;
 							event_consumer->disconnect_event(epos->second.fully_qualified_event_name,epos->second.endpoint);
 							disconnect_called = true;
 						}
 #endif
-cerr << "Calling connect_event_system()" << endl;
 						event_consumer->connect_event_system(d_name,epos->second.attr_name,epos->second.event_name,vs,ipos,ecbs,dd);
 
 						const DevVarLongStringArray *dvlsa;
@@ -463,18 +458,9 @@ cerr << "Calling connect_event_system()" << endl;
 
 						cout3 << "Reconnected to ZMQ event" << endl;
 					}
-catch(Tango::DevFailed &e)
-{
-epos->second.filter_ok = false;
-cerr << "DevFailed Exception in KeepAliveThread::reconnect_to_zmq_event()" << endl;
-string reas(e.errors[0].reason.in());
-string desc(e.errors[0].desc.in());
-cerr << "Exception reason = " << reas << ", desc = " << desc << endl;
-}
 					catch(...)
 					{
 						epos->second.filter_ok = false;
-cerr << "Exception in KeepAliveThread::reconnect_to_zmq_event()" << endl;
 					}
 
 					epos->second.callback_monitor->rel_monitor();

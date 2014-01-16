@@ -2044,6 +2044,10 @@ public:
 	void get_properties_2(Tango::AttributeConfig_2 &);
 	void get_properties_3(Tango::AttributeConfig_3 &);
 	void get_properties_5(Tango::AttributeConfig_5 &);
+
+	void get_prop(Tango::AttributeConfig_3 &_a) {get_properties_3(_a);}
+	void get_prop(Tango::AttributeConfig_5 &_a) {get_properties_5(_a);}
+
 	void set_properties(const Tango::AttributeConfig_3 &);
 	void set_properties(const Tango::AttributeConfig &,Tango::DeviceImpl *);
 	void set_properties(const Tango::AttributeConfig_3 &,Tango::DeviceImpl *);
@@ -2115,6 +2119,7 @@ public:
 	bool quality_event_subscribed();
 	bool user_event_subscribed();
 	bool attr_conf_event_subscribed();
+	bool attr_conf5_event_subscribed();
 	bool data_ready_event_subscribed();
 
 	bool use_notifd_event() {return notifd_event;}
@@ -2139,6 +2144,10 @@ public:
 	void set_user_event_sub() {event_user_subscription=time(NULL);}
 	time_t get_user_event_sub() {return event_user_subscription;}
 
+	void set_att_conf_event_sub() {event_attr_conf_subscription=time(NULL);}
+	void set_att_conf5_event_sub() {event_attr_conf5_subscription=time(NULL);}
+
+	void set_data_ready_event_sub() {event_user_subscription=time(NULL);}
 	time_t get_data_ready_event_sub() {return event_data_ready_subscription;}
 
 // End of warning

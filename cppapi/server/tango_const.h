@@ -268,6 +268,7 @@ const char* const NotANumber               = "NaN";
 
 const char* const MemNotUsed               = "Not used yet";
 const char* const MemAttrPropName          = "__value";
+const char* const RootAttrPropName		   = "__root_att";
 
 /*
  * List of strings used by the API as the DevError reason field.

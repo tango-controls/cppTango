@@ -399,12 +399,33 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 					{
 						if (dev_attr->get_attr_by_ind(j).get_writable() == Tango::WRITE)
 						{
-							x.idx_in_multi_attr = j	;
-							x.failed = false;
-							Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
-							if(att.is_startup_exception())
-								att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
-							wanted_w_attr.push_back(x);
+
+//
+// If the attribute is a forwarded one, force reading it from  the root device. Another client could have
+// written its value
+//
+
+							if (dev_attr->get_attr_by_ind(j).is_fwd_att() == true)
+							{
+								x.idx_in_multi_attr = j;
+								x.failed = false;
+								Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+								if(att.is_startup_exception())
+									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+								wanted_attr.push_back(x);
+								att.set_value_flag(false);
+								att.get_when().tv_sec = 0;
+								att.save_alarm_quality();
+							}
+							else
+							{
+								x.idx_in_multi_attr = j	;
+								x.failed = false;
+								Attribute &att = dev_attr->get_attr_by_ind(x.idx_in_multi_attr);
+								if(att.is_startup_exception())
+									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
+								wanted_w_attr.push_back(x);
+							}
 						}
 						else
 						{
@@ -957,7 +978,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							else
 							{
 								AttrSerialModel atsm = att.get_attr_serial_model();
-								if ((atsm != ATTR_NO_SYNC) && (w_type != Tango::WRITE))
+								if ((atsm != ATTR_NO_SYNC) && ((att.is_fwd_att() == true) || (w_type != Tango::WRITE)))
 								{
 									cout4 << "Giving attribute mutex to CORBA structure for attribute " << att.get_name() << endl;
 									if (atsm == ATTR_BY_KERNEL)
@@ -972,6 +993,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								(*back4)[index].name = CORBA::string_dup(att.get_name().c_str());
 								(*back4)[index].r_dim.dim_x = att.get_x();
 								(*back4)[index].r_dim.dim_y = att.get_y();
+
 								if ((w_type == Tango::READ_WRITE) ||
 									(w_type == Tango::READ_WITH_WRITE))
 								{

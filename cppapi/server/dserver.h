@@ -127,6 +127,8 @@ public :
 	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
 	void mcast_event_for_att(string &,string &,vector<string> &);
+	void mem_event_par(map<string, vector<EventPar> > &);
+	void apply_event_par(map<string,vector<EventPar> > &);
 
 	friend class NotifdEventSupplier;
 	friend class ZmqEventSupplier;

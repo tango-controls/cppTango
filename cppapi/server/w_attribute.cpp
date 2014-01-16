@@ -83,7 +83,7 @@ WAttribute::WAttribute(vector<AttrProperty> &prop_list,
 :Attribute(prop_list,tmp_attr,dev_name,idx),
 long_ptr(NULL),double_ptr(NULL),str_ptr(NULL),float_ptr(NULL),
 boolean_ptr(NULL),ushort_ptr(NULL),uchar_ptr(NULL),encoded_ptr(NULL),
-string_allocated(false),memorized(false),memorized_init(true),w_ext(new WAttributeExt),
+string_allocated(false),memorized(false),memorized_init(false),w_ext(new WAttributeExt),
 long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false),mem_write_failed(false)
 {
 
@@ -180,19 +180,17 @@ WAttribute::~WAttribute()
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		WAttribute::set_rvalue
+// method :
+//		WAttribute::set_rvalue
 //
-// description : 	This method is used when a Writable attribute is
-//			set to set the value in the Attribute class. This
-//			is necessary for the read_attribute CORBA operation
-//			which takes its data from this internal Attribute
-//			class data.
-//			It is used in the read_attributes code in the
-//			device class
+// description :
+//		This method is used when a Writable attribute is set to set the value in the Attribute class. This is
+//		necessary for the read_attribute CORBA operation which takes its data from this internal Attribute
+//		class data. It is used in the read_attributes code in the device class
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void WAttribute::set_rvalue()
 {

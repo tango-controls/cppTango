@@ -343,7 +343,7 @@ public :
 	virtual ~EventConsumer() {}
 
 	int connect_event(DeviceProxy *,const string &,EventType,CallBack *,EventQueue *,const vector<string> &,string &,int event_id = 0);
-	void connect(DeviceProxy *,string &,DeviceData &,string &);
+	void connect(DeviceProxy *,string &,DeviceData &,string &,bool &);
 
 	void shutdown();
 	void shutdown_keep_alive_thread();

@@ -149,8 +149,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 			{
 				value.sh_seq = new Tango::DevVarShortArray(data_size);
 				value.sh_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.sh_seq)[k] = p_data[k];
+				::memcpy(value.sh_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevShort));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -262,8 +261,7 @@ void Attribute::set_value(Tango::DevLong *p_data,long x,long y,bool release)
 			{
 				value.lg_seq = new Tango::DevVarLongArray(data_size);
 				value.lg_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.lg_seq)[k] = p_data[k];
+				::memcpy(value.lg_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevLong));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -377,8 +375,7 @@ void Attribute::set_value(Tango::DevLong64 *p_data,long x,long y,bool release)
 			{
 				value.lg64_seq = new Tango::DevVarLong64Array(data_size);
 				value.lg64_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.lg64_seq)[k] = p_data[k];
+				::memcpy(value.lg64_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevLong64));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -491,8 +488,7 @@ void Attribute::set_value(Tango::DevFloat *p_data,long x, long y,bool release)
 			{
 				value.fl_seq = new Tango::DevVarFloatArray(data_size);
 				value.fl_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.fl_seq)[k] = p_data[k];
+				::memcpy(value.fl_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevFloat));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -604,8 +600,7 @@ void Attribute::set_value(Tango::DevDouble *p_data,long x, long y,bool release)
 			{
 				value.db_seq = new Tango::DevVarDoubleArray(data_size);
 				value.db_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.db_seq)[k] = p_data[k];
+				::memcpy(value.db_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevDouble));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -743,11 +738,24 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 			if (release == true)
 			{
 				char **strvec = Tango::DevVarStringArray::allocbuf(data_size);
-				for (int i = 0;i < data_size;i++)
-					strvec[i] = p_data[i];
+				if (is_fwd_att() == true)
+				{
+					for (int i = 0;i < data_size;i++)
+						strvec[i] = CORBA::string_dup(p_data[i]);
+				}
+				else
+				{
+					for (int i = 0;i < data_size;i++)
+						strvec[i] = p_data[i];
+				}
 				value.str_seq = new Tango::DevVarStringArray(data_size,data_size,strvec,release);
 				if (data_format == Tango::SCALAR)
-					delete p_data;
+				{
+					if (is_fwd_att() == true)
+						Tango::DevVarStringArray::freebuf(p_data);
+					else
+						delete p_data;
+				}
 				else
 					delete [] p_data;
 			}
@@ -840,8 +848,7 @@ void Attribute::set_value(Tango::DevUShort *p_data,long x, long y,bool release)
 			{
 				value.ush_seq = new Tango::DevVarUShortArray(data_size);
 				value.ush_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.ush_seq)[k] = p_data[k];
+				::memcpy(value.ush_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevUShort));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -1067,8 +1074,7 @@ void Attribute::set_value(Tango::DevUChar *p_data,long x, long y,bool release)
 			{
 				value.cha_seq = new Tango::DevVarCharArray(data_size);
 				value.cha_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.cha_seq)[k] = p_data[k];
+				::memcpy(value.cha_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevUChar));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -1181,8 +1187,7 @@ void Attribute::set_value(Tango::DevULong *p_data,long x,long y,bool release)
 			{
 				value.ulg_seq = new Tango::DevVarULongArray(data_size);
 				value.ulg_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.ulg_seq)[k] = p_data[k];
+				::memcpy(value.ulg_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevULong));
 				if (release == true)
 					delete [] p_data;
 			}
@@ -1295,8 +1300,7 @@ void Attribute::set_value(Tango::DevULong64 *p_data,long x,long y,bool release)
 			{
 				value.ulg64_seq = new Tango::DevVarULong64Array(data_size);
 				value.ulg64_seq->length(data_size);
-				for (int k = 0;k < data_size;k++)
-					(*value.ulg64_seq)[k] = p_data[k];
+				::memcpy(value.ulg64_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevULong64));
 				if (release == true)
 					delete [] p_data;
 			}

@@ -58,7 +58,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 												bool fwd_cb,int caller_idl)
 {
 	cout4 << "Entering Device_3Impl::set_attribute_config_3_local" << endl;
-cout << "Entering set_attribute_config_3_local" << endl;
 
 //
 // Return exception if the device does not have any attribute
@@ -144,7 +143,16 @@ cout << "Entering set_attribute_config_3_local" << endl;
 			if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
 			{
 				string tmp_name(new_conf[i].name);
-				const V *tmp_ptr = &(new_conf)[i];
+
+//
+// The event data has to be the new attribute conf which could be different than the one we received (in case some
+// of the parameters are reset to lib/user/class default value)
+//
+
+				V mod_conf;
+				attr.get_prop(mod_conf);
+
+				const V *tmp_ptr = &mod_conf;
 
 				Tango::AttributeConfig_3 conf3;
 				Tango::AttributeConfig_5 conf5;
@@ -158,13 +166,13 @@ cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " <
 					{
 
 //
-// Even if device is IDL 5, the chage has been done from one old client, thus with AttributeConfig_3.
+// Even if device is IDL 5, the change has been done from one old client, thus with AttributeConfig_3.
 // If a new client is listening to event, don't forget to send it.
 //
 
 						if (attr.get_client_lib() == 8)
 						{
-							attr.AttributeConfig_3_2_AttributeConfig_5(new_conf[i],conf5);
+							attr.AttributeConfig_3_2_AttributeConfig_5(mod_conf,conf5);
 							attr.add_config_5_specific(conf5);
 							tmp_conf_ptr5 = &conf5;
 							::memcpy(&(ad.attr_conf_5),&(tmp_conf_ptr5),sizeof(V *));
@@ -180,7 +188,7 @@ cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " <
 					{
 						if (attr.get_client_lib() == 8)
 						{
-							attr.AttributeConfig_5_2_AttributeConfig_3(new_conf[i],conf3);
+							attr.AttributeConfig_5_2_AttributeConfig_3(mod_conf,conf3);
 							tmp_conf_ptr = &conf3;
 							::memcpy(&(ad.attr_conf_3),&(tmp_conf_ptr),sizeof(V *));
 

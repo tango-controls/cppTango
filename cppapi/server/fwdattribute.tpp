@@ -86,7 +86,7 @@ void FwdAttribute::set_local_attribute(DeviceAttribute &da,T* &seq_ptr)
 // argument :
 //		in :
 //			- attr : The attribute
-//			- ptr : Intermidiate pointer
+//			- ptr : Intermediate pointer
 //			- seq_ptr : Poniter to sequence used to fill in the DeviceAttribute
 //		out :
 //			- da : The DeviceAttribute coming from the root device read_attribute()
@@ -98,9 +98,11 @@ void FwdAttribute::propagate_writen_data(DeviceAttribute &da,WAttribute &attr,T 
 {
 	attr.get_write_value(const_cast<const T* &>(ptr));
 	int data_length = attr.get_write_value_length();
+	long w_dim_x = attr.get_w_dim_x();
+	long w_dim_y = attr.get_w_dim_y();
 
 	seq_ptr = new V(data_length,data_length,ptr,false);
-	da << seq_ptr;
+	da.insert(seq_ptr,w_dim_x,w_dim_y);
 }
 
 //--------------------------------------------------------------------------------------------------------------------
