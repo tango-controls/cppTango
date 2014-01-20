@@ -1514,36 +1514,17 @@ void MultiAttribute::add_write_value(Attribute &att)
 //		Check for all attribute if one of them has its quality factor set to ALARM.
 //		Returns true in this case. Otherwise, returns false
 //
-// argument :
-// 		in :
-//			- all_att : Flag set to false if the search must exclude all attributes with alarm levels set
-//
 //------------------------------------------------------------------------------------------------------------------
 
-bool MultiAttribute::is_att_quality_alarmed(bool all_att)
+bool MultiAttribute::is_att_quality_alarmed()
 {
-	unsigned long i,j;
+	unsigned long i;
 	bool ret;
 
 	ret = false;
 
 	for (i = 0;i < attr_list.size();i++)
 	{
-		if (all_att == false)
-		{
-			bool found = false;
-			for (j = 0;j < alarm_attr_list.size();j++)
-			{
-				if (alarm_attr_list[j] == (long)i)
-				{
-					found = true;
-					break;
-				}
-			}
-			if (found == true)
-				continue;
-		}
-
 		if ((attr_list[i]->get_quality() == Tango::ATTR_ALARM) ||
 		    (attr_list[i]->get_quality() == Tango::ATTR_WARNING))
 		{

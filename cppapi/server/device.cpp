@@ -1276,7 +1276,7 @@ Tango::DevState DeviceImpl::dev_state()
 
             if ((set_alrm == false) && (device_state != Tango::ALARM))
             {
-                if (dev_attr->is_att_quality_alarmed(true) == true)
+                if (dev_attr->is_att_quality_alarmed() == true)
                     device_state = Tango::ALARM;
                 else
                     device_state = Tango::ON;

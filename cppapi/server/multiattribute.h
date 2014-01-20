@@ -282,7 +282,7 @@ public:
 	void add_fwd_attribute(string &,DeviceClass *,long);
 	void remove_attribute(string &,bool);
 	vector<long> &get_w_attr_list() {return writable_attr_list;}
-	bool is_att_quality_alarmed(bool);
+	bool is_att_quality_alarmed();
 	void get_event_param(vector<EventPar> &);
 	void set_event_param(vector<EventPar> &);
 	void add_alarmed_quality_factor(string &);

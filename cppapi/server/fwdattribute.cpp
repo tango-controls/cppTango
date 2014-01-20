@@ -121,7 +121,6 @@ FwdAttribute::~FwdAttribute()
 
 void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 {
-cout << "Att name = " << get_name() << ", received description = " << conf.description.in() << endl;
 	description = conf.description.in();
 	unit = conf.unit.in();
 	standard_unit = conf.standard_unit.in();
