@@ -1613,7 +1613,7 @@ public :
  * @li write_read_attribute call
  * @li set_attribute_config call
  *
- * @param [in] lock_validity The filter
+ * @param [in] lock_validity The lock validity (in seconds)
  */
 	virtual void lock(int lock_validity=DEFAULT_LOCK_VALIDITY);
 /**

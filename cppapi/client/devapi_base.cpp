@@ -2310,7 +2310,6 @@ DbDevImportInfo DeviceProxy::import_info()
 
 DeviceProxy::~DeviceProxy()
 {
-
 	if (dbase_used == true)
 		delete db_dev;
 
@@ -7204,6 +7203,7 @@ void DeviceProxy::lock(int lock_validity)
 	if (au->is_lock_exit_installed() == false)
 	{
 		atexit(clean_lock);
+		au->set_sig_handler();
 		au->set_lock_exit_installed(true);
 	}
 

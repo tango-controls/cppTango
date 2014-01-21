@@ -4069,6 +4069,13 @@ void DeviceImpl::lock(client_addr *cl,int validity)
 	locking_date = time(NULL);
 	lock_validity = validity;
 	lock_ctr++;
+
+//
+// Also lock root device(s) in case it is needed (due to forwarded attributes)
+//
+
+	if (get_with_fwd_att() == true)
+		lock_root_devices(validity,true);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -4200,6 +4207,13 @@ void DeviceImpl::basic_unlock(bool forced)
 		delete locker_client;
 	locker_client = NULL;
 	lock_ctr = 0;
+
+//
+// Also unlock root device(s) in case it is needed (due to forwarded attributes)
+//
+
+	if (get_with_fwd_att() == true)
+		lock_root_devices(0,false);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -5557,6 +5571,62 @@ void DeviceImpl::update_wrong_conf_att(const string &root_att_name,FwdAttError e
 			ite->fae = err;
 			break;
 		}
+	}
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::lock_root_devices
+//
+// description :
+//		Lock/Unlock all root devices for all the forwarded attributes defined for this device
+//
+// argument:
+//		in :
+//			- validity : The lock validity interval (used only in case of locking)
+//			- lock_action : Flag set to true if root device(s) must be locked. If false, root devices will be unlocked
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::lock_root_devices(int validity,bool lock_action)
+{
+//
+// Get list of root device(s)
+//
+
+	vector<string> root_devs;
+	vector<string>::iterator ite;
+	vector<Attribute *> att_list = dev_attr->get_attribute_list();
+	for (size_t j = 0;j < att_list.size();j++)
+	{
+		if (att_list[j]->is_fwd_att() == true)
+		{
+			FwdAttribute *fwd_att = static_cast<FwdAttribute *>(att_list[j]);
+			string &dev_name = fwd_att->get_fwd_dev_name();
+			ite = find(root_devs.begin(),root_devs.end(),dev_name);
+			if (ite == root_devs.end())
+				root_devs.push_back(dev_name);
+		}
+	}
+
+//
+// Lock/Unlock all these devices
+//
+
+	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+	for (size_t loop = 0;loop < root_devs.size();loop++)
+	{
+		DeviceProxy *dp = rar.get_root_att_dp(root_devs[loop]);
+if (lock_action == true)
+	cout << "Locking ";
+else
+	cout << "Unlocking ";
+cout << "device " << dp->dev_name() << endl;
+		if (lock_action == true)
+			dp->lock(validity);
+		else
+			dp->unlock();
 	}
 }
 

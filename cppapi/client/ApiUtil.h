@@ -169,6 +169,8 @@ public:
 	void get_ip_from_if(vector<string> &);
 	void print_error_message(const char *);
 
+	void set_sig_handler();
+
 //
 // EventConsumer related methods
 //
@@ -249,6 +251,12 @@ private:
     ZmqEventConsumer            *zmq_event_consumer;
     vector<string>              host_ip_adrs;
     DevLong                     user_sub_hwm;
+};
+
+class _KillProc_: public omni_thread
+{
+public:
+	void run(void *) {::exit(-1);}
 };
 
 #endif /* _APIUTIL_H */

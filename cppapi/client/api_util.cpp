@@ -37,19 +37,20 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <eventconsumer.h>
 
 #ifndef _TG_WINDOWS_
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <net/if.h>
-#include <sys/ioctl.h>
-#include <netdb.h>
-#include <signal.h>
-#include <ifaddrs.h>
-
-#include <netinet/in.h> 	// FreeBSD
-
+	#include <sys/types.h>
+	#include <sys/socket.h>
+	#include <net/if.h>
+	#include <sys/ioctl.h>
+	#include <netdb.h>
+	#include <signal.h>
+	#include <ifaddrs.h>
+	#ifdef HAS_THREAD
+		#include <thread>
+	#endif
+	#include <netinet/in.h> 	// FreeBSD
 #else
-#include <ws2tcpip.h>
-#include <process.h>
+	#include <ws2tcpip.h>
+	#include <process.h>
 #endif
 
 
@@ -58,6 +59,24 @@ namespace Tango
 
 ApiUtil *ApiUtil::_instance = NULL;
 omni_mutex ApiUtil::inst_mutex;
+
+#ifdef HAS_THREAD
+void _killproc_()
+{
+	::exit(-1);
+}
+#endif // HAS_THREAD
+
+void _t_handler (TANGO_UNUSED(int signum))
+{
+#ifdef HAS_THREAD
+	thread t(_killproc_);
+	t.detach();
+#else
+	_KillProc_ *t = new _KillProc_;
+	t->start();
+#endif
+}
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
@@ -221,6 +240,43 @@ ApiUtil::~ApiUtil()
 		CORBA::release(_orb);
 	}
 
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ApiUtil::set_sig_handler()
+//
+// description :
+//		Install a signal handler for SIGINT and SIGTERM but only if nothing is already installed
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void ApiUtil::set_sig_handler()
+{
+#ifndef _TG_WINDOWS_
+	if (in_serv == false)
+	{
+		struct sigaction sa,old_action;
+
+		sa.sa_handler = _t_handler;
+		sigemptyset (&sa.sa_mask);
+		sa.sa_flags = 0;
+
+		if (sigaction(SIGTERM,NULL,&old_action) != -1)
+		{
+			if (old_action.sa_handler == NULL)
+				sigaction(SIGTERM,&sa,NULL);
+		}
+
+		if (sigaction(SIGINT,NULL,&old_action) != -1)
+		{
+			if (old_action.sa_handler == NULL)
+				sigaction(SIGINT,&sa,NULL);
+		}
+
+	}
+#endif
 }
 
 //------------------------------------------------------------------------------------------------------------------

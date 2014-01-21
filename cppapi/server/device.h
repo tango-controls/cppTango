@@ -3417,6 +3417,7 @@ private:
     void stop_poll_object(const string &,PollObjType);
     void att_conf_loop();
     void build_att_list_in_status_mess(size_t,AttErrorType);
+	void lock_root_devices(int,bool);
 
 #ifdef TANGO_HAS_LOG4TANGO
   	log4tango::Logger *get_logger_i (void);

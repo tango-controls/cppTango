@@ -142,6 +142,7 @@
             #if __GNUC_MINOR__ > 3
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE
+                #define HAS_THREAD
             #endif
             #if __GNUC_MINOR__ > 4
                 #define HAS_LAMBDA_FUNC
@@ -160,6 +161,7 @@
                 #define HAS_NULLPTR
                 #define HAS_RANGE_BASE_FOR
 				#define INIT_LIST
+				#define HAS_THREAD
         #endif
     #endif
 #else
