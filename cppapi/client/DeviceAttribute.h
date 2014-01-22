@@ -892,14 +892,14 @@ public :
 /**
  * Set exception flag
  *
- * Is a method which allows the user to switch on/off exception throwing for trying to extract data from an
- * empty DeviceAttribute object. The default is to not throw exception. The following flags are supported :
+ * Is a method which allows the user to switch on/off exception throwing when trying to extract data from a
+ * DeviceAttribute object. The following flags are supported :
  * @li @b isempty_flag - throw a WrongData exception (reason = API_EmptyDbDatum) if user tries to extract
  *       data from an empty DeviceAttribute object. By default, this flag is set
  * @li @b wrongtype_flag - throw a WrongData exception (reason = API_IncompatibleArgumentType) if user
  *       tries to extract data with a type different than the type used for insertion. By default, this flag
  *       is not set
- * @li @b failed_flag - throw an exception when the user try to extract data fromthe DeviceAttribute object and
+ * @li @b failed_flag - throw an exception when the user try to extract data from the DeviceAttribute object and
  * an error was reported by the server when the user try to read the attribute. The type of the exception
  * thrown is the type of the error reported by the server. By default, this flag is set.
  * @li @b unknown_format_flag - throw an exception when the user try to get the attribute data format from

@@ -140,7 +140,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
 
 //
-// Check that the wanted attribute is polled.
+// Check that the wanted attribute is polled (Except in case of forwarded attribute)
 //
 
 	long j;
@@ -154,7 +154,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 			break;
 		}
 	}
-	if (polled_attr == NULL)
+	if ((polled_attr == NULL) && (att.is_fwd_att() == false))
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
@@ -580,7 +580,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 	}
 
 //
-// Store source parameter
+// Store source parameter (used in case of forwarded attribute(s))
 //
 
 	set_call_source(source);

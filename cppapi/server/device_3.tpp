@@ -170,7 +170,7 @@ cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " <
 // If a new client is listening to event, don't forget to send it.
 //
 
-						if (attr.get_client_lib() == 8)
+						if (attr.get_client_lib() >= 9)
 						{
 							attr.AttributeConfig_3_2_AttributeConfig_5(mod_conf,conf5);
 							attr.add_config_5_specific(conf5);
@@ -186,7 +186,7 @@ cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " <
 					}
 					else
 					{
-						if (attr.get_client_lib() == 8)
+						if (attr.get_client_lib() <= 8)
 						{
 							attr.AttributeConfig_5_2_AttributeConfig_3(mod_conf,conf3);
 							tmp_conf_ptr = &conf3;

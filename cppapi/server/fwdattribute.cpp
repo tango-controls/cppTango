@@ -899,7 +899,7 @@ DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
 	Device_4_var dev = dp->get_device_4();
 
 //
-// Get data from root device (Reminder: we don use the classical API. See above)
+// Get data from root device (Reminder: we don't use the classical API. See above)
 //
 
 	DevAttrHistory_4 *hist_4;
