@@ -67,15 +67,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 
 		if (ev->err == false)
 		{
-
-//
-// The attribute name received in the callback follows the syntax tango:://host:port/dev/att
-// We want only the dev/att part which starts after the first / after the first 8 chars (tango://)
-//
-
-			string::size_type pos;
-			pos = ev->attr_name.find('/',8);
-			string att_name = ev->attr_name.substr(pos + 1);
+			string att_name = ev->attr_name;
 
 			{
 				omni_mutex_lock oml(the_lock);
@@ -267,18 +259,11 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 		ZmqEventSupplier *zes = Util::instance()->get_zmq_event_supplier();
 
 //
-// First, extract root att name (root_dev_name/att_name) from the received attribute name
+// Get local device name from event name
 //
 
-		string::size_type pos = ev->attr_name.find("//");
-		pos = pos + 2;
-		pos = ev->attr_name.find('/',pos);
-		pos = pos + 1;
-		string::size_type pos_end = ev->attr_name.rfind('.');
-		string root_att_name = ev->attr_name.substr(pos,pos_end - pos);
-
-		string local_name = rar->get_local_att_name(root_att_name);
-		pos = local_name.rfind('/');
+		string local_name = rar->get_local_att_name(ev->attr_name);
+		string::size_type pos = local_name.rfind('/');
 		string local_dev_name = local_name.substr(0,pos);
 		string local_att_name = local_name.substr(pos + 1);
 
@@ -699,7 +684,6 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		}
 		catch (Tango::DevFailed &e)
 		{
-Tango::Except::print_exception(e);
 			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
 				attdesc->set_err_kind(FWD_WRONG_ATTR);
 			else if (::strcmp(e.errors[0].reason.in(),API_CantConnectToDevice) == 0)

@@ -145,20 +145,55 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 		full_root_att = root_att_db;
 
 //
-// Check root att syntax
+// Check root att syntax and add TANGO_HOST info in root device name of not given
+// Also add dns suffix if not defined in provided TANGO_HOST host name
 //
+
+	Util *tg = Util::instance();
+	Database *db = tg->get_database();
+	string fq;
+	if (db != Tango_nullptr)
+	{
+		fq = "tango://";
+		string &h = db->get_db_host();
+		string &p = db->get_db_port();
+		fq = fq + h + ':' + p + '/';
+	}
+	transform(fq.begin(),fq.end(),fq.begin(),::tolower);
 
 	if (full_root_att != RootAttNotDef)
 	{
 		int nb_sep = count(full_root_att.begin(),full_root_att.end(),'/');
 
-		if (nb_sep == 6)
+		if (nb_sep == 3)
+		{
+			full_root_att.insert(0,fq);
+		}
+		else if (nb_sep == 6)
 		{
 			string::size_type pos = full_root_att.find("tango://");
 			if (pos != 0)
 				ret = false;
+			else
+			{
+				pos = full_root_att.find(':',8);
+				string ho = full_root_att.substr(8,pos - 8);
+				string::size_type pos1 = ho.find('.');
+				size_t old_size = ho.size();
+				if (pos1 == string::npos)
+					Connection::get_fqdn(ho);
+				string dom = ho.substr(old_size);
+				full_root_att.insert(pos,dom);
+			}
 		}
-		if (nb_sep == 3 || (nb_sep == 6 && ret == true))
+		else
+		{
+			fwd_wrongly_conf = true;
+			err_kind = FWD_WRONG_SYNTAX;
+			ret = false;
+		}
+
+		if (ret == true)
 		{
 			string::size_type pos = full_root_att.find_last_of('/');
 			fwd_root_att = full_root_att.substr(pos + 1);
@@ -166,12 +201,6 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 
 			transform(fwd_dev_name.begin(),fwd_dev_name.end(),fwd_dev_name.begin(),::tolower);
 			transform(fwd_root_att.begin(),fwd_root_att.end(),fwd_root_att.begin(),::tolower);
-		}
-		else
-		{
-			fwd_wrongly_conf = true;
-			err_kind = FWD_WRONG_SYNTAX;
-			ret = false;
 		}
 	}
 	else
@@ -185,7 +214,10 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 // Check that the root device is not the local device
 //
 
-	if (fwd_dev_name == dev_name)
+	string local_dev_name(dev_name);
+	local_dev_name.insert(0,fq);
+
+	if (fwd_dev_name == local_dev_name)
 	{
 		fwd_wrongly_conf = true;
 		err_kind = FWD_ROOT_DEV_LOCAL_DEV;
