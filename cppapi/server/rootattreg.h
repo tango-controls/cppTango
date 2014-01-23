@@ -71,6 +71,7 @@ public:
 
 	bool is_event_subscribed(string &,EventType);
 	void subscribe_user_event(string &,string &,EventType);
+	void unsubscribe_user_event(string &,string &,EventType);
 	void auto_unsub();
 
 	bool is_root_attribute(string &_s) {return cbp.is_root_att_in_map(_s);}

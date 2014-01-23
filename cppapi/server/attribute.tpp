@@ -118,7 +118,7 @@ void Attribute::check_hard_coded_properties(const T &user_conf)
 	transform(local_w_name.begin(),local_w_name.end(),local_w_name.begin(),::tolower);
 	string user_w_name(user_conf.writable_attr_name.in());
 	transform(user_w_name.begin(),user_w_name.end(),user_w_name.begin(),::tolower);
-cout << "user_w_name = " << user_w_name << ", local_w_name = " << local_w_name << endl;
+
 	if (user_w_name != local_w_name)
 	{
 		throw_hard_coded_prop("writable_attr_name");

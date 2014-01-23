@@ -1094,6 +1094,9 @@ Tango::DevState DeviceImpl::dev_state()
             (device_state == Tango::ALARM))
         {
 
+			if (device_state == Tango::ALARM)
+				device_state = Tango::ON;
+
 //
 // Build attribute lists
 //
@@ -5618,11 +5621,7 @@ void DeviceImpl::lock_root_devices(int validity,bool lock_action)
 	for (size_t loop = 0;loop < root_devs.size();loop++)
 	{
 		DeviceProxy *dp = rar.get_root_att_dp(root_devs[loop]);
-if (lock_action == true)
-	cout << "Locking ";
-else
-	cout << "Unlocking ";
-cout << "device " << dp->dev_name() << endl;
+
 		if (lock_action == true)
 			dp->lock(validity);
 		else

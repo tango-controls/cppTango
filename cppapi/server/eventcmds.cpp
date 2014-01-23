@@ -273,9 +273,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				{
 					if (attribute.is_fwd_att() == false && attribute.is_change_event() == false)
 					{
-						Except::throw_exception((const char *)API_AttributePollingNotStarted,
-									o.str(),
-									(const char *)"DServer::event_subscription");
+						Except::throw_exception(API_AttributePollingNotStarted,o.str(),
+												"DServer::event_subscription");
 					}
 				}
 				else
@@ -284,16 +283,14 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					{
 						if (attribute.is_fwd_att() == false && attribute.is_archive_event() == false)
 						{
-							Except::throw_exception((const char *)API_AttributePollingNotStarted,
-										o.str(),
-										(const char *)"DServer::event_subscription");
+							Except::throw_exception(API_AttributePollingNotStarted,o.str(),
+													"DServer::event_subscription");
 						}
 					}
 					else
 					{
-						Except::throw_exception((const char *)API_AttributePollingNotStarted,
-									o.str(),
-									(const char *)"DServer::event_subscription");
+						if (attribute.is_fwd_att() == false)
+							Except::throw_exception(API_AttributePollingNotStarted,o.str(),"DServer::event_subscription");
 					}
 				}
 			}
@@ -778,8 +775,15 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			RootAttRegistry &rar = tg->get_root_att_reg();
 			bool already_there = rar.is_event_subscribed(root_name,et);
 
-			if (already_there == false)
-				rar.subscribe_user_event(fwd_att.get_fwd_dev_name(),fwd_att.get_fwd_att_name(),et);
+//
+// We unsubscribe and subscribe. This is mandatory for following case: The appli is killed and re-started
+// but in the meantime, polling for the root attribute has been stopped. The error that the polling is not started
+// for the root attribute is sent at subscription time
+//
+
+			if (already_there == true)
+				rar.unsubscribe_user_event(fwd_att.get_fwd_dev_name(),fwd_att.get_fwd_att_name(),et);
+			rar.subscribe_user_event(fwd_att.get_fwd_dev_name(),fwd_att.get_fwd_att_name(),et);
 		}
 
 //

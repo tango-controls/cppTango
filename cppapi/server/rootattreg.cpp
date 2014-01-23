@@ -644,7 +644,18 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 	ite = dps.find(device_name);
 	if (ite == dps.end())
 	{
-		the_dev = new DeviceProxy(device_name);
+		try
+		{
+			the_dev = new DeviceProxy(device_name);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			attdesc->set_err_kind(FWD_WRONG_DEV);
+
+			string desc("The root device ");
+			desc = desc + device_name + " is not defined in database";
+			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+		}
 		int idl_vers = the_dev->get_idl_version();
 		if (idl_vers > 0 && idl_vers < MIN_IDL_CONF5)
 		{
@@ -688,6 +699,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		}
 		catch (Tango::DevFailed &e)
 		{
+Tango::Except::print_exception(e);
 			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
 				attdesc->set_err_kind(FWD_WRONG_ATTR);
 			else if (::strcmp(e.errors[0].reason.in(),API_CantConnectToDevice) == 0)
@@ -1069,6 +1081,8 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 			ev_id = dp->subscribe_event(att_name,et,&cbu,true);
 			ue.event_id = ev_id;
 		}
+		else
+			throw;
 	}
 
 //
@@ -1097,6 +1111,94 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		RootAttRegistry::unsubscribe_user_event
+//
+// description :
+//		Unsubscribe to event from the root attribute
+//
+// argument :
+//		in :
+//			- dev_name : The root device name
+//			- att_name : The attribute name
+//			- et : The event type
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void RootAttRegistry::unsubscribe_user_event(string &dev_name,string &att_name,EventType et)
+{
+
+//
+// Find the proxy and create registered event name
+//
+
+	DeviceProxy *dp = get_root_att_dp(dev_name);
+	string f_ev_name = dev_name + '/' + att_name;
+
+//
+// Find the event_id
+//
+
+	int local_evid = 0;
+
+	{
+		ReaderLock rl(id_user_lock);
+		map<string,vector<UserEvent> >::iterator pos;
+
+		pos = map_event_id_user.find(f_ev_name);
+		vector<UserEvent> &v_ue = pos->second;
+		for (size_t loop = 0;loop < v_ue.size();++loop)
+		{
+			if (v_ue[loop].event_type == et)
+			{
+				local_evid = v_ue[loop].event_id;
+				break;
+			}
+		}
+	}
+
+	if (local_evid == 0)
+	{
+		stringstream ss;
+		ss << f_ev_name << " not found in map of user event on root attribute!";
+		Except::throw_exception(API_FwdAttrInconsistency,ss.str(),"RootAttRegistry::unsubscribe_user_event");
+	}
+
+//
+// Unsubscribe to the event.
+//
+
+	dp->unsubscribe_event(local_evid);
+
+//
+// Remove entry from vector in map. Eventually remove entry from map if vector becomes empty
+//
+
+	{
+		WriterLock wl(id_user_lock);
+		map<string,vector<UserEvent> >::iterator pos;
+
+		pos = map_event_id_user.find(f_ev_name);
+		vector<UserEvent> &v_ue = pos->second;
+		vector<UserEvent>::iterator iter;
+		for (iter = v_ue.begin();iter != v_ue.end();++iter)
+		{
+			if (iter->event_type == et)
+			{
+				v_ue.erase(iter);
+				break;
+			}
+		}
+
+		if (v_ue.empty() == true)
+		{
+			map_event_id_user.erase(pos);
+		}
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		RootAttRegistry::auto_unsub
 //
 // description :
@@ -1106,6 +1208,7 @@ void RootAttRegistry::subscribe_user_event(string &dev_name,string &att_name,Eve
 
 void RootAttRegistry::auto_unsub()
 {
+
 //
 // Return immediately if there is no user events
 //

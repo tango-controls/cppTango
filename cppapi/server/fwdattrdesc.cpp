@@ -152,7 +152,13 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 	{
 		int nb_sep = count(full_root_att.begin(),full_root_att.end(),'/');
 
-		if (nb_sep == 3)
+		if (nb_sep == 6)
+		{
+			string::size_type pos = full_root_att.find("tango://");
+			if (pos != 0)
+				ret = false;
+		}
+		if (nb_sep == 3 || (nb_sep == 6 && ret == true))
 		{
 			string::size_type pos = full_root_att.find_last_of('/');
 			fwd_root_att = full_root_att.substr(pos + 1);
