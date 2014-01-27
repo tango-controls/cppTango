@@ -3131,7 +3131,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 		Except::throw_exception((const char *)API_AttrNotFound,
 				o.str(),
-				(const char *)"Device_Impl::add_attribute");
+				(const char *)"DeviceImpl::add_attribute");
 	}
 
 	if (already_there == true)
@@ -3187,7 +3187,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 			Except::throw_exception((const char *)API_AttrNotFound,
 					o.str(),
-					(const char *)"Device_Impl::add_attribute");
+					(const char *)"DeviceImpl::add_attribute");
 		}
 	}
 
@@ -3256,7 +3256,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 
 		Except::throw_exception((const char *)API_AttrNotFound,
 					o.str(),
-					(const char *)"Device_Impl::remove_attribute");
+					(const char *)"DeviceImpl::remove_attribute");
 	}
 
 //
@@ -3427,11 +3427,288 @@ void DeviceImpl::remove_attribute(string &rem_attr_name, bool free_it,bool clean
 
 		Except::re_throw_exception(e,(const char *)API_AttrNotFound,
 					o.str(),
-					(const char *)"Device_Impl::remove_attribute");
+					(const char *)"DeviceImpl::remove_attribute");
 	}
 
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::add_command
+//
+// description :
+//		Add command to the device command(s) list
+//
+// argument:
+//		in :
+//			- new_cmd: The new command to be added.
+//			- device_level : flag set to true if the command must be added at the device level (instead of class level)
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::add_command(Tango::Command *new_cmd,bool device_level)
+{
+//
+// Take the device monitor in order to protect the command list
+//
+
+	AutoTangoMonitor sync(this,true);
+
+//
+// Check that this command is not already defined for this device. If it is already there, immediately returns.
+//
+
+	string &cmd_name = new_cmd->get_name();
+	bool already_there = true;
+	bool throw_ex = false;
+	try
+	{
+		Tango::Command &al_cmd = device_class->get_cmd_by_name(cmd_name);
+		if ((al_cmd.get_in_type() != new_cmd->get_in_type()) ||
+		    (al_cmd.get_out_type() != new_cmd->get_out_type()))
+		{
+			throw_ex = true;
+		}
+	}
+	catch (Tango::DevFailed)
+	{
+		already_there = false;
+	}
+
+	if (already_there == false)
+	{
+		already_there = true;
+		try
+		{
+			Tango::Command &al_cmd_dev = get_local_cmd_by_name(cmd_name);
+			if ((al_cmd_dev.get_in_type() != new_cmd->get_in_type()) ||
+				(al_cmd_dev.get_out_type() != new_cmd->get_out_type()))
+			{
+				throw_ex = true;
+			}
+		}
+		catch (Tango::DevFailed)
+		{
+			already_there = false;
+		}
+	}
+
+//
+// Throw exception if the device already have a command with the same name but with a different definition
+//
+
+	if (throw_ex == true)
+	{
+		TangoSys_OMemStream o;
+
+		o << "Device " << get_name() << " -> Command " << cmd_name << " already exists for your device but with other definition";
+		o << "\n(command input data type or command output data type)" << ends;
+
+		Except::throw_exception(API_CommandNotFound,o.str(),"DeviceImpl::add_command");
+	}
+
+	if (already_there == true)
+	{
+		delete new_cmd;
+		return;
+	}
+
+//
+// Add this command to the command list
+//
+
+	if (device_level == false)
+	{
+		vector<Tango::Command *> &cmd_list = device_class->get_command_list();
+		cmd_list.push_back(new_cmd);
+	}
+	else
+	{
+		vector<Tango::Command *> &dev_cmd_list = get_local_command_list();
+		dev_cmd_list.push_back(new_cmd);
+	}
+
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::remove_command
+//
+// description :
+//		Remove command to the device command(s) list
+//
+// argument:
+//		in :
+//			- rem_cmd: The command to be deleted.
+//          - free_it : Free Command object flag
+//          - clean_db : Clean command related info in db
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it,bool clean_db)
+{
+
+//
+// Take the device monitor in order to protect the command list
+//
+
+	AutoTangoMonitor sync(this,true);
+
+//
+// Check that the class or the device support this command
+//
+
+	string &cmd_name = rem_cmd->get_name();
+	bool device_cmd = false;
+
+	try
+	{
+		device_class->get_cmd_by_name(cmd_name);
+	}
+	catch (Tango::DevFailed)
+	{
+		try
+		{
+			get_local_cmd_by_name(cmd_name);
+			device_cmd = true;
+		}
+		catch (Tango::DevFailed)
+		{
+			TangoSys_OMemStream o;
+
+			o << "Command " << cmd_name << " is not defined as command for your device.";
+			o << "\nCan't remove it" << ends;
+
+			Except::throw_exception(API_CommandNotFound,o.str(),"DeviceImpl::remove_command");
+		}
+	}
+
+//
+// stop any configured polling for this command first!
+//
+
+	vector<string> &poll_cmd = get_polled_cmd();
+	vector<string>::iterator ite_cmd;
+
+	string cmd_name_low(cmd_name);
+	transform(cmd_name_low.begin(),cmd_name_low.end(),cmd_name_low.begin(),::tolower);
+
+//
+// Try to find the command in the list of polled commands
+//
+
+	Tango::Util *tg = Tango::Util::instance();
+	ite_cmd = find(poll_cmd.begin(),poll_cmd.end(), cmd_name_low);
+	if (ite_cmd != poll_cmd.end())
+	{
+		// stop the polling and clean-up the database
+
+		DServer *adm_dev = tg->get_dserver_device();
+
+		DevVarStringArray send;
+		send.length(3);
+
+		send[0] = CORBA::string_dup(device_name.c_str());
+		send[1] = CORBA::string_dup("command");
+		send[2] = CORBA::string_dup(cmd_name.c_str());
+
+		if (tg->is_svr_shutting_down() == true)
+		{
+
+//
+// There is no need to stop the polling because we are in the server shutdown sequence and the polling is
+// already stopped.
+//
+
+			if (clean_db == true && Tango::Util::_UseDb == true)
+			{
+
+//
+// Memorize the fact that the dynamic polling properties has to be removed from db.
+//
+
+                tg->get_polled_dyn_cmd_names().push_back(cmd_name_low);
+                if (tg->get_full_polled_cmd_list().size() == 0)
+                {
+                    tg->get_full_polled_cmd_list() = poll_cmd;
+                    tg->get_dyn_cmd_dev_name() = device_name;
+                }
+			}
+		}
+		else
+		{
+			if (tg->is_device_restarting(get_name()) == false)
+				adm_dev->rem_obj_polling(&send,clean_db);
+		}
+	}
+
+//
+// Now, remove the command from the command list
+//
+
+	if (device_cmd == false)
+		device_class->remove_command(cmd_name_low);
+	else
+		remove_local_command(cmd_name_low);
+
+//
+// Delete Command object if wanted
+//
+
+	if (free_it == true)
+		delete rem_cmd;
+
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::remove_command
+//
+// description :
+//		Remove command to the device command(s) list
+//
+// argument:
+//		in :
+//			- rem_cmd_name: The name of the command to be deleted.
+//          - free_it : Free Command object flag
+//          - clean_db : Clean command related info in db
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::remove_command(const string &rem_cmd_name, bool free_it,bool clean_db)
+{
+
+//
+// Search for command first at class level and then at device level (for dynamic cmd)
+//
+
+	try
+	{
+		Command &cmd = device_class->get_cmd_by_name(rem_cmd_name);
+		remove_command(&cmd,free_it,clean_db);
+	}
+	catch (Tango::DevFailed &e)
+	{
+		try
+		{
+			Command &cmd = get_local_cmd_by_name(rem_cmd_name);
+			remove_command(&cmd,free_it,clean_db);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			TangoSys_OMemStream o;
+
+			o << "Command " << rem_cmd_name << " is not defined as a command for your device.";
+			o << "\nCan't remove it" << ends;
+
+			Except::re_throw_exception(e,API_CommandNotFound,o.str(),"DeviceImpl::remove_command");
+		}
+	}
+
+}
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
@@ -5627,6 +5904,90 @@ void DeviceImpl::lock_root_devices(int validity,bool lock_action)
 		else
 			dp->unlock();
 	}
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceImpl::get_local_cmd_by_name
+//
+// description :	Get a reference to a local Command object
+//
+// in : 	cmd_name : The command name
+//
+//-----------------------------------------------------------------------------
+
+Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
+{
+	vector<Command *>::iterator pos;
+
+#ifdef HAS_LAMBDA_FUNC
+	pos = find_if(command_list.begin(),command_list.end(),
+					[&] (Command *cmd) -> bool
+					{
+						if (cmd_name.size() != cmd->get_lower_name().size())
+							return false;
+						string tmp_name(cmd_name);
+						transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+						return cmd->get_lower_name() == tmp_name;
+					});
+#else
+	pos = find_if(command_list.begin(),command_list.end(),
+				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+#endif
+
+	if (pos == command_list.end())
+	{
+		cout3 << "DeviceImpl::get_cmd_by_name throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << cmd_name << " command not found" << ends;
+		Except::throw_exception((const char *)API_CommandNotFound,
+				      o.str(),
+				      (const char *)"Device::get_cmd_by_name");
+	}
+
+	return *(*pos);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceImpl::remove_local_command
+//
+// description :	Delete a command from the local command list
+//
+// in : 	cmd_name : The command name (in lower case letter)
+//
+//-----------------------------------------------------------------------------
+
+void DeviceImpl::remove_local_command(const string &cmd_name)
+{
+	vector<Command *>::iterator pos;
+
+#ifdef HAS_LAMBDA_FUNC
+	pos = find_if(command_list.begin(),command_list.end(),
+					[&] (Command *cmd) -> bool
+					{
+						if (cmd_name.size() != cmd->get_lower_name().size())
+							return false;
+						return cmd->get_lower_name() == cmd_name;
+					});
+#else
+	pos = find_if(command_list.begin(),command_list.end(),
+				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+#endif
+
+	if (pos == command_list.end())
+	{
+		cout3 << "DeviceImpl::remove_local_command throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << cmd_name << " command not found" << ends;
+		Except::throw_exception((const char *)API_CommandNotFound,
+				      o.str(),
+				      (const char *)"DeviceImpl::remove_local_command");
+	}
+
+	command_list.erase(pos);
 }
 
 } // End of Tango namespace

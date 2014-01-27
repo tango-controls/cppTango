@@ -979,23 +979,31 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 	cout4 << "Device_2Impl::command_list_query_2 arrived" << endl;
 
 //
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_op(Op_Command_list_2);
+
+//
 // Retrieve number of command and allocate memory to send back info
 //
 
-	long nb_cmd = device_class->get_command_list().size();
+	long nb_cmd_class = device_class->get_command_list().size();
+	long nb_cmd_dev = get_local_command_list().size();
+	long nb_cmd = nb_cmd_class + nb_cmd_dev;
 	cout4 << nb_cmd << " command(s) for device" << endl;
 	Tango::DevCmdInfoList_2 *back = NULL;
 
 	try
 	{
 		back = new Tango::DevCmdInfoList_2(nb_cmd);
-                back->length(nb_cmd);
+		back->length(nb_cmd);
 
 //
 // Populate the vector
 //
 
-		for (long i = 0;i < nb_cmd;i++)
+		for (long i = 0;i < nb_cmd_class;i++)
 		{
 			Tango::DevCmdInfo_2 tmp;
 			tmp.cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
@@ -1016,6 +1024,29 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 
 			(*back)[i] = tmp;
 		}
+
+		for (long i = 0;i < nb_cmd_dev;i++)
+		{
+			Command *cmd_ptr = get_local_command_list()[i];
+			Tango::DevCmdInfo_2 tmp;
+			tmp.cmd_name = CORBA::string_dup(cmd_ptr->get_name().c_str());
+			tmp.cmd_tag = 0;
+			tmp.level = cmd_ptr->get_disp_level();
+			tmp.in_type = (long)(cmd_ptr->get_in_type());
+			tmp.out_type = (long)(cmd_ptr->get_out_type());
+			string &str_in = cmd_ptr->get_in_type_desc();
+			if (str_in.size() != 0)
+				tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
+			else
+				tmp.in_type_desc = CORBA::string_dup(NotSet);
+			string &str_out = cmd_ptr->get_out_type_desc();
+			if (str_out.size() != 0)
+				tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
+			else
+				tmp.out_type_desc = CORBA::string_dup(NotSet);
+
+			(*back)[i + nb_cmd_class] = tmp;
+		}
 	}
 	catch (bad_alloc)
 	{
@@ -1023,12 +1054,6 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_2Impl::command_list_query_2");
 	}
-
-//
-// Record operation request in black box
-//
-
-	blackbox_ptr->insert_op(Op_Command_list_2);
 
 //
 // Return to caller
@@ -1064,6 +1089,12 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
 //
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_op(Op_Command_2);
+
+//
 // Allocate memory for the stucture sent back to caller. The ORB will free it
 //
 
@@ -1079,38 +1110,61 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	}
 
 //
-// Try to retrieve the command in the command list
+// Try to retrieve the command in the command list first at class level then at device level
+// (in case of dyn command instaleld at device level)
 //
 
 	long i;
+	bool found = false;
+	Command *cmd_ptr = Tango_nullptr;
 	long nb_cmd = device_class->get_command_list().size();
 	for (i = 0;i < nb_cmd;i++)
 	{
 		if (device_class->get_command_list()[i]->get_lower_name() == cmd)
 		{
-			back->cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
-			back->cmd_tag = 0;
-			back->level = (device_class->get_command_list())[i]->get_disp_level();
-			back->in_type = (long)((device_class->get_command_list())[i]->get_in_type());
-			back->out_type = (long)((device_class->get_command_list())[i]->get_out_type());
-			string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
-			if (str_in.size() != 0)
-				back->in_type_desc = CORBA::string_dup(str_in.c_str());
-			else
-				back->in_type_desc = CORBA::string_dup(NotSet);
-			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
-			if (str_out.size() != 0)
-				back->out_type_desc = CORBA::string_dup(str_out.c_str());
-			else
-				back->out_type_desc = CORBA::string_dup(NotSet);
+			found = true;
+			cmd_ptr = device_class->get_command_list()[i];
 			break;
 		}
 	}
 
-	if (i == nb_cmd)
+	if (found == false)
+	{
+		nb_cmd = get_local_command_list().size();
+		for (i = 0;i < nb_cmd;i++)
+		{
+			if (get_local_command_list()[i]->get_lower_name() == cmd)
+			{
+				found = true;
+				cmd_ptr = get_local_command_list()[i];
+				break;
+			}
+		}
+	}
+
+
+	if (found == true)
+	{
+		back->cmd_name = CORBA::string_dup(cmd_ptr->get_name().c_str());
+		back->cmd_tag = 0;
+		back->level = cmd_ptr->get_disp_level();
+		back->in_type = (long)(cmd_ptr->get_in_type());
+		back->out_type = (long)(cmd_ptr->get_out_type());
+		string &str_in = cmd_ptr->get_in_type_desc();
+		if (str_in.size() != 0)
+			back->in_type_desc = CORBA::string_dup(str_in.c_str());
+		else
+			back->in_type_desc = CORBA::string_dup(NotSet);
+		string &str_out = cmd_ptr->get_out_type_desc();
+		if (str_out.size() != 0)
+			back->out_type_desc = CORBA::string_dup(str_out.c_str());
+		else
+			back->out_type_desc = CORBA::string_dup(NotSet);
+	}
+	else
 	{
 		delete back;
-		cout3 << "Device_2Impl::command_query_2(): operation " << command << " not found" << endl;
+		cout3 << "Device_2Impl::command_query_2(): command " << command << " not found" << endl;
 
 //
 // throw an exception to client
@@ -1123,12 +1177,6 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 				        o.str(),
 				        (const char *)"Device_2Impl::command_query_2");
 	}
-
-//
-// Record operation request in black box
-//
-
-	blackbox_ptr->insert_op(Op_Command_2);
 
 //
 // Return to caller

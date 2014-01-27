@@ -438,6 +438,8 @@ public:
 	void check_att_conf();
 	void release_devices_mon();
 
+	void remove_command(const string &);
+
 protected:
 /// @privatesection
 	Command *get_default_command() {return default_cmd;}

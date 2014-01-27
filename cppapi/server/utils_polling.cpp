@@ -786,6 +786,53 @@ void Util::clean_attr_polled_prop()
 	}
 }
 
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::clean_cmd_polled_prop()
+//
+// description :
+//		Clean in database the prop used to memorized which commands are polled
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+void Util::clean_cmd_polled_prop()
+{
+	if (Tango::Util::_UseDb == true)
+	{
+		DbData send_data;
+		DbDatum db_info("polled_cmd");
+
+		for (unsigned int loop = 0;loop < polled_dyn_cmd_names.size();loop++)
+		{
+			vector<string>::iterator ite_cmd = find(polled_cmd_list.begin(),polled_cmd_list.end(), polled_dyn_cmd_names[loop]);
+			if (ite_cmd != polled_cmd_list.end())
+			{
+				ite_cmd = polled_cmd_list.erase(ite_cmd);
+				if (ite_cmd != polled_cmd_list.end())
+					polled_cmd_list.erase(ite_cmd);
+			}
+			else
+			{
+				TangoSys_OMemStream o;
+
+				o << "Polling properties for command " << polled_dyn_cmd_names[loop] << " on device " << dyn_cmd_dev_name;
+				o << " not found device in polled command list!" << ends;
+
+				Except::throw_exception((const char *)API_MethodArgument,o.str(),
+										(const char *)"Util::clean_cmd_polling_prop");
+			}
+		}
+
+		db_info << polled_cmd_list;
+		send_data.push_back(db_info);
+
+		if (db_info.size() == 0)
+			db->delete_device_property(dyn_cmd_dev_name,send_data);
+		else
+			db->put_device_property(dyn_cmd_dev_name,send_data);
+	}
+}
 
 //+------------------------------------------------------------------------------------------------------------------
 //

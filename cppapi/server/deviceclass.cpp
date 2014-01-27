@@ -695,13 +695,15 @@ DeviceClass::~DeviceClass()
 			delete_dev(0,tg,r_poa);
 
 //
-// Clean-up db (dyn attribute)
+// Clean-up db (dyn attribute and cmd)
 //
 
 			if (tg->get_polled_dyn_attr_names().size() != 0)
 				tg->clean_attr_polled_prop();
 			if (tg->get_all_dyn_attr_names().size() != 0)
 				tg->clean_dyn_attr_prop();
+			if (tg->get_polled_dyn_cmd_names().size() != 0)
+				tg->clean_cmd_polled_prop();
 
 			vector<DeviceImpl *>::iterator it = device_list.begin();
 			device_list.erase(it);
@@ -1078,44 +1080,67 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 
 	transform(command_lower.begin(),command_lower.end(),command_lower.begin(),::tolower);
 
+//
+// Search for command object first at class level then at device level (case of dynamic command installed at device
+// level)
+//
+
+	bool found = false;
 	for (i_cmd = command_list.begin();i_cmd < command_list.end();++i_cmd)
 	{
 		if ((*i_cmd)->get_lower_name() == command_lower)
 		{
+			found = true;
+			break;
+		}
+	}
+
+	if (found == false)
+	{
+		vector<Command *> &dev_command_list = device->get_local_command_list();
+		for (i_cmd = dev_command_list.begin();i_cmd < dev_command_list.end();++i_cmd)
+		{
+			if ((*i_cmd)->get_lower_name() == command_lower)
+			{
+				found = true;
+				break;
+			}
+		}
+	}
+
+	if (found == true)
+	{
 
 //
 // Call the always executed method
 //
 
-			device->always_executed_hook();
+		device->always_executed_hook();
 
 //
 // Check if command is allowed
 //
 
-			if ((*i_cmd)->is_allowed(device,in_any) == false)
-			{
-				TangoSys_OMemStream o;
-				o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
-				Except::throw_exception((const char *)API_CommandNotAllowed,
+		if ((*i_cmd)->is_allowed(device,in_any) == false)
+		{
+			TangoSys_OMemStream o;
+			o << "Command " << command << " not allowed when the device is in " << Tango::DevStateName[device->get_state()] << " state"  << ends;
+			Except::throw_exception((const char *)API_CommandNotAllowed,
 						      o.str(),
 						      (const char *)"DeviceClass::command_handler");
-			}
+		}
 
 //
 // Execute command
 //
 
-			ret = (*i_cmd)->execute(device,in_any);
-			break;
-		}
+		ret = (*i_cmd)->execute(device,in_any);
 	}
 
-	if (i_cmd == command_list.end())
+	if (found == false)
 	{
 
-		cout3 << "DeviceClass::command_handler(): command " << command << " not found" << endl;
-
+		cout3 << "DeviceClass::command_handler(): command " << command << " not found in class/device command" << endl;
 
 		Command *def_cmd = get_default_command();
 		if (def_cmd != NULL)
@@ -1462,6 +1487,47 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 	}
 
 	return *(*pos);
+}
+
+//+----------------------------------------------------------------------------
+//
+// method :		DeviceClass::remove_command
+//
+// description :	Delete a command from the command list
+//
+// in : 	cmd_name : The command name (in lower case letter)
+//
+//-----------------------------------------------------------------------------
+
+void DeviceClass::remove_command(const string &cmd_name)
+{
+	vector<Command *>::iterator pos;
+
+#ifdef HAS_LAMBDA_FUNC
+	pos = find_if(command_list.begin(),command_list.end(),
+					[&] (Command *cmd) -> bool
+					{
+						if (cmd_name.size() != cmd->get_lower_name().size())
+							return false;
+						return cmd->get_lower_name() == cmd_name;
+					});
+#else
+	pos = find_if(command_list.begin(),command_list.end(),
+				bind2nd(WantedCmd<Command *,const char *,bool>(),cmd_name.c_str()));
+#endif
+
+	if (pos == command_list.end())
+	{
+		cout3 << "DeviceClass::get_cmd_by_name throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << cmd_name << " command not found" << ends;
+		Except::throw_exception((const char *)API_CommandNotFound,
+				      o.str(),
+				      (const char *)"DeviceClass::get_cmd_by_name");
+	}
+
+	command_list.erase(pos);
 }
 
 //+----------------------------------------------------------------------------

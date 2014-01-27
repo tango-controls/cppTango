@@ -685,7 +685,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 // Refuse to do the job for forwarded attribute
 //
 
-	if (attr_ptr->is_fwd_att() == true)
+	if (obj_type == PollAttribute && attr_ptr->is_fwd_att() == true)
 	{
 		stringstream ss;
 		ss << "Attribute " << obj_name << " is a forwarded attribute.\n";

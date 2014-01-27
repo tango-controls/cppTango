@@ -838,11 +838,15 @@ public:
 	void set_svr_shutting_down(bool val) {svr_stopping = val;}
 
 	vector<string> &get_polled_dyn_attr_names() {return polled_dyn_attr_names;}
+	vector<string> &get_polled_dyn_cmd_names() {return polled_dyn_cmd_names;}
 	vector<string> &get_full_polled_att_list() {return polled_att_list;}
+	vector<string> &get_full_polled_cmd_list() {return polled_cmd_list;}
 	string &get_dyn_att_dev_name() {return dyn_att_dev_name;}
+	string &get_dyn_cmd_dev_name() {return dyn_cmd_dev_name;}
 	vector<string> &get_all_dyn_attr_names() {return all_dyn_attr;}
 
 	void clean_attr_polled_prop();
+	void clean_cmd_polled_prop();
 	void clean_dyn_attr_prop();
 
 	int create_poll_thread(const char *dev_name,bool startup,int smallest_upd = -1);
@@ -996,9 +1000,12 @@ private:
 	bool						svr_stopping;			// Server is shutting down flag
 
 	vector<string>				polled_dyn_attr_names;	// Dynamic att. names (used for polling clean-up)
+	vector<string>				polled_dyn_cmd_names;	// Dynamic cmd. names (used for polling clean-up)
 	vector<string>				polled_att_list;		// Full polled att list
+	vector<string>				polled_cmd_list;		// Full polled cmd list
 	vector<string>				all_dyn_attr;			// All dynamic attr name list
 	string						dyn_att_dev_name;		// Device name (use for dyn att clean-up)
+	string						dyn_cmd_dev_name;		// Device name (use for dyn cmd clean-up)
 
 	unsigned long				poll_pool_size;			// Polling threads pool size
 	vector<string>  			poll_pool_conf;			// Polling threads pool conf.

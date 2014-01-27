@@ -562,7 +562,7 @@ public:
  * Attributes are normally
  * constructed in the DeviceClass::attribute_factory() method. Nevertheless, it
  * is still possible to add a new attribute to a device with the DeviceImpl::add_attribute method.
- * This remove_Attribute method delete the attribute from the
+ * This remove_attribute method delete the attribute from the
  * device attribute list.
  *
  * @param rem_attr Pointer to the attribute to be removed
@@ -582,11 +582,11 @@ public:
  * Attributes are normally
  * constructed in the DeviceClass::attribute_factory() method. Nevertheless, it
  * is still possible to add a new attribute to a device with the DeviceImpl::add_attribute method.
- * This remove_Attribute method delete the attribute from the
+ * This remove_attribute method delete the attribute from the
  * device attribute list.
  *
  * @param rem_attr_name The name of the attribute to be removed
- * @param free_it  Boolean set to true if the object passed as first argument
+ * @param free_it  Boolean set to true if the attribute object
  *		   must be freed. Default value is false.
  * @param clean_db  Clean all attributes related information (included polling
  *         info if the attribute is polled) from database. Default value is true
@@ -595,6 +595,68 @@ public:
  * <b>DevFailed</b> exception specification
  */
  	void remove_attribute(string &rem_attr_name,bool free_it = false,bool clean_db = true);
+
+/**
+ * Add a new command to the device command list.
+ *
+ * Commands are normally
+ * constructed in the DeviceClass::command_factory() method. Nevertheless, it
+ * is still possible to add a new command to a device with this method.
+ * Please, note that if you add a command to a device at device creation
+ * time, this command will
+ * be added to the device class command list. Therefore, all devices
+ * belonging to the same class created after this command addition
+ * will also have this command.
+ *
+ * @param new_cmd Pointer to the new command to be added to the list. This pointer
+ * must point to "heap" allocated memory (or to static memory) and not to "stack"
+ * allocated memory
+ * @param device Set this flag to true if the command must be added for only this device
+ * Default is false (command added for the device class)
+ * @exception DevFailed
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+ 	void add_command(Command *new_cmd, bool device = false);
+/**
+ * Remove one command from the device command list.
+ *
+ * Commands are normally
+ * constructed in the DeviceClass::command_factory() method. Nevertheless, it
+ * is still possible to add a new command to a device with the DeviceImpl::add_command method.
+ * This remove_command method delete the command from the
+ * device command list.
+ *
+ * @param rem_cmd Pointer to the command to be removed
+ * @param free_it  Boolean set to true if the object passed as first argument
+ *		   must be freed. Default value is false.
+ * @param clean_db  Clean command related information (included polling
+ *         info if the command is polled) from database. Default value is true
+ * @exception DevFailed
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+ 	void remove_command(Command *rem_cmd,bool free_it = false,bool clean_db = true);
+
+/**
+ * Remove one command from the device command list.
+ *
+ * Commands are normally
+ * constructed in the DeviceClass::command_factory() method. Nevertheless, it
+ * is still possible to add a new command to a device with the DeviceImpl::add_command method.
+ * This remove_command method delete the command from the
+ * device command list.
+ *
+ * @param rem_cmd_name The name of the command to be removed
+ * @param free_it  Boolean set to true if the command object
+ *		   must be freed. Default value is false.
+ * @param clean_db  Clean command related information (included polling
+ *         info if the command is polled) from database. Default value is true
+ * @exception DevFailed
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+ 	void remove_command(const string &rem_cmd_name,bool free_it = false,bool clean_db = true);
 
 /**
  * Retrieve a polled object from the polled object list.
@@ -3282,6 +3344,10 @@ public:
 	void set_call_source(DevSource _s) {call_source=_s;}
 	DevSource get_call_source() {return call_source;}
 
+	vector<Command *> &get_local_command_list() {return command_list;}
+	Command &get_local_cmd_by_name(const string &);
+	void remove_local_command(const string &);
+
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
@@ -3393,6 +3459,8 @@ protected:
 	vector<FwdWrongConf>		fwd_att_wrong_conf;
 	bool						with_fwd_att;
 	DevSource					call_source;
+
+	vector<Command *>			command_list;
 
 private:
 //

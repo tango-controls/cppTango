@@ -554,13 +554,15 @@ void DServer::delete_devices()
 					class_list[i]->delete_dev(0,tg,r_poa);
 
 //
-// Clean-up db (dyn attribute)
+// Clean-up db (dyn attribute and dyn command)
 //
 
 					if (tg->get_polled_dyn_attr_names().size() != 0)
 						tg->clean_attr_polled_prop();
 					if (tg->get_all_dyn_attr_names().size() != 0)
 						tg->clean_dyn_attr_prop();
+					if (tg->get_polled_dyn_cmd_names().size() != 0)
+						tg->clean_cmd_polled_prop();
 
 //
 // Wait for POA to destroy the object before going to the next one. Limit this waiting time to 200 mS
