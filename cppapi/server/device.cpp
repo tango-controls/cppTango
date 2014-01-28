@@ -88,7 +88,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
+ event_intr_change_subscription(0)
 {
     real_ctor();
 }
@@ -104,7 +105,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
+ event_intr_change_subscription(0)
 {
     real_ctor();
 }
@@ -118,7 +120,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
+ event_intr_change_subscription(0)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -136,7 +139,8 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
  store_in_bb(true),poll_mon("cache"),att_conf_mon("att_config"),
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
- min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false)
+ min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
+ event_intr_change_subscription(0)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;

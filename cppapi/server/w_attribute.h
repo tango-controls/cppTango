@@ -795,8 +795,10 @@ public:
 	Tango::DevEncoded &get_last_written_encoded() {return encoded_val;}
 
 	bool is_memorized() {return memorized;}
+	bool get_memorized() {return memorized;}
 	void set_memorized(bool mem) {memorized = mem;}
 	bool is_memorized_init() {return memorized_init;}
+	bool get_memorized_init() {return memorized_init;}
 	void set_memorized_init(bool mem_init) {memorized_init = mem_init;}
 	string &get_mem_value() {return mem_value;}
 	void set_mem_value(const string &new_val) {mem_value = new_val;}

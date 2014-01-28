@@ -43,6 +43,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <basiccommand.h>
+#include <devintr.h>
 
 extern omni_thread::key_t key_py_data;
 
@@ -193,15 +194,20 @@ DevInitCmd::DevInitCmd(const char *name,Tango::CmdArgType in, Tango::CmdArgType 
 //
 // argument :
 //		in :
-//			- device : Pointer to the device on which the command must be eexcuted
+//			- device : Pointer to the device on which the command must be excuted
 //			- in_any : Input data packed in a CORBA Any object
 //
 //--------------------------------------------------------------------------------------------------------------------
 
 CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::Any &in_any))
 {
-
 	cout4 << "Init::execute(): arrived" << endl;
+
+//
+// Get device interface
+//
+
+	DevIntr di(device);
 
 //
 // Init device
@@ -289,6 +295,15 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		Except::re_throw_exception(e,(const char *)API_InitThrowsException,o.str(),
 				           (const char *)"DevInitCmd::execute()");
 	}
+
+//
+// Check if device interface has changed
+//
+
+	if (di.has_changed(device) == true)
+		cout << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
+	else
+		cout << "Unchanged device interface" << endl;
 
 //
 // return to the caller

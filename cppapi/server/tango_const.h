@@ -201,11 +201,8 @@ const int   MaxDevPropLength               = 255;
 //
 
 const int	MIN_IDL_CONF5			       = 5;
-const char* const CONF_TYPE_EVENT		   = "attr_conf";
 const char* const CONF5_TYPE_EVENT		   = "attr_5_conf";
-const char* const DATA_READY_TYPE_EVENT	   = "data_ready";
 const int  ALL_EVENTS					   = 0;
-
 
 //
 // Files used to retrieve env. variables
@@ -1013,13 +1010,14 @@ const char * const DevStateName[] = {
  */
 
 enum EventType {
-	CHANGE_EVENT=0,         ///< Change event
-	QUALITY_EVENT,          ///< Quality change event (deprecated - do not use)
-	PERIODIC_EVENT,         ///< Periodic event
-	ARCHIVE_EVENT,          ///< Archive event
-	USER_EVENT,             ///< User event
-	ATTR_CONF_EVENT,        ///< attribute configuration change event
-	DATA_READY_EVENT,       ///< Data ready event
+	CHANGE_EVENT=0,         	///< Change event
+	QUALITY_EVENT,          	///< Quality change event (deprecated - do not use)
+	PERIODIC_EVENT,         	///< Periodic event
+	ARCHIVE_EVENT,          	///< Archive event
+	USER_EVENT,             	///< User event
+	ATTR_CONF_EVENT,        	///< Attribute configuration change event
+	DATA_READY_EVENT,       	///< Data ready event
+	INTERFACE_CHANGE_EVENT,		///< Device interface change event
 	numEventType
 };
 
@@ -1030,8 +1028,12 @@ const char * const EventName[] = {
     "archive",
     "user_event",
     "attr_conf",
-    "data_ready"
+    "data_ready",
+    "intr_change"
 };
+
+const char *const CONF_TYPE_EVENT		   = EventName[ATTR_CONF_EVENT];
+const char* const DATA_READY_TYPE_EVENT	   = EventName[DATA_READY_EVENT];
 
 enum AttrSerialModel
 {

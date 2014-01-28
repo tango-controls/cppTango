@@ -3348,6 +3348,9 @@ public:
 	Command &get_local_cmd_by_name(const string &);
 	void remove_local_command(const string &);
 
+	void set_event_intr_change_subscription(time_t _t) {event_intr_change_subscription=_t;}
+	time_t get_event_intr_change_subscription() {return event_intr_change_subscription;}
+
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
@@ -3399,8 +3402,6 @@ protected:
 	DevVarULong64Array			dummy_ulong64_att_value;
 	DevVarStateArray			dummy_state_att_value;
 	DevVarEncodedArray			dummy_encoded_att_value;
-
-
 
 //
 // Ported from the extension class
@@ -3461,6 +3462,7 @@ protected:
 	DevSource					call_source;
 
 	vector<Command *>			command_list;
+	time_t						event_intr_change_subscription;
 
 private:
 //
