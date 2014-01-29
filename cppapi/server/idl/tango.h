@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;    
+omni_mutex *mut_ptr;  
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4086,6 +4086,28 @@ omni_mutex *mut_ptr;
   typedef _CORBA_ConstrType_Variable_OUT_arg< AttDataReady,AttDataReady_var > AttDataReady_out;
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_AttDataReady;
+
+  struct DevIntrChange {
+    typedef _CORBA_ConstrType_Variable_Var<DevIntrChange> _var_type;
+
+    
+    ::CORBA::Boolean dev_started;
+
+    DevCmdInfoList_2 cmds;
+
+    AttributeConfigList_5 atts;
+
+  
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef DevIntrChange::_var_type DevIntrChange_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< DevIntrChange,DevIntrChange_var > DevIntrChange_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevIntrChange;
 
   struct DevInfo {
     typedef _CORBA_ConstrType_Variable_Var<DevInfo> _var_type;
@@ -6329,6 +6351,11 @@ extern void operator<<=(::CORBA::Any& _a, const Tango::AttDataReady& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::AttDataReady* _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttDataReady*& _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttDataReady*& _sp);
+
+extern void operator<<=(::CORBA::Any& _a, const Tango::DevIntrChange& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::DevIntrChange* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevIntrChange*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevIntrChange*& _sp);
 
 extern void operator<<=(::CORBA::Any& _a, const Tango::DevInfo& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::DevInfo* _sp);

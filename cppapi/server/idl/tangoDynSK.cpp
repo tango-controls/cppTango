@@ -1385,6 +1385,41 @@ const ::CORBA::TypeCode_ptr Tango::_tc_AttDataReady = _0RL_tc_Tango_mAttDataRead
 #endif
 
 
+
+
+
+
+
+
+
+static CORBA::PR_structMember _0RL_structmember_Tango_mDevIntrChange[] = {
+  {"dev_started", CORBA::TypeCode::PR_boolean_tc()},
+  {"cmds", _0RL_tc_Tango_mDevCmdInfoList__2},
+  {"atts", _0RL_tc_Tango_mAttributeConfigList__5}
+};
+
+#ifdef _0RL_tc_Tango_mDevIntrChange
+#  undef _0RL_tc_Tango_mDevIntrChange
+#endif
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevIntrChange = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevIntrChange:1.0", "DevIntrChange", _0RL_structmember_Tango_mDevIntrChange, 3, &_0RL_tcTrack);
+
+
+
+
+
+
+
+
+#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
+// MSVC++ does not give the constant external linkage otherwise.
+namespace Tango { 
+  const ::CORBA::TypeCode_ptr _tc_DevIntrChange = _0RL_tc_Tango_mDevIntrChange;
+} 
+#else
+const ::CORBA::TypeCode_ptr Tango::_tc_DevIntrChange = _0RL_tc_Tango_mDevIntrChange;
+#endif
+
+
 static CORBA::PR_structMember _0RL_structmember_Tango_mDevInfo[] = {
   {"dev_class", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"server_id", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
@@ -4755,6 +4790,57 @@ void operator<<=(::CORBA::Any& _a, Tango::AttDataReady* _sp)
                     _0RL_Tango_mAttDataReady_destructor_fn,
                     _v)) {
     _sp = (const Tango::AttDataReady*)_v;
+    return 1;
+  }
+  return 0;
+}
+
+static void _0RL_Tango_mDevIntrChange_marshal_fn(cdrStream& _s, void* _v)
+{
+  Tango::DevIntrChange* _p = (Tango::DevIntrChange*)_v;
+  *_p >>= _s;
+}
+static void _0RL_Tango_mDevIntrChange_unmarshal_fn(cdrStream& _s, void*& _v)
+{
+  Tango::DevIntrChange* _p = new Tango::DevIntrChange;
+  *_p <<= _s;
+  _v = _p;
+}
+static void _0RL_Tango_mDevIntrChange_destructor_fn(void* _v)
+{
+  Tango::DevIntrChange* _p = (Tango::DevIntrChange*)_v;
+  delete _p;
+}
+
+void operator<<=(::CORBA::Any& _a, const Tango::DevIntrChange& _s)
+{
+  Tango::DevIntrChange* _p = new Tango::DevIntrChange(_s);
+  _a.PR_insert(_0RL_tc_Tango_mDevIntrChange,
+               _0RL_Tango_mDevIntrChange_marshal_fn,
+               _0RL_Tango_mDevIntrChange_destructor_fn,
+               _p);
+}
+void operator<<=(::CORBA::Any& _a, Tango::DevIntrChange* _sp)
+{
+  _a.PR_insert(_0RL_tc_Tango_mDevIntrChange,
+               _0RL_Tango_mDevIntrChange_marshal_fn,
+               _0RL_Tango_mDevIntrChange_destructor_fn,
+               _sp);
+}
+
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevIntrChange*& _sp)
+{
+  return _a >>= (const Tango::DevIntrChange*&) _sp;
+}
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevIntrChange*& _sp)
+{
+  void* _v;
+  if (_a.PR_extract(_0RL_tc_Tango_mDevIntrChange,
+                    _0RL_Tango_mDevIntrChange_unmarshal_fn,
+                    _0RL_Tango_mDevIntrChange_marshal_fn,
+                    _0RL_Tango_mDevIntrChange_destructor_fn,
+                    _v)) {
+    _sp = (const Tango::DevIntrChange*)_v;
     return 1;
   }
   return 0;

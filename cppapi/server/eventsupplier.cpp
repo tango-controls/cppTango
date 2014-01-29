@@ -2010,4 +2010,47 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &
            except);
 }
 
+//+--------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventSupplier::push_dev_intr_change_event()
+//
+// description :
+//		Push a device interface change event
+//
+// argument :
+//		in :
+//			- device_impl : Pointer to device
+//			- attr_name : Attribute name
+//
+//-------------------------------------------------------------------------------------------------------------
+
+void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,const string &attr_name)
+{
+	cout3 << "EventSupplier::push_dev_intr_change_event(): called for device " << device_impl->get_name() << endl;
+
+	vector<string> filterable_names;
+	vector<double> filterable_data;
+	vector<string> filterable_names_lg;
+	vector<long> filterable_data_lg;
+
+	string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
+
+	AttDataReady dat_ready;
+
+    AttributeData ad;
+    ::memset(&ad,0,sizeof(ad));
+    ad.attr_dat_ready = &dat_ready;
+
+	push_event(device_impl,
+		   ev_type,
+		   filterable_names,
+		   filterable_data,
+		   filterable_names_lg,
+		   filterable_data_lg,
+	       ad,
+		   const_cast<string &>(attr_name),
+		   NULL);
+}
+
 } /* End of Tango namespace */

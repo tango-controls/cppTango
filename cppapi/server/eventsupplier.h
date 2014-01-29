@@ -95,6 +95,7 @@ public :
 	virtual ~EventSupplier() {}
 
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
+	void push_dev_intr_change_event(DeviceImpl *,const string &);
 
     struct AttributeData
     {

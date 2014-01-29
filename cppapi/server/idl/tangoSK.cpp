@@ -929,6 +929,24 @@ Tango::AttDataReady::operator<<= (cdrStream &_n)
 }
 
 void
+Tango::DevIntrChange::operator>>= (cdrStream &_n) const
+{
+  _n.marshalBoolean(dev_started);
+  (const DevCmdInfoList_2&) cmds >>= _n;
+  (const AttributeConfigList_5&) atts >>= _n;
+
+}
+
+void
+Tango::DevIntrChange::operator<<= (cdrStream &_n)
+{
+  dev_started = _n.unmarshalBoolean();
+  (DevCmdInfoList_2&)cmds <<= _n;
+  (AttributeConfigList_5&)atts <<= _n;
+
+}
+
+void
 Tango::DevInfo::operator>>= (cdrStream &_n) const
 {
   _n.marshalString(dev_class,0);
