@@ -2085,4 +2085,34 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,bool dev_
 	delete atts_list;
 }
 
+//+--------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventSupplier::any_dev_intr_client
+//
+// description :
+//		Check if there is at least a device interface change client
+//
+// argument :
+//		in :
+//			- device_impl : Pointer to device
+//
+//	return :
+//		True if there is at least one client listening for this event
+//
+//-------------------------------------------------------------------------------------------------------------
+
+bool EventSupplier::any_dev_intr_client(DeviceImpl *device_impl)
+{
+	bool ret = false;
+
+    time_t now = time(NULL);
+	time_t dev_intr_subscription = now - device_impl->get_event_intr_change_subscription();
+
+    if (dev_intr_subscription < EVENT_RESUBSCRIBE_PERIOD)
+		ret = true;
+
+	return ret;
+}
+
 } /* End of Tango namespace */

@@ -57,6 +57,7 @@ struct EventPar
 	bool		att_conf;
 	bool		att_conf5;
 	bool		data_ready;
+	bool		dev_intr_change;
 	bool        notifd;
 	bool        zmq;
 };

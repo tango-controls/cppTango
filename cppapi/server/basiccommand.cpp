@@ -212,11 +212,21 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 	cout4 << "Init::execute(): arrived" << endl;
 
 //
-// Get device interface
+// Get device interface only if necessary (some client(s) listening on device interface change event)
 //
 
+	ZmqEventSupplier *event_supplier_zmq = Tango_nullptr;
+	event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
 	DevIntr di;
-	if (device->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
+
+	bool ev_client = false;
+
+	if (event_supplier_zmq != Tango_nullptr)
+	{
+		ev_client = event_supplier_zmq->any_dev_intr_client(device);
+	}
+
+	if (device->get_dev_idl_version() >= MIN_IDL_DEV_INTR && ev_client == true)
 	{
 		di.get_interface(device);
 		device->disable_intr_change_ev();
@@ -315,31 +325,23 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 // Check if device interface has changed and eventually fire device interface change event
 //
 
-	if (device->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
+	if (device->get_dev_idl_version() >= MIN_IDL_DEV_INTR && ev_client == true)
 	{
 		device->enable_intr_change_ev();
 		if (di.has_changed(device) == true)
 		{
 			cout << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
 
-			ZmqEventSupplier *event_supplier_zmq = Tango_nullptr;
-			event_supplier_zmq = tg->get_zmq_event_supplier();
+			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(device);
+			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
 
-			if (event_supplier_zmq != Tango_nullptr)
-			{
-				Device_5Impl *dev_5 = static_cast<Device_5Impl *>(device);
-				DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
+			DevVarStringArray dvsa(1);
+			dvsa.length(1);
+			dvsa[0] = Tango::string_dup(AllAttr_3);
+			AttributeConfigList_5 *atts_list = dev_5->get_attribute_config_5(dvsa);
 
-				DevVarStringArray dvsa(1);
-				dvsa.length(1);
-				dvsa[0] = Tango::string_dup(AllAttr_3);
-				AttributeConfigList_5 *atts_list = dev_5->get_attribute_config_5(dvsa);
-
-				event_supplier_zmq->push_dev_intr_change_event(device,false,cmds_list,atts_list);
-			}
+			event_supplier_zmq->push_dev_intr_change_event(device,false,cmds_list,atts_list);
 		}
-		else
-			cout << "Unchanged device interface" << endl;
 	}
 
 //

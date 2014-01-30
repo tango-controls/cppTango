@@ -40,6 +40,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <eventsupplier.h>
+#include <devintr.h>
 
 #include <new>
 #include <algorithm>
@@ -807,6 +808,25 @@ void DServer::restart(string &d_name)
 	DeviceImpl *dev_to_del = *ite;
 
 //
+// Memorize device interface if some client(s) are listening on device interface change event
+//
+
+	DevIntr di;
+	bool ev_client = false;
+
+	if (dev_to_del->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
+	{
+		ZmqEventSupplier *event_supplier_zmq = Tango_nullptr;
+		event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+
+		if (event_supplier_zmq != Tango_nullptr)
+			ev_client = event_supplier_zmq->any_dev_intr_client(dev_to_del);
+
+		if (ev_client == true)
+			di.get_interface(dev_to_del);
+	}
+
+//
 // If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
@@ -850,6 +870,7 @@ void DServer::restart(string &d_name)
 	}
 
 	dev_to_del->get_device_attr()->get_event_param(eve);
+	dev_to_del->get_event_param(eve);
 
 //
 // Also get device locker parameters if device locked
@@ -1016,6 +1037,7 @@ void DServer::restart(string &d_name)
 
 	Tango::MultiAttribute *m_attr = new_dev->get_device_attr();
 	m_attr->set_event_param(eve);
+	new_dev->set_event_param(eve);
 
 //
 // Re-set multicast event parameters
@@ -1045,6 +1067,28 @@ void DServer::restart(string &d_name)
 	if (cl_addr != NULL)
 		new_dev->set_locking_param(cl_addr,old_cl_addr,l_date,l_ctr,l_valid);
 
+//
+// Fire device interface change event if needed
+//
+
+	if (ev_client == true)
+	{
+		if (di.has_changed(new_dev) == true)
+		{
+			cout << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
+
+			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(new_dev);
+			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
+
+			DevVarStringArray dvsa(1);
+			dvsa.length(1);
+			dvsa[0] = Tango::string_dup(AllAttr_3);
+			AttributeConfigList_5 *atts_list = dev_5->get_attribute_config_5(dvsa);
+
+			ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+			event_supplier_zmq->push_dev_intr_change_event(new_dev,false,cmds_list,atts_list);
+		}
+	}
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

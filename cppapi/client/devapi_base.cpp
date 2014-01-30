@@ -6741,6 +6741,15 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 
 int DeviceProxy::subscribe_event (EventType event,CallBack *callback,bool stateless)
 {
+	if (version < MIN_IDL_DEV_INTR)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " does not support device interface change event\n";
+		ss << "Available since Tango release 9 AND for device inheriting from IDL release 5 (Device_5Impl)";
+
+		Tango::Except::throw_exception(API_NotSupportedFeature,ss.str(),"DeviceProxy::subscribe_event()");
+	}
+
     ApiUtil *api_ptr = ApiUtil::instance();
   	if (api_ptr->get_zmq_event_consumer() == NULL)
 	{

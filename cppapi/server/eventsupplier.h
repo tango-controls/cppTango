@@ -96,6 +96,7 @@ public :
 
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
 	void push_dev_intr_change_event(DeviceImpl *,bool,DevCmdInfoList_2 *,AttributeConfigList_5 *);
+	bool any_dev_intr_client(DeviceImpl *);
 
     struct SuppliedEventData
     {

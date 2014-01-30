@@ -3210,12 +3210,13 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 // If device is IDL 5 or more and if enabled, push a device interface change event
 //
 
-	if (idl_version >= MIN_IDL_DEV_INTR)
+	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true)
 	{
-		if (is_intr_change_ev_enable() == true)
-		{
-			cout << "Push a device interface change event from add_attribute!!!" << endl;
-		}
+		devintr_shared.cmd_pending = false;
+		devintr_shared.suicide = false;
+		devintr_thread = new DevIntrThread(devintr_shared,devintr_mon);
+
+		devintr_thread->start();
 	}
 //
 // Free memory if needed
@@ -3223,7 +3224,6 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 	if (need_free == true)
 		delete new_attr;
-
 }
 
 
@@ -6003,6 +6003,72 @@ void DeviceImpl::remove_local_command(const string &cmd_name)
 	}
 
 	command_list.erase(pos);
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::get_event_param
+//
+// description :
+//		Return event info for the device with events subscribed
+//
+// argument :
+// 		out :
+//			- eve : One structure in this vector for each device event subsribed
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::get_event_param(vector<EventPar> &eve)
+{
+	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+
+	if (event_supplier_zmq->any_dev_intr_client(this) == true)
+	{
+		EventPar ep;
+
+		ep.notifd = false;
+		ep.zmq = true;
+		ep.attr_id = -1;
+		ep.change = false;
+		ep.quality = false;
+		ep.archive = false;
+		ep.periodic = false;
+		ep.user = false;
+		ep.att_conf = false;
+		ep.att_conf5 = false;
+		ep.data_ready = false;
+		ep.dev_intr_change = true;
+
+		eve.push_back(ep);
+	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::set_event_param
+//
+// description :
+//		Return event info for the device with events subscribed
+//
+// argument :
+// 		in :
+//			- eve : One structure in this vector for each device event subsribed
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::set_event_param(vector<EventPar> &eve)
+{
+	for (size_t loop = 0;loop < eve.size();loop++)
+	{
+		if (eve[loop].attr_id == -1)
+		{
+			if (eve[loop].dev_intr_change == true)
+				set_event_intr_change_subscription(time(NULL));
+			break;
+		}
+	}
 }
 
 } // End of Tango namespace

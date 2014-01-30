@@ -128,6 +128,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/command.o \
 		$(OBJS_DIR)/dserversignal.o \
 		$(OBJS_DIR)/devintr.o \
+		$(OBJS_DIR)/dintrthread.o \
 		$(OBJS_DIR)/thsig.o \
 		$(OBJS_DIR)/basiccommand.o \
 		$(OBJS_DIR)/utils.o \
@@ -225,6 +226,7 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/command.so.o \
 		$(OBJS_DIR_SL)/dserversignal.so.o \
 		$(OBJS_DIR_SL)/devintr.so.o \
+		$(OBJS_DIR_SL)/dintrthread.so.o \
 		$(OBJS_DIR_SL)/thsig.so.o \
 		$(OBJS_DIR_SL)/basiccommand.so.o \
 		$(OBJS_DIR_SL)/utils.so.o \
@@ -358,6 +360,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			device_5.h \
 			deviceclass.h \
 			devintr.h \
+			dintrthread.h \
 			dserver.h \
 			dserverclass.h \
 			dserversignal.h \

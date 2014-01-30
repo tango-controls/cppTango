@@ -1373,32 +1373,35 @@ void MultiAttribute::set_event_param(vector<EventPar> &eve)
 {
 	for (size_t i = 0;i < eve.size();i++)
 	{
-		Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
-
+		if (eve[i].attr_id != -1)
 		{
-			omni_mutex_lock oml(EventSupplier::get_event_mutex());
-			if (eve[i].change == true)
-				att.set_change_event_sub();
-			if (eve[i].periodic == true)
-				att.set_periodic_event_sub();
-			if (eve[i].quality == true)
-				att.set_quality_event_sub();
-			if (eve[i].archive == true)
-				att.set_archive_event_sub();
-			if (eve[i].user == true)
-				att.set_user_event_sub();
-			if (eve[i].att_conf == true)
-				att.set_att_conf_event_sub();
-			if (eve[i].att_conf5 == true)
-				att.set_att_conf5_event_sub();
-			if (eve[i].data_ready == true)
-				att.set_data_ready_event_sub();
-		}
+			Tango::Attribute &att = get_attr_by_ind(eve[i].attr_id);
 
-        if (eve[i].notifd == true)
-            att.set_use_notifd_event();
-        if (eve[i].zmq == true)
-            att.set_use_zmq_event();
+			{
+				omni_mutex_lock oml(EventSupplier::get_event_mutex());
+				if (eve[i].change == true)
+					att.set_change_event_sub();
+				if (eve[i].periodic == true)
+					att.set_periodic_event_sub();
+				if (eve[i].quality == true)
+					att.set_quality_event_sub();
+				if (eve[i].archive == true)
+					att.set_archive_event_sub();
+				if (eve[i].user == true)
+					att.set_user_event_sub();
+				if (eve[i].att_conf == true)
+					att.set_att_conf_event_sub();
+				if (eve[i].att_conf5 == true)
+					att.set_att_conf5_event_sub();
+				if (eve[i].data_ready == true)
+					att.set_data_ready_event_sub();
+			}
+
+			if (eve[i].notifd == true)
+				att.set_use_notifd_event();
+			if (eve[i].zmq == true)
+				att.set_use_zmq_event();
+		}
 	}
 }
 

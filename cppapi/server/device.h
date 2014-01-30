@@ -43,6 +43,7 @@
 #include <multiattribute.h>
 #include <pollobj.h>
 #include <deviceclass.h>
+#include <dintrthread.h>
 
 namespace Tango
 {
@@ -3354,6 +3355,9 @@ public:
 	void disable_intr_change_ev() {intr_change_ev = false;}
 	bool is_intr_change_ev_enable() {return intr_change_ev;}
 
+	void get_event_param(vector<EventPar> &);
+	void set_event_param(vector<EventPar> &);
+
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
@@ -3467,6 +3471,10 @@ protected:
 	vector<Command *>			command_list;
 	time_t						event_intr_change_subscription;
 	bool						intr_change_ev;
+
+	TangoMonitor				devintr_mon;
+	ShDevIntrTh					devintr_shared;
+	DevIntrThread				*devintr_thread;
 
 private:
 //

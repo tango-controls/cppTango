@@ -1045,10 +1045,11 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	}
 
 //
-// Set the DeviceImpl exported flag to true
+// Set the DeviceImpl exported flag to true. Also enable device interface change event
 //
 
 	dev->set_exported_flag(true);
+	dev->enable_intr_change_ev();
 
 	cout4 << "Leaving DeviceClass::export_device method()" << endl;
 }
