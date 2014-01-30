@@ -1287,6 +1287,31 @@ public :
  */
 	virtual int subscribe_event(const string &att_name, EventType event, int event_queue_size,bool stateless = false);
 /**
+ * Subscribe for event reception with stateless support
+ *
+ * The client call to subscribe for <B>device</B> event reception in the push model. The client implements a callback method
+ * which is triggered when the event is received. Filtering is done based on the event
+ * type. Today, only one event type is supported for <B>device</B> event. This event type is a device interface
+ * change event.
+ * cb is a pointer to a class inheriting from the Tango CallBack class and implementing a push_event() method.
+ * The last call parameter is named stateless. When the stateless flag is set to false, an exception will be thrown
+ * when the event subscription encounters a problem.
+ * With the stateless flag set to true, the event subscription will always succeed, even if the corresponding
+ * device server is not running. The keep alive thread will try every 10 seconds to subscribe for the specified
+ * event. At every subscription retry, a callback is executed which contains the corresponding exception.
+ * The subscribe_event() call returns an event id which has to be specified when unsubscribing from this
+ * event. Please, note that the cb parameter is a pointer. The lifetime of the pointed to object must at least
+ * be equal to the time when events are requested because only the pointer is stored into the event machinery.
+ * The same thing is true for the DeviceProxy instance on which the subscribe_event() method is called.
+ *
+ * @param [in] event The event type
+ * @param [in] cb The callback object
+ * @param [in] stateless The stateless flag
+ * @return The event identifier
+ * @throws EventSystemFailed
+ */
+	virtual int subscribe_event(EventType event,CallBack *cb,bool stateless = false);
+/**
  * Unsubscribe for event reception
  *
  * Unsubscribe a client from receiving the event specified by event_id. event_id is the event identifier returned

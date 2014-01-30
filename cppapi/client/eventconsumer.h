@@ -258,14 +258,14 @@ typedef struct event_not_connected
 	string							prefix;
 } EventNotConnected;
 
+//------------------------ Event Callback related info --------------------------------------
+
 typedef struct event_subscribe
 {
 	EventQueue						*ev_queue;
 	CallBack						*callback;
 	int								id;
 } EventSubscribeStruct;
-
-//------------------------ Event Callback related info --------------------------------------
 
 typedef struct event_callback_base
 {
@@ -355,6 +355,8 @@ public :
 	                   CallBack *callback, const vector<string> &filters, bool stateless = false);
 	int subscribe_event(DeviceProxy *device, const string &attribute, EventType event,
 	                   int event_queue_size, const vector<string> &filters, bool stateless = false);
+	int subscribe_event(DeviceProxy *device, EventType event,CallBack *callback,bool stateless = false);
+
 	void unsubscribe_event(int event_id);
 
 	// methods to access data in event queues
@@ -476,7 +478,8 @@ public :
 	{
 	    ATT_CONF = 0,
 	    ATT_READY,
-	    ATT_VALUE
+	    ATT_VALUE,
+	    DEV_INTR
 	};
 
     enum SocketCmd
@@ -513,6 +516,7 @@ private :
     AttributeConfig_3_var                   ac3;
     AttributeConfig_5_var					ac5;
     AttDataReady_var                        adr;
+    DevIntrChange_var						dic;
     DevErrorList_var                        del;
 
     int                                     old_poll_nb;

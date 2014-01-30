@@ -269,7 +269,7 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 
 		DeviceImpl *dev = rar->get_local_dev(local_dev_name);
 
-		EventSupplier::AttributeData ad;
+		EventSupplier::SuppliedEventData ad;
 		::memset(&ad,0,sizeof(ad));
 
 		if (ev->err == true)
@@ -331,7 +331,7 @@ void RootAttRegistry::RootAttUserCallBack::push_archive_event(Tango::DataReadyEv
 
 		DeviceImpl *dev = rar->get_local_dev(local_dev_name);
 
-		EventSupplier::AttributeData ad;
+		EventSupplier::SuppliedEventData ad;
 		::memset(&ad,0,sizeof(ad));
 
 		if (ev->err == true)

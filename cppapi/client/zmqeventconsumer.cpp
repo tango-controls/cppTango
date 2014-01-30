@@ -81,6 +81,7 @@ ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),omni_threa
 	ac3 = new AttributeConfig_3();
 	ac5 = new AttributeConfig_5();
 	adr = new AttDataReady();
+	dic = new DevIntrChange();
 	del = new DevErrorList();
 
 	start_undetached();
@@ -1622,15 +1623,28 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
     string full_event_name;
     string::size_type pos;
 
+    bool inter_event = false;
+    if (event_name == EventName[INTERFACE_CHANGE_EVENT])
+		inter_event = true;
+
     if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
     {
         full_event_name = device_name;
-        string tmp = '/' + att_name;
-        full_event_name.insert(pos,tmp);
+        if (inter_event == false)
+		{
+			string tmp = '/' + att_name;
+			full_event_name.insert(pos,tmp);
+		}
         full_event_name = full_event_name + '.' + event_name;
     }
     else
-        full_event_name = device_name + '/' + att_name + '.' + event_name;
+	{
+		if (inter_event == true)
+			full_event_name = device_name + '.' + event_name;
+		else
+			full_event_name = device_name + '/' + att_name + '.' + event_name;
+	}
+
 
 //
 // Extract server command result
@@ -1900,6 +1914,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // Search for entry within the event_callback map using the event name received in the event
 //
 
+cout << "Received event name = " << ev_name << endl;
     map<std::string,EventCallBackStruct>::iterator ipos;
     size_t loop;
     bool no_db_dev = false;
@@ -1936,12 +1951,14 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             const AttributeConfig_3 *attr_conf_3 = NULL;
             const AttributeConfig_5 *attr_conf_5 = NULL;
             AttDataReady *att_ready = NULL;
+            DevIntrChange *dev_intr_change = NULL;
             const DevErrorList *err_ptr;
             DevErrorList errors;
             AttributeInfoEx *attr_info_ex = NULL;
 
             bool ev_attr_conf = false;
             bool ev_attr_ready = false;
+            bool ev_dev_intr = false;
 
             EventCallBackStruct &evt_cb = ipos->second;
 
@@ -2003,6 +2020,8 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 			}
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;
+			else if (event_name == EventName[INTERFACE_CHANGE_EVENT])
+				data_type = DEV_INTR;
             else
                 data_type = ATT_VALUE;
 
@@ -2236,6 +2255,28 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						}
 						break;
 
+						case DEV_INTR:
+						try
+						{
+							(DevIntrChange &)dic <<= event_data_cdr;
+							dev_intr_change = &dic.inout();
+cout << "Event data unmarshalled" << endl;
+							ev_dev_intr = true;
+						}
+						catch(...)
+						{
+							TangoSys_OMemStream o;
+							o << "Received malformed data for event ";
+							o << ev_name << ends;
+
+							errors.length(1);
+							errors[0].reason = API_WrongEventData;
+							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].severity = ERR;
+						}
+						break;
+
 						case ATT_VALUE:
 						if (evt_cb.device_idl > 3)
 						{
@@ -2322,6 +2363,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             FwdEventData *missed_event_data = NULL;
             FwdAttrConfEventData *missed_conf_event_data = NULL;
             DataReadyEventData *missed_ready_event_data = NULL;
+            DevIntrChangeEventData *missed_dev_intr_event_data = NULL;
 
             try
             {
@@ -2340,16 +2382,22 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     missed_errors[0].desc = "Missed some events! Zmq queue has reached HWM?";
                     missed_errors[0].severity = ERR;
 
-                    if ((ev_attr_conf == false) && (ev_attr_ready == false))
+                    if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false))
                         missed_event_data = new FwdEventData (event_callback_map[ev_name].device,
                                                         full_att_name,event_name,NULL,missed_errors);
-                    else if (ev_attr_ready == false)
+                    else if (ev_attr_ready == false && ev_dev_intr == false)
                         missed_conf_event_data = new FwdAttrConfEventData(event_callback_map[ev_name].device,
                                                                     full_att_name,event_name,
                                                                     NULL,missed_errors);
-                    else
+                    else if (ev_dev_intr == false)
                         missed_ready_event_data = new DataReadyEventData(event_callback_map[ev_name].device,
                                                                     NULL,event_name,missed_errors);
+					else
+						missed_dev_intr_event_data = new DevIntrChangeEventData(event_callback_map[ev_name].device,
+																			event_name,full_att_name,
+																			(CommandInfoList *)NULL,
+																			(AttributeInfoListEx *)NULL,
+																			false,missed_errors);
                 }
 
 //
@@ -2371,7 +2419,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                         EventQueue *ev_queue;
                         ev_queue = esspos->ev_queue;
 
-                        if ((ev_attr_conf == false) && (ev_attr_ready == false))
+                        if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false))
                         {
                             FwdEventData *event_dat;
 
@@ -2485,7 +2533,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                     delete dev_attr;
                             }
                         }
-                        else if (ev_attr_ready == false)
+                        else if (ev_attr_ready == false && ev_dev_intr == false)
                         {
                             FwdAttrConfEventData *event_data;
 
@@ -2546,7 +2594,44 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 ev_queue->insert_event(event_data);
                             }
                         }
-                        else
+                        else if (ev_attr_ready == false)
+						{
+                            DevIntrChangeEventData *event_data = new DevIntrChangeEventData(event_callback_map[new_tango_host].device,
+                                                                    event_name,full_att_name,&dev_intr_change->cmds,
+                                                                    &dev_intr_change->atts,dev_intr_change->dev_started,errors);
+                            // if a callback method was specified, call it!
+                            if (callback != NULL )
+                            {
+                                try
+                                {
+                                    if (err_missed_event == true)
+                                        callback->push_event(missed_dev_intr_event_data);
+                                    callback->push_event(event_data);
+                                }
+                                catch (...)
+                                {
+                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+									st = st + ipos->first;
+									print_error_message(st.c_str());
+                                }
+                                delete event_data;
+                            }
+
+                            // no calback method, the event has to be instered
+                            // into the event queue
+                            else
+                            {
+                                if (err_missed_event == true)
+                                {
+									DevIntrChangeEventData *missed_dev_intr_data_copy = new DevIntrChangeEventData;
+									*missed_dev_intr_data_copy = *missed_dev_intr_event_data;
+
+                                    ev_queue->insert_event(missed_dev_intr_data_copy);
+								}
+                                ev_queue->insert_event(event_data);
+                            }
+						}
+						else
                         {
                             DataReadyEventData *event_data = new DataReadyEventData(event_callback_map[new_tango_host].device,
                                                                     const_cast<AttDataReady *>(att_ready),event_name,errors);
@@ -2592,6 +2677,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 delete missed_event_data;
                 delete missed_conf_event_data;
                 delete missed_ready_event_data;
+                delete missed_dev_intr_event_data;
 
                 break;
             }
@@ -2600,6 +2686,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 delete missed_event_data;
                 delete missed_conf_event_data;
                 delete missed_ready_event_data;
+				delete missed_dev_intr_event_data;
 
                 // free the map lock if not already done
                 if ( map_lock == true )
@@ -2622,6 +2709,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 delete missed_event_data;
                 delete missed_conf_event_data;
                 delete missed_ready_event_data;
+				delete missed_dev_intr_event_data;
 
                 // free the map lock if not already done
                 if ( map_lock == true )

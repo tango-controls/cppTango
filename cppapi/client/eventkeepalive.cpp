@@ -548,6 +548,7 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 //
 
 		cout4 << "KeepAliveThread at work" << endl;
+cout << "KeepAliveThread at work" << endl;
 
 		// lock the maps only for reading
 		event_consumer->map_modification_lock.writerIn();
@@ -1003,6 +1004,39 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 												ev_queue->insert_event(event_data);
 											}
 										}
+										else if (event_name == EventName[INTERFACE_CHANGE_EVENT])
+										{
+											DevIntrChangeEventData *event_data = new DevIntrChangeEventData(epos->second.device,
+																								event_name,domain_name,
+																								(CommandInfoList *)NULL,
+																								(AttributeInfoListEx *)NULL,
+																								false,errors);
+											// if a callback method was specified, call it!
+											if (callback != NULL )
+											{
+												try
+												{
+													callback->push_event(event_data);
+												}
+												catch (...)
+												{
+													ApiUtil *au = ApiUtil::instance();
+													stringstream ss;
+
+													ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
+													au->print_error_message(ss.str().c_str());
+												}
+
+												delete event_data;
+											}
+
+											// no calback method, the event has to be instered
+											// into the event queue
+											else
+											{
+												ev_queue->insert_event(event_data);
+											}
+										}
 										else
 										{
 											FwdEventData *event_data = new FwdEventData(epos->second.device,
@@ -1272,6 +1306,109 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 													}
 												}
 											}
+											else if (epos->second.event_name == EventName[INTERFACE_CHANGE_EVENT])
+											{
+
+//
+// For device interface change event
+//
+
+												AttributeInfoListEx *aie = Tango_nullptr;
+												CommandInfoList *cil = Tango_nullptr;
+												DevErrorList err;
+												err.length(0);
+												string prefix = event_consumer->env_var_fqdn_prefix[0];
+												string domain_name = prefix + epos->second.device->dev_name();
+
+												bool old_transp = epos->second.device->get_transparency_reconnection();
+												epos->second.device->set_transparency_reconnection(true);
+
+												try
+												{
+													aie = epos->second.device->attribute_list_query_ex();
+													cil = epos->second.device->command_list_query();
+												}
+												catch (DevFailed &e)
+												{
+													delete aie;
+													aie = Tango_nullptr;
+													delete cil;
+													cil = Tango_nullptr;
+
+													err = e.errors;
+												}
+												epos->second.device->set_transparency_reconnection(old_transp);
+
+												unsigned int cb_nb = epos->second.callback_list.size();
+												unsigned int cb_ctr = 0;
+												CommandInfoList *cil_copy = Tango_nullptr;
+												AttributeInfoListEx *aie_copy = Tango_nullptr;
+
+												for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
+												{
+													cb_ctr++;
+													DevIntrChangeEventData *event_data;
+													string ev_name(epos->second.event_name);
+
+													if (cb_ctr != cb_nb)
+													{
+														aie_copy = new AttributeInfoListEx;
+														*aie_copy = *aie;
+														cil_copy = new CommandInfoList;
+														*cil_copy = *cil;
+														event_data = new DevIntrChangeEventData(epos->second.device,
+													      				ev_name,domain_name,
+													      				cil_copy,aie_copy,true,
+													      				err);
+													}
+													else
+													{
+														event_data = new DevIntrChangeEventData(epos->second.device,
+													      				ev_name,domain_name,
+													      				cil,aie,true,
+													      				err);
+													}
+
+													CallBack   *callback = esspos->callback;
+													EventQueue *ev_queue = esspos->ev_queue;
+
+													// if a callback method was specified, call it!
+													if (callback != NULL )
+													{
+														try
+														{
+															callback->push_event(event_data);
+														}
+														catch (...)
+														{
+															ApiUtil *au = ApiUtil::instance();
+															stringstream ss;
+
+															ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
+															au->print_error_message(ss.str().c_str());
+														}
+
+														if (cb_ctr != cb_nb)
+														{
+															delete aie_copy;
+															delete cil_copy;
+														}
+														else
+														{
+															delete aie;
+															delete cil;
+														}
+														delete event_data;
+													}
+
+													// no calback method, the event has to be instered
+													// into the event queue
+													else
+													{
+														ev_queue->insert_event(event_data);
+													}
+												}
+											}
 										}
 									}
 									// release callback monitor
@@ -1349,7 +1486,9 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
 
     DevErrorList err;
     err.length(0);
-    string domain_name = vpos->prefix + vpos->device->dev_name() + "/" + vpos->attribute;
+    string domain_name = vpos->prefix + vpos->device->dev_name();
+    if (vpos->event_name != EventName[INTERFACE_CHANGE_EVENT])
+		domain_name = domain_name + "/" + vpos->attribute;
     err = e.errors;
 
 //
@@ -1446,6 +1585,39 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
     else if (vpos->event_name == DATA_READY_TYPE_EVENT)
     {
         DataReadyEventData *event_data = new DataReadyEventData(vpos->device,NULL,vpos->event_name,err);
+
+//
+// If a callback method was specified, call it!
+//
+
+        if (vpos->callback != NULL )
+        {
+            try
+            {
+                vpos->callback->push_event(event_data);
+            }
+            catch (...)
+            {
+				ApiUtil *au = ApiUtil::instance();
+				stringstream ss;
+
+				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
+				au->print_error_message(ss.str().c_str());
+            }
+            delete event_data;
+        }
+
+//
+// No callback method, the event has to be inserted into the event queue
+//
+        else
+            vpos->ev_queue->insert_event(event_data);
+    }
+    else if (vpos->event_name == EventName[INTERFACE_CHANGE_EVENT])
+    {
+        DevIntrChangeEventData *event_data = new DevIntrChangeEventData(vpos->device,vpos->event_name,
+																		domain_name,(CommandInfoList *)NULL,
+																		(AttributeInfoListEx *)NULL,false,err);
 
 //
 // If a callback method was specified, call it!

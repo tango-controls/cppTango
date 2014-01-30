@@ -87,7 +87,7 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	long nb_attr = new_conf.length();
 	long i;
 
-    EventSupplier::AttributeData ad;
+    EventSupplier::SuppliedEventData ad;
     ::memset(&ad,0,sizeof(ad));
 
 	try

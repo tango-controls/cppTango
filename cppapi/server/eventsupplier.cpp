@@ -93,7 +93,7 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct AttributeData &attr_value,
+SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct SuppliedEventData &attr_value,
 												DevFailed *except,string &attr_name,struct timeval *time_bef_attr)
 {
     string event, domain_name;
@@ -176,7 +176,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
+bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct SuppliedEventData &attr_value,
                      Attribute &attr,string &attr_name,DevFailed *except,bool user_push)
 {
     string event, domain_name;
@@ -357,7 +357,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 //
 //------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,AttributeData &attr_value,
+bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,SuppliedEventData &attr_value,
                     Attribute &attr,string &attr_name,DevFailed *except,struct timeval *time_bef_attr,
                     bool user_push)
 {
@@ -629,7 +629,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 //
 //------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
+bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struct SuppliedEventData &attr_value,
                     Attribute &attr,string &attr_name,DevFailed *except,struct timeval *time_bef_attr)
 {
 	string event, domain_name;
@@ -790,7 +790,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_value,bool archive,
+bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr_value,bool archive,
               double &delta_change_rel,double &delta_change_abs,DevFailed *except,
               bool &force_change,DeviceImpl *dev)
 {
@@ -1911,7 +1911,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 	dat_ready.data_type = (int)data_type;
 	dat_ready.ctr = ctr;
 
-    AttributeData ad;
+    SuppliedEventData ad;
     ::memset(&ad,0,sizeof(ad));
     ad.attr_dat_ready = &dat_ready;
 
@@ -1944,7 +1944,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &attr_conf,DevFailed *except,string &attr_name)
+void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &attr_conf,DevFailed *except,string &attr_name)
 {
     string event, domain_name;
     time_t now, att_conf_subscription;
@@ -2021,11 +2021,13 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &
 // argument :
 //		in :
 //			- device_impl : Pointer to device
-//			- attr_name : Attribute name
+//			- dev_started : Device started flag
+//			- cmds_list: Device commands list
+//			- atts_list: Device attribute list
 //
 //-------------------------------------------------------------------------------------------------------------
 
-void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,const string &attr_name)
+void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,bool dev_start,DevCmdInfoList_2 *cmds_list,AttributeConfigList_5 *atts_list)
 {
 	cout3 << "EventSupplier::push_dev_intr_change_event(): called for device " << device_impl->get_name() << endl;
 
@@ -2035,13 +2037,36 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,const str
 	vector<long> filterable_data_lg;
 
 	string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
+    time_t now, dev_intr_subscription;
 
-	AttDataReady dat_ready;
+//
+// If no client, do not send event
+//
 
-    AttributeData ad;
+    now = time(NULL);
+	dev_intr_subscription = now - device_impl->get_event_intr_change_subscription();
+
+    cout3 << "EventSupplier::push_dev_intr_event(): delta since last subscription " << dev_intr_subscription << endl;
+
+    if (dev_intr_subscription > EVENT_RESUBSCRIBE_PERIOD)
+	{
+		delete cmds_list;
+		delete atts_list;
+
+		return;
+	}
+
+	DevIntrChange dev_intr;
+
+	dev_intr.dev_started = dev_start;
+	dev_intr.cmds = *cmds_list;
+	dev_intr.atts = *atts_list;
+
+    SuppliedEventData ad;
     ::memset(&ad,0,sizeof(ad));
-    ad.attr_dat_ready = &dat_ready;
+    ad.dev_intr_change = &dev_intr;
 
+	string att_name("dummy");
 	push_event(device_impl,
 		   ev_type,
 		   filterable_names,
@@ -2049,8 +2074,15 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,const str
 		   filterable_names_lg,
 		   filterable_data_lg,
 	       ad,
-		   const_cast<string &>(attr_name),
+		   att_name,
 		   NULL);
+
+//
+// Free memory allocated for the two pointers we receive
+//
+
+	delete cmds_list;
+	delete atts_list;
 }
 
 } /* End of Tango namespace */

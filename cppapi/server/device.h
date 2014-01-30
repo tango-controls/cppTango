@@ -3350,6 +3350,9 @@ public:
 
 	void set_event_intr_change_subscription(time_t _t) {event_intr_change_subscription=_t;}
 	time_t get_event_intr_change_subscription() {return event_intr_change_subscription;}
+	void enable_intr_change_ev() {intr_change_ev = true;}
+	void disable_intr_change_ev() {intr_change_ev = false;}
+	bool is_intr_change_ev_enable() {return intr_change_ev;}
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
@@ -3463,6 +3466,7 @@ protected:
 
 	vector<Command *>			command_list;
 	time_t						event_intr_change_subscription;
+	bool						intr_change_ev;
 
 private:
 //

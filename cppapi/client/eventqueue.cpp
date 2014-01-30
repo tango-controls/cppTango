@@ -285,6 +285,58 @@ void EventQueue::insert_event (DataReadyEventData *new_event)
 
 //+-------------------------------------------------------------------------
 //
+// method :         EventQueue::insert_event
+//
+// description :    Insert a new device interface change event in the
+//                  event queue
+//
+// argument : in :  - new_event : A pointer to the allocated device interface
+//                                change event data structure.
+//
+//--------------------------------------------------------------------------
+
+void EventQueue::insert_event (DevIntrChangeEventData *new_event)
+{
+	cout3 << "Entering EventQueue::insert_event" << endl;
+
+	// lock the event queue
+	omni_mutex_lock l(modification_mutex);
+
+	//
+	// Insert data in the event queue
+	//
+
+	// when no maximum queue size is given, just add the new event
+	if ( max_elt == 0 )
+    {
+		dev_inter_event_buffer.push_back (new_event);
+    }
+
+	// when a maximum size s given, handle a circular buffer
+	else
+    {
+		// allocate ring buffer when not yet done
+		if ( dev_inter_event_buffer.empty() == true )
+        {
+			dev_inter_event_buffer.resize (max_elt, NULL);
+        }
+
+		// free data when necessary
+		if ( dev_inter_event_buffer[insert_elt] != NULL )
+        {
+			delete dev_inter_event_buffer[insert_elt];
+        }
+
+		// insert the event data pointer into the queue
+		dev_inter_event_buffer[insert_elt] = new_event;
+    }
+
+    // Manage insert and read indexes
+    inc_indexes();
+}
+
+//+-------------------------------------------------------------------------
+//
 // method :         EventQueue::inc_indexes
 //
 // description :    This private method increments the indexes used to acces

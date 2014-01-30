@@ -3724,7 +3724,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 
 					for (size_t i=0; i<attr_config_list->length(); i++)
 					{
-						COPY_BASE_CONFIG(attr_config_list)
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list)
 						(*dev_attr_config)[i].min_alarm = attr_config_list[i].min_alarm;
 						(*dev_attr_config)[i].max_alarm = attr_config_list[i].max_alarm;
 						(*dev_attr_config)[i].disp_level = Tango::OPERATOR;
@@ -3741,7 +3741,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 
 					for (size_t i=0; i<attr_config_list_2->length(); i++)
 					{
-						COPY_BASE_CONFIG(attr_config_list_2)
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list_2)
 						(*dev_attr_config)[i].min_alarm = attr_config_list_2[i].min_alarm;
 						(*dev_attr_config)[i].max_alarm = attr_config_list_2[i].max_alarm;
 						(*dev_attr_config)[i].disp_level = attr_config_list_2[i].level;
@@ -3760,7 +3760,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 
 					for (size_t i=0; i<attr_config_list_3->length(); i++)
 					{
-						COPY_BASE_CONFIG(attr_config_list_3)
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list_3)
 
 						for (size_t j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
 						{
@@ -3771,9 +3771,9 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 						(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
 						(*dev_attr_config)[i].memorized = NOT_KNOWN;
 
-						COPY_ALARM_CONFIG(attr_config_list_3)
+						COPY_ALARM_CONFIG((*dev_attr_config),attr_config_list_3)
 
-						COPY_EVENT_CONFIG(attr_config_list_3)
+						COPY_EVENT_CONFIG((*dev_attr_config),attr_config_list_3)
 					}
 				}
 				break;
@@ -3786,7 +3786,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 
 					for (size_t i=0; i<attr_config_list_5->length(); i++)
 					{
-						COPY_BASE_CONFIG(attr_config_list_5)
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list_5)
 
 						for (size_t j=0; j<attr_config_list_5[i].sys_extensions.length(); j++)
 						{
@@ -3806,9 +3806,9 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 								(*dev_attr_config)[i].memorized	= MEMORIZED_WRITE_INIT;
 						}
 
-						COPY_ALARM_CONFIG(attr_config_list_5)
+						COPY_ALARM_CONFIG((*dev_attr_config),attr_config_list_5)
 
-						COPY_EVENT_CONFIG(attr_config_list_5)
+						COPY_EVENT_CONFIG((*dev_attr_config),attr_config_list_5)
 					}
 				}
 				break;
@@ -6729,6 +6729,29 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	return ret;
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+// 		DeviceProxy::subscribe_event
+//
+// description :
+//		Subscribe to a device event- Adds the statless flag for stateless event subscription.
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+int DeviceProxy::subscribe_event (EventType event,CallBack *callback,bool stateless)
+{
+    ApiUtil *api_ptr = ApiUtil::instance();
+  	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		api_ptr->create_zmq_event_consumer();
+	}
+
+    int ret;
+	ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this,event,callback,stateless);
+
+	return ret;
+}
 
 //--------------------------------------------------------------------------------------------------------------------
 //

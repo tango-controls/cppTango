@@ -89,7 +89,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0)
+ event_intr_change_subscription(0),intr_change_ev(false)
 {
     real_ctor();
 }
@@ -106,7 +106,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0)
+ event_intr_change_subscription(0),intr_change_ev(false)
 {
     real_ctor();
 }
@@ -121,7 +121,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0)
+ event_intr_change_subscription(0),intr_change_ev(false)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -140,7 +140,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0)
+ event_intr_change_subscription(0),intr_change_ev(false)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -2338,7 +2338,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 			{
 				string tmp_name(new_conf[i].name);
 
-                EventSupplier::AttributeData ad;
+                EventSupplier::SuppliedEventData ad;
                 ::memset(&ad,0,sizeof(ad));
 
 				long vers = get_dev_idl_version();
@@ -3206,6 +3206,17 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	else
 		dev_attr->add_attribute(device_name,device_class,i);
 
+//
+// If device is IDL 5 or more and if enabled, push a device interface change event
+//
+
+	if (idl_version >= MIN_IDL_DEV_INTR)
+	{
+		if (is_intr_change_ev_enable() == true)
+		{
+			cout << "Push a device interface change event from add_attribute!!!" << endl;
+		}
+	}
 //
 // Free memory if needed
 //
@@ -4247,7 +4258,7 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 
 	if ((event_supplier_nd != NULL) || (event_supplier_zmq != NULL))
 	{
-	    EventSupplier::AttributeData ad;
+	    EventSupplier::SuppliedEventData ad;
 	    ::memset(&ad,0,sizeof(ad));
 
 		long vers = get_dev_idl_version();

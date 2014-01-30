@@ -95,9 +95,9 @@ public :
 	virtual ~EventSupplier() {}
 
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
-	void push_dev_intr_change_event(DeviceImpl *,const string &);
+	void push_dev_intr_change_event(DeviceImpl *,bool,DevCmdInfoList_2 *,AttributeConfigList_5 *);
 
-    struct AttributeData
+    struct SuppliedEventData
     {
         const AttributeValue      *attr_val;
         const AttributeValue_3    *attr_val_3;
@@ -106,35 +106,36 @@ public :
         const AttributeConfig_3   *attr_conf_3;
         const AttributeConfig_5	  *attr_conf_5;
         const AttDataReady        *attr_dat_ready;
+        const DevIntrChange		  *dev_intr_change;
         zmq::message_t	  		  *zmq_mess;
     };
 
-	SendEventType detect_and_push_events(DeviceImpl *,struct AttributeData &,DevFailed *,string &,struct timeval *);
+	SendEventType detect_and_push_events(DeviceImpl *,struct SuppliedEventData &,DevFailed *,string &,struct timeval *);
 
 //------------------ Change event ---------------------------
 
-	bool detect_change(Attribute &,struct AttributeData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
+	bool detect_change(Attribute &,struct SuppliedEventData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
 
 //------------------ Detect, push change event --------------
 
-	bool detect_and_push_change_event(DeviceImpl *,struct AttributeData &,Attribute &,string &,DevFailed *,bool user_push = false);
+	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,bool user_push = false);
 
 //------------------ Detect, push archive event --------------
 
-	bool detect_and_push_archive_event(DeviceImpl *,struct AttributeData &,Attribute &,string &,DevFailed *,struct timeval *,bool user_push = false);
+	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,struct timeval *,bool user_push = false);
 
 //------------------ Detect, push periodic event -------------
 
-	bool detect_and_push_periodic_event(DeviceImpl *,struct AttributeData &,Attribute &,string &,DevFailed *,struct timeval *);
+	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,struct timeval *);
 
 //------------------ Push event -------------------------------
 
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct AttributeData &,string &,DevFailed *) = 0;
+	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *) = 0;
 	virtual void push_heartbeat_event() = 0;
 
 //------------------- Attribute conf change event ---------------------
 
-	void push_att_conf_events(DeviceImpl *device_impl,AttributeData &,DevFailed *,string &);
+	void push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &,DevFailed *,string &);
 
 	omni_mutex &get_push_mutex() {return push_mutex;}
 	static omni_mutex &get_event_mutex() {return event_mutex;}
@@ -193,7 +194,7 @@ public :
 
 //------------------ Push event -------------------------------
 
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct AttributeData &,string &,DevFailed *);
+	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *);
 
 protected :
 
@@ -267,7 +268,7 @@ public :
 //------------------ Push event -------------------------------
 
 	void push_heartbeat_event();
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct AttributeData &,string &,DevFailed *);
+	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *);
 
 	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	string &get_event_endpoint() {return event_endpoint;}

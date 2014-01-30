@@ -325,6 +325,92 @@ public:
 
 /********************************************************************************
  * 																				*
+ * 						DevIntrChangedEventData class							*
+ * 																				*
+ *******************************************************************************/
+
+/**
+ * Device interface change event callback execution data
+ *
+ * This class is used to pass data to the callback method when a device interface change event is sent to the client.
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
+class DevIntrChangeEventData
+{
+public :
+///@privatesection
+	DevIntrChangeEventData() {}
+	DevIntrChangeEventData(DeviceProxy *,string &,string &,DevCmdInfoList_2 *,AttributeConfigList_5 *,bool,DevErrorList &);
+	DevIntrChangeEventData(DeviceProxy *,string &,string &,CommandInfoList *,AttributeInfoListEx *,bool,DevErrorList &);
+	~DevIntrChangeEventData() {};
+	DevIntrChangeEventData(const DevIntrChangeEventData &);
+	DevIntrChangeEventData & operator=(const DevIntrChangeEventData &);
+	/**
+	 * The date when the event arrived
+	 */
+	Tango::TimeVal 	reception_date;
+	Tango::TimeVal &get_date() {return reception_date;}
+
+///@publicsection
+	DeviceProxy 		*device;            ///< The DeviceProxy object on which the call was executed
+	string				event;              ///< The event name
+	string				device_name;		///< The device name
+	CommandInfoList 	cmd_list;			///< Device command list info
+	AttributeInfoListEx	att_list;			///< Device attribute list info
+	bool				dev_started;		///< Device started flag (true when event sent due to device being started)
+
+	bool 				err;                ///< A boolean flag set to true if the request failed. False otherwise
+	DevErrorList 		errors;            	///< The error stack
+
+private:
+	void set_time();
+};
+
+/********************************************************************************
+ * 																				*
+ * 						DevIntrChangeEventDataList class						*
+ * 																				*
+ *******************************************************************************/
+
+class DevIntrChangeEventDataList:public vector<DevIntrChangeEventData *>
+{
+public:
+	DevIntrChangeEventDataList(): vector<DevIntrChangeEventData *>(0) {};
+	~DevIntrChangeEventDataList()
+	{
+		if (size() > 0)
+		{
+			DevIntrChangeEventDataList::iterator vpos;
+			for (vpos=begin(); vpos!=end(); ++vpos)
+			{
+				delete (*vpos);
+			}
+		}
+	}
+	void clear()
+	{
+		if (size() > 0)
+		{
+			DevIntrChangeEventDataList::iterator vpos;
+			for (vpos=begin(); vpos!=end(); ++vpos)
+			{
+				delete (*vpos);
+			}
+
+			this->vector<DevIntrChangeEventData *>::clear();
+		}
+	}
+};
+
+
+/********************************************************************************
+ * 																				*
  * 						EventQueue class										*
  * 																				*
  *******************************************************************************/
@@ -338,6 +424,7 @@ public:
 	void insert_event(EventData         	*new_event);
 	void insert_event(AttrConfEventData 	*new_event);
 	void insert_event(DataReadyEventData 	*new_event);
+	void insert_event(DevIntrChangeEventData *new_event);
 
 	int      size();
 	TimeVal get_last_event_date();
@@ -351,9 +438,10 @@ public:
 private:
 	void inc_indexes();
 
-	vector<EventData *>         	event_buffer;
-	vector<AttrConfEventData *> 	conf_event_buffer;
-	vector<DataReadyEventData *>	ready_event_buffer;
+	vector<EventData *>         		event_buffer;
+	vector<AttrConfEventData *> 		conf_event_buffer;
+	vector<DataReadyEventData *>		ready_event_buffer;
+	vector<DevIntrChangeEventData *>	dev_inter_event_buffer;
 
 	long	max_elt;
 	long	insert_elt;

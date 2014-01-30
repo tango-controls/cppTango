@@ -44,10 +44,10 @@ namespace Tango
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		DevIntr::DevIntr
+//		DevIntr::get_interface
 //
 // description :
-//		DevIntr class ctor. The ctor gets the device interface and stores it locally
+//		Get a device interface
 //
 // argument :
 //		in :
@@ -55,7 +55,7 @@ namespace Tango
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DevIntr::DevIntr(DeviceImpl *dev)
+void DevIntr::get_interface(DeviceImpl *dev)
 {
 	build_cmd_interfaces(dev,cmds);
 	build_att_interfaces(dev,atts);

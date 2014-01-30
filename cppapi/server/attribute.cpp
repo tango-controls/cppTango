@@ -4164,7 +4164,7 @@ void Attribute::fire_change_event(DevFailed *except)
 // Create the structure used to send data to event system
 //
 
-        EventSupplier::AttributeData ad;
+        EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
 //
@@ -4540,7 +4540,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Create the structure used to send data to event system
 //
 
-        EventSupplier::AttributeData ad;
+        EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
         if (send_attr != NULL)
@@ -4895,7 +4895,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 // Create the structure used to send data to event system
 //
 
-        EventSupplier::AttributeData ad;
+        EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
         if (send_attr != NULL)

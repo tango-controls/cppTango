@@ -836,66 +836,66 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 		}
 
 
-#define	COPY_BASE_CONFIG(A) \
-	(*dev_attr_config)[i].name = A[i].name; \
-	(*dev_attr_config)[i].writable = A[i].writable; \
-	(*dev_attr_config)[i].data_format = A[i].data_format; \
-	(*dev_attr_config)[i].data_type = A[i].data_type; \
-	(*dev_attr_config)[i].max_dim_x = A[i].max_dim_x; \
-	(*dev_attr_config)[i].max_dim_y = A[i].max_dim_y; \
-	(*dev_attr_config)[i].description = A[i].description; \
-	(*dev_attr_config)[i].label = A[i].label; \
-	(*dev_attr_config)[i].unit = A[i].unit; \
-	(*dev_attr_config)[i].standard_unit = A[i].standard_unit; \
-	(*dev_attr_config)[i].display_unit = A[i].display_unit; \
-	(*dev_attr_config)[i].format = A[i].format; \
-	(*dev_attr_config)[i].min_value = A[i].min_value; \
-	(*dev_attr_config)[i].max_value = A[i].max_value; \
-	(*dev_attr_config)[i].writable_attr_name = A[i].writable_attr_name; \
-	(*dev_attr_config)[i].extensions.resize(A[i].extensions.length()); \
-	for (size_t j=0; j<A[i].extensions.length(); j++) \
+#define	COPY_BASE_CONFIG(A,B) \
+	A[i].name = B[i].name; \
+	A[i].writable = B[i].writable; \
+	A[i].data_format = B[i].data_format; \
+	A[i].data_type = B[i].data_type; \
+	A[i].max_dim_x = B[i].max_dim_x; \
+	A[i].max_dim_y = B[i].max_dim_y; \
+	A[i].description = B[i].description; \
+	A[i].label = B[i].label; \
+	A[i].unit = B[i].unit; \
+	A[i].standard_unit = B[i].standard_unit; \
+	A[i].display_unit = B[i].display_unit; \
+	A[i].format = B[i].format; \
+	A[i].min_value = B[i].min_value; \
+	A[i].max_value = B[i].max_value; \
+	A[i].writable_attr_name = B[i].writable_attr_name; \
+	A[i].extensions.resize(B[i].extensions.length()); \
+	for (size_t j=0; j<B[i].extensions.length(); j++) \
 	{ \
-		(*dev_attr_config)[i].extensions[j] = A[i].extensions[j]; \
+		A[i].extensions[j] = B[i].extensions[j]; \
 	}
 
 
-#define	COPY_ALARM_CONFIG(A) \
-	(*dev_attr_config)[i].alarms.min_alarm = A[i].att_alarm.min_alarm; \
-	(*dev_attr_config)[i].alarms.max_alarm = A[i].att_alarm.max_alarm; \
-	(*dev_attr_config)[i].alarms.min_warning = A[i].att_alarm.min_warning; \
-	(*dev_attr_config)[i].alarms.max_warning = A[i].att_alarm.max_warning; \
-	(*dev_attr_config)[i].alarms.delta_t = A[i].att_alarm.delta_t; \
-	(*dev_attr_config)[i].alarms.delta_val = A[i].att_alarm.delta_val; \
-	(*dev_attr_config)[i].alarms.extensions.resize(A[i].att_alarm.extensions.length()); \
-	for (size_t j=0; j<A[i].att_alarm.extensions.length(); j++) \
+#define	COPY_ALARM_CONFIG(A,B) \
+	A[i].alarms.min_alarm = B[i].att_alarm.min_alarm; \
+	A[i].alarms.max_alarm = B[i].att_alarm.max_alarm; \
+	A[i].alarms.min_warning = B[i].att_alarm.min_warning; \
+	A[i].alarms.max_warning = B[i].att_alarm.max_warning; \
+	A[i].alarms.delta_t = B[i].att_alarm.delta_t; \
+	A[i].alarms.delta_val = B[i].att_alarm.delta_val; \
+	A[i].alarms.extensions.resize(B[i].att_alarm.extensions.length()); \
+	for (size_t j=0; j<B[i].att_alarm.extensions.length(); j++) \
 	{ \
-		(*dev_attr_config)[i].alarms.extensions[j] = A[i].att_alarm.extensions[j]; \
+		A[i].alarms.extensions[j] = B[i].att_alarm.extensions[j]; \
 	}
 
 
-#define	COPY_EVENT_CONFIG(A) \
-	(*dev_attr_config)[i].events.ch_event.rel_change = A[i].event_prop.ch_event.rel_change; \
-	(*dev_attr_config)[i].events.ch_event.abs_change = A[i].event_prop.ch_event.abs_change; \
-	(*dev_attr_config)[i].events.ch_event.extensions.resize(A[i].event_prop.ch_event.extensions.length()); \
-	for (size_t j=0; j<A[i].event_prop.ch_event.extensions.length(); j++) \
+#define	COPY_EVENT_CONFIG(A,B) \
+	A[i].events.ch_event.rel_change = B[i].event_prop.ch_event.rel_change; \
+	A[i].events.ch_event.abs_change = B[i].event_prop.ch_event.abs_change; \
+	A[i].events.ch_event.extensions.resize(B[i].event_prop.ch_event.extensions.length()); \
+	for (size_t j=0; j<B[i].event_prop.ch_event.extensions.length(); j++) \
 	{ \
-		(*dev_attr_config)[i].events.ch_event.extensions[j] = A[i].event_prop.ch_event.extensions[j]; \
+		A[i].events.ch_event.extensions[j] = B[i].event_prop.ch_event.extensions[j]; \
 	} \
 \
-	(*dev_attr_config)[i].events.per_event.period = A[i].event_prop.per_event.period; \
-	(*dev_attr_config)[i].events.per_event.extensions.resize(A[i].event_prop.per_event.extensions.length()); \
-	for (size_t j=0; j<A[i].event_prop.per_event.extensions.length(); j++) \
+	A[i].events.per_event.period = B[i].event_prop.per_event.period; \
+	A[i].events.per_event.extensions.resize(B[i].event_prop.per_event.extensions.length()); \
+	for (size_t j=0; j<B[i].event_prop.per_event.extensions.length(); j++) \
 	{ \
-		(*dev_attr_config)[i].events.per_event.extensions[j] = A[i].event_prop.per_event.extensions[j]; \
+		A[i].events.per_event.extensions[j] = B[i].event_prop.per_event.extensions[j]; \
 	} \
 \
-	(*dev_attr_config)[i].events.arch_event.archive_rel_change = A[i].event_prop.arch_event.rel_change; \
-	(*dev_attr_config)[i].events.arch_event.archive_abs_change = A[i].event_prop.arch_event.abs_change; \
-	(*dev_attr_config)[i].events.arch_event.archive_period = A[i].event_prop.arch_event.period; \
-	(*dev_attr_config)[i].events.arch_event.extensions.resize(A[i].event_prop.arch_event.extensions.length()); \
-	for (size_t j=0; j<A[i].event_prop.arch_event.extensions.length(); j++) \
+	A[i].events.arch_event.archive_rel_change = B[i].event_prop.arch_event.rel_change; \
+	A[i].events.arch_event.archive_abs_change = B[i].event_prop.arch_event.abs_change; \
+	A[i].events.arch_event.archive_period = B[i].event_prop.arch_event.period; \
+	A[i].events.arch_event.extensions.resize(B[i].event_prop.arch_event.extensions.length()); \
+	for (size_t j=0; j<B[i].event_prop.arch_event.extensions.length(); j++) \
 	{ \
-		(*dev_attr_config)[i].events.arch_event.extensions[j] = A[i].event_prop.arch_event.extensions[j]; \
+		A[i].events.arch_event.extensions[j] = B[i].event_prop.arch_event.extensions[j]; \
 	}
 
 

@@ -45,9 +45,11 @@ class NamedDevFailedList;
 class EventData;
 class AttrConfEventData;
 class DataReadyEventData;
+class DevIntrChangeEventData;
 class EventDataList;
 class AttrConfEventDataList;
 class DataReadyEventDataList;
+class DevIntrChangeEventDataList;
 class EventConsumer;
 class EventConsumerKeepAliveThread;
 
@@ -293,6 +295,15 @@ public:
  * @param dre The data ready event data
  */
 	virtual void push_event(DataReadyEventData *dre) {};
+/**
+ * Device interface change event callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when events are used. This is
+ * the method which will be executed when the server send device interface change event(s) to the client.
+ *
+ * @param dic The device interface change event data
+ */
+	virtual void push_event(DevIntrChangeEventData *dic) {};
 #else
 	virtual void cmd_ended(CmdDoneEvent *) {};
 	virtual void attr_read(AttrReadEvent *) {};
@@ -300,6 +311,7 @@ public:
 	virtual void push_event(EventData *) {};
 	virtual void push_event(AttrConfEventData *) {};
 	virtual void push_event(DataReadyEventData *) {};
+	virtual void push_event(DevIntrChangeEventData *) {};
 #endif
 
 /// @privatesection

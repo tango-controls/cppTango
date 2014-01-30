@@ -1241,7 +1241,7 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 		Tango::DevFailed except(errs);
 		long idl_vers = to_do.dev->get_dev_idl_version();
 
-        struct EventSupplier::AttributeData ad;
+        struct EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
         if (idl_vers > 3)
@@ -1577,7 +1577,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 	{
 		if (attr_failed == true)
 		{
-		    struct EventSupplier::AttributeData ad;
+		    struct EventSupplier::SuppliedEventData ad;
 		    ::memset(&ad,0,sizeof(ad));
 
 		    if (idl_vers > 3)
@@ -1617,7 +1617,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 		}
 		else
 		{
-		    struct EventSupplier::AttributeData ad;
+		    struct EventSupplier::SuppliedEventData ad;
 		    ::memset(&ad,0,sizeof(ad));
 
 		    if (idl_vers > 3)

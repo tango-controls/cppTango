@@ -42,8 +42,9 @@ namespace Tango
 class DevIntr
 {
 public:
-	DevIntr(DeviceImpl *);
+	DevIntr() {}
 
+	void get_interface(DeviceImpl *);
 	bool has_changed(DeviceImpl *);
 
 protected:

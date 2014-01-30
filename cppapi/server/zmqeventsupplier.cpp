@@ -838,7 +838,7 @@ void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
             TANGO_UNUSED(vector<string> &filterable_names),TANGO_UNUSED(vector<double> &filterable_data),
             TANGO_UNUSED(vector<string> &filterable_names_lg),TANGO_UNUSED(vector<long> &filterable_data_lg),
-            struct AttributeData &attr_value,string &attr_name,DevFailed *except)
+            struct SuppliedEventData &ev_value,string &attr_name,DevFailed *except)
 {
 	cout3 << "ZmqEventSupplier::push_event(): called for attribute " << attr_name << endl;
 
@@ -861,13 +861,19 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	string loc_attr_name(attr_name);
 	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
 
+	bool intr_change = false;
+	if (event_type == EventName[INTERFACE_CHANGE_EVENT])
+		intr_change = true;
+
 	event_name = fqdn_prefix;
 
 	int size = event_name.size();
 	if (event_name[size - 1] == '#')
         event_name.erase(size - 1);
 
-	event_name = event_name + device_impl->get_name_lower() + '/' + loc_attr_name;
+	event_name = event_name + device_impl->get_name_lower();
+	if (intr_change == false)
+		event_name = event_name + '/' + loc_attr_name;
 	if (Util::_FileDb == true || Util::_UseDb == false)
         event_name = event_name + MODIFIER_DBASE_NO;
     event_name = event_name + '.' + event_type;
@@ -893,42 +899,50 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
         ev_ctr = ev_cptr_ite->second;
     else
     {
-        Attribute &att = device_impl->get_device_attr()->get_attr_by_name(attr_name.c_str());
-        bool print = false;
+		bool print = false;
+    	if (intr_change == false)
+		{
+			Attribute &att = device_impl->get_device_attr()->get_attr_by_name(attr_name.c_str());
 
-        if (event_type == "data_ready")
-        {
-            if (att.event_data_ready_subscription != 0)
-                print = true;
-        }
-        else if (event_type == "attr_conf")
-        {
-            if (att.event_attr_conf_subscription != 0)
-                print = true;
-        }
-        else if (event_type == "user_event")
-        {
-            if (att.event_user_subscription != 0)
-                print = true;
-        }
-        else if (event_type == "change")
-        {
-            if (att.event_change_subscription != 0)
-                print = true;
-        }
-        else if (event_type == "periodic")
-        {
-            if (att.event_periodic_subscription != 0)
-                print = true;
-        }
-        else if (event_type == "archive")
-        {
-            if (att.event_archive_subscription != 0)
-                print = true;
-        }
+			if (event_type == "data_ready")
+			{
+				if (att.event_data_ready_subscription != 0)
+					print = true;
+			}
+			else if (event_type == "attr_conf")
+			{
+				if (att.event_attr_conf_subscription != 0)
+					print = true;
+			}
+			else if (event_type == "user_event")
+			{
+				if (att.event_user_subscription != 0)
+					print = true;
+			}
+			else if (event_type == "change")
+			{
+				if (att.event_change_subscription != 0)
+					print = true;
+			}
+			else if (event_type == "periodic")
+			{
+				if (att.event_periodic_subscription != 0)
+					print = true;
+			}
+			else if (event_type == "archive")
+			{
+				if (att.event_archive_subscription != 0)
+					print = true;
+			}
+		}
+		else
+		{
+			if (device_impl->get_event_intr_change_subscription() != 0)
+				print = true;
+		}
 
-        if (print == true)
-            cout3 << "-----> Can't find event counter for event " << event_name << " in map!!!!!!!!!!" << endl;
+		if (print == true)
+			cout3 << "-----> Can't find event counter for event " << event_name << " in map!!!!!!!!!!" << endl;
     }
 
 
@@ -952,17 +966,17 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	void *mess_ptr;
     zmq::message_t data_mess;
 
-	if (attr_value.zmq_mess != NULL)
+	if (ev_value.zmq_mess != NULL)
 	{
 
 //
 // It's a forwarded attribute, therefore, use the already marshalled message
 //
 
-		mess_ptr = attr_value.zmq_mess->data();
-		mess_size = attr_value.zmq_mess->size();
+		mess_ptr = ev_value.zmq_mess->data();
+		mess_size = ev_value.zmq_mess->size();
 
-		data_mess.move(attr_value.zmq_mess);
+		data_mess.move(ev_value.zmq_mess);
 	}
 	else
 	{
@@ -978,15 +992,15 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 		if (except == NULL)
 		{
-			if (attr_value.attr_val != NULL)
+			if (ev_value.attr_val != NULL)
 			{
-				*(attr_value.attr_val) >>= data_call_cdr;
+				*(ev_value.attr_val) >>= data_call_cdr;
 			}
-			else if (attr_value.attr_val_3 != NULL)
+			else if (ev_value.attr_val_3 != NULL)
 			{
-				*(attr_value.attr_val_3) >>= data_call_cdr;
+				*(ev_value.attr_val_3) >>= data_call_cdr;
 			}
-			else if (attr_value.attr_val_4 != NULL)
+			else if (ev_value.attr_val_4 != NULL)
 			{
 
 //
@@ -994,7 +1008,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // In such a case, we will use ZMQ no-copy message call
 //
 
-				*(attr_value.attr_val_4) >>= data_call_cdr;
+				*(ev_value.attr_val_4) >>= data_call_cdr;
 
 				mess_ptr = data_call_cdr.bufPtr();
 				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
@@ -1004,7 +1018,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 				if (data_discr == ATT_ENCODED)
 				{
-					const DevVarEncodedArray &dvea = attr_value.attr_val_4->value.encoded_att_value();
+					const DevVarEncodedArray &dvea = ev_value.attr_val_4->value.encoded_att_value();
 					nb_data = dvea.length();
 					if (nb_data > LARGE_DATA_THRESHOLD_ENCODED)
 						large_data = true;
@@ -1016,21 +1030,25 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 						large_data = true;
 				}
 			}
-			else if (attr_value.attr_conf_2 != NULL)
+			else if (ev_value.attr_conf_2 != NULL)
 			{
-				*(attr_value.attr_conf_2) >>= data_call_cdr;
+				*(ev_value.attr_conf_2) >>= data_call_cdr;
 			}
-			else if (attr_value.attr_conf_3 != NULL)
+			else if (ev_value.attr_conf_3 != NULL)
 			{
-				*(attr_value.attr_conf_3) >>= data_call_cdr;
+				*(ev_value.attr_conf_3) >>= data_call_cdr;
 			}
-			else if (attr_value.attr_conf_5 != NULL)
+			else if (ev_value.attr_conf_5 != NULL)
 			{
-				*(attr_value.attr_conf_5) >>= data_call_cdr;
+				*(ev_value.attr_conf_5) >>= data_call_cdr;
+			}
+			else if (ev_value.attr_dat_ready != NULL)
+			{
+				*(ev_value.attr_dat_ready) >>= data_call_cdr;
 			}
 			else
 			{
-				*(attr_value.attr_dat_ready) >>= data_call_cdr;
+				*(ev_value.dev_intr_change) >>= data_call_cdr;
 			}
 		}
 		else
@@ -1045,8 +1063,6 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // For event with small amount of data, use memcpy to initialize the zmq message. For large amount of data, use
 // zmq message with no-copy option
 //
-
-
 
 		if (large_data == true)
 		{

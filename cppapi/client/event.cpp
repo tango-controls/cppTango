@@ -1196,7 +1196,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 		conn_params.filters          = filters;
 		conn_params.last_heartbeat   = time(NULL);
 		if (env_var_fqdn_prefix.empty() == false)
-		conn_params.prefix			 = env_var_fqdn_prefix[0];
+			conn_params.prefix			 = env_var_fqdn_prefix[0];
 		// protect the vector as the other maps!
 
 		// create and save the unique event ID
@@ -1208,6 +1208,40 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	}
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::subscribe_event()
+//
+// description :
+//		Method to subscribe to an event with the callback mechanism. Can be called in a stateless way, that it even
+//		works when the attribute is not available.
+//
+// argument :
+//		in :
+//			- device    : The device handle
+//			- event     : The type of event to subscribe for
+//			- callback  : A pointer to the callback object
+//          - stateless : Flag to enable the stateless connection when set to true
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+int EventConsumer::subscribe_event (DeviceProxy *device,
+				   EventType event,
+				   CallBack *callback,
+				   bool stateless)
+{
+	if ((device == NULL) || (callback == NULL) || (event != INTERFACE_CHANGE_EVENT))
+	{
+		EventSystemExcept::throw_exception((const char*)"API_InvalidArgs",
+                       	(const char*)"Device,callback pointer NULL or unsupported event type",
+                       	(const char*)"EventConsumer::subscribe_event()");
+	}
+
+	vector<string> filters;
+
+	return (subscribe_event(device,"dummy",event,callback,NULL,filters,stateless));
+}
 
 //+-------------------------------------------------------------------------------------------------------------------
 //
@@ -1243,6 +1277,10 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	device_name = device->dev_name();
 	cout3 << "Tango::EventConsumer::connect_event(" << device_name << "," << attribute <<"," << event << ")\n";
 
+	bool inter_event = false;
+	if (event == INTERFACE_CHANGE_EVENT)
+		inter_event = true;
+
 //
 // Build callback map key and local device name from fqdn
 //
@@ -1272,11 +1310,19 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	string::size_type pos;
 	if ((pos = local_callback_key.find('#')) == string::npos)
-		local_callback_key = local_callback_key + "/" + att_name_lower + "." + event_name;
+	{
+		if (inter_event == true)
+			local_callback_key = local_callback_key + "." + event_name;
+		else
+			local_callback_key = local_callback_key + "/" + att_name_lower + "." + event_name;
+	}
 	else
 	{
 		local_callback_key.erase(pos);
-		local_callback_key = local_callback_key + "/" + att_name_lower + MODIFIER_DBASE_NO + '.' + event_name;
+		if (inter_event == true)
+			local_callback_key = local_callback_key + MODIFIER_DBASE_NO + '.' + event_name;
+		else
+			local_callback_key = local_callback_key + "/" + att_name_lower + MODIFIER_DBASE_NO + '.' + event_name;
 	}
 
 //
@@ -1430,7 +1476,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 //		delete adm_dev;
 
 //
-// Change event name if it is IDl 5 compatible:
+// Change event name if it is IDL 5 compatible:
 // This code is Tango 9 or more. If the remote device is IDL 5 (or more, use attr5_conf event instead of
 // attr_conf
 //
@@ -1522,7 +1568,10 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.attr_name = attribute;
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
-    new_event_callback.fully_qualified_event_name = device_name + '/' + att_name_lower + '.' + event_name;
+    if (inter_event == true)
+		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
+	else
+		new_event_callback.fully_qualified_event_name = device_name + '/' + att_name_lower + '.' + event_name;
 
     if (dd_extract_ok == false)
         new_event_callback.device_idl = 0;
@@ -1547,17 +1596,22 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Check if this subscription if for a fwd attribute root attribute
 //
 
-	ApiUtil *au = ApiUtil::instance();
-	if (au->in_server() == true)
+	if (inter_event == false)
 	{
-		RootAttRegistry &rar = Util::instance()->get_root_att_reg();
+		ApiUtil *au = ApiUtil::instance();
+		if (au->in_server() == true)
+		{
+			RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 
-		string root_att_name = local_device_name;
-		transform(root_att_name.begin(),root_att_name.end(),root_att_name.begin(),::tolower);
-		root_att_name = root_att_name + '/' + att_name_lower;
+			string root_att_name = local_device_name;
+			transform(root_att_name.begin(),root_att_name.end(),root_att_name.begin(),::tolower);
+			root_att_name = root_att_name + '/' + att_name_lower;
 
-		if (rar.is_root_attribute(root_att_name) == true)
-			new_event_callback.fwd_att = true;
+			if (rar.is_root_attribute(root_att_name) == true)
+				new_event_callback.fwd_att = true;
+		}
+		else
+			new_event_callback.fwd_att = false;
 	}
 	else
 		new_event_callback.fwd_att = false;
@@ -2777,6 +2831,65 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			ev_queue->insert_event(event_data);
 		}
 	}
+	else if (event == INTERFACE_CHANGE_EVENT)
+	{
+		DevErrorList err;
+		err.length(0);
+		CommandInfoList *c_list = Tango_nullptr;
+		AttributeInfoListEx *a_list = Tango_nullptr;
+		string ev_name(EventName[INTERFACE_CHANGE_EVENT]);
+
+		try
+		{
+			c_list = device->command_list_query();
+			a_list = device->attribute_list_query_ex();
+		}
+		catch (DevFailed &e)
+		{
+			delete c_list;
+			c_list = Tango_nullptr;
+			delete a_list;
+			a_list = Tango_nullptr;
+
+			err = e.errors;
+		}
+
+		DevIntrChangeEventData *event_data = new DevIntrChangeEventData(device,
+						      device_name,ev_name,
+						      c_list,a_list,true,
+						      err);
+
+		AutoTangoMonitor _mon(cb.callback_monitor);
+
+//
+// if a callback method was specified, call it!
+//
+
+		if (callback != NULL )
+		{
+			try
+			{
+				callback->push_event(event_data);
+			}
+			catch (...)
+			{
+				cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
+			}
+
+			delete event_data;
+			delete c_list;
+			delete a_list;
+		}
+
+//
+// No calback method, the event has to be instered into the event queue
+//
+
+		else
+		{
+			ev_queue->insert_event(event_data);
+		}
+	}
 }
 
 
@@ -3228,5 +3341,173 @@ void DataReadyEventData::set_time()
 #endif
 }
 
+/************************************************************************/
+/*		       															*/
+/* 			DevIntrChangeEventData class 								*/
+/*			----------------------										*/
+/*		       															*/
+/************************************************************************/
+
+//+----------------------------------------------------------------------
+//
+//  DevIntrChangeEventData constructor
+//
+//-----------------------------------------------------------------------
+
+DevIntrChangeEventData::DevIntrChangeEventData(DeviceProxy *dev,string &evt,string &d_name,
+								DevCmdInfoList_2 *c_list,AttributeConfigList_5 *a_list,
+								bool d_s,DevErrorList &errors_in)
+:event(evt),device_name(d_name),dev_started(d_s),errors(errors_in)
+{
+	device = dev;
+
+	if (errors.length()==0)
+		err = false;
+	else
+		err = true;
+
+	if (err == false)
+	{
+
+//
+// Convert first command list and then attribute list
+//
+
+		cmd_list.resize(c_list->length());
+		for (size_t i=0; i < c_list->length(); i++)
+		{
+			cmd_list[i].cmd_name = (*c_list)[i].cmd_name;
+			cmd_list[i].cmd_tag = (*c_list)[i].cmd_tag;
+			cmd_list[i].in_type = (*c_list)[i].in_type;
+			cmd_list[i].out_type = (*c_list)[i].out_type;
+			cmd_list[i].in_type_desc = (*c_list)[i].in_type_desc.in();
+			cmd_list[i].out_type_desc = (*c_list)[i].out_type_desc.in();
+			cmd_list[i].disp_level = (*c_list)[i].level;
+		}
+
+		att_list.resize(a_list->length());
+		AttributeConfigList_5_var a_list_var(a_list);
+
+		for (size_t i=0; i<a_list->length(); i++)
+		{
+			COPY_BASE_CONFIG(att_list,a_list_var)
+
+			for (size_t j=0; j<(*a_list)[i].sys_extensions.length(); j++)
+			{
+				att_list[i].sys_extensions[j] = (*a_list)[i].sys_extensions[j];
+			}
+			att_list[i].disp_level = (*a_list)[i].level;
+			att_list[i].min_alarm = (*a_list)[i].att_alarm.min_alarm;
+			att_list[i].max_alarm = (*a_list)[i].att_alarm.max_alarm;
+			att_list[i].root_attr_name = (*a_list)[i].root_attr_name;
+			if ((*a_list)[i].memorized == false)
+				att_list[i].memorized	= NONE;
+			else
+			{
+				if ((*a_list)[i].mem_init == false)
+					att_list[i].memorized	= MEMORIZED;
+				else
+					att_list[i].memorized	= MEMORIZED_WRITE_INIT;
+			}
+
+			COPY_ALARM_CONFIG(att_list,a_list_var)
+
+			COPY_EVENT_CONFIG(att_list,a_list_var)
+		}
+
+		a_list_var._retn();
+	}
+}
+
+DevIntrChangeEventData::DevIntrChangeEventData(DeviceProxy *dev,string &evt,string &d_name,
+								CommandInfoList *c_list,AttributeInfoListEx *a_list,
+								bool d_s,DevErrorList &errors_in)
+:event(evt),device_name(d_name),dev_started(d_s),errors(errors_in)
+{
+	device = dev;
+
+	if (errors.length()==0)
+		err = false;
+	else
+		err = true;
+
+	if (err == false)
+	{
+		cmd_list = *c_list;
+		att_list = *a_list;
+	}
+}
+
+//+----------------------------------------------------------------------
+//
+//  DevIntrChangeEventData copy constructor
+//
+//-----------------------------------------------------------------------
+
+DevIntrChangeEventData::DevIntrChangeEventData(const DevIntrChangeEventData &sou)
+{
+	device = sou.device;
+	event = sou.event;
+	device_name = sou.device_name;
+	cmd_list = sou.cmd_list;
+	att_list = sou.att_list;
+	dev_started = sou.dev_started;
+	reception_date = sou.reception_date;
+	err = sou.err;
+	errors = sou.errors;
+}
+
+//+----------------------------------------------------------------------
+//
+// 	DevIntrChangeEventData assignement operator
+//
+//-----------------------------------------------------------------------
+
+DevIntrChangeEventData & DevIntrChangeEventData::operator=(const DevIntrChangeEventData &ri)
+{
+	if (&ri == this)
+		return *this;
+
+	device = ri.device;
+	event = ri.event;
+	device_name = ri.device_name;
+	cmd_list = ri.cmd_list;
+	att_list = ri.att_list;
+	dev_started = ri.dev_started;
+	reception_date = ri.reception_date;
+
+	err = ri.err;
+	errors = ri.errors;
+
+	return *this;
+}
+
+//+-------------------------------------------------------------------------
+//
+// method : 		DevIntrChangeEventData::set_time
+//
+// description : 	Set the event reception data
+//
+//--------------------------------------------------------------------------
+
+void DevIntrChangeEventData::set_time()
+{
+#ifdef _TG_WINDOWS_
+		struct _timeb t;
+		_ftime(&t);
+
+		reception_date.tv_sec  = (CORBA::Long)t.time;
+		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_nsec = 0;
+#else
+		struct timezone tz;
+		struct timeval tv;
+		gettimeofday(&tv,&tz);
+
+		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
+		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_nsec = 0;
+#endif
+}
 } /* End of Tango namespace */
 
