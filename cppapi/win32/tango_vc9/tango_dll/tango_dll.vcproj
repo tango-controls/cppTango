@@ -988,6 +988,14 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\devintr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\dintrthread.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\dserver.cpp"
 				>
 				<FileConfiguration
@@ -1934,6 +1942,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\deviceclass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\devintr.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\dintrthread.h"
 				>
 			</File>
 			<File
