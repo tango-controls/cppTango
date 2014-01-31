@@ -353,6 +353,7 @@ const char* const API_InitMethodNotFound           = "API_InitMethodNotFound";
 const char* const API_InitNotPublic                = "API_InitNotPublic";
 const char* const API_InitThrowsException          = "API_InitThrowsException";
 const char* const API_InternalError                = "API_InternalError";
+const char* const API_InvalidArgs				   = "API_InvalidArgs";
 const char* const API_JavaRuntimeSecurityException = "API_JavaRuntimeSecurityException";
 const char* const API_MemAttFailedDuringInit       = "API_MemAttFailedDuringInit";
 const char* const API_MemoryAllocation             = "API_MemoryAllocation";

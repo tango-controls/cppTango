@@ -1072,9 +1072,8 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (callback == NULL))
 	{
-		EventSystemExcept::throw_exception((const char*)"API_InvalidArgs",
-                       	(const char*)"Device or callback pointer NULL",
-                       	(const char*)"EventConsumer::subscribe_event()");
+		EventSystemExcept::throw_exception(API_InvalidArgs,
+                       	"Device or callback pointer NULL","EventConsumer::subscribe_event()");
 	}
 
 	return (subscribe_event (device, attribute, event, callback, NULL, filters, stateless));
@@ -1109,9 +1108,9 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (event_queue_size < 0))
 	{
-		EventSystemExcept::throw_exception((const char*)"API_InvalidArgs",
-                       	(const char*)"Device pointer is NULL or the event queue size is invalid",
-                       	(const char*)"EventConsumer::subscribe_event()");
+		EventSystemExcept::throw_exception(API_InvalidArgs,
+                       	"Device pointer is NULL or the event queue size is invalid",
+                       	"EventConsumer::subscribe_event()");
 	}
 
 	// create an event queue object
@@ -1151,9 +1150,9 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	string event_name;
 	if (event == QUALITY_EVENT)
 	{
-        EventSystemExcept::throw_exception((const char*)"API_InvalidArgs",
-            (const char*)"The quality change event does not exist any more. A change event is fired on a qaulity change!",
-            (const char*)"EventConsumer::subscribe_event()");
+        EventSystemExcept::throw_exception(API_InvalidArgs,
+            "The quality change event does not exist any more. A change event is fired on a qaulity change!",
+            "EventConsumer::subscribe_event()");
 	}
     else
         event_name = EventName[event];
@@ -1233,9 +1232,8 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 {
 	if ((device == NULL) || (callback == NULL) || (event != INTERFACE_CHANGE_EVENT))
 	{
-		EventSystemExcept::throw_exception((const char*)"API_InvalidArgs",
-                       	(const char*)"Device,callback pointer NULL or unsupported event type",
-                       	(const char*)"EventConsumer::subscribe_event()");
+		EventSystemExcept::throw_exception(API_InvalidArgs,
+                       	"Device,callback pointer NULL or unsupported event type","EventConsumer::subscribe_event()");
 	}
 
 	vector<string> filters;
@@ -1243,6 +1241,24 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	return (subscribe_event(device,"dummy",event,callback,NULL,filters,stateless));
 }
 
+int EventConsumer::subscribe_event (DeviceProxy *device,
+				   EventType event,
+				   int event_queue_size,
+				   bool stateless)
+{
+	if ((device == NULL) || (event != INTERFACE_CHANGE_EVENT))
+	{
+		EventSystemExcept::throw_exception(API_InvalidArgs,
+                       	"Device NULL or unsupported event type","EventConsumer::subscribe_event()");
+	}
+
+	vector<string> filters;
+
+// create an event queue object
+
+	EventQueue *ev_queue = new EventQueue(event_queue_size);
+	return (subscribe_event(device,"dummy",event,NULL,ev_queue,filters,stateless));
+}
 //+-------------------------------------------------------------------------------------------------------------------
 //
 // method :

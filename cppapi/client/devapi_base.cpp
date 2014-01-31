@@ -6735,7 +6735,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 // 		DeviceProxy::subscribe_event
 //
 // description :
-//		Subscribe to a device event- Adds the statless flag for stateless event subscription.
+//		Subscribe to a device event- Add the statless flag for stateless event subscription.
 //
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -6758,6 +6758,40 @@ int DeviceProxy::subscribe_event (EventType event,CallBack *callback,bool statel
 
     int ret;
 	ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this,event,callback,stateless);
+
+	return ret;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+// 		DeviceProxy::subscribe_event
+//
+// description :
+//		Subscribe to an event with the usage of the event queue for data reception. Adds the statless flag for
+//		stateless event subscription.
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+int DeviceProxy::subscribe_event (EventType event,int event_queue_size,bool stateless)
+{
+	if (version < MIN_IDL_DEV_INTR)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " does not support device interface change event\n";
+		ss << "Available since Tango release 9 AND for device inheriting from IDL release 5 (Device_5Impl)";
+
+		Tango::Except::throw_exception(API_NotSupportedFeature,ss.str(),"DeviceProxy::subscribe_event()");
+	}
+
+    ApiUtil *api_ptr = ApiUtil::instance();
+  	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		api_ptr->create_zmq_event_consumer();
+	}
+
+    int ret;
+	ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this,event,event_queue_size,stateless);
 
 	return ret;
 }

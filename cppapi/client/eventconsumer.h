@@ -356,6 +356,7 @@ public :
 	int subscribe_event(DeviceProxy *device, const string &attribute, EventType event,
 	                   int event_queue_size, const vector<string> &filters, bool stateless = false);
 	int subscribe_event(DeviceProxy *device, EventType event,CallBack *callback,bool stateless = false);
+	int subscribe_event(DeviceProxy *device, EventType event,int event_queue_size,bool stateless = false);
 
 	void unsubscribe_event(int event_id);
 

@@ -1287,7 +1287,7 @@ public :
  */
 	virtual int subscribe_event(const string &att_name, EventType event, int event_queue_size,bool stateless = false);
 /**
- * Subscribe for event reception with stateless support
+ * Subscribe for device event reception with stateless support
  *
  * The client call to subscribe for <B>device</B> event reception in the push model. The client implements a callback method
  * which is triggered when the event is received. Filtering is done based on the event
@@ -1311,6 +1311,34 @@ public :
  * @throws EventSystemFailed
  */
 	virtual int subscribe_event(EventType event,CallBack *cb,bool stateless = false);
+
+/**
+ * Subscribe for device event reception with stateless support and event queue
+ *
+ * The client call to subscribe for <B>device</B> event reception in the pull model.
+ * Today, only one event type is supported for <B>device</B> event. This event type is a device interface
+ * change event.
+ * Instead of a callback method the client
+ * has to specify the size of the event reception buffer.
+ * The event reception buffer is implemented as a round robin buffer. This way the client can set-up
+ * different ways to receive events.
+ * @li Event reception buffer size = 1 : The client is interested only in the value of the last event received.
+ * All other events that have been received since the last reading are discarded.
+ * @li Event reception buffer size > 1 : The client has chosen to keep an event history of a given size. When
+ * more events arrive since the last reading, older events will be discarded.
+ * @li Event reception buffer size = ALL_EVENTS : The client buffers all received events. The buffer size
+ * is unlimited and only restricted by the available memory for the client.
+ * The last call parameter is named stateless. When the stateless flag is set to false, an exception will be thrown
+ * when the event subscription encounters a problem.
+ * With the stateless flag set to true, the event subscription will always succeed.
+ *
+ * @param [in] event The event type
+ * @param [in] event_queue_size The event queue size
+ * @param [in] stateless The stateless flag
+ * @return The event identifier
+ * @throws EventSystemFailed
+ */
+	virtual int subscribe_event(EventType event,int event_queue_size,bool stateless = false);
 /**
  * Unsubscribe for event reception
  *

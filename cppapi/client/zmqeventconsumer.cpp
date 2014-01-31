@@ -2260,7 +2260,6 @@ cout << "Received event name = " << ev_name << endl;
 						{
 							(DevIntrChange &)dic <<= event_data_cdr;
 							dev_intr_change = &dic.inout();
-cout << "Event data unmarshalled" << endl;
 							ev_dev_intr = true;
 						}
 						catch(...)
