@@ -215,6 +215,8 @@
     <ClInclude Include="..\..\..\server\device_4.h" />
     <ClInclude Include="..\..\..\server\deviceclass.h" />
     <ClInclude Include="..\..\..\server\device_5.h" />
+    <ClInclude Include="..\..\..\server\devintr.h" />
+    <ClInclude Include="..\..\..\server\dintrthread.h" />
     <ClInclude Include="..\..\..\server\dserver.h" />
     <ClInclude Include="..\..\..\server\dserverclass.h" />
     <ClInclude Include="..\..\..\server\dserversignal.h" />
@@ -561,6 +563,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\..\..\server\device_5.cpp" />
+    <ClCompile Include="..\..\..\server\devintr.cpp" />
     <ClCompile Include="..\..\..\server\dev_event.cpp" />
     <ClCompile Include="..\..\..\server\dev_poll.cpp" />
     <ClCompile Include="..\..\..\client\devapi_attr.cpp">
@@ -691,6 +694,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\dintrthread.cpp" />
     <ClCompile Include="..\..\..\server\dserver.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
