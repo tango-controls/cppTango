@@ -190,6 +190,7 @@ void DeviceImpl::real_ctor()
 	black_box_create();
 
 	idl_version = 1;
+	devintr_shared.th_running = false;
 
 //
 // Create the multi attribute object

@@ -421,18 +421,19 @@ public:
 	EventQueue(long max_size);
 	~EventQueue();
 
-	void insert_event(EventData         	*new_event);
-	void insert_event(AttrConfEventData 	*new_event);
-	void insert_event(DataReadyEventData 	*new_event);
-	void insert_event(DevIntrChangeEventData *new_event);
+	void insert_event(EventData         		*new_event);
+	void insert_event(AttrConfEventData 		*new_event);
+	void insert_event(DataReadyEventData 		*new_event);
+	void insert_event(DevIntrChangeEventData 	*new_event);
 
 	int      size();
 	TimeVal get_last_event_date();
 	bool     is_empty() {if (event_buffer.empty() == true) return true;else return false;}
 
-	void get_events(EventDataList         	&event_list);
-	void get_events(AttrConfEventDataList 	&event_list);
-	void get_events(DataReadyEventDataList	&event_list);
+	void get_events(EventDataList         		&event_list);
+	void get_events(AttrConfEventDataList 		&event_list);
+	void get_events(DataReadyEventDataList		&event_list);
+	void get_events(DevIntrChangeEventDataList  &event_list);
 	void get_events(CallBack *cb);
 
 private:
