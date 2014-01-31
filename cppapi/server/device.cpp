@@ -45,7 +45,6 @@ static const char *RcsId = "$Id$";
 #include <dserversignal.h>
 #include <classattribute.h>
 #include <eventsupplier.h>
-
 #include <apiexcept.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
@@ -89,7 +88,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,const char *d_name,
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0),intr_change_ev(false)
+ event_intr_change_subscription(0),intr_change_ev(false),devintr_thread(Tango_nullptr)
 {
     real_ctor();
 }
@@ -106,7 +105,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &de,
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0),intr_change_ev(false)
+ event_intr_change_subscription(0),intr_change_ev(false),devintr_thread(Tango_nullptr)
 {
     real_ctor();
 }
@@ -121,7 +120,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name)
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0),intr_change_ev(false)
+ event_intr_change_subscription(0),intr_change_ev(false),devintr_thread(Tango_nullptr)
 {
 	desc = "A Tango device";
 	device_state = Tango::UNKNOWN;
@@ -140,7 +139,7 @@ DeviceImpl::DeviceImpl(DeviceClass *cl_ptr,string &d_name,string &description)
  state_from_read(false),py_device(false),device_locked(false),
  locker_client(NULL),old_locker_client(NULL),lock_ctr(0),
  min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false),with_fwd_att(false),
- event_intr_change_subscription(0),intr_change_ev(false)
+ event_intr_change_subscription(0),intr_change_ev(false),devintr_thread(Tango_nullptr)
 {
 	desc = description;
 	device_state = Tango::UNKNOWN;
@@ -3145,6 +3144,29 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	}
 
 //
+// If device is IDL 5 or more and if enabled, and if there is some client(s) listening on the device interface
+// change event, get device interface.
+//
+
+	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+	bool ev_client = event_supplier_zmq->any_dev_intr_client(this);
+
+	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true)
+	{
+		if (ev_client == true)
+		{
+			bool th_running;
+			{
+				omni_mutex_lock lo(devintr_mon);
+				th_running = devintr_shared.th_running;
+			}
+
+			if (th_running == false)
+				devintr_shared.interface.get_interface(this);
+		}
+	}
+
+//
 // Add this attribute in the MultiClassAttribute attr_list vector if it does not already exist
 //
 
@@ -3207,17 +3229,11 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 		dev_attr->add_attribute(device_name,device_class,i);
 
 //
-// If device is IDL 5 or more and if enabled, push a device interface change event
+// Eventually start or update device interface change event thread
 //
 
-	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true)
-	{
-		devintr_shared.cmd_pending = false;
-		devintr_shared.suicide = false;
-		devintr_thread = new DevIntrThread(devintr_shared,devintr_mon);
+	push_dev_intr(ev_client);
 
-		devintr_thread->start();
-	}
 //
 // Free memory if needed
 //
@@ -3272,6 +3288,29 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 		Except::throw_exception((const char *)API_AttrNotFound,
 					o.str(),
 					(const char *)"DeviceImpl::remove_attribute");
+	}
+
+//
+// If device is IDL 5 or more and if enabled, and if there is some client(s) listening on the device interface
+// change event, get device interface.
+//
+
+	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+	bool ev_client = event_supplier_zmq->any_dev_intr_client(this);
+
+	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true)
+	{
+		if (ev_client == true)
+		{
+			bool th_running;
+			{
+				omni_mutex_lock lo(devintr_mon);
+				th_running = devintr_shared.th_running;
+			}
+
+			if (th_running == false)
+				devintr_shared.interface.get_interface(this);
+		}
 	}
 
 //
@@ -3405,9 +3444,13 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 	if ((free_it == true) && (update_idx == true))
 		delete rem_attr;
 
+//
+// Eventually start or update device interface change event thread
+//
+
+	push_dev_intr(ev_client);
+
 }
-
-
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
@@ -3530,6 +3573,29 @@ void DeviceImpl::add_command(Tango::Command *new_cmd,bool device_level)
 	}
 
 //
+// If device is IDL 5 or more and if enabled, and if there is some client(s) listening on the device interface
+// change event, get device interface.
+//
+
+	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+	bool ev_client = event_supplier_zmq->any_dev_intr_client(this);
+
+	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true)
+	{
+		if (ev_client == true)
+		{
+			bool th_running;
+			{
+				omni_mutex_lock lo(devintr_mon);
+				th_running = devintr_shared.th_running;
+			}
+
+			if (th_running == false)
+				devintr_shared.interface.get_interface(this);
+		}
+	}
+
+//
 // Add this command to the command list
 //
 
@@ -3544,6 +3610,11 @@ void DeviceImpl::add_command(Tango::Command *new_cmd,bool device_level)
 		dev_cmd_list.push_back(new_cmd);
 	}
 
+//
+// Eventually start or update device interface change event thread
+//
+
+	push_dev_intr(ev_client);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -3597,6 +3668,29 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it,bool clean
 			o << "\nCan't remove it" << ends;
 
 			Except::throw_exception(API_CommandNotFound,o.str(),"DeviceImpl::remove_command");
+		}
+	}
+
+//
+// If device is IDL 5 or more and if enabled, and if there is some client(s) listening on the device interface
+// change event, get device interface.
+//
+
+	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+	bool ev_client = event_supplier_zmq->any_dev_intr_client(this);
+
+	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true)
+	{
+		if (ev_client == true)
+		{
+			bool th_running;
+			{
+				omni_mutex_lock lo(devintr_mon);
+				th_running = devintr_shared.th_running;
+			}
+
+			if (th_running == false)
+				devintr_shared.interface.get_interface(this);
 		}
 	}
 
@@ -3675,6 +3769,11 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it,bool clean
 	if (free_it == true)
 		delete rem_cmd;
 
+//
+// Eventually start or update device interface change event thread
+//
+
+	push_dev_intr(ev_client);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -6067,6 +6166,74 @@ void DeviceImpl::set_event_param(vector<EventPar> &eve)
 			if (eve[loop].dev_intr_change == true)
 				set_event_intr_change_subscription(time(NULL));
 			break;
+		}
+	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::push_dev_intr
+//
+// description :
+//		Start or update device interface change event thread
+//
+// argument :
+// 		in :
+//			- ev_client : Flag set to true if some clients are listening on the event
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::push_dev_intr(bool ev_client)
+{
+
+//
+// If device is IDL 5 or more and if enabled, push a device interface change event but only if there is some
+// client(s) listening on the event.
+// This is done by starting a dedicated thread (if not already started). The rule of this thread is to delayed
+// the event in case of attributes/commands added/removed in a loop in order to minimize the event number.
+//
+
+	if (idl_version >= MIN_IDL_DEV_INTR && is_intr_change_ev_enable() == true && ev_client == true)
+	{
+		bool th_running;
+		{
+			omni_mutex_lock lo(devintr_mon);
+			th_running = devintr_shared.th_running;
+		}
+
+		if (th_running == false)
+		{
+			devintr_shared.cmd_pending = false;
+			devintr_thread = new DevIntrThread(devintr_shared,devintr_mon,this);
+			devintr_shared.th_running = true;
+
+			devintr_thread->start();
+		}
+		else
+		{
+			int interupted;
+
+			omni_mutex_lock sync(devintr_mon);
+
+			devintr_shared.cmd_pending = true;
+			devintr_shared.cmd_code = DEV_INTR_SLEEP;
+
+			devintr_mon.signal();
+
+			cout4 << "Cmd sent to device interface change thread" << endl;
+
+			while (devintr_shared.cmd_pending == true)
+			{
+				interupted = devintr_mon.wait(DEFAULT_TIMEOUT);
+
+				if ((devintr_shared.cmd_pending == true) && (interupted == 0))
+				{
+					cout4 << "TIME OUT" << endl;
+					Except::throw_exception(API_CommandTimedOut,"Device interface change event thread blocked !!!",
+											"DeviceProxy::add_attribute");
+				}
+			}
 		}
 	}
 }

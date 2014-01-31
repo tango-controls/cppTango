@@ -43,6 +43,7 @@
 #include <multiattribute.h>
 #include <pollobj.h>
 #include <deviceclass.h>
+#include <devintr.h>
 #include <dintrthread.h>
 
 namespace Tango
@@ -92,6 +93,7 @@ public:
 	friend class Tango::NoSyncModelTangoMonitor;
 	friend class Tango::EventSupplier;
 	friend class Tango::EventSubscriptionChangeCmd;
+//	friend class Tango::DevIntrThread;
 
 /**@name Constructors
  * Miscellaneous constructors */
@@ -3500,6 +3502,7 @@ private:
     void att_conf_loop();
     void build_att_list_in_status_mess(size_t,AttErrorType);
 	void lock_root_devices(int,bool);
+	void push_dev_intr(bool);
 
 #ifdef TANGO_HAS_LOG4TANGO
   	log4tango::Logger *get_logger_i (void);

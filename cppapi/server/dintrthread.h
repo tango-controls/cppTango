@@ -37,6 +37,8 @@
 namespace Tango
 {
 
+class DevIntr;
+
 //=================================================================================================================
 //
 //			The DevIntrThCmd structure
@@ -56,7 +58,8 @@ struct _ShDevIntrTh
 {
 	bool			cmd_pending;	// The new command flag
 	DevIntrCmdCode	cmd_code;		// The command code
-	bool			suicide;		// The suicide flag
+	bool			th_running;		// Thread running flag
+	DevIntr			interface;		// Device interface
 };
 typedef struct _ShDevIntrTh	ShDevIntrTh;
 
@@ -73,6 +76,7 @@ enum DevIntrCmdType
 // description :
 //		Class to store all the necessary information for the device interface change event thread.
 //		It's run() method is the thread code
+//		This is a detached thread
 //
 //=================================================================================================================
 
@@ -81,7 +85,7 @@ class TangoMonitor;
 class DevIntrThread: public omni_thread
 {
 public:
-	DevIntrThread(ShDevIntrTh &,TangoMonitor &);
+	DevIntrThread(ShDevIntrTh &,TangoMonitor &,DeviceImpl *);
 
 	void run(void *);
 
@@ -92,6 +96,7 @@ public:
 protected:
 	ShDevIntrTh				&shared_data;
 	TangoMonitor			&p_mon;
+	DeviceImpl				*dev;
 
 	ShDevIntrTh				local_cmd;
 };

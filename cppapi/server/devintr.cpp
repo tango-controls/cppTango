@@ -36,7 +36,7 @@ static const char *RcsId = "$Id$";
 #include <ac_config.h>
 #endif
 
-#include <devintr.h>
+#include <tango.h>
 
 namespace Tango
 {
@@ -83,6 +83,8 @@ void DevIntr::build_cmd_interfaces(DeviceImpl *dev,vector<CmdIntr> &cmds)
 //
 // Get commands interface at class and device levels
 //
+
+	cmds.clear();
 
 	size_t cmd_class = dev->get_device_class()->get_command_list().size();
 	size_t cmd_dev = dev->get_local_command_list().size();
@@ -142,6 +144,8 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,vector<AttrIntr> &atts)
 //
 // Get attribute(s) interface
 //
+
+	atts.clear();
 
 	size_t nb_attr = dev->get_device_attr()->get_attribute_list().size();
 	atts.reserve(nb_attr);
@@ -230,6 +234,23 @@ bool DevIntr::has_changed(DeviceImpl *dev)
 
 	return ret;
 }
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevIntr::== operator
+//
+// description :
+//		Check the equality of inner structure
+//
+// argument :
+//		in :
+//			- rhs: th eright hand side of the equality
+//
+// return:
+//		True if the two instances are equals
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 bool DevIntr::CmdIntr::operator==(const struct CmdIntr &rhs) const
 {

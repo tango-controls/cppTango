@@ -206,6 +206,12 @@ const char* const CONF5_TYPE_EVENT		   = "attr_5_conf";
 const int  ALL_EVENTS					   = 0;
 
 //
+// For device interface change event
+//
+
+const int DEV_INTR_THREAD_SLEEP_TIME	   = 50;
+
+//
 // Files used to retrieve env. variables
 //
 

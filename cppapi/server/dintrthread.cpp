@@ -41,6 +41,7 @@ static const char *RcsId = "$Id$";
 
 #include <tango.h>
 #include <dintrthread.h>
+#include <eventsupplier.h>
 
 namespace Tango
 {
@@ -55,8 +56,8 @@ namespace Tango
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DevIntrThread::DevIntrThread(ShDevIntrTh &cmd,TangoMonitor &m):
-shared_data(cmd),p_mon(m)
+DevIntrThread::DevIntrThread(ShDevIntrTh &cmd,TangoMonitor &m,DeviceImpl *_d):
+shared_data(cmd),p_mon(m),dev(_d)
 {
 	shared_data.cmd_pending = false;
 }
@@ -84,7 +85,7 @@ void DevIntrThread::run(TANGO_UNUSED(void *ptr))
 	{
 		while (exit == false)
 		{
-			DevIntrCmdType received = get_command(100);
+			DevIntrCmdType received = get_command(DEV_INTR_THREAD_SLEEP_TIME);
 
 			switch (received)
 			{
@@ -99,6 +100,10 @@ void DevIntrThread::run(TANGO_UNUSED(void *ptr))
 			}
 		}
 
+		{
+			omni_mutex_lock sync(p_mon);
+			shared_data.th_running = false;
+		}
 		omni_thread::exit();
 	}
 	catch (omni_thread_fatal &)
@@ -137,6 +142,7 @@ DevIntrCmdType DevIntrThread::get_command(DevLong tout)
 
 	if (shared_data.cmd_pending == false)
 	{
+		cout4 << "DevIntrThread:: Going to wait on monitor" << endl;
 		p_mon.wait(tout);
 	}
 
@@ -207,6 +213,10 @@ void DevIntrThread::execute_cmd()
 
 	if (need_exit == true)
 	{
+		{
+			omni_mutex_lock sync(p_mon);
+			shared_data.th_running = false;
+		}
 		omni_thread::exit();
 	}
 }
@@ -223,7 +233,25 @@ void DevIntrThread::execute_cmd()
 
 void DevIntrThread::push_event()
 {
+	cout4 << "Device interface change event thread pushing event!" << endl;
 
+	AutoTangoMonitor sync(dev,true);
+
+	if (shared_data.interface.has_changed(dev) == true)
+	{
+		cout4 << "Device interface has changed" << endl;
+
+		Device_5Impl *dev_5 = static_cast<Device_5Impl *>(dev);
+		DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
+
+		DevVarStringArray dvsa(1);
+		dvsa.length(1);
+		dvsa[0] = Tango::string_dup(AllAttr_3);
+		AttributeConfigList_5 *atts_list = dev_5->get_attribute_config_5(dvsa);
+
+		ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+		event_supplier_zmq->push_dev_intr_change_event(dev,false,cmds_list,atts_list);
+	}
 }
 
 } // End of Tango namespace
