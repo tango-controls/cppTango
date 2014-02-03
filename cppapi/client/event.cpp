@@ -1619,10 +1619,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		{
 			RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 
-			string root_att_name = local_device_name;
-			transform(root_att_name.begin(),root_att_name.end(),root_att_name.begin(),::tolower);
+			string root_att_name = device_name;
 			root_att_name = root_att_name + '/' + att_name_lower;
-
 			if (rar.is_root_attribute(root_att_name) == true)
 				new_event_callback.fwd_att = true;
 		}
@@ -2871,7 +2869,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		}
 
 		DevIntrChangeEventData *event_data = new DevIntrChangeEventData(device,
-						      device_name,ev_name,
+						      ev_name,device_name,
 						      c_list,a_list,true,
 						      err);
 

@@ -130,6 +130,9 @@ public :
 	void mem_event_par(map<string, vector<EventPar> > &);
 	void apply_event_par(map<string,vector<EventPar> > &);
 
+	void mem_devices_interface(map<string,DevIntr> &);
+	void changed_devices_interface(map<string,DevIntr> &);
+
 	friend class NotifdEventSupplier;
 	friend class ZmqEventSupplier;
 

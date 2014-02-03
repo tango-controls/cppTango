@@ -1075,7 +1075,7 @@ void DServer::restart(string &d_name)
 	{
 		if (di.has_changed(new_dev) == true)
 		{
-			cout << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
+			cout4 << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
 
 			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(new_dev);
 			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
@@ -1160,11 +1160,14 @@ void ServRestartThread::run(void *ptr)
 	dev->set_status("The device is ON");
 
 //
-// Memorize event parameters
+// Memorize event parameters and devices interface
 //
 
 	map<string,vector<EventPar> > map_events;
+	map<string,DevIntr> map_dev_inter;
+
 	dev->mem_event_par(map_events);
+	dev->mem_devices_interface(map_dev_inter);
 
 //
 // Destroy and recreate the multi attribute object
@@ -1205,10 +1208,11 @@ void ServRestartThread::run(void *ptr)
 	tg->polling_configure();
 
 //
-// Reset event params
+// Reset event params and send event(s) if some device interface has changed
 //
 
 	dev->apply_event_par(map_events);
+	dev->changed_devices_interface(map_dev_inter);
 
 //
 // Exit thread
@@ -1921,6 +1925,8 @@ void DServer::mem_event_par(map<string,vector<EventPar> > &_map)
 		{
 			vector<EventPar> eve;
 			dev_list[j]->get_device_attr()->get_event_param(eve);
+			dev_list[j]->get_event_param(eve);
+
 			if (eve.size() != 0)
 			{
 				_map.insert(make_pair(dev_list[j]->get_name(),eve));
@@ -1955,10 +1961,98 @@ void DServer::apply_event_par(map<string,vector<EventPar> > &_map)
 			ite = _map.find(dev_name);
 
 			if (ite != _map.end())
+			{
 				dev_list[j]->get_device_attr()->set_event_param(ite->second);
+				dev_list[j]->set_event_param(ite->second);
+			}
 		}
 	}
 }
 
-} // End of Tango namespace
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DServer::mem_devices_interface()
+//
+// description :
+//		Memorize device interface for devices where some client(s) are listening on device interface change
+//		event
+//
+// arguments :
+//		out :
+//			- _map : reference to the map (name,device interface) where the interface must be stored
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DServer::mem_devices_interface(map<string,DevIntr> &_map)
+{
+	ZmqEventSupplier *event_supplier_zmq = Util::instance()->get_zmq_event_supplier();
+
+	if (class_list.empty() == false)
+	{
+		for (long i = class_list.size() - 1;i >= 0;i--)
+		{
+			if (class_list[i]->is_py_class() == false)
+			{
+				vector<DeviceImpl *> &devs = class_list[i]->get_device_list();
+				size_t nb_dev = devs.size();
+				for (size_t loop = 0;loop < nb_dev;loop++)
+				{
+					if (event_supplier_zmq->any_dev_intr_client(devs[loop]) == true)
+					{
+						cout4 << "Memorize dev interface for device " << devs[loop]->get_name() << endl;
+
+						DevIntr di;
+						di.get_interface(devs[loop]);
+						_map.insert(make_pair(devs[loop]->get_name(),di));
+					}
+				}
+			}
+		}
+	}
+
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DServer::changed_devices_interface()
+//
+// description :
+//		Check for each device with client(s) listening on device interface change event if the device interface
+//		has changed and if true, send event
+//
+// arguments :
+//		in :
+//			- _map : reference to the map (name,device interface) where devices interface are stored
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DServer::changed_devices_interface(map<string,DevIntr> &_map)
+{
+	Tango::Util *tg = Util::instance();
+	ZmqEventSupplier *event_supplier_zmq = tg->get_zmq_event_supplier();
+
+	map<string,DevIntr>::iterator pos;
+	for (pos = _map.begin();pos != _map.end();++pos)
+	{
+		DeviceImpl *dev = tg->get_device_by_name(pos->first);
+		if (pos->second.has_changed(dev) == true)
+		{
+			cout4 << "Device interface for device " << dev->get_name() << " has changed !!!!!!!!!!!!!!!!!!!" << endl;
+
+			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(dev);
+			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
+
+			DevVarStringArray dvsa(1);
+			dvsa.length(1);
+			dvsa[0] = Tango::string_dup(AllAttr_3);
+			AttributeConfigList_5 *atts_list = dev_5->get_attribute_config_5(dvsa);
+
+			event_supplier_zmq->push_dev_intr_change_event(dev,false,cmds_list,atts_list);
+		}
+	}
+}
+
+}// End of Tango namespace
 

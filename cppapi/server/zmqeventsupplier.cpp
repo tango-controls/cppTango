@@ -673,7 +673,7 @@ void ZmqEventSupplier::push_heartbeat_event()
 	DServer *adm_dev = tg->get_dserver_device();
 	now_time = time(NULL);
 	delta_time = now_time - adm_dev->last_heartbeat_zmq;
-	cout3 << "ZmqEventSupplier::push_heartbeat_event(): delta time since last heartbeat " << delta_time << endl;
+//	cout3 << "ZmqEventSupplier::push_heartbeat_event(): delta time since last heartbeat " << delta_time << endl;
 
 	if (heartbeat_name_init == false)
 	{
@@ -704,8 +704,8 @@ void ZmqEventSupplier::push_heartbeat_event()
 	{
 	    int nb_event = 1;
 
-		cout3 << "ZmqEventSupplier::push_heartbeat_event(): detected heartbeat event for " << heartbeat_event_name << endl;
-		cout3 << "ZmqEventSupplier::push_heartbeat_event(): delta _time " << delta_time << endl;
+//		cout3 << "ZmqEventSupplier::push_heartbeat_event(): detected heartbeat event for " << heartbeat_event_name << endl;
+//		cout3 << "ZmqEventSupplier::push_heartbeat_event(): delta _time " << delta_time << endl;
 
         if (double_send_heartbeat == true)
         {
@@ -713,7 +713,7 @@ void ZmqEventSupplier::push_heartbeat_event()
             double_send_heartbeat = false;
         }
 
-		cout3 << "ZmqEventSupplier::push_heartbeat_event(): nb_event = " << nb_event << endl;
+//		cout3 << "ZmqEventSupplier::push_heartbeat_event(): nb_event = " << nb_event << endl;
 
         while (nb_event != 0)
         {

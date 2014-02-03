@@ -253,8 +253,8 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 {
 	try
 	{
-cout << "One event received" << endl;
-cout << "Attr name = " << ev->attr_name << endl;
+//cout << "One event received" << endl;
+//cout << "Attr name = " << ev->attr_name << endl;
 
 		ZmqEventSupplier *zes = Util::instance()->get_zmq_event_supplier();
 
@@ -274,18 +274,15 @@ cout << "Attr name = " << ev->attr_name << endl;
 
 		if (ev->err == true)
 		{
-cout << "Received error" << endl;
 			DevFailed df(ev->errors);
 			zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df);
 		}
 		else
 		{
-cout << "No error received" << endl;
 			FwdEventData *ev_fwd = static_cast<FwdEventData *>(ev);
 			const AttributeValue_4 *ptr = ev_fwd->get_av_4();
 			zmq::message_t *zmq_mess_ptr = ev_fwd->get_zmq_mess_ptr();
 
-cout << "ptr = " << ptr << ", zmq_mess_ptr = " << zmq_mess_ptr << endl;
 			if (ptr != Tango_nullptr || zmq_mess_ptr != Tango_nullptr)
 			{
 
@@ -299,7 +296,6 @@ cout << "ptr = " << ptr << ", zmq_mess_ptr = " << zmq_mess_ptr << endl;
 				else
 					ad.zmq_mess = zmq_mess_ptr;
 
-cout << "Going to push event" << endl;
 				zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,Tango_nullptr);
 			}
 		}
@@ -519,7 +515,7 @@ void RootAttRegistry::RootAttConfCallBack::clear_attrdesc(string &root_att_name)
 //		RootAttRegistry::RootAttConfCallBack::is_root_att_in_map
 //
 // description :
-//		Check if one attribute is defined in the map
+//		Check if one attribute is defined in the map as one of the root attribute
 //
 // argument :
 //		in :

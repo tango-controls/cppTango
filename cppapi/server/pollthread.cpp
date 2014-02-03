@@ -1710,9 +1710,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 void PollThread::eve_heartbeat()
 {
-	cout5 << "----------> Time = " << now.tv_sec << ","
-	      << setw(6) << setfill('0') << now.tv_usec
-	      << " Sending event heartbeat" << endl;
+//	cout5 << "----------> Time = " << now.tv_sec << ","
+//	      << setw(6) << setfill('0') << now.tv_usec
+//	      << " Sending event heartbeat" << endl;
 
 	EventSupplier *event_supplier;
 	event_supplier = Util::instance()->get_zmq_event_supplier();
