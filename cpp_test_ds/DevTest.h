@@ -200,6 +200,7 @@ public :
 	friend class IOGetCbExecuted;
 	friend class ChangeEncodedFormat;
 	friend class ChangeEncodedData;
+	friend class IOAddCommand;
 
 protected :
 	Tango::DevDouble 	attr_double;

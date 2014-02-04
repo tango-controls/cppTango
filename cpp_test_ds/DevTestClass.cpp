@@ -563,6 +563,16 @@ void DevTestClass::command_factory()
 					    Tango::DEV_VOID,
 					    "Type of exception to be thrown by write_attr_hardware() method",
 					    "void"));
+	command_list.push_back(new IOAddCommand("IOAddCommand",
+					   Tango::DEV_LONG,
+					   Tango::DEV_VOID,
+					   "True if command must be added at device level",
+					   "void"));
+	command_list.push_back(new IORemoveCommand("IORemoveCommand",
+					   Tango::DEV_VOID,
+					   Tango::DEV_VOID,
+					   "void",
+					   "void"));
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 
