@@ -347,8 +347,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 
 		if (tg->is_svr_starting() == true)
 		{
-			cerr << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
-			cout << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
+			cout4 << "Failed to narrow the EventChannelFactory - Notifd events will not be generated (hint: start the notifd daemon on this host)" << endl;
 		}
 
 		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
