@@ -1998,7 +1998,8 @@ void DServer::mem_devices_interface(map<string,DevIntr> &_map)
 				size_t nb_dev = devs.size();
 				for (size_t loop = 0;loop < nb_dev;loop++)
 				{
-					if (event_supplier_zmq->any_dev_intr_client(devs[loop]) == true)
+					if (event_supplier_zmq->any_dev_intr_client(devs[loop]) == true &&
+						devs[loop]->get_dev_idl_version() >= MIN_IDL_DEV_INTR)
 					{
 						cout4 << "Memorize dev interface for device " << devs[loop]->get_name() << endl;
 
