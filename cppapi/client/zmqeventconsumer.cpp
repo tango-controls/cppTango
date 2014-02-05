@@ -2013,11 +2013,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
             UserDataEventType data_type;
 
-            if (event_name == CONF_TYPE_EVENT || event_name == CONF5_TYPE_EVENT)
+            if (event_name.find(CONF_TYPE_EVENT) != string::npos)
 			{
 				data_type = ATT_CONF;
-				if (event_name == CONF5_TYPE_EVENT)
-					event_name = CONF_TYPE_EVENT;
+				pos = event_name.find('!');
+				if (pos != string::npos)
+					event_name.erase(pos);
 			}
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;
@@ -2159,9 +2160,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						{
 
 //
-// Event if the device sending the event is IDL 5, if one of the client is not Tango 9, the event has to be sent
-// using AttributeConfig_3 instead of AttributeConfig_5. Try first as AttributeConfig_5 and if it fails, try
-// with AttributeConfig_3
+// Event if the device sending the event is IDL 5
 //
 
 							try
@@ -2175,28 +2174,15 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							}
 							catch(...)
 							{
-								try
-								{
-									event_data_cdr.rewindPtrs();
-									(AttributeConfig_3 &)ac3 <<= event_data_cdr;
-									attr_conf_3 = &ac3.in();
-									vers = 3;
-									attr_info_ex = new AttributeInfoEx();
-									*attr_info_ex = const_cast<AttributeConfig_3 *>(attr_conf_3);
-									ev_attr_conf = true;
-								}
-								catch (...)
-								{
-									TangoSys_OMemStream o;
-									o << "Received malformed data for event ";
-									o << ev_name << ends;
+								TangoSys_OMemStream o;
+								o << "Received malformed data for event ";
+								o << ev_name << ends;
 
-									errors.length(1);
-									errors[0].reason = API_WrongEventData;
-									errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
-									errors[0].desc = CORBA::string_dup(o.str().c_str());
-									errors[0].severity = ERR;
-								}
+								errors.length(1);
+								errors[0].reason = API_WrongEventData;
+								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].severity = ERR;
 							}
 						}
 						else if (evt_cb.device_idl > 2)

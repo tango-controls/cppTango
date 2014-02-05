@@ -3360,6 +3360,8 @@ public:
 	void get_event_param(vector<EventPar> &);
 	void set_event_param(vector<EventPar> &);
 
+	void set_client_lib(int _l) {if (_l < client_lib)client_lib=_l;}
+
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
 	{return logger ? logger : get_logger_i();}
@@ -3477,6 +3479,8 @@ protected:
 	TangoMonitor				devintr_mon;
 	ShDevIntrTh					devintr_shared;
 	DevIntrThread				*devintr_thread;
+
+	int							client_lib;			// Lowest clients lib used
 
 private:
 //

@@ -111,7 +111,7 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_
  event_change_client_3(false),event_archive_client_3(false),
  event_user_client_3(false),dr_event_implmented(false),
  scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
- check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false),client_lib(TANGO_VERSION_MAJOR)
+ check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false)
 {
 
 //
@@ -590,6 +590,13 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	event_attr_conf_subscription = 0;
 	event_attr_conf5_subscription = 0;
 	event_data_ready_subscription = 0;
+
+//
+// Init client lib parameters
+//
+
+	for (int i = 0;i < numEventType;i++)
+		client_lib[i] = _convert_tango_lib_release();
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -5791,6 +5798,19 @@ bool Attribute::data_ready_event_subscribed()
 	}
 
 	return ret;
+}
+
+void Attribute::set_client_lib(int _l,string &ev_name)
+{
+	int i;
+	for (i = 0;i < numEventType;i++)
+	{
+		if (ev_name == EventName[i])
+			break;
+	}
+
+	if (_l < client_lib[i])
+		client_lib[i] = _l;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

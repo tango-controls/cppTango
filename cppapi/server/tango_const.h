@@ -202,7 +202,7 @@ const int   MaxDevPropLength               = 255;
 
 const int	MIN_IDL_CONF5			       = 5;
 const int 	MIN_IDL_DEV_INTR			   = 5;
-const char* const CONF5_TYPE_EVENT		   = "attr_5_conf";
+const char* const ATT_CONF_EVENT_VERSION   = "9";
 const int  ALL_EVENTS					   = 0;
 
 //

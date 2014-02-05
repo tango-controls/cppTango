@@ -154,7 +154,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 //      	- rate : PGM rate parameter
 //      	- ivl : PGM ivl paramteter
 //      	- dev : The device pointer
-//			- client_lib : Major Tango release number used by client
+//			- client_lib : Tango release number used by client
 //
 //--------------------------------------------------------------------------------------------------------------------
 
@@ -212,8 +212,6 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				cl_release = 3;
 		}
 
-		attribute.set_client_lib(client_lib);
-
 		if (action == "subscribe")
 		{
 			if (event == "user_event")
@@ -226,19 +224,15 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				if (cl_release == 3)
 					attribute.event_user_client_3 = true;
 			}
-			else if (event == CONF_TYPE_EVENT)
+			else if (event.find(CONF_TYPE_EVENT) != string::npos)
 			{
 				cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				attribute.event_attr_conf_subscription = time(NULL);
-			}
-			else if (event == CONF5_TYPE_EVENT)
-			{
-				cout4 << "DServer::event_subscription(): update attr_5_conf subscription\n";
-
-				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				attribute.event_attr_conf5_subscription = time(NULL);
+				if (event.find('!') != string::npos)
+					attribute.event_attr_conf5_subscription = time(NULL);
+				else
+					attribute.event_attr_conf_subscription = time(NULL);
 			}
 			else if (event == "data_ready")
 			{
@@ -513,6 +507,12 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				ivl = 0;
 			}
 		}
+
+//
+// Memorize client lib release
+//
+
+		attribute.set_client_lib(client_lib,event);
 	}
 	else
 	{
@@ -531,6 +531,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			rate = 0;
 			ivl = 0;
 		}
+
+		dev_impl->set_client_lib(client_lib);
 	}
 
 //
@@ -568,7 +570,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 // returns :
 //		The command output data (Tango lib release number)
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVarStringArray *argin)
 {
     if (argin->length() > 1 && argin->length() < 4)
@@ -646,15 +648,15 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         attr_name_lower = attr_name;
         transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
-        int client_major_release = 8;
+        int client_release = 800;
         if (argin->length() == 5)
         {
 			stringstream ss;
 			ss << (*argin)[4];
-			ss >> client_major_release;
+			ss >> client_release;
         }
 
-        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_major_release << endl;
+        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
 
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
@@ -713,8 +715,8 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 				      (const char *)"DServer::zmq_event_subscription_change");
         }
 
-        if (idl_vers >= MIN_IDL_CONF5 && client_major_release >= 9 && event == CONF_TYPE_EVENT)
-			event = CONF5_TYPE_EVENT;
+        if (idl_vers >= MIN_IDL_CONF5 && client_release >= 900 && event == CONF_TYPE_EVENT)
+			event = event + '!' +  ATT_CONF_EVENT_VERSION;
 
 //
 // Call common method (common between old and new command)
@@ -723,7 +725,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         string mcast;
         int rate,ivl;
 
-        event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_major_release);
+        event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_release);
 
 //
 // Check if the client is a new one

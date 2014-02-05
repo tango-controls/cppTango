@@ -1351,11 +1351,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	if (iter == event_callback_map.end() && event == ATTR_CONF_EVENT)
 	{
-		string::size_type pos = mod_local_callback_key.rfind('.');
-		if (event_name == CONF_TYPE_EVENT)
-			mod_local_callback_key.replace(pos + 1,20,string(CONF5_TYPE_EVENT));
-		else
-			mod_local_callback_key.replace(pos + 1,20,string(CONF_TYPE_EVENT));
+		mod_local_callback_key = mod_local_callback_key + '!' + ATT_CONF_EVENT_VERSION;
 
 		iter = event_callback_map.find(mod_local_callback_key);
 	}
@@ -1433,7 +1429,10 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	    if (cmd_name.find("Zmq") != string::npos)
 	    {
 			zmq_used = true;
-			subscriber_info.push_back(TgLibMajorVers);
+			long _v = _convert_tango_lib_release();
+			stringstream ss;
+			ss << _v;
+			subscriber_info.push_back(ss.str());
 		}
 
 		subscriber_in << subscriber_info;
@@ -1493,8 +1492,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 //
 // Change event name if it is IDL 5 compatible:
-// This code is Tango 9 or more. If the remote device is IDL 5 (or more, use attr5_conf event instead of
-// attr_conf
+// This code is Tango 9 or more. If the remote device is IDL 5 (or more, add tango release number to event name)
 //
 
 	const DevVarLongStringArray *dvlsa;
@@ -1503,12 +1501,10 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	if ((dd >> dvlsa) == false)
 		dd_extract_ok = false;
 
-	if (dd_extract_ok == true && event == ATTR_CONF_EVENT
-		&& dvlsa->lvalue[1] >= MIN_IDL_CONF5 && event_name != string(CONF5_TYPE_EVENT))
+	if (dd_extract_ok == true && event == ATTR_CONF_EVENT && dvlsa->lvalue[1] >= MIN_IDL_CONF5)
 	{
-		event_name = CONF5_TYPE_EVENT;
-		string::size_type pos = local_callback_key.rfind('.');
-		local_callback_key.replace(pos + 1,20,string(CONF5_TYPE_EVENT));
+		event_name = event_name + '!' + ATT_CONF_EVENT_VERSION;
+		local_callback_key = local_callback_key + '!' + ATT_CONF_EVENT_VERSION;
 	}
 
 //
@@ -2803,8 +2799,9 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		AttributeInfoEx *aie = NULL;
 		string local_event_name = event_name;
 
-		if (event_name.size() != 9)
-			local_event_name = EventName[event];
+		string::size_type pos = local_event_name.find('!');
+		if (pos != string::npos)
+			local_event_name.erase(pos);
 
 		try
 		{

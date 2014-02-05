@@ -1993,11 +1993,9 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
     vector<string> filterable_names_lg;
     vector<long> filterable_data_lg;
 
-    string ev_type;
+    string ev_type = CONF_TYPE_EVENT;
     if (conf5 == true)
-		ev_type = CONF5_TYPE_EVENT;
-	else
-		ev_type = CONF_TYPE_EVENT;
+		ev_type = ev_type + '!' + ATT_CONF_EVENT_VERSION;
 
     push_event(device_impl,
            ev_type,

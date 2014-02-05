@@ -548,7 +548,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 //
 
 		cout4 << "KeepAliveThread at work" << endl;
-cout << "KeepAliveThread at work" << endl;
 
 		// lock the maps only for reading
 		event_consumer->map_modification_lock.writerIn();
@@ -781,7 +780,7 @@ cout << "KeepAliveThread at work" << endl;
  					bool heartbeat_skipped;
 					heartbeat_skipped = ((now - ipos->second.last_heartbeat) >= EVENT_HEARTBEAT_PERIOD);
 
-					if (heartbeat_skipped || ipos->second.heartbeat_skipped || ipos->second.event_system_failed == true )
+					if (heartbeat_skipped || ipos->second.heartbeat_skipped || ipos->second.event_system_failed == true)
 					{
 						ipos->second.heartbeat_skipped = true;
 
@@ -928,8 +927,10 @@ cout << "KeepAliveThread at work" << endl;
 									{
 										domain_name = epos->first.substr(0,pos);
 										event_name = epos->first.substr(pos + 1);
-										if (event_name == CONF5_TYPE_EVENT)
-											event_name = CONF_TYPE_EVENT;
+
+										string::size_type pos = event_name.find('!');
+										if (pos != string::npos)
+											event_name.erase(pos);
 									}
 
 									for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
@@ -941,7 +942,7 @@ cout << "KeepAliveThread at work" << endl;
 // Push an event with error set
 //
 
-										if (event_name == CONF_TYPE_EVENT || event_name == CONF5_TYPE_EVENT)
+										if (event_name == CONF_TYPE_EVENT)
 										{
 											FwdAttrConfEventData *event_data = new FwdAttrConfEventData(epos->second.device,
 											      												domain_name,
@@ -1205,8 +1206,7 @@ cout << "KeepAliveThread at work" << endl;
 												}
 											}
 
-											else if (epos->second.event_name == CONF_TYPE_EVENT ||
-													 epos->second.event_name == CONF5_TYPE_EVENT)
+											else if (epos->second.event_name.find(CONF_TYPE_EVENT) != string::npos)
 											{
 
 //
@@ -1254,8 +1254,9 @@ cout << "KeepAliveThread at work" << endl;
 													cb_ctr++;
 													FwdAttrConfEventData *event_data;
 													string ev_name(epos->second.event_name);
-													if (ev_name == CONF5_TYPE_EVENT)
-														ev_name = CONF_TYPE_EVENT;
+													string::size_type pos = ev_name.find('!');
+													if (pos != string::npos)
+														ev_name.erase(pos);
 
 													if (cb_ctr != cb_nb)
 													{

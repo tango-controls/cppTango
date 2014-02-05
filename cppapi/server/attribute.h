@@ -2182,8 +2182,8 @@ public:
 	bool is_mem_exception() {return att_mem_exception;}
 	virtual bool is_fwd_att() {return false;}
 
-	void set_client_lib(int _l) {if (_l < client_lib)client_lib = _l;}
-	int get_client_lib() {return client_lib;}
+	void set_client_lib(int _l,string &);
+	int get_client_lib(EventType _et) {return client_lib[_et];}
 
 	void add_config_5_specific(AttributeConfig_5 &);
 
@@ -2334,7 +2334,7 @@ protected:
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
 														// memorized and if it failed at init
-	int					client_lib;						// Lowest clients lib used
+	int					client_lib[numEventType];		// Lowest clients lib used
 };
 
 //
