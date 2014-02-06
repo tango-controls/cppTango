@@ -1995,7 +1995,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
 
     string ev_type = CONF_TYPE_EVENT;
     if (conf5 == true)
-		ev_type = ev_type + '!' + ATT_CONF_EVENT_VERSION;
+		ev_type = ev_type + '!' + AttConfEventVersion[ATT_CONF_REL_NB - 1];
 
     push_event(device_impl,
            ev_type,

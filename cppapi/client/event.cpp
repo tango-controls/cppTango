@@ -1347,13 +1347,17 @@ int EventConsumer::connect_event(DeviceProxy *device,
 //
 
 	EvCbIte iter = event_callback_map.find(local_callback_key);
-	string mod_local_callback_key(local_callback_key);
 
 	if (iter == event_callback_map.end() && event == ATTR_CONF_EVENT)
 	{
-		mod_local_callback_key = mod_local_callback_key + '!' + ATT_CONF_EVENT_VERSION;
-
-		iter = event_callback_map.find(mod_local_callback_key);
+		for (int i = 0;i < ATT_CONF_REL_NB;i++)
+		{
+			string mod_local_callback_key(local_callback_key);
+			mod_local_callback_key = mod_local_callback_key + '!' + AttConfEventVersion[i];
+			iter = event_callback_map.find(mod_local_callback_key);
+			if (iter != event_callback_map.end())
+				break;
+		}
 	}
 
 	if (iter != event_callback_map.end())
@@ -1503,8 +1507,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	if (dd_extract_ok == true && event == ATTR_CONF_EVENT && dvlsa->lvalue[1] >= MIN_IDL_CONF5)
 	{
-		event_name = event_name + '!' + ATT_CONF_EVENT_VERSION;
-		local_callback_key = local_callback_key + '!' + ATT_CONF_EVENT_VERSION;
+		event_name = event_name + '!' + AttConfEventVersion[ATT_CONF_REL_NB - 1];
+		local_callback_key = local_callback_key + '!' + AttConfEventVersion[ATT_CONF_REL_NB - 1];
 	}
 
 //
@@ -2765,7 +2769,10 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 
 		AutoTangoMonitor _mon(cb.callback_monitor);
 
-		// if a callback method was specified, call it!
+//
+// If a callback method was specified, call it!
+//
+
 		if (callback != NULL )
 		{
 			try
@@ -2777,14 +2784,15 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 				cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
 			}
 
-			//event_data->attr_value = NULL;
 			delete event_data;
 			if (cb.fwd_att == true)
 				delete [] av;
 		}
 
-		// no calback method, the event has to be instered
-		// into the event queue
+//
+// No calback method, the event has to be inserted into the event queue
+//
+
 		else
 		{
 			ev_queue->insert_event(event_data);
@@ -2795,7 +2803,6 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		DevErrorList err;
 		err.length(0);
 		string domain_name = device_name + "/" + att_name_lower;
-		//AttributeInfoEx aie;
 		AttributeInfoEx *aie = NULL;
 		string local_event_name = event_name;
 
@@ -2820,7 +2827,10 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 						      err);
 		AutoTangoMonitor _mon(cb.callback_monitor);
 
-		// if a callback method was specified, call it!
+//
+// If a callback method was specified, call it!
+//
+
 		if (callback != NULL )
 		{
 			try
@@ -2831,12 +2841,13 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			{
 				cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
 			}
-		//event_data->attr_conf = NULL;
 			delete event_data;
 		}
 
-		// no calback method, the event has to be instered
-		// into the event queue
+//
+// No calback method, the event has to be inserted into the event queue
+//
+
 		else
 		{
 			ev_queue->insert_event(event_data);

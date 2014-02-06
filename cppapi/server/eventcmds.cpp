@@ -716,7 +716,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         }
 
         if (idl_vers >= MIN_IDL_CONF5 && client_release >= 900 && event == CONF_TYPE_EVENT)
-			event = event + '!' +  ATT_CONF_EVENT_VERSION;
+			event = event + '!' +  AttConfEventVersion[ATT_CONF_REL_NB - 1];
 
 //
 // Call common method (common between old and new command)

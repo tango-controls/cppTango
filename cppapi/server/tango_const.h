@@ -202,8 +202,16 @@ const int   MaxDevPropLength               = 255;
 
 const int	MIN_IDL_CONF5			       = 5;
 const int 	MIN_IDL_DEV_INTR			   = 5;
-const char* const ATT_CONF_EVENT_VERSION   = "9";
-const int  ALL_EVENTS					   = 0;
+const int   ALL_EVENTS					   = 0;
+
+//
+// For attribute conf. change event
+//
+
+const char* const AttConfEventVersion[]    = {
+	"902"
+};
+const int   ATT_CONF_REL_NB				   = sizeof(AttConfEventVersion) / sizeof (const char *);
 
 //
 // For device interface change event
