@@ -576,6 +576,11 @@ private :
 
     bool reconnect_to_zmq_channel(EvChanIte &,EventConsumer *,DeviceData &);
 	void reconnect_to_zmq_event(EvChanIte &,EventConsumer *,DeviceData &);
+
+	void not_conected_event(ZmqEventConsumer *,time_t,NotifdEventConsumer *);
+	void confirm_subscription(ZmqEventConsumer *,map<string,EventChannelStruct>::iterator &);
+	void main_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &);
+	void re_subscribe_after_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &,string &);
 };
 
 /********************************************************************************
