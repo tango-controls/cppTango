@@ -490,6 +490,8 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			len = tmp_seq_state->length();
 			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
 			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
+			break;
+
 		default:
 			break;
 		}
@@ -639,6 +641,8 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			len = tmp_seq_state->length();
 			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
 			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
+			break;
+
 		default:
 			break;
 		}

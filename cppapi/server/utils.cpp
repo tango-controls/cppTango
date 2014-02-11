@@ -823,6 +823,7 @@ void Util::check_args(int argc,char *argv[])
 							}
 						}
 					}
+					break;
 
 				default:
 					ind++;

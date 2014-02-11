@@ -288,7 +288,7 @@ public :
 	DeviceAttribute(const char *, vector<DevULong64> &,int,int);
 	DeviceAttribute(const char *, vector<DevState> &,int,int);
 
-	~DeviceAttribute();
+	virtual ~DeviceAttribute();
 
 	AttrQuality 		quality;
 	AttrDataFormat		data_format;

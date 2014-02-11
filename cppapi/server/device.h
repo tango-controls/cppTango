@@ -93,7 +93,6 @@ public:
 	friend class Tango::NoSyncModelTangoMonitor;
 	friend class Tango::EventSupplier;
 	friend class Tango::EventSubscriptionChangeCmd;
-//	friend class Tango::DevIntrThread;
 
 /**@name Constructors
  * Miscellaneous constructors */

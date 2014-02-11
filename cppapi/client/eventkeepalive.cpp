@@ -1383,7 +1383,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
 			else
 				prefix = event_consumer->env_var_fqdn_prefix[0];
-			string domain_name = prefix + epos->second.device->dev_name() + "/" + epos->second.attr_name;
+			string dom_name = prefix + epos->second.device->dev_name() + "/" + epos->second.attr_name;
 
 			bool old_transp = epos->second.device->get_transparency_reconnection();
 			epos->second.device->set_transparency_reconnection(true);
@@ -1425,7 +1425,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					aie_copy = new AttributeInfoEx;
 					*aie_copy = *aie;
 					event_data = new FwdAttrConfEventData(epos->second.device,
-									domain_name,
+									dom_name,
 									ev_name,
 									aie_copy,
 									err);
@@ -1433,7 +1433,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				else
 				{
 					event_data = new FwdAttrConfEventData(epos->second.device,
-									domain_name,
+									dom_name,
 									ev_name,
 									aie,
 									err);
@@ -1481,7 +1481,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			DevErrorList err;
 			err.length(0);
 			string prefix = event_consumer->env_var_fqdn_prefix[0];
-			string domain_name = prefix + epos->second.device->dev_name();
+			string dom_name = prefix + epos->second.device->dev_name();
 
 			bool old_transp = epos->second.device->get_transparency_reconnection();
 			epos->second.device->set_transparency_reconnection(true);
@@ -1520,14 +1520,14 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 					cil_copy = new CommandInfoList;
 					*cil_copy = *cil;
 					event_data = new DevIntrChangeEventData(epos->second.device,
-									ev_name,domain_name,
+									ev_name,dom_name,
 									cil_copy,aie_copy,true,
 									err);
 				}
 				else
 				{
 					event_data = new DevIntrChangeEventData(epos->second.device,
-									ev_name,domain_name,
+									ev_name,dom_name,
 									cil,aie,true,
 									err);
 				}

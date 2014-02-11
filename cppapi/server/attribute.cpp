@@ -5450,14 +5450,17 @@ void Attribute::avns_in_db(const char *prop_name,string &dev_name)
     }
 }
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::avns_in_att()
+// method :
+//		Attribute::avns_in_att()
 //
-// description : 	Store in att the famous AVNS (AlrmValueNotSpec)
-//                  for a specific attribute property
+// description :
+//		Store in att the famous AVNS (AlrmValueNotSpec) for a specific attribute property
 //
-// Arg in :			pt : Property type
+// Arguments:
+//		in :
+//			- pt : Property type
 //
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -5799,6 +5802,21 @@ bool Attribute::data_ready_event_subscribed()
 
 	return ret;
 }
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::set_client_lib()
+//
+// description :
+//		Set client lowest client lib for event compatibility
+//
+// argument :
+//		in :
+//			- _l : Client lib release
+//			- ev_name : Event name
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_client_lib(int _l,string &ev_name)
 {

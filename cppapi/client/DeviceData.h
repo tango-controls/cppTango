@@ -76,7 +76,7 @@ public :
 	DeviceData(DeviceData &&);
 	DeviceData & operator=(DeviceData &&);
 #endif
-	~DeviceData();
+	virtual ~DeviceData();
 
 	CORBA::Any_var any;
 
