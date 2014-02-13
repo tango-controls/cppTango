@@ -98,6 +98,7 @@ const char* const TANGO_PY_MOD_NAME        = "_PyTango.pyd";
 const char* const DATABASE_CLASS           = "DataBase";
 
 const int   TANGO_FLOAT_PRECISION          = 15;
+const char * const NoClass				   = "noclass";
 
 //
 // Event related define
@@ -393,6 +394,7 @@ const char* const API_UnsupportedFeature           = "API_UnsupportedFeature";
 const char* const API_WAttrOutsideLimit            = "API_WAttrOutsideLimit";
 const char* const API_WizardConfError              = "API_WizardConfError";
 const char* const API_WrongAttributeNameSyntax     = "API_WrongAttributeNameSyntax";
+const char* const API_WrongCmdLineArgs			   = "API_WrongCmdLineArgs";
 const char* const API_WrongDeviceNameSyntax        = "API_WrongDeviceNameSyntax";
 const char* const API_WrongEventData               = "API_WrongEventData";
 const char* const API_WrongFormat                  = "API_WrongFormat";

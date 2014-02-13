@@ -47,12 +47,12 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttributeExt &DeviceAttribute::DeviceAttributeExt::operator=(const DeviceAttribute::DeviceAttributeExt &rval)
+DeviceAttribute::DeviceAttributeExt &DeviceAttribute::DeviceAttributeExt::operator=(TANGO_UNUSED(const DeviceAttribute::DeviceAttributeExt &rval))
 {
 	return *this;
 }
 
-void DeviceAttribute::DeviceAttributeExt::deep_copy(const DeviceAttribute::DeviceAttributeExt &rval)
+void DeviceAttribute::DeviceAttributeExt::deep_copy(TANGO_UNUSED(const DeviceAttribute::DeviceAttributeExt &rval))
 {
 }
 

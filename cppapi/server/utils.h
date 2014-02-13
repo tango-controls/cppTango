@@ -796,7 +796,8 @@ public:
 	void set_interceptors(Interceptors *in) {inter = in;}
 	Interceptors *get_interceptors() {return inter;}
 
-	vector<string> &get_cmd_line_name_list() {return cmd_line_name_list;}
+	map <string,vector<string> > &get_cmd_line_name_list() {return cmd_line_name_list;}
+	void get_cmd_line_name_list(const string &,vector<string> &);
 	TangoMonitor &get_heartbeat_monitor() {return poll_mon;}
 	PollThCmd &get_heartbeat_shared_cmd() {return shared_data;}
 	bool poll_status() {return poll_on;}
@@ -891,6 +892,8 @@ public:
 	RootAttRegistry &get_root_att_reg() {return root_att_reg;}
 	void event_name_2_event_type(string &,EventType &);
 
+	void validate_cmd_line_classes();
+
 private:
 	TANGO_IMP static Util	*_instance;
 	static bool				_constructed;
@@ -963,6 +966,7 @@ private:
 	void display_help_message();
 	DeviceImpl *find_device_name_core(string &);
 	void check_orb_endpoint(int,char **);
+	void validate_sort(vector<string> &);
 
 	bool  							display_help;	// display help message flag
 	const vector<DeviceClass *>		*cl_list_ptr;	// Ptr to server device class list
@@ -977,7 +981,7 @@ private:
 // Ported from the extension class
 //
 
-	vector<string>				cmd_line_name_list;
+	map<string,vector<string> >	cmd_line_name_list;		// Command line map <Class name, device name list>
 
 	PollThread					*heartbeat_th;			// The heartbeat thread object
 	int							heartbeat_th_id;		// The heartbeat thread identifier

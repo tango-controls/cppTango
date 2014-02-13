@@ -191,6 +191,13 @@ void DServer::init_device()
 			get_event_misc_prop(tg);
 
 //
+// In case nodb is used, validate class name used in DS command line
+//
+
+			if (tg->_UseDb == false)
+				tg->validate_cmd_line_classes();
+
+//
 // A loop for each class
 //
 
@@ -307,17 +314,21 @@ void DServer::init_device()
 				else
 				{
 
+//
+// Retrieve devices name list from either the command line or from the device_name_factory method
+//
+
 					vector<string> &list = class_list[i]->get_nodb_name_list();
 					Tango::DevVarStringArray *dev_list_nodb = new Tango::DevVarStringArray();
-					if (i != class_list.size() - 1)
-						class_list[i]->device_name_factory(list);
-					else
+
+					tg->get_cmd_line_name_list(class_list[i]->get_name(),list);
+					if (i == class_list.size() - 1)
 					{
-						if (tg->get_cmd_line_name_list().size() == 0)
-							class_list[i]->device_name_factory(list);
-						else
-							list = tg->get_cmd_line_name_list();
+						tg->get_cmd_line_name_list(NoClass,list);
 					}
+
+					if (list.empty() == true)
+						class_list[i]->device_name_factory(list);
 
 					if (list.empty() == true)
 					{

@@ -1,11 +1,10 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+=============================================================================
+//+===================================================================================================================
 //
 // file :				Tango_utils.cpp
 //
-// description :		C++ source for all the utilities used by Tango device
-//						server and mainly for the Tango class
+// description :		C++ source for all the utilities used by Tango device server and mainly for the Tango class
 //
 // project :            TANGO
 //
@@ -18,22 +17,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-=============================================================================
+//-==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -89,18 +86,21 @@ bool Util::_service = false;
 omni_thread::key_t key;
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::init()
+// method :
+//		Util::init()
 //
-// description : 	static method to create/retrieve the Tango object.
-//			This method is the only one which enables a user to
-//			create the object
+// description :
+//		static method to create/retrieve the Tango object. This method is the only one which enables a user to
+//		create the object
 //
-// in :			- argc : The command line argument number
+// arguments :
+// 		in :
+//			- argc : The command line argument number
 //			- argv : The command line argument
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 Util *Util::init(int argc,char *argv[])
 {
@@ -122,14 +122,15 @@ Util *Util::init(HINSTANCE hi,int nCmd)
 }
 #endif
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::instance()
+// method :
+//		Util::instance()
 //
-// description : 	static method to retrieve the Tango object once it has
-//			been initialised
+// description :
+//		static method to retrieve the Tango object once it has been initialised
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 Util *Util::instance(bool exit)
 {
@@ -147,14 +148,13 @@ Util *Util::instance(bool exit)
 	return _instance;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::Util()
+// method :
+//		Util::Util()
 //
-// description : 	Constructor of the Tango class.
-//
-// in :			- argc : The command line argument number
-//			- argv : The command line argument
+// description :
+//		Constructor of the Tango class.
 //
 //-----------------------------------------------------------------------------
 
@@ -463,20 +463,21 @@ void Util::effective_job(int argc,char *argv[])
 }
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::create_CORBA_objects()
+// method :
+//		Util::create_CORBA_objects()
 //
-// description : 	Create some CORBA objects needed later-on
+// description :
+//		Create some CORBA objects needed later-on
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::create_CORBA_objects()
 {
 
 //
-// Install an omniORB interceptors to store client name in blackbox
-// and allocate a key for per thread specific storage
+// Install an omniORB interceptors to store client name in blackbox and allocate a key for per thread specific storage
 //
 
 	omni::omniInterceptors *intercep = omniORB::getInterceptors();
@@ -494,10 +495,8 @@ void Util::create_CORBA_objects()
 	PortableServer::POA_var root_poa = PortableServer::POA::_narrow(poaObj);
 
 //
-// If the database is not used, we must used the omniINSPOA poa
-// in both cases of database on file or nodb
-// remember that when you have database on file you have
-//  _UseDb == true and  _FileDb == true
+// If the database is not used, we must used the omniINSPOA poa in both cases of database on file or nodb
+// remember that when you have database on file you have _UseDb == true and  _FileDb == true
 //
 
 	PortableServer::POA_var nodb_poa;
@@ -508,8 +507,7 @@ void Util::create_CORBA_objects()
 	}
 
 //
-// Store POA
-// this is the same test but inverted
+// Store POA. This is the same test but inverted
 //
 
 	if ((_UseDb == true) && (_FileDb == false))
@@ -521,23 +519,25 @@ void Util::create_CORBA_objects()
 
 
 #ifdef _TG_WINDOWS_
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::Util()
+// method :
+//		Util::Util()
 //
-// description : 	Constructor of the Tango class when used in a non-console
-//                      Windows device server. On top of the UNIX way of building
-//                      a Util singleton, for Windows non-console mode, it is
-//                      necessary to :
-//                      - Build a UNIX like argc,argv from the command line
-//                      - Initialise the OB reactor
-//                      - Create a debug output window if verbose mode is requested
-//                        and change cout so that it prints into this window
+// description :
+//		Constructor of the Tango class when used in a non-console Windows device server. On top of the UNIX way of
+//		building a Util singleton, for Windows non-console mode, it is necessary to :
+//         - Build a UNIX like argc,argv from the command line
+//         - Initialise the ORB
+//         - Create a debug output window if verbose mode is requested and change cout so that it prints into this
+//			 window
 //
-// in :			- hInst : The application instance
+// arguments :
+// 		in :
+//			- hInst : The application instance
 //			- nCmdShow : The display window flag
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 Util::Util(HINSTANCE hInst,int nCmdShow):cl_list_ptr(NULL),mon("Windows startup"),ext(new UtilExt)
 #ifndef TANGO_HAS_LOG4TANGO
@@ -576,19 +576,21 @@ Util::Util(HINSTANCE hInst,int nCmdShow):cl_list_ptr(NULL),mon("Windows startup"
 }
 #endif
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::ckeck_args()
+// method :
+//		Util::ckeck_args()
 //
-// description : 	Check the command line arguments. The first one is
-//			mandatory and is the server personal name. A -v option
-//			is authorized with an optional argument. The other
-//			option should be ORBacus option
+// description :
+//		Check the command line arguments. The first one is mandatory and is the server personal name. A -v option
+//		is authorized with an optional argument. The other option should be ORBacus option
 //
-// in :			- argc : The command line argument number
+// arguments :
+// 		in :
+//			- argc : The command line argument number
 //			- argv : The command line argument
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::check_args(int argc,char *argv[])
 {
@@ -787,40 +789,22 @@ void Util::check_args(int argc,char *argv[])
 							string::size_type start = 0;
 							string str;
 							string::size_type pos;
-							vector<string> &list = get_cmd_line_name_list();
+//vector<string> &list = get_cmd_line_name_list();
+							vector<string>	dev_list;
 
 							while ((pos = dlist.find(',',start)) != string::npos)
 							{
 								str = dlist.substr(start,pos - start);
 								start = pos + 1;
-								list.push_back(str);
+								dev_list.push_back(str);
 							}
 							if (start != dlist.size())
 							{
 								str = dlist.substr(start);
-								list.push_back(str);
+								dev_list.push_back(str);
 							}
 
-//
-// Check that the same device name is not used twice
-//
-
-							unsigned long i,j;
-							for (i = 0;i < list.size();i++)
-							{
-								for (j = 0;j < list.size();j++)
-								{
-									if (i == j)
-										continue;
-									else
-									{
-										if (list[i] == list[j])
-										{
-        										print_err_message("Each device must have different name",Tango::INFO);
-										}
-									}
-								}
-							}
+							validate_sort(dev_list);
 						}
 					}
 					break;
@@ -867,19 +851,131 @@ void Util::check_args(int argc,char *argv[])
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::display_help_message()
+// method :
+//		Util::validate_sort
 //
-// description : 	Check the command line arguments. The first one is
-//			mandatory and is the server personal name. A -v option
-//			is authorized with an optional argument. The other
-//			option should be ORBacus option
+// description :
+//		Validate and sort the list of devices passed by the user to the DS in the command line
 //
-// in :			- argc : The command line argument number
-//			- argv : The command line argument
+// arguments :
+//		in :
+//			- dev_list : Vector with device name list
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
+
+void Util::validate_sort(vector<string> &dev_list)
+{
+
+	unsigned long i,j;
+	vector<string> dev_no_class;
+
+//
+//  First, create a vector with device name in lower case letters without class name
+//
+
+	for (i = 0;i < dev_list.size();i++)
+	{
+		string tmp(dev_list[i]);
+		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
+
+		string::size_type pos = tmp.find("::");
+		if (pos == string::npos)
+		{
+			dev_no_class.push_back(tmp);
+		}
+		else
+		{
+			string tmp_no_class = tmp.substr(pos + 2);
+			dev_no_class.push_back(tmp_no_class);
+		}
+	}
+
+//
+// Check that the same device name is not used twice and check that their syntax is correct (2 / characters)
+//
+
+	for (i = 0;i < dev_no_class.size();i++)
+	{
+		int nb_char = count(dev_no_class[i].begin(),dev_no_class[i].end(),'/');
+		if (nb_char != 2)
+		{
+			stringstream ss;
+			ss << "Device name " << dev_list[i] << " does not have the correct syntax (domain/family/member or ClassName::domain/family/member)";
+			print_err_message(ss.str());
+		}
+		for (j = 0;j < dev_no_class.size();j++)
+		{
+			if (i == j)
+				continue;
+			else
+			{
+				if (dev_no_class[i] == dev_no_class[j])
+				{
+					print_err_message("Each device must have different name",Tango::INFO);
+				}
+			}
+		}
+	}
+
+//
+// Sort this device name list and store them in a map according to the class name. Command line device name
+// syntax is "ClassName::device_name" eg: MyClass::my/device/name
+//
+
+	map<string,vector<string> > &the_map = get_cmd_line_name_list();
+	string::size_type pos;
+
+	for (i = 0;i < dev_list.size();i++)
+	{
+		pos = dev_list[i].find("::");
+		if (pos == string::npos)
+		{
+			map<string,vector<string> >::iterator ite = the_map.find(NoClass);
+			if (ite == the_map.end())
+			{
+				vector<string> v_s;
+				v_s.push_back(dev_list[i]);
+				the_map.insert(pair<string,vector<string> >(NoClass,v_s));
+			}
+			else
+			{
+				ite->second.push_back(dev_list[i]);
+			}
+		}
+		else
+		{
+			string cl_name = dev_list[i].substr(0,pos);
+			transform(cl_name.begin(),cl_name.end(),cl_name.begin(),::tolower);
+
+			map<string,vector<string> >::iterator ite = the_map.find(cl_name);
+			if (ite == the_map.end())
+			{
+				vector<string> v_s;
+				string d_name = dev_list[i].substr(pos + 2);
+				v_s.push_back(d_name);
+				the_map.insert(pair<string,vector<string> >(cl_name,v_s));
+			}
+			else
+			{
+				string d_name = dev_list[i].substr(pos + 2);
+				ite->second.push_back(d_name);
+			}
+		}
+	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::display_help_message()
+//
+// description :
+//		Display Tango device server process command line option and the list of instances defined for the
+//		device server (retrieved from DB)
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::display_help_message()
 {
@@ -936,15 +1032,19 @@ void Util::display_help_message()
 
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::print_usage()
+// method :
+//		Util::print_usage()
 //
-// description : 	Print device server command line syntax
+// description :
+//		Print device server command line syntax
 //
-// in :			- serv_name : The server name
+// arguments :
+// 		in :
+//			- serv_name : The server name
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::print_usage(char *serv_name)
 {
@@ -956,16 +1056,16 @@ void Util::print_usage(char *serv_name)
 	print_err_message(o.str(),Tango::INFO);
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::connect_db()
+// method :
+//		Util::connect_db()
 //
-// description : 	This method builds a connection to the Tango database
-//			servant. It uses the db_host and db_port object
-//			variables. The Tango database server implements its
-//			CORBA object as named servant.
+// description :
+//		This method builds a connection to the Tango database servant. It uses the db_host and db_port object
+//		variables. The Tango database server implements its CORBA object as named servant.
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Util::connect_db()
 {
@@ -1142,17 +1242,18 @@ void Util::reset_filedatabase()
 	db = new Database(database_file_name);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::misc_init()
+// method :
+//		Util::misc_init()
 //
-// description : 	This method initialises miscellaneous variable which
-//			are needed later in the device server startup
-//			sequence. These variables are :
+// description :
+//		This method initialises miscellaneous variable which are needed later in the device server startup sequence.
+//		These variables are :
 //				The process ID
 //				The Tango version
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::misc_init()
 {
@@ -1212,15 +1313,15 @@ void Util::misc_init()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::init_host_name()
+// method :
+//		Util::init_host_name()
 //
-// description : 	This method initialises the process hst name which
-//			is needed later in the device server startup
-//			sequence.
+// description :
+//		This method initialises the process hst name which is needed later in the device server startup sequence.
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::init_host_name()
 {
@@ -1302,13 +1403,15 @@ void Util::init_host_name()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::create_notifd_event_supplier()
+// method :
+//		Util::create_notifd_event_supplier()
 //
-// description : 	This method create the notifd event_supplier if possible
+// description :
+//		This method create the notifd event_supplier if possible
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::create_notifd_event_supplier()
 {
@@ -1332,13 +1435,15 @@ void Util::create_notifd_event_supplier()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::create_zmq_event_supplier()
+// method :
+//		Util::create_zmq_event_supplier()
 //
-// description : 	This method create the zmq event_supplier if possible
+// description :
+//		This method create the zmq event_supplier if possible
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::create_zmq_event_supplier()
 {
@@ -1355,23 +1460,21 @@ void Util::create_zmq_event_supplier()
 }
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::~Util()
+// method :
+//		Util::~Util()
 //
-// description : 	Tango singleton object destructor.
-//			This destructor shutdown everything before the process
-//			dies. This means
-//  				- Send kill command to the polling thread
-//    				- Join with this polling thread
-//				- Unregister server in database
-//				- Delete devices (except the admin one)
-//				- Shutdown the ORB
-//				- Cleanup Logging
+// description :
+//		Tango singleton object destructor. This destructor shutdown everything before the process dies. This means
+//  		- Send kill command to the polling thread
+//    		- Join with this polling thread
+//			- Unregister server in database
+//			- Delete devices (except the admin one)
+//			- Shutdown the ORB
+//			- Cleanup Logging
 //
-//
-//
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 Util::~Util()
 {
@@ -1403,14 +1506,15 @@ Util::~Util()
 }
 
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::server_already_running()
+// method :
+//		Util::server_already_running()
 //
-// description : 	Check if the same device server is not already running
-//			somewhere else and refuse to start in this case
+// description :
+//		Check if the same device server is not already running somewhere else and refuse to start in this case
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::server_already_running()
 {
@@ -1525,8 +1629,7 @@ void Util::server_already_running()
 	{
 
 //
-// It is necessary to catch this exception because it is thrown by the
-// print_err_message method under windows
+// It is necessary to catch this exception because it is thrown by the print_err_message method under windows
 //
 
 		throw;
@@ -1549,20 +1652,21 @@ void Util::server_already_running()
 
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::server_init()
+// method :
+//		Util::server_init()
 //
-// description : 	To initialise all classes in the device server process
+// description :
+//		To initialise all classes in the device server process
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::server_init(TANGO_UNUSED(bool with_window))
 {
 //
-// Even if we are not in a Python DS, we have to create the per-thread
-// PyData object. For Python DS, this is done in the Python_init method
-// defined in the binding
+// Even if we are not in a Python DS, we have to create the per-thread PyData object.
+// For Python DS, this is done in the Python_init method defined in the binding
 //
 
 #ifdef _TG_WINDOWS_
@@ -1637,10 +1741,8 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 		DServerClass::init();
 
 //
-// Configure polling from the polling properties
-// In case of python DS, we need to release the Python GIL
-// because the polling_configure method will send cmd to the
-// pollinh thread which will try to get the Python GIL
+// Configure polling from the polling properties. In case of python DS, we need to release the Python GIL
+// because the polling_configure method will send cmd to the polling thread which will try to get the Python GIL
 //
 
 		int th_id = th->id();
@@ -1678,13 +1780,15 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 #endif /* _TG_WINDOWS_ */
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		Util::server_run()
+// method :
+//		Util::server_run()
 //
-// description : 	To start the CORBA event loop
+// description :
+//		To start the CORBA event loop
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::server_run()
 {
@@ -1828,13 +1932,15 @@ void Util::server_run()
 #endif
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		Util::server_cleanup()
+// method :
+//		Util::server_cleanup()
 //
-// description : 	To relinquish computer resource before process exit
+// description :
+//		To relinquish computer resource before process exit
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::server_cleanup()
 {
@@ -1864,16 +1970,22 @@ void Util::server_cleanup()
 		omni_thread::release_dummy();
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_device_list_by_class()
+// method :
+//		Util::get_device_list_by_class()
 //
-// description : 	To return a reference to the vector of device for a
-//			specific class
+// description :
+//		To return a reference to the vector of device for a specific class
 //
-// in : 		- class_name : The class name
+// arguments :
+// 		in :
+//			- class_name : The class name
 //
-//-----------------------------------------------------------------------------
+// returns :
+//		Reference to the vector with device pointers
+//
+//------------------------------------------------------------------------------------------------------------------
 
 vector<DeviceImpl *> &Util::get_device_list_by_class(const string &class_name)
 {
@@ -1939,16 +2051,22 @@ vector<DeviceImpl *> &Util::get_device_list_by_class(const char *class_name)
 	return get_device_list_by_class(class_str);
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_device_by_name()
+// method :
+//		Util::get_device_by_name()
 //
-// description : 	To return a reference to the device object from its
-//			name
+// description :
+//		To return a reference to the device object from its name
 //
-// in : 		- dev_name : The device name
+// arguments :
+// 		in :
+//			- dev_name : The device name
 //
-//-----------------------------------------------------------------------------
+// returns :
+//		Pointer to the device object
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 DeviceImpl *Util::get_device_by_name(const string &dev_name)
 {
@@ -2095,14 +2213,15 @@ DeviceImpl *Util::get_device_by_name(const char *dev_name)
 	return get_device_by_name(name_str);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_dserver_device()
+// method :
+//		Util::get_dserver_device()
 //
-// description : 	To return a pointer to the dserver device automatically
-//			attached to each device server process
+// description :
+//		To return a pointer to the dserver device automatically attached to each device server process
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 DServer *Util::get_dserver_device()
 {
@@ -2110,19 +2229,23 @@ DServer *Util::get_dserver_device()
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : Util::get_device_list
+// method :
+//		Util::get_device_list
 //
-// description :  helper method to get device list from a wild card
-//		  If no device is found, does not throw exception, just return
-//		  an empty vector
+// description :
+//		Helper method to get device list from a wild card. If no device is found, does not throw exception, just return
+//		an empty vector
 //
-// in : The wildcard (e.g. "*", "/tango/tangotest/*", ...)
+// arguments :
+// 		in :
+//			- pattern: The wildcard (e.g. "*", "/tango/tangotest/*", ...)
 //
-// out : The list of devices which name matches the wildcard
+// returns :
+//		The list of devices which name matches the wildcard
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 {
@@ -2252,13 +2375,15 @@ std::vector<DeviceImpl *> Util::get_device_list (const std::string& pattern)
 
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::unregister_server()
+// method :
+//		Util::unregister_server()
 //
-// description : 	Unregister the server from the database
+// description :
+//		Unregister the server from the database
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::unregister_server()
 {
@@ -2290,19 +2415,21 @@ void Util::unregister_server()
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::print_err_message()
+// method :
+//		Util::print_err_message()
 //
-// description : 	Print error message in the classical console or with
-//                      a message box
-//                      For Unix like OS, this method exits. if it is called
-//                      under NT in a graphical environment, it throws
-//                      exception
+// description :
+//		Print error message in the classical console or with a message box For Linux OS, this method exits.
+//		If it is called under Windows in a graphical environment, it throws exception
 //
-// in :			- err_mess : The error message
+// argument :
+// 		in :
+//			- err_mess : The error message
+//			- type : The error type
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxType type))
 {
@@ -2335,14 +2462,15 @@ void Util::print_err_message(const char *err_mess,TANGO_UNUSED(Tango::MessBoxTyp
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::get_tango_lib_vers()
+// method :
+//		Util::get_tango_lib_vers()
 //
-// description : 	Return a number set to the Tango release number
-//			coded with 3 digits (550, 551,552,600)
+// description :
+//		Return a number set to the Tango release number coded with 3 digits (550, 551,552,600)
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 long Util::get_tango_lib_release()
 {
@@ -2350,13 +2478,15 @@ long Util::get_tango_lib_release()
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::clean_dyn_attr_prop()
+// method :
+//		Util::clean_dyn_attr_prop()
 //
-// description : 	Clean in database the dynamic attribute property(ies)
+// description :
+//		Clean in database the dynamic attribute property(ies)
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::clean_dyn_attr_prop()
 {
@@ -2374,15 +2504,19 @@ void Util::clean_dyn_attr_prop()
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::delete_restarting_device()
+// method :
+//		Util::delete_restarting_device()
 //
-// description : 	Delete a device from the vector of restarting device
+// description :
+//		Delete a device from the vector of restarting device
 //
-// args: - d_name : - The device name
+// arguments:
+//		in :
+//			- d_name : - The device name
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::delete_restarting_device(string &d_name)
 {
@@ -2391,17 +2525,83 @@ void Util::delete_restarting_device(string &d_name)
     restarting_devices.erase(pos,restarting_devices.end());
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::get_cmd_line_name_list()
+//
+// description :
+//		Get command line device name list for a specified class
+//
+// arguments:
+//		in :
+//			- cl_name : The class name
+//		out :
+//			- name_list : Vector where device name must be stored
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Util::get_cmd_line_name_list(const string &cl_name,vector<string> &name_list)
+{
+	string  local_cl_name(cl_name);
+	transform(local_cl_name.begin(),local_cl_name.end(),local_cl_name.begin(),::tolower);
+
+	map<string,vector<string> >::iterator pos = cmd_line_name_list.find(local_cl_name);
+	if (pos != cmd_line_name_list.end())
+		name_list.insert(name_list.end(),pos->second.begin(),pos->second.end());
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::validate_cmd_line_classes()
+//
+// description :
+//		Validate the class name used in DS command line argument
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Util::validate_cmd_line_classes()
+{
+	map<string,vector<string> >::iterator pos;
+
+	for(pos = cmd_line_name_list.begin();pos != cmd_line_name_list.end();++pos)
+	{
+		if (pos->first == NoClass)
+			continue;
+
+		bool found = false;
+		for (size_t loop = 0;loop < cl_list.size();loop++)
+		{
+			string cl_name = cl_list[loop]->get_name();
+			transform(cl_name.begin(),cl_name.end(),cl_name.begin(),::tolower);
+
+			if (cl_name == pos->first)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		if (found == false)
+		{
+			stringstream ss;
+			ss << "Class name " << pos->first << " used on command line device declaration but this class is not embedded in DS process";
+			Except::throw_exception(API_WrongCmdLineArgs,ss.str(),"Util::validate_cmd_line_classes");
+		}
+	}
+}
+
 #ifdef _TG_WINDOWS_
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::build_argc_argv()
+// method :
+//		Util::build_argc_argv()
 //
-// description : 	Build argc, argv UNIX like parameters from the Windows
-//                      command line
+// description :
+//		Build argc, argv UNIX like parameters from the Windows command line
 //
-// in :
-//
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Util::build_argc_argv()
 {
@@ -2416,8 +2616,8 @@ void Util::build_argc_argv()
 	char *tmp;
 
 //
-// First, count how many args we have. If the user type two spaces between args,
-// we will have too many pointers allocates but it is not a problem
+// First, count how many args we have. If the user type two spaces between args, we will have too many pointers
+// allocates but it is not a problem
 //
 
     int cmd_line_size = strlen(cmd_line);
@@ -2505,18 +2705,16 @@ void Util::install_cons_handler()
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Util::ORBWin32Loop::run()
+// method :
+//		Util::ORBWin32Loop::run()
 //
-// description : 	Start the ORB loop. This method is in a inner class
-//			because it is started using the a separate thread.
-//			One thread is for the Windows event loop and the
-//			second thread is for the ORB loop.
+// description :
+//		Start the ORB loop. This method is in a inner class because it is started using the a separate thread.
+//		One thread is for the Windows event loop and the second thread is for the ORB loop.
 //
-// in :
-//
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void *Util::ORBWin32Loop::run_undetached(void *ptr)
 {
