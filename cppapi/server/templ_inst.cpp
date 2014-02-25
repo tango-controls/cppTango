@@ -187,6 +187,10 @@ template void Attribute::check_hard_coded_properties(const AttributeConfig_3 &);
 template void Attribute::set_hard_coded_properties(const AttributeConfig &);
 template void Attribute::set_hard_coded_properties(const AttributeConfig_3 &);
 
+template void Attribute::set_upd_properties(const AttributeConfig &,string &);
+template void Attribute::set_upd_properties(const AttributeConfig_3 &,string &);
+template void Attribute::set_upd_properties(const AttributeConfig_5 &,string &);
+
 //+----------------------------------------------------------------------------
 //
 // Instanciate Util::fill_XXX_polling buffers methods and associate template classes

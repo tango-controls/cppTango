@@ -66,8 +66,7 @@ namespace Tango
 //
 //------------------------------------------------------------------------------------------------------------------
 
-AttrProperty::AttrProperty(string &name,string &value):attr_name(name),
-						       attr_value(value)
+AttrProperty::AttrProperty(string &name,string &value):attr_name(name),attr_value(value)
 {
 	attr_lg = 0;
 
@@ -82,14 +81,10 @@ AttrProperty::AttrProperty(string &name,string &value):attr_name(name),
 //
 
 	if ((attr_name == "data_type") || (attr_name == "data_format"))
-	{
-		transform(attr_value.begin(),attr_value.end(),
-			  attr_value.begin(),::tolower);
-	}
+		transform(attr_value.begin(),attr_value.end(),attr_value.begin(),::tolower);
 }
 
-AttrProperty::AttrProperty(const char *name,const char *value):attr_name(name),
-							       attr_value(value)
+AttrProperty::AttrProperty(const char *name,const char *value):attr_name(name),attr_value(value)
 {
 	attr_lg = 0;
 
@@ -104,10 +99,7 @@ AttrProperty::AttrProperty(const char *name,const char *value):attr_name(name),
 //
 
 	if ((attr_name == "data_type") || (attr_name == "data_format"))
-	{
-		transform(attr_value.begin(),attr_value.end(),
-			  attr_value.begin(),::tolower);
-	}
+		transform(attr_value.begin(),attr_value.end(),attr_value.begin(),::tolower);
 }
 
 AttrProperty::AttrProperty(const char *name,long value):attr_name(name),attr_lg(value)

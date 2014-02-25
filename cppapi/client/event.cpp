@@ -1581,7 +1581,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     EventSubscribeStruct new_ess;
 
     new_event_callback.device = device;
-    new_event_callback.attr_name = attribute;
+    new_event_callback.attr_name = att_name_lower;
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     if (inter_event == true)

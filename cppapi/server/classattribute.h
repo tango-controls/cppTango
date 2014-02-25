@@ -85,9 +85,9 @@ public:
 #endif
 
 private:
-	string		attr_name;
-	string		attr_value;
-	long		attr_lg;
+	string			attr_name;
+	string			attr_value;
+	long			attr_lg;
 };
 
 

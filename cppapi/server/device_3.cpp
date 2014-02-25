@@ -2333,12 +2333,12 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 			if (all_attr == true)
 			{
 				Attribute &attr = dev_attr->get_attr_by_ind(i);
-				attr.get_properties_3((*back)[i]);
+				attr.get_properties((*back)[i]);
 			}
 			else
 			{
 				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
-				attr.get_properties_3((*back)[i]);
+				attr.get_properties((*back)[i]);
 			}
 		}
 		catch (Tango::DevFailed &)

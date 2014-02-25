@@ -194,6 +194,13 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_
 //
 
 	init_event_prop(prop_list,dev_name,tmp_attr);
+
+//
+// Enum init (in case of)
+//
+
+	if (data_type == DEV_ENUM)
+		init_enum_prop(prop_list);
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -1496,18 +1503,110 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::add_startup_exception
+// method :
+//		Attribute::init_enum_prop
 //
-// description : 	Stores an exception raised during the device startup
-//			sequence in a map
+// description :
+//		Get the enumeration labels from the property vector
 //
-// in :			prop_name : The property name for which the exception was
-//			raised
-//			except : The raised exceptoin
+// argument :
+// 		in :
+//			- prop_list : The property vector
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
+
+void Attribute::init_enum_prop(vector<AttrProperty> &prop_list)
+{
+	try
+	{
+		string tmp_enum_label = get_attr_value(prop_list,"enum_labels");
+		build_check_enum_labels(tmp_enum_label);
+	}
+	catch(DevFailed &e)
+	{
+		add_startup_exception("enum_labels",e);
+	}
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::build_check_enum_labels
+//
+// description :
+//		Create vector of enum labels and  check that the same label is not used several times
+//
+// argument :
+// 		in :
+//			- labs : The enum labels (labels1,label2,label3,...)
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Attribute::build_check_enum_labels(string &labs)
+{
+	string::size_type pos = 0;
+	string::size_type start = 0;
+	bool exit = false;
+
+//
+// Build vector with enum labels
+//
+
+	while(exit == false)
+	{
+		pos = labs.find(',',start);
+		if (pos == string::npos)
+		{
+			string tmp = labs.substr(start);
+			enum_labels.push_back(tmp);
+			exit = true;
+		}
+		else
+		{
+			string tmp = labs.substr(start,pos - start);
+			enum_labels.push_back(tmp);
+			start = pos + 1;
+		}
+	}
+
+for(const auto &elem:enum_labels)
+	cout << "Enum labels = " << elem << endl;
+
+//
+// Check that all labels are different
+//
+
+	vector<string> v_s = enum_labels;
+	sort(v_s.begin(),v_s.end());
+	for (size_t loop = 1;loop < v_s.size();loop++)
+	{
+		if (v_s[loop - 1] == v_s[loop])
+		{
+			stringstream ss;
+			ss << "Enumeration for attribute " << name << " has two similar labels (";
+			ss << v_s[loop - 1] << ", " << v_s[loop] << ")";
+
+			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::build_check_enum_labels");
+		}
+	}
+}
+
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::add_startup_exception
+//
+// description :
+//		Stores an exception raised during the device startup sequence in a map
+//
+// argument :
+// 		in :
+//			- prop_name : The property name for which the exception was raised
+//			- except : The raised exception
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attribute::add_startup_exception(string prop_name,const DevFailed &except)
 {
@@ -1515,17 +1614,20 @@ void Attribute::add_startup_exception(string prop_name,const DevFailed &except)
 	check_startup_exceptions = true;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::delete_startup_exception
+// method :
+//		Attribute::delete_startup_exception
 //
-// description : 	Deletes the exception related to the property name from
-//			startup_exceptoins map
+// description :
+//		Deletes the exception related to the property name from startup_exceptions map
 //
-// in :			prop_name : The property name as a key for which the
-//			exception is to be deleted from startup_exceptions map
+// argument :
+// 		in :
+//			- prop_name : The property name as a key for which the
+//			- exception is to be deleted from startup_exceptions map
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attribute::delete_startup_exception(string prop_name)
 {
@@ -1542,19 +1644,22 @@ void Attribute::delete_startup_exception(string prop_name)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::throw_err_format
+// method :
+//		Attribute::throw_err_format
 //
-// description : 	Throw a Tango DevFailed exception when an error format
-//			is detected in the string which should be converted
-//			to a number
+// description :
+//		Throw a Tango DevFailed exception when an error format is detected in the string which should be converted
+//		to a number
 //
-// in :			prop_name : The property name
-//			dev_name : The device name
-//			origin : The origin of the exception
+// argument :
+// 		in :
+//			- prop_name : The property name
+//			- dev_name : The device name
+//			- origin : The origin of the exception
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::throw_err_format(const char *prop_name,const string &dev_name,const char *origin)
 {
@@ -1735,17 +1840,18 @@ bool Attribute::is_polled(DeviceImpl *the_dev)
     return is_polled();
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::is_writ_associated
+// method :
+//		Attribute::is_writ_associated
 //
-// description : 	Check if the attribute has an associated writable
-//			attribute
+// description :
+//		Check if the attribute has an associated writable attribute
 //
-// This method returns a boolean set to true if the atribute has an associatied
-// writable attribute
+// returns:
+//		This method returns a boolean set to true if the atribute has an associatied writable attribute
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 bool Attribute::is_writ_associated()
 {
@@ -1755,17 +1861,20 @@ bool Attribute::is_writ_associated()
 		return false;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::get_attr_value
+// method :
+//		Attribute::get_attr_value
 //
-// description : 	Retrieve a property value as a string from the vector
-//			of properties
+// description :
+//		Retrieve a property value as a string from the vector of properties
 //
-// in :			prop_list : The property vector
-//			prop_name : the property name
+// arguments :
+// 		in :
+//			- prop_list : The property vector
+//			- prop_name : the property name
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 string &Attribute::get_attr_value(vector <AttrProperty> &prop_list,const char *prop_name)
@@ -1780,27 +1889,28 @@ string &Attribute::get_attr_value(vector <AttrProperty> &prop_list,const char *p
 	if (pos == prop_list.end())
 	{
 		TangoSys_OMemStream o;
-
 		o << "Property " << prop_name << " is missing for attribute " << name << ends;
-		Except::throw_exception((const char *)API_AttrOptProp,
-				      o.str(),
-				      (const char *)"Attribute::get_attr_value()");
+
+		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
 	}
 
 	return pos->get_value();
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::get_lg_attr_value
+// method :
+//		Attribute::get_lg_attr_value
 //
-// description : 	Retrieve a property value as a long from the vector
-//			of properties
+// description :
+//		Retrieve a property value as a long from the vector of properties
 //
-// in :			prop_list : The property vector
-//			prop_name : the property name
+// argument :
+// 		in :
+//			- prop_list : The property vector
+//			- prop_name : the property name
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 
 long Attribute::get_lg_attr_value(vector <AttrProperty> &prop_list,const char *prop_name)
@@ -1815,24 +1925,24 @@ long Attribute::get_lg_attr_value(vector <AttrProperty> &prop_list,const char *p
 	if (pos == prop_list.end())
 	{
 		TangoSys_OMemStream o;
-
 		o << "Property " << prop_name << " is missing for attribute " << name << ends;
-		Except::throw_exception((const char *)API_AttrOptProp,
-				      o.str(),
-				      (const char *)"Attribute::get_attr_value()");
+
+		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
 	}
 
 	pos->convert();
 	return pos->get_lg_value();
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::set_data_size
+// method :
+//		Attribute::set_data_size
 //
-// description : 	Compute the attribute amount of data
+// description :
+//		Compute the attribute amount of data
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_data_size()
 {
@@ -1856,13 +1966,15 @@ void Attribute::set_data_size()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::set_time
+// method :
+//		Attribute::set_time
 //
-// description : 	Set the date if the date flag is true
+// description :
+//		Set the date if the date flag is true
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::set_time()
 {

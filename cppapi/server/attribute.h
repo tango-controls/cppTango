@@ -1865,24 +1865,24 @@ protected:
 /**
  * A flag set to true if the attribute value has been updated
  */
-	bool 			value_flag;
+	bool 					value_flag;
 /**
  * The date when attribute was read
  */
-	Tango::TimeVal		when;
+	Tango::TimeVal			when;
 /**
  * Flag set to true if the date must be set
  */
-	bool			date;
+	bool					date;
 /**
  * The attribute quality factor
  */
-	Tango::AttrQuality	quality;
+	Tango::AttrQuality		quality;
 
 /**
  * The attribute name
  */
-	string 			name;
+	string 					name;
 /**
  * The attribute writable flag
  */
@@ -1890,11 +1890,11 @@ protected:
 /**
  * The attribute data type.
  *
- * Eight types are suported. They are Tango::DevShort, Tango::DevLong,
- * Tango::DevDouble, Tango::DevString, Tango::DevUShort, Tango::DevUChar,
- * Tango::DevFloat and Tango::DevBoolean
+ * Forteen types are suported. They are Tango::DevShort, Tango::DevUShort, Tango::DevLong, Tango::DevULong,
+ * Tango::DevLong64, Tango::DevULong64, Tango::DevDouble, Tango::DevString, , Tango::DevUChar,
+ * Tango::DevFloat, Tango::DevBoolean, Tango::DevState, Tango::DevEncoded and Tango::DevEnum
  */
-	long			data_type;
+	long					data_type;
 /**
  * The attribute data format.
  *
@@ -1906,79 +1906,79 @@ protected:
  *
  * It is needed for SPECTRUM or IMAGE data format
  */
-	long			max_x;
+	long					max_x;
 /**
  * The attribute maximum y dimension.
  *
  * It is necessary only for IMAGE data format
  */
-	long			max_y;
+	long					max_y;
 /**
  * The attribute label
  */
-	string			label;
+	string					label;
 /**
  * The attribute description
  */
-	string			description;
+	string					description;
 /**
  * The attribute unit
  */
-	string			unit;
+	string					unit;
 /**
  * The attribute standard unit
  */
-	string			standard_unit;
+	string					standard_unit;
 /**
  * The attribute display unit
  */
-	string 			display_unit;
+	string 					display_unit;
 /**
  * The attribute format.
  *
  * This string specifies how an attribute value must be printed
  */
-	string			format;
+	string					format;
 /**
  * The name of the associated writable attribute
  */
-	string			writable_attr_name;
+	string					writable_attr_name;
 /**
  * The attribute minimum alarm level
  */
-	string			min_alarm_str;
+	string					min_alarm_str;
 /**
  * The attribute maximun alarm level
  */
-	string			max_alarm_str;
+	string					max_alarm_str;
 /**
  * The attribute minimum value
  */
-	string			min_value_str;
+	string					min_value_str;
 /**
  * The attribute maximum value
  */
-	string			max_value_str;
+	string					max_value_str;
 /**
  * The attribute minimun  warning
  */
-	string			min_warning_str;
+	string					min_warning_str;
 /**
  * The attribute maximum warning
  */
-	string			max_warning_str;
+	string					max_warning_str;
 /**
  * The attribute delta value RDS alarm
  */
-	string			delta_val_str;
+	string					delta_val_str;
 /**
  * The attribute delta time RDS alarm
  */
-	string			delta_t_str;
+	string					delta_t_str;
 /**
  * Index in the main attribute vector of the associated writable attribute (if any)
  */
-	long			assoc_ind;
+	long					assoc_ind;
 /**
  * The attribute minimum alarm in binary format
  */
@@ -2006,19 +2006,19 @@ protected:
 /**
  * The attribute value
  */
-	Tango::Attr_Value	value;
+	Tango::Attr_Value		value;
 /**
  * The attribute data size
  */
-	long			data_size;
+	long					data_size;
 /**
  * Flag set to true if a minimum value is defined
  */
-	bool			check_min_value;
+	bool					check_min_value;
 /**
  * Flag set to true if a maximum alarm is defined
  */
-	bool			check_max_value;
+	bool					check_max_value;
 /**
  * Authorized delta between the last written value and the
  * actual read. Used if the attribute has an alarm on
@@ -2030,27 +2030,53 @@ protected:
  * last written value if the attribute has an alarm on
  * Read Different Than Set (RDS)
  */
- 	long 			delta_t;
+ 	long 					delta_t;
+/**
+ * Enumeration labels when the attribute data type is DevEnum
+ */
+ 	vector<string> 			enum_labels;
 //@}
 
 public:
 /// @privatesection
+
+	struct CheckOneStrProp
+	{
+		DbData					*db_d;
+		long					*prop_to_update;
+		DbData					*db_del;
+		long					*prop_to_delete;
+		vector<AttrProperty>	*def_user_prop;
+		vector<AttrProperty> 	*def_class_prop;
+	};
 
 //
 // methods not usable for the external world (outside the lib)
 //
 
     void get_properties(Tango::AttributeConfig &);
-	void get_properties_2(Tango::AttributeConfig_2 &);
-	void get_properties_3(Tango::AttributeConfig_3 &);
-	void get_properties_5(Tango::AttributeConfig_5 &);
+	void get_properties(Tango::AttributeConfig_2 &);
+	void get_properties(Tango::AttributeConfig_3 &);
+	void get_properties(Tango::AttributeConfig_5 &);
 
-	void get_prop(Tango::AttributeConfig_3 &_a) {get_properties_3(_a);}
-	void get_prop(Tango::AttributeConfig_5 &_a) {get_properties_5(_a);}
+	void get_prop(Tango::AttributeConfig_3 &_a) {get_properties(_a);}
+	void get_prop(Tango::AttributeConfig_5 &_a) {get_properties(_a);}
 
-	void set_properties(const Tango::AttributeConfig_3 &);
 	void set_properties(const Tango::AttributeConfig &,Tango::DeviceImpl *);
+	void set_properties(const Tango::AttributeConfig &,string &);
+	void set_properties(const Tango::AttributeConfig_3 &);
 	void set_properties(const Tango::AttributeConfig_3 &,Tango::DeviceImpl *);
+	void set_properties(const Tango::AttributeConfig_3 &,string &);
+	void set_properties(const Tango::AttributeConfig_5 &,string &);
+
+	void upd_database(const Tango::AttributeConfig &,string &);
+	void upd_database(const Tango::AttributeConfig_3 &,string &,struct Tango::Attribute::CheckOneStrProp *db_inf=Tango_nullptr);
+	void upd_database(const Tango::AttributeConfig_5 &,string &,struct Tango::Attribute::CheckOneStrProp *db_inf=Tango_nullptr);
+
+	template <typename T>
+	void set_upd_properties(const T &_c) {set_upd_properties(_c,d_name);}
+	template <typename T>
+	void set_upd_properties(const T &,string &);
 
 	virtual void set_rvalue() {};
 	void delete_seq();
@@ -2103,15 +2129,6 @@ public:
 
 	omni_mutex *get_attr_mutex() {return &(ext->attr_mutex);}
 	omni_mutex *get_user_attr_mutex() {return ext->user_attr_mutex;}
-
-	void set_properties(const Tango::AttributeConfig &,string &);
-	void set_properties(const Tango::AttributeConfig_3 &,string &);
-	void upd_database(const Tango::AttributeConfig &,string &);
-	void upd_database(const Tango::AttributeConfig_3 &,string &);
-	void set_upd_properties(const Tango::AttributeConfig_3 &_c) {set_upd_properties(_c,d_name);}
-	void set_upd_properties(const Tango::AttributeConfig_3 &,string &);
-	void set_upd_properties(const Tango::AttributeConfig_5 &_c) {set_upd_properties(_c,d_name);}
-	void set_upd_properties(const Tango::AttributeConfig_5 &,string &);
 
 	bool change_event_subscribed();
 	bool periodic_event_subscribed();
@@ -2223,10 +2240,11 @@ protected:
 
 	AttributeExt		*ext;
 
-	virtual void init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name);
-	virtual void init_event_prop(vector<AttrProperty> &prop_list,const string &dev_name,Attr &att);
-	string &get_attr_value(vector<AttrProperty> &prop_list,const char *name);
-	long get_lg_attr_value(vector<AttrProperty> &prop_list,const char *name);
+	virtual void init_opt_prop(vector<AttrProperty> &,string &);
+	virtual void init_event_prop(vector<AttrProperty> &,const string &,Attr &);
+	void init_enum_prop(vector<AttrProperty> &);
+	string &get_attr_value(vector<AttrProperty> &,const char *);
+	long get_lg_attr_value(vector<AttrProperty> &,const char *);
 	virtual bool check_rds_alarm() {return false;}
 	bool check_level_alarm();
 	bool check_warn_alarm();
@@ -2259,6 +2277,13 @@ protected:
     void avns_in_att(prop_type);
 
 	void convert_prop_value(const char *,string &,Attr_CheckVal &,const string &);
+
+	void check_one_str_prop(const char *,const CORBA::String_member &,struct CheckOneStrProp &,const char *);
+	void check_range_coherency(string &);
+	void db_access(struct CheckOneStrProp &,string &);
+	void set_prop_5_specific(const AttributeConfig_5 &,string &);
+	void build_check_enum_labels(string &);
+	void upd_database_5_specific(const AttributeConfig_5 &,string &,struct CheckOneStrProp &);
 
 	bitset<numFlags>	alarm_conf;
 	bitset<numFlags>	alarm;

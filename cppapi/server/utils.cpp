@@ -2100,8 +2100,7 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 			ret_ptr = find_device_name_core(d_name);
 
 //
-// If the name given to this method is a valid alias name,
-// store the alias name in device object for possible
+// If the name given to this method is a valid alias name, store the alias name in device object for possible
 // future call to this method (save some db calls)
 //
 
@@ -2133,11 +2132,9 @@ DeviceImpl *Util::get_device_by_name(const string &dev_name)
 DeviceImpl *Util::find_device_name_core(string &dev_name)
 {
 //
-// Retrieve class list. Don't use the get_dserver_device() method followed by
-// the get_class_list(). In case of several classes embedded within
-// the same server and the use of this method in the object creation, it
-// will fail because the end of the dserver object creation is after the
-// end of the last server device creation.
+// Retrieve class list. Don't use the get_dserver_device() method followed by the get_class_list(). In case of several
+// classes embedded within the same server and the use of this method in the object creation, it will fail because the
+// end of the dserver object creation is after the end of the last server device creation.
 //
 
 	const vector<DeviceClass *> &tmp_cl_list = *cl_list_ptr;
@@ -2186,7 +2183,7 @@ DeviceImpl *Util::find_device_name_core(string &dev_name)
 // Check also the dserver device
 //
 
-	if (found == false)
+	if (found == false && dev_name.find("dserver/") == 0)
 	{
 		DServerClass *ds_class = DServerClass::instance();
 		vector<DeviceImpl *> &devlist = ds_class->get_device_list();

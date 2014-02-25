@@ -275,6 +275,21 @@ public:
 	{
 		archive_period = def_archive_period;
 	}
+
+/**
+ * Set default enumeration labels
+ *
+ * @param	def_enum_label	The enumeration labels
+ */
+	void set_enum_labels(vector<string> &def_enum_labels)
+	{
+		for (size_t loop = 0;loop < def_enum_labels.size();loop++)
+		{
+			enum_labels = enum_labels + def_enum_labels[loop];
+			if (loop != def_enum_labels.size() - 1)
+				enum_labels = enum_labels + ',';
+		}
+	}
 //@}
 
 /// @privatesection
@@ -330,6 +345,7 @@ public:
 	string			archive_abs_change;
 	string			archive_rel_change;
 	string			archive_period;
+	string			enum_labels;
 
 private:
     class UserDefaultAttrPropExt
@@ -583,7 +599,7 @@ private:
 	AttrExt					*ext;
 #endif
 
-    string				cl_name;
+    string					cl_name;
 };
 
 /**

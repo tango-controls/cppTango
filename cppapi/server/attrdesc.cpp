@@ -1,16 +1,11 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+===================================================================================================================
 //
 // file :               attrdesc.cpp
 //
-// description :        C++ source code for the BlackBoxElt and BlackBox
-//			classes. These classes are used to implement the
-//			tango device server black box. There is one
-//			black box for each Tango device. This black box
-//			keeps info. on all the activities on a device.
-//			A client is able to retrieve these data via a Device
-//			attribute
+// description :        C++ source code for the Attr, SpectrumAttr and ImageAttr classes. Those classes are used
+//						by DS devcelopper to define their attributes (Scalar, Spectrum and Image)
 //
 // project :            TANGO
 //
@@ -23,22 +18,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -50,14 +43,15 @@ static const char *RcsId = "$Id$\n$Name$";
 namespace Tango
 {
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attr::Attr
+// method :
+//		Attr::Attr
 //
-// description : 	Constructor for the Attr class.
-//			This constructor simply set the internal values
+// description :
+//		Constructor for the Attr class. This constructor simply set the internal values
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 Attr::Attr(const char *att_name,long att_type,AttrWriteType att_writable,
            const char *assoc)
@@ -172,44 +166,34 @@ Attr::~Attr()
 #endif
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attr::check_type
+// method :
+//		Attr::check_type
 //
-// description : 	This method checks data type and throws an exception
-//			in case of unsupported data type
+// description :
+//		This method checks data type and throws an exception in case of unsupported data type
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attr::check_type()
 {
 	bool unsuported = true;
 
-	if (type == Tango::DEV_SHORT)
-		unsuported = false;
-	else if (type == Tango::DEV_LONG)
-		unsuported = false;
-	else if (type == Tango::DEV_LONG64)
-		unsuported = false;
-	else if (type == Tango::DEV_DOUBLE)
-		unsuported = false;
-	else if (type == Tango::DEV_STRING)
-		unsuported = false;
-	else if (type == Tango::DEV_FLOAT)
-		unsuported = false;
-	else if (type == Tango::DEV_BOOLEAN)
-		unsuported = false;
-	else if (type == Tango::DEV_USHORT)
-		unsuported = false;
-	else if (type == Tango::DEV_UCHAR)
-		unsuported = false;
-	else if (type == Tango::DEV_ULONG)
-		unsuported = false;
-	else if (type == Tango::DEV_ULONG64)
-		unsuported = false;
-	else if (type == Tango::DEV_STATE)
-		unsuported = false;
-	else if (type == Tango::DEV_ENCODED)
+	if (type == Tango::DEV_SHORT ||
+		type == Tango::DEV_LONG ||
+		type == Tango::DEV_LONG64 ||
+		type == Tango::DEV_DOUBLE ||
+		type == Tango::DEV_STRING ||
+		type == Tango::DEV_FLOAT ||
+		type == Tango::DEV_BOOLEAN ||
+		type == Tango::DEV_USHORT ||
+		type == Tango::DEV_UCHAR ||
+		type == Tango::DEV_ULONG ||
+		type == Tango::DEV_ULONG64 ||
+		type == Tango::DEV_STATE ||
+		type == Tango::DEV_ENCODED ||
+		type == Tango::DEV_ENUM)
 		unsuported = false;
 
 	if (unsuported == true)
@@ -225,16 +209,20 @@ void Attr::check_type()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attr::set_default_properties
+// method :
+//		Attr::set_default_properties
 //
-// description : 	This method set the default user properties in the
-//			Attr object. At this level, each attribute property
-//			is represented by one instance of the Attrproperty
-//			class.
+// description :
+//		This method set the default user properties in the Attr object. At this level, each attribute property
+//		is represented by one instance of the Attrproperty class.
 //
-//--------------------------------------------------------------------------
+// arguments :
+//		in :
+//			- prop_list : The user property list
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 {
@@ -425,6 +413,9 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 		user_default_properties.push_back(AttrProperty("archive_period",prop_list.archive_period));
 	}
 
+	if (prop_list.enum_labels.empty() == false)
+		user_default_properties.push_back(AttrProperty("enum_labels",prop_list.enum_labels));
+
 	if(ranges.test(min_value) && ranges.test(max_value))
 	{
 		double min = 0.0, max = 0.0;
@@ -459,6 +450,22 @@ void Attr::set_default_properties(UserDefaultAttrProp &prop_list)
 	}
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attr::convert_def_prop
+//
+// description :
+//		Convert a property froma string to a double with a defined precision
+//
+// arguments :
+//		in :
+//			- val : The property as a string
+//		out :
+//			- db : The double data
+//
+//-------------------------------------------------------------------------------------------------------------------
+
 void Attr::convert_def_prop(const string &val, double &db)
 {
 	TangoSys_MemStream str;
@@ -467,6 +474,21 @@ void Attr::convert_def_prop(const string &val, double &db)
 	str << val;
 	str >> db;
 }
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attr::validate_def_prop
+//
+// description :
+//		Validate the property string definition
+//
+// arguments :
+//		in :
+//			- val : The property as a string
+//			- prop : The property name for a correct error message
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attr::validate_def_prop(const string &val, const char* prop)
 {
@@ -538,6 +560,21 @@ void Attr::validate_def_prop(const string &val, const char* prop)
 	}
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attr::validate_def_change_prop
+//
+// description :
+//		Validate event change property (defined as negative delta,positive delta)
+//
+// arguments :
+//		in :
+//			- val : The property as a string
+//			- prop : The property name for a correct error message
+//
+//-------------------------------------------------------------------------------------------------------------------
+
 void Attr::validate_def_change_prop(const string &val, const char * prop)
 {
 	TangoSys_MemStream str;
@@ -582,15 +619,16 @@ void Attr::throw_invalid_def_prop(const char* prop, const char* type)
 	Except::throw_exception(API_IncompatibleAttrDataType,err_msg,"Attr::set_default_properties()");
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attr::set_memorized
+// method :
+//		Attr::set_memorized
 //
-// description : 	This method set the attribute as memorized in database
-//			This is allowed only for scalar attribute and for
-//			writable one
+// description :
+//		This method set the attribute as memorized in database. This is allowed only for scalar attribute and for
+//		writable one
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Attr::set_memorized()
 {
@@ -635,14 +673,15 @@ void Attr::set_memorized()
 
 
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		SpectrumAttr::SpectrumAttr
+// method :
+//		SpectrumAttr::SpectrumAttr
 //
-// description : 	Constructor for the SpectrumAttr class.
-//			This constructor simply set the internal values
+// description :
+//		Constructor for the SpectrumAttr class. This constructor simply set the internal values
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,long x)
 :Attr(att_name,att_type),ext(Tango_nullptr)
@@ -760,14 +799,15 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 	max_x = x;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		ImageAttr::ImageAttr
+// method :
+//		ImageAttr::ImageAttr
 //
-// description : 	Constructor for the ImageAttr class.
-//			This constructor simply set the internal values
+// description :
+//		Constructor for the ImageAttr class. This constructor simply set the internal values
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 ImageAttr::ImageAttr(const char *att_name,long att_type,long x,long y)
 :SpectrumAttr(att_name,att_type,x),ext(Tango_nullptr)

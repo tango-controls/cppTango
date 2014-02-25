@@ -283,6 +283,10 @@ const char* const MemNotUsed               = "Not used yet";
 const char* const MemAttrPropName          = "__value";
 const char* const RootAttrPropName		   = "__root_att";
 
+// For DevEnum data type
+
+typedef DevShort	DevEnum;
+
 /*
  * List of strings used by the API as the DevError reason field.
  * This list is given here only for API writers to re-use (if possible)
@@ -879,6 +883,7 @@ enum CmdArgType {
 	DEVVAR_ULONG64ARRAY,
 	DEV_INT,
 	DEV_ENCODED,
+	DEV_ENUM,
 	DATA_TYPE_UNKNOWN
 };
 
@@ -996,6 +1001,7 @@ const char * const CmdArgTypeName[] = {
 	"DevVarULong64Array",
 	"DevInt",
 	"DevEncoded",
+	"DevEnum",
 	"Unknown"
 };
 

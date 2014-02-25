@@ -1284,12 +1284,12 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			if (all_attr == true)
 			{
 				Attribute &attr = dev_attr->get_attr_by_ind(i);
-				attr.get_properties_2((*back)[i]);
+				attr.get_properties((*back)[i]);
 			}
 			else
 			{
 				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
-				attr.get_properties_2((*back)[i]);
+				attr.get_properties((*back)[i]);
 			}
 		}
 		catch (Tango::DevFailed &)

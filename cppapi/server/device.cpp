@@ -1326,7 +1326,8 @@ Tango::ConstDevString DeviceImpl::dev_status()
 		{
 			alarm_status = alarm_status + "\nAttribute";
 			build_att_list_in_status_mess(nb_wrong_att,DeviceImpl::CONF);
-			alarm_status = alarm_status + "wrong configuration (wrong root attribute)";
+			alarm_status = alarm_status + "wrong configuration";
+			alarm_status = alarm_status + "\nTry accessing the faulty attribute(s) to get more information";
 		}
 
 //
@@ -2345,7 +2346,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 				if (vers <= 2)
 				{
 					Tango::AttributeConfig_2 attr_conf_2;
-					attr.get_properties_2(attr_conf_2);
+					attr.get_properties(attr_conf_2);
 					ad.attr_conf_2 = &attr_conf_2;
 					if (event_supplier_nd != NULL)
                         event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
@@ -2355,7 +2356,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 				else if (vers <= 4)
 				{
 					Tango::AttributeConfig_3 attr_conf_3;
-					attr.get_properties_3(attr_conf_3);
+					attr.get_properties(attr_conf_3);
 					ad.attr_conf_3 = &attr_conf_3;
 					if (event_supplier_nd != NULL)
                         event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
@@ -2365,7 +2366,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 				else
 				{
 					Tango::AttributeConfig_5 attr_conf_5;
-					attr.get_properties_5(attr_conf_5);
+					attr.get_properties(attr_conf_5);
 					ad.attr_conf_5 = &attr_conf_5;
 					if (event_supplier_nd != NULL)
                         event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
@@ -4365,7 +4366,7 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 		if (vers <= 2)
 		{
 			Tango::AttributeConfig_2 attr_conf_2;
-			attr->get_properties_2(attr_conf_2);
+			attr->get_properties(attr_conf_2);
 			ad.attr_conf_2 = &attr_conf_2;
 			if (event_supplier_nd != NULL)
                 event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
@@ -4375,7 +4376,7 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 		else if (vers <= 4)
 		{
 			Tango::AttributeConfig_3 attr_conf_3;
-			attr->get_properties_3(attr_conf_3);
+			attr->get_properties(attr_conf_3);
             ad.attr_conf_3 = &attr_conf_3;
             if (event_supplier_nd != NULL)
                 event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());
@@ -4385,7 +4386,7 @@ void DeviceImpl::push_att_conf_event(Attribute *attr)
 		else
 		{
 			Tango::AttributeConfig_5 attr_conf_5;
-			attr->get_properties_5(attr_conf_5);
+			attr->get_properties(attr_conf_5);
             ad.attr_conf_5 = &attr_conf_5;
             if (event_supplier_nd != NULL)
                 event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,attr->get_name());

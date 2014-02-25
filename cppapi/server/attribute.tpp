@@ -1051,6 +1051,7 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
 //
 
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
+		!(data_type == DEV_ENUM && ranges_type2const<T>::enu == DEV_SHORT) &&
 		(data_type != ranges_type2const<T>::enu))
 	{
 		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
@@ -1070,8 +1071,8 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
         mon_ptr = &(get_att_device()->get_att_conf_monitor());
 	AutoTangoMonitor sync1(mon_ptr);
 
-	AttributeConfig_3 conf;
-	get_properties_3(conf);
+	AttributeConfig_5 conf;
+	get_properties(conf);
 
 	props.label = conf.label;
 	props.description = conf.description;
@@ -1093,6 +1094,7 @@ void Attribute::get_properties(Tango::MultiAttrProp<T> &props)
 	props.abs_change = conf.event_prop.ch_event.abs_change;
 	props.archive_rel_change = conf.event_prop.arch_event.rel_change;
 	props.archive_abs_change = conf.event_prop.arch_event.abs_change;
+	props.enum_labels = enum_labels;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -1118,6 +1120,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 //
 
 	if (!(data_type == DEV_ENCODED && ranges_type2const<T>::enu == DEV_UCHAR) &&
+		!(data_type == DEV_ENUM && ranges_type2const<T>::enu == DEV_SHORT) &&
 		(data_type != ranges_type2const<T>::enu))
 	{
 		string err_msg = "Attribute (" + name + ") data type does not match the type provided : " + ranges_type2const<T>::str;
@@ -1132,7 +1135,8 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
-		(data_type == Tango::DEV_STATE))
+		(data_type == Tango::DEV_STATE) ||
+		(data_type == Tango::DEV_ENUM))
 	{
 		if(TG_strcasecmp(props.min_alarm,AlrmValueNotSpec) != 0)
 			throw_err_data_type("min_alarm",d_name,"Attribute::set_properties()");
@@ -1172,11 +1176,11 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 	AutoTangoMonitor sync1(mon_ptr);
 
 //
-// Get current attribute configuration and update properties with provided values
+// Get current attribute configuration (to retrieve un-mutable properties) and update properties with provided values
 //
 
-	AttributeConfig_3 conf;
-	get_properties_3(conf);
+	AttributeConfig_5 conf;
+	get_properties(conf);
 
 	conf.label = CORBA::string_dup(props.label.c_str());
 	conf.description = CORBA::string_dup(props.description.c_str());
@@ -1199,6 +1203,10 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 	conf.event_prop.arch_event.rel_change = CORBA::string_dup(props.archive_rel_change);
 	conf.event_prop.arch_event.abs_change = CORBA::string_dup(props.archive_abs_change);
 
+	conf.enum_labels.length(props.enum_labels.size());
+	for (size_t loop = 0;loop < props.enum_labels.size();loop++)
+		conf.enum_labels[loop] = CORBA::string_dup(props.enum_labels[loop].c_str());
+
 //
 // Set properties and update database
 //
@@ -1211,6 +1219,114 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 
     if (tg->is_svr_starting() == false && tg->is_device_restarting(d_name) == false)
         get_att_device()->push_att_conf_event(this);
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::set_upd_properties()
+//
+// description :
+//		Set new attribute configuration AND update database (if required)
+//
+// args :
+// 		in :
+//			- conf : The new attribute configuration
+//			- dev_name : The device name
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+template <typename T>
+void Attribute::set_upd_properties(const T &conf,string &dev_name)
+{
+
+//
+// Backup current configuration
+//
+
+	T old_conf;
+	if (is_fwd_att() == false)
+		get_properties(old_conf);
+
+//
+// Set flags which disable attribute configuration roll back in case there are some device startup exceptions
+//
+
+	bool is_startup_exception = check_startup_exceptions;
+	if(is_startup_exception == true)
+		startup_exceptions_clear = false;
+
+	try
+	{
+
+//
+// Set properties locally. In case of exception bring the backed-up values
+//
+
+		set_properties(conf,dev_name);
+
+//
+// Check ranges coherence for min and max properties (min-max alarm / min-max value ...)
+//
+
+		check_range_coherency(dev_name);
+
+//
+// At this point the attribute configuration is correct. Clear the device startup exceptions flag
+//
+
+		startup_exceptions_clear = true;
+
+//
+// Update database
+//
+
+		try
+		{
+			upd_database(conf,dev_name);
+		}
+		catch(DevFailed &)
+		{
+
+//
+// In case of exception, try to store old properties in the database and inform the user about the error
+//
+
+			try
+			{
+				upd_database(old_conf,dev_name);
+			}
+			catch(DevFailed &)
+			{
+
+//
+// If the old values could not be restored, notify the user about possible database corruption
+//
+
+				TangoSys_OMemStream o;
+
+				o << "Device " << dev_name << "-> Attribute : " << name;
+				o << "\nDatabase error occurred whilst setting attribute properties. The database may be corrupted." << ends;
+				Except::throw_exception((const char *)API_CorruptedDatabase,
+							  o.str(),
+							  (const char *)"Attribute::set_upd_properties()");
+			}
+
+			throw;
+		}
+	}
+	catch(DevFailed &)
+	{
+
+//
+// If there are any device startup exceptions, do not roll back the attribute configuration unless the new
+// configuration is correct
+//
+
+		if(is_startup_exception == false && startup_exceptions_clear == true && is_fwd_att() == false)
+			set_properties(old_conf,dev_name);
+		throw;
+	}
 }
 
 } // End of Tango namespace

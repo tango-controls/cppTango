@@ -1,12 +1,12 @@
-///=============================================================================
+//==================================================================================================================
 //
 // file :		AttrProp.h
 //
 // description :	Include file for the AttrProp, DoubleAttrProp and MultiAttrProp classes.
-//			Three classes are declared in this file :
-//				The AttrProp class
-//				The DoubleAttrProp class
-//				The MultiAttrProp class
+//					Three classes are declared in this file :
+//						The AttrProp class
+//						The DoubleAttrProp class
+//						The MultiAttrProp class
 //
 // project :		TANGO
 //
@@ -19,22 +19,20 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision: 19431 $
 //
-//=============================================================================
+//==================================================================================================================
 
 #ifndef _ATTRPROP_H
 #define _ATTRPROP_H
@@ -44,15 +42,14 @@
 namespace Tango
 {
 
-//=============================================================================
+//=================================================================================================================
 //
 //			The AttrProp class
 //
+// description :
+//		This is a template class which holds a value of attribute property and its string representation.
 //
-// description :	This is a template class which holds a value of attribute
-//			property and its string representation.
-//
-//=============================================================================
+//=================================================================================================================
 
 /**
  * This class represents a Tango attribute property.
@@ -250,17 +247,15 @@ private:
 #endif
 };
 
-//=============================================================================
+//===================================================================================================================
 //
 //			The DoubleAttrProp class
 //
+// description :	This is a template class which holds values of a compound attribute property (like rel_change,
+//					abs_change, archive_rel_change, archive_abs_change) which consists of two values, and its string
+//					representation.
 //
-// description :	This is a template class which holds values of a compound
-//			attribute property (like rel_change, abs_change, archive_rel_change,
-//			archive_abs_change) which consists of two values, and its string
-//			representation.
-//
-//=============================================================================
+//==================================================================================================================
 
 /**
  * This class represents a Tango compound attribute property which consists of
@@ -529,15 +524,13 @@ private:
 #endif
 };
 
-//=============================================================================
+//==================================================================================================================
 //
 //			The MultiAttrProp class
 //
+// description :	This is a template class which holds values of modifiable attribute properties.
 //
-// description :	This is a template class which holds values of modifiable
-//		attribute properties.
-//
-//=============================================================================
+//=================================================================================================================
 
 /**
  * This class represents Tango modifiable attribute properties grouped in
@@ -571,27 +564,27 @@ public:
 /**
  * Attribute label
  */
-		string 					label;
+		string 						label;
 /**
  * Attribute description
  */
-		string 					description;
+		string 						description;
 /**
  * Attribute unit
  */
-		string 					unit;
+		string 						unit;
 /**
  * Attribute standard_unit
  */
-		string 					standard_unit;
+		string 						standard_unit;
 /**
  * Attribute display_unit
  */
-		string 					display_unit;
+		string 						display_unit;
 /**
  * Attribute format
  */
-		string 					format;
+		string 						format;
 /**
  * Attribute min_value
  */
@@ -627,27 +620,31 @@ public:
 /**
  * Attribute event_period
  */
-        AttrProp<DevLong>                 	event_period;
+        AttrProp<DevLong>			event_period;
 /**
  * Attribute archive_period
  */
-        AttrProp<DevLong>                 	archive_period;
+        AttrProp<DevLong>			archive_period;
 /**
  * Attribute rel_change
  */
-        DoubleAttrProp<DevDouble>	        rel_change;
+        DoubleAttrProp<DevDouble>	rel_change;
 /**
  * Attribute abs_change
  */
-        DoubleAttrProp<DevDouble>	        abs_change;
+        DoubleAttrProp<DevDouble>	abs_change;
 /**
  * Attribute archive_rel_change
  */
-        DoubleAttrProp<DevDouble>	        archive_rel_change;
+        DoubleAttrProp<DevDouble>	archive_rel_change;
 /**
  * Attribute archive_abs_change
  */
-        DoubleAttrProp<DevDouble>	        archive_abs_change;
+        DoubleAttrProp<DevDouble>	archive_abs_change;
+/**
+ * Enumeration labels (For DevEnum data type)
+ */
+        vector<string>				enum_labels;
 //@}
 private:
 
