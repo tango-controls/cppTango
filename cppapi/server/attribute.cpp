@@ -1571,9 +1571,6 @@ void Attribute::build_check_enum_labels(string &labs)
 		}
 	}
 
-for(const auto &elem:enum_labels)
-	cout << "Enum labels = " << elem << endl;
-
 //
 // Check that all labels are different
 //

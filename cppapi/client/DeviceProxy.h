@@ -665,7 +665,7 @@ public :
  */
 	virtual void write_attribute(DeviceAttribute &attr_in);
 /**
- * Write the read a single attribute
+ * Write and read a single attribute
  *
  * Write then read a single attribute in a single network call. By default (serialisation by device), the execution
  * of this call in the server can’t be interrupted by other clients. To insert/extract the value to write/read you
