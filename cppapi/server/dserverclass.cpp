@@ -1828,7 +1828,6 @@ void DServerClass::device_factory(const Tango::DevVarStringArray *devlist_ptr)
 // timeout value (Except for db server itself)
 //
 
-		tg->set_svr_starting(false);
 		Database *db = tg->get_database();
 		if ((db != NULL) && (Util::_FileDb == false))
 			db->set_timeout_millis(CLNT_TIMEOUT);

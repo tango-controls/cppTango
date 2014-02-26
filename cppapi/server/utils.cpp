@@ -1793,6 +1793,16 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 void Util::server_run()
 {
 
+//
+// The server is now started
+//
+
+	set_svr_starting(false);
+
+//
+// Get thread ID
+//
+
 	omni_thread *th = omni_thread::self();
 	int th_id = th->id();
 
