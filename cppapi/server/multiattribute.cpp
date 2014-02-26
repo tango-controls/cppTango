@@ -432,6 +432,7 @@ void MultiAttribute::add_default(vector<AttrProperty> &prop_list, TANGO_UNUSED(s
 		break;
 
 	case DEV_STRING:
+	case DEV_ENUM:
 		Tango_OptAttrProp[5].default_value = FormatNotSpec_STR;
 		break;
 
@@ -570,6 +571,48 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 		attr_list[index]->set_assoc_ind(writable_attr_list[j]);
 	}
 
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		MultiAttribute::check_idl_release
+//
+// description :
+//		Check that the device inherits from IDL 5
+//
+// argument :
+//		in :
+//			- dev : The device pointer
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void MultiAttribute::check_idl_release(DeviceImpl *dev)
+{
+	int idl_version = dev->get_dev_idl_version();
+	size_t nb_attr = attr_list.size();
+
+	for (size_t i = 0;i < nb_attr;i++)
+	{
+		if (attr_list[i]->get_data_type() == DEV_ENUM)
+		{
+			if (dev->get_dev_idl_version() < 5)
+			{
+				try
+				{
+					stringstream ss;
+					ss << "Attribute " << attr_list[i]->get_name() << " has a DEV_ENUM data type.\n";
+					ss << "This is supported oonly for device inheriting from IDL 5 or more";
+
+					Except::throw_exception(API_NotSupportedFeature,ss.str(),"MultiAttribute::check_idl_release()");
+				}
+				catch (Tango::DevFailed &e)
+				{
+					attr_list[i]->add_startup_exception("enum_labels",e);
+				}
+			}
+		}
+	}
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

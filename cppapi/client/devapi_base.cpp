@@ -3805,7 +3805,11 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 							else
 								(*dev_attr_config)[i].memorized	= MEMORIZED_WRITE_INIT;
 						}
-
+						if (attr_config_list_5[i].data_type == DEV_ENUM)
+						{
+							for(size_t loop = 0;loop < attr_config_list_5[i].enum_labels.length();loop++)
+								(*dev_attr_config)[i].enum_labels.push_back(attr_config_list_5[i].enum_labels[loop].in());
+						}
 						COPY_ALARM_CONFIG((*dev_attr_config),attr_config_list_5)
 
 						COPY_EVENT_CONFIG((*dev_attr_config),attr_config_list_5)

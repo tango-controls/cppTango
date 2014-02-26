@@ -1550,6 +1550,8 @@ void Attribute::build_check_enum_labels(string &labs)
 	string::size_type start = 0;
 	bool exit = false;
 
+	enum_labels.clear();
+
 //
 // Build vector with enum labels
 //
@@ -5333,25 +5335,27 @@ void Attribute::set_attr_serial_model(AttrSerialModel ser_model)
 	attr_serial_model=ser_model;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::get_att_device_class
+// method :
+//		Attribute::get_att_device_class
 //
-// description : 	Return a pointer to the attribute device class
+// description :
+//		Return a pointer to the attribute device class
 //
-//--------------------------------------------------------------------------
+// argument :
+//		in :
+//			- dev_name: The device name
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 DeviceClass *Attribute::get_att_device_class(string &dev_name)
 {
 
 //
-// Get device class
-// When the server is started, it's an easy task
-// When the server is in its starting phase, it's more tricky
-// Get from the DeviceClass list the first one for which the device
-// factory method has not yet been fully executed.
-// This is the DeviceClass with the device in its init_device() method
-// has called Attribute::set_properties()
+// Get device class. When the server is started, it's an easy task. When the server is in its starting phase, it's more
+// tricky. Get from the DeviceClass list the first one for which the device_factory method has not yet been fully
+// executed. This is the DeviceClass with the device in its init_device() method has called Attribute::set_properties()
 //
 
     Tango::Util *tg = Tango::Util::instance();
@@ -5378,13 +5382,11 @@ DeviceClass *Attribute::get_att_device_class(string &dev_name)
         }
         else
         {
-				TangoSys_OMemStream o;
+			stringstream o;
+			o << "Device " << dev_name << "-> Attribute : " << name;
+			o << "\nCan't retrieve device class!" << ends;
 
-				o << "Device " << dev_name << "-> Attribute : " << name;
-				o << "\nCan't retrieve device class!" << ends;
-				Except::throw_exception((const char *)API_CantRetrieveClass,
-							  o.str(),
-							  (const char *)"Attribute::set_properties()");
+			Except::throw_exception(API_CantRetrieveClass,o.str(),"Attribute::set_properties()");
         }
     }
 
@@ -5645,6 +5647,7 @@ void Attribute::set_format_notspec()
 		break;
 
 	case DEV_STRING:
+	case DEV_ENUM:
 		format = FormatNotSpec_STR;
 		break;
 
@@ -5699,6 +5702,7 @@ bool Attribute::is_format_notspec(const char *format)
 		break;
 
 	case DEV_STRING:
+	case DEV_ENUM:
 		if (TG_strcasecmp(format,FormatNotSpec_STR) == 0)
 			ret = true;
 		break;
@@ -5753,6 +5757,7 @@ void Attribute::def_format_in_dbdatum(DbDatum &db)
 		break;
 
 	case DEV_STRING:
+	case DEV_ENUM:
 		db << FormatNotSpec_STR;
 		break;
 

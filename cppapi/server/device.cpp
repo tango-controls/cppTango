@@ -5733,6 +5733,8 @@ void DeviceImpl::att_conf_loop()
 
 void DeviceImpl::check_att_conf()
 {
+	dev_attr->check_idl_release(this);
+
     if (run_att_conf_loop == true)
         att_conf_loop();
 }

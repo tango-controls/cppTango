@@ -206,7 +206,7 @@ private:
 // MultiAttrProp template specialisation for DevEnum
 //
 
-template <>
+/*template <>
 class MultiAttrProp<DevEnum>
 {
 public:
@@ -247,6 +247,8 @@ private:
 #else
 	MultiAttrPropExt				*ext;
 #endif
-};
+};*/
+
 } // End of Tango namespace
+
 #endif // _ATTRPROP_TPP

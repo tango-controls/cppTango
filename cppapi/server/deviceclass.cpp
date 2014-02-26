@@ -1,13 +1,11 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+=================================================================================================================
 //
 // file :		Deviceclass.cpp
 //
-// description :	C++ source code for the DeviceClass
-//			class. This class
-//			is one the root class for all derived Device classes.
-//			It is an abstract class.
+// description :	C++ source code for the DeviceClass class. This class is one the root class for all derived
+//					Device classes. It is an abstract class.
 //
 // project :		TANGO
 //
@@ -20,22 +18,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -66,14 +62,15 @@ static void lower_cmd_name(string &cmd)
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::DeviceClass(string &s)
+// method :
+//		DeviceClass::DeviceClass(string &s)
 //
-// description :	DeviceClass constructor. Protected method which will
-//			be called automatically by the compiler.
+// description :
+//		DeviceClass constructor. Protected method which will be called automatically by the compiler.
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
 		only_one("class"),default_cmd(NULL),py_class(false),device_factory_done(false)
@@ -128,15 +125,15 @@ DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
 
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::get_class_system_resource(string &s)
+// method :
+//		DeviceClass::get_class_system_resource(string &s)
 //
-// description :	Method to retrieve some basic class resource(s)
-//			The resource to be retrived are :
-//				- The class doc URL
+// description :
+//		Method to retrieve some basic class resource(s)
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::get_class_system_resource()
 {
@@ -758,7 +755,7 @@ DeviceClass::~DeviceClass()
 //			- tg : Pointer to the Tango Util singleton
 //			- r_poa : Pointer to the CORBA POA
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_poa)
@@ -823,18 +820,21 @@ void DeviceClass::delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_
 }
 
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::register_signal
+// method :
+//		DeviceClass::register_signal
 //
-// description :	Method to register a class on a signal. When the
-//			signal is sent to the process, the signal_handler
-//			method of this class will be executed
+// description :
+//		Method to register a class on a signal. When the signal is sent to the process, the signal_handler
+//		method of this class will be executed
 //
-// in : 		signo : The signal number
-//			delayed : The boolean delayed flag
+// argument :
+// 		in :
+//			- signo : The signal number
+//			- delayed : The boolean delayed flag
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 #if defined _TG_WINDOWS_
 void DeviceClass::register_signal(long signo)
@@ -856,16 +856,20 @@ void DeviceClass::register_signal(long signo,bool handler)
 }
 #endif
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::unregister_signal
+// method :
+//		DeviceClass::unregister_signal
 //
-// description :	Method to unregister a class on a signal.
+// description :
+//		Method to unregister a class on a signal.
 //
-// in : 		signo : The signal number
-//			delayed : The boolean delayed flag
+// argument :
+// 		in :
+//			- signo : The signal number
+//			- delayed : The boolean delayed flag
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::unregister_signal(long signo)
 {
@@ -876,18 +880,20 @@ void DeviceClass::unregister_signal(long signo)
 	cout4 << "Leaving DeviceClass::unregister_signal method()" << endl;
 }
 
-//+-------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::signal_handler
+// method :
+//		DeviceClass::signal_handler
 //
-// description :	This is the signal handler for the class. This method
-//			is defined as virtual and therefore, can be redefined
-//			by DS programmers in their own classes derived from
-//			DeviceClass class
+// description :
+//		This is the signal handler for the class. This method is defined as virtual and therefore, can be redefined
+//		by DS programmers in their own classes derived from DeviceClass class
 //
-// in : 		signo : The signal number
+// argument :
+// 		in :
+//			- signo : The signal number
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::signal_handler(long signo)
 {
@@ -897,22 +903,22 @@ void DeviceClass::signal_handler(long signo)
 }
 
 
-//+-------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::export_device()
+// method :
+//		DeviceClass::export_device()
 //
-// description :	This method exports a device to the outside world.
-//			This is done by sending its CORBA network parameter
-//			(mainly the IOR) to the Tango database
+// description :
+//		This method exports a device to the outside world. This is done by sending its CORBA network parameter
+//		(mainly the IOR) to the Tango database
 //
-// in : 		dev : The device to be exported
-//			corba_obj_name : The CORBA object name associated
-//					 with the device. A default value
-//					 is provided. This field is mainly
-//					 use for specific device server
-//					 like the database device server.
+// argument :
+// 		in :
+//			- dev : The device to be exported
+//			- corba_obj_name : The CORBA object name associated with the device. A default value is provided.
+//							   This field is mainly use for specific device server like the database device server.
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 {
@@ -945,8 +951,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 			dev->_remove_ref();
 
 //
-// Store the ObjectId (The ObjectId_var type is a typedef of a string_var
-// type)
+// Store the ObjectId (The ObjectId_var type is a typedef of a string_var type)
 //
 
 		PortableServer::ObjectId_var oid;
@@ -970,11 +975,9 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	{
 
 //
-// For server started without db usage (Mostly the database server). In this case,
-// it is necessary to create our own CORBA object id and to bind it into the
-// OOC Boot Manager for access through a stringified object reference
-// constructed using the corbaloc style
-// The API will try to connect to device using lower case letters.
+// For server started without db usage (Mostly the database server). In this case, it is necessary to create our own
+// CORBA object id and to bind it into the Boot Manager for access through a stringified object reference
+// constructed using the corbaloc style. The API will try to connect to device using lower case letters.
 // Register device in POA with lower case letters
 //
 
@@ -1055,20 +1058,17 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::command_handler(string &s)
+// method :
+//		DeviceClass::command_handler(string &s)
 //
-// description :	Command handler which is called by Device
-//			when a command is received. It will check
-//			to see if the command is implemented. If
-//			so it will test to see if it is allowed
-//			in this state. Finally it will execute the
-//			command by calling its execute method.
-//			If an error occurs it will throw a DevFailed
-//			exception.
+// description :
+//		Command handler which is called by Device when a command is received. It will check to see if the command is
+//		implemented. If so it will test to see if it is allowed in this state. Finally it will execute the
+//		command by calling its execute method. If an error occurs it will throw a DevFailed exception.
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,const CORBA::Any &in_any)
 {
@@ -1201,18 +1201,21 @@ CORBA::Any *DeviceClass::command_handler(DeviceImpl *device,string &command,cons
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::add_wiz_dev_prop()
+// method :
+//		DeviceClass::add_wiz_dev_prop()
 //
-// description :	Method to add a device property definition for the
-//			device  wizard
+// description :
+//		Method to add a device property definition for the device  wizard
 //
-// in : 		name : The device property name
-//			desc : The device property description
-//			def : The device property default value
+// argument :
+// 		in :
+//			- name : The device property name
+//			- desc : The device property description
+//			- def : The device property default value
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc,string &def)
 {
@@ -1265,18 +1268,21 @@ void DeviceClass::add_wiz_dev_prop(string &p_name,string &desc)
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::add_wiz_class_prop()
+// method :
+//		DeviceClass::add_wiz_class_prop()
 //
-// description :	Method to add a class property definition for the
-//			device  wizard
+// description :
+//		Method to add a class property definition for the device  wizard
 //
-// in : 		name : The class property name
-//			desc : The class property description
-//			def : The class property default value
+// argument :
+// 		in :
+//			- name : The class property name
+//			- desc : The class property description
+//			- def : The class property default value
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::add_wiz_class_prop(string &p_name,string &desc,string &def)
 {
@@ -1326,16 +1332,19 @@ void DeviceClass::add_wiz_class_prop(string &p_name,string &desc)
 	add_wiz_class_prop(p_name,desc,def);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::device_destroyer
+// method :
+//		DeviceClass::device_destroyer
 //
-// description :	Method to remove and delete a device from the running devices
-//					belonging to the Tango class
+// description :
+//		Method to remove and delete a device from the running devices belonging to the Tango class
 //
-// in : 	dev_name : The device name
+// argument :
+// 		in :
+//			- dev_name : The device name
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::device_destroyer(const string &dev_name)
 {
@@ -1361,15 +1370,13 @@ void DeviceClass::device_destroyer(const string &dev_name)
 	}
 
 //
-// Check if the device is polled
-// If yes, ask polling thread to stop polling it
+// Check if the device is polled. If yes, ask polling thread to stop polling it
 //
 
 	if (device_list[k]->is_polled() == true)
 	{
 		device_list[k]->stop_polling();
 	}
-
 
 //
 // Delete the device
@@ -1391,18 +1398,20 @@ void DeviceClass::device_destroyer(const char *dev_name)
 	return device_destroyer(name_str);
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::is_command_allowed
+// method :
+//		DeviceClass::is_command_allowed
 //
-// description :	Method to check if a command is allowed even if the device
-//					is locked by another client. It follows the definition
-//					of the Tango control access system to define what is an
-//					allowed command
+// description :
+//		Method to check if a command is allowed even if the device is locked by another client. It follows the
+//		definition of the Tango control access system to define what is an allowed command
 //
-// in : 	cmd : The command name
+// argument :
+// 		in :
+//			- cmd : The command name
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool DeviceClass::is_command_allowed(const char *cmd)
 {
@@ -1419,16 +1428,19 @@ bool DeviceClass::is_command_allowed(const char *cmd)
 }
 
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DeviceClass::get_mcast_event()
+// method :
+//		DeviceClass::get_mcast_event()
 //
-// description : 	Get for all class devices and for all attributes multicast
-//					event parameters (if any)
+// description :
+//		Get for all class devices and for all attributes multicast event parameters (if any)
 //
-// in :	dserv : Pointer to the DServer device
+// argument :
+// 		in :
+//			- dserv : Pointer to the DServer device
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::get_mcast_event(DServer *dserv)
 {
@@ -1447,15 +1459,19 @@ void DeviceClass::get_mcast_event(DServer *dserv)
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::get_cmd_by_name
+// method :
+//		DeviceClass::get_cmd_by_name
 //
-// description :	Get a reference to the Command object
+// description :
+//		Get a reference to the Command object
 //
-// in : 	cmd_name : The command name
+// arguemt :
+// 		in :
+//			- cmd_name : The command name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 {
@@ -1490,15 +1506,19 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 	return *(*pos);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::remove_command
+// method :
+//		DeviceClass::remove_command
 //
-// description :	Delete a command from the command list
+// description :
+//		Delete a command from the command list
 //
-// in : 	cmd_name : The command name (in lower case letter)
+// argument :
+// 		in :
+//			- cmd_name : The command name (in lower case letter)
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::remove_command(const string &cmd_name)
 {
@@ -1531,14 +1551,15 @@ void DeviceClass::remove_command(const string &cmd_name)
 	command_list.erase(pos);
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::check_att_conf
+// method :
+//		DeviceClass::check_att_conf
 //
-// description :	Check attribute configuration (for wrong conf. in db
-//                  exception) for all devices in the class
+// description :
+//		Check attribute configuration (for wrong conf. in db exception) for all devices in the class
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::check_att_conf()
 {
@@ -1548,16 +1569,16 @@ void DeviceClass::check_att_conf()
 		(*ite)->check_att_conf();
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method :		DeviceClass::release_devices_mon
+// method :
+//		DeviceClass::release_devices_mon
 //
-// description :	Release all device(s) class monitor. This is needed in DS
-//					startup sequence. Each device monitor is taken before the
-//					device is known to CORBA and released after the memorized
-//					attributes (if any) are set
+// description :
+//		Release all device(s) class monitor. This is needed in DS startup sequence. Each device monitor is taken
+//		before the device is known to CORBA and released after the memorized attributes (if any) are set
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DeviceClass::release_devices_mon()
 {

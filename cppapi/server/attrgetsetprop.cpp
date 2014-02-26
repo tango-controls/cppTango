@@ -2426,7 +2426,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			for (size_t loop = 0;loop < conf.enum_labels.length();loop++)
 			{
 				labs = labs + conf.enum_labels[loop].in();
-				if (loop != conf.enum_labels.length() - 2)
+				if (loop != conf.enum_labels.length() - 1)
 					labs = labs + ',';
 			}
 			build_check_enum_labels(labs);
@@ -4201,7 +4201,7 @@ void Attribute::upd_database_5_specific(const Tango::AttributeConfig_5 &conf,str
 
 			bool same_labels = false;
 
-			size_t usr_enum_labels_nb = count(usr_def_val.begin(),usr_def_val.end(),',');
+			size_t usr_enum_labels_nb = count(usr_def_val.begin(),usr_def_val.end(),',') + 1;
 			if (conf.enum_labels.length() == usr_enum_labels_nb)
 			{
 				string::size_type pos = 0;
@@ -4254,6 +4254,16 @@ void Attribute::upd_database_5_specific(const Tango::AttributeConfig_5 &conf,str
 					(*cosp.prop_to_delete)++;
 				}
 			}
+			else
+			{
+				DbDatum desc(prop_name);
+				vector<string> v_tmp;
+				for (size_t loop = 0;loop < conf.enum_labels.length();loop++)
+					v_tmp.push_back(string(conf.enum_labels[loop].in()));
+				desc << v_tmp;
+				cosp.db_d->push_back(desc);
+				(*cosp.prop_to_update)++;
+			}
 		}
 		else if (class_defaults == true)
 		{
@@ -4264,7 +4274,7 @@ void Attribute::upd_database_5_specific(const Tango::AttributeConfig_5 &conf,str
 
 			bool same_labels = false;
 
-			size_t class_enum_labels_nb = count(class_def_val.begin(),class_def_val.end(),',');
+			size_t class_enum_labels_nb = count(class_def_val.begin(),class_def_val.end(),',') + 1;
 			if (conf.enum_labels.length() == class_enum_labels_nb)
 			{
 				string::size_type pos = 0;
@@ -4307,18 +4317,24 @@ void Attribute::upd_database_5_specific(const Tango::AttributeConfig_5 &conf,str
 				cosp.db_del->push_back(del_desc);
 				(*cosp.prop_to_delete)++;
 			}
+			else
+			{
+				DbDatum desc(prop_name);
+				vector<string> v_tmp;
+				for (size_t loop = 0;loop < conf.enum_labels.length();loop++)
+					v_tmp.push_back(string(conf.enum_labels[loop].in()));
+				desc << v_tmp;
+				cosp.db_d->push_back(desc);
+				(*cosp.prop_to_update)++;
+			}
 		}
 		else
 		{
 			DbDatum desc(prop_name);
-			string tmp;
+			vector<string> v_tmp;
 			for (size_t loop = 0;loop < conf.enum_labels.length();loop++)
-			{
-				tmp = tmp + conf.enum_labels[loop].in();
-				if (loop != conf.enum_labels.length() - 2)
-					tmp = tmp + ',';
-			}
-			desc << tmp;
+				v_tmp.push_back(string(conf.enum_labels[loop].in()));
+			desc << v_tmp;
 			cosp.db_d->push_back(desc);
 			(*cosp.prop_to_update)++;
 		}
@@ -4381,6 +4397,7 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 		(*cosp.db_del)[0] << *cosp.prop_to_delete;
 
 		Tango::Util *tg = Tango::Util::instance();
+
 //
 // Implement a reconnection schema. The first exception received if the db server is down is a COMM_FAILURE exception.
 // Following exception received from following calls are TRANSIENT exception
@@ -4551,12 +4568,32 @@ void Attribute::check_one_str_prop(const char *prop_name,const CORBA::String_mem
         cosp.db_del->push_back(del_desc);
         (*cosp.prop_to_delete)++;
     }
-    else if (class_defaults == false && TG_strcasecmp(conf_val,DescNotSpec) == 0)
-    {
-        DbDatum del_desc(prop_name);
-        cosp.db_del->push_back(del_desc);
-        (*cosp.prop_to_delete)++;
-    }
+    else if (class_defaults == false)
+	{
+		if (strcmp(lib_def,FormatNotSpec) == 0)
+		{
+			if (is_format_notspec(conf_val) == true)
+			{
+				DbDatum del_desc(prop_name);
+				cosp.db_del->push_back(del_desc);
+				(*cosp.prop_to_delete)++;
+			}
+		}
+		else
+		{
+			string def;
+			if (strcmp(lib_def,LabelNotSpec) == 0)
+				def = name;
+			else
+				def = lib_def;
+			if (TG_strcasecmp(conf_val,def.c_str()))
+			{
+				DbDatum del_desc(prop_name);
+				cosp.db_del->push_back(del_desc);
+				(*cosp.prop_to_delete)++;
+			}
+		}
+	}
     else
     {
         DbDatum desc(prop_name);

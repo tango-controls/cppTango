@@ -2203,6 +2203,7 @@ public:
 	int get_client_lib(EventType _et) {return client_lib[_et];}
 
 	void add_config_5_specific(AttributeConfig_5 &);
+	void add_startup_exception(string,const DevFailed &);
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);
@@ -2259,7 +2260,6 @@ protected:
 
     void check_hard_coded(const AttributeConfig_5 &);
 
-	void add_startup_exception(string,const DevFailed &);
 	void delete_startup_exception(string);
 
     void throw_hard_coded_prop(const char *);
@@ -2433,6 +2433,7 @@ inline void Attribute::throw_startup_exception(const char* origin)
 				err_msg += "\nSetting a valid value (also 'NaN', 'Not specified' and '' - empty string) for any property for this attribute will automatically bring the above-mentioned property to its library defaults";
 			else
 				err_msg += "\nSetting a valid value (also 'NaN', 'Not specified' and '' - empty string) for any property for this attribute will automatically bring the above-listed properties to their library defaults";
+			err_msg += "\nHint : Check also class level attribute properties";
 		}
 		else if(event_exceptions.empty() == false)
 		{
@@ -2451,9 +2452,9 @@ inline void Attribute::throw_startup_exception(const char* origin)
 				err_msg += "to its library defaults";
 			else
 				err_msg += "to their library defaults";
-		}
 
-		err_msg += "\nHint : Check also class level attribute properties";
+			err_msg += "\nHint : Check also class level attribute properties";
+		}
 
 		Except::throw_exception(API_AttrConfig,err_msg,origin);
 	}

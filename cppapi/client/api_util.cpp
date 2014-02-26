@@ -2201,6 +2201,12 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 		o_str << "Tango::DevEncoded" << endl;
 		break;
 
+	case Tango::DEV_ENUM :
+		o_str << "Tango::DevEnum" << endl;
+		for (size_t loop = 0;loop < p.enum_labels.size();loop++)
+			o_str << "\tEnumeration label = " << p.enum_labels[loop] << endl;
+		break;
+
 	case Tango::DATA_TYPE_UNKNOWN :
 		o_str << "Unknown" << endl;
 		break;
@@ -2292,6 +2298,7 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	default:
 		break;
 	}
+
 	o_str << "Attribute label = " << p.label << endl;
 	o_str << "Attribute description = " << p.description << endl;
 	o_str << "Attribute unit = " << p.unit;
