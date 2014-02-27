@@ -1074,6 +1074,19 @@ public:
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_DefClassUser_attr(att);}
 };
+
+class EnumAttr: public Tango::Attr
+{
+public:
+	EnumAttr():Attr("Enum_attr_rw",Tango::DEV_ENUM,Tango::READ_WRITE) {};
+	~EnumAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_Enum_attr(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_Enum_attr(att);}
+};
+
 // ----------------------------------------------------------------------------
 
 

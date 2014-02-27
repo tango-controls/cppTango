@@ -1143,6 +1143,11 @@ void DevTest::write_DefClassUser_attr(Tango::WAttribute &att)
 	cout << "In write_DefClassUser_attr for attribute " << att.get_name() << endl;
 }
 
+void DevTest::write_Enum_attr(Tango::WAttribute &att)
+{
+	cout << "In write_Enum_attr for attribute " << att.get_name() << endl;
+}
+
 void DevTest::write_attr_hardware(vector<long> &att_idx)
 {
 	switch (wattr_throw)
@@ -1936,24 +1941,29 @@ void DevTest::read_Slow_attr(Tango::Attribute &att)
 
 void DevTest::read_Def_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name DefAttr" << endl;
-      	att.set_value(&att_conf);
+	cout << "[DevTest::read_attr] attribute name DefAttr" << endl;
+	att.set_value(&att_conf);
 }
 
 void DevTest::read_DefUser_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name DefUserAttr" << endl;
-      	att.set_value(&att_conf);
+	cout << "[DevTest::read_attr] attribute name DefUserAttr" << endl;
+	att.set_value(&att_conf);
 }
 
 void DevTest::read_DefClass_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name DefClassAttr" << endl;
-      	att.set_value(&att_conf);
+	cout << "[DevTest::read_attr] attribute name DefClassAttr" << endl;
+	att.set_value(&att_conf);
 }
 
 void DevTest::read_DefClassUser_attr(Tango::Attribute &att)
 {
-      	cout << "[DevTest::read_attr] attribute name DefClassUserAttr" << endl;
-      	att.set_value(&att_conf);
+	cout << "[DevTest::read_attr] attribute name DefClassUserAttr" << endl;
+	att.set_value(&att_conf);
+}
+
+void DevTest::read_Enum_attr(Tango::Attribute &att)
+{
+	cout << "[DevTest::read_attr] attribute name EnumAttr" << endl;
 }

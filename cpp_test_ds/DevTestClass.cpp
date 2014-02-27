@@ -827,6 +827,17 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
 
   att_list.push_back(new DefAttr());
   att_list.push_back(new DefClassAttr());
+
+  Tango::UserDefaultAttrProp att_enum_prop;
+  vector<string> v_s;
+  v_s.push_back("North");
+  v_s.push_back("South");
+  v_s.push_back("East");
+  v_s.push_back("West");
+  att_enum_prop.set_enum_labels(v_s);
+  Tango::Attr *en_att = new EnumAttr();
+  en_att->set_default_properties(att_enum_prop);
+  att_list.push_back(en_att);
 }
 
 

@@ -135,6 +135,8 @@ public :
 	void read_DefClass_attr(Tango::Attribute &att);
 	void read_DefClassUser_attr(Tango::Attribute &att);
 
+	void read_Enum_attr(Tango::Attribute &att);
+
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
 	void write_ULong_attr_rw(Tango::WAttribute &att);
@@ -188,6 +190,8 @@ public :
 	void write_DefUser_attr(Tango::WAttribute &att);
 	void write_DefClass_attr(Tango::WAttribute &att);
 	void write_DefClassUser_attr(Tango::WAttribute &att);
+
+	void write_Enum_attr(Tango::WAttribute &att);
 
 	virtual void write_attr_hardware(vector<long> &);
 

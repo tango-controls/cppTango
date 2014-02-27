@@ -30,47 +30,38 @@ static const char *RcsId = "$Header$";
 int main(int argc,char *argv[])
 {
 
-  Tango::Util *tg;
-  try
-    {
-//
-// Initialise the device server
-//
-      tg = Tango::Util::init(argc,argv);
+	Tango::Util *tg;
+	try
+	{
 
-//
-// Create the device server singleton which will create everything
-//
-      tg->server_init();
-//
-// Run the endless loop
-//
+		tg = Tango::Util::init(argc,argv);
 
-      cout << "Ready to accept request" << endl;
-      tg->get_orb()->run();
-    }
-  catch (bad_alloc)
-    {
-      cout << "Can't allocate memory to store device object !!!" << endl;
-      cout << "Exiting" << endl;
-    }
-  catch (Tango::DevFailed &e)
-    {
-      Tango::Except::print_exception(e);
-    }
-  catch (CORBA::Exception &e)
-    {
-      Tango::Except::print_exception(e);
-		
-      cout << "Received a CORBA_Exception" << endl;
-      cout << "Exiting" << endl;
-    }
-	
+		tg->server_init();
+
+		tg->server_run();
+	}
+	catch (bad_alloc)
+	{
+		cout << "Can't allocate memory to store device object !!!" << endl;
+		cout << "Exiting" << endl;
+	}
+	catch (Tango::DevFailed &e)
+	{
+		Tango::Except::print_exception(e);
+	}
+	catch (CORBA::Exception &e)
+	{
+		Tango::Except::print_exception(e);
+
+		cout << "Received a CORBA_Exception" << endl;
+		cout << "Exiting" << endl;
+	}
+
 //
 // Destroy the ORB (and properly releases its resources)
 //
 
-    tg->server_cleanup();
-  return(0);
+	tg->server_cleanup();
+	return(0);
 }
 

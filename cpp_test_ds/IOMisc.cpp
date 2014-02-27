@@ -1870,13 +1870,13 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 
 		TangoSys_MemStream str;
 		vector<string> alarms_vec;
-		Tango::AttributeConfig_3 conf;
+		Tango::AttributeConfig_5 conf;
 		Tango::Attribute *attr_ptr = NULL;
 
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Double_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevDouble db, db_min_alarm = -999.99, db_min_warning = -888.88, db_max_warning = 888.88, db_max_alarm = 999.99;
@@ -1920,7 +1920,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevFloat fl, fl_min_alarm = -777.77, fl_min_warning = -666.66, fl_max_warning = 666.66, fl_max_alarm = 777.77;
@@ -1966,7 +1966,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevLong lg, lg_min_alarm = 1000, lg_min_warning = 1100, lg_max_warning = 1400, lg_max_alarm = 1500;
@@ -2012,7 +2012,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long64_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevLong64 lg64, lg64_min_alarm = -90000, lg64_min_warning = -80000, lg64_max_warning = 80000, lg64_max_alarm = 90000;
@@ -2058,7 +2058,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("Short_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevShort sh, sh_min_alarm = -5000, sh_min_warning = -4000, sh_max_warning = 4000, sh_max_alarm = 5000;
@@ -2104,7 +2104,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("UChar_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevUChar uch, uch_min_alarm = 1, uch_min_warning = 2, uch_max_warning = 230, uch_max_alarm = 240;
@@ -2150,7 +2150,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevULong ulg, ulg_min_alarm = 1, ulg_min_warning = 2, ulg_max_warning = 666666, ulg_max_alarm = 777777;
@@ -2196,7 +2196,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong64_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevULong64 ulg64, ulg64_min_alarm = 1, ulg64_min_warning = 2, ulg64_max_warning = 77777777, ulg64_max_alarm = 88888888;
@@ -2242,7 +2242,7 @@ CORBA::Any *SetGetAlarms::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::Attribute &attr = attributes->get_attr_by_name("UShort_attr");
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			Tango::DevUShort ush, ush_min_alarm = 1, ush_min_warning = 2, ush_max_warning = 20000, ush_max_alarm = 30000;
@@ -2359,13 +2359,13 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 
 		TangoSys_MemStream str;
 		vector<string> ranges_vec;
-		Tango::AttributeConfig_3 conf;
+		Tango::AttributeConfig conf;
 		Tango::WAttribute *wattr_ptr = NULL;
 
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Double_attr_w");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevDouble db, db_min_value = -1111.11, db_max_value = 1111.11;
@@ -2397,7 +2397,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Float_attr_w");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevFloat fl, fl_min_value = -888.88, fl_max_value = 888.88;
@@ -2431,7 +2431,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Long_attr_w");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevLong lg, lg_min_value = 900, lg_max_value = 1600;
@@ -2465,7 +2465,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Long64_attr_rw");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevLong64 lg64, lg64_min_value = -100000, lg64_max_value = 100000;
@@ -2499,7 +2499,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("Short_attr_w");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevShort sh, sh_min_value = -6000, sh_max_value = 6000;
@@ -2533,7 +2533,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UChar_attr_w");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevUChar uch, uch_min_value = 0, uch_max_value = 250;
@@ -2567,7 +2567,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("ULong_attr_rw");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevULong ulg, ulg_min_value = 0, ulg_max_value = 888888;
@@ -2601,7 +2601,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("ULong64_attr_rw");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevULong64 ulg64, ulg64_min_value = 0, ulg64_max_value = 99999999;
@@ -2635,7 +2635,7 @@ CORBA::Any *SetGetRanges::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 		try
 		{
 			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UShort_attr_w");
-			wattr.get_properties_3(conf);
+			wattr.get_properties(conf);
 			wattr_ptr = &wattr;
 
 			Tango::DevUShort ush, ush_min_value = 0, ush_max_value = 40000;
@@ -2746,7 +2746,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		Tango::DevVarStringArray *props = new Tango::DevVarStringArray();
 
 		vector<string> props_vec;
-		Tango::AttributeConfig_3 conf;
+		Tango::AttributeConfig_5 conf;
 		Tango::Attribute *attr_ptr = NULL;
 		vector<Tango::DevDouble> changes;
 
@@ -2755,7 +2755,8 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevDouble> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Double_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
+cout << "conf.min_warning = " << conf.att_alarm.min_warning << endl;
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -2810,6 +2811,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
+cout << "conf.min_warning after set_upd_properties = " << multi_prop.min_warning << endl;
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -2861,6 +2863,8 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+attr.get_properties(conf);
+cout << "conf.min_warning at the end = " << conf.att_alarm.min_warning << endl;
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -2874,7 +2878,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevFloat> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Float_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -2993,7 +2997,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevLong> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3112,7 +3116,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevLong64> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Long64_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3231,7 +3235,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevShort> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Short_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3350,7 +3354,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevUChar> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("UChar_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3469,7 +3473,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevULong> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3588,7 +3592,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevULong64> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("ULong64_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3707,7 +3711,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevUShort> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("UShort_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3826,7 +3830,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::MultiAttrProp<Tango::DevEncoded> multi_prop, multi_prop_get;
 			Tango::Attribute &attr = attributes->get_attr_by_name("Encoded_attr");
 
-			attr.get_properties_3(conf);
+			attr.get_properties(conf);
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -3947,7 +3951,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 //			Tango::MultiAttrProp<Tango::DevDouble> multi_prop, multi_prop_get;
 //			Tango::WAttribute &wattr = attributes->get_w_attr_by_name("UChar_attr_w");
 //
-//			attr.get_properties_3(conf);
+//			attr.get_properties(conf);
 //			attr_ptr = &attr;
 //
 //			attr.get_properties(multi_prop);
