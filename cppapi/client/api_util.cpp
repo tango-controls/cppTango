@@ -1585,6 +1585,11 @@ void ApiUtil::AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *aie,Attr
 	default:
 		break;
 	}
+	att_conf_5->enum_labels.length(aie->enum_labels.size());
+	for (size_t j=0; j<aie->enum_labels.size(); j++)
+	{
+		att_conf_5->enum_labels[j] = string_dup(aie->enum_labels[j].c_str());
+	}
 	att_conf_5->extensions.length(aie->extensions.size());
 	for (size_t j=0; j<aie->extensions.size(); j++)
 	{
@@ -2299,6 +2304,9 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 		break;
 	}
 
+	o_str << "Attribute writable_attr_name = " << p.writable_attr_name << endl;
+	if (p.root_attr_name.empty() == false)
+		o_str << "Root attribute name = " << p.root_attr_name << endl;
 	o_str << "Attribute label = " << p.label << endl;
 	o_str << "Attribute description = " << p.description << endl;
 	o_str << "Attribute unit = " << p.unit;
@@ -2307,9 +2315,6 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	o_str << "Attribute format = " << p.format << endl;
 	o_str << "Attribute min value = " << p.min_value << endl;
 	o_str << "Attribute max value = " << p.max_value << endl;
-	o_str << "Attribute writable_attr_name = " << p.writable_attr_name << endl;
-	if (p.root_attr_name.empty() == false)
-		o_str << "Root attribute name = " << p.root_attr_name << endl;
 
 	unsigned int i;
 	for (i = 0;i < p.extensions.size();i++)

@@ -716,7 +716,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 // First min_value
 //
 
-	TangoSys_MemStream str;
+	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	string min_value_usr_def;
@@ -1296,7 +1296,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 	vector<AttrProperty> &def_class_prop = state_or_status == false ? att_ptr->get_class_properties() : fake_attr_prop;
 	size_t nb_class = def_class_prop.size();
 
-	TangoSys_MemStream str;
+	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	if (state_or_status == false)
@@ -2116,7 +2116,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 // Event period
 //
 
-	TangoSys_MemStream def_event_period;
+	stringstream def_event_period;
 	string tmp_event_period;
 	def_event_period << (int)(DEFAULT_EVENT_PERIOD);
 	if(TG_strcasecmp(conf.event_prop.per_event.period,AlrmValueNotSpec) == 0 ||
@@ -2190,7 +2190,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 // Archive event period
 //
 
-	TangoSys_MemStream def_archive_period;
+	stringstream def_archive_period;
 	def_archive_period << (int)(INT_MAX);
 	string tmp_archive_period;
 	if(TG_strcasecmp(conf.event_prop.arch_event.period,AlrmValueNotSpec) == 0 ||
@@ -2370,7 +2370,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			// no library defaults for enum
 			stringstream ss;
 			ss << "Device " << dev_name << "-> Attribute : " << name;
-			ss << "\nNo enumeration labels default library value for attribute of the DEV_ENUM data type";
+			ss << "\nNo enumeration label(s) default library value for attribute of the Tango::DEV_ENUM data type";
 
 			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
 		}
@@ -2386,7 +2386,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 				{
 					stringstream ss;
 					ss << "Device " << dev_name << "-> Attribute : " << name;
-					ss << "\nNo enumeration labels default library value for attribute of the DEV_ENUM data type";
+					ss << "\nNo enumeration labels default library value for attribute of the Tango::DEV_ENUM data type";
 
 					Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
 				}
@@ -2409,7 +2409,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			{
 				stringstream ss;
 				ss << "Device " << dev_name << "-> Attribute : " << name;
-				ss << "\nNo enumeration labels default library value for attribute of the DEV_ENUM data type";
+				ss << "\nNo enumeration labels default library value for attribute of the Tango::DEV_ENUM data type";
 
 				Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
 			}
@@ -2760,7 +2760,7 @@ void Attribute::upd_database(const Tango::AttributeConfig &conf,string &dev_name
 // For the last four, if the data type is not string, checks that the input strings are really number
 //
 
-	TangoSys_MemStream str;
+	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	CHECK_PROP(conf.min_value,str,dev_name,db_d,db_del,
@@ -2842,7 +2842,7 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 	size_t nb_class = def_class_prop.size();
 	string usr_def_val;
 
-	TangoSys_MemStream str;
+	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	if (state_or_status == false)
@@ -3743,7 +3743,7 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 
     string class_def_val;
 
-	TangoSys_MemStream def_event_period_str;
+	stringstream def_event_period_str;
 	string def_event_period;
 	def_event_period_str << (int)(DEFAULT_EVENT_PERIOD);
 	def_event_period_str >> def_event_period;
@@ -3761,7 +3761,7 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
                 (TG_strcasecmp(class_def_val.c_str(),NotANumber) == 0) ||
                 (strlen(class_def_val.c_str()) == 0))
         {
-            TangoSys_MemStream str;
+            stringstream str;
             str << (int)(DEFAULT_EVENT_PERIOD);
             class_def_val = str.str();
         }
@@ -3875,7 +3875,7 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 // Archive event period
 //
 
-	TangoSys_MemStream def_arch_event_period_str;
+	stringstream def_arch_event_period_str;
 	string def_arch_event_period;
 	def_arch_event_period_str << (int)(INT_MAX);
 	def_arch_event_period_str >> def_arch_event_period;
@@ -3891,7 +3891,7 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
                 (TG_strcasecmp(class_def_val.c_str(),NotANumber) == 0) ||
                 (strlen(class_def_val.c_str()) == 0))
         {
-            TangoSys_MemStream str;
+            stringstream str;
             str << (int)(INT_MAX);
             class_def_val = str.str();
         }
@@ -4673,7 +4673,7 @@ void Attribute::validate_change_properties(const string &dev_name, const char *p
 	bring_class_def.push_back(false);
 	bring_class_def.push_back(false);
 
-	TangoSys_MemStream str;
+	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 	string prop_min;
 	string prop_max;
@@ -4819,7 +4819,7 @@ void Attribute::event_prop_db(const char *prop_name,vector<double> &rel_change_t
     }
     else
     {
-        TangoSys_MemStream str;
+        stringstream str;
         str.precision(TANGO_FLOAT_PRECISION);
         if(rel_change_usr_def_tmp[0] && !rel_change_usr_def_tmp[1])
         {
@@ -4915,7 +4915,7 @@ void Attribute::check_hard_coded(const AttributeConfig_5 &user_conf)
 
 void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_CheckVal &val,const string &dev_name)
 {
-	TangoSys_MemStream str;
+	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	str << value_str;

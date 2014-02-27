@@ -596,7 +596,7 @@ void MultiAttribute::check_idl_release(DeviceImpl *dev)
 	{
 		if (attr_list[i]->get_data_type() == DEV_ENUM)
 		{
-			if (dev->get_dev_idl_version() < 5)
+			if (dev->get_dev_idl_version() < idl_version)
 			{
 				try
 				{
