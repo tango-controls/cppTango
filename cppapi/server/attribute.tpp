@@ -1194,7 +1194,7 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 // Set properties and update database
 //
 
-	set_upd_properties(conf,d_name);
+	set_upd_properties(conf,d_name,true);
 
 //
 // Push a att conf event
@@ -1216,11 +1216,12 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 // 		in :
 //			- conf : The new attribute configuration
 //			- dev_name : The device name
+//			- from_ds : Flag set to true if the call is from a DS process
 //
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Attribute::set_upd_properties(const T &conf,string &dev_name)
+void Attribute::set_upd_properties(const T &conf,string &dev_name,bool from_ds)
 {
 
 //
@@ -1246,7 +1247,7 @@ void Attribute::set_upd_properties(const T &conf,string &dev_name)
 // Set properties locally. In case of exception bring the backed-up values
 //
 
-		set_properties(conf,dev_name);
+		set_properties(conf,dev_name,from_ds);
 
 //
 // Check ranges coherence for min and max properties (min-max alarm / min-max value ...)

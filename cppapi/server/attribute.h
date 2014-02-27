@@ -2063,11 +2063,11 @@ public:
 	void get_prop(Tango::AttributeConfig_5 &_a) {get_properties(_a);}
 
 	void set_properties(const Tango::AttributeConfig &,Tango::DeviceImpl *);
-	void set_properties(const Tango::AttributeConfig &,string &);
+	void set_properties(const Tango::AttributeConfig &,string &,bool f_s=false);
 	void set_properties(const Tango::AttributeConfig_3 &);
 	void set_properties(const Tango::AttributeConfig_3 &,Tango::DeviceImpl *);
-	void set_properties(const Tango::AttributeConfig_3 &,string &);
-	void set_properties(const Tango::AttributeConfig_5 &,string &);
+	void set_properties(const Tango::AttributeConfig_3 &,string &,bool f_s=false);
+	void set_properties(const Tango::AttributeConfig_5 &,string &,bool f_s=false);
 
 	void upd_database(const Tango::AttributeConfig &,string &);
 	void upd_database(const Tango::AttributeConfig_3 &,string &,struct Tango::Attribute::CheckOneStrProp *db_inf=Tango_nullptr);
@@ -2076,7 +2076,7 @@ public:
 	template <typename T>
 	void set_upd_properties(const T &_c) {set_upd_properties(_c,d_name);}
 	template <typename T>
-	void set_upd_properties(const T &,string &);
+	void set_upd_properties(const T &,string &,bool f_s=false);
 
 	virtual void set_rvalue() {};
 	void delete_seq();
@@ -2281,7 +2281,7 @@ protected:
 	void check_one_str_prop(const char *,const CORBA::String_member &,struct CheckOneStrProp &,const char *);
 	void check_range_coherency(string &);
 	void db_access(struct CheckOneStrProp &,string &);
-	void set_prop_5_specific(const AttributeConfig_5 &,string &);
+	void set_prop_5_specific(const AttributeConfig_5 &,string &,bool);
 	void build_check_enum_labels(string &);
 	void upd_database_5_specific(const AttributeConfig_5 &,string &,struct CheckOneStrProp &);
 

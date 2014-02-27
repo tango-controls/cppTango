@@ -444,7 +444,7 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,Tango::DeviceI
 	set_properties(conf,d->get_name());
 }
 
-void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_name)
+void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_name,TANGO_UNUSED(bool from_ds))
 {
 
     if (name_lower == "state" || name_lower == "status")
@@ -1222,7 +1222,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,Tango::Devic
 	set_properties(conf,d->get_name());
 }
 
-void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_name)
+void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_name,TANGO_UNUSED(bool from_ds))
 {
 
 //
@@ -2261,7 +2261,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 	delete_startup_exception("archive_period");
 }
 
-void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_name)
+void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_name,bool from_ds)
 {
 
 //
@@ -2303,7 +2303,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_
 // Now some IDL 5 specific properties
 //
 
-	set_prop_5_specific(conf,dev_name);
+	set_prop_5_specific(conf,dev_name,from_ds);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -2319,10 +2319,11 @@ void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_
 //		in :
 //			- conf : The new attribute configuration
 //			- dev_name: The device name
+//			- from_ds : Flag set to true if the request comes from a DS code
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_name)
+void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_name,bool from_ds)
 {
 	if (data_type == Tango::DEV_ENUM)
 	{
@@ -2338,6 +2339,24 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			ss << "\nNo value defined for the property enum_labels";
 
 			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
+		}
+
+		if (from_ds == false)
+		{
+			if (!(conf.enum_labels.length() == 1 &&
+				(TG_strcasecmp(conf.enum_labels[0],AlrmValueNotSpec) == 0 ||
+				TG_strcasecmp(conf.enum_labels[0],NotANumber) == 0 ||
+				strlen(conf.enum_labels[0]) == 0)))
+			{
+				if (conf.enum_labels.length() != enum_labels.size())
+				{
+					stringstream ss;
+					ss << "Device " << dev_name << "-> Attribute : " << name;
+					ss << "\nIt's not supported to change enumeration labels number from outside the Tango device class code";
+
+					Except::throw_exception(API_NotSupportedFeature,ss.str(),"Attribute::set_prop_5_specific()");
+				}
+			}
 		}
 
 //
