@@ -6218,133 +6218,141 @@ void DeviceAttribute::del_mem(int data_type)
 ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 {
 
-	bitset<DeviceAttribute::numFlags> bs = da.exceptions();
-	da.reset_exceptions(DeviceAttribute::isempty_flag);
-	if (da.is_empty() == true)
+	if (da.has_failed() == true)
 	{
-		da.exceptions(bs);
-		o_str << "No data in DeviceAttribute object";
-		return o_str;
+		o_str << "Exception stored in DeviceAttribute object" << endl;
+		Except::print_error_stack(da.err_list);
 	}
-	da.exceptions(bs);
+	else
+	{
+		bitset<DeviceAttribute::numFlags> bs = da.exceptions();
+		da.reset_exceptions(DeviceAttribute::isempty_flag);
+		if (da.is_empty() == true)
+		{
+			da.exceptions(bs);
+			o_str << "No data in DeviceAttribute object";
+			return o_str;
+		}
+		da.exceptions(bs);
 
 //
 // Print date
 //
 
-	if (da.time.tv_sec != 0)
-	{
-		time_t tmp_val = da.time.tv_sec;
-		char tmp_date[128];
+		if (da.time.tv_sec != 0)
+		{
+			time_t tmp_val = da.time.tv_sec;
+			char tmp_date[128];
 #ifdef _TG_WINDOWS_
-		ctime_s(tmp_date,128,&tmp_val);
+			ctime_s(tmp_date,128,&tmp_val);
 #else
-        ctime_r(&tmp_val,tmp_date);
+			ctime_r(&tmp_val,tmp_date);
 #endif
-		tmp_date[strlen(tmp_date) - 1] = '\0';
-		o_str << tmp_date;
-		o_str << " (" << da.time.tv_sec << "," << da.time.tv_usec << " sec) : ";
-	}
+			tmp_date[strlen(tmp_date) - 1] = '\0';
+			o_str << tmp_date;
+			o_str << " (" << da.time.tv_sec << "," << da.time.tv_usec << " sec) : ";
+		}
 
 //
 // print attribute name
 //
 
-	o_str << da.name;
+		o_str << da.name;
 
 //
 // print dim_x and dim_y
 //
 
-	o_str << " (dim_x = " << da.dim_x << ", dim_y = " << da.dim_y << ", ";
-	o_str << "w_dim_x = " << da.w_dim_x << ", w_dim_y = " << da.w_dim_y << ", ";
+		o_str << " (dim_x = " << da.dim_x << ", dim_y = " << da.dim_y << ", ";
+		o_str << "w_dim_x = " << da.w_dim_x << ", w_dim_y = " << da.w_dim_y << ", ";
 
 //
 // Print quality
 //
 
-	o_str << "Data quality factor = ";
-	switch (da.quality)
-	{
-	case Tango::ATTR_VALID:
-		o_str << "VALID, ";
-		break;
+		o_str << "Data quality factor = ";
+		switch (da.quality)
+		{
+		case Tango::ATTR_VALID:
+			o_str << "VALID, ";
+			break;
 
-	case Tango::ATTR_INVALID:
-		o_str << "INVALID, ";
-		break;
+		case Tango::ATTR_INVALID:
+			o_str << "INVALID, ";
+			break;
 
-	case Tango::ATTR_ALARM:
-		o_str << "ALARM, ";
-		break;
+		case Tango::ATTR_ALARM:
+			o_str << "ALARM, ";
+			break;
 
-	case Tango::ATTR_CHANGING:
-		o_str << "CHANGING, ";
-		break;
+		case Tango::ATTR_CHANGING:
+			o_str << "CHANGING, ";
+			break;
 
-	case Tango::ATTR_WARNING:
-		o_str << "WARNING, ";
-		break;
-	}
+		case Tango::ATTR_WARNING:
+			o_str << "WARNING, ";
+			break;
+		}
 
 //
 // Print data format
 //
 
-	o_str << "Data format = ";
-	switch (da.data_format)
-	{
-	case Tango::SCALAR:
-		o_str << "SCALAR)" << endl;
-		break;
+		o_str << "Data format = ";
+		switch (da.data_format)
+		{
+		case Tango::SCALAR:
+			o_str << "SCALAR)" << endl;
+			break;
 
-	case Tango::SPECTRUM:
-		o_str << "SPECTRUM)" << endl;
-		break;
+		case Tango::SPECTRUM:
+			o_str << "SPECTRUM)" << endl;
+			break;
 
-	case Tango::IMAGE:
-		o_str << "IMAGE)" << endl;
-		break;
+		case Tango::IMAGE:
+			o_str << "IMAGE)" << endl;
+			break;
 
-	case Tango::FMT_UNKNOWN:
-		o_str << "UNKNOWN)" << endl;
-		break;
-	}
+		case Tango::FMT_UNKNOWN:
+			o_str << "UNKNOWN)" << endl;
+			break;
+		}
 
 //
 // Print data (if valid)
 //
 
-	if (da.quality != Tango::ATTR_INVALID)
-	{
-		if (da.LongSeq.operator->() != NULL)
-			o_str << *(da.LongSeq.operator->());
-		else if (da.Long64Seq.operator->() != NULL)
-			o_str << *(da.Long64Seq.operator->());
-		else if (da.ShortSeq.operator->() != NULL)
-			o_str << *(da.ShortSeq.operator->());
-		else if (da.DoubleSeq.operator->() != NULL)
-			o_str << *(da.DoubleSeq.operator->());
-		else if (da.FloatSeq.operator->() != NULL)
-			o_str << *(da.FloatSeq.operator->());
-		else if (da.BooleanSeq.operator->() != NULL)
-			o_str << *(da.BooleanSeq.operator->());
-		else if (da.UShortSeq.operator->() != NULL)
-			o_str << *(da.UShortSeq.operator->());
-		else if (da.UCharSeq.operator->() != NULL)
-			o_str << *(da.UCharSeq.operator->());
-		else if (da.StringSeq.operator->() != NULL)
-			o_str << *(da.StringSeq.operator->());
-		else if (da.ULongSeq.operator->() != NULL)
-			o_str << *(da.ULongSeq.operator->());
-		else if (da.ULong64Seq.operator->() != NULL)
-			o_str << *(da.ULong64Seq.operator->());
-		else if (da.StateSeq.operator->() != NULL)
-			o_str << *(da.StateSeq.operator->());
-		else if (da.EncodedSeq.operator->() != NULL)
-			o_str << *(da.EncodedSeq.operator->());
-		else
-			o_str << DevStateName[da.d_state];
+		if (da.quality != Tango::ATTR_INVALID)
+		{
+			if (da.LongSeq.operator->() != NULL)
+				o_str << *(da.LongSeq.operator->());
+			else if (da.Long64Seq.operator->() != NULL)
+				o_str << *(da.Long64Seq.operator->());
+			else if (da.ShortSeq.operator->() != NULL)
+				o_str << *(da.ShortSeq.operator->());
+			else if (da.DoubleSeq.operator->() != NULL)
+				o_str << *(da.DoubleSeq.operator->());
+			else if (da.FloatSeq.operator->() != NULL)
+				o_str << *(da.FloatSeq.operator->());
+			else if (da.BooleanSeq.operator->() != NULL)
+				o_str << *(da.BooleanSeq.operator->());
+			else if (da.UShortSeq.operator->() != NULL)
+				o_str << *(da.UShortSeq.operator->());
+			else if (da.UCharSeq.operator->() != NULL)
+				o_str << *(da.UCharSeq.operator->());
+			else if (da.StringSeq.operator->() != NULL)
+				o_str << *(da.StringSeq.operator->());
+			else if (da.ULongSeq.operator->() != NULL)
+				o_str << *(da.ULongSeq.operator->());
+			else if (da.ULong64Seq.operator->() != NULL)
+				o_str << *(da.ULong64Seq.operator->());
+			else if (da.StateSeq.operator->() != NULL)
+				o_str << *(da.StateSeq.operator->());
+			else if (da.EncodedSeq.operator->() != NULL)
+				o_str << *(da.EncodedSeq.operator->());
+			else
+				o_str << DevStateName[da.d_state];
+		}
 	}
 
 	return o_str;

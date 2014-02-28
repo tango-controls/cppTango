@@ -131,6 +131,7 @@
 	#include <utils_spec.tpp>
 	#include <w_attribute_spec.tpp>
 	#include <attrprop.tpp>
+	#include <attrsetval.tpp>
 #endif
 
 #include <event.h>

@@ -33,6 +33,8 @@
 #ifndef _ATTRIBUTE_TPP
 #define _ATTRIBUTE_TPP
 
+#include <type_traits>
+
 namespace Tango
 {
 

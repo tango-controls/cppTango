@@ -549,6 +549,8 @@ public:
 	virtual void write(DeviceImpl *,WAttribute &) {};
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
+	virtual bool same_type(const type_info &) {return false;}
+	virtual string get_enum_type() {return string("Unknown");}
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,const Attr &);

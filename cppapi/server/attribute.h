@@ -2040,6 +2040,12 @@ protected:
 public:
 /// @privatesection
 
+	template <typename T>
+	void set_value(T *,long x = 1,long y = 0,bool release = false);
+	short enum_sh;
+
+
+
 	struct CheckOneStrProp
 	{
 		DbData					*db_d;

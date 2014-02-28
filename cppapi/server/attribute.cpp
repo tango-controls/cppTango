@@ -1526,6 +1526,14 @@ void Attribute::init_enum_prop(vector<AttrProperty> &prop_list)
 	}
 	catch(DevFailed &e)
 	{
+		string desc(e.errors[0].desc.in());
+		if (desc.find("Property enum_labels is missing") != string::npos)
+		{
+			stringstream ss;
+			ss << "The attribute " << name << " has the DEV_ENUM data type but there is no enumeration label(s) defined";
+
+			e.errors[0].desc = CORBA::string_dup(ss.str().c_str());
+		}
 		add_startup_exception("enum_labels",e);
 	}
 }
@@ -1638,8 +1646,12 @@ void Attribute::delete_startup_exception(string prop_name)
 		if(startup_exceptions.empty() == true)
 			check_startup_exceptions = false;
 
-        DeviceImpl *dev = get_att_device();
-        dev->set_run_att_conf_loop(true);
+		Util *tg = Util::instance();
+		if (tg->is_svr_starting() == false)
+		{
+			DeviceImpl *dev = get_att_device();
+			dev->set_run_att_conf_loop(true);
+		}
 	}
 }
 

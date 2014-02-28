@@ -341,6 +341,7 @@ CLIENT_INCLUDE =	apiexcept.h \
 SERVER_INCLUDE =	attrdesc.h \
 			attribute.h \
             attribute.tpp \
+            attrsetval.tpp \
             attribute_spec.tpp \
 			attrmanip.h \
 			attrprop.h \

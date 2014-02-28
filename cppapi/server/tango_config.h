@@ -153,6 +153,9 @@
                 #define HAS_RANGE_BASE_FOR
 				#define INIT_LIST
             #endif
+            #if __GNUC_MINOR__ > 7
+				#define HAS_UNDERLYING
+			#endif
         #elif __GNUC__ > 4
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE

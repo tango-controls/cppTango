@@ -4884,6 +4884,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 	switch (att.get_data_type())
 	{
 		case Tango::DEV_SHORT :
+		case Tango::DEV_ENUM :
 		{
 			Tango::DevVarShortArray *ptr = att.get_short_value();
 			if (back != NULL)

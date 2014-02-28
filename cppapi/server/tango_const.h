@@ -1160,6 +1160,7 @@ struct ranges_const2type
 	}; \
 	string ranges_const2type<Tango::constant>::str = #type;
 
+
 } // End of Tango namespace
 
 
