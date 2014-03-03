@@ -34,7 +34,9 @@
 #ifndef _ATTRSETVAL_TPP
 #define _ATTRSETVAL_TPP
 
-#include <type_traits>
+#ifdef HAS_TYPE_TRAITS
+	#include <type_traits>
+#endif
 
 namespace Tango
 {
@@ -90,12 +92,13 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 
 		Except::throw_exception(API_IncompatibleArgumentType,ss.str(),"Attribute::set_value()");
 	}
-#endif
+#endif // HAS_UNDERLYING
 
 //
 // Check if the input type is an enum and if it is from the valid type
 //
 
+#ifdef HAS_TYPE_TRAITS
 	if (is_enum<T>::value == false)
 	{
 		SAFE_DELETE(enum_ptr);
@@ -103,6 +106,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 								"The input argument data type is not an enumeration",
 								"Attribute::set_value()");
 	}
+#endif // HAS_TYPE_TRAITS
 
 	DeviceImpl *dev=get_att_device();
 	Tango::DeviceClass *dev_class = dev->get_device_class();
