@@ -1655,6 +1655,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 				idxs.idx_in_names = i;
 				idxs.idx_in_multi_attr = dev_attr->get_attr_ind_by_name(single_att_name);
 				updated_attr.push_back(idxs);
+
 //
 // Check that these attributes are writable.
 // For attributes which are not scalar, also check that their dimensions are correct
@@ -2456,6 +2457,7 @@ void Device_3Impl::write_attributes_in_db(vector<long> &att_in_db,vector<AttIdx>
 		switch (att.get_data_type())
 		{
 		case Tango::DEV_SHORT :
+		case Tango::DEV_ENUM :
 			tmp_db << (*att.get_last_written_sh())[0];
 			break;
 

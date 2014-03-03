@@ -1662,6 +1662,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long type)
 				switch (type)
 				{
 				case Tango::DEV_SHORT :
+				case Tango::DEV_ENUM :
 					(*ring[index].attr_value)[0].value >>= tmp_sh;
 					new_tmp_sh = new DevVarShortArray(
 							tmp_sh->length(),
@@ -1855,6 +1856,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long typ
 				switch (type)
 				{
 				case Tango::DEV_SHORT :
+				case Tango::DEV_ENUM :
 					(*ring[index].attr_value_3)[0].value >>= tmp_sh;
 					new_tmp_sh = new DevVarShortArray(
 							tmp_sh->length(),
@@ -2308,6 +2310,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long type)
 			switch (type)
 			{
 				case Tango::DEV_SHORT :
+				case Tango::DEV_ENUM :
 				{
 					DevVarShortArray &tmp_seq = (*ring[index].attr_value_4)[0].value.short_att_value();
 					if (new_tmp_sh == NULL)
@@ -2612,6 +2615,7 @@ void PollRing::get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long 
 				switch (type)
 				{
 				case Tango::DEV_SHORT :
+				case Tango::DEV_ENUM :
 					{
 						const DevVarShortArray &tmp_seq = (*ring[index].attr_value_4)[0].value.short_att_value();
 						(*ptr)[seq_index].value.value <<= tmp_seq;

@@ -252,6 +252,10 @@ log4tango::LoggerStream& operator<< (log4tango::LoggerStream& ls, const Attribut
 	  case Tango::DEV_STATE :
 	  	  ls << "Tango::DevState" << endl;
 		  break;
+
+	  case Tango::DEV_ENUM :
+		  ls << "Tango::DevEnum" << endl;
+		  break;
 	}
 	ls << "Attribute data_format: ";
 	switch (conf.data_format)

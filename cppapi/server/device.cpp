@@ -1864,7 +1864,7 @@ Tango::DevCmdInfoList* DeviceImpl::command_list_query()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)API_MemoryAllocation,
+	Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
 				      (const char *)"DeviceImpl::command_list_query");
 	}
@@ -2755,6 +2755,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 					switch (att.get_data_type())
 					{
 					case Tango::DEV_SHORT :
+					case Tango::DEV_ENUM :
 					{
 						Tango::DevVarShortArray *ptr = att.get_short_value();
 						a <<= *ptr;
@@ -5251,6 +5252,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 	switch (type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		if (back != NULL)
 		{
 			if (vers >= 4)

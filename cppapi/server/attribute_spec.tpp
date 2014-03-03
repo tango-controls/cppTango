@@ -164,7 +164,8 @@ inline void Attribute::set_min_alarm(const string &new_min_alarm_str)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
-		    (data_type != Tango::DEV_STATE))
+		    (data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			double db;
 			float fl;
@@ -356,7 +357,8 @@ inline void Attribute::set_max_alarm(const string &new_max_alarm_str)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
-		    (data_type != Tango::DEV_STATE))
+		    (data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			double db;
 			float fl;
@@ -548,7 +550,8 @@ inline void Attribute::set_min_warning(const string &new_min_warning_str)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
-		    (data_type != Tango::DEV_STATE))
+		    (data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			double db;
 			float fl;
@@ -740,7 +743,8 @@ inline void Attribute::set_max_warning(const string &new_max_warning_str)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
-		    (data_type != Tango::DEV_STATE))
+		    (data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			double db;
 			float fl;

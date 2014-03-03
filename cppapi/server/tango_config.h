@@ -176,6 +176,8 @@
         #define HAS_LAMBDA_FUNC
         #define HAS_NULLPTR
         #define HAS_RVALUE
+        #define HAS_TYPE_TRAITS
+        #define HAS_UNDERLYING
     #endif
     #ifdef WIN32_VC11
         #define HAS_UNIQUE_PTR
@@ -183,6 +185,8 @@
         #define HAS_NULLPTR
         #define HAS_RVALUE
 		#define HAS_RANGE_BASE_FOR
+        #define HAS_TYPE_TRAITS
+        #define HAS_UNDERLYING
     #endif
 #endif
 

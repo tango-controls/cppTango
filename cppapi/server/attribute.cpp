@@ -103,7 +103,7 @@ static bool WantedProp_f(AttrProperty a,const char *n)
 
 Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_name,long idx)
 :date(true),quality(Tango::ATTR_VALID),check_min_value(false),check_max_value(false),
- poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
+ enum_nb(0),loc_enum_ptr(Tango_nullptr),poll_period(0),event_period(0),archive_period(0),last_periodic(0.0),
  archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
  archive_last_event(0.0),dev(NULL),change_event_implmented(false),
  archive_event_implmented(false),check_change_event_criteria(true),
@@ -218,6 +218,7 @@ Attribute::~Attribute()
 	try
 	{
 		delete ext;
+		delete [] loc_enum_ptr;
 	}
 	catch(omni_thread_fatal &){}
 }
@@ -717,7 +718,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				str << min_alarm_str;
 				empty = false;
@@ -820,7 +822,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				if (empty == false)
 				{
@@ -930,7 +933,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				if (empty == false)
 				{
@@ -1040,7 +1044,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				if (empty == false)
 				{
@@ -1150,7 +1155,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				if (empty == false)
 				{
@@ -1259,7 +1265,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				if (empty == false)
 				{
@@ -1399,7 +1406,8 @@ void Attribute::init_opt_prop(vector<AttrProperty> &prop_list,string &dev_name)
 		{
 			if((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				if (empty == false)
 				{
@@ -3232,6 +3240,7 @@ void Attribute::delete_seq()
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT:
+	case Tango::DEV_ENUM:
 		delete value.sh_seq;
 		break;
 
@@ -3616,6 +3625,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 			switch (data_type)
 			{
 			case Tango::DEV_SHORT :
+			case Tango::DEV_ENUM:
 				sh_tmp_ptr = get_short_value()->get_buffer();
 				sh_seq = new Tango::DevVarShortArray(seq_length,seq_length,sh_tmp_ptr,false);
 				a <<= *sh_seq;
@@ -5152,6 +5162,7 @@ void Attribute::upd_att_prop_db(Tango::Attr_CheckVal &new_value,
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT:
+	case Tango::DEV_ENUM:
 		prop << new_value.sh;
 		break;
 
@@ -6035,6 +6046,10 @@ ostream &operator<<(ostream &o_str,Attribute &p)
 
 	case Tango::Dev_ENCODED :
 		o_str << "Tango::DevEncoded" << endl;
+		break;
+
+	case Tango::DEV_ENUM :
+		o_str << "Tango::DevEnum" << endl;
 		break;
 
 	case Tango::DATA_TYPE_UNKNOWN :

@@ -333,6 +333,7 @@ CLIENT_INCLUDE =	apiexcept.h \
 			ApiUtil.h \
 			DeviceData.h \
 			DeviceAttribute.h \
+			devapi_attr.tpp \
 			Connection.h \
 			DeviceProxy.h \
 			AttributeProxy.h \

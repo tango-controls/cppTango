@@ -894,6 +894,7 @@ public:
 						break;
 					}
 				case Tango::DEV_SHORT:
+				case Tango::DEV_ENUM:
 					{
 						w_attr_value = da_out_.ShortSeq[1];
 						break;

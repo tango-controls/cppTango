@@ -714,6 +714,8 @@ public :
 	void operator << (DevEncoded &);
 	void operator << (DevString);
 	void operator << (const char *);
+	template <typename T>
+	void operator << (T);
 
 	void operator << (vector<short> &);
 	void operator << (vector<DevLong> &);
@@ -820,6 +822,8 @@ public :
 	bool operator >> (DevULong64 &);
 	bool operator >> (DevState &);
 	bool operator >> (DevEncoded &);
+	template <typename T>
+	bool operator >> (T &);
 
 	bool operator >> (vector<string>&);
 	bool operator >> (vector<short>&);

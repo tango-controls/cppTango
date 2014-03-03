@@ -79,16 +79,15 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 // Throw exception if type is not correct
 //
 
-	if (data_type != Tango::DEV_SHORT)
+	if (data_type != Tango::DEV_SHORT &&
+		data_type != Tango::DEV_ENUM)
 	{
 		SAFE_DELETE(p_data);
 
-		TangoSys_OMemStream o;
+		stringstream ss;
+		ss << "Invalid data type for attribute " << name;
 
-		o << "Invalid data type for attribute " << name << ends;
-		Except::throw_exception((const char *)API_AttrOptProp,
-				      o.str(),
-				      (const char *)"Attribute::set_value()");
+		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
 	}
 
 //
@@ -99,12 +98,10 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 	{
 		SAFE_DELETE(p_data);
 
-		TangoSys_OMemStream o;
+		stringstream ss;
+		ss << "Data size for attribute " << name << " exceeds given limit";
 
-		o << "Data size for attribute " << name << " exceeds given limit" << ends;
-		Except::throw_exception((const char *)API_AttrOptProp,
-				      o.str(),
-				      (const char *)"Attribute::set_value()");
+		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
 	}
 
 //
@@ -123,6 +120,38 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 	if (data_size != 0)
 	{
 		CHECK_PTR(p_data,name);
+	}
+
+//
+// For DevEnum, check that the enum labels are defined. Also check the enum value
+//
+
+	if (data_type == DEV_ENUM)
+	{
+		if (enum_labels.size() == 0)
+		{
+			SAFE_DELETE(p_data);
+
+			stringstream ss;
+			ss << "Attribute " << name << " data type is enum but no enum labels are defined!";
+
+			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
+		}
+
+		int max_val = enum_labels.size() - 1;
+		for (unsigned int i = 0;i < data_size;i++)
+		{
+			if (p_data[i] < 0 || p_data[i] > max_val)
+			{
+				SAFE_DELETE(p_data);
+
+				stringstream ss;
+				ss << "Wrong value for attribute " << name;
+				ss << ". Element " << i << " is negative or above the limit defined by the enum (" << max_val << ").";
+
+				Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
+			}
+		}
 	}
 
 //

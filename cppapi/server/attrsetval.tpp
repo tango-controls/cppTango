@@ -48,6 +48,7 @@ namespace Tango
 //
 // description :
 //		Set the attribute read value and quality. This method automatically set the date when it has been called
+//
 //		This method is overloaded several times for all the supported attribute data type. Nevertheless, one
 //		template method is defined (this one) which willbe called for all data types with no overload.
 //		This is the case for enumeration data type
@@ -160,13 +161,21 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 // back to the caller)
 //
 
-	enum_sh = static_cast<short>(*enum_ptr);
-//	enum_sh = *enum_ptr;
-	short *p_data = &enum_sh;
+	if (data_size > enum_nb)
+	{
+		if (enum_nb != 0)
+			delete [] loc_enum_ptr;
+		loc_enum_ptr = new short [data_size];
+		enum_nb = data_size;
+	}
+	for (int i = 0;i < data_size;i++)
+		loc_enum_ptr[i] = static_cast<short>(enum_ptr[i]);
+
+	SAFE_DELETE(enum_ptr);
 
 	if (date == false)
 	{
-		value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,p_data,release);
+		value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,loc_enum_ptr,false);
 	}
 	else
 	{
@@ -174,32 +183,23 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		{
 			if (data_format == Tango::SCALAR)
 			{
-				tmp_sh[0] = *p_data;
-				SAFE_DELETE(p_data);
+				tmp_sh[0] = *loc_enum_ptr;
 			}
 			else
 			{
 				value.sh_seq = new Tango::DevVarShortArray(data_size);
 				value.sh_seq->length(data_size);
-				::memcpy(value.sh_seq->get_buffer(false),p_data,data_size * sizeof(Tango::DevShort));
-				if (release == true)
-					delete [] p_data;
+				::memcpy(value.sh_seq->get_buffer(false),loc_enum_ptr,data_size * sizeof(Tango::DevShort));
 			}
 		}
 		else
 		{
 			if ((data_format == Tango::SCALAR) && (release == true))
 			{
-				Tango::DevShort *tmp_ptr = new Tango::DevShort[1];
-				*tmp_ptr = *p_data;
-				value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,tmp_ptr,release);
-				if (is_fwd_att() == true)
-					delete [] p_data;
-				else
-					delete p_data;
+				value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,loc_enum_ptr,false);
 			}
 			else
-				value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,p_data,release);
+				value.sh_seq = new Tango::DevVarShortArray(data_size,data_size,loc_enum_ptr,release);
 		}
 	}
 	value_flag = true;

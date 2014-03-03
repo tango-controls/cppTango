@@ -2523,7 +2523,8 @@ void Attribute::check_range_coherency(string &dev_name)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 			(data_type != Tango::DEV_BOOLEAN) &&
-			(data_type != Tango::DEV_STATE))
+			(data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			switch (data_type)
 			{
@@ -2590,7 +2591,8 @@ void Attribute::check_range_coherency(string &dev_name)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 			(data_type != Tango::DEV_BOOLEAN) &&
-			(data_type != Tango::DEV_STATE))
+			(data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			switch (data_type)
 			{
@@ -2657,7 +2659,8 @@ void Attribute::check_range_coherency(string &dev_name)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 			(data_type != Tango::DEV_BOOLEAN) &&
-			(data_type != Tango::DEV_STATE))
+			(data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			switch (data_type)
 			{
@@ -2985,7 +2988,8 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 		{
 			if ((data_type != Tango::DEV_STRING) &&
 				(data_type != Tango::DEV_BOOLEAN) &&
-				(data_type != Tango::DEV_STATE))
+				(data_type != Tango::DEV_STATE) &&
+				(data_type != Tango::DEV_ENUM))
 			{
 				double db;
 
@@ -4944,6 +4948,7 @@ void Attribute::convert_prop_value(const char *prop_name,string &value_str,Attr_
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT:
+	case Tango::DEV_ENUM:
 		val.sh = (DevShort)val.db;
 		str.str("");
 		str.clear();

@@ -357,6 +357,7 @@ void DeviceClass::set_memorized_values(bool all,long idx,bool from_init)
 						switch (att.get_data_type())
 						{
 						case Tango::DEV_SHORT:
+						case Tango::DEV_ENUM:
 							if (from_init == false)
 							{
 								if (!(str >> sh))

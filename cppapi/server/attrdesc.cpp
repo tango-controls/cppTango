@@ -510,6 +510,7 @@ void Attr::validate_def_prop(const string &val, const char* prop)
 	switch (type)
 	{
 	case Tango::DEV_SHORT:
+	case Tango::DEV_ENUM:
 		if (!(str >> sh && str.eof()))
 			throw_invalid_def_prop(prop,"DevShort");
 		break;

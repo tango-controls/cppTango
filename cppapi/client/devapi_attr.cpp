@@ -6090,24 +6090,26 @@ bool DeviceAttribute::check_for_data()
 	return true;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method name : 	check_wrong_type_exception
+// method name :
+//		check_wrong_type_exception
 //
-// description : 	Checks whether the wrongtype exception flag is set
-//                and throws an exception in this case.
-//                Otherwise the method will return false.
+// description :
+//		Checks whether the wrongtype exception flag is set and throws an exception in this case.
+//      Otherwise the method will return false.
 //
-// ret : false when no exception was thrown.
+// return :
+// 		False when no exception was thrown.
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 bool DeviceAttribute::check_wrong_type_exception()
 {
 	if (exceptions_flags.test(wrongtype_flag))
 	{
-		ApiDataExcept::throw_exception((const char*)"API_IncompatibleAttrArgumentType",
-					(const char*)"Cannot extract, data in DeviceAttribute object is not an array of short",
-					(const char*)"DeviceAttribute::operator>>");
+		ApiDataExcept::throw_exception("API_IncompatibleAttrArgumentType",
+		"Cannot extract, data type in DeviceAttribute object is not coherent with the type provided to extraction method",
+		"DeviceAttribute::operator>>");
 	}
 
 	return false;

@@ -1483,6 +1483,7 @@ void MultiAttribute::add_write_value(Attribute &att)
 	switch (att.get_data_type())
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		sh_write_val = assoc_att.get_last_written_sh();
 		att.add_write_value(sh_write_val);
 		break;

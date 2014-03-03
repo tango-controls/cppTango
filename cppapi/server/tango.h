@@ -96,6 +96,7 @@
 #include <devapi.h>
 #include <group.h>
 #include <filedatabase.h>
+#include <devapi_attr.tpp>
 
 //
 // Include Tango utility files

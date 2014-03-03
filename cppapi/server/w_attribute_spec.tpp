@@ -65,7 +65,8 @@ inline void WAttribute::set_min_value(const string &new_min_value_str)
 {
 	if((data_type == Tango::DEV_STRING) ||
 		(data_type == Tango::DEV_BOOLEAN) ||
-		(data_type == Tango::DEV_STATE))
+		(data_type == Tango::DEV_STATE) ||
+		(data_type == Tango::DEV_ENUM))
 		throw_err_data_type("min_value",d_name,"WAttribute::set_min_value()");
 
 	string min_value_str_tmp = new_min_value_str;
@@ -345,7 +346,8 @@ inline void WAttribute::set_max_value(const string &new_max_value_str)
 	{
 		if ((data_type != Tango::DEV_STRING) &&
 		    (data_type != Tango::DEV_BOOLEAN) &&
-		    (data_type != Tango::DEV_STATE))
+		    (data_type != Tango::DEV_STATE) &&
+			(data_type != Tango::DEV_ENUM))
 		{
 			double db;
 			float fl;

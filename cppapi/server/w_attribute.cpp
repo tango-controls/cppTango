@@ -197,6 +197,7 @@ void WAttribute::set_rvalue()
 	switch(data_type)
 	{
 	case Tango::DEV_SHORT:
+	case Tango::DEV_ENUM:
 		if (data_format == Tango::SCALAR)
 			set_value(&short_val,1,0,false);
 		else
@@ -308,6 +309,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
         {
 
 //
@@ -1304,6 +1306,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		{
 
 //
@@ -1394,6 +1397,26 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			{
 				w_dim_x = x;
 				w_dim_y = y;
+			}
+
+//
+// If the attribute is enumerated, check the input value compared to the enum labels
+//
+
+			if (get_data_type() == DEV_ENUM)
+			{
+				int max_val = enum_labels.size() - 1;
+				for (i = 0;i < nb_data;i++)
+				{
+					if (sh_seq[i] < 0 || sh_seq[i] > max_val)
+					{
+						stringstream ss;
+						ss << "Set value for attribute " << name;
+						ss << " is negative or above the maximun authorized (" << max_val << ") for at least element " << i;
+
+						Except::throw_exception(API_WAttrOutsideLimit,ss.str(),"WAttribute::check_written_value()");
+					}
+				}
 			}
 		}
 		break;
@@ -3077,6 +3100,7 @@ void WAttribute::rollback()
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		short_val = old_short_val;
 		break;
 
@@ -3143,6 +3167,7 @@ void WAttribute::copy_data(const CORBA::Any &any)
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		const Tango::DevVarShortArray *sh_ptr;
 		any >>= sh_ptr;
 		short_array_val = *sh_ptr;
@@ -3222,6 +3247,7 @@ void WAttribute::copy_data(const Tango::AttrValUnion &the_union)
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		short_array_val = the_union.short_att_value();
 		break;
 

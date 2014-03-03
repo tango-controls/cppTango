@@ -2042,9 +2042,6 @@ public:
 
 	template <typename T>
 	void set_value(T *,long x = 1,long y = 0,bool release = false);
-	short enum_sh;
-
-
 
 	struct CheckOneStrProp
 	{
@@ -2308,6 +2305,9 @@ protected:
 	Tango::DevEncoded	tmp_enc[2];
 
 	vector<AttrProperty>::iterator pos_end;
+
+	int 				enum_nb;						// For enum attribute
+	short				*loc_enum_ptr;					// For enum attribute
 
 //
 // Ported from the extension class
@@ -2621,6 +2621,7 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
             switch (data_type) \
             { \
             case Tango::DEV_SHORT: \
+            case Tango::DEV_ENUM: \
                 if((DevShort)db == user_def_val_db) \
                     equal_user_def = true; \
                 break; \
@@ -2684,6 +2685,7 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
             switch (data_type) \
             { \
             case Tango::DEV_SHORT: \
+            case Tango::DEV_ENUM: \
                 if((DevShort)db == class_def_val_db) \
                     equal_class_def = true; \
                 break; \
@@ -2813,6 +2815,7 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 				switch (data_type) \
 				{ \
 				case Tango::DEV_SHORT: \
+				case Tango::DEV_ENUM: \
 					B.str(""); \
 					B.clear(); \
 					B << (DevShort)db; \

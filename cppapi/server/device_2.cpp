@@ -1864,6 +1864,7 @@ void Device_2Impl::Polled_2_Live(long data_type,CORBA::Any &hist_any,CORBA::Any 
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		hist_any >>= tmp_sh;
 		new_tmp_sh = new DevVarShortArray(
 		tmp_sh->length(),
