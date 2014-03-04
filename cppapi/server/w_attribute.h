@@ -761,6 +761,29 @@ public:
 
 /// @privatesection
 
+	template <typename T>
+	void get_write_value(T &);
+
+	template <typename T>
+	void get_write_value(const T *&);
+
+	template <typename T>
+	void check_type(T &,const string &);
+
+	template <typename T>
+	void set_write_value(T);
+
+	template <typename T>
+	void set_write_value(T *,long,long);
+
+	template <typename T>
+	void set_write_value(vector<T> &,long,long);
+
+
+
+
+
+
 	void set_write_value(Tango::DevEncoded *, long x = 1,long y = 0); // Dummy method for compiler
 
 	virtual void set_rvalue();

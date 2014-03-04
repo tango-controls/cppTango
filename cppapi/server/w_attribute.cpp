@@ -2514,16 +2514,16 @@ long WAttribute::get_write_value_length()
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		WAttribute::set_write_value() methods
+// method :
+//		WAttribute::set_write_value() methods
 //
-// description : 	Set the attribute internal value.
-//			There are different methods according to the
-//			attribute data type and the attribute type (scalar,
-//       spectrum or image)
+// description :
+//		Set the attribute internal value. There are different methods according to the attribute data type and the
+//		attribute type (scalar, spectrum or image)
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 // DevShort:
 

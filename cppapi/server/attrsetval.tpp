@@ -217,5 +217,49 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	set_time();
 }
 
+template <typename T>
+void Attribute::set_value_date_quality(T *p_data,time_t t,Tango::AttrQuality qual,long x,long y,bool release)
+{
+	set_value(p_data,x,y,release);
+	set_quality(qual,false);
+	set_date(t);
+
+	if (qual == Tango::ATTR_INVALID)
+	{
+		if (!((is_writ_associated() == true) && (data_format == Tango::SCALAR)))
+			delete_seq();
+	}
+}
+
+#ifdef _TG_WINDOWS_
+template <typename T>
+void Attribute::set_value_date_quality(T *p_data,struct _timeb &t,Tango::AttrQuality qual,long x,long y,bool release)
+{
+	set_value(p_data,x,y,release);
+	set_quality(qual,false);
+	set_date(t);
+
+	if (qual == Tango::ATTR_INVALID)
+	{
+		if (!((is_writ_associated() == true) && (data_format == Tango::SCALAR)))
+			delete_seq();
+	}
+}
+#else
+template <typename T>
+void Attribute::set_value_date_quality(T *p_data,struct timeval &t,Tango::AttrQuality qual,long x,long y,bool release)
+{
+	set_value(p_data,x,y,release);
+	set_quality(qual,false);
+	set_date(t);
+
+	if (qual == Tango::ATTR_INVALID)
+	{
+		if (!((is_writ_associated() == true) && (data_format == Tango::SCALAR)))
+			delete_seq();
+	}
+}
+#endif
+
 } // End of Tango namespace
 #endif // _ATTRSETVAL_TPP

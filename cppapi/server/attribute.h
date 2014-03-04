@@ -2043,6 +2043,16 @@ public:
 	template <typename T>
 	void set_value(T *,long x = 1,long y = 0,bool release = false);
 
+	template <typename T>
+	void set_value_date_quality(T *,time_t,Tango::AttrQuality,long x=1,long y=0,bool rel=false);
+#ifdef _TG_WINDOWS_
+	template <typename T>
+	void set_value_date_quality(T *,struct _timeb &,Tango::AttrQuality,long x=1,long y=1,bool rel=false);
+#else
+	template <typename T>
+	void set_value_date_quality(T *,struct timeval &,Tango::AttrQuality,long x=1,long y=1,bool rel=false);
+#endif
+
 	struct CheckOneStrProp
 	{
 		DbData					*db_d;
