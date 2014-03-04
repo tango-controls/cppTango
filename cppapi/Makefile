@@ -399,6 +399,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			w32win.h \
 			w_attribute.h \
 			w_attribute.tpp \
+			w_attrsetval.tpp \
 			w_attribute_spec.tpp \
 			subdev_diag.h \
 			encoded_attribute.h \
