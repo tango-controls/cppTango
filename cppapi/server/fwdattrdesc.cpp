@@ -423,6 +423,7 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 	switch(fwd_attr.get_data_type())
 	{
 	case DEV_SHORT:
+	case DEV_ENUM:
 		DevShort *ptr_sh;
 		fwd_attr.propagate_writen_data(da,attr,ptr_sh,fwd_attr.get_root_ptr().sh_seq);
 		break;

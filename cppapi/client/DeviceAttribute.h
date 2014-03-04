@@ -755,6 +755,7 @@ public :
 	void operator << (DevVarULongArray *datum);
 	void operator << (DevVarULong64Array *datum);
 	void operator << (DevVarStateArray *datum);
+	void operator << (TANGO_UNUSED(DevVarEncodedArray *datum)) {} 	// For template stuff
 
 //
 // Insert methods

@@ -871,16 +871,19 @@ int Connection::get_env_var_from_file(string &f_name,const char *env_var,string 
     return ret;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// Connection::get_fqdn() - Get a host fqdn (Fully Qualified domain name)
+// method:
+//		Connection::get_fqdn()
 //
-// This method gets the host fully qualified domain name (from DNS) and
-// modified the passed string accordingly
+// description:
+// 		This method gets the host fully qualified domain name (from DNS) and modified the passed string accordingly
 //
-// in :	- the_host : The host name
+// argument:
+// 		in/out :
+//			- the_host: The original host name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Connection::get_fqdn(string &the_host)
 {
@@ -937,11 +940,15 @@ void Connection::get_fqdn(string &the_host)
         if (result == 0)
         {
             ptr = info;
+            int nb_loop = 0;
+            string myhost;
+
             while (ptr != NULL)
             {
                 if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
                 {
-                    string myhost(tmp_host);
+                	nb_loop++;
+                    myhost = tmp_host;
                     string::size_type pos = myhost.find('.');
                     if (pos != string::npos)
                     {
@@ -957,6 +964,9 @@ void Connection::get_fqdn(string &the_host)
                 ptr = ptr->ai_next;
             }
             freeaddrinfo(info);
+
+            if (host_found == false && nb_loop == 1)
+				the_host = myhost;
         }
     }
 }
