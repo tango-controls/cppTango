@@ -218,6 +218,7 @@ then
 		/bin/mkdir -p $BASE/include
 		/bin/mkdir -p $BASE/include/idl
 		/bin/cp client/*.h $BASE/include
+		/bin/cp client/*.tpp $BASE/include
 		/bin/cp server/*.h $BASE/include
 		/bin/cp server/*.tpp $BASE/include
 		/bin/cp server/idl/*.h $BASE/include/idl
