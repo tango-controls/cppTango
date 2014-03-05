@@ -1329,6 +1329,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			{
 				if (nb_data != x)
 				{
+cout << "Thrown there" << endl;
 					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
 					        	(const char *)"Incorrect data number",
 					        	(const char *)"WAttribute::check_written_value()");
@@ -1338,6 +1339,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			{
 				if (nb_data != (x * y))
 				{
+cout << "Thrown here: nb_data = " << nb_data << ", x = " << x << ", y = " << y << endl;
 					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
 					        	(const char *)"Incorrect data number",
 					        	(const char *)"WAttribute::check_written_value()");

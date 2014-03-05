@@ -76,7 +76,7 @@ void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<De
 	unsigned int h_depth = hist_4->dates.length();
 
 //
-// Copy date and name in each History list element
+// Copy date and name in each history list element
 //
 
 	unsigned int loop;

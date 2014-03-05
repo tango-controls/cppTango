@@ -1280,6 +1280,8 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                         attr.prev_change_event.value >>= prev_seq_sh;
                 }
 
+cout << "short_type in detect_change() = " << short_type << endl;
+
                 if (short_type == true)
                 {
                     curr_seq_nb = curr_seq_sh->length();
@@ -1287,38 +1289,47 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                     if (curr_seq_nb != prev_seq_nb)
                     {
                         force_change = true;
+cout << "short -> return true" << endl;
                         return true;
                     }
-                    for (i=0; i<curr_seq_sh->length(); i++)
-                    {
-                        if (rel_change[0] != INT_MAX)
-                        {
-                            if ((*prev_seq_sh)[i] != 0)
-                            {
-                                delta_change_rel = ((*curr_seq_sh)[i] - (*prev_seq_sh)[i])*100/(*prev_seq_sh)[i];
-                            }
-                            else
-                            {
-                                delta_change_rel = 100;
-                                if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
-                            }
-                            if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-                            {
-                                is_change = true;
-                                return(is_change);
-                            }
-                        }
-                        if (abs_change[0] != INT_MAX)
-                        {
-                            delta_change_abs = (*curr_seq_sh)[i] - (*prev_seq_sh)[i];
-                            if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-                            {
-                                is_change = true;
-                                return(is_change);
-                            }
-                        }
-                    }
-                    return false;
+
+					if (attr.data_type == DEV_ENUM)
+					{
+// TODO: To be coded
+					}
+					else
+					{
+						for (i=0; i<curr_seq_sh->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
+							{
+								if ((*prev_seq_sh)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_sh)[i] - (*prev_seq_sh)[i])*100/(*prev_seq_sh)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+							if (abs_change[0] != INT_MAX)
+							{
+								delta_change_abs = (*curr_seq_sh)[i] - (*prev_seq_sh)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+						}
+						return false;
+					}
                 }
 
 //

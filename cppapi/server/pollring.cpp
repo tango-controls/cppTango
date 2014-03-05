@@ -2495,6 +2495,7 @@ void PollRing::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long type)
 			switch(type)
 			{
 			case Tango::DEV_SHORT:
+			case Tango::DEV_ENUM:
 				if (new_tmp_sh != NULL)
 					ptr->value <<= new_tmp_sh;
 				break;

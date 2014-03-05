@@ -169,7 +169,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		enum_nb = data_size;
 	}
 	for (int i = 0;i < data_size;i++)
-		loc_enum_ptr[i] = static_cast<short>(enum_ptr[i]);
+		loc_enum_ptr[i] = (short)enum_ptr[i];
 
 	SAFE_DELETE(enum_ptr);
 

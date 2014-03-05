@@ -306,7 +306,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 						if ((attribute.get_data_type() != Tango::DEV_STRING) &&
 							(attribute.get_data_type() != Tango::DEV_BOOLEAN) &&
 							(attribute.get_data_type() != Tango::DEV_ENCODED) &&
-							(attribute.get_data_type() != Tango::DEV_STATE))
+							(attribute.get_data_type() != Tango::DEV_STATE) &&
+							(attribute.get_data_type() != Tango::DEV_ENUM))
 						{
 							if ( attribute.is_check_change_criteria() == true )
 							{
@@ -359,7 +360,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 						if ((attribute.get_data_type() != Tango::DEV_STRING) &&
 							(attribute.get_data_type() != Tango::DEV_BOOLEAN) &&
 							(attribute.get_data_type() != Tango::DEV_ENCODED) &&
-							(attribute.get_data_type() != Tango::DEV_STATE))
+							(attribute.get_data_type() != Tango::DEV_STATE) &&
+							(attribute.get_data_type() != Tango::DEV_ENUM))
 						{
 							if ( attribute.is_check_archive_criteria() == true )
 							{

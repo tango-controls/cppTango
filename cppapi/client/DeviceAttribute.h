@@ -288,6 +288,30 @@ public :
 	DeviceAttribute(const char *, vector<DevULong64> &,int,int);
 	DeviceAttribute(const char *, vector<DevState> &,int,int);
 
+	template <typename T> DeviceAttribute(string &,T);
+	template <typename T> DeviceAttribute(const char *,T);
+	template <typename T> DeviceAttribute(string &,vector<T> &);
+	template <typename T> DeviceAttribute(const char *,vector<T> &);
+	template <typename T> DeviceAttribute(string &,vector<T> &,int,int);
+	template <typename T> DeviceAttribute(const char *,vector<T> &,int,int);
+
+	template <typename T> void base_val(T);
+	template <typename T> void base_vect(vector<T> &);
+	template <typename T> void base_vect_size(vector<T> &);
+
+	template <typename T> void operator << (T);
+	template <typename T> void operator << (vector<T> &);
+	template <typename T> void insert(vector<T> &,int,int);
+
+	template <typename T> bool operator >> (T &);
+	template <typename T> bool operator >> (vector<T> &);
+	template <typename T> bool extract_read (vector<T> &);
+	template <typename T> bool extract_set(vector<T> &);
+
+	template <typename T> bool template_type_check(T &);
+
+
+
 	virtual ~DeviceAttribute();
 
 	AttrQuality 		quality;
@@ -519,18 +543,18 @@ public :
  *
  * Insert methods for @b image attribute and for the following types by reference.
  * These method allow the programmer to define the x and y image dimensions. The following methods are defined :
- * @li const DevVarBooleanArray &
- * @li const DevVarShortArray &
- * @li const DevVarLongArray &
- * @li const DevVarLong64Array&
- * @li const DevVarFloatArray &
- * @li const DevVarDoubleArray &
- * @li const DevVarUCharArray &
- * @li const DevVarUShortArray &
- * @li const DevVarULongArray &
- * @li const DevVarULong64Array&
- * @li const DevVarStringArray &
- * @li const DevVarStateArray &
+ * @li insert(const DevVarBooleanArray &,int, int)
+ * @li insert(const DevVarShortArray &,int, int)
+ * @li insert(const DevVarLongArray &,int, int)
+ * @li insert(const DevVarLong64Array&,int, int)
+ * @li insert(const DevVarFloatArray &,int, int)
+ * @li insert(const DevVarDoubleArray &,int, int)
+ * @li insert(const DevVarUCharArray &,int, int)
+ * @li insert(const DevVarUShortArray &,int, int)
+ * @li insert(const DevVarULongArray &,int, int)
+ * @li insert(const DevVarULong64Array&,int, int)
+ * @li insert(const DevVarStringArray &,int, int)
+ * @li insert(const DevVarStateArray &,int, int)
 
  * See DeviceAttribute::operator<< for example of inserting and extracting data to/from DeviceAttribute instance
  *
@@ -543,7 +567,7 @@ public :
 /**
  * Insert attribute data for image attribute (from CORBA sequence by pointer)
  *
- * Insert methods for @b image attribute and pointers. The DeviceAttribute object tkes ownership of the
+ * Insert methods for @b image attribute and pointers. The DeviceAttribute object takes ownership of the
  * given memory. These method allow the programmer to define the x
  * and y image dimensions. The following methods are defined :
  * @li insert(DevVarBooleanArray *, int , int )
@@ -714,8 +738,6 @@ public :
 	void operator << (DevEncoded &);
 	void operator << (DevString);
 	void operator << (const char *);
-	template <typename T>
-	void operator << (T);
 
 	void operator << (vector<short> &);
 	void operator << (vector<DevLong> &);
@@ -823,8 +845,6 @@ public :
 	bool operator >> (DevULong64 &);
 	bool operator >> (DevState &);
 	bool operator >> (DevEncoded &);
-	template <typename T>
-	bool operator >> (T &);
 
 	bool operator >> (vector<string>&);
 	bool operator >> (vector<short>&);
