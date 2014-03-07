@@ -1280,8 +1280,6 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                         attr.prev_change_event.value >>= prev_seq_sh;
                 }
 
-cout << "short_type in detect_change() = " << short_type << endl;
-
                 if (short_type == true)
                 {
                     curr_seq_nb = curr_seq_sh->length();
@@ -1289,13 +1287,20 @@ cout << "short_type in detect_change() = " << short_type << endl;
                     if (curr_seq_nb != prev_seq_nb)
                     {
                         force_change = true;
-cout << "short -> return true" << endl;
                         return true;
                     }
 
 					if (attr.data_type == DEV_ENUM)
 					{
-// TODO: To be coded
+						for (i=0; i<curr_seq_sh->length(); i++)
+						{
+							if ((*curr_seq_sh)[i] != (*prev_seq_sh)[i])
+							{
+								delta_change_rel = delta_change_abs = 100.;
+								is_change = true;
+							}
+							return is_change;
+						}
 					}
 					else
 					{
