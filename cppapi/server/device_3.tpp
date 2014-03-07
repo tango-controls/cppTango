@@ -159,7 +159,6 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 				AttributeConfig_3 *tmp_conf_ptr;
 				AttributeConfig_5 *tmp_conf_ptr5;
 
-cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " << caller_idl << endl;
 				if (get_dev_idl_version() > 4)
 				{
 					if (caller_idl <= 4)
@@ -192,14 +191,12 @@ cout << "get_dev_idl_version = " << get_dev_idl_version() << ", caller_idl = " <
 							tmp_conf_ptr = &conf3;
 							::memcpy(&(ad.attr_conf_3),&(tmp_conf_ptr),sizeof(V *));
 
-cout << "Pushing AttributeConfig_3 event" << endl;
 							if (event_supplier_nd != NULL)
 								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 							ad.attr_conf_3 = NULL;
 						}
-cout << "Pushing AttributeConfig_5 event" << endl;
 						::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
 					}
 				}

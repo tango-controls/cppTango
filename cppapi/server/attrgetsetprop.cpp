@@ -4506,6 +4506,15 @@ void Attribute::check_one_str_prop(const char *prop_name,const CORBA::String_mem
 								   Attribute::CheckOneStrProp &cosp,const char *lib_def)
 {
 
+	bool def_val = false;
+	if ((strcmp(lib_def,DescNotSpec) == 0 && TG_strcasecmp(conf_val,DescNotSpec) == 0) ||
+		(strcmp(lib_def,LabelNotSpec) == 0 && TG_strcasecmp(conf_val,name.c_str()) == 0) ||
+		(strcmp(lib_def,UnitNotSpec) == 0 && TG_strcasecmp(conf_val,UnitNotSpec) == 0) ||
+		(strcmp(lib_def,StdUnitNotSpec) == 0 && TG_strcasecmp(conf_val,StdUnitNotSpec) == 0) ||
+		(strcmp(lib_def,DispUnitNotSpec) == 0 && TG_strcasecmp(conf_val,DispUnitNotSpec) == 0) ||
+		(strcmp(lib_def,FormatNotSpec) == 0 && is_format_notspec(conf_val)))
+			def_val = true;
+
 //
 // Check if the value of attribute property is to be stored in the database. There are 5 value alternatives
 // distinguished: value (Val), empty string (""), NotANumber (NaN), AlrmValueNotSpec (AVNS) and
@@ -4591,25 +4600,22 @@ void Attribute::check_one_str_prop(const char *prop_name,const CORBA::String_mem
         cosp.db_del->push_back(del_desc);
         (*cosp.prop_to_delete)++;
     }
-    else if (class_defaults == false)
+    else if (class_defaults == false && def_val == true)
 	{
-		if (strcmp(lib_def,FormatNotSpec) == 0)
+		if (strcmp(lib_def,FormatNotSpec) == 0 && is_format_notspec(conf_val) == true)
 		{
-			if (is_format_notspec(conf_val) == true)
-			{
-				DbDatum del_desc(prop_name);
-				cosp.db_del->push_back(del_desc);
-				(*cosp.prop_to_delete)++;
-			}
+			DbDatum del_desc(prop_name);
+			cosp.db_del->push_back(del_desc);
+			(*cosp.prop_to_delete)++;
 		}
 		else
 		{
 			string def;
-			if (strcmp(lib_def,LabelNotSpec) == 0)
+			if (strcmp(lib_def,LabelNotSpec) == 0 && TG_strcasecmp(conf_val,name.c_str()) == 0)
 				def = name;
 			else
 				def = lib_def;
-			if (TG_strcasecmp(conf_val,def.c_str()))
+			if (TG_strcasecmp(conf_val,def.c_str()) == 0)
 			{
 				DbDatum del_desc(prop_name);
 				cosp.db_del->push_back(del_desc);

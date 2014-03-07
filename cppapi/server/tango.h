@@ -1,4 +1,4 @@
-//=============================================================================
+//====================================================================================================================
 //
 // file :               Tango.h
 //
@@ -15,33 +15,23 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//===================================================================================================================
 
 #ifndef _TANGO_H
 #define _TANGO_H
-
-//
-// Insert typeinfo file as the first include file
-//
-
-#ifndef TANGO_CLIENT
-//	#include <typeinfo>
-#endif
 
 //
 // Include the Tango config file
@@ -83,6 +73,7 @@
 // Include some stdc++ library headers
 //
 
+#include <typeinfo>
 #include <string>
 #include <vector>
 

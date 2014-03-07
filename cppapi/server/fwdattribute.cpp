@@ -647,7 +647,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_5 &conf)
 		AttributeInfoListEx aile;
 		AttributeInfoEx aie;
 		aie = &conf;
-		aie.label = LabelNotSpec;
+		aie.label = get_fwd_att_name();
 
 		RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 		DeviceProxy *dev = rar.get_root_att_dp(fwd_dev_name);
@@ -674,7 +674,7 @@ void FwdAttribute::upd_att_config(const Tango::AttributeConfig_3 &conf)
 		AttributeInfoListEx aile;
 		AttributeInfoEx aie;
 		aie = &conf;
-		aie.label = LabelNotSpec;
+		aie.label = get_fwd_att_name();
 
 		RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 		DeviceProxy *dev = rar.get_root_att_dp(fwd_dev_name);
