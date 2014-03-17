@@ -62,6 +62,7 @@ public:
 	Tango::AttributeValueList	*attr_value;
 	Tango::AttributeValueList_3	*attr_value_3;
 	Tango::AttributeValueList_4	*attr_value_4;
+	Tango::AttributeValueList_5	*attr_value_5;
 	Tango::DevFailed			*except;
 	struct timeval				when;
 };
@@ -96,9 +97,10 @@ public:
 	void insert_data(Tango::AttributeValueList *,struct timeval &);
 	void insert_data(Tango::AttributeValueList_3 *,struct timeval &);
 	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,bool);
+	void insert_data(Tango::AttributeValueList_5 *,struct timeval &,bool);
 	void insert_except(Tango::DevFailed *,struct timeval &);
 
-	void force_copy_data(Tango::AttributeValueList_4 *);
+	template <typename T> void force_copy_data(T *);
 
 	void get_delta_t(vector<double> &,long nb);
 	struct timeval get_last_insert_date();
@@ -115,6 +117,7 @@ public:
 	Tango::AttributeValue &get_last_attr_value();
 	Tango::AttributeValue_3 &get_last_attr_value_3();
 	Tango::AttributeValue_4 &get_last_attr_value_4();
+	Tango::AttributeValue_5 &get_last_attr_value_5();
 	long get_nb_elt() {return nb_elt;}
 
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);

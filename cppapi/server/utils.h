@@ -1191,6 +1191,7 @@ inline DbDevice *DeviceImpl::get_db_device()
 
 void clear_att_dim(Tango::AttributeValue_3 &att_val);
 void clear_att_dim(Tango::AttributeValue_4 &att_val);
+void clear_att_dim(Tango::AttributeValue_5 &att_val);
 
 //-----------------------------------------------------------------------
 //

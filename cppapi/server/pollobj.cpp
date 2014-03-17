@@ -260,6 +260,14 @@ Tango::AttributeValue_4 &PollObj::get_last_attr_value_4(bool lock)
 	return ring.get_last_attr_value_4();
 }
 
+Tango::AttributeValue_5 &PollObj::get_last_attr_value_5(bool lock)
+{
+	if (lock == true)
+		omni_mutex_lock(*this);
+
+	return ring.get_last_attr_value_5();
+}
+
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :

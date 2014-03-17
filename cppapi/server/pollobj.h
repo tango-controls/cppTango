@@ -80,6 +80,7 @@ public:
 	Tango::AttributeValue &get_last_attr_value(bool);
 	Tango::AttributeValue_3 &get_last_attr_value_3(bool);
 	Tango::AttributeValue_4 &get_last_attr_value_4(bool);
+	Tango::AttributeValue_5 &get_last_attr_value_5(bool);
 
 	bool is_ring_empty() {omni_mutex_lock(*this);return is_ring_empty_i();}
 	bool is_ring_empty_i() {return ring.is_empty();}

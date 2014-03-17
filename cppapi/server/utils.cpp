@@ -2831,6 +2831,17 @@ void clear_att_dim(Tango::AttributeValue_4 &att_val)
 	att_val.data_format = Tango::FMT_UNKNOWN;
 }
 
+void clear_att_dim(Tango::AttributeValue_5 &att_val)
+{
+	att_val.r_dim.dim_x = 0;
+	att_val.r_dim.dim_y = 0;
+	att_val.w_dim.dim_x = 0;
+	att_val.w_dim.dim_y = 0;
+
+	att_val.data_format = Tango::FMT_UNKNOWN;
+	att_val.data_type = 0;
+}
+
 //
 // The function called by the interceptor on thread creation
 //

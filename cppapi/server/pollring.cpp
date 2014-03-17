@@ -241,6 +241,42 @@ void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval 
 	inc_indexes();
 }
 
+void PollRing::insert_data(Tango::AttributeValueList_5 *attr_val,struct timeval &t,bool unlock)
+{
+
+//
+// Insert data in the ring
+//
+
+	delete(ring[insert_elt].attr_value_5);
+	delete(ring[insert_elt].except);
+	ring[insert_elt].except = NULL;
+
+	ring[insert_elt].attr_value_5 = attr_val;
+	ring[insert_elt].when = t;
+
+	force_copy_data(ring[insert_elt].attr_value_5);
+
+//
+// Release attribute mutexes because the data are now copied
+//
+
+	if (unlock == true)
+	{
+		for (unsigned int loop = 0;loop < attr_val->length();loop++)
+		{
+			Tango::AttributeValue_5 *tmp_ptr = &((*attr_val)[loop]);
+			(tmp_ptr)->rel_attr_mutex();
+		}
+	}
+
+//
+// Manage insert and read indexes
+//
+
+	inc_indexes();
+}
+
 //-------------------------------------------------------------------------
 //
 // method : 		PollRing::force_copy_data
@@ -262,15 +298,15 @@ void PollRing::insert_data(Tango::AttributeValueList_4 *attr_val,struct timeval 
 //
 //--------------------------------------------------------------------------
 
-void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
+void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value)
 {
-	for (unsigned long loop = 0;loop < attr_value_4->length();loop++)
+	for (unsigned long loop = 0;loop < attr_value->length();loop++)
 	{
-		switch ((*attr_value_4)[loop].value._d())
+		switch ((*attr_value)[loop].value._d())
 		{
 			case ATT_BOOL:
 			{
-				DevVarBooleanArray &union_seq = (*attr_value_4)[loop].value.bool_att_value();
+				DevVarBooleanArray &union_seq = (*attr_value)[loop].value.bool_att_value();
 				DevVarBooleanArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -280,7 +316,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_SHORT:
 			{
-				DevVarShortArray &union_seq = (*attr_value_4)[loop].value.short_att_value();
+				DevVarShortArray &union_seq = (*attr_value)[loop].value.short_att_value();
 				DevVarShortArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -290,7 +326,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_LONG:
 			{
-				DevVarLongArray &union_seq = (*attr_value_4)[loop].value.long_att_value();
+				DevVarLongArray &union_seq = (*attr_value)[loop].value.long_att_value();
 				DevVarLongArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -300,7 +336,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_LONG64:
 			{
-				DevVarLong64Array &union_seq = (*attr_value_4)[loop].value.long64_att_value();
+				DevVarLong64Array &union_seq = (*attr_value)[loop].value.long64_att_value();
 				DevVarLong64Array tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -310,7 +346,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_FLOAT:
 			{
-				DevVarFloatArray &union_seq = (*attr_value_4)[loop].value.float_att_value();
+				DevVarFloatArray &union_seq = (*attr_value)[loop].value.float_att_value();
 				DevVarFloatArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -320,7 +356,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_DOUBLE:
 			{
-				DevVarDoubleArray &union_seq = (*attr_value_4)[loop].value.double_att_value();
+				DevVarDoubleArray &union_seq = (*attr_value)[loop].value.double_att_value();
 				DevVarDoubleArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -330,7 +366,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_UCHAR:
 			{
-				DevVarCharArray &union_seq = (*attr_value_4)[loop].value.uchar_att_value();
+				DevVarCharArray &union_seq = (*attr_value)[loop].value.uchar_att_value();
 				DevVarCharArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -340,7 +376,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_USHORT:
 			{
-				DevVarUShortArray &union_seq = (*attr_value_4)[loop].value.ushort_att_value();
+				DevVarUShortArray &union_seq = (*attr_value)[loop].value.ushort_att_value();
 				DevVarUShortArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -350,7 +386,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_ULONG:
 			{
-				DevVarULongArray &union_seq = (*attr_value_4)[loop].value.ulong_att_value();
+				DevVarULongArray &union_seq = (*attr_value)[loop].value.ulong_att_value();
 				DevVarULongArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -360,7 +396,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_ULONG64:
 			{
-				DevVarULong64Array &union_seq = (*attr_value_4)[loop].value.ulong64_att_value();
+				DevVarULong64Array &union_seq = (*attr_value)[loop].value.ulong64_att_value();
 				DevVarULong64Array tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -370,16 +406,16 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_STRING:
 			{
-				const DevVarStringArray &union_seq = (*attr_value_4)[loop].value.string_att_value();
+				const DevVarStringArray &union_seq = (*attr_value)[loop].value.string_att_value();
 				DevVarStringArray tmp_seq = union_seq;
 				(const_cast<DevVarStringArray &>(union_seq)).replace(0,0,NULL,true);
-				(*attr_value_4)[loop].value.string_att_value(tmp_seq);
+				(*attr_value)[loop].value.string_att_value(tmp_seq);
 			}
 			break;
 
 			case ATT_STATE:
 			{
-				DevVarStateArray &union_seq = (*attr_value_4)[loop].value.state_att_value();
+				DevVarStateArray &union_seq = (*attr_value)[loop].value.state_att_value();
 				DevVarStateArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 				unsigned long len = tmp_seq.length();
@@ -393,7 +429,7 @@ void PollRing::force_copy_data(Tango::AttributeValueList_4 *attr_value_4)
 
 			case ATT_ENCODED:
 			{
-				DevVarEncodedArray &union_seq = (*attr_value_4)[loop].value.encoded_att_value();
+				DevVarEncodedArray &union_seq = (*attr_value)[loop].value.encoded_att_value();
 				DevVarEncodedArray tmp_seq(union_seq);
 				union_seq.replace(0,0,NULL,true);
 
@@ -635,9 +671,16 @@ bool PollRing::is_last_attr_an_error()
 				else
 					return false;
 			}
-			else
+			else if (ring[max_elt - 1].attr_value_4 != NULL)
 			{
 				if ((*(ring[max_elt - 1].attr_value_4))[0].err_list.length() != 0)
+					return true;
+				else
+					return false;
+			}
+			else
+			{
+				if ((*(ring[max_elt - 1].attr_value_5))[0].err_list.length() != 0)
 					return true;
 				else
 					return false;
@@ -657,9 +700,16 @@ bool PollRing::is_last_attr_an_error()
 				else
 					return false;
 			}
-			else
+			else if (ring[insert_elt - 1].attr_value_4 != NULL)
 			{
 				if ((*(ring[insert_elt - 1].attr_value_4))[0].err_list.length() != 0)
+					return true;
+				else
+					return false;
+			}
+			else
+			{
+				if ((*(ring[insert_elt - 1].attr_value_5))[0].err_list.length() != 0)
 					return true;
 				else
 					return false;
@@ -702,15 +752,19 @@ Tango::DevErrorList &PollRing::get_last_attr_error()
 	{
 		if (ring[max_elt - 1].attr_value_3 != NULL)
 			return (*(ring[max_elt - 1].attr_value_3))[0].err_list;
-		else
+		else if (ring[max_elt - 1].attr_value_4 != NULL)
 			return (*(ring[max_elt - 1].attr_value_4))[0].err_list;
+		else
+			return (*(ring[max_elt - 1].attr_value_5))[0].err_list;
 	}
 	else
 	{
-		if(ring[insert_elt - 1].attr_value_3 != NULL)
+		if (ring[insert_elt - 1].attr_value_3 != NULL)
 			return (*(ring[insert_elt - 1].attr_value_3))[0].err_list;
-		else
+		else if (ring[insert_elt - 1].attr_value_4 != NULL)
 			return (*(ring[insert_elt - 1].attr_value_4))[0].err_list;
+		else
+			return (*(ring[insert_elt - 1].attr_value_5))[0].err_list;
 	}
 }
 
@@ -831,6 +885,30 @@ Tango::AttributeValue_4 &PollRing::get_last_attr_value_4()
 	}
 
 }
+
+Tango::AttributeValue_5 &PollRing::get_last_attr_value_5()
+{
+	if (insert_elt == 0)
+	{
+		if (ring[max_elt - 1].except == NULL)
+		{
+			return (*(ring[max_elt - 1].attr_value_5))[0];
+		}
+		else
+			throw Tango::DevFailed(*(ring[max_elt - 1].except));
+	}
+	else
+	{
+		if (ring[insert_elt - 1].except == NULL)
+		{
+			return (*(ring[insert_elt - 1].attr_value_5))[0];
+		}
+		else
+			throw Tango::DevFailed(*(ring[insert_elt - 1].except));
+	}
+
+}
+
 //-------------------------------------------------------------------------
 //
 // method : 		PollObj::get_cmd_history
