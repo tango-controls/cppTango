@@ -403,7 +403,7 @@ protected :
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);
 
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &) = 0;
-    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint)) {}
+    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint),TANGO_UNUSED(string &endpoint_event)) {}
     virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &) = 0;
     virtual void disconnect_event(string &,string &) {}
 
@@ -492,7 +492,7 @@ public :
 protected :
 	ZmqEventConsumer(ApiUtil *ptr);
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
-    virtual void disconnect_event_channel(string &channel_name,string &endpoint);
+    virtual void disconnect_event_channel(string &channel_name,string &endpoint,string &endpoint_event);
     virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &);
     virtual void disconnect_event(string &,string &);
 

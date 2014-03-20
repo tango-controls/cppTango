@@ -4865,16 +4865,14 @@ void DeviceImpl::throw_locked_exception(const char *meth)
 // argument:
 //		in :
 //			- att :
-//			- back :
-//			- back4 :
+//			- aid :
 //			- index :
 //			- w_type :
 //			- del_seq :
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
-										AttributeValueList_4 *back4,
+void DeviceImpl::data_into_net_object(Attribute &att,AttributeIdlData &aid,
 										long index,AttrWriteType w_type,bool del_seq)
 {
 
@@ -4887,307 +4885,145 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 		case Tango::DEV_SHORT :
 		case Tango::DEV_ENUM :
 		{
-			Tango::DevVarShortArray *ptr = att.get_short_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.short_att_value(dummy_short_att_value);
-
-				DevVarShortArray &the_seq = (*back4)[index].value.short_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarShortArray,get_short_value,dummy_short_att_value,short_att_value);
 			break;
 		}
 
 		case Tango::DEV_LONG :
 		{
-			Tango::DevVarLongArray *ptr = att.get_long_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.long_att_value(dummy_long_att_value);
-
-				DevVarLongArray &the_seq = (*back4)[index].value.long_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarLongArray,get_long_value,dummy_long_att_value,long_att_value);
 			break;
 		}
 
 		case Tango::DEV_LONG64 :
 		{
-			Tango::DevVarLong64Array *ptr = att.get_long64_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.long64_att_value(dummy_long64_att_value);
-
-				DevVarLong64Array &the_seq = (*back4)[index].value.long64_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarLong64Array,get_long64_value,dummy_long64_att_value,long64_att_value);
 			break;
 		}
 
 		case Tango::DEV_DOUBLE :
 		{
-			Tango::DevVarDoubleArray *ptr = att.get_double_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.double_att_value(dummy_double_att_value);
-
-				DevVarDoubleArray &the_seq = (*back4)[index].value.double_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarDoubleArray,get_double_value,dummy_double_att_value,double_att_value);
 			break;
 		}
 
 		case Tango::DEV_STRING :
 		{
-			Tango::DevVarStringArray *ptr = att.get_string_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.string_att_value(dummy_string_att_value);
-
-				DevVarStringArray &the_seq = (*back4)[index].value.string_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarStringArray,get_string_value,dummy_string_att_value,string_att_value);
 			break;
 		}
 
 		case Tango::DEV_FLOAT :
 		{
-			Tango::DevVarFloatArray *ptr = att.get_float_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.float_att_value(dummy_float_att_value);
-
-				DevVarFloatArray &the_seq = (*back4)[index].value.float_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarFloatArray,get_float_value,dummy_float_att_value,float_att_value);
 			break;
 		}
 
 		case Tango::DEV_BOOLEAN :
 		{
-			Tango::DevVarBooleanArray *ptr = att.get_boolean_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.bool_att_value(dummy_boolean_att_value);
-
-				DevVarBooleanArray &the_seq = (*back4)[index].value.bool_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarBooleanArray,get_boolean_value,dummy_boolean_att_value,bool_att_value);
 			break;
 		}
 
 		case Tango::DEV_USHORT :
 		{
-			Tango::DevVarUShortArray *ptr = att.get_ushort_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.ushort_att_value(dummy_ushort_att_value);
-
-				DevVarUShortArray &the_seq = (*back4)[index].value.ushort_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarUShortArray,get_ushort_value,dummy_ushort_att_value,ushort_att_value);
 			break;
 		}
 
 		case Tango::DEV_UCHAR :
 		{
-			Tango::DevVarCharArray *ptr = att.get_uchar_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.uchar_att_value(dummy_uchar_att_value);
-
-				DevVarCharArray &the_seq = (*back4)[index].value.uchar_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarCharArray,get_uchar_value,dummy_uchar_att_value,uchar_att_value);
 			break;
 		}
 
 		case Tango::DEV_ULONG :
 		{
-			Tango::DevVarULongArray *ptr = att.get_ulong_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.ulong_att_value(dummy_ulong_att_value);
-
-				DevVarULongArray &the_seq = (*back4)[index].value.ulong_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarULongArray,get_ulong_value,dummy_ulong_att_value,ulong_att_value);
 			break;
 		}
 
 		case Tango::DEV_ULONG64 :
 		{
-			Tango::DevVarULong64Array *ptr = att.get_ulong64_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.ulong64_att_value(dummy_ulong64_att_value);
-
-				DevVarULong64Array &the_seq = (*back4)[index].value.ulong64_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarULong64Array,get_ulong64_value,dummy_ulong64_att_value,ulong64_att_value);
 			break;
 		}
 
 		case Tango::DEV_STATE :
 		{
-			Tango::DevVarStateArray *ptr = att.get_state_value();
-			if (back != NULL)
-			{
-				(*back)[index].value <<= *ptr;
-			}
-			else
-			{
-				(*back4)[index].value.state_att_value(dummy_state_att_value);
-
-				DevVarStateArray &the_seq = (*back4)[index].value.state_att_value();
-				the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release());
-
-				if (ptr->release() == true)
-					ptr->get_buffer(true);
-			}
-			if (del_seq == true)
-				delete ptr;
+			DATA_IN_OBJECT(DevVarStateArray,get_state_value,dummy_state_att_value,state_att_value);
 			break;
 		}
 
 		case Tango::DEV_ENCODED :
 		{
-			if (back4 == NULL)
+			if (aid.data_3 != Tango_nullptr)
 			{
-				(*back)[index].err_list.length(1);
-				(*back)[index].err_list[0].severity = Tango::ERR;
-				(*back)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
-				(*back)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-				(*back)[index].err_list[0].desc = CORBA::string_dup("The DevEncoded data type is available only for device implementing IDL 4 and above");
-				(*back)[index].quality = Tango::ATTR_INVALID;
-				(*back)[index].name = CORBA::string_dup(att.get_name().c_str());
-				clear_att_dim((*back)[index]);
+				(*aid.data_3)[index].err_list.length(1);
+				(*aid.data_3)[index].err_list[0].severity = Tango::ERR;
+				(*aid.data_3)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
+				(*aid.data_3)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
+				(*aid.data_3)[index].err_list[0].desc = CORBA::string_dup("The DevEncoded data type is available only for device implementing IDL 4 and above");
+				(*aid.data_3)[index].quality = Tango::ATTR_INVALID;
+				(*aid.data_3)[index].name = CORBA::string_dup(att.get_name().c_str());
+				clear_att_dim((*aid.data_3)[index]);
 			}
 			else
 			{
-				(*back4)[index].value.encoded_att_value(dummy_encoded_att_value);
-				DevVarEncodedArray &the_seq = (*back4)[index].value.encoded_att_value();
-
 				Tango::DevVarEncodedArray *ptr = att.get_encoded_value();
-				if ((w_type == Tango::READ) || (w_type == Tango::WRITE))
-					the_seq.length(1);
-				else
-					the_seq.length(2);
-
-				the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
-
-				if (ptr->release() == true)
+				if (aid.data_5 != Tango_nullptr)
 				{
-					unsigned long nb_data = (*ptr)[0].encoded_data.length();
-					the_seq[0].encoded_data.replace(nb_data,nb_data,(*ptr)[0].encoded_data.get_buffer(true),true);
-					(*ptr)[0].encoded_data.replace(0,0,NULL,false);
+					(*aid.data_5)[index].value.encoded_att_value(dummy_encoded_att_value);
+					DevVarEncodedArray &the_seq = (*aid.data_5)[index].value.encoded_att_value();
+
+					if ((w_type == Tango::READ) || (w_type == Tango::WRITE))
+						the_seq.length(1);
+					else
+						the_seq.length(2);
+
+					the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
+
+					if (ptr->release() == true)
+					{
+						unsigned long nb_data = (*ptr)[0].encoded_data.length();
+						the_seq[0].encoded_data.replace(nb_data,nb_data,(*ptr)[0].encoded_data.get_buffer(true),true);
+						(*ptr)[0].encoded_data.replace(0,0,NULL,false);
+					}
+					else
+						the_seq[0].encoded_data.replace((*ptr)[0].encoded_data.length(),(*ptr)[0].encoded_data.length(),(*ptr)[0].encoded_data.get_buffer());
+
+					if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
+					{
+						the_seq[1].encoded_format = CORBA::string_dup((*ptr)[1].encoded_format);
+						the_seq[1].encoded_data.replace((*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.get_buffer());
+					}
 				}
 				else
-					the_seq[0].encoded_data.replace((*ptr)[0].encoded_data.length(),(*ptr)[0].encoded_data.length(),(*ptr)[0].encoded_data.get_buffer());
-
-				if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
 				{
-					the_seq[1].encoded_format = CORBA::string_dup((*ptr)[1].encoded_format);
-					the_seq[1].encoded_data.replace((*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.get_buffer());
+					(*aid.data_4)[index].value.encoded_att_value(dummy_encoded_att_value);
+					DevVarEncodedArray &the_seq = (*aid.data_4)[index].value.encoded_att_value();
+
+					if ((w_type == Tango::READ) || (w_type == Tango::WRITE))
+						the_seq.length(1);
+					else
+						the_seq.length(2);
+
+					the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
+
+					if (ptr->release() == true)
+					{
+						unsigned long nb_data = (*ptr)[0].encoded_data.length();
+						the_seq[0].encoded_data.replace(nb_data,nb_data,(*ptr)[0].encoded_data.get_buffer(true),true);
+						(*ptr)[0].encoded_data.replace(0,0,NULL,false);
+					}
+					else
+						the_seq[0].encoded_data.replace((*ptr)[0].encoded_data.length(),(*ptr)[0].encoded_data.length(),(*ptr)[0].encoded_data.get_buffer());
+
+					if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
+					{
+						the_seq[1].encoded_format = CORBA::string_dup((*ptr)[1].encoded_format);
+						the_seq[1].encoded_data.replace((*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.get_buffer());
+					}
 				}
 				if (del_seq == true)
 					delete ptr;
@@ -5208,8 +5044,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 //
 // argument:
 //		in :
-//			- back :
-//			- back4 :
+//			- aid :
 //			- index :
 //			- type :
 //			- vers : Device IDl version
@@ -5218,8 +5053,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeValueList_3 *back,
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
-										AttributeValueList_4 *back4,
+void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 										long index,long type,long vers,PollObj *polled_att,
 										const DevVarStringArray &names)
 {
@@ -5253,339 +5087,104 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 	{
 	case Tango::DEV_SHORT :
 	case Tango::DEV_ENUM :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarShortArray &union_seq = att_val.value.short_att_value();
-				new_tmp_sh = new DevVarShortArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<short *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_sh;
-				new_tmp_sh = new DevVarShortArray(tmp_sh->length(),
-								tmp_sh->length(),
-								const_cast<short *>(tmp_sh->get_buffer()),
-								false);
-			}
-			(*back)[index].value <<= new_tmp_sh;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.short_att_value(att_val.value.short_att_value());
-		}
+		DATA_IN_NET_OBJECT(short_att_value,DevVarShortArray,short,new_tmp_sh,tmp_sh);
 		break;
 
     case Tango::DEV_DOUBLE :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarDoubleArray &union_seq = att_val.value.double_att_value();
-				new_tmp_db = new DevVarDoubleArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<double *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_db;
-				new_tmp_db = new DevVarDoubleArray(tmp_db->length(),
-							   tmp_db->length(),
-							   const_cast<double *>(tmp_db->get_buffer()),
-							   false);
-			}
-			(*back)[index].value <<= new_tmp_db;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.double_att_value(att_val.value.double_att_value());
-		}
+		DATA_IN_NET_OBJECT(double_att_value,DevVarDoubleArray,double,new_tmp_db,tmp_db);
 		break;
 
 	case Tango::DEV_LONG :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarLongArray &union_seq = att_val.value.long_att_value();
-				new_tmp_lg = new DevVarLongArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevLong *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_lg;
-				new_tmp_lg = new DevVarLongArray(tmp_lg->length(),
-							   tmp_lg->length(),
-							   const_cast<DevLong *>(tmp_lg->get_buffer()),
-							   false);
-			}
-			(*back)[index].value <<= new_tmp_lg;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.long_att_value(att_val.value.long_att_value());
-		}
+		DATA_IN_NET_OBJECT(long_att_value,DevVarLongArray,DevLong,new_tmp_lg,tmp_lg);
 		break;
 
 	case Tango::DEV_LONG64 :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarLong64Array &union_seq = att_val.value.long64_att_value();
-				new_tmp_lg64 = new DevVarLong64Array(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevLong64 *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_lg64;
-				new_tmp_lg64 = new DevVarLong64Array(tmp_lg64->length(),tmp_lg64->length(),
-						 				const_cast<DevLong64 *>(tmp_lg64->get_buffer()),false);
-			}
-			(*back)[index].value <<= new_tmp_lg64;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.long64_att_value(att_val.value.long64_att_value());
-		}
+		DATA_IN_NET_OBJECT(long64_att_value,DevVarLong64Array,DevLong64,new_tmp_lg64,tmp_lg64);
 		break;
 
 	case Tango::DEV_STRING :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarStringArray &union_seq = att_val.value.string_att_value();
-				new_tmp_str = new DevVarStringArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<char **>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_str;
-				new_tmp_str = new DevVarStringArray(tmp_str->length(),
-								tmp_str->length(),
-								const_cast<char **>(tmp_str->get_buffer()),
-								false);
-			}
-			(*back)[index].value <<= new_tmp_str;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.string_att_value(att_val.value.string_att_value());
-		}
+		DATA_IN_NET_OBJECT(string_att_value,DevVarStringArray,char *,new_tmp_str,tmp_str);
 		break;
 
 	case Tango::DEV_FLOAT :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarFloatArray &union_seq = att_val.value.float_att_value();
-				new_tmp_fl = new DevVarFloatArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<float *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_fl;
-				new_tmp_fl = new DevVarFloatArray(tmp_fl->length(),
-						  	tmp_fl->length(),
-						  	const_cast<float *>(tmp_fl->get_buffer()),
-						  	false);
-			}
-			(*back)[index].value <<= new_tmp_fl;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.float_att_value(att_val.value.float_att_value());
-		}
+		DATA_IN_NET_OBJECT(float_att_value,DevVarFloatArray,float,new_tmp_fl,tmp_fl);
 		break;
 
 	case Tango::DEV_BOOLEAN :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarBooleanArray &union_seq = att_val.value.bool_att_value();
-				new_tmp_boo = new DevVarBooleanArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevBoolean *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_boo;
-				new_tmp_boo = new DevVarBooleanArray(tmp_boo->length(),
-						   tmp_boo->length(),
-						   const_cast<DevBoolean *>(tmp_boo->get_buffer()),
-						   false);
-			}
-			(*back)[index].value <<= new_tmp_boo;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.bool_att_value(att_val.value.bool_att_value());
-		}
+		DATA_IN_NET_OBJECT(bool_att_value,DevVarBooleanArray,DevBoolean,new_tmp_boo,tmp_boo);
 		break;
 
 	case Tango::DEV_USHORT :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarUShortArray &union_seq = att_val.value.ushort_att_value();
-				new_tmp_ush = new DevVarUShortArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevUShort *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_ush;
-				new_tmp_ush = new DevVarUShortArray(tmp_ush->length(),
-						 			tmp_ush->length(),
-						 			const_cast<DevUShort *>(tmp_ush->get_buffer()),
-						 			false);
-			}
-			(*back)[index].value <<= new_tmp_ush;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.ushort_att_value(att_val.value.ushort_att_value());
-		}
+		DATA_IN_NET_OBJECT(ushort_att_value,DevVarUShortArray,DevUShort,new_tmp_ush,tmp_ush);
 		break;
 
 	case Tango::DEV_UCHAR :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarCharArray &union_seq = att_val.value.uchar_att_value();
-				new_tmp_uch = new DevVarUCharArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevUChar *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_uch;
-				new_tmp_uch = new DevVarCharArray(tmp_uch->length(),
-							tmp_uch->length(),
-							const_cast<DevUChar *>(tmp_uch->get_buffer()),
-							false);
-			}
-			(*back)[index].value <<= new_tmp_uch;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.uchar_att_value(att_val.value.uchar_att_value());
-		}
+		DATA_IN_NET_OBJECT(uchar_att_value,DevVarUCharArray,DevUChar,new_tmp_uch,tmp_uch);
 		break;
 
 	case Tango::DEV_ULONG :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarULongArray &union_seq = att_val.value.ulong_att_value();
-				new_tmp_ulg = new DevVarULongArray(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevULong *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_ulg;
-				new_tmp_ulg = new DevVarULongArray(tmp_ulg->length(),tmp_ulg->length(),
-						 		const_cast<DevULong *>(tmp_ulg->get_buffer()),false);
-			}
-			(*back)[index].value <<= new_tmp_ulg;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.ulong_att_value(att_val.value.ulong_att_value());
-		}
+		DATA_IN_NET_OBJECT(ulong_att_value,DevVarULongArray,DevULong,new_tmp_ulg,tmp_ulg);
 		break;
 
 	case Tango::DEV_ULONG64 :
-		if (back != NULL)
-		{
-			if (vers >= 4)
-			{
-				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-				DevVarULong64Array &union_seq = att_val.value.ulong64_att_value();
-				new_tmp_ulg64 = new DevVarULong64Array(union_seq.length(),
-									union_seq.length(),
-									const_cast<DevULong64 *>(union_seq.get_buffer()),
-									false);
-			}
-			else
-			{
-				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false);
-				att_val.value >>= tmp_ulg64;
-				new_tmp_ulg64 = new DevVarULong64Array(tmp_ulg64->length(),tmp_ulg64->length(),
-						 		const_cast<DevULong64 *>(tmp_ulg64->get_buffer()),false);
-			}
-			(*back)[index].value <<= new_tmp_ulg64;
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			(*back4)[index].value.ulong64_att_value(att_val.value.ulong64_att_value());
-		}
+		DATA_IN_NET_OBJECT(ulong64_att_value,DevVarULong64Array,DevULong64,new_tmp_ulg64,tmp_ulg64);
 		break;
 
 	case Tango::DEV_STATE :
-		if (back != NULL)
+		if (aid.data_5 != Tango_nullptr)
 		{
-			if (vers >= 4)
+			AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
+			if (att_val.value._d() == DEVICE_STATE)
+			{
+				sta = att_val.value.dev_state_att();
+				(*aid.data_4)[index].value.dev_state_att(sta);
+			}
+			else if (att_val.value._d() == ATT_STATE)
+			{
+				DevVarStateArray &union_seq = att_val.value.state_att_value();
+				(*aid.data_4)[index].value.state_att_value(union_seq);
+			}
+		}
+		else if (aid.data_4 != Tango_nullptr)
+		{
+			if (vers >= 5)
+			{
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
+				if (att_val.value._d() == DEVICE_STATE)
+				{
+					sta = att_val.value.dev_state_att();
+					(*aid.data_4)[index].value.dev_state_att(sta);
+				}
+				else if (att_val.value._d() == ATT_STATE)
+				{
+					DevVarStateArray &union_seq = att_val.value.state_att_value();
+					(*aid.data_4)[index].value.state_att_value(union_seq);
+				}
+			}
+			else
 			{
 				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
 				if (att_val.value._d() == DEVICE_STATE)
 				{
 					sta = att_val.value.dev_state_att();
-					(*back)[index].value <<= sta;
+					(*aid.data_4)[index].value.dev_state_att(sta);
+				}
+				else if (att_val.value._d() == ATT_STATE)
+				{
+					DevVarStateArray &union_seq = att_val.value.state_att_value();
+					(*aid.data_4)[index].value.state_att_value(union_seq);
+				}
+			}
+		}
+		else
+		{
+			if (vers >= 5)
+			{
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
+				if (att_val.value._d() == DEVICE_STATE)
+				{
+					sta = att_val.value.dev_state_att();
+					(*aid.data_3)[index].value <<= sta;
 				}
 				else if (att_val.value._d() == ATT_STATE)
 				{
@@ -5594,7 +5193,25 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 										union_seq.length(),
 										const_cast<DevState *>(union_seq.get_buffer()),
 										false);
-					(*back)[index].value <<= new_tmp_state;
+					(*aid.data_3)[index].value <<= new_tmp_state;
+				}
+			}
+			else if (vers == 4)
+			{
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
+				if (att_val.value._d() == DEVICE_STATE)
+				{
+					sta = att_val.value.dev_state_att();
+					(*aid.data_3)[index].value <<= sta;
+				}
+				else if (att_val.value._d() == ATT_STATE)
+				{
+					DevVarStateArray &union_seq = att_val.value.state_att_value();
+					new_tmp_state = new DevVarStateArray(union_seq.length(),
+										union_seq.length(),
+										const_cast<DevState *>(union_seq.get_buffer()),
+										false);
+					(*aid.data_3)[index].value <<= new_tmp_state;
 				}
 			}
 			else
@@ -5606,60 +5223,29 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 				if (ty->kind() == CORBA::tk_enum)
 				{
 					att_val.value >>= sta;
-					(*back)[index].value <<= sta;
+					(*aid.data_3)[index].value <<= sta;
 				}
 				else
 				{
 					att_val.value >>= tmp_state;
 					new_tmp_state = new DevVarStateArray(tmp_state->length(),tmp_state->length(),
 									 const_cast<DevState *>(tmp_state->get_buffer()),false);
-					(*back)[index].value <<= new_tmp_state;
+					(*aid.data_3)[index].value <<= new_tmp_state;
 				}
-			}
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
-			if (att_val.value._d() == DEVICE_STATE)
-			{
-				sta = att_val.value.dev_state_att();
-				(*back4)[index].value.dev_state_att(sta);
-			}
-			else if (att_val.value._d() == ATT_STATE)
-			{
-				DevVarStateArray &union_seq = att_val.value.state_att_value();
-				(*back4)[index].value.state_att_value(union_seq);
 			}
 		}
 		break;
 
 	case Tango::DEV_ENCODED:
-		if (back != NULL)
+		if (aid.data_5 != Tango_nullptr)
 		{
-			TangoSys_OMemStream o;
-			o << "Data type for attribute " << names[index] << " is DEV_ENCODED.";
-			o << " It's not possible to retrieve this data type through the interface you are using (IDL V3)" << ends;
-
-			(*back)[index].err_list.length(1);
-			(*back)[index].err_list[0].severity = Tango::ERR;
-			(*back)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
-			(*back)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
-
-			string s = o.str();
-			(*back)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
-			(*back)[index].quality = Tango::ATTR_INVALID;
-			(*back)[index].name = CORBA::string_dup(names[index]);
-			clear_att_dim((*back)[index]);
-		}
-		else
-		{
-			AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
+			AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
 			DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
 
 			unsigned int nb_encoded = polled_seq.length();
 
-			(*back4)[index].value.encoded_att_value(dummy_encoded_att_value);
-			DevVarEncodedArray &the_seq = (*back4)[index].value.encoded_att_value();
+			(*aid.data_5)[index].value.encoded_att_value(dummy_encoded_att_value);
+			DevVarEncodedArray &the_seq = (*aid.data_5)[index].value.encoded_att_value();
 
 			the_seq.length(nb_encoded);
 			for (unsigned int loop = 0;loop < nb_encoded;loop++)
@@ -5670,6 +5256,65 @@ void DeviceImpl::polled_data_into_net_object(AttributeValueList_3 *back,
 				the_seq[loop].encoded_data.replace(nb_data,nb_data,tmp_enc);
 			}
 		}
+		else if (aid.data_4 != Tango_nullptr)
+		{
+			if (vers == 5)
+			{
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false);
+				DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
+
+				unsigned int nb_encoded = polled_seq.length();
+
+				(*aid.data_4)[index].value.encoded_att_value(dummy_encoded_att_value);
+				DevVarEncodedArray &the_seq = (*aid.data_4)[index].value.encoded_att_value();
+
+				the_seq.length(nb_encoded);
+				for (unsigned int loop = 0;loop < nb_encoded;loop++)
+				{
+					the_seq[loop].encoded_format = CORBA::string_dup(polled_seq[loop].encoded_format);
+					unsigned char *tmp_enc = polled_seq[loop].encoded_data.get_buffer();
+					unsigned int nb_data = polled_seq[loop].encoded_data.length();
+					the_seq[loop].encoded_data.replace(nb_data,nb_data,tmp_enc);
+				}
+			}
+			else
+			{
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false);
+				DevVarEncodedArray &polled_seq = att_val.value.encoded_att_value();
+
+				unsigned int nb_encoded = polled_seq.length();
+
+				(*aid.data_4)[index].value.encoded_att_value(dummy_encoded_att_value);
+				DevVarEncodedArray &the_seq = (*aid.data_4)[index].value.encoded_att_value();
+
+				the_seq.length(nb_encoded);
+				for (unsigned int loop = 0;loop < nb_encoded;loop++)
+				{
+					the_seq[loop].encoded_format = CORBA::string_dup(polled_seq[loop].encoded_format);
+					unsigned char *tmp_enc = polled_seq[loop].encoded_data.get_buffer();
+					unsigned int nb_data = polled_seq[loop].encoded_data.length();
+					the_seq[loop].encoded_data.replace(nb_data,nb_data,tmp_enc);
+				}
+			}
+		}
+		else
+		{
+			TangoSys_OMemStream o;
+			o << "Data type for attribute " << names[index] << " is DEV_ENCODED.";
+			o << " It's not possible to retrieve this data type through the interface you are using (IDL V3)" << ends;
+
+			(*aid.data_3)[index].err_list.length(1);
+			(*aid.data_3)[index].err_list[0].severity = Tango::ERR;
+			(*aid.data_3)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
+			(*aid.data_3)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
+
+			string s = o.str();
+			(*aid.data_3)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
+			(*aid.data_3)[index].quality = Tango::ATTR_INVALID;
+			(*aid.data_3)[index].name = CORBA::string_dup(names[index]);
+			clear_att_dim((*aid.data_3)[index]);
+		}
+		break;
 	}
 }
 

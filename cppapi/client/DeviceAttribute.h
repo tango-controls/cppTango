@@ -316,6 +316,7 @@ public :
 
 	AttrQuality 		quality;
 	AttrDataFormat		data_format;
+	long				data_type;
 	string 				name;
 	int 				dim_x;
 	int 				dim_y;

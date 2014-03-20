@@ -140,7 +140,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 	transform(attr_str.begin(),attr_str.end(),attr_str.begin(),::tolower);
 
 //
-// Check that the wanted attribute is polled (Except in case of forwarded attribute)
+// Check that the wanted attribute is polled
 //
 
 	long j;
@@ -154,78 +154,53 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 			break;
 		}
 	}
-	if ((polled_attr == NULL) && (att.is_fwd_att() == false))
+	if (polled_attr == NULL)
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
-		Except::throw_exception((const char *)API_AttrNotPolled,
-						o.str(),
-						(const char *)"Device_4Impl::read_attribute_history_4");
+		Except::throw_exception(API_AttrNotPolled,o.str(),"Device_4Impl::read_attribute_history_4");
 	}
-
-//
-// If it is a forwarded attribute, get data from the root attribute
-//
-
-	if (att.is_fwd_att() == true)
-	{
-		try
-		{
-			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
-			back = fwd_att.read_root_att_history(n);
-		}
-		catch (Tango::DevFailed &e)
-		{
-			stringstream ss;
-			ss << "Reading history for attribute " << attr_str << " on device " << get_name() << " failed!";
-			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_4Impl::read_attribute_history_4");
-		}
-	}
-	else
-	{
 
 //
 // Check that some data is available in cache
 //
 
-		if (polled_attr->is_ring_empty() == true)
-		{
-			TangoSys_OMemStream o;
-			o << "No data available in cache for attribute " << attr_str << ends;
-			Except::throw_exception((const char *)API_NoDataYet,
-							o.str(),
-							(const char *)"Device_4Impl::read_attribute_history_4");
-		}
+	if (polled_attr->is_ring_empty() == true)
+	{
+		TangoSys_OMemStream o;
+		o << "No data available in cache for attribute " << attr_str << ends;
+		Except::throw_exception(API_NoDataYet,o.str(),"Device_4Impl::read_attribute_history_4");
+	}
 
 //
 // Set the number of returned records
 //
 
-		long in_buf = polled_attr->get_elt_nb_in_buffer();
-		if (n > in_buf)
-			n = in_buf;
+	long in_buf = polled_attr->get_elt_nb_in_buffer();
+	if (n > in_buf)
+		n = in_buf;
 
 //
 // Allocate memory for the returned value
 //
 
-		try
-		{
-			back = new Tango::DevAttrHistory_4;
-			back->dates.length(n);
-		}
-		catch (bad_alloc)
-		{
-			Except::throw_exception((const char *)API_MemoryAllocation,
-								(const char *)"Can't allocate memory in server",
-								(const char *)"Device_4Impl::read_attribute_history_4");
-		}
+	try
+	{
+		back = new Tango::DevAttrHistory_4;
+		back->dates.length(n);
+	}
+	catch (bad_alloc)
+	{
+		Except::throw_exception(API_MemoryAllocation,
+							"Can't allocate memory in server",
+							"Device_4Impl::read_attribute_history_4");
+	}
 
 //
 // Init attribute name in the returned structure
 //
 
-		back->name = CORBA::string_dup(name);
+	back->name = CORBA::string_dup(name);
 
 //
 // Get attribute value history
@@ -233,11 +208,10 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 // DEV_STATE, use DEV_VOID for state as data type.
 //
 
-		if (att.get_name_lower() == "state")
-			polled_attr->get_attr_history(n,back,Tango::DEV_VOID);
-		else
-			polled_attr->get_attr_history(n,back,att.get_data_type());
-	}
+	if (att.get_name_lower() == "state")
+		polled_attr->get_attr_history(n,back,Tango::DEV_VOID);
+	else
+		polled_attr->get_attr_history(n,back,att.get_data_type());
 
 	cout4 << "Leaving Device_4Impl::read_attribute_history_4 method" << endl;
 	return back;
@@ -561,16 +535,15 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 // Allocate memory for the AttributeValue structures
 //
 
-	Tango::AttributeValueList_4 *back;
-	Tango::AttributeValueList_3 *back3 = NULL;
+	AttributeIdlData aid;
 
 	try
 	{
 		Tango::AttributeValue_4 *l_back = new Tango::AttributeValue_4 [nb_names];
-		back = new Tango::AttributeValueList_4(nb_names,nb_names,l_back,true);
+		aid.data_4 = new Tango::AttributeValueList_4(nb_names,nb_names,l_back,true);
 
 		for (unsigned long loop = 0;loop < nb_names;loop++)
-			(*back)[loop].value.union_no_data(true);
+			(*aid.data_4)[loop].value.union_no_data(true);
 	}
 	catch (bad_alloc)
 	{
@@ -590,6 +563,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 // which does not throw exception except for major fault (cant allocate
 // memory,....)
 //
+
 	vector <long> idx_in_back;
 
 	if (source == Tango::DEV)
@@ -597,11 +571,11 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 		try
 		{
 			AutoTangoMonitor sync(this);
-			read_attributes_no_except(real_names,back3,back,false,idx_in_back);
+			read_attributes_no_except(real_names,aid,false,idx_in_back);
 		}
 		catch (...)
 		{
-			delete back;
+			delete aid.data_4;
 			throw;
 		}
 	}
@@ -654,11 +628,11 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 			{
 				TangoMonitor &mon = get_poll_monitor();
 				AutoTangoMonitor sync(&mon);
-				read_attributes_from_cache(real_names,back3,back);
+				read_attributes_from_cache(real_names,aid);
 			}
 			catch (...)
 			{
-				delete back;
+				delete aid.data_4;
 				throw;
 			}
 		}
@@ -675,18 +649,18 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 				TangoMonitor &mon = get_poll_monitor();
 				{
 					AutoTangoMonitor sync(&mon);
-					read_attributes_from_cache(local_names,back3,back);
+					read_attributes_from_cache(local_names,aid);
 				}
 
 				{
 					AutoTangoMonitor sync(this);
-					read_attributes_no_except(fwd_names,back3,back,true,idx_in_back);
+					read_attributes_no_except(fwd_names,aid,true,idx_in_back);
 					idx_in_back.clear();
 				}
 			}
 			catch (...)
 			{
-				delete back;
+				delete aid.data_4;
 				throw;
 			}
 		}
@@ -703,11 +677,11 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 		{
 			TangoMonitor &mon = get_poll_monitor();
 			AutoTangoMonitor sync(&mon);
-			read_attributes_from_cache(real_names,back3,back);
+			read_attributes_from_cache(real_names,aid);
 		}
 		catch (...)
 		{
-			delete back;
+			delete aid.data_4;
 			throw;
 		}
 
@@ -721,21 +695,21 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 
        	for (i = 0;i < nb_names;i++)
        	{
-       		long nb_err = (*back)[i].err_list.length();
+       		long nb_err = (*aid.data_4)[i].err_list.length();
        		if (nb_err != 0)
        		{
        			nb_err--;
-       			if ((strcmp((*back)[i].err_list[nb_err].reason,API_AttrNotPolled) == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,API_NoDataYet) == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].reason,API_NotUpdatedAnyMore) == 0) ||
-       					(strcmp((*back)[i].err_list[nb_err].origin,"DServer::add_obj_polling") == 0))
+       			if ((strcmp((*aid.data_4)[i].err_list[nb_err].reason,API_AttrNotPolled) == 0) ||
+       					(strcmp((*aid.data_4)[i].err_list[nb_err].reason,API_NoDataYet) == 0) ||
+       					(strcmp((*aid.data_4)[i].err_list[nb_err].reason,API_NotUpdatedAnyMore) == 0) ||
+       					(strcmp((*aid.data_4)[i].err_list[nb_err].origin,"DServer::add_obj_polling") == 0))
        			{
        				nb_attr++;
        				names_from_device.length(nb_attr);
        				names_from_device[nb_attr - 1] = real_names[i];
        				idx_in_back.push_back(i);
 
-       				(*back)[i].err_list.length(0);
+       				(*aid.data_4)[i].err_list.length(0);
        			}
        		}
        	}
@@ -750,17 +724,17 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 			try
 			{
 				AutoTangoMonitor sync(this);
-				read_attributes_no_except(names_from_device,back3,back,true,idx_in_back);
+				read_attributes_no_except(names_from_device,aid,true,idx_in_back);
 			}
 			catch (...)
 			{
-				delete back;
+				delete aid.data_4;
 				throw;
 			}
 		}
 	}
 
-	return back;
+	return aid.data_4;
 }
 
 
@@ -899,46 +873,25 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 	Tango::AttributeValueList_4 *read_val_ptr;
 
 //
-// Check if the attribute is a forwarded one. If yes, do special stuff
-//
-
-	if (att.is_fwd_att() == true)
-	{
-		try
-		{
-			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
-			read_val_ptr = fwd_att.write_read_root_att(const_cast<AttributeValueList_4 &>(values));
-		}
-		catch (Tango::DevFailed &e)
-		{
-			stringstream ss;
-			ss << "Write_read_attribute on attribute " << att.get_name() << " on device " << get_name() << " failed!";
-			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_4Impl::write_read_attribute_4");
-		}
-	}
-	else
-	{
-//
 // First, write the attribute
 //
 
-		store_in_bb = false;
-		write_attributes_4(values,cl_id);
+	store_in_bb = false;
+	write_attributes_4(values,cl_id);
 
 //
 // Now, read the attribute
 //
 
-		Tango::DevVarStringArray att_name(1);
-		att_name.length(1);
-		att_name[0] = CORBA::string_dup(values[0].name);
-		Tango::ClntIdent dummy_cl_id;
-		Tango::CppClntIdent cci = 0;
-		dummy_cl_id.cpp_clnt(cci);
+	Tango::DevVarStringArray att_name(1);
+	att_name.length(1);
+	att_name[0] = CORBA::string_dup(values[0].name);
+	Tango::ClntIdent dummy_cl_id;
+	Tango::CppClntIdent cci = 0;
+	dummy_cl_id.cpp_clnt(cci);
 
-		store_in_bb = false;
-		read_val_ptr = read_attributes_4(att_name,Tango::DEV,dummy_cl_id);
-	}
+	store_in_bb = false;
+	read_val_ptr = read_attributes_4(att_name,Tango::DEV,dummy_cl_id);
 
 	return read_val_ptr;
 }

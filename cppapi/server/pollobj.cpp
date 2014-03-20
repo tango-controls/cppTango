@@ -40,6 +40,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <pollobj.h>
 #include <pollring.h>
+#include <pollring.tpp>
 
 
 #ifdef _TG_WINDOWS_
@@ -123,9 +124,7 @@ PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd,long
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void PollObj::insert_data(CORBA::Any *res,
-			  struct timeval &when,
-			  struct timeval &needed)
+void PollObj::insert_data(CORBA::Any *res,struct timeval &when,struct timeval &needed)
 {
 	omni_mutex_lock(*this);
 
@@ -133,9 +132,7 @@ void PollObj::insert_data(CORBA::Any *res,
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList *res,
-			  struct timeval &when,
-			  struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList *res,struct timeval &when,struct timeval &needed)
 {
 	omni_mutex_lock(*this);
 
@@ -143,9 +140,7 @@ void PollObj::insert_data(Tango::AttributeValueList *res,
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList_3 *res,
-			  struct timeval &when,
-			  struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList_3 *res,struct timeval &when,struct timeval &needed)
 {
 	omni_mutex_lock(*this);
 
@@ -153,9 +148,15 @@ void PollObj::insert_data(Tango::AttributeValueList_3 *res,
 	needed_time = needed;
 }
 
-void PollObj::insert_data(Tango::AttributeValueList_4 *res,
-			  struct timeval &when,
-			  struct timeval &needed)
+void PollObj::insert_data(Tango::AttributeValueList_4 *res,struct timeval &when,struct timeval &needed)
+{
+	omni_mutex_lock(*this);
+
+	ring.insert_data(res,when,true);
+	needed_time = needed;
+}
+
+void PollObj::insert_data(Tango::AttributeValueList_5 *res,struct timeval &when,struct timeval &needed)
 {
 	omni_mutex_lock(*this);
 
@@ -374,6 +375,14 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_typ
 	omni_mutex_lock(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
+}
+
+void PollObj::get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long attr_type)
+{
+	omni_mutex_lock(*this);
+
+	ring.get_attr_history(n,ptr,attr_type);
+	ptr->data_type = attr_type;
 }
 
 void PollObj::get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long attr_type)

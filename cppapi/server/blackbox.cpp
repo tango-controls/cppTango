@@ -568,7 +568,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSo
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent &cl_id,TANGO_UNUSED(long vers),DevSource sour)
+void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent &cl_id,long vers,DevSource sour)
 {
 
 //
@@ -584,7 +584,10 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
 
-	box[insert_elt].op_type = Op_Read_Attr_4;
+	if (vers == 5)
+		box[insert_elt].op_type = Op_Read_Attr_5;
+	else
+		box[insert_elt].op_type = Op_Read_Attr_4;
 
 	box[insert_elt].source = sour;
 	box[insert_elt].client_ident = false;
@@ -832,7 +835,9 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list, lo
 
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
-	if (vers >= 4)
+	if (vers == 5)
+		box[insert_elt].op_type = Op_Write_Read_Attributes_5;
+	else
 		box[insert_elt].op_type = Op_Write_Read_Attributes_4;
 
 	box[insert_elt].attr_names.clear();
@@ -1155,6 +1160,34 @@ void BlackBox::build_info_as_str(long index)
 			elt_str = elt_str + "set_attribute_config_5 ";
 			break;
 
+		case Op_Read_Attr_5 :
+			elt_str = elt_str + "read_attributes_5 (";
+			nb_in_vect = box[index].attr_names.size();
+			for (i = 0;i < nb_in_vect;i++)
+			{
+				elt_str = elt_str + box[index].attr_names[i];
+				if (i != nb_in_vect - 1)
+					elt_str = elt_str + ", ";
+			}
+			elt_str = elt_str + ") from ";
+			add_source(index);
+			break;
+
+		case Op_Write_Read_Attributes_5 :
+			elt_str = elt_str + "write_read_attributes_5 (";
+			nb_in_vect = box[index].attr_names.size();
+			for (i = 0;i < nb_in_vect;i++)
+			{
+				elt_str = elt_str + box[index].attr_names[i];
+				if (i != nb_in_vect - 1)
+					elt_str = elt_str + ", ";
+			}
+			elt_str = elt_str + ") ";
+			break;
+
+		case Op_Read_Attr_history_5 :
+			elt_str = elt_str + "read_attribute_history_5 ";
+			break;
 
 		case Op_Unknown :
 			elt_str = elt_str + "unknown operation !!!!!";

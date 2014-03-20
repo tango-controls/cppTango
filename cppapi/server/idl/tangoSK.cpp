@@ -701,6 +701,36 @@ Tango::AttributeValue_4::operator<<= (cdrStream &_n)
 }
 
 void
+Tango::AttributeValue_5::operator>>= (cdrStream &_n) const
+{
+  (const AttrValUnion&) value >>= _n;
+  quality >>= _n;
+  data_format >>= _n;
+  data_type >>= _n;
+  (const TimeVal&) time >>= _n;
+  _n.marshalString(name,0);
+  (const AttributeDim&) r_dim >>= _n;
+  (const AttributeDim&) w_dim >>= _n;
+  (const DevErrorList&) err_list >>= _n;
+
+}
+
+void
+Tango::AttributeValue_5::operator<<= (cdrStream &_n)
+{
+  (AttrValUnion&)value <<= _n;
+  (AttrQuality&)quality <<= _n;
+  (AttrDataFormat&)data_format <<= _n;
+  (::CORBA::Long&)data_type <<= _n;
+  (TimeVal&)time <<= _n;
+  name = _n.unmarshalString(0);
+  (AttributeDim&)r_dim <<= _n;
+  (AttributeDim&)w_dim <<= _n;
+  (DevErrorList&)err_list <<= _n;
+
+}
+
+void
 Tango::ChangeEventProp::operator>>= (cdrStream &_n) const
 {
   _n.marshalString(rel_change,0);
@@ -1083,6 +1113,44 @@ void
 Tango::DevAttrHistory_4::operator<<= (cdrStream &_n)
 {
   name = _n.unmarshalString(0);
+  (TimeValList&)dates <<= _n;
+  (::CORBA::Any&)value <<= _n;
+  (AttrQualityList&)quals <<= _n;
+  (EltInArrayList&)quals_array <<= _n;
+  (AttributeDimList&)r_dims <<= _n;
+  (EltInArrayList&)r_dims_array <<= _n;
+  (AttributeDimList&)w_dims <<= _n;
+  (EltInArrayList&)w_dims_array <<= _n;
+  (DevErrorListList&)errors <<= _n;
+  (EltInArrayList&)errors_array <<= _n;
+
+}
+
+void
+Tango::DevAttrHistory_5::operator>>= (cdrStream &_n) const
+{
+  _n.marshalString(name,0);
+  data_format >>= _n;
+  data_type >>= _n;
+  (const TimeValList&) dates >>= _n;
+  (const ::CORBA::Any&) value >>= _n;
+  (const AttrQualityList&) quals >>= _n;
+  (const EltInArrayList&) quals_array >>= _n;
+  (const AttributeDimList&) r_dims >>= _n;
+  (const EltInArrayList&) r_dims_array >>= _n;
+  (const AttributeDimList&) w_dims >>= _n;
+  (const EltInArrayList&) w_dims_array >>= _n;
+  (const DevErrorListList&) errors >>= _n;
+  (const EltInArrayList&) errors_array >>= _n;
+
+}
+
+void
+Tango::DevAttrHistory_5::operator<<= (cdrStream &_n)
+{
+  name = _n.unmarshalString(0);
+  (AttrDataFormat&)data_format <<= _n;
+  (::CORBA::Long&)data_type <<= _n;
   (TimeValList&)dates <<= _n;
   (::CORBA::Any&)value <<= _n;
   (AttrQualityList&)quals <<= _n;
@@ -5926,6 +5994,369 @@ void Tango::_objref_Device_5::set_attribute_config_5(const ::Tango::AttributeCon
 
 
 }
+// Proxy call descriptor class. Mangled signature:
+//  _cTango_mAttributeValueList__5_i_cTango_mDevVarStringArray_i_cTango_mDevSource_i_cTango_mClntIdent_e_cTango_mDevFailed
+class _0RL_cd_6fe2f94a21a10053_74000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_6fe2f94a21a10053_74000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
+     omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 1, upcall)
+  {
+    
+  }
+  
+  void marshalArguments(cdrStream&);
+  void unmarshalArguments(cdrStream&);
+
+  void unmarshalReturnedValues(cdrStream&);
+  void marshalReturnedValues(cdrStream&);
+  
+  void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
+  static const char* const _user_exns[];
+
+  Tango::DevVarStringArray_var arg_0_;
+  const Tango::DevVarStringArray* arg_0;
+  Tango::DevSource arg_1;
+  Tango::ClntIdent_var arg_2_;
+  const Tango::ClntIdent* arg_2;
+  Tango::AttributeValueList_5_var result;
+};
+
+void _0RL_cd_6fe2f94a21a10053_74000000::marshalArguments(cdrStream& _n)
+{
+  (const Tango::DevVarStringArray&) *arg_0 >>= _n;
+  arg_1 >>= _n;
+  (const Tango::ClntIdent&) *arg_2 >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_74000000::unmarshalArguments(cdrStream& _n)
+{
+  arg_0_ = new Tango::DevVarStringArray;
+  (Tango::DevVarStringArray&)arg_0_ <<= _n;
+  arg_0 = &arg_0_.in();
+  (Tango::DevSource&)arg_1 <<= _n;
+  arg_2_ = new Tango::ClntIdent;
+  (Tango::ClntIdent&)arg_2_ <<= _n;
+  arg_2 = &arg_2_.in();
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_74000000::marshalReturnedValues(cdrStream& _n)
+{
+  (const Tango::AttributeValueList_5&) result >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_74000000::unmarshalReturnedValues(cdrStream& _n)
+{
+  result = new Tango::AttributeValueList_5;
+  (Tango::AttributeValueList_5&)result <<= _n;
+
+}
+
+const char* const _0RL_cd_6fe2f94a21a10053_74000000::_user_exns[] = {
+  Tango::DevFailed::_PD_repoId
+};
+
+void _0RL_cd_6fe2f94a21a10053_74000000::userException(cdrStream& s, _OMNI_NS(IOP_C)* iop_client, const char* repoId)
+{
+  if ( omni::strMatch(repoId, Tango::DevFailed::_PD_repoId) ) {
+    Tango::DevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+
+  else {
+    if (iop_client) iop_client->RequestCompleted(1);
+    OMNIORB_THROW(UNKNOWN,UNKNOWN_UserException,
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+// Local call call-back function.
+static void
+_0RL_lcfn_6fe2f94a21a10053_84000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_6fe2f94a21a10053_74000000* tcd = (_0RL_cd_6fe2f94a21a10053_74000000*)cd;
+  Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
+#ifdef HAS_Cplusplus_catch_exception_by_base
+  tcd->result = impl->read_attributes_5(*tcd->arg_0, tcd->arg_1, *tcd->arg_2);
+#else
+  if (!cd->is_upcall())
+    tcd->result = impl->read_attributes_5(*tcd->arg_0, tcd->arg_1, *tcd->arg_2);
+  else {
+    try {
+      tcd->result = impl->read_attributes_5(*tcd->arg_0, tcd->arg_1, *tcd->arg_2);
+    }
+    catch(Tango::DevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+
+  }
+#endif
+
+
+}
+
+Tango::AttributeValueList_5* Tango::_objref_Device_5::read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident)
+{
+  _0RL_cd_6fe2f94a21a10053_74000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_84000000, "read_attributes_5", 18);
+  _call_desc.arg_0 = &(::Tango::DevVarStringArray&) names;
+  _call_desc.arg_1 = source;
+  _call_desc.arg_2 = &(::Tango::ClntIdent&) cl_ident;
+
+  _invoke(_call_desc);
+  return _call_desc.result._retn();
+
+
+}
+// Proxy call descriptor class. Mangled signature:
+//  _cTango_mAttributeValueList__5_i_cTango_mAttributeValueList__4_i_cTango_mClntIdent_e_cTango_mDevFailed_e_cTango_mMultiDevFailed
+class _0RL_cd_6fe2f94a21a10053_94000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_6fe2f94a21a10053_94000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
+     omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 2, upcall)
+  {
+    
+  }
+  
+  void marshalArguments(cdrStream&);
+  void unmarshalArguments(cdrStream&);
+
+  void unmarshalReturnedValues(cdrStream&);
+  void marshalReturnedValues(cdrStream&);
+  
+  void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
+  static const char* const _user_exns[];
+
+  Tango::AttributeValueList_4_var arg_0_;
+  const Tango::AttributeValueList_4* arg_0;
+  Tango::ClntIdent_var arg_1_;
+  const Tango::ClntIdent* arg_1;
+  Tango::AttributeValueList_5_var result;
+};
+
+void _0RL_cd_6fe2f94a21a10053_94000000::marshalArguments(cdrStream& _n)
+{
+  (const Tango::AttributeValueList_4&) *arg_0 >>= _n;
+  (const Tango::ClntIdent&) *arg_1 >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_94000000::unmarshalArguments(cdrStream& _n)
+{
+  arg_0_ = new Tango::AttributeValueList_4;
+  (Tango::AttributeValueList_4&)arg_0_ <<= _n;
+  arg_0 = &arg_0_.in();
+  arg_1_ = new Tango::ClntIdent;
+  (Tango::ClntIdent&)arg_1_ <<= _n;
+  arg_1 = &arg_1_.in();
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_94000000::marshalReturnedValues(cdrStream& _n)
+{
+  (const Tango::AttributeValueList_5&) result >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_94000000::unmarshalReturnedValues(cdrStream& _n)
+{
+  result = new Tango::AttributeValueList_5;
+  (Tango::AttributeValueList_5&)result <<= _n;
+
+}
+
+const char* const _0RL_cd_6fe2f94a21a10053_94000000::_user_exns[] = {
+  Tango::DevFailed::_PD_repoId,
+  Tango::MultiDevFailed::_PD_repoId
+};
+
+void _0RL_cd_6fe2f94a21a10053_94000000::userException(cdrStream& s, _OMNI_NS(IOP_C)* iop_client, const char* repoId)
+{
+  if ( omni::strMatch(repoId, Tango::DevFailed::_PD_repoId) ) {
+    Tango::DevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+  if ( omni::strMatch(repoId, Tango::MultiDevFailed::_PD_repoId) ) {
+    Tango::MultiDevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+
+  else {
+    if (iop_client) iop_client->RequestCompleted(1);
+    OMNIORB_THROW(UNKNOWN,UNKNOWN_UserException,
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+// Local call call-back function.
+static void
+_0RL_lcfn_6fe2f94a21a10053_a4000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_6fe2f94a21a10053_94000000* tcd = (_0RL_cd_6fe2f94a21a10053_94000000*)cd;
+  Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
+#ifdef HAS_Cplusplus_catch_exception_by_base
+  tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1);
+#else
+  if (!cd->is_upcall())
+    tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1);
+  else {
+    try {
+      tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1);
+    }
+    catch(Tango::DevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+    catch(Tango::MultiDevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+
+  }
+#endif
+
+
+}
+
+Tango::AttributeValueList_5* Tango::_objref_Device_5::write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident)
+{
+  _0RL_cd_6fe2f94a21a10053_94000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_a4000000, "write_read_attributes_5", 24);
+  _call_desc.arg_0 = &(::Tango::AttributeValueList_4&) values;
+  _call_desc.arg_1 = &(::Tango::ClntIdent&) cl_ident;
+
+  _invoke(_call_desc);
+  return _call_desc.result._retn();
+
+
+}
+// Proxy call descriptor class. Mangled signature:
+//  _cTango_mDevAttrHistory__5_i_cstring_i_clong_e_cTango_mDevFailed
+class _0RL_cd_6fe2f94a21a10053_b4000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_6fe2f94a21a10053_b4000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
+     omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 1, upcall)
+  {
+    
+  }
+  
+  void marshalArguments(cdrStream&);
+  void unmarshalArguments(cdrStream&);
+
+  void unmarshalReturnedValues(cdrStream&);
+  void marshalReturnedValues(cdrStream&);
+  
+  void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
+  static const char* const _user_exns[];
+
+  ::CORBA::String_var arg_0_;
+  const char* arg_0;
+  ::CORBA::Long arg_1;
+  Tango::DevAttrHistory_5_var result;
+};
+
+void _0RL_cd_6fe2f94a21a10053_b4000000::marshalArguments(cdrStream& _n)
+{
+  _n.marshalString(arg_0,0);
+  arg_1 >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_b4000000::unmarshalArguments(cdrStream& _n)
+{
+  arg_0_ = _n.unmarshalString(0);
+  arg_0 = arg_0_.in();
+  (::CORBA::Long&)arg_1 <<= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_b4000000::marshalReturnedValues(cdrStream& _n)
+{
+  (const Tango::DevAttrHistory_5&) result >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_b4000000::unmarshalReturnedValues(cdrStream& _n)
+{
+  result = new Tango::DevAttrHistory_5;
+  (Tango::DevAttrHistory_5&)result <<= _n;
+
+}
+
+const char* const _0RL_cd_6fe2f94a21a10053_b4000000::_user_exns[] = {
+  Tango::DevFailed::_PD_repoId
+};
+
+void _0RL_cd_6fe2f94a21a10053_b4000000::userException(cdrStream& s, _OMNI_NS(IOP_C)* iop_client, const char* repoId)
+{
+  if ( omni::strMatch(repoId, Tango::DevFailed::_PD_repoId) ) {
+    Tango::DevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+
+  else {
+    if (iop_client) iop_client->RequestCompleted(1);
+    OMNIORB_THROW(UNKNOWN,UNKNOWN_UserException,
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+// Local call call-back function.
+static void
+_0RL_lcfn_6fe2f94a21a10053_c4000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_6fe2f94a21a10053_b4000000* tcd = (_0RL_cd_6fe2f94a21a10053_b4000000*)cd;
+  Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
+#ifdef HAS_Cplusplus_catch_exception_by_base
+  tcd->result = impl->read_attribute_history_5(tcd->arg_0, tcd->arg_1);
+#else
+  if (!cd->is_upcall())
+    tcd->result = impl->read_attribute_history_5(tcd->arg_0, tcd->arg_1);
+  else {
+    try {
+      tcd->result = impl->read_attribute_history_5(tcd->arg_0, tcd->arg_1);
+    }
+    catch(Tango::DevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+
+  }
+#endif
+
+
+}
+
+Tango::DevAttrHistory_5* Tango::_objref_Device_5::read_attribute_history_5(const char* name, ::CORBA::Long n)
+{
+  _0RL_cd_6fe2f94a21a10053_b4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_c4000000, "read_attribute_history_5", 25);
+  _call_desc.arg_0 = name;
+  _call_desc.arg_1 = n;
+
+  _invoke(_call_desc);
+  return _call_desc.result._retn();
+
+
+}
 Tango::_pof_Device_5::~_pof_Device_5() {}
 
 
@@ -5978,6 +6409,30 @@ Tango::_impl_Device_5::_dispatch(omniCallHandle& _handle)
   if( omni::strMatch(op, "set_attribute_config_5") ) {
 
     _0RL_cd_6fe2f94a21a10053_54000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_64000000, "set_attribute_config_5", 23, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
+  if( omni::strMatch(op, "read_attributes_5") ) {
+
+    _0RL_cd_6fe2f94a21a10053_74000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_84000000, "read_attributes_5", 18, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
+  if( omni::strMatch(op, "write_read_attributes_5") ) {
+
+    _0RL_cd_6fe2f94a21a10053_94000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_a4000000, "write_read_attributes_5", 24, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
+  if( omni::strMatch(op, "read_attribute_history_5") ) {
+
+    _0RL_cd_6fe2f94a21a10053_b4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_c4000000, "read_attribute_history_5", 25, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;

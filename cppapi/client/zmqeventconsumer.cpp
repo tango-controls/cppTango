@@ -786,6 +786,7 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
             const char *event_name = &(tmp_ptr[1]);
 #ifdef ZMQ_HAS_DISCONNECT
             const char *endpoint = &(tmp_ptr[1 + ::strlen(event_name) + 1]);
+            const char *endpoint_event = &(tmp_ptr[1 + ::strlen(event_name) + ::strlen(endpoint) + 2]);
 #endif
 
 //
@@ -817,6 +818,17 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
 				connected_heartbeat.erase(pos);
 
 			heartbeat_sub_sock->disconnect(endpoint);
+
+//
+// Remove the event endpoint from the already connected event and disconnect the event socket
+//
+
+			pos = find(connected_pub.begin(),connected_pub.end(),string(endpoint_event));
+			if (pos != connected_pub.end())
+			{
+				connected_pub.erase(pos);
+				event_sub_sock->disconnect(endpoint_event);
+			}
 #endif
         }
         break;
@@ -928,20 +940,6 @@ bool ZmqEventConsumer::process_ctrl(zmq::message_t &received_ctrl,zmq::pollitem_
                     string base_name(event_name);
                     multi_tango_host(event_sub_sock,UNSUBSCRIBE,base_name);
                 }
-
-#ifdef ZMQ_HAS_DISCONNECT
-//
-// Remove the endpoint in the vector of already connected event and disconnect the socket to this endpoint
-//
-
-				vector<string>::iterator pos;
-				pos = find(connected_pub.begin(),connected_pub.end(),endpoint_str);
-				if (pos != connected_pub.end())
-				{
-					connected_pub.erase(pos);
-					event_sub_sock->disconnect(endpoint);
-				}
-#endif
             }
             else
             {
@@ -1417,10 +1415,11 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 //		in :
 //			- channel name : The event channel name (DS admin name)
 //			- endpoint : The ZMQ endpoint for the heartbeat publisher socket
+//			- endpoint_event : The ZMQ endpoint for the event publisher socket
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &endpoint)
+void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &endpoint,string &endpoint_event)
 {
     string unsub(channel_name);
     unsub = unsub + '.' + HEARTBEAT_EVENT_NAME;
@@ -1452,6 +1451,9 @@ void ZmqEventConsumer::disconnect_event_channel(string &channel_name,string &end
 
         ::strcpy(&(buffer[length]),endpoint.c_str());
         length = length + endpoint.size() + 1;
+
+        ::strcpy(&(buffer[length]),endpoint_event.c_str());
+        length = length + endpoint_event.size() + 1;
 
 //
 // Send command to main ZMQ thread

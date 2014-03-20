@@ -3803,8 +3803,10 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango:
 				check_alarm();
 			}
 
+			Tango::AttributeIdlData aid;
 			Tango::AttributeValueList_4 dummy_list(1,1,ptr_4,false);
-			d->data_into_net_object(*this,(Tango::AttributeValueList_3 *)NULL,&dummy_list,0,writable,false);
+			aid.data_4 = &dummy_list;
+			d->data_into_net_object(*this,aid,0,writable,false);
 
 			ptr_4->r_dim.dim_x = dim_x;
 			ptr_4->r_dim.dim_y = dim_y;

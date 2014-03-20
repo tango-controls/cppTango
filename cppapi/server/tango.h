@@ -66,13 +66,11 @@
 #include <sstream>
 #include <fstream>
 
-#include <memory>
-
-
 //
 // Include some stdc++ library headers
 //
 
+#include <memory>
 #include <typeinfo>
 #include <string>
 #include <vector>

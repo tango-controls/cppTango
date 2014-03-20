@@ -75,8 +75,8 @@ public:
 	template<typename T>
 	bool new_att_conf_base(const T&);
 
-	DevAttrHistory_4 *read_root_att_history(long n);
-	AttributeValueList_4 *write_read_root_att(AttributeValueList_4&);
+	DevAttrHistory_5 *read_root_att_history(long n);
+	AttributeValueList_5 *write_read_root_att(AttributeValueList_4&);
 
 protected:
 	void convert_event_prop(string &,double *);

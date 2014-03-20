@@ -3320,8 +3320,8 @@ public:
 
 	void push_att_conf_event(Attribute *);
 
-	void data_into_net_object(Attribute &,AttributeValueList_3 *,AttributeValueList_4 *,long,AttrWriteType,bool);
-	void polled_data_into_net_object(AttributeValueList_3 *,AttributeValueList_4 *,long,long,long,PollObj *,const DevVarStringArray &);
+	void data_into_net_object(Attribute &,AttributeIdlData &,long,AttrWriteType,bool);
+	void polled_data_into_net_object(AttributeIdlData &,long,long,long,PollObj *,const DevVarStringArray &);
 
 	int get_min_poll_period() {return min_poll_period;}
 	vector<string> &get_cmd_min_poll_period() {return cmd_min_poll_period;}
@@ -3518,6 +3518,92 @@ private:
 protected:
 };
 
+#define DATA_IN_NET_OBJECT(A,B,C,D,E) \
+	do \
+	{ \
+		if (aid.data_5 != Tango_nullptr) \
+		{ \
+			AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
+			(*aid.data_5)[index].value.A(att_val.value.A()); \
+		} \
+		else if (aid.data_4 != Tango_nullptr) \
+		{ \
+			if (vers >= 5) \
+			{ \
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
+				(*aid.data_4)[index].value.A(att_val.value.A()); \
+			} \
+			else \
+			{ \
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false); \
+				(*aid.data_4)[index].value.A(att_val.value.A()); \
+			} \
+		} \
+		else \
+		{ \
+			if (vers >= 5) \
+			{ \
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
+				B &union_seq = att_val.value.A(); \
+				D = new B(union_seq.length(), \
+									union_seq.length(), \
+									const_cast<C *>(union_seq.get_buffer()), \
+									false); \
+			} \
+			else if (vers == 4) \
+			{ \
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false); \
+				B &union_seq = att_val.value.A(); \
+				D = new B(union_seq.length(), \
+									union_seq.length(), \
+									const_cast<C *>(union_seq.get_buffer()), \
+									false); \
+			} \
+			else \
+			{ \
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false); \
+				att_val.value >>= E; \
+				D = new B(tmp_sh->length(), \
+								E->length(), \
+								const_cast<C *>(E->get_buffer()), \
+								false); \
+			} \
+			(*aid.data_3)[index].value <<= D; \
+		} \
+	} \
+	while (false)
+
+
+
+#define DATA_IN_OBJECT(A,B,C,D) \
+	do \
+	{ \
+		Tango::A *ptr = att.B(); \
+		if (aid.data_5 != Tango_nullptr) \
+		{ \
+			(*aid.data_5)[index].value.D(C); \
+			A &the_seq = (*aid.data_5)[index].value.D(); \
+			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release()); \
+			if (ptr->release() == true) \
+				ptr->get_buffer(true); \
+		} \
+		else if (aid.data_4 != Tango_nullptr) \
+		{ \
+			(*aid.data_4)[index].value.D(C); \
+			A &the_seq = (*aid.data_4)[index].value.D(); \
+			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release()); \
+			if (ptr->release() == true) \
+				ptr->get_buffer(true); \
+		} \
+		else \
+		{ \
+			(*aid.data_3)[index].value <<= *ptr; \
+		} \
+\
+		if (del_seq == true) \
+			delete ptr; \
+	} \
+	while (false)
 
 
 

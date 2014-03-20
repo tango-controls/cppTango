@@ -204,8 +204,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
     unsigned long i;
     Tango::DevFailed *save_except;
-    Tango::AttributeValueList_3 *back_3;
-    Tango::AttributeValueList_4 *back_4;
+    AttributeIdlData aid;
     bool attr_failed;
 
     struct timeval zero,when;
@@ -225,8 +224,6 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
     for (i = 0;i < nb_elt;i++)
     {
         save_except = NULL;
-        back_3 = NULL;
-        back_4 = NULL;
         attr_failed = false;
 
         if ((data.get_data())[i].err.length() != 0)
@@ -255,14 +252,14 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             {
                 if (idl_vers >= 4)
                 {
-                    back_4 = new Tango::AttributeValueList_4(1);
-                    back_4->length(1);
-                    (*back_4)[0].value.union_no_data(true);
+                    aid.data_4 = new Tango::AttributeValueList_4(1);
+                    aid.data_4->length(1);
+                    (*aid.data_4)[0].value.union_no_data(true);
                 }
                 else
                 {
-                    back_3 = new Tango::AttributeValueList_3(1);
-                    back_3->length(1);
+                    aid.data_3 = new Tango::AttributeValueList_3(1);
+                    aid.data_3->length(1);
                 }
             }
             catch (bad_alloc)
@@ -280,33 +277,33 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             Tango::AttrQuality qu = (data.get_data())[i].qual;
             if (idl_vers >= 4)
             {
-                (*back_4)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
-                (*back_4)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
-                (*back_4)[0].time.tv_nsec = 0;
+                (*aid.data_4)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
+                (*aid.data_4)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
+                (*aid.data_4)[0].time.tv_nsec = 0;
 
-                (*back_4)[0].quality = qu;
-                (*back_4)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_4)[0].quality = qu;
+                (*aid.data_4)[0].name = CORBA::string_dup(att_name.c_str());
 
-                (*back_4)[0].w_dim.dim_x = 0;
-                (*back_4)[0].w_dim.dim_y = 0;
-                (*back_4)[0].r_dim.dim_x = 0;
-                (*back_4)[0].r_dim.dim_y = 0;
+                (*aid.data_4)[0].w_dim.dim_x = 0;
+                (*aid.data_4)[0].w_dim.dim_y = 0;
+                (*aid.data_4)[0].r_dim.dim_x = 0;
+                (*aid.data_4)[0].r_dim.dim_y = 0;
 
-                (*back_4)[0].data_format = att.get_data_format();
+                (*aid.data_4)[0].data_format = att.get_data_format();
             }
             else
             {
-                (*back_3)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
-                (*back_3)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
-                (*back_3)[0].time.tv_nsec = 0;
+                (*aid.data_3)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
+                (*aid.data_3)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
+                (*aid.data_3)[0].time.tv_nsec = 0;
 
-                (*back_3)[0].quality = qu;
-                (*back_3)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_3)[0].quality = qu;
+                (*aid.data_3)[0].name = CORBA::string_dup(att_name.c_str());
 
-                (*back_3)[0].w_dim.dim_x = 0;
-                (*back_3)[0].w_dim.dim_y = 0;
-                (*back_3)[0].r_dim.dim_x = 0;
-                (*back_3)[0].r_dim.dim_y = 0;
+                (*aid.data_3)[0].w_dim.dim_x = 0;
+                (*aid.data_3)[0].w_dim.dim_y = 0;
+                (*aid.data_3)[0].r_dim.dim_x = 0;
+                (*aid.data_3)[0].r_dim.dim_y = 0;
             }
             if ((qu == Tango::ATTR_VALID) ||
                 (qu == Tango::ATTR_ALARM) ||
@@ -358,7 +355,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 // Insert data into the AttributeValue object
 //
 
-                dev->data_into_net_object(att,back_3,back_4,0,w_type,true);
+                dev->data_into_net_object(att,aid,0,w_type,true);
 
 //
 // Init remaining fields
@@ -366,26 +363,26 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
                 if (idl_vers >= 4)
                 {
-                    (*back_4)[0].r_dim.dim_x = (data.get_data())[i].x;
-                    (*back_4)[0].r_dim.dim_y = (data.get_data())[i].y;
+                    (*aid.data_4)[0].r_dim.dim_x = (data.get_data())[i].x;
+                    (*aid.data_4)[0].r_dim.dim_y = (data.get_data())[i].y;
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*back_4)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*back_4)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_4)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
+                        (*aid.data_4)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }
                 }
                 else
                 {
-                    (*back_3)[0].r_dim.dim_x = (data.get_data())[i].x;
-                    (*back_3)[0].r_dim.dim_y = (data.get_data())[i].y;
+                    (*aid.data_3)[0].r_dim.dim_x = (data.get_data())[i].x;
+                    (*aid.data_3)[0].r_dim.dim_y = (data.get_data())[i].y;
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*back_3)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*back_3)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_3)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
+                        (*aid.data_3)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }
                 }
             }
@@ -403,15 +400,15 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             {
                 if (idl_vers >= 4)
                 {
-                    when.tv_sec  = (*back_4)[0].time.tv_sec - DELTA_T;
-                    when.tv_usec = (*back_4)[0].time.tv_usec;
-                    (*ite)->insert_data(back_4,when,zero);
+                    when.tv_sec  = (*aid.data_4)[0].time.tv_sec - DELTA_T;
+                    when.tv_usec = (*aid.data_4)[0].time.tv_usec;
+                    (*ite)->insert_data(aid.data_4,when,zero);
                 }
                 else
                 {
-                    when.tv_sec  = (*back_3)[0].time.tv_sec - DELTA_T;
-                    when.tv_usec = (*back_3)[0].time.tv_usec;
-                    (*ite)->insert_data(back_3,when,zero);
+                    when.tv_sec  = (*aid.data_3)[0].time.tv_sec - DELTA_T;
+                    when.tv_usec = (*aid.data_3)[0].time.tv_usec;
+                    (*ite)->insert_data(aid.data_3,when,zero);
                 }
             }
             else
@@ -425,9 +422,9 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         {
             if (attr_failed == false)
                 if (idl_vers >= 4)
-                    delete back_4;
+                    delete aid.data_4;
             else
-                    delete back_3;
+                    delete aid.data_3;
             else
                 delete save_except;
         }

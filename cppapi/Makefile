@@ -383,6 +383,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			pollext.tpp \
 			pollobj.h \
 			pollring.h \
+			pollring.tpp \
 			pollthread.h \
 			readers_writers_lock.h \
 			rootattreg.h \

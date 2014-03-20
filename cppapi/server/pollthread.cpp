@@ -1442,6 +1442,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 	Tango::AttributeValueList *argout = NULL;
 	Tango::AttributeValueList_3 *argout_3 = NULL;
 	Tango::AttributeValueList_4 *argout_4 = NULL;
+	Tango::AttributeValueList_5 *argout_5 = NULL;
 	Tango::DevFailed *save_except = NULL;
 	bool attr_failed = false;
 	vector<PollObj *>::iterator ite;
@@ -1465,7 +1466,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 //
 
 		attr_names[0] = to_do.name.c_str();
-		if (idl_vers >= 4)
+		if (idl_vers >= 5)
+			argout_5 = (static_cast<Device_5Impl *>(to_do.dev))->read_attributes_5(attr_names,Tango::DEV,dummy_cl_id);
+		else if (idl_vers == 4)
 			argout_4 = (static_cast<Device_4Impl *>(to_do.dev))->read_attributes_4(attr_names,Tango::DEV,dummy_cl_id);
 		else if (idl_vers == 3)
 			argout_3 = (static_cast<Device_3Impl *>(to_do.dev))->read_attributes_3(attr_names,Tango::DEV);
@@ -1537,7 +1540,16 @@ void PollThread::poll_attr(WorkItem &to_do)
 
 	if (idl_vers >= 3)
 	{
-		if (idl_vers >= 4)
+		if (idl_vers >= 5)
+		{
+			if ((attr_failed == false) && ((*argout_5)[0].err_list.length() != 0))
+			{
+				attr_failed = true;
+				save_except = new Tango::DevFailed((*argout_5)[0].err_list);
+				delete argout_5;
+			}
+		}
+		else if (idl_vers == 4)
 		{
 			if ((attr_failed == false) && ((*argout_4)[0].err_list.length() != 0))
 			{
@@ -1580,7 +1592,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 		    struct EventSupplier::SuppliedEventData ad;
 		    ::memset(&ad,0,sizeof(ad));
 
-		    if (idl_vers > 3)
+			if (idl_vers > 4)
+				ad.attr_val_5 = &dummy_att5;
+		    else if (idl_vers == 4)
                 ad.attr_val_4 = &dummy_att4;
             else if (idl_vers == 3)
                 ad.attr_val_3 = &dummy_att3;
@@ -1620,7 +1634,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 		    struct EventSupplier::SuppliedEventData ad;
 		    ::memset(&ad,0,sizeof(ad));
 
-		    if (idl_vers > 3)
+		    if (idl_vers > 4)
+                ad.attr_val_5 = &((*argout_5)[0]);
+		    else if (idl_vers == 4)
                 ad.attr_val_4 = &((*argout_4)[0]);
             else if (idl_vers == 3)
                 ad.attr_val_3 = &((*argout_3)[0]);
@@ -1669,7 +1685,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 		ite = to_do.dev->get_polled_obj_by_type_name(to_do.type,to_do.name);
 		if (attr_failed == false)
 		{
-			if (idl_vers >= 4)
+			if (idl_vers >= 5)
+				(*ite)->insert_data(argout_5,before_cmd,needed_time);
+			else if (idl_vers == 4)
 				(*ite)->insert_data(argout_4,before_cmd,needed_time);
 			else if (idl_vers == 3)
 				(*ite)->insert_data(argout_3,before_cmd,needed_time);
@@ -1684,7 +1702,9 @@ void PollThread::poll_attr(WorkItem &to_do)
 	{
 		if (attr_failed == false)
 		{
-			if (idl_vers >= 4)
+			if (idl_vers >= 5)
+				delete argout_5;
+			else if (idl_vers == 4)
 				delete argout_4;
 			else if (idl_vers == 3)
 				delete argout_3;

@@ -538,6 +538,7 @@ public :
 
 	Tango::Device_var &get_device() {return device;} 	// For CORBA expert !!
 	Tango::Device_4_ptr get_device_4() {return Device_4::_duplicate(device_4);}
+	Tango::Device_5_ptr get_device_5() {return Device_5::_duplicate(device_5);}
 
 	virtual CORBA::Any_var command_inout(string &, CORBA::Any&);
 	virtual CORBA::Any_var command_inout(const char *co, CORBA::Any &d) {string str(co);return command_inout(str,d);}

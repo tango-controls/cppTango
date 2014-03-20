@@ -291,26 +291,41 @@ public:
 /// @privatesection
 	void write_attributes_in_db(vector<long> &,vector<long> &);
 	void add_state_status_attrs();
-	void read_attributes_from_cache(const Tango::DevVarStringArray&,Tango::AttributeValueList_3 *&,Tango::AttributeValueList_4 *&);
+	void read_attributes_from_cache(const Tango::DevVarStringArray&,Tango::AttributeIdlData &);
 	void delete_dev() {ext_3->delete_dev();}
 	void get_attr_props(const char *,vector<AttrProperty> &);
 
 protected:
 /// @privatesection
-	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeValueList_3 *&,Tango::AttributeValueList_4 *&,bool,vector<long> &);
+	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeIdlData &,bool,vector<long> &);
 	void write_attributes_in_db(vector<long> &,vector<AttIdx> &);
 	void add_alarmed(vector<long> &);
 	long reading_state_necessary(vector<AttIdx> &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_3 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_4 &);
+	void state2attr(Tango::DevState,Tango::AttributeValue_5 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_3 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_4 &);
+	void status2attr(Tango::ConstDevString,Tango::AttributeValue_5 &);
 	void alarmed_not_read(vector<AttIdx> &);
 
 	void write_attributes_34(const Tango::AttributeValueList *,const Tango::AttributeValueList_4 *);
 
 	template <typename T,typename V>
 	void set_attribute_config_3_local(const T &,const V &,bool,int);
+
+	template <typename T> void error_from_devfailed(T &,DevFailed &,const char *);
+	template <typename T> void error_from_errorlist(T &,DevErrorList &,const char *);
+
+	template <typename T> void one_error(T &,const char *,const char *,string &,Attribute &);
+	template <typename T> void one_error(T &,const char *,const char *,string &,const char *);
+
+	template <typename T,typename V> void init_polled_out_data(T &,V &);
+	template <typename T> void init_out_data(T &,Attribute &,AttrWriteType &);
+	template <typename T> void init_out_data_quality(T &,Attribute &,AttrQuality);
+
+	template <typename T> void base_state2attr(T &);
+	template <typename T> void base_status2attr(T &);
 
 private:
 

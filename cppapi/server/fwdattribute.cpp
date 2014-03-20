@@ -887,7 +887,7 @@ void FwdAttribute::upd_att_label(const char *new_label)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
+DevAttrHistory_5 *FwdAttribute::read_root_att_history(long n)
 {
 
 //
@@ -896,13 +896,13 @@ DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
 
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *dp = rar.get_root_att_dp(get_fwd_dev_name());
-	Device_4_var dev = dp->get_device_4();
+	Device_5_var dev = dp->get_device_5();
 
 //
 // Get data from root device (Reminder: we don't use the classical API. See above)
 //
 
-	DevAttrHistory_4 *hist_4;
+	DevAttrHistory_5 *hist_5;
 	int ctr = 0;
 
 	while (ctr < 2)
@@ -911,7 +911,7 @@ DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
 		{
 			dp->check_and_reconnect();
 
-			hist_4 = dev->read_attribute_history_4(get_fwd_att_name().c_str(),n);
+			hist_5 = dev->read_attribute_history_5(get_fwd_att_name().c_str(),n);
 
 			ctr = 2;
 		}
@@ -963,9 +963,9 @@ DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
 // Update attribute name in returned data
 //
 
-	hist_4->name = get_name().c_str();
+	hist_5->name = get_name().c_str();
 
-	return hist_4;
+	return hist_5;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -985,7 +985,7 @@ DevAttrHistory_4 *FwdAttribute::read_root_att_history(long n)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-AttributeValueList_4 *FwdAttribute::write_read_root_att(Tango::AttributeValueList_4& values)
+AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueList_4& values)
 {
 //
 // Get CORBA object reference
@@ -993,7 +993,7 @@ AttributeValueList_4 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 	DeviceProxy *dp = rar.get_root_att_dp(get_fwd_dev_name());
-	Device_4_var dev4 = dp->get_device_4();
+	Device_5_var dev5 = dp->get_device_5();
 
 //
 // Update attribute name
@@ -1002,7 +1002,7 @@ AttributeValueList_4 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 	values[0].name = get_fwd_att_name().c_str();
 
 	int ctr = 0;
-	AttributeValueList_4 *attr_value_list_4;
+	AttributeValueList_5 *attr_value_list_5;
 	Tango::AccessControlType local_act;
 
 	while (ctr < 2)
@@ -1043,7 +1043,7 @@ AttributeValueList_4 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			attr_value_list_4 = dev4->write_read_attributes_4(values,ci);
+			attr_value_list_5 = dev5->write_read_attributes_5(values,ci);
 
 			ctr = 2;
 
@@ -1135,8 +1135,8 @@ AttributeValueList_4 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 // Init the returned DeviceAttribute instance
 //
 
-	(*attr_value_list_4)[0].name = get_name().c_str();
-	return attr_value_list_4;
+	(*attr_value_list_5)[0].name = get_name().c_str();
+	return attr_value_list_5;
 }
 
 } // End of Tango namespace

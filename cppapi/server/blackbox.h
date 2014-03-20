@@ -137,7 +137,10 @@ enum BlackBoxElt_OpType
 	Op_Set_Attr_Config_4,
 	Op_Write_Read_Attributes_4,
 	Op_Get_Attr_Config_5,
-	Op_Set_Attr_Config_5
+	Op_Set_Attr_Config_5,
+	Op_Read_Attr_5,
+	Op_Write_Read_Attributes_5,
+	Op_Read_Attr_history_5
 };
 
 class BlackBoxElt

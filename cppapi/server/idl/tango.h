@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;  
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3049,6 +3049,46 @@ omni_mutex *mut_ptr;
   typedef _CORBA_ConstrType_Variable_OUT_arg< AttributeValue_4,AttributeValue_4_var > AttributeValue_4_out;
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_AttributeValue_4;
+
+  struct AttributeValue_5 {
+    typedef _CORBA_ConstrType_Variable_Var<AttributeValue_5> _var_type;
+
+// Added by ET for LockedAttributeValue_5 class
+virtual ~AttributeValue_5() {if (mut_ptr != NULL)mut_ptr->unlock();}
+AttributeValue_5() {mut_ptr=NULL;}
+void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}
+void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
+    
+    AttrValUnion value;
+
+    AttrQuality quality;
+
+    AttrDataFormat data_format;
+
+    ::CORBA::Long data_type;
+
+    TimeVal time;
+
+    ::CORBA::String_member name;
+
+    AttributeDim r_dim;
+
+    AttributeDim w_dim;
+
+    DevErrorList err_list;
+
+// Added by ET for LockedAttributeValue_5 class
+omni_mutex *mut_ptr;   
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef AttributeValue_5::_var_type AttributeValue_5_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< AttributeValue_5,AttributeValue_5_var > AttributeValue_5_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_AttributeValue_5;
 
   struct ChangeEventProp {
     typedef _CORBA_ConstrType_Variable_Var<ChangeEventProp> _var_type;
@@ -4065,6 +4105,117 @@ omni_mutex *mut_ptr;
     AttributeValueList_4_out& operator=(const AttributeValueList_4_var&);
   };
 
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_AttributeValueList_5;
+
+  class AttributeValueList_5_var;
+
+  class AttributeValueList_5 : public _CORBA_Unbounded_Sequence< AttributeValue_5 >  {
+  public:
+    typedef AttributeValueList_5_var _var_type;
+    inline AttributeValueList_5() {}
+    inline AttributeValueList_5(const AttributeValueList_5& _s)
+      : _CORBA_Unbounded_Sequence< AttributeValue_5 > (_s) {}
+
+    inline AttributeValueList_5(_CORBA_ULong _max)
+      : _CORBA_Unbounded_Sequence< AttributeValue_5 > (_max) {}
+    inline AttributeValueList_5(_CORBA_ULong _max, _CORBA_ULong _len, AttributeValue_5* _val, _CORBA_Boolean _rel=0)
+      : _CORBA_Unbounded_Sequence< AttributeValue_5 > (_max, _len, _val, _rel) {}
+
+  
+
+    inline AttributeValueList_5& operator = (const AttributeValueList_5& _s) {
+      _CORBA_Unbounded_Sequence< AttributeValue_5 > ::operator=(_s);
+      return *this;
+    }
+  };
+
+  class AttributeValueList_5_out;
+
+  class AttributeValueList_5_var {
+  public:
+    inline AttributeValueList_5_var() : _pd_seq(0) {}
+    inline AttributeValueList_5_var(AttributeValueList_5* _s) : _pd_seq(_s) {}
+    inline AttributeValueList_5_var(const AttributeValueList_5_var& _s) {
+      if( _s._pd_seq )  _pd_seq = new AttributeValueList_5(*_s._pd_seq);
+      else              _pd_seq = 0;
+    }
+    inline ~AttributeValueList_5_var() { if( _pd_seq )  delete _pd_seq; }
+      
+    inline AttributeValueList_5_var& operator = (AttributeValueList_5* _s) {
+      if( _pd_seq )  delete _pd_seq;
+      _pd_seq = _s;
+      return *this;
+    }
+    inline AttributeValueList_5_var& operator = (const AttributeValueList_5_var& _s) {
+      if( _s._pd_seq ) {
+        if( !_pd_seq )  _pd_seq = new AttributeValueList_5;
+        *_pd_seq = *_s._pd_seq;
+      } else if( _pd_seq ) {
+        delete _pd_seq;
+        _pd_seq = 0;
+      }
+      return *this;
+    }
+    inline AttributeValue_5& operator [] (_CORBA_ULong _s) {
+      return (*_pd_seq)[_s];
+    }
+
+  
+
+    inline AttributeValueList_5* operator -> () { return _pd_seq; }
+    inline const AttributeValueList_5* operator -> () const { return _pd_seq; }
+#if defined(__GNUG__)
+    inline operator AttributeValueList_5& () const { return *_pd_seq; }
+#else
+    inline operator const AttributeValueList_5& () const { return *_pd_seq; }
+    inline operator AttributeValueList_5& () { return *_pd_seq; }
+#endif
+      
+    inline const AttributeValueList_5& in() const { return *_pd_seq; }
+    inline AttributeValueList_5&       inout()    { return *_pd_seq; }
+    inline AttributeValueList_5*&      out() {
+      if( _pd_seq ) { delete _pd_seq; _pd_seq = 0; }
+      return _pd_seq;
+    }
+    inline AttributeValueList_5* _retn() { AttributeValueList_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
+      
+    friend class AttributeValueList_5_out;
+    
+  private:
+    AttributeValueList_5* _pd_seq;
+  };
+
+  class AttributeValueList_5_out {
+  public:
+    inline AttributeValueList_5_out(AttributeValueList_5*& _s) : _data(_s) { _data = 0; }
+    inline AttributeValueList_5_out(AttributeValueList_5_var& _s)
+      : _data(_s._pd_seq) { _s = (AttributeValueList_5*) 0; }
+    inline AttributeValueList_5_out(const AttributeValueList_5_out& _s) : _data(_s._data) {}
+    inline AttributeValueList_5_out& operator = (const AttributeValueList_5_out& _s) {
+      _data = _s._data;
+      return *this;
+    }
+    inline AttributeValueList_5_out& operator = (AttributeValueList_5* _s) {
+      _data = _s;
+      return *this;
+    }
+    inline operator AttributeValueList_5*&()  { return _data; }
+    inline AttributeValueList_5*& ptr()       { return _data; }
+    inline AttributeValueList_5* operator->() { return _data; }
+
+    inline AttributeValue_5& operator [] (_CORBA_ULong _i) {
+      return (*_data)[_i];
+    }
+
+  
+
+    AttributeValueList_5*& _data;
+
+  private:
+    AttributeValueList_5_out();
+    AttributeValueList_5_out& operator=(const AttributeValueList_5_var&);
+  };
+
   struct AttDataReady {
     typedef _CORBA_ConstrType_Variable_Var<AttDataReady> _var_type;
 
@@ -4959,6 +5110,48 @@ omni_mutex *mut_ptr;
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevAttrHistory_4;
 
+  struct DevAttrHistory_5 {
+    typedef _CORBA_ConstrType_Variable_Var<DevAttrHistory_5> _var_type;
+
+    
+    ::CORBA::String_member name;
+
+    AttrDataFormat data_format;
+
+    ::CORBA::Long data_type;
+
+    TimeValList dates;
+
+    ::CORBA::Any value;
+
+    AttrQualityList quals;
+
+    EltInArrayList quals_array;
+
+    AttributeDimList r_dims;
+
+    EltInArrayList r_dims_array;
+
+    AttributeDimList w_dims;
+
+    EltInArrayList w_dims_array;
+
+    DevErrorListList errors;
+
+    EltInArrayList errors_array;
+
+  
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef DevAttrHistory_5::_var_type DevAttrHistory_5_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< DevAttrHistory_5,DevAttrHistory_5_var > DevAttrHistory_5_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevAttrHistory_5;
+
   struct DevCmdHistory_4 {
     typedef _CORBA_ConstrType_Variable_Var<DevCmdHistory_4> _var_type;
 
@@ -5794,6 +5987,9 @@ omni_mutex *mut_ptr;
   public:
     AttributeConfigList_5* get_attribute_config_5(const ::Tango::DevVarStringArray& names);
     void set_attribute_config_5(const ::Tango::AttributeConfigList_5& new_conf, const ::Tango::ClntIdent& cl_ident);
+    AttributeValueList_5* read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident);
+    AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident);
+    DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n);
 
     inline _objref_Device_5()  { _PR_setobj(0); }  // nil
     _objref_Device_5(omniIOR*, omniIdentity*);
@@ -5829,6 +6025,9 @@ omni_mutex *mut_ptr;
 
     virtual AttributeConfigList_5* get_attribute_config_5(const ::Tango::DevVarStringArray& names) = 0;
     virtual void set_attribute_config_5(const ::Tango::AttributeConfigList_5& new_conf, const ::Tango::ClntIdent& cl_ident) = 0;
+    virtual AttributeValueList_5* read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident) = 0;
+    virtual AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident) = 0;
+    virtual DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n) = 0;
     
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
@@ -6277,6 +6476,11 @@ extern void operator<<=(::CORBA::Any& _a, Tango::AttributeValue_4* _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValue_4*& _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValue_4*& _sp);
 
+extern void operator<<=(::CORBA::Any& _a, const Tango::AttributeValue_5& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::AttributeValue_5* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValue_5*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValue_5*& _sp);
+
 extern void operator<<=(::CORBA::Any& _a, const Tango::ChangeEventProp& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::ChangeEventProp* _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::ChangeEventProp*& _sp);
@@ -6346,6 +6550,11 @@ void operator<<=(::CORBA::Any& _a, const Tango::AttributeValueList_4& _s);
 void operator<<=(::CORBA::Any& _a, Tango::AttributeValueList_4* _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValueList_4*& _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValueList_4*& _sp);
+
+void operator<<=(::CORBA::Any& _a, const Tango::AttributeValueList_5& _s);
+void operator<<=(::CORBA::Any& _a, Tango::AttributeValueList_5* _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValueList_5*& _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValueList_5*& _sp);
 
 extern void operator<<=(::CORBA::Any& _a, const Tango::AttDataReady& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::AttDataReady* _sp);
@@ -6421,6 +6630,11 @@ extern void operator<<=(::CORBA::Any& _a, const Tango::DevAttrHistory_4& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::DevAttrHistory_4* _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevAttrHistory_4*& _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevAttrHistory_4*& _sp);
+
+extern void operator<<=(::CORBA::Any& _a, const Tango::DevAttrHistory_5& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::DevAttrHistory_5* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevAttrHistory_5*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevAttrHistory_5*& _sp);
 
 extern void operator<<=(::CORBA::Any& _a, const Tango::DevCmdHistory_4& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::DevCmdHistory_4* _sp);

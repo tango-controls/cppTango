@@ -154,6 +154,7 @@ private:
 	AttributeValue		dummy_att;
 	AttributeValue_3	dummy_att3;
 	AttributeValue_4 	dummy_att4;
+	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
 	long				auto_upd;

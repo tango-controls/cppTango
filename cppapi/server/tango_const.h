@@ -1128,6 +1128,20 @@ typedef enum _FwdAttError
 	FWD_ERR_UNKNOWN
 }FwdAttError;
 
+typedef struct _AttributeIdlData
+{
+	AttributeValueList_3 *data_3;
+	AttributeValueList_4 *data_4;
+	AttributeValueList_5 *data_5;
+
+	_AttributeIdlData()
+	{
+		data_3 = Tango_nullptr;
+		data_4 = Tango_nullptr;
+		data_5 = Tango_nullptr;
+	}
+}AttributeIdlData;
+
 // Ranges type-enum-string conversions
 
 template <typename T>

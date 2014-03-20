@@ -1,11 +1,10 @@
-//=============================================================================
+//====================================================================================================================
 //
 // file :               PollRing.h
 //
-// description :        Include for the PollRing object. This class implements
-//                      the polling ring buffer. Command result or attribute
-//			values are stored in this buffer manages as a ring
-//			buffer.
+// description :        Include for the PollRing object. This class implements the polling ring buffer.
+//						Command result or attribute values are stored in this buffer manages as a ring
+//						buffer.
 //
 // project :            TANGO
 //
@@ -18,22 +17,20 @@
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//====================================================================================================================
 
 #ifndef _POLLRING_H
 #define _POLLRING_H
@@ -43,14 +40,14 @@
 namespace Tango
 {
 
-//=============================================================================
+//===================================================================================================================
 //
 //			The RingElt class
 //
-// description :	Class to store all the necessary information which will
-//			be stored and returned to client on request
+// description :
+//		Class to store all the necessary information which will be stored and returned to client on request
 //
-//=============================================================================
+//===================================================================================================================
 
 
 class RingElt
@@ -77,14 +74,14 @@ inline bool operator==(const RingElt &,const RingElt &)
 	return true;
 }
 
-//=============================================================================
+//===================================================================================================================
 //
 //			The PollRing class
 //
-// description :	Class to implement the ring buffer itself. This is mainly
-//			a vector of RingElt managed as a circular buffer
+// description :
+//		Class to implement the ring buffer itself. This is mainly a vector of RingElt managed as a circular buffer
 //
-//=============================================================================
+//==================================================================================================================
 
 class PollRing
 {
@@ -125,7 +122,8 @@ public:
 
 	void get_attr_history(long,Tango::DevAttrHistoryList *,long);
 	void get_attr_history(long,Tango::DevAttrHistoryList_3 *,long);
-	void get_attr_history(long,Tango::DevAttrHistory_4 *,long);
+
+	template <typename T> void get_attr_history(long,T *,long);
 
 	void get_attr_history_43(long,Tango::DevAttrHistoryList_3 *,long);
 

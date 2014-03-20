@@ -270,6 +270,163 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 	cout4 << "Leaving Device_3Impl::set_attribute_config_3_local" << endl;
 }
 
+template <typename T>
+inline void Device_3Impl::error_from_devfailed(T &back,DevFailed &e,const char *na)
+{
+	back.err_list = e.errors;
+	back.quality = ATTR_INVALID;
+	back.name = CORBA::string_dup(na);
+	clear_att_dim(back);
+}
+
+template <typename T>
+inline void Device_3Impl::error_from_errorlist(T &back,DevErrorList &e,const char *na)
+{
+	back.err_list = e;
+	back.quality = ATTR_INVALID;
+	back.name = CORBA::string_dup(na);
+	clear_att_dim(back);
+}
+
+template <typename T>
+inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,string &mess,Attribute &att)
+{
+	back.err_list.length(1);
+
+	back.err_list[0].severity = Tango::ERR;
+	back.err_list[0].reason = CORBA::string_dup(reas);
+	back.err_list[0].origin = CORBA::string_dup(ori);
+	back.err_list[0].desc = CORBA::string_dup(mess.c_str());
+
+	back.quality = Tango::ATTR_INVALID;
+	back.name = CORBA::string_dup(att.get_name().c_str());
+	clear_att_dim(back);
+}
+
+template <typename T>
+inline void Device_3Impl::one_error(T &back,const char *reas,const char *ori,string &mess,const char *na)
+{
+	back.err_list.length(1);
+
+	back.err_list[0].severity = Tango::ERR;
+	back.err_list[0].reason = CORBA::string_dup(reas);
+	back.err_list[0].origin = CORBA::string_dup(ori);
+	back.err_list[0].desc = CORBA::string_dup(mess.c_str());
+
+	back.quality = Tango::ATTR_INVALID;
+	back.name = CORBA::string_dup(na);
+	clear_att_dim(back);
+}
+
+template <typename T,typename V>
+inline void Device_3Impl::init_polled_out_data(T &back,V &att_val)
+{
+	back.quality = att_val.quality;
+	back.time = att_val.time;
+	back.r_dim = att_val.r_dim;
+	back.w_dim = att_val.w_dim;
+	back.name = CORBA::string_dup(att_val.name);
+}
+
+template <typename T>
+inline void Device_3Impl::init_out_data(T &back,Attribute &att,AttrWriteType &w_type)
+{
+	back.time = att.get_when();
+	back.quality = att.get_quality();
+	back.name = CORBA::string_dup(att.get_name().c_str());
+	back.r_dim.dim_x = att.get_x();
+	back.r_dim.dim_y = att.get_y();
+	if ((w_type == Tango::READ_WRITE) ||
+		(w_type == Tango::READ_WITH_WRITE))
+	{
+		WAttribute &assoc_att = dev_attr->get_w_attr_by_ind(att.get_assoc_ind());
+		back.w_dim.dim_x = assoc_att.get_w_dim_x();
+		back.w_dim.dim_y = assoc_att.get_w_dim_y();
+	}
+	else
+	{
+		if ( w_type == Tango::WRITE)
+		{
+			// for write only attributes read and set value are the same!
+			back.w_dim.dim_x = att.get_x();
+			back.w_dim.dim_y = att.get_y();
+		}
+		else
+		{
+			// Tango::Read : read only attributes
+			back.w_dim.dim_x = 0;
+			back.w_dim.dim_y = 0;
+		}
+	}
+}
+
+template <typename T>
+inline void Device_3Impl::init_out_data_quality(T &back,Attribute &att,AttrQuality qual)
+{
+	back.time = att.get_when();
+	back.quality = qual;
+	back.name = CORBA::string_dup(att.get_name().c_str());
+	back.r_dim.dim_x = att.get_x();
+	back.r_dim.dim_y = att.get_y();
+	back.r_dim.dim_x = 0;
+	back.r_dim.dim_y = 0;
+	back.w_dim.dim_x = 0;
+	back.w_dim.dim_y = 0;
+}
+
+template <typename T>
+inline void Device_3Impl::base_state2attr(T &back)
+{
+
+#ifdef _TG_WINDOWS_
+	struct _timeb after_win;
+
+	_ftime(&after_win);
+	back.time.tv_sec = (long)after_win.time;
+	back.time.tv_usec = (long)after_win.millitm * 1000;
+	back.time.tv_nsec = 0;
+#else
+	struct timeval after;
+
+	gettimeofday(&after,NULL);
+	back.time.tv_sec = after.tv_sec;
+	back.time.tv_usec = after.tv_usec;
+	back.time.tv_nsec = 0;
+#endif
+	back.quality = Tango::ATTR_VALID;
+	back.name = CORBA::string_dup("State");
+	back.r_dim.dim_x = 1;
+	back.r_dim.dim_y = 0;
+	back.w_dim.dim_x = 0;
+	back.w_dim.dim_y = 0;
+}
+
+template <typename T>
+inline void Device_3Impl::base_status2attr(T &back)
+{
+
+#ifdef _TG_WINDOWS_
+	struct _timeb after_win;
+
+	_ftime(&after_win);
+	back.time.tv_sec = (long)after_win.time;
+	back.time.tv_usec = (long)after_win.millitm * 1000;
+	back.time.tv_nsec = 0;
+#else
+	struct timeval after;
+
+	gettimeofday(&after,NULL);
+	back.time.tv_sec = after.tv_sec;
+	back.time.tv_usec = after.tv_usec;
+	back.time.tv_nsec = 0;
+#endif
+	back.quality = Tango::ATTR_VALID;
+	back.name = CORBA::string_dup("Status");
+	back.r_dim.dim_x = 1;
+	back.r_dim.dim_y = 0;
+	back.w_dim.dim_x = 0;
+	back.w_dim.dim_y = 0;
+}
 
 } // End of Tango namespace
 

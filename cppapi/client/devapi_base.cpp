@@ -35,6 +35,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <eventconsumer.h>
+#include <devapi_utils.tpp>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -4473,6 +4474,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 	AttributeValueList_var attr_value_list;
 	AttributeValueList_3_var attr_value_list_3;
 	AttributeValueList_4_var attr_value_list_4;
+	AttributeValueList_5_var attr_value_list_5;
 	DevVarStringArray attr_list;
 
 //
@@ -4498,12 +4500,17 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		{
 			check_and_reconnect(local_source);
 
-			if (version >= 4)
-			{
-				ClntIdent ci;
-				ApiUtil *au = ApiUtil::instance();
-				ci.cpp_clnt(au->get_client_pid());
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
 
+			if (version == 5)
+			{
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			}
+			else if (version == 4)
+			{
 				Device_4_var dev = Device_4::_duplicate(device_4);
 				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
@@ -4612,8 +4619,10 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		nb_received = attr_value_list->length();
 	else if (version == 3)
 		nb_received = attr_value_list_3->length();
-	else
+	else if (version == 4)
 		nb_received = attr_value_list_4->length();
+	else
+		nb_received = attr_value_list_5->length();
 
 	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
 	dev_attr->resize(nb_received);
@@ -4622,10 +4631,12 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 	{
 		if (version >= 3)
 		{
-			if (version == 3)
-				ApiUtil::attr_to_device(NULL,&(attr_value_list_3[i]),version,&(*dev_attr)[i]);
-			else
+			if (version == 5)
+				ApiUtil::attr_to_device(&(attr_value_list_5[i]),version,&(*dev_attr)[i]);
+			else if (version == 4)
 				ApiUtil::attr_to_device(&(attr_value_list_4[i]),version,&(*dev_attr)[i]);
+			else
+				ApiUtil::attr_to_device(NULL,&(attr_value_list_3[i]),version,&(*dev_attr)[i]);
 
 //
 // Add an error in the error stack in case there is one
@@ -4669,6 +4680,7 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 	AttributeValueList_var attr_value_list;
 	AttributeValueList_3_var attr_value_list_3;
 	AttributeValueList_4_var attr_value_list_4;
+	AttributeValueList_5_var attr_value_list_5;
 	DeviceAttribute dev_attr;
 	DevVarStringArray attr_list;
 	int ctr = 0;
@@ -4683,7 +4695,15 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 		{
 			check_and_reconnect(local_source);
 
-			if (version >= 4)
+			if (version >= 5)
+			{
+				ClntIdent ci;
+				ApiUtil *au = ApiUtil::instance();
+				ci.cpp_clnt(au->get_client_pid());
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			}
+			else if (version == 4)
 			{
 				ClntIdent ci;
 				ApiUtil *au = ApiUtil::instance();
@@ -4713,10 +4733,12 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 
 	if (version >= 3)
 	{
-		if (version == 3)
-			ApiUtil::attr_to_device(NULL,&(attr_value_list_3[0]),version,&dev_attr);
-		else
+		if (version >= 5)
+			ApiUtil::attr_to_device(&(attr_value_list_5[0]),version,&dev_attr);
+		else if (version == 4)
 			ApiUtil::attr_to_device(&(attr_value_list_4[0]),version,&dev_attr);
+		else
+			ApiUtil::attr_to_device(NULL,&(attr_value_list_3[0]),version,&dev_attr);
 
 //
 // Add an error in the error stack in case there is one
@@ -4753,6 +4775,7 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 	AttributeValueList *attr_value_list = NULL;
 	AttributeValueList_3 *attr_value_list_3 = NULL;
 	AttributeValueList_4 *attr_value_list_4 = NULL;
+	AttributeValueList_5 *attr_value_list_5 = NULL;
 	DevVarStringArray attr_list;
 	int ctr = 0;
 	Tango::DevSource local_source;
@@ -4766,12 +4789,17 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 		{
 			check_and_reconnect(local_source);
 
-			if (version >= 4)
-			{
-				ClntIdent ci;
-				ApiUtil *au = ApiUtil::instance();
-				ci.cpp_clnt(au->get_client_pid());
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
 
+			if (version >= 5)
+			{
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			}
+			else if (version == 4)
+			{
 				Device_4_var dev = Device_4::_duplicate(device_4);
 				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
@@ -4797,15 +4825,21 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 
 	if (version >= 3)
 	{
-		if (version == 3)
+
+		if (version >= 5)
 		{
-			ApiUtil::attr_to_device(NULL,&((*attr_value_list_3)[0]),version,&dev_attr);
-			delete attr_value_list_3;
+			ApiUtil::attr_to_device(&((*attr_value_list_5)[0]),version,&dev_attr);
+			delete attr_value_list_5;
 		}
-		else
+		else if (version == 4)
 		{
 			ApiUtil::attr_to_device(&((*attr_value_list_4)[0]),version,&dev_attr);
 			delete attr_value_list_4;
+		}
+		else
+		{
+			ApiUtil::attr_to_device(NULL,&((*attr_value_list_3)[0]),version,&dev_attr);
+			delete attr_value_list_3;
 		}
 
 //
@@ -5895,6 +5929,7 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 	DevAttrHistoryList_var hist;
 	DevAttrHistoryList_3_var hist_3;
 	DevAttrHistory_4_var hist_4;
+	DevAttrHistory_5_var hist_5;
 
 	int ctr = 0;
 
@@ -5916,10 +5951,15 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 					Device_3_var dev = Device_3::_duplicate(device_3);
 					hist_3 = dev->read_attribute_history_3(cmd_name.c_str(),depth);
 				}
-				else
+				else if (version == 4)
 				{
 					Device_4_var dev = Device_4::_duplicate(device_4);
 					hist_4 = dev->read_attribute_history_4(cmd_name.c_str(),depth);
+				}
+				else
+				{
+					Device_5_var dev = Device_5::_duplicate(device_5);
+					hist_5 = dev->read_attribute_history_5(cmd_name.c_str(),depth);
 				}
 			}
 			ctr = 2;
@@ -5992,12 +6032,19 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 			ddh->push_back(DeviceAttributeHistory(i,hist_3));
 		}
 	}
-	else
+	else if (version == 4)
 	{
 		ddh->reserve(hist_4->dates.length());
 		for (unsigned int i = 0;i < hist_4->dates.length();i++)
 			ddh->push_back(DeviceAttributeHistory());
-		from_hist4_2_AttHistory(hist_4,ddh);
+		from_hist_2_AttHistory(hist_4,ddh);
+	}
+	else
+	{
+		ddh->reserve(hist_5->dates.length());
+		for (unsigned int i = 0;i < hist_5->dates.length();i++)
+			ddh->push_back(DeviceAttributeHistory());
+		from_hist_2_AttHistory(hist_5,ddh);
 	}
 
 	return ddh;
@@ -7952,6 +7999,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
 	int ctr = 0;
 	AttributeValueList_4_var attr_value_list_4;
+	AttributeValueList_5_var attr_value_list_5;
 	Tango::AccessControlType local_act;
 
 	while (ctr < 2)
@@ -7992,8 +8040,16 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			Device_4_var dev = Device_4::_duplicate(device_4);
-			attr_value_list_4 = dev->write_read_attributes_4(attr_value_list,ci);
+			if (version >= 5)
+			{
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->write_read_attributes_5(attr_value_list,ci);
+			}
+			else
+			{
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->write_read_attributes_4(attr_value_list,ci);
+			}
 
 			ctr = 2;
 
@@ -8086,7 +8142,10 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 //
 
 	DeviceAttribute ret_dev_attr;
-	ApiUtil::attr_to_device(&(attr_value_list_4[0]),version,&ret_dev_attr);
+	if (version >= 5)
+		ApiUtil::attr_to_device(&(attr_value_list_5[0]),version,&ret_dev_attr);
+	else
+		ApiUtil::attr_to_device(&(attr_value_list_4[0]),version,&ret_dev_attr);
 
 //
 // Add an error in the error stack in case there is one

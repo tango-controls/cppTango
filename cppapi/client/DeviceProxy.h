@@ -108,7 +108,7 @@ protected :
 	bool is_polled(polled_object,string &, string &);
 	virtual void reconnect(bool);
 	void get_remaining_param(AttributeInfoListEx *);
-	void from_hist4_2_AttHistory(DevAttrHistory_4_var &,vector<DeviceAttributeHistory> *);
+	template <typename T> void from_hist_2_AttHistory(T &,vector<DeviceAttributeHistory> *);
 	void from_hist4_2_DataHistory(DevCmdHistory_4_var &,vector<DeviceDataHistory> *);
 	void ask_locking_status(vector<string> &,vector<DevLong> &);
 	void get_locker_host(string &,string &);

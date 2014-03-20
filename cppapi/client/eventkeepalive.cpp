@@ -191,7 +191,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 					string adm_name = ipos->second.full_adm_name;
 
 #ifdef ZMQ_HAS_DISCONNECT
-					event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint);
+					event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint,epos->second.endpoint);
 #endif
 					event_consumer->connect_event_channel(adm_name,
 									      epos->second.device->get_device_db(),

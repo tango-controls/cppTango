@@ -196,6 +196,7 @@ public:
 
 	static void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
 	static void attr_to_device(const AttributeValue_4 *,long,DeviceAttribute *);
+	static void attr_to_device(const AttributeValue_5 *,long,DeviceAttribute *);
 
 	static void device_to_attr(const DeviceAttribute &,AttributeValue_4 &);
 	static void device_to_attr(const DeviceAttribute &,AttributeValue &,string &);
@@ -251,6 +252,8 @@ private:
     ZmqEventConsumer            *zmq_event_consumer;
     vector<string>              host_ip_adrs;
     DevLong                     user_sub_hwm;
+
+    template <typename T> static void attr_to_device_base(const T *,DeviceAttribute *);
 };
 
 class _KillProc_: public omni_thread

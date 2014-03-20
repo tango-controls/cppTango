@@ -2913,6 +2913,16 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 		(void)0
 
 
+#define GIVE_ATT_MUTEX_5(A,B,C) \
+	if (true) \
+	{\
+		Tango::AttributeValue_5 *tmp_ptr = &((*A)[B]); \
+		(tmp_ptr)->set_attr_mutex(C.get_attr_mutex()); \
+	} \
+	else \
+		(void)0
+
+
 #define GIVE_USER_ATT_MUTEX(A,B,C) \
 	if (true) \
 	{ \
@@ -2921,6 +2931,17 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 	} \
 	else \
 		(void)0
+
+
+#define GIVE_USER_ATT_MUTEX_5(A,B,C) \
+	if (true) \
+	{ \
+		Tango::AttributeValue_5 *tmp_ptr = &((*A)[B]); \
+		(tmp_ptr)->set_attr_mutex(C.get_user_attr_mutex()); \
+	} \
+	else \
+		(void)0
+
 
 //
 // Yet another macro !!
@@ -2937,6 +2958,17 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
 	} \
 	else \
 		(void)0
+
+
+#define REL_ATT_MUTEX_5(A,B,C) \
+	if (C.get_attr_serial_model() != ATTR_NO_SYNC) \
+	{ \
+		Tango::AttributeValue_5 *tmp_ptr = &((*A)[B]); \
+		(tmp_ptr)->rel_attr_mutex(); \
+	} \
+	else \
+		(void)0
+
 
 //
 // Again a macro for clean pointer delete

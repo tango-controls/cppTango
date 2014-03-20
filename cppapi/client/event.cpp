@@ -1811,6 +1811,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 					delete epos->second.callback_monitor;
 
 					string deleted_channel_name = epos->second.channel_name;
+					string deleted_event_endpoint = evt_cb.endpoint;
 					event_callback_map.erase(epos);
 
 //
@@ -1869,7 +1870,7 @@ void EventConsumer::unsubscribe_event(int event_id)
 								    }
 								    else
 								    {
-                                        disconnect_event_channel(deleted_channel_name,evt_ch.endpoint);
+                                        disconnect_event_channel(deleted_channel_name,evt_ch.endpoint,deleted_event_endpoint);
 								    }
 
 									delete evt_ch.adm_device_proxy;

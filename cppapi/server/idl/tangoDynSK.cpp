@@ -961,6 +961,41 @@ const ::CORBA::TypeCode_ptr Tango::_tc_AttributeValue_4 = _0RL_tc_Tango_mAttribu
 #endif
 
 
+
+
+
+
+static CORBA::PR_structMember _0RL_structmember_Tango_mAttributeValue__5[] = {
+  {"value", _0RL_tc_Tango_mAttrValUnion},
+  {"quality", _0RL_tc_Tango_mAttrQuality},
+  {"data_format", _0RL_tc_Tango_mAttrDataFormat},
+  {"data_type", CORBA::TypeCode::PR_long_tc()},
+  {"time", _0RL_tc_Tango_mTimeVal},
+  {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
+  {"r_dim", _0RL_tc_Tango_mAttributeDim},
+  {"w_dim", _0RL_tc_Tango_mAttributeDim},
+  {"err_list", _0RL_tc_Tango_mDevErrorList}
+};
+
+#ifdef _0RL_tc_Tango_mAttributeValue__5
+#  undef _0RL_tc_Tango_mAttributeValue__5
+#endif
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mAttributeValue__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/AttributeValue_5:1.0", "AttributeValue_5", _0RL_structmember_Tango_mAttributeValue__5, 9, &_0RL_tcTrack);
+
+
+
+
+
+#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
+// MSVC++ does not give the constant external linkage otherwise.
+namespace Tango { 
+  const ::CORBA::TypeCode_ptr _tc_AttributeValue_5 = _0RL_tc_Tango_mAttributeValue__5;
+} 
+#else
+const ::CORBA::TypeCode_ptr Tango::_tc_AttributeValue_5 = _0RL_tc_Tango_mAttributeValue__5;
+#endif
+
+
 static CORBA::PR_structMember _0RL_structmember_Tango_mChangeEventProp[] = {
   {"rel_change", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"abs_change", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
@@ -1364,6 +1399,38 @@ namespace Tango {
 const ::CORBA::TypeCode_ptr Tango::_tc_AttributeValueList_4 = _0RL_tc_Tango_mAttributeValueList__4;
 #endif
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mAttributeValueList__5 = CORBA::TypeCode::PR_alias_tc("IDL:Tango/AttributeValueList_5:1.0", "AttributeValueList_5", CORBA::TypeCode::PR_sequence_tc(0, _0RL_tc_Tango_mAttributeValue__5, &_0RL_tcTrack), &_0RL_tcTrack);
+
+
+#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
+// MSVC++ does not give the constant external linkage otherwise.
+namespace Tango { 
+  const ::CORBA::TypeCode_ptr _tc_AttributeValueList_5 = _0RL_tc_Tango_mAttributeValueList__5;
+} 
+#else
+const ::CORBA::TypeCode_ptr Tango::_tc_AttributeValueList_5 = _0RL_tc_Tango_mAttributeValueList__5;
+#endif
+
 static CORBA::PR_structMember _0RL_structmember_Tango_mAttDataReady[] = {
   {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"data_type", CORBA::TypeCode::PR_long_tc()},
@@ -1712,6 +1779,53 @@ namespace Tango {
 } 
 #else
 const ::CORBA::TypeCode_ptr Tango::_tc_DevAttrHistory_4 = _0RL_tc_Tango_mDevAttrHistory__4;
+#endif
+
+
+
+
+
+
+
+
+
+
+static CORBA::PR_structMember _0RL_structmember_Tango_mDevAttrHistory__5[] = {
+  {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
+  {"data_format", _0RL_tc_Tango_mAttrDataFormat},
+  {"data_type", CORBA::TypeCode::PR_long_tc()},
+  {"dates", _0RL_tc_Tango_mTimeValList},
+  {"value", CORBA::TypeCode::PR_any_tc()},
+  {"quals", _0RL_tc_Tango_mAttrQualityList},
+  {"quals_array", _0RL_tc_Tango_mEltInArrayList},
+  {"r_dims", _0RL_tc_Tango_mAttributeDimList},
+  {"r_dims_array", _0RL_tc_Tango_mEltInArrayList},
+  {"w_dims", _0RL_tc_Tango_mAttributeDimList},
+  {"w_dims_array", _0RL_tc_Tango_mEltInArrayList},
+  {"errors", _0RL_tc_Tango_mDevErrorListList},
+  {"errors_array", _0RL_tc_Tango_mEltInArrayList}
+};
+
+#ifdef _0RL_tc_Tango_mDevAttrHistory__5
+#  undef _0RL_tc_Tango_mDevAttrHistory__5
+#endif
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevAttrHistory__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevAttrHistory_5:1.0", "DevAttrHistory_5", _0RL_structmember_Tango_mDevAttrHistory__5, 13, &_0RL_tcTrack);
+
+
+
+
+
+
+
+
+
+#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
+// MSVC++ does not give the constant external linkage otherwise.
+namespace Tango { 
+  const ::CORBA::TypeCode_ptr _tc_DevAttrHistory_5 = _0RL_tc_Tango_mDevAttrHistory__5;
+} 
+#else
+const ::CORBA::TypeCode_ptr Tango::_tc_DevAttrHistory_5 = _0RL_tc_Tango_mDevAttrHistory__5;
 #endif
 
 
@@ -4030,6 +4144,57 @@ void operator<<=(::CORBA::Any& _a, Tango::AttributeValue_4* _sp)
   return 0;
 }
 
+static void _0RL_Tango_mAttributeValue__5_marshal_fn(cdrStream& _s, void* _v)
+{
+  Tango::AttributeValue_5* _p = (Tango::AttributeValue_5*)_v;
+  *_p >>= _s;
+}
+static void _0RL_Tango_mAttributeValue__5_unmarshal_fn(cdrStream& _s, void*& _v)
+{
+  Tango::AttributeValue_5* _p = new Tango::AttributeValue_5;
+  *_p <<= _s;
+  _v = _p;
+}
+static void _0RL_Tango_mAttributeValue__5_destructor_fn(void* _v)
+{
+  Tango::AttributeValue_5* _p = (Tango::AttributeValue_5*)_v;
+  delete _p;
+}
+
+void operator<<=(::CORBA::Any& _a, const Tango::AttributeValue_5& _s)
+{
+  Tango::AttributeValue_5* _p = new Tango::AttributeValue_5(_s);
+  _a.PR_insert(_0RL_tc_Tango_mAttributeValue__5,
+               _0RL_Tango_mAttributeValue__5_marshal_fn,
+               _0RL_Tango_mAttributeValue__5_destructor_fn,
+               _p);
+}
+void operator<<=(::CORBA::Any& _a, Tango::AttributeValue_5* _sp)
+{
+  _a.PR_insert(_0RL_tc_Tango_mAttributeValue__5,
+               _0RL_Tango_mAttributeValue__5_marshal_fn,
+               _0RL_Tango_mAttributeValue__5_destructor_fn,
+               _sp);
+}
+
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValue_5*& _sp)
+{
+  return _a >>= (const Tango::AttributeValue_5*&) _sp;
+}
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValue_5*& _sp)
+{
+  void* _v;
+  if (_a.PR_extract(_0RL_tc_Tango_mAttributeValue__5,
+                    _0RL_Tango_mAttributeValue__5_unmarshal_fn,
+                    _0RL_Tango_mAttributeValue__5_marshal_fn,
+                    _0RL_Tango_mAttributeValue__5_destructor_fn,
+                    _v)) {
+    _sp = (const Tango::AttributeValue_5*)_v;
+    return 1;
+  }
+  return 0;
+}
+
 static void _0RL_Tango_mChangeEventProp_marshal_fn(cdrStream& _s, void* _v)
 {
   Tango::ChangeEventProp* _p = (Tango::ChangeEventProp*)_v;
@@ -4739,6 +4904,57 @@ void operator<<=(::CORBA::Any& _a, Tango::AttributeValueList_4* _sp)
                     _0RL_Tango_mAttributeValueList__4_destructor_fn,
                     _v)) {
     _sp = (const Tango::AttributeValueList_4*)_v;
+    return 1;
+  }
+  return 0;
+}
+
+static void _0RL_Tango_mAttributeValueList__5_marshal_fn(cdrStream& _s, void* _v)
+{
+  Tango::AttributeValueList_5* _p = (Tango::AttributeValueList_5*)_v;
+  *_p >>= _s;
+}
+static void _0RL_Tango_mAttributeValueList__5_unmarshal_fn(cdrStream& _s, void*& _v)
+{
+  Tango::AttributeValueList_5* _p = new Tango::AttributeValueList_5;
+  *_p <<= _s;
+  _v = _p;
+}
+static void _0RL_Tango_mAttributeValueList__5_destructor_fn(void* _v)
+{
+  Tango::AttributeValueList_5* _p = (Tango::AttributeValueList_5*)_v;
+  delete _p;
+}
+
+void operator<<=(::CORBA::Any& _a, const Tango::AttributeValueList_5& _s)
+{
+  Tango::AttributeValueList_5* _p = new Tango::AttributeValueList_5(_s);
+  _a.PR_insert(_0RL_tc_Tango_mAttributeValueList__5,
+               _0RL_Tango_mAttributeValueList__5_marshal_fn,
+               _0RL_Tango_mAttributeValueList__5_destructor_fn,
+               _p);
+}
+void operator<<=(::CORBA::Any& _a, Tango::AttributeValueList_5* _sp)
+{
+  _a.PR_insert(_0RL_tc_Tango_mAttributeValueList__5,
+               _0RL_Tango_mAttributeValueList__5_marshal_fn,
+               _0RL_Tango_mAttributeValueList__5_destructor_fn,
+               _sp);
+}
+
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValueList_5*& _sp)
+{
+  return _a >>= (const Tango::AttributeValueList_5*&) _sp;
+}
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValueList_5*& _sp)
+{
+  void* _v;
+  if (_a.PR_extract(_0RL_tc_Tango_mAttributeValueList__5,
+                    _0RL_Tango_mAttributeValueList__5_unmarshal_fn,
+                    _0RL_Tango_mAttributeValueList__5_marshal_fn,
+                    _0RL_Tango_mAttributeValueList__5_destructor_fn,
+                    _v)) {
+    _sp = (const Tango::AttributeValueList_5*)_v;
     return 1;
   }
   return 0;
@@ -5504,6 +5720,57 @@ void operator<<=(::CORBA::Any& _a, Tango::DevAttrHistory_4* _sp)
                     _0RL_Tango_mDevAttrHistory__4_destructor_fn,
                     _v)) {
     _sp = (const Tango::DevAttrHistory_4*)_v;
+    return 1;
+  }
+  return 0;
+}
+
+static void _0RL_Tango_mDevAttrHistory__5_marshal_fn(cdrStream& _s, void* _v)
+{
+  Tango::DevAttrHistory_5* _p = (Tango::DevAttrHistory_5*)_v;
+  *_p >>= _s;
+}
+static void _0RL_Tango_mDevAttrHistory__5_unmarshal_fn(cdrStream& _s, void*& _v)
+{
+  Tango::DevAttrHistory_5* _p = new Tango::DevAttrHistory_5;
+  *_p <<= _s;
+  _v = _p;
+}
+static void _0RL_Tango_mDevAttrHistory__5_destructor_fn(void* _v)
+{
+  Tango::DevAttrHistory_5* _p = (Tango::DevAttrHistory_5*)_v;
+  delete _p;
+}
+
+void operator<<=(::CORBA::Any& _a, const Tango::DevAttrHistory_5& _s)
+{
+  Tango::DevAttrHistory_5* _p = new Tango::DevAttrHistory_5(_s);
+  _a.PR_insert(_0RL_tc_Tango_mDevAttrHistory__5,
+               _0RL_Tango_mDevAttrHistory__5_marshal_fn,
+               _0RL_Tango_mDevAttrHistory__5_destructor_fn,
+               _p);
+}
+void operator<<=(::CORBA::Any& _a, Tango::DevAttrHistory_5* _sp)
+{
+  _a.PR_insert(_0RL_tc_Tango_mDevAttrHistory__5,
+               _0RL_Tango_mDevAttrHistory__5_marshal_fn,
+               _0RL_Tango_mDevAttrHistory__5_destructor_fn,
+               _sp);
+}
+
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevAttrHistory_5*& _sp)
+{
+  return _a >>= (const Tango::DevAttrHistory_5*&) _sp;
+}
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevAttrHistory_5*& _sp)
+{
+  void* _v;
+  if (_a.PR_extract(_0RL_tc_Tango_mDevAttrHistory__5,
+                    _0RL_Tango_mDevAttrHistory__5_unmarshal_fn,
+                    _0RL_Tango_mDevAttrHistory__5_marshal_fn,
+                    _0RL_Tango_mDevAttrHistory__5_destructor_fn,
+                    _v)) {
+    _sp = (const Tango::DevAttrHistory_5*)_v;
     return 1;
   }
   return 0;

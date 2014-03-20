@@ -71,6 +71,7 @@ public:
 	void insert_data(Tango::AttributeValueList *,struct timeval &,struct timeval &);
 	void insert_data(Tango::AttributeValueList_3 *,struct timeval &,struct timeval &);
 	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,struct timeval &);
+	void insert_data(Tango::AttributeValueList_5 *,struct timeval &,struct timeval &);
 	void insert_except(Tango::DevFailed *,struct timeval &,struct timeval &);
 
 	double get_authorized_delta() {return max_delta_t;}
@@ -124,6 +125,7 @@ public:
 	void get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long type);
 	void get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
 	void get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long type);
+	void get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long type);
 
 	void get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
 
