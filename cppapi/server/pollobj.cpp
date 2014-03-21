@@ -370,18 +370,19 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long attr
 	}
 }
 
-void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_type)
+void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_type,AttrDataFormat attr_format)
 {
 	omni_mutex_lock(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
 }
 
-void PollObj::get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long attr_type)
+void PollObj::get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long attr_type,AttrDataFormat attr_format)
 {
 	omni_mutex_lock(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
+	ptr->data_format = attr_format;
 	ptr->data_type = attr_type;
 }
 

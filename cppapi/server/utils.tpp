@@ -64,8 +64,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         TangoSys_OMemStream o;
         o << "Device " << dev->get_name() << " is not polled" << ends;
 
-        Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -97,8 +96,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         o << "Attribute " << att_name;
         o << " of device " << dev->get_name() << " is WRITE only" << ends;
 
-        Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -118,8 +116,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 o << " is not a READ_WRITE attribute. You can't set the attribute written part.";
                 o << "It is defined for record number " << i + 1 << ends;
 
-                Except::throw_exception((const char *)API_NotSupportedFeature,o.str(),
-                                        (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
             }
         }
     }
@@ -137,8 +134,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         o << " is of type DEV_ENCODED. Your device supports only IDL V3.";
         o << " DEV_ENCODED data type is supported starting with IDL V4" << ends;
 
-        Except::throw_exception((const char *)API_NotSupportedFeature,o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -160,8 +156,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                 o << " is of type DEV_ENCODED. Only Scalar attribute are supported for DEV_ENCODED";
                 o << "It is defined for record number " << i + 1 << ends;
 
-                Except::throw_exception((const char *)API_NotSupportedFeature,o.str(),
-                                        (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
             }
         }
     }
@@ -176,8 +171,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         o << "The device " << dev->get_name() << " is too old to support this feature. ";
         o << "Please update your device to IDL 3 or more" << ends;
 
-        Except::throw_exception((const char *)API_NotSupportedFeature,o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -194,8 +188,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         o << " is only " << nb_poll;
         o << " which is less than " << nb_elt << "!" << ends;
 
-        Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -236,9 +229,9 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             catch (bad_alloc)
             {
                 dev->get_poll_monitor().rel_monitor();
-                Except::throw_exception((const char *)API_MemoryAllocation,
-                                (const char *)"Can't allocate memory in server",
-                                (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_MemoryAllocation,
+                                "Can't allocate memory in server",
+                                "Util::fill_attr_polling_buffer");
             }
         }
         else
@@ -250,7 +243,13 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
             try
             {
-                if (idl_vers >= 4)
+            	if (idl_vers >= 5)
+				{
+					aid.data_5 = new Tango::AttributeValueList_5(1);
+					aid.data_5->length(1);
+                    (*aid.data_5)[0].value.union_no_data(true);
+				}
+                else if (idl_vers == 4)
                 {
                     aid.data_4 = new Tango::AttributeValueList_4(1);
                     aid.data_4->length(1);
@@ -265,9 +264,8 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             catch (bad_alloc)
             {
                 dev->get_poll_monitor().rel_monitor();
-                Except::throw_exception((const char *)API_MemoryAllocation,
-                                (const char *)"Can't allocate memory in server",
-                                (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_MemoryAllocation,
+                                "Can't allocate memory in server","Util::fill_attr_polling_buffer");
             }
 
 //
@@ -275,7 +273,24 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 //
 
             Tango::AttrQuality qu = (data.get_data())[i].qual;
-            if (idl_vers >= 4)
+            if (idl_vers >= 5)
+            {
+                (*aid.data_5)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
+                (*aid.data_5)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
+                (*aid.data_5)[0].time.tv_nsec = 0;
+
+                (*aid.data_5)[0].quality = qu;
+                (*aid.data_5)[0].name = CORBA::string_dup(att_name.c_str());
+
+                (*aid.data_5)[0].w_dim.dim_x = 0;
+                (*aid.data_5)[0].w_dim.dim_y = 0;
+                (*aid.data_5)[0].r_dim.dim_x = 0;
+                (*aid.data_5)[0].r_dim.dim_y = 0;
+
+                (*aid.data_5)[0].data_format = att.get_data_format();
+                (*aid.data_5)[0].data_type = att.get_data_type();
+            }
+            else if (idl_vers == 4)
             {
                 (*aid.data_4)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
                 (*aid.data_4)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
@@ -361,7 +376,19 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 // Init remaining fields
 //
 
-                if (idl_vers >= 4)
+				if (idl_vers >= 5)
+				{
+                    (*aid.data_5)[0].r_dim.dim_x = (data.get_data())[i].x;
+                    (*aid.data_5)[0].r_dim.dim_y = (data.get_data())[i].y;
+
+                    if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
+                    {
+                        WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
+                        (*aid.data_5)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
+                        (*aid.data_5)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                    }
+				}
+                else if (idl_vers == 4)
                 {
                     (*aid.data_4)[0].r_dim.dim_x = (data.get_data())[i].x;
                     (*aid.data_4)[0].r_dim.dim_y = (data.get_data())[i].y;
@@ -398,7 +425,13 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
 
             if (attr_failed == false)
             {
-                if (idl_vers >= 4)
+            	if (idl_vers >= 5)
+				{
+                    when.tv_sec  = (*aid.data_5)[0].time.tv_sec - DELTA_T;
+                    when.tv_usec = (*aid.data_5)[0].time.tv_usec;
+                    (*ite)->insert_data(aid.data_5,when,zero);
+				}
+                else if (idl_vers == 4)
                 {
                     when.tv_sec  = (*aid.data_4)[0].time.tv_sec - DELTA_T;
                     when.tv_usec = (*aid.data_4)[0].time.tv_usec;
@@ -421,10 +454,14 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
         catch (Tango::DevFailed &)
         {
             if (attr_failed == false)
-                if (idl_vers >= 4)
+			{
+				if (idl_vers >= 5)
+					delete aid.data_5;
+                else if (idl_vers == 4)
                     delete aid.data_4;
-            else
+				else
                     delete aid.data_3;
+			}
             else
                 delete save_except;
         }

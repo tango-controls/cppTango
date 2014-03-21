@@ -675,7 +675,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}
-					error_from_devfailed((*aid.data_5)[index],e,names[wanted_attr[i].idx_in_names]);
+					error_from_devfailed((*aid.data_5)[index],e,names[wanted_w_attr[i].idx_in_names]);
 				}
 				else if (aid.data_4 != Tango_nullptr)
 				{
@@ -685,10 +685,10 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 						omni_mutex *attr_mut = (atsm == ATTR_BY_KERNEL) ? att.get_attr_mutex() : att.get_user_attr_mutex();
 						attr_mut->unlock();
 					}
-					error_from_devfailed((*aid.data_4)[index],e,names[wanted_attr[i].idx_in_names]);
+					error_from_devfailed((*aid.data_4)[index],e,names[wanted_w_attr[i].idx_in_names]);
 				}
 				else
-					error_from_devfailed((*aid.data_3)[index],e,names[wanted_attr[i].idx_in_names]);
+					error_from_devfailed((*aid.data_3)[index],e,names[wanted_w_attr[i].idx_in_names]);
 			}
 		}
 

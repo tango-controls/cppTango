@@ -380,15 +380,21 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 			cout4 << "Device_2Impl: Returning data from polling buffer" << endl;
 			if ((state_cmd == true) || (status_cmd == true))
 			{
+				long vers = get_dev_idl_version();
 				omni_mutex_lock sync(*polled_cmd);
-				if (get_dev_idl_version() < 4)
+				if (vers >= 5)
 				{
-					Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
+					Tango::AttributeValue_5 &att_val = polled_cmd->get_last_attr_value_5(false);
+					ret = attr2cmd(att_val,state_cmd,status_cmd);
+				}
+				else if (vers == 4)
+				{
+					Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
 					ret = attr2cmd(att_val,state_cmd,status_cmd);
 				}
 				else
 				{
-					Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
+					Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
 					ret = attr2cmd(att_val,state_cmd,status_cmd);
 				}
 			}
@@ -402,15 +408,21 @@ CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 				cout4 << "Device_2Impl: Returning data from polling buffer" << endl;
 				if ((state_cmd == true) || (status_cmd == true))
 				{
+					long vers = get_dev_idl_version();
 					omni_mutex_lock sync(*polled_cmd);
-					if (get_dev_idl_version() < 4)
+					if (vers >= 5)
 					{
-						Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
+						Tango::AttributeValue_5 &att_val = polled_cmd->get_last_attr_value_5(false);
+						ret = attr2cmd(att_val,state_cmd,status_cmd);
+					}
+					else if (vers == 4)
+					{
+						Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
 						ret = attr2cmd(att_val,state_cmd,status_cmd);
 					}
 					else
 					{
-						Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
+						Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
 						ret = attr2cmd(att_val,state_cmd,status_cmd);
 					}
 				}
@@ -1672,6 +1684,23 @@ CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_3 &att_val,bool state,bool sta
 }
 
 CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_4 &att_val,bool state,bool status)
+{
+	CORBA::Any *any = new CORBA::Any();
+	if (state == true)
+	{
+		const Tango::DevState &sta = att_val.value.dev_state_att();
+		(*any) <<= sta;
+	}
+	else if (status == true)
+	{
+		Tango::DevVarStringArray &dvsa = att_val.value.string_att_value();
+		(*any) <<= dvsa[0];
+	}
+
+	return any;
+}
+
+CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_5 &att_val,bool state,bool status)
 {
 	CORBA::Any *any = new CORBA::Any();
 	if (state == true)

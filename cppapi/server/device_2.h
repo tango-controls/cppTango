@@ -314,6 +314,7 @@ public:
 private:
 	CORBA::Any *attr2cmd(AttributeValue_3 &,bool,bool);
 	CORBA::Any *attr2cmd(AttributeValue_4 &,bool,bool);
+	CORBA::Any *attr2cmd(AttributeValue_5 &,bool,bool);
 	void Hist_32Hist(DevAttrHistoryList_3 *,DevAttrHistoryList *);
 	void Polled_2_Live(long,Tango::AttrValUnion &,CORBA::Any &);
 	void Polled_2_Live(long,CORBA::Any &,CORBA::Any &);

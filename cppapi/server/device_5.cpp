@@ -750,9 +750,9 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 //
 
 		if (att.get_name_lower() == "state")
-			polled_attr->get_attr_history(n,back,Tango::DEV_VOID);
+			polled_attr->get_attr_history(n,back,Tango::DEV_VOID,att.get_data_format());
 		else
-			polled_attr->get_attr_history(n,back,att.get_data_type());
+			polled_attr->get_attr_history(n,back,att.get_data_type(),att.get_data_format());
 	}
 
 	cout4 << "Leaving Device_5Impl::read_attribute_history_5 method" << endl;

@@ -1004,11 +1004,40 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			{
 
 //
-// Get number of data exchanged by this event. If this value is greater than a threashold, set a flag
+// Get number of data exchanged by this event. If this value is greater than a threshold, set a flag
 // In such a case, we will use ZMQ no-copy message call
 //
 
 				*(ev_value.attr_val_4) >>= data_call_cdr;
+
+				mess_ptr = data_call_cdr.bufPtr();
+				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
+
+				int nb_data;
+				int data_discr = ((int *)mess_ptr)[0];
+
+				if (data_discr == ATT_ENCODED)
+				{
+					const DevVarEncodedArray &dvea = ev_value.attr_val_4->value.encoded_att_value();
+					nb_data = dvea.length();
+					if (nb_data > LARGE_DATA_THRESHOLD_ENCODED)
+						large_data = true;
+				}
+				else
+				{
+					nb_data = ((int *)mess_ptr)[1];
+					if (nb_data >= LARGE_DATA_THRESHOLD)
+						large_data = true;
+				}
+			}
+			else if (ev_value.attr_val_5 != NULL)
+			{
+//
+// Get number of data exchanged by this event. If this value is greater than a threshold, set a flag
+// In such a case, we will use ZMQ no-copy message call
+//
+
+				*(ev_value.attr_val_5) >>= data_call_cdr;
 
 				mess_ptr = data_call_cdr.bufPtr();
 				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);

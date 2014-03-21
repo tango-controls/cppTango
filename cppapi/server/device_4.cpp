@@ -209,9 +209,9 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 //
 
 	if (att.get_name_lower() == "state")
-		polled_attr->get_attr_history(n,back,Tango::DEV_VOID);
+		polled_attr->get_attr_history(n,back,Tango::DEV_VOID,att.get_data_format());
 	else
-		polled_attr->get_attr_history(n,back,att.get_data_type());
+		polled_attr->get_attr_history(n,back,att.get_data_type(),att.get_data_format());
 
 	cout4 << "Leaving Device_4Impl::read_attribute_history_4 method" << endl;
 	return back;
@@ -368,7 +368,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 
 		if (status_cmd == true)
 		{
-			polled_cmd->get_attr_history(n,back_attr,Tango::DEV_STRING);
+			polled_cmd->get_attr_history(n,back_attr,Tango::DEV_STRING,SCALAR);
 
 			back->dates = back_attr->dates;
 			back->errors = back_attr->errors;
@@ -386,7 +386,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 // DEV_STATE, use DEV_VOID for state as data type.
 //
 
-			polled_cmd->get_attr_history(n,back_attr,Tango::DEV_VOID);
+			polled_cmd->get_attr_history(n,back_attr,Tango::DEV_VOID,SCALAR);
 
 			back->dates = back_attr->dates;
 			back->errors = back_attr->errors;

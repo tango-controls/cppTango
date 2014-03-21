@@ -122,10 +122,10 @@ public:
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);
 	void get_cmd_history(long,Tango::DevCmdHistory_4 *,Tango::CmdArgType &);
 
-	void get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long type);
-	void get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
-	void get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long type);
-	void get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long type);
+	void get_attr_history(long,Tango::DevAttrHistoryList *,long);
+	void get_attr_history(long,Tango::DevAttrHistoryList_3 *,long);
+	void get_attr_history(long,Tango::DevAttrHistory_4 *,long,AttrDataFormat);
+	void get_attr_history(long,Tango::DevAttrHistory_5 *,long,AttrDataFormat);
 
 	void get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
 

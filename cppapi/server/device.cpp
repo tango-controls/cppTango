@@ -5137,12 +5137,12 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 			if (att_val.value._d() == DEVICE_STATE)
 			{
 				sta = att_val.value.dev_state_att();
-				(*aid.data_4)[index].value.dev_state_att(sta);
+				(*aid.data_5)[index].value.dev_state_att(sta);
 			}
 			else if (att_val.value._d() == ATT_STATE)
 			{
 				DevVarStateArray &union_seq = att_val.value.state_att_value();
-				(*aid.data_4)[index].value.state_att_value(union_seq);
+				(*aid.data_5)[index].value.state_att_value(union_seq);
 			}
 		}
 		else if (aid.data_4 != Tango_nullptr)
