@@ -328,6 +328,7 @@ CLIENT_INCLUDE =	apiexcept.h \
 			accessproxy.h \
 			eventconsumer.h \
 			event.h \
+			event.tpp \
 			Database.h \
 			DbDevice.h \
 			ApiUtil.h \
