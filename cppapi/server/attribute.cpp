@@ -4168,6 +4168,7 @@ void Attribute::fire_change_event(DevFailed *except)
 
 	Tango::AttributeValue_3 *send_attr = NULL;
 	Tango::AttributeValue_4 *send_attr_4 = NULL;
+	Tango::AttributeValue_5 *send_attr_5 = NULL;
 
 	try
 	{
@@ -4260,20 +4261,24 @@ void Attribute::fire_change_event(DevFailed *except)
 						o << " has not been updated. Can't send change event\n";
 						o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
-				        		(const char *)"Attribute::fire_change_event()");
+						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_change_event()");
 					}
 				}
 			}
 		}
 
 //
-// Build one AttributeValue_3 or AttributeValue_4 object
+// Build one AttributeValue_3, AttributeValue_4 or AttributeValue_5 object
 //
 
+		long vers = dev->get_dev_idl_version();
 		try
 		{
-			if (dev->get_dev_idl_version() >= 4)
+			if (vers >= 5)
+			{
+
+			}
+			else if (vers == 4)
 			{
 				if (event_change_client_3 == true)
 					send_attr = new Tango::AttributeValue_3;
@@ -4285,9 +4290,8 @@ void Attribute::fire_change_event(DevFailed *except)
 		}
 		catch (bad_alloc)
 		{
-			Except::throw_exception((const char *)API_MemoryAllocation,
-				      	  (const char *)"Can't allocate memory in server",
-				      	  (const char *)"Attribute::fire_change_event()");
+			Except::throw_exception(API_MemoryAllocation,
+									"Can't allocate memory in server","Attribute::fire_change_event()");
 		}
 
 //

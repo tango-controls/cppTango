@@ -350,6 +350,23 @@ private :
     void create_mcast_socket(string &,int,McastSocketPub &);
 };
 
+//
+// Yet another evil macro! But sometimes quite usefull
+//
+
+#define	GET_SEQ(A,B,C,D,E) \
+	do \
+	{ \
+		A = true; \
+		B = &E->value.C(); \
+		if (archive == true) \
+			D = &attr.prev_archive_event.value_4.C(); \
+		else \
+			D = &attr.prev_change_event.value_4.C(); \
+	} \
+	while (false)
+
+
 } // End of namespace
 
 #endif // _EVENT_SUPPLIER_API_H

@@ -34,6 +34,7 @@ static const char *RcsId = "$Id$";
 
 #include <tango.h>
 #include <eventconsumer.h>
+#include <event.tpp>
 
 #include <stdio.h>
 
@@ -744,20 +745,13 @@ void EventConsumer::attr_to_device(const AttributeValue_4 *attr_value_4,DeviceAt
 
 void EventConsumer::attr_to_device(const ZmqAttributeValue_4 *attr_value_4,DeviceAttribute *dev_attr)
 {
-	dev_attr->name = attr_value_4->name;
-	dev_attr->quality = attr_value_4->quality;
-	dev_attr->time = attr_value_4->time;
-	dev_attr->dim_x = attr_value_4->r_dim.dim_x;
-	dev_attr->dim_y = attr_value_4->r_dim.dim_y;
-	dev_attr->set_w_dim_x(attr_value_4->w_dim.dim_x);
-	dev_attr->set_w_dim_y(attr_value_4->w_dim.dim_y);
-	dev_attr->err_list = new DevErrorList(attr_value_4->err_list);
-	dev_attr->data_format = attr_value_4->data_format;
+	base_attr_to_device(attr_value_4,dev_attr);
+}
 
-	if (dev_attr->quality != Tango::ATTR_INVALID)
-	{
-	    att_union_to_device(&attr_value_4->zvalue,dev_attr);
-	}
+void EventConsumer::attr_to_device(const ZmqAttributeValue_5 *attr_value_5,DeviceAttribute *dev_attr)
+{
+	base_attr_to_device(attr_value_5,dev_attr);
+	dev_attr->data_type = attr_value_5->data_type;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

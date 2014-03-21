@@ -115,6 +115,14 @@ struct ZmqAttributeValue_4:public AttributeValue_4
     void operator<<= (TangoCdrMemoryStream &);
 };
 
+/***            ZmqAttributeValue_5               ***/
+
+struct ZmqAttributeValue_5:public AttributeValue_5
+{
+    ZmqAttrValUnion     zvalue;
+    void operator<<= (TangoCdrMemoryStream &);
+};
+
 /***    Macros to help coding       ***/
 
 #ifndef Swap16
@@ -381,6 +389,8 @@ protected :
 	void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
 	void attr_to_device(const AttributeValue_4 *,DeviceAttribute *);
     void attr_to_device(const ZmqAttributeValue_4 *,DeviceAttribute *);
+    void attr_to_device(const ZmqAttributeValue_5 *,DeviceAttribute *);
+	template <typename T> void base_attr_to_device(const T *,DeviceAttribute *);
     void att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr);
 	void conf_to_info(AttributeConfig_2 &,AttributeInfoEx **);
 	void get_cs_tango_host(Database *);
@@ -513,6 +523,7 @@ private :
     AttributeValue_var                      av;
     AttributeValue_3_var                    av3;
     ZmqAttributeValue_4                     zav4;
+    ZmqAttributeValue_5						zav5;
     AttributeConfig_2_var                   ac2;
     AttributeConfig_3_var                   ac3;
     AttributeConfig_5_var					ac5;

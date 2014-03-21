@@ -1950,6 +1950,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             const AttributeValue *attr_value = NULL;
             const AttributeValue_3 *attr_value_3 = NULL;
             const ZmqAttributeValue_4 *z_attr_value_4 = NULL;
+            const ZmqAttributeValue_5 *z_attr_value_5 = NULL;
             const AttributeConfig_2 *attr_conf_2 = NULL;
             const AttributeConfig_3 *attr_conf_3 = NULL;
             const AttributeConfig_5 *attr_conf_5 = NULL;
@@ -2266,7 +2267,38 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						break;
 
 						case ATT_VALUE:
-						if (evt_cb.device_idl > 3)
+						if (evt_cb.device_idl >= 5)
+						{
+							try
+							{
+								vers = 5;
+								zav5.operator<<=(event_data_cdr);
+								z_attr_value_5 = &zav5;
+								dev_attr = new (DeviceAttribute);
+								attr_to_device(z_attr_value_5,dev_attr);
+
+//
+// Update name in DeviceAttribute in case it is not coherent with name received in first ZMQ message part.
+// This happens in case of forwarded attribute
+//
+
+								if (att_name != dev_attr->get_name())
+									dev_attr->set_name(att_name);
+							}
+							catch(...)
+							{
+								TangoSys_OMemStream o;
+								o << "Received malformed data for event ";
+								o << ev_name << ends;
+
+								errors.length(1);
+								errors[0].reason = API_WrongEventData;
+								errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+								errors[0].desc = CORBA::string_dup(o.str().c_str());
+								errors[0].severity = ERR;
+							}
+						}
+						else if (evt_cb.device_idl == 4)
 						{
 							try
 							{
@@ -3005,6 +3037,32 @@ void Tango::ZmqAttributeValue_4::operator<<= (TangoCdrMemoryStream &_n)
     (AttributeDim&)w_dim <<= _n;
     (DevErrorList&)err_list <<= _n;
 }
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqAttributeValue_5::operator<<=()
+//
+// description :
+//
+// argument :
+//		in :
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Tango::ZmqAttributeValue_5::operator<<= (TangoCdrMemoryStream &_n)
+{
+    (ZmqAttrValUnion&)zvalue <<= _n;
+    (AttrQuality&)quality <<= _n;
+    (AttrDataFormat&)data_format <<= _n;
+    data_type <<= _n;
+    (TimeVal&)time <<= _n;
+    name = _n.unmarshalString(0);
+    (AttributeDim&)r_dim <<= _n;
+    (AttributeDim&)w_dim <<= _n;
+    (DevErrorList&)err_list <<= _n;
+}
+
 
 //---------------------------------------------------------------------------------------------------------------------
 //
