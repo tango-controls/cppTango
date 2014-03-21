@@ -4168,7 +4168,6 @@ void Attribute::fire_change_event(DevFailed *except)
 
 	Tango::AttributeValue_3 *send_attr = NULL;
 	Tango::AttributeValue_4 *send_attr_4 = NULL;
-	Tango::AttributeValue_5 *send_attr_5 = NULL;
 
 	try
 	{

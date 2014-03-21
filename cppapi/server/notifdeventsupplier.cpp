@@ -912,6 +912,15 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			struct_event.remainder_of_body >>= tmp_ptr;
 			const_cast<Tango::AttributeValue_4 *>(tmp_ptr)->mut_ptr = NULL;
 		}
+		else if (attr_value.attr_val_5 != NULL)
+		{
+			string str("Can't send event! Client is too old (Tango 7 or less).\n");
+			str = str + ("Please, re-compile your client with at least Tango 8");
+
+			cerr << str << endl;
+
+			Except::throw_exception(API_NotSupported,str,"NotifdEventSupplier::push_event");
+		}
 	    else if (attr_value.attr_conf_2 != NULL)
             struct_event.remainder_of_body <<= (*attr_value.attr_conf_2);
         else if (attr_value.attr_conf_3 != NULL)
