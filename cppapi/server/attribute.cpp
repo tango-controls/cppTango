@@ -604,7 +604,7 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 //
 
 	for (int i = 0;i < numEventType;i++)
-		client_lib[i] = _convert_tango_lib_release();
+		client_lib[i].clear();
 }
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -5951,7 +5951,7 @@ bool Attribute::data_ready_event_subscribed()
 //		Attribute::set_client_lib()
 //
 // description :
-//		Set client lowest client lib for event compatibility
+//		Set client lib (for event compatibility)
 //
 // argument :
 //		in :
@@ -5969,8 +5969,38 @@ void Attribute::set_client_lib(int _l,string &ev_name)
 			break;
 	}
 
-	if (_l < client_lib[i])
-		client_lib[i] = _l;
+	if (count(client_lib[i].begin(),client_lib[i].end(),_l) == 0)
+		client_lib[i].push_back(_l);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::remove_client_lib()
+//
+// description :
+//		Remove a client lib (for event compatibility)
+//
+// argument :
+//		in :
+//			- _l : Client lib release
+//			- ev_name : Event name
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Attribute::remove_client_lib(int _l,const string &ev_name)
+{
+	int i;
+	for (i = 0;i < numEventType;i++)
+	{
+		if (ev_name == EventName[i])
+			break;
+	}
+
+	vector<int>::iterator pos = find(client_lib[i].begin(),client_lib[i].end(),_l);
+	if (pos != client_lib[i].end())
+		client_lib[i].erase(pos);
+cout << "Removed release " << _l << "for table for event " << ev_name << ". Still " << client_lib[i].size() << " rel in vector" << endl;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

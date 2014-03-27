@@ -1996,8 +1996,13 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
 //
 
 	bool conf5 = false;
+	int vers = 4;
+
 	if (attr_conf.attr_conf_5 != NULL)
+	{
 		conf5 = true;
+		vers = 5;
+	}
 
 //
 // Return if there is no client or if the last client subscription is more than 10 mins ago
@@ -2019,6 +2024,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
 
     if (att_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
 	{
+		attr.remove_client_lib(vers,string(EventName[ATTR_CONF_EVENT]));
 		return;
 	}
 
@@ -2033,7 +2039,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
 
     string ev_type = CONF_TYPE_EVENT;
     if (conf5 == true)
-		ev_type = ev_type + '!' + AttConfEventVersion[ATT_CONF_REL_NB - 1];
+		ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
     push_event(device_impl,
            ev_type,

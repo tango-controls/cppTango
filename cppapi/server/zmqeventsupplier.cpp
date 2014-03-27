@@ -54,7 +54,7 @@ ZmqEventSupplier *ZmqEventSupplier::_instance = NULL;
 /************************************************************************/
 
 
-ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),event_pub_sock(NULL),double_send(false),double_send_heartbeat(false)
+ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),event_pub_sock(NULL),double_send(0),double_send_heartbeat(false)
 {
 	_instance = this;
 
@@ -1166,7 +1166,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		map<string,McastSocketPub>::iterator mcast_ite;
 		map<string,McastSocketPub>::iterator mcast_ite_end = event_mcast.end();
 
-		bool local_double_send = double_send;
+		int local_double_send = double_send;
 		bool mcast_event = false;
 
 		if (event_mcast.empty() == false)
@@ -1185,17 +1185,18 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 						pub = mcast_ite->second.pub_socket;
 					}
 				}
-				local_double_send = mcast_ite->second.double_send;
+				if (mcast_ite->second.double_send == true)
+					local_double_send++;
 				mcast_ite->second.double_send = false;
 				mcast_event = true;
 			}
 		}
 
-		if (local_double_send == true)
+		if (local_double_send > 0)
 		{
 			send_nb = 2;
 			if (mcast_event == false)
-				double_send = false;
+				double_send--;
 		}
 
 //

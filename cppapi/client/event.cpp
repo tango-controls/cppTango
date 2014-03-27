@@ -1347,7 +1347,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		for (int i = 0;i < ATT_CONF_REL_NB;i++)
 		{
 			string mod_local_callback_key(local_callback_key);
-			mod_local_callback_key = mod_local_callback_key + '!' + AttConfEventVersion[i];
+			string::size_type pos = mod_local_callback_key.rfind('.');
+			mod_local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
 			iter = event_callback_map.find(mod_local_callback_key);
 			if (iter != event_callback_map.end())
 				break;
@@ -1427,9 +1428,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	    if (cmd_name.find("Zmq") != string::npos)
 	    {
 			zmq_used = true;
-			long _v = _convert_tango_lib_release();
 			stringstream ss;
-			ss << _v;
+			ss << DevVersion;
 			subscriber_info.push_back(ss.str());
 		}
 
@@ -1501,8 +1501,9 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	if (dd_extract_ok == true && event == ATTR_CONF_EVENT && dvlsa->lvalue[1] >= MIN_IDL_CONF5)
 	{
-		event_name = event_name + '!' + AttConfEventVersion[ATT_CONF_REL_NB - 1];
-		local_callback_key = local_callback_key + '!' + AttConfEventVersion[ATT_CONF_REL_NB - 1];
+		event_name = EVENT_COMPAT_IDL5 + event_name;
+		string::size_type pos = local_callback_key.rfind('.');
+		local_callback_key.insert(pos + 1,EVENT_COMPAT_IDL5);
 	}
 
 //
@@ -2801,9 +2802,9 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		AttributeInfoEx *aie = NULL;
 		string local_event_name = event_name;
 
-		string::size_type pos = local_event_name.find('!');
+		string::size_type pos = local_event_name.find(EVENT_COMPAT);
 		if (pos != string::npos)
-			local_event_name.erase(pos);
+			local_event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
 		try
 		{

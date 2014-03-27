@@ -50,7 +50,7 @@ namespace Tango
 //		Set the attribute read value and quality. This method automatically set the date when it has been called
 //
 //		This method is overloaded several times for all the supported attribute data type. Nevertheless, one
-//		template method is defined (this one) which willbe called for all data types with no overload.
+//		template method is defined (this one) which will be called for all data types with no overload.
 //		This is the case for enumeration data type
 //
 // argument :
@@ -109,7 +109,7 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	}
 #endif // HAS_TYPE_TRAITS
 
-	DeviceImpl *dev=get_att_device();
+	DeviceImpl *dev = get_att_device();
 	Tango::DeviceClass *dev_class = dev->get_device_class();
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
 	Tango::Attr &att = mca->get_attr(name);

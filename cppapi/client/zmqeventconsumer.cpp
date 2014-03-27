@@ -2019,9 +2019,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             if (event_name.find(CONF_TYPE_EVENT) != string::npos)
 			{
 				data_type = ATT_CONF;
-				pos = event_name.find('!');
+				pos = event_name.find(EVENT_COMPAT);
 				if (pos != string::npos)
-					event_name.erase(pos);
+					event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 			}
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;

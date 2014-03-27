@@ -183,7 +183,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     subscriber_info.push_back(epos->second.attr_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
-					subscriber_info.push_back(TgLibMajorVers);
+					subscriber_info.push_back("0");
                     subscriber_in << subscriber_info;
 
                     subscriber_out = ipos->second.adm_device_proxy->command_inout("ZmqEventSubscriptionChange",subscriber_in);
@@ -853,7 +853,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 					subscriber_info.push_back(cmd_params[(loop * 3) + 1]);
 					subscriber_info.push_back("subscribe");
 					subscriber_info.push_back(cmd_params[(loop * 3) + 2]);
-					subscriber_info.push_back(TgLibMajorVers);
+					subscriber_info.push_back("0");
 					subscriber_in << subscriber_info;
 
 					try
@@ -1047,9 +1047,9 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 					domain_name = epos->first.substr(0,pos);
 					event_name = epos->first.substr(pos + 1);
 
-					string::size_type pos = event_name.find('!');
+					string::size_type pos = event_name.find(EVENT_COMPAT);
 					if (pos != string::npos)
-						event_name.erase(pos);
+						event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 				}
 
 				for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
@@ -1244,7 +1244,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 	subscriber_info.push_back("subscribe");
 	subscriber_info.push_back(epos->second.event_name);
 	if (ipos->second.channel_type == ZMQ)
-		subscriber_info.push_back(TgLibMajorVers);
+		subscriber_info.push_back("0");
 	subscriber_in << subscriber_info;
 
 	bool ds_failed = false;
@@ -1416,9 +1416,9 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				cb_ctr++;
 				FwdAttrConfEventData *event_data;
 				string ev_name(epos->second.event_name);
-				string::size_type pos = ev_name.find('!');
+				string::size_type pos = ev_name.find(EVENT_COMPAT);
 				if (pos != string::npos)
-					ev_name.erase(pos);
+					ev_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
 				if (cb_ctr != cb_nb)
 				{

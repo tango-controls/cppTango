@@ -283,7 +283,7 @@ public :
     size_t get_mcast_event_nb() {return event_mcast.size();}
 
     bool update_connected_client(client_addr *);
-    void set_double_send() {double_send=true;double_send_heartbeat=true;}
+    void set_double_send() {double_send++;double_send_heartbeat=true;}
 
     int get_zmq_release() {return zmq_release;}
 
@@ -340,7 +340,7 @@ private :
 	map<string,unsigned int>    event_cptr;             // event counter map
 
 	list<ConnectedClient>       con_client;             // Connected clients
-	bool                        double_send;            // Double send flag
+	int                         double_send;            // Double send ctr
 	bool                        double_send_heartbeat;
 
 	int							zmq_release;			// ZMQ lib release

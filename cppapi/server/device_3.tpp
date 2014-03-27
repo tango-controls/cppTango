@@ -161,52 +161,79 @@ void Device_3Impl::set_attribute_config_3_local(const T &new_conf,TANGO_UNUSED(c
 
 				if (get_dev_idl_version() > 4)
 				{
+					vector<int> cl_lib = attr.get_client_lib(ATTR_CONF_EVENT);
+
 					if (caller_idl <= 4)
 					{
 
 //
-// Even if device is IDL 5, the change has been done from one old client, thus with AttributeConfig_3.
+// Even if device is IDL 5, the change has been done from one old client (IDL4) thus with AttributeConfig_3.
 // If a new client is listening to event, don't forget to send it.
 //
 
-						if (attr.get_client_lib(ATTR_CONF_EVENT) >= 900)
+						for (size_t i = 0;i < cl_lib.size();i++)
 						{
-							attr.AttributeConfig_3_2_AttributeConfig_5(mod_conf,conf5);
-							attr.add_config_5_specific(conf5);
-							tmp_conf_ptr5 = &conf5;
-							::memcpy(&(ad.attr_conf_5),&(tmp_conf_ptr5),sizeof(V *));
+							if (cl_lib[i] == 5)
+							{
+								attr.AttributeConfig_3_2_AttributeConfig_5(mod_conf,conf5);
+								attr.add_config_5_specific(conf5);
+								tmp_conf_ptr5 = &conf5;
+
+								::memcpy(&(ad.attr_conf_5),&(tmp_conf_ptr5),sizeof(V *));
+							}
+							else
+							{
+								::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
+							}
+
 							if (event_supplier_nd != NULL)
 								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
-							ad.attr_conf_5 = NULL;
+
+							if (cl_lib[i] == 5)
+								ad.attr_conf_5 = NULL;
+							else
+								ad.attr_conf_3 = NULL;
 						}
-						::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
 					}
 					else
 					{
-						if (attr.get_client_lib(ATTR_CONF_EVENT) <= 800)
+						for (size_t i = 0;i < cl_lib.size();i++)
 						{
-							attr.AttributeConfig_5_2_AttributeConfig_3(mod_conf,conf3);
-							tmp_conf_ptr = &conf3;
-							::memcpy(&(ad.attr_conf_3),&(tmp_conf_ptr),sizeof(V *));
+							if (cl_lib[i] < 5)
+							{
+								attr.AttributeConfig_5_2_AttributeConfig_3(mod_conf,conf3);
+								tmp_conf_ptr = &conf3;
+
+								::memcpy(&(ad.attr_conf_3),&(tmp_conf_ptr),sizeof(V *));
+							}
+							else
+							{
+								::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
+							}
 
 							if (event_supplier_nd != NULL)
 								event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
 							if (event_supplier_zmq != NULL)
 								event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
-							ad.attr_conf_3 = NULL;
+
+							if (cl_lib[i] == 5)
+								ad.attr_conf_5 = NULL;
+							else
+								ad.attr_conf_3 = NULL;
 						}
-						::memcpy(&(ad.attr_conf_5),&(tmp_ptr),sizeof(V *));
 					}
 				}
 				else
+				{
 					::memcpy(&(ad.attr_conf_3),&(tmp_ptr),sizeof(V *));
 
-				if (event_supplier_nd != NULL)
-					event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
-				if (event_supplier_zmq != NULL)
-					event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+					if (event_supplier_nd != NULL)
+						event_supplier_nd->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+					if (event_supplier_zmq != NULL)
+						event_supplier_zmq->push_att_conf_events(this,ad,(Tango::DevFailed *)NULL,tmp_name);
+				}
 			}
 		}
 

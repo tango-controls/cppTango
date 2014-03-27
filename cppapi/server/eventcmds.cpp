@@ -229,7 +229,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				cout4 << "DServer::event_subscription(): update attr_conf subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				if (event.find('!') != string::npos)
+				if (client_lib == 5)
 					attribute.event_attr_conf5_subscription = time(NULL);
 				else
 					attribute.event_attr_conf_subscription = time(NULL);
@@ -514,7 +514,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 // Memorize client lib release
 //
 
-		attribute.set_client_lib(client_lib,event);
+		if (client_lib != 0)
+			attribute.set_client_lib(client_lib,event);
 	}
 	else
 	{
@@ -534,7 +535,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			ivl = 0;
 		}
 
-		dev_impl->set_client_lib(client_lib);
+		if (client_lib != 0)
+			dev_impl->set_client_lib(client_lib);
 	}
 
 //
@@ -650,13 +652,32 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         attr_name_lower = attr_name;
         transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
-        int client_release = 800;
+        int client_release = 4;
         if (argin->length() == 5)
         {
-			stringstream ss;
-			ss << (*argin)[4];
-			ss >> client_release;
-        }
+        	string tmp_str((*argin)[4]);
+			client_release = stoi(tmp_str);
+
+			if (client_release == 0)
+			{
+				string::size_type pos = event.find(EVENT_COMPAT);
+				if (pos != string::npos)
+				{
+					string client_lib_str = event.substr(pos + 3,1);
+					client_release = stoi(client_lib_str);
+					event.erase(0,EVENT_COMPAT_IDL5_SIZE);
+				}
+				else
+				{
+					if (event == EventName[ATTR_CONF_EVENT])
+						client_release = 4;
+					else
+					{
+
+					}
+				}
+			}
+		}
 
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
 
@@ -717,15 +738,16 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 				      (const char *)"DServer::zmq_event_subscription_change");
         }
 
-        if (idl_vers >= MIN_IDL_CONF5 && client_release >= 900 && event == CONF_TYPE_EVENT)
-			event = event + '!' +  AttConfEventVersion[ATT_CONF_REL_NB - 1];
-
 //
 // Call common method (common between old and new command)
 //
 
         string mcast;
         int rate,ivl;
+
+		string::size_type pos = event.find(EVENT_COMPAT);
+		if (pos != string::npos)
+			event.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
         event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_release);
 
@@ -955,10 +977,29 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 //
 
 		string mcast;
-		int rate,ivl;
+		int rate,ivl,client_lib;
 
 		string action("subscribe");
-		event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev);
+		string client_lib_str;
+
+		string::size_type pos = event.find(EVENT_COMPAT);
+		if (pos != string::npos)
+		{
+			client_lib_str = event.substr(pos + 3,1);
+			client_lib = stoi(client_lib_str);
+			event.erase(0,EVENT_COMPAT_IDL5_SIZE);
+		}
+		else
+		{
+			if (event == EventName[ATTR_CONF_EVENT])
+				client_lib = 4;
+			else
+			{
+
+			}
+		}
+
+		event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_lib);
 	}
 
 }

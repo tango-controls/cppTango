@@ -1013,7 +1013,7 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							attr_mut->unlock();
 						}
 
-						init_out_data_quality((*aid.data_3)[index],att,qual);
+						init_out_data_quality((*aid.data_4)[index],att,qual);
 						(*aid.data_4)[index].data_format = att.get_data_format();
 					}
 					else

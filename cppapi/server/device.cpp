@@ -1275,6 +1275,11 @@ Tango::DevState DeviceImpl::dev_state()
                     }
                 }
             }
+			else
+			{
+				if (device_state == Tango::ALARM)
+					device_state = Tango::ON;
+			}
 
 //
 // Check if one of the remaining attributes has its quality factor set to ALARM or WARNING. It is not necessary to do
@@ -5801,11 +5806,11 @@ void DeviceImpl::get_event_param(vector<EventPar> &eve)
 //		DeviceImpl::set_event_param
 //
 // description :
-//		Return event info for the device with events subscribed
+//      Set device interface change event subscription time
 //
 // argument :
 // 		in :
-//			- eve : One structure in this vector for each device event subsribed
+//			- eve : One structure in this vector for each device event subscribed
 //
 //------------------------------------------------------------------------------------------------------------------
 
