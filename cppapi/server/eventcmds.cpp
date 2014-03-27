@@ -655,8 +655,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         int client_release = 4;
         if (argin->length() == 5)
         {
-        	string tmp_str((*argin)[4]);
-			client_release = stoi(tmp_str);
+			stringstream ss;
+			ss << (*argin)[4];
+			ss >> client_release;
 
 			if (client_release == 0)
 			{
@@ -664,7 +665,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 				if (pos != string::npos)
 				{
 					string client_lib_str = event.substr(pos + 3,1);
-					client_release = stoi(client_lib_str);
+					stringstream ss;
+					ss << client_lib_str;
+					ss >> client_release;
 					event.erase(0,EVENT_COMPAT_IDL5_SIZE);
 				}
 				else
@@ -986,7 +989,9 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 		if (pos != string::npos)
 		{
 			client_lib_str = event.substr(pos + 3,1);
-			client_lib = stoi(client_lib_str);
+			stringstream ss;
+			ss << client_lib_str;
+			ss >> client_lib;
 			event.erase(0,EVENT_COMPAT_IDL5_SIZE);
 		}
 		else
