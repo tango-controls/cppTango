@@ -109,6 +109,24 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 	}
 #endif // HAS_TYPE_TRAITS
 
+//
+// Check if enum labels are defined
+//
+
+	if (enum_labels.size() == 0)
+	{
+		SAFE_DELETE(enum_ptr);
+
+		stringstream ss;
+		ss << "Attribute " << name << " data type is enum but no enum labels are defined!";
+
+		Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
+	}
+
+//
+// Check enum type
+//
+
 	DeviceImpl *dev = get_att_device();
 	Tango::DeviceClass *dev_class = dev->get_device_class();
 	Tango::MultiClassAttribute *mca = dev_class->get_class_attr();
@@ -168,8 +186,24 @@ void Attribute::set_value(T *enum_ptr,long x,long y,bool release)
 		loc_enum_ptr = new short [data_size];
 		enum_nb = data_size;
 	}
+
+	short max_val = (short)enum_labels.size() - 1;
 	for (int i = 0;i < data_size;i++)
+	{
 		loc_enum_ptr[i] = (short)enum_ptr[i];
+		if (loc_enum_ptr[i] < 0 || loc_enum_ptr[i] > max_val)
+		{
+			SAFE_DELETE(enum_ptr);
+			enum_nb = 0;
+
+			stringstream ss;
+			ss << "Wrong value for attribute " << name;
+			ss << ". Element " << i << " (value = " << loc_enum_ptr[i] << ") is negative or above the limit defined by the enum (" << max_val << ").";
+			delete [] loc_enum_ptr;
+
+			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
+		}
+	}
 
 	SAFE_DELETE(enum_ptr);
 

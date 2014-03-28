@@ -147,7 +147,7 @@ void Attribute::set_value(Tango::DevShort *p_data,long x,long y,bool release)
 
 				stringstream ss;
 				ss << "Wrong value for attribute " << name;
-				ss << ". Element " << i << " is negative or above the limit defined by the enum (" << max_val << ").";
+				ss << ". Element " << i << " (value = " << p_data[i] << ") is negative or above the limit defined by the enum (" << max_val << ").";
 
 				Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_value()");
 			}
