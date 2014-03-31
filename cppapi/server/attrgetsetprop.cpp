@@ -1299,6 +1299,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 	stringstream str;
 	str.precision(TANGO_FLOAT_PRECISION);
 
+	bool mod_prop;
+
 	if (state_or_status == false)
 	{
 
@@ -1910,42 +1912,85 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 // Set values
 //
 
+		mod_prop = false;
+
 		if (abs_change_class_def)
 		{
 			if (abs_change_set_class_def[0] == true)
+			{
+				if (abs_change[0] != abs_change_class[0])
+					mod_prop = true;
 				abs_change[0] = abs_change_class[0];
+			}
 			else if (abs_change_usr_def)
 			{
 				if (abs_change_set_usr_def[0] == true)
+				{
+					if (abs_change[0] != abs_change_usr[0])
+						mod_prop = true;
 					abs_change[0] = abs_change_usr[0];
+				}
 				else
+				{
+					if (abs_change[0] != abs_change_tmp[0])
+						mod_prop = true;
 					abs_change[0] = abs_change_tmp[0];
+				}
 			}
 			else
+			{
+				if (abs_change[0] != abs_change_tmp[0])
+					mod_prop = true;
 				abs_change[0] = abs_change_tmp[0];
+			}
 
 			if (abs_change_set_class_def[1] == true)
+			{
+				if (abs_change[1] != abs_change_class[1])
+					mod_prop = true;
 				abs_change[1] = abs_change_class[1];
+			}
 			else if (abs_change_usr_def)
 			{
 				if (abs_change_set_usr_def[1] == true)
+				{
+					if (abs_change[1] != abs_change_usr[1])
+						mod_prop = true;
 					abs_change[1] = abs_change_usr[1];
+				}
 				else
+				{
+					if (abs_change[1] != abs_change_tmp[1])
+						mod_prop = true;
 					abs_change[1] = abs_change_tmp[1];
+				}
 			}
 			else
+			{
+				if (abs_change[1] != abs_change_tmp[1])
+					mod_prop = true;
 				abs_change[1] = abs_change_tmp[1];
+			}
 		}
 		else if(abs_change_usr_def)
 		{
+// TODO: Change it for mod_prop
 			abs_change[0] = (abs_change_set_class_def[0]) ? abs_change_usr[0] : ((abs_change_set_usr_def[0]) ? abs_change_usr[0] : abs_change_tmp[0]);
 			abs_change[1] = (abs_change_set_class_def[1]) ? abs_change_usr[1] : ((abs_change_set_usr_def[1]) ? abs_change_usr[1] : abs_change_tmp[1]);
+			mod_prop = true;
 		}
 		else
 		{
+			if (abs_change[0] != abs_change_tmp[0])
+				mod_prop = true;
+			if (mod_prop == false && abs_change[1] != abs_change_tmp[1])
+				mod_prop = true;
 			abs_change[0] = abs_change_tmp[0];
 			abs_change[1] = abs_change_tmp[1];
 		}
+
+		if (mod_prop == true)
+			updated_props.push_back("abs_change");
 
 		delete_startup_exception("abs_change");
 
@@ -1989,6 +2034,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 // Set values
 //
 
+		mod_prop = false;
 		if (archive_rel_change_class_def)
 		{
 			if (archive_rel_change_set_class_def[0] == true)
@@ -2068,44 +2114,86 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 // Set values
 //
 
+		mod_prop = false;
+
 		if (archive_abs_change_class_def)
 		{
 			if (archive_abs_change_set_class_def[0] == true)
+			{
+				if (archive_abs_change[0] != archive_abs_change_class[0])
+					mod_prop = true;
 				archive_abs_change[0] = archive_abs_change_class[0];
+			}
 			else if (archive_abs_change_usr_def)
 			{
 				if (archive_abs_change_set_usr_def[0] == true)
+				{
+					if (archive_abs_change[0] != archive_abs_change_usr[0])
+						mod_prop = true;
 					archive_abs_change[0] = archive_abs_change_usr[0];
+				}
 				else
+				{
+					if (archive_abs_change[0] != archive_abs_change_tmp[0])
+						mod_prop = true;
 					archive_abs_change[0] = archive_abs_change_tmp[0];
+				}
 			}
 			else
+			{
+				if (archive_abs_change[0] != archive_abs_change_tmp[0])
+					mod_prop = true;
 				archive_abs_change[0] = archive_abs_change_tmp[0];
+			}
+
 
 			if (archive_abs_change_set_class_def[1] == true)
+			{
+				if (archive_abs_change[1] != archive_abs_change_class[1])
+					mod_prop = true;
 				archive_abs_change[1] = archive_abs_change_class[1];
+			}
 			else if (archive_abs_change_usr_def)
 			{
 				if (archive_abs_change_set_usr_def[1] == true)
+				{
+					if (archive_abs_change[1] != archive_abs_change_usr[1])
+						mod_prop = true;
 					archive_abs_change[1] = archive_abs_change_usr[1];
+				}
 				else
+				{
+					if (archive_abs_change[1] != archive_abs_change_tmp[1])
+						mod_prop = true;
 					archive_abs_change[1] = archive_abs_change_tmp[1];
+				}
 			}
 			else
+			{
+				if (archive_abs_change[1] != archive_abs_change_tmp[1])
+					mod_prop = true;
 				archive_abs_change[1] = archive_abs_change_tmp[1];
+			}
 		}
 		else if(archive_abs_change_usr_def)
 		{
+// TODO: manage mod_prop
 			archive_abs_change[0] = (archive_abs_change_set_class_def[0]) ? archive_abs_change_usr[0] : ((archive_abs_change_set_usr_def[0]) ? archive_abs_change_usr[0] : archive_abs_change_tmp[0]);
 			archive_abs_change[1] = (archive_abs_change_set_class_def[1]) ? archive_abs_change_usr[1] : ((archive_abs_change_set_usr_def[1]) ? archive_abs_change_usr[1] : archive_abs_change_tmp[1]);
 		}
 		else
 		{
+			if (archive_abs_change[0] != archive_abs_change_tmp[0])
+				mod_prop = true;
+			if (mod_prop == false && archive_abs_change[1] != archive_abs_change_tmp[1])
+				mod_prop = true;
 			archive_abs_change[0] = archive_abs_change_tmp[0];
 			archive_abs_change[1] = archive_abs_change_tmp[1];
 		}
 
 		delete_startup_exception("archive_abs_change");
+		if (mod_prop == true)
+			updated_props.push_back("archive_abs_change");
 	}
 
 //
@@ -2190,6 +2278,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 // Archive event period
 //
 
+	mod_prop = false;
+
 	stringstream def_archive_period;
 	def_archive_period << (int)(INT_MAX);
 	string tmp_archive_period;
@@ -2197,6 +2287,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 			TG_strcasecmp(conf.event_prop.arch_event.period,def_archive_period.str().c_str()) == 0)
 	{
 		// force library defaults (even if user defaults defined)
+		if (archive_period != INT_MAX)
+			mod_prop = true;
 		archive_period = INT_MAX;
 	}
 	else if (TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0)
@@ -2206,7 +2298,11 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 		{
             found = prop_in_list("archive_period",tmp_archive_period,nb_user,def_user_prop);
             if (found == false)
+			{
+				if (archive_period != DEFAULT_EVENT_PERIOD)
+					mod_prop = true;
                 archive_period = DEFAULT_EVENT_PERIOD;
+			}
             else
             {
                 str.str("");
@@ -2215,6 +2311,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
                 double db;
                 if (!(str >> db && str.eof()))
                     throw_err_format("archive_period",dev_name,"Attribute::set_properties()");
+				if (archive_period != (int)db)
+					mod_prop = true;
                 archive_period = (int)db;
             }
 		}
@@ -2226,6 +2324,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
             double db;
             if (!(str >> db && str.eof()))
                 throw_err_format("archive_period",dev_name,"Attribute::set_properties()");
+			if (archive_period != (int)db)
+				mod_prop = true;
             archive_period = (int)db;
 		}
 	}
@@ -2234,7 +2334,11 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 		// set user default value if defined, otherwise use the library defaults
         bool found = prop_in_list("archive_period",tmp_archive_period,nb_user,def_user_prop);
         if (found == false)
-            event_period = DEFAULT_EVENT_PERIOD;
+		{
+			if (archive_period != DEFAULT_EVENT_PERIOD)
+				mod_prop = true;
+            archive_period = DEFAULT_EVENT_PERIOD;
+		}
         else
         {
             str.str("");
@@ -2243,6 +2347,8 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
             double db;
             if (!(str >> db && str.eof()))
                 throw_err_format("archive_period",dev_name,"Attribute::set_properties()");
+			if (archive_period != (int)db)
+				mod_prop = true;
             archive_period = (int)db;
         }
 	}
@@ -2255,10 +2361,14 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 		double db;
 		if (!(str >> db && str.eof()))
 			throw_err_format("archive_period",dev_name,"Attribute::set_properties()");
+		if (archive_period != (int)db)
+			mod_prop = true;
 		archive_period = (int)db;
 	}
 
 	delete_startup_exception("archive_period");
+	if (mod_prop == true)
+		updated_props.push_back("archive_period");
 }
 
 void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_name,bool from_ds)
@@ -2912,7 +3022,6 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 		CHECK_PROP(conf.att_alarm.max_warning,str,dev_name,db_d,db_del,
 				   prop_to_update,prop_to_delete,"max_warning",def_user_prop,def_class_prop);
 
-
 //
 // RDS alarm values (delta_val and delta_t) are stored in or deleted from the database only if both are set or both not
 // specified.
@@ -3349,139 +3458,142 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 // Absolute change
 //
 
-        string abs_change_str(conf.event_prop.ch_event.abs_change); // provided, comma separated min and/or max values for the property
-        string abs_change_usr_str; // user default, comma separated min and/or max values for the property, if defined
-        string abs_change_class_str; // class default, comma separated min and/or max values for the property, if defined
-        vector<double> abs_change_tmp; // vector containing min and max values of the property
-        vector<double> abs_change_usr; // vector containing user default min and max values of the property
-        vector<double> abs_change_class; // vector containing class default min and max values of the property
-        bool abs_change_usr_def; // true if there are user defaults defined for the property
-        bool abs_change_class_def; // true if there are user defaults defined for the property
+		if (find(updated_props.begin(),updated_props.end(),"abs_change") != updated_props.end())
+		{
+			string abs_change_str(conf.event_prop.ch_event.abs_change); // provided, comma separated min and/or max values for the property
+			string abs_change_usr_str; // user default, comma separated min and/or max values for the property, if defined
+			string abs_change_class_str; // class default, comma separated min and/or max values for the property, if defined
+			vector<double> abs_change_tmp; // vector containing min and max values of the property
+			vector<double> abs_change_usr; // vector containing user default min and max values of the property
+			vector<double> abs_change_class; // vector containing class default min and max values of the property
+			bool abs_change_usr_def; // true if there are user defaults defined for the property
+			bool abs_change_class_def; // true if there are user defaults defined for the property
 
-        vector<bool> abs_change_set_usr_def; // vector indicating if to use provided values for the property or the user defaults if defined
-        vector<bool> abs_change_set_class_def; // vector indicating if to use provided values for the property or the class defaults if defined
+			vector<bool> abs_change_set_usr_def; // vector indicating if to use provided values for the property or the user defaults if defined
+			vector<bool> abs_change_set_class_def; // vector indicating if to use provided values for the property or the class defaults if defined
 
-        abs_change_usr_def = prop_in_list("abs_change",abs_change_usr_str,nb_user,def_user_prop);
+			abs_change_usr_def = prop_in_list("abs_change",abs_change_usr_str,nb_user,def_user_prop);
 
-        abs_change_class_def = prop_in_list("abs_change",abs_change_class_str,nb_class,def_class_prop);
+			abs_change_class_def = prop_in_list("abs_change",abs_change_class_str,nb_class,def_class_prop);
 
 //
 // Validate user or class default properties
 //
 
-        if(abs_change_usr_def)
-            validate_change_properties(dev_name,"abs_change",abs_change_usr_str,abs_change_usr);
+			if(abs_change_usr_def)
+				validate_change_properties(dev_name,"abs_change",abs_change_usr_str,abs_change_usr);
 
-        if(abs_change_class_def)
-            validate_change_properties(dev_name,"abs_change",abs_change_class_str,abs_change_class);
+			if(abs_change_class_def)
+				validate_change_properties(dev_name,"abs_change",abs_change_class_str,abs_change_class);
 
 //
 // Validate user provided values
 //
 
-        validate_change_properties(dev_name,"abs_change",abs_change_str,abs_change_tmp,abs_change_set_usr_def,abs_change_set_class_def);
+			validate_change_properties(dev_name,"abs_change",abs_change_str,abs_change_tmp,abs_change_set_usr_def,abs_change_set_class_def);
 
 //
 // Overwrite rel_change values according to user request to return to class/user defaults
 //
 
-        if (abs_change_class_def)
-        {
-            if (abs_change_set_class_def[0] == true)
-                abs_change_tmp[0] = abs_change_class[0];
-            else if (abs_change_usr_def)
-            {
-                if (abs_change_set_usr_def[0] == true)
-                    abs_change_tmp[0] = abs_change_usr[0];
-            }
+			if (abs_change_class_def)
+			{
+				if (abs_change_set_class_def[0] == true)
+					abs_change_tmp[0] = abs_change_class[0];
+				else if (abs_change_usr_def)
+				{
+					if (abs_change_set_usr_def[0] == true)
+						abs_change_tmp[0] = abs_change_usr[0];
+				}
 
-            if (abs_change_set_class_def[1] == true)
-                abs_change_tmp[1] = abs_change_class[1];
-            else if (abs_change_usr_def)
-            {
-                if (abs_change_set_usr_def[1] == true)
-                    abs_change_tmp[1] = abs_change_usr[1];
-            }
-        }
-        else if(abs_change_usr_def)
-        {
-            abs_change_tmp[0] = (abs_change_set_class_def[0]) ? abs_change_usr[0] : ((abs_change_set_usr_def[0]) ? abs_change_usr[0] : abs_change_tmp[0]);
-            abs_change_tmp[1] = (abs_change_set_class_def[1]) ? abs_change_usr[1] : ((abs_change_set_usr_def[1]) ? abs_change_usr[1] : abs_change_tmp[1]);
-        }
+				if (abs_change_set_class_def[1] == true)
+					abs_change_tmp[1] = abs_change_class[1];
+				else if (abs_change_usr_def)
+				{
+					if (abs_change_set_usr_def[1] == true)
+						abs_change_tmp[1] = abs_change_usr[1];
+				}
+			}
+			else if(abs_change_usr_def)
+			{
+				abs_change_tmp[0] = (abs_change_set_class_def[0]) ? abs_change_usr[0] : ((abs_change_set_usr_def[0]) ? abs_change_usr[0] : abs_change_tmp[0]);
+				abs_change_tmp[1] = (abs_change_set_class_def[1]) ? abs_change_usr[1] : ((abs_change_set_usr_def[1]) ? abs_change_usr[1] : abs_change_tmp[1]);
+			}
 
-        abs_change_tmp[0] = fabs(abs_change_tmp[0]);
-        abs_change_tmp[1] = fabs(abs_change_tmp[1]);
+			abs_change_tmp[0] = fabs(abs_change_tmp[0]);
+			abs_change_tmp[1] = fabs(abs_change_tmp[1]);
 
 //
 // Manage db
 //
 
-        if (abs_change_tmp[0] == abs_change_tmp[1])
-        {
-            if (abs_change_tmp[0] == INT_MAX)
-            {
-                if (abs_change_usr_def == true || abs_change_class_def == true)
-                {
-                    DbDatum desc("abs_change");
-                    desc << abs_change_tmp[0];
-                    db_d.push_back(desc);
-                    prop_to_update++;
-                }
-                else
-                {
-                    DbDatum del_desc("abs_change");
-                    db_del.push_back(del_desc);
-                    prop_to_delete++;
-                }
-            }
-            else if (abs_change_usr_def == true && abs_change_tmp[0] == fabs(abs_change_usr[0]))
-            {
-                if (abs_change_class_def == true)
-                {
-                    DbDatum desc("abs_change");
-                    desc << abs_change_tmp[0];
-                    db_d.push_back(desc);
-                    prop_to_update++;
-                }
-                else
-                {
-                    DbDatum del_desc("abs_change");
-                    db_del.push_back(del_desc);
-                    prop_to_delete++;
-                }
-            }
-            else if (abs_change_class_def == true && abs_change_tmp[0] == fabs(abs_change_class[0]))
-            {
-                DbDatum del_desc("abs_change");
-                db_del.push_back(del_desc);
-                prop_to_delete++;
-            }
-            else
-            {
-                DbDatum desc("abs_change");
-                desc << abs_change_tmp[0];
-                db_d.push_back(desc);
-                prop_to_update++;
-            }
-        }
-        else
-        {
-            if (abs_change_class_def)
-            {
-                event_prop_db("abs_change",abs_change_tmp,abs_change_class,db_del,prop_to_delete,db_d,prop_to_update);
-            }
-            else if(abs_change_usr_def)
-            {
-                event_prop_db("abs_change",abs_change_tmp,abs_change_usr,db_del,prop_to_delete,db_d,prop_to_update);
-            }
-            else
-            {
-                DbDatum abschange("abs_change");
-                abschange << abs_change_tmp;
-                db_d.push_back(abschange);
-                prop_to_update++;
-            }
-        }
+			if (abs_change_tmp[0] == abs_change_tmp[1])
+			{
+				if (abs_change_tmp[0] == INT_MAX)
+				{
+					if (abs_change_usr_def == true || abs_change_class_def == true)
+					{
+						DbDatum desc("abs_change");
+						desc << abs_change_tmp[0];
+						db_d.push_back(desc);
+						prop_to_update++;
+					}
+					else
+					{
+						DbDatum del_desc("abs_change");
+						db_del.push_back(del_desc);
+						prop_to_delete++;
+					}
+				}
+				else if (abs_change_usr_def == true && abs_change_tmp[0] == fabs(abs_change_usr[0]))
+				{
+					if (abs_change_class_def == true)
+					{
+						DbDatum desc("abs_change");
+						desc << abs_change_tmp[0];
+						db_d.push_back(desc);
+						prop_to_update++;
+					}
+					else
+					{
+						DbDatum del_desc("abs_change");
+						db_del.push_back(del_desc);
+						prop_to_delete++;
+					}
+				}
+				else if (abs_change_class_def == true && abs_change_tmp[0] == fabs(abs_change_class[0]))
+				{
+					DbDatum del_desc("abs_change");
+					db_del.push_back(del_desc);
+					prop_to_delete++;
+				}
+				else
+				{
+					DbDatum desc("abs_change");
+					desc << abs_change_tmp[0];
+					db_d.push_back(desc);
+					prop_to_update++;
+				}
+			}
+			else
+			{
+				if (abs_change_class_def)
+				{
+					event_prop_db("abs_change",abs_change_tmp,abs_change_class,db_del,prop_to_delete,db_d,prop_to_update);
+				}
+				else if(abs_change_usr_def)
+				{
+					event_prop_db("abs_change",abs_change_tmp,abs_change_usr,db_del,prop_to_delete,db_d,prop_to_update);
+				}
+				else
+				{
+					DbDatum abschange("abs_change");
+					abschange << abs_change_tmp;
+					db_d.push_back(abschange);
+					prop_to_update++;
+				}
+			}
+		}
 
 //
 // Archive relative change
@@ -3625,140 +3737,143 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 // Archive absolute change
 //
 
-        string archive_abs_change_str(conf.event_prop.arch_event.abs_change); // provided, comma separated min and/or max values for the property
-        string archive_abs_change_usr_str; // user default, comma separated min and/or max values for the property, if defined
-        string archive_abs_change_class_str; // class default, comma separated min and/or max values for the property, if defined
-        vector<double> archive_abs_change_tmp; // vector containing min and max values of the property
-        vector<double> archive_abs_change_usr; // vector containing user default min and max values of the property
-        vector<double> archive_abs_change_class; // vector containing class default min and max values of the property
-        bool archive_abs_change_usr_def; // true if there are user defaults defined for the property
-        bool archive_abs_change_class_def; // true if there are class defaults defined for the property
+		if (find(updated_props.begin(),updated_props.end(),"archive_abs_change") != updated_props.end())
+		{
+			string archive_abs_change_str(conf.event_prop.arch_event.abs_change); // provided, comma separated min and/or max values for the property
+			string archive_abs_change_usr_str; // user default, comma separated min and/or max values for the property, if defined
+			string archive_abs_change_class_str; // class default, comma separated min and/or max values for the property, if defined
+			vector<double> archive_abs_change_tmp; // vector containing min and max values of the property
+			vector<double> archive_abs_change_usr; // vector containing user default min and max values of the property
+			vector<double> archive_abs_change_class; // vector containing class default min and max values of the property
+			bool archive_abs_change_usr_def; // true if there are user defaults defined for the property
+			bool archive_abs_change_class_def; // true if there are class defaults defined for the property
 
-        vector<bool> archive_abs_change_set_usr_def; // vector indicating if to use provided values for the property or the user defaults if defined
-        vector<bool> archive_abs_change_set_class_def; // vector indicating if to use provided values for the property or the class defaults if defined
+			vector<bool> archive_abs_change_set_usr_def; // vector indicating if to use provided values for the property or the user defaults if defined
+			vector<bool> archive_abs_change_set_class_def; // vector indicating if to use provided values for the property or the class defaults if defined
 
-        archive_abs_change_usr_def = prop_in_list("archive_abs_change",archive_abs_change_usr_str,nb_user,def_user_prop);
+			archive_abs_change_usr_def = prop_in_list("archive_abs_change",archive_abs_change_usr_str,nb_user,def_user_prop);
 
-        archive_abs_change_class_def = prop_in_list("archive_abs_change",archive_abs_change_class_str,nb_class,def_class_prop);
+			archive_abs_change_class_def = prop_in_list("archive_abs_change",archive_abs_change_class_str,nb_class,def_class_prop);
 
 //
 // Validate user or class default properties
 //
 
-        if(archive_abs_change_usr_def)
-            validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_usr_str,archive_abs_change_usr);
+			if(archive_abs_change_usr_def)
+				validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_usr_str,archive_abs_change_usr);
 
-        if(archive_abs_change_class_def)
-            validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_class_str,archive_abs_change_class);
+			if(archive_abs_change_class_def)
+				validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_class_str,archive_abs_change_class);
 
 //
 // Validate user provided values
 //
 
-        validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_str,archive_abs_change_tmp,archive_abs_change_set_usr_def,archive_abs_change_set_class_def);
+			validate_change_properties(dev_name,"archive_abs_change",archive_abs_change_str,archive_abs_change_tmp,archive_abs_change_set_usr_def,archive_abs_change_set_class_def);
 
 //
 // Overwrite archive_abs_change values according to user request to return to class/user defaults
 //
 
-        if (archive_abs_change_class_def)
-        {
-            if (archive_abs_change_set_class_def[0] == true)
-            	archive_abs_change_tmp[0] = archive_abs_change_class[0];
-            else if (archive_abs_change_usr_def)
-            {
-                if (archive_abs_change_set_usr_def[0] == true)
-                	archive_abs_change_tmp[0] = archive_abs_change_usr[0];
-            }
+			if (archive_abs_change_class_def)
+			{
+				if (archive_abs_change_set_class_def[0] == true)
+					archive_abs_change_tmp[0] = archive_abs_change_class[0];
+				else if (archive_abs_change_usr_def)
+				{
+					if (archive_abs_change_set_usr_def[0] == true)
+						archive_abs_change_tmp[0] = archive_abs_change_usr[0];
+				}
 
-            if (archive_abs_change_set_class_def[1] == true)
-            	archive_abs_change_tmp[1] = archive_abs_change_class[1];
-            else if (archive_abs_change_usr_def)
-            {
-                if (archive_abs_change_set_usr_def[1] == true)
-                	archive_abs_change_tmp[1] = archive_abs_change_usr[1];
-            }
-        }
-        else if(archive_abs_change_usr_def)
-        {
-        	archive_abs_change_tmp[0] = (archive_abs_change_set_class_def[0]) ? archive_abs_change_usr[0] : ((archive_abs_change_set_usr_def[0]) ? archive_abs_change_usr[0] : archive_abs_change_tmp[0]);
-        	archive_abs_change_tmp[1] = (archive_abs_change_set_class_def[1]) ? archive_abs_change_usr[1] : ((archive_abs_change_set_usr_def[1]) ? archive_abs_change_usr[1] : archive_abs_change_tmp[1]);
-        }
+				if (archive_abs_change_set_class_def[1] == true)
+					archive_abs_change_tmp[1] = archive_abs_change_class[1];
+				else if (archive_abs_change_usr_def)
+				{
+					if (archive_abs_change_set_usr_def[1] == true)
+						archive_abs_change_tmp[1] = archive_abs_change_usr[1];
+				}
+			}
+			else if(archive_abs_change_usr_def)
+			{
+				archive_abs_change_tmp[0] = (archive_abs_change_set_class_def[0]) ? archive_abs_change_usr[0] : ((archive_abs_change_set_usr_def[0]) ? archive_abs_change_usr[0] : archive_abs_change_tmp[0]);
+				archive_abs_change_tmp[1] = (archive_abs_change_set_class_def[1]) ? archive_abs_change_usr[1] : ((archive_abs_change_set_usr_def[1]) ? archive_abs_change_usr[1] : archive_abs_change_tmp[1]);
+			}
 
-        archive_abs_change_tmp[0] = fabs(archive_abs_change_tmp[0]);
-        archive_abs_change_tmp[1] = fabs(archive_abs_change_tmp[1]);
+			archive_abs_change_tmp[0] = fabs(archive_abs_change_tmp[0]);
+			archive_abs_change_tmp[1] = fabs(archive_abs_change_tmp[1]);
 
 //
 // Manage db
 //
 
-        if(archive_abs_change_tmp[0] == archive_abs_change_tmp[1])
-        {
-            if (archive_abs_change_tmp[0] == INT_MAX)
-            {
-                if (archive_abs_change_usr_def == true || archive_abs_change_class_def == true)
-                {
-                    DbDatum desc("archive_abs_change");
-                    desc << archive_abs_change_tmp[0];
-                    db_d.push_back(desc);
-                    prop_to_update++;
-                }
-                else
-                {
-                    DbDatum del_desc("archive_abs_change");
-                    db_del.push_back(del_desc);
-                    prop_to_delete++;
-                }
-            }
-            else if (archive_abs_change_usr_def == true && archive_abs_change_tmp[0] == fabs(archive_abs_change_usr[0]))
-            {
-                if (archive_abs_change_class_def == true)
-                {
-                    DbDatum desc("archive_abs_change");
-                    desc << archive_abs_change_tmp[0];
-                    db_d.push_back(desc);
-                    prop_to_update++;
-                }
-                else
-                {
-                    DbDatum del_desc("archive_abs_change");
-                    db_del.push_back(del_desc);
-                    prop_to_delete++;
-                }
-            }
-            else if (archive_abs_change_class_def == true && archive_abs_change_tmp[0] == fabs(archive_abs_change_class[0]))
-            {
-                DbDatum del_desc("archive_abs_change");
-                db_del.push_back(del_desc);
-                prop_to_delete++;
-            }
-            else
-            {
-                DbDatum desc("archive_abs_change");
-                desc << archive_abs_change_tmp[0];
-                db_d.push_back(desc);
-                prop_to_update++;
-            }
-        }
-        else
-        {
-            if (archive_abs_change_class_def)
-            {
-                event_prop_db("archive_abs_change",archive_abs_change_tmp,archive_abs_change_class,db_del,prop_to_delete,db_d,prop_to_update);
-            }
-            else if(archive_abs_change_usr_def)
-            {
-                event_prop_db("archive_abs_change",archive_abs_change_tmp,archive_abs_change_usr,db_del,prop_to_delete,db_d,prop_to_update);
-            }
-            else
-            {
-                DbDatum archiveabschange("archive_abs_change");
-                archiveabschange << archive_abs_change_tmp;
-                db_d.push_back(archiveabschange);
-                prop_to_update++;
-            }
-        }
-    }
+			if(archive_abs_change_tmp[0] == archive_abs_change_tmp[1])
+			{
+				if (archive_abs_change_tmp[0] == INT_MAX)
+				{
+					if (archive_abs_change_usr_def == true || archive_abs_change_class_def == true)
+					{
+						DbDatum desc("archive_abs_change");
+						desc << archive_abs_change_tmp[0];
+						db_d.push_back(desc);
+						prop_to_update++;
+					}
+					else
+					{
+						DbDatum del_desc("archive_abs_change");
+						db_del.push_back(del_desc);
+						prop_to_delete++;
+					}
+				}
+				else if (archive_abs_change_usr_def == true && archive_abs_change_tmp[0] == fabs(archive_abs_change_usr[0]))
+				{
+					if (archive_abs_change_class_def == true)
+					{
+						DbDatum desc("archive_abs_change");
+						desc << archive_abs_change_tmp[0];
+						db_d.push_back(desc);
+						prop_to_update++;
+					}
+					else
+					{
+						DbDatum del_desc("archive_abs_change");
+						db_del.push_back(del_desc);
+						prop_to_delete++;
+					}
+				}
+				else if (archive_abs_change_class_def == true && archive_abs_change_tmp[0] == fabs(archive_abs_change_class[0]))
+				{
+					DbDatum del_desc("archive_abs_change");
+					db_del.push_back(del_desc);
+					prop_to_delete++;
+				}
+				else
+				{
+					DbDatum desc("archive_abs_change");
+					desc << archive_abs_change_tmp[0];
+					db_d.push_back(desc);
+					prop_to_update++;
+				}
+			}
+			else
+			{
+				if (archive_abs_change_class_def)
+				{
+					event_prop_db("archive_abs_change",archive_abs_change_tmp,archive_abs_change_class,db_del,prop_to_delete,db_d,prop_to_update);
+				}
+				else if(archive_abs_change_usr_def)
+				{
+					event_prop_db("archive_abs_change",archive_abs_change_tmp,archive_abs_change_usr,db_del,prop_to_delete,db_d,prop_to_update);
+				}
+				else
+				{
+					DbDatum archiveabschange("archive_abs_change");
+					archiveabschange << archive_abs_change_tmp;
+					db_d.push_back(archiveabschange);
+					prop_to_update++;
+				}
+			}
+		}
+	}
 
 //
 // Event period
@@ -3898,130 +4013,133 @@ void Attribute::upd_database(const Tango::AttributeConfig_3 &conf,string &dev_na
 // Archive event period
 //
 
-	stringstream def_arch_event_period_str;
-	string def_arch_event_period;
-	def_arch_event_period_str << (int)(INT_MAX);
-	def_arch_event_period_str >> def_arch_event_period;
-	store_in_db = true;
+	if (find(updated_props.begin(),updated_props.end(),"archive_period") != updated_props.end())
+	{
+		stringstream def_arch_event_period_str;
+		string def_arch_event_period;
+		def_arch_event_period_str << (int)(INT_MAX);
+		def_arch_event_period_str >> def_arch_event_period;
+		store_in_db = true;
 
 
-    user_defaults = prop_in_list("archive_period",usr_def_val,nb_user,def_user_prop);
+		user_defaults = prop_in_list("archive_period",usr_def_val,nb_user,def_user_prop);
 
-    class_defaults = prop_in_list("archive_period",class_def_val,nb_class,def_class_prop);
-    if (class_defaults)
-    {
-        if((TG_strcasecmp(class_def_val.c_str(),AlrmValueNotSpec) == 0) ||
-                (TG_strcasecmp(class_def_val.c_str(),NotANumber) == 0) ||
-                (strlen(class_def_val.c_str()) == 0))
-        {
-            stringstream str;
-            str << (int)(INT_MAX);
-            class_def_val = str.str();
-        }
-    }
-
-    if (class_defaults)
-    {
-    	bool input_equal_def = false;
-		str.str("");
-		str.clear();
-		str << conf.event_prop.arch_event.period.in();
-		double db;
-		if (str >> db && str.eof())
+		class_defaults = prop_in_list("archive_period",class_def_val,nb_class,def_class_prop);
+		if (class_defaults)
 		{
+			if((TG_strcasecmp(class_def_val.c_str(),AlrmValueNotSpec) == 0) ||
+					(TG_strcasecmp(class_def_val.c_str(),NotANumber) == 0) ||
+					(strlen(class_def_val.c_str()) == 0))
+			{
+				stringstream str;
+				str << (int)(INT_MAX);
+				class_def_val = str.str();
+			}
+		}
+
+		if (class_defaults)
+		{
+			bool input_equal_def = false;
 			str.str("");
 			str.clear();
-			str << class_def_val;
-			int i;
-			str >> i;
-			if((int)db == i)
-				input_equal_def = true;
+			str << conf.event_prop.arch_event.period.in();
+			double db;
+			if (str >> db && str.eof())
+			{
+				str.str("");
+				str.clear();
+				str << class_def_val;
+				int i;
+				str >> i;
+				if((int)db == i)
+					input_equal_def = true;
+			}
+			if ((TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0) ||
+					(strcmp(conf.event_prop.arch_event.period,class_def_val.c_str()) == 0) ||
+					(input_equal_def == true))
+				store_in_db = false;
 		}
-		if ((TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0) ||
-				(strcmp(conf.event_prop.arch_event.period,class_def_val.c_str()) == 0) ||
-				(input_equal_def == true))
-			store_in_db = false;
-    }
-	else if(user_defaults)
-	{
-    	bool input_equal_def = false;
-		str.str("");
-		str.clear();
-		str << conf.event_prop.arch_event.period.in();
-		double db;
-		if (str >> db && str.eof())
+		else if(user_defaults)
 		{
+			bool input_equal_def = false;
 			str.str("");
 			str.clear();
-			str << usr_def_val;
-			int i;
-			str >> i;
-			if((int)db == i)
-				input_equal_def = true;
+			str << conf.event_prop.arch_event.period.in();
+			double db;
+			if (str >> db && str.eof())
+			{
+				str.str("");
+				str.clear();
+				str << usr_def_val;
+				int i;
+				str >> i;
+				if((int)db == i)
+					input_equal_def = true;
+			}
+			if ((TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0) ||
+					(strcmp(conf.event_prop.arch_event.period,usr_def_val.c_str()) == 0) ||
+					(strlen(conf.event_prop.arch_event.period) == 0) ||
+					(input_equal_def == true))
+				store_in_db = false;
 		}
-		if ((TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0) ||
-				(strcmp(conf.event_prop.arch_event.period,usr_def_val.c_str()) == 0) ||
-				(strlen(conf.event_prop.arch_event.period) == 0) ||
-				(input_equal_def == true))
-			store_in_db = false;
-	}
-	else
-	{
-    	bool input_equal_def = false;
-		str.str("");
-		str.clear();
-		str << conf.event_prop.arch_event.period.in();
-		double db;
-		if (str >> db && str.eof())
-		{
-			if((int)db == (int)(INT_MAX))
-				input_equal_def = true;
-		}
-		if ((TG_strcasecmp(conf.event_prop.arch_event.period,AlrmValueNotSpec) == 0) ||
-				(TG_strcasecmp(conf.event_prop.arch_event.period,def_arch_event_period.c_str()) == 0) ||
-				(TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0) ||
-				(strlen(conf.event_prop.arch_event.period) == 0) ||
-				(input_equal_def == true))
-			store_in_db = false;
-	}
-
-	if(store_in_db)
-	{
-		string tmp = conf.event_prop.arch_event.period.in();
-		if (TG_strcasecmp(conf.event_prop.arch_event.period,AlrmValueNotSpec) == 0)
-		{
-            tmp = def_arch_event_period;
-        }
-		else if (strlen(conf.event_prop.arch_event.period) == 0)
-        {
-            if (class_defaults && user_defaults)
-                tmp = usr_def_val;
-            else
-                tmp = def_arch_event_period;
-        }
 		else
 		{
+			bool input_equal_def = false;
 			str.str("");
 			str.clear();
-			str << conf.event_prop.arch_event.period;
+			str << conf.event_prop.arch_event.period.in();
 			double db;
-			if (!(str >> db && str.eof()))
-				throw_err_format("archive_period",dev_name,"Attribute::upd_database()");
-			str.str("");
-			str.clear();
-			str << (int)db;
-			tmp = str.str();
+			if (str >> db && str.eof())
+			{
+				if((int)db == (int)(INT_MAX))
+					input_equal_def = true;
+			}
+			if ((TG_strcasecmp(conf.event_prop.arch_event.period,AlrmValueNotSpec) == 0) ||
+					(TG_strcasecmp(conf.event_prop.arch_event.period,def_arch_event_period.c_str()) == 0) ||
+					(TG_strcasecmp(conf.event_prop.arch_event.period,NotANumber) == 0) ||
+					(strlen(conf.event_prop.arch_event.period) == 0) ||
+					(input_equal_def == true))
+				store_in_db = false;
 		}
-		DbDatum archeventperiod("archive_period");
-		archeventperiod << tmp.c_str();
-		db_d.push_back(archeventperiod);
-		prop_to_update++;
-	}
-	else
-	{
-		DbDatum del_archeventperiod("archive_period");
-		db_del.push_back(del_archeventperiod);
-		prop_to_delete++;
+
+		if(store_in_db)
+		{
+			string tmp = conf.event_prop.arch_event.period.in();
+			if (TG_strcasecmp(conf.event_prop.arch_event.period,AlrmValueNotSpec) == 0)
+			{
+				tmp = def_arch_event_period;
+			}
+			else if (strlen(conf.event_prop.arch_event.period) == 0)
+			{
+				if (class_defaults && user_defaults)
+					tmp = usr_def_val;
+				else
+					tmp = def_arch_event_period;
+			}
+			else
+			{
+				str.str("");
+				str.clear();
+				str << conf.event_prop.arch_event.period;
+				double db;
+				if (!(str >> db && str.eof()))
+					throw_err_format("archive_period",dev_name,"Attribute::upd_database()");
+				str.str("");
+				str.clear();
+				str << (int)db;
+				tmp = str.str();
+			}
+			DbDatum archeventperiod("archive_period");
+			archeventperiod << tmp.c_str();
+			db_d.push_back(archeventperiod);
+			prop_to_update++;
+		}
+		else
+		{
+			DbDatum del_archeventperiod("archive_period");
+			db_del.push_back(del_archeventperiod);
+			prop_to_delete++;
+		}
 	}
 
 //
@@ -4391,6 +4509,8 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 	{
 		cout4 << *cosp.prop_to_update << " properties to update in db" << endl;
 		(*cosp.db_d)[0] << *cosp.prop_to_update;
+for (const auto &elem: *cosp.db_d)
+	cout << "prop_to_update name = " << elem.name << endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -4418,6 +4538,8 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 	{
 		cout4 << *cosp.prop_to_delete << " properties to delete in db" << endl;
 		(*cosp.db_del)[0] << *cosp.prop_to_delete;
+for (const auto &elem: *cosp.db_del)
+	cout << "prop_to_delete name = " << elem.name << endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 

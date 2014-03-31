@@ -2376,6 +2376,7 @@ protected:
     bool 				startup_exceptions_clear;		// Flag set to true when the cause for the device startup exceptions has been fixed
 	bool				att_mem_exception;				// Flag set to true if the attribute is writable and
 														// memorized and if it failed at init
+	vector<string>		updated_props;					// Update prop during a set_properties()  method
 	vector<int> 		client_lib[numEventType];		// Clients lib used (for event sending and compat)
 };
 

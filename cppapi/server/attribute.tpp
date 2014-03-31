@@ -1248,6 +1248,7 @@ void Attribute::set_upd_properties(const T &conf,string &dev_name,bool from_ds)
 // Set properties locally. In case of exception bring the backed-up values
 //
 
+		updated_props.clear();
 		set_properties(conf,dev_name,from_ds);
 
 //

@@ -202,53 +202,6 @@ private:
 #endif
 };
 
-//
-// MultiAttrProp template specialisation for DevEnum
-//
-
-/*template <>
-class MultiAttrProp<DevEnum>
-{
-public:
-        MultiAttrProp() {}
-
-		string 					            label;
-		string 					            description;
-		string 					            unit;
-		string 					            standard_unit;
-		string 					            display_unit;
-		string 					            format;
-        AttrProp<DevShort>                 	min_value;
-        AttrProp<DevShort>                 	max_value;
-        AttrProp<DevShort>                 	min_alarm;
-        AttrProp<DevShort>                 	max_alarm;
-        AttrProp<DevShort>                 	min_warning;
-        AttrProp<DevShort>                 	max_warning;
-        AttrProp<DevShort>					delta_t;
-        AttrProp<DevShort>                 	delta_val;
-        AttrProp<DevShort>                 	event_period;
-        AttrProp<DevShort>                 	archive_period;
-        DoubleAttrProp<DevDouble>	        rel_change;
-        DoubleAttrProp<DevDouble>	        abs_change;
-        DoubleAttrProp<DevDouble>	        archive_rel_change;
-        DoubleAttrProp<DevDouble>	        archive_abs_change;
-        vector<string>						enum_labels;
-
-private:
-
-//
-// The extension class
-//
-
-	class MultiAttrPropExt {};
-
-#ifdef HAS_UNIQUE_PTR
-	unique_ptr<MultiAttrPropExt>	ext;           // Class extension
-#else
-	MultiAttrPropExt				*ext;
-#endif
-};*/
-
 } // End of Tango namespace
 
 #endif // _ATTRPROP_TPP
