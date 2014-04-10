@@ -1248,8 +1248,8 @@ void Attribute::set_upd_properties(const T &conf,string &dev_name,bool from_ds)
 // Set properties locally. In case of exception bring the backed-up values
 //
 
-		updated_props.clear();
-		set_properties(conf,dev_name,from_ds);
+		vector<AttPropDb> v_db;
+		set_properties(conf,dev_name,from_ds,v_db);
 
 //
 // Check ranges coherence for min and max properties (min-max alarm / min-max value ...)
@@ -1269,7 +1269,7 @@ void Attribute::set_upd_properties(const T &conf,string &dev_name,bool from_ds)
 
 		try
 		{
-			upd_database(conf,dev_name);
+			upd_database(v_db);
 		}
 		catch(DevFailed &)
 		{
@@ -1280,7 +1280,9 @@ void Attribute::set_upd_properties(const T &conf,string &dev_name,bool from_ds)
 
 			try
 			{
-				upd_database(old_conf,dev_name);
+				v_db.clear();
+				set_properties(old_conf,dev_name,from_ds,v_db);
+				upd_database(v_db);
 			}
 			catch(DevFailed &)
 			{
@@ -1308,7 +1310,11 @@ void Attribute::set_upd_properties(const T &conf,string &dev_name,bool from_ds)
 //
 
 		if(is_startup_exception == false && startup_exceptions_clear == true && is_fwd_att() == false)
-			set_properties(old_conf,dev_name);
+		{
+			vector<AttPropDb> v_db;
+			set_properties(old_conf,dev_name,true,v_db);
+		}
+
 		throw;
 	}
 }

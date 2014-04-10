@@ -533,6 +533,7 @@ private :
 
     int                                     old_poll_nb;
     omni_mutex								subscription_mutex;
+    bool									ctrl_socket_bound;
 
 	void *run_undetached(void *arg);
 	void push_heartbeat_event(string &);
@@ -543,6 +544,8 @@ private :
     void process_event(zmq_msg_t &,zmq_msg_t &,zmq_msg_t &,zmq_msg_t &);
     void multi_tango_host(zmq::socket_t *,SocketCmd,string &);
 	void print_error_message(const char *mess) {ApiUtil *au=ApiUtil::instance();au->print_error_message(mess);}
+	void set_ctrl_sock_bound() {subscription_mutex.lock();ctrl_socket_bound=true;subscription_mutex.unlock();}
+	bool is_ctrl_sock_bound() {bool _b;subscription_mutex.lock();_b=ctrl_socket_bound;subscription_mutex.unlock();return _b;}
 
     friend class DelayEvent;
 };

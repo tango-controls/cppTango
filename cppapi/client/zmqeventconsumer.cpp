@@ -65,7 +65,8 @@ ZmqEventConsumer *ZmqEventConsumer::_instance = NULL;
 /*		       															*/
 /************************************************************************/
 
-ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),omni_thread((void *)ptr),zmq_context(1)
+ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),
+omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
 {
 	cout3 << "calling Tango::ZmqEventConsumer::ZmqEventConsumer() \n";
 
@@ -120,7 +121,6 @@ ZmqEventConsumer *ZmqEventConsumer::create()
 
 void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 {
-
 	int linger = 0;
 	int reconnect_ivl = -1;
 	int send_hwm = SUB_SEND_HWM;
@@ -162,6 +162,8 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 	control_sock = new zmq::socket_t(zmq_context,ZMQ_REP);
 	control_sock->setsockopt(ZMQ_LINGER,&linger,sizeof(linger));
 	control_sock->bind(CTRL_SOCK_ENDPOINT);
+
+	set_ctrl_sock_bound();
 
 //
 // Initialize poll set
@@ -3104,10 +3106,27 @@ DelayEvent::DelayEvent(EventConsumer *ec):released(false),eve_con(NULL)
 // I have tried with a yield call but it still failed in some cases (when running the DS with a file as database  for
 // instance). Replace the yield with a 15 mS sleep !!!
 //
+// Since ZMQ 4, itś possible to connect to the remote socket event if it is not yet bound but the remote
+// socket will hang in the its recev call!!!!
+// We still need the sleep call but not in the exception case
+//
 
             try
             {
                 sender.connect(CTRL_SOCK_ENDPOINT);
+
+				if (eve_con->is_ctrl_sock_bound() == false)
+				{
+#ifndef _TG_WINDOWS_
+					struct timespec ts;
+					ts.tv_sec = 0;
+					ts.tv_nsec = 15000000;
+
+					nanosleep(&ts,NULL);
+#else
+					Sleep(20);
+#endif
+				}
             }
             catch (zmq::error_t &e)
             {

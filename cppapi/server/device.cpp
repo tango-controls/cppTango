@@ -2313,9 +2313,10 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 
 			Attribute &attr = dev_attr->get_attr_by_name(new_conf[i].name);
 			bool old_alarm = attr.is_alarmed().any();
-			attr.set_properties(new_conf[i],device_name);
+			vector<Attribute::AttPropDb> v_db;
+			attr.set_properties(new_conf[i],device_name,false,v_db);
 			if (Tango::Util::_UseDb == true)
-				attr.upd_database(new_conf[i],device_name);
+				attr.upd_database(v_db);
 
 //
 // In case the attribute quality factor was set to ALARM, reset it to VALID
