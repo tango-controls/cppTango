@@ -2810,8 +2810,8 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 	{
 		cout4 << *cosp.prop_to_update << " properties to update in db" << endl;
 		(*cosp.db_d)[0] << *cosp.prop_to_update;
-for (const auto &elem: *cosp.db_d)
-	cout << "prop_to_update name = " << elem.name << endl;
+//for (const auto &elem: *cosp.db_d)
+//	cout << "prop_to_update name = " << elem.name << endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
@@ -2839,8 +2839,8 @@ for (const auto &elem: *cosp.db_d)
 	{
 		cout4 << *cosp.prop_to_delete << " properties to delete in db" << endl;
 		(*cosp.db_del)[0] << *cosp.prop_to_delete;
-for (const auto &elem: *cosp.db_del)
-	cout << "prop_to_delete name = " << elem.name << endl;
+//for (const auto &elem: *cosp.db_del)
+//	cout << "prop_to_delete name = " << elem.name << endl;
 
 		Tango::Util *tg = Tango::Util::instance();
 
