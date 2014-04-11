@@ -187,6 +187,21 @@ DeviceData::~DeviceData()
 
 //-----------------------------------------------------------------------------
 //
+// DeviceData::is_empty() - test is DeviceData is empty !
+//
+//-----------------------------------------------------------------------------
+
+bool DeviceData::is_empty()
+{
+	bitset<numFlags> bs = exceptions_flags;
+	exceptions_flags.reset((size_t)isempty_flag);
+	bool ret = any_is_null();
+	exceptions_flags = bs;
+	return(ret);
+}
+
+//-----------------------------------------------------------------------------
+//
 // DeviceData::any_is_null() - test any type for equality to null
 //
 //-----------------------------------------------------------------------------
@@ -201,7 +216,7 @@ bool DeviceData::any_is_null()
 		if (exceptions_flags.test(isempty_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)"API_EmptyDeviceData",
-					        (const char*)"cannot extract, no data in DeviceData object ",
+					        (const char*)"Cannot extract, no data in DeviceData object ",
 					        (const char*)"DeviceData::any_is_null");
 		}
 		return(true);

@@ -480,10 +480,10 @@ public :
 /**
  * Set exception flag
  *
- * Is a method which allows the user to switch on/off exception throwing for trying to extract data from an
- * empty DeviceData object. The default is to not throw exception. The following flags are supported :
- * @li @b isempty_flag - throw a WrongData exception (reason = API_EmptyDbDatum) if user tries to extract
- *       data from an empty DeviceAttribute object. By default, this flag is set
+ * It's a method which allows the user to switch on/off exception throwing when trying to extract data from a
+ * DeviceData object. The following flags are supported :
+ * @li @b isempty_flag - throw a Empty DeviceData exception (reason = API_EmptyDeviceData) if user tries to extract
+ *       data from an empty DeviceData object. By default, this flag is set
  * @li @b wrongtype_flag - throw a WrongData exception (reason = API_IncompatibleArgumentType) if user
  *       tries to extract data with a type different than the type used for insertion. By default, this flag
  *       is not set
@@ -535,11 +535,13 @@ public :
  * Check if the DeviceData instance is empty
  *
  * is_empty() is a boolean method which returns true or false depending on whether the DeviceData object
- * contains data or not. It can be used to test whether the DeviceData has been initialized or not e.g.
+ * contains data or not. It can be used to test whether the DeviceData has been initialized or not but
+ * you have first to disable exception throwing in case of empty object e.g.
  * @code
  * string string_read;
  *
  * DeviceData sl_read = my_device->command_inout(“ReadLine”);
+ * sl_read.reset_exceptions(DeviceData::isempty_flag);
  *
  * if (! sl_read.is_empty())
  * {
@@ -553,7 +555,7 @@ public :
  *
  * @return Boolean set to true is the instance is empty
  */
-	bool is_empty() {return any_is_null();}
+	bool is_empty();
 /**
  * Get Tango data type of the included data
  *
