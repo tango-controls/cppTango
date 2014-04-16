@@ -1336,13 +1336,25 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	}
 
 //
+// Do we have to support event compatibility ?
+//
+
+	bool add_compat_info = false;
+	if (event == ATTR_CONF_EVENT ||
+		event == CHANGE_EVENT ||
+		event == PERIODIC_EVENT ||
+		event == ARCHIVE_EVENT ||
+		event == USER_EVENT)
+		add_compat_info = true;
+
+//
 // Do we already have this event in the callback map? If yes, simply add this new callback to the event callback list
 // If it's a ATTR_CONF_EVENT, don't forget to look for the two different event kinds
 //
 
 	EvCbIte iter = event_callback_map.find(local_callback_key);
 
-	if (iter == event_callback_map.end() && event == ATTR_CONF_EVENT)
+	if (iter == event_callback_map.end() && add_compat_info == true)
 	{
 		for (int i = 0;i < ATT_CONF_REL_NB;i++)
 		{
@@ -1490,7 +1502,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 //
 // Change event name if it is IDL 5 compatible:
-// This code is Tango 9 or more. If the remote device is IDL 5 (or more, add tango release number to event name)
+// This code is Tango 9 or more. If the remote device is IDL 5 (or more), insert tango IDL release number
+// at the beginning of event name.
 //
 
 	const DevVarLongStringArray *dvlsa;
@@ -1499,7 +1512,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	if ((dd >> dvlsa) == false)
 		dd_extract_ok = false;
 
-	if (dd_extract_ok == true && event == ATTR_CONF_EVENT && dvlsa->lvalue[1] >= MIN_IDL_CONF5)
+	if (dd_extract_ok == true && add_compat_info == true && dvlsa->lvalue[1] >= MIN_IDL_CONF5)
 	{
 		event_name = EVENT_COMPAT_IDL5 + event_name;
 		string::size_type pos = local_callback_key.rfind('.');
@@ -1651,9 +1664,9 @@ int EventConsumer::connect_event(DeviceProxy *device,
         TangoSys_OMemStream o;
         o << "Failed to connect to event channel for device " << device_name
           << "\nCorrupted internal map: event callback already exists. Please report bug!" << ends;
-        EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
+        EventSystemExcept::throw_exception(API_NotificationServiceFailed,
                                 o.str(),
-                                (const char*)"EventConsumer::connect_event()");
+								"EventConsumer::connect_event()");
     }
     iter = ret.first;
 
@@ -2722,6 +2735,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
             domain_name = device_name + '/' + att_name_lower;
 
 		AttributeValue_4 *av = Tango_nullptr;
+// TODO: Do we need AttributeValue_5 here ????
 		DeviceAttribute *da = Tango_nullptr;
 		FwdEventData *event_data;
 
@@ -2752,15 +2766,20 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			err = e.errors;
 		}
 
+		string local_event_name = event_name;
+		pos = local_event_name.find(EVENT_COMPAT);
+		if (pos != string::npos)
+			local_event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
+
 		if (cb.fwd_att == true)
 		{
 			da = new DeviceAttribute();
-			event_data = new FwdEventData(device,domain_name,event_name,da,err);
+			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
 			event_data->set_av_4(av);
 		}
 		else
 		{
-			event_data = new FwdEventData(device,domain_name,event_name,da,err);
+			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
 		}
 
 		AutoTangoMonitor _mon(cb.callback_monitor);
@@ -2800,8 +2819,8 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		err.length(0);
 		string domain_name = device_name + "/" + att_name_lower;
 		AttributeInfoEx *aie = NULL;
-		string local_event_name = event_name;
 
+		string local_event_name = event_name;
 		string::size_type pos = local_event_name.find(EVENT_COMPAT);
 		if (pos != string::npos)
 			local_event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);

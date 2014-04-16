@@ -199,17 +199,19 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 // device from class 1 and device from classs 2)
 //
 
-		client_addr *cl = get_client_ident();
-		int cl_release;
-
-		if (cl == NULL)
-			cl_release = 4;
-		else
+		if (client_lib == 0)
 		{
-			if (cl->client_ident == true)
-				cl_release = 4;
+			client_addr *cl = get_client_ident();
+
+			if (cl == NULL)
+				client_lib = 4;
 			else
-				cl_release = 3;
+			{
+				if (cl->client_ident == true)
+					client_lib = 4;
+				else
+					client_lib = 3;
+			}
 		}
 
 		if (action == "subscribe")
@@ -219,10 +221,20 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				cout4 << "DServer::event_subscription(): update user_event subscription\n";
 
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				attribute.event_user_subscription = time(NULL);
+				switch (client_lib)
+				{
+					case 5:
+					attribute.event_user5_subscription = time(NULL);
+					break;
 
-				if (cl_release == 3)
-					attribute.event_user_client_3 = true;
+					case 4:
+					attribute.event_user4_subscription = time(NULL);
+					break;
+
+					default:
+					attribute.event_user3_subscription = time(NULL);
+					break;
+				}
 			}
 			else if (event.find(CONF_TYPE_EVENT) != string::npos)
 			{
@@ -321,18 +333,29 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 									o << attr_name;
 									o << " are not set" << ends;
 
-									Except::throw_exception((const char *)API_EventPropertiesNotSet,
-																	o.str(),
-																	(const char *)"DServer::event_subscription");
+									Except::throw_exception(API_EventPropertiesNotSet,
+															o.str(),"DServer::event_subscription");
 								}
 							}
 						}
 					}
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-					attribute.event_change_subscription = time(NULL);
-					if (cl_release == 3)
-						attribute.event_change_client_3 = true;
+
+					switch (client_lib)
+					{
+						case 5:
+						attribute.event_change5_subscription = time(NULL);
+						break;
+
+						case 4:
+						attribute.event_change4_subscription = time(NULL);
+						break;
+
+						default:
+						attribute.event_change3_subscription = time(NULL);
+						break;
+					}
 				}
 				else if (event == "quality")
 				{
@@ -344,9 +367,20 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					cout4 << "DServer::event_subscription(): update periodic subscription\n";
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-					attribute.event_periodic_subscription = time(NULL);
-					if (cl_release == 3)
-						attribute.event_periodic_client_3 = true;
+					switch (client_lib)
+					{
+						case 5:
+						attribute.event_periodic5_subscription = time(NULL);
+						break;
+
+						case 4:
+						attribute.event_periodic4_subscription = time(NULL);
+						break;
+
+						default:
+						attribute.event_periodic3_subscription = time(NULL);
+						break;
+					}
 				}
 				else if (event == "archive")
 				{
@@ -376,9 +410,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 									o << attr_name;
 									o << " are not set" << ends;
 
-									Except::throw_exception((const char *)API_EventPropertiesNotSet,
-																	o.str(),
-																	(const char *)"DServer::event_subscription");
+									Except::throw_exception(API_EventPropertiesNotSet,
+															o.str(),"DServer::event_subscription");
 								}
 							}
 						}
@@ -387,10 +420,20 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					cout4 << "DServer::event_subscription(): update archive subscription\n";
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-					attribute.event_archive_subscription = time(NULL);
+					switch (client_lib)
+					{
+						case 5:
+						attribute.event_archive5_subscription = time(NULL);
+						break;
 
-					if (cl_release == 3)
-						attribute.event_archive_client_3 = true;
+						case 4:
+						attribute.event_archive4_subscription = time(NULL);
+						break;
+
+						default:
+						attribute.event_archive3_subscription = time(NULL);
+						break;
+					}
 				}
 			}
 
@@ -432,9 +475,8 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 							o << zmq_major << "." << zmq_minor << "." << zmq_patch;
 							o << "\nMulticast event(s) not available with this ZMQ release" << ends;
 
-							Except::throw_exception((const char *)API_UnsupportedFeature,
-															o.str(),
-															(const char *)"DServer::event_subscription");
+							Except::throw_exception(API_UnsupportedFeature,
+													o.str(),"DServer::event_subscription");
 						}
 
 						string::size_type start,end;
@@ -645,6 +687,10 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         action = (*argin)[2];
         event = (*argin)[3];
 
+cout << "ZmqEventSubscriptionChange: dev_name = " << dev_name << ", att_name =" << attr_name << ", action = " << action << ", event = " << event << endl;
+if (argin->length()  == 5)
+	cout << "ZmqEventSub... version = " << (*argin)[4] << endl;
+
         bool intr_change = false;
         if (event == EventName[INTERFACE_CHANGE_EVENT])
 			intr_change = true;
@@ -683,7 +729,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 		}
 
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
-
+cout << "Client release = " << client_release << endl;
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //
@@ -811,7 +857,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // Init event counter in Event Supplier
 //
 
-        ev->init_event_cptr(ev_name);
+		ev->init_event_cptr(ev_name);
 
 //
 // Init one subscription command flag in Eventsupplier
@@ -918,6 +964,8 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 								(const char *)"DServer::event_confirm_subscription");
 	}
 
+for (unsigned int i = 0;i < argin->length();i++)
+	cout << "EventConfirmSubscription: " << (*argin)[i] << endl;
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //

@@ -107,9 +107,7 @@ Attribute::Attribute(vector<AttrProperty> &prop_list,Attr &tmp_attr,string &dev_
  archive_last_periodic(0.0),periodic_counter(0),archive_periodic_counter(0),
  archive_last_event(0.0),dev(NULL),change_event_implmented(false),
  archive_event_implmented(false),check_change_event_criteria(true),
- check_archive_event_criteria(true),event_periodic_client_3(false),
- event_change_client_3(false),event_archive_client_3(false),
- event_user_client_3(false),dr_event_implmented(false),
+ check_archive_event_criteria(true),dr_event_implmented(false),
  scalar_str_attr_release(false),notifd_event(false),zmq_event(false),
  check_startup_exceptions(false),startup_exceptions_clear(true),att_mem_exception(false)
 {
@@ -590,13 +588,26 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 // will put an unnecessary load on the server because all attributes will be polled
 //
 
-	event_change_subscription = 0;
-	event_archive_subscription = 0;
-	event_quality_subscription = 0;
-	event_periodic_subscription = 0;
-	event_user_subscription = 0;
+	event_change3_subscription = 0;
+	event_change4_subscription = 0;
+	event_change5_subscription = 0;
+
+	event_archive3_subscription = 0;
+	event_archive4_subscription = 0;
+	event_archive5_subscription = 0;
+
+	event_periodic3_subscription = 0;
+	event_periodic4_subscription = 0;
+	event_periodic5_subscription = 0;
+
+	event_user3_subscription = 0;
+	event_user4_subscription = 0;
+	event_user5_subscription = 0;
+
 	event_attr_conf_subscription = 0;
 	event_attr_conf5_subscription = 0;
+
+	event_quality_subscription = 0;
 	event_data_ready_subscription = 0;
 
 //
@@ -3515,20 +3526,21 @@ void Attribute::add_write_value(Tango::DevEncoded &val_ref)
 	value.enc_seq = new Tango::DevVarEncodedArray(data_size + 1,data_size + 1,tmp_enc,false);
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::Attribute_2_AttributeValue
+// method :
+//		Attribute::Attribute_2_AttributeValue
 //
-// description : 	Build an AttributeValue_3 object from the Attribute
-//			object content
+// description :
+//		Build an AttributeValue_3 object from the Attribute object content
 //
-// in :		ptr : Pointer to the AttributeValue_3 object to
-//			      be filled in.
-//			ptr_4 : Pointer to the AttributeValue_4 object to be filled
-//					in.
-//			dev : The device to which the attribute belongs to
+// arguments
+// 		in :
+//			- dev : The device to which the attribute belongs to
+//		out :
+//			- ptr : Pointer to the AttributeValue_3 object to be filled in
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::DeviceImpl *d)
@@ -3739,119 +3751,76 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 	}
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::Attribute_2_AttributeValue
+//
+// description :
+//		Build an AttributeValue_4 object from the Attribute object content
+//
+// arguments
+// 		in :
+//			- d : The device to which the attribute belongs to
+//		out :
+//			- ptr_4 : Pointer to the AttributeValue_5 object to be filled in
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_4 *ptr_4,Tango::DeviceImpl *d)
 {
-	if ((name_lower == "state") || (name_lower == "status"))
-	{
-		ptr_4->quality = Tango::ATTR_VALID;
+	Attribute_2_AttributeValue_base(ptr_4,d);
 
-		if (name_lower == "state")
-		{
-			ptr_4->value.dev_state_att(d->get_state());
-		}
-		else
-		{
-			Tango::DevVarStringArray str_seq(1);
-			str_seq.length(1);
-			str_seq[0] = CORBA::string_dup(d->get_status().c_str());
-
-			ptr_4->value.string_att_value(str_seq);
-		}
-
-#ifdef _TG_WINDOWS_
-		struct _timeb t;
-		_ftime(&t);
-
-		ptr_4->time.tv_sec = (long)t.time;
-		ptr_4->time.tv_usec = (long)(t.millitm * 1000);
-		ptr_4->time.tv_nsec = 0;
-#else
-		struct timeval after;
-
-		gettimeofday(&after,NULL);
-
-		ptr_4->time.tv_sec = after.tv_sec;
-		ptr_4->time.tv_usec = after.tv_usec;
-		ptr_4->time.tv_nsec = 0;
-#endif
-		ptr_4->r_dim.dim_x = 1;
-		ptr_4->r_dim.dim_y = 0;
-		ptr_4->w_dim.dim_x = 0;
-		ptr_4->w_dim.dim_y = 0;
-
-		ptr_4->name = CORBA::string_dup(name.c_str());
-		ptr_4->data_format = data_format;
-	}
-	else
-	{
-		if (quality != Tango::ATTR_INVALID)
-		{
-			MultiAttribute *m_attr = d->get_device_attr();
-
-			// Add the attribute setpoint to the value sequence
-
-			if ((writable == Tango::READ_WRITE) ||
-			    (writable == Tango::READ_WITH_WRITE))
-			{
-				m_attr->add_write_value(*this);
-			}
-
-			// check for alarms to position the data quality value.
-			if ( is_alarmed().any() == true )
-			{
-				check_alarm();
-			}
-
-			Tango::AttributeIdlData aid;
-			Tango::AttributeValueList_4 dummy_list(1,1,ptr_4,false);
-			aid.data_4 = &dummy_list;
-			d->data_into_net_object(*this,aid,0,writable,false);
-
-			ptr_4->r_dim.dim_x = dim_x;
-			ptr_4->r_dim.dim_y = dim_y;
-			if ((writable == Tango::READ_WRITE) ||
-			     (writable == Tango::READ_WITH_WRITE))
-			{
-				WAttribute &assoc_att = m_attr->get_w_attr_by_ind(get_assoc_ind());
-				ptr_4->w_dim.dim_x = assoc_att.get_w_dim_x();
-				ptr_4->w_dim.dim_y = assoc_att.get_w_dim_y();
-			}
-			else
-			{
-				ptr_4->w_dim.dim_x = 0;
-				ptr_4->w_dim.dim_y = 0;
-			}
-		}
-		else
-		{
-			ptr_4->r_dim.dim_x = 0;
-			ptr_4->r_dim.dim_y = 0;
-			ptr_4->w_dim.dim_x = 0;
-			ptr_4->w_dim.dim_y = 0;
-			ptr_4->value.union_no_data(true);
-		}
-
-		ptr_4->time = when;
-		ptr_4->quality = quality;
-		ptr_4->data_format = data_format;
-		ptr_4->name = CORBA::string_dup(name.c_str());
-	}
+	Tango::AttributeIdlData aid;
+	Tango::AttributeValueList_4 dummy_list(1,1,ptr_4,false);
+	aid.data_4 = &dummy_list;
+	d->data_into_net_object(*this,aid,0,writable,false);
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::Attribute_2_AttributeValue
+//
+// description :
+//		Build an AttributeValue_5 object from the Attribute object content
+//
+// arguments
+// 		in :
+//			- d : The device to which the attribute belongs to
+//		out :
+//			- ptr_5 : Pointer to the AttributeValue_5 object to be filled in
+//
+//--------------------------------------------------------------------------------------------------------------------
 
-//+-------------------------------------------------------------------------
+void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_5 *ptr_5,Tango::DeviceImpl *d)
+{
+	Attribute_2_AttributeValue_base(ptr_5,d);
+
+	Tango::AttributeIdlData aid;
+	Tango::AttributeValueList_5 dummy_list(1,1,ptr_5,false);
+	aid.data_5 = &dummy_list;
+	d->data_into_net_object(*this,aid,0,writable,false);
+
+	ptr_5->data_type = data_type;
+}
+
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::AttributeValue_4_2_AttributeValue_3
+// method :
+//		Attribute::AttributeValue_4_2_AttributeValue_3
 //
-// description : 	Build an AttributeValue_3 object from the AttributeValue_4
-//					object. This method is used in case an event is requested
-//					by a client knowing only IDL release 3
+// description :
+//		Build an AttributeValue_3 object from the AttributeValue_4 object. This method is used in case an event is
+//		requested by a client knowing only IDL release 3
 //
-// in :		ptr_4 : Pointer to the AttributeValue_4 object
-//			ptr_3 : Pointer to the AttributeValue_3 object to be filled in
+// args :
+// 		in :
+//			- ptr_4 : Pointer to the AttributeValue_4 object
+//  	out :
+//			- ptr_3 : Pointer to the AttributeValue_3 object to be filled in
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *ptr_4,Tango::AttributeValue_3 *ptr_3)
@@ -3863,109 +3832,7 @@ void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_
 
 	if (ptr_4->quality != Tango::ATTR_INVALID)
 	{
-		switch (ptr_4->value._d())
-		{
-			case ATT_BOOL:
-			{
-				const DevVarBooleanArray &tmp_seq = ptr_4->value.bool_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_SHORT:
-			{
-				const DevVarShortArray &tmp_seq = ptr_4->value.short_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_LONG:
-			{
-				const DevVarLongArray &tmp_seq = ptr_4->value.long_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_LONG64:
-			{
-				const DevVarLong64Array &tmp_seq = ptr_4->value.long64_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_FLOAT:
-			{
-				const DevVarFloatArray &tmp_seq = ptr_4->value.float_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_DOUBLE:
-			{
-				const DevVarDoubleArray &tmp_seq = ptr_4->value.double_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_UCHAR:
-			{
-				const DevVarCharArray &tmp_seq = ptr_4->value.uchar_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_USHORT:
-			{
-				const DevVarUShortArray &tmp_seq = ptr_4->value.ushort_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_ULONG:
-			{
-				const DevVarULongArray &tmp_seq = ptr_4->value.ulong_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_ULONG64:
-			{
-				const DevVarULong64Array &tmp_seq = ptr_4->value.ulong64_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_STRING:
-			{
-				const DevVarStringArray &tmp_seq = ptr_4->value.string_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_STATE:
-			{
-				const DevVarStateArray &tmp_seq = ptr_4->value.state_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case DEVICE_STATE:
-			{
-				const DevState &sta = ptr_4->value.dev_state_att();
-				ptr_3->value <<= sta;
-			}
-			break;
-
-			case ATT_ENCODED:
-			{
-				const DevVarEncodedArray &tmp_seq = ptr_4->value.encoded_att_value();
-				ptr_3->value <<= tmp_seq;
-			}
-			break;
-
-			case ATT_NO_DATA:
-			break;
-		}
+		AttrValUnion_2_Any(ptr_4,ptr_3->value);
 	}
 
 //
@@ -3980,6 +3847,123 @@ void Attribute::AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_
 	ptr_3->w_dim = ptr_4->w_dim;
 
 	ptr_3->err_list = ptr_4->err_list;
+}
+
+void Attribute::AttributeValue_5_2_AttributeValue_3(const Tango::AttributeValue_5 *att_5,Tango::AttributeValue_3 *att_3)
+{
+//
+// First copy the data
+//
+
+	if (att_5->quality != Tango::ATTR_INVALID)
+	{
+		AttrValUnion_2_Any(att_5,att_3->value);
+	}
+
+//
+// The remaining fields
+//
+
+	att_3->time = att_5->time;
+	att_3->quality = att_5->quality;
+	att_3->name = att_5->name;
+
+	att_3->r_dim = att_5->r_dim;
+	att_3->w_dim = att_5->w_dim;
+
+	att_3->err_list = att_5->err_list;
+}
+
+void Attribute::AttributeValue_3_2_AttributeValue_4(const Tango::AttributeValue_3 *att_3,Tango::AttributeValue_4 *att_4)
+{
+// TODO: Code data from Any to Union
+
+//
+// The remaining fields
+//
+
+	att_4->time = att_3->time;
+	att_4->quality = att_3->quality;
+	att_4->name = att_3->name;
+	att_4->data_format = data_format;
+
+	att_4->r_dim = att_3->r_dim;
+	att_4->w_dim = att_3->w_dim;
+
+	att_4->err_list = att_3->err_list;
+}
+
+void Attribute::AttributeValue_5_2_AttributeValue_4(const Tango::AttributeValue_5 *att_5,Tango::AttributeValue_4 *att_4)
+{
+//
+// First pass the data from one union to another WITHOUT copying them
+//
+
+	if (att_5->quality != Tango::ATTR_INVALID)
+	{
+		AttrValUnion_fake_copy(att_5,att_4);
+	}
+
+//
+// The remaining fields
+//
+
+	att_4->time = att_5->time;
+	att_4->quality = att_5->quality;
+	att_4->name = att_5->name;
+	att_4->data_format = att_5->data_format;
+
+	att_4->r_dim = att_5->r_dim;
+	att_4->w_dim = att_5->w_dim;
+
+	att_4->err_list = att_5->err_list;
+}
+
+void Attribute::AttributeValue_3_2_AttributeValue_5(const Tango::AttributeValue_3 *att_3,Tango::AttributeValue_5 *att_5)
+{
+// TODO: Code data from Any to Union
+
+//
+// The remaining fields
+//
+
+	att_5->time = att_3->time;
+	att_5->quality = att_3->quality;
+	att_5->name = att_3->name;
+	att_5->data_format = data_format;
+	att_5->data_type = data_type;
+
+	att_5->r_dim = att_3->r_dim;
+	att_5->w_dim = att_3->w_dim;
+
+	att_5->err_list = att_3->err_list;
+}
+
+void Attribute::AttributeValue_4_2_AttributeValue_5(const Tango::AttributeValue_4 *att_4,Tango::AttributeValue_5 *att_5)
+{
+//
+// First pass the data from one union to another WITHOUT copying them
+//
+
+	if (att_4->quality != Tango::ATTR_INVALID)
+	{
+		AttrValUnion_fake_copy(att_4,att_5);
+	}
+
+//
+// The remaining fields
+//
+
+	att_5->time = att_4->time;
+	att_5->quality = att_4->quality;
+	att_5->name = att_4->name;
+	att_5->data_format = att_4->data_format;
+	att_5->data_type = data_type;
+
+	att_5->r_dim = att_4->r_dim;
+	att_5->w_dim = att_4->w_dim;
+
+	att_5->err_list = att_4->err_list;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -4142,15 +4126,19 @@ void Attribute::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConf
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::fire_change_event
+// method :
+//		Attribute::fire_change_event
 //
-// description : 	Fire a change change event for the attribute value.
-// in :			   ptr : Pointer to a DevFailed exception to fire in case of
-// 							an error to indicate.
+// description :
+//		Fire a change change event for the attribute value.
 //
-//--------------------------------------------------------------------------
+// arguments:
+// 		in :
+//			- ptr : Pointer to a DevFailed exception to fire in case of an error to indicate.
+//
+//---------------------------------------------------------------------------------------------------------------------
 
 
 void Attribute::fire_change_event(DevFailed *except)
@@ -4166,18 +4154,45 @@ void Attribute::fire_change_event(DevFailed *except)
 // Check if it is needed to send an event
 //
 
-	Tango::AttributeValue_3 *send_attr = NULL;
-	Tango::AttributeValue_4 *send_attr_4 = NULL;
+	Tango::AttributeValue_3 *send_attr = Tango_nullptr;
+	Tango::AttributeValue_4 *send_attr_4 = Tango_nullptr;
+	Tango::AttributeValue_5 *send_attr_5 = Tango_nullptr;
 
 	try
 	{
 		time_t now;
-		int change_subscription;
+		time_t change3_subscription,change4_subscription,change5_subscription;
 
 		now = time(NULL);
-		change_subscription = (int)now - event_change_subscription;
+		change3_subscription = now - event_change3_subscription;
+		change4_subscription = now - event_change4_subscription;
+		change5_subscription = now - event_change5_subscription;
 
-		if (change_subscription > EVENT_RESUBSCRIBE_PERIOD)
+		vector<int> client_libs = get_client_lib(CHANGE_EVENT); 	// We want a copy
+
+		vector<int>::iterator ite;
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			switch (*ite)
+			{
+				case 5:
+				if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(5,string(EventName[CHANGE_EVENT]));
+				break;
+
+				case 4:
+				if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(4,string(EventName[CHANGE_EVENT]));
+				break;
+
+				default:
+				if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(3,string(EventName[CHANGE_EVENT]));
+				break;
+			}
+		}
+
+		if (client_libs.size() == 0)
 		{
 			if ( (name_lower != "state") && (name_lower != "status"))
 			{
@@ -4273,17 +4288,10 @@ void Attribute::fire_change_event(DevFailed *except)
 		long vers = dev->get_dev_idl_version();
 		try
 		{
-			if (vers >= 5)
-			{
-
-			}
+			if (vers >= 4)
+				send_attr_5 = new Tango::AttributeValue_5;
 			else if (vers == 4)
-			{
-				if (event_change_client_3 == true)
-					send_attr = new Tango::AttributeValue_3;
-				else
-					send_attr_4 = new Tango::AttributeValue_4;
-			}
+				send_attr_4 = new Tango::AttributeValue_4;
 			else
 				send_attr = new Tango::AttributeValue_3;
 		}
@@ -4299,10 +4307,12 @@ void Attribute::fire_change_event(DevFailed *except)
 
 		if ( except == NULL )
 		{
-			if (send_attr != NULL)
-				Attribute_2_AttributeValue(send_attr,dev);
-			else
+			if (send_attr_5 != Tango_nullptr)
+				Attribute_2_AttributeValue(send_attr_5,dev);
+			else if (send_attr_4 != NULL)
 				Attribute_2_AttributeValue(send_attr_4,dev);
+			else
+				Attribute_2_AttributeValue(send_attr,dev);
 		}
 
 //
@@ -4319,10 +4329,12 @@ void Attribute::fire_change_event(DevFailed *except)
 		if ( is_check_change_criteria() == true )
 		{
 
-            if (send_attr != NULL)
-                ad.attr_val_3 = send_attr;
-            else
+			if (send_attr_5 != Tango_nullptr)
+				ad.attr_val_5 = send_attr_5;
+            else if (send_attr_4 != Tango_nullptr)
                 ad.attr_val_4 = send_attr_4;
+            else
+                ad.attr_val_3 = send_attr;
 
 //
 // Eventually push the event (if detected)
@@ -4345,7 +4357,57 @@ void Attribute::fire_change_event(DevFailed *except)
                         vector<string> f_names_lg;
                         vector<long> f_data_lg;
 
-                        event_supplier_zmq->push_event(dev,"change",f_names,f_data,f_names_lg,f_data_lg,ad,name,except);
+						vector<int> &client_libs = get_client_lib(CHANGE_EVENT);
+						string ev_name = EventName[CHANGE_EVENT];
+
+						for (ite = client_libs.begin();ite != client_libs.end();++ite)
+						{
+							bool need_free = false;
+							bool name_changed = false;
+
+							struct EventSupplier::SuppliedEventData sent_value;
+							::memset(&sent_value,0,sizeof(sent_value));
+
+							switch (*ite)
+							{
+								case 5:
+								{
+									event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
+									ev_name = EVENT_COMPAT_IDL5 + ev_name;
+									name_changed = true;
+								}
+								break;
+
+								case 4:
+								{
+									event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
+								}
+								break;
+
+								default:
+								{
+									event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
+								}
+								break;
+							}
+
+							event_supplier_zmq->push_event(dev,ev_name,f_names,f_data,f_names_lg,f_data_lg,
+														   sent_value,name,except);
+
+							if (need_free == true)
+							{
+								if (sent_value.attr_val_5 != NULL)
+									delete sent_value.attr_val_5;
+								else if (sent_value.attr_val_4 != NULL)
+									delete sent_value.attr_val_4;
+								else if (sent_value.attr_val_3 != NULL)
+									delete sent_value.attr_val_3;
+								else
+									delete sent_value.attr_val;
+							}
+							if (name_changed == true)
+								ev_name = EventName[CHANGE_EVENT];
+						}
                     }
                 }
                 else
@@ -4390,7 +4452,12 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				Tango::AttrQuality the_quality;
 
-				if (send_attr_4 != NULL)
+				if (send_attr_5 != NULL)
+				{
+					the_quality = send_attr_5->quality;
+					prev_change_event.value_4 = send_attr_5->value;
+				}
+				else if (send_attr_4 != NULL)
 				{
 					the_quality = send_attr_4->quality;
 					prev_change_event.value_4 = send_attr_4->value;
@@ -4423,10 +4490,12 @@ void Attribute::fire_change_event(DevFailed *except)
 			else
 				filterable_data.push_back((double)0.0);
 
-            if (send_attr != NULL)
-                ad.attr_val_3 = send_attr;
-            else
+			if (send_attr_5 != Tango_nullptr)
+				ad.attr_val_5 = send_attr_5;
+            else if (send_attr_4 != Tango_nullptr)
                 ad.attr_val_4 = send_attr_4;
+            else
+                ad.attr_val_3 = send_attr;
 
 //
 // Finally push the event(s)
@@ -4442,26 +4511,73 @@ void Attribute::fire_change_event(DevFailed *except)
                                         ad,
                                         name,
                                         except);
+
             if (event_supplier_zmq != NULL)
-                event_supplier_zmq->push_event(dev,
-                                        "change",
-                                        filterable_names,
-                                        filterable_data,
-                                        filterable_names_lg,
-                                        filterable_data_lg,
-                                        ad,
-                                        name,
-                                        except);
+			{
+				vector<int> &client_libs = get_client_lib(CHANGE_EVENT);
+				string ev_name = EventName[CHANGE_EVENT];
+
+				for (ite = client_libs.begin();ite != client_libs.end();++ite)
+				{
+					bool need_free = false;
+					bool name_changed = false;
+
+					struct EventSupplier::SuppliedEventData sent_value;
+					::memset(&sent_value,0,sizeof(sent_value));
+
+					switch (*ite)
+					{
+						case 5:
+						{
+							event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
+							ev_name = EVENT_COMPAT_IDL5 + ev_name;
+							name_changed = true;
+						}
+						break;
+
+						case 4:
+						{
+							event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
+						}
+						break;
+
+						default:
+						{
+							event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
+						}
+						break;
+					}
+
+					event_supplier_zmq->push_event(dev,ev_name,filterable_names,filterable_data,
+												   filterable_names_lg,filterable_data_lg,sent_value,name,except);
+
+					if (need_free == true)
+					{
+						if (sent_value.attr_val_5 != NULL)
+							delete sent_value.attr_val_5;
+						else if (sent_value.attr_val_4 != NULL)
+							delete sent_value.attr_val_4;
+						else if (sent_value.attr_val_3 != NULL)
+							delete sent_value.attr_val_3;
+						else
+							delete sent_value.attr_val;
+					}
+					if (name_changed == true)
+						ev_name = EventName[CHANGE_EVENT];
+				}
+			}
 		}
 
 //
 // Return allocated memory
 //
 
-		if (send_attr != NULL)
-			delete send_attr;
-		else
+		if (send_attr_5 != Tango_nullptr)
+			delete send_attr_5;
+		else if (send_attr_4 != Tango_nullptr)
 			delete send_attr_4;
+		else
+			delete send_attr;
 
 //
 // Delete the data values allocated in the attribute
@@ -4480,10 +4596,12 @@ void Attribute::fire_change_event(DevFailed *except)
 	}
 	catch (...)
 	{
-		if (send_attr != NULL)
-			delete send_attr;
-		else
+		if (send_attr_5 != Tango_nullptr)
+			delete send_attr_5;
+		else if (send_attr_4 != NULL)
 			delete send_attr_4;
+		else
+			delete send_attr;
 
 		if ( (name_lower != "state") && (name_lower != "status"))
 		{
@@ -4504,16 +4622,19 @@ void Attribute::fire_change_event(DevFailed *except)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::fire_archive_event
+// method :
+//		Attribute::fire_archive_event
 //
-// description : 	Fire a archive change event for the attribute value.
-// in :			   ptr : Pointer to a DevFailed exception to fire in case of
-// 							an error to indicate.
+// description :
+//		Fire a archive change event for the attribute value.
 //
-//--------------------------------------------------------------------------
-
+// arguments:
+// 		in :
+//			- ptr : Pointer to a DevFailed exception to fire in case of an error to indicate.
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void Attribute::fire_archive_event(DevFailed *except)
 {
@@ -4528,18 +4649,46 @@ void Attribute::fire_archive_event(DevFailed *except)
 // Check if it is needed to send an event
 //
 
-	Tango::AttributeValue_3 *send_attr = NULL;
-	Tango::AttributeValue_4 *send_attr_4 = NULL;
+	Tango::AttributeValue_3 *send_attr = Tango_nullptr;
+	Tango::AttributeValue_4 *send_attr_4 = Tango_nullptr;
+	Tango::AttributeValue_5 *send_attr_5 = Tango_nullptr;
 
 	try
 	{
 		time_t now;
-		int archive_subscription;
+		time_t archive3_subscription,archive4_subscription,archive5_subscription;
 
 		now = time(NULL);
-		archive_subscription = (int)now - event_archive_subscription;
 
-		if (archive_subscription > EVENT_RESUBSCRIBE_PERIOD)
+		archive3_subscription = now - event_archive3_subscription;
+		archive4_subscription = now - event_archive4_subscription;
+		archive5_subscription = now - event_archive5_subscription;
+
+		vector<int> client_libs = get_client_lib(ARCHIVE_EVENT); 	// We want a copy
+
+		vector<int>::iterator ite;
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			switch (*ite)
+			{
+				case 5:
+				if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(5,string(EventName[ARCHIVE_EVENT]));
+				break;
+
+				case 4:
+				if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(4,string(EventName[ARCHIVE_EVENT]));
+				break;
+
+				default:
+				if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(3,string(EventName[ARCHIVE_EVENT]));
+				break;
+			}
+		}
+
+		if (client_libs.size() == 0)
         {
 			if ( (name_lower != "state") && (name_lower != "status") )
             {
@@ -4647,26 +4796,22 @@ void Attribute::fire_archive_event(DevFailed *except)
 		}
 
 //
-// Build one AttributeValue_3 or AttributeValue_4 object
+// Build one AttributeValue_3, AttributeValue_4 or AttributeValue_5 object
 //
 
 		try
 		{
-			if (dev->get_dev_idl_version() >= 4)
-			{
-				if (event_archive_client_3 == true)
-					send_attr = new Tango::AttributeValue_3;
-				else
-					send_attr_4 = new Tango::AttributeValue_4;
-			}
+			if (dev->get_dev_idl_version() > 4)
+				send_attr_5 = new Tango::AttributeValue_5;
+			else if (dev->get_dev_idl_version() == 4)
+				send_attr_4 = new Tango::AttributeValue_4;
 			else
 				send_attr = new Tango::AttributeValue_3;
 		}
 		catch (bad_alloc)
 		{
-			Except::throw_exception((const char *)API_MemoryAllocation,
-				      	  (const char *)"Can't allocate memory in server",
-				      	  (const char *)"Attribute::fire_archive_event()");
+			Except::throw_exception(API_MemoryAllocation,
+									"Can't allocate memory in server","Attribute::fire_archive_event()");
 		}
 
 //
@@ -4675,10 +4820,12 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 		if ( except == NULL )
 		{
-			if (send_attr != NULL)
-				Attribute_2_AttributeValue(send_attr,dev);
-			else
+			if (send_attr_5 != Tango_nullptr)
+				Attribute_2_AttributeValue(send_attr_5,dev);
+			else if (send_attr_4 != Tango_nullptr)
 				Attribute_2_AttributeValue(send_attr_4,dev);
+			else
+				Attribute_2_AttributeValue(send_attr,dev);
 		}
 
 //
@@ -4688,10 +4835,12 @@ void Attribute::fire_archive_event(DevFailed *except)
         EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
-        if (send_attr != NULL)
-            ad.attr_val_3 = send_attr;
-        else
+		if (send_attr_5 != Tango_nullptr)
+			ad.attr_val_5 = send_attr_5;
+        else if (send_attr_4 != Tango_nullptr)
             ad.attr_val_4 = send_attr_4;
+        else
+            ad.attr_val_3 = send_attr;
 
 //
 // Fire event
@@ -4733,7 +4882,57 @@ void Attribute::fire_archive_event(DevFailed *except)
                         vector<string> f_names_lg;
                         vector<long> f_data_lg;
 
-                        event_supplier_zmq->push_event(dev,"archive",f_names,f_data,f_names_lg,f_data_lg,ad,name,except);
+						vector<int> &client_libs = get_client_lib(ARCHIVE_EVENT);
+						string ev_name = EventName[ARCHIVE_EVENT];
+
+						for (ite = client_libs.begin();ite != client_libs.end();++ite)
+						{
+							bool need_free = false;
+							bool name_changed = false;
+
+							struct EventSupplier::SuppliedEventData sent_value;
+							::memset(&sent_value,0,sizeof(sent_value));
+
+							switch (*ite)
+							{
+								case 5:
+								{
+									event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
+									ev_name = EVENT_COMPAT_IDL5 + ev_name;
+									name_changed = true;
+								}
+								break;
+
+								case 4:
+								{
+									event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
+								}
+								break;
+
+								default:
+								{
+									event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
+								}
+								break;
+							}
+
+							event_supplier_zmq->push_event(dev,ev_name,f_names,f_data,f_names_lg,f_data_lg,
+														   sent_value,name,except);
+
+							if (need_free == true)
+							{
+								if (sent_value.attr_val_5 != NULL)
+									delete sent_value.attr_val_5;
+								else if (sent_value.attr_val_4 != NULL)
+									delete sent_value.attr_val_4;
+								else if (sent_value.attr_val_3 != NULL)
+									delete sent_value.attr_val_3;
+								else
+									delete sent_value.attr_val;
+							}
+							if (name_changed == true)
+								ev_name = EventName[ARCHIVE_EVENT];
+						}
                     }
                 }
                 else
@@ -4783,7 +4982,12 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				Tango::AttrQuality the_quality;
 
-				if (send_attr_4 != NULL)
+				if (send_attr_5 != Tango_nullptr)
+				{
+					prev_archive_event.value_4 = send_attr_5->value;
+					the_quality = send_attr_5->quality;
+				}
+				else if (send_attr_4 != Tango_nullptr)
 				{
 					prev_archive_event.value_4 = send_attr_4->value;
 					the_quality = send_attr_4->quality;
@@ -4834,44 +5038,93 @@ void Attribute::fire_archive_event(DevFailed *except)
 							ad,
 							name,
 							except);
+
             if (event_supplier_zmq != NULL)
-                event_supplier_zmq->push_event(dev,
-							"archive",
-							filterable_names,
-							filterable_data,
-							filterable_names_lg,
-							filterable_data_lg,
-							ad,
-							name,
-							except);
+			{
+				vector<int> &client_libs = get_client_lib(ARCHIVE_EVENT);
+				string ev_name = EventName[ARCHIVE_EVENT];
+
+				for (ite = client_libs.begin();ite != client_libs.end();++ite)
+				{
+					bool need_free = false;
+					bool name_changed = false;
+
+					struct EventSupplier::SuppliedEventData sent_value;
+					::memset(&sent_value,0,sizeof(sent_value));
+
+					switch (*ite)
+					{
+						case 5:
+						{
+							event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
+							ev_name = EVENT_COMPAT_IDL5 + ev_name;
+							name_changed = true;
+						}
+						break;
+
+						case 4:
+						{
+							event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
+						}
+						break;
+
+						default:
+						{
+							event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
+						}
+						break;
+					}
+
+					event_supplier_zmq->push_event(dev,ev_name,filterable_names,filterable_data,
+												   filterable_names_lg,filterable_data_lg,sent_value,name,except);
+
+					if (need_free == true)
+					{
+						if (sent_value.attr_val_5 != NULL)
+							delete sent_value.attr_val_5;
+						else if (sent_value.attr_val_4 != NULL)
+							delete sent_value.attr_val_4;
+						else if (sent_value.attr_val_3 != NULL)
+							delete sent_value.attr_val_3;
+						else
+							delete sent_value.attr_val;
+					}
+					if (name_changed == true)
+						ev_name = EventName[ARCHIVE_EVENT];
+				}
+			}
 		}
 
-		if (send_attr != NULL)
-			delete send_attr;
-		else
+		if (send_attr_5 != Tango_nullptr)
+			delete send_attr_5;
+		else if (send_attr_4 != Tango_nullptr)
 			delete send_attr_4;
+		else
+			delete send_attr;
 
 //
 // Delete the data values allocated in the attribute
 //
 
 		if ((name_lower != "state") && (name_lower != "status"))
-			{
+		{
 			bool data_flag = get_value_flag();
 			if ( data_flag == true )
-				{
+			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
 				set_value_flag (false);
-				}
 			}
 		}
+	}
 	catch (...)
 	{
-		if (send_attr != NULL)
-			delete send_attr;
-		else
+		if (send_attr_5 != Tango_nullptr)
+			delete send_attr_5;
+		else if (send_attr_4 != Tango_nullptr)
 			delete send_attr_4;
+		else
+			delete send_attr;
 
 //
 // Delete the data values allocated in the attribute
@@ -4893,18 +5146,21 @@ void Attribute::fire_archive_event(DevFailed *except)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		Attribute::fire_event
+// method :
+//		Attribute::fire_event
 //
-// description : 	Fire a user event for the attribute value.
+// description :
+//		Fire a user event for the attribute value.
 //
-// in :			filt_names : The filterable fields name
-//			filt_vals : The filterable fields value (as double)
-//			except : Pointer to a DevFailed exception to fire in case of
-// 			         an error to indicate.
+// arguments:
+// 		in :
+//			- filt_names : The filterable fields name
+//			- filt_vals : The filterable fields value (as double)
+//			- except : Pointer to a DevFailed exception to fire in case of an error to indicate.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,DevFailed *except)
@@ -4914,8 +5170,9 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 	if (except != NULL)
 		set_value_flag(false);
 
-	Tango::AttributeValue_3 *send_attr = NULL;
-	Tango::AttributeValue_4 *send_attr_4 = NULL;
+	Tango::AttributeValue_3 *send_attr = Tango_nullptr;
+	Tango::AttributeValue_4 *send_attr_4 = Tango_nullptr;
+	Tango::AttributeValue_5 *send_attr_5 = Tango_nullptr;
 
 //
 // Check if it is needed to send an event
@@ -4923,6 +5180,39 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 
 	try
 	{
+
+		time_t now;
+		time_t user3_subscription,user4_subscription,user5_subscription;
+
+		now = time(NULL);
+
+		user3_subscription = now - event_user3_subscription;
+		user4_subscription = now - event_user4_subscription;
+		user5_subscription = now - event_user5_subscription;
+
+		vector<int> client_libs = get_client_lib(USER_EVENT); 	// We want a copy
+
+		vector<int>::iterator ite;
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			switch (*ite)
+			{
+				case 5:
+				if (user5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(5,string(EventName[USER_EVENT]));
+				break;
+
+				case 4:
+				if (user4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(4,string(EventName[USER_EVENT]));
+				break;
+
+				default:
+				if (user3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+					remove_client_lib(3,string(EventName[USER_EVENT]));
+				break;
+			}
+		}
 
 //
 // Get the event supplier, and simply return if not created
@@ -4937,7 +5227,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
         if (use_zmq_event() == true)
             event_supplier_zmq = tg->get_zmq_event_supplier();
 
-		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
+		if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.size() == 0)
 		{
 			if (name_lower != "state")
 			{
@@ -4994,34 +5284,28 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 						o << " has not been updated. Can't send user event\n";
 						o << "Set the attribute value (using set_value(...) method) before!" << ends;
 
-						Except::throw_exception((const char *)API_AttrValueNotSet,o.str(),
-				        		(const char *)"Attribute::fire_event()");
+						Except::throw_exception(API_AttrValueNotSet,o.str(),"Attribute::fire_event()");
 					}
 				}
 			}
 		}
 
 //
-// Build one AttributeValue_3 or AttributeValue_4 object
+// Build one AttributeValue_3, AttributeValue_4 object or Attribute_5 object
 //
 
 		try
 		{
-			if (dev->get_dev_idl_version() >= 4)
-			{
-				if (event_user_client_3 == true)
-					send_attr = new Tango::AttributeValue_3;
-				else
-					send_attr_4 = new Tango::AttributeValue_4;
-			}
+			if (dev->get_dev_idl_version() > 4)
+				send_attr_5 = new Tango::AttributeValue_5;
+			else if (dev->get_dev_idl_version() == 4)
+				send_attr_4 = new Tango::AttributeValue_4;
 			else
 				send_attr = new Tango::AttributeValue_3;
 		}
 		catch (bad_alloc)
 		{
-			Except::throw_exception((const char *)API_MemoryAllocation,
-				      	  (const char *)"Can't allocate memory in server",
-				      	  (const char *)"Attribute::fire_event()");
+			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server","Attribute::fire_event()");
 		}
 
 //
@@ -5030,10 +5314,12 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 
 		if ( except == NULL )
 		{
-			if (send_attr != NULL)
-				Attribute_2_AttributeValue(send_attr,dev);
-			else
+			if (send_attr_5 != Tango_nullptr)
+				Attribute_2_AttributeValue(send_attr_5,dev);
+			else if (send_attr_4 != Tango_nullptr)
 				Attribute_2_AttributeValue(send_attr_4,dev);
+			else
+				Attribute_2_AttributeValue(send_attr,dev);
 		}
 
 //
@@ -5043,10 +5329,12 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
         EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
-        if (send_attr != NULL)
-            ad.attr_val_3 = send_attr;
-        else
+		if (send_attr_5 != Tango_nullptr)
+			ad.attr_val_5 = send_attr_5;
+        else if (send_attr_4 != NULL)
             ad.attr_val_4 = send_attr_4;
+        else
+            ad.attr_val_3 = send_attr;
 
 //
 // Fire event
@@ -5066,21 +5354,68 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					   name,
 					   except);
         if (event_supplier_zmq != NULL)
-            event_supplier_zmq->push_event(dev,
-					   "user_event",
-					   filt_names,
-					   filt_vals,
-					   filterable_names_lg,
-					   filterable_data_lg,
-					   ad,
-					   name,
-					   except);
+		{
+			vector<int> &client_libs = get_client_lib(USER_EVENT);
+			vector<int>::iterator ite;
+			string ev_name = EventName[USER_EVENT];
+
+			for (ite = client_libs.begin();ite != client_libs.end();++ite)
+			{
+				bool need_free = false;
+				bool name_changed = false;
+
+				struct EventSupplier::SuppliedEventData sent_value;
+				::memset(&sent_value,0,sizeof(sent_value));
+
+				switch (*ite)
+				{
+					case 5:
+					{
+						event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
+						ev_name = EVENT_COMPAT_IDL5 + ev_name;
+						name_changed = true;
+					}
+					break;
+
+					case 4:
+					{
+						event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
+					}
+					break;
+
+					default:
+					{
+						event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
+					}
+					break;
+				}
+
+				event_supplier_zmq->push_event(dev,ev_name,filt_names,filt_vals,
+												   filterable_names_lg,filterable_data_lg,sent_value,name,except);
+
+				if (need_free == true)
+				{
+					if (sent_value.attr_val_5 != NULL)
+						delete sent_value.attr_val_5;
+					else if (sent_value.attr_val_4 != NULL)
+						delete sent_value.attr_val_4;
+					else if (sent_value.attr_val_3 != NULL)
+						delete sent_value.attr_val_3;
+					else
+						delete sent_value.attr_val;
+				}
+				if (name_changed == true)
+					ev_name = EventName[USER_EVENT];
+			}
+		}
 
 
-		if (send_attr != NULL)
-			delete send_attr;
-		else
+		if (send_attr_5 != Tango_nullptr)
+			delete send_attr_5;
+		else if (send_attr_4 != Tango_nullptr)
 			delete send_attr_4;
+		else
+			delete send_attr;
 
 //
 // delete the data values allocated in the attribute
@@ -5099,11 +5434,12 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 	}
 	catch (...)
 	{
-
-		if (send_attr != NULL)
-			delete send_attr;
-		else
+		if (send_attr_5 != Tango_nullptr)
+			delete send_attr_5;
+		else if (send_attr_4 != Tango_nullptr)
 			delete send_attr_4;
+		else
+			delete send_attr;
 
 //
 // delete the data values allocated in the attribute
@@ -5820,48 +6156,111 @@ void Attribute::def_format_in_dbdatum(DbDatum &db)
 bool Attribute::change_event_subscribed()
 {
 	bool ret = false;
+	time_t now = time(NULL);
 
-	if (event_change_subscription != 0)
+	if (event_change5_subscription != 0)
 	{
-		time_t now = time(NULL);
-		if (now - event_change_subscription > EVENT_RESUBSCRIBE_PERIOD)
+		if (now - event_change5_subscription > EVENT_RESUBSCRIBE_PERIOD)
 			ret = false;
 		else
 			ret = true;
 	}
 
+	if (ret == false)
+	{
+		if (event_change4_subscription != 0)
+		{
+			if (now - event_change4_subscription > EVENT_RESUBSCRIBE_PERIOD)
+				ret = false;
+			else
+				ret = true;
+		}
+
+		if (ret == false)
+		{
+			if (event_change3_subscription != 0)
+			{
+				if (now - event_change3_subscription > EVENT_RESUBSCRIBE_PERIOD)
+					ret = false;
+				else
+					ret = true;
+			}
+		}
+	}
 	return ret;
 }
 
 bool Attribute::periodic_event_subscribed()
 {
 	bool ret = false;
+	time_t now = time(NULL);
 
-	if (event_periodic_subscription != 0)
+	if (event_periodic5_subscription != 0)
 	{
-		time_t now = time(NULL);
-		if (now - event_periodic_subscription > EVENT_RESUBSCRIBE_PERIOD)
+		if (now - event_periodic5_subscription > EVENT_RESUBSCRIBE_PERIOD)
 			ret = false;
 		else
 			ret = true;
 	}
 
+	if (ret == false)
+	{
+		if (event_periodic4_subscription != 0)
+		{
+			if (now - event_periodic4_subscription > EVENT_RESUBSCRIBE_PERIOD)
+				ret = false;
+			else
+				ret = true;
+		}
+
+		if (ret == false)
+		{
+			if (event_periodic3_subscription != 0)
+			{
+				if (now - event_periodic3_subscription > EVENT_RESUBSCRIBE_PERIOD)
+					ret = false;
+				else
+					ret = true;
+			}
+		}
+	}
 	return ret;
 }
 
 bool Attribute::archive_event_subscribed()
 {
 	bool ret = false;
+	time_t now = time(NULL);
 
-	if (event_archive_subscription != 0)
+	if (event_archive5_subscription != 0)
 	{
-		time_t now = time(NULL);
-		if (now - event_archive_subscription > EVENT_RESUBSCRIBE_PERIOD)
+		if (now - event_archive5_subscription > EVENT_RESUBSCRIBE_PERIOD)
 			ret = false;
 		else
 			ret = true;
 	}
 
+	if (ret == false)
+	{
+		if (event_archive4_subscription != 0)
+		{
+			if (now - event_archive4_subscription > EVENT_RESUBSCRIBE_PERIOD)
+				ret = false;
+			else
+				ret = true;
+		}
+
+		if (ret == false)
+		{
+			if (event_archive3_subscription != 0)
+			{
+				if (now - event_archive3_subscription > EVENT_RESUBSCRIBE_PERIOD)
+					ret = false;
+				else
+					ret = true;
+			}
+		}
+	}
 	return ret;
 }
 
@@ -5884,36 +6283,41 @@ bool Attribute::quality_event_subscribed()
 bool Attribute::user_event_subscribed()
 {
 	bool ret = false;
+	time_t now = time(NULL);
 
-	if (event_user_subscription != 0)
+	if (event_user5_subscription != 0)
 	{
-		time_t now = time(NULL);
-		if (now - event_user_subscription > EVENT_RESUBSCRIBE_PERIOD)
+		if (now - event_user5_subscription > EVENT_RESUBSCRIBE_PERIOD)
 			ret = false;
 		else
 			ret = true;
 	}
 
+	if (ret == false)
+	{
+		if (event_user4_subscription != 0)
+		{
+			if (now - event_user4_subscription > EVENT_RESUBSCRIBE_PERIOD)
+				ret = false;
+			else
+				ret = true;
+		}
+
+		if (ret == false)
+		{
+			if (event_user3_subscription != 0)
+			{
+				if (now - event_user3_subscription > EVENT_RESUBSCRIBE_PERIOD)
+					ret = false;
+				else
+					ret = true;
+			}
+		}
+	}
 	return ret;
 }
 
 bool Attribute::attr_conf_event_subscribed()
-{
-	bool ret = false;
-
-	if (event_attr_conf_subscription != 0)
-	{
-		time_t now = time(NULL);
-		if (now - event_attr_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
-			ret = false;
-		else
-			ret = true;
-	}
-
-	return ret;
-}
-
-bool Attribute::attr_conf5_event_subscribed()
 {
 	bool ret = false;
 
@@ -5926,6 +6330,17 @@ bool Attribute::attr_conf5_event_subscribed()
 			ret = true;
 	}
 
+	if (ret == false)
+	{
+		if (event_attr_conf_subscription != 0)
+		{
+			time_t now = time(NULL);
+			if (now - event_attr_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
+				ret = false;
+			else
+				ret = true;
+		}
+	}
 	return ret;
 }
 
@@ -6000,7 +6415,6 @@ void Attribute::remove_client_lib(int _l,const string &ev_name)
 	vector<int>::iterator pos = find(client_lib[i].begin(),client_lib[i].end(),_l);
 	if (pos != client_lib[i].end())
 		client_lib[i].erase(pos);
-cout << "Removed release " << _l << "for table for event " << ev_name << ". Still " << client_lib[i].size() << " rel in vector" << endl;
 }
 
 //-------------------------------------------------------------------------------------------------------------------

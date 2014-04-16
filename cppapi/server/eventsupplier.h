@@ -143,6 +143,11 @@ public :
 	static omni_mutex &get_event_mutex() {return event_mutex;}
 	string &get_fqdn_prefix() {return fqdn_prefix;}
 
+	void convert_att_event_to_5(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+	void convert_att_event_to_4(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+	void convert_att_event_to_3(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+
+
 	bool get_one_subscription_cmd() {return one_subscription_cmd;}
 	void set_one_subscription_cmd(bool val) {one_subscription_cmd = val;}
 

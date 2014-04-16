@@ -48,18 +48,17 @@ class DeviceClass;
 
 struct EventPar
 {
-	long		attr_id;
-	bool		change;
-	bool		archive;
-	bool		quality;
-	bool		periodic;
-	bool		user;
-	bool		att_conf;
-	bool		att_conf5;
-	bool		data_ready;
-	bool		dev_intr_change;
-	bool        notifd;
-	bool        zmq;
+	long			attr_id;
+	vector<int>		change;
+	vector<int>		archive;
+	bool			quality;
+	vector<int>		periodic;
+	vector<int>		user;
+	vector<int>		att_conf;
+	bool			data_ready;
+	bool			dev_intr_change;
+	bool        	notifd;
+	bool        	zmq;
 };
 
 //=============================================================================

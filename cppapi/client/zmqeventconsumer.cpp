@@ -1918,8 +1918,6 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // Search for entry within the event_callback map using the event name received in the event
 //
 
-//cout << "Received event name = " << ev_name << endl;
-
     map<std::string,EventCallBackStruct>::iterator ipos;
     size_t loop;
     bool no_db_dev = false;

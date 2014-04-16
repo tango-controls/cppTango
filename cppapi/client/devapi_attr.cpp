@@ -2035,6 +2035,12 @@ bool DeviceAttribute::is_empty()
 	if (d_state_filled == true)
 		return false;
 
+	if (exceptions_flags.test(isempty_flag))
+	{
+		ApiDataExcept::throw_exception(API_EmptyDeviceAttribute,
+					"cannot extract, no data in DeviceAttribute object ",
+					"DeviceAttribute::is_empty");
+	}
 	return true;
 }
 

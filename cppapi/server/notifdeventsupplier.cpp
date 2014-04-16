@@ -855,6 +855,10 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
 	domain_name = device_impl->get_name_lower() + "/" + loc_attr_name;
 
+	string::size_type pos = event_type.find(EVENT_COMPAT);
+	if (pos != string::npos)
+		event_type.erase(0,EVENT_COMPAT_IDL5_SIZE);
+
 	struct_event.header.fixed_header.event_type.domain_name = CORBA::string_dup(domain_name.c_str());
 	struct_event.header.fixed_header.event_type.type_name = CORBA::string_dup(fqdn_prefix.c_str());
 

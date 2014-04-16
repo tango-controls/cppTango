@@ -370,7 +370,7 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long attr
 	}
 }
 
-void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_type,AttrDataFormat attr_format)
+void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_type,TANGO_UNUSED(AttrDataFormat attr_format))
 {
 	omni_mutex_lock(*this);
 

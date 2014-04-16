@@ -1067,12 +1067,16 @@ public :
  * Check is the instance is empty
  *
  * is_empty() is a boolean method which returns true or false depending on whether the DeviceAttribute
- * object contains data or not. It can be used to test whether the DeviceAttribute has been initialized or not
+ * object contains data or not. Note that by default, a DeviceAttribute object throws exception if it is empty
+ * (See DeviceAttribute::exceptions() method). If you want to use this method, you have to change this
+ * default behavior. It can be used to test whether the DeviceAttribute has been initialized or not
  * e.g.
  * @code
  * string parity;
  * DeviceAttribute sl_parity = my_device->read_attribute("parity");
- * if (! sl_read.is_empty())
+ * sl_parity.reset_exceptions(DeviceData::isempty_flag);
+ *
+ * if (! sl_parity.is_empty())
  * {
  *     sl_parity >> parity;
  * }

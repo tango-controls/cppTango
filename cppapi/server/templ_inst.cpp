@@ -191,6 +191,15 @@ template void Attribute::set_upd_properties(const AttributeConfig &,string &,boo
 template void Attribute::set_upd_properties(const AttributeConfig_3 &,string &,bool);
 template void Attribute::set_upd_properties(const AttributeConfig_5 &,string &,bool);
 
+template void Attribute::Attribute_2_AttributeValue_base(AttributeValue_4 *,Tango::DeviceImpl *);
+template void Attribute::Attribute_2_AttributeValue_base(AttributeValue_5 *,Tango::DeviceImpl *);
+
+template void Attribute::AttrValUnion_fake_copy(const AttributeValue_5 *,AttributeValue_4 *);
+template void Attribute::AttrValUnion_fake_copy(const AttributeValue_4 *,AttributeValue_5 *);
+
+template void Attribute::AttrValUnion_2_Any(const AttributeValue_4 *,CORBA::Any &);
+template void Attribute::AttrValUnion_2_Any(const AttributeValue_5 *,CORBA::Any &);
+
 //+----------------------------------------------------------------------------
 //
 // Instanciate Util::fill_XXX_polling buffers methods and associate template classes

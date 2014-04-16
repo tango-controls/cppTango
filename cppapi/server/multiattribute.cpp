@@ -1312,19 +1312,18 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 	for (i = 0;i < attr_list.size();i++)
 	{
 		bool once_more = false;
-		bool ch = false;
-		bool ar = false;
-		bool qu = false;
-		bool pe = false;
-		bool us = false;
-		bool ac = false;
-		bool ac5 = false;
+		vector<int> ch;
+		vector<int> ar;
+		vector<int> pe;
+		vector<int> us;
+		vector<int> ac;
 		bool dr = false;
+		bool qu = false;
 
 		if (attr_list[i]->change_event_subscribed() == true)
 		{
 			once_more = true;
-			ch = true;
+			ch = attr_list[i]->get_client_lib(CHANGE_EVENT);
 		}
 
 		if (attr_list[i]->quality_event_subscribed() == true)
@@ -1336,31 +1335,25 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 		if (attr_list[i]->periodic_event_subscribed() == true)
 		{
 			once_more = true;
-			pe = true;
+			pe = attr_list[i]->get_client_lib(PERIODIC_EVENT);
 		}
 
 		if (attr_list[i]->archive_event_subscribed() == true)
 		{
 			once_more = true;
-			ar = true;
+			ar = attr_list[i]->get_client_lib(ARCHIVE_EVENT);
 		}
 
 		if (attr_list[i]->user_event_subscribed() == true)
 		{
 			once_more = true;
-			us = true;
+			us = attr_list[i]->get_client_lib(USER_EVENT);
 		}
 
 		if (attr_list[i]->attr_conf_event_subscribed() == true)
 		{
 			once_more = true;
-			ac = true;
-		}
-
-		if (attr_list[i]->attr_conf5_event_subscribed() == true)
-		{
-			once_more = true;
-			ac5 = true;
+			ac = attr_list[i]->get_client_lib(ATTR_CONF_EVENT);
 		}
 
 		if (attr_list[i]->data_ready_event_subscribed() == true)
@@ -1390,7 +1383,6 @@ void MultiAttribute::get_event_param(vector<EventPar> &eve)
 			ep.periodic = pe;
 			ep.user = us;
 			ep.att_conf = ac;
-			ep.att_conf5 = ac5;
 			ep.data_ready = dr;
 
 			eve.push_back(ep);
@@ -1422,20 +1414,40 @@ void MultiAttribute::set_event_param(vector<EventPar> &eve)
 
 			{
 				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				if (eve[i].change == true)
-					att.set_change_event_sub();
-				if (eve[i].periodic == true)
-					att.set_periodic_event_sub();
+				vector<int>::iterator ite;
+
+				if (eve[i].change.empty() == false)
+				{
+					for (ite = eve[i].change.begin();ite != eve[i].change.end();++ite)
+						att.set_change_event_sub(*ite);
+				}
+
+				if (eve[i].periodic.empty() == false)
+				{
+					for (ite = eve[i].periodic.begin();ite != eve[i].periodic.end();++ite)
+						att.set_periodic_event_sub(*ite);
+				}
+
+				if (eve[i].archive.empty() == false)
+				{
+					for (ite = eve[i].archive.begin();ite != eve[i].archive.end();++ite)
+						att.set_archive_event_sub(*ite);
+				}
+
+				if (eve[i].att_conf.empty() == false)
+				{
+					for (ite = eve[i].att_conf.begin();ite != eve[i].att_conf.end();++ite)
+						att.set_att_conf_event_sub(*ite);
+				}
+
+				if (eve[i].user.empty() == false)
+				{
+					for (ite = eve[i].user.begin();ite != eve[i].user.end();++ite)
+						att.set_user_event_sub(*ite);
+				}
+
 				if (eve[i].quality == true)
 					att.set_quality_event_sub();
-				if (eve[i].archive == true)
-					att.set_archive_event_sub();
-				if (eve[i].user == true)
-					att.set_user_event_sub();
-				if (eve[i].att_conf == true)
-					att.set_att_conf_event_sub();
-				if (eve[i].att_conf5 == true)
-					att.set_att_conf5_event_sub();
 				if (eve[i].data_ready == true)
 					att.set_data_ready_event_sub();
 			}

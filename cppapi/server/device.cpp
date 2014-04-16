@@ -5787,13 +5787,7 @@ void DeviceImpl::get_event_param(vector<EventPar> &eve)
 		ep.notifd = false;
 		ep.zmq = true;
 		ep.attr_id = -1;
-		ep.change = false;
 		ep.quality = false;
-		ep.archive = false;
-		ep.periodic = false;
-		ep.user = false;
-		ep.att_conf = false;
-		ep.att_conf5 = false;
 		ep.data_ready = false;
 		ep.dev_intr_change = true;
 

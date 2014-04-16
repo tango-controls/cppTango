@@ -1244,11 +1244,11 @@ void RootAttRegistry::auto_unsub()
 					switch (posi->event_type)
 					{
 						case CHANGE_EVENT:
-						delta_t = now - att.get_change_event_sub();
+						delta_t = now - att.get_change5_event_sub();
 						break;
 
 						case PERIODIC_EVENT:
-						delta_t = now - att.get_periodic_event_sub();
+						delta_t = now - att.get_periodic5_event_sub();
 						break;
 
 						case QUALITY_EVENT:
@@ -1256,11 +1256,11 @@ void RootAttRegistry::auto_unsub()
 						break;
 
 						case ARCHIVE_EVENT:
-						delta_t = now - att.get_archive_event_sub();
+						delta_t = now - att.get_archive5_event_sub();
 						break;
 
 						case USER_EVENT:
-						delta_t = now - att.get_user_event_sub();
+						delta_t = now - att.get_user5_event_sub();
 						break;
 
 						case DATA_READY_EVENT:

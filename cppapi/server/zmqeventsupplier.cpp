@@ -642,9 +642,7 @@ void ZmqEventSupplier::init_event_cptr(string &event_name)
             o << "Can't insert event counter for event ";
             o << event_name << " in EventSupplier instance" << ends;
 
-            Except::throw_exception((const char *)API_InternalError,
-                                    o.str(),
-                                   (const char *)"ZmqEventSupplier::init_event_cptr");
+            Except::throw_exception(API_InternalError,o.str(),"ZmqEventSupplier::init_event_cptr");
         }
     }
 }
@@ -876,7 +874,17 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		event_name = event_name + '/' + loc_attr_name;
 	if (Util::_FileDb == true || Util::_UseDb == false)
         event_name = event_name + MODIFIER_DBASE_NO;
-    event_name = event_name + '.' + event_type;
+    event_name = event_name + '.';
+
+	string ctr_event_name = event_name;
+	string local_event_type = event_type;
+
+    event_name = event_name + event_type;
+
+	string::size_type pos = local_event_type.find(EVENT_COMPAT);
+	if (pos != string::npos)
+		local_event_type.erase(0,EVENT_COMPAT_IDL5_SIZE);
+	ctr_event_name = ctr_event_name + local_event_type;
 
 //
 // Create zmq messages
@@ -894,7 +902,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
     map<string,unsigned int>::iterator ev_cptr_ite;
     unsigned int ev_ctr = 0;
 
-    ev_cptr_ite = event_cptr.find(event_name);
+    ev_cptr_ite = event_cptr.find(ctr_event_name);
     if (ev_cptr_ite != event_cptr.end())
         ev_ctr = ev_cptr_ite->second;
     else
@@ -904,34 +912,34 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		{
 			Attribute &att = device_impl->get_device_attr()->get_attr_by_name(attr_name.c_str());
 
-			if (event_type == "data_ready")
+			if (local_event_type == "data_ready")
 			{
 				if (att.event_data_ready_subscription != 0)
 					print = true;
 			}
-			else if (event_type == "attr_conf")
+			else if (local_event_type == "attr_conf")
 			{
-				if (att.event_attr_conf_subscription != 0)
+				if (att.event_attr_conf_subscription != 0 || att.event_attr_conf5_subscription != 0)
 					print = true;
 			}
-			else if (event_type == "user_event")
+			else if (local_event_type == "user_event")
 			{
-				if (att.event_user_subscription != 0)
+				if (att.event_user3_subscription != 0 || att.event_user4_subscription != 0 || att.event_user5_subscription != 0)
 					print = true;
 			}
-			else if (event_type == "change")
+			else if (local_event_type == "change")
 			{
-				if (att.event_change_subscription != 0)
+				if (att.event_change3_subscription != 0 || att.event_change4_subscription != 0 || att.event_change5_subscription != 0)
 					print = true;
 			}
-			else if (event_type == "periodic")
+			else if (local_event_type == "periodic")
 			{
-				if (att.event_periodic_subscription != 0)
+				if (att.event_periodic3_subscription != 0 || att.event_periodic4_subscription != 0 || att.event_periodic5_subscription != 0)
 					print = true;
 			}
-			else if (event_type == "archive")
+			else if (local_event_type == "archive")
 			{
-				if (att.event_archive_subscription != 0)
+				if (att.event_archive3_subscription != 0 || att.event_archive4_subscription != 0 || att.event_archive5_subscription != 0)
 					print = true;
 			}
 		}
@@ -1047,7 +1055,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 				if (data_discr == ATT_ENCODED)
 				{
-					const DevVarEncodedArray &dvea = ev_value.attr_val_4->value.encoded_att_value();
+					const DevVarEncodedArray &dvea = ev_value.attr_val_5->value.encoded_att_value();
 					nb_data = dvea.length();
 					if (nb_data > LARGE_DATA_THRESHOLD_ENCODED)
 						large_data = true;
@@ -1418,7 +1426,7 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 //
 
 #ifdef HAS_LAMBDA_FUNC
-    con_client.remove_if([&] (ConnectedClient &cc) -> bool
+	con_client.remove_if([&] (ConnectedClient &cc) -> bool
                         {
                             if (now.tv_sec > (cc.date + 500))
                                 return true;
@@ -1426,10 +1434,10 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
                                 return false;
                         });
 #else
-   con_client.remove_if(bind2nd(OldClient<ZmqEventSupplier::ConnectedClient,time_t,bool>(),now.tv_sec));
+	con_client.remove_if(bind2nd(OldClient<ZmqEventSupplier::ConnectedClient,time_t,bool>(),now.tv_sec));
 #endif
 
-    return ret;
+	return ret;
 }
 
 } /* End of Tango namespace */

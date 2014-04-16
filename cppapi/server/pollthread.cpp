@@ -1244,7 +1244,9 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
         struct EventSupplier::SuppliedEventData ad;
         ::memset(&ad,0,sizeof(ad));
 
-        if (idl_vers > 3)
+		if (idl_vers > 4)
+			ad.attr_val_5 = &dummy_att5;
+        else if (idl_vers == 4)
             ad.attr_val_4 = &dummy_att4;
         else if (idl_vers == 3)
             ad.attr_val_3 = &dummy_att3;

@@ -97,7 +97,9 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
 												DevFailed *except,string &attr_name,struct timeval *time_bef_attr)
 {
     string event, domain_name;
-    time_t now, change_subscription, periodic_subscription, archive_subscription;
+    time_t now, change3_subscription, periodic3_subscription, archive3_subscription;
+    time_t change4_subscription, periodic4_subscription,archive4_subscription;
+    time_t change5_subscription, periodic5_subscription,archive5_subscription;
     SendEventType ret;
     cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << endl;
 
@@ -108,51 +110,129 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
     {
     	omni_mutex_lock oml(event_mutex);
 
-		change_subscription = now - attr.event_change_subscription;
-		periodic_subscription = now - attr.event_periodic_subscription;
-		archive_subscription = now - attr.event_archive_subscription;
+		change3_subscription = now - attr.event_change3_subscription;
+		periodic3_subscription = now - attr.event_periodic3_subscription;
+		archive3_subscription = now - attr.event_archive3_subscription;
+
+		change4_subscription = now - attr.event_change4_subscription;
+		periodic4_subscription = now - attr.event_periodic4_subscription;
+		archive4_subscription = now - attr.event_archive4_subscription;
+
+		change5_subscription = now - attr.event_change5_subscription;
+		periodic5_subscription = now - attr.event_periodic5_subscription;
+		archive5_subscription = now - attr.event_archive5_subscription;
     }
 
-    cout3 << "EventSupplier::detect_and_push_events(): last subscription for change " << change_subscription << " periodic " << periodic_subscription << " archive " << archive_subscription << endl;
+    cout3 << "EventSupplier::detect_and_push_events(): last subscription for change5 " << change5_subscription << " periodic5 " << periodic5_subscription << " archive5 " << archive5_subscription << endl;
 
 //
 // For change event
+// First check if it is necessary to send the event in case clients are not there any more
 //
 
     ret.change = false;
-    if (change_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    vector<int> client_libs = attr.get_client_lib(CHANGE_EVENT); 	// We want a copy
+
+    vector<int>::iterator ite;
+    for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(5,string(EventName[CHANGE_EVENT]));
+			break;
+
+			case 4:
+			if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(4,string(EventName[CHANGE_EVENT]));
+			break;
+
+			default:
+			if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(3,string(EventName[CHANGE_EVENT]));
+			break;
+		}
+
+	}
+
+    if (client_libs.size() != 0)
     {
         if (detect_and_push_change_event(device_impl,attr_value,attr,attr_name,except) == true)
             ret.change = true;
     }
-	else
-		attr.event_change_client_3 = false;
 
 //
 // For periodic event
 //
 
     ret.periodic = false;
-    if (periodic_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    client_libs.clear();
+    client_libs = attr.get_client_lib(PERIODIC_EVENT); 	// We want a copy
+
+    for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(5,string(EventName[PERIODIC_EVENT]));
+			break;
+
+			case 4:
+			if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(4,string(EventName[PERIODIC_EVENT]));
+			break;
+
+			default:
+			if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(3,string(EventName[PERIODIC_EVENT]));
+			break;
+		}
+
+	}
+
+    if (client_libs.size() != 0)
     {
         if (detect_and_push_periodic_event(device_impl,attr_value,attr,attr_name,except,time_bef_attr) == true)
             ret.periodic = true;
     }
-	else
-		attr.event_periodic_client_3 = false;
 
 //
 // For archive event
 //
 
     ret.archive = false;
-    if (archive_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    client_libs.clear();
+    client_libs = attr.get_client_lib(ARCHIVE_EVENT); 	// We want a copy
+
+    for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(5,string(EventName[ARCHIVE_EVENT]));
+			break;
+
+			case 4:
+			if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(4,string(EventName[ARCHIVE_EVENT]));
+			break;
+
+			default:
+			if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(3,string(EventName[ARCHIVE_EVENT]));
+			break;
+		}
+
+	}
+
+    if (client_libs.size() != 0)
     {
         if (detect_and_push_archive_event(device_impl,attr_value,attr,attr_name,except,time_bef_attr) == true)
             ret.archive = true;
     }
-	else
-		attr.event_archive_client_3 = false;
 
     return ret;
 }
@@ -283,19 +363,8 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
         }
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent
-// using an AttributeValue_3 data type
+// Prepare to push the event
 //
-
-        bool need_free = false;
-        if ((attr.event_change_client_3 == true) && (attr_value.attr_val_3 == NULL))
-        {
-            AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
-            attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
-            attr_value.attr_val_3 = tmp_attr_val_3;
-            attr_value.attr_val_4 = NULL;
-            need_free = true;
-        }
 
         domain_name = device_impl->get_name() + "/" + attr_name;
         filterable_names.push_back("delta_change_rel");
@@ -315,28 +384,67 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
         else
             filterable_data.push_back((double)0.0);
 
-        push_event(device_impl,
-               "change",
-               filterable_names,
-               filterable_data,
-               filterable_names_lg,
-               filterable_data_lg,
-               attr_value,
-               attr_name,
-               except);
+		vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
+		vector<int>::iterator ite;
+		string ev_name = EventName[CHANGE_EVENT];
+
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			bool need_free = false;
+			bool name_changed = false;
+
+			struct SuppliedEventData sent_value;
+		    ::memset(&sent_value,0,sizeof(sent_value));
+
+			switch (*ite)
+			{
+				case 5:
+				{
+					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
+					ev_name = EVENT_COMPAT_IDL5 + ev_name;
+					name_changed = true;
+				}
+				break;
+
+				case 4:
+				{
+					convert_att_event_to_4(attr_value,sent_value,need_free,attr);
+				}
+				break;
+
+				default:
+				{
+					convert_att_event_to_3(attr_value,sent_value,need_free,attr);
+				}
+				break;
+			}
+
+			push_event(device_impl,
+				   ev_name,
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   sent_value,
+				   attr_name,
+				   except);
+
+			if (need_free == true)
+			{
+				if (sent_value.attr_val_5 != NULL)
+					delete sent_value.attr_val_5;
+				else if (sent_value.attr_val_4 != NULL)
+					delete sent_value.attr_val_4;
+				else if (sent_value.attr_val_3 != NULL)
+					delete sent_value.attr_val_3;
+				else
+					delete sent_value.attr_val;
+			}
+			if (name_changed == true)
+				ev_name = EventName[CHANGE_EVENT];
+		}
         ret = true;
 
-        if (need_free == true)
-        {
-			if (attr_value.attr_val_5 != NULL)
-                delete attr_value.attr_val_5;
-			else if (attr_value.attr_val_4 != NULL)
-                delete attr_value.attr_val_4;
-            else if (attr_value.attr_val_3 != NULL)
-                delete attr_value.attr_val_3;
-            else
-                delete attr_value.attr_val;
-        }
     }
 
     cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;
@@ -551,19 +659,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 		}
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent using an AttributeValue_3
-// data type
+// Prepare to push the event
 //
-
-		bool need_free = false;
-        if ((attr.event_archive_client_3 == true) && (attr_value.attr_val_3 == NULL))
-        {
-            AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
-            attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
-            attr_value.attr_val_3 = tmp_attr_val_3;
-            attr_value.attr_val_4 = NULL;
-            need_free = true;
-        }
 
 		filterable_names_lg.push_back("counter");
 		if (period_change == true)
@@ -597,28 +694,67 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 		filterable_data.push_back(now_ms - attr.archive_last_event);
 		attr.archive_last_event = now_ms;
 
-		push_event(device_impl,
-			   "archive",
-			   filterable_names,
-			   filterable_data,
-			   filterable_names_lg,
-			   filterable_data_lg,
-			   attr_value,
-			   attr_name,
-			   except);
-        ret = true;
+		vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
+		vector<int>::iterator ite;
+		string ev_name = EventName[ARCHIVE_EVENT];
 
-        if (need_free == true)
-        {
-			if (attr_value.attr_val_5 != NULL)
-                delete attr_value.attr_val_5;
-			else if (attr_value.attr_val_4 != NULL)
-                delete attr_value.attr_val_4;
-            else if (attr_value.attr_val_3 != NULL)
-                delete attr_value.attr_val_3;
-            else
-                delete attr_value.attr_val;
-        }
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			bool need_free = false;
+			bool name_changed = false;
+
+			struct SuppliedEventData sent_value;
+		    ::memset(&sent_value,0,sizeof(sent_value));
+
+			switch (*ite)
+			{
+				case 5:
+				{
+					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
+					ev_name = EVENT_COMPAT_IDL5 + ev_name;
+					name_changed = true;
+				}
+				break;
+
+				case 4:
+				{
+					convert_att_event_to_4(attr_value,sent_value,need_free,attr);
+				}
+				break;
+
+				default:
+				{
+					convert_att_event_to_3(attr_value,sent_value,need_free,attr);
+				}
+				break;
+			}
+
+			push_event(device_impl,
+				   ev_name,
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   sent_value,
+				   attr_name,
+				   except);
+
+			if (need_free == true)
+			{
+				if (sent_value.attr_val_5 != NULL)
+					delete sent_value.attr_val_5;
+				else if (sent_value.attr_val_4 != NULL)
+					delete sent_value.attr_val_4;
+				else if (sent_value.attr_val_3 != NULL)
+					delete sent_value.attr_val_3;
+				else
+					delete sent_value.attr_val;
+			}
+			if (name_changed == true)
+				ev_name = EventName[ARCHIVE_EVENT];
+		}
+
+        ret = true;
 	}
 
 	return ret;
@@ -728,21 +864,10 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 
 	if ( ms_since_last_periodic > eve_period )
 	{
-		bool need_free = false;
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent using an AttributeValue_3
-// data type
+// Prepare to push the event
 //
-
-        if ((attr.event_periodic_client_3 == true) && (attr_value.attr_val_3 == NULL))
-        {
-            AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
-            attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
-            attr_value.attr_val_3 = tmp_attr_val_3;
-            attr_value.attr_val_4 = NULL;
-            need_free = true;
-        }
 
 		vector<string> filterable_names;
 		vector<double> filterable_data;
@@ -754,29 +879,68 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 		filterable_names_lg.push_back("counter");
 		filterable_data_lg.push_back(attr.periodic_counter);
 
-		cout3 << "EventSupplier::detect_and_push_is_periodic_event(): detected periodic event for " << device_impl->get_name()+"/"+attr_name << endl;
-		push_event(device_impl,
-			   "periodic",
-			   filterable_names,
-			   filterable_data,
-			   filterable_names_lg,
-			   filterable_data_lg,
-			   attr_value,
-			   attr_name,
-			   except);
-        ret = true;
+		vector<int> &client_libs = attr.get_client_lib(PERIODIC_EVENT);
+		vector<int>::iterator ite;
+		string ev_name = EventName[PERIODIC_EVENT];
 
-        if (need_free == true)
-        {
-			if (attr_value.attr_val_5 != NULL)
-                delete attr_value.attr_val_5;
-			else if (attr_value.attr_val_4 != NULL)
-                delete attr_value.attr_val_4;
-            else if (attr_value.attr_val_3 != NULL)
-                delete attr_value.attr_val_3;
-            else
-                delete attr_value.attr_val;
-        }
+		cout3 << "EventSupplier::detect_and_push_is_periodic_event(): detected periodic event for " << device_impl->get_name()+"/"+attr_name << endl;
+
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			bool need_free = false;
+			bool name_changed = false;
+
+			struct SuppliedEventData sent_value;
+		    ::memset(&sent_value,0,sizeof(sent_value));
+
+			switch (*ite)
+			{
+				case 5:
+				{
+					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
+					ev_name = EVENT_COMPAT_IDL5 + ev_name;
+					name_changed = true;
+				}
+				break;
+
+				case 4:
+				{
+					convert_att_event_to_4(attr_value,sent_value,need_free,attr);
+				}
+				break;
+
+				default:
+				{
+					convert_att_event_to_3(attr_value,sent_value,need_free,attr);
+				}
+				break;
+			}
+
+			push_event(device_impl,
+				   ev_name,
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   sent_value,
+				   attr_name,
+				   except);
+
+			if (need_free == true)
+			{
+				if (sent_value.attr_val_5 != NULL)
+					delete sent_value.attr_val_5;
+				else if (sent_value.attr_val_4 != NULL)
+					delete sent_value.attr_val_4;
+				else if (sent_value.attr_val_3 != NULL)
+					delete sent_value.attr_val_3;
+				else
+					delete sent_value.attr_val;
+			}
+			if (name_changed == true)
+				ev_name = EventName[CHANGE_EVENT];
+		}
+        ret = true;
 	}
 
 	return ret;
@@ -1985,7 +2149,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &attr_conf,DevFailed *except,string &attr_name)
 {
     string event, domain_name;
-    time_t now, att_conf_subscription;
+    time_t now,att_conf_subscription,attr_sub;
 
     cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << endl;
 
@@ -2008,17 +2172,20 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
 // Return if there is no client or if the last client subscription is more than 10 mins ago
 //
 
-	if (conf5 == true && attr.event_attr_conf5_subscription == 0)
+    {
+    	omni_mutex_lock oml(event_mutex);
+
+		if (conf5 == true)
+			attr_sub = attr.event_attr_conf5_subscription;
+		else
+			attr_sub = attr.event_attr_conf_subscription;
+    }
+
+	if (attr_sub == 0)
 		return;
 
-    if (conf5 == false && attr.event_attr_conf_subscription == 0)
-        return;
-
     now = time(NULL);
-    if (conf5 == true)
-		att_conf_subscription = now - attr.event_attr_conf5_subscription;
-	else
-		att_conf_subscription = now - attr.event_attr_conf_subscription;
+	att_conf_subscription = now - attr_sub;
 
     cout3 << "EventSupplier::push_att_conf_events(): delta since last subscription " << att_conf_subscription << endl;
 
@@ -2038,7 +2205,7 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
     vector<long> filterable_data_lg;
 
     string ev_type = CONF_TYPE_EVENT;
-    if (conf5 == true)
+	if (conf5 == true)
 		ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
     push_event(device_impl,
@@ -2155,6 +2322,72 @@ bool EventSupplier::any_dev_intr_client(DeviceImpl *device_impl)
 		ret = true;
 
 	return ret;
+}
+
+void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventData &attr_value,
+										   struct EventSupplier::SuppliedEventData &sent_value,
+										   bool &need_free,Attribute &attr)
+{
+	if (attr_value.attr_val_3 != Tango_nullptr)
+	{
+		AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
+		attr.AttributeValue_3_2_AttributeValue_5(attr_value.attr_val_3,tmp_attr_val_5);
+		sent_value.attr_val_5 = tmp_attr_val_5;
+		need_free = true;
+	}
+	else if (attr_value.attr_val_4 != Tango_nullptr)
+	{
+		AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
+		attr.AttributeValue_4_2_AttributeValue_5(attr_value.attr_val_4,tmp_attr_val_5);
+		sent_value.attr_val_5 = tmp_attr_val_5;
+		need_free = true;
+	}
+	else
+		sent_value.attr_val_5 = attr_value.attr_val_5;
+}
+
+void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventData &attr_value,
+										   struct EventSupplier::SuppliedEventData &sent_value,
+										   bool &need_free,Attribute &attr)
+{
+	if (attr_value.attr_val_3 != Tango_nullptr)
+	{
+		AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
+		attr.AttributeValue_3_2_AttributeValue_4(attr_value.attr_val_3,tmp_attr_val_4);
+		sent_value.attr_val_4 = tmp_attr_val_4;
+		need_free = true;
+	}
+	else if (attr_value.attr_val_5 != Tango_nullptr)
+	{
+		AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
+		attr.AttributeValue_5_2_AttributeValue_4(attr_value.attr_val_5,tmp_attr_val_4);
+		sent_value.attr_val_4 = tmp_attr_val_4;
+		need_free = true;
+	}
+	else
+		sent_value.attr_val_4 = attr_value.attr_val_4;
+}
+
+void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventData &attr_value,
+										   struct EventSupplier::SuppliedEventData &sent_value,
+										   bool &need_free,Attribute &attr)
+{
+	if (attr_value.attr_val_4 != Tango_nullptr)
+	{
+		AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
+		attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
+		sent_value.attr_val_3 = tmp_attr_val_3;
+		need_free = true;
+	}
+	else if (attr_value.attr_val_5 != Tango_nullptr)
+	{
+		AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
+		attr.AttributeValue_5_2_AttributeValue_3(attr_value.attr_val_5,tmp_attr_val_3);
+		sent_value.attr_val_3 = tmp_attr_val_3;
+		need_free = true;
+	}
+	else
+		sent_value.attr_val_3 = attr_value.attr_val_3;
 }
 
 } /* End of Tango namespace */

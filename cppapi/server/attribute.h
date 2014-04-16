@@ -2163,7 +2163,6 @@ public:
 	bool quality_event_subscribed();
 	bool user_event_subscribed();
 	bool attr_conf_event_subscribed();
-	bool attr_conf5_event_subscribed();
 	bool data_ready_event_subscribed();
 
 	bool use_notifd_event() {return notifd_event;}
@@ -2173,25 +2172,24 @@ public:
 // Warning, methods below are not protected !
 //
 
-	void set_change_event_sub() {event_change_subscription=time(NULL);}
-	time_t get_change_event_sub() {return event_change_subscription;}
+	void set_change_event_sub(int);
+	time_t get_change5_event_sub() {return event_change5_subscription;}
 
-	void set_periodic_event_sub() {event_periodic_subscription=time(NULL);}
-	time_t get_periodic_event_sub() {return event_periodic_subscription;}
+	void set_periodic_event_sub(int);
+	time_t get_periodic5_event_sub() {return event_periodic5_subscription;}
 
-	void set_archive_event_sub() {event_archive_subscription=time(NULL);}
-	time_t get_archive_event_sub() {return event_archive_subscription;}
+	void set_archive_event_sub(int);
+	time_t get_archive5_event_sub() {return event_archive5_subscription;}
 
 	void set_quality_event_sub() {event_quality_subscription=time(NULL);}
 	time_t get_quality_event_sub() {return event_quality_subscription;}
 
-	void set_user_event_sub() {event_user_subscription=time(NULL);}
-	time_t get_user_event_sub() {return event_user_subscription;}
+	void set_user_event_sub(int);
+	time_t get_user5_event_sub() {return event_user5_subscription;}
 
-	void set_att_conf_event_sub() {event_attr_conf_subscription=time(NULL);}
-	void set_att_conf5_event_sub() {event_attr_conf5_subscription=time(NULL);}
+	void set_att_conf_event_sub(int);
 
-	void set_data_ready_event_sub() {event_user_subscription=time(NULL);}
+	void set_data_ready_event_sub() {event_data_ready_subscription=time(NULL);}
 	time_t get_data_ready_event_sub() {return event_data_ready_subscription;}
 
 // End of warning
@@ -2203,9 +2201,22 @@ public:
 	void set_attr_idx(long new_idx) {idx_in_attr=new_idx;}
 	DeviceImpl *get_att_device();
 
+	template <typename T> void Attribute_2_AttributeValue_base(T *,Tango::DeviceImpl *);
 	void Attribute_2_AttributeValue(Tango::AttributeValue_3 *,DeviceImpl *);
 	void Attribute_2_AttributeValue(Tango::AttributeValue_4 *,DeviceImpl *);
+	void Attribute_2_AttributeValue(Tango::AttributeValue_5 *,DeviceImpl *);
+
+	template <typename T,typename V> void AttrValUnion_fake_copy(const T *,V *);
+	template <typename T> void AttrValUnion_2_Any(const T *,CORBA::Any &);
+
 	void AttributeValue_4_2_AttributeValue_3(const Tango::AttributeValue_4 *,Tango::AttributeValue_3 *);
+	void AttributeValue_5_2_AttributeValue_3(const Tango::AttributeValue_5 *,Tango::AttributeValue_3 *);
+
+	void AttributeValue_3_2_AttributeValue_4(const Tango::AttributeValue_3 *,Tango::AttributeValue_4 *);
+	void AttributeValue_5_2_AttributeValue_4(const Tango::AttributeValue_5 *,Tango::AttributeValue_4 *);
+
+	void AttributeValue_3_2_AttributeValue_5(const Tango::AttributeValue_3 *,Tango::AttributeValue_5 *);
+	void AttributeValue_4_2_AttributeValue_5(const Tango::AttributeValue_4 *,Tango::AttributeValue_5 *);
 
 	void AttributeConfig_5_2_AttributeConfig_3(const Tango::AttributeConfig_5 &,Tango::AttributeConfig_3 &);
 	void AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConfig_3 &,Tango::AttributeConfig_5 &);
@@ -2359,11 +2370,19 @@ protected:
     LastAttrValue		prev_change_event;				// Last change attribute
     LastAttrValue		prev_quality_event;				// Last quality attribute
     LastAttrValue		prev_archive_event;				// Last archive attribute
-    time_t				event_change_subscription;		// Last time() a subscription was made
+    time_t				event_change3_subscription;		// Last time() a subscription was made
+    time_t				event_change4_subscription;
+	time_t				event_change5_subscription;
     time_t				event_quality_subscription;		// Last time() a subscription was made
-    time_t				event_periodic_subscription;	// Last time() a subscription was made
-    time_t				event_archive_subscription; 	// Last time() a subscription was made
-    time_t				event_user_subscription; 		// Last time() a subscription was made
+    time_t				event_periodic3_subscription;	// Last time() a subscription was made
+    time_t				event_periodic4_subscription;
+    time_t				event_periodic5_subscription;
+    time_t				event_archive3_subscription; 	// Last time() a subscription was made
+    time_t				event_archive4_subscription;
+    time_t				event_archive5_subscription;
+    time_t				event_user3_subscription; 		// Last time() a subscription was made
+    time_t				event_user4_subscription;
+    time_t				event_user5_subscription;
     time_t				event_attr_conf_subscription;	// Last time() a subscription was made
     time_t				event_attr_conf5_subscription;	// Last time() a subscription was made
     time_t				event_data_ready_subscription;	// Last time() a subscription was made
@@ -2375,10 +2394,6 @@ protected:
     bool				archive_event_implmented;		// Flag true if a manual fire archive event is implemented.
     bool				check_change_event_criteria;	// True if change event criteria should be checked when sending the event
     bool				check_archive_event_criteria;	// True if change event criteria should be checked when sending the event
-    bool				event_periodic_client_3;		// True if at least one periodic event client is using IDL 3
-    bool				event_change_client_3;			// True if at least one periodic event client is using IDL 3
-    bool				event_archive_client_3;			// True if at least one periodic event client is using IDL 3
-    bool				event_user_client_3;			// True if at least one periodic event client is using IDL 3
     Tango::DevLong64	tmp_lo64[2];
     Tango::DevULong		tmp_ulo[2];
     Tango::DevULong64	tmp_ulo64[2];
@@ -2536,6 +2551,96 @@ inline bool Attribute::prop_in_list(const char *prop_name,string &prop_str,size_
     }
 
     return ret;
+}
+
+inline void Attribute::set_change_event_sub(int cl_lib)
+{
+	switch (cl_lib)
+	{
+		case 5:
+		event_change5_subscription = time(NULL);
+		break;
+
+		case 4:
+		event_change4_subscription = time(NULL);
+		break;
+
+		default:
+		event_change3_subscription = time(NULL);
+		break;
+	}
+}
+
+
+inline void Attribute::set_periodic_event_sub(int cl_lib)
+{
+	switch (cl_lib)
+	{
+		case 5:
+		event_periodic5_subscription = time(NULL);
+		break;
+
+		case 4:
+		event_periodic4_subscription = time(NULL);
+		break;
+
+		default:
+		event_periodic3_subscription = time(NULL);
+		break;
+	}
+}
+
+
+inline void Attribute::set_archive_event_sub(int cl_lib)
+{
+	switch (cl_lib)
+	{
+		case 5:
+		event_archive5_subscription = time(NULL);
+		break;
+
+		case 4:
+		event_archive4_subscription = time(NULL);
+		break;
+
+		default:
+		event_archive3_subscription = time(NULL);
+		break;
+	}
+}
+
+
+inline void Attribute::set_user_event_sub(int cl_lib)
+{
+	switch (cl_lib)
+	{
+		case 5:
+		event_user5_subscription = time(NULL);
+		break;
+
+		case 4:
+		event_user4_subscription = time(NULL);
+		break;
+
+		default:
+		event_user3_subscription = time(NULL);
+		break;
+	}
+}
+
+
+inline void Attribute::set_att_conf_event_sub(int cl_lib)
+{
+	switch (cl_lib)
+	{
+		case 5:
+		event_attr_conf5_subscription = time(NULL);
+		break;
+
+		default:
+		event_attr_conf_subscription = time(NULL);
+		break;
+	}
 }
 
 //
