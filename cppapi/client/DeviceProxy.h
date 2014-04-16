@@ -1756,6 +1756,7 @@ public :
 //
 
 	void read_attribute(const string &,AttributeValue_4 *&);
+	void read_attribute(const string &,AttributeValue_5 *&);
 	void read_attribute(const char *,DeviceAttribute &);
 	void read_attribute(string &at,DeviceAttribute &da) {read_attribute(at.c_str(),da);}
 

@@ -276,12 +276,12 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 		if (ev->err == true)
 		{
 			DevFailed df(ev->errors);
-			zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df);
+			zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df,true);
 		}
 		else
 		{
 			FwdEventData *ev_fwd = static_cast<FwdEventData *>(ev);
-			const AttributeValue_4 *ptr = ev_fwd->get_av_4();
+			const AttributeValue_5 *ptr = ev_fwd->get_av_5();
 			zmq::message_t *zmq_mess_ptr = ev_fwd->get_zmq_mess_ptr();
 
 			if (ptr != Tango_nullptr || zmq_mess_ptr != Tango_nullptr)
@@ -293,11 +293,11 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 
 
 				if (ptr != Tango_nullptr)
-					ad.attr_val_4 = ptr;
+					ad.attr_val_5 = ptr;
 				else
 					ad.zmq_mess = zmq_mess_ptr;
 
-				zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,Tango_nullptr);
+				zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,Tango_nullptr,true);
 			}
 		}
 	}
@@ -308,7 +308,7 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 	}
 }
 
-void RootAttRegistry::RootAttUserCallBack::push_archive_event(Tango::DataReadyEventData *ev)
+void RootAttRegistry::RootAttUserCallBack::push_event(Tango::DataReadyEventData *ev)
 {
 	try
 	{
@@ -338,7 +338,7 @@ void RootAttRegistry::RootAttUserCallBack::push_archive_event(Tango::DataReadyEv
 		if (ev->err == true)
 		{
 			DevFailed df(ev->errors);
-			zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df);
+			zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df,true);
 		}
 		else
 		{

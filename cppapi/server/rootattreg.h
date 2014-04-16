@@ -110,7 +110,7 @@ private:
 		RootAttUserCallBack(RootAttRegistry *_r):Tango::CallBack(),rar(_r) {}
 
 		virtual void push_event(Tango::EventData *);
-		virtual void push_archive_event(Tango::DataReadyEventData *);
+		virtual void push_event(Tango::DataReadyEventData *);
 
 	private:
 		RootAttRegistry						*rar;

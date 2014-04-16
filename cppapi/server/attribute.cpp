@@ -4359,6 +4359,7 @@ void Attribute::fire_change_event(DevFailed *except)
 
 						vector<int> &client_libs = get_client_lib(CHANGE_EVENT);
 						string ev_name = EventName[CHANGE_EVENT];
+						bool inc_ctr = true;
 
 						for (ite = client_libs.begin();ite != client_libs.end();++ite)
 						{
@@ -4392,8 +4393,9 @@ void Attribute::fire_change_event(DevFailed *except)
 							}
 
 							event_supplier_zmq->push_event(dev,ev_name,f_names,f_data,f_names_lg,f_data_lg,
-														   sent_value,name,except);
+														   sent_value,name,except,inc_ctr);
 
+							inc_ctr = false;
 							if (need_free == true)
 							{
 								if (sent_value.attr_val_5 != NULL)
@@ -4510,12 +4512,14 @@ void Attribute::fire_change_event(DevFailed *except)
                                         filterable_data_lg,
                                         ad,
                                         name,
-                                        except);
+                                        except,
+                                        false);
 
             if (event_supplier_zmq != NULL)
 			{
 				vector<int> &client_libs = get_client_lib(CHANGE_EVENT);
 				string ev_name = EventName[CHANGE_EVENT];
+				bool inc_ctr = true;
 
 				for (ite = client_libs.begin();ite != client_libs.end();++ite)
 				{
@@ -4549,8 +4553,10 @@ void Attribute::fire_change_event(DevFailed *except)
 					}
 
 					event_supplier_zmq->push_event(dev,ev_name,filterable_names,filterable_data,
-												   filterable_names_lg,filterable_data_lg,sent_value,name,except);
+												   filterable_names_lg,filterable_data_lg,
+												   sent_value,name,except,inc_ctr);
 
+					inc_ctr = false;
 					if (need_free == true)
 					{
 						if (sent_value.attr_val_5 != NULL)
@@ -4884,6 +4890,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 						vector<int> &client_libs = get_client_lib(ARCHIVE_EVENT);
 						string ev_name = EventName[ARCHIVE_EVENT];
+						bool inc_ctr = true;
 
 						for (ite = client_libs.begin();ite != client_libs.end();++ite)
 						{
@@ -4917,8 +4924,9 @@ void Attribute::fire_archive_event(DevFailed *except)
 							}
 
 							event_supplier_zmq->push_event(dev,ev_name,f_names,f_data,f_names_lg,f_data_lg,
-														   sent_value,name,except);
+														   sent_value,name,except,inc_ctr);
 
+							inc_ctr = false;
 							if (need_free == true)
 							{
 								if (sent_value.attr_val_5 != NULL)
@@ -5037,12 +5045,14 @@ void Attribute::fire_archive_event(DevFailed *except)
 							filterable_data_lg,
 							ad,
 							name,
-							except);
+							except,
+							false);
 
             if (event_supplier_zmq != NULL)
 			{
 				vector<int> &client_libs = get_client_lib(ARCHIVE_EVENT);
 				string ev_name = EventName[ARCHIVE_EVENT];
+				bool inc_ctr = true;
 
 				for (ite = client_libs.begin();ite != client_libs.end();++ite)
 				{
@@ -5076,8 +5086,10 @@ void Attribute::fire_archive_event(DevFailed *except)
 					}
 
 					event_supplier_zmq->push_event(dev,ev_name,filterable_names,filterable_data,
-												   filterable_names_lg,filterable_data_lg,sent_value,name,except);
+												   filterable_names_lg,filterable_data_lg,
+												   sent_value,name,except,inc_ctr);
 
+					inc_ctr = false;
 					if (need_free == true)
 					{
 						if (sent_value.attr_val_5 != NULL)
@@ -5352,12 +5364,14 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					   filterable_data_lg,
 					   ad,
 					   name,
-					   except);
+					   except,
+					   false);
         if (event_supplier_zmq != NULL)
 		{
 			vector<int> &client_libs = get_client_lib(USER_EVENT);
 			vector<int>::iterator ite;
 			string ev_name = EventName[USER_EVENT];
+			bool inc_ctr = true;
 
 			for (ite = client_libs.begin();ite != client_libs.end();++ite)
 			{
@@ -5391,8 +5405,10 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 				}
 
 				event_supplier_zmq->push_event(dev,ev_name,filt_names,filt_vals,
-												   filterable_names_lg,filterable_data_lg,sent_value,name,except);
+												   filterable_names_lg,filterable_data_lg,
+												   sent_value,name,except,inc_ctr);
 
+				inc_ctr = false;
 				if (need_free == true)
 				{
 					if (sent_value.attr_val_5 != NULL)
@@ -5408,7 +5424,6 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					ev_name = EventName[USER_EVENT];
 			}
 		}
-
 
 		if (send_attr_5 != Tango_nullptr)
 			delete send_attr_5;

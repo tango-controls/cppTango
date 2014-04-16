@@ -836,7 +836,7 @@ void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
             TANGO_UNUSED(vector<string> &filterable_names),TANGO_UNUSED(vector<double> &filterable_data),
             TANGO_UNUSED(vector<string> &filterable_names_lg),TANGO_UNUSED(vector<long> &filterable_data_lg),
-            struct SuppliedEventData &ev_value,string &attr_name,DevFailed *except)
+            struct SuppliedEventData &ev_value,string &attr_name,DevFailed *except,bool inc_cptr)
 {
 	cout3 << "ZmqEventSupplier::push_event(): called for attribute " << attr_name << endl;
 
@@ -1312,10 +1312,10 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		}
 
 //
-// Increment event counter
+// Increment event counter if required
 //
 
-		if (ev_cptr_ite != event_cptr.end())
+		if (ev_cptr_ite != event_cptr.end() && inc_cptr == true)
 			ev_cptr_ite->second++;
 
 //

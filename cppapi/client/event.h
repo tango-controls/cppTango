@@ -96,12 +96,12 @@ public:
 	FwdEventData(DeviceProxy *,string &,string &,Tango::DeviceAttribute *,DevErrorList &);
 	FwdEventData(DeviceProxy *,string &,string &,Tango::DeviceAttribute *,DevErrorList &,zmq::message_t *);
 
-	void set_av_4(const AttributeValue_4 *_p) {av_4 = _p;}
-	const AttributeValue_4 *get_av_4() {return av_4;}
+	void set_av_5(const AttributeValue_5 *_p) {av_5 = _p;}
+	const AttributeValue_5 *get_av_5() {return av_5;}
 	zmq::message_t *get_zmq_mess_ptr() {return event_data;}
 
 private:
-	const AttributeValue_4	*av_4;
+	const AttributeValue_5	*av_5;
 	zmq::message_t			*event_data;
 };
 

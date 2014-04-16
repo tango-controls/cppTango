@@ -387,6 +387,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 		vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
 		vector<int>::iterator ite;
 		string ev_name = EventName[CHANGE_EVENT];
+		bool inc_ctr = true;
 
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
 		{
@@ -427,8 +428,10 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 				   filterable_data_lg,
 				   sent_value,
 				   attr_name,
-				   except);
+				   except,
+				   inc_ctr);
 
+			inc_ctr = false;
 			if (need_free == true)
 			{
 				if (sent_value.attr_val_5 != NULL)
@@ -697,6 +700,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 		vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
 		vector<int>::iterator ite;
 		string ev_name = EventName[ARCHIVE_EVENT];
+		bool inc_ctr = true;
 
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
 		{
@@ -737,8 +741,10 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 				   filterable_data_lg,
 				   sent_value,
 				   attr_name,
-				   except);
+				   except,
+				   inc_ctr);
 
+			inc_ctr = false;
 			if (need_free == true)
 			{
 				if (sent_value.attr_val_5 != NULL)
@@ -882,6 +888,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 		vector<int> &client_libs = attr.get_client_lib(PERIODIC_EVENT);
 		vector<int>::iterator ite;
 		string ev_name = EventName[PERIODIC_EVENT];
+		bool inc_ctr = true;
 
 		cout3 << "EventSupplier::detect_and_push_is_periodic_event(): detected periodic event for " << device_impl->get_name()+"/"+attr_name << endl;
 
@@ -924,8 +931,10 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 				   filterable_data_lg,
 				   sent_value,
 				   attr_name,
-				   except);
+				   except,
+				   inc_ctr);
 
+			inc_ctr = false;
 			if (need_free == true)
 			{
 				if (sent_value.attr_val_5 != NULL)
@@ -2125,7 +2134,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 		   filterable_data_lg,
 	       ad,
 		   const_cast<string &>(attr_name),
-		   NULL);
+		   NULL,true);
 }
 
 
@@ -2216,7 +2225,8 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventDa
            filterable_data_lg,
            attr_conf,
            attr_name,
-           except);
+           except,
+           true);
 }
 
 //+--------------------------------------------------------------------------------------------------------------
@@ -2284,7 +2294,8 @@ void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,bool dev_
 		   filterable_data_lg,
 	       ad,
 		   att_name,
-		   NULL);
+		   NULL,
+		   true);
 
 //
 // Free memory allocated for the two pointers we receive

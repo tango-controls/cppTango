@@ -5458,11 +5458,11 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 				break;
 
 			case FWD_TOO_OLD_LOCAL_DEVICE:
-				alarm_status = alarm_status + "Local device too old (IDL 4 or less)";
+				alarm_status = alarm_status + "Local device too old (< IDL 5)";
 				break;
 
 			case FWD_TOO_OLD_ROOT_DEVICE:
-				alarm_status = alarm_status + "Root device too old (IDL 4 or less)";
+				alarm_status = alarm_status + "Root device too old (< IDL 5)";
 				break;
 
 			case FWD_DOUBLE_USED:

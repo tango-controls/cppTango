@@ -2734,8 +2734,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		else
             domain_name = device_name + '/' + att_name_lower;
 
-		AttributeValue_4 *av = Tango_nullptr;
-// TODO: Do we need AttributeValue_5 here ????
+		AttributeValue_5 *av_5 = Tango_nullptr;
 		DeviceAttribute *da = Tango_nullptr;
 		FwdEventData *event_data;
 
@@ -2743,10 +2742,10 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		{
 			if (cb.fwd_att == true)
 			{
-				device->read_attribute(attribute.c_str(),av);
-				if (av->err_list.length() != 0)
+				device->read_attribute(attribute.c_str(),av_5);
+				if (av_5->err_list.length() != 0)
 				{
-					err = av->err_list;
+					err = av_5->err_list;
 					err.length(err.length() - 1);
 				}
 			}
@@ -2775,7 +2774,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		{
 			da = new DeviceAttribute();
 			event_data = new FwdEventData(device,domain_name,local_event_name,da,err);
-			event_data->set_av_4(av);
+			event_data->set_av_5(av_5);
 		}
 		else
 		{
@@ -2801,7 +2800,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 
 			delete event_data;
 			if (cb.fwd_att == true)
-				delete [] av;
+				delete [] av_5;
 		}
 
 //
@@ -3131,17 +3130,17 @@ void EventData::set_time()
 #endif
 }
 
-FwdEventData::FwdEventData():EventData(),av_4(Tango_nullptr),event_data(Tango_nullptr)
+FwdEventData::FwdEventData():EventData(),av_5(Tango_nullptr),event_data(Tango_nullptr)
 {
 }
 
 FwdEventData::FwdEventData(DeviceProxy *dev,string &_s1,string &_s2,Tango::DeviceAttribute *_da,DevErrorList &_del) :
-                  EventData(dev,_s1,_s2,_da,_del),av_4(Tango_nullptr),event_data(Tango_nullptr)
+                  EventData(dev,_s1,_s2,_da,_del),av_5(Tango_nullptr),event_data(Tango_nullptr)
 {
 }
 
 FwdEventData::FwdEventData(DeviceProxy *dev,string &_s1,string &_s2,Tango::DeviceAttribute *_da,DevErrorList &_del,zmq::message_t *_m) :
-                  EventData(dev,_s1,_s2,_da,_del),av_4(Tango_nullptr),event_data(_m)
+                  EventData(dev,_s1,_s2,_da,_del),av_5(Tango_nullptr),event_data(_m)
 {
 }
 /************************************************************************/

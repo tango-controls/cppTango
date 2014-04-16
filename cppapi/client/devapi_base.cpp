@@ -4928,6 +4928,63 @@ void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_4 *&av_4)
 	}
 }
 
+void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_5 *&av_5)
+{
+	DevVarStringArray attr_list;
+	int ctr = 0;
+	Tango::DevSource local_source;
+
+	if (version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " is too old to support this call. Please, update to IDL 5 (Tango 9.x or more)";
+		Except::throw_exception(API_NotSupported,ss.str(),"DeviceProxy::read_attribute");
+	}
+
+	attr_list.length(1);
+	attr_list[0] = CORBA::string_dup(attr_str.c_str());
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect(local_source);
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			AttributeValueList_5 *attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			av_5 = attr_value_list_5->get_buffer(true);
+			delete attr_value_list_5;
+
+			ctr = 2;
+		}
+		READ_ATT_EXCEPT(attr_str,this)
+	}
+
+//
+// Add an error in the error stack in case there is one
+//
+
+	long nb_except = av_5->err_list.length();
+	if (nb_except != 0)
+	{
+		TangoSys_OMemStream desc;
+		desc << "Failed to read_attribute on device " << device_name;
+		desc << ", attribute " << attr_str << ends;
+
+		av_5->err_list.length(nb_except + 1);
+		av_5->err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
+		av_5->err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+
+		string st = desc.str();
+		av_5->err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		av_5->err_list[nb_except].severity = Tango::ERR;
+	}
+}
+
 //-----------------------------------------------------------------------------
 //
 // DeviceProxy::write_attributes() - write a list of attributes
