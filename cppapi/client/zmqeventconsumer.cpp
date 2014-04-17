@@ -2009,20 +2009,20 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //
 
             string::size_type pos = ev_name.rfind('.');
+
             string event_name = ev_name.substr(pos + 1);
-            string full_att_name = ev_name.substr(0,pos);
+ 			string::size_type pos1 = event_name.find(EVENT_COMPAT);
+			if (pos1 != string::npos)
+				event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
+
+			string full_att_name = ev_name.substr(0,pos);
             pos = full_att_name.rfind('/');
             string att_name = full_att_name.substr(pos + 1);
 
             UserDataEventType data_type;
 
             if (event_name.find(CONF_TYPE_EVENT) != string::npos)
-			{
 				data_type = ATT_CONF;
-				pos = event_name.find(EVENT_COMPAT);
-				if (pos != string::npos)
-					event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
-			}
             else if (event_name == DATA_READY_TYPE_EVENT)
                 data_type = ATT_READY;
 			else if (event_name == EventName[INTERFACE_CHANGE_EVENT])

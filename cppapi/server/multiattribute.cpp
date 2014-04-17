@@ -579,7 +579,13 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 //		MultiAttribute::check_idl_release
 //
 // description :
-//		Check that the device inherits from IDL 5
+//		Check some featires according to which IDL release the device implement. This could not be done in
+//		DeviceImpl class ctor becasue when the DeviceImpl ctor is executed, it is always IDl release 1
+//		The real supported IDl release number is set during each Device_XImpl ctor which is executed after
+//		DeviceImpl ctor.
+//		Tody, we check :
+//			- Enum attribute with IDL5
+//			- Forwarded attribute with IDl 5
 //
 // argument :
 //		in :
@@ -591,26 +597,55 @@ void MultiAttribute::check_idl_release(DeviceImpl *dev)
 {
 	int idl_version = dev->get_dev_idl_version();
 	size_t nb_attr = attr_list.size();
+	bool vector_cleared = false;
 
 	for (size_t i = 0;i < nb_attr;i++)
 	{
-		if (attr_list[i]->get_data_type() == DEV_ENUM)
-		{
-			if (dev->get_dev_idl_version() < idl_version)
-			{
-				try
-				{
-					stringstream ss;
-					ss << "Attribute " << attr_list[i]->get_name() << " has a DEV_ENUM data type.\n";
-					ss << "This is supported oonly for device inheriting from IDL 5 or more";
 
-					Except::throw_exception(API_NotSupportedFeature,ss.str(),"MultiAttribute::check_idl_release()");
-				}
-				catch (Tango::DevFailed &e)
-				{
-					attr_list[i]->add_startup_exception("enum_labels",e);
-				}
+//
+// Check for enumerated attribute
+//
+
+		if (attr_list[i]->get_data_type() == DEV_ENUM && idl_version < 5)
+		{
+			try
+			{
+				stringstream ss;
+				ss << "Attribute " << attr_list[i]->get_name() << " has a DEV_ENUM data type.\n";
+				ss << "This is supported oonly for device inheriting from IDL 5 or more";
+
+				Except::throw_exception(API_NotSupportedFeature,ss.str(),"MultiAttribute::check_idl_release()");
 			}
+			catch (Tango::DevFailed &e)
+			{
+				attr_list[i]->add_startup_exception("enum_labels",e);
+			}
+		}
+
+//
+// Chek for forwarded attribute
+// If IDL < 5, on top of setting wrongly configured attribute in device, remove the root att from
+// root attribute registry
+//
+
+		if (attr_list[i]->is_fwd_att() == true && idl_version < 5)
+		{
+			vector<DeviceImpl::FwdWrongConf> &fwd_wrong_conf = dev->get_fwd_att_wrong_conf();
+			if (vector_cleared == false)
+			{
+				fwd_wrong_conf.clear();
+				vector_cleared = true;
+			}
+
+			DeviceImpl::FwdWrongConf fwc;
+			fwc.att_name = attr_list[i]->get_name();
+			FwdAttribute *fwd_attr = static_cast<FwdAttribute *>(attr_list[i]);
+			fwc.full_root_att_name = fwd_attr->get_fwd_dev_name() + '/' + fwd_attr->get_fwd_att_name();
+			fwc.fae = FWD_TOO_OLD_LOCAL_DEVICE;
+			fwd_wrong_conf.push_back(fwc);
+
+			RootAttRegistry &fdp = Util::instance()->get_root_att_reg();
+			fdp.remove_root_att(fwd_attr->get_fwd_dev_name(),fwd_attr->get_fwd_att_name());
 		}
 	}
 }

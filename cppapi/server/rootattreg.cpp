@@ -273,10 +273,12 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 		EventSupplier::SuppliedEventData ad;
 		::memset(&ad,0,sizeof(ad));
 
+		string event_name = EVENT_COMPAT_IDL5 + ev->event;
+
 		if (ev->err == true)
 		{
 			DevFailed df(ev->errors);
-			zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df,true);
+			zes->push_event(dev,event_name,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,&df,true);
 		}
 		else
 		{
@@ -297,7 +299,7 @@ void RootAttRegistry::RootAttUserCallBack::push_event(Tango::EventData *ev)
 				else
 					ad.zmq_mess = zmq_mess_ptr;
 
-				zes->push_event(dev,ev->event,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,Tango_nullptr,true);
+				zes->push_event(dev,event_name,dummy_vs,dummy_vd,dummy_vs,dummy_vl,ad,local_att_name,Tango_nullptr,true);
 			}
 		}
 	}

@@ -300,6 +300,7 @@ const char* const API_AsynReplyNotArrived          = "API_AsynReplyNotArrived";
 const char* const API_AttrConfig                   = "API_AttrConfig";
 const char* const API_AttrEventProp                = "API_AttrEventProp";
 const char* const API_AttributeFailed			   = "API_AttributeFailed";
+const char* const API_AttributeNotDataReadyEnabled = "API_AttributeNotDataReadyEnabled";
 const char* const API_AttributePollingNotStarted   = "API_AttributePollingNotStarted";
 const char* const API_AttrIncorrectDataNumber      = "API_AttrIncorrectDataNumber";
 const char* const API_AttrNoAlarm                  = "API_AttrNoAlarm";

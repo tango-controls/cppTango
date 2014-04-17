@@ -273,6 +273,8 @@ public:
 
 //@}
 
+/// @privatesection
+
 private:
     class Device_5ImplExt
     {

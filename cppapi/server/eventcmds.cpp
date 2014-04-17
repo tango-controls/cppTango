@@ -193,6 +193,35 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 		Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
 
 //
+// Refuse subscription on forwarded attribute and notifd
+//
+
+		if (ct == NOTIFD)
+		{
+			if (attribute.is_fwd_att() == true)
+			{
+				stringstream ss;
+				ss << "The attribute " << attr_name << " is a forwarded attribute.";
+				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
+
+				Except::throw_exception(API_NotSupportedFeature,
+										ss.str(),"DServer::event_subscription");
+			}
+		}
+		else
+		{
+			if (attribute.is_fwd_att() == true && client_lib < 5)
+			{
+				stringstream ss;
+				ss << "The attribute " << attr_name << " is a forwarded attribute.";
+				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
+
+				Except::throw_exception(API_NotSupportedFeature,
+										ss.str(),"DServer::event_subscription");
+			}
+		}
+
+//
 // Check if the request comes from a Tango 6 client (without client identification)
 // If true, the event has to be sent using AttributeValue_3 data structure
 // If cl is NULL, this means that the call is local (Two tango classes within the same process and with events between
@@ -255,9 +284,9 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					o << attr_name;
 					o << " is not data ready event enabled" << ends;
 
-					Except::throw_exception((const char*)"API_AttributeNotDataReadyEnabled",
+					Except::throw_exception(API_AttributeNotDataReadyEnabled,
 											o.str(),
-											(const char *)"DServer::event_subscription");
+											"DServer::event_subscription");
 				}
 				cout4 << "DServer::event_subscription(): update data_ready subscription\n";
 

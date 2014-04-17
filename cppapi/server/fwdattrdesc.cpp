@@ -271,7 +271,7 @@ void FwdAttr::get_root_conf(string &dev_name,DeviceImpl *dev)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void FwdAttr::read(TANGO_UNUSED(DeviceImpl *dev),Attribute &attr)
+void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 {
 //
 // Throw exception in case of fwd att wrongly configured or if the root device is not yet accessible
@@ -292,7 +292,18 @@ void FwdAttr::read(TANGO_UNUSED(DeviceImpl *dev),Attribute &attr)
 
 	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
-	DeviceProxy *root_att_dev = rar.get_root_att_dp(fwd_attr.get_fwd_dev_name());
+	DeviceProxy *root_att_dev;
+	try
+	{
+		root_att_dev = rar.get_root_att_dp(fwd_attr.get_fwd_dev_name());
+	}
+	catch (Tango::DevFailed &e)
+	{
+		string desc("Attribute ");
+		desc = desc + name + " is a forwarded attribute.\n";
+		desc = desc + "Check device status to get more info";
+		Tango::Except::re_throw_exception(e,API_AttrConfig,desc,"FwdAttr::read()");
+	}
 
 //
 // Read the ŕoot attribute
@@ -411,7 +422,18 @@ void FwdAttr::write(TANGO_UNUSED(DeviceImpl *dev),WAttribute &attr)
 
 	FwdAttribute &fwd_attr = static_cast<FwdAttribute &>(attr);
 	RootAttRegistry &rar = Util::instance()->get_root_att_reg();
-	DeviceProxy *root_att_dev = rar.get_root_att_dp(fwd_attr.get_fwd_dev_name());
+	DeviceProxy *root_att_dev;
+	try
+	{
+		root_att_dev = rar.get_root_att_dp(fwd_attr.get_fwd_dev_name());
+	}
+	catch (Tango::DevFailed &e)
+	{
+		string desc("Attribute ");
+		desc = desc + name + " is a forwarded attribute.\n";
+		desc = desc + "Check device status to get more info";
+		Tango::Except::re_throw_exception(e,API_AttrConfig,desc,"FwdAttr::write()");
+	}
 
 //
 // Write the ŕoot attribute
