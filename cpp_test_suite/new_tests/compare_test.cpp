@@ -317,6 +317,96 @@ void CmpTst::CompareTest::ref_replace_keywords(string file, map<string,string> k
 
 //+-------------------------------------------------------------------------
 //
+// method :			out_remove_entries
+//
+// description :	
+// argument : in :	- file : output file to be modified
+//					- prop_val_map : 	keys - properties to be modified,
+//										values - new values of the properties
+//
+//--------------------------------------------------------------------------
+void CmpTst::CompareTest::out_remove_entries(string file, vector<string> &v_entries)
+{
+	if(v_entries.empty() == false)
+	{
+		ifstream infile;
+		ofstream outfile;
+
+		infile.open(file.c_str()); // file to be modified
+		if(!infile)
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_remove_entries] Cannot open file: " + file);
+
+		string outfile_name = file + TMP_SUFFIX; // temporary file
+		outfile.open(string(outfile_name).c_str());
+		if(!outfile)
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_remove_entries] Cannot open file for writing: " + outfile_name);
+
+		while(infile)
+		{
+			string line1;
+			getline(infile, line1);
+
+			if (line1.find("<log4j:event ") == string::npos)
+			{
+				outfile << line1;
+				continue;
+			}
+
+			string line2,line3,line4,line5;
+			getline(infile,line2);
+			getline(infile,line3);
+			getline(infile,line4);
+			getline(infile,line5);
+
+			// for each line checks presence of each property
+
+			bool found = false;
+			for(vector<string>::iterator it = v_entries.begin(); it != v_entries.end(); ++it)
+			{
+				if (line2.find(*it) != string::npos)
+				{
+					found = true;
+					break;
+				}
+			}
+
+			if (found == true)
+				continue;
+
+			outfile << line1; // writing lines to the tmp file
+			outfile << endl;
+			outfile << line2;
+			outfile << endl;
+			outfile << line3;
+			outfile << endl;
+			outfile << line4;
+			outfile << endl;
+			outfile << line5;
+
+
+			if(!infile.eof())
+				outfile << endl; // no endl after the last line in the file
+		}
+
+		infile.close();
+		outfile.close();
+		if(infile.bad())
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_remove_entries] Cannot close file: " + file);
+		if(outfile.bad())
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_remove_entries] Cannot close file: " + outfile_name);
+
+		// remove file to swap its content with the tmp file
+		if(remove(file.c_str()) != 0)
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_reemove_entries] Cannot remove file: " + file);
+
+		// rename the tmp file to the name of its original
+		if(rename(string(outfile_name).c_str(), file.c_str()) != 0)
+			throw CmpTst::CompareTestException("[CmpTst::CompareTest::out_remove_entries] Cannot rename file: " + outfile_name);
+	}
+}
+
+//+-------------------------------------------------------------------------
+//
 // method :			compare
 //
 // description :	Compares the output file with the reference file line

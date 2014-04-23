@@ -353,7 +353,7 @@ int main(int argc, char **argv)
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
 		cb.old_sec = cb.old_usec = 0;
-		
+
 		eve_id = device->subscribe_event(att_name,Tango::CHANGE_EVENT,5,filters);
 		int eve_id1 = device->subscribe_event(att_name,Tango::CHANGE_EVENT,5,filters);
 		int eve_id2 = device->subscribe_event(att_name,Tango::CHANGE_EVENT,5,filters);

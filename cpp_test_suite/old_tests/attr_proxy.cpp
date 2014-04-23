@@ -31,11 +31,11 @@ int main(int argc, char **argv)
 	{
 		attr = new AttributeProxy(attribute_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	cout << '\n' << "new AttributeProxy returned" << '\n' << endl;
 
@@ -129,6 +129,10 @@ int main(int argc, char **argv)
 		assert (res_ex.display_unit == s);
 				
 		cout << "   Set config --> OK" << endl;
+
+		res_ex.format = "Not specified";
+		res_ex.display_unit = "Not specified";
+		attr->set_config(res_ex);
 		
 // Test read
 

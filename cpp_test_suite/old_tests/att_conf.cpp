@@ -132,7 +132,6 @@ int main(int argc, char **argv)
 		adm_dev->set_timeout_millis(6000);
 		ddOut = adm_dev->command_inout( "DevRestart", ddIn );
 		Tango_sleep( 5 );
-
 		ai_act = dev->attribute_query( an );
 		res = compare( ai_act, ai_expected );
 		if( res != 0 )

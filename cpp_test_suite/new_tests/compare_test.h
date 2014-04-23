@@ -6,6 +6,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <map>
+#include <vector>
 
 namespace CmpTst
 {
@@ -223,6 +224,8 @@ namespace CmpTst
 		//
 		//--------------------------------------------------------------------------
 		static void print_output(std::string out, bool show_line_numbers);
+
+		static void out_remove_entries(std::string file, std::vector<std::string> &);
 	};
 
 	//=============================================================================

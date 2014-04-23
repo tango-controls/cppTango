@@ -266,6 +266,16 @@ $DIR/data_ready_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
+$echo "\nTesting event from different devices"
+$DIR/multi_dev_event $DEV1 $DEV2 $DEV3
+ret=$?
+check_return_value $ret
+#
+$echo "\nTesting device interface change event"
+$DIR/dev_intr_event $DEV1
+ret=$?
+check_return_value $ret
+#
 $echo "\nTesting device locking and event usage within the same process (memory pb at process exit)"
 $DIR/event_lock $DEV1
 ret=$?

@@ -286,11 +286,18 @@ public:
 	{
 		try
 		{
+			vector<string> v_s;
+			v_s.push_back("push_heartbeat_event()");
+			v_s.push_back("Sending event heartbeat");
+			v_s.push_back("Event heartbeat");
+			v_s.push_back("Sub device property");
+			v_s.push_back("Sleep for :");
+			CmpTst::CompareTest::out_remove_entries(out_file,v_s);
+
 			map<string,string> prop_val_map;
 			prop_val_map["timestamp"] = "10";
 			prop_val_map["thread"] = "1";
 			CmpTst::CompareTest::out_set_event_properties(out_file, prop_val_map);
-
 
 			map<string,string> key_val_map;
 			key_val_map["DEVICE1"] = device1_name;

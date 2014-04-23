@@ -24,12 +24,13 @@ class EventCallBack : public Tango::CallBack
 	void push_event(Tango::EventData*);
 	
 public:
-	int cb_executed;
-	int cb_err;
-	int cb_err_out_of_sync;
-	int a_cb_err;
-	int old_sec,old_usec;
-	int delta_msec;
+	int 					cb_executed;
+	int 					cb_err;
+	int 					cb_err_out_of_sync;
+	int 					a_cb_err;
+	int 					old_sec,old_usec;
+	int 					delta_msec;
+	Tango::AttrDataFormat 	d_format;
 };
 
 void EventCallBack::push_event(Tango::EventData* event_data)
@@ -64,6 +65,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		{
 
 			*(event_data->attr_value) >> value;
+			d_format = event_data->attr_value->get_data_format();
 			coutv << "CallBack value " << value << endl;
 		}
 		else
@@ -158,10 +160,11 @@ int main(int argc, char **argv)
 		cb.a_cb_err = 0;
 		cb.cb_err_out_of_sync = 0;
 		cb.old_sec = cb.old_usec = 0;
+		cb.d_format = Tango::FMT_UNKNOWN;
 		
 		// start the polling first!
 		device->poll_attribute(att_name,500);
-		
+
 		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
 
 //
@@ -202,6 +205,7 @@ int main(int argc, char **argv)
 		assert (cb.delta_msec > 900);
 		assert (cb.delta_msec < 1100);
 		assert (cb.a_cb_err == 0);
+		assert (cb.d_format == SCALAR);
 				
 		cout << "   CallBack executed every 1000 mS --> OK" << endl;
 		
@@ -293,6 +297,7 @@ int main(int argc, char **argv)
 
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
+		cb.d_format = FMT_UNKNOWN;
 		filters.clear();
 				
 		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb,filters);
@@ -321,6 +326,7 @@ int main(int argc, char **argv)
 		assert (cb.cb_executed < 5);
 		assert (cb.delta_msec > 900);
 		assert (cb.delta_msec < 1100);
+		assert (cb.d_format == SCALAR);
 				
 		cout << "   CallBack executed every 1000 mS --> OK" << endl;
 		
