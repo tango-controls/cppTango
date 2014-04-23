@@ -12,6 +12,16 @@ public:
 	int cb_err;
 };
 
+enum _CardinalPoints
+{
+	NORTH = 0,
+	SOUTH,
+	EAST,
+	WEST
+};
+typedef _CardinalPoints	CardinalPoints;
+
+
 #ifndef COMPAT
 class DevTest : public TANGO_BASE_CLASS {
 #else
@@ -136,6 +146,7 @@ public :
 	void read_DefClassUser_attr(Tango::Attribute &att);
 
 	void read_Enum_attr(Tango::Attribute &att);
+	void read_Enum_spec_attr_rw(Tango::Attribute &att);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -192,6 +203,7 @@ public :
 	void write_DefClassUser_attr(Tango::WAttribute &att);
 
 	void write_Enum_attr(Tango::WAttribute &att);
+	void write_Enum_spec_attr_rw(Tango::WAttribute &att);
 
 	virtual void write_attr_hardware(vector<long> &);
 
@@ -290,6 +302,8 @@ protected :
 #endif
 
     Tango::DevLong      att_conf;
+    CardinalPoints		cp;
+    CardinalPoints		cp_array[5];
 };
 
 #endif

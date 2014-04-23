@@ -1075,6 +1075,8 @@ public:
 	{(static_cast<DevTest *>(dev))->write_DefClassUser_attr(att);}
 };
 
+//-------------------------------------------------------------------------------------------------------
+
 class EnumAttr: public Tango::Attr
 {
 public:
@@ -1085,7 +1087,37 @@ public:
 	{(static_cast<DevTest *>(dev))->read_Enum_attr(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_Enum_attr(att);}
+
+	virtual bool same_type(const type_info &in_type) {return typeid(CardinalPoints) == in_type;}
+	virtual string get_enum_type() {return string("CardinalPoints");}
 };
+
+class EnumSpecAttr: public Tango::SpectrumAttr
+{
+public:
+	EnumSpecAttr():SpectrumAttr("Enum_spec_attr_rw",Tango::DEV_ENUM,Tango::READ_WRITE,5) {};
+	~EnumSpecAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_Enum_spec_attr_rw(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_Enum_spec_attr_rw(att);}
+
+	virtual bool same_type(const type_info &in_type) {return typeid(CardinalPoints) == in_type;}
+	virtual string get_enum_type() {return string("CardinalPoints");}
+};
+
+/*class Enum_spec_attr_rwAttr: public Tango::SpectrumAttr
+{
+public:
+	Enum_spec_attr_rwAttr():SpectrumAttr("Enum_spec_attr_rw", Tango::DEV_ENUM,Tango::READ_WRITE, 5) {};
+	~Enum_spec_attr_rwAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_Enum_spec_attr_rw(att);}
+	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
+	{(static_cast<DevTest *>(dev))->write_Enum_spec_attr_rw(att);}
+};*/
 
 // ----------------------------------------------------------------------------
 

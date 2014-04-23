@@ -1148,6 +1148,11 @@ void DevTest::write_Enum_attr(Tango::WAttribute &att)
 	cout << "In write_Enum_attr for attribute " << att.get_name() << endl;
 }
 
+void DevTest::write_Enum_spec_attr_rw(Tango::WAttribute &att)
+{
+	cout << "In write_Enum_spec_attr_rw for attribute " << att.get_name() << endl;
+}
+
 void DevTest::write_attr_hardware(vector<long> &att_idx)
 {
 	switch (wattr_throw)
@@ -1966,4 +1971,15 @@ void DevTest::read_DefClassUser_attr(Tango::Attribute &att)
 void DevTest::read_Enum_attr(Tango::Attribute &att)
 {
 	cout << "[DevTest::read_attr] attribute name EnumAttr" << endl;
+	cp = SOUTH;
+	att.set_value(&cp);
+}
+
+void DevTest::read_Enum_spec_attr_rw(Tango::Attribute &att)
+{
+	cout << "[DevTest::read_attr] attribute name Enum_spec_attr_rw" << endl;
+	cp_array[0] = SOUTH;
+	cp_array[1] = NORTH;
+	cp_array[2] = WEST;
+	att.set_value(cp_array,3);
 }

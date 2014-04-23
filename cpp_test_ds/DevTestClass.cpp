@@ -838,6 +838,10 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   Tango::Attr *en_att = new EnumAttr();
   en_att->set_default_properties(att_enum_prop);
   att_list.push_back(en_att);
+
+  Tango::Attr *en_s_att = new EnumSpecAttr();
+  en_s_att->set_default_properties(att_enum_prop);
+  att_list.push_back(en_s_att);
 }
 
 
