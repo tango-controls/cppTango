@@ -133,6 +133,7 @@ public :
 //------------------ Push event -------------------------------
 
 	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool) = 0;
+	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) = 0;
 	virtual void push_heartbeat_event() = 0;
 
 //------------------- Attribute conf change event ---------------------
@@ -202,6 +203,7 @@ public :
 //------------------ Push event -------------------------------
 
 	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool);
+	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) {}
 
 protected :
 
@@ -276,6 +278,7 @@ public :
 
 	void push_heartbeat_event();
 	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool);
+	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *);
 
 	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	string &get_event_endpoint() {return event_endpoint;}

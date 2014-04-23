@@ -76,7 +76,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
 	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
-
+cout << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
 	Tango::Util *tg = Tango::Util::instance();
 
 //
@@ -116,7 +116,27 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
     string mcast;
     int rate,ivl;
 
-    event_subscription(dev_name,attr_name,action,event,attr_name_lower,NOTIFD,mcast,rate,ivl,NULL);
+//
+// Check if the request comes from a Tango 6 client (without client identification)
+// If true, the event has to be sent using AttributeValue_3 data structure
+// If cl is NULL, this means that the call is local (Two tango classes within the same process and with events between
+// device from class 1 and device from classs 2)
+//
+
+	int client_release = 0;
+	client_addr *cl = get_client_ident();
+
+	if (cl == NULL)
+		client_release = 4;
+	else
+	{
+		if (cl->client_ident == true)
+			client_release = 4;
+		else
+			client_release = 3;
+	}
+
+    event_subscription(dev_name,attr_name,action,event,attr_name_lower,NOTIFD,mcast,rate,ivl,NULL,client_release);
 
 //
 // Init one subscription command flag in Eventsupplier
@@ -159,8 +179,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 //--------------------------------------------------------------------------------------------------------------------
 
 void DServer::event_subscription(string &dev_name,string &attr_name,string &action,string &event,string &attr_name_lower,
-								 ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev,
-								 int client_lib)
+								 ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev,int client_lib)
 {
     Tango::Util *tg = Tango::Util::instance();
 
@@ -218,28 +237,6 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 
 				Except::throw_exception(API_NotSupportedFeature,
 										ss.str(),"DServer::event_subscription");
-			}
-		}
-
-//
-// Check if the request comes from a Tango 6 client (without client identification)
-// If true, the event has to be sent using AttributeValue_3 data structure
-// If cl is NULL, this means that the call is local (Two tango classes within the same process and with events between
-// device from class 1 and device from classs 2)
-//
-
-		if (client_lib == 0)
-		{
-			client_addr *cl = get_client_ident();
-
-			if (cl == NULL)
-				client_lib = 4;
-			else
-			{
-				if (cl->client_ident == true)
-					client_lib = 4;
-				else
-					client_lib = 3;
 			}
 		}
 
@@ -449,6 +446,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					cout4 << "DServer::event_subscription(): update archive subscription\n";
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
+cout << "client_lib = " << client_lib << endl;
 					switch (client_lib)
 					{
 						case 5:
@@ -461,6 +459,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 
 						default:
 						attribute.event_archive3_subscription = time(NULL);
+cout << "Event_archive3_subscription set" << endl;
 						break;
 					}
 				}
@@ -728,6 +727,9 @@ if (argin->length()  == 5)
         transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
         int client_release = 4;
+		if (event == EventName[ATTR_CONF_EVENT])
+			client_release = 3;
+
         if (argin->length() == 5)
         {
 			stringstream ss;
@@ -748,10 +750,28 @@ if (argin->length()  == 5)
 				else
 				{
 					if (event == EventName[ATTR_CONF_EVENT])
-						client_release = 4;
+						client_release = 3;
 					else
 					{
 
+//
+// Check if the request comes from a Tango 6 client (without client identification)
+// If true, the event has to be sent using AttributeValue_3 data structure
+// If cl is NULL, this means that the call is local (Two tango classes within the same process and with events between
+// device from class 1 and device from classs 2)
+//
+
+						client_addr *cl = get_client_ident();
+
+						if (cl == NULL)
+							client_release = 4;
+						else
+						{
+							if (cl->client_ident == true)
+								client_release = 4;
+							else
+								client_release = 3;
+						}
 					}
 				}
 			}
@@ -815,6 +835,9 @@ cout << "Client release = " << client_release << endl;
 				      o.str(),
 				      (const char *)"DServer::zmq_event_subscription_change");
         }
+
+        if (client_release > idl_vers)
+			client_release = idl_vers;
 
 //
 // Call common method (common between old and new command)
@@ -1074,11 +1097,9 @@ for (unsigned int i = 0;i < argin->length();i++)
 		else
 		{
 			if (event == EventName[ATTR_CONF_EVENT])
-				client_lib = 4;
+				client_lib = 3;
 			else
-			{
-
-			}
+				client_lib = 4;		// Command implemented only with Tango 8 -> IDL 4 for event data
 		}
 
 		event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_lib);

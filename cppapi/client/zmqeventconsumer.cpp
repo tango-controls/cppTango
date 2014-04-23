@@ -1913,6 +1913,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
+//	cout << "Received event for " << ev_name << endl;
 
 //
 // Search for entry within the event_callback map using the event name received in the event

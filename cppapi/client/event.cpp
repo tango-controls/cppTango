@@ -1472,8 +1472,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 					o << "Device server for device " << device_name;
 					o << " is too old to generate event in a multi TANGO_HOST environment. Please, use Tango >= 7.1" << ends;
 
-					EventSystemExcept::throw_exception((const char*)"API_DSFailedRegisteringEvent",o.str(),
-                      				(const char*)"EventConsumer::connect_event()");
+					EventSystemExcept::throw_exception(API_DSFailedRegisteringEvent,o.str(),
+                      				"EventConsumer::connect_event()");
 				}
 			}
 		}
@@ -1486,9 +1486,9 @@ int EventConsumer::connect_event(DeviceProxy *device,
         if (reason == API_CommandNotFound)
             throw;
         else
-            EventSystemExcept::re_throw_exception(e,(const char*)"API_DSFailedRegisteringEvent",
-                       				(const char*)"Device server send exception while trying to register event",
-                      				(const char*)"EventConsumer::connect_event()");
+            EventSystemExcept::re_throw_exception(e,API_DSFailedRegisteringEvent,
+                       				"Device server send exception while trying to register event",
+                      				"EventConsumer::connect_event()");
 	}
 
 //

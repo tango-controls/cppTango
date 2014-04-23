@@ -846,9 +846,16 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	CosNotification::StructuredEvent struct_event;
 	string domain_name;
 
-	cout3 << "EventSupplier::push_event(): called for attribute " << attr_name << endl;
+	cout3 << "NotifdEventSupplier::push_event(): called for attribute " << attr_name << endl;
 
-	// get the mutex to synchronize the sending of events
+//
+// If we are called for IDL 5 (AttributeValue_5 or AttributeConfig_5), simply return. IDL 5 is only for ZMQ
+//
+
+	if (attr_value.attr_conf_5 != Tango_nullptr || attr_value.attr_val_5 != Tango_nullptr)
+		return;
+
+// get the mutex to synchronize the sending of events
 	omni_mutex_lock l(push_mutex);
 
 	string loc_attr_name = attr_name;

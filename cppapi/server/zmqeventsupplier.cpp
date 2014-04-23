@@ -1440,4 +1440,97 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 	return ret;
 }
 
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqEventSupplier::push_event_loop()
+//
+// description :
+//		Method to send the event in aloop due to possible different client release (event compatibility)
+//
+// argument :
+//		in :
+//			- device_impl : The device
+//			- event_type : The event type (change, periodic....)
+//			- filterable_names :
+//			- filterable_data :
+//			- attr_value : The attribute value
+//			- att : The attribute object reference
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_type,
+            TANGO_UNUSED(vector<string> &filterable_names),TANGO_UNUSED(vector<double> &filterable_data),
+            TANGO_UNUSED(vector<string> &filterable_names_lg),TANGO_UNUSED(vector<long> &filterable_data_lg),
+            struct SuppliedEventData &attr_value,Attribute &att,DevFailed *except)
+{
+	cout3 << "ZmqEventSupplier::push_event_loop(): called for attribute " << att.get_name() << endl;
+
+	vector<int> &client_libs = att.get_client_lib(event_type);
+	vector<int>::iterator ite;
+	string ev_name = EventName[event_type];
+	bool inc_ctr = true;
+
+	for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		bool need_free = false;
+		bool name_changed = false;
+
+		struct SuppliedEventData sent_value;
+		::memset(&sent_value,0,sizeof(sent_value));
+
+		switch (*ite)
+		{
+			case 5:
+			{
+				convert_att_event_to_5(attr_value,sent_value,need_free,att);
+				ev_name = EVENT_COMPAT_IDL5 + ev_name;
+				name_changed = true;
+			}
+			break;
+
+			case 4:
+			{
+				convert_att_event_to_4(attr_value,sent_value,need_free,att);
+			}
+			break;
+
+			default:
+			{
+				convert_att_event_to_3(attr_value,sent_value,need_free,att);
+			}
+			break;
+		}
+
+		push_event(device_impl,
+			   ev_name,
+			   filterable_names,
+			   filterable_data,
+			   filterable_names_lg,
+			   filterable_data_lg,
+			   sent_value,
+			   att.get_name_lower(),
+			   except,
+			   inc_ctr);
+
+		inc_ctr = false;
+		if (need_free == true)
+		{
+			if (sent_value.attr_val_5 != NULL)
+				delete sent_value.attr_val_5;
+			else if (sent_value.attr_val_4 != NULL)
+				delete sent_value.attr_val_4;
+			else if (sent_value.attr_val_3 != NULL)
+				delete sent_value.attr_val_3;
+			else
+				delete sent_value.attr_val;
+		}
+		if (name_changed == true)
+			ev_name = EventName[event_type];
+	}
+
+}
+
 } /* End of Tango namespace */

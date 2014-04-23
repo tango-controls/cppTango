@@ -1270,11 +1270,11 @@ void PollThread::err_out_of_sync(WorkItem &to_do)
 				vector<long> f_data_lg;
 
 				if (send_event.change == true)
-					event_supplier_zmq->push_event(to_do.dev,"change",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except,false);
+					event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
 				if (send_event.archive == true)
-					event_supplier_zmq->push_event(to_do.dev,"archive",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except,false);
+					event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
 				if (send_event.periodic == true)
-					event_supplier_zmq->push_event(to_do.dev,"periodic",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,&except,false);
+					event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,&except);
 			}
 			else
 				event_supplier_zmq->detect_and_push_events(to_do.dev,ad,&except,to_do.name,(struct timeval *)NULL);
@@ -1621,11 +1621,11 @@ void PollThread::poll_attr(WorkItem &to_do)
                     vector<long> f_data_lg;
 
                     if (send_event.change == true)
-                        event_supplier_zmq->push_event(to_do.dev,"change",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,save_except,false);
+                        event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                     if (send_event.archive == true)
-                        event_supplier_zmq->push_event(to_do.dev,"archive",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,save_except,false);
+                        event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                     if (send_event.periodic == true)
-                        event_supplier_zmq->push_event(to_do.dev,"periodic",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,save_except,false);
+                        event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                 }
                 else
                     event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name,&before_cmd);
@@ -1663,11 +1663,11 @@ void PollThread::poll_attr(WorkItem &to_do)
                     vector<long> f_data_lg;
 
                     if (send_event.change == true)
-                        event_supplier_zmq->push_event(to_do.dev,"change",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,save_except,false);
+                        event_supplier_zmq->push_event_loop(to_do.dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                     if (send_event.periodic == true)
-                        event_supplier_zmq->push_event(to_do.dev,"periodic",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,save_except,false);
+                        event_supplier_zmq->push_event_loop(to_do.dev,PERIODIC_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                     if (send_event.archive == true)
-                        event_supplier_zmq->push_event(to_do.dev,"archive",f_names,f_data,f_names_lg,f_data_lg,ad,to_do.name,save_except,false);
+                        event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,save_except);
                 }
                 else
                     event_supplier_zmq->detect_and_push_events(to_do.dev,ad,save_except,to_do.name,&before_cmd);

@@ -4352,64 +4352,13 @@ void Attribute::fire_change_event(DevFailed *except)
                 {
                     if (send_event == true)
                     {
+
                         vector<string> f_names;
                         vector<double> f_data;
                         vector<string> f_names_lg;
                         vector<long> f_data_lg;
 
-						vector<int> &client_libs = get_client_lib(CHANGE_EVENT);
-						string ev_name = EventName[CHANGE_EVENT];
-						bool inc_ctr = true;
-
-						for (ite = client_libs.begin();ite != client_libs.end();++ite)
-						{
-							bool need_free = false;
-							bool name_changed = false;
-
-							struct EventSupplier::SuppliedEventData sent_value;
-							::memset(&sent_value,0,sizeof(sent_value));
-
-							switch (*ite)
-							{
-								case 5:
-								{
-									event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
-									ev_name = EVENT_COMPAT_IDL5 + ev_name;
-									name_changed = true;
-								}
-								break;
-
-								case 4:
-								{
-									event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
-								}
-								break;
-
-								default:
-								{
-									event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
-								}
-								break;
-							}
-
-							event_supplier_zmq->push_event(dev,ev_name,f_names,f_data,f_names_lg,f_data_lg,
-														   sent_value,name,except,inc_ctr);
-
-							inc_ctr = false;
-							if (need_free == true)
-							{
-								if (sent_value.attr_val_5 != NULL)
-									delete sent_value.attr_val_5;
-								else if (sent_value.attr_val_4 != NULL)
-									delete sent_value.attr_val_4;
-								else if (sent_value.attr_val_3 != NULL)
-									delete sent_value.attr_val_3;
-								else
-									delete sent_value.attr_val;
-							}
-							if (name_changed == true)
-								ev_name = EventName[CHANGE_EVENT];
-						}
+						event_supplier_zmq->push_event_loop(dev,CHANGE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,*this,except);
                     }
                 }
                 else
@@ -4517,60 +4466,7 @@ void Attribute::fire_change_event(DevFailed *except)
 
             if (event_supplier_zmq != NULL)
 			{
-				vector<int> &client_libs = get_client_lib(CHANGE_EVENT);
-				string ev_name = EventName[CHANGE_EVENT];
-				bool inc_ctr = true;
-
-				for (ite = client_libs.begin();ite != client_libs.end();++ite)
-				{
-					bool need_free = false;
-					bool name_changed = false;
-
-					struct EventSupplier::SuppliedEventData sent_value;
-					::memset(&sent_value,0,sizeof(sent_value));
-
-					switch (*ite)
-					{
-						case 5:
-						{
-							event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
-							ev_name = EVENT_COMPAT_IDL5 + ev_name;
-							name_changed = true;
-						}
-						break;
-
-						case 4:
-						{
-							event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
-						}
-						break;
-
-						default:
-						{
-							event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
-						}
-						break;
-					}
-
-					event_supplier_zmq->push_event(dev,ev_name,filterable_names,filterable_data,
-												   filterable_names_lg,filterable_data_lg,
-												   sent_value,name,except,inc_ctr);
-
-					inc_ctr = false;
-					if (need_free == true)
-					{
-						if (sent_value.attr_val_5 != NULL)
-							delete sent_value.attr_val_5;
-						else if (sent_value.attr_val_4 != NULL)
-							delete sent_value.attr_val_4;
-						else if (sent_value.attr_val_3 != NULL)
-							delete sent_value.attr_val_3;
-						else
-							delete sent_value.attr_val;
-					}
-					if (name_changed == true)
-						ev_name = EventName[CHANGE_EVENT];
-				}
+				event_supplier_zmq->push_event_loop(dev,CHANGE_EVENT,filterable_names,filterable_data,filterable_names_lg,filterable_data_lg,ad,*this,except);
 			}
 		}
 
@@ -4888,59 +4784,7 @@ void Attribute::fire_archive_event(DevFailed *except)
                         vector<string> f_names_lg;
                         vector<long> f_data_lg;
 
-						vector<int> &client_libs = get_client_lib(ARCHIVE_EVENT);
-						string ev_name = EventName[ARCHIVE_EVENT];
-						bool inc_ctr = true;
-
-						for (ite = client_libs.begin();ite != client_libs.end();++ite)
-						{
-							bool need_free = false;
-							bool name_changed = false;
-
-							struct EventSupplier::SuppliedEventData sent_value;
-							::memset(&sent_value,0,sizeof(sent_value));
-
-							switch (*ite)
-							{
-								case 5:
-								{
-									event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
-									ev_name = EVENT_COMPAT_IDL5 + ev_name;
-									name_changed = true;
-								}
-								break;
-
-								case 4:
-								{
-									event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
-								}
-								break;
-
-								default:
-								{
-									event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
-								}
-								break;
-							}
-
-							event_supplier_zmq->push_event(dev,ev_name,f_names,f_data,f_names_lg,f_data_lg,
-														   sent_value,name,except,inc_ctr);
-
-							inc_ctr = false;
-							if (need_free == true)
-							{
-								if (sent_value.attr_val_5 != NULL)
-									delete sent_value.attr_val_5;
-								else if (sent_value.attr_val_4 != NULL)
-									delete sent_value.attr_val_4;
-								else if (sent_value.attr_val_3 != NULL)
-									delete sent_value.attr_val_3;
-								else
-									delete sent_value.attr_val;
-							}
-							if (name_changed == true)
-								ev_name = EventName[ARCHIVE_EVENT];
-						}
+						event_supplier_zmq->push_event_loop(dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,*this,except);
                     }
                 }
                 else
@@ -5050,60 +4894,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 
             if (event_supplier_zmq != NULL)
 			{
-				vector<int> &client_libs = get_client_lib(ARCHIVE_EVENT);
-				string ev_name = EventName[ARCHIVE_EVENT];
-				bool inc_ctr = true;
-
-				for (ite = client_libs.begin();ite != client_libs.end();++ite)
-				{
-					bool need_free = false;
-					bool name_changed = false;
-
-					struct EventSupplier::SuppliedEventData sent_value;
-					::memset(&sent_value,0,sizeof(sent_value));
-
-					switch (*ite)
-					{
-						case 5:
-						{
-							event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
-							ev_name = EVENT_COMPAT_IDL5 + ev_name;
-							name_changed = true;
-						}
-						break;
-
-						case 4:
-						{
-							event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
-						}
-						break;
-
-						default:
-						{
-							event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
-						}
-						break;
-					}
-
-					event_supplier_zmq->push_event(dev,ev_name,filterable_names,filterable_data,
-												   filterable_names_lg,filterable_data_lg,
-												   sent_value,name,except,inc_ctr);
-
-					inc_ctr = false;
-					if (need_free == true)
-					{
-						if (sent_value.attr_val_5 != NULL)
-							delete sent_value.attr_val_5;
-						else if (sent_value.attr_val_4 != NULL)
-							delete sent_value.attr_val_4;
-						else if (sent_value.attr_val_3 != NULL)
-							delete sent_value.attr_val_3;
-						else
-							delete sent_value.attr_val;
-					}
-					if (name_changed == true)
-						ev_name = EventName[ARCHIVE_EVENT];
-				}
+				event_supplier_zmq->push_event_loop(dev,ARCHIVE_EVENT,filterable_names,filterable_data,filterable_names_lg,filterable_data_lg,ad,*this,except);
 			}
 		}
 
@@ -5368,61 +5159,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					   false);
         if (event_supplier_zmq != NULL)
 		{
-			vector<int> &client_libs = get_client_lib(USER_EVENT);
-			vector<int>::iterator ite;
-			string ev_name = EventName[USER_EVENT];
-			bool inc_ctr = true;
-
-			for (ite = client_libs.begin();ite != client_libs.end();++ite)
-			{
-				bool need_free = false;
-				bool name_changed = false;
-
-				struct EventSupplier::SuppliedEventData sent_value;
-				::memset(&sent_value,0,sizeof(sent_value));
-
-				switch (*ite)
-				{
-					case 5:
-					{
-						event_supplier_zmq->convert_att_event_to_5(ad,sent_value,need_free,*this);
-						ev_name = EVENT_COMPAT_IDL5 + ev_name;
-						name_changed = true;
-					}
-					break;
-
-					case 4:
-					{
-						event_supplier_zmq->convert_att_event_to_4(ad,sent_value,need_free,*this);
-					}
-					break;
-
-					default:
-					{
-						event_supplier_zmq->convert_att_event_to_3(ad,sent_value,need_free,*this);
-					}
-					break;
-				}
-
-				event_supplier_zmq->push_event(dev,ev_name,filt_names,filt_vals,
-												   filterable_names_lg,filterable_data_lg,
-												   sent_value,name,except,inc_ctr);
-
-				inc_ctr = false;
-				if (need_free == true)
-				{
-					if (sent_value.attr_val_5 != NULL)
-						delete sent_value.attr_val_5;
-					else if (sent_value.attr_val_4 != NULL)
-						delete sent_value.attr_val_4;
-					else if (sent_value.attr_val_3 != NULL)
-						delete sent_value.attr_val_3;
-					else
-						delete sent_value.attr_val;
-				}
-				if (name_changed == true)
-					ev_name = EventName[USER_EVENT];
-			}
+			event_supplier_zmq->push_event_loop(dev,USER_EVENT,filt_names,filt_vals,filterable_names_lg,filterable_data_lg,ad,*this,except);
 		}
 
 		if (send_attr_5 != Tango_nullptr)

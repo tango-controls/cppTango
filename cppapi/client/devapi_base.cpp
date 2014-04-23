@@ -5795,10 +5795,10 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 vector<string> *DeviceProxy::get_attribute_list()
 {
 	vector<string> all_attr;
-	AttributeInfoList * all_attr_config;
+	AttributeInfoListEx * all_attr_config;
 
 	all_attr.push_back(AllAttr_3);
-	all_attr_config = get_attribute_config(all_attr);
+	all_attr_config = get_attribute_config_ex(all_attr);
 
 	vector<string> *attr_list = new vector<string>;
 	attr_list->resize(all_attr_config->size());

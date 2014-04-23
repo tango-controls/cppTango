@@ -353,6 +353,7 @@ const char* const API_DeviceNotPolled              = "API_DeviceNotPolled";
 const char* const API_DeviceUnlockable             = "API_DeviceUnlockable";
 const char* const API_DeviceUnlocked               = "API_DeviceUnlocked";
 const char* const API_DServerClassNotInitialised   = "API_DServerClassNotInitialised";
+const char* const API_DSFailedRegisteringEvent	   = "API_DSFailedRegisteringEvent";
 const char* const API_EmptyDeviceAttribute		   = "API_EmptyDeviceAttribute";
 const char* const API_EventPropertiesNotSet        = "API_EventPropertiesNotSet";
 const char* const API_EventQueues                  = "API_EventQueues";

@@ -128,6 +128,7 @@ PollRing::~PollRing()
 		delete ring[i].attr_value;
 		delete ring[i].attr_value_3;
 		delete ring[i].attr_value_4;
+		delete ring[i].attr_value_5;
 	}
 }
 

@@ -2370,6 +2370,16 @@ protected:
     LastAttrValue		prev_change_event;				// Last change attribute
     LastAttrValue		prev_quality_event;				// Last quality attribute
     LastAttrValue		prev_archive_event;				// Last archive attribute
+
+/*    time_t				nd_event_change3_subscription;	// Last time() a subscription was made
+    time_t				nd_event_change4_subscription;
+    time_t				nd_event_periodic3_subscription;// Last time() a subscription was made
+    time_t				nd_event_periodic4_subscription;
+    time_t				nd_event_archive3_subscription; // Last time() a subscription was made
+    time_t				nd_event_archive4_subscription;
+	time_t				nd_event_user3_subscription; 	// Last time() a subscription was made
+    time_t				nd_event_user4_subscription;*/
+
     time_t				event_change3_subscription;		// Last time() a subscription was made
     time_t				event_change4_subscription;
 	time_t				event_change5_subscription;
@@ -2386,6 +2396,7 @@ protected:
     time_t				event_attr_conf_subscription;	// Last time() a subscription was made
     time_t				event_attr_conf5_subscription;	// Last time() a subscription was made
     time_t				event_data_ready_subscription;	// Last time() a subscription was made
+
     double				archive_last_event;				// Last time an archive event was detected (periodic or not)
     long				idx_in_attr;					// Index in MultiClassAttribute vector
     string				d_name;							// The device name

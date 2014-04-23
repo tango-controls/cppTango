@@ -494,7 +494,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 
     if (attr_value.attr_val_5 != NULL)
         the_quality = attr_value.attr_val_5->quality;
-    else if (attr_value.attr_val_4 == NULL)
+    else if (attr_value.attr_val_4 != NULL)
         the_quality = attr_value.attr_val_4->quality;
     else if (attr_value.attr_val_3 != NULL)
         the_quality = attr_value.attr_val_3->quality;
@@ -947,7 +947,7 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 					delete sent_value.attr_val;
 			}
 			if (name_changed == true)
-				ev_name = EventName[CHANGE_EVENT];
+				ev_name = EventName[PERIODIC_EVENT];
 		}
         ret = true;
 	}
