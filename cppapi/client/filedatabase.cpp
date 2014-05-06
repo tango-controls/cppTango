@@ -451,7 +451,13 @@ string FileDatabase:: read_full_word(ifstream& f)
   		read_char(f);
   		while( CurrentChar!='"' && CurrentChar!=0 && CurrentChar!='\n')
 		{
-			ret_word += CurrentChar;
+			if (CurrentChar=='\\')
+			{
+				read_char(f);
+				ret_word += CurrentChar;
+			}
+			else
+				ret_word += CurrentChar;
 			read_char(f);
   		}
   		if( CurrentChar==0 || CurrentChar=='\n')
@@ -596,20 +602,21 @@ std::string FileDatabase::parse_res_file(const std::string &file_name)
          	case _TG_STRING:
 
 /* Domain */
-           		domain=word;
+				domain=word;
            		word=read_word(f);
-			lex=class_lex(word);
+				lex=class_lex(word);
+
 			//cout << "DOMAIN " << domain << endl;;
            		CHECK_LEX(lex,_TG_SLASH);
 
 /* Family */
            		word=read_word(f);
-			lex=class_lex(word);
+				lex=class_lex(word);
            		CHECK_LEX(lex,_TG_STRING);
            		family=word;
 			//cout << "FAMILI " << family << endl;
            		word=read_word(f);
-			lex=class_lex(word);
+				lex=class_lex(word);
 
 	   		switch(lex)
 			{
@@ -993,7 +1000,9 @@ void  FileDatabase :: write_file()
 				{
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"" ;
-					f << (*iterator_s);
+					string str = (*iterator_s);
+					escape_double_quote(str);
+					f << str;
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"";
 				}
@@ -1004,7 +1013,9 @@ void  FileDatabase :: write_file()
 					f << margin_s;
 					if (its->find(' ', 0)!=string::npos)
 						f << "\"" ;
-					f << (*its);
+					string str = (*its);
+					escape_double_quote(str);
+					f << str;
 					if (its->find(' ', 0)!=string::npos)
 						f << "\"";
 				}
@@ -1025,7 +1036,9 @@ void  FileDatabase :: write_file()
 				{
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"" ;
-					f << (*iterator_s);
+					string str = (*iterator_s);
+					escape_double_quote(str);
+					f << str;
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"";
 					++iterator_s;
@@ -1036,7 +1049,9 @@ void  FileDatabase :: write_file()
 						f << margin_s;
 						if (its->find(' ', 0)!=string::npos)
 							f << "\"" ;
-						f << (*its);
+						string str = (*its);
+						escape_double_quote(str);
+						f << str;
 						if (its->find(' ', 0)!=string::npos)
 							f << "\"";
 					}
@@ -1060,7 +1075,9 @@ void  FileDatabase :: write_file()
 				int margin = (*ite)->name.size() + 1 + (*itp)->name.size() + 2;
 				if (iterator_s->find(' ', 0)!=string::npos)
 					f << "\"" ;
-				f << (*iterator_s);
+				string str = (*iterator_s);
+				escape_double_quote(str);
+				f << str;
 				if (iterator_s->find(' ', 0)!=string::npos)
 					f << "\"";
 				++iterator_s;
@@ -1071,7 +1088,9 @@ void  FileDatabase :: write_file()
 					f << margin_s;
 					if (its->find(' ', 0)!=string::npos)
 						f << "\"" ;
-					f << (*its);
+					string str = (*its);
+					escape_double_quote(str);
+					f << str;
 					if (its->find(' ', 0)!=string::npos)
 						f << "\"";
 				}
@@ -1091,7 +1110,9 @@ void  FileDatabase :: write_file()
 				{
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"" ;
-					f << (*iterator_s);
+					string str = (*iterator_s);
+					escape_double_quote(str);
+					f << str;
 					if (iterator_s->find(' ', 0)!=string::npos)
 						f << "\"";
 					++iterator_s;
@@ -1102,7 +1123,9 @@ void  FileDatabase :: write_file()
 						f << margin_s;
 						if (its->find(' ', 0)!=string::npos)
 							f << "\"" ;
-						f << (*its);
+						string str = (*its);
+						escape_double_quote(str);
+						f << str;
 						if (its->find(' ', 0)!=string::npos)
 							f << "\"";
 					}
@@ -1116,6 +1139,20 @@ void  FileDatabase :: write_file()
 	f.close();
 }
 
+void FileDatabase::escape_double_quote(string &_str)
+{
+	int co = count(_str.begin(),_str.end(),'"');
+	if (co != 0)
+	{
+		string::size_type start = 0;
+		for (int i = 0;i < co;i++)
+		{
+			string::size_type pos = _str.find('"',start);
+			_str.insert(pos,1,'\\');
+			start = pos + 2;
+		}
+	}
+}
 
 CORBA::Any*   FileDatabase :: DbGetDeviceProperty(CORBA::Any& send)
 {
@@ -1646,8 +1683,8 @@ CORBA::Any*   FileDatabase :: DbPutClassProperty(CORBA::Any& send)
 	cout4 << "FILEDATABASE: entering DbPutClassProperty" << endl;
 
 	send >>= data_in;
-	//for(unsigned int n = 0; n < data_in->length(); n++)
-	//	cout << string((*data_in)[n]) << endl;
+//	for(unsigned int n = 0; n < data_in->length(); n++)
+//		cout << "DbPutProperty : " << string((*data_in)[n]) << endl;
 
 	if ((*data_in).length() > 1)
 	{
