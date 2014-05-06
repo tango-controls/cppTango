@@ -1197,6 +1197,10 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 		conn_params.event_id = subscribe_event_id;
 
 		event_not_connected.push_back (conn_params);
+
+		vector<EventNotConnected>::iterator vpos = event_not_connected.end() - 1;
+		time_t now = time(NULL);
+		keep_alive_thread->stateless_subscription_failed(vpos,e,now);
 		return subscribe_event_id;
 	}
 }

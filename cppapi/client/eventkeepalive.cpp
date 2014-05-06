@@ -1618,6 +1618,7 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
     if ((vpos->event_name == "change") ||
         (vpos->event_name == "quality") ||
         (vpos->event_name == "archive") ||
+		(vpos->event_name == "periodic") ||
         (vpos->event_name == "user_event"))
     {
 
