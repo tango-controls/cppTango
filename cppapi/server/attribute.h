@@ -2244,6 +2244,8 @@ public:
 	void add_config_5_specific(AttributeConfig_5 &);
 	void add_startup_exception(string,const DevFailed &);
 
+	void fire_error_periodic_event(DevFailed *);
+
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,Attribute &);
 #endif // TANGO_HAS_LOG4TANGO
@@ -2370,15 +2372,6 @@ protected:
     LastAttrValue		prev_change_event;				// Last change attribute
     LastAttrValue		prev_quality_event;				// Last quality attribute
     LastAttrValue		prev_archive_event;				// Last archive attribute
-
-/*    time_t				nd_event_change3_subscription;	// Last time() a subscription was made
-    time_t				nd_event_change4_subscription;
-    time_t				nd_event_periodic3_subscription;// Last time() a subscription was made
-    time_t				nd_event_periodic4_subscription;
-    time_t				nd_event_archive3_subscription; // Last time() a subscription was made
-    time_t				nd_event_archive4_subscription;
-	time_t				nd_event_user3_subscription; 	// Last time() a subscription was made
-    time_t				nd_event_user4_subscription;*/
 
     time_t				event_change3_subscription;		// Last time() a subscription was made
     time_t				event_change4_subscription;

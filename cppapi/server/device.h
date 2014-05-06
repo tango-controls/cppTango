@@ -1632,7 +1632,7 @@ public:
 	void set_archive_event  (string attr_name, bool implemented, bool detect = true);
 
 /**
- * Push an archive event for a state or status attribute or return an exception as archive
+ * Push an archive event for state or status attribute or push an exception as archive
  * event for any attribute.
  * The event is pushed to the event system.
  *

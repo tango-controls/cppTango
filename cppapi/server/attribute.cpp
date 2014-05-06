@@ -5212,6 +5212,117 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 	}
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Attribute::fire_error_periodic_event
+//
+// description :
+//		Fire a periodic event with error set. This is used when attribute polling is stopped
+//
+// arguments:
+// 		in :
+//			- except : Pointer to a DevFailed exception to fire in case of an error to indicate.
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Attribute::fire_error_periodic_event(DevFailed *except)
+{
+	cout4 << "Attribute::fire_error_periodic_event() entring ..." << endl;
+
+//
+// Check if it is needed to send an event
+//
+
+	time_t now;
+	time_t periodic3_subscription,periodic4_subscription,periodic5_subscription;
+
+	now = time(NULL);
+
+	periodic3_subscription = now - event_periodic3_subscription;
+	periodic4_subscription = now - event_periodic4_subscription;
+	periodic5_subscription = now - event_periodic5_subscription;
+
+	vector<int> client_libs = get_client_lib(PERIODIC_EVENT); 	// We want a copy
+
+	vector<int>::iterator ite;
+	for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				remove_client_lib(5,string(EventName[PERIODIC_EVENT]));
+			break;
+
+			case 4:
+			if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				remove_client_lib(4,string(EventName[PERIODIC_EVENT]));
+			break;
+
+			default:
+			if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				remove_client_lib(3,string(EventName[PERIODIC_EVENT]));
+			break;
+		}
+	}
+
+//
+// Get the event supplier, and simply return if not created
+//
+
+	EventSupplier *event_supplier_nd = NULL;
+	EventSupplier *event_supplier_zmq = NULL;
+
+	Tango::Util *tg = Util::instance();
+	if (use_notifd_event() == true)
+		event_supplier_nd = tg->get_notifd_event_supplier();
+	if (use_zmq_event() == true)
+		event_supplier_zmq = tg->get_zmq_event_supplier();
+
+	if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.size() == 0)
+	{
+		return;
+	}
+
+//
+// Retrieve device object if not already done
+//
+
+	if (dev == NULL)
+		dev = tg->get_device_by_name(d_name);
+
+//
+// Create the structure used to send data to event system
+//
+
+	EventSupplier::SuppliedEventData ad;
+	::memset(&ad,0,sizeof(ad));
+
+//
+// Fire event
+//
+
+	vector<string> filterable_names_lg,filt_names;
+	vector<long> filterable_data_lg;
+	vector<double> filt_vals;
+
+	if (event_supplier_nd != NULL)
+		event_supplier_nd->push_event(dev,
+				   "periodic_event",
+				   filt_names,
+				   filt_vals,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   ad,
+				   name,
+				   except,
+				   false);
+	if (event_supplier_zmq != NULL)
+	{
+		event_supplier_zmq->push_event_loop(dev,PERIODIC_EVENT,filt_names,filt_vals,filterable_names_lg,filterable_data_lg,ad,*this,except);
+	}
+}
 
 //+-------------------------------------------------------------------------
 //

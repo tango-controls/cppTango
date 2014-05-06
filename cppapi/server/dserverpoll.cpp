@@ -1652,6 +1652,32 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			tg->get_dserver_device()->get_db_device()->put_property(send_data);
 		}
 	}
+
+//
+// In case there are some subscribers for event on this attribute relying on polling, fire event with error
+//
+
+	if (type == POLL_ATTR)
+	{
+		Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
+
+		DevFailed ex;
+		ex.errors.length(1);
+
+		ex.errors[0].severity = ERR;
+		ex.errors[0].reason = CORBA::string_dup(API_PollObjNotFound);
+		ex.errors[0].origin = CORBA::string_dup("DServer::rem_obj_polling");
+		stringstream ss;
+		ss << "No event possible on attribute " << obj_name << ". Polling has just being stopped!";
+		ex.errors[0].desc = CORBA::string_dup(ss.str().c_str());
+
+		if (att.periodic_event_subscribed() == true)
+			att.fire_error_periodic_event(&ex);
+		if (att.archive_event_subscribed() == true && att.is_archive_event() == false)
+			dev->push_archive_event(obj_name,&ex);
+		if (att.change_event_subscribed() == true && att.is_change_event() == false)
+			dev->push_change_event(obj_name,&ex);
+	}
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
