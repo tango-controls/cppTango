@@ -97,7 +97,7 @@ typedef struct _DevCommandInfo
 {
 	string 		cmd_name;           ///< Command name
 	long 		cmd_tag;            ///< Command tag
-	long 		in_type;            ///< Input parameter date type
+	long 		in_type;            ///< Input parameter data type
 	long 		out_type;           ///< Output parameter data type
 	string 		in_type_desc;       ///< Input parameter description
 	string 		out_type_desc;      ///< Ouptput parameter description
@@ -123,7 +123,8 @@ typedef struct _CommandInfo : public DevCommandInfo
 {
 	Tango::DispLevel disp_level;    ///< Command display level
 
-///@privatesection
+/// @privatesection
+	friend ostream &operator<<(ostream &,_CommandInfo &);
 	bool operator==(const _CommandInfo &);
 }CommandInfo;
 

@@ -364,6 +364,38 @@ public :
  */
 	virtual CommandInfoList *command_list_query();
 /**
+ * Query all commands name
+ *
+ * Return the names of all commands implemented for this device as a vector of strings. This method allocates
+ * memory for the vector of strings returned to the caller. It is the caller responsibility to delete this memory.
+ *
+ * @return A vector of string with one string per command
+ * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
+ */
+	virtual vector<string> *get_command_list();
+/**
+ * Get command information for a single command
+ *
+ * Return the command information for a single command.
+ *
+ * @param [in] cmd_name Command name
+ * @return The command information
+ * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
+ */
+	virtual CommandInfo get_command_config(const string &cmd_name) {return command_query(cmd_name);}
+/**
+ * Get information for a set of commands
+ *
+ * Return command information for the list of specified commands. This method allocates memory for the vector of
+ * CommandInfo returned to the caller. It is the caller responsibility to delete this memory.
+ *
+ * @param [in] cmd_names Command name list
+ * @return A vector of CommadnInfo srtuctures with one element per command
+ * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
+ */
+	virtual CommandInfoList *get_command_config(vector<string> &cmd_names);
+
+/**
  * Retrieve command history from polling buffer.
  *
  * Retrieve command history from the command polling buffer. The first argument is the command name.

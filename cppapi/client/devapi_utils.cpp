@@ -561,6 +561,22 @@ bool _CommandInfo::operator==(const _CommandInfo &ci)
 	return _DevCommandInfo::operator==(ci) && disp_level == ci.disp_level;
 }
 
+ostream &operator<<(ostream &o_str,_CommandInfo &ci)
+{
+	o_str << "Command name = " << ci.cmd_name << endl;
+
+	o_str << "Command input parameter data type = Tango::" << CmdArgTypeName[ci.in_type] << endl;
+	if (ci.in_type_desc.empty() == false)
+		o_str << "Command input parameter description = " << ci.in_type_desc << endl;
+
+	o_str << "Command output parameter data type = Tango::" << CmdArgTypeName[ci.out_type] << endl;
+	if (ci.out_type_desc.empty() == false)
+		o_str << "Command output parameter description = " << ci.out_type_desc;
+
+	return o_str;
+}
+
+
 bool _DeviceAttributeConfig::operator==(const _DeviceAttributeConfig &dac)
 {
 	  return name == dac.name &&

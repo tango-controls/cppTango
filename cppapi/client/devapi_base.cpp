@@ -3145,11 +3145,41 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		}
 	}
 
-
-
 	return(command_info);
 }
 
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_command_config() - return the command info for a set of commands
+//
+//-----------------------------------------------------------------------------
+
+CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
+{
+	CommandInfoList *all_cmds = command_list_query();
+
+	CommandInfoList *ret_cmds = new CommandInfoList;
+	vector<string>::iterator ite;
+	for (ite = cmd_names.begin();ite != cmd_names.end();++ite)
+	{
+		string w_str(*ite);
+		transform(w_str.begin(),w_str.end(),w_str.begin(),::tolower);
+
+		vector<CommandInfo>::iterator pos;
+		for (pos = all_cmds->begin();pos != all_cmds->end();++pos)
+		{
+			string lower_cmd(pos->cmd_name);
+			transform(lower_cmd.begin(),lower_cmd.end(),lower_cmd.begin(),::tolower);
+			if (w_str == lower_cmd)
+			{
+				ret_cmds->push_back(*pos);
+				break;
+			}
+		}
+	}
+
+	return ret_cmds;
+}
 
 //-----------------------------------------------------------------------------
 //
@@ -3261,9 +3291,30 @@ CommandInfoList *DeviceProxy::command_list_query()
 		}
 	}
 
-
-
 	return(command_info_list);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_command_list() - return the list of commands implemented for this TANGO device (only names)
+//
+//-----------------------------------------------------------------------------
+
+vector<string> *DeviceProxy::get_command_list()
+{
+	CommandInfoList *all_cmd_config;
+
+	all_cmd_config = command_list_query();
+
+	vector<string> *cmd_list = new vector<string>;
+	cmd_list->resize(all_cmd_config->size());
+	for (unsigned int i=0; i<all_cmd_config->size(); i++)
+	{
+		(*cmd_list)[i] = (*all_cmd_config)[i].cmd_name;
+	}
+	delete all_cmd_config;
+
+	return cmd_list;
 }
 
 //-----------------------------------------------------------------------------
