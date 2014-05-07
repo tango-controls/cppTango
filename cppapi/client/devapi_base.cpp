@@ -6123,13 +6123,21 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 
 	vector<DeviceAttributeHistory> *ddh = new vector<DeviceAttributeHistory>;
 
-	if (version == 2)
+	if (version > 4)
 	{
-		ddh->reserve(hist->length());
-		for (unsigned int i = 0;i < hist->length();i++)
-		{
-			ddh->push_back(DeviceAttributeHistory(i,hist));
-		}
+		ddh->reserve(hist_5->dates.length());
+		for (unsigned int i = 0;i < hist_5->dates.length();i++)
+			ddh->push_back(DeviceAttributeHistory());
+		from_hist_2_AttHistory(hist_5,ddh);
+		for (unsigned int i = 0;i < hist_5->dates.length();i++)
+			(*ddh)[i].data_type = hist_5->data_type;
+	}
+	else if (version == 4)
+	{
+		ddh->reserve(hist_4->dates.length());
+		for (unsigned int i = 0;i < hist_4->dates.length();i++)
+			ddh->push_back(DeviceAttributeHistory());
+		from_hist_2_AttHistory(hist_4,ddh);
 	}
 	else if (version == 3)
 	{
@@ -6139,19 +6147,13 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 			ddh->push_back(DeviceAttributeHistory(i,hist_3));
 		}
 	}
-	else if (version == 4)
-	{
-		ddh->reserve(hist_4->dates.length());
-		for (unsigned int i = 0;i < hist_4->dates.length();i++)
-			ddh->push_back(DeviceAttributeHistory());
-		from_hist_2_AttHistory(hist_4,ddh);
-	}
 	else
 	{
-		ddh->reserve(hist_5->dates.length());
-		for (unsigned int i = 0;i < hist_5->dates.length();i++)
-			ddh->push_back(DeviceAttributeHistory());
-		from_hist_2_AttHistory(hist_5,ddh);
+		ddh->reserve(hist->length());
+		for (unsigned int i = 0;i < hist->length();i++)
+		{
+			ddh->push_back(DeviceAttributeHistory(i,hist));
+		}
 	}
 
 	return ddh;

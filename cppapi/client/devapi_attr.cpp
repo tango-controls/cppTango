@@ -6312,21 +6312,27 @@ ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 		switch (da.data_format)
 		{
 		case Tango::SCALAR:
-			o_str << "SCALAR)" << endl;
+			o_str << "SCALAR, ";
 			break;
 
 		case Tango::SPECTRUM:
-			o_str << "SPECTRUM)" << endl;
+			o_str << "SPECTRUM, ";
 			break;
 
 		case Tango::IMAGE:
-			o_str << "IMAGE)" << endl;
+			o_str << "IMAGE, ";
 			break;
 
 		case Tango::FMT_UNKNOWN:
-			o_str << "UNKNOWN)" << endl;
+			o_str << "UNKNOWN, ";
 			break;
 		}
+
+//
+// Print data type
+//
+
+		o_str << "Data type = " << CmdArgTypeName[da.get_type()] << ")" << endl;
 
 //
 // Print data (if valid)

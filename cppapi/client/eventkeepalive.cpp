@@ -1271,12 +1271,16 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 
 		vector<EventSubscribeStruct>:: iterator esspos;
 
-		if ((epos->second.event_name == "change") ||
-			 (epos->second.event_name == "quality") ||
-			 (epos->second.event_name == "archive") ||
-			 (epos->second.event_name == "user_event"))
-		{
+		string ev_name(epos->second.event_name);
+		string::size_type pos = ev_name.find(EVENT_COMPAT);
+		if (pos != string::npos)
+			ev_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
+		if ((ev_name == "change") ||
+			 (ev_name == "quality") ||
+			 (ev_name == "archive") ||
+			 (ev_name == "user_event"))
+		{
 //
 // For attribute data event
 //
