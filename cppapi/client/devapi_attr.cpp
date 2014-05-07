@@ -74,6 +74,7 @@ DeviceAttribute::DeviceAttribute():ext(new DeviceAttributeExt)
 	time.tv_nsec = 0;
 	quality = Tango::ATTR_INVALID;
 	data_format = Tango::FMT_UNKNOWN;
+	data_type = Tango::DATA_TYPE_UNKNOWN;
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
@@ -95,6 +96,7 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 	w_dim_y = source.w_dim_y;
 	quality = source.quality;
 	data_format = source.data_format;
+	data_type = source.data_type;
 	time = source.time;
 	err_list = source.err_list;
 
@@ -179,6 +181,7 @@ DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
 	w_dim_y = source.w_dim_y;
 	quality = source.quality;
 	data_format = source.data_format;
+	data_type = source.data_type;
 	time = source.time;
 	err_list = source.err_list;
 
@@ -227,6 +230,7 @@ void DeviceAttribute::deep_copy(const DeviceAttribute & source)
 	w_dim_y = source.w_dim_y;
 	quality = source.quality;
 	data_format = source.data_format;
+	data_type = source.data_type;
 	time = source.time;
 	err_list = source.err_list;
 
@@ -325,6 +329,7 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
         w_dim_y = rval.w_dim_y;
         quality = rval.quality;
         data_format = rval.data_format;
+        data_type = rval.data_type;
         time = rval.time;
         err_list = rval.err_list;
 
@@ -454,6 +459,7 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 	w_dim_y = rval.w_dim_y;
 	quality = rval.quality;
 	data_format = rval.data_format;
+	data_type = rval.data_type;
 	time = rval.time;
 	err_list = rval.err_list;
 
@@ -2052,43 +2058,45 @@ bool DeviceAttribute::is_empty()
 
 int DeviceAttribute::get_type()
 {
-	int data_type;
+	int da_type;
 
 	if (is_empty() == true)
 		return -1;
 	else
 	{
 		if (LongSeq.operator->() != NULL)
-			data_type = Tango::DEV_LONG;
+			da_type = Tango::DEV_LONG;
 		else if (ShortSeq.operator->() != NULL)
-			data_type = Tango::DEV_SHORT;
+		{
+			da_type = data_type;
+		}
 		else if (DoubleSeq.operator->() != NULL)
-			data_type = Tango::DEV_DOUBLE;
+			da_type = Tango::DEV_DOUBLE;
 		else if (FloatSeq.operator->() != NULL)
-			data_type = Tango::DEV_FLOAT;
+			da_type = Tango::DEV_FLOAT;
 		else if (BooleanSeq.operator->() != NULL)
-			data_type = Tango::DEV_BOOLEAN;
+			da_type = Tango::DEV_BOOLEAN;
 		else if (UShortSeq.operator->() != NULL)
-			data_type = Tango::DEV_USHORT;
+			da_type = Tango::DEV_USHORT;
 		else if (UCharSeq.operator->() != NULL)
-			data_type = Tango::DEV_UCHAR;
+			da_type = Tango::DEV_UCHAR;
 		else if (StringSeq.operator->() != NULL)
-			data_type = Tango::DEV_STRING;
+			da_type = Tango::DEV_STRING;
 		else if (Long64Seq.operator->() != NULL)
-			data_type = Tango::DEV_LONG64;
+			da_type = Tango::DEV_LONG64;
 		else if (ULongSeq.operator->() != NULL)
-			data_type = Tango::DEV_ULONG;
+			da_type = Tango::DEV_ULONG;
 		else if (ULong64Seq.operator->() != NULL)
-			data_type = Tango::DEV_ULONG64;
+			da_type = Tango::DEV_ULONG64;
 		else if (EncodedSeq.operator->() != NULL)
-			data_type = Tango::DEV_ENCODED;
+			da_type = Tango::DEV_ENCODED;
 		else if ((StateSeq.operator->() != NULL) || (d_state_filled == true))
-			data_type = Tango::DEV_STATE;
+			da_type = Tango::DEV_STATE;
         else
-            data_type = -1;
+            da_type = -1;
 	}
 
-	return data_type;
+	return da_type;
 }
 
 //-----------------------------------------------------------------------------

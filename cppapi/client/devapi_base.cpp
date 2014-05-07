@@ -4533,7 +4533,6 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 //
 
 	same_att_name(attr_string_list,"Deviceproxy::read_attributes()");
-
 	unsigned long i;
 
 	attr_list.length(attr_string_list.size());
@@ -8294,7 +8293,6 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
 void DeviceProxy::same_att_name(vector<string> &attr_list,const char *met_name)
 {
-
 	if (attr_list.size() > 1)
 	{
 	    unsigned int i;

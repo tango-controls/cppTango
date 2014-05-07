@@ -888,7 +888,7 @@ enum CmdArgType {
 	DEV_INT,
 	DEV_ENCODED,
 	DEV_ENUM,
-	DATA_TYPE_UNKNOWN
+	DATA_TYPE_UNKNOWN = 100
 };
 
 enum MessBoxType {

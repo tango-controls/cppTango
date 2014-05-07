@@ -843,13 +843,11 @@ void ApiUtil::clean_locking_threads(bool clean)
 //		ApiUtil::attr_to_device()
 //
 // description :
-//		Create the event consumer. This will automatically start a new thread which is waiting in a CORBA::run()
-//		indefintely for events. It will then trigger the events.
+//
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void ApiUtil::attr_to_device(const AttributeValue *attr_value,
-			     const AttributeValue_3 *attr_value_3,
+void ApiUtil::attr_to_device(const AttributeValue *attr_value,const AttributeValue_3 *attr_value_3,
 			     long vers,DeviceAttribute *dev_attr)
 {
 

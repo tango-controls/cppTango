@@ -34,7 +34,7 @@ namespace Tango
 //-----------------------------------------------------------------------------------------------------------------
 //
 // method :
-//		ApiUtil::attr_to_device()
+//		ApiUtil::attr_to_device_base()
 //
 // description :
 //
