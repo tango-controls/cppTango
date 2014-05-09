@@ -109,6 +109,16 @@ do
 		MAKE_PATH="make"
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
+
+	if [ $i = "debian7_tango" ]
+	then
+		echo "Debian 7 OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		CPU_BUS="64bits=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
 done
 
 pwd

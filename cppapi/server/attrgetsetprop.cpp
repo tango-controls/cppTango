@@ -2352,8 +2352,8 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 		if (conf.enum_labels.length() == 0)
 		{
 			stringstream ss;
-			ss << "Device " << dev_name << "-> Attribute : " << name;
-			ss << "\nNo value defined for the property enum_labels";
+			ss << "Device " << dev_name << "- Attribute : " << name;
+			ss << "- No value defined for the property enum_labels";
 
 			Except::throw_exception(API_AttrOptProp,ss.str(),"Attribute::set_prop_5_specific()");
 		}
