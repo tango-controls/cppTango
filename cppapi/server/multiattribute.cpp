@@ -216,6 +216,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 			{
 				FwdAttr &fwdattr = static_cast<FwdAttr &>(attr);
 				fwd_ok = fwdattr.validate_fwd_att(prop_list,dev_name);
+cout << "Att name " << fwdattr.get_name() << ": fwd_ok = " << fwd_ok << endl;
 				dev->set_with_fwd_att(true);
 				if (fwd_ok == true)
 				{
@@ -227,8 +228,9 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 					}
 					catch (Tango::DevFailed &e)
 					{
-//						fwd_ok = false;
+						fwd_ok = false;
 
+cout << "Att name " << fwdattr.get_name() << ": fwd_ok set to false due to exception " << endl;
 						add_user_default(prop_list,def_user_prop);
 						add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 

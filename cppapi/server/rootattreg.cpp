@@ -62,9 +62,9 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-//cout << "One attribute configuration change event received" << endl;
-//cout << "Attr name = " << ev->attr_name << endl;
-//cout << "Event name = " << ev->event << endl;
+cout << "One attribute configuration change event received" << endl;
+cout << "Attr name = " << ev->attr_name << endl;
+cout << "Event name = " << ev->event << endl;
 
 		if (ev->err == false)
 		{
@@ -158,6 +158,8 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 								{
 									if (ite->second.local_label.empty() == false)
 										ev->attr_conf->label = ite->second.local_label;
+
+									the_dev->add_attribute(ite->second.fwd_attr);
 
 									Attribute &the_fwd_att = the_dev->get_device_attr()->get_attr_by_name(ite->second.local_att_name.c_str());
 									static_cast<FwdAttribute &>(the_fwd_att).set_att_config(ev->attr_conf);
@@ -706,11 +708,15 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 	}
 	else
 	{
-		attdesc->set_err_kind(FWD_DOUBLE_USED);
+		Tango::Util *tg = Util::instance();
+		if (tg->is_device_restarting(local_dev_name) == false)
+		{
+			attdesc->set_err_kind(FWD_DOUBLE_USED);
 
-		string desc("It's not supported to have in the same device server process two times the same root attribute (");
-		desc = desc + a_name + ")";
-		Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+			string desc("It's not supported to have in the same device server process two times the same root attribute (");
+			desc = desc + a_name + ")";
+			Except::throw_exception(API_AttrNotAllowed,desc,"RootAttRegistry::add_root_att");
+		}
 	}
 }
 

@@ -44,6 +44,7 @@ struct NameFwdAttr
 	string			local_name;			// Local device name
 	string			local_att_name;		// Local attribute name
 	string			local_label;		// Local attribute label
+	bool			restart;			//
 	FwdAttr			*fwd_attr;
 };
 
@@ -95,6 +96,7 @@ private:
 		DeviceImpl *get_local_dev(string &);
 		void update_label(string &,string &);
 		void update_device_impl(string &,DeviceImpl *);
+		void device_restarting(string &);
 
 	private:
 		ClntIdent 							ci;
