@@ -70,13 +70,35 @@ CORBA::Any *IOAddAttribute::execute(Tango::DeviceImpl *device,const CORBA::Any &
 {
   try {
     cout << "[IOAddAttribute::execute] " << endl;
-    Tango::Attr *at = new Tango::Attr("Added_short_attr", Tango::DEV_SHORT, Tango::READ);
-    Tango::UserDefaultAttrProp def_prop;
-    def_prop.set_label("Test label");
-    def_prop.set_description("Test description");
-    def_prop.set_format("Illisible");
-    at->set_default_properties(def_prop);
-    device->add_attribute(at);
+
+    Tango::DevString new_att;
+	extract(in_any, new_att);
+	string str(new_att);
+	transform(str.begin(),str.end(),str.begin(),::tolower);
+
+	if (str == "added_short_attr")
+	{
+		Tango::Attr *at = new Tango::Attr("Added_short_attr", Tango::DEV_SHORT, Tango::READ);
+		Tango::UserDefaultAttrProp def_prop;
+		def_prop.set_label("Test label");
+		def_prop.set_description("Test description");
+		def_prop.set_format("Illisible");
+		at->set_default_properties(def_prop);
+		device->add_attribute(at);
+	}
+	else if (str == "added_enum_attr")
+	{
+		Tango::Attr *at = new Tango::Attr("Added_enum_attr", Tango::DEV_ENUM, Tango::READ);
+		Tango::UserDefaultAttrProp def_prop;
+		vector<string> v_s;
+		v_s.push_back("Red");
+		v_s.push_back("Green");
+		v_s.push_back("Blue");
+		def_prop.set_enum_labels(v_s);
+		at->set_default_properties(def_prop);
+		device->add_attribute(at);
+	}
+
     return insert();
   }
   catch (CORBA::Exception &e)
@@ -156,8 +178,13 @@ CORBA::Any *IORemoveAttribute::execute(Tango::DeviceImpl *device,const CORBA::An
 {
   try {
     cout << "[IORemoveAttribute::execute] " << endl;
-    string st("Added_short_attr");
-    device->remove_attribute(st,true);
+
+	Tango::DevString att_name;
+	extract(in_any, att_name);
+	string str(att_name);
+	transform(str.begin(),str.end(),str.begin(),::tolower);
+
+    device->remove_attribute(str,true);
     return insert();
   }
   catch (CORBA::Exception &e)

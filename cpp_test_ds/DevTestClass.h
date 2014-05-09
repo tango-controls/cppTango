@@ -1080,7 +1080,7 @@ public:
 class EnumAttr: public Tango::Attr
 {
 public:
-	EnumAttr():Attr("Enum_attr_rw",Tango::DEV_ENUM,Tango::READ_WRITE) {};
+	EnumAttr():Attr("Enum_attr_rw",Tango::DEV_ENUM,Tango::READ_WRITE) {set_memorized();}
 	~EnumAttr() {};
 
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
@@ -1107,17 +1107,15 @@ public:
 	virtual string get_enum_type() {return string("CardinalPoints");}
 };
 
-/*class Enum_spec_attr_rwAttr: public Tango::SpectrumAttr
+class DynEnumAttr: public Tango::Attr
 {
 public:
-	Enum_spec_attr_rwAttr():SpectrumAttr("Enum_spec_attr_rw", Tango::DEV_ENUM,Tango::READ_WRITE, 5) {};
-	~Enum_spec_attr_rwAttr() {};
+	DynEnumAttr():Attr("DynEnum_attr", Tango::DEV_ENUM,Tango::READ) {};
+	~DynEnumAttr() {};
 
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
-	{(static_cast<DevTest *>(dev))->read_Enum_spec_attr_rw(att);}
-	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
-	{(static_cast<DevTest *>(dev))->write_Enum_spec_attr_rw(att);}
-};*/
+	{(static_cast<DevTest *>(dev))->read_DynEnum_attr(att);}
+};
 
 // ----------------------------------------------------------------------------
 

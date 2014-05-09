@@ -56,6 +56,8 @@ public :
 	void FileDb();
 	void IOSetWAttrLimit(const Tango::DevVarDoubleArray *);
 	void push_data_ready(const Tango::DevVarLongStringArray *);
+	void set_enum_labels();
+	void add_enum_label(Tango::DevString);
 
 	Tango::DevVarLongArray *IOTemplOut();
 	Tango::DevVarDoubleArray *IOTemplInOut(Tango::DevDouble);
@@ -147,6 +149,7 @@ public :
 
 	void read_Enum_attr(Tango::Attribute &att);
 	void read_Enum_spec_attr_rw(Tango::Attribute &att);
+	void read_DynEnum_attr(Tango::Attribute &att);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -217,6 +220,7 @@ public :
 	friend class ChangeEncodedFormat;
 	friend class ChangeEncodedData;
 	friend class IOAddCommand;
+	friend class ForbiddenEnumValue;
 
 protected :
 	Tango::DevDouble 	attr_double;
@@ -304,6 +308,7 @@ protected :
     Tango::DevLong      att_conf;
     CardinalPoints		cp;
     CardinalPoints		cp_array[5];
+    Tango::DevShort		enum_value;
 };
 
 #endif

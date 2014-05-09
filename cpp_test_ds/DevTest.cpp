@@ -180,6 +180,7 @@ void DevTest::init_device()
 
     att_conf = 10;
     wattr_throw = 0;
+	enum_value = 2;
 }
 
 
@@ -703,6 +704,30 @@ Tango::DevVarStringArray *DevTest::IOPollingInDevice()
     (*ret)[11] = Tango::string_dup(ss.str().c_str());
 
     return ret;
+}
+
+void DevTest::set_enum_labels()
+{
+	Tango::Attribute &att = (get_device_attr())->get_attr_by_name("DynEnum_attr");
+	Tango::MultiAttrProp<Tango::DevEnum> multi_prop;
+	att.get_properties(multi_prop);
+
+	vector<string> v_s;
+	v_s.push_back("Zero");
+	v_s.push_back("One");
+	v_s.push_back("Two");
+	v_s.push_back("Three");
+	multi_prop.enum_labels = v_s;
+	att.set_properties(multi_prop);
+}
+
+void DevTest::add_enum_label(Tango::DevString new_label)
+{
+	Tango::Attribute &att = (get_device_attr())->get_attr_by_name("DynEnum_attr");
+	Tango::MultiAttrProp<Tango::DevEnum> multi_prop;
+	att.get_properties(multi_prop);
+	multi_prop.enum_labels.push_back(new_label);
+	att.set_properties(multi_prop);
 }
 
 //+----------------------------------------------------------------------------
@@ -1982,4 +2007,10 @@ void DevTest::read_Enum_spec_attr_rw(Tango::Attribute &att)
 	cp_array[1] = NORTH;
 	cp_array[2] = WEST;
 	att.set_value(cp_array,3);
+}
+
+void DevTest::read_DynEnum_attr(Tango::Attribute &att)
+{
+	cout << "[DevTest::read_attr] attribute name DynEnum_attr" << endl;
+	att.set_value(&enum_value);
 }

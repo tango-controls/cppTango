@@ -367,3 +367,30 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
+
+class SetEnumLabels : public Tango::Command {
+public:
+	SetEnumLabels(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~SetEnumLabels() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+class AddEnumLabel : public Tango::Command {
+public:
+	AddEnumLabel(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~AddEnumLabel() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+class ForbiddenEnumValue : public Tango::Command {
+public:
+	ForbiddenEnumValue(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~ForbiddenEnumValue() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};

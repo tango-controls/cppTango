@@ -298,14 +298,14 @@ void DevTestClass::command_factory()
 					   "New attr value",
 					   "void"));
 	command_list.push_back(new IOAddAttribute("IOAddAttribute",
+					   Tango::DEV_STRING,
 					   Tango::DEV_VOID,
-					   Tango::DEV_VOID,
-					   "void",
+					   "New attribute name",
 					   "void"));
 	command_list.push_back(new IORemoveAttribute("IORemoveAttribute",
+					   Tango::DEV_STRING,
 					   Tango::DEV_VOID,
-					   Tango::DEV_VOID,
-					   "void",
+					   "Attribute name",
 					   "void"));
 	command_list.push_back(new IOSeqVecChar("IOSeqVecChar",
 					   Tango::DEVVAR_CHARARRAY,
@@ -573,6 +573,22 @@ void DevTestClass::command_factory()
 					   Tango::DEV_VOID,
 					   "void",
 					   "void"));
+	command_list.push_back(new SetEnumLabels("SetEnumLabels",
+					   Tango::DEV_VOID,
+					   Tango::DEV_VOID,
+					   "void",
+					   "void"));
+	command_list.push_back(new AddEnumLabel("AddEnumLabel",
+					   Tango::DEV_STRING,
+					   Tango::DEV_VOID,
+					   "New enum label",
+					   "void"));
+	command_list.push_back(new ForbiddenEnumValue("ForbiddenEnumValue",
+					   Tango::DEV_SHORT,
+					   Tango::DEV_VOID,
+					   "New value for setting enum (Must be > 100)",
+					   "void"));
+
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 
@@ -842,6 +858,8 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   Tango::Attr *en_s_att = new EnumSpecAttr();
   en_s_att->set_default_properties(att_enum_prop);
   att_list.push_back(en_s_att);
+
+  att_list.push_back(new DynEnumAttr());
 }
 
 

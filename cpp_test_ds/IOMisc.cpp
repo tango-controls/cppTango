@@ -2756,7 +2756,6 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			Tango::Attribute &attr = attributes->get_attr_by_name("Double_attr");
 
 			attr.get_properties(conf);
-cout << "conf.min_warning = " << conf.att_alarm.min_warning << endl;
 			attr_ptr = &attr;
 
 			// test properties provided as strings
@@ -2811,7 +2810,6 @@ cout << "conf.min_warning = " << conf.att_alarm.min_warning << endl;
 
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
-cout << "conf.min_warning after set_upd_properties = " << multi_prop.min_warning << endl;
 			multi_prop.label = "Test_label";
 			multi_prop.description = "Test_description";
 			multi_prop.unit = "Test_unit";
@@ -2863,8 +2861,6 @@ cout << "conf.min_warning after set_upd_properties = " << multi_prop.min_warning
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-attr.get_properties(conf);
-cout << "conf.min_warning at the end = " << conf.att_alarm.min_warning << endl;
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -4027,4 +4023,136 @@ cout << "conf.min_warning at the end = " << conf.att_alarm.min_warning << endl;
 		Tango::Except::print_exception(e);
 		throw ;
 	}
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		SetEnumLabels::SetEnumLabels()
+//
+// description : 	constructor for the SetEnumLabels command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+SetEnumLabels::SetEnumLabels(const char *name, Tango::CmdArgType in,
+								   Tango::CmdArgType out, const char *in_desc,
+								   const char *out_desc)
+	: Command(name, in, out, in_desc, out_desc)
+{
+}
+
+
+bool SetEnumLabels::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *SetEnumLabels::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	(static_cast<DevTest *>(device))->set_enum_labels();
+	return insert();
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		AddEnumLabel::AddEnumLabel()
+//
+// description : 	constructor for the AddEnumLabels command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+AddEnumLabel::AddEnumLabel(const char *name, Tango::CmdArgType in,
+								   Tango::CmdArgType out, const char *in_desc,
+								   const char *out_desc)
+	: Command(name, in, out, in_desc, out_desc)
+{
+}
+
+
+bool AddEnumLabel::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *AddEnumLabel::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	Tango::DevString new_label;
+	extract(in_any, new_label);
+	(static_cast<DevTest *>(device))->add_enum_label(new_label);
+	return insert();
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		ForbiddenEnumValue::ForbiddenEnumValue()
+//
+// description : 	constructor for the ForbiddenEnumValue command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+ForbiddenEnumValue::ForbiddenEnumValue(const char *name, Tango::CmdArgType in,
+								   Tango::CmdArgType out, const char *in_desc,
+								   const char *out_desc)
+	: Command(name, in, out, in_desc, out_desc)
+{
+}
+
+
+bool ForbiddenEnumValue::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *ForbiddenEnumValue::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	Tango::DevShort new_value;
+	extract(in_any, new_value);
+
+	DevTest *dev = (static_cast<DevTest *>(device));
+	dev->enum_value = new_value;
+	return insert();
 }
