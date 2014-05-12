@@ -3249,6 +3249,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 	if (need_free == true)
 		delete new_attr;
+
 }
 
 

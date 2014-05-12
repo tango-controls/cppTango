@@ -85,6 +85,7 @@ ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false
     fire_dr_event = false;
 
     set_cl_name("FwdAttr");
+    set_err_kind(FWD_NO_ERROR);
 }
 
 //--------------------------------------------------------------------------------------------------------------------

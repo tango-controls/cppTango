@@ -62,9 +62,9 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-cout << "One attribute configuration change event received" << endl;
-cout << "Attr name = " << ev->attr_name << endl;
-cout << "Event name = " << ev->event << endl;
+//cout << "One attribute configuration change event received" << endl;
+//cout << "Attr name = " << ev->attr_name << endl;
+//cout << "Event name = " << ev->event << endl;
 
 		if (ev->err == false)
 		{
@@ -78,7 +78,6 @@ cout << "Event name = " << ev->event << endl;
 				{
 					if (ite->second.fwd_attr == Tango_nullptr)
 					{
-
 //
 // Event received while everything is OK for the fwd attribute
 //
@@ -167,6 +166,7 @@ cout << "Event name = " << ev->event << endl;
 									MultiAttribute *m_att = the_dev->get_device_attr();
 									m_att->update(the_fwd_att,ite->second.local_name);
 
+									ite->second.fwd_attr->set_err_kind(FWD_NO_ERROR);
 									ite->second.fwd_attr = Tango_nullptr;
 
 									the_dev->rem_wrong_fwd_att(att_name);

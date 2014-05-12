@@ -156,6 +156,9 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 //
 
 		long ind = 0;
+		vector<string> rem_att_name;
+		vector<string> rem_att_cl_name;
+		int sub = 0;
 
 		for (i = 0;i < nb_attr;i++)
 		{
@@ -216,7 +219,6 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 			{
 				FwdAttr &fwdattr = static_cast<FwdAttr &>(attr);
 				fwd_ok = fwdattr.validate_fwd_att(prop_list,dev_name);
-cout << "Att name " << fwdattr.get_name() << ": fwd_ok = " << fwd_ok << endl;
 				dev->set_with_fwd_att(true);
 				if (fwd_ok == true)
 				{
@@ -230,7 +232,6 @@ cout << "Att name " << fwdattr.get_name() << ": fwd_ok = " << fwd_ok << endl;
 					{
 						fwd_ok = false;
 
-cout << "Att name " << fwdattr.get_name() << ": fwd_ok set to false due to exception " << endl;
 						add_user_default(prop_list,def_user_prop);
 						add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 
@@ -241,10 +242,11 @@ cout << "Att name " << fwdattr.get_name() << ": fwd_ok set to false due to excep
 						fwc.fae = fwdattr.get_err_kind();
 						fwd_wrong_conf.push_back(fwc);
 
-//						if (fwc.fae == FWD_ROOT_DEV_NOT_STARTED)
-//						{
-//							dev_class_ptr->get_class_attr()->remove_attr(fwdattr.get_name(),fwdattr.get_cl_name());
-//						}
+						if (fwc.fae == FWD_ROOT_DEV_NOT_STARTED)
+						{
+							rem_att_name.push_back(fwdattr.get_name());
+							rem_att_cl_name.push_back(fwdattr.get_cl_name());
+						}
 					}
 				}
 				else
@@ -286,26 +288,38 @@ cout << "Att name " << fwdattr.get_name() << ": fwd_ok set to false due to excep
 // If it is writable, add it to the writable attribute list
 //
 
-				Tango::AttrWriteType w_type = attr_list[i]->get_writable();
+				Tango::AttrWriteType w_type = attr_list[i - sub]->get_writable();
 				if ((w_type == Tango::WRITE) ||
 					(w_type == Tango::READ_WRITE))
 				{
-					writable_attr_list.push_back(i);
+					writable_attr_list.push_back(i - sub);
 				}
 
 //
 // If one of the alarm properties is defined, add it to the alarmed attribute list
 //
 
-				if (attr_list[i]->is_alarmed().any() == true)
+				if (attr_list[i - sub]->is_alarmed().any() == true)
 				{
 					if (w_type != Tango::WRITE)
-						alarm_attr_list.push_back(i);
+						alarm_attr_list.push_back(i - sub);
 				}
 
-				cout4 << *(attr_list[i]) << endl;
+				cout4 << *(attr_list[i - sub]) << endl;
 			}
+			else
+				sub++;
 		}
+
+//
+// Remove attdesc entry in class object for forwarded attribute with root device not started
+//
+
+		for (unsigned int loop = 0;loop < rem_att_name.size();loop++)
+		{
+			dev_class_ptr->get_class_attr()->remove_attr(rem_att_name[loop],rem_att_cl_name[loop]);
+		}
+
 	}
 
 //

@@ -1120,7 +1120,8 @@ typedef struct _OptAttrProp
 
 typedef enum _FwdAttError
 {
-	FWD_WRONG_ATTR = 0,
+	FWD_NO_ERROR = 0,
+	FWD_WRONG_ATTR,
 	FWD_WRONG_DEV,
 	FWD_ROOT_DEV_LOCAL_DEV,
 	FWD_MISSING_ROOT,
