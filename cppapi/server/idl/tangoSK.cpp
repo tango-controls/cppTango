@@ -6116,7 +6116,7 @@ Tango::AttributeValueList_5* Tango::_objref_Device_5::read_attributes_5(const ::
 
 }
 // Proxy call descriptor class. Mangled signature:
-//  _cTango_mAttributeValueList__5_i_cTango_mAttributeValueList__4_i_cTango_mClntIdent_e_cTango_mDevFailed_e_cTango_mMultiDevFailed
+//  _cTango_mAttributeValueList__5_i_cTango_mAttributeValueList__4_i_cTango_mDevVarStringArray_i_cTango_mClntIdent_e_cTango_mDevFailed_e_cTango_mMultiDevFailed
 class _0RL_cd_6fe2f94a21a10053_94000000
   : public omniCallDescriptor
 {
@@ -6138,15 +6138,18 @@ public:
 
   Tango::AttributeValueList_4_var arg_0_;
   const Tango::AttributeValueList_4* arg_0;
-  Tango::ClntIdent_var arg_1_;
-  const Tango::ClntIdent* arg_1;
+  Tango::DevVarStringArray_var arg_1_;
+  const Tango::DevVarStringArray* arg_1;
+  Tango::ClntIdent_var arg_2_;
+  const Tango::ClntIdent* arg_2;
   Tango::AttributeValueList_5_var result;
 };
 
 void _0RL_cd_6fe2f94a21a10053_94000000::marshalArguments(cdrStream& _n)
 {
   (const Tango::AttributeValueList_4&) *arg_0 >>= _n;
-  (const Tango::ClntIdent&) *arg_1 >>= _n;
+  (const Tango::DevVarStringArray&) *arg_1 >>= _n;
+  (const Tango::ClntIdent&) *arg_2 >>= _n;
 
 }
 
@@ -6155,9 +6158,12 @@ void _0RL_cd_6fe2f94a21a10053_94000000::unmarshalArguments(cdrStream& _n)
   arg_0_ = new Tango::AttributeValueList_4;
   (Tango::AttributeValueList_4&)arg_0_ <<= _n;
   arg_0 = &arg_0_.in();
-  arg_1_ = new Tango::ClntIdent;
-  (Tango::ClntIdent&)arg_1_ <<= _n;
+  arg_1_ = new Tango::DevVarStringArray;
+  (Tango::DevVarStringArray&)arg_1_ <<= _n;
   arg_1 = &arg_1_.in();
+  arg_2_ = new Tango::ClntIdent;
+  (Tango::ClntIdent&)arg_2_ <<= _n;
+  arg_2 = &arg_2_.in();
 
 }
 
@@ -6210,13 +6216,13 @@ _0RL_lcfn_6fe2f94a21a10053_a4000000(omniCallDescriptor* cd, omniServant* svnt)
   _0RL_cd_6fe2f94a21a10053_94000000* tcd = (_0RL_cd_6fe2f94a21a10053_94000000*)cd;
   Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
 #ifdef HAS_Cplusplus_catch_exception_by_base
-  tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1);
+  tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1, *tcd->arg_2);
 #else
   if (!cd->is_upcall())
-    tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1);
+    tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1, *tcd->arg_2);
   else {
     try {
-      tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1);
+      tcd->result = impl->write_read_attributes_5(*tcd->arg_0, *tcd->arg_1, *tcd->arg_2);
     }
     catch(Tango::DevFailed& ex) {
       throw omniORB::StubUserException(ex._NP_duplicate());
@@ -6233,11 +6239,12 @@ _0RL_lcfn_6fe2f94a21a10053_a4000000(omniCallDescriptor* cd, omniServant* svnt)
 
 }
 
-Tango::AttributeValueList_5* Tango::_objref_Device_5::write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident)
+Tango::AttributeValueList_5* Tango::_objref_Device_5::write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident)
 {
   _0RL_cd_6fe2f94a21a10053_94000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_a4000000, "write_read_attributes_5", 24);
   _call_desc.arg_0 = &(::Tango::AttributeValueList_4&) values;
-  _call_desc.arg_1 = &(::Tango::ClntIdent&) cl_ident;
+  _call_desc.arg_1 = &(::Tango::DevVarStringArray&) r_names;
+  _call_desc.arg_2 = &(::Tango::ClntIdent&) cl_ident;
 
   _invoke(_call_desc);
   return _call_desc.result._retn();

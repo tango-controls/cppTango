@@ -712,6 +712,22 @@ public :
  */
 	virtual DeviceAttribute write_read_attribute(DeviceAttribute &attr_in);
 /**
+ * Write and read attribute(s)
+ *
+ * Write then read attribute(s) in a single network call. By default (serialisation by device), the execution
+ * of this call in the server can’t be interrupted by other clients. To insert/extract the value to write/read you
+ * have to use the operator of the class DeviceAttribute which corresponds to the data type of the attribute.
+ * NOTE: There is no automatic type conversion from the user type to the attribute native type e.g. if an
+ * attribute expects a short you cannot insert it as a double (this will throw an exception) you have to insert it
+ * as a short.
+ *
+ * @param [in] attr_in Attribute name and value (to be written)
+ * @param [in] r_names Names of attribute to be read
+ * @return The read attribute(s) data
+ * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
+ */
+	virtual vector<DeviceAttribute> *write_read_attributes(vector<DeviceAttribute> &attr_in,vector<string> &r_names);
+/**
  * Retrieve attribute history from polling buffer
  *
  * Retrieve attribute history from the attribute polling buffer. The first argument is the attribute name. The

@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;    
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3078,7 +3078,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;  
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -5988,7 +5988,7 @@ omni_mutex *mut_ptr;
     AttributeConfigList_5* get_attribute_config_5(const ::Tango::DevVarStringArray& names);
     void set_attribute_config_5(const ::Tango::AttributeConfigList_5& new_conf, const ::Tango::ClntIdent& cl_ident);
     AttributeValueList_5* read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident);
-    AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident);
+    AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident);
     DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n);
 
     inline _objref_Device_5()  { _PR_setobj(0); }  // nil
@@ -6026,7 +6026,7 @@ omni_mutex *mut_ptr;
     virtual AttributeConfigList_5* get_attribute_config_5(const ::Tango::DevVarStringArray& names) = 0;
     virtual void set_attribute_config_5(const ::Tango::AttributeConfigList_5& new_conf, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual AttributeValueList_5* read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident) = 0;
-    virtual AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident) = 0;
+    virtual AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n) = 0;
     
   public:  // Really protected, workaround for xlC

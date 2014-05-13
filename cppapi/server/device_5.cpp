@@ -362,7 +362,8 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 //------------------------------------------------------------------------------------------------------------------
 
 Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::AttributeValueList_4 &values,
-									  const Tango::ClntIdent &cl_id)
+																   const Tango::DevVarStringArray &r_names,
+																   const Tango::ClntIdent &cl_id)
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_5Impl::write_read_attributes_5 arrived" << endl;
@@ -371,7 +372,7 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 // Record operation request in black box
 //
 
-	blackbox_ptr->insert_wr_attr(values,cl_id,5);
+	blackbox_ptr->insert_wr_attr(values,r_names,cl_id,5);
 
 //
 // Check if the device is locked and by who
@@ -379,63 +380,112 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 
 	check_lock("write_read_attributes_5");
 
+	unsigned int nb_write = values.length();
+	unsigned int nb_read = r_names.length();
+
 //
-// Check the attribute write type (only READ_WRITE or READ_WITH_WRITE allowed)
+// Special case for forwarded attribute used for both read and write
+// Memorize their root device name to lock unlock them
 //
 
-	Tango::Attribute &att = dev_attr->get_attr_by_name(values[0].name);
-	Tango::AttrWriteType awt = att.get_writable();
-	if ((awt == Tango::READ) || (awt == Tango::WRITE))
+	vector<string> r_w_att;
+	for (unsigned int loop = 0;loop < nb_write;loop++)
 	{
-		TangoSys_OMemStream o;
-		o << "Attribute " << values[0].name << " is not a READ_WRITE or READ_WITH_WRITE attribute" << ends;
-
-		Except::throw_exception((const char *)API_AttrNotWritable,o.str(),
-								(const char *)"Device_5Impl::write_read_attribute_5");
+		string w_att_name(values[loop].name);
+		transform(w_att_name.begin(),w_att_name.end(),w_att_name.begin(),::tolower);
+		for (unsigned int j = 0;j < nb_read;j++)
+		{
+			string r_att_name(r_names[j]);
+			transform(r_att_name.begin(),r_att_name.end(),r_att_name.begin(),::tolower);
+			if (w_att_name == r_att_name)
+			{
+				r_w_att.push_back(w_att_name);
+				break;
+			}
+		}
 	}
+
+	vector<string> fwd_att_root_dev_name;
+
+	for (unsigned int loop = 0;loop < r_w_att.size();++loop)
+	{
+		Tango::Attribute &att = dev_attr->get_attr_by_name(values[loop].name);
+		if (att.is_fwd_att() == true)
+		{
+			Tango::FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
+			fwd_att_root_dev_name.push_back(fwd_att.get_fwd_dev_name());
+		}
+	}
+
+	cout4 << fwd_att_root_dev_name.size() << " forwarded attribute(s) in write_read_attributes_5()" << endl;
+
+//
+// If we have some fwd atts, lock their root device
+//
+
+	Util *tg = Util::instance();
+	RootAttRegistry &rar = tg->get_root_att_reg();
+
+	if (fwd_att_root_dev_name.empty() == false)
+	{
+		vector<string>::iterator ite;
+		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
+		{
+			DeviceProxy *dp = rar.get_root_att_dp(*ite);
+			dp->lock();
+		}
+	}
+
+//
+// First, write the attribute(s)
+//
 
 	Tango::AttributeValueList_5 *read_val_ptr;
-
-//
-// Check if the attribute is a forwarded one. If yes, do special stuff
-//
-
-	if (att.is_fwd_att() == true)
+	try
 	{
-		try
-		{
-			FwdAttribute &fwd_att = static_cast<FwdAttribute &>(att);
-			read_val_ptr = fwd_att.write_read_root_att(const_cast<AttributeValueList_4 &>(values));
-		}
-		catch (Tango::DevFailed &e)
-		{
-			stringstream ss;
-			ss << "Write_read_attribute on attribute " << att.get_name() << " on device " << get_name() << " failed!";
-			Tango::Except::re_throw_exception(e,API_AttributeFailed,ss.str(),"Device_5Impl::write_read_attribute_5");
-		}
-	}
-	else
-	{
-//
-// First, write the attribute
-//
-
 		store_in_bb = false;
+		cout4 << "write_read_attributes_5(): Writing " << nb_write << " attribute(s)" << endl;
 		write_attributes_4(values,cl_id);
 
 //
-// Now, read the attribute
+// Now, read the attribute(s)
 //
 
-		Tango::DevVarStringArray att_name(1);
-		att_name.length(1);
-		att_name[0] = CORBA::string_dup(values[0].name);
 		Tango::ClntIdent dummy_cl_id;
 		Tango::CppClntIdent cci = 0;
 		dummy_cl_id.cpp_clnt(cci);
 
 		store_in_bb = false;
-		read_val_ptr = read_attributes_5(att_name,Tango::DEV,dummy_cl_id);
+		cout4 << "write_read_attributes_5(): Reading " << nb_read << " attribute(s)" << endl;
+		read_val_ptr = read_attributes_5(r_names,Tango::DEV,dummy_cl_id);
+	}
+	catch (...)
+	{
+		if (fwd_att_root_dev_name.empty() == false)
+		{
+			vector<string>::iterator ite;
+			for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
+			{
+				DeviceProxy *dp = rar.get_root_att_dp(*ite);
+				dp->unlock();
+			}
+		}
+
+		throw;
+	}
+
+//
+// Unlock devices (if case there are some due to forwarded attributes)
+//
+
+	if (fwd_att_root_dev_name.empty() == false)
+	{
+		vector<string>::iterator ite;
+		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
+		{
+			DeviceProxy *dp = rar.get_root_att_dp(*ite);
+			dp->unlock();
+		}
 	}
 
 	return read_val_ptr;

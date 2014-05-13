@@ -803,11 +803,11 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
 //
 //--------------------------------------------------------------------------
 
-void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list, const ClntIdent &cl_id,long vers)
+void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const Tango::DevVarStringArray &r_names,const ClntIdent &cl_id,long vers)
 {
 	sync.lock();
 
-	insert_attr_wr_nl(att_list,vers);
+	insert_attr_wr_nl(att_list,r_names,vers);
 
 	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 	if (ip == NULL)
@@ -827,7 +827,7 @@ void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list, const
 	sync.unlock();
 }
 
-void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list, long vers)
+void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,const Tango::DevVarStringArray &r_names,long vers)
 {
 //
 // Insert elt in the box
@@ -844,6 +844,14 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list, lo
 	for (unsigned long i = 0;i < att_list.length();i++)
 	{
 		string tmp_str(att_list[i].name);
+		box[insert_elt].attr_names.push_back(tmp_str);
+	}
+
+	box[insert_elt].attr_names.push_back(string("/"));
+
+	for (unsigned long i = 0;i < r_names.length();i++)
+	{
+		string tmp_str(r_names[i]);
 		box[insert_elt].attr_names.push_back(tmp_str);
 	}
 
@@ -1179,8 +1187,11 @@ void BlackBox::build_info_as_str(long index)
 			for (i = 0;i < nb_in_vect;i++)
 			{
 				elt_str = elt_str + box[index].attr_names[i];
-				if (i != nb_in_vect - 1)
-					elt_str = elt_str + ", ";
+				if (i != nb_in_vect - 1 && box[index].attr_names[i] != "/")
+				{
+					if (box[index].attr_names[i + 1] != "/")
+						elt_str = elt_str + ", ";
+				}
 			}
 			elt_str = elt_str + ") ";
 			break;

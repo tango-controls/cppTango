@@ -194,6 +194,7 @@ public:
  * date are not used by this method.
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue_5">here</a>
  * to read <b>AttributeValue</b> structure definition.
+ * @param r_names Names of the attribute(s) to be read
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
  * @return A sequence of AttributeValue_5 structure. One structure is initialised
@@ -204,8 +205,10 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
+
     	virtual Tango::AttributeValueList_5* write_read_attributes_5(const Tango::AttributeValueList_4 &values,
-    										  const Tango::ClntIdent &cl_ident);
+																   const Tango::DevVarStringArray &r_names,
+																   const Tango::ClntIdent &cl_ident);
 
 /**
  * Get attribute(s) configuration.

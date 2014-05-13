@@ -847,7 +847,11 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 // Record operation request in black box
 //
 
-	blackbox_ptr->insert_wr_attr(values,cl_id,4);
+	Tango::DevVarStringArray dvsa;
+	dvsa.length(1);
+	dvsa[0] = CORBA::string_dup(values[0].name);
+
+	blackbox_ptr->insert_wr_attr(values,dvsa,cl_id,4);
 
 //
 // Check if the device is locked and by who

@@ -8106,6 +8106,10 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 	else if (dev_attr.EncodedSeq.operator->() != NULL)
 		attr_value_list[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
 
+	Tango::DevVarStringArray dvsa;
+	dvsa.length(1);
+	dvsa[0] = CORBA::string_dup(dev_attr.name.c_str());
+
 	int ctr = 0;
 	AttributeValueList_4_var attr_value_list_4;
 	AttributeValueList_5_var attr_value_list_5;
@@ -8152,7 +8156,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			if (version >= 5)
 			{
 				Device_5_var dev = Device_5::_duplicate(device_5);
-				attr_value_list_5 = dev->write_read_attributes_5(attr_value_list,ci);
+				attr_value_list_5 = dev->write_read_attributes_5(attr_value_list,dvsa,ci);
 			}
 			else
 			{
@@ -8278,6 +8282,252 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 	}
 
 	return(ret_dev_attr);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::write_read_attributes() - write then read a single attribute
+//
+//-----------------------------------------------------------------------------
+
+vector<DeviceAttribute> *DeviceProxy::write_read_attributes(vector<DeviceAttribute> &attr_list,vector<string> &r_names)
+{
+
+//
+// This call is available only for Devices implemented IDL V5
+//
+
+	if (version < 5)
+	{
+		TangoSys_OMemStream desc;
+		desc << "Device " << device_name;
+		desc << " does not support write_read_attributes feature" << ends;
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
+						  desc.str(),
+						  (const char *)"DeviceProxy::write_read_attributes");
+	}
+
+//
+// Data into the AttributeValue object
+//
+
+	AttributeValueList_4 attr_value_list;
+	attr_value_list.length(attr_list.size());
+
+	for (unsigned int i=0; i<attr_list.size(); i++)
+	{
+		attr_value_list[i].name = attr_list[i].name.c_str();
+		attr_value_list[i].quality = attr_list[i].quality;
+		attr_value_list[i].data_format = attr_list[i].data_format;
+		attr_value_list[i].time = attr_list[i].time;
+		attr_value_list[i].w_dim.dim_x = attr_list[i].dim_x;
+		attr_value_list[i].w_dim.dim_y = attr_list[i].dim_y;
+
+		if (attr_list[i].LongSeq.operator->() != NULL)
+			attr_value_list[i].value.long_att_value(attr_list[i].LongSeq.in());
+		else if (attr_list[i].Long64Seq.operator->() != NULL)
+			attr_value_list[i].value.long64_att_value(attr_list[i].Long64Seq.in());
+		else if (attr_list[i].ShortSeq.operator->() != NULL)
+			attr_value_list[i].value.short_att_value(attr_list[i].ShortSeq.in());
+		else if (attr_list[i].DoubleSeq.operator->() != NULL)
+			attr_value_list[i].value.double_att_value(attr_list[i].DoubleSeq.in());
+		else if (attr_list[i].StringSeq.operator->() != NULL)
+			attr_value_list[i].value.string_att_value(attr_list[i].StringSeq.in());
+		else if (attr_list[i].FloatSeq.operator->() != NULL)
+			attr_value_list[i].value.float_att_value(attr_list[i].FloatSeq.in());
+		else if (attr_list[i].BooleanSeq.operator->() != NULL)
+			attr_value_list[i].value.bool_att_value(attr_list[i].BooleanSeq.in());
+		else if (attr_list[i].UShortSeq.operator->() != NULL)
+			attr_value_list[i].value.ushort_att_value(attr_list[i].UShortSeq.in());
+		else if (attr_list[i].UCharSeq.operator->() != NULL)
+			attr_value_list[i].value.uchar_att_value(attr_list[i].UCharSeq.in());
+		else if (attr_list[i].ULongSeq.operator->() != NULL)
+			attr_value_list[i].value.ulong_att_value(attr_list[i].ULongSeq.in());
+		else if (attr_list[i].ULong64Seq.operator->() != NULL)
+			attr_value_list[i].value.ulong64_att_value(attr_list[i].ULong64Seq.in());
+		else if (attr_list[i].StateSeq.operator->() != NULL)
+			attr_value_list[i].value.state_att_value(attr_list[i].StateSeq.in());
+		else if (attr_list[i].EncodedSeq.operator->() != NULL)
+			attr_value_list[i].value.encoded_att_value(attr_list[i].EncodedSeq.in());
+	}
+
+//
+// Create remaining parameter
+//
+
+	Tango::DevVarStringArray dvsa;
+	dvsa << r_names;
+
+//
+// Call device
+//
+
+	int ctr = 0;
+	AttributeValueList_5_var attr_value_list_5;
+	Tango::AccessControlType local_act;
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect(local_act);
+
+//
+// Throw exception if caller not allowed to write_attribute
+//
+
+			if (local_act == ACCESS_READ)
+			{
+				try
+				{
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
+				}
+				catch(...)
+				{
+					set_connection_state(CONNECTION_NOTOK);
+					throw;
+				}
+
+				TangoSys_OMemStream desc;
+				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
+
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
+											  	  (const char *)"DeviceProxy::write_read_attribute()");
+			}
+
+//
+// Now, call the server
+//
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			attr_value_list_5 = dev->write_read_attributes_5(attr_value_list,dvsa,ci);
+
+			ctr = 2;
+		}
+		catch (Tango::MultiDevFailed &e)
+		{
+
+//
+// Transfer this exception into a DevFailed exception
+//
+
+			Tango::DevFailed ex(e.errors[0].err_list);
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attributes on device " << device_name;
+			desc << ", attribute ";
+			desc << attr_value_list[0].name.in();
+			desc << ends;
+			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
+                        	desc.str(), (const char*)"DeviceProxy::write_read_attributes()");
+
+		}
+		catch (Tango::DevFailed &e)
+		{
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attributes on device " << device_name;
+			desc << ", attribute ";
+			desc << attr_value_list[0].name.in();
+			desc << ends;
+
+			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
+				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
+							desc.str(), (const char*)"DeviceProxy::write_read_attributes()");
+			else
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
+                        	desc.str(), (const char*)"DeviceProxy::write_read_attributes()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_attributes()",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_attributes",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute write_read_attributes on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(one,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::write_read_attributes()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_attributes",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute write_attributes on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(comm,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::write_read_attributes()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute write_read_attributes on device " << device_name << ends;
+			ApiCommExcept::re_throw_exception(ce,
+						      (const char*)"API_CommunicationFailed",
+                        			      desc.str(),
+						      (const char*)"DeviceProxy::write_read_attributes()");
+		}
+	}
+
+//
+// Init the returned DeviceAttribute vector
+
+	unsigned long nb_received;
+	nb_received = attr_value_list_5->length();
+
+	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
+	dev_attr->resize(nb_received);
+
+	for (unsigned int i=0; i < nb_received; i++)
+	{
+		ApiUtil::attr_to_device(&(attr_value_list_5[i]),5,&(*dev_attr)[i]);
+
+//
+// Add an error in the error stack in case there is one
+//
+
+		DevErrorList_var &err_list = (*dev_attr)[i].get_error_list();
+		long nb_except = err_list.in().length();
+		if (nb_except != 0)
+		{
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attribute on device " << device_name;
+			desc << ", attribute " << (*dev_attr)[i].name << ends;
+
+			err_list.inout().length(nb_except + 1);
+			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
+			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::write_read_attributes()");
+
+			string st = desc.str();
+			err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+			err_list[nb_except].severity = Tango::ERR;
+		}
+	}
+
+	return(dev_attr);
 }
 
 //-----------------------------------------------------------------------------

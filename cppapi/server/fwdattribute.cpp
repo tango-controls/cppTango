@@ -1001,6 +1001,10 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 
 	values[0].name = get_fwd_att_name().c_str();
 
+	Tango::DevVarStringArray dvsa;
+	dvsa.length(1);
+	dvsa[0] = CORBA::string_dup(get_fwd_att_name().c_str());
+
 	int ctr = 0;
 	AttributeValueList_5 *attr_value_list_5;
 	Tango::AccessControlType local_act;
@@ -1043,7 +1047,7 @@ AttributeValueList_5 *FwdAttribute::write_read_root_att(Tango::AttributeValueLis
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			attr_value_list_5 = dev5->write_read_attributes_5(values,ci);
+			attr_value_list_5 = dev5->write_read_attributes_5(values,dvsa,ci);
 
 			ctr = 2;
 

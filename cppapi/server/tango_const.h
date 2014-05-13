@@ -1070,6 +1070,19 @@ enum AttrSerialModel
 	ATTR_BY_USER
 };
 
+/**
+ * Possible error management with write_read_attribute call
+ *
+ * @ingroup Client
+ * @headerfile tango.h
+ */
+
+enum ErrorManagementType {
+	ABORT_ON_ERROR=0,         		///< Do not read attribute(s) if one of the written attribute(s) failed
+	CONTINUE_ON_ERROR,          	///< Read attribute(s) even if one of the written attribute(s) failed
+	numErrorManagementType
+};
+
 enum KeepAliveCmdCode
 {
 	EXIT_TH = 0

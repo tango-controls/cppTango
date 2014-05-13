@@ -195,7 +195,7 @@ public:
 	void insert_attr(const Tango::DevVarStringArray &,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
 	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
-	void insert_wr_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
+	void insert_wr_attr(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,const ClntIdent &,long vers);
 	void insert_op(BlackBoxElt_OpType);
 	void insert_op(BlackBoxElt_OpType,const ClntIdent &);
 
@@ -216,7 +216,7 @@ private:
 	void insert_op_nl(BlackBoxElt_OpType);
 	void insert_attr_nl(const Tango::AttributeValueList &,long);
 	void insert_attr_nl_4(const Tango::AttributeValueList_4 &);
-	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,long);
+	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,long);
 
 	vector<BlackBoxElt>	box;
 	long				insert_elt;
