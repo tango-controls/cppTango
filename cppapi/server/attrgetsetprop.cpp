@@ -517,8 +517,6 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 }
 
 
-
-
 void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_name,bool from_ds,vector<AttPropDb> &v_db)
 {
 
@@ -721,7 +719,6 @@ void Attribute::set_one_str_prop(const char *prop_name,const CORBA::String_membe
 								 string &att_conf,vector<AttPropDb> &v_db,vector<AttrProperty> &def_user_prop,
 								vector<AttrProperty> &def_class_prop,const char *lib_def)
 {
-
 	AttPropDb apd;
 	apd.name = prop_name;
 

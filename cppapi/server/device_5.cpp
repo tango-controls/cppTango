@@ -431,8 +431,8 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		vector<string>::iterator ite;
 		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 		{
-			DeviceProxy *dp = rar.get_root_att_dp(*ite);
-			dp->lock();
+//			DeviceProxy *dp = rar.get_root_att_dp(*ite);
+//			dp->lock();
 		}
 	}
 
@@ -466,8 +466,8 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 			vector<string>::iterator ite;
 			for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 			{
-				DeviceProxy *dp = rar.get_root_att_dp(*ite);
-				dp->unlock();
+//				DeviceProxy *dp = rar.get_root_att_dp(*ite);
+//				dp->unlock();
 			}
 		}
 
@@ -483,8 +483,8 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		vector<string>::iterator ite;
 		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 		{
-			DeviceProxy *dp = rar.get_root_att_dp(*ite);
-			dp->unlock();
+//			DeviceProxy *dp = rar.get_root_att_dp(*ite);
+//			dp->unlock();
 		}
 	}
 

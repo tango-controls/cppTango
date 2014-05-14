@@ -553,7 +553,7 @@ public :
  * Get attribute configuration (extended) for a list of attributes
  *
  * Return the extended attribute configuration for the list of specified attributes. To get all the attributes
- * pass a vector containing the string AllAttr (defined in tango_const.h). This method allocates memory for
+ * pass a vector containing the define AllAttr (defined in tango_const.h). This method allocates memory for
  * the vector of AttributeInfoEx returned to the caller. It is the caller responsibility to delete this memory.
  * @n See DeviceProxy::attribute_query for a note about compatibility between attribute properties structure
  *

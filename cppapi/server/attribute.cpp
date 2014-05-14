@@ -1668,8 +1668,12 @@ void Attribute::delete_startup_exception(string prop_name)
 		Util *tg = Util::instance();
 		if (tg->is_svr_starting() == false)
 		{
-			DeviceImpl *dev = get_att_device();
-			dev->set_run_att_conf_loop(true);
+			try
+			{
+				DeviceImpl *dev = get_att_device();
+				dev->set_run_att_conf_loop(true);
+			}
+			catch (Tango::DevFailed &e) {}
 		}
 	}
 }
