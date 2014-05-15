@@ -431,8 +431,8 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		vector<string>::iterator ite;
 		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 		{
-//			DeviceProxy *dp = rar.get_root_att_dp(*ite);
-//			dp->lock();
+			DeviceProxy *dp = rar.get_root_att_dp(*ite);
+			dp->lock();
 		}
 	}
 
@@ -466,8 +466,8 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 			vector<string>::iterator ite;
 			for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 			{
-//				DeviceProxy *dp = rar.get_root_att_dp(*ite);
-//				dp->unlock();
+				DeviceProxy *dp = rar.get_root_att_dp(*ite);
+				dp->unlock();
 			}
 		}
 
@@ -483,8 +483,8 @@ Tango::AttributeValueList_5* Device_5Impl::write_read_attributes_5(const Tango::
 		vector<string>::iterator ite;
 		for (ite = fwd_att_root_dev_name.begin();ite != fwd_att_root_dev_name.end();++ite)
 		{
-//			DeviceProxy *dp = rar.get_root_att_dp(*ite);
-//			dp->unlock();
+			DeviceProxy *dp = rar.get_root_att_dp(*ite);
+			dp->unlock();
 		}
 	}
 
@@ -660,7 +660,6 @@ void Device_5Impl::set_attribute_config_5(const Tango::AttributeConfigList_5& ne
 // Call the Device_3Impl set_attribute_config
 //
 
-	store_in_bb = false;
 	return set_attribute_config_3_local(new_conf,new_conf[0],from_fwd_cb,5);
 }
 

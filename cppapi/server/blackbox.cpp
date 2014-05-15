@@ -1,16 +1,13 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+============================================================================
+//+==================================================================================================================
 //
 // file :               BlackBox.cpp
 //
-// description :        C++ source code for the BlackBoxElt and BlackBox
-//			classes. These classes are used to implement the
-//			tango device server black box. There is one
-//			black box for each Tango device. This black box
-//			keeps info. on all the activities on a device.
-//			A client is able to retrieve these data via a Device
-//			attribute
+// description :        C++ source code for the BlackBoxElt and BlackBox classes. These classes are used to implement
+//						the tango device server black box. There is one black box for each Tango device. This black box
+//						keeps info. on all the activities on a device. A client is able to retrieve these data via
+//						a Device CORBA attribute
 //
 // project :            TANGO
 //
@@ -23,22 +20,20 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-===================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -87,15 +82,15 @@ CORBA::Boolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::i
 	return true;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBoxElt::BlackBoxElt
+// method :
+//		BlackBoxElt::BlackBoxElt
 //
-// description : 	Constructor for the BlackBoxElt class.
-//			This constructor simply set the internal value to their
-//			default
+// description :
+//		Constructor for the BlackBoxElt class. This constructor simply set the internal value to their default
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 BlackBoxElt::BlackBoxElt()
 {
@@ -112,19 +107,20 @@ BlackBoxElt::~BlackBoxElt()
 {
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::BlackBox
+// method :
+//		BlackBox::BlackBox
 //
-// description : 	Two constructors for the BlackBox class. The first one
-//			does not take any argument and construct a black box
-//			with the default depth.
-//			The second one create a black box with a depth defined
-//			by the argument.
+// description :
+//		Two constructors for the BlackBox class. The first one does not take any argument and construct a black box
+//		with the default depth. The second one create a black box with a depth defined by the argument.
 //
-// argument : in : 	- max_size : The black box depth
+// argument :
+//		in :
+//			- max_size : The black box depth
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 BlackBox::BlackBox():box(DefaultBlackBoxDepth)
 {
@@ -140,16 +136,19 @@ BlackBox::BlackBox(long max_size):box(max_size)
 	max_elt = max_size;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::insert_corba_attr
+// method :
+//		BlackBox::insert_corba_attr
 //
-// description : 	This method insert a new element in the black box when
-//			this element is a attribute
+// description :
+//		This method insert a new element in the black box when this element is a attribute
 //
-// argument : in : 	- attr : The attribute type
+// argument :
+//		in :
+//			- attr : The attribute type
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
@@ -172,9 +171,8 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
 
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -205,18 +203,21 @@ void BlackBox::insert_corba_attr(BlackBoxElt_AttrType attr)
 	sync.unlock();
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::insert_cmd
+// method :
+//		BlackBox::insert_cmd
 //
-// description : 	This method insert a new element in the black box when
-//			this element is a call to the operation command_inout
+// description :
+//		This method insert a new element in the black box when this element is a call to the operation command_inout
 //
-// argument : in : 	- cmd : The command name
-//					- vers : The IDL device version
-//					- sour : The source parameter (DEV, CACHE...)
+// argument :
+//		in :
+//			- cmd : The command name
+//			- vers : The IDL device version
+//			- sour : The source parameter (DEV, CACHE...)
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 
 void BlackBox::insert_cmd(const char *cmd,long vers,DevSource sour)
@@ -248,9 +249,8 @@ void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
 	box[insert_elt].client_ident = false;
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -275,18 +275,21 @@ void BlackBox::insert_cmd_nl(const char *cmd,long vers,DevSource sour)
 	inc_indexes();
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::insert_cmd_cl_ident
+// method :
+//		BlackBox::insert_cmd_cl_ident
 //
-// description : 	This method insert a new element in the black box when
-//			this element is a call to the operation command_inout
+// description :
+//		This method insert a new element in the black box when this element is a call to the operation command_inout
 //
-// argument : in : 	- cmd : The command name
-//					- cl_id : The client identification data
-//					- sour : The source parameter (DEV, CACHE...)
+// argument :
+//		in :
+//			- cmd : The command name
+//			- cl_id : The client identification data
+//			- sour : The source parameter (DEV, CACHE...)
 //
-//--------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 
 void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long vers,DevSource sour)
@@ -300,8 +303,7 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 	insert_cmd_nl(cmd,vers,sour);
 
 //
-// Check if the command is executed due to polling
-// If true, simply return
+// Check if the command is executed due to polling. If true, simply return
 //
 
 	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
@@ -312,8 +314,7 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 	}
 
 //
-// Add client ident info into the client_addr instance
-// and into the box
+// Add client ident info into the client_addr instance and into the box
 //
 
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
@@ -322,17 +323,20 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 	sync.unlock();
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::add_cl_ident
+// method :
+//		BlackBox::add_cl_ident
 //
-// description : 	Add client identification data to the client address
-//					instance
+// description :
+//		Add client identification data to the client address instance
 //
-// argument : in : 	- cl_ident : The client identificator
-//					- cl_addr : The client address instance
+// argument :
+//		in :
+//			- cl_ident : The client identificator
+//			- cl_addr : The client address instance
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
 {
@@ -359,16 +363,19 @@ void BlackBox::add_cl_ident(const ClntIdent &cl_ident,client_addr *cl_addr)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::update_client_host
+// method :
+//		BlackBox::update_client_host
 //
-// description : 	Add client identification data to one of the BlackBox
-//					element
+// description :
+//		Add client identification data to one of the BlackBox element
 //
-// argument : in : - ip : The client address instance
+// argument :
+//		in :
+//			- ip : The client address instance
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::update_client_host(client_addr *ip)
 {
@@ -385,17 +392,20 @@ void BlackBox::update_client_host(client_addr *ip)
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::insert_op
+// method :
+//		BlackBox::insert_op
 //
-// description : 	This method insert a new element in the black box when
-//			this element is a call to an operation which is not
-//			the command_inout operation
+// description :
+//		This method insert a new element in the black box when this element is a call to an operation which is not
+//		the command_inout operation
 //
-// argument : in : 	- cmd : The operation type
+// argument :
+//		in :
+//			- op : The operation type
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::insert_op(BlackBoxElt_OpType op)
 {
@@ -413,8 +423,7 @@ void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
 	insert_op_nl(op);
 
 //
-// Check if the command is executed due to polling
-// If true, simply return
+// Check if the command is executed due to polling. If true, simply return
 //
 
 	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
@@ -425,8 +434,7 @@ void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
 	}
 
 //
-// Add client ident info into the client_addr instance
-// and into the box
+// Add client ident info into the client_addr instance and into the box
 //
 
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
@@ -447,9 +455,8 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 	box[insert_elt].client_ident = false;
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -474,19 +481,22 @@ void BlackBox::insert_op_nl(BlackBoxElt_OpType op)
 	inc_indexes();
 }
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::insert_attr
+// method :
+//		BlackBox::insert_attr
 //
-// description : 	This method insert a new element in the black box when
-//			this element is a call to the CORBA operation
-//			read_attributes
+// description :
+//		This method insert a new element in the black box when this element is a call to the CORBA operation
+//		read_attributes
 //
-// argument : in : 	- names : The attribute(s) name
-//					- vers : The device IDl version
-//					- sour : The device source parameter (CACHE, DEV,...)
+// argument :
+//		in :
+//			- names : The attribute(s) name
+//			- vers : The device IDl version
+//			- sour : The device source parameter (CACHE, DEV,...)
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 
 void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSource sour)
@@ -535,9 +545,8 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,long vers,DevSo
 
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -602,9 +611,8 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -629,8 +637,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	inc_indexes();
 
 //
-// Check if the command is executed due to polling
-// If true, simply return
+// Check if the command is executed due to polling. If true, simply return
 //
 
 	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
@@ -641,8 +648,7 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	}
 
 //
-// Add client ident info into the client_addr instance
-// and into the box
+// Add client ident info into the client_addr instance and into the box
 //
 
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
@@ -671,8 +677,7 @@ void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const Cl
 	insert_attr_nl_4(att_list);
 
 //
-// Check if the command is executed due to polling
-// If true, simply return
+// Check if the command is executed due to polling. If true, simply return
 //
 
 	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
@@ -683,8 +688,7 @@ void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const Cl
 	}
 
 //
-// Add client ident info into the client_addr instance
-// and into the box
+// Add client ident info into the client_addr instance and into the box
 //
 
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
@@ -718,9 +722,8 @@ void BlackBox::insert_attr_nl(const Tango::AttributeValueList &att_list, long ve
 
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -764,9 +767,8 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
 
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -791,17 +793,20 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
 	inc_indexes();
 }
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::insert_wr_attr
+// method :
+//		BlackBox::insert_wr_attr
 //
-// description : 	This method insert a new element in the black box when
-//			this element is a call to the CORBA operation
-//			write_read_attributes
+// description :
+//		This method insert a new element in the black box when this element is a call to the CORBA operation
+//		write_read_attributes
 //
-// argument : in : 	- names : The attribute(s) name
+// argument :
+//		in :
+//			- names : The attribute(s) name
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const Tango::DevVarStringArray &r_names,const ClntIdent &cl_id,long vers)
 {
@@ -817,8 +822,7 @@ void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const 
 	}
 
 //
-// Add client ident info into the client_addr instance
-// and into the box
+// Add client ident info into the client_addr instance and into the box
 //
 
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
@@ -857,9 +861,8 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,con
 
 #ifdef _TG_WINDOWS_
 //
-// Note that the exact conversion between milli-sec and u-sec will be done
-// only when data is send back to user. This save some times in unnecessary
-// computation
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
 //
 	struct _timeb t;
 	_ftime(&t);
@@ -884,15 +887,16 @@ void BlackBox::insert_attr_wr_nl(const Tango::AttributeValueList_4 &att_list,con
 	inc_indexes();
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::inc_indexes
+// method :
+//		BlackBox::inc_indexes
 //
-// description : 	This private method increment the indexes used to acces
-//			the box itself. This is necessary because the box must
-//			be managed as a circular buffer
+// description :
+//		This private method increment the indexes used to acces the box itself. This is necessary because the box must
+//		be managed as a circular buffer
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 void BlackBox::inc_indexes()
@@ -905,15 +909,15 @@ void BlackBox::inc_indexes()
 		nb_elt++;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		get_client_host
+// method :
+//		BlackBox::get_client_host
 //
-// description : 	This private method retrieves the client host IP
-//			address (the number). IT USES OMNIORB SPECIFIC
-//			INTERCEPTOR
+// description :
+//		This private method retrieves the client host IP address (the number). IT USES OMNIORB SPECIFIC INTERCEPTOR
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::get_client_host()
 {
@@ -934,16 +938,19 @@ void BlackBox::get_client_host()
 		strcpy(box[insert_elt].host_ip_str,(static_cast<client_addr *>(ip))->client_ip);
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::build_info_as_str
+// method :
+//		BlackBox::build_info_as_str
 //
-// description : 	Translate all the info stored in a black box element
-//			into a readable string.
+// description :
+//		Translate all the info stored in a black box element into a readable string.
 //
-// argument : in : 	- index : The black box element index
+// argument :
+//		in :
+//			- index : The black box element index
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::build_info_as_str(long index)
 {
@@ -1396,16 +1403,19 @@ void BlackBox::build_info_as_str(long index)
 	return;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::add_source
+// method :
+//		BlackBox::add_source
 //
-// description : 	Read black box element as strings. The newest element
-//			is return in the first position
+// description :
+//		Read black box element as strings. The newest element is return in the first position
 //
-// argument : in : 	- index : The number of element to read
+// argument :
+//		in :
+//			- index : The number of element to read
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::add_source(long index)
 {
@@ -1429,16 +1439,19 @@ void BlackBox::add_source(long index)
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::read
+// method :
+//		BlackBox::read
 //
-// description : 	Read black box element as strings. The newest element
-//			is return in the first position
+// description :
+//		Read black box element as strings. The newest element is returned in the first position
 //
-// argument : in : 	- index : The number of element to read
+// argument :
+//		in :
+//			- index : The number of element to read
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 {
@@ -1451,8 +1464,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 	sync.lock();
 
 //
-// Throw exeception if the wanted element is stupid and if there is no element
-// stored in the black box
+// Throw exeception if the wanted element is stupid and if there is no element stored in the black box
 //
 
 	if (wanted_elt <= 0)
@@ -1526,19 +1538,22 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 	return(ret);
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		BlackBox::date_ux_to_str
+// method :
+//		BlackBox::date_ux_to_str
 //
-// description : 	Convert a UNIX date (number of seconds since EPOCH)
-//			to a string of the following format :
+// description :
+//		Convert a UNIX date (number of seconds since EPOCH) to a string of the following format :
 //			dd/mm/yyyy hh24:mi:ss:xx
 //
-// argument : in : 	- ux_date : The UNIX date in a timeval structure
-//			- str_date : Pointer to char array where the date will
-//				     be stored (must be allocated)
+// argument :
+//		in :
+//			- ux_date : The UNIX date in a timeval structure
+//		out :
+//			- str_date : Pointer to char array where the date will be stored (must be allocated)
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void BlackBox::date_ux_to_str(timeval &ux_date,char *str_date)
 {
@@ -1636,13 +1651,15 @@ void BlackBox::date_ux_to_str(timeval &ux_date,char *str_date)
 
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		client_addr::client_addr
+// method :
+//		client_addr::client_addr
 //
-// description : 	Copy ctor of the client_addr class
+// description :
+//		Copy ctor of the client_addr class
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 client_addr::client_addr(const client_addr &rhs)
 {
@@ -1655,13 +1672,15 @@ client_addr::client_addr(const client_addr &rhs)
 	memcpy(client_ip,rhs.client_ip,IP_ADDR_BUFFER_SIZE);
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		client_addr::operator=()
+// method :
+//		client_addr::operator=()
 //
-// description : 	Assignement operator of the client_addr class
+// description :
+//		Assignement operator of the client_addr class
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 client_addr & client_addr::operator=(const client_addr &rhs)
 {
@@ -1675,13 +1694,15 @@ client_addr & client_addr::operator=(const client_addr &rhs)
 	return *this;
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		client_addr::operator==()
+// method :
+//		client_addr::operator==()
 //
-// description : 	Equality operator of the client_addr class
+// description :
+//		Equality operator of the client_addr class
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool client_addr::operator==(const client_addr &rhs)
 {
@@ -1718,13 +1739,15 @@ bool client_addr::operator==(const client_addr &rhs)
 	return true;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		client_addr::operator!=()
+// method :
+//		client_addr::operator!=()
 //
-// description : 	Operator of the client_addr class
+// description :
+//		Operator of the client_addr class
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 bool client_addr::operator!=(const client_addr &rhs)
 {
@@ -1761,13 +1784,15 @@ bool client_addr::operator!=(const client_addr &rhs)
 	return false;
 }
 
-//+-------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------------
 //
-// method : 		client_addr::client_ip_2_client_name()
+// method :
+//		client_addr::client_ip_2_client_name()
 //
-// description : 	Convert client host IP address to client host name
+// description :
+//		Convert client host IP address to client host name
 //
-//--------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 
 int client_addr::client_ip_2_client_name(string &cl_host_name) const
 {
@@ -1848,14 +1873,14 @@ int client_addr::client_ip_2_client_name(string &cl_host_name) const
 }
 
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
 // operator overloading : 	<<
 //
-// description : 	Friend function to ease printing instance of the
-//					client_addr class
+// description :
+//		Friend function to ease printing instance of the client_addr class
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 ostream &operator<<(ostream &o_str,const client_addr &ca)
 {
