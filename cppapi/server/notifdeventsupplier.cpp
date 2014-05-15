@@ -247,8 +247,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // compiled with -D_TANGO_LIB)
 //
 
-				cerr << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
-				cout << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
+				cout4 << "Failed to import EventChannelFactory " << factory_name << " from the Tango database" << endl;
 			}
 
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
@@ -274,10 +273,8 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		{
 			if (tg->is_svr_starting() == true)
 			{
-				cerr << "Failed to import EventChannelFactory from the Device Server property file" << endl;
-				cerr << "Notifd event will not be generated" << endl;
-				cout << "Failed to import EventChannelFactory from the Device Server property file" << endl;
-				cout << "Notifd event will not be generated" << endl;
+				cout4 << "Failed to import EventChannelFactory from the Device Server property file" << endl;
+				cout4 << "Notifd event will not be generated" << endl;
 			}
 
 			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
