@@ -1655,7 +1655,7 @@ void Attribute::add_startup_exception(string prop_name,const DevFailed &except)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Attribute::delete_startup_exception(string prop_name)
+void Attribute::delete_startup_exception(string prop_name,string dev_name)
 {
 	if(check_startup_exceptions == true)
 	{
@@ -1666,14 +1666,15 @@ void Attribute::delete_startup_exception(string prop_name)
 			check_startup_exceptions = false;
 
 		Util *tg = Util::instance();
-		if (tg->is_svr_starting() == false)
+		bool dev_restart = false;
+		if (dev_name != "None")
 		{
-			try
-			{
-				DeviceImpl *dev = get_att_device();
-				dev->set_run_att_conf_loop(true);
-			}
-			catch (Tango::DevFailed &e) {}
+			dev_restart = tg->is_device_restarting(dev_name);
+		}
+		if (tg->is_svr_starting() == false && dev_restart == false)
+		{
+			DeviceImpl *dev = get_att_device();
+			dev->set_run_att_conf_loop(true);
 		}
 	}
 }

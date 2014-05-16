@@ -321,7 +321,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 // Delete device startup exception related to min_alarm if there is any
 //
 
-    delete_startup_exception("min_alarm");
+    delete_startup_exception("min_alarm",d_name);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -542,7 +542,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 // Delete device startup exception related to max_alarm if there is any
 //
 
-	delete_startup_exception("max_alarm");
+	delete_startup_exception("max_alarm",d_name);
 }
 
 
@@ -757,7 +757,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 // Delete device startup exception related to min_warning if there is any
 //
 
-	delete_startup_exception("min_warning");
+	delete_startup_exception("min_warning",d_name);
 }
 
 
@@ -971,7 +971,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 // Delete device startup exception related to max_warning if there is any
 //
 
-	delete_startup_exception("max_warning");
+	delete_startup_exception("max_warning",d_name);
 }
 
 //+------------------------------------------------------------------------------------------------------------------

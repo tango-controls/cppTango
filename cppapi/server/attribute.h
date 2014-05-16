@@ -2299,7 +2299,7 @@ protected:
 
     void check_hard_coded(const AttributeConfig_5 &);
 
-	void delete_startup_exception(string);
+	void delete_startup_exception(string,string str=string("None"));
 
     void throw_hard_coded_prop(const char *);
 	void throw_err_format(const char *,const string &,const char *);
@@ -2324,8 +2324,8 @@ protected:
 
 	void set_one_str_prop(const char *,const CORBA::String_member &,string &,vector<AttPropDb> &,vector<AttrProperty> &,vector<AttrProperty> &,const char *);
 	void set_one_alarm_prop(const char *,const CORBA::String_member &,string &,Tango::Attr_CheckVal &, vector<AttPropDb> &,vector<AttrProperty> &,vector<AttrProperty> &,bool &);
-	void set_rds_prop(const AttributeAlarm &,vector<AttPropDb> &,vector<AttrProperty> &,vector<AttrProperty> &);
-	void set_rds_prop_val(const AttributeAlarm &,vector<AttrProperty> &,vector<AttrProperty> &);
+	void set_rds_prop(const AttributeAlarm &,string &,vector<AttPropDb> &,vector<AttrProperty> &,vector<AttrProperty> &);
+	void set_rds_prop_val(const AttributeAlarm &,string &,vector<AttrProperty> &,vector<AttrProperty> &);
 	void set_rds_prop_db(const AttributeAlarm &,vector<AttPropDb> &,vector<AttrProperty> &,vector<AttrProperty> &);
 	void set_one_event_prop(const char *,const CORBA::String_member &,double *,vector<AttPropDb> &,vector<AttrProperty> &,vector<AttrProperty> &);
 	void event_prop_db_xxx(vector<double> &,vector<double> &,vector<AttPropDb> &,AttPropDb &);

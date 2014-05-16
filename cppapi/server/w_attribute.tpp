@@ -204,7 +204,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 // Delete device startup exception related to min_value if there is any
 //
 
-	delete_startup_exception("min_value");
+	delete_startup_exception("min_value",d_name);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -414,7 +414,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 // Delete device startup exception related to max_value if there is any
 //
 
-	delete_startup_exception("max_value");
+	delete_startup_exception("max_value",d_name);
 }
 
 //+------------------------------------------------------------------------------------------------------------------

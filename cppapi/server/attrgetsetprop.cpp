@@ -473,32 +473,32 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 //
 
 	set_one_str_prop("description",conf.description,description,v_db,def_user_prop,def_class_prop,DescNotSpec);
-	delete_startup_exception("description");
+	delete_startup_exception("description",dev_name);
 
 	set_one_str_prop("label",conf.label,label,v_db,def_user_prop,def_class_prop,name.c_str());
-	delete_startup_exception("label");
+	delete_startup_exception("label",dev_name);
 
 	set_one_str_prop("unit",conf.unit,unit,v_db,def_user_prop,def_class_prop,UnitNotSpec);
-	delete_startup_exception("unit");
+	delete_startup_exception("unit",dev_name);
 
 	set_one_str_prop("standard_unit",conf.standard_unit,standard_unit,v_db,def_user_prop,def_class_prop,StdUnitNotSpec);
-	delete_startup_exception("standard_unit");
+	delete_startup_exception("standard_unit",dev_name);
 
 	set_one_str_prop("display_unit",conf.display_unit,display_unit,v_db,def_user_prop,def_class_prop,DispUnitNotSpec);
-	delete_startup_exception("display_unit");
+	delete_startup_exception("display_unit",dev_name);
 
 	set_one_str_prop("format",conf.format,format,v_db,def_user_prop,def_class_prop,FormatNotSpec);
-	delete_startup_exception("format");
+	delete_startup_exception("format",dev_name);
 
 //
 // Min, max and most of the alarm related properties
 //
 
 	set_one_alarm_prop("min_value",conf.min_value,min_value_str,min_value,v_db,def_user_prop,def_class_prop,check_min_value);
-	delete_startup_exception("min_value");
+	delete_startup_exception("min_value",dev_name);
 
 	set_one_alarm_prop("max_value",conf.max_value,max_value_str,max_value,v_db,def_user_prop,def_class_prop,check_max_value);
-	delete_startup_exception("max_value");
+	delete_startup_exception("max_value",dev_name);
 
 	bool alrm_set;
 	set_one_alarm_prop("min_alarm",conf.min_alarm,min_alarm_str,min_alarm,v_db,def_user_prop,def_class_prop,alrm_set);
@@ -506,14 +506,14 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 		alarm_conf.reset(min_level);
 	else
 		alarm_conf.set(min_level);
-	delete_startup_exception("min_alarm");
+	delete_startup_exception("min_alarm",dev_name);
 
 	set_one_alarm_prop("max_alarm",conf.max_alarm,max_alarm_str,max_alarm,v_db,def_user_prop,def_class_prop,alrm_set);
 	if (alrm_set == false)
 		alarm_conf.reset(max_level);
 	else
 		alarm_conf.set(max_level);
-	delete_startup_exception("max_alarm");
+	delete_startup_exception("max_alarm",dev_name);
 }
 
 
@@ -605,36 +605,36 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 			alarm_conf.reset(min_warn);
 		else
 			alarm_conf.set(min_warn);
-		delete_startup_exception("min_warning");
+		delete_startup_exception("min_warning",dev_name);
 
 		set_one_alarm_prop("max_warning",conf.att_alarm.max_warning,max_warning_str,max_warning,v_db,def_user_prop,def_class_prop,alrm_set);
 		if (alrm_set == false)
 			alarm_conf.reset(max_warn);
 		else
 			alarm_conf.set(max_warn);
-		delete_startup_exception("max_warning");
+		delete_startup_exception("max_warning",dev_name);
 
 //
 // RDS related properties
 //
 
-		set_rds_prop(conf.att_alarm,v_db,def_user_prop,def_class_prop);
+		set_rds_prop(conf.att_alarm,dev_name,v_db,def_user_prop,def_class_prop);
 
 //
 // Event related properties (except period)
 //
 
 		set_one_event_prop("rel_change",conf.event_prop.ch_event.rel_change,rel_change,v_db,def_user_prop,def_class_prop);
-		delete_startup_exception("rel_change");
+		delete_startup_exception("rel_change",dev_name);
 
 		set_one_event_prop("abs_change",conf.event_prop.ch_event.abs_change,abs_change,v_db,def_user_prop,def_class_prop);
-		delete_startup_exception("rel_change");
+		delete_startup_exception("rel_change",dev_name);
 
 		set_one_event_prop("archive_rel_change",conf.event_prop.arch_event.rel_change,archive_rel_change,v_db,def_user_prop,def_class_prop);
-		delete_startup_exception("archive_rel_change");
+		delete_startup_exception("archive_rel_change",dev_name);
 
 		set_one_event_prop("archive_abs_change",conf.event_prop.arch_event.abs_change,archive_abs_change,v_db,def_user_prop,def_class_prop);
-		delete_startup_exception("archive_abs_change");
+		delete_startup_exception("archive_abs_change",dev_name);
 	}
 
 //
@@ -642,10 +642,10 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 //
 
 	set_one_event_period("event_period",conf.event_prop.per_event.period,event_period,DEFAULT_EVENT_PERIOD,v_db,def_user_prop,def_class_prop);
-	delete_startup_exception("event_period");
+	delete_startup_exception("event_period",dev_name);
 
 	set_one_event_period("archive_period",conf.event_prop.arch_event.period,archive_period,INT_MAX,v_db,def_user_prop,def_class_prop);
-	delete_startup_exception("archive_period");
+	delete_startup_exception("archive_period",dev_name);
 }
 
 
@@ -1439,6 +1439,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 // Arguments:
 //		in :
 //			- att_alarm : New properties value
+//			- dev_name : The device name
 //			- def_user_prop : User defined default prop.
 //			- def_class_prop : Class defined default prop.
 //		out :
@@ -1447,7 +1448,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 //---------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::set_rds_prop(const AttributeAlarm &att_alarm,
+void Attribute::set_rds_prop(const AttributeAlarm &att_alarm, string &dev_name,
 							 vector<AttPropDb> &v_db,
 							 vector<AttrProperty> &def_user_prop,
 							 vector<AttrProperty> &def_class_prop)
@@ -1455,7 +1456,7 @@ void Attribute::set_rds_prop(const AttributeAlarm &att_alarm,
 	Tango::Attr_CheckVal old_delta_val = delta_val;
 	long old_delta_t = delta_t;
 
-	set_rds_prop_val(att_alarm,def_user_prop,def_class_prop);
+	set_rds_prop_val(att_alarm,dev_name,def_user_prop,def_class_prop);
 
 	bool delta_val_changed = false;
 	switch(data_type)
@@ -1526,13 +1527,14 @@ void Attribute::set_rds_prop(const AttributeAlarm &att_alarm,
 // Arguments:
 //		in :
 //			- att_alarm : New attribute properties
+//			- dev_name : The device name
 //			- def_user_prop : User defined default prop.
 //			- def_class_prop : Class defined default prop.
 //
 //---------------------------------------------------------------------------------------------------------------------
 
 
-void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm,
+void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm, string &dev_name,
 							 vector<AttrProperty> &def_user_prop,
 							 vector<AttrProperty> &def_class_prop)
 {
@@ -1644,7 +1646,7 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm,
 			delta_val_str = delta_val_usr_def;
 	}
 
-	delete_startup_exception("delta_val");
+	delete_startup_exception("delta_val",dev_name);
 
 //
 // And the delta_t
@@ -1760,7 +1762,7 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm,
 			delta_t_str = delta_t_usr_def;
 	}
 
-	delete_startup_exception("delta_t");
+	delete_startup_exception("delta_t",dev_name);
 
 //
 // Set RDS alarm flag only if both delta_t and delta_val are defined
@@ -1769,7 +1771,7 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm,
 	if(delta_t_defined && delta_val_defined)
 	{
 		alarm_conf.set(rds);
-		delete_startup_exception("rds_alarm");
+		delete_startup_exception("rds_alarm",dev_name);
 	}
 	else if(delta_t_defined || delta_val_defined)
 	{
@@ -1801,7 +1803,7 @@ void Attribute::set_rds_prop_val(const AttributeAlarm &att_alarm,
 	else
 	{
 		alarm_conf.reset(rds);
-		delete_startup_exception("rds_alarm");
+		delete_startup_exception("rds_alarm",dev_name);
 	}
 }
 
@@ -2510,7 +2512,7 @@ void Attribute::set_prop_5_specific(const AttributeConfig_5 &conf,string &dev_na
 			}
 		}
 
-		delete_startup_exception("enum_labels");
+		delete_startup_exception("enum_labels",dev_name);
 	}
 }
 
