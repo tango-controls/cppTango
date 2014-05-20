@@ -38,6 +38,8 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 
+#include <omniORB4/internal/orbOptions.h>
+
 #include <stdlib.h>
 #include <dserversignal.h>
 #include <dserverclass.h>
@@ -231,54 +233,6 @@ void Util::effective_job(int argc,char *argv[])
 		DServerSignal::instance();
 
 //
-// Check if the user specified a endPoint on the command line or using one
-// env. variable
-// If true, extract the IP address from the end point and store it
-// for future use in the ZMQ publiher(s)
-//
-
-		for (int i = 2;i < argc;i++)
-		{
-			if (::strcmp("-ORBendPoint",argv[i]) == 0)
-			{
-				set_endpoint_specified(true);
-
-				string endPoint(argv[i + 1]);
-				string::size_type start,stop;
-				start = endPoint.find(':');
-				++start;
-				start = endPoint.find(':',start);
-				stop = endPoint.find(':',start + 1);
-				++start;
-				string ip = endPoint.substr(start,stop - start);
-
-				set_specified_ip(ip);
-				break;
-			}
-
-		}
-
-		if (get_endpoint_specified() == false)
-		{
-			DummyDeviceProxy d;
-			string env_var;
-			if (d.get_env_var("ORBendPoint",env_var) == 0)
-			{
-				set_endpoint_specified(true);
-
-				string::size_type start,stop;
-				start = env_var.find(':');
-				++start;
-				start = env_var.find(':',start);
-				stop = env_var.find(':',start + 1);
-				++start;
-				string ip = env_var.substr(start,stop - start);
-
-				set_specified_ip(ip);
-			}
-		}
-
-//
 // Destroy the ORB created as a client (in case there is one)
 // Also destroy database objsect stored in the ApiUtil object. This is needed in case of CS running TAC
 // because the TAC device is stored in the db object and it references the destroyed ORB
@@ -360,6 +314,37 @@ void Util::effective_job(int argc,char *argv[])
 
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
+
+//
+// Check if the user specified a endPoint on the command line, using one env. variable
+// or in the omniORB config file.
+// If true, extract the IP address from the end point and store it
+// for future use in the ZMQ publiher(s)
+//
+
+		omni::orbOptions::sequenceString *seqStr = omni::orbOptions::singleton().dumpCurrentSet();
+		for (unsigned int loop = 0;loop < seqStr->length();loop++)
+		{
+			string str((*seqStr)[loop]);
+			string::size_type pos = str.find("giop:tcp:");
+			if (pos != string::npos)
+			{
+				string::size_type start,stop;
+				start = str.find(':');
+				++start;
+				start = str.find(':',start);
+				stop = str.find(':',start + 1);
+				++start;
+				string ip = str.substr(start,stop - start);
+
+				if (ip.empty() == false)
+				{
+					set_endpoint_specified(true);
+					set_specified_ip(ip);
+				}
+			}
+		}
+		delete seqStr;
 
 #ifndef TANGO_HAS_LOG4TANGO
 
