@@ -156,11 +156,12 @@ then
 	export PREFIX=$INSTALL_DIR
 	if [ $OS_SPEC = "Windows_64_VC10" ]
 	then
-		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /m /p:Platform=x64 /t:$PROJ_NAME,$PROJ2_NAME /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
+		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /m /p:Platform=x64 /t:$PROJ_NAME;$PROJ2_NAME /p:Configuration=Debug /v:quiet /flp:LogFile=$OUTFILE;Summary;ShowCommandLine;Verbosity=minimal"
 		export PATH=$PATH:/cygdrive/c/Windows/Microsoft.Net/Framework64/v4.0.30319
 		cd cpp_test_ds/win64_ds_vc10
 	else
 		MAKE_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ_NAME $BUILD Debug  /projectconfig Debug /out $OUTFILE "
+		MAKE2_CMD="$MAKE_PATH WIN32_DS.sln /project $PROJ2_NAME $BUILD Debug  /projectconfig Debug /out $OUTFILE "
 		export PATH=$PATH:/cygdrive/c/Program\ Files/Microsoft\ Visual\ Studio\ 9.0/Common7/IDE
 		cd cpp_test_ds/win32_ds_vs9
 	fi
@@ -177,6 +178,11 @@ fi
 echo $MAKE_CMD
 $MAKE_CMD
 RET=$?
+if [ $OS_SPEC = "Windows" ]
+then
+	echo $MAKE2_CMD
+	$MAKE2_CMD
+fi
 
 #
 # For windows, in the archive build, also build DS running with its own window
