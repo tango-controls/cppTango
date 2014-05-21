@@ -1,4 +1,4 @@
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -178,6 +178,7 @@ private:
 	std::vector<std::string> parse_resource_value(std::ifstream& f);
 
 	std::string read_full_word(std::ifstream& f);
+	void escape_double_quote(string &);
 
 
 	static const char* lexical_word_null;

@@ -1,37 +1,34 @@
-//=============================================================================
+
+//===================================================================================================================
 //
 // file :               Tango_config.h
 //
-// description :        Include file where all the system dependant types
-//			are defined.
+// description :        Include file where all the system dependant types are defined.
 //
 // project :            TANGO
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//===================================================================================================================
 
 #ifndef _TANGO_CONFIG_H
 #define _TANGO_CONFIG_H
@@ -82,8 +79,10 @@
             #define WIN32_VC8
         #elif ((_MSC_VER >= 1500) && (_MSC_VER < 1600))
             #define WIN32_VC9
-        #elif (_MSC_VER >= 1600)
+        #elif ((_MSC_VER >= 1600) && (_MSC_VER < 1700))
             #define WIN32_VC10
+		#elif (_MSC_VER >= 1700)
+			#define WIN32_VC11
         #endif   // VC8+/VC9/VC10
     #endif
 #endif
@@ -132,17 +131,19 @@
 //
 // Some C++11 feature
 // Unique_ptr -> gcc 4.3
+// rvalues -> gcc 4.3
 // Lambda function -> gcc 4.5
 // nullptr -> gcc 4.6
-// rvalues -> gcc 4.3
 //
 
 #ifndef _TG_WINDOWS_
     #if defined(__GNUC__)
         #if __GNUC__ == 4
-            #if __GNUC_MINOR__ > 2
+            #if __GNUC_MINOR__ > 3
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE
+                #define HAS_THREAD
+                #define HAS_TYPE_TRAITS
             #endif
             #if __GNUC_MINOR__ > 4
                 #define HAS_LAMBDA_FUNC
@@ -150,13 +151,23 @@
             #endif
             #if __GNUC_MINOR__ > 5
                 #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
+				#define INIT_LIST
             #endif
+            #if __GNUC_MINOR__ > 7
+				#define HAS_UNDERLYING
+			#endif
         #elif __GNUC__ > 4
                 #define HAS_UNIQUE_PTR
                 #define HAS_RVALUE
                 #define HAS_LAMBDA_FUNC
                 #define HAS_ISNAN_IN_STD
                 #define HAS_NULLPTR
+                #define HAS_RANGE_BASE_FOR
+				#define INIT_LIST
+				#define HAS_THREAD
+				#define HAS_TYPE_TRAITS
+				#define HAS_UNDERLYING
         #endif
     #endif
 #else
@@ -165,6 +176,16 @@
         #define HAS_LAMBDA_FUNC
         #define HAS_NULLPTR
         #define HAS_RVALUE
+        #define HAS_TYPE_TRAITS
+    #endif
+    #ifdef WIN32_VC11
+        #define HAS_UNIQUE_PTR
+        #define HAS_LAMBDA_FUNC
+        #define HAS_NULLPTR
+        #define HAS_RVALUE
+		#define HAS_RANGE_BASE_FOR
+        #define HAS_TYPE_TRAITS
+        #define HAS_UNDERLYING
     #endif
 #endif
 
@@ -209,9 +230,9 @@
 //
 
 #ifdef HAS_NULLPTR
-    #define Tango_NullPtr   nullptr
+    #define Tango_nullptr   nullptr
 #else
-    #define Tango_NullPtr   NULL
+    #define Tango_nullptr   NULL
 #endif
 
 //

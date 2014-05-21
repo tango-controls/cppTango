@@ -12,7 +12,7 @@
 ///
 /// 		original : 7 April 2003
 //
-// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -95,46 +95,59 @@ public :
 	virtual ~EventSupplier() {}
 
 	void push_att_data_ready_event(DeviceImpl *,const string &,long,DevLong);
+	void push_dev_intr_change_event(DeviceImpl *,bool,DevCmdInfoList_2 *,AttributeConfigList_5 *);
+	bool any_dev_intr_client(DeviceImpl *);
 
-    struct AttributeData
+    struct SuppliedEventData
     {
         const AttributeValue      *attr_val;
         const AttributeValue_3    *attr_val_3;
         const AttributeValue_4    *attr_val_4;
+        const AttributeValue_5    *attr_val_5;
         const AttributeConfig_2   *attr_conf_2;
         const AttributeConfig_3   *attr_conf_3;
+        const AttributeConfig_5	  *attr_conf_5;
         const AttDataReady        *attr_dat_ready;
+        const DevIntrChange		  *dev_intr_change;
+        zmq::message_t	  		  *zmq_mess;
     };
 
-	SendEventType detect_and_push_events(DeviceImpl *,struct AttributeData &,DevFailed *,string &,struct timeval *);
+	SendEventType detect_and_push_events(DeviceImpl *,struct SuppliedEventData &,DevFailed *,string &,struct timeval *);
 
 //------------------ Change event ---------------------------
 
-	bool detect_change(Attribute &,struct AttributeData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
+	bool detect_change(Attribute &,struct SuppliedEventData &,bool,double &,double &,DevFailed *,bool &,DeviceImpl *);
 
 //------------------ Detect, push change event --------------
 
-	bool detect_and_push_change_event(DeviceImpl *,struct AttributeData &,Attribute &,string &,DevFailed *,bool user_push = false);
+	bool detect_and_push_change_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,bool user_push = false);
 
 //------------------ Detect, push archive event --------------
 
-	bool detect_and_push_archive_event(DeviceImpl *,struct AttributeData &,Attribute &,string &,DevFailed *,struct timeval *,bool user_push = false);
+	bool detect_and_push_archive_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,struct timeval *,bool user_push = false);
 
 //------------------ Detect, push periodic event -------------
 
-	bool detect_and_push_periodic_event(DeviceImpl *,struct AttributeData &,Attribute &,string &,DevFailed *,struct timeval *);
+	bool detect_and_push_periodic_event(DeviceImpl *,struct SuppliedEventData &,Attribute &,string &,DevFailed *,struct timeval *);
 
 //------------------ Push event -------------------------------
 
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct AttributeData &,string &,DevFailed *) = 0;
+	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool) = 0;
+	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) = 0;
 	virtual void push_heartbeat_event() = 0;
 
 //------------------- Attribute conf change event ---------------------
 
-	void push_att_conf_events(DeviceImpl *device_impl,AttributeData &,DevFailed *,string &);
+	void push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &,DevFailed *,string &);
 
 	omni_mutex &get_push_mutex() {return push_mutex;}
+	static omni_mutex &get_event_mutex() {return event_mutex;}
 	string &get_fqdn_prefix() {return fqdn_prefix;}
+
+	void convert_att_event_to_5(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+	void convert_att_event_to_4(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+	void convert_att_event_to_3(struct SuppliedEventData &,struct SuppliedEventData &,bool &,Attribute &);
+
 
 	bool get_one_subscription_cmd() {return one_subscription_cmd;}
 	void set_one_subscription_cmd(bool val) {one_subscription_cmd = val;}
@@ -189,7 +202,8 @@ public :
 
 //------------------ Push event -------------------------------
 
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct AttributeData &,string &,DevFailed *);
+	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool);
+	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *) {}
 
 protected :
 
@@ -263,7 +277,8 @@ public :
 //------------------ Push event -------------------------------
 
 	void push_heartbeat_event();
-	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct AttributeData &,string &,DevFailed *);
+	virtual void push_event(DeviceImpl *,string,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,string &,DevFailed *,bool);
+	virtual void push_event_loop(DeviceImpl *,EventType,vector<string> &,vector<double> &,vector<string> &,vector<long> &,struct SuppliedEventData &,Attribute &,DevFailed *);
 
 	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	string &get_event_endpoint() {return event_endpoint;}
@@ -273,9 +288,12 @@ public :
     bool is_event_mcast(string &);
     string &get_mcast_event_endpoint(string &);
     void init_event_cptr(string &event_name);
+    size_t get_mcast_event_nb() {return event_mcast.size();}
 
     bool update_connected_client(client_addr *);
-    void set_double_send() {double_send=true;double_send_heartbeat=true;}
+    void set_double_send() {double_send++;double_send_heartbeat=true;}
+
+    int get_zmq_release() {return zmq_release;}
 
 protected :
 	ZmqEventSupplier(Util *);
@@ -288,6 +306,7 @@ private :
         string                  endpoint;
         zmq::socket_t           *pub_socket;
         bool                    local_client;
+        bool					double_send;
     };
 
     struct ConnectedClient
@@ -299,7 +318,9 @@ private :
 	zmq::context_t              zmq_context;            // ZMQ context
 	zmq::socket_t               *heartbeat_pub_sock;    // heartbeat publisher socket
 	zmq::socket_t               *event_pub_sock;        // events publisher socket
-	map<string,McastSocketPub>  event_mcast;            // multicast socket(s)
+	map<string,McastSocketPub>  event_mcast;            // multicast socket(s) map
+														// The key is the full event name
+														// ie: tango://kidiboo.esrf.fr:1000/dev/test/10/att.change
 
 	string                      heartbeat_endpoint;     // heartbeat publisher endpoint
 	string                      host_ip;                // Host IP address
@@ -309,8 +330,10 @@ private :
     TangoCdrMemoryStream        data_call_cdr;
     string                      event_name;
 
-    zmq::message_t              endian_mess;            // Zmq message for host endianness
+    zmq::message_t              endian_mess;            // Zmq messages
     zmq::message_t              endian_mess_2;          //
+    zmq::message_t				endian_mess_heartbeat;	//
+    zmq::message_t				endian_mess_heartbeat_2;//
     zmq::message_t              heartbeat_call_mess;    //
     zmq::message_t              heartbeat_call_mess_2;  //
 
@@ -325,13 +348,32 @@ private :
 	map<string,unsigned int>    event_cptr;             // event counter map
 
 	list<ConnectedClient>       con_client;             // Connected clients
-	bool                        double_send;            // Double send flag
+	int                         double_send;            // Double send ctr
 	bool                        double_send_heartbeat;
+
+	int							zmq_release;			// ZMQ lib release
 
 	void tango_bind(zmq::socket_t *,string &);
 	unsigned char test_endian();
     void create_mcast_socket(string &,int,McastSocketPub &);
 };
+
+//
+// Yet another evil macro! But sometimes quite usefull
+//
+
+#define	GET_SEQ(A,B,C,D,E) \
+	do \
+	{ \
+		A = true; \
+		B = &E->value.C(); \
+		if (archive == true) \
+			D = &attr.prev_archive_event.value_4.C(); \
+		else \
+			D = &attr.prev_change_event.value_4.C(); \
+	} \
+	while (false)
+
 
 } // End of namespace
 

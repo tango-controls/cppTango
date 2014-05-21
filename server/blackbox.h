@@ -11,7 +11,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -135,7 +135,12 @@ enum BlackBoxElt_OpType
 	Op_Write_Attr_4,
 	Op_Read_Attr_4,
 	Op_Set_Attr_Config_4,
-	Op_Write_Read_Attributes_4
+	Op_Write_Read_Attributes_4,
+	Op_Get_Attr_Config_5,
+	Op_Set_Attr_Config_5,
+	Op_Read_Attr_5,
+	Op_Write_Read_Attributes_5,
+	Op_Read_Attr_history_5
 };
 
 class BlackBoxElt
@@ -190,7 +195,7 @@ public:
 	void insert_attr(const Tango::DevVarStringArray &,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
 	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
-	void insert_wr_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
+	void insert_wr_attr(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,const ClntIdent &,long vers);
 	void insert_op(BlackBoxElt_OpType);
 	void insert_op(BlackBoxElt_OpType,const ClntIdent &);
 
@@ -211,7 +216,7 @@ private:
 	void insert_op_nl(BlackBoxElt_OpType);
 	void insert_attr_nl(const Tango::AttributeValueList &,long);
 	void insert_attr_nl_4(const Tango::AttributeValueList_4 &);
-	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,long);
+	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,long);
 
 	vector<BlackBoxElt>	box;
 	long				insert_elt;

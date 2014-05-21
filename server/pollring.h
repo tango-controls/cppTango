@@ -1,39 +1,36 @@
-//=============================================================================
+//====================================================================================================================
 //
 // file :               PollRing.h
 //
-// description :        Include for the PollRing object. This class implements
-//                      the polling ring buffer. Command result or attribute
-//			values are stored in this buffer manages as a ring
-//			buffer.
+// description :        Include for the PollRing object. This class implements the polling ring buffer.
+//						Command result or attribute values are stored in this buffer manages as a ring
+//						buffer.
 //
 // project :            TANGO
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//====================================================================================================================
 
 #ifndef _POLLRING_H
 #define _POLLRING_H
@@ -43,14 +40,14 @@
 namespace Tango
 {
 
-//=============================================================================
+//===================================================================================================================
 //
 //			The RingElt class
 //
-// description :	Class to store all the necessary information which will
-//			be stored and returned to client on request
+// description :
+//		Class to store all the necessary information which will be stored and returned to client on request
 //
-//=============================================================================
+//===================================================================================================================
 
 
 class RingElt
@@ -62,6 +59,7 @@ public:
 	Tango::AttributeValueList	*attr_value;
 	Tango::AttributeValueList_3	*attr_value_3;
 	Tango::AttributeValueList_4	*attr_value_4;
+	Tango::AttributeValueList_5	*attr_value_5;
 	Tango::DevFailed			*except;
 	struct timeval				when;
 };
@@ -76,14 +74,14 @@ inline bool operator==(const RingElt &,const RingElt &)
 	return true;
 }
 
-//=============================================================================
+//===================================================================================================================
 //
 //			The PollRing class
 //
-// description :	Class to implement the ring buffer itself. This is mainly
-//			a vector of RingElt managed as a circular buffer
+// description :
+//		Class to implement the ring buffer itself. This is mainly a vector of RingElt managed as a circular buffer
 //
-//=============================================================================
+//==================================================================================================================
 
 class PollRing
 {
@@ -96,9 +94,10 @@ public:
 	void insert_data(Tango::AttributeValueList *,struct timeval &);
 	void insert_data(Tango::AttributeValueList_3 *,struct timeval &);
 	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,bool);
+	void insert_data(Tango::AttributeValueList_5 *,struct timeval &,bool);
 	void insert_except(Tango::DevFailed *,struct timeval &);
 
-	void force_copy_data(Tango::AttributeValueList_4 *);
+	template <typename T> void force_copy_data(T *);
 
 	void get_delta_t(vector<double> &,long nb);
 	struct timeval get_last_insert_date();
@@ -115,6 +114,7 @@ public:
 	Tango::AttributeValue &get_last_attr_value();
 	Tango::AttributeValue_3 &get_last_attr_value_3();
 	Tango::AttributeValue_4 &get_last_attr_value_4();
+	Tango::AttributeValue_5 &get_last_attr_value_5();
 	long get_nb_elt() {return nb_elt;}
 
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);
@@ -122,7 +122,8 @@ public:
 
 	void get_attr_history(long,Tango::DevAttrHistoryList *,long);
 	void get_attr_history(long,Tango::DevAttrHistoryList_3 *,long);
-	void get_attr_history(long,Tango::DevAttrHistory_4 *,long);
+
+	template <typename T> void get_attr_history(long,T *,long);
 
 	void get_attr_history_43(long,Tango::DevAttrHistoryList_3 *,long);
 

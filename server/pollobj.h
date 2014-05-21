@@ -11,7 +11,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -71,6 +71,7 @@ public:
 	void insert_data(Tango::AttributeValueList *,struct timeval &,struct timeval &);
 	void insert_data(Tango::AttributeValueList_3 *,struct timeval &,struct timeval &);
 	void insert_data(Tango::AttributeValueList_4 *,struct timeval &,struct timeval &);
+	void insert_data(Tango::AttributeValueList_5 *,struct timeval &,struct timeval &);
 	void insert_except(Tango::DevFailed *,struct timeval &,struct timeval &);
 
 	double get_authorized_delta() {return max_delta_t;}
@@ -80,6 +81,7 @@ public:
 	Tango::AttributeValue &get_last_attr_value(bool);
 	Tango::AttributeValue_3 &get_last_attr_value_3(bool);
 	Tango::AttributeValue_4 &get_last_attr_value_4(bool);
+	Tango::AttributeValue_5 &get_last_attr_value_5(bool);
 
 	bool is_ring_empty() {omni_mutex_lock(*this);return is_ring_empty_i();}
 	bool is_ring_empty_i() {return ring.is_empty();}
@@ -111,24 +113,23 @@ public:
 	Tango::DevFailed *get_last_except_i() {return ring.get_last_except();}
 	Tango::DevErrorList &get_last_attr_error_i() {return ring.get_last_attr_error();}
 
-	inline void get_delta_t(vector<double> &vd, long nb)
-	{omni_mutex_lock(*this);get_delta_t_i(vd,nb);}
-	inline void get_delta_t_i(vector<double> &vd,long nb)
-	{ring.get_delta_t(vd,nb);}
+	void get_delta_t(vector<double> &vd, long nb) {omni_mutex_lock(*this);get_delta_t_i(vd,nb);}
+	void get_delta_t_i(vector<double> &vd,long nb) {ring.get_delta_t(vd,nb);}
 
-	inline long get_elt_nb_in_buffer()
-	{omni_mutex_lock(*this);return get_elt_nb_in_buffer_i();}
-	inline long get_elt_nb_in_buffer_i()
-	{return ring.get_nb_elt();}
+	long get_elt_nb_in_buffer() {omni_mutex_lock(*this);return get_elt_nb_in_buffer_i();}
+	long get_elt_nb_in_buffer_i() {return ring.get_nb_elt();}
 
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);
 	void get_cmd_history(long,Tango::DevCmdHistory_4 *,Tango::CmdArgType &);
 
-	void get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long type);
-	void get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
-	void get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long type);
+	void get_attr_history(long,Tango::DevAttrHistoryList *,long);
+	void get_attr_history(long,Tango::DevAttrHistoryList_3 *,long);
+	void get_attr_history(long,Tango::DevAttrHistory_4 *,long,AttrDataFormat);
+	void get_attr_history(long,Tango::DevAttrHistory_5 *,long,AttrDataFormat);
 
 	void get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long type);
+
+	bool is_fwd_att() {return fwd;}
 
 protected:
 	DeviceImpl			*dev;
@@ -138,6 +139,7 @@ protected:
 	struct timeval		needed_time;
 	double				max_delta_t;
 	PollRing			ring;
+	bool				fwd;
 };
 
 inline bool operator<(const PollObj &,const PollObj &)

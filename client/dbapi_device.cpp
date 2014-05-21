@@ -1,4 +1,6 @@
 static const char *RcsId = "$Id$\n$Name$";
+
+//===================================================================================================================
 //
 // dbdevice.cpp - C++ source code file for TANGO dbapi class DbDevice
 //
@@ -6,26 +8,25 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
+//===================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -39,45 +40,54 @@ using namespace CORBA;
 namespace Tango
 {
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::DbDevice() - constructor to create a DbDevice object for
-//			  accessing a device of this name in the specified
-//			  TANGO database (import/export info and properties)
+//	method :
+// 		DbDevice::DbDevice()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Constructor to create a DbDevice object for accessing a device of this name in the specified TANGO database
+//		(import/export info and properties)
+//
+//------------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_NullPtr)
+DbDevice::DbDevice(string &dev_name, Database *dev_dbase):ext(Tango_nullptr)
 {
 	name = dev_name;
 	dbase = dev_dbase;
 	ext_dbase = true;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::DbDevice() - constructor to create a DbDevice object for
-//			  accessing a device of this name without specifying
-//			  the TANGO database.
+//	method :
+// 		DbDevice::DbDevice()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Constructor to create a DbDevice object for accessing a device of this name without specifying the
+//		TANGO database.
+//
+//-----------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name):ext(Tango_NullPtr)
+DbDevice::DbDevice(string &dev_name):ext(Tango_nullptr)
 {
 	name = dev_name;
 	db_ind = ApiUtil::instance()->get_db_ind();
 	ext_dbase = false;
 }
 
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::DbDevice() - constructor to create a DbDevice object for
-//			  accessing a device of this name with specifying
-//			  the TANGO database via its server host and port
+//	method:
+//		DbDevice::DbDevice()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Constructor to create a DbDevice object for accessing a device of this name with specifying the TANGO
+//		database via its server host and port
+//
+//------------------------------------------------------------------------------------------------------------------
 
-DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_NullPtr)
+DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_nullptr)
 {
 	name = dev_name;
 
@@ -90,25 +100,30 @@ DbDevice::DbDevice(string &dev_name,string &host,string &port_str):ext(Tango_Nul
 	ext_dbase = false;
 }
 
-//-----------------------------------------------------------------------------
-
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::~DbDevice() - destructor to destroy a DbDevice object
+//	method :
+// 		DbDevice::~DbDevice()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Destructor to destroy a DbDevice object
+//
+//------------------------------------------------------------------------------------------------------------------
 
 DbDevice::~DbDevice()
 {
 }
 
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::get_dbase() - public method to return the database used by this
-//			   db device.
+//	method :
+// 		DbDevice::get_dbase()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to return the database used by this db device.
+//
+//------------------------------------------------------------------------------------------------------------------
 
 Database *DbDevice::get_dbase()
 {
@@ -122,11 +137,15 @@ Database *DbDevice::get_dbase()
 }
 
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::import() - public method to return import info for a device
+//	method :
+// 		DbDevice::import()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to return import info for a device
+//
+//------------------------------------------------------------------------------------------------------------------
 
 DbDevImportInfo DbDevice::import_device()
 {
@@ -139,11 +158,15 @@ DbDevImportInfo DbDevice::import_device()
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::export_device() - public method to export device to the database
+// 	method :
+// 		DbDevice::export_device()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to export device to the database
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::export_device(DbDevExportInfo &dev_export)
 {
@@ -157,11 +180,15 @@ void DbDevice::export_device(DbDevExportInfo &dev_export)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::get_property() - public method to get device properties from the database
+//	method :
+// 		DbDevice::get_property()
 //
-//-----------------------------------------------------------------------------
+// 	description :
+//		Public method to get device properties from the database
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::get_property(DbData &db_data)
 {
@@ -184,11 +211,15 @@ void DbDevice::get_property(DbData &db_data)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::put_property() - public method to put device properties from the database
+//	method :
+// 		DbDevice::put_property()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to put device properties from the database
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::put_property(DbData &db_data)
 {
@@ -202,11 +233,15 @@ void DbDevice::put_property(DbData &db_data)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::delete_property() - public method to delete device properties from the database
+//	method :
+// 		DbDevice::delete_property()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to delete device properties from the database
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::delete_property(DbData &db_data)
 {
@@ -220,12 +255,15 @@ void DbDevice::delete_property(DbData &db_data)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::get_attribute_property() - public method to get device attribute
-//           properties from the database
+//	method :
+// 		DbDevice::get_attribute_property()
 //
-//-----------------------------------------------------------------------------
+//	description:
+//		Public method to get device attribute properties from the database
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::get_attribute_property(DbData &db_data)
 {
@@ -239,12 +277,15 @@ void DbDevice::get_attribute_property(DbData &db_data)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::put_attribute_property() - public method to put device attribute
-//           properties from the database
+//	method :
+// 		DbDevice::put_attribute_property()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to put device attribute properties from the database
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::put_attribute_property(DbData &db_data)
 {
@@ -258,12 +299,15 @@ void DbDevice::put_attribute_property(DbData &db_data)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::delete_attribute_property() - public method to delete device attribute
-//           properties from the database
+//	method :
+// 		DbDevice::delete_attribute_property()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to delete device attribute properties from the database
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::delete_attribute_property(DbData &db_data)
 {
@@ -277,11 +321,15 @@ void DbDevice::delete_attribute_property(DbData &db_data)
 	return;
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::check_access_control() - public method to return device access right
+//	method :
+//	 	DbDevice::check_access_control()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to return device access right
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 AccessControlType DbDevice::check_access_control()
 {
@@ -296,12 +344,15 @@ AccessControlType DbDevice::check_access_control()
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::clear_access_except_errors() - public method to clear memorized
-// access control exception
+//	method :
+// 		DbDevice::clear_access_except_errors()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to clear memorized access control exception
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::clear_access_except_errors()
 {
@@ -314,12 +365,15 @@ void DbDevice::clear_access_except_errors()
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbDevice::get_property_list() - public method to get device properties list
-// from the database
+//	method :
+// 		DbDevice::get_property_list()
 //
-//-----------------------------------------------------------------------------
+//	description :
+//		Public method to get device properties list from the database
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbDevice::get_property_list(const string &wildcard,vector<string> &prop_list)
 {

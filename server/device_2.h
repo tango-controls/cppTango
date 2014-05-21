@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -69,6 +69,9 @@ class DeviceClass;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Device_2Impl : public virtual POA_Tango::Device_2,
@@ -180,8 +183,7 @@ public:
  */
 	virtual CORBA::Any *command_inout_2(const char *in_cmd,
 					    const CORBA::Any &in_data,
-					    Tango::DevSource source)
-	throw (Tango::DevFailed, CORBA::SystemException);
+					    Tango::DevSource source);
 
 /**
  * Get device command list.
@@ -194,8 +196,7 @@ public:
  * device command. Since Tango release 2, the command display level field has
  * been added to this structure
  */
-	virtual Tango::DevCmdInfoList_2 *command_list_query_2()
-	throw (Tango::DevFailed, CORBA::SystemException);
+	virtual Tango::DevCmdInfoList_2 *command_list_query_2();
 
 /**
  * Get command info.
@@ -213,8 +214,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual Tango::DevCmdInfo_2 *command_query_2(const char *command)
-	throw (Tango::DevFailed, CORBA::SystemException);
+	virtual Tango::DevCmdInfo_2 *command_query_2(const char *command);
 
 /**
  * Read attribute(s) value.
@@ -236,8 +236,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
     	virtual Tango::AttributeValueList *read_attributes_2(const Tango::DevVarStringArray& names,
-							     Tango::DevSource source)
-	throw (Tango::DevFailed, CORBA::SystemException);
+							     Tango::DevSource source);
 
 /**
  * Get attribute(s) configuration.
@@ -315,6 +314,7 @@ public:
 private:
 	CORBA::Any *attr2cmd(AttributeValue_3 &,bool,bool);
 	CORBA::Any *attr2cmd(AttributeValue_4 &,bool,bool);
+	CORBA::Any *attr2cmd(AttributeValue_5 &,bool,bool);
 	void Hist_32Hist(DevAttrHistoryList_3 *,DevAttrHistoryList *);
 	void Polled_2_Live(long,Tango::AttrValUnion &,CORBA::Any &);
 	void Polled_2_Live(long,CORBA::Any &,CORBA::Any &);

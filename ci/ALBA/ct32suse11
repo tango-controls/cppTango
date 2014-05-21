@@ -1,0 +1,11 @@
+MAKE_PATH="make"
+OS_TYPE="linux"
+OS_SPEC="linux=1 ubuntu=1"
+CPU_BUS=
+OBJS_DIR=objs
+OBJS_DIR_SL=objs_sl
+CLEAN="clean"
+
+OMNI_BASE=/siciliarep/build/lib/omniORB/omniORB.suse111.32
+LOG4TANGO_BASE=/siciliarep/build/lib/log4tango/log4tango.suse111.32
+ZMQ_BASE=/siciliarep/build/lib/zeromq/zeromq.suse111.32

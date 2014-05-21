@@ -8,7 +8,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- August 2002
 //
-// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -107,7 +107,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 			desc << "Command_inout_asynch on device " << dev_name() << " for command ";
 			desc << command << " is not authorized" << ends;
 
-			NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+			NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  (const char *)"Connection::command_inout_asynch()");
 		}
 	}
@@ -125,7 +125,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
 		desc << ", command " << command << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"Connection::command_inout_asynch()");
 	}
 
@@ -136,7 +136,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 	CORBA::Request_ptr request;
 
 	if (version >= 4)
-		request = ext->device_4->_request("command_inout_4");
+		request = device_4->_request("command_inout_4");
 	else if (version >=2)
 		request = device_2->_request("command_inout_2");
 	else
@@ -246,7 +246,7 @@ DeviceData Connection::command_inout_reply(long id)
 
 	if (req.req_type != TgRequest::CMD_INOUT)
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::command_inout_reply");
 	}
@@ -261,7 +261,7 @@ DeviceData Connection::command_inout_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       desc.str(),
 						       (const char *)"Connection::command_inout_reply");
 	}
@@ -278,7 +278,7 @@ DeviceData Connection::command_inout_reply(long id)
 // Get received value
 //
 
-		const CORBA::Any *received;
+		const CORBA::Any *received = NULL;
 		CORBA::Any &dii_any = req.request->return_value();
 		dii_any >>= received;
 		CORBA::Any *server_any = new CORBA::Any(*received);
@@ -353,7 +353,7 @@ DeviceData Connection::command_inout_reply(long id)
 			remove_asyn_request(id);
 
 			Except::re_throw_exception(ex,
-					   (const char*)"API_CommandFailed",
+					   (const char*)API_CommandFailed,
 					   desc.str(),
 					   (const char*)"Connection::command_inout_reply()");
 
@@ -463,7 +463,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 	if (req.req_type != TgRequest::CMD_INOUT)
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::command_inout_reply");
 	}
@@ -512,7 +512,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			desc << "Device " << dev_name();
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"Connection::command_inout_reply");
 		}
@@ -605,7 +605,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			remove_asyn_request(id);;
 
 			Except::re_throw_exception(ex,
-						   (const char*)"API_CommandFailed",
+						   (const char*)API_CommandFailed,
                         			   desc.str(),
 						   (const char*)"Connection::command_inout_reply()");
 
@@ -711,7 +711,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
 	}
 
@@ -732,12 +732,12 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 		names[i] = attr_names[i].c_str();
 
 	CORBA::Request_ptr request;
-	if (version == 4)
+	if (version >= 4)
 	{
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
-		request = Connection::ext->device_4->_request("read_attributes_4");
+		request = Connection::device_4->_request("read_attributes_4");
 		request->add_in_arg() <<= names;
 		request->add_in_arg() <<= source;
 		request->add_in_arg() <<= ci;
@@ -745,7 +745,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	}
 	else if (version == 3)
 	{
-		request = Connection::ext->device_3->_request("read_attributes_3");
+		request = Connection::device_3->_request("read_attributes_3");
 		request->add_in_arg() <<= names;
 		request->add_in_arg() <<= source;
 		request->set_return_type(Tango::_tc_AttributeValueList_3);
@@ -812,7 +812,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::read_attributes_reply");
 	}
@@ -827,7 +827,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       desc.str(),
 						       (const char *)"DeviceProxy::read_attributes_reply");
 	}
@@ -912,7 +912,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 					desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 					err_list.inout().length(nb_except + 1);
-					err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+					err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 					err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
 
 					string st = desc.str();
@@ -968,7 +968,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::read_attribute_reply");
 	}
@@ -983,7 +983,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       desc.str(),
 						       (const char *)"DeviceProxy::read_attribute_reply");
 	}
@@ -1056,7 +1056,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 				desc << ", attribute " << dev_attr->name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute_reply()");
 
 				string st = desc.str();
@@ -1114,7 +1114,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::read_attributes_reply");
 	}
@@ -1163,7 +1163,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"DeviceProxy::read_attributes_reply");
 		}
@@ -1250,7 +1250,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 				desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attributes_reply()");
 
 				string st = desc.str();
@@ -1306,7 +1306,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::read_attribute_reply");
 	}
@@ -1355,7 +1355,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"DeviceProxy::read_attributes_reply");
 		}
@@ -1428,7 +1428,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 			desc << ", attribute " << dev_attr->name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute_reply()");
 
 			string st = desc.str();
@@ -1545,12 +1545,12 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
 		if (type == SIMPLE)
 	        	Except::re_throw_exception(ex,
-						   (const char*)"API_AttributeFailed",
+						   (const char*)API_AttributeFailed,
                         		   	   desc.str(),
 						   (const char*)"DeviceProxy::read_attribute_reply()");
 		else
 	        	Except::re_throw_exception(ex,
-						   (const char*)"API_AttributeFailed",
+						   (const char*)API_AttributeFailed,
                         		   	   desc.str(),
 						   (const char*)"DeviceProxy::read_attributes_reply()");
 
@@ -1645,7 +1645,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 		TangoSys_OMemStream desc;
 		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-		NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+		NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  (const char *)"DeviceProxy::write_attributes_asynch()");
 	}
 
@@ -1661,7 +1661,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
 	}
 
@@ -1693,7 +1693,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		request = ext->device_4->_request("write_attributes_4");
+		request = device_4->_request("write_attributes_4");
 		request->add_in_arg() <<= att_4;
 		request->add_in_arg() <<= ci;
 		request->exceptions()->add(Tango::_tc_MultiDevFailed);
@@ -1734,7 +1734,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 		TangoSys_OMemStream desc;
 		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-		NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+		NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  (const char *)"DeviceProxy::write_attribute_asynch()");
 	}
 
@@ -1750,7 +1750,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         desc.str(), (const char*)"DeviceProxy::write_attribute_asynch()");
 	}
 
@@ -1780,7 +1780,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 		ApiUtil *au = ApiUtil::instance();
 		ci.cpp_clnt(au->get_client_pid());
 
-		request = ext->device_4->_request("write_attributes_4");
+		request = device_4->_request("write_attributes_4");
 		request->add_in_arg() <<= att_4;
 		request->add_in_arg() <<= ci;
 		request->exceptions()->add(Tango::_tc_MultiDevFailed);
@@ -1841,7 +1841,7 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 
 	if ((req.req_type == TgRequest::CMD_INOUT) || (req.req_type == TgRequest::READ_ATTR))
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::write_attributes_reply");
 	}
@@ -1890,7 +1890,7 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       	       desc.str(),
 						               (const char *)"DeviceProxy::write_attributes_reply");
 		}
@@ -1950,7 +1950,7 @@ void DeviceProxy::write_attributes_reply(long id)
 
 	if ((req.req_type == TgRequest::CMD_INOUT) || (req.req_type == TgRequest::READ_ATTR))
 	{
-		ApiAsynExcept::throw_exception((const char *)"API_BadAsynReqType",
+		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
 					       (const char *)"Incompatible request type",
 					       (const char *)"Connection::write_attributes_reply");
 	}
@@ -1965,7 +1965,7 @@ void DeviceProxy::write_attributes_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)"API_AsynReplyNotArrived",
+		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
 						       desc.str(),
 						       (const char *)"DeviceProxy::write_attributes_reply");
 	}
@@ -2138,7 +2138,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
 		if (version < 3)
 		{
-			Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
 						   desc.str(),
 						   (const char*)"DeviceProxy::write_attributes_reply()");
 		}
@@ -2146,7 +2146,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 		{
 			if (serv_ex != NULL)
 			{
-				Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+				Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
 							   desc.str(),
 							   (const char*)"DeviceProxy::write_attributes_reply()");
 			}
@@ -2155,7 +2155,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 				throw Tango::NamedDevFailedList(m_ex,
 					       			device_name,
 					       			(const char *)"DeviceProxy::write_attributes_reply()",
-					       			(const char *)"API_AttributeFailed");
+					       			(const char *)API_AttributeFailed);
 			else
 			{
 
@@ -2164,7 +2164,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 //
 
 				Tango::DevFailed ex(m_ex.errors[0].err_list);
-				Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+				Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         				   desc.str(), (const char*)"DeviceProxy::write_attributes_reply()");
 
 			}
@@ -2472,7 +2472,7 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 
 void Connection::cancel_asynch_request(long id)
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_as_cancelled(id);
 	pasyn_ctr--;
 }
@@ -2491,7 +2491,7 @@ void Connection::cancel_asynch_request(long id)
 
 void Connection::cancel_all_polling_asynch_request()
 {
-	omni_mutex_lock guard(ext->asyn_mutex);
+	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_all_polling_as_cancelled();
 	pasyn_ctr = 0;
 }

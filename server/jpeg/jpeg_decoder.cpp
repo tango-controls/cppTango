@@ -10,7 +10,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -701,7 +701,7 @@ int jpeg_decode(int jpegSize,unsigned char *jpegData,
   errCode = jpeg_process_marker(&decoder,bs);ERROR(errCode);
   errCode = jpeg_decoder_init(&decoder);ERROR(errCode);
 
-  int nbMCU   = decoder.mcuNbCol * decoder.mcuNbRow;
+//  int nbMCU   = decoder.mcuNbCol * decoder.mcuNbRow;
   int rWidth  = decoder.mcuNbRow * decoder.mcuWidth;
   int rHeight = decoder.mcuNbCol * decoder.mcuHeight;
   int mcuSize = decoder.mcuNbBlock*64;

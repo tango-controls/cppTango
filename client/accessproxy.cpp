@@ -7,7 +7,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -121,6 +121,8 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 
 	bool multi_ip = true;
 	bool two_tries = false;
+
+	omni_mutex_lock oml(only_one);
 
 	while (two_tries == false)
 	{
@@ -262,13 +264,13 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+			if (::strcmp(e.errors[0].reason.in(),API_CommandNotFound) == 0)
 			{
 				multi_ip = false;
 			}
 			else if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
 			{
-				Except::re_throw_exception(e,(const char *)"API_CannotCheckAccessControl",
+				Except::re_throw_exception(e,(const char *)API_CannotCheckAccessControl,
 											(const char *)"Cannot import Access Control device !",
 											(const char *)"AccessProxy::check_access_control()");
 			}

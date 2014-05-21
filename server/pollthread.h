@@ -9,7 +9,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,6 +38,7 @@
 
 #include <tango.h>
 #include <pollobj.h>
+#include <utils.h>
 
 #include <list>
 
@@ -121,6 +122,7 @@ protected:
 	void poll_attr(WorkItem &);
 	void eve_heartbeat();
 	void store_subdev();
+	void auto_unsub();
 
 	void print_list();
 	void insert_in_list(WorkItem &);
@@ -152,10 +154,12 @@ private:
 	AttributeValue		dummy_att;
 	AttributeValue_3	dummy_att3;
 	AttributeValue_4 	dummy_att4;
+	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
 	long				auto_upd;
 	bool				send_heartbeat;
+	u_int				heartbeat_ctr;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
@@ -165,7 +169,6 @@ public:
 	static string	   	name_to_del;
 	static PollObjType	type_to_del;
 };
-
 
 //
 // Three macros

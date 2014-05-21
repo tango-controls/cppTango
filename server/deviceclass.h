@@ -8,7 +8,7 @@
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -67,6 +67,9 @@ class DServer;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class
@@ -156,7 +159,7 @@ public:
  * @param list Reference to the device name list
  */
 
-	virtual void device_name_factory(vector<string> &) {};
+	virtual void device_name_factory(vector<string> &list) {(void)list;};
 
 /**
  * Delete device.
@@ -256,7 +259,7 @@ public:
 /**@name Signal related methods
  * These methods allow a signal management at device level */
 //@{
-#if !(defined __linux)
+#if defined _TG_WINDOWS_
 /**
  * Register a signal.
  *
@@ -361,7 +364,7 @@ protected:
  * @param cmd The command object
  */
 
-	void set_default_command(Command *cmd) {ext->default_cmd = cmd;}
+	void set_default_command(Command *cmd) {default_cmd = cmd;}
 //@}
 
 /**@name Class data members */
@@ -397,7 +400,8 @@ protected:
 //@}
 
 public:
-	vector<string> &get_nodb_name_list() {return ext->nodb_name_list;}
+/// @privatesection
+	vector<string> &get_nodb_name_list() {return nodb_name_list;}
 	void set_memorized_values(bool flag, long idx = 0,bool from_init = false);
 
 	void add_wiz_dev_prop(string &name,string &desc,string &def);
@@ -409,46 +413,42 @@ public:
 	vector<string> &get_wiz_class_prop() {return wiz_class_prop;}
 	vector<string> &get_wiz_dev_prop() {return wiz_dev_prop;}
 
-	string &get_cvs_tag() {return ext->cvs_tag;}
-	string &get_cvs_location() {return ext->cvs_location;}
+	string &get_cvs_tag() {return cvs_tag;}
+	string &get_cvs_location() {return cvs_location;}
 
-	string &get_svn_tag() {return ext->svn_tag;}
-	string &get_svn_location() {return ext->svn_location;}
+	string &get_svn_tag() {return svn_tag;}
+	string &get_svn_location() {return svn_location;}
 
-	void set_cvs_tag(string &str) {ext->cvs_tag=str;}
-	void set_cvs_location(string &str) {ext->cvs_location=str;}
+	void set_cvs_tag(string &str) {cvs_tag=str;}
+	void set_cvs_location(string &str) {cvs_location=str;}
 
 	void add_device(DeviceImpl *dev) {device_list.push_back(dev);}
 	void delete_dev(long idx,Tango::Util *tg,PortableServer::POA_ptr r_poa);
 
-	bool is_py_class() {return ext->py_class;}
-	void set_py_class(bool py) {ext->py_class=py;}
+	bool is_py_class() {return py_class;}
+	void set_py_class(bool py) {py_class=py;}
 	virtual void delete_class() {}
 	void get_mcast_event(DServer *);
 
 	bool is_command_allowed(const char *);
 
-	bool get_device_factory_done() {return ext->device_factory_done;}
-	void set_device_factory_done(bool val) {ext->device_factory_done = val;}
+	bool get_device_factory_done() {return device_factory_done;}
+	void set_device_factory_done(bool val) {device_factory_done = val;}
+
+	void check_att_conf();
+	void release_devices_mon();
+
+	void remove_command(const string &);
 
 protected:
-	Command *get_default_command() {return ext->default_cmd;}
+/// @privatesection
+	Command *get_default_command() {return default_cmd;}
 
 private:
     class DeviceClassExt
     {
     public:
-        DeviceClassExt():only_one("class"),default_cmd(NULL),py_class(false),device_factory_done(false) {};
-
-        vector<string>		nodb_name_list;
-        TangoMonitor		only_one;
-        string				cvs_tag;
-        string				cvs_location;
-        Command * 			default_cmd;
-        bool				py_class;
-        string              svn_tag;
-        string              svn_location;
-        bool                device_factory_done;
+        DeviceClassExt() {};
     };
 
 	void get_class_system_resource();
@@ -464,6 +464,20 @@ private:
 #else
 	DeviceClassExt			        *ext;
 #endif
+
+//
+// Ported from the extension class
+//
+
+    vector<string>		nodb_name_list;
+    TangoMonitor		only_one;
+    string				cvs_tag;
+    string				cvs_location;
+    Command * 			default_cmd;
+    bool				py_class;
+    string              svn_tag;
+    string              svn_location;
+    bool                device_factory_done;
 };
 
 
