@@ -25,9 +25,13 @@ python %REL_DIR%cxxtest\bin\cxxtestgen.py --template=%REL_DIR%cxxtest\template\t
 %REL_DIR%new_tests\cxx_database.cpp ^
 %REL_DIR%new_tests\cxx_mem_attr.cpp ^
 %REL_DIR%new_tests\cxx_write_attr_hard.cpp ^
-%REL_DIR%new_tests\cxx_zmcast01_simple.cpp ^
-%REL_DIR%new_tests\cxx_zmcast02_local_remote.cpp ^
-%REL_DIR%new_tests\cxx_zmcast03_svr_local_remote.cpp
+%REL_DIR%new_tests\cxx_enum_att.cpp ^
+%REL_DIR%new_tests\cxx_fwd_att.cpp ^
+%REL_DIR%new_tests\cxx_z00_dyn_cmd.cpp 
+
+rem %REL_DIR%new_tests\cxx_zmcast01_simple.cpp ^
+rem %REL_DIR%new_tests\cxx_zmcast02_local_remote.cpp ^
+rem %REL_DIR%new_tests\cxx_zmcast03_svr_local_remote.cpp
 
 rem %REL_DIR%new_tests\cxx_signal.cpp
 rem %REL_DIR%new_tests\cxx_dserver_cmd.cpp

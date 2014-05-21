@@ -34,11 +34,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	cout << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -59,7 +59,10 @@ int main(int argc, char **argv)
 // Add one attribute to the device
 //
 
-		device->command_inout("IOAddAttribute");
+		Tango::ConstDevString ds = "Added_short_attr";
+		Tango::DeviceData din;
+		din << ds;
+		device->command_inout("IOAddAttribute",din);
 		
 //
 // Get new attribute number
@@ -76,7 +79,7 @@ int main(int argc, char **argv)
 // Redo it once, this should not change att number (attribute already added)
 //
 
-		device->command_inout("IOAddAttribute");
+		device->command_inout("IOAddAttribute",din);
 		
 		vector<string> *att_list_add2;		
 		att_list_add2 = device->get_attribute_list();
@@ -91,7 +94,7 @@ int main(int argc, char **argv)
 // Remove the attribute
 //
 
-		device->command_inout("IORemoveAttribute");
+		device->command_inout("IORemoveAttribute",din);
 		
 		vector<string> *att_list_rem;		
 		att_list_rem = device->get_attribute_list();
@@ -107,7 +110,7 @@ int main(int argc, char **argv)
 		bool except = false;
 		try
 		{
-			device->command_inout("IORemoveAttribute");
+			device->command_inout("IORemoveAttribute",din);
 		}
 		catch (Tango::DevFailed &e)
 		{

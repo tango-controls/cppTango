@@ -557,7 +557,7 @@ public:
 		TS_ASSERT((*confs_root)[0].label == "Ca marche?");	
 
 		delete confs;
-		delete confs_root;					
+		delete confs_root;			
 	}
 
 // Try a write_read on a fwd attribute

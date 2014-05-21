@@ -72,9 +72,7 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 		else
 		{
 			coutv << "Error send to callback" << endl;
-//			Tango::Except::print_error_stack(event_data->errors);
-			if (strcmp(event_data->errors[0].reason.in(),"bbb64") == 0)
-				cb_err++;
+			cb_err++;
 		}
 	}
 	catch (...)
@@ -106,11 +104,11 @@ int main(int argc, char **argv)
 	{
 		device = new DeviceProxy(device_name);
 	}
-        catch (CORBA::Exception &e)
-        {
-              	Except::print_exception(e);
+	catch (CORBA::Exception &e)
+	{
+		Except::print_exception(e);
 		exit(1);
-        }
+	}
 
 	coutv << endl << "new DeviceProxy(" << device->name() << ") returned" << endl << endl;
 
@@ -276,7 +274,24 @@ int main(int argc, char **argv)
 		assert (cb.val_size == 2);
 				
 		cout << "   CallBack executed when spectrum size decreases --> OK" << endl;
-								
+
+//
+// Stop polling
+//
+
+		device->stop_poll_attribute(att_name);
+
+//
+// We should have receive one error event
+//
+
+		Tango_sleep(1);
+
+		coutv << "cb err = " << cb.cb_err << endl;
+		assert (cb.cb_err == 1);
+
+		cout << "   Error received in callback if we stop polling --> OK" << endl;
+				
 //
 // unsubscribe to the event
 //
@@ -285,11 +300,6 @@ int main(int argc, char **argv)
 		
 		cout << "   unsubscribe_event --> OK" << endl;
 				
-//
-// Stop polling
-//
-
-		device->stop_poll_attribute(att_name);
 	}
 	catch (Tango::DevFailed &e)
 	{

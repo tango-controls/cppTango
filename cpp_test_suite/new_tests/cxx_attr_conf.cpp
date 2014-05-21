@@ -298,8 +298,10 @@ public:
 	{
 		try
 		{
-//		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAddAttribute"));
-		device1->command_inout("IOAddAttribute");
+		Tango::ConstDevString ds = "Added_short_attr";
+		Tango::DeviceData din;
+		din << ds;
+		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAddAttribute",din));
 
 		AttributeInfoEx att_inf;
 //		TS_ASSERT_THROWS_NOTHING(att_inf = device1->get_attribute_config("Added_short_attr"));
@@ -316,7 +318,7 @@ public:
 		TS_ASSERT(att_inf.unit == "No unit");
 		TS_ASSERT(att_inf.standard_unit == "No standard unit");
 		TS_ASSERT(att_inf.display_unit == "No display unit");
-		TS_ASSERT(att_inf.format == "From db (device)");
+		TS_ASSERT(att_inf.format == "Illisible");
 		TS_ASSERT(att_inf.min_value == "Not specified");
 		TS_ASSERT(att_inf.max_value == "Not specified");
 		TS_ASSERT(att_inf.min_alarm == "Not specified");
@@ -324,7 +326,7 @@ public:
 		TS_ASSERT(att_inf.writable_attr_name == "None");
 
 //		TS_ASSERT_THROWS_NOTHING(device1->command_inout("IOAddAttribute")); // ?
-		device1->command_inout("IOAddAttribute");
+		device1->command_inout("IOAddAttribute",din);
 		}
 		catch (Tango::DevFailed &e)
 		{

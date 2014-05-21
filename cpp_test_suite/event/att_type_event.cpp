@@ -27,54 +27,31 @@ class EventCallBack : public Tango::CallBack
 public:
 	int cb_executed;
 	int cb_err;
-	int old_sec,old_usec;
-	int delta_msec;
+	int data_type;
 };
 
 void EventCallBack::push_event(Tango::EventData* event_data)
 {
-	struct timeval now_timeval;
-#ifdef WIN32
-	struct _timeb before_win;
-	_ftime(&before_win);
-	now_timeval.tv_sec = (unsigned long)before_win.time;
-	now_timeval.tv_usec = (long)before_win.millitm * 1000;
-#else
-	gettimeofday(&now_timeval,NULL);
-#endif
-
-	coutv << "date : tv_sec = " << now_timeval.tv_sec;
-	coutv << ", tv_usec = " << now_timeval.tv_usec << endl;
-
-	delta_msec = ((now_timeval.tv_sec - old_sec) * 1000) + ((now_timeval.tv_usec - old_usec) / 1000);	
-
-	old_sec = now_timeval.tv_sec;
-	old_usec = now_timeval.tv_usec;
-	
-	coutv << "delta_msec = " << delta_msec << endl;
-
 	cb_executed++;
 
 	try
 	{
-		coutv << "StateEventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
+		coutv << "EventCallBack::push_event(): called attribute " << event_data->attr_name << " event " << event_data->event << "\n";
 		if (!event_data->err)
 		{
 			coutv << "CallBack value " << *(event_data->attr_value) << endl;
+			data_type = event_data->attr_value->get_type();
 		}
 		else
 		{
 			coutv << "Error send to callback" << endl;
-//			Tango::Except::print_error_stack(event_data->errors);
-			if (strcmp(event_data->errors[0].reason.in(),"aaa") == 0)
-				cb_err++;
+			cb_err++;
 		}
 	}
 	catch (...)
 	{
 		coutv << "EventCallBack::push_event(): could not extract data !\n";
 	}
-
 }
 
 int main(int argc, char **argv)
@@ -172,6 +149,11 @@ int main(int argc, char **argv)
 		att_name = ("UChar_attr");
 		check_attribute_data_type(device,att_name, "DevUChar");
 
+//*************** DevEnum data type ***********************
+
+		att_name = ("Enum_attr_rw");
+		check_attribute_data_type(device,att_name, "DevEnum");
+
 //*************** Exception data type ***********************
 
 		att_name = ("attr_wrong_type");
@@ -205,7 +187,7 @@ void check_attribute_data_type(DeviceProxy *device,string &att_name, const char 
 	EventCallBack cb;
 	cb.cb_executed = 0;
 	cb.cb_err = 0;
-	cb.old_sec = cb.old_usec = 0;
+	cb.data_type = 100;
 		
 // start the polling first!
 
@@ -245,6 +227,13 @@ void check_attribute_data_type(DeviceProxy *device,string &att_name, const char 
 			
 	coutv << "cb excuted = " << cb.cb_executed << endl;
 	assert (cb.cb_executed != 0);
+	
+	string requested_type(data_type);
+	if (requested_type != "Error")
+	{
+		string received_type(CmdArgTypeName[cb.data_type]);
+		assert (received_type == requested_type);
+	}
 				
 	cout << "   Event received for " << data_type << " attribute --> OK" << endl;
 

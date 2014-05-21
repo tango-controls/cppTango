@@ -176,11 +176,20 @@ int main(int argc, char **argv)
 		
 		cout << "   Command_query --> OK" << endl;
 		
-// Test command_list_query
+// Test command_list_query and get_command_list
 
 		CommandInfoList *cmd_list;
 		cmd_list = device->command_list_query();
 		cout << "cmd list size = " << cmd_list->size() << endl;
+
+		vector<string> *cmd_name_list;
+		cmd_name_list = device->get_command_list();
+
+		cout << "cmd_name_list size = " << cmd_name_list->size() << endl;
+
+		assert (cmd_name_list->size() == cmd_list->size());
+
+		cout << "   Command list --> OK" << endl;
 		
 //		assert (cmd_list->size() == 88 );
 //		assert ((*cmd_list)[0].cmd_name == "FileDb" );
@@ -188,6 +197,7 @@ int main(int argc, char **argv)
 
 //		cout << "   Command_list_query --> OK" << endl;
 		delete cmd_list;
+		delete cmd_name_list;
 		
 // Test get_attribute_list
 
@@ -237,6 +247,27 @@ int main(int argc, char **argv)
 		
 		cout << "   Get attribute config --> OK" << endl;
 		delete attr_conf_ptr;
+
+//  Test get_command_config
+
+		CommandInfoList *cmd_conf_ptr;
+		li.clear();
+		li.push_back("state");
+		li.push_back("status");
+
+		cmd_conf_ptr = device->get_command_config(li);
+
+		assert ( cmd_conf_ptr->size() == 2 );
+		
+		assert ( (*cmd_conf_ptr)[0].cmd_name == "State" );
+		assert ( (*cmd_conf_ptr)[0].in_type == DEV_VOID );
+		assert ( (*cmd_conf_ptr)[0].out_type == DEV_STATE );
+
+		assert ( (*cmd_conf_ptr)[1].cmd_name == "Status" );
+		assert ( (*cmd_conf_ptr)[1].in_type == DEV_VOID );
+		assert ( (*cmd_conf_ptr)[1].out_type == DEV_STRING );	
+		
+		cout << "   Get command config --> OK" << endl;
 
 // test attribute_list_query
 

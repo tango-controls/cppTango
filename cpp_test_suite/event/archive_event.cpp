@@ -332,12 +332,10 @@ int main(int argc, char **argv)
 		Tango_sleep(1);
 		long nb_cb = cb.cb_executed;
 		Tango_sleep(12);
-
-cout << "theorical nb = " << nb_cb + 1 << ", real nb = " << cb.cb_executed << endl;		
+	
 		assert (cb.cb_executed == (nb_cb + 1));
 		cout << "   CallBack executed for the periodic part of the event --> OK" << endl;
-		
-								
+										
 //
 // unsubscribe to the event
 //
