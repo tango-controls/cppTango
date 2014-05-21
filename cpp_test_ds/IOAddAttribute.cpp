@@ -182,7 +182,7 @@ CORBA::Any *IORemoveAttribute::execute(Tango::DeviceImpl *device,const CORBA::An
 	Tango::DevString att_name;
 	extract(in_any, att_name);
 	string str(att_name);
-	transform(str.begin(),str.end(),str.begin(),::tolower);
+/*	transform(str.begin(),str.end(),str.begin(),::tolower);*/
 
     device->remove_attribute(str,true);
     return insert();

@@ -96,6 +96,7 @@ endif
 ##############################################################################
 
 OBJS_DIR = 	objs
+OBJS_FWD_DIR = fwd_ds/objs
 
 ifdef prefix
 INCLUDE_DIRS = -I$(OMNI_BASE)/include \
@@ -114,7 +115,8 @@ INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/client \
 			   -I$(LOG4TANGO_BASE)/include/tango \
 			   -I$(ZMQ_BASE)/include \
-			   -I.
+			   -I. \
+			   -I fwd_ds
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR) \
@@ -172,7 +174,11 @@ SVC_OBJS = 	$(OBJS_DIR)/main.o \
 		$(OBJS_DIR)/DevTestClass.o \
 		$(OBJS_DIR)/DevTest.o
 
-
+SVC_FWD_OBJS = $(OBJS_FWD_DIR)/main.o \
+			   $(OBJS_FWD_DIR)/ClassFactory.o \
+			   $(OBJS_FWD_DIR)/FwdTestClass.o \
+			   $(OBJS_FWD_DIR)/FwdTest.o \
+			   $(OBJS_FWD_DIR)/FwdTestStateMachine.o
 
 #.SUFFIXES:	.o .cpp
 #.cpp.o:
@@ -184,15 +190,22 @@ $(OBJS_DIR)/%.o: %.cpp
 	@./cr_dir $(OBJS_DIR)
 	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_DIR)/$*.o
 
-all: DevTest
+$(OBJS_FWD_DIR)/%.o: fwd_ds/%.cpp
+	@./cr_dir $(OBJS_FWD_DIR)
+	$(CC) $(CXXFLAGS) -c $< -o $(OBJS_FWD_DIR)/$*.o
+
+all: DevTest FwdTest
 
 DevTest:	$(SVC_OBJS)
 	@./cr_dir $(BIN_TANGO_DIR)
 	$(CC) $(SVC_OBJS) -o $(BIN_TANGO_DIR)/devTest $(LFLAGS)
 
+FwdTest:	$(SVC_FWD_OBJS)
+	@./cr_dir $(BIN_TANGO_DIR)
+	$(CC) $(SVC_FWD_OBJS) -o $(BIN_TANGO_DIR)/FwdTest $(LFLAGS)
 
 clean:
-	rm -f $(OBJS_DIR)/*.o core
+	rm -f $(OBJS_DIR)/*.o $(OBJS_FWD_DIR)/*.o core
 
 
 

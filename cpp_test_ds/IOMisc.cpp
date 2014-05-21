@@ -4111,6 +4111,7 @@ CORBA::Any *AddEnumLabel::execute(Tango::DeviceImpl *device, const CORBA::Any &i
 	return insert();
 }
 
+
 //+----------------------------------------------------------------------------
 //
 // method : 		ForbiddenEnumValue::ForbiddenEnumValue()

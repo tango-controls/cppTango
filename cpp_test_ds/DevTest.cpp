@@ -181,6 +181,16 @@ void DevTest::init_device()
     att_conf = 10;
     wattr_throw = 0;
 	enum_value = 2;
+
+	Tango::Attribute &att = (get_device_attr())->get_attr_by_name("DynEnum_attr");
+	Tango::MultiAttrProp<Tango::DevEnum> multi_prop;
+	att.get_properties(multi_prop);
+	if (multi_prop.enum_labels.empty() == true)
+		multi_prop.enum_labels.push_back("Dummy_label");
+	att.set_properties(multi_prop);
+
+	cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << endl;
+
 }
 
 
