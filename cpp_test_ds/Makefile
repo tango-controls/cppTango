@@ -103,7 +103,8 @@ INCLUDE_DIRS = -I$(OMNI_BASE)/include \
 			   -I$(TANGO_HOME)/include \
 			   -I$(LOG4TANGO_BASE)/include/tango \
 			   -I$(ZMQ_BASE)/include \
-			   -I.
+			   -I. \
+			   -I fwd_ds
 
 LIB_DIRS = -L $(OMNI_BASE)/lib \
            -L $(LIB_TANGO_DIR)/debug \
