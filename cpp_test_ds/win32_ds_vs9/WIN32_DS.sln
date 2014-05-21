@@ -7,6 +7,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_ds_dll", "win32_ds_dl
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "win32_ds_win", "win32_ds_win\win32_ds_win.vcproj", "{B5E926E7-E990-427A-BBCC-E5F37687BEC6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwd_ds_static", "fwd_ds_static\fwd_ds_static.vcproj", "{BF76C646-4ED6-4043-B0C4-1F9E3A83439F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "fwd_ds_dll", "fwd_ds_dll\fwd_ds_dll.vcproj", "{E4BBDB3D-BBF8-448E-96F5-21FCFA0EE52B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +29,14 @@ Global
 		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Debug|Win32.Build.0 = Debug|Win32
 		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Release|Win32.ActiveCfg = Release|Win32
 		{B5E926E7-E990-427A-BBCC-E5F37687BEC6}.Release|Win32.Build.0 = Release|Win32
+		{BF76C646-4ED6-4043-B0C4-1F9E3A83439F}.Debug|Win32.ActiveCfg = Debug|Win32
+		{BF76C646-4ED6-4043-B0C4-1F9E3A83439F}.Debug|Win32.Build.0 = Debug|Win32
+		{BF76C646-4ED6-4043-B0C4-1F9E3A83439F}.Release|Win32.ActiveCfg = Release|Win32
+		{BF76C646-4ED6-4043-B0C4-1F9E3A83439F}.Release|Win32.Build.0 = Release|Win32
+		{E4BBDB3D-BBF8-448E-96F5-21FCFA0EE52B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{E4BBDB3D-BBF8-448E-96F5-21FCFA0EE52B}.Debug|Win32.Build.0 = Debug|Win32
+		{E4BBDB3D-BBF8-448E-96F5-21FCFA0EE52B}.Release|Win32.ActiveCfg = Release|Win32
+		{E4BBDB3D-BBF8-448E-96F5-21FCFA0EE52B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
