@@ -116,7 +116,7 @@ public:
 
 			Tango::DbDatum fwd_att("fwd_short_rw");
 			Tango::DbDatum root_att("__root_att");
-			fwd_att << 1;
+			fwd_att << (short)1;
 			root_att << "dev/test/10/short_attr_rw";
 			Tango::DbData dd;
 			dd.push_back(fwd_att);
@@ -178,7 +178,7 @@ public:
 
 		Tango::DbDatum fwd_att("fwd_short_rw");
 		Tango::DbDatum root_att("__root_att");
-		fwd_att << 1;
+		fwd_att << (short)1;
 		root_att << "devtest/10/short_attr_rw";
 		Tango::DbData dd;
 		dd.push_back(fwd_att);
