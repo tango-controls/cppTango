@@ -342,7 +342,8 @@ public:
 
 // Third writable attribute
 
-		vector<string> v_str{"Tango"};
+		vector<string> v_str;
+		v_str.push_back("Tango");
 		DeviceAttribute da_v_str("fwd_ima_string_rw",v_str,1,1);
 		fwd_device->write_attribute(da_v_str);
 
@@ -396,7 +397,8 @@ public:
 
 // Third writable attribute
 
-		vector<string> v_str{"Samba"};
+		vector<string> v_str;
+		v_str.push_back("Samba");
 		DeviceAttribute da_v_str("string_ima_attr_rw",v_str,1,1);
 		device2->write_attribute(da_v_str);
 
@@ -414,7 +416,11 @@ public:
 
 	void test_attribute_configuration()
 	{
-		vector<string> att_names{"fwd_short_rw","fwd_string_w","fwd_spec_double","fwd_ima_string_rw"};
+		vector<string> att_names;
+		att_names.push_back("fwd_short_rw");
+		att_names.push_back("fwd_string_w");
+		att_names.push_back("fwd_spec_double");
+		att_names.push_back("fwd_ima_string_rw");
 
 		AttributeInfoListEx *confs = fwd_device->get_attribute_config_ex(att_names);
 
@@ -511,8 +517,10 @@ public:
 
 	void test_attribute_configuration_propagation()
 	{
-		vector<string> att_names_root{"short_attr_rw"};
-		vector<string> att_names{"fwd_short_rw"};
+		vector<string> att_names_root;
+		att_names_root.push_back("short_attr_rw");
+		vector<string> att_names;
+		att_names.push_back("fwd_short_rw");
 		confs_root = device1->get_attribute_config_ex(att_names_root);
 
 		(*confs_root)[0].description = "houla houla";
@@ -539,8 +547,10 @@ public:
 
 	void test_label_is_local()
 	{
-		vector<string> att_names_root{"short_attr_rw"};
-		vector<string> att_names{"fwd_short_rw"};
+		vector<string> att_names_root;
+		att_names_root.push_back("short_attr_rw");
+		vector<string> att_names;
+		att_names.push_back("fwd_short_rw");
 		confs_root = device1->get_attribute_config_ex(att_names_root);
 
 		(*confs_root)[0].label = "Ca marche?";
