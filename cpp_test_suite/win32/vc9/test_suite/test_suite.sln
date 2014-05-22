@@ -161,6 +161,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "attr_conf_test", "attr_conf
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wait_mcast_dev", "wait_mcast_dev\wait_mcast_dev.vcproj", "{E17456B8-BFA1-402F-8D40-A1157193673A}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_dev_event", "multi_dev_event\multi_dev_event.vcproj", "{176EEE86-5A0F-4A0A-8950-1672579625B4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dev_intr_event", "dev_intr_event\dev_intr_event.vcproj", "{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -480,6 +484,14 @@ Global
 		{E17456B8-BFA1-402F-8D40-A1157193673A}.Debug|Win32.Build.0 = Debug|Win32
 		{E17456B8-BFA1-402F-8D40-A1157193673A}.Release|Win32.ActiveCfg = Release|Win32
 		{E17456B8-BFA1-402F-8D40-A1157193673A}.Release|Win32.Build.0 = Release|Win32
+		{176EEE86-5A0F-4A0A-8950-1672579625B4}.Debug|Win32.ActiveCfg = Debug|Win32
+		{176EEE86-5A0F-4A0A-8950-1672579625B4}.Debug|Win32.Build.0 = Debug|Win32
+		{176EEE86-5A0F-4A0A-8950-1672579625B4}.Release|Win32.ActiveCfg = Release|Win32
+		{176EEE86-5A0F-4A0A-8950-1672579625B4}.Release|Win32.Build.0 = Release|Win32
+		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Debug|Win32.Build.0 = Debug|Win32
+		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Release|Win32.ActiveCfg = Release|Win32
+		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
