@@ -69,8 +69,8 @@ public:
 // Initialization --------------------------------------------------
 //
 
-		confs_init = nullptr;
-		confs_root_init = nullptr;
+		confs_init = NULL;
+		confs_root_init = NULL;
 
 		try
 		{
