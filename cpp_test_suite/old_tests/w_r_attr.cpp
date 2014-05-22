@@ -219,8 +219,8 @@ int main(int argc, char **argv)
 		d_check >> v_dl;
 
 		assert (v_dl.size() == 2);
-		assert (v_dl[0] = 0x800000000);
-		assert (v_dl[1] = 555);
+		assert (v_dl[0] == 0x800000000LL);
+		assert (v_dl[1] == 555);
 
 		delete dout;
 	}
