@@ -93,10 +93,12 @@ public:
 
 			Tango_sleep(5);
 
-			vector<string> att{"fwd_short_rw"};
+			vector<string> att;
+			att.push_back("fwd_short_rw");
 			confs_init = fwd_device->get_attribute_config_ex(att);
 
-			vector<string> att_r{"short_attr_rw"};
+			vector<string> att_r;
+			att_r.push_back("short_attr_rw");
 			confs_root_init = device1->get_attribute_config_ex(att_r);
 		}
 		catch (CORBA::Exception &e)
