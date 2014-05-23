@@ -20,6 +20,7 @@ int main(int argc, char **argv)
 
 	string device_name = argv[1];
 
+
 	try 
 	{
 		device = new DeviceProxy(device_name);

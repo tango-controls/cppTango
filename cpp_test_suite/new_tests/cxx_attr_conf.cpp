@@ -318,7 +318,7 @@ public:
 		TS_ASSERT(att_inf.unit == "No unit");
 		TS_ASSERT(att_inf.standard_unit == "No standard unit");
 		TS_ASSERT(att_inf.display_unit == "No display unit");
-		TS_ASSERT(att_inf.format == "Illisible");
+		TS_ASSERT(att_inf.format == "From db (device)");
 		TS_ASSERT(att_inf.min_value == "Not specified");
 		TS_ASSERT(att_inf.max_value == "Not specified");
 		TS_ASSERT(att_inf.min_alarm == "Not specified");
