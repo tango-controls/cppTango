@@ -62,9 +62,9 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-//cout << "One attribute configuration change event received" << endl;
-//cout << "Attr name = " << ev->attr_name << endl;
-//cout << "Event name = " << ev->event << endl;
+cout << "One attribute configuration change event received" << endl;
+cout << "Attr name = " << ev->attr_name << endl;
+cout << "Event name = " << ev->event << endl;
 
 		if (ev->err == false)
 		{
@@ -670,6 +670,7 @@ Tango::Except::print_exception(e);
 // When the device is not there, subscribing to att change event throws one exception
 // and it does call the callback with error flag set. Because we want to know that the root device is not yet
 // ready, implement a two steps subscription
+// First subsccription is in statefull mode while the second one is in stateless mode
 //
 
 	string a_name = device_name + '/' + att_name;
