@@ -91,7 +91,7 @@ public:
 			root_admin = new DeviceProxy(root_adm_name);
 			root_admin->command_inout("RestartServer");
 
-			Tango_sleep(5);
+			Tango_sleep(10);
 
 			vector<string> att;
 			att.push_back("fwd_short_rw");
@@ -100,9 +100,13 @@ public:
 			vector<string> att_r;
 			att_r.push_back("short_attr_rw");
 			confs_root_init = device1->get_attribute_config_ex(att_r);
+
+cout << "End of ctor" << endl;
 		}
 		catch (CORBA::Exception &e)
 		{
+cout << "Exception thrown from here" << endl;
+cout << "Device status = " << fwd_device->status() << endl;
 			Except::print_exception(e);
 			exit(-1);
 		}
@@ -174,6 +178,7 @@ public:
 
 	void test_error_case_in_forwarded_attribute_configuration()
 	{
+cout << "Start of first test" << endl;
 		Tango::Database db;
 
 		Tango::DbDatum fwd_att("fwd_short_rw");
