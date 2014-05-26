@@ -201,7 +201,9 @@ public:
 
 		// A wrong root attribute configuration in db (root device is local device)
 
-		dd[1] << "dev/fwdtest/10/short_attr_rw";
+		string r_name(fwd_device_name);
+		r_name = r_name + "/short_attr_rw";
+		dd[1] << r_name;
 		db.put_device_attribute_property(fwd_device_name,dd);
 
 		ad->command_inout("RestartServer");
