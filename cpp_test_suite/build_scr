@@ -35,7 +35,7 @@ do
 		DS_INST_NAME_2=ubuntu1004_2
 		MCAST_INST_NAME=ubuntu1004_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 
 	if [ $i = "ubuntu12.04" ]
@@ -48,7 +48,7 @@ do
 		DS_INST_NAME_2=ubuntu1204_2
 		MCAST_INST_NAME=ubuntu1204_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 
 	if [ $i = "Windows_VC9" ]
@@ -89,7 +89,7 @@ do
 		DS_INST_NAME_2=centos5_2
 		MCAST_INST_NAME=centos5_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 
 	if [ $i = "redhate4" ]
@@ -102,7 +102,7 @@ do
 		DS_INST_NAME_2=redhate4_2
 		MCAST_INST_NAME=redhate4_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 
 	if [ $i = "redhate5" ]
@@ -128,7 +128,7 @@ do
 		DS_INST_NAME_2=debian6_2
 		MCAST_INST_NAME=debian6_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins
+		PROF=jenkins_no_mcast
 	fi
 done
 
