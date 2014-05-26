@@ -91,7 +91,8 @@ public:
 			root_admin = new DeviceProxy(root_adm_name);
 			root_admin->command_inout("RestartServer");
 
-			Tango_sleep(10);
+cout << "Sleeping for 15 sec" << endl;
+			Tango_sleep(15);
 
 			vector<string> att;
 			att.push_back("fwd_short_rw");
