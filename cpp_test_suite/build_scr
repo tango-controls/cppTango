@@ -278,13 +278,25 @@ RET=$?
 
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | grep -v $MCAST_INST_NAME | awk '{print $1}'`
 IND=0
-echo "PIDS = $PIDS"
 for pid in $PIDS
 do
 	echo "Killing process with PID $pid"
 	kill $pid
 	let IND=IND+1
 	if [ $IND == 2 ]
+	then
+		break
+	fi
+done
+
+PIDS=`ps -e | grep $FWD_DS_NAME | grep -v grep | grep -v $MCAST_INST_NAME | awk '{print $1}'`
+IND=0
+for pid in $PIDS
+do
+	echo "Killing process with PID $pid"
+	kill $pid
+	let IND=IND+1
+	if [ $IND == 1 ]
 	then
 		break
 	fi
