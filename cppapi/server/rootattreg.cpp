@@ -62,9 +62,14 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-cout << "One attribute configuration change event received" << endl;
-cout << "Attr name = " << ev->attr_name << endl;
-cout << "Event name = " << ev->event << endl;
+time_t now;
+time(&now);
+
+cerr << "At " << asctime(localtime(&now)) << endl;
+cerr << "One attribute configuration change event received" << endl;
+cerr << "Attr name = " << ev->attr_name << endl;
+cerr << "Event name = " << ev->event << endl;
+cerr << "Error flag = " << boolalpha << ev->err << endl;
 
 		if (ev->err == false)
 		{
