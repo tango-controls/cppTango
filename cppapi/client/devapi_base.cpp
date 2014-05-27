@@ -1559,7 +1559,7 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 					 	desc.str(),
 						(const char *)"DeviceProxy::DeviceProxy");
 			}
-			else if (strcmp(dfe.errors[0].reason,"API_DeviceNotExported") == 0)
+			else if (strcmp(dfe.errors[0].reason,API_DeviceNotExported) == 0)
 				exported = false;
 		}
 	}
@@ -2220,9 +2220,8 @@ string DeviceProxy::get_corba_name(bool need_check_acc)
 
 			TangoSys_OMemStream desc;
 			desc << "Device " << device_name << " is not exported (hint: try starting the device server)" << ends;
-			ApiConnExcept::throw_exception((const char*)"API_DeviceNotExported",
-						       desc.str(),
-						       (const char*)"DeviceProxy::get_corba_name()");
+			ApiConnExcept::throw_exception(API_DeviceNotExported,desc.str(),
+						       "DeviceProxy::get_corba_name()");
 		}
 	}
 

@@ -268,7 +268,7 @@ AccessControlType AccessProxy::check_access_control(string &devname)
 			{
 				multi_ip = false;
 			}
-			else if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0)
+			else if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
 			{
 				Except::re_throw_exception(e,(const char *)API_CannotCheckAccessControl,
 											(const char *)"Cannot import Access Control device !",

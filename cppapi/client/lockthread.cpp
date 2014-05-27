@@ -355,7 +355,7 @@ void LockThread::one_more_lock()
 		{
 			if ((::strcmp(e.errors[loop].reason.in(),API_DeviceLocked) == 0) ||
 			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotLocked) == 0) ||
-			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotExported") == 0))
+			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotExported) == 0))
 			{
 				string error_message(e.errors[loop].desc.in());
 				string::size_type pos = error_message.find(':');

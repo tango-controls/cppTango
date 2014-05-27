@@ -347,6 +347,7 @@ const char* const API_DatabaseFileError            = "API_DatabaseFileError";
 const char* const API_DecodeErr                    = "API_DecodeErr";
 const char* const API_DeprecatedCommand            = "API_DeprecatedCommand";
 const char* const API_DeviceLocked                 = "API_DeviceLocked";
+const char* const API_DeviceNotExported			   = "API_DeviceNotExported";
 const char* const API_DeviceNotFound               = "API_DeviceNotFound";
 const char* const API_DeviceNotLocked              = "API_DeviceNotLocked";
 const char* const API_DeviceNotPolled              = "API_DeviceNotPolled";
