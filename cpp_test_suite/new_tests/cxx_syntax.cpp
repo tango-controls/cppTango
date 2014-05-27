@@ -159,7 +159,7 @@ public:
 		TS_ASSERT(check_proxy(device_alias) == 2);
 		DeviceProxy *device;
 		TS_ASSERT_THROWS_NOTHING(device = new DeviceProxy(device_alias));
-cout << "device->name = " << device_name() << ", device1_name = " << device1_name << endl;
+cout << "device->name = " << device->name() << ", device1_name = " << device1_name << endl;
 		TS_ASSERT(device->name() == device1_name);
 
 		DbData db_data;
