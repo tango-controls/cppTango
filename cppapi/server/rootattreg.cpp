@@ -62,14 +62,10 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 {
 	try
 	{
-time_t now;
-time(&now);
-
-cerr << "At " << asctime(localtime(&now)) << endl;
-cerr << "One attribute configuration change event received" << endl;
-cerr << "Attr name = " << ev->attr_name << endl;
-cerr << "Event name = " << ev->event << endl;
-cerr << "Error flag = " << boolalpha << ev->err << endl;
+//cout << "One attribute configuration change event received" << endl;
+//cout << "Attr name = " << ev->attr_name << endl;
+//cout << "Event name = " << ev->event << endl;
+//cout << "Error flag = " << boolalpha << ev->err << endl;
 
 		if (ev->err == false)
 		{
@@ -645,7 +641,6 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		}
 		catch (Tango::DevFailed &e)
 		{
-Tango::Except::print_exception(e);
 			attdesc->set_err_kind(FWD_WRONG_DEV);
 
 			string desc("The root device ");
@@ -696,7 +691,6 @@ Tango::Except::print_exception(e);
 		}
 		catch (Tango::DevFailed &e)
 		{
-Tango::Except::print_exception(e);
 			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
 				attdesc->set_err_kind(FWD_WRONG_ATTR);
 			else if (::strcmp(e.errors[0].reason.in(),API_CantConnectToDevice) == 0 ||
