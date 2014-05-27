@@ -6332,7 +6332,8 @@ ostream &operator<<(ostream &o_str,DeviceAttribute &da)
 // Print data type
 //
 
-		o_str << "Data type = " << CmdArgTypeName[da.get_type()] << ")" << endl;
+		if (da.get_type() != DATA_TYPE_UNKNOWN)
+			o_str << "Data type = " << CmdArgTypeName[da.get_type()] << ")" << endl;
 
 //
 // Print data (if valid)

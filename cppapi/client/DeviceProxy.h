@@ -339,7 +339,7 @@ public :
 	virtual int get_tango_lib_version();
 //@}
 
-/** @name Synchronous command oriented methods */
+/** @name Synchronous command related methods */
 //@{
 /**
  * Query the device for single command information.
@@ -1065,7 +1065,7 @@ public :
 	virtual void write_attributes_asynch(vector<DeviceAttribute> &argin,CallBack &cb);
 //@}
 
-/** @name Asynchronous attribute related methods */
+/** @name Asynchronous related methods */
 //@{
 /**
  * Get pending asynchronous request number
