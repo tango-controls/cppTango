@@ -159,6 +159,7 @@ public:
 		TS_ASSERT(check_proxy(device_alias) == 2);
 		DeviceProxy *device;
 		TS_ASSERT_THROWS_NOTHING(device = new DeviceProxy(device_alias));
+cout << "device->name = " << device_name() << ", device1_name = " << device1_name << endl;
 		TS_ASSERT(device->name() == device1_name);
 
 		DbData db_data;
@@ -167,6 +168,7 @@ public:
 		TS_ASSERT_THROWS_NOTHING(device->get_property(db_data));
 		delete device;
 		db_data[0] >> prop_val;
+cout << "prop_val = " << prop_val << endl;
 		TS_ASSERT(prop_val == 25);
 	}
 

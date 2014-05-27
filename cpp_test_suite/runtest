@@ -123,7 +123,8 @@ jenkins )
 			DEV2="test/win32_vc9/11"
 			DEV3="test/win32_vc9/12"
 			FWD_DEV="test/fwd_win32_vc9/10"
-			DEV_MCAST="test/win64_vc10/30"
+#			DEV_MCAST="test/win64_vc10/30"
+			DEV_MCAST="no/mcast/test"
 			DEV1_ALIAS="win32_vc9_alias"
 			ATTR_ALIAS="win32_vc9_attr_alias"
 			INST_NAME=win32_vc9
@@ -138,7 +139,8 @@ jenkins )
 			DEV2="test/win64_vc10/11"
 			DEV3="test/win64_vc10/12"
 			FWD_DEV="test/fwd_win64_vc10/10"
-			DEV_MCAST="test/win32_vc9/30"
+#			DEV_MCAST="test/win32_vc9/30"
+			DEV_MCAST="no/mcast/test"
 			DEV1_ALIAS="win64_vc10_alias"
 			ATTR_ALIAS="win64_vc10_attr_alias"
 			INST_NAME=win64_vc10
