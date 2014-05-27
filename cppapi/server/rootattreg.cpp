@@ -700,7 +700,8 @@ Tango::Except::print_exception(e);
 			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
 				attdesc->set_err_kind(FWD_WRONG_ATTR);
 			else if (::strcmp(e.errors[0].reason.in(),API_CantConnectToDevice) == 0 ||
-					 ::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0)
+					 ::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0 ||
+					 ::strcmp(e.errors[0].reason.in(),API_ZmqFailed) == 0)
 				attdesc->set_err_kind(FWD_ROOT_DEV_NOT_STARTED);
 			else
 				attdesc->set_err_kind(FWD_WRONG_DEV);
