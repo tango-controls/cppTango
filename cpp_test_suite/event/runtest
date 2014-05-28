@@ -306,7 +306,7 @@ sleep 2
 #
 
 $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
-sleep 6
+sleep 10
 
 #
 # Next test will restart server

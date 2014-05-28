@@ -199,7 +199,7 @@ fi
 #
 
 echo $MAKE_CMD
-$MAKE_CMD
+#$MAKE_CMD
 RET=$?
 echo "Compilation done"
 echo "OS = $OS"
