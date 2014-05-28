@@ -197,57 +197,57 @@ fi
 #
 
 $echo "Testing periodic event"
-#$DIR/per_event $DEV1
+$DIR/per_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting miscellaneous attribute data type"
-#$DIR/att_type_event $DEV1
+$DIR/att_type_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting change event and ApiUtil::cleanup() stuff"
-#$DIR/change_event $DEV1
+$DIR/change_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting 64bits data change event"
-#$DIR/change_event64 $DEV1
+$DIR/change_event64 $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event buffers with change events"
-#$DIR/change_event_buffer $DEV1
+$DIR/change_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting archive_event"
-#$DIR/archive_event $DEV1
+$DIR/archive_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting user_event (with DevEncoded data type)"
-#$DIR/user_event $DEV1
+$DIR/user_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting multiple callback on same events"
-#$DIR/multi_event $DEV1
+$DIR/multi_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting state and status event"
-#$DIR/state_event $DEV1
+$DIR/state_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting attribute configuration event"
-#$DIR/att_conf_event $DEV1
+$DIR/att_conf_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event buffers with attribute configuration events"
-#$DIR/att_conf_event_buffer $DEV1
+$DIR/att_conf_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
@@ -257,17 +257,17 @@ check_return_value $ret
 #check_return_value $ret
 #
 $echo "\nTesting attribute data ready event"
-#$DIR/data_ready_event $DEV1
+$DIR/data_ready_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event buffers with attribute data ready events"
-#$DIR/data_ready_event_buffer $DEV1
+$DIR/data_ready_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event from different devices"
-#$DIR/multi_dev_event $DEV1 $DEV2 $DEV3
+$DIR/multi_dev_event $DEV1 $DEV2 $DEV3
 ret=$?
 check_return_value $ret
 #
@@ -306,7 +306,7 @@ sleep 2
 #
 
 $DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
-sleep 10
+sleep 6
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
 echo "PIDS = $PIDS"
 #
