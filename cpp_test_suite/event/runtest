@@ -257,17 +257,17 @@ check_return_value $ret
 #check_return_value $ret
 #
 $echo "\nTesting attribute data ready event"
-#$DIR/data_ready_event $DEV1
+$DIR/data_ready_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event buffers with attribute data ready events"
-#$DIR/data_ready_event_buffer $DEV1
+$DIR/data_ready_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event from different devices"
-#$DIR/multi_dev_event $DEV1 $DEV2 $DEV3
+$DIR/multi_dev_event $DEV1 $DEV2 $DEV3
 ret=$?
 check_return_value $ret
 #
