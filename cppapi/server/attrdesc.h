@@ -446,7 +446,7 @@ public:
  * Set the attribute as memorized in database (only for scalar and writable
  * attribute)
  * By default the setpoint will be written to the attribute during initialisation!
- * Use method set_memorized_init() with false as argument if you don want this feature
+ * Use method set_memorized_init() with false as argument if you don't want this feature
  */
  	void set_memorized();
 /**

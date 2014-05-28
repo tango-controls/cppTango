@@ -2,7 +2,7 @@
 //
 // file :               doc.h
 //
-// description :        Just a file some some documentation to be used by
+// description :        Just a file with some documentation to be used by
 //                      doxygen
 //
 // project :            TANGO

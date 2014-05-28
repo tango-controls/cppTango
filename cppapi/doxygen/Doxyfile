@@ -184,7 +184,7 @@ SEPARATE_MEMBER_PAGES  = NO
 # The TAB_SIZE tag can be used to set the number of spaces in a tab.
 # Doxygen uses this value to replace tabs by spaces in code fragments.
 
-TAB_SIZE               = 8
+TAB_SIZE               = 4
 
 # This tag can be used to specify a number of aliases that acts
 # as commands in the documentation. An alias has the form "name=value".
@@ -308,7 +308,7 @@ INLINE_SIMPLE_STRUCTS  = NO
 # be useful for C code in case the coding convention dictates that all compound
 # types are typedef'ed and only the typedef is referenced, never the tag name.
 
-TYPEDEF_HIDES_STRUCT   = YES
+TYPEDEF_HIDES_STRUCT   = NO
 
 # The SYMBOL_CACHE_SIZE determines the size of the internal cache use to
 # determine which symbols to keep in memory and which to flush to disk.
@@ -550,7 +550,7 @@ SHOW_DIRECTORIES       = NO
 # This will remove the Files entry from the Quick Index and from the
 # Folder Tree View (if specified). The default is YES.
 
-SHOW_FILES             = YES
+SHOW_FILES             = NO
 
 # Set the SHOW_NAMESPACES tag to NO to disable the generation of the
 # Namespaces page.
@@ -654,6 +654,7 @@ INPUT                  = device.h \
                          utils.h \
                          except.h \
                          attrdesc.h \
+						 fwdattrdesc.h \
                          tango_const.h \
                          attribute.h \
                          multiattribute.h \
@@ -662,8 +663,9 @@ INPUT                  = device.h \
                          w_attribute.h \
                          device_3.h \
                          device_4.h \
+						 device_5.h \
                          encoded_attribute.h \
-                         attrprop.h \
+                         attrprop.h \:
 						 ../client/dbapi.h \
 						 ../client/apiexcept.h \
 						 ../client/devapi.h \

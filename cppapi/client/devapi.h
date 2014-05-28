@@ -39,7 +39,8 @@
 
 using namespace std;
 
-namespace Tango {
+namespace Tango
+{
 
 /** @defgroup Client Client classes */
 
@@ -93,7 +94,11 @@ struct LockingThread
  *
  * @headerfile tango.h
  */
+#ifdef GEN_DOC
+typedef struct DevCommandInfo
+#else
 typedef struct _DevCommandInfo
+#endif
 {
 	string 		cmd_name;           ///< Command name
 	long 		cmd_tag;            ///< Command tag
@@ -119,7 +124,11 @@ struct AttributeDimension
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct CommandInfo : public DevCommandInfo
+#else
 typedef struct _CommandInfo : public DevCommandInfo
+#endif
 {
 	Tango::DispLevel disp_level;    ///< Command display level
 
@@ -147,7 +156,11 @@ typedef _DeviceInfo DeviceInfo;
  *
  * @headerfile tango.h
  */
+#ifdef GEN_DOC
+typedef struct DeviceAttributeConfig
+#else
 typedef struct _DeviceAttributeConfig
+#endif
 {
 	string 			name;               ///< Name
 	AttrWriteType 	writable;           ///< Writable type (Read, Write,...)
@@ -178,7 +191,11 @@ typedef struct _DeviceAttributeConfig
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct AttributeInfo : public DeviceAttributeConfig
+#else
 typedef struct _AttributeInfo : public DeviceAttributeConfig
+#endif
 {
 	Tango::DispLevel disp_level;        ///< Display level
 
@@ -193,7 +210,11 @@ typedef struct _AttributeInfo : public DeviceAttributeConfig
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct AttributeAlarmInfo
+#else
 typedef struct _AttributeAlarmInfo
+#endif
 {
 	string			min_alarm;      ///< Min alarm level
 	string			max_alarm;      ///< max alarm level
@@ -213,7 +234,11 @@ typedef struct _AttributeAlarmInfo
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct ChangeEventInfo
+#else
 typedef struct _ChangeEventInfo
+#endif
 {
 	string			rel_change;     ///< Relative change threshold
 	string			abs_change;     ///< Absolute change threshold
@@ -226,7 +251,11 @@ typedef struct _ChangeEventInfo
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct PeriodicEventInfo
+#else
 typedef struct _PeriodicEventInfo
+#endif
 {
 	string			period;         ///< Event period
 	vector<string>	extensions;     ///< Future extensions
@@ -238,7 +267,11 @@ typedef struct _PeriodicEventInfo
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct ArchiveEventInfo
+#else
 typedef struct _ArchiveEventInfo
+#endif
 {
 	string			archive_rel_change;     ///< Archive relative change threshold
 	string			archive_abs_change;     ///< Archive abosolute change threshold
@@ -252,7 +285,11 @@ typedef struct _ArchiveEventInfo
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct AttributeEventInfo
+#else
 typedef struct _AttributeEventInfo
+#endif
 {
 	ChangeEventInfo		ch_event;       ///< Attribute change event info
 	PeriodicEventInfo	per_event;      ///< Attribute periodic event info
@@ -283,7 +320,11 @@ typedef enum _AttrMemorizedType
  * @headerfile tango.h
  * @ingroup Client
  */
+#ifdef GEN_DOC
+typedef struct AttributeInfoEx: public AttributeInfo
+#else
 typedef struct _AttributeInfoEx : public AttributeInfo
+#endif
 {
 	string				root_attr_name;		///< Root attribute name
 	AttrMemorizedType	memorized;			///< Attribute memorization type

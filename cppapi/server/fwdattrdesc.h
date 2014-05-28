@@ -82,11 +82,37 @@ private:
 #endif
 };
 
+/**
+ * User class to create a forwarded attribute object.
+ *
+ * Information from this class and information fetched out from the Tango
+ * database allows the Tango core software to create the FwdAttribute object
+ * for the forwarded attribute created by the user.
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
+ */
+
 class FwdAttr: public ImageAttr
 {
 public:
-	FwdAttr(const string &,const string &root_attribute=RootAttNotDef);
+/**@name Constructors
+ * Only one constructor is defined for this class */
+//@{
+/**
+ * Constructs a newly allocated FwdAttr object.
+ *
+ * @param 	name	The attribute name
+ * @param	root_attribute	The root attribute name (FQAN)
+ *
+ */
+	FwdAttr(const string &name,const string &root_attribute=RootAttNotDef);
+//@}
 
+/// @privatesection
 	virtual bool is_fwd() {return true;}
 
 	string &get_fwd_root_att() {return fwd_root_att;}
@@ -108,6 +134,7 @@ public:
  	string &get_label_from_default_properties();
 
 protected:
+/// @privatesection
 	string				full_root_att;			// Root att (dev_name/att_name)
 	string				fwd_dev_name;			// Root att device name (lower case)
 	string				fwd_root_att;			// Root att (lower case)
