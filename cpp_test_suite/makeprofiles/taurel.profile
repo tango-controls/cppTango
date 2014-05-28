@@ -42,12 +42,12 @@
 #######################################################################################################################
 
 EXCLUDE_FILES = 64.cpp helper.cpp zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
-#COMPILE_FILES = cxx_fwd_att.cpp
-#COMPILE_FILES = attr_conf_test.cpp
-#COMPILE_FILES = cxx_zmcast01_simple.cpp cxx_zmcast02_local_remote.cpp cxx_zmcast03_svr_local_remote.cpp
+COMPILE_FILES = w_r_attr.cpp
+#COMPILE_FILES = add_rem_attr.cpp
+#COMPILE_FILES = cxx_zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
 #COMPILE_FILES = cxx_class_dev_signal.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
-#COMPILE_FILES = poll_attr.cpp Poll.cpp StopPoll.cpp
+#COMPILE_FILES = att_type_event.cpp
 
 OS_DIR = ubuntu1204
 

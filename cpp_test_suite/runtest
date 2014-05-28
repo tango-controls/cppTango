@@ -314,7 +314,7 @@ then
 	RUN_CMD="$DIR/runner --device1=$DEV1 --device2=$DEV2 --device3=$DEV3 --fwd_device=$FWD_DEV --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --clienthost=$FULL_HOSTNAME --serverversion=5 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\new_tests\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS --local_device=$DEV1 --remote_device=$DEV_MCAST"
 	
 	echo "runner command="$RUN_CMD
-	$RUN_CMD
+#	$RUN_CMD
 else
 	export RUN_CMD="runner --device1=$DEV1 --device2=$DEV2 --device3=$DEV3 --fwd_device=$FWD_DEV --loop=1 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME  --clienthost=$FULL_HOSTNAME --serverversion=5 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$CURR_DIR/new_tests/out/ --loglevel=0 --dsloglevel=3 --suiteloop=1 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS"
 
@@ -522,6 +522,6 @@ check_return_value $ret
 #
 #	Now, test events
 #
-cd ../event;./runtest $*
-
+#cd ../event;./runtest $*
+cd event;./runtest $*
 
