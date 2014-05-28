@@ -350,123 +350,123 @@ $DIR/StopPoll --kill $DEV_MCAST
 #
 
 $echo "Testing miscellaneous DeviceProxy features"
-$DIR/misc_devproxy $DEV1 $SERV_NAME/$INST_NAME
+#$DIR/misc_devproxy $DEV1 $SERV_NAME/$INST_NAME
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting insertion and extraction into DeviceData objects for all types"
-$DIR/cmd_types $DEV1 10
+#$DIR/cmd_types $DEV1 10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting extraction from DeviceAttribute objects for all types"
-$DIR/attr_types $DEV1 10
+#$DIR/attr_types $DEV1 10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting attribute configuration changes"
-$DIR/att_conf $DEV1
+#$DIR/att_conf $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting miscellaneous DeviceData object features"
-$DIR/misc_devdata
+#$DIR/misc_devdata
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting miscellaneous DeviceAttribute object features"
-$DIR/misc_devattr
+#$DIR/misc_devattr
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing attribute (with the eight data types) using DeviceAttribute"
-$DIR/write_attr $DEV1 10
+#$DIR/write_attr $DEV1 10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting copy constructor and assignement operator of the DeviceProxy class"
-$DIR/copy_devproxy $DEV1 $DEV2 $DEV3
+#$DIR/copy_devproxy $DEV1 $DEV2 $DEV3
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting miscellaneous attribute features"
-$DIR/attr_misc $DEV1
+#$DIR/attr_misc $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting object property methods of the Database class"
-$DIR/obj_prop
+#$DIR/obj_prop
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting command_history and attribute_history DeviceProxy methods"
-$DIR/Poll $DEV1
+#$DIR/Poll $DEV1
 ret=$?
 check_return_value $ret
 sleep 7
-$DIR/read_hist $DEV1
+#$DIR/read_hist $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting polling of new attribute data types"
-$DIR/poll_attr $DEV1
+#$DIR/poll_attr $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting all DeviceProxy polling methods"
-$DIR/poll_met $DEV1 $DEV2 $DEV1_ALIAS
+#$DIR/poll_met $DEV1 $DEV2 $DEV1_ALIAS
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting polling threads pool"
-$DIR/poll_pool $DEV1 $DEV2 $INST_NAME
+#$DIR/poll_pool $DEV1 $DEV2 $INST_NAME
 ret=$?
 check_return_value $ret
 #
-$DIR/StopPoll $DEV1
+#$DIR/StopPoll $DEV1
 #
 $echo "\nTesting all AttributeProxy methods"
-$DIR/attr_proxy $DEV1/Short_attr_rw
+#$DIR/attr_proxy $DEV1/Short_attr_rw
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting writing spectrum and image attributes"
-$DIR/write_attr_3 $DEV1 10
+#$DIR/write_attr_3 $DEV1 10
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting polled command with external triggering"
-$DIR/read_hist_ext $DEV1
+#$DIR/read_hist_ext $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting individual polling buffer depth and polling methods in DeviceImpl"
-$DIR/ring_depth $DEV1
+#$DIR/ring_depth $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting memorized attributes"
-$DIR/mem_att $DEV1
+#$DIR/mem_att $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting state and status read as attributes"
-$DIR/state_attr $DEV1
+#$DIR/state_attr $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting RDS alarm"
-$DIR/rds $DEV1
+#$DIR/rds $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting Device Server Cache"
-$DIR/ds_cache
+#$DIR/ds_cache
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting Write_Read attribute"
-$DIR/w_r_attr $DEV1
+#$DIR/w_r_attr $DEV1
 ret=$?
 check_return_value $ret
 #
@@ -477,13 +477,13 @@ else
 	PATH=$PATH:./$DIR
 fi
 $echo "\nTesting device locking feature"
-$DIR/lock $DEV1 $DEV2
+#$DIR/lock $DEV1 $DEV2
 ret=$?
 check_return_value $ret
 
 #
 $echo "\nTesting the sub device diagnostics"
-$DIR/sub_dev $DEV1 $DEV2 $DEV3
+#$DIR/sub_dev $DEV1 $DEV2 $DEV3
 ret=$?
 check_return_value $ret
 #
