@@ -307,7 +307,7 @@ sleep 2
 
 #$DS_PATH/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 $DS_PATH/$DS_NAME $DS_INST_NAME &
-sleep 6
+sleep 15
 PIDS=`ps -e | grep $DS_NAME | grep -v grep | awk '{print $1}'`
 echo "PIDS = $PIDS"
 #
