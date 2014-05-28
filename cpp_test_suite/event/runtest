@@ -237,17 +237,17 @@ ret=$?
 check_return_value $ret
 #
 $echo "\nTesting state and status event"
-$DIR/state_event $DEV1
+#$DIR/state_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting attribute configuration event"
-$DIR/att_conf_event $DEV1
+#$DIR/att_conf_event $DEV1
 ret=$?
 check_return_value $ret
 #
 $echo "\nTesting event buffers with attribute configuration events"
-$DIR/att_conf_event_buffer $DEV1
+#$DIR/att_conf_event_buffer $DEV1
 ret=$?
 check_return_value $ret
 #
@@ -257,7 +257,7 @@ check_return_value $ret
 #check_return_value $ret
 #
 $echo "\nTesting attribute data ready event"
-$DIR/data_ready_event $DEV1
+#$DIR/data_ready_event $DEV1
 ret=$?
 check_return_value $ret
 #
