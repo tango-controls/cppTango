@@ -312,6 +312,11 @@ then
 	#WIN_OUT_DIR="c:\\jenkins\\workspace\\tango_test_suite\\operatingsystems\\windows_vc9\\cpp_test_suite\\win32\\vc9\\test_suite\\runner\\../../../../new_tests/out\\"
 	WIN_OUT_DIR="`cygpath -w -p $CURR_DIR`"
 	RUN_CMD="$DIR/runner --device1=$DEV1 --device2=$DEV2 --device3=$DEV3 --fwd_device=$FWD_DEV --loop=5 --fulldsname=$SERV_NAME/$INST_NAME --serverhost=$FULL_HOSTNAME --clienthost=$FULL_HOSTNAME --serverversion=5 --docurl=http://www.tango-controls.org --devtype=TestDevice --dbserver=sys/database/2 --outpath=/tmp/ --refpath=$WIN_OUT_DIR\\new_tests\\out\\ --loglevel=0 --dsloglevel=3 --suiteloop=3 --devicealias=$DEV1_ALIAS --attributealias=$ATTR_ALIAS --local_device=$DEV1 --remote_device=$DEV_MCAST"
+
+	if [ $INST_NAME = "win32_vc9" ]
+	then
+		sleep 10
+	fi
 	
 	echo "runner command="$RUN_CMD
 	$RUN_CMD
