@@ -47,6 +47,12 @@
  * status flag indicates if there is data in the DbDatum object or not. An additional flag allows the user to
  * activate exceptions.
  *
+ * <B> Insertion by pointers takes full ownership of the pointed to memory. The insertion copy the data in
+ * the DeviceData object and delete the pointed to memory. Therefore, the memory is not more usable
+ * after the insertion.\n
+ * When using extraction by pointers, the pointed to memory is inside
+ * the DeviceData object and its lifetime is the same than the DeviceData object lifetime.</B>
+ *
  * $Author: taurel $
  * $Revision: 1 $
  *

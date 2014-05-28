@@ -43,12 +43,24 @@
  * This is the fundamental type for sending and receiving data to and from device attributes. The values can be
  * inserted and extracted using the operators << and >> respectively and insert() for mixed data types. There
  * are two ways to check if the extraction operator succeed :
- * @li 1. By testing the extractor operators return value. All the extractors operator returns a boolean value set
+ * <ul>
+ * <li> 1. By testing the extractor operators return value. All the extractors operator returns a boolean value set
  * to false in case of problem.
- * @li 2. By asking the DeviceAttribute object to throw exception in case of problem. By default, DeviceAttribute
+ * <li> 2. By asking the DeviceAttribute object to throw exception in case of problem. By default, DeviceAttribute
  * throws exception :
- * @li (a) when the user try to extract data and the server reported an error when the attribute was read.
- * @li (b) When the user try to extract data from an empty DeviceAttribute
+ *    <ol>
+ *    <li> When the user try to extract data and the server reported an error when the attribute was read.
+ *    <li> When the user try to extract data from an empty DeviceAttribute
+ *    </ol>
+ * </ul>
+ *
+ * <B>For insertion into DeviceAttribute instance from TANGO CORBA sequence pointers, the DeviceAttribute
+ * object takes ownership of the pointed to memory. This means that the pointed
+ * to memory will be freed when the DeviceAttribute object is destroyed or when another data is
+ * inserted into it. The insertion into DeviceAttribute instance from TANGO CORBA sequence reference copy
+ * the data into the DeviceAttribute object.\n
+ * For extraction into TANGO CORBA sequence types, the extraction method consumes the
+ * memory allocated to store the data and it is the caller responsibility to delete this memory.</B>
  *
  * $Author: taurel $
  * $Revision: 1 $
