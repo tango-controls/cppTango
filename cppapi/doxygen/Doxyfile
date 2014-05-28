@@ -665,7 +665,7 @@ INPUT                  = device.h \
                          device_4.h \
 						 device_5.h \
                          encoded_attribute.h \
-                         attrprop.h \:
+                         attrprop.h \
 						 ../client/dbapi.h \
 						 ../client/apiexcept.h \
 						 ../client/devapi.h \
