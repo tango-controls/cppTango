@@ -1448,6 +1448,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pipe.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollcmds.cpp"
 				>
 				<FileConfiguration
@@ -2057,6 +2061,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pipe.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollcmds.h"
 				>
 			</File>
@@ -2093,11 +2101,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
