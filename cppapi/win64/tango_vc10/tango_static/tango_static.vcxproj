@@ -241,6 +241,7 @@
     <ClInclude Include="..\..\..\server\logstream.h" />
     <ClInclude Include="..\..\..\server\multiattribute.h" />
     <ClInclude Include="..\..\..\server\ntservice.h" />
+    <ClInclude Include="..\..\..\server\pipe.h" />
     <ClInclude Include="..\..\..\server\pollcmds.h" />
     <ClInclude Include="..\..\..\server\pollext.h" />
     <ClInclude Include="..\..\..\server\pollobj.h" />
@@ -922,6 +923,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\pipe.cpp" />
     <ClCompile Include="..\..\..\server\pollcmds.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
