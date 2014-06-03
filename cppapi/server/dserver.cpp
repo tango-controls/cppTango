@@ -118,6 +118,14 @@ bool less_than (Command *a,Command *b)
 		return false;
 }
 
+bool less_than_pipe (Pipe *a,Pipe *b)
+{
+	if (a->get_name() < b->get_name())
+		return true;
+	else
+		return false;
+}
+
 void DServer::init_device()
 {
 //
@@ -223,6 +231,18 @@ void DServer::init_device()
 				MultiClassAttribute *c_attr = class_list[i]->get_class_attr();
 				class_list[i]->attribute_factory(c_attr->get_attr_list());
 				c_attr->init_class_attribute(class_list[i]->get_name());
+
+//
+// Build class pipes
+//
+
+				class_list[i]->pipe_factory();
+
+//
+// Sort the Pipe list array
+//
+
+				sort(class_list[i]->get_pipe_list().begin(),class_list[i]->get_pipe_list().end(),less_than_pipe);
 
 //
 // Retrieve device(s) name list from the database. No need to implement a retry here (in case of db server restart)

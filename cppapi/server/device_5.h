@@ -274,6 +274,24 @@ public:
  */
 	virtual Tango::DevAttrHistory_5 *read_attribute_history_5(const char* name,CORBA::Long n);
 
+/**
+ * Get pipe(s) configuration.
+ *
+ * Invoked when the client request the get_pipe_config_5 CORBA operation.
+ * It returns to the client one PipeConfig_5 structure for each wanted
+ * pipe. All the pipe description is returned in this
+ * PipeConfig_5 structure.
+ *
+ * @param names The pipe(s) name list
+ * @return A sequence of PipeConfig_5 structure. One structure is initialised
+ * for each wanted pipe. Click <a href="../../../tango_idl/idl_html/_Tango.html#PipeConfig_5">here</a>
+ * to read <b>PipeConfig_5</b> structure specification.
+ *
+ * @exception DevFailed Thrown if the pipe does not exist.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	virtual Tango::PipeConfigList_5 *get_pipe_config_5(const Tango::DevVarStringArray& names);
 //@}
 
 /// @privatesection

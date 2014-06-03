@@ -941,6 +941,28 @@ Tango::AttributeConfig_5::operator<<= (cdrStream &_n)
 }
 
 void
+Tango::PipeConfig_5::operator>>= (cdrStream &_n) const
+{
+  _n.marshalString(name,0);
+  _n.marshalString(description,0);
+  _n.marshalString(label,0);
+  level >>= _n;
+  (const DevVarStringArray&) extensions >>= _n;
+
+}
+
+void
+Tango::PipeConfig_5::operator<<= (cdrStream &_n)
+{
+  name = _n.unmarshalString(0);
+  description = _n.unmarshalString(0);
+  label = _n.unmarshalString(0);
+  (DispLevel&)level <<= _n;
+  (DevVarStringArray&)extensions <<= _n;
+
+}
+
+void
 Tango::AttDataReady::operator>>= (cdrStream &_n) const
 {
   _n.marshalString(name,0);
@@ -6364,6 +6386,116 @@ Tango::DevAttrHistory_5* Tango::_objref_Device_5::read_attribute_history_5(const
 
 
 }
+// Proxy call descriptor class. Mangled signature:
+//  _cTango_mPipeConfigList__5_i_cTango_mDevVarStringArray_e_cTango_mDevFailed
+class _0RL_cd_6fe2f94a21a10053_d4000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_6fe2f94a21a10053_d4000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
+     omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 1, upcall)
+  {
+    
+  }
+  
+  void marshalArguments(cdrStream&);
+  void unmarshalArguments(cdrStream&);
+
+  void unmarshalReturnedValues(cdrStream&);
+  void marshalReturnedValues(cdrStream&);
+  
+  void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
+  static const char* const _user_exns[];
+
+  Tango::DevVarStringArray_var arg_0_;
+  const Tango::DevVarStringArray* arg_0;
+  Tango::PipeConfigList_5_var result;
+};
+
+void _0RL_cd_6fe2f94a21a10053_d4000000::marshalArguments(cdrStream& _n)
+{
+  (const Tango::DevVarStringArray&) *arg_0 >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_d4000000::unmarshalArguments(cdrStream& _n)
+{
+  arg_0_ = new Tango::DevVarStringArray;
+  (Tango::DevVarStringArray&)arg_0_ <<= _n;
+  arg_0 = &arg_0_.in();
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_d4000000::marshalReturnedValues(cdrStream& _n)
+{
+  (const Tango::PipeConfigList_5&) result >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_d4000000::unmarshalReturnedValues(cdrStream& _n)
+{
+  result = new Tango::PipeConfigList_5;
+  (Tango::PipeConfigList_5&)result <<= _n;
+
+}
+
+const char* const _0RL_cd_6fe2f94a21a10053_d4000000::_user_exns[] = {
+  Tango::DevFailed::_PD_repoId
+};
+
+void _0RL_cd_6fe2f94a21a10053_d4000000::userException(cdrStream& s, _OMNI_NS(IOP_C)* iop_client, const char* repoId)
+{
+  if ( omni::strMatch(repoId, Tango::DevFailed::_PD_repoId) ) {
+    Tango::DevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+
+  else {
+    if (iop_client) iop_client->RequestCompleted(1);
+    OMNIORB_THROW(UNKNOWN,UNKNOWN_UserException,
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+// Local call call-back function.
+static void
+_0RL_lcfn_6fe2f94a21a10053_e4000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_6fe2f94a21a10053_d4000000* tcd = (_0RL_cd_6fe2f94a21a10053_d4000000*)cd;
+  Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
+#ifdef HAS_Cplusplus_catch_exception_by_base
+  tcd->result = impl->get_pipe_config_5(*tcd->arg_0);
+#else
+  if (!cd->is_upcall())
+    tcd->result = impl->get_pipe_config_5(*tcd->arg_0);
+  else {
+    try {
+      tcd->result = impl->get_pipe_config_5(*tcd->arg_0);
+    }
+    catch(Tango::DevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+
+  }
+#endif
+
+
+}
+
+Tango::PipeConfigList_5* Tango::_objref_Device_5::get_pipe_config_5(const ::Tango::DevVarStringArray& names)
+{
+  _0RL_cd_6fe2f94a21a10053_d4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_e4000000, "get_pipe_config_5", 18);
+  _call_desc.arg_0 = &(::Tango::DevVarStringArray&) names;
+
+  _invoke(_call_desc);
+  return _call_desc.result._retn();
+
+
+}
 Tango::_pof_Device_5::~_pof_Device_5() {}
 
 
@@ -6440,6 +6572,14 @@ Tango::_impl_Device_5::_dispatch(omniCallHandle& _handle)
   if( omni::strMatch(op, "read_attribute_history_5") ) {
 
     _0RL_cd_6fe2f94a21a10053_b4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_c4000000, "read_attribute_history_5", 25, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
+  if( omni::strMatch(op, "get_pipe_config_5") ) {
+
+    _0RL_cd_6fe2f94a21a10053_d4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_e4000000, "get_pipe_config_5", 18, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;

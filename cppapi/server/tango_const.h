@@ -75,6 +75,7 @@ const char* const RootAttNotDef			   = "Not defined";
 const bool  DefaultWritAttrProp            = false;
 const char* const AllAttr                  = "All attributes";
 const char* const AllAttr_3                = "All attributes_3";
+const char* const AllPipe				   = "All pipes";
 
 const char* const PollCommand              = "command";
 const char* const PollAttribute            = "attribute";
@@ -386,6 +387,7 @@ const char* const API_NotSupportedFeature          = "API_NotSupportedFeature";
 const char* const API_NotUpdatedAnyMore            = "API_NotUpdatedAnyMore";
 const char* const API_NtDebugWindowError           = "API_NtDebugWindowError";
 const char* const API_OverloadingNotSupported      = "API_OverloadingNotSupported";
+const char* const API_PipeNotFound				   = "API_PipeNotFound";
 const char* const API_PolledDeviceNotInPoolConf    = "API_PolledDeviceNotInPoolConf";
 const char* const API_PolledDeviceNotInPoolMap     = "API_PolledDeviceNotInPoolMap";
 const char* const API_PollingThreadNotFound        = "API_PollingThreadNotFound";

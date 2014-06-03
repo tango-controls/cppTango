@@ -719,6 +719,14 @@ DeviceClass::~DeviceClass()
 	command_list.clear();
 
 //
+// Destroy the pipe list
+//
+
+	for (i = 0;i < pipe_list.size();i++)
+		delete pipe_list[i];
+	pipe_list.clear();
+
+//
 // Destroy the MultiClassAttribute object
 //
 
@@ -1502,6 +1510,51 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 		Except::throw_exception((const char *)API_CommandNotFound,
 				      o.str(),
 				      (const char *)"DeviceClass::get_cmd_by_name");
+	}
+
+	return *(*pos);
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceClass::get_pipe_by_name
+//
+// description :
+//		Get a reference to the Pipe object
+//
+// arguemt :
+// 		in :
+//			- pipe_name : The pipe name
+//
+//------------------------------------------------------------------------------------------------------------------
+
+Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name)
+{
+	vector<Pipe *>::iterator pos;
+
+#ifdef HAS_LAMBDA_FUNC
+	pos = find_if(pipe_list.begin(),pipe_list.end(),
+					[&] (Pipe *pi) -> bool
+					{
+						if (pipe_name.size() != pi->get_lower_name().size())
+							return false;
+						string tmp_name(pipe_name);
+						transform(tmp_name.begin(),tmp_name.end(),tmp_name.begin(),::tolower);
+						return pi->get_lower_name() == tmp_name;
+					});
+#else
+	pos = find_if(pipe_list.begin(),pipe_list.end(),
+				bind2nd(WantedPipe<Pipe *,const char *,bool>(),pipe_name.c_str()));
+#endif
+
+	if (pos == pipe_list.end())
+	{
+		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << pipe_name << " pipe not found" << ends;
+		Except::throw_exception(API_PipeNotFound,o.str(),"DeviceClass::get_pipe_by_name");
 	}
 
 	return *(*pos);

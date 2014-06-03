@@ -40,6 +40,7 @@ namespace Tango
 {
 
 class Command;
+class Pipe;
 class DeviceClass;
 class AutoTangoMonitor;
 class NoSyncModelTangoMonitor;
@@ -129,10 +130,19 @@ public:
  *
  * In the DeviceClass class, this method does nothing and must be re-defined
  * in sub-class if the sub-class supports attributes. Its rule is to
- * store the supported attributes in a vector.
+ * create and store the supported attributes in a vector.
  *
  */
 	virtual void attribute_factory(vector<Attr *> &) {};
+/**
+ * Create all the pipes supported by this class of device.
+ *
+ * In the DeviceClass class, this method does nothing and must be re-defined
+ * in sub-class if the sub-class supports pipes. Its rule is to
+ * create and store the supported pipes in a vector.
+ *
+ */
+	virtual void pipe_factory() {};
 
 /**
  * Create device(s).
@@ -223,11 +233,23 @@ public:
  */
 	vector<Command *> &get_command_list() {return command_list;}
 /**
+ * Get the pipe object vector.
+ *
+ * @return A reference to the pipe vector
+ */
+	vector<Pipe *> &get_pipe_list() {return pipe_list;}
+/**
  * Get a reference to a command object.
  *
  * @return A reference to the command object
  */
 	Command &get_cmd_by_name(const string &);
+/**
+ * Get a reference to a pipe object.
+ *
+ * @return A reference to the pipe object
+ */
+	Pipe &get_pipe_by_name(const string &);
 /**
  * Get a pointer to the associated DbClass object.
  *
@@ -397,6 +419,10 @@ protected:
  * Pointer to the class multi attribute object
  */
  	MultiClassAttribute		*class_attr;
+/**
+ * The pipe(s) list
+ */
+	vector<Pipe *> 			pipe_list;
 //@}
 
 public:

@@ -345,6 +345,30 @@ typedef struct _AttributeInfoEx : public AttributeInfo
 typedef vector<AttributeInfo> AttributeInfoList;
 typedef vector<AttributeInfoEx> AttributeInfoListEx;
 
+/**
+ * Base structure for pipe information
+ *
+ * @headerfile tango.h
+ */
+#ifdef GEN_DOC
+typedef struct PipeInfo
+#else
+typedef struct _PipeInfo
+#endif
+{
+	string 				name;          		///< Pipe name
+	string				description;		///< Pipe description
+	string 				label;       		///< Pipe label
+	Tango::DispLevel 	disp_level;        	///< Display level
+	vector<string> 		extensions;         ///< For future extensions
+
+///@privatesection
+	friend ostream &operator<<(ostream &,_PipeInfo &);
+//	bool operator==(const _PipeInfo &);
+}PipeInfo;
+
+typedef vector<PipeInfo> PipeInfoList;
+
 //
 // Can't use CALLBACK (without _) in the following enum because it's a
 // pre-defined type on Windows....

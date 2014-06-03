@@ -1207,6 +1207,10 @@ void BlackBox::build_info_as_str(long index)
 			elt_str = elt_str + "read_attribute_history_5 ";
 			break;
 
+		case Op_Get_Pipe_Config_5 :
+			elt_str = elt_str + "get_pipe_config_5 ";
+			break;
+
 		case Op_Unknown :
 			elt_str = elt_str + "unknown operation !!!!!";
 			return;

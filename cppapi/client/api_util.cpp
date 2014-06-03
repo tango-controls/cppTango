@@ -2119,4 +2119,55 @@ ostream &operator<<(ostream &o_str,AttributeInfoEx &p)
 	return o_str;
 }
 
+//+----------------------------------------------------------------------------------------------------------------
+//
+// function :
+// 		operator overloading : 	<<
+//
+// description :
+//		Friend function to ease printing instance of the PipeInfo class
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+ostream &operator<<(ostream &o_str,PipeInfo &p)
+{
+
+//
+// Print all these properties
+//
+
+	o_str << "Pipe name = " << p.name << endl;
+	o_str << "Pipe label = " << p.label << endl;
+	o_str << "Pipe description = " << p.description << endl;
+
+	o_str << "Pipe display level = ";
+	switch(p.disp_level)
+	{
+	case DL_UNKNOWN :
+		o_str << "Unknown";
+		break;
+
+	case OPERATOR:
+		o_str << "Operator";
+		break;
+
+	case EXPERT:
+		o_str << "Expert";
+		break;
+
+	default:
+		break;
+	}
+
+	unsigned int i;
+	for (i = 0;i < p.extensions.size();i++)
+	{
+		if (i == 0)
+			o_str << endl;
+		o_str << "Pipe extensions " << i + 1 << " = " << p.extensions[i] << endl;
+	}
+
+	return o_str;
+}
+
 } // End of tango namespace

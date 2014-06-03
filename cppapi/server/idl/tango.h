@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;    
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3078,7 +3078,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;  
+omni_mutex *mut_ptr;    
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4214,6 +4214,143 @@ omni_mutex *mut_ptr;
   private:
     AttributeValueList_5_out();
     AttributeValueList_5_out& operator=(const AttributeValueList_5_var&);
+  };
+
+  struct PipeConfig_5 {
+    typedef _CORBA_ConstrType_Variable_Var<PipeConfig_5> _var_type;
+
+    
+    ::CORBA::String_member name;
+
+    ::CORBA::String_member description;
+
+    ::CORBA::String_member label;
+
+    DispLevel level;
+
+    DevVarStringArray extensions;
+
+  
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef PipeConfig_5::_var_type PipeConfig_5_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< PipeConfig_5,PipeConfig_5_var > PipeConfig_5_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_PipeConfig_5;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_PipeConfigList_5;
+
+  class PipeConfigList_5_var;
+
+  class PipeConfigList_5 : public _CORBA_Unbounded_Sequence< PipeConfig_5 >  {
+  public:
+    typedef PipeConfigList_5_var _var_type;
+    inline PipeConfigList_5() {}
+    inline PipeConfigList_5(const PipeConfigList_5& _s)
+      : _CORBA_Unbounded_Sequence< PipeConfig_5 > (_s) {}
+
+    inline PipeConfigList_5(_CORBA_ULong _max)
+      : _CORBA_Unbounded_Sequence< PipeConfig_5 > (_max) {}
+    inline PipeConfigList_5(_CORBA_ULong _max, _CORBA_ULong _len, PipeConfig_5* _val, _CORBA_Boolean _rel=0)
+      : _CORBA_Unbounded_Sequence< PipeConfig_5 > (_max, _len, _val, _rel) {}
+
+  
+
+    inline PipeConfigList_5& operator = (const PipeConfigList_5& _s) {
+      _CORBA_Unbounded_Sequence< PipeConfig_5 > ::operator=(_s);
+      return *this;
+    }
+  };
+
+  class PipeConfigList_5_out;
+
+  class PipeConfigList_5_var {
+  public:
+    inline PipeConfigList_5_var() : _pd_seq(0) {}
+    inline PipeConfigList_5_var(PipeConfigList_5* _s) : _pd_seq(_s) {}
+    inline PipeConfigList_5_var(const PipeConfigList_5_var& _s) {
+      if( _s._pd_seq )  _pd_seq = new PipeConfigList_5(*_s._pd_seq);
+      else              _pd_seq = 0;
+    }
+    inline ~PipeConfigList_5_var() { if( _pd_seq )  delete _pd_seq; }
+      
+    inline PipeConfigList_5_var& operator = (PipeConfigList_5* _s) {
+      if( _pd_seq )  delete _pd_seq;
+      _pd_seq = _s;
+      return *this;
+    }
+    inline PipeConfigList_5_var& operator = (const PipeConfigList_5_var& _s) {
+      if( _s._pd_seq ) {
+        if( !_pd_seq )  _pd_seq = new PipeConfigList_5;
+        *_pd_seq = *_s._pd_seq;
+      } else if( _pd_seq ) {
+        delete _pd_seq;
+        _pd_seq = 0;
+      }
+      return *this;
+    }
+    inline PipeConfig_5& operator [] (_CORBA_ULong _s) {
+      return (*_pd_seq)[_s];
+    }
+
+  
+
+    inline PipeConfigList_5* operator -> () { return _pd_seq; }
+    inline const PipeConfigList_5* operator -> () const { return _pd_seq; }
+#if defined(__GNUG__)
+    inline operator PipeConfigList_5& () const { return *_pd_seq; }
+#else
+    inline operator const PipeConfigList_5& () const { return *_pd_seq; }
+    inline operator PipeConfigList_5& () { return *_pd_seq; }
+#endif
+      
+    inline const PipeConfigList_5& in() const { return *_pd_seq; }
+    inline PipeConfigList_5&       inout()    { return *_pd_seq; }
+    inline PipeConfigList_5*&      out() {
+      if( _pd_seq ) { delete _pd_seq; _pd_seq = 0; }
+      return _pd_seq;
+    }
+    inline PipeConfigList_5* _retn() { PipeConfigList_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
+      
+    friend class PipeConfigList_5_out;
+    
+  private:
+    PipeConfigList_5* _pd_seq;
+  };
+
+  class PipeConfigList_5_out {
+  public:
+    inline PipeConfigList_5_out(PipeConfigList_5*& _s) : _data(_s) { _data = 0; }
+    inline PipeConfigList_5_out(PipeConfigList_5_var& _s)
+      : _data(_s._pd_seq) { _s = (PipeConfigList_5*) 0; }
+    inline PipeConfigList_5_out(const PipeConfigList_5_out& _s) : _data(_s._data) {}
+    inline PipeConfigList_5_out& operator = (const PipeConfigList_5_out& _s) {
+      _data = _s._data;
+      return *this;
+    }
+    inline PipeConfigList_5_out& operator = (PipeConfigList_5* _s) {
+      _data = _s;
+      return *this;
+    }
+    inline operator PipeConfigList_5*&()  { return _data; }
+    inline PipeConfigList_5*& ptr()       { return _data; }
+    inline PipeConfigList_5* operator->() { return _data; }
+
+    inline PipeConfig_5& operator [] (_CORBA_ULong _i) {
+      return (*_data)[_i];
+    }
+
+  
+
+    PipeConfigList_5*& _data;
+
+  private:
+    PipeConfigList_5_out();
+    PipeConfigList_5_out& operator=(const PipeConfigList_5_var&);
   };
 
   struct AttDataReady {
@@ -5990,6 +6127,7 @@ omni_mutex *mut_ptr;
     AttributeValueList_5* read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident);
     AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident);
     DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n);
+    PipeConfigList_5* get_pipe_config_5(const ::Tango::DevVarStringArray& names);
 
     inline _objref_Device_5()  { _PR_setobj(0); }  // nil
     _objref_Device_5(omniIOR*, omniIdentity*);
@@ -6028,6 +6166,7 @@ omni_mutex *mut_ptr;
     virtual AttributeValueList_5* read_attributes_5(const ::Tango::DevVarStringArray& names, ::Tango::DevSource source, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n) = 0;
+    virtual PipeConfigList_5* get_pipe_config_5(const ::Tango::DevVarStringArray& names) = 0;
     
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
@@ -6555,6 +6694,16 @@ void operator<<=(::CORBA::Any& _a, const Tango::AttributeValueList_5& _s);
 void operator<<=(::CORBA::Any& _a, Tango::AttributeValueList_5* _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValueList_5*& _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValueList_5*& _sp);
+
+extern void operator<<=(::CORBA::Any& _a, const Tango::PipeConfig_5& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::PipeConfig_5* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfig_5*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfig_5*& _sp);
+
+void operator<<=(::CORBA::Any& _a, const Tango::PipeConfigList_5& _s);
+void operator<<=(::CORBA::Any& _a, Tango::PipeConfigList_5* _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfigList_5*& _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfigList_5*& _sp);
 
 extern void operator<<=(::CORBA::Any& _a, const Tango::AttDataReady& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::AttDataReady* _sp);

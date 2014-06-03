@@ -126,6 +126,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/dev_poll.o \
 		$(OBJS_DIR)/deviceclass.o \
 		$(OBJS_DIR)/command.o \
+		$(OBJS_DIR)/pipe.o \
 		$(OBJS_DIR)/dserversignal.o \
 		$(OBJS_DIR)/devintr.o \
 		$(OBJS_DIR)/dintrthread.o \
@@ -224,6 +225,7 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/dev_poll.so.o \
 		$(OBJS_DIR_SL)/deviceclass.so.o \
 		$(OBJS_DIR_SL)/command.so.o \
+		$(OBJS_DIR_SL)/pipe.so.o \
 		$(OBJS_DIR_SL)/dserversignal.so.o \
 		$(OBJS_DIR_SL)/devintr.so.o \
 		$(OBJS_DIR_SL)/dintrthread.so.o \
@@ -353,6 +355,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			blackbox.h \
 			classattribute.h \
 			command.h \
+			pipe.h \
 			coutappender.h \
 			coutbuf.h \
 			device.h \

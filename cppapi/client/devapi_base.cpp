@@ -4515,7 +4515,173 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceProxy::read_attributes() - return a list of attributes
+// DeviceProxy::get_pipe_config() - return a list of pipe config
+//
+//-----------------------------------------------------------------------------
+
+PipeInfoList *DeviceProxy::get_pipe_config(vector<string>& pipe_string_list)
+{
+	PipeConfigList_5_var pipe_config_list_5;
+	PipeInfoList *dev_pipe_config = new PipeInfoList();
+	DevVarStringArray pipe_list;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use get_pipe_config() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,
+									  ss.str(),"DeviceProxy::get_pipe_config()");
+	}
+
+//
+// Prepare sent parameters
+//
+
+	pipe_list.length(pipe_string_list.size());
+	for (unsigned int i=0; i<pipe_string_list.size(); i++)
+	{
+		if (pipe_string_list[i] == AllPipe)
+			pipe_list[i] = string_dup(AllPipe);
+		else
+			pipe_list[i] = string_dup(pipe_string_list[i].c_str());
+	}
+
+//
+// Call device
+//
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			pipe_config_list_5 = dev->get_pipe_config_5(pipe_list);
+			dev_pipe_config->resize(pipe_config_list_5->length());
+
+			for (size_t i=0; i<pipe_config_list_5->length(); i++)
+			{
+				(*dev_pipe_config)[i].disp_level = pipe_config_list_5[i].level;
+				(*dev_pipe_config)[i].name = pipe_config_list_5[i].name;
+				(*dev_pipe_config)[i].description = pipe_config_list_5[i].description;
+				(*dev_pipe_config)[i].label = pipe_config_list_5[i].label;
+				for (size_t j=0; j<pipe_config_list_5[i].extensions.length(); j++)
+				{
+					(*dev_pipe_config)[i].extensions[j] = pipe_config_list_5[i].extensions[j];
+				}
+			}
+
+			ctr = 2;
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_pipe_config",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute get_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",
+                        				      desc.str(),"DeviceProxy::get_pipe_config()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute get_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",
+                        				      desc.str(),"DeviceProxy::get_pipe_config()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute get_pipe_config on device " << device_name << ends;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",
+                       				   desc.str(),"DeviceProxy::get_pipe_config()");
+		}
+		catch (Tango::DevFailed)
+		{
+			delete dev_pipe_config;
+			throw;
+		}
+	}
+
+	return(dev_pipe_config);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_pipe_config() - return a pipe config
+//
+//-----------------------------------------------------------------------------
+
+PipeInfo DeviceProxy::get_pipe_config(const string &pipe_name)
+{
+	vector<string> pipe_string_list;
+	PipeInfoList *dev_pipe_config_list;
+	PipeInfo dev_pipe_config;
+
+	pipe_string_list.push_back(pipe_name);
+	dev_pipe_config_list = get_pipe_config(pipe_string_list);
+
+	dev_pipe_config = (*dev_pipe_config_list)[0];
+	delete(dev_pipe_config_list);
+
+	return(dev_pipe_config);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_pipe_list() - get list of pipes
+//
+//-----------------------------------------------------------------------------
+
+vector<string> *DeviceProxy::get_pipe_list()
+{
+	vector<string> all_pipe;
+	PipeInfoList *all_pipe_config;
+
+	all_pipe.push_back(AllPipe);
+	all_pipe_config = get_pipe_config(all_pipe);
+
+	vector<string> *pipe_list = new vector<string>;
+	pipe_list->resize(all_pipe_config->size());
+	for (unsigned int i=0; i<all_pipe_config->size(); i++)
+	{
+		(*pipe_list)[i] = (*all_pipe_config)[i].name;
+	}
+	delete all_pipe_config;
+
+	return pipe_list;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::read_attributes() - Read attributes
 //
 //-----------------------------------------------------------------------------
 

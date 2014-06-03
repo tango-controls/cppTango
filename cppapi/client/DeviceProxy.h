@@ -816,6 +816,42 @@ public :
 			{string str(att_name);return attribute_history(str,depth);}
 //@}
 
+/** @name Synchronous pipe related methods */
+//@{
+/**
+ * Get pipe configuration for a list of pipes
+ *
+ * Return the pipe configuration for the list of specified pipes. To get all the pipes
+ * pass a vector containing the define AllPipe (defined in tango_const.h). This method allocates memory for
+ * the vector of PipeInfo returned to the caller. It is the caller responsibility to delete this memory.
+ *
+ * @param [in] pipe_names Pipes name list
+ * @return A vector of PipeInfo structures with one element per pipe
+ * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
+ */
+	virtual PipeInfoList *get_pipe_config(vector<string> &pipe_names);
+/**
+ * Get pipe configuration for a single pipe
+ *
+ * Return the pipe configuration for a single pipe.
+ *
+ * @param [in] pipe_name Pipe name
+ * @return The pipe information
+ * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
+ */
+	virtual PipeInfo get_pipe_config(const string &pipe_name);
+/**
+ * Query all pipes name
+ *
+ * Return the names of all pipes implemented for this device as a vector of strings. This method allocates
+ * memory for the vector of strings returned to the caller. It is the caller responsibility to delete this memory.
+ *
+ * @return A vector of string with one string per pipe
+ * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
+ */
+	virtual vector<string> *get_pipe_list();
+//@}
+
 /** @name Asynchronous attribute related methods */
 //@{
 /**

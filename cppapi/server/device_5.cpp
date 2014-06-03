@@ -808,4 +808,105 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 	return back;
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_5Impl::get_pipe_config_5
+//
+// description :
+//		CORBA operation to get pipe configuration.
+//
+// argument:
+//		in :
+//			- names: name of pipe(s)
+//
+// return :
+//		Pointer to a PipeConfigList_5 with one PipeConfig_5 structure for each pipe
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStringArray& names)
+{
+	cout4 << "Device_5Impl::get_pipe_config_5 arrived" << endl;
+
+	long nb_pipe = names.length();
+	Tango::PipeConfigList_5 *back = Tango_nullptr;
+	bool all_pipe = false;
+
+//
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_op(Op_Get_Pipe_Config_5);
+
+//
+// Check if the caller want to get config for all pipes
+//
+
+	string in_name(names[0]);
+	if (nb_pipe == 1 && in_name == AllPipe)
+	{
+		all_pipe = true;
+		nb_pipe = device_class->get_pipe_list().size();
+	}
+
+//
+// Allocate memory for the PipeConfig structures
+//
+
+	try
+	{
+		back = new Tango::PipeConfigList_5(nb_pipe);
+		back->length(nb_pipe);
+	}
+	catch (bad_alloc)
+	{
+		Except::throw_exception((const char *)API_MemoryAllocation,
+				        (const char *)"Can't allocate memory in server",
+				        (const char *)"Device_5Impl::get_pipe_config_5");
+	}
+
+//
+// Fill in these structures
+//
+
+	vector<Pipe *> &pipe_list = device_class->get_pipe_list();
+
+	for (long i = 0;i < nb_pipe;i++)
+	{
+		try
+		{
+			if (all_pipe == true)
+			{
+				Pipe *pi_ptr = pipe_list[i];
+				(*back)[i].name = Tango::string_dup(pi_ptr->get_name().c_str());
+				(*back)[i].description = Tango::string_dup(pi_ptr->get_desc().c_str());
+				(*back)[i].label = Tango::string_dup(pi_ptr->get_label().c_str());
+				(*back)[i].level = pi_ptr->get_disp_level();
+			}
+			else
+			{
+				Pipe &pi = device_class->get_pipe_by_name(names[i].in());
+				(*back)[i].name = Tango::string_dup(pi.get_name().c_str());
+				(*back)[i].description = Tango::string_dup(pi.get_desc().c_str());
+				(*back)[i].label = Tango::string_dup(pi.get_label().c_str());
+				(*back)[i].level = pi.get_disp_level();
+			}
+		}
+		catch (Tango::DevFailed &e)
+		{
+			delete back;
+			throw;
+		}
+	}
+
+//
+// Return to caller
+//
+
+	cout4 << "Leaving Device_5Impl::get_pipe_config_5" << endl;
+
+	return back;
+}
+
 } // End of Tango namespace
