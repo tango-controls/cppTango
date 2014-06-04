@@ -135,7 +135,11 @@ public:
 			rem_attr_poll[1] = "attribute";
 			rem_attr_poll[2] = "short_attr_rw";
 			din << rem_attr_poll;
-			root_admin->command_inout("RemObjPolling", din);
+			try
+			{
+				root_admin->command_inout("RemObjPolling", din);
+			}
+			catch (Tango::DevFailed &e) {}
 		}
 
 		(*confs_init)[0].label = "";
