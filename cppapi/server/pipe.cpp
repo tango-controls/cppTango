@@ -57,6 +57,9 @@ Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::D
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+
+	vector<DataEltParam> tmp_v(MAX_DATA_ELT_IN_PIPE_BLOB);
+	v_dep = tmp_v;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -90,7 +93,7 @@ void Pipe::set_time()
 }
 
 
-void Pipe::set_value(DevLong *p_data,long size,bool r)
+void Pipe::set_value(DevLong *p_data,size_t size,bool r)
 {
 	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
 
@@ -98,11 +101,11 @@ void Pipe::set_value(DevLong *p_data,long size,bool r)
 	cout << "Value = " << *p_data << endl;
 
 	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
-	DevVarLongArray dvla(1,1,p_data,false);
+	DevVarLongArray dvla(size,size,p_data,r);
 	ret_data->data_blob[rec_count].value.long_att_value(dvla);
 }
 
-void Pipe::set_value(DevDouble *p_data,long size,bool r)
+void Pipe::set_value(DevDouble *p_data,size_t size,bool r)
 {
 	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
 
@@ -111,11 +114,11 @@ void Pipe::set_value(DevDouble *p_data,long size,bool r)
 
 	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
 
-	DevVarDoubleArray dvda(1,1,p_data,false);
+	DevVarDoubleArray dvda(size,size,p_data,r);
 	ret_data->data_blob[rec_count].value.double_att_value(dvda);
 }
 
-void Pipe::set_value(DevShort *p_data,long size,bool r)
+void Pipe::set_value(DevShort *p_data,size_t size,bool r)
 {
 	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
 
@@ -123,11 +126,11 @@ void Pipe::set_value(DevShort *p_data,long size,bool r)
 	cout << "Value = " << *p_data << endl;
 
 	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
-	DevVarShortArray dvsa(1,1,p_data,false);
+	DevVarShortArray dvsa(size,size,p_data,r);
 	ret_data->data_blob[rec_count].value.short_att_value(dvsa);
 }
 
-void Pipe::set_value(char **p_data,long size,bool r)
+void Pipe::set_value(char **p_data,size_t size,bool r)
 {
 	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
 
@@ -141,7 +144,9 @@ void Pipe::set_value(vector<string> &)
 {
 	cout << "In the end recursive set_value call. Send data on the wire" << endl;
 	value_flag = true;
-//	for_each(v_pe.begin(),v_pe.end(),[] (PipeExtra &pe) {pe.size=1;pe.release=false;});
+#ifdef HAS_VARIADIC_TEMPLATE
+	for_each(v_dep.begin(),v_dep.end(),[] (DataEltParam &pe) {pe.size=1;pe.rel=false;});
+#endif
 }
 
 } // End of Tango namespace

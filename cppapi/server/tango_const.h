@@ -223,6 +223,12 @@ const int EVENT_COMPAT_IDL5_SIZE  		   = 5;		// strlen of previsou string
 const int DEV_INTR_THREAD_SLEEP_TIME	   = 50;
 
 //
+// For pipe
+//
+
+const int MAX_DATA_ELT_IN_PIPE_BLOB		   = 20;
+
+//
 // Files used to retrieve env. variables
 //
 

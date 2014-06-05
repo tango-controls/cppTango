@@ -207,10 +207,10 @@ public:
     void set_value(vector<string> &,T *val,Args ... args);
 #endif // HAS_VARIADIC_TEMPLATE
 
-	void set_value(DevLong *val,long size=1,bool r=false);
-	void set_value(DevDouble *val,long size=1,bool r=false);
-	void set_value(DevShort *val,long size=1,bool r=false);
-	void set_value(DevString *val,long size=1,bool r=false);
+	void set_value(DevLong *val,size_t,bool);
+	void set_value(DevDouble *val,size_t,bool);
+	void set_value(DevShort *val,size_t,bool);
+	void set_value(DevString *val,size_t,bool);
 
 	void set_value(vector<string> &);
 	void clear_count() {rec_count = 0;}
@@ -248,6 +248,14 @@ private:
         PipeExt() {}
     };
 
+	struct DataEltParam
+	{
+		bool		rel;
+		size_t		size;
+
+		DataEltParam():rel(false),size(1) {}
+	};
+
 #ifdef HAS_UNIQUE_PTR
     unique_ptr<PipeExt>          ext;           // Class extension
 #else
@@ -258,9 +266,9 @@ private:
 	Tango::TimeVal				when;			// Date associated to the pipe
 	Tango::DevPipeData_5 		*ret_data;		// Pointer for read data
 
-	vector<string> 				pe_out_names;
-	int 						rec_count;
-//	vector<PipeExtra>			v_pe;
+	vector<string> 				pe_out_names;	// Data elements name
+	int 						rec_count;		// Data elements ctr
+	vector<DataEltParam>		v_dep;			// Data elements param (size, release)
 };
 
 //
