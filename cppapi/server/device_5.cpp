@@ -992,7 +992,7 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 			stringstream o;
 			o << "It is currently not allowed to read pipe " << name;
 
-			Except::throw_exception(API_AttrNotAllowed,o.str(),"Device_5Impl::read_pipe_5");
+			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::read_pipe_5");
 		}
 
 // TODO: Pipe : Do we need to have a mutex to protect pipe data (like attribute)?
@@ -1002,6 +1002,7 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 //
 
 		pi.set_time();
+		pi.set_returned_data_ptr(back);
 		pi.read(this);
 
 //
@@ -1023,13 +1024,13 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 		back->time = pi.get_when();
 		back->name = CORBA::string_dup(pipe_name.c_str());
 
-		vector<string> &names = pi.get_data_elt_name();
+/*		vector<string> &names = pi.get_data_elt_name();
 		back->data_blob.length(names.size());
 		for (size_t ctr = 0;ctr < names.size();ctr++)
 		{
 			back->data_blob[ctr].name = Tango::string_dup(names[ctr].c_str());
 			back->data_blob[ctr].value.union_no_data();
-		}
+		}*/
 	}
 	catch (...)
 	{

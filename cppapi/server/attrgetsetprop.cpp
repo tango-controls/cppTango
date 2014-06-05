@@ -1327,7 +1327,7 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 					throw_min_max_value(d_name,mem_value,MAX);
 			}
 		}
-}
+	}
 
 //
 // For string representation: If there is a default (class or user) and if the user

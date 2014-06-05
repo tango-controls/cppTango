@@ -46,8 +46,27 @@ void Pipe::set_value(vector<string> &blob_elt_names,T *val,Args ...args)
 {
 	cout << "In set_value variadic template method: " << sizeof...(args) << " data in pack, rec_count = " << rec_count << endl;
 
+//
+// If it is the first call for the set_value() method (variadic template) check that the nb of args is coherent with
+// the data_elt names
+// Also copy the data elements name
+//
+
 	if (rec_count == 0)
+	{
+		unsigned int nb_vargs = sizeof...(args);
+		if (nb_vargs + 1 != blob_elt_names.size())
+		{
+			stringstream ss;
+			ss << "Data blob for pipe " << name << " is supposed to have " << blob_elt_names.size() << " data elements but only ";
+			ss << nb_vargs + 1 << " argument(s) given to set_value() method";
+
+			Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_value()");
+		}
+
 		pe_out_names = blob_elt_names;
+		ret_data->data_blob.length(pe_out_names.size());
+	}
 
 	set_value(val);
 	rec_count++;

@@ -90,28 +90,51 @@ void Pipe::set_time()
 }
 
 
-void Pipe::set_value(int *val,long size,bool r)
+void Pipe::set_value(DevLong *p_data,long size,bool r)
 {
+	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
+
 	cout << "set_value for int for data elt name: " << pe_out_names[rec_count] << endl;
-	cout << "Value = " << *val << endl;
+	cout << "Value = " << *p_data << endl;
+
+	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+	DevVarLongArray dvla(1,1,p_data,false);
+	ret_data->data_blob[rec_count].value.long_att_value(dvla);
 }
 
-void Pipe::set_value(double *val,long size,bool r)
+void Pipe::set_value(DevDouble *p_data,long size,bool r)
 {
+	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
+
 	cout << "set_value for double for data elt name: " << pe_out_names[rec_count] << endl;
-	cout << "Value = " << *val << endl;
+	cout << "Value = " << *p_data << endl;
+
+	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+
+	DevVarDoubleArray dvda(1,1,p_data,false);
+	ret_data->data_blob[rec_count].value.double_att_value(dvda);
 }
 
-void Pipe::set_value(short *val,long size,bool r)
+void Pipe::set_value(DevShort *p_data,long size,bool r)
 {
+	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
+
 	cout << "set_value for short for data elt name: " << pe_out_names[rec_count] << endl;
-	cout << "Value = " << *val << endl;
+	cout << "Value = " << *p_data << endl;
+
+	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+	DevVarShortArray dvsa(1,1,p_data,false);
+	ret_data->data_blob[rec_count].value.short_att_value(dvsa);
 }
 
-void Pipe::set_value(char **val,long size,bool r)
+void Pipe::set_value(char **p_data,long size,bool r)
 {
+	PIPE_CHECK_PTR(p_data,name,pe_out_names[rec_count]);
+
 	cout << "set_value for char * for data elt name: " << pe_out_names[rec_count] << endl;
-	cout << "Value = " << *val << endl;
+	cout << "Value = " << *p_data << endl;
+
+	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
 }
 
 void Pipe::set_value(vector<string> &)

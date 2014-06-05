@@ -200,6 +200,7 @@ public:
 	void set_value_flag(bool val) {value_flag = val;}
 	void set_time();
 	Tango::TimeVal &get_when() {return when;}
+	void set_returned_data_ptr(DevPipeData_5 *_p) {ret_data=_p;}
 
 #ifdef HAS_VARIADIC_TEMPLATE
 	template <typename T,typename ... Args>
@@ -255,16 +256,26 @@ private:
 
 	bool						value_flag;		// Flag set when pipe value is set
 	Tango::TimeVal				when;			// Date associated to the pipe
-
-	vector<short> 				short_val;
-	vector<int>					int_val;
-	vector<double>				db_val;
+	Tango::DevPipeData_5 		*ret_data;		// Pointer for read data
 
 	vector<string> 				pe_out_names;
 	int 						rec_count;
 //	vector<PipeExtra>			v_pe;
 };
 
+//
+// Throw exception if pointer is null
+//
+
+#define PIPE_CHECK_PTR(A,B,C) \
+	if (A == NULL) \
+	{ \
+		stringstream o; \
+		o << "Data pointer for pipe " << B << ", data element " << C << " is NULL!"; \
+		Except::throw_exception(API_PipeOptProp,o.str(),"Pipe::set_value()"); \
+	} \
+	else \
+		(void)0
 
 } // End of Tango namespace
 

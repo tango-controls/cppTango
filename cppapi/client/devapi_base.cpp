@@ -4777,6 +4777,33 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	for  (size_t ctr = 0;ctr < pipe_value_5->data_blob.length();ctr++)
 	{
 		dev_pipe.elt_names.push_back(string(pipe_value_5->data_blob[ctr].name));
+
+		switch (pipe_value_5->data_blob[ctr].value._d())
+		{
+			case ATT_SHORT:
+			{
+				const DevVarShortArray &tmp_seq = pipe_value_5->data_blob[ctr].value.short_att_value();
+				cout << "DevShort data" << endl;
+				cout << tmp_seq << endl;
+			}
+			break;
+
+			case ATT_LONG:
+			{
+				const DevVarLongArray &tmp_seq = pipe_value_5->data_blob[ctr].value.long_att_value();
+				cout << "DevLong data" << endl;
+				cout << tmp_seq << endl;
+			}
+			break;
+
+			case ATT_DOUBLE:
+			{
+				const DevVarDoubleArray &tmp_seq = pipe_value_5->data_blob[ctr].value.double_att_value();
+				cout << "DevDouble data" << endl;
+				cout << tmp_seq << endl;
+			}
+			break;
+		}
 	}
 
 	return dev_pipe;

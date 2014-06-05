@@ -2669,10 +2669,9 @@ inline void Attribute::set_att_conf_event_sub(int cl_lib)
 #define CHECK_PTR(A,B) \
 	if (A == NULL) \
 	{ \
-		TangoSys_OMemStream o; \
-		o << "Data pointer for attribute " << B << " is NULL!" << ends; \
-		Except::throw_exception((const char *)API_AttrOptProp,o.str(), \
-                            (const char *)"Attribute::set_value()"); \
+		stringstream o; \
+		o << "Data pointer for attribute " << B << " is NULL!"; \
+		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::set_value()"); \
 	} \
 	else \
 		(void)0
