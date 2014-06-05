@@ -59,5 +59,66 @@ Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::D
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 }
 
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::set_time
+//
+// description :
+//		Set the date in the pipe object
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Pipe::set_time()
+{
+#ifdef _TG_WINDOWS_
+	struct _timeb t;
+	_ftime(&t);
+
+	when.tv_sec = (CORBA::Long)t.time;
+	when.tv_usec = (CORBA::Long)(t.millitm * 1000);
+	when.tv_nsec = 0;
+#else
+	struct timezone tz;
+	struct timeval tv;
+	gettimeofday(&tv,&tz);
+
+	when.tv_sec = (CORBA::Long)tv.tv_sec;
+	when.tv_usec = (CORBA::Long)tv.tv_usec;
+	when.tv_nsec = 0;
+#endif
+}
+
+
+void Pipe::set_value(int *val,long size,bool r)
+{
+	cout << "set_value for int for data elt name: " << pe_out_names[rec_count] << endl;
+	cout << "Value = " << *val << endl;
+}
+
+void Pipe::set_value(double *val,long size,bool r)
+{
+	cout << "set_value for double for data elt name: " << pe_out_names[rec_count] << endl;
+	cout << "Value = " << *val << endl;
+}
+
+void Pipe::set_value(short *val,long size,bool r)
+{
+	cout << "set_value for short for data elt name: " << pe_out_names[rec_count] << endl;
+	cout << "Value = " << *val << endl;
+}
+
+void Pipe::set_value(char **val,long size,bool r)
+{
+	cout << "set_value for char * for data elt name: " << pe_out_names[rec_count] << endl;
+	cout << "Value = " << *val << endl;
+}
+
+void Pipe::set_value(vector<string> &)
+{
+	cout << "In the end recursive set_value call. Send data on the wire" << endl;
+	value_flag = true;
+//	for_each(v_pe.begin(),v_pe.end(),[] (PipeExtra &pe) {pe.size=1;pe.release=false;});
+}
 
 } // End of Tango namespace

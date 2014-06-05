@@ -195,6 +195,7 @@ CLIENT_OBJS = 	$(OBJS_DIR)/dbapi_base.o \
 		$(OBJS_DIR)/devapi_base.o \
 		$(OBJS_DIR)/devapi_data.o \
 		$(OBJS_DIR)/devapi_datahist.o \
+		$(OBJS_DIR)/devapi_pipe.o \
 		$(OBJS_DIR)/api_util.o \
 		$(OBJS_DIR)/devapi_utils.o \
 		$(OBJS_DIR)/asynreq.o \
@@ -294,6 +295,7 @@ CLIENT_OBJS_SL = $(OBJS_DIR_SL)/dbapi_base.so.o \
 		$(OBJS_DIR_SL)/devapi_base.so.o \
 		$(OBJS_DIR_SL)/devapi_data.so.o \
 		$(OBJS_DIR_SL)/devapi_datahist.so.o \
+		$(OBJS_DIR_SL)/devapi_pipe.so.o \
 		$(OBJS_DIR_SL)/api_util.so.o \
 		$(OBJS_DIR_SL)/devapi_utils.so.o \
 		$(OBJS_DIR_SL)/asynreq.so.o \
@@ -336,6 +338,7 @@ CLIENT_INCLUDE =	apiexcept.h \
 			ApiUtil.h \
 			DeviceData.h \
 			DeviceAttribute.h \
+			DevicePipe.h \
 			devapi_attr.tpp \
 			Connection.h \
 			DeviceProxy.h \
@@ -356,6 +359,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			classattribute.h \
 			command.h \
 			pipe.h \
+			pipe.tpp \
 			coutappender.h \
 			coutbuf.h \
 			device.h \

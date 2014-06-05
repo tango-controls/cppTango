@@ -75,15 +75,17 @@
 
 #ifdef _WIN32
     #ifdef _MSC_VER
-        #if ((_MSC_VER >= 1400)  && (_MSC_VER < 1500))     // VC8+
+        #if ((_MSC_VER >= 1400)  && (_MSC_VER < 1500))
             #define WIN32_VC8
         #elif ((_MSC_VER >= 1500) && (_MSC_VER < 1600))
             #define WIN32_VC9
         #elif ((_MSC_VER >= 1600) && (_MSC_VER < 1700))
             #define WIN32_VC10
-		#elif (_MSC_VER >= 1700)
+		#elif ((_MSC_VER >= 1700) && (_MSC_VER < 1800))
 			#define WIN32_VC11
-        #endif   // VC8+/VC9/VC10
+		#elif (_MSC_VER >= 1800)
+			#define WIN32_VC12
+        #endif   // VC8+/VC9/VC10/VC11/VC12
     #endif
 #endif
 
@@ -144,6 +146,7 @@
                 #define HAS_RVALUE
                 #define HAS_THREAD
                 #define HAS_TYPE_TRAITS
+                #define HAS_VARIADIC_TEMPLATE
             #endif
             #if __GNUC_MINOR__ > 4
                 #define HAS_LAMBDA_FUNC
@@ -168,6 +171,7 @@
 				#define HAS_THREAD
 				#define HAS_TYPE_TRAITS
 				#define HAS_UNDERLYING
+				#define HAS_VARIADIC_TEMPLATE
         #endif
     #endif
 #else
@@ -186,6 +190,16 @@
 		#define HAS_RANGE_BASE_FOR
         #define HAS_TYPE_TRAITS
         #define HAS_UNDERLYING
+    #endif
+    #ifdef WIN32_VC12
+        #define HAS_UNIQUE_PTR
+        #define HAS_LAMBDA_FUNC
+        #define HAS_NULLPTR
+        #define HAS_RVALUE
+		#define HAS_RANGE_BASE_FOR
+        #define HAS_TYPE_TRAITS
+        #define HAS_UNDERLYING
+        #define HAS_VARIADIC_TEMPLATE
     #endif
 #endif
 

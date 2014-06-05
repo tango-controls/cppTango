@@ -113,18 +113,7 @@ public:
 
 /**@name Miscellaneous methods */
 //@{
-/**
- * Check if it is allowed to read the pipe in the actual device state.
- *
- * This method is automatically called by the TANGO core classes when the associated pipe is read by a client to check
- * if the pipe is allowed in the actual device state. This method is the default is_allowed method which
- * always allows the pipe to be read. It is possible to re-define it if this default behaviour does not fullfill
- * the device needs.
- *
- * @param dev The device on which the pipe must be read
- * @return A boolean set to true is the pipe is allowed. Otherwise, the return value is false.
- */
-	virtual bool is_allowed (DeviceImpl *dev) {(void)dev;return true;}
+
 //@}
 
 /**@name Get/Set object members.
@@ -203,6 +192,29 @@ public:
 
 //@}
 
+/// @privatesection
+	virtual bool is_allowed (DeviceImpl *dev) {(void)dev;return true;}
+	virtual void read(DeviceImpl *) {}
+
+	bool get_value_flag() {return value_flag;}
+	void set_value_flag(bool val) {value_flag = val;}
+	void set_time();
+	Tango::TimeVal &get_when() {return when;}
+
+#ifdef HAS_VARIADIC_TEMPLATE
+	template <typename T,typename ... Args>
+    void set_value(vector<string> &,T *val,Args ... args);
+#endif // HAS_VARIADIC_TEMPLATE
+
+	void set_value(int *val,long size=1,bool r=false);
+	void set_value(double *val,long size=1,bool r=false);
+	void set_value(short *val,long size=1,bool r=false);
+	void set_value(char **val,long size=1,bool r=false);
+
+	void set_value(vector<string> &);
+	void clear_count() {rec_count = 0;}
+	vector<string> &get_data_elt_name() {return pe_out_names;}
+
 protected:
 /**@name Class data members */
 //@{
@@ -241,6 +253,16 @@ private:
 	PipeExt		                *ext;
 #endif
 
+	bool						value_flag;		// Flag set when pipe value is set
+	Tango::TimeVal				when;			// Date associated to the pipe
+
+	vector<short> 				short_val;
+	vector<int>					int_val;
+	vector<double>				db_val;
+
+	vector<string> 				pe_out_names;
+	int 						rec_count;
+//	vector<PipeExtra>			v_pe;
 };
 
 

@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;      
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3078,7 +3078,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;    
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4352,6 +4352,161 @@ omni_mutex *mut_ptr;
     PipeConfigList_5_out();
     PipeConfigList_5_out& operator=(const PipeConfigList_5_var&);
   };
+
+  struct DevPipeDataElt_5 {
+    typedef _CORBA_ConstrType_Variable_Var<DevPipeDataElt_5> _var_type;
+
+    
+    AttrValUnion value;
+
+    ::CORBA::String_member name;
+
+  
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef DevPipeDataElt_5::_var_type DevPipeDataElt_5_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< DevPipeDataElt_5,DevPipeDataElt_5_var > DevPipeDataElt_5_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeDataElt_5;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeBlob_5;
+
+  class DevPipeBlob_5_var;
+
+  class DevPipeBlob_5 : public _CORBA_Unbounded_Sequence< DevPipeDataElt_5 >  {
+  public:
+    typedef DevPipeBlob_5_var _var_type;
+    inline DevPipeBlob_5() {}
+    inline DevPipeBlob_5(const DevPipeBlob_5& _s)
+      : _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > (_s) {}
+
+    inline DevPipeBlob_5(_CORBA_ULong _max)
+      : _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > (_max) {}
+    inline DevPipeBlob_5(_CORBA_ULong _max, _CORBA_ULong _len, DevPipeDataElt_5* _val, _CORBA_Boolean _rel=0)
+      : _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > (_max, _len, _val, _rel) {}
+
+  
+
+    inline DevPipeBlob_5& operator = (const DevPipeBlob_5& _s) {
+      _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > ::operator=(_s);
+      return *this;
+    }
+  };
+
+  class DevPipeBlob_5_out;
+
+  class DevPipeBlob_5_var {
+  public:
+    inline DevPipeBlob_5_var() : _pd_seq(0) {}
+    inline DevPipeBlob_5_var(DevPipeBlob_5* _s) : _pd_seq(_s) {}
+    inline DevPipeBlob_5_var(const DevPipeBlob_5_var& _s) {
+      if( _s._pd_seq )  _pd_seq = new DevPipeBlob_5(*_s._pd_seq);
+      else              _pd_seq = 0;
+    }
+    inline ~DevPipeBlob_5_var() { if( _pd_seq )  delete _pd_seq; }
+      
+    inline DevPipeBlob_5_var& operator = (DevPipeBlob_5* _s) {
+      if( _pd_seq )  delete _pd_seq;
+      _pd_seq = _s;
+      return *this;
+    }
+    inline DevPipeBlob_5_var& operator = (const DevPipeBlob_5_var& _s) {
+      if( _s._pd_seq ) {
+        if( !_pd_seq )  _pd_seq = new DevPipeBlob_5;
+        *_pd_seq = *_s._pd_seq;
+      } else if( _pd_seq ) {
+        delete _pd_seq;
+        _pd_seq = 0;
+      }
+      return *this;
+    }
+    inline DevPipeDataElt_5& operator [] (_CORBA_ULong _s) {
+      return (*_pd_seq)[_s];
+    }
+
+  
+
+    inline DevPipeBlob_5* operator -> () { return _pd_seq; }
+    inline const DevPipeBlob_5* operator -> () const { return _pd_seq; }
+#if defined(__GNUG__)
+    inline operator DevPipeBlob_5& () const { return *_pd_seq; }
+#else
+    inline operator const DevPipeBlob_5& () const { return *_pd_seq; }
+    inline operator DevPipeBlob_5& () { return *_pd_seq; }
+#endif
+      
+    inline const DevPipeBlob_5& in() const { return *_pd_seq; }
+    inline DevPipeBlob_5&       inout()    { return *_pd_seq; }
+    inline DevPipeBlob_5*&      out() {
+      if( _pd_seq ) { delete _pd_seq; _pd_seq = 0; }
+      return _pd_seq;
+    }
+    inline DevPipeBlob_5* _retn() { DevPipeBlob_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
+      
+    friend class DevPipeBlob_5_out;
+    
+  private:
+    DevPipeBlob_5* _pd_seq;
+  };
+
+  class DevPipeBlob_5_out {
+  public:
+    inline DevPipeBlob_5_out(DevPipeBlob_5*& _s) : _data(_s) { _data = 0; }
+    inline DevPipeBlob_5_out(DevPipeBlob_5_var& _s)
+      : _data(_s._pd_seq) { _s = (DevPipeBlob_5*) 0; }
+    inline DevPipeBlob_5_out(const DevPipeBlob_5_out& _s) : _data(_s._data) {}
+    inline DevPipeBlob_5_out& operator = (const DevPipeBlob_5_out& _s) {
+      _data = _s._data;
+      return *this;
+    }
+    inline DevPipeBlob_5_out& operator = (DevPipeBlob_5* _s) {
+      _data = _s;
+      return *this;
+    }
+    inline operator DevPipeBlob_5*&()  { return _data; }
+    inline DevPipeBlob_5*& ptr()       { return _data; }
+    inline DevPipeBlob_5* operator->() { return _data; }
+
+    inline DevPipeDataElt_5& operator [] (_CORBA_ULong _i) {
+      return (*_data)[_i];
+    }
+
+  
+
+    DevPipeBlob_5*& _data;
+
+  private:
+    DevPipeBlob_5_out();
+    DevPipeBlob_5_out& operator=(const DevPipeBlob_5_var&);
+  };
+
+  struct DevPipeData_5 {
+    typedef _CORBA_ConstrType_Variable_Var<DevPipeData_5> _var_type;
+
+    
+    DevPipeBlob_5 data_blob;
+
+    TimeVal time;
+
+    ::CORBA::String_member name;
+
+    DevErrorList err_list;
+
+  
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef DevPipeData_5::_var_type DevPipeData_5_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< DevPipeData_5,DevPipeData_5_var > DevPipeData_5_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeData_5;
 
   struct AttDataReady {
     typedef _CORBA_ConstrType_Variable_Var<AttDataReady> _var_type;
@@ -6128,6 +6283,7 @@ omni_mutex *mut_ptr;
     AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident);
     DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n);
     PipeConfigList_5* get_pipe_config_5(const ::Tango::DevVarStringArray& names);
+    DevPipeData_5* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident);
 
     inline _objref_Device_5()  { _PR_setobj(0); }  // nil
     _objref_Device_5(omniIOR*, omniIdentity*);
@@ -6167,6 +6323,7 @@ omni_mutex *mut_ptr;
     virtual AttributeValueList_5* write_read_attributes_5(const ::Tango::AttributeValueList_4& values, const ::Tango::DevVarStringArray& r_names, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n) = 0;
     virtual PipeConfigList_5* get_pipe_config_5(const ::Tango::DevVarStringArray& names) = 0;
+    virtual DevPipeData_5* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident) = 0;
     
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
@@ -6704,6 +6861,21 @@ void operator<<=(::CORBA::Any& _a, const Tango::PipeConfigList_5& _s);
 void operator<<=(::CORBA::Any& _a, Tango::PipeConfigList_5* _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfigList_5*& _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfigList_5*& _sp);
+
+extern void operator<<=(::CORBA::Any& _a, const Tango::DevPipeDataElt_5& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::DevPipeDataElt_5* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeDataElt_5*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeDataElt_5*& _sp);
+
+void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlob_5& _s);
+void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlob_5* _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlob_5*& _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlob_5*& _sp);
+
+extern void operator<<=(::CORBA::Any& _a, const Tango::DevPipeData_5& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::DevPipeData_5* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeData_5*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeData_5*& _sp);
 
 extern void operator<<=(::CORBA::Any& _a, const Tango::AttDataReady& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::AttDataReady* _sp);

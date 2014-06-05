@@ -629,7 +629,7 @@ public :
  */
 	virtual vector<DeviceAttribute> *read_attributes(vector<string> &att_names);
 /**
- * Read the list of specified attributes
+ * Read a single attribute
  *
  * Read a single attribute. To extract the value you have to use the operator of the class DeviceAttribute
  * which corresponds to the data type of the attribute. NOTE: There is no automatic type conversion from the
@@ -850,6 +850,16 @@ public :
  * @throws ConnectionFailed, CommunicationFailed, DevFailed from device
  */
 	virtual vector<string> *get_pipe_list();
+/**
+ * Read a pipe
+ *
+ * Read a pipe.
+ *
+ * @param [in] pipe_name Pipe name
+ * @return The pipe value in a DevicePipe instance
+ * @throws ConnectionFailed, CommunicationFailed
+ */
+	virtual DevicePipe read_pipe(const string &pipe_name);
 //@}
 
 /** @name Asynchronous attribute related methods */

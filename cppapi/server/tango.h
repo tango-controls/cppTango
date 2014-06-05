@@ -117,6 +117,7 @@
 	#include <device_5.h>
 	#include <command.h>
 	#include <pipe.h>
+	#include <pipe.tpp>
 	#include <dserver.h>
 	#include <attribute_spec.tpp>
 	#include <utils_spec.tpp>

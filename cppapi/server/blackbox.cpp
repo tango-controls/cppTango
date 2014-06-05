@@ -661,6 +661,72 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	sync.unlock();
 }
 
+void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(long vers))
+{
+
+//
+// Take mutex
+//
+
+	sync.lock();
+
+//
+// Insert elt in the box
+//
+
+	box[insert_elt].req_type = Req_Operation;
+	box[insert_elt].attr_type = Attr_Unknown;
+
+	box[insert_elt].op_type = Op_Read_Pipe_5;
+	box[insert_elt].client_ident = false;
+
+
+	box[insert_elt].attr_names.clear();
+	string tmp_str(name);
+	box[insert_elt].attr_names.push_back(tmp_str);
+
+#ifdef _TG_WINDOWS_
+//
+// Note that the exact conversion between milli-sec and u-sec will be done only when data is send back to user.
+// This save some times in unnecessary computation
+//
+	struct _timeb t;
+	_ftime(&t);
+
+	box[insert_elt].when.tv_usec = (long)t.millitm;
+	box[insert_elt].when.tv_sec = (unsigned long)t.time;
+#else
+	struct timezone tz;
+	gettimeofday(&box[insert_elt].when,&tz);
+#endif
+
+//
+// get client address
+//
+
+	get_client_host();
+
+//
+// manage insert and read indexes
+//
+
+	inc_indexes();
+
+//
+// Add client ident info into the client_addr instance and into the box
+//
+
+	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
+	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
+	update_client_host(static_cast<client_addr *>(ip));
+
+//
+// Release mutex
+//
+
+	sync.unlock();
+}
+
 void BlackBox::insert_attr(const Tango::AttributeValueList &att_list, long vers)
 {
 	sync.lock();
@@ -1209,6 +1275,18 @@ void BlackBox::build_info_as_str(long index)
 
 		case Op_Get_Pipe_Config_5 :
 			elt_str = elt_str + "get_pipe_config_5 ";
+			break;
+
+		case Op_Read_Pipe_5 :
+			elt_str = elt_str + "read_pipe_5 (";
+			nb_in_vect = box[index].attr_names.size();
+			for (i = 0;i < nb_in_vect;i++)
+			{
+				elt_str = elt_str + box[index].attr_names[i];
+				if (i != nb_in_vect - 1)
+					elt_str = elt_str + ", ";
+			}
+			elt_str = elt_str + ") ";
 			break;
 
 		case Op_Unknown :

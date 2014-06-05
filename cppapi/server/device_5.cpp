@@ -909,4 +909,152 @@ Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStri
 	return back;
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_5Impl::read_pipe_5
+//
+// description :
+//		CORBA operation to read a pipe.
+//
+// argument:
+//		in :
+//			- name: pipe name
+//
+// return :
+//		Pointer to a DevPipeData_5 with pipe data (blob)
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::ClntIdent &cl_id)
+{
+	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << endl;
+	DevPipeData_5 *back = Tango_nullptr;
+
+//
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_attr(name,cl_id,5);
+
+//
+//  Write the device name into the per thread data for sub device diagnostics.
+//  Keep the old name, to put it back at the end!
+//  During device access inside the same server, the thread stays the same!
+//
+
+	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
+	string last_associated_device = sub.get_associated_device();
+	sub.set_associated_device(get_name());
+
+//
+// Catch all exceptions to set back the associated device after execution
+//
+
+	try
+	{
+
+//
+// Retrieve requested pipe
+//
+		string pipe_name(name);
+		Pipe &pi = device_class->get_pipe_by_name(pipe_name);
+
+		pi.set_value_flag(false);
+		pi.clear_count();
+
+//
+// Allocate memory for the returned value
+//
+
+		try
+		{
+			back = new Tango::DevPipeData_5;
+		}
+		catch (bad_alloc)
+		{
+			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
+									"Device_5Impl::read_pipe_5");
+		}
+
+//
+// Call the always_executed_hook
+//
+
+		always_executed_hook();
+
+//
+// Call the is_allowed method
+//
+
+		if (pi.is_allowed(this) == false)
+		{
+			stringstream o;
+			o << "It is currently not allowed to read pipe " << name;
+
+			Except::throw_exception(API_AttrNotAllowed,o.str(),"Device_5Impl::read_pipe_5");
+		}
+
+// TODO: Pipe : Do we need to have a mutex to protect pipe data (like attribute)?
+
+//
+// Call the user read method but before, set pipe date
+//
+
+		pi.set_time();
+		pi.read(this);
+
+//
+// Check that the wanted pipe set value has been updated
+//
+
+		if (pi.get_value_flag() == false)
+		{
+			stringstream o;
+			o << "Value for pipe " << pipe_name << " has not been updated";
+
+			Except::throw_exception(API_PipeValueNotSet,o.str(),"Device_5Impl::read_pipe_5");
+		}
+
+//
+// Populate the structure sent back to caller
+//
+
+		back->time = pi.get_when();
+		back->name = CORBA::string_dup(pipe_name.c_str());
+
+		vector<string> &names = pi.get_data_elt_name();
+		back->data_blob.length(names.size());
+		for (size_t ctr = 0;ctr < names.size();ctr++)
+		{
+			back->data_blob[ctr].name = Tango::string_dup(names[ctr].c_str());
+			back->data_blob[ctr].value.union_no_data();
+		}
+	}
+	catch (...)
+	{
+
+//
+// Set back the device attribution for the thread and rethrow the exception.
+//
+
+		sub.set_associated_device(last_associated_device);
+		delete back;
+		throw;
+	}
+
+//
+// Set back the device attribution for the thread
+//
+
+	sub.set_associated_device(last_associated_device);
+
+//
+// Return to caller
+//
+
+	cout4 << "Leaving Device_5Impl::read_pipe_5" << endl;
+	return back;
+}
+
 } // End of Tango namespace

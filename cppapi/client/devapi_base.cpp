@@ -4681,6 +4681,109 @@ vector<string> *DeviceProxy::get_pipe_list()
 
 //-----------------------------------------------------------------------------
 //
+// DeviceProxy::read_pipe() - read a single pipe
+//
+//-----------------------------------------------------------------------------
+
+
+DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
+{
+	DevPipeData_5_var pipe_value_5;
+	DevicePipe dev_pipe;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use read_pipe() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::read_pipe()");
+	}
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			pipe_value_5 = dev->read_pipe_5(pipe_name.c_str(),ci);
+
+			ctr = 2;
+		}
+		catch (Tango::ConnectionFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to read_pipe on device " << device_name << ", pipe " << pipe_name;
+			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::read_pipe()");
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to read_pipe on device " << device_name << ", pipe " << pipe_name;
+			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::read_pipe()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_pipe",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",desc.str(),"DeviceProxy::read_pipe()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",desc.str(),"DeviceProxy::read_pipe()");
+			}
+		}
+		catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+			stringstream desc;
+			desc << "Failed to read_pipe on device " << device_name;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",desc.str(),"DeviceProxy::read_pipe()");
+		}
+	}
+
+	dev_pipe.name = pipe_value_5->name;
+	dev_pipe.time = pipe_value_5->time;
+
+	for  (size_t ctr = 0;ctr < pipe_value_5->data_blob.length();ctr++)
+	{
+		dev_pipe.elt_names.push_back(string(pipe_value_5->data_blob[ctr].name));
+	}
+
+	return dev_pipe;
+}
+
+//-----------------------------------------------------------------------------
+//
 // DeviceProxy::read_attributes() - Read attributes
 //
 //-----------------------------------------------------------------------------
