@@ -352,6 +352,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\..\..\client\dbapi_serverdata.cpp" />
+    <ClCompile Include="..\..\..\client\devapi_pipe.cpp" />
     <ClCompile Include="..\..\..\client\eventqueue.cpp" />
     <ClCompile Include="..\..\..\server\attrdesc.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
@@ -1190,6 +1191,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\client\accessproxy.h" />
     <ClInclude Include="..\..\..\client\apiexcept.h" />
+    <ClInclude Include="..\..\..\client\DevicePipe.h" />
     <ClInclude Include="..\..\..\server\attrdesc.h" />
     <ClInclude Include="..\..\..\server\attribute.h" />
     <ClInclude Include="..\..\..\server\attrmanip.h" />
@@ -1260,6 +1262,7 @@
     <None Include="..\..\..\server\device_3.tpp" />
     <None Include="..\..\..\server\fwdattribute.tpp" />
     <None Include="..\..\..\server\fwdattribute_spec.tpp" />
+    <None Include="..\..\..\server\pipe.tpp" />
     <None Include="..\..\..\server\pollext.tpp" />
     <None Include="..\..\..\server\utils_spec.tpp" />
     <None Include="..\..\..\server\w_attribute_spec.tpp" />
