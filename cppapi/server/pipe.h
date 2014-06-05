@@ -207,10 +207,10 @@ public:
     void set_value(vector<string> &,T *val,Args ... args);
 #endif // HAS_VARIADIC_TEMPLATE
 
-	void set_value(int *val,long size=1,bool r=false);
-	void set_value(double *val,long size=1,bool r=false);
-	void set_value(short *val,long size=1,bool r=false);
-	void set_value(char **val,long size=1,bool r=false);
+	void set_value(DevLong *val,long size=1,bool r=false);
+	void set_value(DevDouble *val,long size=1,bool r=false);
+	void set_value(DevShort *val,long size=1,bool r=false);
+	void set_value(DevString *val,long size=1,bool r=false);
 
 	void set_value(vector<string> &);
 	void clear_count() {rec_count = 0;}
