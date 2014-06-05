@@ -59,6 +59,8 @@ public :
 	TimeVal 			time;
 	vector<string>		elt_names;
 
+	DevicePipe(const DevicePipe &);
+
 ///@publicsection
 /**@name Constructors */
 //@{

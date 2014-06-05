@@ -1133,6 +1133,10 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 
 			if (user_defaults == true)
 			{
+				stringstream ss1;
+				ss1 << usr_def_val;
+				ss1 >> alrm_usr_def_db;
+
 				double db;
 				stringstream ss;
 				ss.precision(TANGO_FLOAT_PRECISION);
@@ -1202,6 +1206,10 @@ void Attribute::set_one_alarm_prop(const char *prop_name,const CORBA::String_mem
 
 			if (class_defaults == true)
 			{
+				stringstream ss1;
+				ss1 << class_def_val;
+				ss1 >> alrm_class_def_db;
+
 				double db;
 				stringstream ss;
 				ss.precision(TANGO_FLOAT_PRECISION);

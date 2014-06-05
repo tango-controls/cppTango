@@ -56,6 +56,36 @@ DevicePipe::DevicePipe():ext(Tango_nullptr)
 
 }
 
+//-----------------------------------------------------------------------------------------------------------------
+//
+// method
+//		DeviceData::DeviceData()
+//
+// description:
+//		Copy ctor for DevicePipe class
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+DevicePipe::DevicePipe(const DevicePipe &source):ext(Tango_nullptr)
+{
+
+#ifdef HAS_UNIQUE_PTR
+    if (source.ext.get() != NULL)
+    {
+        ext.reset(new DevicePipeExt);
+        *(ext.get()) = *(source.ext.get());
+    }
+#else
+	if (source.ext != NULL)
+	{
+		ext = new DevicePipeExt();
+		*ext = *(source.ext);
+	}
+	else
+		ext = NULL;
+#endif
+}
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method

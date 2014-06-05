@@ -3563,10 +3563,10 @@ protected:
 			{ \
 				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false); \
 				att_val.value >>= E; \
-				D = new B(tmp_sh->length(), \
-								E->length(), \
-								const_cast<C *>(E->get_buffer()), \
-								false); \
+				D = new B(E->length(), \
+						  E->length(), \
+						  const_cast<C *>(E->get_buffer()), \
+						  false); \
 			} \
 			(*aid.data_3)[index].value <<= D; \
 		} \
