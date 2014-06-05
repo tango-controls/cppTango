@@ -698,6 +698,15 @@ public:
 		EventCallBack cb(this);
 		cb.cb_executed = 0;
 		cb.cb_err = 0;
+
+		try
+		{
+			fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb);
+		}
+		catch (Tango::DevFailed &e)
+		{
+			Tango::Except::print_exception(e);
+		}
 		
 		TS_ASSERT_THROWS_ASSERT(fwd_device->subscribe_event("fwd_short_rw",Tango::PERIODIC_EVENT,&cb),Tango::DevFailed &e,
 							TS_ASSERT(string(e.errors[0].reason.in()) == "API_AttributePollingNotStarted" 
