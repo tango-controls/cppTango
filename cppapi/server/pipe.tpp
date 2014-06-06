@@ -64,6 +64,15 @@ void Pipe::set_value(vector<string> &blob_elt_names,T *val,Args ...args)
 			Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_value()");
 		}
 
+		if (nb_vargs >= MAX_DATA_ELT_IN_PIPE_BLOB - 1)
+		{
+			stringstream ss;
+			ss << "Too many data elements in data blob for pipe " << name;
+			ss << ". Max data elements is " << MAX_DATA_ELT_IN_PIPE_BLOB;
+
+			Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_value()");
+		}
+
 		pe_out_names = blob_elt_names;
 		ret_data->data_blob.length(pe_out_names.size());
 	}

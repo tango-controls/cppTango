@@ -216,6 +216,9 @@ public:
 	void clear_count() {rec_count = 0;}
 	vector<string> &get_data_elt_name() {return pe_out_names;}
 
+	void set_pipe_blob_elt_size(int,size_t);
+	void set_pipe_blob_elt_release(int,bool);
+
 protected:
 /**@name Class data members */
 //@{

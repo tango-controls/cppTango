@@ -4530,7 +4530,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(vector<string>& pipe_string_list)
 // Error if device does not support IDL 5
 //
 
-	if (version < 5)
+	if (version > 0 && version < 5)
 	{
 		stringstream ss;
 		ss << "Device " << device_name << " too old to use get_pipe_config() call. Please upgrade to Tango 9/IDL5";
@@ -4696,7 +4696,7 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 // Error if device does not support IDL 5
 //
 
-	if (version < 5)
+	if (version > 0 && version < 5)
 	{
 		stringstream ss;
 		ss << "Device " << device_name << " too old to use read_pipe() call. Please upgrade to Tango 9/IDL5";
