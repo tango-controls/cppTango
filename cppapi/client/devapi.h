@@ -100,8 +100,8 @@ typedef struct DevCommandInfo
 typedef struct _DevCommandInfo
 #endif
 {
-	string 		cmd_name;           ///< Command name
-	long 		cmd_tag;            ///< Command tag
+	string 		cmd_name;           ///< The command name
+	long 		cmd_tag;            ///< The command tag
 	long 		in_type;            ///< Input parameter data type
 	long 		out_type;           ///< Output parameter data type
 	string 		in_type_desc;       ///< Input parameter description
@@ -130,13 +130,19 @@ typedef struct CommandInfo : public DevCommandInfo
 typedef struct _CommandInfo : public DevCommandInfo
 #endif
 {
-	Tango::DispLevel disp_level;    ///< Command display level
+	Tango::DispLevel disp_level;    ///< The command display level
 
 /// @privatesection
 	friend ostream &operator<<(ostream &,_CommandInfo &);
 	bool operator==(const _CommandInfo &);
 }CommandInfo;
 
+/**
+ * A vector of CommandInfo structure
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
 typedef vector<CommandInfo> CommandInfoList;
 
 struct _DeviceInfo
@@ -308,7 +314,7 @@ typedef struct _AttributeEventInfo
 typedef enum _AttrMemorizedType
 {
 	NOT_KNOWN,        		///< Device too old to  get this info
-	NONE,      				///< Attribute not memorized
+	NONE,      				///< The attribute is not memorized
 	MEMORIZED,      		///< Memorized attribute
 	MEMORIZED_WRITE_INIT	///< Memorized attribute with memorized value writen at initialization
 }AttrMemorizedType;
@@ -327,10 +333,10 @@ typedef struct _AttributeInfoEx : public AttributeInfo
 #endif
 {
 	string				root_attr_name;		///< Root attribute name
-	AttrMemorizedType	memorized;			///< Attribute memorization type
+	AttrMemorizedType	memorized;			///< The attribute memorization type
 	vector<string>		enum_labels;		///< Enumerated attribute labels
-	AttributeAlarmInfo 	alarms;             ///< Attribute alarms
-	AttributeEventInfo	events;             ///< Attribute events configuration
+	AttributeAlarmInfo 	alarms;             ///< The attribute alarms
+	AttributeEventInfo	events;             ///< The attribute events configuration
 	vector<string>		sys_extensions;     ///< Future extensions
 
 /// @privatesection
@@ -343,6 +349,13 @@ typedef struct _AttributeInfoEx : public AttributeInfo
 }AttributeInfoEx;
 
 typedef vector<AttributeInfo> AttributeInfoList;
+
+/**
+ * vector of AttributeInfoEx structure
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
 typedef vector<AttributeInfoEx> AttributeInfoListEx;
 
 /**

@@ -163,18 +163,18 @@ void Pipe::set_value(vector<string> &)
 #endif
 }
 
-void Pipe::set_pipe_blob_elt_size(int ind,size_t si)
+void Pipe::set_pipe_blob_elt_size(int ind,size_t _si)
 {
 	if (ind >= MAX_DATA_ELT_IN_PIPE_BLOB)
 	{
 		stringstream ss;
-		ss << "For pipe " << name << "given index is above the max limit for data element";
+		ss << "For pipe " << name << ", given index is above the max limit for data element";
 		ss << ". Max data elements is " << MAX_DATA_ELT_IN_PIPE_BLOB;
 
 		Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_pipe_blob_elt_size()");
 	}
 
-	v_dep[ind].size = si;
+	v_dep[ind].size = _si;
 }
 
 void Pipe::set_pipe_blob_elt_release(int ind,bool _rel)
@@ -182,7 +182,7 @@ void Pipe::set_pipe_blob_elt_release(int ind,bool _rel)
 	if (ind >= MAX_DATA_ELT_IN_PIPE_BLOB)
 	{
 		stringstream ss;
-		ss << "For pipe " << name << "given index is above the max limit for data element";
+		ss << "For pipe " << name << ", given index is above the max limit for data element";
 		ss << ". Max data elements is " << MAX_DATA_ELT_IN_PIPE_BLOB;
 
 		Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_pipe_blob_elt_size()");

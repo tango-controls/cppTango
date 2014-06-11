@@ -279,7 +279,7 @@ public:
 /**
  * Set default enumeration labels
  *
- * @param	def_enum_label	The enumeration labels
+ * @param	def_enum_labels	The enumeration labels
  */
 	void set_enum_labels(vector<string> &def_enum_labels)
 	{

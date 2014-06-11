@@ -715,13 +715,15 @@ public :
  * Write and read attribute(s)
  *
  * Write then read attribute(s) in a single network call. By default (serialisation by device), the execution
- * of this call in the server can’t be interrupted by other clients. To insert/extract the value to write/read you
+ * of this call in the server can’t be interrupted by other clients. On the server side, attribute(s) are first
+ * written and if no exception has been thrown during the write phase, attributes will be read.
+ * To insert/extract the value to write/read you
  * have to use the operator of the class DeviceAttribute which corresponds to the data type of the attribute.
  * NOTE: There is no automatic type conversion from the user type to the attribute native type e.g. if an
  * attribute expects a short you cannot insert it as a double (this will throw an exception) you have to insert it
  * as a short.
  *
- * @param [in] attr_in Attribute name and value (to be written)
+ * @param [in] attr_in The attribute(s) name and value (to be written)
  * @param [in] r_names Names of attribute to be read
  * @return The read attribute(s) data
  * @throws ConnectionFailed, CommunicationFailed, DeviceUnlocked, DevFailed from device
@@ -1496,6 +1498,20 @@ public :
  * @throws EventSystemFailed
  */
 	virtual void get_events (int event_id, DataReadyEventDataList &event_list);
+/**
+ * Get arrived events from event queue in event pull model
+ *
+ * The method extracts all waiting attribute configuration events from the event reception buffer. The returned
+ * event_list is a vector of DevIntrChangeEventData pointers. The DevIntrChangeEventData object contains the event
+ * information as for the callback methods.
+ * During event subscription the client must have chosen the <B>pull model</B> for this event. event_id is the
+ * event identifier returned by the DeviceProxy::subscribe_event() method.
+ *
+ * @param [in] event_id The event identifier
+ * @param [out] event_list The event(s) list
+ * @throws EventSystemFailed
+ */
+	virtual void get_events (int event_id, DevIntrChangeEventDataList &event_list);
 /**
  * Get event number in event queue
  *

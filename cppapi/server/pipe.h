@@ -60,6 +60,7 @@ struct WantedPipe : public binary_function<A1,A2,R>
 };
 #endif
 
+
 /**
  * This class is a class representing a pipe in the TANGO device server pattern. It is an abstract class.
  * It is the root class for all pipe related classes.
@@ -273,6 +274,7 @@ private:
 	int 						rec_count;		// Data elements ctr
 	vector<DataEltParam>		v_dep;			// Data elements param (size, release)
 };
+
 
 //
 // Throw exception if pointer is null

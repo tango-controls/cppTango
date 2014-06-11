@@ -266,7 +266,7 @@ public:
  * @param qual The attribute quality factor
  * @param when The date
  */
-	TimedAttrData(const T *p_data,TANGO_UNUSED(const T *p_wr_data),Tango::AttrQuality qual,struct timeval when);
+	TimedAttrData(const T *p_data,const T *p_wr_data,Tango::AttrQuality qual,struct timeval when);
 
 /**
  * Create a new TimedAttrData object.

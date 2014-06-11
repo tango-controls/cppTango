@@ -1016,8 +1016,6 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 								(const char *)"DServer::event_confirm_subscription");
 	}
 
-for (unsigned int i = 0;i < argin->length();i++)
-	cout << "EventConfirmSubscription: " << (*argin)[i] << endl;
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //

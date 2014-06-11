@@ -83,4 +83,6 @@ void Pipe::set_value(vector<string> &blob_elt_names,T *val,Args ...args)
 }
 #endif // HAS_VARIADIC_TEMPLATE
 
+
+
 } // End of Tango namespace

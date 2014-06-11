@@ -2270,6 +2270,102 @@ void EventConsumer::get_events (int event_id, DataReadyEventDataList &event_list
 //		EventConsumer::get_events()
 //
 // description :
+//		Return a vector with all device interface change events stored in the event queue.
+//      Events are kept in the buffer since the last extraction with get_events().
+//      After returning the event data, the event queue gets emptied!
+//
+// argument :
+//		in  :
+//			- event_id   : The event identifier
+// 		out :
+//			- event_list : A reference to an event data list to be filled
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void EventConsumer::get_events (int event_id, DevIntrChangeEventDataList &event_list)
+{
+	cout3 << "EventConsumer::get_events() : event_id = " << event_id << endl;
+
+	// lock the maps
+	ReaderLock l(map_modification_lock);
+
+//
+// First search the event entry in the callback map
+//
+
+	std::map<std::string,EventCallBackStruct>::iterator epos;
+	std::vector<EventSubscribeStruct>::iterator esspos;
+
+	for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
+	{
+		EventCallBackStruct &evt_cb = epos->second;
+		for (esspos = evt_cb.callback_list.begin(); esspos != evt_cb.callback_list.end(); ++esspos)
+		{
+			if(esspos->id == event_id)
+			{
+				// check wether an event queue is used!
+				if ( esspos->callback == NULL )
+				{
+					// get the events from the queue
+					esspos->ev_queue->get_events (event_list);
+					return;
+				}
+				else
+				{
+					TangoSys_OMemStream o;
+					o << "No event queue specified during subscribe_event()\n";
+					o << "Cannot return any event data" << ends;
+					EventSystemExcept::throw_exception(API_EventQueues,
+					        o.str(),"EventConsumer::get_events()");
+				}
+			}
+		}
+	}
+
+//
+// check also the vector of not yet connected events
+//
+
+	if ( event_not_connected.empty() == false )
+	{
+		std::vector<EventNotConnected>::iterator vpos;
+		for (vpos =  event_not_connected.begin();
+			 vpos != event_not_connected.end(); ++vpos)
+		{
+			if ( vpos->event_id == event_id)
+			{
+				// check wether an event queue is used!
+				if ( vpos->callback == NULL )
+				{
+					// get the events from the queue
+					vpos->ev_queue->get_events (event_list);
+					return;
+				}
+				else
+				{
+					TangoSys_OMemStream o;
+					o << "No event queue specified during subscribe_event()\n";
+					o << "Cannot return any event data" << ends;
+					EventSystemExcept::throw_exception(API_EventQueues,
+				        o.str(),"EventConsumer::get_events()");
+				}
+			}
+		}
+	}
+
+	// nothing was found!
+
+	EventSystemExcept::throw_exception("API_EventNotFound",
+			"Failed to get event, the event id specified does not correspond with any known one",
+			"EventConsumer::get_events()");
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::get_events()
+//
+// description :
 //		Call the callback method for all events stored in the event queue.
 //      Events are kept in the buffer since the last extraction with get_events().
 //      After returning the event data, the event queue gets emptied!

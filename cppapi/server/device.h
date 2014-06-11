@@ -675,11 +675,12 @@ public:
  */
 	vector<PollObj *>::iterator get_polled_obj_by_type_name(Tango::PollObjType obj_type,const string &obj_name);
 /**
- * Check if there is subscriber listening  for one event
+ * Check if there is subscriber(s) listening for the event
  *
  * This method returns a boolean set to true if there are some subscriber(s) listening on the event specified
  * by the two method arguments. Be aware that there is some delay (up to 600 sec) between this method returning false
- * and the last subscriber unsubscription or crash...
+ * and the last subscriber unsubscription or crash... The device interface change event is not supported
+ * by this method.
  *
  * @param att_name The attribute name
  * @param event_type The event type

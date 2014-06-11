@@ -325,7 +325,7 @@ public:
 
 /********************************************************************************
  * 																				*
- * 						DevIntrChangedEventData class							*
+ * 						DevIntrChangeEventData class							*
  * 																				*
  *******************************************************************************/
 
@@ -363,7 +363,8 @@ public :
 	string				device_name;		///< The device name
 	CommandInfoList 	cmd_list;			///< Device command list info
 	AttributeInfoListEx	att_list;			///< Device attribute list info
-	bool				dev_started;		///< Device started flag (true when event sent due to device being started)
+	bool				dev_started;		///< Device started flag (true when event sent due to device being (re)started
+											///< and with only a possible but not sure interface change)
 
 	bool 				err;                ///< A boolean flag set to true if the request failed. False otherwise
 	DevErrorList 		errors;            	///< The error stack

@@ -5562,6 +5562,7 @@ bool DeviceImpl::is_there_subscriber(const string &att_name,EventType event_type
 		break;
 
 	default:
+		Except::throw_exception(API_UnsupportedFeature,"Unsupported event type","Device::get_cmd_by_name");
 		break;
 	}
 
@@ -5714,9 +5715,7 @@ Command &DeviceImpl::get_local_cmd_by_name(const string &cmd_name)
 		TangoSys_OMemStream o;
 
 		o << cmd_name << " command not found" << ends;
-		Except::throw_exception((const char *)API_CommandNotFound,
-				      o.str(),
-				      (const char *)"Device::get_cmd_by_name");
+		Except::throw_exception(API_CommandNotFound,o.str(),"Device::get_cmd_by_name");
 	}
 
 	return *(*pos);

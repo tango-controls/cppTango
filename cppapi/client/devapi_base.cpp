@@ -7380,10 +7380,7 @@ void DeviceProxy::get_events (int event_id, AttrConfEventDataList &event_list)
 		desc << "Could not find event consumer object, \n";
 		desc << "probably no event subscription was done before!";
 		desc << ends;
-		Tango::Except::throw_exception(
-						(const char*)"API_EventConsumer",
-						desc.str(),
-						(const char*)"DeviceProxy::get_events()");
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
 	}
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -7398,10 +7395,7 @@ void DeviceProxy::get_events (int event_id, AttrConfEventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << ends;
-            Tango::Except::throw_exception(
-                            (const char*)"API_EventConsumer",
-                            desc.str(),
-                            (const char*)"DeviceProxy::get_events()");
+            Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
     }
@@ -7416,10 +7410,7 @@ void DeviceProxy::get_events (int event_id, DataReadyEventDataList &event_list)
 		desc << "Could not find event consumer object, \n";
 		desc << "probably no event subscription was done before!";
 		desc << ends;
-		Tango::Except::throw_exception(
-						(const char*)"API_EventConsumer",
-						desc.str(),
-						(const char*)"DeviceProxy::get_events()");
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
 	}
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -7434,12 +7425,32 @@ void DeviceProxy::get_events (int event_id, DataReadyEventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << ends;
-            Tango::Except::throw_exception(
-                            (const char*)"API_EventConsumer",
-                            desc.str(),
-                            (const char*)"DeviceProxy::get_events()");
+            Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
+    }
+}
+
+void DeviceProxy::get_events (int event_id, DevIntrChangeEventDataList &event_list)
+{
+    ApiUtil *api_ptr = ApiUtil::instance();
+	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		stringstream desc;
+		desc << "Could not find event consumer object, \n";
+		desc << "probably no event subscription was done before!";
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
+	}
+
+    if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
+    {
+        api_ptr->get_zmq_event_consumer()->get_events(event_id, event_list);
+    }
+    else
+    {
+		stringstream desc;
+		desc << "Event Device Interface Change not implemented in old Tango event system (notifd)";
+		Tango::Except::throw_exception(API_UnsupportedFeature,desc.str(),"DeviceProxy::get_events()");
     }
 }
 
