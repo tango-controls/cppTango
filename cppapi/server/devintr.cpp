@@ -117,8 +117,6 @@ void DevIntr::build_cmd_interfaces(DeviceImpl *dev,vector<CmdIntr> &cmds)
 //
 
 	sort(cmds.begin(),cmds.end());
-//for(const auto &elem:cmds)
-//	cout << "Command name = " << elem.name << endl;
 
 }
 
@@ -160,6 +158,8 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,vector<AttrIntr> &atts)
 		ai.data_format = att_ptr->get_data_format();
 		ai.max_x = att_ptr->get_max_dim_x();
 		ai.max_y = att_ptr->get_max_dim_y();
+		ai.enum_labels = att_ptr->get_enum_labels();
+
 		if (ai.writable == READ_WRITE || ai.writable == WRITE)
 		{
 			WAttribute *w_att_ptr = static_cast<WAttribute *>(att_ptr);
@@ -173,9 +173,6 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,vector<AttrIntr> &atts)
 			ai.mem_init = false;
 		}
 
-// TODO: Add enum_labels
-// TODO: In case of fwd attribute wrongly configured??
-
 		atts.push_back(ai);
 	}
 
@@ -184,8 +181,6 @@ void DevIntr::build_att_interfaces(DeviceImpl *dev,vector<AttrIntr> &atts)
 //
 
 	sort(atts.begin(),atts.end());
-//for(const auto &elem:atts)
-//	cout << "Attribute name = " << elem.name << endl;
 
 }
 

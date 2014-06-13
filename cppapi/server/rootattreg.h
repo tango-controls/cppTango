@@ -77,6 +77,7 @@ public:
 	bool is_root_attribute(string &_s) {return cbp.is_root_att_in_map(_s);}
 
 protected:
+	bool check_loop(string &,string &,string &,string &);
 
 private:
 	class RootAttConfCallBack: public Tango::CallBack

@@ -77,6 +77,7 @@ void Pipe::set_value(vector<string> &blob_elt_names,T *val,Args ...args)
 		ret_data->data_blob.length(pe_out_names.size());
 	}
 
+	set_value_flag(true);
 	set_value(val,v_dep[rec_count].size,v_dep[rec_count].rel);
 	rec_count++;
 	set_value(blob_elt_names,args...);

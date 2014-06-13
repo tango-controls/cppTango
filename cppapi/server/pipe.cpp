@@ -191,4 +191,48 @@ void Pipe::set_pipe_blob_elt_release(int ind,bool _rel)
 	v_dep[ind].rel = _rel;
 }
 
+void Pipe::set_value(vector<OldDataEltParam> &pa,...)
+{
+	va_list argp;
+	va_start(argp,pa);
+
+	pe_out_names.clear();
+
+	size_t nb_params = pa.size();
+	ret_data->data_blob.length(nb_params);
+	set_value_flag(true);
+
+	for (size_t ctr = 0;ctr < nb_params;ctr++)
+	{
+		rec_count = ctr;
+		pe_out_names.push_back(pa[ctr].name);
+
+		switch(pa[ctr].type)
+		{
+			case DEV_SHORT:
+			{
+				DevShort *ptr = va_arg(argp,short *);
+				set_value(ptr,pa[ctr].size,pa[ctr].rel);
+			}
+			break;
+
+			case DEV_DOUBLE:
+			{
+				DevDouble *ptr = va_arg(argp,double *);
+				set_value(ptr,pa[ctr].size,pa[ctr].rel);
+			}
+			break;
+
+			case DEV_LONG:
+			{
+				DevLong *ptr = va_arg(argp,DevLong *);
+				set_value(ptr,pa[ctr].size,pa[ctr].rel);
+			}
+			break;
+		}
+	}
+
+	va_end(argp);
+}
+
 } // End of Tango namespace

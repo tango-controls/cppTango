@@ -28,6 +28,7 @@
 #ifndef _DEVICEPIPE_H
 #define _DEVICEPIPE_H
 
+#include <tuple>
 
 /****************************************************************************************
  * 																						*
@@ -54,10 +55,6 @@ class DevicePipe
 
 public :
 ///@privatesection
-
-	string 				name;
-	TimeVal 			time;
-	vector<string>		elt_names;
 
 	DevicePipe(const DevicePipe &);
 
@@ -92,9 +89,35 @@ public :
  */
 	friend ostream &operator<<(ostream &str,DevicePipe &dd);
 
-protected :
+public :
 ///@privatesection
 
+	string 					name;
+	TimeVal 				time;
+	vector<string>			elt_names;
+
+	struct ClPipeDataElt
+	{
+		string		name;
+		long		type;
+
+		DevVarLongArray_var 	LongSeq;
+		DevVarShortArray_var 	ShortSeq;
+		DevVarDoubleArray_var 	DoubleSeq;
+
+		ClPipeDataElt(const string &_na,long _ty):name(_na),type(_ty) {}
+		ClPipeDataElt(const string &_na):name(_na) {}
+
+		bool operator >> (short &);
+		bool operator >> (DevLong &);
+		bool operator >> (double &);
+		bool operator >> (vector<short> &);
+	};
+
+	vector<ClPipeDataElt>	v_elt;
+
+	ClPipeDataElt &operator[](const string &);
+	ClPipeDataElt &operator[](size_t);
 
 private:
     class DevicePipeExt
@@ -109,7 +132,5 @@ private:
 	DevicePipeExt		        *ext;			// Class extension
 #endif
 };
-
-
 
 #endif /* _DEVICEPIPE_H */

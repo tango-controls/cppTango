@@ -86,6 +86,118 @@ DevicePipe::DevicePipe(const DevicePipe &source):ext(Tango_nullptr)
 #endif
 }
 
+DevicePipe::ClPipeDataElt &DevicePipe::operator[](const string &elt_name)
+{
+	vector<ClPipeDataElt>::iterator ite;
+	bool ret = false;
+
+	for (ite = v_elt.begin();ite != v_elt.end();++ite)
+	{
+		if (ite->name == elt_name)
+		{
+			ret = true;
+			break;
+		}
+
+	}
+
+	if (ret == false)
+	{
+		stringstream ss;
+		ss << "Data element " << elt_name << " not found in data blob for pipe " << name << endl;
+		Except::throw_exception(API_PipeDataEltNotFound,ss.str(),"DevicePipe::operator[]");
+	}
+
+	return *ite;
+}
+
+DevicePipe::ClPipeDataElt &DevicePipe::operator[](size_t ind)
+{
+	if (ind > v_elt.size())
+	{
+		stringstream ss;
+		ss << "Given index (" << ind << ") above number of data element (" << v_elt.size() << ") in data blob for pipe " << name << endl;
+		Except::throw_exception(API_PipeDataEltNotFound,ss.str(),"DevicePipe::operator[]");
+	}
+
+	return v_elt[ind];
+}
+
+bool DevicePipe::ClPipeDataElt::operator>>(short &datum)
+{
+//	bool ret = check_for_data();
+	bool ret = true;
+	if ( ret == false)
+		return false;
+
+	if (ShortSeq.operator->() != NULL)
+	{
+		if (ShortSeq->length() != 0)
+			datum = ShortSeq[0];
+		else
+			ret = false;
+	}
+	else
+	{
+		// check the wrongtype_flag
+//		ret = check_wrong_type_exception();
+	}
+
+	return ret;
+}
+
+bool DevicePipe::ClPipeDataElt::operator>>(DevLong &datum)
+{
+//	bool ret = check_for_data();
+	bool ret = true;
+	if ( ret == false)
+		return false;
+
+	if (LongSeq.operator->() != NULL)
+	{
+		if (LongSeq->length() != 0)
+			datum = LongSeq[0];
+		else
+			ret = false;
+	}
+	else
+	{
+		// check the wrongtype_flag
+//		ret = check_wrong_type_exception();
+	}
+
+	return ret;
+}
+
+bool DevicePipe::ClPipeDataElt::operator>>(double &datum)
+{
+//	bool ret = check_for_data();
+	bool ret = true;
+	if ( ret == false)
+		return false;
+
+	if (DoubleSeq.operator->() != NULL)
+	{
+		if (DoubleSeq->length() != 0)
+			datum = DoubleSeq[0];
+		else
+			ret = false;
+	}
+	else
+	{
+		// check the wrongtype_flag
+//		ret = check_wrong_type_exception();
+	}
+
+	return ret;
+}
+
+bool DevicePipe::ClPipeDataElt::operator>>(vector<short> &d_out)
+{
+	bool ret = true;
+	return ret;
+}
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method
@@ -122,13 +234,22 @@ ostream &operator<<(ostream &o_str,DevicePipe &dd)
 	o_str << dd.name << endl;
 
 //
-// Data element name
+// Data element name/value
 //
 
-	for (size_t ctr = 0;ctr < dd.elt_names.size();ctr++)
+	for (size_t ctr = 0;ctr < dd.v_elt.size();ctr++)
 	{
-		o_str << "Data element name = " << dd.elt_names[ctr];
-		if (ctr < dd.elt_names.size() - 1)
+		o_str << "Data element name = " << dd.v_elt[ctr].name << endl;
+		o_str << "Data element value:" << endl;
+
+		if (dd.v_elt[ctr].LongSeq.operator->() != NULL)
+			o_str << *(dd.v_elt[ctr].LongSeq.operator->());
+		else if (dd.v_elt[ctr].ShortSeq.operator->() != NULL)
+			o_str << *(dd.v_elt[ctr].ShortSeq.operator->());
+		else
+			o_str << *(dd.v_elt[ctr].DoubleSeq.operator->());
+
+		if (ctr < dd.v_elt.size() - 1)
 			o_str << endl;
 	}
 

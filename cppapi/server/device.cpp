@@ -5438,6 +5438,10 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 				alarm_status = alarm_status + "Attribute not found in root device";
 				break;
 
+			case FWD_CONF_LOOP:
+				alarm_status = alarm_status + "Loop found in root attributes configuration";
+				break;
+
 			case FWD_WRONG_DEV:
 				alarm_status = alarm_status + "Wrong root device";
 				break;

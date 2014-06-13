@@ -76,7 +76,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
 
 	cout4 << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
-cout << "EventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << endl;
+
 	Tango::Util *tg = Tango::Util::instance();
 
 //
@@ -446,7 +446,6 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 					cout4 << "DServer::event_subscription(): update archive subscription\n";
 
 					omni_mutex_lock oml(EventSupplier::get_event_mutex());
-cout << "client_lib = " << client_lib << endl;
 					switch (client_lib)
 					{
 						case 5:
@@ -459,7 +458,6 @@ cout << "client_lib = " << client_lib << endl;
 
 						default:
 						attribute.event_archive3_subscription = time(NULL);
-cout << "Event_archive3_subscription set" << endl;
 						break;
 					}
 				}
@@ -715,10 +713,6 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         action = (*argin)[2];
         event = (*argin)[3];
 
-cout << "ZmqEventSubscriptionChange: dev_name = " << dev_name << ", att_name =" << attr_name << ", action = " << action << ", event = " << event << endl;
-if (argin->length()  == 5)
-	cout << "ZmqEventSub... version = " << (*argin)[4] << endl;
-
         bool intr_change = false;
         if (event == EventName[INTERFACE_CHANGE_EVENT])
 			intr_change = true;
@@ -778,7 +772,7 @@ if (argin->length()  == 5)
 		}
 
         cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
-cout << "Client release = " << client_release << endl;
+
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
 //

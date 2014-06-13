@@ -39,6 +39,22 @@
 namespace Tango
 {
 
+/**
+ * User class to set forwarded attribute default properties.
+ *
+ * This class is used to set forwarded attribute default properties. Three levels of
+ * attributes properties setting are implemented within Tango. The highest
+ * property setting level is the database. Then the user default (set using
+ * this UserDefaultFwdAttrProp class) and finally a Tango library default
+ * value
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
+ */
+
 class UserDefaultFwdAttrProp
 {
 public:
@@ -112,6 +128,16 @@ public:
 	FwdAttr(const string &name,const string &root_attribute=RootAttNotDef);
 //@}
 
+/**@name Miscellaneous methods*/
+//@{
+/**
+ * Set default attribute properties
+ *
+ * @param	prop	The user default property class
+ */
+ 	void set_default_properties(UserDefaultFwdAttrProp &prop);
+//@}
+
 /// @privatesection
 	virtual bool is_fwd() {return true;}
 
@@ -130,7 +156,6 @@ public:
 	bool validate_fwd_att(vector<AttrProperty> &,const string &);
 	void get_root_conf(string &,DeviceImpl *);
 
- 	void set_default_properties(UserDefaultFwdAttrProp &prop);
  	string &get_label_from_default_properties();
 
 protected:

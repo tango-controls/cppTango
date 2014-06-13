@@ -394,6 +394,7 @@ const char* const API_NotSupportedFeature          = "API_NotSupportedFeature";
 const char* const API_NotUpdatedAnyMore            = "API_NotUpdatedAnyMore";
 const char* const API_NtDebugWindowError           = "API_NtDebugWindowError";
 const char* const API_OverloadingNotSupported      = "API_OverloadingNotSupported";
+const char* const API_PipeDataEltNotFound		   = "API_PipeDataEltNotFound";
 const char* const API_PipeFailed				   = "API_PipeFailed";
 const char* const API_PipeNotAllowed			   = "API_PipeNotAllowed";
 const char* const API_PipeNotFound				   = "API_PipeNotFound";
@@ -1158,6 +1159,7 @@ typedef enum _FwdAttError
 	FWD_DOUBLE_USED,
 	FWD_TOO_OLD_LOCAL_DEVICE,
 	FWD_TOO_OLD_ROOT_DEVICE,
+	FWD_CONF_LOOP,
 	FWD_ERR_UNKNOWN
 }FwdAttError;
 

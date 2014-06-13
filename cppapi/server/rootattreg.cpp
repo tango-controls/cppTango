@@ -692,7 +692,13 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		catch (Tango::DevFailed &e)
 		{
 			if (::strcmp(e.errors[0].reason.in(),API_AttrNotFound) == 0)
-				attdesc->set_err_kind(FWD_WRONG_ATTR);
+			{
+				bool loop = check_loop(device_name,att_name,local_dev_name,local_att_name);
+				if (loop == true)
+					attdesc->set_err_kind(FWD_CONF_LOOP);
+				else
+					attdesc->set_err_kind(FWD_WRONG_ATTR);
+			}
 			else if (::strcmp(e.errors[0].reason.in(),API_CantConnectToDevice) == 0 ||
 					 ::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0 ||
 					 ::strcmp(e.errors[0].reason.in(),API_ZmqFailed) == 0)
@@ -1308,6 +1314,107 @@ void RootAttRegistry::auto_unsub()
 				map_event_id_user.erase(ite);
 		}
 	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		RootAttRegistry::check_loop
+//
+// description :
+//		Check if there is a loop in the root attribute configuration.
+//		This is a one level only check. Could (Should) be imprved to be a n level check
+//
+// argument :
+//		in :
+//			- device_name : The device name
+//			- att_name : The attribute name
+//			- local_dev_name : The local device name
+//			- local_att_name : The local attribute name
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &local_dev_name,string &local_att_name)
+{
+	string tg_host;
+	int tg_port;
+	bool ret = false;
+
+	try
+	{
+
+//
+// Get tango host in the device name and the local one
+//
+
+		Util::tango_host_from_fqan(device_name,tg_host,tg_port);
+
+		Util *tg = Util::instance();
+		Database *db = tg->get_database();
+		string db_host = db->get_db_host();
+		int db_port = db->get_db_port_num();
+
+//
+// Extract device name from fqdn
+//
+
+		string::size_type pos = device_name.find('/',8);
+		string res_dev_name = device_name.substr(pos + 1);
+
+//
+// Retrieve root attribute property
+//
+
+		DbData db_data;
+		db_data.push_back(DbDatum(att_name));
+
+		if (db_port == tg_port && db_host == tg_host)
+		{
+			db->get_device_attribute_property(res_dev_name,db_data);
+		}
+		else
+		{
+			Database other_db(tg_host,tg_port);
+			other_db.get_device_attribute_property(res_dev_name,db_data);
+		}
+
+		string new_root_att;
+		int nb_prop;
+		db_data[0] >> nb_prop;
+
+		if (nb_prop != 0)
+		{
+			bool prop_found = false;
+			for (int k=0;k < nb_prop;k++)
+			{
+				string &prop_name = db_data[k + 1].name;
+				if (prop_name == RootAttrPropName)
+				{
+					db_data[k + 1] >> new_root_att;
+					prop_found = true;
+					break;
+				}
+			}
+
+//
+// If the root attribute property is found, compare it with the local device/local_att name. If they are equal,
+// it is a loop!
+//
+
+			if (prop_found == true)
+			{
+				transform(new_root_att.begin(),new_root_att.end(),new_root_att.begin(),::tolower);
+				string full_local_att_name = local_dev_name + '/' + local_att_name;
+				transform(full_local_att_name.begin(),full_local_att_name.end(),full_local_att_name.begin(),::tolower);
+
+				if (full_local_att_name == new_root_att)
+					ret = true;
+			}
+		}
+	}
+	catch (Tango::DevFailed &) {}
+
+	return ret;
 }
 
 } // End of Tango namespace

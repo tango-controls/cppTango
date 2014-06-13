@@ -2584,6 +2584,72 @@ void Util::validate_cmd_line_classes()
 	}
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::tango_host_from_fqan()
+//
+// description :
+//		Utility method to get tango host from a fully qualified Tango attribute name
+//		Note that it works also if the fqan is only a fully qualified Tango device name (fqdn)
+//
+// arguments:
+//		in :
+//			- fqan : The fully qualified Tango attribute name
+//		out :
+//			- tg_host : The tango host (host:port)
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Util::tango_host_from_fqan(string &fqan,string &tg_host)
+{
+	string lower_fqan(fqan);
+	transform(lower_fqan.begin(),lower_fqan.end(),lower_fqan.begin(),::tolower);
+
+	string start = lower_fqan.substr(0,5);
+	if (start != "tango")
+	{
+		stringstream ss;
+		ss << "The provided fqan (" << fqan << ") is not a valid Tango attribute name" << endl;
+		Except::throw_exception(API_InvalidArgs,ss.str(),"Util::tango_host_from_fqan");
+	}
+
+	string::size_type pos = lower_fqan.find('/',8);
+	tg_host = fqan.substr(8,pos - 8);
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::tango_host_from_fqan()
+//
+// description :
+//		Utility method to get tango host from a fully qualified Tango attribute name
+//		Note that it works also if the fqan is only a fully qualified Tango device name (fqdn)
+//
+// arguments:
+//		in :
+//			- fqan : The fully qualified Tango attribute name
+//		out :
+//			- host : The Tango host (only the host name part)
+//			- port : The Tango db server port
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Util::tango_host_from_fqan(string &fqan,string &host,int &port)
+{
+	string tmp_tg_host;
+	tango_host_from_fqan(fqan,tmp_tg_host);
+
+	string::size_type pos = tmp_tg_host.find(':');
+	host = tmp_tg_host.substr(0,pos);
+
+	string tmp_port = tmp_tg_host.substr(pos + 1);
+	stringstream ss;
+	ss << tmp_port;
+	ss >> port;
+}
+
 #ifdef _TG_WINDOWS_
 //+------------------------------------------------------------------------------------------------------------------
 //

@@ -35,6 +35,8 @@
 
 #include <tango.h>
 
+#include <stdarg.h>
+
 namespace Tango
 {
 
@@ -273,6 +275,20 @@ private:
 	vector<string> 				pe_out_names;	// Data elements name
 	int 						rec_count;		// Data elements ctr
 	vector<DataEltParam>		v_dep;			// Data elements param (size, release)
+
+public:
+	struct OldDataEltParam
+	{
+		string		name;
+		long		type;
+		bool		rel;
+		size_t		size;
+
+		OldDataEltParam(const string &_na,long _ty):name(_na),type(_ty),rel(false),size(1) {}
+		OldDataEltParam(const string &_na,long _ty,size_t _si,bool _r):name(_na),type(_ty),rel(_r),size(_si) {}
+	};
+
+	void set_value(vector<OldDataEltParam> &,...);
 };
 
 

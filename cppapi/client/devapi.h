@@ -332,7 +332,7 @@ typedef struct AttributeInfoEx: public AttributeInfo
 typedef struct _AttributeInfoEx : public AttributeInfo
 #endif
 {
-	string				root_attr_name;		///< Root attribute name
+	string				root_attr_name;		///< Root attribute name (in case of forwarded attribute)
 	AttrMemorizedType	memorized;			///< The attribute memorization type
 	vector<string>		enum_labels;		///< Enumerated attribute labels
 	AttributeAlarmInfo 	alarms;             ///< The attribute alarms

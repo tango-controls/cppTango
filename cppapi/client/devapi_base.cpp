@@ -4774,33 +4774,76 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	dev_pipe.name = pipe_value_5->name;
 	dev_pipe.time = pipe_value_5->time;
 
+	dev_pipe.v_elt.clear();
+
+	CORBA::Long *tmp_lo;
+	CORBA::Short *tmp_sh;
+	CORBA::Double *tmp_db;
+
+	CORBA::ULong max,len;
+
 	for  (size_t ctr = 0;ctr < pipe_value_5->data_blob.length();ctr++)
 	{
-		dev_pipe.elt_names.push_back(string(pipe_value_5->data_blob[ctr].name));
+		dev_pipe.v_elt.push_back(DevicePipe::ClPipeDataElt(pipe_value_5->data_blob[ctr].name.in()));
 
 		switch (pipe_value_5->data_blob[ctr].value._d())
 		{
 			case ATT_SHORT:
 			{
 				const DevVarShortArray &tmp_seq = pipe_value_5->data_blob[ctr].value.short_att_value();
+				max = tmp_seq.maximum();
+				len = tmp_seq.length();
+				if (tmp_seq.release() == true)
+				{
+					tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					dev_pipe.v_elt[ctr].ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
+				}
+				else
+				{
+					tmp_sh = const_cast<CORBA::Short *>(tmp_seq.get_buffer());
+					dev_pipe.v_elt[ctr].ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
+				}
 				cout << "DevShort data" << endl;
-				cout << tmp_seq << endl;
 			}
 			break;
 
 			case ATT_LONG:
 			{
 				const DevVarLongArray &tmp_seq = pipe_value_5->data_blob[ctr].value.long_att_value();
+				max = tmp_seq.maximum();
+				len = tmp_seq.length();
+				if (tmp_seq.release() == true)
+				{
+					tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					dev_pipe.v_elt[ctr].LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
+				}
+				else
+				{
+					tmp_lo = const_cast<CORBA::Long *>(tmp_seq.get_buffer());
+					dev_pipe.v_elt[ctr].LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
+				}
 				cout << "DevLong data" << endl;
-				cout << tmp_seq << endl;
+
 			}
 			break;
 
 			case ATT_DOUBLE:
 			{
 				const DevVarDoubleArray &tmp_seq = pipe_value_5->data_blob[ctr].value.double_att_value();
+				max = tmp_seq.maximum();
+				len = tmp_seq.length();
+				if (tmp_seq.release() == true)
+				{
+					tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					dev_pipe.v_elt[ctr].DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+				}
+				else
+				{
+					tmp_db = const_cast<CORBA::Double *>(tmp_seq.get_buffer());
+					dev_pipe.v_elt[ctr].DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+				}
 				cout << "DevDouble data" << endl;
-				cout << tmp_seq << endl;
+
 			}
 			break;
 		}

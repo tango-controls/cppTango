@@ -894,6 +894,9 @@ public:
 
 	void validate_cmd_line_classes();
 
+	static void tango_host_from_fqan(string &,string &);
+	static void tango_host_from_fqan(string &,string &,int &);
+
 private:
 	TANGO_IMP static Util	*_instance;
 	static bool				_constructed;

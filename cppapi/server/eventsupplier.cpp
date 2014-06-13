@@ -578,7 +578,7 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 	}
 
 //
-// if no attribute of this name is registered with change then insert the current value
+// If no attribute of this name is registered with change then insert the current value
 //
 
 

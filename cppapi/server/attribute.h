@@ -2100,6 +2100,8 @@ public:
 	void get_prop(Tango::AttributeConfig_3 &_a) {get_properties(_a);}
 	void get_prop(Tango::AttributeConfig_5 &_a) {get_properties(_a);}
 
+	vector<string> &get_enum_labels() {return enum_labels;}
+
 	template <typename T>
 	void set_upd_properties(const T &_c) {set_upd_properties(_c,d_name);}
 	template <typename T>
