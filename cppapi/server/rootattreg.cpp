@@ -1379,7 +1379,7 @@ bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &lo
 		}
 
 		string new_root_att;
-		int nb_prop;
+		DevLong nb_prop;
 		db_data[0] >> nb_prop;
 
 		if (nb_prop != 0)
