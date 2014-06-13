@@ -28,8 +28,6 @@
 #ifndef _DEVICEPIPE_H
 #define _DEVICEPIPE_H
 
-#include <tuple>
-
 /****************************************************************************************
  * 																						*
  * 					The DevicePipe class					   						    *
