@@ -592,6 +592,14 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	PollObjType type = Tango::POLL_CMD;
 	Attribute *attr_ptr;
 
+	bool local_request = false;
+	string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
+	if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE)
+	{
+		local_request = true;
+		obj_type.erase(pos);
+	}
+
 	if (obj_type == PollCommand)
 	{
 		dev->check_command_exists(obj_name);
@@ -764,7 +772,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 
 		omni_thread *th = omni_thread::self();
 		int th_id = th->id();
-		if (th_id != poll_th_id)
+		if (th_id != poll_th_id && local_request == false)
 		{
 			while (shared_cmd.cmd_pending == true)
 			{
@@ -1065,6 +1073,13 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,b
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
 
+	string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
+	if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE)
+	{
+		obj_type.erase(pos);
+	}
+
+
 	if (obj_type == PollCommand)
 	{
 		type = Tango::POLL_CMD;
@@ -1338,6 +1353,15 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	transform(obj_type.begin(),obj_type.end(),obj_type.begin(),::tolower);
 	string obj_name((*argin)[2]);
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+
+	bool local_request = false;
+	string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
+	if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE)
+	{
+		local_request = true;
+		obj_type.erase(pos);
+	}
+
 	PollObjType type = Tango::POLL_CMD;
 
 	if (obj_type == PollCommand)
@@ -1425,15 +1449,18 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 				int th_id = omni_thread::self()->id();
 				if (th_id != poll_th_id)
 				{
-					while (shared_cmd.cmd_pending == true)
+					if (local_request == false)
 					{
-						int interupted = mon.wait(DEFAULT_TIMEOUT);
-						if ((shared_cmd.cmd_pending == true) && (interupted == false))
+						while (shared_cmd.cmd_pending == true)
 						{
-							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)API_CommandTimedOut,
-										(const char *)"Polling thread blocked !!!",
-										(const char *)"DServer::rem_obj_polling");
+							int interupted = mon.wait(DEFAULT_TIMEOUT);
+							if ((shared_cmd.cmd_pending == true) && (interupted == false))
+							{
+								cout4 << "TIME OUT" << endl;
+								Except::throw_exception((const char *)API_CommandTimedOut,
+											(const char *)"Polling thread blocked !!!",
+											(const char *)"DServer::rem_obj_polling");
+							}
 						}
 					}
 				}

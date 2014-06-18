@@ -240,7 +240,7 @@ bool DevIntr::has_changed(DeviceImpl *dev)
 //
 // argument :
 //		in :
-//			- rhs: th eright hand side of the equality
+//			- rhs: The right hand side of the equality
 //
 // return:
 //		True if the two instances are equals
@@ -304,7 +304,7 @@ bool DevIntr::AttrIntr::operator==(const struct AttrIntr &rhs) const
 										ret = false;
 									else
 									{
-										if (enum_labels != rhs.enum_labels)
+										if (enum_labels.size() != rhs.enum_labels.size())
 											ret = false;
 									}
 								}

@@ -979,8 +979,22 @@ public :
 /**
  * Set one exception flag
  *
- * Sets one exception flag. See DeviceAttribute::exceptions() for a usage example.
+ * Sets one exception flag.
+ * The following is an example of how to use this exceptions related methods
+ * @code
+ * DeviceAttribute da = dev.read_attribute("MyAttr");
+ * da.set_exceptions(DeviceAttribute::wrongtype_flag);
  *
+ * DevLong dl;
+ * try
+ * {
+ *     da >> dl;
+ * }
+ * catch (DevFailed &e)
+ * {
+ *     ....
+ * @endcode
+ * There is another usage example in the DeviceAttribute::exceptions() method documentation.
  * @param [in] fl The exception flag
  */
 	void set_exceptions(except_flags fl) {exceptions_flags.set((size_t)fl);}

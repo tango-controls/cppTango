@@ -262,7 +262,7 @@ void ApiUtil::set_sig_handler()
 
 		sa.sa_handler = _t_handler;
 		sigemptyset (&sa.sa_mask);
-		sa.sa_flags = 0;
+		sa.sa_flags = SA_RESTART;
 
 		if (sigaction(SIGTERM,NULL,&old_action) != -1)
 		{
@@ -275,7 +275,6 @@ void ApiUtil::set_sig_handler()
 			if (old_action.sa_handler == NULL)
 				sigaction(SIGINT,&sa,NULL);
 		}
-
 	}
 #endif
 }

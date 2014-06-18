@@ -92,6 +92,7 @@ void leavefunc()
 	if (already_executed == false)
 		au->clean_locking_threads();
 
+
 //
 // Manage event stuff
 //
@@ -103,7 +104,7 @@ void leavefunc()
 		notifd_ec->shutdown();
 
 //
-// Shut-down the ORB and wait for the thread to exit
+// Shut-down the notifd ORB and wait for the thread to exit
 //
 
 		int *rv;
@@ -116,6 +117,17 @@ void leavefunc()
 	if (zmq_ec != NULL && already_executed == false)
 	{
 		zmq_ec->shutdown();
+	}
+
+//
+// Shutdown and destroy the ORB
+//
+
+	if (already_executed == false)
+	{
+		CORBA::ORB_ptr orb = au->get_orb();
+		orb->shutdown(true);
+		orb->destroy();
 
 		already_executed = true;
 		au->need_reset_already_flag(false);
@@ -192,6 +204,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
 	if ((api_ptr->in_server() == false) && (api_ptr->is_lock_exit_installed() == false))
 	{
 		atexit(leavefunc);
+		api_ptr->set_sig_handler();
 		api_ptr->set_lock_exit_installed(true);
 	}
 #endif

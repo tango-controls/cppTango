@@ -79,6 +79,8 @@ const char* const AllPipe				   = "All pipes";
 
 const char* const PollCommand              = "command";
 const char* const PollAttribute            = "attribute";
+const char* const LOCAL_POLL_REQUEST	   = "_local";
+const int   LOCAL_REQUEST_STR_SIZE		   = 6;
 
 const int   MIN_POLL_PERIOD                = 5;
 const int   DELTA_T                        = 1002000000;
