@@ -1304,7 +1304,7 @@ void Util::misc_init()
 //		Util::init_host_name()
 //
 // description :
-//		This method initialises the process hst name which is needed later in the device server startup sequence.
+//		This method initialises the process host name which is needed later in the device server startup sequence.
 //
 //-------------------------------------------------------------------------------------------------------------------
 

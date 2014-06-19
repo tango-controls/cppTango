@@ -139,7 +139,8 @@ enum BlackBoxElt_OpType
 	Op_Write_Read_Attributes_5,
 	Op_Read_Attr_history_5,
 	Op_Get_Pipe_Config_5,
-	Op_Read_Pipe_5
+	Op_Read_Pipe_5,
+	Op_Write_Pipe_5
 };
 
 class BlackBoxElt
@@ -195,6 +196,7 @@ public:
 	void insert_attr(const char *,const ClntIdent &,long);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
 	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
+	void insert_attr(const Tango::DevPipeData_5 &,const ClntIdent &,long vers);
 	void insert_wr_attr(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,const ClntIdent &,long vers);
 	void insert_op(BlackBoxElt_OpType);
 	void insert_op(BlackBoxElt_OpType,const ClntIdent &);

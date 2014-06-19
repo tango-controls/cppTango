@@ -400,9 +400,11 @@ const char* const API_PipeDataEltNotFound		   = "API_PipeDataEltNotFound";
 const char* const API_PipeFailed				   = "API_PipeFailed";
 const char* const API_PipeNotAllowed			   = "API_PipeNotAllowed";
 const char* const API_PipeNotFound				   = "API_PipeNotFound";
+const char* const API_PipeNotWritable              = "API_PipeNotWritable";
 const char* const API_PipeOptProp				   = "API_PipeOptProp";
 const char* const API_PipeValueNotSet              = "API_PipeValueNotSet";
 const char* const API_PipeWrongArgNumber		   = "API_PipeWrongArgNumber";
+const char* const API_PipeWrongArg 				   = "API_PipeWrongArg";
 const char* const API_PolledDeviceNotInPoolConf    = "API_PolledDeviceNotInPoolConf";
 const char* const API_PolledDeviceNotInPoolMap     = "API_PolledDeviceNotInPoolMap";
 const char* const API_PollingThreadNotFound        = "API_PollingThreadNotFound";
@@ -945,6 +947,8 @@ enum AttReqType {
 	READ_REQ = 0,
 	WRITE_REQ
 };
+
+typedef AttReqType PipeReqType;
 
 enum LockCmdCode {
 	LOCK_ADD_DEV = 0,

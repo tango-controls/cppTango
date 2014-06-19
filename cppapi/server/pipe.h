@@ -96,9 +96,10 @@ public:
  * @param	desc	The pipe description
  * @param	label 	The pipe label
  * @param	level	The pipe display level
+ * @param	pwt		The pipe R/W type (default to READ)
  *
  */
-	Pipe(const string &na,const string &desc,const string &label,const Tango::DispLevel level);
+	Pipe(const string &na,const string &desc,const string &label,const Tango::DispLevel level,const PipeWriteType pwt=PIPE_READ);
 //@}
 
 /**@name Destructor
@@ -146,6 +147,13 @@ public:
 	string &get_lower_name() {return lower_name;}
 
 /**
+ * Return the data blob name.
+ *
+ * @return The data blob name
+ */
+	string &get_blob_name() {return blob_name;}
+
+/**
  * Return the pipe description.
  *
  * @return The pipe description
@@ -186,6 +194,13 @@ public:
  * @param new_level The pipe display level
  */
 	void set_disp_level(Tango::DispLevel new_level) {disp_level = new_level;}
+
+/**
+ * Get the pipe writable type (RO/RW).
+ *
+ * @return The pipe write type.
+ */
+	Tango::PipeWriteType get_writable() {return writable;}
 //@}
 
 /**@name set_value methods.
@@ -196,7 +211,7 @@ public:
 //@}
 
 /// @privatesection
-	virtual bool is_allowed (DeviceImpl *dev) {(void)dev;return true;}
+	virtual bool is_allowed (DeviceImpl *dev,PipeReqType) {(void)dev;return true;}
 	virtual void read(DeviceImpl *) {}
 
 	bool get_value_flag() {return value_flag;}
@@ -245,6 +260,10 @@ protected:
  * The pipe display level
  */
     Tango::DispLevel	disp_level;
+/**
+ * The pipe R/W type
+ */
+    Tango::PipeWriteType	writable;
 //@}
 
 private:
@@ -287,6 +306,9 @@ public:
 		OldDataEltParam(const string &_na,long _ty):name(_na),type(_ty),rel(false),size(1) {}
 		OldDataEltParam(const string &_na,long _ty,size_t _si,bool _r):name(_na),type(_ty),rel(_r),size(_si) {}
 	};
+
+// TODO: Pipe-> Stay public ???
+	string						blob_name;
 
 	void set_value(vector<OldDataEltParam> &,...);
 };

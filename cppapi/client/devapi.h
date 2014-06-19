@@ -369,16 +369,19 @@ typedef struct PipeInfo
 typedef struct _PipeInfo
 #endif
 {
-	string 				name;          		///< Pipe name
-	string				description;		///< Pipe description
-	string 				label;       		///< Pipe label
-	Tango::DispLevel 	disp_level;        	///< Display level
-	vector<string> 		extensions;         ///< For future extensions
+	string 					name;          		///< Pipe name
+	string					description;		///< Pipe description
+	string 					label;       		///< Pipe label
+	Tango::DispLevel 		disp_level;        	///< Display level
+	Tango::PipeWriteType 	writable;           ///< Writable type (Read, Read-Write)
+	vector<string> 			extensions;         ///< For future extensions
 
 ///@privatesection
 	friend ostream &operator<<(ostream &,_PipeInfo &);
 //	bool operator==(const _PipeInfo &);
 }PipeInfo;
+
+// TODO: Pipe -> Change the type for writable to replace PIPE_READ, PIPE_READ_WRITE by READ, READ_WRITE (IDL limitation)
 
 typedef vector<PipeInfo> PipeInfoList;
 

@@ -862,6 +862,15 @@ public :
  * @throws ConnectionFailed, CommunicationFailed
  */
 	virtual DevicePipe read_pipe(const string &pipe_name);
+/**
+ * Write a pipe
+ *
+ * Write a pipe.
+ *
+ * @param [in] pipe_data Data to be sent to the device through the pipe
+ * @throws ConnectionFailed, CommunicationFailed
+ */
+	virtual void write_pipe(const DevicePipe &pipe_data);
 //@}
 
 /** @name Asynchronous attribute related methods */

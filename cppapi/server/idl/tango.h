@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;      
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3078,7 +3078,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;    
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4216,6 +4216,11 @@ omni_mutex *mut_ptr;
     AttributeValueList_5_out& operator=(const AttributeValueList_5_var&);
   };
 
+  enum PipeWriteType { PIPE_READ, PIPE_READ_WRITE, PIPE_WT_UNKNOWN /*, __max_PipeWriteType=0xffffffff */ };
+  typedef PipeWriteType& PipeWriteType_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_PipeWriteType;
+
   struct PipeConfig_5 {
     typedef _CORBA_ConstrType_Variable_Var<PipeConfig_5> _var_type;
 
@@ -4227,6 +4232,8 @@ omni_mutex *mut_ptr;
     ::CORBA::String_member label;
 
     DispLevel level;
+
+    PipeWriteType writable;
 
     DevVarStringArray extensions;
 
@@ -4373,50 +4380,50 @@ omni_mutex *mut_ptr;
 
   _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeDataElt_5;
 
-  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeBlob_5;
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeDataEltArray_5;
 
-  class DevPipeBlob_5_var;
+  class DevPipeDataEltArray_5_var;
 
-  class DevPipeBlob_5 : public _CORBA_Unbounded_Sequence< DevPipeDataElt_5 >  {
+  class DevPipeDataEltArray_5 : public _CORBA_Unbounded_Sequence< DevPipeDataElt_5 >  {
   public:
-    typedef DevPipeBlob_5_var _var_type;
-    inline DevPipeBlob_5() {}
-    inline DevPipeBlob_5(const DevPipeBlob_5& _s)
+    typedef DevPipeDataEltArray_5_var _var_type;
+    inline DevPipeDataEltArray_5() {}
+    inline DevPipeDataEltArray_5(const DevPipeDataEltArray_5& _s)
       : _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > (_s) {}
 
-    inline DevPipeBlob_5(_CORBA_ULong _max)
+    inline DevPipeDataEltArray_5(_CORBA_ULong _max)
       : _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > (_max) {}
-    inline DevPipeBlob_5(_CORBA_ULong _max, _CORBA_ULong _len, DevPipeDataElt_5* _val, _CORBA_Boolean _rel=0)
+    inline DevPipeDataEltArray_5(_CORBA_ULong _max, _CORBA_ULong _len, DevPipeDataElt_5* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > (_max, _len, _val, _rel) {}
 
   
 
-    inline DevPipeBlob_5& operator = (const DevPipeBlob_5& _s) {
+    inline DevPipeDataEltArray_5& operator = (const DevPipeDataEltArray_5& _s) {
       _CORBA_Unbounded_Sequence< DevPipeDataElt_5 > ::operator=(_s);
       return *this;
     }
   };
 
-  class DevPipeBlob_5_out;
+  class DevPipeDataEltArray_5_out;
 
-  class DevPipeBlob_5_var {
+  class DevPipeDataEltArray_5_var {
   public:
-    inline DevPipeBlob_5_var() : _pd_seq(0) {}
-    inline DevPipeBlob_5_var(DevPipeBlob_5* _s) : _pd_seq(_s) {}
-    inline DevPipeBlob_5_var(const DevPipeBlob_5_var& _s) {
-      if( _s._pd_seq )  _pd_seq = new DevPipeBlob_5(*_s._pd_seq);
+    inline DevPipeDataEltArray_5_var() : _pd_seq(0) {}
+    inline DevPipeDataEltArray_5_var(DevPipeDataEltArray_5* _s) : _pd_seq(_s) {}
+    inline DevPipeDataEltArray_5_var(const DevPipeDataEltArray_5_var& _s) {
+      if( _s._pd_seq )  _pd_seq = new DevPipeDataEltArray_5(*_s._pd_seq);
       else              _pd_seq = 0;
     }
-    inline ~DevPipeBlob_5_var() { if( _pd_seq )  delete _pd_seq; }
+    inline ~DevPipeDataEltArray_5_var() { if( _pd_seq )  delete _pd_seq; }
       
-    inline DevPipeBlob_5_var& operator = (DevPipeBlob_5* _s) {
+    inline DevPipeDataEltArray_5_var& operator = (DevPipeDataEltArray_5* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
       return *this;
     }
-    inline DevPipeBlob_5_var& operator = (const DevPipeBlob_5_var& _s) {
+    inline DevPipeDataEltArray_5_var& operator = (const DevPipeDataEltArray_5_var& _s) {
       if( _s._pd_seq ) {
-        if( !_pd_seq )  _pd_seq = new DevPipeBlob_5;
+        if( !_pd_seq )  _pd_seq = new DevPipeDataEltArray_5;
         *_pd_seq = *_s._pd_seq;
       } else if( _pd_seq ) {
         delete _pd_seq;
@@ -4430,46 +4437,46 @@ omni_mutex *mut_ptr;
 
   
 
-    inline DevPipeBlob_5* operator -> () { return _pd_seq; }
-    inline const DevPipeBlob_5* operator -> () const { return _pd_seq; }
+    inline DevPipeDataEltArray_5* operator -> () { return _pd_seq; }
+    inline const DevPipeDataEltArray_5* operator -> () const { return _pd_seq; }
 #if defined(__GNUG__)
-    inline operator DevPipeBlob_5& () const { return *_pd_seq; }
+    inline operator DevPipeDataEltArray_5& () const { return *_pd_seq; }
 #else
-    inline operator const DevPipeBlob_5& () const { return *_pd_seq; }
-    inline operator DevPipeBlob_5& () { return *_pd_seq; }
+    inline operator const DevPipeDataEltArray_5& () const { return *_pd_seq; }
+    inline operator DevPipeDataEltArray_5& () { return *_pd_seq; }
 #endif
       
-    inline const DevPipeBlob_5& in() const { return *_pd_seq; }
-    inline DevPipeBlob_5&       inout()    { return *_pd_seq; }
-    inline DevPipeBlob_5*&      out() {
+    inline const DevPipeDataEltArray_5& in() const { return *_pd_seq; }
+    inline DevPipeDataEltArray_5&       inout()    { return *_pd_seq; }
+    inline DevPipeDataEltArray_5*&      out() {
       if( _pd_seq ) { delete _pd_seq; _pd_seq = 0; }
       return _pd_seq;
     }
-    inline DevPipeBlob_5* _retn() { DevPipeBlob_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
+    inline DevPipeDataEltArray_5* _retn() { DevPipeDataEltArray_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
       
-    friend class DevPipeBlob_5_out;
+    friend class DevPipeDataEltArray_5_out;
     
   private:
-    DevPipeBlob_5* _pd_seq;
+    DevPipeDataEltArray_5* _pd_seq;
   };
 
-  class DevPipeBlob_5_out {
+  class DevPipeDataEltArray_5_out {
   public:
-    inline DevPipeBlob_5_out(DevPipeBlob_5*& _s) : _data(_s) { _data = 0; }
-    inline DevPipeBlob_5_out(DevPipeBlob_5_var& _s)
-      : _data(_s._pd_seq) { _s = (DevPipeBlob_5*) 0; }
-    inline DevPipeBlob_5_out(const DevPipeBlob_5_out& _s) : _data(_s._data) {}
-    inline DevPipeBlob_5_out& operator = (const DevPipeBlob_5_out& _s) {
+    inline DevPipeDataEltArray_5_out(DevPipeDataEltArray_5*& _s) : _data(_s) { _data = 0; }
+    inline DevPipeDataEltArray_5_out(DevPipeDataEltArray_5_var& _s)
+      : _data(_s._pd_seq) { _s = (DevPipeDataEltArray_5*) 0; }
+    inline DevPipeDataEltArray_5_out(const DevPipeDataEltArray_5_out& _s) : _data(_s._data) {}
+    inline DevPipeDataEltArray_5_out& operator = (const DevPipeDataEltArray_5_out& _s) {
       _data = _s._data;
       return *this;
     }
-    inline DevPipeBlob_5_out& operator = (DevPipeBlob_5* _s) {
+    inline DevPipeDataEltArray_5_out& operator = (DevPipeDataEltArray_5* _s) {
       _data = _s;
       return *this;
     }
-    inline operator DevPipeBlob_5*&()  { return _data; }
-    inline DevPipeBlob_5*& ptr()       { return _data; }
-    inline DevPipeBlob_5* operator->() { return _data; }
+    inline operator DevPipeDataEltArray_5*&()  { return _data; }
+    inline DevPipeDataEltArray_5*& ptr()       { return _data; }
+    inline DevPipeDataEltArray_5* operator->() { return _data; }
 
     inline DevPipeDataElt_5& operator [] (_CORBA_ULong _i) {
       return (*_data)[_i];
@@ -4477,12 +4484,157 @@ omni_mutex *mut_ptr;
 
   
 
-    DevPipeBlob_5*& _data;
+    DevPipeDataEltArray_5*& _data;
 
   private:
-    DevPipeBlob_5_out();
-    DevPipeBlob_5_out& operator=(const DevPipeBlob_5_var&);
+    DevPipeDataEltArray_5_out();
+    DevPipeDataEltArray_5_out& operator=(const DevPipeDataEltArray_5_var&);
   };
+
+  struct DevPipeBlob_5;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeBlobArray;
+
+  class DevPipeBlobArray_var;
+
+  class DevPipeBlobArray : public _CORBA_Unbounded_Sequence_Forward< DevPipeBlob_5 >  {
+  public:
+    typedef DevPipeBlobArray_var _var_type;
+
+    inline DevPipeBlobArray() {}
+    DevPipeBlobArray(const DevPipeBlobArray& _s);
+    DevPipeBlobArray& operator=(const DevPipeBlobArray& _s);
+
+    inline DevPipeBlobArray(_CORBA_ULong _max)
+      : _CORBA_Unbounded_Sequence_Forward< DevPipeBlob_5 > (_max) {}
+    inline DevPipeBlobArray(_CORBA_ULong _max, _CORBA_ULong _len, DevPipeBlob_5* _val, _CORBA_Boolean _rel=0)
+      : _CORBA_Unbounded_Sequence_Forward< DevPipeBlob_5 > (_max, _len, _val, _rel) {}
+
+  
+
+    virtual ~DevPipeBlobArray();
+
+    DevPipeBlob_5& operator[] (_CORBA_ULong _index);
+    const DevPipeBlob_5& operator[] (_CORBA_ULong _index) const;
+    static DevPipeBlob_5* allocbuf(_CORBA_ULong _nelems);
+    static void freebuf(DevPipeBlob_5* _b);
+
+    void operator>>= (cdrStream &_s) const;
+    void operator<<= (cdrStream &_s);
+
+  protected:
+    void NP_copybuffer(_CORBA_ULong _newmax);
+    void NP_freebuf();
+  };
+
+  class DevPipeBlobArray_out;
+
+  class DevPipeBlobArray_var {
+  public:
+    inline DevPipeBlobArray_var() : _pd_seq(0) {}
+    inline DevPipeBlobArray_var(DevPipeBlobArray* _s) : _pd_seq(_s) {}
+    inline DevPipeBlobArray_var(const DevPipeBlobArray_var& _s) {
+      if( _s._pd_seq )  _pd_seq = new DevPipeBlobArray(*_s._pd_seq);
+      else              _pd_seq = 0;
+    }
+    inline ~DevPipeBlobArray_var() { if( _pd_seq )  delete _pd_seq; }
+      
+    inline DevPipeBlobArray_var& operator = (DevPipeBlobArray* _s) {
+      if( _pd_seq )  delete _pd_seq;
+      _pd_seq = _s;
+      return *this;
+    }
+    inline DevPipeBlobArray_var& operator = (const DevPipeBlobArray_var& _s) {
+      if( _s._pd_seq ) {
+        if( !_pd_seq )  _pd_seq = new DevPipeBlobArray;
+        *_pd_seq = *_s._pd_seq;
+      } else if( _pd_seq ) {
+        delete _pd_seq;
+        _pd_seq = 0;
+      }
+      return *this;
+    }
+    inline DevPipeBlob_5& operator [] (_CORBA_ULong _s) {
+      return (*_pd_seq)[_s];
+    }
+
+  
+
+    inline DevPipeBlobArray* operator -> () { return _pd_seq; }
+    inline const DevPipeBlobArray* operator -> () const { return _pd_seq; }
+#if defined(__GNUG__)
+    inline operator DevPipeBlobArray& () const { return *_pd_seq; }
+#else
+    inline operator const DevPipeBlobArray& () const { return *_pd_seq; }
+    inline operator DevPipeBlobArray& () { return *_pd_seq; }
+#endif
+      
+    inline const DevPipeBlobArray& in() const { return *_pd_seq; }
+    inline DevPipeBlobArray&       inout()    { return *_pd_seq; }
+    inline DevPipeBlobArray*&      out() {
+      if( _pd_seq ) { delete _pd_seq; _pd_seq = 0; }
+      return _pd_seq;
+    }
+    inline DevPipeBlobArray* _retn() { DevPipeBlobArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
+      
+    friend class DevPipeBlobArray_out;
+    
+  private:
+    DevPipeBlobArray* _pd_seq;
+  };
+
+  class DevPipeBlobArray_out {
+  public:
+    inline DevPipeBlobArray_out(DevPipeBlobArray*& _s) : _data(_s) { _data = 0; }
+    inline DevPipeBlobArray_out(DevPipeBlobArray_var& _s)
+      : _data(_s._pd_seq) { _s = (DevPipeBlobArray*) 0; }
+    inline DevPipeBlobArray_out(const DevPipeBlobArray_out& _s) : _data(_s._data) {}
+    inline DevPipeBlobArray_out& operator = (const DevPipeBlobArray_out& _s) {
+      _data = _s._data;
+      return *this;
+    }
+    inline DevPipeBlobArray_out& operator = (DevPipeBlobArray* _s) {
+      _data = _s;
+      return *this;
+    }
+    inline operator DevPipeBlobArray*&()  { return _data; }
+    inline DevPipeBlobArray*& ptr()       { return _data; }
+    inline DevPipeBlobArray* operator->() { return _data; }
+
+    inline DevPipeBlob_5& operator [] (_CORBA_ULong _i) {
+      return (*_data)[_i];
+    }
+
+  
+
+    DevPipeBlobArray*& _data;
+
+  private:
+    DevPipeBlobArray_out();
+    DevPipeBlobArray_out& operator=(const DevPipeBlobArray_var&);
+  };
+
+  struct DevPipeBlob_5 {
+    typedef _CORBA_ConstrType_Variable_Var<DevPipeBlob_5> _var_type;
+
+    
+    ::CORBA::String_member name;
+
+    DevPipeDataEltArray_5 blob_data;
+
+    DevPipeBlobArray inner_blobs;
+
+  
+
+    void operator>>= (cdrStream &) const;
+    void operator<<= (cdrStream &);
+  };
+
+  typedef DevPipeBlob_5::_var_type DevPipeBlob_5_var;
+
+  typedef _CORBA_ConstrType_Variable_OUT_arg< DevPipeBlob_5,DevPipeBlob_5_var > DevPipeBlob_5_out;
+
+  _CORBA_MODULE_VAR _dyn_attr const ::CORBA::TypeCode_ptr _tc_DevPipeBlob_5;
 
   struct DevPipeData_5 {
     typedef _CORBA_ConstrType_Variable_Var<DevPipeData_5> _var_type;
@@ -6284,6 +6436,7 @@ omni_mutex *mut_ptr;
     DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n);
     PipeConfigList_5* get_pipe_config_5(const ::Tango::DevVarStringArray& names);
     DevPipeData_5* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident);
+    void write_pipe_5(const ::Tango::DevPipeData_5& value, const ::Tango::ClntIdent& cl_ident);
 
     inline _objref_Device_5()  { _PR_setobj(0); }  // nil
     _objref_Device_5(omniIOR*, omniIdentity*);
@@ -6324,6 +6477,7 @@ omni_mutex *mut_ptr;
     virtual DevAttrHistory_5* read_attribute_history_5(const char* name, ::CORBA::Long n) = 0;
     virtual PipeConfigList_5* get_pipe_config_5(const ::Tango::DevVarStringArray& names) = 0;
     virtual DevPipeData_5* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident) = 0;
+    virtual void write_pipe_5(const ::Tango::DevPipeData_5& value, const ::Tango::ClntIdent& cl_ident) = 0;
     
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
@@ -6852,6 +7006,25 @@ void operator<<=(::CORBA::Any& _a, Tango::AttributeValueList_5* _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::AttributeValueList_5*& _sp);
 _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::AttributeValueList_5*& _sp);
 
+inline void operator >>=(Tango::PipeWriteType _e, cdrStream& s) {
+  ::operator>>=((::CORBA::ULong)_e, s);
+}
+
+inline void operator <<= (Tango::PipeWriteType& _e, cdrStream& s) {
+  ::CORBA::ULong _0RL_e;
+  ::operator<<=(_0RL_e,s);
+  if (_0RL_e <= Tango::PIPE_WT_UNKNOWN) {
+    _e = (Tango::PipeWriteType) _0RL_e;
+  }
+  else {
+    OMNIORB_THROW(MARSHAL,_OMNI_NS(MARSHAL_InvalidEnumValue),
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+void operator<<=(::CORBA::Any& _a, Tango::PipeWriteType _s);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeWriteType& _s);
+
 extern void operator<<=(::CORBA::Any& _a, const Tango::PipeConfig_5& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::PipeConfig_5* _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfig_5*& _sp);
@@ -6867,10 +7040,20 @@ extern void operator<<=(::CORBA::Any& _a, Tango::DevPipeDataElt_5* _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeDataElt_5*& _sp);
 extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeDataElt_5*& _sp);
 
-void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlob_5& _s);
-void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlob_5* _sp);
-_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlob_5*& _sp);
-_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlob_5*& _sp);
+void operator<<=(::CORBA::Any& _a, const Tango::DevPipeDataEltArray_5& _s);
+void operator<<=(::CORBA::Any& _a, Tango::DevPipeDataEltArray_5* _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeDataEltArray_5*& _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeDataEltArray_5*& _sp);
+
+void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlobArray& _s);
+void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlobArray* _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlobArray*& _sp);
+_CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlobArray*& _sp);
+
+extern void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlob_5& _s);
+extern void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlob_5* _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlob_5*& _sp);
+extern _CORBA_Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlob_5*& _sp);
 
 extern void operator<<=(::CORBA::Any& _a, const Tango::DevPipeData_5& _s);
 extern void operator<<=(::CORBA::Any& _a, Tango::DevPipeData_5* _sp);

@@ -947,6 +947,7 @@ Tango::PipeConfig_5::operator>>= (cdrStream &_n) const
   _n.marshalString(description,0);
   _n.marshalString(label,0);
   level >>= _n;
+  writable >>= _n;
   (const DevVarStringArray&) extensions >>= _n;
 
 }
@@ -958,6 +959,7 @@ Tango::PipeConfig_5::operator<<= (cdrStream &_n)
   description = _n.unmarshalString(0);
   label = _n.unmarshalString(0);
   (DispLevel&)level <<= _n;
+  (PipeWriteType&)writable <<= _n;
   (DevVarStringArray&)extensions <<= _n;
 
 }
@@ -975,6 +977,131 @@ Tango::DevPipeDataElt_5::operator<<= (cdrStream &_n)
 {
   (AttrValUnion&)value <<= _n;
   name = _n.unmarshalString(0);
+
+}
+
+Tango::DevPipeBlobArray::DevPipeBlobArray(const ::Tango::DevPipeBlobArray& _s)
+  : _CORBA_Unbounded_Sequence_Forward< Tango::DevPipeBlob_5 > (_s.pd_max, 0, 0, 1)
+{
+  length(_s.pd_len);
+  for (_CORBA_ULong _i=0; _i < pd_len; _i++) {
+    pd_buf[_i] = _s.pd_buf[_i];
+  }
+}
+
+void
+Tango::DevPipeBlobArray::operator<<= (cdrStream& _s)
+{
+  _CORBA_ULong _l;
+  _l <<= _s;
+  if (!_s.checkInputOverrun(1,_l)) {
+    _CORBA_marshal_sequence_range_check_error(_s);
+    // never reach here
+  }
+  length(_l);
+  for( _CORBA_ULong _i = 0; _i < _l; _i++ )
+    pd_buf[_i] <<= _s;
+}
+
+void
+Tango::DevPipeBlobArray::operator>>= (cdrStream& _s) const
+{
+  ::operator>>=(_CORBA_ULong(pd_len), _s);
+  for( _CORBA_ULong _i = 0; _i < pd_len; _i++ )
+    pd_buf[_i] >>= _s;
+}
+
+Tango::DevPipeBlobArray&
+Tango::DevPipeBlobArray::operator=(const ::Tango::DevPipeBlobArray& _s)
+{
+  length(_s.pd_len);
+  for (unsigned long _i=0; _i < pd_len; _i++) {
+    pd_buf[_i] = _s.pd_buf[_i];
+  }
+  return *this;
+}
+
+Tango::DevPipeBlob_5&
+Tango::DevPipeBlobArray::operator[](_CORBA_ULong _index)
+{
+  if (_index >= pd_len) _CORBA_bound_check_error();
+  return pd_buf[_index];
+}
+
+const Tango::DevPipeBlob_5&
+Tango::DevPipeBlobArray::operator[](_CORBA_ULong _index) const
+{
+  if (_index >= pd_len) _CORBA_bound_check_error();
+  return pd_buf[_index];
+}
+
+Tango::DevPipeBlob_5*
+Tango::DevPipeBlobArray::allocbuf(_CORBA_ULong _nelems)
+{
+  ::Tango::DevPipeBlob_5* _tmp = 0;
+  if (_nelems) {
+    _tmp = new ::Tango::DevPipeBlob_5[_nelems];
+  }
+  return _tmp;
+}
+
+void
+Tango::DevPipeBlobArray::freebuf(::Tango::DevPipeBlob_5* _b)
+{
+  if (_b) delete [] _b;
+}
+
+void
+Tango::DevPipeBlobArray::NP_freebuf()
+{
+  if (pd_buf) delete [] pd_buf;
+}
+
+Tango::DevPipeBlobArray::~DevPipeBlobArray()
+{
+  if (pd_rel && pd_buf) delete [] pd_buf;
+  pd_buf = 0;
+}
+
+void
+Tango::DevPipeBlobArray::NP_copybuffer(_CORBA_ULong _newmax)
+{
+  // replace pd_data with a new buffer of size newmax.
+  // Invariant:  pd_len <= newmax
+  //
+  ::Tango::DevPipeBlob_5* _newbuf = allocbuf(_newmax);
+  if (!_newbuf) {
+    _CORBA_new_operator_return_null();
+    // never reach here
+  }
+  for (unsigned long _i=0; _i < pd_len; _i++) {
+    _newbuf[_i] = pd_buf[_i];
+  }
+  if (pd_rel && pd_buf) {
+    freebuf(pd_buf);
+  }
+  else {
+    pd_rel = 1;
+  }
+  pd_buf = _newbuf;
+  pd_max = _newmax;
+}
+
+void
+Tango::DevPipeBlob_5::operator>>= (cdrStream &_n) const
+{
+  _n.marshalString(name,0);
+  (const DevPipeDataEltArray_5&) blob_data >>= _n;
+  (const DevPipeBlobArray&) inner_blobs >>= _n;
+
+}
+
+void
+Tango::DevPipeBlob_5::operator<<= (cdrStream &_n)
+{
+  name = _n.unmarshalString(0);
+  (DevPipeDataEltArray_5&)blob_data <<= _n;
+  (DevPipeBlobArray&)inner_blobs <<= _n;
 
 }
 
@@ -6648,6 +6775,107 @@ Tango::DevPipeData_5* Tango::_objref_Device_5::read_pipe_5(const char* name, con
 
 
 }
+// Proxy call descriptor class. Mangled signature:
+//  void_i_cTango_mDevPipeData__5_i_cTango_mClntIdent_e_cTango_mDevFailed
+class _0RL_cd_6fe2f94a21a10053_15000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_6fe2f94a21a10053_15000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
+     omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 1, upcall)
+  {
+    
+  }
+  
+  void marshalArguments(cdrStream&);
+  void unmarshalArguments(cdrStream&);
+
+    
+  void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
+  static const char* const _user_exns[];
+
+  Tango::DevPipeData_5_var arg_0_;
+  const Tango::DevPipeData_5* arg_0;
+  Tango::ClntIdent_var arg_1_;
+  const Tango::ClntIdent* arg_1;
+};
+
+void _0RL_cd_6fe2f94a21a10053_15000000::marshalArguments(cdrStream& _n)
+{
+  (const Tango::DevPipeData_5&) *arg_0 >>= _n;
+  (const Tango::ClntIdent&) *arg_1 >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_15000000::unmarshalArguments(cdrStream& _n)
+{
+  arg_0_ = new Tango::DevPipeData_5;
+  (Tango::DevPipeData_5&)arg_0_ <<= _n;
+  arg_0 = &arg_0_.in();
+  arg_1_ = new Tango::ClntIdent;
+  (Tango::ClntIdent&)arg_1_ <<= _n;
+  arg_1 = &arg_1_.in();
+
+}
+
+const char* const _0RL_cd_6fe2f94a21a10053_15000000::_user_exns[] = {
+  Tango::DevFailed::_PD_repoId
+};
+
+void _0RL_cd_6fe2f94a21a10053_15000000::userException(cdrStream& s, _OMNI_NS(IOP_C)* iop_client, const char* repoId)
+{
+  if ( omni::strMatch(repoId, Tango::DevFailed::_PD_repoId) ) {
+    Tango::DevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+
+  else {
+    if (iop_client) iop_client->RequestCompleted(1);
+    OMNIORB_THROW(UNKNOWN,UNKNOWN_UserException,
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+// Local call call-back function.
+static void
+_0RL_lcfn_6fe2f94a21a10053_25000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_6fe2f94a21a10053_15000000* tcd = (_0RL_cd_6fe2f94a21a10053_15000000*)cd;
+  Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
+#ifdef HAS_Cplusplus_catch_exception_by_base
+  impl->write_pipe_5(*tcd->arg_0, *tcd->arg_1);
+#else
+  if (!cd->is_upcall())
+    impl->write_pipe_5(*tcd->arg_0, *tcd->arg_1);
+  else {
+    try {
+      impl->write_pipe_5(*tcd->arg_0, *tcd->arg_1);
+    }
+    catch(Tango::DevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+
+  }
+#endif
+
+
+}
+
+void Tango::_objref_Device_5::write_pipe_5(const ::Tango::DevPipeData_5& value, const ::Tango::ClntIdent& cl_ident)
+{
+  _0RL_cd_6fe2f94a21a10053_15000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_25000000, "write_pipe_5", 13);
+  _call_desc.arg_0 = &(::Tango::DevPipeData_5&) value;
+  _call_desc.arg_1 = &(::Tango::ClntIdent&) cl_ident;
+
+  _invoke(_call_desc);
+
+
+
+}
 Tango::_pof_Device_5::~_pof_Device_5() {}
 
 
@@ -6740,6 +6968,14 @@ Tango::_impl_Device_5::_dispatch(omniCallHandle& _handle)
   if( omni::strMatch(op, "read_pipe_5") ) {
 
     _0RL_cd_6fe2f94a21a10053_f4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_05000000, "read_pipe_5", 12, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
+  if( omni::strMatch(op, "write_pipe_5") ) {
+
+    _0RL_cd_6fe2f94a21a10053_15000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_25000000, "write_pipe_5", 13, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;

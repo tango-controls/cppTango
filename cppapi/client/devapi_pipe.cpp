@@ -198,6 +198,38 @@ bool DevicePipe::ClPipeDataElt::operator>>(vector<short> &d_out)
 	return ret;
 }
 
+
+void DevicePipe::ClPipeDataElt::operator<<(short &datum)
+{
+	ShortSeq = new DevVarShortArray(1);
+	ShortSeq->length(1);
+	ShortSeq[0] = datum;
+
+	type = DEV_SHORT;
+}
+
+void DevicePipe::ClPipeDataElt::operator << (DevLong &datum)
+{
+	LongSeq = new DevVarLongArray(1);
+	LongSeq->length(1);
+	LongSeq[0] = datum;
+
+	type = DEV_LONG;
+}
+
+void DevicePipe::ClPipeDataElt::operator << (double &datum)
+{
+	DoubleSeq = new DevVarDoubleArray(1);
+	DoubleSeq->length(1);
+	DoubleSeq[0] = datum;
+
+	type = DEV_DOUBLE;
+}
+void DevicePipe::ClPipeDataElt::operator << (vector<short> &)
+{
+
+}
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method

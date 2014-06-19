@@ -127,6 +127,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/deviceclass.o \
 		$(OBJS_DIR)/command.o \
 		$(OBJS_DIR)/pipe.o \
+		$(OBJS_DOR)/w_pipe.o \
 		$(OBJS_DIR)/dserversignal.o \
 		$(OBJS_DIR)/devintr.o \
 		$(OBJS_DIR)/dintrthread.o \
@@ -227,6 +228,7 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/deviceclass.so.o \
 		$(OBJS_DIR_SL)/command.so.o \
 		$(OBJS_DIR_SL)/pipe.so.o \
+		$(OBJS_DIR_SL)/w_pipe.so.o \
 		$(OBJS_DIR_SL)/dserversignal.so.o \
 		$(OBJS_DIR_SL)/devintr.so.o \
 		$(OBJS_DIR_SL)/dintrthread.so.o \
@@ -410,6 +412,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			w_attribute.tpp \
 			w_attrsetval.tpp \
 			w_attribute_spec.tpp \
+			w_pipe.h \
 			subdev_diag.h \
 			encoded_attribute.h \
 			encoded_format.h

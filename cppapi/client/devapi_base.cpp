@@ -4572,6 +4572,7 @@ PipeInfoList *DeviceProxy::get_pipe_config(vector<string>& pipe_string_list)
 				(*dev_pipe_config)[i].name = pipe_config_list_5[i].name;
 				(*dev_pipe_config)[i].description = pipe_config_list_5[i].description;
 				(*dev_pipe_config)[i].label = pipe_config_list_5[i].label;
+				(*dev_pipe_config)[i].writable = pipe_config_list_5[i].writable;
 				for (size_t j=0; j<pipe_config_list_5[i].extensions.length(); j++)
 				{
 					(*dev_pipe_config)[i].extensions[j] = pipe_config_list_5[i].extensions[j];
@@ -4782,15 +4783,15 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 
 	CORBA::ULong max,len;
 
-	for  (size_t ctr = 0;ctr < pipe_value_5->data_blob.length();ctr++)
+	for  (size_t ctr = 0;ctr < pipe_value_5->data_blob.blob_data.length();ctr++)
 	{
-		dev_pipe.v_elt.push_back(DevicePipe::ClPipeDataElt(pipe_value_5->data_blob[ctr].name.in()));
+		dev_pipe.v_elt.push_back(DevicePipe::ClPipeDataElt(pipe_value_5->data_blob.blob_data[ctr].name.in()));
 
-		switch (pipe_value_5->data_blob[ctr].value._d())
+		switch (pipe_value_5->data_blob.blob_data[ctr].value._d())
 		{
 			case ATT_SHORT:
 			{
-				const DevVarShortArray &tmp_seq = pipe_value_5->data_blob[ctr].value.short_att_value();
+				const DevVarShortArray &tmp_seq = pipe_value_5->data_blob.blob_data[ctr].value.short_att_value();
 				max = tmp_seq.maximum();
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
@@ -4809,7 +4810,7 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 
 			case ATT_LONG:
 			{
-				const DevVarLongArray &tmp_seq = pipe_value_5->data_blob[ctr].value.long_att_value();
+				const DevVarLongArray &tmp_seq = pipe_value_5->data_blob.blob_data[ctr].value.long_att_value();
 				max = tmp_seq.maximum();
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
@@ -4829,7 +4830,7 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 
 			case ATT_DOUBLE:
 			{
-				const DevVarDoubleArray &tmp_seq = pipe_value_5->data_blob[ctr].value.double_att_value();
+				const DevVarDoubleArray &tmp_seq = pipe_value_5->data_blob.blob_data[ctr].value.double_att_value();
 				max = tmp_seq.maximum();
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
@@ -4850,6 +4851,123 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	}
 
 	return dev_pipe;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::write_pipe() - wriite a single pipe
+//
+//-----------------------------------------------------------------------------
+
+
+void DeviceProxy::write_pipe(const DevicePipe& dev_pipe)
+{
+	DevPipeData_5 pipe_value_5;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use write_pipe() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::write_pipe()");
+	}
+
+	pipe_value_5.name = dev_pipe.name.c_str();
+	if (dev_pipe.blob_name.size() != 0)
+		pipe_value_5.data_blob.name = dev_pipe.blob_name.c_str();
+	pipe_value_5.data_blob.blob_data.length(dev_pipe.v_elt.size());
+	for (size_t elt_ctr = 0;elt_ctr < dev_pipe.v_elt.size();elt_ctr++)
+	{
+		pipe_value_5.data_blob.blob_data[elt_ctr].name = dev_pipe.v_elt[elt_ctr].name.c_str();
+		switch (dev_pipe.v_elt[elt_ctr].type)
+		{
+			case DEV_SHORT:
+			pipe_value_5.data_blob.blob_data[elt_ctr].value.short_att_value(dev_pipe.v_elt[elt_ctr].ShortSeq.in());
+			break;
+
+			case DEV_LONG:
+			pipe_value_5.data_blob.blob_data[elt_ctr].value.long_att_value(dev_pipe.v_elt[elt_ctr].LongSeq.in());
+			break;
+
+			case DEV_DOUBLE:
+			pipe_value_5.data_blob.blob_data[elt_ctr].value.double_att_value(dev_pipe.v_elt[elt_ctr].DoubleSeq.in());
+			break;
+		}
+//		pipe_value_5.data_blob.blob_data[elt_ctr].value.union_no_data(true);
+	}
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			dev->write_pipe_5(pipe_value_5,ci);
+
+			ctr = 2;
+		}
+		catch (Tango::ConnectionFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.name;
+			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.name;
+			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_pipe",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_pipe()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_pipe()");
+			}
+		}
+		catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_pipe()");
+		}
+	}
+
 }
 
 //-----------------------------------------------------------------------------

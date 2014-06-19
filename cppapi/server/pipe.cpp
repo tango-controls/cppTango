@@ -52,8 +52,8 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::DispLevel _level)
-:name(_name),desc(_desc),label(_label),disp_level(_level),ext(new PipeExt)
+Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::DispLevel _level,PipeWriteType _pwt)
+:name(_name),desc(_desc),label(_label),disp_level(_level),writable(_pwt),ext(new PipeExt)
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
@@ -101,10 +101,10 @@ void Pipe::set_value(DevLong *p_data,size_t size,bool r)
 	cout << "set_value for int for data elt name: " << pe_out_names[rec_count] << endl;
 	cout << "Value = " << *p_data << endl;
 
-	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+	ret_data->data_blob.blob_data[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
 	DevVarLongArray dvla;
-	ret_data->data_blob[rec_count].value.long_att_value(dvla);
-	DevVarLongArray &dv = ret_data->data_blob[rec_count].value.long_att_value();
+	ret_data->data_blob.blob_data[rec_count].value.long_att_value(dvla);
+	DevVarLongArray &dv = ret_data->data_blob.blob_data[rec_count].value.long_att_value();
 	dv.replace(size,size,p_data,r);
 }
 
@@ -115,11 +115,11 @@ void Pipe::set_value(DevDouble *p_data,size_t size,bool r)
 	cout << "set_value for double for data elt name: " << pe_out_names[rec_count] << endl;
 	cout << "Value = " << *p_data << endl;
 
-	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+	ret_data->data_blob.blob_data[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
 
 	DevVarDoubleArray dvda;
-	ret_data->data_blob[rec_count].value.double_att_value(dvda);
-	DevVarDoubleArray &dv = ret_data->data_blob[rec_count].value.double_att_value();
+	ret_data->data_blob.blob_data[rec_count].value.double_att_value(dvda);
+	DevVarDoubleArray &dv = ret_data->data_blob.blob_data[rec_count].value.double_att_value();
 	dv.replace(size,size,p_data,r);
 }
 
@@ -130,10 +130,10 @@ void Pipe::set_value(DevShort *p_data,size_t size,bool r)
 	cout << "set_value for short for data elt name: " << pe_out_names[rec_count] << endl;
 	cout << "Value = " << *p_data << endl;
 
-	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+	ret_data->data_blob.blob_data[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
 	DevVarShortArray dvsa;
-	ret_data->data_blob[rec_count].value.short_att_value(dvsa);
-	DevVarShortArray &dv = ret_data->data_blob[rec_count].value.short_att_value();
+	ret_data->data_blob.blob_data[rec_count].value.short_att_value(dvsa);
+	DevVarShortArray &dv = ret_data->data_blob.blob_data[rec_count].value.short_att_value();
 	dv.replace(size,size,p_data,r);
 }
 
@@ -144,7 +144,7 @@ void Pipe::set_value(char **p_data,size_t size,bool r)
 	cout << "set_value for char * for data elt name: " << pe_out_names[rec_count] << endl;
 	cout << "Value = " << *p_data << endl;
 
-	ret_data->data_blob[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
+	ret_data->data_blob.blob_data[rec_count].name = Tango::string_dup(pe_out_names[rec_count].c_str());
 }
 
 void Pipe::set_value(vector<string> &)
@@ -199,7 +199,7 @@ void Pipe::set_value(vector<OldDataEltParam> &pa,...)
 	pe_out_names.clear();
 
 	size_t nb_params = pa.size();
-	ret_data->data_blob.length(nb_params);
+	ret_data->data_blob.blob_data.length(nb_params);
 	set_value_flag(true);
 
 	for (size_t ctr = 0;ctr < nb_params;ctr++)

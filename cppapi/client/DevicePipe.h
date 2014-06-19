@@ -90,7 +90,11 @@ public :
 public :
 ///@privatesection
 
+	void set_name(const string &_na) {name=_na;}
+	void set_blob_name(const string &_na) {blob_name=_na;}
+
 	string 					name;
+	string					blob_name;
 	TimeVal 				time;
 	vector<string>			elt_names;
 
@@ -98,6 +102,7 @@ public :
 	{
 		string		name;
 		long		type;
+// TODO: Pipe : type is a int or a long!!!!
 
 		DevVarLongArray_var 	LongSeq;
 		DevVarShortArray_var 	ShortSeq;
@@ -110,6 +115,11 @@ public :
 		bool operator >> (DevLong &);
 		bool operator >> (double &);
 		bool operator >> (vector<short> &);
+
+		void operator << (short &);
+		void operator << (DevLong &);
+		void operator << (double &);
+		void operator << (vector<short> &);
 	};
 
 	vector<ClPipeDataElt>	v_elt;

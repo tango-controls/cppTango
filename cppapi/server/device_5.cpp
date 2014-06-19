@@ -883,6 +883,7 @@ Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStri
 				(*back)[i].description = Tango::string_dup(pi_ptr->get_desc().c_str());
 				(*back)[i].label = Tango::string_dup(pi_ptr->get_label().c_str());
 				(*back)[i].level = pi_ptr->get_disp_level();
+				(*back)[i].writable = pi_ptr->get_writable();
 			}
 			else
 			{
@@ -891,6 +892,7 @@ Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStri
 				(*back)[i].description = Tango::string_dup(pi.get_desc().c_str());
 				(*back)[i].label = Tango::string_dup(pi.get_label().c_str());
 				(*back)[i].level = pi.get_disp_level();
+				(*back)[i].writable = pi.get_writable();
 			}
 		}
 		catch (Tango::DevFailed &e)
@@ -920,6 +922,7 @@ Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStri
 // argument:
 //		in :
 //			- name: pipe name
+//			- cl_id : client identifier
 //
 // return :
 //		Pointer to a DevPipeData_5 with pipe data (blob)
@@ -931,11 +934,15 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << endl;
 	DevPipeData_5 *back = Tango_nullptr;
 
+// TODO: Pipe -> Need to take device monitor here ?
+
 //
 // Record operation request in black box
 //
 
-	blackbox_ptr->insert_attr(name,cl_id,5);
+	if (store_in_bb == true)
+		blackbox_ptr->insert_attr(name,cl_id,5);
+	store_in_bb = true;
 
 //
 //  Write the device name into the per thread data for sub device diagnostics.
@@ -987,7 +994,7 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 // Call the is_allowed method
 //
 
-		if (pi.is_allowed(this) == false)
+		if (pi.is_allowed(this,READ_REQ) == false)
 		{
 			stringstream o;
 			o << "It is currently not allowed to read pipe " << name;
@@ -1056,6 +1063,220 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 
 	cout4 << "Leaving Device_5Impl::read_pipe_5" << endl;
 	return back;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_5Impl::write_pipe_5
+//
+// description :
+//		CORBA operation to write a pipe.
+//
+// argument:
+//		in :
+//			- pi_value: new pipe value
+//			- cl_id : client identifier
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Device_5Impl::write_pipe_5(const Tango::DevPipeData_5 &pi_value, const Tango::ClntIdent& cl_id)
+{
+	string pipe_name(pi_value.name.in());
+	cout4 << "Device_5Impl::write_pipe_5 arrived for pipe " << pipe_name << endl;
+
+//
+// Take dev monitor
+//
+
+	AutoTangoMonitor sync(this,true);
+
+//
+// Record operation in blackbox
+//
+
+	if (store_in_bb == true)
+		blackbox_ptr->insert_attr(pi_value,cl_id,5);
+	store_in_bb = true;
+
+//
+// Check if the device is locked and by who
+//
+
+	check_lock("write_pipe_5");
+
+//
+//  Write the device name into the per thread data for sub device diagnostics.
+//  Keep the old name, to put it back at the end!
+//  During device access inside the same server, the thread stays the same!
+//
+
+	SubDevDiag &sub = (Tango::Util::instance())->get_sub_dev_diag();
+	string last_associated_device = sub.get_associated_device();
+	sub.set_associated_device(get_name());
+
+//
+// Catch all exceptions to set back the associated device after execution
+//
+
+	try
+	{
+
+//
+// Retrieve requested pipe
+//
+
+		Pipe &tmp_pi = device_class->get_pipe_by_name(pipe_name);
+
+//
+// Check that pipe is writable
+//
+
+		if (tmp_pi.get_writable() != PIPE_READ_WRITE)
+		{
+			stringstream o;
+			o << "Pipe " << pipe_name << " is not writable";
+
+			Except::throw_exception(API_PipeNotWritable,o.str(),"Device_5Impl::write_pipe_5");
+		}
+
+		WPipe &pi = static_cast<WPipe &>(tmp_pi);
+
+//
+// Call the always_executed_hook
+//
+
+		always_executed_hook();
+
+//
+// Call the is_allowed method
+//
+
+		if (pi.is_allowed(this,WRITE_REQ) == false)
+		{
+			stringstream o;
+			o << "It is currently not allowed to write pipe " << pipe_name;
+
+			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::write_pipe_5");
+		}
+
+//
+// Init the WPipe object with data received from client
+//
+
+		init_wpipe(pi_value,pi);
+
+//
+// Call the user write method
+//
+
+		pi.write(this);
+
+	}
+	catch (...)
+	{
+
+//
+// Set back the device attribution for the thread and rethrow the exception.
+//
+
+		sub.set_associated_device(last_associated_device);
+		throw;
+	}
+
+//
+// Set back the device attribution for the thread
+//
+
+	sub.set_associated_device(last_associated_device);
+
+//
+// Return to caller
+//
+
+	cout4 << "Leaving Device_5Impl::write_pipe_5" << endl;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_5Impl::init_wpipe
+//
+// description :
+//		Init a WPipe instance with the data received from the client. Do not copy data.
+//
+// argument:
+//		in :
+//			- pi_value: The received data blob
+//		out :
+//			- pi : The WPipe instance to be innitialized
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Device_5Impl::init_wpipe(const Tango::DevPipeData_5 &pi_value,WPipe &pi)
+{
+
+//
+// First the blob name (if any)
+//
+
+	if (::strlen(pi_value.data_blob.name.in()) != 0)
+		pi.blob_name = pi_value.data_blob.name.in();
+
+//
+// Now the data element
+//
+
+	CORBA::Long *tmp_lo;
+	CORBA::Short *tmp_sh;
+	CORBA::Double *tmp_db;
+
+	CORBA::ULong max,len;
+
+	pi.v_elt.clear();
+	for (size_t ctr = 0;ctr < pi_value.data_blob.blob_data.length();++ctr)
+	{
+		pi.v_elt.push_back(WPipe::SvrPipeDataElt(pi_value.data_blob.blob_data[ctr].name.in(),&pi));
+
+		switch(pi_value.data_blob.blob_data[ctr].value._d())
+		{
+			case ATT_LONG:
+			{
+				const DevVarLongArray &tmp_seq = pi_value.data_blob.blob_data[ctr].value.long_att_value();
+				max = tmp_seq.maximum();
+				len = tmp_seq.length();
+				tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+				pi.v_elt[ctr].LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
+
+				pi.v_elt[ctr].type = DEV_LONG;
+			}
+			break;
+
+			case ATT_SHORT:
+			{
+				const DevVarShortArray &tmp_seq = pi_value.data_blob.blob_data[ctr].value.short_att_value();
+				max = tmp_seq.maximum();
+				len = tmp_seq.length();
+				tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+				pi.v_elt[ctr].ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
+
+				pi.v_elt[ctr].type = DEV_SHORT;
+			}
+			break;
+
+			case ATT_DOUBLE:
+			{
+				const DevVarDoubleArray &tmp_seq = pi_value.data_blob.blob_data[ctr].value.double_att_value();
+				max = tmp_seq.maximum();
+				len = tmp_seq.length();
+				tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+				pi.v_elt[ctr].DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+
+				pi.v_elt[ctr].type = DEV_DOUBLE;
+			}
+			break;
+		}
+	}
 }
 
 } // End of Tango namespace

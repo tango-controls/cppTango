@@ -2139,6 +2139,12 @@ ostream &operator<<(ostream &o_str,PipeInfo &p)
 	o_str << "Pipe label = " << p.label << endl;
 	o_str << "Pipe description = " << p.description << endl;
 
+	o_str << "Pipe writable type = ";
+	if (p.writable == PIPE_READ)
+		o_str << "READ" << endl;
+	else
+		o_str << "READ_WRITE" << endl;
+
 	o_str << "Pipe display level = ";
 	switch(p.disp_level)
 	{
