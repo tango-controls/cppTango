@@ -50,6 +50,8 @@
 #include <pollext.tpp>
 #include <utils.tpp>
 #include <w_attribute.tpp>
+#include <devapi_pipe.tpp>
+#include <w_pipe.tpp>
 
 namespace Tango
 {
@@ -276,6 +278,65 @@ TEMPL_EXPL_METH_INST(WAttribute,get_max_value)
 
 TEMPL_EXPL_METH_INST_CONST(WAttribute,set_min_value)
 TEMPL_EXPL_METH_INST_CONST(WAttribute,set_max_value)
+
+//+----------------------------------------------------------------------------
+//
+// Instanciate DevicePipeBlob helper functions
+//
+//-----------------------------------------------------------------------------
+
+template DevicePipe &operator<<(DevicePipe &,short &);
+template DevicePipe &operator<<(DevicePipe &,double &);
+template DevicePipe &operator<<(DevicePipe &,DevLong &);
+template DevicePipe &operator<<(DevicePipe &,DevicePipeBlob &);
+
+
+template DevicePipe &operator>>(DevicePipe &,short &);
+template DevicePipe &operator>>(DevicePipe &,vector<short> &);
+template DevicePipe &operator>>(DevicePipe &,double &);
+template DevicePipe &operator>>(DevicePipe &,DevLong &);
+template DevicePipe &operator>>(DevicePipe &,DevicePipeBlob &);
+
+template DevicePipe &operator>>(DevicePipe &,DataElement<short> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<short> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<double> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevLong> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevicePipeBlob> &);
+
+//+----------------------------------------------------------------------------
+//
+// Instanciate WPipe helper functions
+//
+//-----------------------------------------------------------------------------
+
+
+template WPipe &operator>>(WPipe &,short &);
+template WPipe &operator>>(WPipe &,vector<short> &);
+template WPipe &operator>>(WPipe &,double &);
+template WPipe &operator>>(WPipe &,DevLong &);
+template WPipe &operator>>(WPipe &,DevicePipeBlob &);
+
+template WPipe &operator>>(WPipe &,DataElement<short> &);
+template WPipe &operator>>(WPipe &,DataElement<vector<short> > &);
+template WPipe &operator>>(WPipe &,DataElement<double> &);
+template WPipe &operator>>(WPipe &,DataElement<DevLong> &);
+template WPipe &operator>>(WPipe &,DataElement<DevicePipeBlob> &);
+
+
+//+----------------------------------------------------------------------------
+//
+// Instanciate DataElement helper functions
+//
+//-----------------------------------------------------------------------------
+
+template ostream &operator<<(ostream &,DataElement<short> &);
+template ostream &operator<<(ostream &,DataElement<double> &);
+template ostream &operator<<(ostream &,DataElement<DevLong> &);
+template ostream &operator<<(ostream &,DataElement<DevicePipeBlob> &);
+
+template ostream &operator<<(ostream &,DataElement<DevVarShortArray *> &);
+
+template ostream &operator<<(ostream &,DataElement<vector<short> > &);
 
 } // End of Tango namespace
 

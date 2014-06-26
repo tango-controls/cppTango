@@ -870,7 +870,7 @@ public :
  * @param [in] pipe_data Data to be sent to the device through the pipe
  * @throws ConnectionFailed, CommunicationFailed
  */
-	virtual void write_pipe(const DevicePipe &pipe_data);
+	virtual void write_pipe(DevicePipe &pipe_data);
 //@}
 
 /** @name Asynchronous attribute related methods */

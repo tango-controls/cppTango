@@ -292,24 +292,24 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual Tango::PipeConfigList_5 *get_pipe_config_5(const Tango::DevVarStringArray& names);
+	virtual Tango::PipeConfigList *get_pipe_config_5(const Tango::DevVarStringArray& names);
 
 /**
  * Read pipe value.
  *
  * Invoked when the client request the read_pipe_5 CORBA operation.
- * It returns to the client a DevPipeData_5 structure.
+ * It returns to the client a DevPipeData structure.
  *
  * @param name The pipe name
  * @param cl_ident The client identificator. This parameter is new in release 4.
  * It allows device locking feature implemented in Tango V7
- * @return A DevPipeData_5 structure. Click <a href="../../../tango_idl/idl_html/_Tango.html#DevPipeData_5">here</a>
- * to read <b>DevPipeData_5</b> structure definition.
+ * @return A DevPipeData structure. Click <a href="../../../tango_idl/idl_html/_Tango.html#DevPipeData">here</a>
+ * to read <b>DevPipeData</b> structure definition.
  * @exception DevFailed Thrown if the attribute does not exist.
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual Tango::DevPipeData_5 *read_pipe_5(const char *name,const Tango::ClntIdent &cl_ident);
+	virtual Tango::DevPipeData *read_pipe_5(const char *name,const Tango::ClntIdent &cl_ident);
 
 /**
  * Write pipe value.
@@ -324,7 +324,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void write_pipe_5(const Tango::DevPipeData_5 &pipe_value,const Tango::ClntIdent& cl_ident);
+	virtual void write_pipe_5(const Tango::DevPipeData &pipe_value,const Tango::ClntIdent& cl_ident);
 //@}
 
 /// @privatesection
@@ -343,7 +343,6 @@ private:
 	Device_5ImplExt				    *ext_5;
 #endif
 
-	void init_wpipe(const DevPipeData_5 &,WPipe &);
 };
 
 } // End of Tango namespace

@@ -196,7 +196,7 @@ public:
 	void insert_attr(const char *,const ClntIdent &,long);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
 	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
-	void insert_attr(const Tango::DevPipeData_5 &,const ClntIdent &,long vers);
+	void insert_attr(const Tango::DevPipeData &,const ClntIdent &,long vers);
 	void insert_wr_attr(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,const ClntIdent &,long vers);
 	void insert_op(BlackBoxElt_OpType);
 	void insert_op(BlackBoxElt_OpType,const ClntIdent &);

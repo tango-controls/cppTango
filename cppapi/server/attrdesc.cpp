@@ -610,7 +610,7 @@ void Attr::validate_def_change_prop(const string &val, const char * prop)
 
 void Attr::throw_incoherent_def_prop(const char* min, const char* max)
 {
-	string err_msg = "User default property " + string(min) + " for attribute : " + get_name() + " is grater then or equal " + string(max);
+	string err_msg = "User default property " + string(min) + " for attribute : " + get_name() + " is greater then or equal " + string(max);
 	Except::throw_exception(API_IncoherentValues,err_msg,"Attr::set_default_properties()");
 }
 

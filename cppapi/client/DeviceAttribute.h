@@ -924,7 +924,7 @@ public :
 
 ///@publicsection
 
-/**@name Exception and error related methods methods
+/**@name Exception and error related methods
  */
 //@{
 /**

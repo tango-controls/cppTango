@@ -99,43 +99,15 @@ public:
 /// @privatesection
 	virtual void write(DeviceImpl *) {}
 
-	struct SvrPipeDataElt
-	{
-		string						name;
-		long						type;
-		WPipe						*upper;
+	DevicePipeBlob					the_blob;
 
-		DevVarLongArray_var 		LongSeq;
-		DevVarShortArray_var 		ShortSeq;
-		DevVarDoubleArray_var 		DoubleSeq;
+	size_t get_data_elt_nb() {return the_blob.get_data_elt_nb();}
+	string get_data_elt_name(size_t _ind) {return the_blob.get_data_elt_name(_ind);}
+	string get_blob_name() {return the_blob.get_name();}
 
-		SvrPipeDataElt(const string &_na,long _ty,WPipe *_ptr):name(_na),type(_ty),upper(_ptr) {}
-		SvrPipeDataElt(const string &_na,WPipe *_ptr):name(_na),upper(_ptr) {}
+//	long get_data_elt_type(size_t);
 
-		bool operator >> (short &);
-		bool operator >> (DevLong &);
-		bool operator >> (double &);
-	};
-
-	vector<SvrPipeDataElt>		v_elt;
-
-	size_t get_data_elt_nb() {return v_elt.size();}
-	string &get_data_elt_name(size_t);
-	int get_data_elt_type(size_t);
-
-	SvrPipeDataElt &get_data_elt(size_t);
-	SvrPipeDataElt &get_data_elt(const string &);
-
-	void get_write_value(const string &,short &);
-	void get_write_value(size_t,short &);
-
-	void get_write_value(const string &,double &);
-	void get_write_value(size_t,double &);
-
-	void get_write_value(const string &,DevLong &);
-	void get_write_value(size_t,DevLong &);
-
-	void throw_type_except(const string &,const string &);
+	WPipe &operator[](const string &);
 
 private:
     class WPipeExt
@@ -152,9 +124,13 @@ private:
 
 };
 
-WPipe &operator>>(WPipe &,short &);
-WPipe &operator>>(WPipe &,double &);
-WPipe &operator>>(WPipe &,DevLong &);
+
+template <typename T>
+WPipe &operator>>(WPipe &,T &);
+
+template <typename T>
+WPipe &operator>>(WPipe &, DataElement<T> &);
+
 
 } // End of Tango namespace
 

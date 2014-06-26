@@ -218,7 +218,7 @@ public:
 	void set_value_flag(bool val) {value_flag = val;}
 	void set_time();
 	Tango::TimeVal &get_when() {return when;}
-	void set_returned_data_ptr(DevPipeData_5 *_p) {ret_data=_p;}
+	void set_returned_data_ptr(DevPipeData *_p) {ret_data=_p;}
 
 #ifdef HAS_VARIADIC_TEMPLATE
 	template <typename T,typename ... Args>
@@ -243,23 +243,23 @@ protected:
 /**
  * The pipe name
  */
-	string 				name;
+	string 					name;
 /**
  * The pipe name in lower case
  */
-	string 				lower_name;
+	string 					lower_name;
 /**
  * The pipe description
  */
-	string				desc;
+	string					desc;
 /**
  * The pipe label
  */
-	string				label;
+	string					label;
 /**
  * The pipe display level
  */
-    Tango::DispLevel	disp_level;
+    Tango::DispLevel		disp_level;
 /**
  * The pipe R/W type
  */
@@ -289,7 +289,7 @@ private:
 
 	bool						value_flag;		// Flag set when pipe value is set
 	Tango::TimeVal				when;			// Date associated to the pipe
-	Tango::DevPipeData_5 		*ret_data;		// Pointer for read data
+	Tango::DevPipeData 			*ret_data;		// Pointer for read data
 
 	vector<string> 				pe_out_names;	// Data elements name
 	int 						rec_count;		// Data elements ctr

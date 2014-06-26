@@ -727,7 +727,7 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevPipeData_5 &pipe_val,const ClntIdent &cl_id,TANGO_UNUSED(long vers))
+void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &cl_id,TANGO_UNUSED(long vers))
 {
 
 //

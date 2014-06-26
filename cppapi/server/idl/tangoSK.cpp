@@ -941,7 +941,7 @@ Tango::AttributeConfig_5::operator<<= (cdrStream &_n)
 }
 
 void
-Tango::PipeConfig_5::operator>>= (cdrStream &_n) const
+Tango::PipeConfig::operator>>= (cdrStream &_n) const
 {
   _n.marshalString(name,0);
   _n.marshalString(description,0);
@@ -953,7 +953,7 @@ Tango::PipeConfig_5::operator>>= (cdrStream &_n) const
 }
 
 void
-Tango::PipeConfig_5::operator<<= (cdrStream &_n)
+Tango::PipeConfig::operator<<= (cdrStream &_n)
 {
   name = _n.unmarshalString(0);
   description = _n.unmarshalString(0);
@@ -964,24 +964,8 @@ Tango::PipeConfig_5::operator<<= (cdrStream &_n)
 
 }
 
-void
-Tango::DevPipeDataElt_5::operator>>= (cdrStream &_n) const
-{
-  (const AttrValUnion&) value >>= _n;
-  _n.marshalString(name,0);
-
-}
-
-void
-Tango::DevPipeDataElt_5::operator<<= (cdrStream &_n)
-{
-  (AttrValUnion&)value <<= _n;
-  name = _n.unmarshalString(0);
-
-}
-
-Tango::DevPipeBlobArray::DevPipeBlobArray(const ::Tango::DevPipeBlobArray& _s)
-  : _CORBA_Unbounded_Sequence_Forward< Tango::DevPipeBlob_5 > (_s.pd_max, 0, 0, 1)
+Tango::DevVarPipeDataEltArray::DevVarPipeDataEltArray(const ::Tango::DevVarPipeDataEltArray& _s)
+  : _CORBA_Unbounded_Sequence_Forward< Tango::DevPipeDataElt > (_s.pd_max, 0, 0, 1)
 {
   length(_s.pd_len);
   for (_CORBA_ULong _i=0; _i < pd_len; _i++) {
@@ -990,7 +974,7 @@ Tango::DevPipeBlobArray::DevPipeBlobArray(const ::Tango::DevPipeBlobArray& _s)
 }
 
 void
-Tango::DevPipeBlobArray::operator<<= (cdrStream& _s)
+Tango::DevVarPipeDataEltArray::operator<<= (cdrStream& _s)
 {
   _CORBA_ULong _l;
   _l <<= _s;
@@ -1004,15 +988,15 @@ Tango::DevPipeBlobArray::operator<<= (cdrStream& _s)
 }
 
 void
-Tango::DevPipeBlobArray::operator>>= (cdrStream& _s) const
+Tango::DevVarPipeDataEltArray::operator>>= (cdrStream& _s) const
 {
   ::operator>>=(_CORBA_ULong(pd_len), _s);
   for( _CORBA_ULong _i = 0; _i < pd_len; _i++ )
     pd_buf[_i] >>= _s;
 }
 
-Tango::DevPipeBlobArray&
-Tango::DevPipeBlobArray::operator=(const ::Tango::DevPipeBlobArray& _s)
+Tango::DevVarPipeDataEltArray&
+Tango::DevVarPipeDataEltArray::operator=(const ::Tango::DevVarPipeDataEltArray& _s)
 {
   length(_s.pd_len);
   for (unsigned long _i=0; _i < pd_len; _i++) {
@@ -1021,55 +1005,55 @@ Tango::DevPipeBlobArray::operator=(const ::Tango::DevPipeBlobArray& _s)
   return *this;
 }
 
-Tango::DevPipeBlob_5&
-Tango::DevPipeBlobArray::operator[](_CORBA_ULong _index)
+Tango::DevPipeDataElt&
+Tango::DevVarPipeDataEltArray::operator[](_CORBA_ULong _index)
 {
   if (_index >= pd_len) _CORBA_bound_check_error();
   return pd_buf[_index];
 }
 
-const Tango::DevPipeBlob_5&
-Tango::DevPipeBlobArray::operator[](_CORBA_ULong _index) const
+const Tango::DevPipeDataElt&
+Tango::DevVarPipeDataEltArray::operator[](_CORBA_ULong _index) const
 {
   if (_index >= pd_len) _CORBA_bound_check_error();
   return pd_buf[_index];
 }
 
-Tango::DevPipeBlob_5*
-Tango::DevPipeBlobArray::allocbuf(_CORBA_ULong _nelems)
+Tango::DevPipeDataElt*
+Tango::DevVarPipeDataEltArray::allocbuf(_CORBA_ULong _nelems)
 {
-  ::Tango::DevPipeBlob_5* _tmp = 0;
+  ::Tango::DevPipeDataElt* _tmp = 0;
   if (_nelems) {
-    _tmp = new ::Tango::DevPipeBlob_5[_nelems];
+    _tmp = new ::Tango::DevPipeDataElt[_nelems];
   }
   return _tmp;
 }
 
 void
-Tango::DevPipeBlobArray::freebuf(::Tango::DevPipeBlob_5* _b)
+Tango::DevVarPipeDataEltArray::freebuf(::Tango::DevPipeDataElt* _b)
 {
   if (_b) delete [] _b;
 }
 
 void
-Tango::DevPipeBlobArray::NP_freebuf()
+Tango::DevVarPipeDataEltArray::NP_freebuf()
 {
   if (pd_buf) delete [] pd_buf;
 }
 
-Tango::DevPipeBlobArray::~DevPipeBlobArray()
+Tango::DevVarPipeDataEltArray::~DevVarPipeDataEltArray()
 {
   if (pd_rel && pd_buf) delete [] pd_buf;
   pd_buf = 0;
 }
 
 void
-Tango::DevPipeBlobArray::NP_copybuffer(_CORBA_ULong _newmax)
+Tango::DevVarPipeDataEltArray::NP_copybuffer(_CORBA_ULong _newmax)
 {
   // replace pd_data with a new buffer of size newmax.
   // Invariant:  pd_len <= newmax
   //
-  ::Tango::DevPipeBlob_5* _newbuf = allocbuf(_newmax);
+  ::Tango::DevPipeDataElt* _newbuf = allocbuf(_newmax);
   if (!_newbuf) {
     _CORBA_new_operator_return_null();
     // never reach here
@@ -1088,39 +1072,55 @@ Tango::DevPipeBlobArray::NP_copybuffer(_CORBA_ULong _newmax)
 }
 
 void
-Tango::DevPipeBlob_5::operator>>= (cdrStream &_n) const
+Tango::DevPipeDataElt::operator>>= (cdrStream &_n) const
 {
   _n.marshalString(name,0);
-  (const DevPipeDataEltArray_5&) blob_data >>= _n;
-  (const DevPipeBlobArray&) inner_blobs >>= _n;
+  (const AttrValUnion&) value >>= _n;
+  (const DevVarPipeDataEltArray&) inner_blob >>= _n;
 
 }
 
 void
-Tango::DevPipeBlob_5::operator<<= (cdrStream &_n)
+Tango::DevPipeDataElt::operator<<= (cdrStream &_n)
 {
   name = _n.unmarshalString(0);
-  (DevPipeDataEltArray_5&)blob_data <<= _n;
-  (DevPipeBlobArray&)inner_blobs <<= _n;
+  (AttrValUnion&)value <<= _n;
+  (DevVarPipeDataEltArray&)inner_blob <<= _n;
 
 }
 
 void
-Tango::DevPipeData_5::operator>>= (cdrStream &_n) const
+Tango::DevPipeBlob::operator>>= (cdrStream &_n) const
 {
-  (const DevPipeBlob_5&) data_blob >>= _n;
-  (const TimeVal&) time >>= _n;
   _n.marshalString(name,0);
+  (const DevVarPipeDataEltArray&) blob_data >>= _n;
+
+}
+
+void
+Tango::DevPipeBlob::operator<<= (cdrStream &_n)
+{
+  name = _n.unmarshalString(0);
+  (DevVarPipeDataEltArray&)blob_data <<= _n;
+
+}
+
+void
+Tango::DevPipeData::operator>>= (cdrStream &_n) const
+{
+  _n.marshalString(name,0);
+  (const TimeVal&) time >>= _n;
+  (const DevPipeBlob&) data_blob >>= _n;
   (const DevErrorList&) err_list >>= _n;
 
 }
 
 void
-Tango::DevPipeData_5::operator<<= (cdrStream &_n)
+Tango::DevPipeData::operator<<= (cdrStream &_n)
 {
-  (DevPipeBlob_5&)data_blob <<= _n;
-  (TimeVal&)time <<= _n;
   name = _n.unmarshalString(0);
+  (TimeVal&)time <<= _n;
+  (DevPipeBlob&)data_blob <<= _n;
   (DevErrorList&)err_list <<= _n;
 
 }
@@ -6550,7 +6550,7 @@ Tango::DevAttrHistory_5* Tango::_objref_Device_5::read_attribute_history_5(const
 
 }
 // Proxy call descriptor class. Mangled signature:
-//  _cTango_mPipeConfigList__5_i_cTango_mDevVarStringArray_e_cTango_mDevFailed
+//  _cTango_mPipeConfigList_i_cTango_mDevVarStringArray_e_cTango_mDevFailed
 class _0RL_cd_6fe2f94a21a10053_d4000000
   : public omniCallDescriptor
 {
@@ -6572,7 +6572,7 @@ public:
 
   Tango::DevVarStringArray_var arg_0_;
   const Tango::DevVarStringArray* arg_0;
-  Tango::PipeConfigList_5_var result;
+  Tango::PipeConfigList_var result;
 };
 
 void _0RL_cd_6fe2f94a21a10053_d4000000::marshalArguments(cdrStream& _n)
@@ -6591,14 +6591,14 @@ void _0RL_cd_6fe2f94a21a10053_d4000000::unmarshalArguments(cdrStream& _n)
 
 void _0RL_cd_6fe2f94a21a10053_d4000000::marshalReturnedValues(cdrStream& _n)
 {
-  (const Tango::PipeConfigList_5&) result >>= _n;
+  (const Tango::PipeConfigList&) result >>= _n;
 
 }
 
 void _0RL_cd_6fe2f94a21a10053_d4000000::unmarshalReturnedValues(cdrStream& _n)
 {
-  result = new Tango::PipeConfigList_5;
-  (Tango::PipeConfigList_5&)result <<= _n;
+  result = new Tango::PipeConfigList;
+  (Tango::PipeConfigList&)result <<= _n;
 
 }
 
@@ -6649,7 +6649,7 @@ _0RL_lcfn_6fe2f94a21a10053_e4000000(omniCallDescriptor* cd, omniServant* svnt)
 
 }
 
-Tango::PipeConfigList_5* Tango::_objref_Device_5::get_pipe_config_5(const ::Tango::DevVarStringArray& names)
+Tango::PipeConfigList* Tango::_objref_Device_5::get_pipe_config_5(const ::Tango::DevVarStringArray& names)
 {
   _0RL_cd_6fe2f94a21a10053_d4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_e4000000, "get_pipe_config_5", 18);
   _call_desc.arg_0 = &(::Tango::DevVarStringArray&) names;
@@ -6660,7 +6660,7 @@ Tango::PipeConfigList_5* Tango::_objref_Device_5::get_pipe_config_5(const ::Tang
 
 }
 // Proxy call descriptor class. Mangled signature:
-//  _cTango_mDevPipeData__5_i_cstring_i_cTango_mClntIdent_e_cTango_mDevFailed
+//  _cTango_mDevPipeData_i_cstring_i_cTango_mClntIdent_e_cTango_mDevFailed
 class _0RL_cd_6fe2f94a21a10053_f4000000
   : public omniCallDescriptor
 {
@@ -6684,7 +6684,7 @@ public:
   const char* arg_0;
   Tango::ClntIdent_var arg_1_;
   const Tango::ClntIdent* arg_1;
-  Tango::DevPipeData_5_var result;
+  Tango::DevPipeData_var result;
 };
 
 void _0RL_cd_6fe2f94a21a10053_f4000000::marshalArguments(cdrStream& _n)
@@ -6706,14 +6706,14 @@ void _0RL_cd_6fe2f94a21a10053_f4000000::unmarshalArguments(cdrStream& _n)
 
 void _0RL_cd_6fe2f94a21a10053_f4000000::marshalReturnedValues(cdrStream& _n)
 {
-  (const Tango::DevPipeData_5&) result >>= _n;
+  (const Tango::DevPipeData&) result >>= _n;
 
 }
 
 void _0RL_cd_6fe2f94a21a10053_f4000000::unmarshalReturnedValues(cdrStream& _n)
 {
-  result = new Tango::DevPipeData_5;
-  (Tango::DevPipeData_5&)result <<= _n;
+  result = new Tango::DevPipeData;
+  (Tango::DevPipeData&)result <<= _n;
 
 }
 
@@ -6764,7 +6764,7 @@ _0RL_lcfn_6fe2f94a21a10053_05000000(omniCallDescriptor* cd, omniServant* svnt)
 
 }
 
-Tango::DevPipeData_5* Tango::_objref_Device_5::read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident)
+Tango::DevPipeData* Tango::_objref_Device_5::read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident)
 {
   _0RL_cd_6fe2f94a21a10053_f4000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_05000000, "read_pipe_5", 12);
   _call_desc.arg_0 = name;
@@ -6776,7 +6776,7 @@ Tango::DevPipeData_5* Tango::_objref_Device_5::read_pipe_5(const char* name, con
 
 }
 // Proxy call descriptor class. Mangled signature:
-//  void_i_cTango_mDevPipeData__5_i_cTango_mClntIdent_e_cTango_mDevFailed
+//  void_i_cTango_mDevPipeData_i_cTango_mClntIdent_e_cTango_mDevFailed
 class _0RL_cd_6fe2f94a21a10053_15000000
   : public omniCallDescriptor
 {
@@ -6794,23 +6794,23 @@ public:
   void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
   static const char* const _user_exns[];
 
-  Tango::DevPipeData_5_var arg_0_;
-  const Tango::DevPipeData_5* arg_0;
+  Tango::DevPipeData_var arg_0_;
+  const Tango::DevPipeData* arg_0;
   Tango::ClntIdent_var arg_1_;
   const Tango::ClntIdent* arg_1;
 };
 
 void _0RL_cd_6fe2f94a21a10053_15000000::marshalArguments(cdrStream& _n)
 {
-  (const Tango::DevPipeData_5&) *arg_0 >>= _n;
+  (const Tango::DevPipeData&) *arg_0 >>= _n;
   (const Tango::ClntIdent&) *arg_1 >>= _n;
 
 }
 
 void _0RL_cd_6fe2f94a21a10053_15000000::unmarshalArguments(cdrStream& _n)
 {
-  arg_0_ = new Tango::DevPipeData_5;
-  (Tango::DevPipeData_5&)arg_0_ <<= _n;
+  arg_0_ = new Tango::DevPipeData;
+  (Tango::DevPipeData&)arg_0_ <<= _n;
   arg_0 = &arg_0_.in();
   arg_1_ = new Tango::ClntIdent;
   (Tango::ClntIdent&)arg_1_ <<= _n;
@@ -6865,10 +6865,10 @@ _0RL_lcfn_6fe2f94a21a10053_25000000(omniCallDescriptor* cd, omniServant* svnt)
 
 }
 
-void Tango::_objref_Device_5::write_pipe_5(const ::Tango::DevPipeData_5& value, const ::Tango::ClntIdent& cl_ident)
+void Tango::_objref_Device_5::write_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident)
 {
   _0RL_cd_6fe2f94a21a10053_15000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_25000000, "write_pipe_5", 13);
-  _call_desc.arg_0 = &(::Tango::DevPipeData_5&) value;
+  _call_desc.arg_0 = &(::Tango::DevPipeData&) value;
   _call_desc.arg_1 = &(::Tango::ClntIdent&) cl_ident;
 
   _invoke(_call_desc);

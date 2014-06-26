@@ -821,16 +821,16 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 //			- names: name of pipe(s)
 //
 // return :
-//		Pointer to a PipeConfigList_5 with one PipeConfig_5 structure for each pipe
+//		Pointer to a PipeConfigList with one PipeConfig_5 structure for each pipe
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStringArray& names)
+Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarStringArray& names)
 {
 	cout4 << "Device_5Impl::get_pipe_config_5 arrived" << endl;
 
 	long nb_pipe = names.length();
-	Tango::PipeConfigList_5 *back = Tango_nullptr;
+	Tango::PipeConfigList *back = Tango_nullptr;
 	bool all_pipe = false;
 
 //
@@ -856,7 +856,7 @@ Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStri
 
 	try
 	{
-		back = new Tango::PipeConfigList_5(nb_pipe);
+		back = new Tango::PipeConfigList(nb_pipe);
 		back->length(nb_pipe);
 	}
 	catch (bad_alloc)
@@ -925,14 +925,14 @@ Tango::PipeConfigList_5 *Device_5Impl::get_pipe_config_5(const Tango::DevVarStri
 //			- cl_id : client identifier
 //
 // return :
-//		Pointer to a DevPipeData_5 with pipe data (blob)
+//		Pointer to a DevPipeData with pipe data (blob)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::ClntIdent &cl_id)
+Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::ClntIdent &cl_id)
 {
 	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << endl;
-	DevPipeData_5 *back = Tango_nullptr;
+	DevPipeData *back = Tango_nullptr;
 
 // TODO: Pipe -> Need to take device monitor here ?
 
@@ -976,7 +976,7 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 
 		try
 		{
-			back = new Tango::DevPipeData_5;
+			back = new Tango::DevPipeData;
 		}
 		catch (bad_alloc)
 		{
@@ -1080,7 +1080,7 @@ Tango::DevPipeData_5 *Device_5Impl::read_pipe_5(const char* name,const Tango::Cl
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void Device_5Impl::write_pipe_5(const Tango::DevPipeData_5 &pi_value, const Tango::ClntIdent& cl_id)
+void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango::ClntIdent& cl_id)
 {
 	string pipe_name(pi_value.name.in());
 	cout4 << "Device_5Impl::write_pipe_5 arrived for pipe " << pipe_name << endl;
@@ -1164,7 +1164,12 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData_5 &pi_value, const Tang
 // Init the WPipe object with data received from client
 //
 
-		init_wpipe(pi_value,pi);
+		string bl_name;
+		if (::strlen(pi_value.data_blob.name.in()) != 0)
+			bl_name = pi_value.data_blob.name.in();
+		pi.the_blob.set_name(bl_name);
+		pi.the_blob.set_extract_data(&(pi_value.data_blob.blob_data));
+		pi.the_blob.reset_extract_ctr();
 
 //
 // Call the user write method
@@ -1195,88 +1200,6 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData_5 &pi_value, const Tang
 //
 
 	cout4 << "Leaving Device_5Impl::write_pipe_5" << endl;
-}
-
-//+------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		Device_5Impl::init_wpipe
-//
-// description :
-//		Init a WPipe instance with the data received from the client. Do not copy data.
-//
-// argument:
-//		in :
-//			- pi_value: The received data blob
-//		out :
-//			- pi : The WPipe instance to be innitialized
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-void Device_5Impl::init_wpipe(const Tango::DevPipeData_5 &pi_value,WPipe &pi)
-{
-
-//
-// First the blob name (if any)
-//
-
-	if (::strlen(pi_value.data_blob.name.in()) != 0)
-		pi.blob_name = pi_value.data_blob.name.in();
-
-//
-// Now the data element
-//
-
-	CORBA::Long *tmp_lo;
-	CORBA::Short *tmp_sh;
-	CORBA::Double *tmp_db;
-
-	CORBA::ULong max,len;
-
-	pi.v_elt.clear();
-	for (size_t ctr = 0;ctr < pi_value.data_blob.blob_data.length();++ctr)
-	{
-		pi.v_elt.push_back(WPipe::SvrPipeDataElt(pi_value.data_blob.blob_data[ctr].name.in(),&pi));
-
-		switch(pi_value.data_blob.blob_data[ctr].value._d())
-		{
-			case ATT_LONG:
-			{
-				const DevVarLongArray &tmp_seq = pi_value.data_blob.blob_data[ctr].value.long_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-				pi.v_elt[ctr].LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
-
-				pi.v_elt[ctr].type = DEV_LONG;
-			}
-			break;
-
-			case ATT_SHORT:
-			{
-				const DevVarShortArray &tmp_seq = pi_value.data_blob.blob_data[ctr].value.short_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-				pi.v_elt[ctr].ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
-
-				pi.v_elt[ctr].type = DEV_SHORT;
-			}
-			break;
-
-			case ATT_DOUBLE:
-			{
-				const DevVarDoubleArray &tmp_seq = pi_value.data_blob.blob_data[ctr].value.double_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-				pi.v_elt[ctr].DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
-
-				pi.v_elt[ctr].type = DEV_DOUBLE;
-			}
-			break;
-		}
-	}
 }
 
 } // End of Tango namespace

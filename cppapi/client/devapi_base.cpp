@@ -4521,7 +4521,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 
 PipeInfoList *DeviceProxy::get_pipe_config(vector<string>& pipe_string_list)
 {
-	PipeConfigList_5_var pipe_config_list_5;
+	PipeConfigList_var pipe_config_list_5;
 	PipeInfoList *dev_pipe_config = new PipeInfoList();
 	DevVarStringArray pipe_list;
 	int ctr = 0;
@@ -4689,7 +4689,7 @@ vector<string> *DeviceProxy::get_pipe_list()
 
 DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 {
-	DevPipeData_5_var pipe_value_5;
+	DevPipeData_var pipe_value_5;
 	DevicePipe dev_pipe;
 	int ctr = 0;
 
@@ -4772,83 +4772,22 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 		}
 	}
 
-	dev_pipe.name = pipe_value_5->name;
-	dev_pipe.time = pipe_value_5->time;
+//
+// Pass received data to the caller.
+// For thw data elt sequence, we create a new one with size and buffer from the original one.
+// This is required because the whole object received by the call will be deleted at the end of this method
+//
 
-	dev_pipe.v_elt.clear();
+	dev_pipe.set_name(pipe_value_5->name.in());
+	dev_pipe.set_time(pipe_value_5->time);
 
-	CORBA::Long *tmp_lo;
-	CORBA::Short *tmp_sh;
-	CORBA::Double *tmp_db;
+	size_t seq_max = pipe_value_5->data_blob.blob_data.length();
+	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer(true);
+	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(seq_max,seq_max,buf,true);
 
-	CORBA::ULong max,len;
-
-	for  (size_t ctr = 0;ctr < pipe_value_5->data_blob.blob_data.length();ctr++)
-	{
-		dev_pipe.v_elt.push_back(DevicePipe::ClPipeDataElt(pipe_value_5->data_blob.blob_data[ctr].name.in()));
-
-		switch (pipe_value_5->data_blob.blob_data[ctr].value._d())
-		{
-			case ATT_SHORT:
-			{
-				const DevVarShortArray &tmp_seq = pipe_value_5->data_blob.blob_data[ctr].value.short_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_pipe.v_elt[ctr].ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
-				}
-				else
-				{
-					tmp_sh = const_cast<CORBA::Short *>(tmp_seq.get_buffer());
-					dev_pipe.v_elt[ctr].ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
-				}
-				cout << "DevShort data" << endl;
-			}
-			break;
-
-			case ATT_LONG:
-			{
-				const DevVarLongArray &tmp_seq = pipe_value_5->data_blob.blob_data[ctr].value.long_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_pipe.v_elt[ctr].LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
-				}
-				else
-				{
-					tmp_lo = const_cast<CORBA::Long *>(tmp_seq.get_buffer());
-					dev_pipe.v_elt[ctr].LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
-				}
-				cout << "DevLong data" << endl;
-
-			}
-			break;
-
-			case ATT_DOUBLE:
-			{
-				const DevVarDoubleArray &tmp_seq = pipe_value_5->data_blob.blob_data[ctr].value.double_att_value();
-				max = tmp_seq.maximum();
-				len = tmp_seq.length();
-				if (tmp_seq.release() == true)
-				{
-					tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
-					dev_pipe.v_elt[ctr].DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
-				}
-				else
-				{
-					tmp_db = const_cast<CORBA::Double *>(tmp_seq.get_buffer());
-					dev_pipe.v_elt[ctr].DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
-				}
-				cout << "DevDouble data" << endl;
-
-			}
-			break;
-		}
-	}
+	dev_pipe.the_root_blob.reset_extract_ctr();
+	dev_pipe.the_root_blob.set_extract_data(dvpdea);
+	dev_pipe.the_root_blob.set_extract_delete(true);
 
 	return dev_pipe;
 }
@@ -4860,9 +4799,9 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 //-----------------------------------------------------------------------------
 
 
-void DeviceProxy::write_pipe(const DevicePipe& dev_pipe)
+void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 {
-	DevPipeData_5 pipe_value_5;
+	DevPipeData pipe_value_5;
 	int ctr = 0;
 
 //
@@ -4877,29 +4816,13 @@ void DeviceProxy::write_pipe(const DevicePipe& dev_pipe)
 		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::write_pipe()");
 	}
 
-	pipe_value_5.name = dev_pipe.name.c_str();
-	if (dev_pipe.blob_name.size() != 0)
-		pipe_value_5.data_blob.name = dev_pipe.blob_name.c_str();
-	pipe_value_5.data_blob.blob_data.length(dev_pipe.v_elt.size());
-	for (size_t elt_ctr = 0;elt_ctr < dev_pipe.v_elt.size();elt_ctr++)
-	{
-		pipe_value_5.data_blob.blob_data[elt_ctr].name = dev_pipe.v_elt[elt_ctr].name.c_str();
-		switch (dev_pipe.v_elt[elt_ctr].type)
-		{
-			case DEV_SHORT:
-			pipe_value_5.data_blob.blob_data[elt_ctr].value.short_att_value(dev_pipe.v_elt[elt_ctr].ShortSeq.in());
-			break;
+	pipe_value_5.name = dev_pipe.get_name().c_str();
+	const string &bl_name = dev_pipe.the_root_blob.get_name();
+	if (bl_name.size() != 0)
+		pipe_value_5.data_blob.name = bl_name.c_str();
 
-			case DEV_LONG:
-			pipe_value_5.data_blob.blob_data[elt_ctr].value.long_att_value(dev_pipe.v_elt[elt_ctr].LongSeq.in());
-			break;
-
-			case DEV_DOUBLE:
-			pipe_value_5.data_blob.blob_data[elt_ctr].value.double_att_value(dev_pipe.v_elt[elt_ctr].DoubleSeq.in());
-			break;
-		}
-//		pipe_value_5.data_blob.blob_data[elt_ctr].value.union_no_data(true);
-	}
+	DevVarPipeDataEltArray *tmp_ptr = dev_pipe.the_root_blob.get_insert_data();
+	pipe_value_5.data_blob.blob_data.replace(tmp_ptr->length(),tmp_ptr->length(),tmp_ptr->get_buffer(),true);
 
 	while (ctr < 2)
 	{
@@ -4918,13 +4841,13 @@ void DeviceProxy::write_pipe(const DevicePipe& dev_pipe)
 		catch (Tango::ConnectionFailed &e)
 		{
 			stringstream desc;
-			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.name;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
 			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
 		}
 		catch (Tango::DevFailed &e)
 		{
 			stringstream desc;
-			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.name;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
 			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
 		}
 		catch (CORBA::TRANSIENT &trans)

@@ -1442,7 +1442,7 @@ namespace Tango {
 const ::CORBA::TypeCode_ptr Tango::_tc_PipeWriteType = _0RL_tc_Tango_mPipeWriteType;
 #endif
 
-static CORBA::PR_structMember _0RL_structmember_Tango_mPipeConfig__5[] = {
+static CORBA::PR_structMember _0RL_structmember_Tango_mPipeConfig[] = {
   {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"description", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"label", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
@@ -1451,18 +1451,18 @@ static CORBA::PR_structMember _0RL_structmember_Tango_mPipeConfig__5[] = {
   {"extensions", _0RL_tc_Tango_mDevVarStringArray}
 };
 
-#ifdef _0RL_tc_Tango_mPipeConfig__5
-#  undef _0RL_tc_Tango_mPipeConfig__5
+#ifdef _0RL_tc_Tango_mPipeConfig
+#  undef _0RL_tc_Tango_mPipeConfig
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mPipeConfig__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/PipeConfig_5:1.0", "PipeConfig_5", _0RL_structmember_Tango_mPipeConfig__5, 6, &_0RL_tcTrack);
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mPipeConfig = CORBA::TypeCode::PR_struct_tc("IDL:Tango/PipeConfig:1.0", "PipeConfig", _0RL_structmember_Tango_mPipeConfig, 6, &_0RL_tcTrack);
 
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
 namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_PipeConfig_5 = _0RL_tc_Tango_mPipeConfig__5;
+  const ::CORBA::TypeCode_ptr _tc_PipeConfig = _0RL_tc_Tango_mPipeConfig;
 } 
 #else
-const ::CORBA::TypeCode_ptr Tango::_tc_PipeConfig_5 = _0RL_tc_Tango_mPipeConfig__5;
+const ::CORBA::TypeCode_ptr Tango::_tc_PipeConfig = _0RL_tc_Tango_mPipeConfig;
 #endif
 
 
@@ -1470,108 +1470,88 @@ const ::CORBA::TypeCode_ptr Tango::_tc_PipeConfig_5 = _0RL_tc_Tango_mPipeConfig_
 
 
 
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mPipeConfigList__5 = CORBA::TypeCode::PR_alias_tc("IDL:Tango/PipeConfigList_5:1.0", "PipeConfigList_5", CORBA::TypeCode::PR_sequence_tc(0, _0RL_tc_Tango_mPipeConfig__5, &_0RL_tcTrack), &_0RL_tcTrack);
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mPipeConfigList = CORBA::TypeCode::PR_alias_tc("IDL:Tango/PipeConfigList:1.0", "PipeConfigList", CORBA::TypeCode::PR_sequence_tc(0, _0RL_tc_Tango_mPipeConfig, &_0RL_tcTrack), &_0RL_tcTrack);
 
 
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
 namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_PipeConfigList_5 = _0RL_tc_Tango_mPipeConfigList__5;
+  const ::CORBA::TypeCode_ptr _tc_PipeConfigList = _0RL_tc_Tango_mPipeConfigList;
 } 
 #else
-const ::CORBA::TypeCode_ptr Tango::_tc_PipeConfigList_5 = _0RL_tc_Tango_mPipeConfigList__5;
+const ::CORBA::TypeCode_ptr Tango::_tc_PipeConfigList = _0RL_tc_Tango_mPipeConfigList;
 #endif
 
-static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeDataElt__5[] = {
+static CORBA::TypeCode_ptr _0RL_ft_Tango_mDevPipeDataElt = CORBA::TypeCode::PR_forward_tc("IDL:Tango/DevPipeDataElt:1.0", &_0RL_tcTrack);
+#define _0RL_tc_Tango_mDevPipeDataElt _0RL_ft_Tango_mDevPipeDataElt
+
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevVarPipeDataEltArray = CORBA::TypeCode::PR_alias_tc("IDL:Tango/DevVarPipeDataEltArray:1.0", "DevVarPipeDataEltArray", CORBA::TypeCode::PR_sequence_tc(0, _0RL_tc_Tango_mDevPipeDataElt, &_0RL_tcTrack), &_0RL_tcTrack);
+
+
+#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
+// MSVC++ does not give the constant external linkage otherwise.
+namespace Tango { 
+  const ::CORBA::TypeCode_ptr _tc_DevVarPipeDataEltArray = _0RL_tc_Tango_mDevVarPipeDataEltArray;
+} 
+#else
+const ::CORBA::TypeCode_ptr Tango::_tc_DevVarPipeDataEltArray = _0RL_tc_Tango_mDevVarPipeDataEltArray;
+#endif
+
+static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeDataElt[] = {
+  {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"value", _0RL_tc_Tango_mAttrValUnion},
-  {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)}
+  {"inner_blob", _0RL_tc_Tango_mDevVarPipeDataEltArray}
 };
 
-#ifdef _0RL_tc_Tango_mDevPipeDataElt__5
-#  undef _0RL_tc_Tango_mDevPipeDataElt__5
+#ifdef _0RL_tc_Tango_mDevPipeDataElt
+#  undef _0RL_tc_Tango_mDevPipeDataElt
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeDataElt__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeDataElt_5:1.0", "DevPipeDataElt_5", _0RL_structmember_Tango_mDevPipeDataElt__5, 2, &_0RL_tcTrack);
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeDataElt = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeDataElt:1.0", "DevPipeDataElt", _0RL_structmember_Tango_mDevPipeDataElt, 3, &_0RL_tcTrack);
 
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
 namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_DevPipeDataElt_5 = _0RL_tc_Tango_mDevPipeDataElt__5;
+  const ::CORBA::TypeCode_ptr _tc_DevPipeDataElt = _0RL_tc_Tango_mDevPipeDataElt;
 } 
 #else
-const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeDataElt_5 = _0RL_tc_Tango_mDevPipeDataElt__5;
+const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeDataElt = _0RL_tc_Tango_mDevPipeDataElt;
 #endif
 
 
-
-
-
-
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeDataEltArray__5 = CORBA::TypeCode::PR_alias_tc("IDL:Tango/DevPipeDataEltArray_5:1.0", "DevPipeDataEltArray_5", CORBA::TypeCode::PR_sequence_tc(0, _0RL_tc_Tango_mDevPipeDataElt__5, &_0RL_tcTrack), &_0RL_tcTrack);
-
-
-#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
-// MSVC++ does not give the constant external linkage otherwise.
-namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_DevPipeDataEltArray_5 = _0RL_tc_Tango_mDevPipeDataEltArray__5;
-} 
-#else
-const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeDataEltArray_5 = _0RL_tc_Tango_mDevPipeDataEltArray__5;
-#endif
-
-static CORBA::TypeCode_ptr _0RL_ft_Tango_mDevPipeBlob__5 = CORBA::TypeCode::PR_forward_tc("IDL:Tango/DevPipeBlob_5:1.0", &_0RL_tcTrack);
-#define _0RL_tc_Tango_mDevPipeBlob__5 _0RL_ft_Tango_mDevPipeBlob__5
-
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeBlobArray = CORBA::TypeCode::PR_alias_tc("IDL:Tango/DevPipeBlobArray:1.0", "DevPipeBlobArray", CORBA::TypeCode::PR_sequence_tc(0, _0RL_tc_Tango_mDevPipeBlob__5, &_0RL_tcTrack), &_0RL_tcTrack);
-
-
-#if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
-// MSVC++ does not give the constant external linkage otherwise.
-namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_DevPipeBlobArray = _0RL_tc_Tango_mDevPipeBlobArray;
-} 
-#else
-const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeBlobArray = _0RL_tc_Tango_mDevPipeBlobArray;
-#endif
-
-
-static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeBlob__5[] = {
+static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeBlob[] = {
   {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
-  {"blob_data", _0RL_tc_Tango_mDevPipeDataEltArray__5},
-  {"inner_blobs", _0RL_tc_Tango_mDevPipeBlobArray}
+  {"blob_data", _0RL_tc_Tango_mDevVarPipeDataEltArray}
 };
 
-#ifdef _0RL_tc_Tango_mDevPipeBlob__5
-#  undef _0RL_tc_Tango_mDevPipeBlob__5
+#ifdef _0RL_tc_Tango_mDevPipeBlob
+#  undef _0RL_tc_Tango_mDevPipeBlob
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeBlob__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeBlob_5:1.0", "DevPipeBlob_5", _0RL_structmember_Tango_mDevPipeBlob__5, 3, &_0RL_tcTrack);
-
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeBlob = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeBlob:1.0", "DevPipeBlob", _0RL_structmember_Tango_mDevPipeBlob, 2, &_0RL_tcTrack);
 
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
 namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_DevPipeBlob_5 = _0RL_tc_Tango_mDevPipeBlob__5;
+  const ::CORBA::TypeCode_ptr _tc_DevPipeBlob = _0RL_tc_Tango_mDevPipeBlob;
 } 
 #else
-const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeBlob_5 = _0RL_tc_Tango_mDevPipeBlob__5;
+const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeBlob = _0RL_tc_Tango_mDevPipeBlob;
 #endif
 
 
 
 
 
-
-static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeData__5[] = {
-  {"data_blob", _0RL_tc_Tango_mDevPipeBlob__5},
+static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeData[] = {
+  {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"time", _0RL_tc_Tango_mTimeVal},
-  {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
+  {"data_blob", _0RL_tc_Tango_mDevPipeBlob},
   {"err_list", _0RL_tc_Tango_mDevErrorList}
 };
 
-#ifdef _0RL_tc_Tango_mDevPipeData__5
-#  undef _0RL_tc_Tango_mDevPipeData__5
+#ifdef _0RL_tc_Tango_mDevPipeData
+#  undef _0RL_tc_Tango_mDevPipeData
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeData__5 = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeData_5:1.0", "DevPipeData_5", _0RL_structmember_Tango_mDevPipeData__5, 4, &_0RL_tcTrack);
-
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeData = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeData:1.0", "DevPipeData", _0RL_structmember_Tango_mDevPipeData, 4, &_0RL_tcTrack);
 
 
 
@@ -1579,10 +1559,10 @@ static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeData__5 = CORBA::TypeCode::PR_s
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
 namespace Tango { 
-  const ::CORBA::TypeCode_ptr _tc_DevPipeData_5 = _0RL_tc_Tango_mDevPipeData__5;
+  const ::CORBA::TypeCode_ptr _tc_DevPipeData = _0RL_tc_Tango_mDevPipeData;
 } 
 #else
-const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeData_5 = _0RL_tc_Tango_mDevPipeData__5;
+const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeData = _0RL_tc_Tango_mDevPipeData;
 #endif
 
 
@@ -5140,358 +5120,307 @@ void operator<<=(::CORBA::Any& _a, Tango::PipeWriteType _s)
                        &_s);
 }
 
-static void _0RL_Tango_mPipeConfig__5_marshal_fn(cdrStream& _s, void* _v)
+static void _0RL_Tango_mPipeConfig_marshal_fn(cdrStream& _s, void* _v)
 {
-  Tango::PipeConfig_5* _p = (Tango::PipeConfig_5*)_v;
+  Tango::PipeConfig* _p = (Tango::PipeConfig*)_v;
   *_p >>= _s;
 }
-static void _0RL_Tango_mPipeConfig__5_unmarshal_fn(cdrStream& _s, void*& _v)
+static void _0RL_Tango_mPipeConfig_unmarshal_fn(cdrStream& _s, void*& _v)
 {
-  Tango::PipeConfig_5* _p = new Tango::PipeConfig_5;
+  Tango::PipeConfig* _p = new Tango::PipeConfig;
   *_p <<= _s;
   _v = _p;
 }
-static void _0RL_Tango_mPipeConfig__5_destructor_fn(void* _v)
+static void _0RL_Tango_mPipeConfig_destructor_fn(void* _v)
 {
-  Tango::PipeConfig_5* _p = (Tango::PipeConfig_5*)_v;
+  Tango::PipeConfig* _p = (Tango::PipeConfig*)_v;
   delete _p;
 }
 
-void operator<<=(::CORBA::Any& _a, const Tango::PipeConfig_5& _s)
+void operator<<=(::CORBA::Any& _a, const Tango::PipeConfig& _s)
 {
-  Tango::PipeConfig_5* _p = new Tango::PipeConfig_5(_s);
-  _a.PR_insert(_0RL_tc_Tango_mPipeConfig__5,
-               _0RL_Tango_mPipeConfig__5_marshal_fn,
-               _0RL_Tango_mPipeConfig__5_destructor_fn,
+  Tango::PipeConfig* _p = new Tango::PipeConfig(_s);
+  _a.PR_insert(_0RL_tc_Tango_mPipeConfig,
+               _0RL_Tango_mPipeConfig_marshal_fn,
+               _0RL_Tango_mPipeConfig_destructor_fn,
                _p);
 }
-void operator<<=(::CORBA::Any& _a, Tango::PipeConfig_5* _sp)
+void operator<<=(::CORBA::Any& _a, Tango::PipeConfig* _sp)
 {
-  _a.PR_insert(_0RL_tc_Tango_mPipeConfig__5,
-               _0RL_Tango_mPipeConfig__5_marshal_fn,
-               _0RL_Tango_mPipeConfig__5_destructor_fn,
+  _a.PR_insert(_0RL_tc_Tango_mPipeConfig,
+               _0RL_Tango_mPipeConfig_marshal_fn,
+               _0RL_Tango_mPipeConfig_destructor_fn,
                _sp);
 }
 
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfig_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfig*& _sp)
 {
-  return _a >>= (const Tango::PipeConfig_5*&) _sp;
+  return _a >>= (const Tango::PipeConfig*&) _sp;
 }
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfig_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfig*& _sp)
 {
   void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mPipeConfig__5,
-                    _0RL_Tango_mPipeConfig__5_unmarshal_fn,
-                    _0RL_Tango_mPipeConfig__5_marshal_fn,
-                    _0RL_Tango_mPipeConfig__5_destructor_fn,
+  if (_a.PR_extract(_0RL_tc_Tango_mPipeConfig,
+                    _0RL_Tango_mPipeConfig_unmarshal_fn,
+                    _0RL_Tango_mPipeConfig_marshal_fn,
+                    _0RL_Tango_mPipeConfig_destructor_fn,
                     _v)) {
-    _sp = (const Tango::PipeConfig_5*)_v;
+    _sp = (const Tango::PipeConfig*)_v;
     return 1;
   }
   return 0;
 }
 
-static void _0RL_Tango_mPipeConfigList__5_marshal_fn(cdrStream& _s, void* _v)
+static void _0RL_Tango_mPipeConfigList_marshal_fn(cdrStream& _s, void* _v)
 {
-  Tango::PipeConfigList_5* _p = (Tango::PipeConfigList_5*)_v;
+  Tango::PipeConfigList* _p = (Tango::PipeConfigList*)_v;
   *_p >>= _s;
 }
-static void _0RL_Tango_mPipeConfigList__5_unmarshal_fn(cdrStream& _s, void*& _v)
+static void _0RL_Tango_mPipeConfigList_unmarshal_fn(cdrStream& _s, void*& _v)
 {
-  Tango::PipeConfigList_5* _p = new Tango::PipeConfigList_5;
+  Tango::PipeConfigList* _p = new Tango::PipeConfigList;
   *_p <<= _s;
   _v = _p;
 }
-static void _0RL_Tango_mPipeConfigList__5_destructor_fn(void* _v)
+static void _0RL_Tango_mPipeConfigList_destructor_fn(void* _v)
 {
-  Tango::PipeConfigList_5* _p = (Tango::PipeConfigList_5*)_v;
+  Tango::PipeConfigList* _p = (Tango::PipeConfigList*)_v;
   delete _p;
 }
 
-void operator<<=(::CORBA::Any& _a, const Tango::PipeConfigList_5& _s)
+void operator<<=(::CORBA::Any& _a, const Tango::PipeConfigList& _s)
 {
-  Tango::PipeConfigList_5* _p = new Tango::PipeConfigList_5(_s);
-  _a.PR_insert(_0RL_tc_Tango_mPipeConfigList__5,
-               _0RL_Tango_mPipeConfigList__5_marshal_fn,
-               _0RL_Tango_mPipeConfigList__5_destructor_fn,
+  Tango::PipeConfigList* _p = new Tango::PipeConfigList(_s);
+  _a.PR_insert(_0RL_tc_Tango_mPipeConfigList,
+               _0RL_Tango_mPipeConfigList_marshal_fn,
+               _0RL_Tango_mPipeConfigList_destructor_fn,
                _p);
 }
-void operator<<=(::CORBA::Any& _a, Tango::PipeConfigList_5* _sp)
+void operator<<=(::CORBA::Any& _a, Tango::PipeConfigList* _sp)
 {
-  _a.PR_insert(_0RL_tc_Tango_mPipeConfigList__5,
-               _0RL_Tango_mPipeConfigList__5_marshal_fn,
-               _0RL_Tango_mPipeConfigList__5_destructor_fn,
+  _a.PR_insert(_0RL_tc_Tango_mPipeConfigList,
+               _0RL_Tango_mPipeConfigList_marshal_fn,
+               _0RL_Tango_mPipeConfigList_destructor_fn,
                _sp);
 }
 
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfigList_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::PipeConfigList*& _sp)
 {
-  return _a >>= (const Tango::PipeConfigList_5*&) _sp;
+  return _a >>= (const Tango::PipeConfigList*&) _sp;
 }
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfigList_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::PipeConfigList*& _sp)
 {
   void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mPipeConfigList__5,
-                    _0RL_Tango_mPipeConfigList__5_unmarshal_fn,
-                    _0RL_Tango_mPipeConfigList__5_marshal_fn,
-                    _0RL_Tango_mPipeConfigList__5_destructor_fn,
+  if (_a.PR_extract(_0RL_tc_Tango_mPipeConfigList,
+                    _0RL_Tango_mPipeConfigList_unmarshal_fn,
+                    _0RL_Tango_mPipeConfigList_marshal_fn,
+                    _0RL_Tango_mPipeConfigList_destructor_fn,
                     _v)) {
-    _sp = (const Tango::PipeConfigList_5*)_v;
+    _sp = (const Tango::PipeConfigList*)_v;
     return 1;
   }
   return 0;
 }
 
-static void _0RL_Tango_mDevPipeDataElt__5_marshal_fn(cdrStream& _s, void* _v)
+static void _0RL_Tango_mDevVarPipeDataEltArray_marshal_fn(cdrStream& _s, void* _v)
 {
-  Tango::DevPipeDataElt_5* _p = (Tango::DevPipeDataElt_5*)_v;
+  Tango::DevVarPipeDataEltArray* _p = (Tango::DevVarPipeDataEltArray*)_v;
   *_p >>= _s;
 }
-static void _0RL_Tango_mDevPipeDataElt__5_unmarshal_fn(cdrStream& _s, void*& _v)
+static void _0RL_Tango_mDevVarPipeDataEltArray_unmarshal_fn(cdrStream& _s, void*& _v)
 {
-  Tango::DevPipeDataElt_5* _p = new Tango::DevPipeDataElt_5;
+  Tango::DevVarPipeDataEltArray* _p = new Tango::DevVarPipeDataEltArray;
   *_p <<= _s;
   _v = _p;
 }
-static void _0RL_Tango_mDevPipeDataElt__5_destructor_fn(void* _v)
+static void _0RL_Tango_mDevVarPipeDataEltArray_destructor_fn(void* _v)
 {
-  Tango::DevPipeDataElt_5* _p = (Tango::DevPipeDataElt_5*)_v;
+  Tango::DevVarPipeDataEltArray* _p = (Tango::DevVarPipeDataEltArray*)_v;
   delete _p;
 }
 
-void operator<<=(::CORBA::Any& _a, const Tango::DevPipeDataElt_5& _s)
+void operator<<=(::CORBA::Any& _a, const Tango::DevVarPipeDataEltArray& _s)
 {
-  Tango::DevPipeDataElt_5* _p = new Tango::DevPipeDataElt_5(_s);
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeDataElt__5,
-               _0RL_Tango_mDevPipeDataElt__5_marshal_fn,
-               _0RL_Tango_mDevPipeDataElt__5_destructor_fn,
+  Tango::DevVarPipeDataEltArray* _p = new Tango::DevVarPipeDataEltArray(_s);
+  _a.PR_insert(_0RL_tc_Tango_mDevVarPipeDataEltArray,
+               _0RL_Tango_mDevVarPipeDataEltArray_marshal_fn,
+               _0RL_Tango_mDevVarPipeDataEltArray_destructor_fn,
                _p);
 }
-void operator<<=(::CORBA::Any& _a, Tango::DevPipeDataElt_5* _sp)
+void operator<<=(::CORBA::Any& _a, Tango::DevVarPipeDataEltArray* _sp)
 {
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeDataElt__5,
-               _0RL_Tango_mDevPipeDataElt__5_marshal_fn,
-               _0RL_Tango_mDevPipeDataElt__5_destructor_fn,
+  _a.PR_insert(_0RL_tc_Tango_mDevVarPipeDataEltArray,
+               _0RL_Tango_mDevVarPipeDataEltArray_marshal_fn,
+               _0RL_Tango_mDevVarPipeDataEltArray_destructor_fn,
                _sp);
 }
 
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeDataElt_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevVarPipeDataEltArray*& _sp)
 {
-  return _a >>= (const Tango::DevPipeDataElt_5*&) _sp;
+  return _a >>= (const Tango::DevVarPipeDataEltArray*&) _sp;
 }
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeDataElt_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevVarPipeDataEltArray*& _sp)
 {
   void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeDataElt__5,
-                    _0RL_Tango_mDevPipeDataElt__5_unmarshal_fn,
-                    _0RL_Tango_mDevPipeDataElt__5_marshal_fn,
-                    _0RL_Tango_mDevPipeDataElt__5_destructor_fn,
+  if (_a.PR_extract(_0RL_tc_Tango_mDevVarPipeDataEltArray,
+                    _0RL_Tango_mDevVarPipeDataEltArray_unmarshal_fn,
+                    _0RL_Tango_mDevVarPipeDataEltArray_marshal_fn,
+                    _0RL_Tango_mDevVarPipeDataEltArray_destructor_fn,
                     _v)) {
-    _sp = (const Tango::DevPipeDataElt_5*)_v;
+    _sp = (const Tango::DevVarPipeDataEltArray*)_v;
     return 1;
   }
   return 0;
 }
 
-static void _0RL_Tango_mDevPipeDataEltArray__5_marshal_fn(cdrStream& _s, void* _v)
+static void _0RL_Tango_mDevPipeDataElt_marshal_fn(cdrStream& _s, void* _v)
 {
-  Tango::DevPipeDataEltArray_5* _p = (Tango::DevPipeDataEltArray_5*)_v;
+  Tango::DevPipeDataElt* _p = (Tango::DevPipeDataElt*)_v;
   *_p >>= _s;
 }
-static void _0RL_Tango_mDevPipeDataEltArray__5_unmarshal_fn(cdrStream& _s, void*& _v)
+static void _0RL_Tango_mDevPipeDataElt_unmarshal_fn(cdrStream& _s, void*& _v)
 {
-  Tango::DevPipeDataEltArray_5* _p = new Tango::DevPipeDataEltArray_5;
+  Tango::DevPipeDataElt* _p = new Tango::DevPipeDataElt;
   *_p <<= _s;
   _v = _p;
 }
-static void _0RL_Tango_mDevPipeDataEltArray__5_destructor_fn(void* _v)
+static void _0RL_Tango_mDevPipeDataElt_destructor_fn(void* _v)
 {
-  Tango::DevPipeDataEltArray_5* _p = (Tango::DevPipeDataEltArray_5*)_v;
+  Tango::DevPipeDataElt* _p = (Tango::DevPipeDataElt*)_v;
   delete _p;
 }
 
-void operator<<=(::CORBA::Any& _a, const Tango::DevPipeDataEltArray_5& _s)
+void operator<<=(::CORBA::Any& _a, const Tango::DevPipeDataElt& _s)
 {
-  Tango::DevPipeDataEltArray_5* _p = new Tango::DevPipeDataEltArray_5(_s);
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeDataEltArray__5,
-               _0RL_Tango_mDevPipeDataEltArray__5_marshal_fn,
-               _0RL_Tango_mDevPipeDataEltArray__5_destructor_fn,
+  Tango::DevPipeDataElt* _p = new Tango::DevPipeDataElt(_s);
+  _a.PR_insert(_0RL_tc_Tango_mDevPipeDataElt,
+               _0RL_Tango_mDevPipeDataElt_marshal_fn,
+               _0RL_Tango_mDevPipeDataElt_destructor_fn,
                _p);
 }
-void operator<<=(::CORBA::Any& _a, Tango::DevPipeDataEltArray_5* _sp)
+void operator<<=(::CORBA::Any& _a, Tango::DevPipeDataElt* _sp)
 {
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeDataEltArray__5,
-               _0RL_Tango_mDevPipeDataEltArray__5_marshal_fn,
-               _0RL_Tango_mDevPipeDataEltArray__5_destructor_fn,
+  _a.PR_insert(_0RL_tc_Tango_mDevPipeDataElt,
+               _0RL_Tango_mDevPipeDataElt_marshal_fn,
+               _0RL_Tango_mDevPipeDataElt_destructor_fn,
                _sp);
 }
 
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeDataEltArray_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeDataElt*& _sp)
 {
-  return _a >>= (const Tango::DevPipeDataEltArray_5*&) _sp;
+  return _a >>= (const Tango::DevPipeDataElt*&) _sp;
 }
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeDataEltArray_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeDataElt*& _sp)
 {
   void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeDataEltArray__5,
-                    _0RL_Tango_mDevPipeDataEltArray__5_unmarshal_fn,
-                    _0RL_Tango_mDevPipeDataEltArray__5_marshal_fn,
-                    _0RL_Tango_mDevPipeDataEltArray__5_destructor_fn,
+  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeDataElt,
+                    _0RL_Tango_mDevPipeDataElt_unmarshal_fn,
+                    _0RL_Tango_mDevPipeDataElt_marshal_fn,
+                    _0RL_Tango_mDevPipeDataElt_destructor_fn,
                     _v)) {
-    _sp = (const Tango::DevPipeDataEltArray_5*)_v;
+    _sp = (const Tango::DevPipeDataElt*)_v;
     return 1;
   }
   return 0;
 }
 
-static void _0RL_Tango_mDevPipeBlobArray_marshal_fn(cdrStream& _s, void* _v)
+static void _0RL_Tango_mDevPipeBlob_marshal_fn(cdrStream& _s, void* _v)
 {
-  Tango::DevPipeBlobArray* _p = (Tango::DevPipeBlobArray*)_v;
+  Tango::DevPipeBlob* _p = (Tango::DevPipeBlob*)_v;
   *_p >>= _s;
 }
-static void _0RL_Tango_mDevPipeBlobArray_unmarshal_fn(cdrStream& _s, void*& _v)
+static void _0RL_Tango_mDevPipeBlob_unmarshal_fn(cdrStream& _s, void*& _v)
 {
-  Tango::DevPipeBlobArray* _p = new Tango::DevPipeBlobArray;
+  Tango::DevPipeBlob* _p = new Tango::DevPipeBlob;
   *_p <<= _s;
   _v = _p;
 }
-static void _0RL_Tango_mDevPipeBlobArray_destructor_fn(void* _v)
+static void _0RL_Tango_mDevPipeBlob_destructor_fn(void* _v)
 {
-  Tango::DevPipeBlobArray* _p = (Tango::DevPipeBlobArray*)_v;
+  Tango::DevPipeBlob* _p = (Tango::DevPipeBlob*)_v;
   delete _p;
 }
 
-void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlobArray& _s)
+void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlob& _s)
 {
-  Tango::DevPipeBlobArray* _p = new Tango::DevPipeBlobArray(_s);
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeBlobArray,
-               _0RL_Tango_mDevPipeBlobArray_marshal_fn,
-               _0RL_Tango_mDevPipeBlobArray_destructor_fn,
+  Tango::DevPipeBlob* _p = new Tango::DevPipeBlob(_s);
+  _a.PR_insert(_0RL_tc_Tango_mDevPipeBlob,
+               _0RL_Tango_mDevPipeBlob_marshal_fn,
+               _0RL_Tango_mDevPipeBlob_destructor_fn,
                _p);
 }
-void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlobArray* _sp)
+void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlob* _sp)
 {
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeBlobArray,
-               _0RL_Tango_mDevPipeBlobArray_marshal_fn,
-               _0RL_Tango_mDevPipeBlobArray_destructor_fn,
+  _a.PR_insert(_0RL_tc_Tango_mDevPipeBlob,
+               _0RL_Tango_mDevPipeBlob_marshal_fn,
+               _0RL_Tango_mDevPipeBlob_destructor_fn,
                _sp);
 }
 
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlobArray*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlob*& _sp)
 {
-  return _a >>= (const Tango::DevPipeBlobArray*&) _sp;
+  return _a >>= (const Tango::DevPipeBlob*&) _sp;
 }
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlobArray*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlob*& _sp)
 {
   void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeBlobArray,
-                    _0RL_Tango_mDevPipeBlobArray_unmarshal_fn,
-                    _0RL_Tango_mDevPipeBlobArray_marshal_fn,
-                    _0RL_Tango_mDevPipeBlobArray_destructor_fn,
+  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeBlob,
+                    _0RL_Tango_mDevPipeBlob_unmarshal_fn,
+                    _0RL_Tango_mDevPipeBlob_marshal_fn,
+                    _0RL_Tango_mDevPipeBlob_destructor_fn,
                     _v)) {
-    _sp = (const Tango::DevPipeBlobArray*)_v;
+    _sp = (const Tango::DevPipeBlob*)_v;
     return 1;
   }
   return 0;
 }
 
-static void _0RL_Tango_mDevPipeBlob__5_marshal_fn(cdrStream& _s, void* _v)
+static void _0RL_Tango_mDevPipeData_marshal_fn(cdrStream& _s, void* _v)
 {
-  Tango::DevPipeBlob_5* _p = (Tango::DevPipeBlob_5*)_v;
+  Tango::DevPipeData* _p = (Tango::DevPipeData*)_v;
   *_p >>= _s;
 }
-static void _0RL_Tango_mDevPipeBlob__5_unmarshal_fn(cdrStream& _s, void*& _v)
+static void _0RL_Tango_mDevPipeData_unmarshal_fn(cdrStream& _s, void*& _v)
 {
-  Tango::DevPipeBlob_5* _p = new Tango::DevPipeBlob_5;
+  Tango::DevPipeData* _p = new Tango::DevPipeData;
   *_p <<= _s;
   _v = _p;
 }
-static void _0RL_Tango_mDevPipeBlob__5_destructor_fn(void* _v)
+static void _0RL_Tango_mDevPipeData_destructor_fn(void* _v)
 {
-  Tango::DevPipeBlob_5* _p = (Tango::DevPipeBlob_5*)_v;
+  Tango::DevPipeData* _p = (Tango::DevPipeData*)_v;
   delete _p;
 }
 
-void operator<<=(::CORBA::Any& _a, const Tango::DevPipeBlob_5& _s)
+void operator<<=(::CORBA::Any& _a, const Tango::DevPipeData& _s)
 {
-  Tango::DevPipeBlob_5* _p = new Tango::DevPipeBlob_5(_s);
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeBlob__5,
-               _0RL_Tango_mDevPipeBlob__5_marshal_fn,
-               _0RL_Tango_mDevPipeBlob__5_destructor_fn,
+  Tango::DevPipeData* _p = new Tango::DevPipeData(_s);
+  _a.PR_insert(_0RL_tc_Tango_mDevPipeData,
+               _0RL_Tango_mDevPipeData_marshal_fn,
+               _0RL_Tango_mDevPipeData_destructor_fn,
                _p);
 }
-void operator<<=(::CORBA::Any& _a, Tango::DevPipeBlob_5* _sp)
+void operator<<=(::CORBA::Any& _a, Tango::DevPipeData* _sp)
 {
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeBlob__5,
-               _0RL_Tango_mDevPipeBlob__5_marshal_fn,
-               _0RL_Tango_mDevPipeBlob__5_destructor_fn,
+  _a.PR_insert(_0RL_tc_Tango_mDevPipeData,
+               _0RL_Tango_mDevPipeData_marshal_fn,
+               _0RL_Tango_mDevPipeData_destructor_fn,
                _sp);
 }
 
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeBlob_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeData*& _sp)
 {
-  return _a >>= (const Tango::DevPipeBlob_5*&) _sp;
+  return _a >>= (const Tango::DevPipeData*&) _sp;
 }
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeBlob_5*& _sp)
+::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeData*& _sp)
 {
   void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeBlob__5,
-                    _0RL_Tango_mDevPipeBlob__5_unmarshal_fn,
-                    _0RL_Tango_mDevPipeBlob__5_marshal_fn,
-                    _0RL_Tango_mDevPipeBlob__5_destructor_fn,
+  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeData,
+                    _0RL_Tango_mDevPipeData_unmarshal_fn,
+                    _0RL_Tango_mDevPipeData_marshal_fn,
+                    _0RL_Tango_mDevPipeData_destructor_fn,
                     _v)) {
-    _sp = (const Tango::DevPipeBlob_5*)_v;
-    return 1;
-  }
-  return 0;
-}
-
-static void _0RL_Tango_mDevPipeData__5_marshal_fn(cdrStream& _s, void* _v)
-{
-  Tango::DevPipeData_5* _p = (Tango::DevPipeData_5*)_v;
-  *_p >>= _s;
-}
-static void _0RL_Tango_mDevPipeData__5_unmarshal_fn(cdrStream& _s, void*& _v)
-{
-  Tango::DevPipeData_5* _p = new Tango::DevPipeData_5;
-  *_p <<= _s;
-  _v = _p;
-}
-static void _0RL_Tango_mDevPipeData__5_destructor_fn(void* _v)
-{
-  Tango::DevPipeData_5* _p = (Tango::DevPipeData_5*)_v;
-  delete _p;
-}
-
-void operator<<=(::CORBA::Any& _a, const Tango::DevPipeData_5& _s)
-{
-  Tango::DevPipeData_5* _p = new Tango::DevPipeData_5(_s);
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeData__5,
-               _0RL_Tango_mDevPipeData__5_marshal_fn,
-               _0RL_Tango_mDevPipeData__5_destructor_fn,
-               _p);
-}
-void operator<<=(::CORBA::Any& _a, Tango::DevPipeData_5* _sp)
-{
-  _a.PR_insert(_0RL_tc_Tango_mDevPipeData__5,
-               _0RL_Tango_mDevPipeData__5_marshal_fn,
-               _0RL_Tango_mDevPipeData__5_destructor_fn,
-               _sp);
-}
-
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, Tango::DevPipeData_5*& _sp)
-{
-  return _a >>= (const Tango::DevPipeData_5*&) _sp;
-}
-::CORBA::Boolean operator>>=(const ::CORBA::Any& _a, const Tango::DevPipeData_5*& _sp)
-{
-  void* _v;
-  if (_a.PR_extract(_0RL_tc_Tango_mDevPipeData__5,
-                    _0RL_Tango_mDevPipeData__5_unmarshal_fn,
-                    _0RL_Tango_mDevPipeData__5_marshal_fn,
-                    _0RL_Tango_mDevPipeData__5_destructor_fn,
-                    _v)) {
-    _sp = (const Tango::DevPipeData_5*)_v;
+    _sp = (const Tango::DevPipeData*)_v;
     return 1;
   }
   return 0;
