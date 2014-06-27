@@ -284,6 +284,7 @@ void Util::effective_job(int argc,char *argv[])
 				{"threadPerConnectionLowerLimit","50"},
 				{"supportCurrent","0"},
 				{"verifyObjectExistsAndType","0"},
+				{"maxGIOPConnectionPerServer",MAX_GIOP_PER_SERVER},
 				{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
 #ifndef _TG_WINDOWS_
 				{"endPoint","giop:unix:"},
@@ -304,6 +305,7 @@ void Util::effective_job(int argc,char *argv[])
 				{"threadPerConnectionLowerLimit","50"},
 				{"supportCurrent","0"},
 				{"verifyObjectExistsAndType","0"},
+				{"maxGIOPConnectionPerServer",MAX_GIOP_PER_SERVER},
 				{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
 #ifndef _TG_WINDOWS_
 				{"endPoint","giop:tcp::"},

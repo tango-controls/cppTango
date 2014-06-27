@@ -194,6 +194,12 @@ const int DEFAULT_POLLING_THREADS_POOL_SIZE = 1;
 const char* const MAX_TRANSFER_SIZE        = "268435456";
 
 //
+// Max GIOP connection per server . Needed by omniORB
+//
+
+const char* const MAX_GIOP_PER_SERVER      = "128";
+
+//
 // Tango name length
 //
 
@@ -364,6 +370,7 @@ const char* const API_DeviceUnlockable             = "API_DeviceUnlockable";
 const char* const API_DeviceUnlocked               = "API_DeviceUnlocked";
 const char* const API_DServerClassNotInitialised   = "API_DServerClassNotInitialised";
 const char* const API_DSFailedRegisteringEvent	   = "API_DSFailedRegisteringEvent";
+const char* const API_EmptyDataElement			   = "API_EmptyDataElement";
 const char* const API_EmptyDeviceAttribute		   = "API_EmptyDeviceAttribute";
 const char* const API_EventConsumer				   = "API_EventConsumer";
 const char* const API_EventPropertiesNotSet        = "API_EventPropertiesNotSet";
@@ -908,6 +915,7 @@ enum CmdArgType {
 	DEV_INT,
 	DEV_ENCODED,
 	DEV_ENUM,
+	DEV_PIPE_BLOB,
 	DATA_TYPE_UNKNOWN = 100
 };
 
@@ -1028,6 +1036,7 @@ const char * const CmdArgTypeName[] = {
 	"DevInt",
 	"DevEncoded",
 	"DevEnum",
+	"DevPipeBlob",
 	"Unknown"
 };
 

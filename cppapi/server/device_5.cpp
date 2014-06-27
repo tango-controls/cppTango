@@ -968,7 +968,6 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		Pipe &pi = device_class->get_pipe_by_name(pipe_name);
 
 		pi.set_value_flag(false);
-		pi.clear_count();
 
 //
 // Allocate memory for the returned value
@@ -1010,6 +1009,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 		pi.set_time();
 		pi.set_returned_data_ptr(back);
+		pi.get_blob().reset_insert_ctr();
 		pi.read(this);
 
 //
@@ -1030,14 +1030,10 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 		back->time = pi.get_when();
 		back->name = CORBA::string_dup(pipe_name.c_str());
+		back->data_blob.name = CORBA::string_dup(pi.get_blob().get_name().c_str());
 
-/*		vector<string> &names = pi.get_data_elt_name();
-		back->data_blob.length(names.size());
-		for (size_t ctr = 0;ctr < names.size();ctr++)
-		{
-			back->data_blob[ctr].name = Tango::string_dup(names[ctr].c_str());
-			back->data_blob[ctr].value.union_no_data();
-		}*/
+		DevVarPipeDataEltArray *dvpdea = pi.get_blob().get_insert_data();
+		back->data_blob.blob_data.replace(dvpdea->length(),dvpdea->length(),dvpdea->get_buffer(),true);
 	}
 	catch (...)
 	{
@@ -1167,9 +1163,9 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 		string bl_name;
 		if (::strlen(pi_value.data_blob.name.in()) != 0)
 			bl_name = pi_value.data_blob.name.in();
-		pi.the_blob.set_name(bl_name);
-		pi.the_blob.set_extract_data(&(pi_value.data_blob.blob_data));
-		pi.the_blob.reset_extract_ctr();
+		pi.get_blob().set_name(bl_name);
+		pi.get_blob().set_extract_data(&(pi_value.data_blob.blob_data));
+		pi.get_blob().reset_extract_ctr();
 
 //
 // Call the user write method
@@ -1200,6 +1196,33 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 //
 
 	cout4 << "Leaving Device_5Impl::write_pipe_5" << endl;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_5Impl::write_read_pipe_5
+//
+// description :
+//		CORBA operation to write then read a pipe.
+//
+// argument:
+//		in :
+//			- pi_value: new pipe value
+//			- cl_id : client identifier
+//
+// return :
+//		Pointer to a DevPipeData with pipe data (blob)
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi_value, const Tango::ClntIdent& cl_id)
+{
+	string pipe_name(pi_value.name.in());
+	cout4 << "Device_5Impl::write_read_pipe_5 arrived for pipe " << pipe_name << endl;
+	DevPipeData *back = Tango_nullptr;
+
+	return back;
 }
 
 } // End of Tango namespace

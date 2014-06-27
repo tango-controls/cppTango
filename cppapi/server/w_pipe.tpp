@@ -42,16 +42,26 @@ namespace Tango
 // 		operator overloading : 	<<
 //
 // description :
-//		Helper function to ease data insertion into DevicePipe root blob
+//		Helper function to ease data insertion into Pipe root blob
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-/*template <typename T>
-DevicePipe &operator<<(DevicePipe &_dp,T &datum)
+template <typename T>
+Pipe &operator<<(Pipe &_dp,T &datum)
 {
-	_dp.the_root_blob.operator<<(datum);
+	_dp.get_blob().operator<<(datum);
+	_dp.set_value_flag(true);
 	return _dp;
-}*/
+}
+
+template <typename T>
+Pipe &operator<<(Pipe &_dp,DataElement<T> &datum)
+{
+	_dp.get_blob().set_current_delt_name(datum.name);
+	_dp.get_blob().operator<<(datum.value);
+	_dp.set_value_flag(true);
+	return _dp;
+}
 
 //+------------------------------------------------------------------------------------------------------------------
 //
@@ -59,22 +69,22 @@ DevicePipe &operator<<(DevicePipe &_dp,T &datum)
 // 		operator overloading : 	>>
 //
 // description :
-//		Helper function to ease data extraction from DevicePipe root blob
+//		Helper function to ease data extraction from WPipe root blob
 //
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
 WPipe &operator>>(WPipe &_dp,T &datum)
 {
-	_dp.the_blob.operator>>(datum);
+	_dp.get_blob().operator>>(datum);
 	return _dp;
 }
 
 template <typename T>
 WPipe &operator>>(WPipe &_dp,DataElement<T> &datum)
 {
-	datum.name = _dp.the_blob.get_current_delt_name();
-	_dp.the_blob.operator>>(datum.value);
+	datum.name = _dp.get_blob().get_current_delt_name();
+	_dp.get_blob().operator>>(datum.value);
 	return _dp;
 }
 

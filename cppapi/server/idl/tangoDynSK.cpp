@@ -1500,13 +1500,14 @@ const ::CORBA::TypeCode_ptr Tango::_tc_DevVarPipeDataEltArray = _0RL_tc_Tango_mD
 static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeDataElt[] = {
   {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"value", _0RL_tc_Tango_mAttrValUnion},
-  {"inner_blob", _0RL_tc_Tango_mDevVarPipeDataEltArray}
+  {"inner_blob", _0RL_tc_Tango_mDevVarPipeDataEltArray},
+  {"inner_blob_name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)}
 };
 
 #ifdef _0RL_tc_Tango_mDevPipeDataElt
 #  undef _0RL_tc_Tango_mDevPipeDataElt
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeDataElt = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeDataElt:1.0", "DevPipeDataElt", _0RL_structmember_Tango_mDevPipeDataElt, 3, &_0RL_tcTrack);
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeDataElt = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeDataElt:1.0", "DevPipeDataElt", _0RL_structmember_Tango_mDevPipeDataElt, 4, &_0RL_tcTrack);
 
 #if defined(HAS_Cplusplus_Namespace) && defined(_MSC_VER)
 // MSVC++ does not give the constant external linkage otherwise.
@@ -1540,19 +1541,16 @@ const ::CORBA::TypeCode_ptr Tango::_tc_DevPipeBlob = _0RL_tc_Tango_mDevPipeBlob;
 
 
 
-
 static CORBA::PR_structMember _0RL_structmember_Tango_mDevPipeData[] = {
   {"name", CORBA::TypeCode::PR_string_tc(0, &_0RL_tcTrack)},
   {"time", _0RL_tc_Tango_mTimeVal},
-  {"data_blob", _0RL_tc_Tango_mDevPipeBlob},
-  {"err_list", _0RL_tc_Tango_mDevErrorList}
+  {"data_blob", _0RL_tc_Tango_mDevPipeBlob}
 };
 
 #ifdef _0RL_tc_Tango_mDevPipeData
 #  undef _0RL_tc_Tango_mDevPipeData
 #endif
-static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeData = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeData:1.0", "DevPipeData", _0RL_structmember_Tango_mDevPipeData, 4, &_0RL_tcTrack);
-
+static CORBA::TypeCode_ptr _0RL_tc_Tango_mDevPipeData = CORBA::TypeCode::PR_struct_tc("IDL:Tango/DevPipeData:1.0", "DevPipeData", _0RL_structmember_Tango_mDevPipeData, 3, &_0RL_tcTrack);
 
 
 

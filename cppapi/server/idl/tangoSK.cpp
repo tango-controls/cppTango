@@ -1077,6 +1077,7 @@ Tango::DevPipeDataElt::operator>>= (cdrStream &_n) const
   _n.marshalString(name,0);
   (const AttrValUnion&) value >>= _n;
   (const DevVarPipeDataEltArray&) inner_blob >>= _n;
+  _n.marshalString(inner_blob_name,0);
 
 }
 
@@ -1086,6 +1087,7 @@ Tango::DevPipeDataElt::operator<<= (cdrStream &_n)
   name = _n.unmarshalString(0);
   (AttrValUnion&)value <<= _n;
   (DevVarPipeDataEltArray&)inner_blob <<= _n;
+  inner_blob_name = _n.unmarshalString(0);
 
 }
 
@@ -1111,7 +1113,6 @@ Tango::DevPipeData::operator>>= (cdrStream &_n) const
   _n.marshalString(name,0);
   (const TimeVal&) time >>= _n;
   (const DevPipeBlob&) data_blob >>= _n;
-  (const DevErrorList&) err_list >>= _n;
 
 }
 
@@ -1121,7 +1122,6 @@ Tango::DevPipeData::operator<<= (cdrStream &_n)
   name = _n.unmarshalString(0);
   (TimeVal&)time <<= _n;
   (DevPipeBlob&)data_blob <<= _n;
-  (DevErrorList&)err_list <<= _n;
 
 }
 
@@ -6876,6 +6876,123 @@ void Tango::_objref_Device_5::write_pipe_5(const ::Tango::DevPipeData& value, co
 
 
 }
+// Proxy call descriptor class. Mangled signature:
+//  _cTango_mDevPipeData_i_cTango_mDevPipeData_i_cTango_mClntIdent_e_cTango_mDevFailed
+class _0RL_cd_6fe2f94a21a10053_35000000
+  : public omniCallDescriptor
+{
+public:
+  inline _0RL_cd_6fe2f94a21a10053_35000000(LocalCallFn lcfn,const char* op_,size_t oplen,_CORBA_Boolean upcall=0):
+     omniCallDescriptor(lcfn, op_, oplen, 0, _user_exns, 1, upcall)
+  {
+    
+  }
+  
+  void marshalArguments(cdrStream&);
+  void unmarshalArguments(cdrStream&);
+
+  void unmarshalReturnedValues(cdrStream&);
+  void marshalReturnedValues(cdrStream&);
+  
+  void userException(cdrStream&,_OMNI_NS(IOP_C)*,const char*);
+  static const char* const _user_exns[];
+
+  Tango::DevPipeData_var arg_0_;
+  const Tango::DevPipeData* arg_0;
+  Tango::ClntIdent_var arg_1_;
+  const Tango::ClntIdent* arg_1;
+  Tango::DevPipeData_var result;
+};
+
+void _0RL_cd_6fe2f94a21a10053_35000000::marshalArguments(cdrStream& _n)
+{
+  (const Tango::DevPipeData&) *arg_0 >>= _n;
+  (const Tango::ClntIdent&) *arg_1 >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_35000000::unmarshalArguments(cdrStream& _n)
+{
+  arg_0_ = new Tango::DevPipeData;
+  (Tango::DevPipeData&)arg_0_ <<= _n;
+  arg_0 = &arg_0_.in();
+  arg_1_ = new Tango::ClntIdent;
+  (Tango::ClntIdent&)arg_1_ <<= _n;
+  arg_1 = &arg_1_.in();
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_35000000::marshalReturnedValues(cdrStream& _n)
+{
+  (const Tango::DevPipeData&) result >>= _n;
+
+}
+
+void _0RL_cd_6fe2f94a21a10053_35000000::unmarshalReturnedValues(cdrStream& _n)
+{
+  result = new Tango::DevPipeData;
+  (Tango::DevPipeData&)result <<= _n;
+
+}
+
+const char* const _0RL_cd_6fe2f94a21a10053_35000000::_user_exns[] = {
+  Tango::DevFailed::_PD_repoId
+};
+
+void _0RL_cd_6fe2f94a21a10053_35000000::userException(cdrStream& s, _OMNI_NS(IOP_C)* iop_client, const char* repoId)
+{
+  if ( omni::strMatch(repoId, Tango::DevFailed::_PD_repoId) ) {
+    Tango::DevFailed _ex;
+    _ex <<= s;
+    if (iop_client) iop_client->RequestCompleted();
+    throw _ex;
+  }
+
+
+  else {
+    if (iop_client) iop_client->RequestCompleted(1);
+    OMNIORB_THROW(UNKNOWN,UNKNOWN_UserException,
+                  (::CORBA::CompletionStatus)s.completion());
+  }
+}
+
+// Local call call-back function.
+static void
+_0RL_lcfn_6fe2f94a21a10053_45000000(omniCallDescriptor* cd, omniServant* svnt)
+{
+  _0RL_cd_6fe2f94a21a10053_35000000* tcd = (_0RL_cd_6fe2f94a21a10053_35000000*)cd;
+  Tango::_impl_Device_5* impl = (Tango::_impl_Device_5*) svnt->_ptrToInterface(Tango::Device_5::_PD_repoId);
+#ifdef HAS_Cplusplus_catch_exception_by_base
+  tcd->result = impl->write_read_pipe_5(*tcd->arg_0, *tcd->arg_1);
+#else
+  if (!cd->is_upcall())
+    tcd->result = impl->write_read_pipe_5(*tcd->arg_0, *tcd->arg_1);
+  else {
+    try {
+      tcd->result = impl->write_read_pipe_5(*tcd->arg_0, *tcd->arg_1);
+    }
+    catch(Tango::DevFailed& ex) {
+      throw omniORB::StubUserException(ex._NP_duplicate());
+    }
+
+
+  }
+#endif
+
+
+}
+
+Tango::DevPipeData* Tango::_objref_Device_5::write_read_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident)
+{
+  _0RL_cd_6fe2f94a21a10053_35000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_45000000, "write_read_pipe_5", 18);
+  _call_desc.arg_0 = &(::Tango::DevPipeData&) value;
+  _call_desc.arg_1 = &(::Tango::ClntIdent&) cl_ident;
+
+  _invoke(_call_desc);
+  return _call_desc.result._retn();
+
+
+}
 Tango::_pof_Device_5::~_pof_Device_5() {}
 
 
@@ -6976,6 +7093,14 @@ Tango::_impl_Device_5::_dispatch(omniCallHandle& _handle)
   if( omni::strMatch(op, "write_pipe_5") ) {
 
     _0RL_cd_6fe2f94a21a10053_15000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_25000000, "write_pipe_5", 13, 1);
+    
+    _handle.upcall(this,_call_desc);
+    return 1;
+  }
+
+  if( omni::strMatch(op, "write_read_pipe_5") ) {
+
+    _0RL_cd_6fe2f94a21a10053_35000000 _call_desc(_0RL_lcfn_6fe2f94a21a10053_45000000, "write_read_pipe_5", 18, 1);
     
     _handle.upcall(this,_call_desc);
     return 1;

@@ -322,6 +322,7 @@ void ApiUtil::create_orb()
 	const char *options[][2] = {
 			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
 			{"verifyObjectExistsAndType","0"},
+			{"maxGIOPConnectionPerServer",MAX_GIOP_PER_SERVER},
 			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
 			{0,0}};
 

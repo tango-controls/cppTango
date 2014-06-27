@@ -40,50 +40,5 @@
 namespace Tango
 {
 
-#ifdef HAS_VARIADIC_TEMPLATE
-template <typename T,typename ... Args>
-void Pipe::set_value(vector<string> &blob_elt_names,T *val,Args ...args)
-{
-	cout << "In set_value variadic template method: " << sizeof...(args) << " data in pack, rec_count = " << rec_count << endl;
-
-//
-// If it is the first call for the set_value() method (variadic template) check that the nb of args is coherent with
-// the data_elt names
-// Also copy the data elements name
-//
-
-	if (rec_count == 0)
-	{
-		unsigned int nb_vargs = sizeof...(args);
-		if (nb_vargs + 1 != blob_elt_names.size())
-		{
-			stringstream ss;
-			ss << "Data blob for pipe " << name << " is supposed to have " << blob_elt_names.size() << " data elements but only ";
-			ss << nb_vargs + 1 << " argument(s) given to set_value() method";
-
-			Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_value()");
-		}
-
-		if (nb_vargs >= MAX_DATA_ELT_IN_PIPE_BLOB - 1)
-		{
-			stringstream ss;
-			ss << "Too many data elements in data blob for pipe " << name;
-			ss << ". Max data elements is " << MAX_DATA_ELT_IN_PIPE_BLOB;
-
-			Tango::Except::throw_exception(API_PipeWrongArgNumber,ss.str(),"Pipe::set_value()");
-		}
-
-		pe_out_names = blob_elt_names;
-		ret_data->data_blob.blob_data.length(pe_out_names.size());
-	}
-
-	set_value_flag(true);
-	set_value(val,v_dep[rec_count].size,v_dep[rec_count].rel);
-	rec_count++;
-	set_value(blob_elt_names,args...);
-}
-#endif // HAS_VARIADIC_TEMPLATE
-
-
 
 } // End of Tango namespace

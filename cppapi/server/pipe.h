@@ -220,22 +220,10 @@ public:
 	Tango::TimeVal &get_when() {return when;}
 	void set_returned_data_ptr(DevPipeData *_p) {ret_data=_p;}
 
-#ifdef HAS_VARIADIC_TEMPLATE
-	template <typename T,typename ... Args>
-    void set_value(vector<string> &,T *val,Args ... args);
-#endif // HAS_VARIADIC_TEMPLATE
-
-	void set_value(DevLong *val,size_t,bool);
-	void set_value(DevDouble *val,size_t,bool);
-	void set_value(DevShort *val,size_t,bool);
-	void set_value(DevString *val,size_t,bool);
-
-	void set_value(vector<string> &);
-	void clear_count() {rec_count = 0;}
-	vector<string> &get_data_elt_name() {return pe_out_names;}
-
-	void set_pipe_blob_elt_size(int,size_t);
-	void set_pipe_blob_elt_release(int,bool);
+	DevicePipeBlob &get_blob() {return the_blob;}
+	void set_data_elt_nb(size_t _nb) {the_blob.set_data_elt_nb(_nb);}
+	void set_data_elt_names(vector<string> &_v_names) {the_blob.set_data_elt_names(_v_names);}
+	void set_root_blob_name(const string &root_blob_name) {the_blob.set_name(root_blob_name);}
 
 protected:
 /**@name Class data members */
@@ -266,20 +254,14 @@ protected:
     Tango::PipeWriteType	writable;
 //@}
 
+	DevicePipeBlob			the_blob;
+
 private:
     class PipeExt
     {
     public:
         PipeExt() {}
     };
-
-	struct DataEltParam
-	{
-		bool		rel;
-		size_t		size;
-
-		DataEltParam():rel(false),size(1) {}
-	};
 
 #ifdef HAS_UNIQUE_PTR
     unique_ptr<PipeExt>          ext;           // Class extension
@@ -293,25 +275,16 @@ private:
 
 	vector<string> 				pe_out_names;	// Data elements name
 	int 						rec_count;		// Data elements ctr
-	vector<DataEltParam>		v_dep;			// Data elements param (size, release)
-
-public:
-	struct OldDataEltParam
-	{
-		string		name;
-		long		type;
-		bool		rel;
-		size_t		size;
-
-		OldDataEltParam(const string &_na,long _ty):name(_na),type(_ty),rel(false),size(1) {}
-		OldDataEltParam(const string &_na,long _ty,size_t _si,bool _r):name(_na),type(_ty),rel(_r),size(_si) {}
-	};
 
 // TODO: Pipe-> Stay public ???
 	string						blob_name;
-
-	void set_value(vector<OldDataEltParam> &,...);
 };
+
+template <typename T>
+Pipe &operator<<(Pipe &,T &);
+
+template <typename T>
+Pipe &operator<<(Pipe &, DataElement<T> &);
 
 
 //

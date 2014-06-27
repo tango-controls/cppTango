@@ -281,7 +281,7 @@ TEMPL_EXPL_METH_INST_CONST(WAttribute,set_max_value)
 
 //+----------------------------------------------------------------------------
 //
-// Instanciate DevicePipeBlob helper functions
+// Instanciate DevicePipe and DevicePipeBlob helper functions
 //
 //-----------------------------------------------------------------------------
 
@@ -290,6 +290,13 @@ template DevicePipe &operator<<(DevicePipe &,double &);
 template DevicePipe &operator<<(DevicePipe &,DevLong &);
 template DevicePipe &operator<<(DevicePipe &,DevicePipeBlob &);
 
+template DevicePipe &operator<<(DevicePipe &,WDataElement<short> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<double> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevLong> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevicePipeBlob> &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<short> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<double> &);
 
 template DevicePipe &operator>>(DevicePipe &,short &);
 template DevicePipe &operator>>(DevicePipe &,vector<short> &);
@@ -302,6 +309,10 @@ template DevicePipe &operator>>(DevicePipe &,DataElement<vector<short> > &);
 template DevicePipe &operator>>(DevicePipe &,DataElement<double> &);
 template DevicePipe &operator>>(DevicePipe &,DataElement<DevLong> &);
 template DevicePipe &operator>>(DevicePipe &,DataElement<DevicePipeBlob> &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<short> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<short> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<double> &);
 
 //+----------------------------------------------------------------------------
 //
@@ -322,6 +333,16 @@ template WPipe &operator>>(WPipe &,DataElement<double> &);
 template WPipe &operator>>(WPipe &,DataElement<DevLong> &);
 template WPipe &operator>>(WPipe &,DataElement<DevicePipeBlob> &);
 
+//+----------------------------------------------------------------------------
+//
+// Instanciate Pipe helper functions
+//
+//-----------------------------------------------------------------------------
+
+
+template Pipe &operator<<(Pipe &,short &);
+template Pipe &operator<<(Pipe &,double &);
+template Pipe &operator<<(Pipe &,DevLong &);
 
 //+----------------------------------------------------------------------------
 //

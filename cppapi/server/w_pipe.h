@@ -93,19 +93,53 @@ public:
  * Methods to get the value of the data blob transported by the pipe
  */
 //@{
-
+/**
+ * Get root blob name
+ *
+ * Get the root blob name
+ *
+ * @return The root blob name
+ */
+	string get_blob_name() {return the_blob.get_name();}
+/**
+ * Get root blob data element number
+ *
+ * Get the root blob data element number
+ *
+ * @return The root blob data element number
+ */
+	size_t get_data_elt_nb() {return the_blob.get_data_elt_nb();}
+/**
+ * Get root blob data elements name
+ *
+ * Get the root blob data elements name
+ *
+ * @return The root blob data elements name
+ */
+	vector<string> get_data_elt_name() {return the_blob.get_data_elt_name();}
+/**
+ * Get root blob data element name
+ *
+ * Get the root blob data element name for a single data element
+ *
+ * @param [in] ind The data element index within the root blob
+ * @return The root blob data element name
+ */
+	string get_data_elt_name(size_t ind) {return the_blob.get_data_elt_name(ind);}
+/**
+ * Get root blob data element value type
+ *
+ * Get the root blob data element value type for a single data element
+ *
+ * @param [in] ind The data element index within the root blob
+ * @return The blob data element value type
+ */
+	int get_data_elt_type(size_t ind) {return the_blob.get_data_elt_type(ind);}
 //@}
 
 /// @privatesection
 	virtual void write(DeviceImpl *) {}
 
-	DevicePipeBlob					the_blob;
-
-	size_t get_data_elt_nb() {return the_blob.get_data_elt_nb();}
-	string get_data_elt_name(size_t _ind) {return the_blob.get_data_elt_name(_ind);}
-	string get_blob_name() {return the_blob.get_name();}
-
-//	long get_data_elt_type(size_t);
 
 	WPipe &operator[](const string &);
 

@@ -42,14 +42,30 @@ namespace Tango
 // 		operator overloading : 	<<
 //
 // description :
-//		Helper function to ease data insertion into DevicePipe root blob
+//		Helper function to ease data insertion into DevicePipe/DevicePipeBlob instance
 //
 //-------------------------------------------------------------------------------------------------------------------
 
 template <typename T>
 DevicePipe &operator<<(DevicePipe &_dp,T &datum)
 {
-	_dp.the_root_blob.operator<<(datum);
+	_dp.get_root_blob().operator<<(datum);
+	return _dp;
+}
+
+template <typename T>
+DevicePipe &operator<<(DevicePipe &_dp,WDataElement<T> &datum)
+{
+	_dp.get_root_blob().set_current_delt_name(datum.name);
+	_dp.get_root_blob().operator<<(datum.value);
+	return _dp;
+}
+
+template <typename T>
+DevicePipeBlob &operator<<(DevicePipeBlob &_dp,WDataElement<T> &datum)
+{
+	_dp.set_current_delt_name(datum.name);
+	_dp.operator<<(datum.value);
 	return _dp;
 }
 
@@ -66,15 +82,23 @@ DevicePipe &operator<<(DevicePipe &_dp,T &datum)
 template <typename T>
 DevicePipe &operator>>(DevicePipe &_dp,T &datum)
 {
-	_dp.the_root_blob.operator>>(datum);
+	_dp.get_root_blob().operator>>(datum);
 	return _dp;
 }
 
 template <typename T>
 DevicePipe &operator>>(DevicePipe &_dp,DataElement<T> &datum)
 {
-	datum.name = _dp.the_root_blob.get_current_delt_name();
-	_dp.the_root_blob.operator>>(datum.value);
+	datum.name = _dp.get_root_blob().get_current_delt_name();
+	_dp.get_root_blob().operator>>(datum.value);
+	return _dp;
+}
+
+template <typename T>
+DevicePipeBlob &operator>>(DevicePipeBlob &_dp,DataElement<T> &datum)
+{
+	datum.name = _dp.get_current_delt_name();
+	_dp.operator>>(datum.value);
 	return _dp;
 }
 
@@ -126,7 +150,8 @@ template <>
 ostream &operator<<(ostream &str,DataElement<DevicePipeBlob> &dd)
 {
 	str << "Name = " << dd.name << "- Value = ";
-	dd.value.print(str,0);
+	dd.value.print(str,0,true);
+	dd.value.print(str,0,false);
 	return str;
 }
 

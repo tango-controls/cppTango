@@ -4785,9 +4785,10 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer(true);
 	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(seq_max,seq_max,buf,true);
 
-	dev_pipe.the_root_blob.reset_extract_ctr();
-	dev_pipe.the_root_blob.set_extract_data(dvpdea);
-	dev_pipe.the_root_blob.set_extract_delete(true);
+	dev_pipe.get_root_blob().reset_extract_ctr();
+	dev_pipe.get_root_blob().set_name(pipe_value_5->data_blob.name.in());
+	dev_pipe.get_root_blob().set_extract_data(dvpdea);
+	dev_pipe.get_root_blob().set_extract_delete(true);
 
 	return dev_pipe;
 }
@@ -4817,11 +4818,11 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 	}
 
 	pipe_value_5.name = dev_pipe.get_name().c_str();
-	const string &bl_name = dev_pipe.the_root_blob.get_name();
+	const string &bl_name = dev_pipe.get_root_blob().get_name();
 	if (bl_name.size() != 0)
 		pipe_value_5.data_blob.name = bl_name.c_str();
 
-	DevVarPipeDataEltArray *tmp_ptr = dev_pipe.the_root_blob.get_insert_data();
+	DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
 	pipe_value_5.data_blob.blob_data.replace(tmp_ptr->length(),tmp_ptr->length(),tmp_ptr->get_buffer(),true);
 
 	while (ctr < 2)

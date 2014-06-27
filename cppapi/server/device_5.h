@@ -325,6 +325,24 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual void write_pipe_5(const Tango::DevPipeData &pipe_value,const Tango::ClntIdent& cl_ident);
+
+/**
+ * Write then read pipe value.
+ *
+ * Invoked when the client request the write_read_pipe_5 CORBA operation.
+ * It allows a client to send data to a device through a pipe then to read data from the device through
+ * the same pipe.
+ *
+ * @param pipe_value The new pipe value
+ * @param cl_ident The client identificator. This parameter is new in release 4.
+ * It allows device locking feature implemented in Tango V7
+ * @return A DevPipeData structure. Click <a href="../../../tango_idl/idl_html/_Tango.html#DevPipeData">here</a>
+ * to read <b>DevPipeData</b> structure definition.
+ * @exception DevFailed Thrown if the attribute does not exist.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	virtual Tango::DevPipeData *write_read_pipe_5(const Tango::DevPipeData &pipe_value,const Tango::ClntIdent& cl_ident);
 //@}
 
 /// @privatesection

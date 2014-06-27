@@ -60,32 +60,32 @@ WPipe::WPipe(const string &_name,const string &_desc,const string &_label,Tango:
 
 WPipe &WPipe::operator[](const string &_na)
 {
-	the_blob.operator[](_na);
+	get_blob().operator[](_na);
 	return *this;
 }
 
 
 WPipe &operator>>(WPipe &_pi,double &datum)
 {
-	_pi.the_blob.operator>>(datum);
+	_pi.get_blob().operator>>(datum);
 	return _pi;
 }
 
 WPipe &operator>>(WPipe &_pi,short &datum)
 {
-	_pi.the_blob.operator>>(datum);
+	_pi.get_blob().operator>>(datum);
 	return _pi;
 }
 
 WPipe &operator>>(WPipe &_pi,DevLong &datum)
 {
-	_pi.the_blob.operator>>(datum);
+	_pi.get_blob().operator>>(datum);
 	return _pi;
 }
 
 WPipe &operator>>(WPipe &_pi,DevicePipeBlob &datum)
 {
-	_pi.the_blob.operator>>(datum);
+	_pi.get_blob().operator>>(datum);
 	return _pi;
 }
 

@@ -64,36 +64,6 @@ DevicePipe::DevicePipe(const string &pipe_name,const string &root_blob_name):nam
 	the_root_blob.set_name(root_blob_name);
 }
 
-//-----------------------------------------------------------------------------------------------------------------
-//
-// method
-//		DeviceData::DeviceData()
-//
-// description:
-//		Copy ctor for DevicePipe class
-//
-//-----------------------------------------------------------------------------------------------------------------
-
-DevicePipe::DevicePipe(const DevicePipe &source):ext(Tango_nullptr)
-{
-
-#ifdef HAS_UNIQUE_PTR
-    if (source.ext.get() != NULL)
-    {
-        ext.reset(new DevicePipeExt);
-        *(ext.get()) = *(source.ext.get());
-    }
-#else
-	if (source.ext != NULL)
-	{
-		ext = new DevicePipeExt();
-		*ext = *(source.ext);
-	}
-	else
-		ext = NULL;
-#endif
-}
-
 //----------------------------------------------------------------------------------------------------------------
 //
 // DevicePipe::~DevicePipe() - destructor to destroy DevicePipe
@@ -118,6 +88,32 @@ DevicePipe &DevicePipe::operator[](const string &_na)
 //						DevicePipeBlob class
 //
 //*************************************************************************************************************
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// method:
+// 		DevicePipeBlob::DevicePipeBlob()
+//
+// description:
+//		Constructor for DevicePipeBlob class
+//
+//------------------------------------------------------------------------------------------------------------------
+
+DevicePipeBlob::DevicePipeBlob():failed(false),insert_elt_array(Tango_nullptr),insert_ctr(0),
+extract_elt_array(Tango_nullptr),extract_ctr(0),extract_delete(false),ext(Tango_nullptr)
+{
+	exceptions_flags.set();
+	ext_state.reset();
+}
+
+
+DevicePipeBlob::DevicePipeBlob(const string &blob_name):name(blob_name),failed(false),
+insert_elt_array(Tango_nullptr),insert_ctr(0),extract_elt_array(Tango_nullptr),extract_ctr(0),
+extract_delete(false),ext(Tango_nullptr)
+{
+	exceptions_flags.set();
+	ext_state.reset();
+}
 
 //----------------------------------------------------------------------------------------------------------------
 //
@@ -226,12 +222,22 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 
 	if ((*extract_elt_array)[_ind].inner_blob.length() != 0)
 	{
-		ret = 1000;
+		ret = DEV_PIPE_BLOB;
 	}
 	else
 	{
 		switch((*extract_elt_array)[_ind].value._d())
 		{
+			case ATT_BOOL:
+			{
+				const DevVarBooleanArray &dvba = (*extract_elt_array)[_ind].value.bool_att_value();
+				if (dvba.length() > 1)
+					ret = DEVVAR_BOOLEANARRAY;
+				else
+					ret = DEV_BOOLEAN;
+			}
+			break;
+
 			case ATT_SHORT:
 			{
 				const DevVarShortArray &dvsa = (*extract_elt_array)[_ind].value.short_att_value();
@@ -252,6 +258,26 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 			}
 			break;
 
+			case ATT_LONG64:
+			{
+				const DevVarLong64Array &dvla = (*extract_elt_array)[_ind].value.long64_att_value();
+				if (dvla.length() > 1)
+					ret = DEVVAR_LONG64ARRAY;
+				else
+					ret = DEV_LONG64;
+			}
+			break;
+
+			case ATT_FLOAT:
+			{
+				const DevVarFloatArray &dvfa = (*extract_elt_array)[_ind].value.float_att_value();
+				if (dvfa.length() > 1)
+					ret = DEVVAR_FLOATARRAY;
+				else
+					ret = DEV_FLOAT;
+			}
+			break;
+
 			case ATT_DOUBLE:
 			{
 				const DevVarDoubleArray &dvda = (*extract_elt_array)[_ind].value.double_att_value();
@@ -260,6 +286,74 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 				else
 					ret = DEV_DOUBLE;
 			}
+			break;
+
+			case ATT_UCHAR:
+			{
+				const DevVarUCharArray &dvuch = (*extract_elt_array)[_ind].value.uchar_att_value();
+				if (dvuch.length() > 1)
+					ret = DEVVAR_CHARARRAY;
+				else
+					ret = DEV_UCHAR;
+			}
+			break;
+
+			case ATT_USHORT:
+			{
+				const DevVarUShortArray &dvuch = (*extract_elt_array)[_ind].value.ushort_att_value();
+				if (dvuch.length() > 1)
+					ret = DEVVAR_USHORTARRAY;
+				else
+					ret = DEV_USHORT;
+			}
+			break;
+
+			case ATT_ULONG:
+			{
+				const DevVarULongArray &dvulo = (*extract_elt_array)[_ind].value.ulong_att_value();
+				if (dvulo.length() > 1)
+					ret = DEVVAR_ULONGARRAY;
+				else
+					ret = DEV_ULONG;
+			}
+			break;
+
+			case ATT_ULONG64:
+			{
+				const DevVarULong64Array &dvulo64 = (*extract_elt_array)[_ind].value.ulong64_att_value();
+				if (dvulo64.length() > 1)
+					ret = DEVVAR_ULONG64ARRAY;
+				else
+					ret = DEV_ULONG;
+			}
+			break;
+
+			case ATT_STRING:
+			{
+				const DevVarStringArray &dvsa = (*extract_elt_array)[_ind].value.string_att_value();
+				if (dvsa.length() > 1)
+					ret = DEVVAR_STRINGARRAY;
+				else
+					ret = DEV_STRING;
+			}
+			break;
+
+			case ATT_STATE:
+			{
+				ret = DEV_STATE;
+			}
+			break;
+
+			case ATT_ENCODED:
+			{
+				ret = DEV_ENCODED;
+			}
+			break;
+
+			default:
+			Except::throw_exception(API_PipeWrongArg,
+									"Unsupported data type in data element! (ATT_NO_DATA, DEVICE_STATE)",
+									"DevicePipeBlob::get_data_elt_type()");
 			break;
 		}
 	}
@@ -343,11 +437,23 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 	return *this;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 {
-	if (insert_elt_array != Tango_nullptr)
-		delete insert_elt_array;
-
 	insert_elt_array = new DevVarPipeDataEltArray();
 	insert_elt_array->length(elt_names.size());
 
@@ -358,207 +464,125 @@ void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 	}
 }
 
-void DevicePipeBlob::set_data_elt_name(size_t _ind)
+void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 {
+	insert_elt_array = new DevVarPipeDataEltArray();
+	insert_elt_array->length(_nb);
+
+	for (size_t loop = 0;loop < _nb;loop++)
+	{
+		(*insert_elt_array)[loop].value.union_no_data(true);
+	}
 }
 
 //******************************************************************************************************************
 
-void DevicePipeBlob::operator<<(short &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(short &datum)
 {
-	if (insert_ctr > insert_elt_array->length() - 1)
-		throw_too_many("operator<<");
+	INSERT_BASIC_TYPE(DevVarShortArray,short_att_value)
 
-	DevVarShortArray dvsa;
-	dvsa.length(1);
-	dvsa[0] = datum;
-
-	(*insert_elt_array)[insert_ctr].value.short_att_value(dvsa);
-	insert_ctr++;
+	return *this;
 }
 
-void DevicePipeBlob::operator<<(DevLong &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(DevLong &datum)
 {
-	if (insert_ctr > insert_elt_array->length() - 1)
-		throw_too_many("operator<<");
+	INSERT_BASIC_TYPE(DevVarLongArray,long_att_value)
 
-	DevVarLongArray dvla;
-	dvla.length(1);
-	dvla[0] = datum;
-
-	(*insert_elt_array)[insert_ctr].value.long_att_value(dvla);
-	insert_ctr++;
+	return *this;
 }
 
-void DevicePipeBlob::operator<<(double &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(double &datum)
 {
-	if (insert_ctr > insert_elt_array->length() - 1)
-		throw_too_many("operator<<");
+	INSERT_BASIC_TYPE(DevVarDoubleArray,double_att_value)
 
-	DevVarDoubleArray dvda;
-	dvda.length(1);
-	dvda[0] = datum;
-
-	(*insert_elt_array)[insert_ctr].value.double_att_value(dvda);
-	insert_ctr++;
+	return *this;
 }
 
-void DevicePipeBlob::operator<<(DevicePipeBlob &datum)
+DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 {
 	if (insert_ctr > insert_elt_array->length() - 1)
-		throw_too_many("operator<<");
+		throw_too_many("operator<<",false);
 
 	DevVarPipeDataEltArray *tmp_ptr = datum.get_insert_data();
 	if (tmp_ptr != Tango_nullptr)
 	{
 		(*insert_elt_array)[insert_ctr].inner_blob.replace(tmp_ptr->length(),tmp_ptr->length(),tmp_ptr->get_buffer(),true);
+		(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
 		insert_ctr++;
 	}
+
+	return *this;
 }
 
 //******************************************************************************************************************
 
-bool DevicePipeBlob::operator >> (short &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (short &datum)
 {
-	bool ret = true;
-	bool too_many_elt = false;
+	EXTRACT_BASIC_TYPE(ATT_SHORT,short_att_value,"DevShort")
 
-	if (extract_ctr > extract_elt_array->length() - 1)
-		too_many_elt = true;
-	else
-	{
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[extract_ctr].value);
-		if (uni_ptr->_d() != ATT_SHORT)
-			ret = false;
-		else
-		{
-			datum = (uni_ptr->short_att_value())[0];
-			extract_ctr++;
-		}
-	}
-
-	if (too_many_elt == true)
-		throw_too_many("operator>>");
-
-	if (ret == false)
-		throw_type_except("DevShort","operator>>");
-
-	return ret;
+	return *this;
 }
 
-bool DevicePipeBlob::operator >> (vector<short> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (DevLong &datum)
 {
-	bool ret = true;
-	bool too_many_elt = false;
+	EXTRACT_BASIC_TYPE(ATT_LONG,long_att_value,"DevLong")
 
-	if (extract_ctr > extract_elt_array->length() - 1)
-		too_many_elt = true;
-	else
-	{
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[extract_ctr].value);
-		if (uni_ptr->_d() != ATT_SHORT)
-			ret = false;
-		else
-		{
-			const DevVarShortArray &dvsa = uni_ptr->short_att_value();
-			datum << dvsa;
-			extract_ctr++;
-		}
-	}
-
-	if (too_many_elt == true)
-		throw_too_many("operator>>");
-
-	if (ret == false)
-		throw_type_except("DevShort","operator>>");
-
-	return ret;
+	return *this;
 }
 
-bool DevicePipeBlob::operator >> (DevLong &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (double &datum)
 {
-	bool ret = true;
-	bool too_many_elt = false;
+	EXTRACT_BASIC_TYPE(ATT_DOUBLE,double_att_value,"DevDouble")
 
-	if (extract_ctr > extract_elt_array->length() - 1)
-		too_many_elt = true;
-	else
-	{
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[extract_ctr].value);
-		if (uni_ptr->_d() != ATT_LONG)
-			ret = false;
-		else
-		{
-			datum = (uni_ptr->long_att_value())[0];
-			extract_ctr++;
-		}
-	}
-
-	if (too_many_elt == true)
-		throw_too_many("operator>>");
-
-	if (ret == false)
-		throw_type_except("DevLong","operator>>");
-
-	return ret;
+	return *this;
 }
 
-bool DevicePipeBlob::operator >> (double &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<short> &datum)
 {
-	bool ret = true;
-	bool too_many_elt = false;
+	EXTRACT_VECTOR_TYPE(ATT_SHORT,short_att_value,DevVarShortArray,"DevShort")
 
-	if (extract_ctr > extract_elt_array->length() - 1)
-		too_many_elt = true;
-	else
-	{
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[extract_ctr].value);
-		if (uni_ptr->_d() != ATT_DOUBLE)
-			ret = false;
-		else
-		{
-			datum = (uni_ptr->double_att_value())[0];
-			extract_ctr++;
-		}
-	}
-
-	if (too_many_elt == true)
-		throw_too_many("operator>>");
-
-	if (ret == false)
-		throw_type_except("DevDouble","operator>>");
-
-	return ret;
+	return *this;
 }
 
-bool DevicePipeBlob::operator >> (DevicePipeBlob &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 {
-	bool ret = true;
-	bool too_many_elt = false;
+	failed = false;
+	ext_state.reset();
 
 	if (extract_ctr > extract_elt_array->length() - 1)
-		too_many_elt = true;
+		ext_state.set(notenoughde_flag);
 	else
 	{
 		if ((*extract_elt_array)[extract_ctr].inner_blob.length() == 0)
-			ret = false;
+		{
+			if ((*extract_elt_array)[extract_ctr].value._d() == ATT_NO_DATA)
+				ext_state.set(isempty_flag);
+			else
+				ext_state.set(wrongtype_flag);
+		}
 		else
 		{
 			datum.set_extract_data(&((*extract_elt_array)[extract_ctr].inner_blob));
-			string tmp((*extract_elt_array)[extract_ctr].name.in());
+			string tmp((*extract_elt_array)[extract_ctr].inner_blob_name.in());
 			datum.set_name(tmp);
 			datum.reset_extract_ctr();
 			extract_ctr++;
 		}
 	}
 
-	if (too_many_elt == true)
-		throw_too_many("operator>>");
+	if (ext_state.any() == true)
+		failed = true;
 
-	if (ret == false)
-		throw_type_except("DevDouble","operator>>");
+	if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true)
+		throw_is_empty("operator>>");
 
-	return ret;
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
+		throw_too_many("operator>>",true);
+
+	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true)
+		throw_type_except("DevicePipeBlob","operator>>");
+
+	return *this;
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -583,7 +607,7 @@ void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
 	ss << "Can't get data element " << extract_ctr << " (numbering starting from 0) into a " << _ty << " data type";
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	Except::throw_exception(API_PipeWrongArg,ss.str(),m_name);
+	ApiDataExcept::throw_exception(API_IncompatibleArgumentType,ss.str(),m_name.c_str());
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -597,16 +621,43 @@ void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
 // argument:
 //		in :
 //			- _meth : Caller method name
+//			- _extract : Flag set to true if this method is called during extraction. Otherwise, false
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::throw_too_many(const string &_meth)
+void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 {
 	stringstream ss;
-	ss << "Not enough data element in blob (" << get_data_elt_nb() << " data elt in created/received blob)";
+	ss << "Not enough data element in blob (";
+	if (_extract == true)
+		ss << get_data_elt_nb();
+	else
+		ss << insert_elt_array->length();
+	ss << " data elt in created/received blob)";
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	Except::throw_exception(API_PipeWrongArg,ss.str(),m_name);
+	ApiDataExcept::throw_exception(API_PipeWrongArg,ss.str(),m_name.c_str());
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::throw_is_empty
+//
+// description :
+//		Throw exception when user try to insert/extract data from one empty data element
+//
+// argument:
+//		in :
+//			- _meth : Caller method name
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void DevicePipeBlob::throw_is_empty(const string &_meth)
+{
+	string m_name("DevicePipeBlob::");
+	m_name = m_name + _meth;
+	ApiDataExcept::throw_exception(API_PipeWrongArg,"The data element is empmty",m_name.c_str());
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -622,10 +673,11 @@ void DevicePipeBlob::throw_too_many(const string &_meth)
 //		in :
 //			- o_str : The stream used for printing
 //			- indent : Indentation level for printing in case of blob inside blob
+//			- insert_extract: Flag set to true is insert data should be printed, else extract data are printed
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void DevicePipeBlob::print(ostream &o_str,int indent)
+void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 {
 
 //
@@ -644,51 +696,147 @@ void DevicePipeBlob::print(ostream &o_str,int indent)
 // Data element name/value
 //
 
-	const DevVarPipeDataEltArray *dvpdea = get_extract_data();
-	for (size_t ctr = 0;ctr < dvpdea->length();ctr++)
+	const DevVarPipeDataEltArray *dvpdea;
+	if (insert_extract == false)
+		dvpdea = get_extract_data();
+	else
+		dvpdea = get_insert_data();
+
+	if (dvpdea != Tango_nullptr)
 	{
-		for (int loop = 0;loop < indent;loop++)
-			o_str << "\t";
-		o_str << "Data element name = " << (*dvpdea)[ctr].name.in() << endl;
-		for (int loop = 0;loop < indent;loop++)
-			o_str<< "\t";
-		o_str << "Data element value:" << endl;
-
-		for (int loop = 0;loop < indent;loop++)
-			o_str << "\t";
-
-		switch ((*dvpdea)[ctr].value._d())
+		for (size_t ctr = 0;ctr < dvpdea->length();ctr++)
 		{
-			case ATT_SHORT:
-			{
-				const DevVarShortArray &dvsa = (*dvpdea)[ctr].value.short_att_value();
-				o_str << dvsa;
-			}
-			break;
+			for (int loop = 0;loop < indent;loop++)
+				o_str << "\t";
+			o_str << "Data element name = " << (*dvpdea)[ctr].name.in() << endl;
+			for (int loop = 0;loop < indent;loop++)
+				o_str<< "\t";
+			o_str << "Data element value:" << endl;
 
-			case ATT_LONG:
-			{
-				const DevVarLongArray &dvla = (*dvpdea)[ctr].value.long_att_value();
-				o_str << dvla;
-			}
-			break;
+//
+// Print indent level
+//
 
-			case ATT_DOUBLE:
+			for (int loop = 0;loop < indent;loop++)
+				o_str << "\t";
+
+//
+// Print data element value
+//
+
+			switch ((*dvpdea)[ctr].value._d())
 			{
-				const DevVarDoubleArray &dvda = (*dvpdea)[ctr].value.double_att_value();
-				o_str << dvda;
+				case ATT_BOOL:
+				{
+					const DevVarBooleanArray &dvba = (*dvpdea)[ctr].value.bool_att_value();
+					o_str << dvba;
+				}
+				break;
+
+				case ATT_SHORT:
+				{
+					const DevVarShortArray &dvsa = (*dvpdea)[ctr].value.short_att_value();
+					o_str << dvsa;
+				}
+				break;
+
+				case ATT_LONG:
+				{
+					const DevVarLongArray &dvla = (*dvpdea)[ctr].value.long_att_value();
+					o_str << dvla;
+				}
+				break;
+
+				case ATT_LONG64:
+				{
+					const DevVarLong64Array &dvlo64 = (*dvpdea)[ctr].value.long64_att_value();
+					o_str << dvlo64;
+				}
+				break;
+
+				case ATT_FLOAT:
+				{
+					const DevVarFloatArray &dvfa = (*dvpdea)[ctr].value.float_att_value();
+					o_str << dvfa;
+				}
+				break;
+
+				case ATT_DOUBLE:
+				{
+					const DevVarDoubleArray &dvda = (*dvpdea)[ctr].value.double_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_UCHAR:
+				{
+					const DevVarCharArray &dvda = (*dvpdea)[ctr].value.uchar_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_USHORT:
+				{
+					const DevVarUShortArray &dvda = (*dvpdea)[ctr].value.ushort_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_ULONG:
+				{
+					const DevVarULongArray &dvda = (*dvpdea)[ctr].value.ulong_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_ULONG64:
+				{
+					const DevVarULong64Array &dvda = (*dvpdea)[ctr].value.ulong64_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_STRING:
+				{
+					const DevVarStringArray &dvda = (*dvpdea)[ctr].value.string_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_STATE:
+				{
+					const DevVarStateArray &dvda = (*dvpdea)[ctr].value.state_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_ENCODED:
+				{
+					const DevVarEncodedArray &dvda = (*dvpdea)[ctr].value.encoded_att_value();
+					o_str << dvda;
+				}
+				break;
+
+				case ATT_NO_DATA:
+				case DEVICE_STATE:
+				o_str << "Unsupported data type in data element (ATT_NO_DATA, DEVICE_STATE)!" << endl;
+				break;
 			}
-			break;
+
+//
+// Print inner blob if any
+//
+
+			if ((*dvpdea)[ctr].inner_blob.length() != 0)
+			{
+				DevicePipeBlob dpb((*dvpdea)[ctr].name.in());
+				dpb.print(o_str,indent + 1,true);
+				dpb.print(o_str,indent + 1,false);
+			}
+
+			if (ctr < dvpdea->length() - 1)
+				o_str << endl;
 		}
-
-		if ((*dvpdea)[ctr].inner_blob.length() != 0)
-		{
-			DevicePipeBlob dpb((*dvpdea)[ctr].name.in());
-			dpb.print(o_str,indent + 1);
-		}
-
-		if (ctr < dvpdea->length() - 1)
-			o_str << endl;
 	}
 }
 
@@ -733,10 +881,27 @@ ostream &operator<<(ostream &o_str,DevicePipe &dd)
 // Print blob
 //
 
-	DevicePipeBlob &dpb = dd.the_root_blob;
-	dpb.print(o_str,0);
+	DevicePipeBlob &dpb = dd.get_root_blob();
+	if (dpb.get_insert_data() == Tango_nullptr && dpb.get_extract_data() == Tango_nullptr)
+		o_str << "DevicePipe is empty";
+	else
+	{
+		dpb.print(o_str,0,true);
+		dpb.print(o_str,0,false);
+	}
 
 	return o_str;
 }
+
+/*DevicePipeBlob &operator>>(DevicePipeBlob &_dpb,short &_datum)
+{
+	_dpb.operator>>(_datum);
+	return _dpb;
+}
+DevicePipeBlob &operator>>(DevicePipeBlob &_dpb,double &_datum)
+{
+	_dpb.operator>>(_datum);
+	return _dpb;
+}*/
 
 } // End of Tango namepsace

@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;  
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3078,7 +3078,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;    
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4493,6 +4493,8 @@ omni_mutex *mut_ptr;
 
     DevVarPipeDataEltArray inner_blob;
 
+    ::CORBA::String_member inner_blob_name;
+
   
 
     void operator>>= (cdrStream &) const;
@@ -4534,8 +4536,6 @@ omni_mutex *mut_ptr;
     TimeVal time;
 
     DevPipeBlob data_blob;
-
-    DevErrorList err_list;
 
   
 
@@ -6326,6 +6326,7 @@ omni_mutex *mut_ptr;
     PipeConfigList* get_pipe_config_5(const ::Tango::DevVarStringArray& names);
     DevPipeData* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident);
     void write_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident);
+    DevPipeData* write_read_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident);
 
     inline _objref_Device_5()  { _PR_setobj(0); }  // nil
     _objref_Device_5(omniIOR*, omniIdentity*);
@@ -6367,6 +6368,7 @@ omni_mutex *mut_ptr;
     virtual PipeConfigList* get_pipe_config_5(const ::Tango::DevVarStringArray& names) = 0;
     virtual DevPipeData* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual void write_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident) = 0;
+    virtual DevPipeData* write_read_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident) = 0;
     
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
