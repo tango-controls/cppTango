@@ -353,7 +353,9 @@ template Pipe &operator<<(Pipe &,DevLong &);
 template ostream &operator<<(ostream &,DataElement<short> &);
 template ostream &operator<<(ostream &,DataElement<double> &);
 template ostream &operator<<(ostream &,DataElement<DevLong> &);
+#ifndef _TG_WINDOWS_
 template ostream &operator<<(ostream &,DataElement<DevicePipeBlob> &);
+#endif
 
 template ostream &operator<<(ostream &,DataElement<DevVarShortArray *> &);
 

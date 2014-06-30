@@ -261,6 +261,7 @@
     <ClInclude Include="..\..\..\server\utils.h" />
     <ClInclude Include="..\..\..\server\w32win.h" />
     <ClInclude Include="..\..\..\server\w_attribute.h" />
+    <ClInclude Include="..\..\..\server\w_pipe.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\client\accessproxy.cpp" />
@@ -1142,9 +1143,11 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\..\..\client\zmqeventconsumer.cpp" />
+    <ClCompile Include="..\..\..\server\w_pipe.cpp" />
     <ClCompile Include="..\..\..\server\zmqeventsupplier.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\client\devapi_pipe.tpp" />
     <None Include="..\..\..\server\attribute_spec.tpp" />
     <None Include="..\..\..\server\device_3.tpp" />
     <None Include="..\..\..\server\fwdattribute.tpp" />
@@ -1154,6 +1157,7 @@
     <None Include="..\..\..\server\utils.tpp" />
     <None Include="..\..\..\server\utils_spec.tpp" />
     <None Include="..\..\..\server\w_attribute_spec.tpp" />
+    <None Include="..\..\..\server\w_pipe.tpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
