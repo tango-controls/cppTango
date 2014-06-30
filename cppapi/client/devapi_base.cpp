@@ -4781,9 +4781,11 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	dev_pipe.set_name(pipe_value_5->name.in());
 	dev_pipe.set_time(pipe_value_5->time);
 
-	size_t seq_max = pipe_value_5->data_blob.blob_data.length();
-	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer(true);
-	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(seq_max,seq_max,buf,true);
+	CORBA::ULong max,len;
+	max = pipe_value_5->data_blob.blob_data.maximum();
+	len = pipe_value_5->data_blob.blob_data.length();
+	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 	dev_pipe.get_root_blob().reset_extract_ctr();
 	dev_pipe.get_root_blob().set_name(pipe_value_5->data_blob.name.in());
@@ -4795,7 +4797,7 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceProxy::write_pipe() - wriite a single pipe
+// DeviceProxy::write_pipe() - write a single pipe
 //
 //-----------------------------------------------------------------------------
 

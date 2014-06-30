@@ -291,6 +291,12 @@ public:
 
 
 	~DevicePipeBlob();
+	DevicePipeBlob(const DevicePipeBlob &);
+	DevicePipeBlob & operator=(const DevicePipeBlob &);
+#ifdef HAS_RVALUE
+	DevicePipeBlob(DevicePipeBlob &&);
+	DevicePipeBlob & operator=(DevicePipeBlob &&);
+#endif
 
 	void set_data_elt_nb(size_t _nb);
 	void set_data_elt_names(vector<string> &);
@@ -465,6 +471,12 @@ public :
 
 public :
 ///@privatesection
+	DevicePipe(const DevicePipe &);
+	DevicePipe & operator=(const DevicePipe &);
+#ifdef HAS_RVALUE
+	DevicePipe(DevicePipe &&);
+	DevicePipe & operator=(DevicePipe &&);
+#endif
 	~DevicePipe();
 
 	void set_time(TimeVal &_ti) {time=_ti;}

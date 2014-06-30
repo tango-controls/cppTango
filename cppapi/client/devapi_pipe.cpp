@@ -64,6 +64,108 @@ DevicePipe::DevicePipe(const string &pipe_name,const string &root_blob_name):nam
 	the_root_blob.set_name(root_blob_name);
 }
 
+//-----------------------------------------------------------------------------
+//
+// DevicePipe::DevicePipe() - copy constructor to create DevicePipe
+//
+//-----------------------------------------------------------------------------
+
+DevicePipe::DevicePipe(const DevicePipe & source):ext(Tango_nullptr)
+{
+	name = source.name;
+	time = source.time;
+	the_root_blob = source.the_root_blob;
+
+#ifdef HAS_UNIQUE_PTR
+    if (source.ext.get() != NULL)
+    {
+        ext.reset(new DevicePipeExt);
+        *(ext.get()) = *(source.ext.get());
+    }
+#else
+	if (source.ext != NULL)
+	{
+		ext = new DevicePipeExt();
+		*ext = *(source.ext);
+	}
+	else
+		ext = NULL;
+#endif
+}
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipe::operator= - assignment operator for DevicePipe class
+//
+//-----------------------------------------------------------------------------
+
+DevicePipe &DevicePipe::operator=(const DevicePipe &rhs)
+{
+	if (this != &rhs)
+    {
+		name = rhs.name;
+    	time = rhs.time;
+		the_root_blob = rhs.the_root_blob;
+
+#ifdef HAS_UNIQUE_PTR
+		if (rhs.ext.get() != NULL)
+		{
+			ext.reset(new DevicePipeExt);
+			*(ext.get()) = *(rhs.ext.get());
+		}
+#else
+		if (rhs.ext != NULL)
+		{
+			ext = new DevicePipeExt();
+			*ext = *(rhs.ext);
+		}
+		else
+			ext = NULL;
+#endif
+    }
+	return *this;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipe::DevicePipe() - Move copy constructor to create DevicePipe
+//
+//-----------------------------------------------------------------------------
+
+DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
+{
+	name = move(source.name);
+	time = source.time;
+	the_root_blob = move(source.the_root_blob);
+
+    if (source.ext.get() != NULL)
+    {
+        ext = move(source.ext);
+    }
+}
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipe::operator= - Move assignment operator for DevicePipe class
+//
+//-----------------------------------------------------------------------------
+
+DevicePipe &DevicePipe::operator=(DevicePipe &&rhs)
+{
+	name = move(rhs.name);
+	time = rhs.time;
+	the_root_blob = move(rhs.the_root_blob);
+
+	if (rhs.ext.get() != NULL)
+	{
+		ext = move(rhs.ext);
+	}
+	else
+		ext.reset();
+
+	return *this;
+}
+
 //----------------------------------------------------------------------------------------------------------------
 //
 // DevicePipe::~DevicePipe() - destructor to destroy DevicePipe
@@ -130,6 +232,185 @@ DevicePipeBlob::~DevicePipeBlob()
     delete ext;
 #endif
 }
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipeBlob::DevicePipeBlob() - copy constructor to create DevicePipeBlob
+//
+//-----------------------------------------------------------------------------
+
+DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(Tango_nullptr)
+{
+	name = source.name;
+	exceptions_flags = source.exceptions_flags;
+	ext_state = source.ext_state;
+	failed = source.failed;
+
+	if (source.insert_elt_array != Tango_nullptr)
+		(*insert_elt_array) = (*source.insert_elt_array);
+	else
+		insert_elt_array = Tango_nullptr;
+	insert_ctr = source.insert_ctr;
+
+	if (source.extract_elt_array != Tango_nullptr)
+	{
+		DevVarPipeDataEltArray *tmp = new DevVarPipeDataEltArray();
+		*tmp = (*source.extract_elt_array);
+		set_extract_data(tmp);
+		extract_delete = true;
+	}
+	else
+	{
+		extract_delete = source.extract_delete;
+	}
+	extract_ctr = source.extract_ctr;
+
+#ifdef HAS_UNIQUE_PTR
+    if (source.ext.get() != NULL)
+    {
+        ext.reset(new DevicePipeBlobExt);
+        *(ext.get()) = *(source.ext.get());
+    }
+#else
+	if (source.ext != NULL)
+	{
+		ext = new DevicePipeBlobExt();
+		*ext = *(source.ext);
+	}
+	else
+		ext = NULL;
+#endif
+}
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipeBlob::operator= - assignment operator for DevicePipeBlob class
+//
+//-----------------------------------------------------------------------------
+
+DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
+{
+	if (this != &rhs)
+    {
+		name = rhs.name;
+		exceptions_flags = rhs.exceptions_flags;
+		ext_state = rhs.ext_state;
+		failed = rhs.failed;
+
+		if (rhs.insert_elt_array != Tango_nullptr)
+			(*insert_elt_array) = (*rhs.insert_elt_array);
+		else
+			insert_elt_array = Tango_nullptr;
+		insert_ctr = rhs.insert_ctr;
+
+		if (rhs.extract_elt_array != Tango_nullptr)
+		{
+			DevVarPipeDataEltArray *tmp = new DevVarPipeDataEltArray();
+			*tmp = (*rhs.extract_elt_array);
+			set_extract_data(tmp);
+			extract_delete = true;
+		}
+		else
+		{
+			extract_delete = rhs.extract_delete;
+		}
+		extract_ctr = rhs.extract_ctr;
+
+#ifdef HAS_UNIQUE_PTR
+        if (rhs.ext.get() != NULL)
+        {
+            ext.reset(new DevicePipeBlobExt);
+            *(ext.get()) = *(rhs.ext.get());
+        }
+        else
+            ext.reset();
+#else
+        delete ext;
+        if (rval.ext != NULL)
+        {
+            ext = new DevicePipeBlobExt();
+            *ext = *(rval.ext);
+        }
+        else
+            ext = NULL;
+#endif
+    }
+	return *this;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipeBlob::DevicePipeBlob() - Move copy constructor to create DevicePipeBlob
+//
+//-----------------------------------------------------------------------------
+
+DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
+{
+	name = move(source.name);
+	exceptions_flags = source.exceptions_flags;
+	ext_state = source.ext_state;
+	failed = source.failed;
+
+	if (source.insert_elt_array != Tango_nullptr)
+		(*insert_elt_array) = (*source.insert_elt_array);
+	else
+		insert_elt_array = Tango_nullptr;
+	insert_ctr = source.insert_ctr;
+
+	if (source.extract_elt_array != Tango_nullptr)
+	{
+		DevVarPipeDataEltArray *tmp = new DevVarPipeDataEltArray();
+		*tmp = (*source.extract_elt_array);
+		set_extract_data(tmp);
+		extract_delete = true;
+	}
+	else
+	{
+		extract_delete = source.extract_delete;
+	}
+	extract_ctr = source.extract_ctr;
+
+    if (source.ext.get() != NULL)
+    {
+        ext = move(source.ext);
+    }
+}
+
+//-----------------------------------------------------------------------------
+//
+// DevicePipeBlob::operator= - Move assignment operator for DevicePipeBlob class
+//
+//-----------------------------------------------------------------------------
+
+DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
+{
+	name = move(rhs.name);
+	exceptions_flags = rhs.exceptions_flags;
+	ext_state = rhs.ext_state;
+	failed = rhs.failed;
+
+	if (rhs.insert_elt_array != Tango_nullptr)
+		insert_elt_array = rhs.insert_elt_array;
+	rhs.insert_elt_array = Tango_nullptr;
+	insert_ctr = rhs.insert_ctr;
+
+	if (rhs.extract_elt_array != Tango_nullptr)
+		extract_elt_array = rhs.extract_elt_array;
+	rhs.extract_elt_array = Tango_nullptr;
+	extract_delete = rhs.extract_delete;
+	extract_ctr = rhs.extract_ctr;
+
+
+    if (rhs.ext.get() != NULL)
+    {
+        ext = move(rhs.ext);
+    }
+    else
+		ext.reset();
+
+	return *this;
+}
+
 
 //+------------------------------------------------------------------------------------------------------------------
 //
