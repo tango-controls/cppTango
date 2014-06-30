@@ -127,7 +127,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/deviceclass.o \
 		$(OBJS_DIR)/command.o \
 		$(OBJS_DIR)/pipe.o \
-		$(OBJS_DOR)/w_pipe.o \
+		$(OBJS_DIR)/w_pipe.o \
 		$(OBJS_DIR)/dserversignal.o \
 		$(OBJS_DIR)/devintr.o \
 		$(OBJS_DIR)/dintrthread.o \
@@ -342,6 +342,7 @@ CLIENT_INCLUDE =	apiexcept.h \
 			DeviceAttribute.h \
 			DevicePipe.h \
 			devapi_attr.tpp \
+			devapi_pipe.tpp \
 			Connection.h \
 			DeviceProxy.h \
 			AttributeProxy.h \
@@ -413,6 +414,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			w_attrsetval.tpp \
 			w_attribute_spec.tpp \
 			w_pipe.h \
+			w_pipe.tpp \
 			subdev_diag.h \
 			encoded_attribute.h \
 			encoded_format.h

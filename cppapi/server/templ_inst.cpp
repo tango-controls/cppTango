@@ -343,6 +343,7 @@ template WPipe &operator>>(WPipe &,DataElement<DevicePipeBlob> &);
 template Pipe &operator<<(Pipe &,short &);
 template Pipe &operator<<(Pipe &,double &);
 template Pipe &operator<<(Pipe &,DevLong &);
+template Pipe &operator<<(Pipe &,DevicePipeBlob &);
 
 //+----------------------------------------------------------------------------
 //

@@ -132,6 +132,7 @@ DevicePipe &DevicePipe::operator=(const DevicePipe &rhs)
 //
 //-----------------------------------------------------------------------------
 
+#ifdef HAS_RVALUE
 DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
 {
 	name = move(source.name);
@@ -143,6 +144,7 @@ DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
         ext = move(source.ext);
     }
 }
+#endif // HAS_RVALUE
 
 //-----------------------------------------------------------------------------
 //
@@ -150,6 +152,7 @@ DevicePipe::DevicePipe(DevicePipe && source):ext(Tango_nullptr)
 //
 //-----------------------------------------------------------------------------
 
+#ifdef HAS_RVALUE
 DevicePipe &DevicePipe::operator=(DevicePipe &&rhs)
 {
 	name = move(rhs.name);
@@ -165,6 +168,7 @@ DevicePipe &DevicePipe::operator=(DevicePipe &&rhs)
 
 	return *this;
 }
+#endif
 
 //----------------------------------------------------------------------------------------------------------------
 //
@@ -344,6 +348,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 //
 //-----------------------------------------------------------------------------
 
+#ifdef HAS_RVALUE
 DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 {
 	name = move(source.name);
@@ -375,6 +380,7 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
         ext = move(source.ext);
     }
 }
+#endif
 
 //-----------------------------------------------------------------------------
 //
@@ -382,6 +388,7 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 //
 //-----------------------------------------------------------------------------
 
+#ifdef HAS_RVALUE
 DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 {
 	name = move(rhs.name);
@@ -410,7 +417,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 
 	return *this;
 }
-
+#endif
 
 //+------------------------------------------------------------------------------------------------------------------
 //
