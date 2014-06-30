@@ -1836,6 +1836,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\w_pipe.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\zmqeventconsumer.cpp"
 				>
 			</File>
@@ -1918,6 +1922,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\client\devapi.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\devapi_pipe.tpp"
 				>
 			</File>
 			<File
@@ -2166,6 +2174,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\w_attribute_spec.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.tpp"
 				>
 			</File>
 		</Filter>

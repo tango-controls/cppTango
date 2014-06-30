@@ -244,6 +244,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\client\devapi_pipe.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\devasyn.h"
 				>
 			</File>
@@ -489,6 +493,14 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\w_attribute_spec.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.tpp"
 				>
 			</File>
 		</Filter>
@@ -2087,6 +2099,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\client\zmqeventconsumer.cpp"
