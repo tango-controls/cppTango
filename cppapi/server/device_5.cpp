@@ -1033,7 +1033,12 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		back->data_blob.name = CORBA::string_dup(pi.get_blob().get_name().c_str());
 
 		DevVarPipeDataEltArray *dvpdea = pi.get_blob().get_insert_data();
-		back->data_blob.blob_data.replace(dvpdea->length(),dvpdea->length(),dvpdea->get_buffer(),true);
+		CORBA::ULong max,len;
+		max = dvpdea->maximum();
+		len = dvpdea->length();
+		back->data_blob.blob_data.replace(max,len,dvpdea->get_buffer((CORBA::Boolean)true),true);
+
+		delete dvpdea;
 	}
 	catch (...)
 	{

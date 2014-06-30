@@ -330,10 +330,10 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
             ext.reset();
 #else
         delete ext;
-        if (rval.ext != NULL)
+        if (rhs.ext != NULL)
         {
             ext = new DevicePipeBlobExt();
-            *ext = *(rval.ext);
+            *ext = *(rhs.ext);
         }
         else
             ext = NULL;
@@ -794,9 +794,14 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 	DevVarPipeDataEltArray *tmp_ptr = datum.get_insert_data();
 	if (tmp_ptr != Tango_nullptr)
 	{
-		(*insert_elt_array)[insert_ctr].inner_blob.replace(tmp_ptr->length(),tmp_ptr->length(),tmp_ptr->get_buffer(),true);
+		CORBA::ULong max,len;
+		max = tmp_ptr->maximum();
+		len = tmp_ptr->length();
+		(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
 		(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
 		insert_ctr++;
+
+		delete tmp_ptr;
 	}
 
 	return *this;
