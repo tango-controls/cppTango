@@ -4825,7 +4825,12 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		pipe_value_5.data_blob.name = bl_name.c_str();
 
 	DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
-	pipe_value_5.data_blob.blob_data.replace(tmp_ptr->length(),tmp_ptr->length(),tmp_ptr->get_buffer(),true);
+	CORBA::ULong max,len;
+	max = tmp_ptr->maximum();
+	len = tmp_ptr->length();
+	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+
+	delete tmp_ptr;
 
 	while (ctr < 2)
 	{
