@@ -432,7 +432,7 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-vector<string> DevicePipeBlob::get_data_elt_name()
+vector<string> DevicePipeBlob::get_data_elt_names()
 {
 	vector<string> v_str;
 	size_t nb_elt = extract_elt_array->length();
@@ -725,19 +725,19 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 	return *this;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::set_data_elt_names
+//
+// description :
+//		Set the blob data element name(s)
+//
+// argument :
+//		in:
+//			- elt_names : Vector with data elements name
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 
 void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
@@ -752,6 +752,20 @@ void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 	}
 }
 
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::set_data_elt_nb
+//
+// description :
+//		Set the blob data element number
+//
+// argument :
+//		in:
+//			- _nb : The data elements number
+//
+//-------------------------------------------------------------------------------------------------------------------
+
 void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 {
 	insert_elt_array = new DevVarPipeDataEltArray();
@@ -764,6 +778,13 @@ void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 }
 
 //******************************************************************************************************************
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevBoolean &datum)
+{
+	INSERT_BASIC_TYPE(DevVarBooleanArray,bool_att_value)
+
+	return *this;
+}
 
 DevicePipeBlob & DevicePipeBlob::operator<<(short &datum)
 {
@@ -779,11 +800,79 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevLong &datum)
 	return *this;
 }
 
+DevicePipeBlob & DevicePipeBlob::operator<<(DevLong64 &datum)
+{
+	INSERT_BASIC_TYPE(DevVarLong64Array,long64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(float &datum)
+{
+	INSERT_BASIC_TYPE(DevVarFloatArray,float_att_value)
+
+	return *this;
+}
+
 DevicePipeBlob & DevicePipeBlob::operator<<(double &datum)
 {
 	INSERT_BASIC_TYPE(DevVarDoubleArray,double_att_value)
 
 	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevUChar &datum)
+{
+	INSERT_BASIC_TYPE(DevVarUCharArray,uchar_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevUShort &datum)
+{
+	INSERT_BASIC_TYPE(DevVarUShortArray,ushort_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevULong &datum)
+{
+	INSERT_BASIC_TYPE(DevVarULongArray,ulong_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevULong64 &datum)
+{
+	INSERT_BASIC_TYPE(DevVarULong64Array,ulong64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevString &datum)
+{
+	INSERT_BASIC_TYPE(DevVarStringArray,string_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevState &datum)
+{
+	INSERT_BASIC_TYPE(DevVarStateArray,state_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevEncoded &datum)
+{
+	INSERT_BASIC_TYPE(DevVarEncodedArray,encoded_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(const string &datum)
+{
+	return operator<<(datum.c_str());
 }
 
 DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
@@ -807,7 +896,335 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 	return *this;
 }
 
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevBoolean> &datum)
+{
+	failed = false;
+	ext_state.reset();
+	if (insert_ctr > insert_elt_array->length() - 1)
+		ext_state.set(notenoughde_flag);
+	else
+	{
+		DevVarBooleanArray &dvsa = (*insert_elt_array)[insert_ctr].value.bool_att_value();
+		dvsa << datum;
+		insert_ctr++;
+	}
+
+	if (ext_state.any() == true)
+		failed = true;
+
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
+		throw_too_many("operator<<",false);
+
+	return *this;
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevShort> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarShortArray,short_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevLong> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarLongArray,long_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevLong64> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarLong64Array,long64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<float> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarFloatArray,float_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<double> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarDoubleArray,double_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevUChar> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarUCharArray,uchar_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevUShort> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarUShortArray,ushort_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevULong> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarULongArray,ulong_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevULong64> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarULong64Array,ulong64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevString> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarStringArray,string_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevState> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarStateArray,state_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevEncoded> &datum)
+{
+	INSERT_VECTOR_TYPE(DevVarEncodedArray,encoded_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(vector<string> &datum)
+{
+	failed = false;
+	ext_state.reset();
+	if (insert_ctr > insert_elt_array->length() - 1)
+		ext_state.set(notenoughde_flag);
+	else
+	{
+		DevVarStringArray &dvsa = (*insert_elt_array)[insert_ctr].value.string_att_value();
+		size_t nb = datum.size();
+		char **strvec = DevVarStringArray::allocbuf(nb);
+		for (size_t i = 0;i < nb;i++)
+			strvec[i] = CORBA::string_dup(datum[i].c_str());
+		dvsa.replace(datum.size(),datum.size(),strvec,true);
+
+		insert_ctr++;
+	}
+
+	if (ext_state.any() == true)
+		failed = true;
+
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
+		throw_too_many("operator<<",false);
+
+	return *this;
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarBooleanArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarBooleanArray,bool_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarShortArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarShortArray,short_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarLongArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarLongArray,long_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarLong64Array &datum)
+{
+	INSERT_SEQ_TYPE(DevVarLong64Array,long64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarFloatArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarFloatArray,float_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarDoubleArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarDoubleArray,double_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarUCharArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarUCharArray,uchar_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarUShortArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarUShortArray,ushort_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarULongArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarULongArray,ulong_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarULong64Array &datum)
+{
+	INSERT_SEQ_TYPE(DevVarULong64Array,ulong64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarStringArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarStringArray,string_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarStateArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarStateArray,state_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarEncodedArray &datum)
+{
+	INSERT_SEQ_TYPE(DevVarEncodedArray,encoded_att_value)
+
+	return *this;
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarBooleanArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarBooleanArray,bool_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarShortArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarShortArray,short_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarLongArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarLongArray,long_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarLong64Array *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarLong64Array,long64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarFloatArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarFloatArray,float_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarDoubleArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarDoubleArray,double_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarUCharArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarUCharArray,uchar_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarUShortArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarUShortArray,ushort_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarULongArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarULongArray,ulong_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarULong64Array *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarULong64Array,ulong64_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarStringArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarStringArray,string_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarStateArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarStateArray,state_att_value)
+
+	return *this;
+}
+
+DevicePipeBlob & DevicePipeBlob::operator<<(DevVarEncodedArray *datum)
+{
+	INSERT_SEQ_PTR_TYPE(DevVarEncodedArray,encoded_att_value)
+
+	return *this;
+}
+
 //******************************************************************************************************************
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevBoolean &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_BOOL,bool_att_value,"DevBoolean")
+
+	return *this;
+}
 
 DevicePipeBlob &DevicePipeBlob::operator >> (short &datum)
 {
@@ -823,6 +1240,20 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevLong &datum)
 	return *this;
 }
 
+DevicePipeBlob &DevicePipeBlob::operator >> (DevLong64 &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_LONG64,long64_att_value,"DevLong64")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (float &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_FLOAT,float_att_value,"DevFloat")
+
+	return *this;
+}
+
 DevicePipeBlob &DevicePipeBlob::operator >> (double &datum)
 {
 	EXTRACT_BASIC_TYPE(ATT_DOUBLE,double_att_value,"DevDouble")
@@ -830,9 +1261,91 @@ DevicePipeBlob &DevicePipeBlob::operator >> (double &datum)
 	return *this;
 }
 
-DevicePipeBlob &DevicePipeBlob::operator >> (vector<short> &datum)
+DevicePipeBlob &DevicePipeBlob::operator >> (DevUChar &datum)
 {
-	EXTRACT_VECTOR_TYPE(ATT_SHORT,short_att_value,DevVarShortArray,"DevShort")
+	EXTRACT_BASIC_TYPE(ATT_UCHAR,uchar_att_value,"DevUChar")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevUShort &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_USHORT,ushort_att_value,"DevUShort")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevULong &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_ULONG,ulong_att_value,"DevULong")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevULong64 &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_ULONG64,ulong64_att_value,"DevULong64")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevString &datum)
+{
+	failed = false;
+	ext_state.reset();
+
+	if (extract_ctr > extract_elt_array->length() - 1)
+		ext_state.set(notenoughde_flag);
+	else
+	{
+		const AttrValUnion *uni_ptr = &((*extract_elt_array)[extract_ctr].value);
+		AttributeDataType adt = uni_ptr->_d();
+		if (adt != ATT_STRING)
+		{
+			if (adt == ATT_NO_DATA)
+			{
+				if ((*extract_elt_array)[extract_ctr].inner_blob.length() == 0)
+					ext_state.set(isempty_flag);
+			}
+			else
+				ext_state.set(wrongtype_flag);
+		}
+		else
+		{
+			datum = CORBA::string_dup((uni_ptr->string_att_value())[0].in());
+			extract_ctr++;
+		}
+	}
+
+	if (ext_state.any() == true)
+		failed = true;
+
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
+		throw_too_many("operator>>",true);
+
+	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true)
+		throw_type_except("DevString","operator>>");
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevState &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_STATE,state_att_value,"DevState")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevEncoded &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_ENCODED,encoded_att_value,"DevEncoded")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (string &datum)
+{
+	EXTRACT_BASIC_TYPE(ATT_STRING,string_att_value,"DevString")
 
 	return *this;
 }
@@ -878,6 +1391,191 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 	return *this;
 }
 
+//----------------------------------------------------------------------------------------------------------
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevBoolean> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_BOOL,bool_att_value,DevVarBooleanArray,"DevBoolean")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<short> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_SHORT,short_att_value,DevVarShortArray,"DevShort")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevLong> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_LONG,long_att_value,DevVarLongArray,"DevLong")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevLong64> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_LONG64,long64_att_value,DevVarLong64Array,"DevLong64")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<float> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_FLOAT,float_att_value,DevVarFloatArray,"DevFloat")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<double> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_DOUBLE,double_att_value,DevVarDoubleArray,"DevDouble")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevUChar> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_UCHAR,uchar_att_value,DevVarUCharArray,"DevUChar")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevUShort> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_USHORT,ushort_att_value,DevVarUShortArray,"DevUShort")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevULong> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_ULONG,ulong_att_value,DevVarULongArray,"DevULong")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevULong64> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_ULONG64,ulong64_att_value,DevVarULong64Array,"DevULong64")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<string> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_STRING,string_att_value,DevVarStringArray,"DevString")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevState> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_STATE,state_att_value,DevVarStateArray,"DevState")
+
+	return *this;
+}
+
+/*DevicePipeBlob &DevicePipeBlob::operator >> (vector<DevEncoded> &datum)
+{
+	EXTRACT_VECTOR_TYPE(ATT_ENCODED,encoded_att_value,DevVarEncodedArray,"DevEncoded")
+
+	return *this;
+}*/
+
+//----------------------------------------------------------------------------------------------------------
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarBooleanArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_BOOL,bool_att_value,DevVarBooleanArray,"DevBoolean")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarShortArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_SHORT,short_att_value,DevVarShortArray,"DevShort")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarLongArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_LONG,long_att_value,DevVarLongArray,"DevLong")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarLong64Array *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_LONG64,long64_att_value,DevVarLong64Array,"DevLong64")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarFloatArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_FLOAT,float_att_value,DevVarFloatArray,"DevFloat")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarDoubleArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_DOUBLE,double_att_value,DevVarDoubleArray,"DevDouble")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarUCharArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_UCHAR,uchar_att_value,DevVarUCharArray,"DevUChar")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarUShortArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_USHORT,ushort_att_value,DevVarUShortArray,"DevUShort")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarULongArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_ULONG,ulong_att_value,DevVarULongArray,"DevULong")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarULong64Array *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_ULONG64,ulong64_att_value,DevVarULong64Array,"DevULong64")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarStringArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_STRING,string_att_value,DevVarStringArray,"DevString")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarStateArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_STATE,state_att_value,DevVarStateArray,"DevState")
+
+	return *this;
+}
+
+DevicePipeBlob &DevicePipeBlob::operator >> (DevVarEncodedArray *datum)
+{
+	EXTRACT_SEQ_PTR_TYPE(ATT_ENCODED,encoded_att_value,DevVarEncodedArray,"DevEncoded")
+
+	return *this;
+}
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :

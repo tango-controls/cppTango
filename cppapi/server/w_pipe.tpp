@@ -36,32 +36,6 @@
 
 namespace Tango
 {
-//+------------------------------------------------------------------------------------------------------------------
-//
-// Function
-// 		operator overloading : 	<<
-//
-// description :
-//		Helper function to ease data insertion into Pipe root blob
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-template <typename T>
-Pipe &operator<<(Pipe &_dp,T &datum)
-{
-	_dp.get_blob().operator<<(datum);
-	_dp.set_value_flag(true);
-	return _dp;
-}
-
-template <typename T>
-Pipe &operator<<(Pipe &_dp,DataElement<T> &datum)
-{
-	_dp.get_blob().set_current_delt_name(datum.name);
-	_dp.get_blob().operator<<(datum.value);
-	_dp.set_value_flag(true);
-	return _dp;
-}
 
 //+------------------------------------------------------------------------------------------------------------------
 //
@@ -75,6 +49,13 @@ Pipe &operator<<(Pipe &_dp,DataElement<T> &datum)
 
 template <typename T>
 WPipe &operator>>(WPipe &_dp,T &datum)
+{
+	_dp.get_blob().operator>>(datum);
+	return _dp;
+}
+
+template <typename T>
+WPipe &operator>>(WPipe &_dp,T *datum)
 {
 	_dp.get_blob().operator>>(datum);
 	return _dp;

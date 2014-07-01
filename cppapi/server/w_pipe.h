@@ -116,7 +116,7 @@ public:
  *
  * @return The root blob data elements name
  */
-	vector<string> get_data_elt_name() {return the_blob.get_data_elt_name();}
+	vector<string> get_data_elt_names() {return the_blob.get_data_elt_names();}
 /**
  * Get root blob data element name
  *
@@ -161,6 +161,9 @@ private:
 
 template <typename T>
 WPipe &operator>>(WPipe &,T &);
+
+template <typename T>
+WPipe &operator>>(WPipe &,T *);
 
 template <typename T>
 WPipe &operator>>(WPipe &, DataElement<T> &);

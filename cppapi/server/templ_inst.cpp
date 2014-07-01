@@ -51,6 +51,7 @@
 #include <utils.tpp>
 #include <w_attribute.tpp>
 #include <devapi_pipe.tpp>
+#include <pipe.tpp>
 #include <w_pipe.tpp>
 
 namespace Tango
@@ -281,38 +282,441 @@ TEMPL_EXPL_METH_INST_CONST(WAttribute,set_max_value)
 
 //+----------------------------------------------------------------------------
 //
-// Instanciate DevicePipe and DevicePipeBlob helper functions
+// Instanciate DevicePipe helper functions
 //
 //-----------------------------------------------------------------------------
 
+template DevicePipe &operator<<(DevicePipe &,DevBoolean &);
 template DevicePipe &operator<<(DevicePipe &,short &);
-template DevicePipe &operator<<(DevicePipe &,double &);
 template DevicePipe &operator<<(DevicePipe &,DevLong &);
+template DevicePipe &operator<<(DevicePipe &,DevLong64 &);
+template DevicePipe &operator<<(DevicePipe &,float &);
+template DevicePipe &operator<<(DevicePipe &,double &);
+template DevicePipe &operator<<(DevicePipe &,DevUChar &);
+template DevicePipe &operator<<(DevicePipe &,DevUShort &);
+template DevicePipe &operator<<(DevicePipe &,DevULong &);
+template DevicePipe &operator<<(DevicePipe &,DevULong64 &);
+template DevicePipe &operator<<(DevicePipe &,DevString &);
+template DevicePipe &operator<<(DevicePipe &,DevState &);
+template DevicePipe &operator<<(DevicePipe &,DevEncoded &);
+template DevicePipe &operator<<(DevicePipe &,const string &);
+
 template DevicePipe &operator<<(DevicePipe &,DevicePipeBlob &);
 
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevBoolean> &);
 template DevicePipe &operator<<(DevicePipe &,WDataElement<short> &);
-template DevicePipe &operator<<(DevicePipe &,WDataElement<double> &);
 template DevicePipe &operator<<(DevicePipe &,WDataElement<DevLong> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevLong64> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<float> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<double> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevUChar> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevUShort> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevULong> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevULong64> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevString> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevState> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevEncoded> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<const string> &);
+
 template DevicePipe &operator<<(DevicePipe &,WDataElement<DevicePipeBlob> &);
 
-template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<short> &);
-template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<double> &);
 
+template DevicePipe &operator<<(DevicePipe &,vector<DevBoolean> &);
+template DevicePipe &operator<<(DevicePipe &,vector<short> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevLong> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevLong64> &);
+template DevicePipe &operator<<(DevicePipe &,vector<float> &);
+template DevicePipe &operator<<(DevicePipe &,vector<double> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevUChar> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevUShort> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevULong> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevULong64> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevString> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevState> &);
+template DevicePipe &operator<<(DevicePipe &,vector<DevEncoded> &);
+template DevicePipe &operator<<(DevicePipe &,vector<string> &);
+
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevBoolean> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<short> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevLong> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevLong64> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<float> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<double> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevUChar> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevUShort> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevULong> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevULong64> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevString> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevState> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<DevEncoded> > &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<vector<string> > &);
+
+template DevicePipe &operator<<(DevicePipe &,DevVarBooleanArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarShortArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarLongArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarLong64Array &);
+template DevicePipe &operator<<(DevicePipe &,DevVarFloatArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarDoubleArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarUCharArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarUShortArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarULongArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarULong64Array &);
+template DevicePipe &operator<<(DevicePipe &,DevVarStringArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarStateArray &);
+template DevicePipe &operator<<(DevicePipe &,DevVarEncodedArray &);
+
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarBooleanArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarShortArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarLongArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarLong64Array &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarFloatArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarDoubleArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarUCharArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarUShortArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarULongArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarULong64Array &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarStringArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarStateArray &> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarEncodedArray &> &);
+
+template DevicePipe &operator<<(DevicePipe &,DevVarBooleanArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarShortArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarLongArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarLong64Array *);
+template DevicePipe &operator<<(DevicePipe &,DevVarFloatArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarDoubleArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarUCharArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarUShortArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarULongArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarULong64Array *);
+template DevicePipe &operator<<(DevicePipe &,DevVarStringArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarStateArray *);
+template DevicePipe &operator<<(DevicePipe &,DevVarEncodedArray *);
+
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarBooleanArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarShortArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarLongArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarLong64Array *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarFloatArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarDoubleArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarUCharArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarUShortArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarULongArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarULong64Array *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarStringArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarStateArray *> &);
+template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarEncodedArray *> &);
+
+//-----------------------------------------------------------------------------------------------------
+
+template DevicePipe &operator>>(DevicePipe &,DevBoolean &);
 template DevicePipe &operator>>(DevicePipe &,short &);
-template DevicePipe &operator>>(DevicePipe &,vector<short> &);
-template DevicePipe &operator>>(DevicePipe &,double &);
 template DevicePipe &operator>>(DevicePipe &,DevLong &);
+template DevicePipe &operator>>(DevicePipe &,DevLong64 &);
+template DevicePipe &operator>>(DevicePipe &,float &);
+template DevicePipe &operator>>(DevicePipe &,double &);
+template DevicePipe &operator>>(DevicePipe &,DevUChar &);
+template DevicePipe &operator>>(DevicePipe &,DevUShort &);
+template DevicePipe &operator>>(DevicePipe &,DevULong &);
+template DevicePipe &operator>>(DevicePipe &,DevULong64 &);
+template DevicePipe &operator>>(DevicePipe &,DevString &);
+template DevicePipe &operator>>(DevicePipe &,DevState &);
+template DevicePipe &operator>>(DevicePipe &,DevEncoded &);
+template DevicePipe &operator>>(DevicePipe &,string &);
+
 template DevicePipe &operator>>(DevicePipe &,DevicePipeBlob &);
 
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevBoolean> &);
 template DevicePipe &operator>>(DevicePipe &,DataElement<short> &);
-template DevicePipe &operator>>(DevicePipe &,DataElement<vector<short> > &);
-template DevicePipe &operator>>(DevicePipe &,DataElement<double> &);
 template DevicePipe &operator>>(DevicePipe &,DataElement<DevLong> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevLong64> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<float> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<double> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevUChar> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevUShort> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevULong> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevULong64> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevString> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevState> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevEncoded> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<string> &);
+
 template DevicePipe &operator>>(DevicePipe &,DataElement<DevicePipeBlob> &);
 
+template DevicePipe &operator>>(DevicePipe &,vector<DevBoolean> &);
+template DevicePipe &operator>>(DevicePipe &,vector<short> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevLong> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevLong64> &);
+template DevicePipe &operator>>(DevicePipe &,vector<float> &);
+template DevicePipe &operator>>(DevicePipe &,vector<double> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevUChar> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevUShort> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevULong> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevULong64> &);
+template DevicePipe &operator>>(DevicePipe &,vector<string> &);
+template DevicePipe &operator>>(DevicePipe &,vector<DevState> &);
+//template DevicePipe &operator>>(DevicePipe &,vector<DevEncoded> &);
+
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevBoolean> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<short> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevLong> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevLong64> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<float> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<double> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevUChar> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevUShort> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevULong> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevULong64> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<string> > &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevState> > &);
+//template DevicePipe &operator>>(DevicePipe &,DataElement<vector<DevEncoded> > &);
+
+template DevicePipe &operator>>(DevicePipe &,DevVarBooleanArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarShortArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarLongArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarLong64Array *);
+template DevicePipe &operator>>(DevicePipe &,DevVarFloatArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarDoubleArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarUCharArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarUShortArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarULongArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarULong64Array *);
+template DevicePipe &operator>>(DevicePipe &,DevVarStringArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarStateArray *);
+template DevicePipe &operator>>(DevicePipe &,DevVarEncodedArray *);
+
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarBooleanArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarShortArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarLongArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarLong64Array *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarFloatArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarDoubleArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarUCharArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarUShortArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarULongArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarULong64Array *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarStringArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarStateArray *> &);
+template DevicePipe &operator>>(DevicePipe &,DataElement<DevVarEncodedArray *> &);
+
+//+----------------------------------------------------------------------------
+//
+// Instanciate DevicePipeBlob helper functions
+//
+//-----------------------------------------------------------------------------
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevBoolean &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,short &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevLong &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevLong64 &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,float &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,double &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevUChar &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevUShort &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevULong &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevULong64 &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevString &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevState &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevEncoded &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,const string &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevicePipeBlob &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevBoolean> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<short> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevLong> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevLong64> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<float> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<double> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevUChar> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevUShort> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevULong> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevULong64> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevString> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevState> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevEncoded> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<const string> &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevicePipeBlob> &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevBoolean> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<short> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevLong> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevLong64> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<float> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<double> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevUChar> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevUShort> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevULong> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevULong64> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevString> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevState> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<DevEncoded> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,vector<string> &);
+
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevBoolean> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<short> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevLong> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevLong64> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<float> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<double> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevUChar> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevUShort> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevULong> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevULong64> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevString> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevState> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<DevEncoded> > &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<vector<string> > &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarBooleanArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarShortArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarLongArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarLong64Array &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarFloatArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarDoubleArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarUCharArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarUShortArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarULongArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarULong64Array &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarStringArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarStateArray &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarEncodedArray &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarBooleanArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarShortArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarLongArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarLong64Array &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarFloatArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarDoubleArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarUCharArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarUShortArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarULongArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarULong64Array &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarStringArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarStateArray &> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarEncodedArray &> &);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarBooleanArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarShortArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarLongArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarLong64Array *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarFloatArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarDoubleArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarUCharArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarUShortArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarULongArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarULong64Array *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarStringArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarStateArray *);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,DevVarEncodedArray *);
+
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarBooleanArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarShortArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarLongArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarLong64Array *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarFloatArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarDoubleArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarUCharArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarUShortArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarULongArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarULong64Array *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarStringArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarStateArray *> &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<DevVarEncodedArray *> &);
+
+//-------------------------------------------------------------------------------------------
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevBoolean &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,short &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevLong &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevLong64 &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,float &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,double &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevUChar &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevUShort &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevULong &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevULong64 &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevString &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevState &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevEncoded &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,string &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevicePipeBlob &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevBoolean> &);
 template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<short> &);
-template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<short> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevLong> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevLong64> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<float> &);
 template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<double> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevUChar> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevUShort> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevULong> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevULong64> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevString> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevState> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevEncoded> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<string> &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevicePipeBlob> &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevBoolean> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<short> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevLong> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevLong64> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<float> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<double> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevUChar> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevUShort> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevULong> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevULong64> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<string> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevState> &);
+//template DevicePipeBlob &operator>>(DevicePipeBlob &,vector<DevEncoded> &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevBoolean> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<short> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevLong> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevLong64> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<float> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<double> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevUChar> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevUShort> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevULong> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevULong64> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<string> > &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevState> > &);
+//template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<vector<DevEncoded> > &);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarBooleanArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarShortArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarLongArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarLong64Array *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarFloatArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarDoubleArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarUCharArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarUShortArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarULongArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarULong64Array *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarStringArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarStateArray *);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DevVarEncodedArray *);
+
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarBooleanArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarShortArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarLongArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarLong64Array *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarFloatArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarDoubleArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarUCharArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarUShortArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarULongArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarULong64Array *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarStringArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarStateArray *> &);
+template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<DevVarEncodedArray *> &);
 
 //+----------------------------------------------------------------------------
 //
@@ -320,18 +724,95 @@ template DevicePipeBlob &operator>>(DevicePipeBlob &,DataElement<double> &);
 //
 //-----------------------------------------------------------------------------
 
-
+template WPipe &operator>>(WPipe &,DevBoolean &);
 template WPipe &operator>>(WPipe &,short &);
-template WPipe &operator>>(WPipe &,vector<short> &);
-template WPipe &operator>>(WPipe &,double &);
 template WPipe &operator>>(WPipe &,DevLong &);
+template WPipe &operator>>(WPipe &,DevLong64 &);
+template WPipe &operator>>(WPipe &,float &);
+template WPipe &operator>>(WPipe &,double &);
+template WPipe &operator>>(WPipe &,DevUChar &);
+template WPipe &operator>>(WPipe &,DevUShort &);
+template WPipe &operator>>(WPipe &,DevULong &);
+template WPipe &operator>>(WPipe &,DevULong64 &);
+template WPipe &operator>>(WPipe &,DevString &);
+template WPipe &operator>>(WPipe &,DevState &);
+template WPipe &operator>>(WPipe &,DevEncoded &);
+template WPipe &operator>>(WPipe &,string &);
+
 template WPipe &operator>>(WPipe &,DevicePipeBlob &);
 
+template WPipe &operator>>(WPipe &,DataElement<DevBoolean> &);
 template WPipe &operator>>(WPipe &,DataElement<short> &);
-template WPipe &operator>>(WPipe &,DataElement<vector<short> > &);
-template WPipe &operator>>(WPipe &,DataElement<double> &);
 template WPipe &operator>>(WPipe &,DataElement<DevLong> &);
+template WPipe &operator>>(WPipe &,DataElement<DevLong64> &);
+template WPipe &operator>>(WPipe &,DataElement<float> &);
+template WPipe &operator>>(WPipe &,DataElement<double> &);
+template WPipe &operator>>(WPipe &,DataElement<DevUChar> &);
+template WPipe &operator>>(WPipe &,DataElement<DevUShort> &);
+template WPipe &operator>>(WPipe &,DataElement<DevULong> &);
+template WPipe &operator>>(WPipe &,DataElement<DevULong64> &);
+template WPipe &operator>>(WPipe &,DataElement<DevString> &);
+template WPipe &operator>>(WPipe &,DataElement<DevState> &);
+template WPipe &operator>>(WPipe &,DataElement<DevEncoded> &);
+template WPipe &operator>>(WPipe &,DataElement<string> &);
+
 template WPipe &operator>>(WPipe &,DataElement<DevicePipeBlob> &);
+
+template WPipe &operator>>(WPipe &,vector<DevBoolean> &);
+template WPipe &operator>>(WPipe &,vector<short> &);
+template WPipe &operator>>(WPipe &,vector<DevLong> &);
+template WPipe &operator>>(WPipe &,vector<DevLong64> &);
+template WPipe &operator>>(WPipe &,vector<float> &);
+template WPipe &operator>>(WPipe &,vector<double> &);
+template WPipe &operator>>(WPipe &,vector<DevUChar> &);
+template WPipe &operator>>(WPipe &,vector<DevUShort> &);
+template WPipe &operator>>(WPipe &,vector<DevULong> &);
+template WPipe &operator>>(WPipe &,vector<DevULong64> &);
+template WPipe &operator>>(WPipe &,vector<string> &);
+template WPipe &operator>>(WPipe &,vector<DevState> &);
+//template WPipe &operator>>(WPipe &,vector<DevEncoded> &);
+
+template WPipe &operator>>(WPipe &,DataElement<vector<DevBoolean> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<short> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevLong> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevLong64> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<float> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<double> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevUChar> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevUShort> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevULong> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevULong64> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<string> > &);
+template WPipe &operator>>(WPipe &,DataElement<vector<DevState> > &);
+//template WPipe &operator>>(WPipe &,DataElement<vector<DevEncoded> > &);
+
+template WPipe &operator>>(WPipe &,DevVarBooleanArray *);
+template WPipe &operator>>(WPipe &,DevVarShortArray *);
+template WPipe &operator>>(WPipe &,DevVarLongArray *);
+template WPipe &operator>>(WPipe &,DevVarLong64Array *);
+template WPipe &operator>>(WPipe &,DevVarFloatArray *);
+template WPipe &operator>>(WPipe &,DevVarDoubleArray *);
+template WPipe &operator>>(WPipe &,DevVarUCharArray *);
+template WPipe &operator>>(WPipe &,DevVarUShortArray *);
+template WPipe &operator>>(WPipe &,DevVarULongArray *);
+template WPipe &operator>>(WPipe &,DevVarULong64Array *);
+template WPipe &operator>>(WPipe &,DevVarStringArray *);
+template WPipe &operator>>(WPipe &,DevVarStateArray *);
+template WPipe &operator>>(WPipe &,DevVarEncodedArray *);
+
+template WPipe &operator>>(WPipe &,DataElement<DevVarBooleanArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarShortArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarLongArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarLong64Array *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarFloatArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarDoubleArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarUCharArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarUShortArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarULongArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarULong64Array *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarStringArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarStateArray *> &);
+template WPipe &operator>>(WPipe &,DataElement<DevVarEncodedArray *> &);
 
 //+----------------------------------------------------------------------------
 //
@@ -340,10 +821,126 @@ template WPipe &operator>>(WPipe &,DataElement<DevicePipeBlob> &);
 //-----------------------------------------------------------------------------
 
 
+template Pipe &operator<<(Pipe &,DevBoolean &);
 template Pipe &operator<<(Pipe &,short &);
-template Pipe &operator<<(Pipe &,double &);
 template Pipe &operator<<(Pipe &,DevLong &);
+template Pipe &operator<<(Pipe &,DevLong64 &);
+template Pipe &operator<<(Pipe &,float &);
+template Pipe &operator<<(Pipe &,double &);
+template Pipe &operator<<(Pipe &,DevUChar &);
+template Pipe &operator<<(Pipe &,DevUShort &);
+template Pipe &operator<<(Pipe &,DevULong &);
+template Pipe &operator<<(Pipe &,DevULong64 &);
+template Pipe &operator<<(Pipe &,DevString &);
+template Pipe &operator<<(Pipe &,DevState &);
+template Pipe &operator<<(Pipe &,DevEncoded &);
+template Pipe &operator<<(Pipe &,const string &);
+
 template Pipe &operator<<(Pipe &,DevicePipeBlob &);
+
+template Pipe &operator<<(Pipe &,WDataElement<DevBoolean> &);
+template Pipe &operator<<(Pipe &,WDataElement<short> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevLong> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevLong64> &);
+template Pipe &operator<<(Pipe &,WDataElement<float> &);
+template Pipe &operator<<(Pipe &,WDataElement<double> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevUChar> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevUShort> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevULong> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevULong64> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevString> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevState> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevEncoded> &);
+template Pipe &operator<<(Pipe &,WDataElement<const string> &);
+
+template Pipe &operator<<(Pipe &,WDataElement<DevicePipeBlob> &);
+
+
+template Pipe &operator<<(Pipe &,vector<DevBoolean> &);
+template Pipe &operator<<(Pipe &,vector<short> &);
+template Pipe &operator<<(Pipe &,vector<DevLong> &);
+template Pipe &operator<<(Pipe &,vector<DevLong64> &);
+template Pipe &operator<<(Pipe &,vector<float> &);
+template Pipe &operator<<(Pipe &,vector<double> &);
+template Pipe &operator<<(Pipe &,vector<DevUChar> &);
+template Pipe &operator<<(Pipe &,vector<DevUShort> &);
+template Pipe &operator<<(Pipe &,vector<DevULong> &);
+template Pipe &operator<<(Pipe &,vector<DevULong64> &);
+template Pipe &operator<<(Pipe &,vector<DevString> &);
+template Pipe &operator<<(Pipe &,vector<DevState> &);
+template Pipe &operator<<(Pipe &,vector<DevEncoded> &);
+template Pipe &operator<<(Pipe &,vector<string> &);
+
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevBoolean> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<short> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevLong> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevLong64> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<float> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<double> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevUChar> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevUShort> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevULong> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevULong64> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevString> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevState> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<DevEncoded> > &);
+template Pipe &operator<<(Pipe &,WDataElement<vector<string> > &);
+
+template Pipe &operator<<(Pipe &,DevVarBooleanArray &);
+template Pipe &operator<<(Pipe &,DevVarShortArray &);
+template Pipe &operator<<(Pipe &,DevVarLongArray &);
+template Pipe &operator<<(Pipe &,DevVarLong64Array &);
+template Pipe &operator<<(Pipe &,DevVarFloatArray &);
+template Pipe &operator<<(Pipe &,DevVarDoubleArray &);
+template Pipe &operator<<(Pipe &,DevVarUCharArray &);
+template Pipe &operator<<(Pipe &,DevVarUShortArray &);
+template Pipe &operator<<(Pipe &,DevVarULongArray &);
+template Pipe &operator<<(Pipe &,DevVarULong64Array &);
+template Pipe &operator<<(Pipe &,DevVarStringArray &);
+template Pipe &operator<<(Pipe &,DevVarStateArray &);
+template Pipe &operator<<(Pipe &,DevVarEncodedArray &);
+
+template Pipe &operator<<(Pipe &,WDataElement<DevVarBooleanArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarShortArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarLongArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarLong64Array &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarFloatArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarDoubleArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarUCharArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarUShortArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarULongArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarULong64Array &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarStringArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarStateArray &> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarEncodedArray &> &);
+
+template Pipe &operator<<(Pipe &,DevVarBooleanArray *);
+template Pipe &operator<<(Pipe &,DevVarShortArray *);
+template Pipe &operator<<(Pipe &,DevVarLongArray *);
+template Pipe &operator<<(Pipe &,DevVarLong64Array *);
+template Pipe &operator<<(Pipe &,DevVarFloatArray *);
+template Pipe &operator<<(Pipe &,DevVarDoubleArray *);
+template Pipe &operator<<(Pipe &,DevVarUCharArray *);
+template Pipe &operator<<(Pipe &,DevVarUShortArray *);
+template Pipe &operator<<(Pipe &,DevVarULongArray *);
+template Pipe &operator<<(Pipe &,DevVarULong64Array *);
+template Pipe &operator<<(Pipe &,DevVarStringArray *);
+template Pipe &operator<<(Pipe &,DevVarStateArray *);
+template Pipe &operator<<(Pipe &,DevVarEncodedArray *);
+
+template Pipe &operator<<(Pipe &,WDataElement<DevVarBooleanArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarShortArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarLongArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarLong64Array *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarFloatArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarDoubleArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarUCharArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarUShortArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarULongArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarULong64Array *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarStringArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarStateArray *> &);
+template Pipe &operator<<(Pipe &,WDataElement<DevVarEncodedArray *> &);
 
 //+----------------------------------------------------------------------------
 //
@@ -351,16 +948,55 @@ template Pipe &operator<<(Pipe &,DevicePipeBlob &);
 //
 //-----------------------------------------------------------------------------
 
+
+template ostream &operator<<(ostream &,DataElement<DevBoolean> &);
 template ostream &operator<<(ostream &,DataElement<short> &);
-template ostream &operator<<(ostream &,DataElement<double> &);
 template ostream &operator<<(ostream &,DataElement<DevLong> &);
+template ostream &operator<<(ostream &,DataElement<DevLong64> &);
+template ostream &operator<<(ostream &,DataElement<float> &);
+template ostream &operator<<(ostream &,DataElement<double> &);
+template ostream &operator<<(ostream &,DataElement<DevUChar> &);
+template ostream &operator<<(ostream &,DataElement<DevUShort> &);
+template ostream &operator<<(ostream &,DataElement<DevULong> &);
+template ostream &operator<<(ostream &,DataElement<DevULong64> &);
+template ostream &operator<<(ostream &,DataElement<DevString> &);
+template ostream &operator<<(ostream &,DataElement<DevState> &);
+//template ostream &operator<<(ostream &,DataElement<DevEncoded> &);
+template ostream &operator<<(ostream &,DataElement<const string> &);
+
 #ifndef _TG_WINDOWS_
 template ostream &operator<<(ostream &,DataElement<DevicePipeBlob> &);
 #endif
 
-template ostream &operator<<(ostream &,DataElement<DevVarShortArray *> &);
-
+template ostream &operator<<(ostream &,DataElement<vector<DevBoolean> > &);
 template ostream &operator<<(ostream &,DataElement<vector<short> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevLong> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevLong64> > &);
+template ostream &operator<<(ostream &,DataElement<vector<float> > &);
+template ostream &operator<<(ostream &,DataElement<vector<double> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevUChar> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevUShort> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevULong> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevULong64> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevString> > &);
+template ostream &operator<<(ostream &,DataElement<vector<DevState> > &);
+//template ostream &operator<<(ostream &,DataElement<vector<DevEncoded> > &);
+template ostream &operator<<(ostream &,DataElement<vector<string> > &);
+
+template ostream &operator<<(ostream &,DataElement<DevVarBooleanArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarShortArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarLongArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarLong64Array *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarFloatArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarDoubleArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarUCharArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarUShortArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarULongArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarULong64Array *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarStringArray *> &);
+template ostream &operator<<(ostream &,DataElement<DevVarStateArray *> &);
+//template ostream &operator<<(ostream &,DataElement<DevVarEncodedArray *> &);
+
 
 } // End of Tango namespace
 

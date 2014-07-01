@@ -89,7 +89,4 @@ void Pipe::set_time()
 #endif
 }
 
-// TODO: Test with release flag set
-
-
 } // End of Tango namespace

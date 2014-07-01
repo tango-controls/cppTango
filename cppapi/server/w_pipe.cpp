@@ -57,6 +57,15 @@ WPipe::WPipe(const string &_name,const string &_desc,const string &_label,Tango:
 {
 }
 
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		WPipe::operator[]
+//
+// description :
+//		Retrieve one data element from the WPipe from its name
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 WPipe &WPipe::operator[](const string &_na)
 {
@@ -64,49 +73,5 @@ WPipe &WPipe::operator[](const string &_na)
 	return *this;
 }
 
-
-WPipe &operator>>(WPipe &_pi,double &datum)
-{
-	_pi.get_blob().operator>>(datum);
-	return _pi;
-}
-
-WPipe &operator>>(WPipe &_pi,short &datum)
-{
-	_pi.get_blob().operator>>(datum);
-	return _pi;
-}
-
-WPipe &operator>>(WPipe &_pi,DevLong &datum)
-{
-	_pi.get_blob().operator>>(datum);
-	return _pi;
-}
-
-WPipe &operator>>(WPipe &_pi,DevicePipeBlob &datum)
-{
-	_pi.get_blob().operator>>(datum);
-	return _pi;
-}
-
-
-
-/*PipeBlob &operator>>(PipeBlob &_pb,double &datum)
-{
-	_pb.operator>>(datum);
-	return _pb;
-}
-
-PipeBlob &operator>>(PipeBlob &_pb,short &datum)
-{
-	_pb.operator>>(datum);
-	return _pb;
-}
-
-PipeBlob &operator>>(PipeBlob &_pb,DevLong &datum)
-{
-	_pb.operator>>(datum);
-	return _pb;
-}*/
 
 } // End of Tango namespace

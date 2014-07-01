@@ -54,10 +54,31 @@ DevicePipe &operator<<(DevicePipe &_dp,T &datum)
 }
 
 template <typename T>
+DevicePipe &operator<<(DevicePipe &_dp,T *datum)
+{
+	_dp.get_root_blob().operator<<(datum);
+	return _dp;
+}
+
+template <typename T>
 DevicePipe &operator<<(DevicePipe &_dp,WDataElement<T> &datum)
 {
 	_dp.get_root_blob().set_current_delt_name(datum.name);
 	_dp.get_root_blob().operator<<(datum.value);
+	return _dp;
+}
+
+template <typename T>
+DevicePipeBlob &operator<<(DevicePipeBlob &_dp,T &datum)
+{
+	_dp.operator<<(datum);
+	return _dp;
+}
+
+template <typename T>
+DevicePipeBlob &operator<<(DevicePipeBlob &_dp,T *datum)
+{
+	_dp.operator<<(datum);
 	return _dp;
 }
 
@@ -87,10 +108,31 @@ DevicePipe &operator>>(DevicePipe &_dp,T &datum)
 }
 
 template <typename T>
+DevicePipe &operator>>(DevicePipe &_dp,T *datum)
+{
+	_dp.get_root_blob().operator>>(datum);
+	return _dp;
+}
+
+template <typename T>
 DevicePipe &operator>>(DevicePipe &_dp,DataElement<T> &datum)
 {
 	datum.name = _dp.get_root_blob().get_current_delt_name();
 	_dp.get_root_blob().operator>>(datum.value);
+	return _dp;
+}
+
+template <typename T>
+DevicePipeBlob &operator>>(DevicePipeBlob &_dp,T &datum)
+{
+	_dp.operator>>(datum);
+	return _dp;
+}
+
+template <typename T>
+DevicePipeBlob &operator>>(DevicePipeBlob &_dp,T *datum)
+{
+	_dp.operator>>(datum);
 	return _dp;
 }
 
@@ -115,6 +157,13 @@ DevicePipeBlob &operator>>(DevicePipeBlob &_dp,DataElement<T> &datum)
 
 template <typename T>
 ostream &operator<<(ostream &str,DataElement<T> &dd)
+{
+	str << "Name = " << dd.name << " - Value = " << dd.value;
+	return str;
+}
+
+template <>
+ostream &operator<<(ostream &str,DataElement<DevString> &dd)
 {
 	str << "Name = " << dd.name << " - Value = " << dd.value;
 	return str;

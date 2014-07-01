@@ -203,6 +203,83 @@ public:
 	Tango::PipeWriteType get_writable() {return writable;}
 //@}
 
+/**@name Exception and error related methods methods
+ */
+//@{
+/**
+ * Set exception flag
+ *
+ * It's a method which allows the user to switch on/off exception throwing when trying to insert/extract data from a
+ * Pipe object. The following flags are supported :
+ * @li @b isempty_flag - throw a WrongData exception (reason = API_EmptyDataElement) if user
+ *       tries to extract data from one empty blob data element. By default, this flag
+ *       is set
+ * @li @b wrongtype_flag - throw a WrongData exception (reason = API_IncompatibleArgumentType) if user
+ *       tries to extract data with a type different than the type used for insertion. By default, this flag
+ *       is set
+ * @li @b notenoughde_flag - throw a WrongData exception (reason = API_PipeWrongArg) if user
+ *       tries to extract data from a DevicePipeBlob for a data element which does not exist. By default, this flag
+ *       is set
+ *
+ * @param [in] fl The exception flag
+ */
+	void exceptions(bitset<DevicePipeBlob::numFlags> fl) {the_blob.exceptions(fl);}
+/**
+ * Get exception flag
+ *
+ * Returns the whole exception flags.
+ * The following is an example of how to use these exceptions related methods
+ * @code
+ * Pipe pi;
+ *
+ * bitset<DevicePipeBlob::numFlags> bs = pi.exceptions();
+ * cout << "bs = " << bs << endl;
+ *
+ * pi.set_exceptions(DevicePipeBlob::wrongtype_flag);
+ * bs = pi.exceptions();
+ *
+ * cout << "bs = " << bs << endl;
+ * @endcode
+ *
+ * @return The exception flag
+ */
+	bitset<DevicePipeBlob::numFlags> exceptions() {return the_blob.exceptions();}
+/**
+ * Reset one exception flag
+ *
+ * Resets one exception flag
+ *
+ * @param [in] fl The exception flag
+ */
+	void reset_exceptions(DevicePipeBlob::except_flags fl) {the_blob.reset_exceptions(fl);}
+/**
+ * Set one exception flag
+ *
+ * Sets one exception flag. See DevicePipeBlob::exceptions() for a usage example.
+ *
+ * @param [in] fl The exception flag
+ */
+	void set_exceptions(DevicePipeBlob::except_flags fl) {the_blob.set_exceptions(fl);}
+/**
+ * Check insertion/extraction success
+ *
+ * Allow the user to check if insertion/extraction into/from Pipe instance was successfull. This
+ * method has to be used when exceptions are disabled.
+ *
+ * @return True if insertion/extraction has failed
+ */
+	bool has_failed() {return the_blob.has_failed();}
+/**
+ * Get instance insertion/extraction state
+ *
+ * Allow the user to find out what was the reason of insertion/extraction into/from Pipe failure. This
+ * method has to be used when exceptions are disabled.
+ *
+ * @return The error bit set.
+ */
+	bitset<DevicePipeBlob::numFlags> state() {return the_blob.state();}
+//@}
+
 /**@name set_value methods.
  * Methods to set the value of the data blob to be transported by the pipe
  */
@@ -276,15 +353,17 @@ private:
 	vector<string> 				pe_out_names;	// Data elements name
 	int 						rec_count;		// Data elements ctr
 
-// TODO: Pipe-> Stay public ???
-	string						blob_name;
+	string						blob_name;		// The blob name
 };
 
 template <typename T>
 Pipe &operator<<(Pipe &,T &);
 
 template <typename T>
-Pipe &operator<<(Pipe &, DataElement<T> &);
+Pipe &operator<<(Pipe &,T *);
+
+template <typename T>
+Pipe &operator<<(Pipe &, WDataElement<T> &);
 
 
 //
