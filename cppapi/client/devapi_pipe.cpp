@@ -872,7 +872,27 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevEncoded &datum)
 
 DevicePipeBlob & DevicePipeBlob::operator<<(const string &datum)
 {
-	return operator<<(datum.c_str());
+	failed = false;
+	ext_state.reset();
+	if (insert_ctr > insert_elt_array->length() - 1)
+		ext_state.set(notenoughde_flag);
+	else
+	{
+		DevVarStringArray dvsa;
+		dvsa.length(1);
+		dvsa[0] = CORBA::string_dup(datum.c_str());
+
+		(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+		insert_ctr++;
+	}
+
+	if (ext_state.any() == true)
+		failed = true;
+
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
+		throw_too_many("operator<<",false);
+
+	return *this;
 }
 
 DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)

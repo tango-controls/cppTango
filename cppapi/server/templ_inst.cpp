@@ -959,13 +959,13 @@ template ostream &operator<<(ostream &,DataElement<DevUChar> &);
 template ostream &operator<<(ostream &,DataElement<DevUShort> &);
 template ostream &operator<<(ostream &,DataElement<DevULong> &);
 template ostream &operator<<(ostream &,DataElement<DevULong64> &);
-template ostream &operator<<(ostream &,DataElement<DevString> &);
 template ostream &operator<<(ostream &,DataElement<DevState> &);
 //template ostream &operator<<(ostream &,DataElement<DevEncoded> &);
 template ostream &operator<<(ostream &,DataElement<const string> &);
 
 #ifndef _TG_WINDOWS_
 template ostream &operator<<(ostream &,DataElement<DevicePipeBlob> &);
+template ostream &operator<<(ostream &,DataElement<DevString> &);
 #endif
 
 template ostream &operator<<(ostream &,DataElement<vector<DevBoolean> > &);
