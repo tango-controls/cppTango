@@ -727,7 +727,7 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
 	sync.unlock();
 }
 
-void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &cl_id,TANGO_UNUSED(long vers))
+void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &cl_id,long vers)
 {
 
 //
@@ -743,7 +743,10 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
 	box[insert_elt].req_type = Req_Operation;
 	box[insert_elt].attr_type = Attr_Unknown;
 
-	box[insert_elt].op_type = Op_Write_Pipe_5;
+	if (vers == 0)
+		box[insert_elt].op_type = Op_Write_Pipe_5;
+	else
+		box[insert_elt].op_type = Op_Write_Read_Pipe_5;
 	box[insert_elt].client_ident = false;
 
 
@@ -1357,6 +1360,18 @@ void BlackBox::build_info_as_str(long index)
 
 		case Op_Write_Pipe_5 :
 			elt_str = elt_str + "write_pipe_5 (";
+			nb_in_vect = box[index].attr_names.size();
+			for (i = 0;i < nb_in_vect;i++)
+			{
+				elt_str = elt_str + box[index].attr_names[i];
+				if (i != nb_in_vect - 1)
+					elt_str = elt_str + ", ";
+			}
+			elt_str = elt_str + ") ";
+			break;
+
+		case Op_Write_Read_Pipe_5 :
+			elt_str = elt_str + "write_read_pipe_5 (";
 			nb_in_vect = box[index].attr_names.size();
 			for (i = 0;i < nb_in_vect;i++)
 			{

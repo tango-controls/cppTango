@@ -1097,7 +1097,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 //
 
 	if (store_in_bb == true)
-		blackbox_ptr->insert_attr(pi_value,cl_id,5);
+		blackbox_ptr->insert_attr(pi_value,cl_id,0);
 	store_in_bb = true;
 
 //
@@ -1225,7 +1225,33 @@ Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi
 {
 	string pipe_name(pi_value.name.in());
 	cout4 << "Device_5Impl::write_read_pipe_5 arrived for pipe " << pipe_name << endl;
-	DevPipeData *back = Tango_nullptr;
+
+//
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_attr(pi_value,cl_id,1);
+
+//
+// Check if the device is locked and by who
+//
+
+	check_lock("write_read_pipe_5");
+
+//
+// First, write the pipe
+//
+
+	store_in_bb = false;
+	write_pipe_5(pi_value,cl_id);
+
+//
+// Now, read the pipe
+//
+
+	store_in_bb = false;
+	DevPipeData *back = read_pipe_5(pi_value.name.in(),cl_id);
+
 
 	return back;
 }

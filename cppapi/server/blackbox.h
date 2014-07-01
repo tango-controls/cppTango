@@ -140,7 +140,8 @@ enum BlackBoxElt_OpType
 	Op_Read_Attr_history_5,
 	Op_Get_Pipe_Config_5,
 	Op_Read_Pipe_5,
-	Op_Write_Pipe_5
+	Op_Write_Pipe_5,
+	Op_Write_Read_Pipe_5
 };
 
 class BlackBoxElt

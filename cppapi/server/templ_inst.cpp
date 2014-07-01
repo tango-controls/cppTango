@@ -964,6 +964,7 @@ template ostream &operator<<(ostream &,DataElement<DevState> &);
 template ostream &operator<<(ostream &,DataElement<const string> &);
 
 #ifndef _TG_WINDOWS_
+template ostream &operator<<(ostream &,DataElement<DevString> &);
 template ostream &operator<<(ostream &,DataElement<DevicePipeBlob> &);
 template ostream &operator<<(ostream &,DataElement<DevString> &);
 #endif
