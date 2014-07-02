@@ -818,7 +818,7 @@ public :
 			{string str(att_name);return attribute_history(str,depth);}
 //@}
 
-/** @name Synchronous pipe related methods */
+/** @name Pipe related methods */
 //@{
 /**
  * Get pipe configuration for a list of pipes
@@ -871,6 +871,17 @@ public :
  * @throws ConnectionFailed, CommunicationFailed
  */
 	virtual void write_pipe(DevicePipe &pipe_data);
+/**
+ * Write then read a pipe
+ *
+ * Write then read a pipe in a single network call. By default (serialisation by device), the execution
+ * of this call in the server can’t be interrupted by other clients.
+ *
+ * @param [in] pipe_data Data to be sent to the device through the pipe
+ * @return The pipe value in a DevicePipe instance
+ * @throws ConnectionFailed, CommunicationFailed
+ */
+	virtual DevicePipe write_read_pipe(DevicePipe &pipe_data);
 //@}
 
 /** @name Asynchronous attribute related methods */
@@ -1782,8 +1793,11 @@ public :
  * commands defined as allowed following the definition of allowed command in the Tango control
  * access schema.
  * @li write_attribute call
+ * @li write_pipe call
  * @li write_read_attribute call
+ * @li write_read_pipe call
  * @li set_attribute_config call
+ * @li set_pipe_config call
  *
  * @param [in] lock_validity The lock validity (in seconds)
  */

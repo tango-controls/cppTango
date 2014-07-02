@@ -4530,6 +4530,11 @@ omni_mutex *mut_ptr;
   struct DevPipeData {
     typedef _CORBA_ConstrType_Variable_Var<DevPipeData> _var_type;
 
+// Added by ET for LockedPipe class
+virtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}
+DevPipeData() {mut_ptr=NULL;}
+void set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}
+void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     
     ::CORBA::String_member name;
 
@@ -4537,7 +4542,8 @@ omni_mutex *mut_ptr;
 
     DevPipeBlob data_blob;
 
-  
+// Added by ET for LockedPipe class
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);

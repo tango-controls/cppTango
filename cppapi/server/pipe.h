@@ -201,6 +201,34 @@ public:
  * @return The pipe write type.
  */
 	Tango::PipeWriteType get_writable() {return writable;}
+/**
+ * Set pipe serialization model
+ *
+ * This method allows the user to choose the pipe serialization model.
+ *
+ * @param ser_model The new serialisation model. The serialization model must be
+ * one of PIPE_BY_KERNEL, PIPE_BY_USER or PIPE_NO_SYNC
+ */
+	void set_pipe_serial_model(PipeSerialModel ser_model);
+/**
+ * Get pipe serialization model
+ *
+ * Get the pipe serialization model
+ *
+ * @return The pipe serialization model
+ */
+	PipeSerialModel get_pipe_serial_model() {return pipe_serial_model;}
+/**
+ * Set pipe user mutex
+ *
+ * This method allows the user to give to the pipe object the pointer to
+ * the omni_mutex used to protect its buffer. The mutex has to be locked when passed
+ * to this method. The Tango kernel will unlock it when the data will be transferred
+ * to the client.
+ *
+ * @param mut_ptr The user mutex pointer
+ */
+	void set_user_pipe_mutex(omni_mutex *mut_ptr) {user_pipe_mutex = mut_ptr;}
 //@}
 
 /**@name Exception and error related methods methods
@@ -302,6 +330,9 @@ public:
 	void set_data_elt_names(vector<string> &_v_names) {the_blob.set_data_elt_names(_v_names);}
 	void set_root_blob_name(const string &root_blob_name) {the_blob.set_name(root_blob_name);}
 
+	omni_mutex *get_pipe_mutex() {return &pipe_mutex;}
+	omni_mutex *get_user_pipe_mutex() {return user_pipe_mutex;}
+
 protected:
 /**@name Class data members */
 //@{
@@ -341,19 +372,23 @@ private:
     };
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<PipeExt>          ext;           // Class extension
+    unique_ptr<PipeExt>          ext;           	// Class extension
 #else
 	PipeExt		                *ext;
 #endif
 
-	bool						value_flag;		// Flag set when pipe value is set
-	Tango::TimeVal				when;			// Date associated to the pipe
-	Tango::DevPipeData 			*ret_data;		// Pointer for read data
+	bool						value_flag;			// Flag set when pipe value is set
+	Tango::TimeVal				when;				// Date associated to the pipe
+	Tango::DevPipeData 			*ret_data;			// Pointer for read data
 
-	vector<string> 				pe_out_names;	// Data elements name
-	int 						rec_count;		// Data elements ctr
+	vector<string> 				pe_out_names;		// Data elements name
+	int 						rec_count;			// Data elements ctr
 
-	string						blob_name;		// The blob name
+	string						blob_name;			// The blob name
+    PipeSerialModel				pipe_serial_model;	// Flag for attribute serialization model
+
+	omni_mutex					pipe_mutex;			// Mutex to protect the pipe shared data buffer
+	omni_mutex					*user_pipe_mutex;	// Ptr for user mutex in case he manages exclusion
 };
 
 template <typename T>

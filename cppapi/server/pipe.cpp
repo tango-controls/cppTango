@@ -57,6 +57,8 @@ Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::D
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+
+	pipe_serial_model = PIPE_BY_KERNEL;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -87,6 +89,30 @@ void Pipe::set_time()
 	when.tv_usec = (CORBA::Long)tv.tv_usec;
 	when.tv_nsec = 0;
 #endif
+}
+
+//+-------------------------------------------------------------------------
+//
+// method : 		Pipe::set_pipe_serial_method
+//
+// description : 	Set pipe serialization method
+//
+//--------------------------------------------------------------------------
+
+void Pipe::set_pipe_serial_model(PipeSerialModel ser_model)
+{
+	if (ser_model == Tango::PIPE_BY_USER)
+	{
+		Tango::Util *tg = Tango::Util::instance();
+		if (tg->get_serial_model() != Tango::BY_DEVICE)
+		{
+			Except::throw_exception(API_PipeNotAllowed,
+				      	  "Pipe serial model by user is not allowed when the process is not in BY_DEVICE serialization model",
+				      	  "Pipe::set_pipe_serial_model");
+		}
+	}
+
+	pipe_serial_model=ser_model;
 }
 
 } // End of Tango namespace

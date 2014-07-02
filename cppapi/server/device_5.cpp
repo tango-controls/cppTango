@@ -934,7 +934,11 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 	cout4 << "Device_5Impl::read_pipe_5 arrived for pipe " << name << endl;
 	DevPipeData *back = Tango_nullptr;
 
-// TODO: Pipe -> Need to take device monitor here ?
+//
+// Take dev monitor
+//
+
+	AutoTangoMonitor sync(this);
 
 //
 // Record operation request in black box
@@ -1001,16 +1005,55 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 			Except::throw_exception(API_PipeNotAllowed,o.str(),"Device_5Impl::read_pipe_5");
 		}
 
-// TODO: Pipe : Do we need to have a mutex to protect pipe data (like attribute)?
+//
+// Take the pipe mutex before calling the user read method
+//
+
+		if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
+		{
+			cout4 << "Locking pipe mutex for pipe " << name << endl;
+			omni_mutex *pi_mut = pi.get_pipe_mutex();
+			if (pi_mut->trylock() == 0)
+			{
+				cout4 << "Mutex for pipe " << name << " is already taken.........." << endl;
+				pi_mut->lock();
+			}
+		}
 
 //
 // Call the user read method but before, set pipe date
 //
 
-		pi.set_time();
-		pi.set_returned_data_ptr(back);
-		pi.get_blob().reset_insert_ctr();
-		pi.read(this);
+		try
+		{
+			pi.set_time();
+			pi.set_returned_data_ptr(back);
+			pi.get_blob().reset_insert_ctr();
+			pi.read(this);
+		}
+		catch (DevFailed &e)
+		{
+			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
+			{
+				cout4 << "Releasing pipe mutex for pipe " << name << " due to error" << endl;
+				omni_mutex *pi_mut = pi.get_pipe_mutex();
+				pi_mut->unlock();
+			}
+
+			throw e;
+		}
+		catch (...)
+		{
+			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
+			{
+				cout4 << "Releasing pipe mutex for pipe " << name << " due to error which is not a DevFailed !!" << endl;
+				omni_mutex *pi_mut = pi.get_pipe_mutex();
+				pi_mut->unlock();
+			}
+
+			throw;
+		}
+
 
 //
 // Check that the wanted pipe set value has been updated
@@ -1018,6 +1061,13 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 		if (pi.get_value_flag() == false)
 		{
+			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
+			{
+				cout4 << "Releasing pipe mutex for pipe " << name << " due to error (value not set)" << endl;
+				omni_mutex *pi_mut = pi.get_pipe_mutex();
+				pi_mut->unlock();
+			}
+
 			stringstream o;
 			o << "Value for pipe " << pipe_name << " has not been updated";
 
@@ -1039,6 +1089,20 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		back->data_blob.blob_data.replace(max,len,dvpdea->get_buffer((CORBA::Boolean)true),true);
 
 		delete dvpdea;
+
+//
+// Give pipe mutex to CORBA layer
+//
+
+		PipeSerialModel pism = pi.get_pipe_serial_model();
+		if (pism != PIPE_NO_SYNC)
+		{
+			cout4 << "Giving pipe mutex to CORBA structure for pipe " << name << endl;
+			if (pism == PIPE_BY_KERNEL)
+				back->set_pipe_mutex(pi.get_pipe_mutex());
+			else
+				back->set_pipe_mutex(pi.get_user_pipe_mutex());
+		}
 	}
 	catch (...)
 	{
@@ -1223,6 +1287,8 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 
 Tango::DevPipeData *Device_5Impl::write_read_pipe_5(const Tango::DevPipeData &pi_value, const Tango::ClntIdent& cl_id)
 {
+	AutoTangoMonitor sync(this,true);
+
 	string pipe_name(pi_value.name.in());
 	cout4 << "Device_5Impl::write_read_pipe_5 arrived for pipe " << pipe_name << endl;
 

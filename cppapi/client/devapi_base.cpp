@@ -4819,6 +4819,10 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::write_pipe()");
 	}
 
+//
+// Prepare data sent to device
+//
+
 	pipe_value_5.name = dev_pipe.get_name().c_str();
 	const string &bl_name = dev_pipe.get_root_blob().get_name();
 	if (bl_name.size() != 0)
@@ -4900,6 +4904,139 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 	}
 
 }
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::write_read_pipe() - write then read a single pipe
+//
+//-----------------------------------------------------------------------------
+
+DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
+{
+	DevPipeData pipe_value_5;
+	DevPipeData_var r_pipe_value_5;
+	DevicePipe r_dev_pipe;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use write_read_pipe() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::write_read_pipe()");
+	}
+
+//
+// Prepare data sent to device
+//
+
+	pipe_value_5.name = pipe_data.get_name().c_str();
+	const string &bl_name = pipe_data.get_root_blob().get_name();
+	if (bl_name.size() != 0)
+		pipe_value_5.data_blob.name = bl_name.c_str();
+
+	DevVarPipeDataEltArray *tmp_ptr = pipe_data.get_root_blob().get_insert_data();
+	CORBA::ULong max,len;
+	max = tmp_ptr->maximum();
+	len = tmp_ptr->length();
+	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+
+	delete tmp_ptr;
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			r_pipe_value_5 = dev->write_read_pipe_5(pipe_value_5,ci);
+
+			ctr = 2;
+		}
+		catch (Tango::ConnectionFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to write_read_pipe on device " << device_name << ", pipe " << pipe_data.get_name();
+			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_read_pipe()");
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << pipe_data.get_name();
+			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_read_pipe()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_pipe",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_read_pipe()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_read_pipe()");
+			}
+		}
+		catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+			stringstream desc;
+			desc << "Failed to write_read_pipe on device " << device_name;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_read_pipe()");
+		}
+	}
+
+//
+// Pass received data to the caller.
+// For thw data elt sequence, we create a new one with size and buffer from the original one.
+// This is required because the whole object received by the call will be deleted at the end of this method
+//
+
+	r_dev_pipe.set_name(r_pipe_value_5->name.in());
+	r_dev_pipe.set_time(r_pipe_value_5->time);
+
+	max = r_pipe_value_5->data_blob.blob_data.maximum();
+	len = r_pipe_value_5->data_blob.blob_data.length();
+	DevPipeDataElt *buf = r_pipe_value_5->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
+
+	r_dev_pipe.get_root_blob().reset_extract_ctr();
+	r_dev_pipe.get_root_blob().set_name(r_pipe_value_5->data_blob.name.in());
+	r_dev_pipe.get_root_blob().set_extract_data(dvpdea);
+	r_dev_pipe.get_root_blob().set_extract_delete(true);
+
+	return r_dev_pipe;
+
+}
+
 
 //-----------------------------------------------------------------------------
 //
