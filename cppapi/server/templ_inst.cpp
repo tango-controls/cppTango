@@ -409,6 +409,12 @@ template DevicePipe &operator<<(DevicePipe &,WDataElement<DevVarEncodedArray *> 
 
 //-----------------------------------------------------------------------------------------------------
 
+//
+// Note that there is no instanciation for type DevString. For this type, a  non template method has been written
+// Otherwise, due the partial specialization for pointer types, it was not possible to use extracttion into
+// DevString type
+//
+
 template DevicePipe &operator>>(DevicePipe &,DevBoolean &);
 template DevicePipe &operator>>(DevicePipe &,short &);
 template DevicePipe &operator>>(DevicePipe &,DevLong &);
@@ -419,7 +425,7 @@ template DevicePipe &operator>>(DevicePipe &,DevUChar &);
 template DevicePipe &operator>>(DevicePipe &,DevUShort &);
 template DevicePipe &operator>>(DevicePipe &,DevULong &);
 template DevicePipe &operator>>(DevicePipe &,DevULong64 &);
-template DevicePipe &operator>>(DevicePipe &,DevString &);
+// Missing DevString (see above)
 template DevicePipe &operator>>(DevicePipe &,DevState &);
 template DevicePipe &operator>>(DevicePipe &,DevEncoded &);
 template DevicePipe &operator>>(DevicePipe &,string &);
@@ -519,6 +525,7 @@ template DevicePipeBlob &operator<<(DevicePipeBlob &,DevString &);
 template DevicePipeBlob &operator<<(DevicePipeBlob &,DevState &);
 template DevicePipeBlob &operator<<(DevicePipeBlob &,DevEncoded &);
 template DevicePipeBlob &operator<<(DevicePipeBlob &,const string &);
+template DevicePipeBlob &operator<<(DevicePipeBlob &,string &);
 
 template DevicePipeBlob &operator<<(DevicePipeBlob &,DevicePipeBlob &);
 
@@ -966,7 +973,6 @@ template ostream &operator<<(ostream &,DataElement<const string> &);
 #ifndef _TG_WINDOWS_
 template ostream &operator<<(ostream &,DataElement<DevString> &);
 template ostream &operator<<(ostream &,DataElement<DevicePipeBlob> &);
-template ostream &operator<<(ostream &,DataElement<DevString> &);
 #endif
 
 template ostream &operator<<(ostream &,DataElement<vector<DevBoolean> > &);

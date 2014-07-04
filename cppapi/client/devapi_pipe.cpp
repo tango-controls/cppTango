@@ -210,6 +210,8 @@ extract_elt_array(Tango_nullptr),extract_ctr(0),extract_delete(false),ext(Tango_
 {
 	exceptions_flags.set();
 	ext_state.reset();
+	insert_ind = -1;
+	extract_ind = -1;
 }
 
 
@@ -219,6 +221,8 @@ extract_delete(false),ext(Tango_nullptr)
 {
 	exceptions_flags.set();
 	ext_state.reset();
+	insert_ind = -1;
+	extract_ind = -1;
 }
 
 //----------------------------------------------------------------------------------------------------------------
@@ -249,6 +253,8 @@ DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(Tango_nullptr)
 	exceptions_flags = source.exceptions_flags;
 	ext_state = source.ext_state;
 	failed = source.failed;
+	insert_ind = source.insert_ind;
+	extract_ind = source.extract_ind;
 
 	if (source.insert_elt_array != Tango_nullptr)
 		(*insert_elt_array) = (*source.insert_elt_array);
@@ -300,6 +306,8 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 		exceptions_flags = rhs.exceptions_flags;
 		ext_state = rhs.ext_state;
 		failed = rhs.failed;
+		insert_ind = rhs.insert_ind;
+		extract_ind = rhs.extract_ind;
 
 		if (rhs.insert_elt_array != Tango_nullptr)
 			(*insert_elt_array) = (*rhs.insert_elt_array);
@@ -355,6 +363,8 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 	exceptions_flags = source.exceptions_flags;
 	ext_state = source.ext_state;
 	failed = source.failed;
+	insert_ind = source.insert_ind;
+	extract_ind = source.extract_ind;
 
 	if (source.insert_elt_array != Tango_nullptr)
 		(*insert_elt_array) = (*source.insert_elt_array);
@@ -395,6 +405,8 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 	exceptions_flags = rhs.exceptions_flags;
 	ext_state = rhs.ext_state;
 	failed = rhs.failed;
+	insert_ind = rhs.insert_ind;
+	extract_ind = rhs.extract_ind;
 
 	if (rhs.insert_elt_array != Tango_nullptr)
 		insert_elt_array = rhs.insert_elt_array;
@@ -672,10 +684,16 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 
 	bool found = false;
-	size_t nb = get_data_elt_nb();
 	size_t loop;
 
-	for (loop = 0;loop < nb;loop++)
+	if (extract_elt_array == Tango_nullptr)
+	{
+		Except::throw_exception(API_PipeNoDataElement,
+								"No data element available for extraction",
+								"DevicePipeBlob::get_extract_ind_from_name()");
+	}
+
+	for (loop = 0;loop < extract_elt_array->length();loop++)
 	{
 		string tmp((*extract_elt_array)[loop].name.in());
 		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
@@ -693,6 +711,44 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 
 		ss << "Can't get data element with name " << _na;
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_extract_ind_from_name()");
+	}
+
+	return loop;
+}
+
+size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
+{
+	string lower_name(_na);
+	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
+
+	bool found = false;
+	size_t loop;
+
+	if (insert_elt_array == Tango_nullptr)
+	{
+		Except::throw_exception(API_PipeNoDataElement,
+								"No data element available for insertion",
+								"DevicePipeBlob::get_insert_ind_from_name()");
+	}
+
+	for (loop = 0;loop < insert_elt_array->length();loop++)
+	{
+		string tmp((*insert_elt_array)[loop].name.in());
+		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
+
+		if (tmp == lower_name)
+		{
+			found = true;
+			break;
+		}
+	}
+
+	if (found == false)
+	{
+		stringstream ss;
+
+		ss << "Can't get data element with name " << _na;
+		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_insert_ind_from_name()");
 	}
 
 	return loop;
@@ -719,8 +775,30 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 
 DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 {
-	int ind = get_extract_ind_from_name(_na);
-	extract_ctr = ind;
+	int ind;
+	try
+	{
+		ind = get_extract_ind_from_name(_na);
+		extract_ind = ind;
+	}
+	catch (Tango::DevFailed &e)
+	{
+		string reason(e.errors[0].reason.in());
+		if (reason != API_PipeNoDataElement)
+			throw e;
+	}
+
+	try
+	{
+		ind = get_insert_ind_from_name(_na);
+		insert_ind = ind;
+	}
+	catch (Tango::DevFailed &e)
+	{
+		string reason(e.errors[0].reason.in());
+		if (reason != API_PipeNoDataElement)
+			throw e;
+	}
 
 	return *this;
 }
@@ -742,6 +820,49 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 
 void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 {
+
+//
+// Check that we do not have two times the same DE name (case independant)
+//
+
+	if (elt_names.size() > 1)
+	{
+	    unsigned int i;
+		vector<string> same_de = elt_names;
+
+		for (i = 0;i < same_de.size();++i)
+			transform(same_de[i].begin(),same_de[i].end(),same_de[i].begin(),::tolower);
+		sort(same_de.begin(),same_de.end());
+		vector<string> same_de_lower = same_de;
+
+		vector<string>::iterator pos = unique(same_de.begin(),same_de.end());
+
+		int duplicate_de;
+		duplicate_de = distance(elt_names.begin(),elt_names.end()) - distance(same_de.begin(),pos);
+
+		if (duplicate_de != 0)
+		{
+			stringstream desc;
+			desc << "Several times the same data element name in provided vector: ";
+			int ctr = 0;
+			for (i = 0;i < same_de_lower.size() - 1;i++)
+			{
+				if (same_de_lower[i] == same_de_lower[i + 1])
+				{
+					ctr++;
+					desc << same_de_lower[i];
+					if (ctr < duplicate_de)
+						desc << ", ";
+				}
+			}
+			ApiConnExcept::throw_exception(API_PipeDuplicateDEName,desc.str(),"set_data_elt_names");
+		}
+	}
+
+//
+// Init insert elt array and set names
+//
+
 	insert_elt_array = new DevVarPipeDataEltArray();
 	insert_elt_array->length(elt_names.size());
 
@@ -750,6 +871,11 @@ void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 		(*insert_elt_array)[loop].name = CORBA::string_dup(elt_names[loop].c_str());
 		(*insert_elt_array)[loop].value.union_no_data(true);
 	}
+
+	insert_ctr = 0;
+	extract_ctr = 0;
+	insert_ind = -1;
+	extract_ind = -1;
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -775,6 +901,11 @@ void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 	{
 		(*insert_elt_array)[loop].value.union_no_data(true);
 	}
+
+	insert_ctr = 0;
+	extract_ctr = 0;
+	insert_ind = -1;
+	extract_ind = -1;
 }
 
 //******************************************************************************************************************
@@ -851,7 +982,25 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevULong64 &datum)
 
 DevicePipeBlob & DevicePipeBlob::operator<<(DevString &datum)
 {
-	INSERT_BASIC_TYPE(DevVarStringArray,string_att_value)
+	failed = false;
+	ext_state.reset();
+	if (insert_ctr > insert_elt_array->length() - 1)
+		ext_state.set(notenoughde_flag);
+	else
+	{
+		DevVarStringArray dvsa;
+		dvsa.length(1);
+		dvsa[0] = CORBA::string_dup(datum);
+
+		(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+		insert_ctr++;
+	}
+
+	if (ext_state.any() == true)
+		failed = true;
+
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
+		throw_too_many("operator<<",false);
 
 	return *this;
 }
@@ -1032,12 +1181,14 @@ DevicePipeBlob & DevicePipeBlob::operator<<(vector<string> &datum)
 		ext_state.set(notenoughde_flag);
 	else
 	{
-		DevVarStringArray &dvsa = (*insert_elt_array)[insert_ctr].value.string_att_value();
+		DevVarStringArray dvsa;
+		(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+		DevVarStringArray &dvsb = (*insert_elt_array)[insert_ctr].value.string_att_value();
 		size_t nb = datum.size();
 		char **strvec = DevVarStringArray::allocbuf(nb);
 		for (size_t i = 0;i < nb;i++)
 			strvec[i] = CORBA::string_dup(datum[i].c_str());
-		dvsa.replace(datum.size(),datum.size(),strvec,true);
+		dvsb.replace(datum.size(),datum.size(),strvec,true);
 
 		insert_ctr++;
 	}
@@ -1668,8 +1819,30 @@ void DevicePipeBlob::throw_is_empty(const string &_meth)
 {
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
-	ApiDataExcept::throw_exception(API_PipeWrongArg,"The data element is empmty",m_name.c_str());
+	ApiDataExcept::throw_exception(API_EmptyDataElement,"The data element is empty",m_name.c_str());
 }
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::throw_name_not_set
+//
+// description :
+//		Throw exception when user try to insert data into a device blob while the DE name/nb not set
+//
+// argument:
+//		in :
+//			- _meth : Caller method name
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void DevicePipeBlob::throw_name_not_set(const string &_meth)
+{
+	string m_name("DevicePipeBlob::");
+	m_name = m_name + _meth;
+	ApiDataExcept::throw_exception(API_PipeNoDataElement,"The blob data element number (or name) not set",m_name.c_str());
+}
+
 
 //+------------------------------------------------------------------------------------------------------------------
 //
@@ -1904,15 +2077,13 @@ ostream &operator<<(ostream &o_str,DevicePipe &dd)
 	return o_str;
 }
 
-/*DevicePipeBlob &operator>>(DevicePipeBlob &_dpb,short &_datum)
+
+DevicePipe &operator>>(DevicePipe &_dp,char *&datum)
 {
-	_dpb.operator>>(_datum);
-	return _dpb;
+	_dp.get_root_blob().operator>>(datum);
+	return _dp;
 }
-DevicePipeBlob &operator>>(DevicePipeBlob &_dpb,double &_datum)
-{
-	_dpb.operator>>(_datum);
-	return _dpb;
-}*/
+
+
 
 } // End of Tango namepsace

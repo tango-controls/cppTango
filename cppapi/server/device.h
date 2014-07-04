@@ -810,7 +810,8 @@ public:
  */
 	inline Tango::DevVarUShortArray *create_DevVarUShortArray(unsigned short *ptr,long length)
 	{
-		return new Tango::DevVarUShortArray(length,length,ptr,false);
+//		return new Tango::DevVarUShortArray(length,length,ptr,false);
+		return new Tango::DevVarUShortArray(length,length,ptr,true);
 	}
 
 /**

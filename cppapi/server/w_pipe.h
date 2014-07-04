@@ -100,7 +100,7 @@ public:
  *
  * @return The root blob name
  */
-	string get_blob_name() {return the_blob.get_name();}
+	string get_root_blob_name() {return the_blob.get_name();}
 /**
  * Get root blob data element number
  *

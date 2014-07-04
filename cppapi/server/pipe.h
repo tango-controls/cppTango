@@ -147,11 +147,18 @@ public:
 	string &get_lower_name() {return lower_name;}
 
 /**
- * Return the data blob name.
+ * Return the root data blob name.
  *
  * @return The data blob name
  */
-	string &get_blob_name() {return blob_name;}
+	const string &get_root_blob_name() {return the_blob.get_name();}
+
+/**
+ * Set the root data blob name.
+ *
+ * @param [in] name The root data blob name
+ */
+	void set_root_blob_name(const string &name) {the_blob.set_name(name);}
 
 /**
  * Return the pipe description.
@@ -163,7 +170,7 @@ public:
 /**
  * Set the pipe description field.
  *
- * @param new_desc The new description
+ * @param [in] new_desc The new description
  */
 	void set_desc(const char *new_desc) {desc = new_desc;}
 
@@ -177,7 +184,7 @@ public:
 /**
  * Set the pipe label field.
  *
- * @param new_label The new label
+ * @param [in] new_label The new label
  */
 	void set_label(const char *new_label) {label = new_label;}
 
@@ -191,7 +198,7 @@ public:
 /**
  * Set the pipe display level.
  *
- * @param new_level The pipe display level
+ * @param [in] new_level The pipe display level
  */
 	void set_disp_level(Tango::DispLevel new_level) {disp_level = new_level;}
 
@@ -206,7 +213,7 @@ public:
  *
  * This method allows the user to choose the pipe serialization model.
  *
- * @param ser_model The new serialisation model. The serialization model must be
+ * @param [in] ser_model The new serialisation model. The serialization model must be
  * one of PIPE_BY_KERNEL, PIPE_BY_USER or PIPE_NO_SYNC
  */
 	void set_pipe_serial_model(PipeSerialModel ser_model);
@@ -226,7 +233,7 @@ public:
  * to this method. The Tango kernel will unlock it when the data will be transferred
  * to the client.
  *
- * @param mut_ptr The user mutex pointer
+ * @param [in] mut_ptr The user mutex pointer
  */
 	void set_user_pipe_mutex(omni_mutex *mut_ptr) {user_pipe_mutex = mut_ptr;}
 //@}
@@ -248,6 +255,9 @@ public:
  * @li @b notenoughde_flag - throw a WrongData exception (reason = API_PipeWrongArg) if user
  *       tries to extract data from a DevicePipeBlob for a data element which does not exist. By default, this flag
  *       is set
+ * @li @b blobdenamenotset_flag - Throw a WrongData exception (reason = API_PipeNoDataElement) if user tries to
+ *       insert data into the blob while the name or number of data element has not been set with methods
+ *       set_data_elt_nb() or set_data_elt_names()
  *
  * @param [in] fl The exception flag
  */
@@ -319,6 +329,8 @@ public:
 	virtual bool is_allowed (DeviceImpl *dev,PipeReqType) {(void)dev;return true;}
 	virtual void read(DeviceImpl *) {}
 
+	Pipe &operator[](const string &);
+
 	bool get_value_flag() {return value_flag;}
 	void set_value_flag(bool val) {value_flag = val;}
 	void set_time();
@@ -328,7 +340,6 @@ public:
 	DevicePipeBlob &get_blob() {return the_blob;}
 	void set_data_elt_nb(size_t _nb) {the_blob.set_data_elt_nb(_nb);}
 	void set_data_elt_names(vector<string> &_v_names) {the_blob.set_data_elt_names(_v_names);}
-	void set_root_blob_name(const string &root_blob_name) {the_blob.set_name(root_blob_name);}
 
 	omni_mutex *get_pipe_mutex() {return &pipe_mutex;}
 	omni_mutex *get_user_pipe_mutex() {return user_pipe_mutex;}
@@ -384,7 +395,6 @@ private:
 	vector<string> 				pe_out_names;		// Data elements name
 	int 						rec_count;			// Data elements ctr
 
-	string						blob_name;			// The blob name
     PipeSerialModel				pipe_serial_model;	// Flag for attribute serialization model
 
 	omni_mutex					pipe_mutex;			// Mutex to protect the pipe shared data buffer

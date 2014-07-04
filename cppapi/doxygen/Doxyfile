@@ -661,6 +661,8 @@ INPUT                  = device.h \
                          pollext.h \
                          device_2.h \
                          w_attribute.h \
+						 pipe.h \
+						 w_pipe.h \
                          device_3.h \
                          device_4.h \
 						 device_5.h \

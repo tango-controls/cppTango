@@ -115,4 +115,10 @@ void Pipe::set_pipe_serial_model(PipeSerialModel ser_model)
 	pipe_serial_model=ser_model;
 }
 
+Pipe &Pipe::operator[](const string &_na)
+{
+	the_blob.operator[](_na);
+	return *this;
+}
+
 } // End of Tango namespace

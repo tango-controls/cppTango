@@ -1033,6 +1033,10 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		}
 		catch (DevFailed &e)
 		{
+			DevVarPipeDataEltArray *dvpdea = pi.get_blob().get_insert_data();
+			delete dvpdea;
+			pi.get_blob().reset_insert_data_ptr();
+
 			if (pi.get_pipe_serial_model() == PIPE_BY_KERNEL)
 			{
 				cout4 << "Releasing pipe mutex for pipe " << name << " due to error" << endl;
@@ -1068,6 +1072,10 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 				pi_mut->unlock();
 			}
 
+			DevVarPipeDataEltArray *dvpdea = pi.get_blob().get_insert_data();
+			delete dvpdea;
+			pi.get_blob().reset_insert_data_ptr();
+
 			stringstream o;
 			o << "Value for pipe " << pipe_name << " has not been updated";
 
@@ -1089,6 +1097,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		back->data_blob.blob_data.replace(max,len,dvpdea->get_buffer((CORBA::Boolean)true),true);
 
 		delete dvpdea;
+		pi.get_blob().reset_insert_data_ptr();
 
 //
 // Give pipe mutex to CORBA layer
