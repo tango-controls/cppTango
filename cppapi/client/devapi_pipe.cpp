@@ -640,7 +640,11 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 
 			case ATT_STATE:
 			{
-				ret = DEV_STATE;
+				const DevVarStateArray &dvsa = (*extract_elt_array)[_ind].value.state_att_value();
+				if (dvsa.length() > 1)
+					ret = DEVVAR_STATEARRAY;
+				else
+					ret = DEV_STATE;
 			}
 			break;
 
@@ -693,6 +697,13 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 								"DevicePipeBlob::get_extract_ind_from_name()");
 	}
 
+	if (extract_ctr > 0)
+	{
+		Except::throw_exception(API_NotSupportedFeature,
+								"Not supported to mix extraction type (operator >> and operator [])",
+								"DevicePipeBlob::get_extract_ind_from_name()");
+	}
+
 	for (loop = 0;loop < extract_elt_array->length();loop++)
 	{
 		string tmp((*extract_elt_array)[loop].name.in());
@@ -713,6 +724,7 @@ size_t DevicePipeBlob::get_extract_ind_from_name(const string &_na)
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_extract_ind_from_name()");
 	}
 
+	extract_ctr = -1;
 	return loop;
 }
 
@@ -728,6 +740,13 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
 	{
 		Except::throw_exception(API_PipeNoDataElement,
 								"No data element available for insertion",
+								"DevicePipeBlob::get_insert_ind_from_name()");
+	}
+
+	if (insert_ctr > 0)
+	{
+		Except::throw_exception(API_NotSupportedFeature,
+								"Not supported to mix insertion type (operator << and operator [])",
 								"DevicePipeBlob::get_insert_ind_from_name()");
 	}
 
@@ -751,6 +770,7 @@ size_t DevicePipeBlob::get_insert_ind_from_name(const string &_na)
 		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_insert_ind_from_name()");
 	}
 
+	insert_ctr = -1;
 	return loop;
 }
 
@@ -984,23 +1004,47 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevString &datum)
 {
 	failed = false;
 	ext_state.reset();
-	if (insert_ctr > insert_elt_array->length() - 1)
-		ext_state.set(notenoughde_flag);
+
+	if (insert_elt_array == Tango_nullptr)
+		ext_state.set(blobdenamenotset_flag);
+	else if (insert_ctr == -1 && insert_ind == -1)
+		ext_state.set(mixing_flag);
 	else
 	{
-		DevVarStringArray dvsa;
-		dvsa.length(1);
-		dvsa[0] = CORBA::string_dup(datum);
+		size_t nb_insert = insert_elt_array->length();
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1)
+			ext_state.set(notenoughde_flag);
+		else
+		{
+			DevVarStringArray dvsa;
+			dvsa.length(1);
+			dvsa[0] = CORBA::string_dup(datum);
 
-		(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
-		insert_ctr++;
+			if (insert_ind != -1)
+			{
+				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
+				insert_ind = -1;
+			}
+			else
+			{
+				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+				insert_ctr++;
+			}
+		}
+
 	}
 
 	if (ext_state.any() == true)
 		failed = true;
 
+	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true)
+		throw_name_not_set("operator<<");
+
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator<<",false);
+
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	return *this;
 }
@@ -1023,71 +1067,156 @@ DevicePipeBlob & DevicePipeBlob::operator<<(const string &datum)
 {
 	failed = false;
 	ext_state.reset();
-	if (insert_ctr > insert_elt_array->length() - 1)
-		ext_state.set(notenoughde_flag);
+
+	if (insert_elt_array == Tango_nullptr)
+		ext_state.set(blobdenamenotset_flag);
+	else if (insert_ctr == -1 && insert_ind == -1)
+		ext_state.set(mixing_flag);
 	else
 	{
-		DevVarStringArray dvsa;
-		dvsa.length(1);
-		dvsa[0] = CORBA::string_dup(datum.c_str());
+		size_t nb_insert = insert_elt_array->length();
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1)
+			ext_state.set(notenoughde_flag);
+		else
+		{
+			DevVarStringArray dvsa;
+			dvsa.length(1);
+			dvsa[0] = CORBA::string_dup(datum.c_str());
 
-		(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
-		insert_ctr++;
+			if (insert_ind != -1)
+			{
+				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
+				insert_ind = -1;
+			}
+			else
+			{
+				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+				insert_ctr++;
+			}
+		}
 	}
 
 	if (ext_state.any() == true)
 		failed = true;
 
+	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true)
+		throw_name_not_set("operator<<");
+
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator<<",false);
+
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	return *this;
 }
 
 DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 {
-	if (insert_ctr > insert_elt_array->length() - 1)
+	failed = false;
+	ext_state.reset();
+
+	if (insert_elt_array == Tango_nullptr)
+		ext_state.set(blobdenamenotset_flag);
+	else if (insert_ctr == -1 && insert_ind == -1)
+		ext_state.set(mixing_flag);
+	else
+	{
+		size_t nb_insert = insert_elt_array->length();
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1)
+			ext_state.set(notenoughde_flag);
+		else
+		{
+			DevVarPipeDataEltArray *tmp_ptr = datum.get_insert_data();
+			if (tmp_ptr != Tango_nullptr)
+			{
+				CORBA::ULong max,len;
+				max = tmp_ptr->maximum();
+				len = tmp_ptr->length();
+
+				if (insert_ind != -1)
+				{
+					(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+					(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
+					insert_ind = -1;
+				}
+				else
+				{
+					(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+					(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
+					insert_ctr++;
+				}
+
+				delete tmp_ptr;
+			}
+		}
+	}
+
+	if (ext_state.any() == true)
+		failed = true;
+
+	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true)
+		throw_name_not_set("operator<<");
+
+	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator<<",false);
 
-	DevVarPipeDataEltArray *tmp_ptr = datum.get_insert_data();
-	if (tmp_ptr != Tango_nullptr)
-	{
-		CORBA::ULong max,len;
-		max = tmp_ptr->maximum();
-		len = tmp_ptr->length();
-		(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
-		(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
-		insert_ctr++;
-
-		delete tmp_ptr;
-	}
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	return *this;
 }
+
+//---------------------------------------------------------------------------------------------------------------
 
 DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevBoolean> &datum)
 {
 	failed = false;
 	ext_state.reset();
-	if (insert_ctr > insert_elt_array->length() - 1)
-		ext_state.set(notenoughde_flag);
+
+	if (insert_elt_array == Tango_nullptr)
+		ext_state.set(blobdenamenotset_flag);
+	else if (insert_ctr == -1 && insert_ind == -1)
+		ext_state.set(mixing_flag);
 	else
 	{
-		DevVarBooleanArray &dvsa = (*insert_elt_array)[insert_ctr].value.bool_att_value();
-		dvsa << datum;
-		insert_ctr++;
+		size_t nb_insert = insert_elt_array->length();
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1)
+			ext_state.set(notenoughde_flag);
+		else
+		{
+			DevVarBooleanArray dvsa;
+			if (insert_ind != -1)
+			{
+				(*insert_elt_array)[insert_ind].value.bool_att_value(dvsa);
+				DevVarBooleanArray &dvsb = (*insert_elt_array)[insert_ind].value.bool_att_value();
+				dvsb << datum;
+				insert_ind = -1;
+			}
+			else
+			{
+				(*insert_elt_array)[insert_ctr].value.bool_att_value(dvsa);
+				DevVarBooleanArray &dvsb = (*insert_elt_array)[insert_ctr].value.bool_att_value();
+				dvsb << datum;
+				insert_ctr++;
+			}
+		}
 	}
 
 	if (ext_state.any() == true)
 		failed = true;
+
+	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true)
+		throw_name_not_set("operator<<");
+
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator<<",false);
 
 	return *this;
 }
-
-//---------------------------------------------------------------------------------------------------------------
 
 DevicePipeBlob & DevicePipeBlob::operator<<(vector<DevShort> &datum)
 {
@@ -1177,27 +1306,52 @@ DevicePipeBlob & DevicePipeBlob::operator<<(vector<string> &datum)
 {
 	failed = false;
 	ext_state.reset();
-	if (insert_ctr > insert_elt_array->length() - 1)
-		ext_state.set(notenoughde_flag);
+
+	if (insert_elt_array == Tango_nullptr)
+		ext_state.set(blobdenamenotset_flag);
+	else if (insert_ctr == -1 && insert_ind == -1)
+		ext_state.set(mixing_flag);
 	else
 	{
-		DevVarStringArray dvsa;
-		(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
-		DevVarStringArray &dvsb = (*insert_elt_array)[insert_ctr].value.string_att_value();
-		size_t nb = datum.size();
-		char **strvec = DevVarStringArray::allocbuf(nb);
-		for (size_t i = 0;i < nb;i++)
-			strvec[i] = CORBA::string_dup(datum[i].c_str());
-		dvsb.replace(datum.size(),datum.size(),strvec,true);
+		size_t nb_insert = insert_elt_array->length();
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1)
+			ext_state.set(notenoughde_flag);
+		else
+		{
+			size_t nb = datum.size();
+			char **strvec = DevVarStringArray::allocbuf(nb);
+			for (size_t i = 0;i < nb;i++)
+				strvec[i] = CORBA::string_dup(datum[i].c_str());
+			DevVarStringArray dvsa;
 
-		insert_ctr++;
+			if (insert_ind != -1)
+			{
+				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
+				DevVarStringArray &dvsb = (*insert_elt_array)[insert_ind].value.string_att_value();
+				dvsb.replace(datum.size(),datum.size(),strvec,true);
+				insert_ind = -1;
+			}
+			else
+			{
+				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+				DevVarStringArray &dvsb = (*insert_elt_array)[insert_ctr].value.string_att_value();
+				dvsb.replace(datum.size(),datum.size(),strvec,true);
+				insert_ctr++;
+			}
+		}
 	}
 
 	if (ext_state.any() == true)
 		failed = true;
 
+	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true)
+		throw_name_not_set("operator<<");
+
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator<<",false);
+
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	return *this;
 }
@@ -1465,17 +1619,24 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevString &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (extract_ctr > extract_elt_array->length() - 1)
+	if (extract_ctr > (int)extract_elt_array->length() - 1)
 		ext_state.set(notenoughde_flag);
+	else if (extract_ctr == -1 && extract_ind == -1)
+		ext_state.set(mixing_flag);
 	else
 	{
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[extract_ctr].value);
+		int ind;
+		if (extract_ind != -1)
+			ind = extract_ind;
+		else
+			ind = extract_ctr;
+		const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value);
 		AttributeDataType adt = uni_ptr->_d();
 		if (adt != ATT_STRING)
 		{
 			if (adt == ATT_NO_DATA)
 			{
-				if ((*extract_elt_array)[extract_ctr].inner_blob.length() == 0)
+				if ((*extract_elt_array)[ind].inner_blob.length() == 0)
 					ext_state.set(isempty_flag);
 			}
 			else
@@ -1484,15 +1645,24 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevString &datum)
 		else
 		{
 			datum = CORBA::string_dup((uni_ptr->string_att_value())[0].in());
-			extract_ctr++;
+			if (extract_ind != -1)
+				extract_ind = -1;
+			else
+				extract_ctr++;
 		}
 	}
 
 	if (ext_state.any() == true)
 		failed = true;
 
+	if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true)
+		throw_is_empty("operator>>");
+
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator>>",true);
+
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true)
 		throw_type_except("DevString","operator>>");
@@ -1526,24 +1696,36 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (extract_ctr > extract_elt_array->length() - 1)
+	if (extract_ctr > (int)extract_elt_array->length() - 1)
 		ext_state.set(notenoughde_flag);
+	else if (extract_ctr == -1 && extract_ind == -1)
+		ext_state.set(mixing_flag);
 	else
 	{
-		if ((*extract_elt_array)[extract_ctr].inner_blob.length() == 0)
+		int ind;
+		if (extract_ind != -1)
+			ind = extract_ind;
+		else
+			ind = extract_ctr;
+
+		if ((*extract_elt_array)[ind].inner_blob.length() == 0)
 		{
-			if ((*extract_elt_array)[extract_ctr].value._d() == ATT_NO_DATA)
+			if ((*extract_elt_array)[ind].value._d() == ATT_NO_DATA)
 				ext_state.set(isempty_flag);
 			else
 				ext_state.set(wrongtype_flag);
 		}
 		else
 		{
-			datum.set_extract_data(&((*extract_elt_array)[extract_ctr].inner_blob));
-			string tmp((*extract_elt_array)[extract_ctr].inner_blob_name.in());
+			datum.set_extract_data(&((*extract_elt_array)[ind].inner_blob));
+			string tmp((*extract_elt_array)[ind].inner_blob_name.in());
 			datum.set_name(tmp);
 			datum.reset_extract_ctr();
-			extract_ctr++;
+
+			if (extract_ind != -1)
+				extract_ind = -1;
+			else
+				extract_ctr++;
 		}
 	}
 
@@ -1555,6 +1737,9 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true)
 		throw_too_many("operator>>",true);
+
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true)
+		throw_mixing("operator>>");
 
 	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true)
 		throw_type_except("DevicePipeBlob","operator>>");
@@ -1843,6 +2028,27 @@ void DevicePipeBlob::throw_name_not_set(const string &_meth)
 	ApiDataExcept::throw_exception(API_PipeNoDataElement,"The blob data element number (or name) not set",m_name.c_str());
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::throw_mixing
+//
+// description :
+//		Throw exception when user try to mix [] and >> (<<) insertion/extraction method
+//
+// argument:
+//		in :
+//			- _meth : Caller method name
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void DevicePipeBlob::throw_mixing(const string &_meth)
+{
+	string m_name("DevicePipeBlob::");
+	m_name = m_name + _meth;
+	Except::throw_exception(API_NotSupportedFeature,
+								"Not supported to mix extraction type (operator >> (or <<) and operator [])",m_name.c_str());
+}
 
 //+------------------------------------------------------------------------------------------------------------------
 //

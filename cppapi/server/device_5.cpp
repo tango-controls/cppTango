@@ -1029,6 +1029,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 			pi.set_time();
 			pi.set_returned_data_ptr(back);
 			pi.get_blob().reset_insert_ctr();
+			pi.get_blob().reset_extract_ctr();
 			pi.read(this);
 		}
 		catch (DevFailed &e)
@@ -1244,6 +1245,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 		pi.get_blob().set_name(bl_name);
 		pi.get_blob().set_extract_data(&(pi_value.data_blob.blob_data));
 		pi.get_blob().reset_extract_ctr();
+		pi.get_blob().reset_insert_ctr();
 
 //
 // Call the user write method

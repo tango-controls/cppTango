@@ -918,6 +918,7 @@ enum CmdArgType {
 	DEV_ENCODED,
 	DEV_ENUM,
 	DEV_PIPE_BLOB,
+	DEVVAR_STATEARRAY,
 	DATA_TYPE_UNKNOWN = 100
 };
 
@@ -1039,6 +1040,7 @@ const char * const CmdArgTypeName[] = {
 	"DevEncoded",
 	"DevEnum",
 	"DevPipeBlob",
+	"DevVarStateArray",
 	"Unknown"
 };
 

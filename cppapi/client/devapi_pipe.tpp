@@ -61,7 +61,7 @@ DevicePipe &operator<<(DevicePipe &_dp,T *datum)
 }
 
 template <typename T>
-DevicePipe &operator<<(DevicePipe &_dp,WDataElement<T> &datum)
+DevicePipe &operator<<(DevicePipe &_dp,DataElement<T> &datum)
 {
 	_dp.get_root_blob().set_current_delt_name(datum.name);
 	_dp.get_root_blob().operator<<(datum.value);
@@ -83,7 +83,7 @@ DevicePipeBlob &operator<<(DevicePipeBlob &_dp,T *datum)
 }
 
 template <typename T>
-DevicePipeBlob &operator<<(DevicePipeBlob &_dp,WDataElement<T> &datum)
+DevicePipeBlob &operator<<(DevicePipeBlob &_dp,DataElement<T> &datum)
 {
 	_dp.set_current_delt_name(datum.name);
 	_dp.operator<<(datum.value);

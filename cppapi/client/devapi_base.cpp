@@ -4788,6 +4788,7 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 	dev_pipe.get_root_blob().reset_extract_ctr();
+	dev_pipe.get_root_blob().reset_insert_ctr();
 	dev_pipe.get_root_blob().set_name(pipe_value_5->data_blob.name.in());
 	dev_pipe.get_root_blob().set_extract_data(dvpdea);
 	dev_pipe.get_root_blob().set_extract_delete(true);
@@ -4829,12 +4830,15 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		pipe_value_5.data_blob.name = bl_name.c_str();
 
 	DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
+	if (tmp_ptr == Tango_nullptr)
+	{
+		Except::throw_exception(API_PipeNoDataElement,"No data in pipe!","DeviceProxy::write_pipe()");
+	}
+
 	CORBA::ULong max,len;
 	max = tmp_ptr->maximum();
 	len = tmp_ptr->length();
 	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
-
-	delete tmp_ptr;
 
 	while (ctr < 2)
 	{
@@ -4903,6 +4907,8 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		}
 	}
 
+	dev_pipe.get_root_blob().reset_insert_ctr();
+	delete tmp_ptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -5029,6 +5035,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
 	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 	r_dev_pipe.get_root_blob().reset_extract_ctr();
+	r_dev_pipe.get_root_blob().reset_insert_ctr();
 	r_dev_pipe.get_root_blob().set_name(r_pipe_value_5->data_blob.name.in());
 	r_dev_pipe.get_root_blob().set_extract_data(dvpdea);
 	r_dev_pipe.get_root_blob().set_extract_delete(true);

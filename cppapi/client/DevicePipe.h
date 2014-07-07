@@ -97,63 +97,6 @@ DataElement<T>::DataElement()
 }
 
 /**
- * Fundamental type for inserting data into a device pipe blob
- *
- * This is the fundamental type for inserting data into a device pipe blob
- *
- * $Author$
- * $Revision$
- *
- * @headerfile tango.h
- * @ingroup Client
- */
-
-template <typename T>
-struct WDataElement: public DataElement<T>
-{
-/**
- * Create a WDataElement object.
- *
- * Create a WDataElement object for device pipe blob insertion
- *
- * @param [in] name The data element name
- * @param [in] value The data element value
- * @param [in] size The data element size (when array is used). Default value is 1
- * @param [in] rel The data element release flag. If true, Tango will free memory used by data elemt value after using
- * it. Dafault value is false
- */
-	WDataElement(const string &name,T value,size_t size=1,bool rel=false);
-/**
- * Create a WDataElement object.
- *
- * Create a WDataElement object for device pipe blob insertion
- *
- * @param [in] name The data element name
- */
-	WDataElement(const string &name);
-
-	WDataElement();
-
-	size_t		size;		///< Data element size
-	bool		release;	///< Data element release flag
-};
-
-template <typename T>
-WDataElement<T>::WDataElement(const string &_na,T _val,size_t _s,bool _r):DataElement<T>(_na,_val),size(_s),release(_r)
-{
-}
-
-template <typename T>
-WDataElement<T>::WDataElement(const string &_na):DataElement<T>(_na),size(1),release(false)
-{
-}
-
-template <typename T>
-WDataElement<T>::WDataElement():DataElement<T>(),size(0),release(false)
-{
-}
-
-/**
  * A device pipe blob
  *
  * A device pipe blob. A blob is used to pack data to be sent through device pipe
@@ -176,6 +119,7 @@ public:
 		wrongtype_flag,
 		notenoughde_flag,
 		blobdenamenotset_flag,
+		mixing_flag,
 		numFlags
 	};
 
@@ -285,8 +229,7 @@ public:
  * @li DevVarULong64Array &
  * @li DevVarStringArray &
  * @li DevVarStateArray &
- * @li DevVarEncodedArray &
-
+ *
  * Insert operators for the following CORBA sequence types <B>with memory consumption</B>  (and DataElement<T>):
  * @li DevVarBooleanArray *
  * @li DevVarShortArray *
@@ -300,7 +243,6 @@ public:
  * @li DevVarULong64Array *
  * @li DevVarStringArray *
  * @li DevVarStateArray *
- * @li DevVarEncodedArray *
  *
  * Here is an example of inserting data into a DevicePipeBlob instance. We insert
  * 3 data element into the pipe blob with a DevLong, a vector of doubles and finally an array of 100 unsigned short
@@ -456,7 +398,6 @@ public:
  * @li DevVarULong64Array *
  * @li DevVarStringArray *
  * @li DevVarStateArray *
- * @li DevVarEncodedArray *
  *
  * Here is an example of extracting data from a DevicePipeBlob instance. We know that the DevicePipeBlob contains
  * 3 data element with a DevLong, an array of doubles and finally an array of unsigned short
@@ -593,6 +534,8 @@ public:
  * @li @b blobdenamenotset_flag - Throw a WrongData exception (reason = API_PipeNoDataElement) if user tries to
  *       insert data into the blob while the name or number of data element has not been set with methods
  *       set_data_elt_nb() or set_data_elt_names()
+ * @li @b mixing_flag - Throw a WrongData exception (reason = API_NotSupportedFeature) if user tries to mix
+ *		  insertion/extraction method (<< or >>) with operator[]
  *
  * @param [in] fl The exception flag
  */
@@ -647,6 +590,24 @@ public:
  *
  * Allow the user to find out what was the reason of insertion/extraction into/from DevicePipeBlob failure. This
  * method has to be used when exceptions are disabled.
+ * Here is an example of how methods has_failed() and state() could be used
+ * @code
+ * DevicePipeBlob dpb = ....
+ *
+ * bitset<DevicePipeBlob::numFlags> bs;
+ * bs.reset();
+ * dpb.exceptions(bs);
+ *
+ * DevLong dl;
+ * dpb >> dl;
+ *
+ * if (dpb.has_failed() == true)
+ * {
+ *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
+ *    if (dpb.test(DevicePipeBlob::isempty_flag) == true)
+ *        .....
+ * }
+ * @endcode
  *
  * @return The error bit set.
  */
@@ -795,6 +756,7 @@ protected:
 	void throw_too_many(const string &,bool);
 	void throw_is_empty(const string &);
 	void throw_name_not_set(const string &);
+	void throw_mixing(const string &);
 
 private:
 	string							name;					// The blob name
@@ -803,11 +765,11 @@ private:
 	bool							failed;					// Failed flag
 
 	DevVarPipeDataEltArray			*insert_elt_array;		// Ptr for data to be inserted (client write/Server read)
-	size_t							insert_ctr;				// Ctr for inserting data elt
+	int								insert_ctr;				// Ctr for inserting data elt
 	int								insert_ind;
 
 	const DevVarPipeDataEltArray	*extract_elt_array;		// Ptr for data to be extracted (client read/Server write)
-	size_t							extract_ctr;			// Ctr for extracting data elt
+	int								extract_ctr;			// Ctr for extracting data elt
 	bool							extract_delete;			// Flag to force extract ptr delete
 	int								extract_ind;
 
@@ -1026,6 +988,24 @@ public :
  *
  * Allow the user to find out what was the reason of insertion/extraction into/from DevicePipe failure. This
  * method has to be used when exceptions are disabled.
+ * Here is an example of how methods has_failed() and state() could be used
+ * @code
+ * DevicePipe dpb = ....
+ *
+ * bitset<DevicePipeBlob::numFlags> bs;
+ * bs.reset();
+ * dpb.exceptions(bs);
+ *
+ * DevLong dl;
+ * dpb >> dl;
+ *
+ * if (dpb.has_failed() == true)
+ * {
+ *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
+ *    if (dpb.test(DevicePipeBlob::isempty_flag) == true)
+ *        .....
+ * }
+ * @endcode
  *
  * @return The error bit set.
  */
@@ -1120,7 +1100,7 @@ template <typename T>
 DevicePipe &operator<<(DevicePipe &,T *);
 
 template <typename T>
-DevicePipe &operator<<(DevicePipe &, WDataElement<T> &);
+DevicePipe &operator<<(DevicePipe &, DataElement<T> &);
 
 //
 // For DevicePipe extraction
@@ -1146,7 +1126,7 @@ template <typename T>
 DevicePipeBlob &operator<<(DevicePipeBlob &,T *);
 
 template <typename T>
-DevicePipeBlob &operator<<(DevicePipeBlob &,WDataElement<T> &);
+DevicePipeBlob &operator<<(DevicePipeBlob &,DataElement<T> &);
 
 //
 // For DevicePipeBlob extraction
@@ -1180,8 +1160,10 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (extract_ctr > extract_elt_array->length() - 1) \
+	if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
+	else if (extract_ctr == -1 && extract_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		int ind; \
@@ -1213,11 +1195,15 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 \
 	if (ext_state.any() == true) \
 		failed = true; \
+\
 	if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
 		throw_is_empty("operator>>"); \
 \
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator>>",true); \
+\
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
 \
 	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
 		throw_type_except(C,"operator>>");
@@ -1234,8 +1220,10 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (extract_ctr > extract_elt_array->length() - 1) \
+	if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
+	else if (extract_ctr == -1 && extract_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		int ind; \
@@ -1275,6 +1263,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator>>",true); \
 \
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
+\
 	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
 		throw_type_except(D,"operator>>");
 
@@ -1289,8 +1280,10 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (extract_ctr > extract_elt_array->length() - 1) \
+	if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
+	else if (extract_ctr == -1 && extract_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		int ind; \
@@ -1333,6 +1326,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator>>",true); \
 \
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
+\
 	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
 		throw_type_except(D,"operator>>");
 
@@ -1348,10 +1344,12 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 \
 	if (insert_elt_array == Tango_nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
+	else if (insert_ctr == -1 && insert_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > nb_insert - 1) \
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
 			ext_state.set(notenoughde_flag); \
 		else \
 		{ \
@@ -1378,6 +1376,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
 		throw_name_not_set("operator<<"); \
 \
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
+\
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator<<",false);
 
@@ -1393,10 +1394,12 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 \
 	if (insert_elt_array == Tango_nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
+	else if (insert_ctr == -1 && insert_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > nb_insert - 1) \
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
 			ext_state.set(notenoughde_flag); \
 		else \
 		{ \
@@ -1424,6 +1427,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
 		throw_name_not_set("operator<<"); \
 \
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
+\
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator<<",false);
 
@@ -1440,10 +1446,12 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 \
 	if (insert_elt_array == Tango_nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
+	else if (insert_ctr == -1 && insert_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > nb_insert - 1) \
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
 			ext_state.set(notenoughde_flag); \
 		else \
 		{ \
@@ -1474,6 +1482,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
 		throw_name_not_set("operator<<"); \
 \
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
+\
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator<<",false);
 
@@ -1490,10 +1501,12 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 \
 	if (insert_elt_array == Tango_nullptr) \
 		ext_state.set(blobdenamenotset_flag); \
+	else if (insert_ctr == -1 && insert_ind == -1) \
+		ext_state.set(mixing_flag); \
 	else \
 	{ \
 		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > nb_insert - 1) \
+		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
 			ext_state.set(notenoughde_flag); \
 		else \
 		{ \
@@ -1501,6 +1514,11 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			CORBA::Long max,len; \
 			max = datum->maximum(); \
 			len = datum->length(); \
+			bool rel = datum->release(); \
+			if (rel == false) \
+			{ \
+				datum->replace(max,len,datum->get_buffer(),true); \
+			} \
 			if (insert_ind != -1) \
 			{ \
 				(*insert_elt_array)[insert_ind].value.B(dvsa); \
@@ -1525,6 +1543,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 \
 	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
 		throw_name_not_set("operator<<"); \
+\
+	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+		throw_mixing("operator>>"); \
 \
 	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
 		throw_too_many("operator<<",false);

@@ -312,6 +312,24 @@ public:
  *
  * Allow the user to find out what was the reason of insertion/extraction into/from Pipe failure. This
  * method has to be used when exceptions are disabled.
+ * Here is an example of how methods has_failed() and state() could be used
+ * @code
+ * Pipe dpb = ....
+ *
+ * bitset<DevicePipeBlob::numFlags> bs;
+ * bs.reset();
+ * dpb.exceptions(bs);
+ *
+ * DevLong dl;
+ * dpb >> dl;
+ *
+ * if (dpb.has_failed() == true)
+ * {
+ *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
+ *    if (dpb.test(DevicePipeBlob::isempty_flag) == true)
+ *        .....
+ * }
+ * @endcode
  *
  * @return The error bit set.
  */
@@ -408,7 +426,7 @@ template <typename T>
 Pipe &operator<<(Pipe &,T *);
 
 template <typename T>
-Pipe &operator<<(Pipe &, WDataElement<T> &);
+Pipe &operator<<(Pipe &, DataElement<T> &);
 
 
 //
