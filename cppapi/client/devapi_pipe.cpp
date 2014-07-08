@@ -413,6 +413,9 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 	rhs.insert_elt_array = Tango_nullptr;
 	insert_ctr = rhs.insert_ctr;
 
+	if (extract_delete == true)
+		delete extract_elt_array;
+
 	if (rhs.extract_elt_array != Tango_nullptr)
 		extract_elt_array = rhs.extract_elt_array;
 	rhs.extract_elt_array = Tango_nullptr;
@@ -1932,6 +1935,31 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevVarEncodedArray *datum)
 
 	return *this;
 }
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::has_failed
+//
+// description :
+//		Throw exception when wrong data type is used
+//
+// return:
+//		True if previous insertion/extraction has failed for one reason or another
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+bool DevicePipeBlob::has_failed()
+{
+	if (failed == true)
+	{
+		delete insert_elt_array;
+		delete extract_elt_array;
+		extract_delete = false;
+	}
+	return failed;
+}
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -1949,6 +1977,10 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevVarEncodedArray *datum)
 
 void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
 {
+	delete insert_elt_array;
+	delete extract_elt_array;
+	extract_delete = false;
+
 	stringstream ss;
 
 	ss << "Can't get data element " << extract_ctr << " (numbering starting from 0) into a " << _ty << " data type";
@@ -1983,6 +2015,11 @@ void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 	ss << " data elt in created/received blob)";
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
+
+	delete insert_elt_array;
+	delete extract_elt_array;
+	extract_delete = false;
+
 	ApiDataExcept::throw_exception(API_PipeWrongArg,ss.str(),m_name.c_str());
 }
 
@@ -2002,6 +2039,10 @@ void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 
 void DevicePipeBlob::throw_is_empty(const string &_meth)
 {
+	delete insert_elt_array;
+	delete extract_elt_array;
+	extract_delete = false;
+
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	ApiDataExcept::throw_exception(API_EmptyDataElement,"The data element is empty",m_name.c_str());
@@ -2023,6 +2064,10 @@ void DevicePipeBlob::throw_is_empty(const string &_meth)
 
 void DevicePipeBlob::throw_name_not_set(const string &_meth)
 {
+	delete insert_elt_array;
+	delete extract_elt_array;
+	extract_delete = false;
+
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	ApiDataExcept::throw_exception(API_PipeNoDataElement,"The blob data element number (or name) not set",m_name.c_str());
@@ -2044,6 +2089,10 @@ void DevicePipeBlob::throw_name_not_set(const string &_meth)
 
 void DevicePipeBlob::throw_mixing(const string &_meth)
 {
+	delete insert_elt_array;
+	delete extract_elt_array;
+	extract_delete = false;
+
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
 	Except::throw_exception(API_NotSupportedFeature,

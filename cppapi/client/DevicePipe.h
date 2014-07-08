@@ -584,7 +584,7 @@ public:
  *
  * @return True if insertion/extraction has failed
  */
-	bool has_failed() {return failed;}
+	bool has_failed();
 /**
  * Get instance insertion/extraction state
  *

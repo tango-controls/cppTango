@@ -4790,6 +4790,7 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	dev_pipe.get_root_blob().reset_extract_ctr();
 	dev_pipe.get_root_blob().reset_insert_ctr();
 	dev_pipe.get_root_blob().set_name(pipe_value_5->data_blob.name.in());
+	delete dev_pipe.get_root_blob().get_extract_data();
 	dev_pipe.get_root_blob().set_extract_data(dvpdea);
 	dev_pipe.get_root_blob().set_extract_delete(true);
 
@@ -4856,12 +4857,18 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		}
 		catch (Tango::ConnectionFailed &e)
 		{
+			dev_pipe.get_root_blob().reset_insert_ctr();
+			delete tmp_ptr;
+
 			stringstream desc;
 			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
 			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
 		}
 		catch (Tango::DevFailed &e)
 		{
+			dev_pipe.get_root_blob().reset_insert_ctr();
+			delete tmp_ptr;
+
 			stringstream desc;
 			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
 			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
@@ -4878,6 +4885,9 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 			}
 			else
 			{
+				dev_pipe.get_root_blob().reset_insert_ctr();
+				delete tmp_ptr;
+
 				set_connection_state(CONNECTION_NOTOK);
 				stringstream desc;
 				desc << "Failed to write_pipe on device " << device_name;
@@ -4892,6 +4902,9 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 			}
 			else
 			{
+				dev_pipe.get_root_blob().reset_insert_ctr();
+				delete tmp_ptr;
+
 				set_connection_state(CONNECTION_NOTOK);
 				stringstream desc;
 				desc << "Failed to write_pipe on device " << device_name;
@@ -4900,6 +4913,9 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		}
 		catch (CORBA::SystemException &ce)
         {
+			dev_pipe.get_root_blob().reset_insert_ctr();
+			delete tmp_ptr;
+
 			set_connection_state(CONNECTION_NOTOK);
 			stringstream desc;
 			desc << "Failed to write_pipe on device " << device_name;
