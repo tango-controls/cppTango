@@ -1954,8 +1954,11 @@ bool DevicePipeBlob::has_failed()
 	if (failed == true)
 	{
 		delete insert_elt_array;
-		delete extract_elt_array;
-		extract_delete = false;
+		if (extract_delete == true)
+		{
+			delete extract_elt_array;
+			extract_delete = false;
+		}
 	}
 	return failed;
 }
@@ -1978,8 +1981,11 @@ bool DevicePipeBlob::has_failed()
 void DevicePipeBlob::throw_type_except(const string &_ty,const string &_meth)
 {
 	delete insert_elt_array;
-	delete extract_elt_array;
-	extract_delete = false;
+	if (extract_delete == true)
+	{
+		delete extract_elt_array;
+		extract_delete = false;
+	}
 
 	stringstream ss;
 
@@ -2017,8 +2023,11 @@ void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 	m_name = m_name + _meth;
 
 	delete insert_elt_array;
-	delete extract_elt_array;
-	extract_delete = false;
+	if (extract_delete == true)
+	{
+		delete extract_elt_array;
+		extract_delete = false;
+	}
 
 	ApiDataExcept::throw_exception(API_PipeWrongArg,ss.str(),m_name.c_str());
 }
@@ -2040,8 +2049,11 @@ void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 void DevicePipeBlob::throw_is_empty(const string &_meth)
 {
 	delete insert_elt_array;
-	delete extract_elt_array;
-	extract_delete = false;
+	if (extract_delete == true)
+	{
+		delete extract_elt_array;
+		extract_delete = false;
+	}
 
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
@@ -2065,8 +2077,11 @@ void DevicePipeBlob::throw_is_empty(const string &_meth)
 void DevicePipeBlob::throw_name_not_set(const string &_meth)
 {
 	delete insert_elt_array;
-	delete extract_elt_array;
-	extract_delete = false;
+	if (extract_delete == true)
+	{
+		delete extract_elt_array;
+		extract_delete = false;
+	}
 
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;
@@ -2090,8 +2105,11 @@ void DevicePipeBlob::throw_name_not_set(const string &_meth)
 void DevicePipeBlob::throw_mixing(const string &_meth)
 {
 	delete insert_elt_array;
-	delete extract_elt_array;
-	extract_delete = false;
+	if (extract_delete == true)
+	{
+		delete extract_elt_array;
+		extract_delete = false;
+	}
 
 	string m_name("DevicePipeBlob::");
 	m_name = m_name + _meth;

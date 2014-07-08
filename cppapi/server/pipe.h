@@ -238,6 +238,42 @@ public:
 	void set_user_pipe_mutex(omni_mutex *mut_ptr) {user_pipe_mutex = mut_ptr;}
 //@}
 
+/**@name Inserting data into a DevicePipe
+ */
+//@{
+#ifdef GEN_DOC
+/**
+ * Insert data into a device pipe
+ *
+ * Inserting data into a Pipe instance is simlar to inserting data into a DevicePipeBlob class instance.
+ * See doc of DevicePipeBlob class insertion methods (DevicePipeBlob::operator<<) to get a complete documentation on
+ * how to insert data into a Pipe object
+ *
+ * @param [in] datum The data to be inserted into the Pipe object
+ * @exception WrongData if requested
+ */
+	Pipe & operator << (short &datum);
+#endif
+/**
+ * Set blob data element number
+ *
+ * Set the blob data element number
+ *
+ * @param [in] nb The blob data element number
+ */
+	void set_data_elt_nb(size_t nb) {the_blob.set_data_elt_nb(nb);}
+/**
+ * Set blob data element number and names
+ *
+ * Set the blob data element number and names. The data element number is the number of names in the input
+ * parameter.
+ *
+ * @param [in] names The blob data element names
+ */
+	void set_data_elt_names(vector<string> &names) {the_blob.set_data_elt_names(names);}
+//@}
+
+
 /**@name Exception and error related methods methods
  */
 //@{
@@ -258,6 +294,8 @@ public:
  * @li @b blobdenamenotset_flag - Throw a WrongData exception (reason = API_PipeNoDataElement) if user tries to
  *       insert data into the blob while the name or number of data element has not been set with methods
  *       set_data_elt_nb() or set_data_elt_names()
+ * @li @b mixing_flag - Throw a WrongData exception (reason = API_NotSupportedFeature) if user tries to mix
+ *		  insertion/extraction method (<< or >>) with operator[]
  *
  * @param [in] fl The exception flag
  */
@@ -356,8 +394,6 @@ public:
 	void set_returned_data_ptr(DevPipeData *_p) {ret_data=_p;}
 
 	DevicePipeBlob &get_blob() {return the_blob;}
-	void set_data_elt_nb(size_t _nb) {the_blob.set_data_elt_nb(_nb);}
-	void set_data_elt_names(vector<string> &_v_names) {the_blob.set_data_elt_names(_v_names);}
 
 	omni_mutex *get_pipe_mutex() {return &pipe_mutex;}
 	omni_mutex *get_user_pipe_mutex() {return user_pipe_mutex;}

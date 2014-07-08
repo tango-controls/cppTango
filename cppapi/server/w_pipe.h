@@ -89,7 +89,7 @@ public:
 #endif
 //@}
 
-/**@name get_value methods.
+/**@name Get/Set methods.
  * Methods to get the value of the data blob transported by the pipe
  */
 //@{
@@ -101,6 +101,24 @@ public:
  * @return The root blob name
  */
 	string get_root_blob_name() {return the_blob.get_name();}
+//@}
+
+/**@name Extracting data from a WPipe
+ */
+//@{
+#ifdef GEN_DOC
+/**
+ * Extract data from a device pipe
+ *
+ * Extracting data from a WPipe instance is simlar to extracting data from a DevicePipeBlob class instance.
+ * See doc of DevicePipeBlob class extraction methods (DevicePipeBlob::operator>>) to get a complete documentation on
+ * how to extract data from a WPipe
+ *
+ * @param [in] datum The pipe data
+ * @exception WrongData if requested
+ */
+	WPipe & operator >> (short &datum);
+#endif
 /**
  * Get root blob data element number
  *
