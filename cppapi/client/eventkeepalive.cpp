@@ -180,7 +180,7 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
                     DeviceData subscriber_in,subscriber_out;
                     vector<string> subscriber_info;
                     subscriber_info.push_back(epos->second.device->dev_name());
-                    subscriber_info.push_back(epos->second.attr_name);
+                    subscriber_info.push_back(epos->second.obj_name);
                     subscriber_info.push_back("subscribe");
                     subscriber_info.push_back(epos->second.event_name);
 					subscriber_info.push_back("0");
@@ -450,7 +450,7 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 							disconnect_called = true;
 						}
 #endif
-						event_consumer->connect_event_system(d_name,epos->second.attr_name,epos->second.event_name,vs,ipos,ecbs,dd);
+						event_consumer->connect_event_system(d_name,epos->second.obj_name,epos->second.event_name,vs,ipos,ecbs,dd);
 
 						const DevVarLongStringArray *dvlsa;
 						dd >> dvlsa;
@@ -780,7 +780,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 				if (ipos->second.channel_type == ZMQ)
 				{
 					cmd_params.push_back(epos->second.device->dev_name());
-					cmd_params.push_back(epos->second.attr_name);
+					cmd_params.push_back(epos->second.obj_name);
 					cmd_params.push_back(epos->second.event_name);
 
 					vd.push_back(distance(event_consumer->event_callback_map.begin(),epos));
@@ -790,7 +790,7 @@ void EventConsumerKeepAliveThread::confirm_subscription(ZmqEventConsumer *event_
 					DeviceData subscriber_in;
 					vector<string> subscriber_info;
 					subscriber_info.push_back(epos->second.device->dev_name());
-					subscriber_info.push_back(epos->second.attr_name);
+					subscriber_info.push_back(epos->second.obj_name);
 					subscriber_info.push_back("subscribe");
 					subscriber_info.push_back(epos->second.event_name);
 					subscriber_in << subscriber_info;
@@ -1240,7 +1240,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 	DeviceData subscriber_in;
 	vector<string> subscriber_info;
 	subscriber_info.push_back(epos->second.device->dev_name());
-	subscriber_info.push_back(epos->second.attr_name);
+	subscriber_info.push_back(epos->second.obj_name);
 	subscriber_info.push_back("subscribe");
 	subscriber_info.push_back(epos->second.event_name);
 	if (ipos->second.channel_type == ZMQ)
@@ -1295,7 +1295,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			try
 			{
 				da = new DeviceAttribute();
-				*da = epos->second.device->read_attribute(epos->second.attr_name.c_str());
+				*da = epos->second.device->read_attribute(epos->second.obj_name.c_str());
 
 //
 // The reconnection worked fine. The heartbeat should come back now, when the notifd has not closed the connection.
@@ -1387,7 +1387,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
 			else
 				prefix = event_consumer->env_var_fqdn_prefix[0];
-			string dom_name = prefix + epos->second.device->dev_name() + "/" + epos->second.attr_name;
+			string dom_name = prefix + epos->second.device->dev_name() + "/" + epos->second.obj_name;
 
 			bool old_transp = epos->second.device->get_transparency_reconnection();
 			epos->second.device->set_transparency_reconnection(true);
@@ -1395,7 +1395,7 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			try
 			{
 				aie = new AttributeInfoEx();
-				*aie = epos->second.device->get_attribute_config(epos->second.attr_name);
+				*aie = epos->second.device->get_attribute_config(epos->second.obj_name);
 
 //
 // The reconnection worked fine. The heartbeat should come back now, when the notifd has not closed the connection.

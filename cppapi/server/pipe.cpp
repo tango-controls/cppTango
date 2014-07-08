@@ -38,6 +38,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
+#include <eventsupplier.h>
 
 namespace Tango
 {
@@ -59,6 +60,8 @@ Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::D
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
 
 	pipe_serial_model = PIPE_BY_KERNEL;
+
+	event_subscription = 0;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------
@@ -119,6 +122,136 @@ Pipe &Pipe::operator[](const string &_na)
 {
 	the_blob.operator[](_na);
 	return *this;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::fire_event
+//
+// description :
+//		Fire a pipe event
+//
+// arguments:
+// 		in :
+//			- dev : Device pointer
+//			- except : Pointer to the DevFailed exception
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+
+void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
+{
+	cout4 << "Pipe::fire_event() entering ..." << endl;
+
+//
+// Check if it is needed to send an event
+//
+
+	time_t now;
+	time_t delta_subscription;
+
+	now = time(NULL);
+	delta_subscription = now - event_subscription;
+
+	if (delta_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+		return;
+
+//
+// Get the event supplier, and simply return if not created
+//
+
+	ZmqEventSupplier *event_supplier_zmq = NULL;
+
+	Tango::Util *tg = Util::instance();
+	event_supplier_zmq = tg->get_zmq_event_supplier();
+
+	if (event_supplier_zmq == NULL)
+	{
+		return;
+	}
+
+//
+// Create the structure used to send data to event system
+//
+
+	EventSupplier::SuppliedEventData ad;
+	::memset(&ad,0,sizeof(ad));
+
+//
+// Fire event
+//
+
+	vector<string> f_names;
+	vector<double> f_data;
+	vector<string> f_names_lg;
+	vector<long> f_data_lg;
+
+	event_supplier_zmq->push_event(dev,"pipe",f_names,f_data,f_names_lg,f_data_lg,ad,name,except,false);
+}
+
+#ifdef _TG_WINDOWS_
+void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct _timeb &t)
+#else
+void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t)
+#endif
+{
+	cout4 << "Pipe::fire_event() entering ..." << endl;
+
+//
+// Check if it is needed to send an event
+//
+
+	time_t now;
+	time_t delta_subscription;
+
+	now = time(NULL);
+	delta_subscription = now - event_subscription;
+
+	if (delta_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+		return;
+
+//
+// Get the event supplier, and simply return if not created
+//
+
+	ZmqEventSupplier *event_supplier_zmq = NULL;
+
+	Tango::Util *tg = Util::instance();
+	event_supplier_zmq = tg->get_zmq_event_supplier();
+
+	if (event_supplier_zmq == NULL)
+	{
+		return;
+	}
+
+//
+// Create the structure used to send data to event system
+//
+
+	EventSupplier::SuppliedEventData ad;
+	::memset(&ad,0,sizeof(ad));
+
+//
+// Init the structure sent with the event
+//
+
+	ad.pipe_val->name = CORBA::string_dup(name.c_str());
+
+	ad.pipe_val->time.tv_sec = t.tv_sec;
+	ad.pipe_val->time.tv_usec = t.tv_usec;
+	ad.pipe_val->time.tv_nsec = 0;
+
+//
+// Fire event
+//
+
+	vector<string> f_names;
+	vector<double> f_data;
+	vector<string> f_names_lg;
+	vector<long> f_data_lg;
+
+	event_supplier_zmq->push_event(dev,"pipe",f_names,f_data,f_names_lg,f_data_lg,ad,name,NULL,false);
 }
 
 } // End of Tango namespace

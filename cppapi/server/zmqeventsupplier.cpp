@@ -821,7 +821,7 @@ void ZmqEventSupplier::push_heartbeat_event()
 //			- filterable_names :
 //			- filterable_data :
 //			- attr_value : The attribute value
-//			- attr_name : The attribute name
+//			- obj_name : The attribute/pipe name
 //			- except : The exception thrown during the last attribute reading. NULL if no exception
 //
 //-------------------------------------------------------------------------------------------------------------------
@@ -836,9 +836,9 @@ void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
             TANGO_UNUSED(vector<string> &filterable_names),TANGO_UNUSED(vector<double> &filterable_data),
             TANGO_UNUSED(vector<string> &filterable_names_lg),TANGO_UNUSED(vector<long> &filterable_data_lg),
-            struct SuppliedEventData &ev_value,string &attr_name,DevFailed *except,bool inc_cptr)
+            struct SuppliedEventData &ev_value,string &obj_name,DevFailed *except,bool inc_cptr)
 {
-	cout3 << "ZmqEventSupplier::push_event(): called for attribute " << attr_name << endl;
+	cout3 << "ZmqEventSupplier::push_event(): called for attribute/pipe " << obj_name << endl;
 
 //
 // Get the mutex to synchronize the sending of events
@@ -856,12 +856,16 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Don't forget case where we have notifd client (thus with a fqdn_prefix modified)
 //
 
-	string loc_attr_name(attr_name);
-	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
+	string loc_obj_name(obj_name);
+	transform(loc_obj_name.begin(),loc_obj_name.end(),loc_obj_name.begin(),::tolower);
 
 	bool intr_change = false;
 	if (event_type == EventName[INTERFACE_CHANGE_EVENT])
 		intr_change = true;
+
+	bool pipe_event = false;
+	if (event_type == EventName[PIPE_EVENT])
+		pipe_event = true;
 
 	event_name = fqdn_prefix;
 
@@ -871,7 +875,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 	event_name = event_name + device_impl->get_name_lower();
 	if (intr_change == false)
-		event_name = event_name + '/' + loc_attr_name;
+		event_name = event_name + '/' + loc_obj_name;
 	if (Util::_FileDb == true || Util::_UseDb == false)
         event_name = event_name + MODIFIER_DBASE_NO;
     event_name = event_name + '.';
@@ -908,9 +912,9 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
     else
     {
 		bool print = false;
-    	if (intr_change == false)
+    	if (intr_change == false && pipe_event == false)
 		{
-			Attribute &att = device_impl->get_device_attr()->get_attr_by_name(attr_name.c_str());
+			Attribute &att = device_impl->get_device_attr()->get_attr_by_name(obj_name.c_str());
 
 			if (local_event_type == "data_ready")
 			{
@@ -942,6 +946,12 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 				if (att.event_archive3_subscription != 0 || att.event_archive4_subscription != 0 || att.event_archive5_subscription != 0)
 					print = true;
 			}
+		}
+		else if (pipe_event == true)
+		{
+			Pipe &pi = device_impl->get_device_class()->get_pipe_by_name(obj_name.c_str());
+			if (pi.event_subscription != 0)
+				print = true;
 		}
 		else
 		{
@@ -1082,6 +1092,11 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			else if (ev_value.attr_dat_ready != NULL)
 			{
 				*(ev_value.attr_dat_ready) >>= data_call_cdr;
+			}
+			else if (ev_value.pipe_val != NULL)
+			{
+// TODO: Pipe: Do we support large data no copy here?
+				*(ev_value.pipe_val) >>= data_call_cdr;
 			}
 			else
 			{
@@ -1447,7 +1462,7 @@ bool ZmqEventSupplier::update_connected_client(client_addr *cl)
 //		ZmqEventSupplier::push_event_loop()
 //
 // description :
-//		Method to send the event in aloop due to possible different client release (event compatibility)
+//		Method to send the event in a loop due to possible different client release (event compatibility)
 //
 // argument :
 //		in :

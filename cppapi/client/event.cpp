@@ -1281,7 +1281,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 // argument :
 //		in :
 //			- device : The device handle
-//			- attribute : The name of the attribute
+//			- obj_name : The attribute or pipe name
 //			- event : The type of event to subscribe for
 //			- callback : A pointer to the callback object
 //			- ev_queue : A pointer to the event queue
@@ -1292,7 +1292,7 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 //--------------------------------------------------------------------------------------------------------------------
 
 int EventConsumer::connect_event(DeviceProxy *device,
-				   const string &attribute,
+				   const string &obj_name,
 				   EventType event,
 				   CallBack *callback,
 				   EventQueue *ev_queue,
@@ -1302,11 +1302,15 @@ int EventConsumer::connect_event(DeviceProxy *device,
 {
 	int ret_event_id = event_id;
 	device_name = device->dev_name();
-	cout3 << "Tango::EventConsumer::connect_event(" << device_name << "," << attribute <<"," << event << ")\n";
+	cout3 << "Tango::EventConsumer::connect_event(" << device_name << "," << obj_name <<"," << event << ")\n";
 
 	bool inter_event = false;
 	if (event == INTERFACE_CHANGE_EVENT)
 		inter_event = true;
+
+	bool pipe_event = false;
+	if (event == PIPE_EVENT)
+		pipe_event = true;
 
 //
 // Build callback map key and local device name from fqdn
@@ -1331,8 +1335,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
 	transform(device_name.begin(),device_name.end(),device_name.begin(),::tolower);
 
-	att_name_lower = attribute;
-	transform(att_name_lower.begin(),att_name_lower.end(),att_name_lower.begin(),::tolower);
+	obj_name_lower = obj_name;
+	transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 	string local_callback_key(device_name);
 
 	string::size_type pos;
@@ -1341,7 +1345,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		if (inter_event == true)
 			local_callback_key = local_callback_key + "." + event_name;
 		else
-			local_callback_key = local_callback_key + "/" + att_name_lower + "." + event_name;
+			local_callback_key = local_callback_key + "/" +obj_name_lower + "." + event_name;
 	}
 	else
 	{
@@ -1349,7 +1353,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		if (inter_event == true)
 			local_callback_key = local_callback_key + MODIFIER_DBASE_NO + '.' + event_name;
 		else
-			local_callback_key = local_callback_key + "/" + att_name_lower + MODIFIER_DBASE_NO + '.' + event_name;
+			local_callback_key = local_callback_key + "/" + obj_name_lower + MODIFIER_DBASE_NO + '.' + event_name;
 	}
 
 //
@@ -1387,7 +1391,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	if (iter != event_callback_map.end())
 	{
 		int new_event_id = add_new_callback(iter,callback,ev_queue,event_id);
-		get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second,local_callback_key);
+		get_fire_sync_event(device,callback,ev_queue,event,event_name,obj_name,iter->second,local_callback_key);
 		return new_event_id;
 	}
 
@@ -1401,7 +1405,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	DeviceData subscriber_in;
 	vector<string> subscriber_info;
 	subscriber_info.push_back(local_device_name);
-	subscriber_info.push_back(att_name_lower);
+	subscriber_info.push_back(obj_name_lower);
 	subscriber_info.push_back("subscribe");
 	subscriber_info.push_back(event_name);
 
@@ -1512,7 +1516,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Some Zmq specific code (Check release compatibility,....)
 //
 
-	zmq_specific(dd,adm_name,device,attribute);
+	zmq_specific(dd,adm_name,device,obj_name);
 
 //	if (allocated == true)
 //		delete adm_dev;
@@ -1606,13 +1610,13 @@ int EventConsumer::connect_event(DeviceProxy *device,
     EventSubscribeStruct new_ess;
 
     new_event_callback.device = device;
-    new_event_callback.attr_name = att_name_lower;
+    new_event_callback.obj_name = obj_name_lower;
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
     if (inter_event == true)
 		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
 	else
-		new_event_callback.fully_qualified_event_name = device_name + '/' + att_name_lower + '.' + event_name;
+		new_event_callback.fully_qualified_event_name = device_name + '/' + obj_name_lower + '.' + event_name;
 
     if (dd_extract_ok == false)
         new_event_callback.device_idl = 0;
@@ -1631,13 +1635,13 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_ess.callback = callback;
     new_ess.ev_queue = ev_queue;
 
-	connect_event_system(device_name,att_name_lower,event_name,filters,evt_it,new_event_callback,dd);
+	connect_event_system(device_name,obj_name_lower,event_name,filters,evt_it,new_event_callback,dd);
 
 //
-// Check if this subscription if for a fwd attribute root attribute
+// Check if this subscription is for a fwd attribute root attribute (when relevant)
 //
 
-	if (inter_event == false)
+	if (inter_event == false && pipe_event == false)
 	{
 		ApiUtil *au = ApiUtil::instance();
 		if (au->in_server() == true)
@@ -1645,7 +1649,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 			RootAttRegistry &rar = Util::instance()->get_root_att_reg();
 
 			string root_att_name = device_name;
-			root_att_name = root_att_name + '/' + att_name_lower;
+			root_att_name = root_att_name + '/' + obj_name_lower;
 			if (rar.is_root_attribute(root_att_name) == true)
 				new_event_callback.fwd_att = true;
 		}
@@ -1688,11 +1692,11 @@ int EventConsumer::connect_event(DeviceProxy *device,
     iter = ret.first;
 
 //
-// Read the attribute by a simple synchronous call.This is necessary for the first point in "change" mode
+// Read the attribute/pipe by a simple synchronous call.This is necessary for the first point in "change" mode
 // Force callback execution when it is done
 //
 
-	get_fire_sync_event(device,callback,ev_queue,event,event_name,attribute,iter->second,local_callback_key);
+	get_fire_sync_event(device,callback,ev_queue,event,event_name,obj_name,iter->second,local_callback_key);
 
 //
 // Sleep for some mS (20) in order to give to ZMQ some times to propagate the subscription to the publisher
@@ -2817,14 +2821,14 @@ int EventConsumer::add_new_callback(EvCbIte &iter,CallBack *callback,EventQueue 
 //			- ev_queue : The event queue
 //			- event : The event type
 //			- event_name : The event name
-//			- attribute : The attribute name
+//			- obj_name : The attribute/pipe name
 //			- cb :
 //			- callback_key :
 //
 //-------------------------------------------------------------------------------------------------------------------
 
 void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,EventQueue *ev_queue,EventType event,
-										string &event_name,const string &attribute,EventCallBackStruct &cb,
+										string &event_name,const string &obj_name,EventCallBackStruct &cb,
 										string &callback_key)
 {
 	if ((event == CHANGE_EVENT) ||
@@ -2841,11 +2845,11 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
 		{
             domain_name = device_name;
-            string tmp = '/' + att_name_lower;
+            string tmp = '/' + obj_name_lower;
             domain_name.insert(pos,tmp);
 		}
 		else
-            domain_name = device_name + '/' + att_name_lower;
+            domain_name = device_name + '/' + obj_name_lower;
 
 		AttributeValue_5 *av_5 = Tango_nullptr;
 		DeviceAttribute *da = Tango_nullptr;
@@ -2855,7 +2859,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		{
 			if (cb.fwd_att == true)
 			{
-				device->read_attribute(attribute.c_str(),av_5);
+				device->read_attribute(obj_name.c_str(),av_5);
 				if (av_5->err_list.length() != 0)
 				{
 					err = av_5->err_list;
@@ -2865,7 +2869,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 			else
 			{
 				da = new DeviceAttribute();
-				*da = device->read_attribute(attribute.c_str());
+				*da = device->read_attribute(obj_name.c_str());
 				if (da->has_failed() == true)
 				{
 					err = da->get_err_stack();
@@ -2929,7 +2933,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	{
 		DevErrorList err;
 		err.length(0);
-		string domain_name = device_name + "/" + att_name_lower;
+		string domain_name = device_name + "/" + obj_name_lower;
 		AttributeInfoEx *aie = NULL;
 
 		string local_event_name = event_name;
@@ -2940,7 +2944,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		try
 		{
 			aie = new AttributeInfoEx();
-			*aie = device->get_attribute_config(const_cast<string &>(attribute));
+			*aie = device->get_attribute_config(const_cast<string &>(obj_name));
 		}
 		catch (DevFailed &e)
 		{
@@ -3038,6 +3042,10 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 		{
 			ev_queue->insert_event(event_data);
 		}
+	}
+	else if (event == PIPE_EVENT)
+	{
+// TODO: Pipe: What to do here in case of pipe event?
 	}
 }
 

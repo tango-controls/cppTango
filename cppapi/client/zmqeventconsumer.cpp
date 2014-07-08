@@ -1606,7 +1606,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 // argument :
 //		in :
 //			- device_name : The device fqdn (lower case)
-//			- att_name : The attribute name
+//			- obj_name : The attribute/pipe name
 //			- event_name : The event name
 //			- filters : The event filters given by the user
 //			- evt_it : Iterator pointing to the event channel entry in channel_map map
@@ -1615,7 +1615,7 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
+void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
                                             TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
                                             DeviceData &dd)
 {
@@ -1636,7 +1636,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
         full_event_name = device_name;
         if (inter_event == false)
 		{
-			string tmp = '/' + att_name;
+			string tmp = '/' + obj_name;
 			full_event_name.insert(pos,tmp);
 		}
         full_event_name = full_event_name + '.' + event_name;
@@ -1646,7 +1646,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &att_name
 		if (inter_event == true)
 			full_event_name = device_name + '.' + event_name;
 		else
-			full_event_name = device_name + '/' + att_name + '.' + event_name;
+			full_event_name = device_name + '/' + obj_name + '.' + event_name;
 	}
 
 
@@ -2777,7 +2777,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //			- dd : The result of the event subscription command
 //			- adm_name : The admin device name used in the heartbeat event
 //			- device : The device proxy pointer (for error message)
-//			- attribute : The attribute name (for error message)
+//			- obj_name : The attribute/pipe name (for error message)
 //			- ev_type : Event type
 //			- ev_name : Event name
 //		out:
@@ -2785,7 +2785,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy *device,const string &attribute)
+void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy *device,const string &obj_name)
 {
 	const DevVarLongStringArray *ev_svr_data;
 	dd >> ev_svr_data;
@@ -2845,7 +2845,7 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 			TangoSys_OMemStream o;
 			o << "The process is using zmq release ";
 			o << zmq_major << "." << zmq_minor << "." << zmq_patch;
-			o << "\nThe event on attribute " << attribute << " for device " << device->dev_name();
+			o << "\nThe event on attribute or pipe " << obj_name << " for device " << device->dev_name();
 			o << " is configured to use multicasting";
 			o << "\nMulticast event(s) not available with this ZMQ release" << ends;
 

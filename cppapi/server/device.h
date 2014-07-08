@@ -3111,6 +3111,51 @@ public:
 	void push_data_ready_event (const string &attr_name,Tango::DevLong ctr = 0);
 //@}
 
+/**@name Push pipe event methods.
+ * These methods allow to fire pipe events
+ */
+
+//@{
+/**
+ * Push a pipe event with exception data as value
+ * The method needs the pipe name as input.
+ *
+ * @param pipe_name The name of the pipe
+ * @param except Pointer to a Tango::DevFailed exception.
+ */
+	void push_pipe_event (const string &pipe_name, DevFailed *except);
+/**
+ * Push a pipe event.
+ *
+ * The method needs the pipe name and a pointer to the pipe blob to be pushed as input.
+ * The time stamp of the event is set to the actual time.
+ *
+ * @param pipe_name The name of the pipe
+ * @param p_data Pointer to the Pipe blob to be sent with the event
+ * @exception DevFailed If the pipe data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	void push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data);
+/**
+ * Push a pipe event with a specified timestamp.
+ *
+ * The method needs the pipe name, a pointer to the pipe blob to be pushed and the time stamp
+ * for the data as input.
+ *
+ * @param pipe_name The name of the pipe
+ * @param p_data Pointer to the data to be pushed
+ * @param t The time stamp
+ * @exception DevFailed If the pipe data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+#ifdef _TG_WINDOWS_
+	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct _timeb &t);
+#else
+	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct timeval &t);
+#endif
+//@}
 
 /**@name Signal related methods
  * These methods allow a signal management at device level */

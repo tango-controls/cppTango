@@ -278,7 +278,7 @@ typedef struct event_subscribe
 typedef struct event_callback_base
 {
  	DeviceProxy 					*device;
-	string 							attr_name;
+	string 							obj_name;
 	string 							event_name;
 	string 							channel_name;
 	string                          fully_qualified_event_name;
@@ -408,7 +408,7 @@ protected :
 	static omni_mutex										ev_consumer_inst_mutex;
 
 	string													device_name;
-	string 													att_name_lower;
+	string 													obj_name_lower;
 
 	int add_new_callback(EvCbIte &,CallBack *,EventQueue *,int);
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);

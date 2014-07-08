@@ -109,6 +109,7 @@ public :
         const AttributeConfig_5	  *attr_conf_5;
         const AttDataReady        *attr_dat_ready;
         const DevIntrChange		  *dev_intr_change;
+        DevPipeData		  		  *pipe_val;
         zmq::message_t	  		  *zmq_mess;
     };
 

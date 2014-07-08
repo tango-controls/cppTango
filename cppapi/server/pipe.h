@@ -398,6 +398,19 @@ public:
 	omni_mutex *get_pipe_mutex() {return &pipe_mutex;}
 	omni_mutex *get_user_pipe_mutex() {return user_pipe_mutex;}
 
+	void fire_event(DeviceImpl *,DevFailed *);
+#ifdef _TG_WINDOWS_
+	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat) {struct _timeb _t;gettimeofday(&_t,NULL);fire_event(_dev,_dat,_t);}
+	void fire_event(DeviceImpl *,DevicePipeBlob *,struct _timeb &);
+#else
+	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat) {struct timeval now;gettimeofday(&now,NULL);fire_event(_dev,_dat,now);}
+	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &);
+#endif
+	void set_event_subscription(time_t _t) {event_subscription = _t;}
+
+	friend class EventSupplier;
+	friend class ZmqEventSupplier;
+
 protected:
 /**@name Class data members */
 //@{
@@ -453,6 +466,8 @@ private:
 
 	omni_mutex					pipe_mutex;			// Mutex to protect the pipe shared data buffer
 	omni_mutex					*user_pipe_mutex;	// Ptr for user mutex in case he manages exclusion
+
+    time_t						event_subscription;	// Last time() a subscription was made
 };
 
 template <typename T>

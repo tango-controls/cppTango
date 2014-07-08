@@ -4148,7 +4148,7 @@ void Attribute::AttributeConfig_3_2_AttributeConfig_5(const Tango::AttributeConf
 
 void Attribute::fire_change_event(DevFailed *except)
 {
-	cout4 << "Attribute::fire_change_event() entring ..." << endl;
+	cout4 << "Attribute::fire_change_event() entering ..." << endl;
 
 	if ( except != NULL )
 	{

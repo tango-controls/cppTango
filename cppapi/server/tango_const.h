@@ -1081,6 +1081,7 @@ enum EventType {
 	ATTR_CONF_EVENT,        	///< Attribute configuration change event
 	DATA_READY_EVENT,       	///< Data ready event
 	INTERFACE_CHANGE_EVENT,		///< Device interface change event
+	PIPE_EVENT,					///< Device pipe event
 	numEventType
 };
 
@@ -1092,7 +1093,8 @@ const char * const EventName[] = {
     "user_event",
     "attr_conf",
     "data_ready",
-    "intr_change"
+    "intr_change",
+    "pipe"
 };
 
 const char *const CONF_TYPE_EVENT		   = EventName[ATTR_CONF_EVENT];

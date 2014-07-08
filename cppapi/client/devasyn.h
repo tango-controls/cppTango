@@ -46,6 +46,7 @@ class EventData;
 class AttrConfEventData;
 class DataReadyEventData;
 class DevIntrChangeEventData;
+class PipeEventData;
 class EventDataList;
 class AttrConfEventDataList;
 class DataReadyEventDataList;
@@ -304,6 +305,15 @@ public:
  * @param dic The device interface change event data
  */
 	virtual void push_event(DevIntrChangeEventData *dic) {};
+/**
+ * Pipe event callback method
+ *
+ * This method is defined as being empty and must be overloaded by the user when events are used. This is
+ * the method which will be executed when the server send pipe event(s) to the client.
+ *
+ * @param ped The pipe event data
+ */
+	virtual void push_event(PipeEventData *ped) {};
 #else
 	virtual void cmd_ended(CmdDoneEvent *) {};
 	virtual void attr_read(AttrReadEvent *) {};
@@ -312,6 +322,7 @@ public:
 	virtual void push_event(AttrConfEventData *) {};
 	virtual void push_event(DataReadyEventData *) {};
 	virtual void push_event(DevIntrChangeEventData *) {};
+	virtual void push_event(PipeEventData *) {};
 #endif
 
 /// @privatesection

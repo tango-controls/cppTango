@@ -165,10 +165,10 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 // args :
 // 		in :
 //			- dev_name : The device name
-//      	- attr_name : The attribute name
+//      	- obj_name : The attribute/pipe name
 //      	- action : What the user want to do
 //      	- event : The event type
-//      	- attr_name_lower : The attribute name in lower case letters
+//      	- obj_name_lower : The attribute/pipe name in lower case letters
 //      	- ct : The channel type (notifd or zmq)
 //      	- mcast_data : The multicast transport data
 //      	- rate : PGM rate parameter
@@ -178,7 +178,7 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 //
 //--------------------------------------------------------------------------------------------------------------------
 
-void DServer::event_subscription(string &dev_name,string &attr_name,string &action,string &event,string &attr_name_lower,
+void DServer::event_subscription(string &dev_name,string &obj_name,string &action,string &event,string &obj_name_lower,
 								 ChannelType ct,string &mcast_data,int &rate,int &ivl,DeviceImpl *dev,int client_lib)
 {
     Tango::Util *tg = Tango::Util::instance();
@@ -204,11 +204,11 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
         }
 	}
 
-	if (event != EventName[INTERFACE_CHANGE_EVENT])
+	if (event != EventName[INTERFACE_CHANGE_EVENT] && event != EventName[PIPE_EVENT])
 	{
 
 		MultiAttribute *m_attr = dev_impl->get_device_attr();
-		int attr_ind = m_attr->get_attr_ind_by_name(attr_name.c_str());
+		int attr_ind = m_attr->get_attr_ind_by_name(obj_name.c_str());
 		Attribute &attribute = m_attr->get_attr_by_ind(attr_ind);
 
 //
@@ -220,7 +220,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			if (attribute.is_fwd_att() == true)
 			{
 				stringstream ss;
-				ss << "The attribute " << attr_name << " is a forwarded attribute.";
+				ss << "The attribute " << obj_name << " is a forwarded attribute.";
 				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
 				Except::throw_exception(API_NotSupportedFeature,
@@ -232,7 +232,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 			if (attribute.is_fwd_att() == true && client_lib < 5)
 			{
 				stringstream ss;
-				ss << "The attribute " << attr_name << " is a forwarded attribute.";
+				ss << "The attribute " << obj_name << " is a forwarded attribute.";
 				ss << "\nIt is not supported to subscribe events from forwarded attribute using Tango < 9. Please update!!";
 
 				Except::throw_exception(API_NotSupportedFeature,
@@ -278,7 +278,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				{
 					TangoSys_OMemStream o;
 					o << "The attribute ";
-					o << attr_name;
+					o << obj_name;
 					o << " is not data ready event enabled" << ends;
 
 					Except::throw_exception(API_AttributeNotDataReadyEnabled,
@@ -301,7 +301,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 				{
 					TangoSys_OMemStream o;
 					o << "The polling (necessary to send events) for the attribute ";
-					o << attr_name;
+					o << obj_name;
 					o << " is not started" << ends;
 
 					if ( event == "change")
@@ -339,7 +339,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 // Check if the attribute has some of the change properties defined
 //
 
-					if (attr_name_lower != "state")
+					if (obj_name_lower != "state")
 					{
 						if ((attribute.get_data_type() != Tango::DEV_STRING) &&
 							(attribute.get_data_type() != Tango::DEV_BOOLEAN) &&
@@ -356,7 +356,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 								{
 									TangoSys_OMemStream o;
 									o << "Event properties (abs_change or rel_change) for attribute ";
-									o << attr_name;
+									o << obj_name;
 									o << " are not set" << ends;
 
 									Except::throw_exception(API_EventPropertiesNotSet,
@@ -415,7 +415,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 // Check if the attribute has some of the archive properties defined
 //
 
-					if (attr_name_lower != "state")
+					if (obj_name_lower != "state")
 					{
 						if ((attribute.get_data_type() != Tango::DEV_STRING) &&
 							(attribute.get_data_type() != Tango::DEV_BOOLEAN) &&
@@ -433,7 +433,7 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 								{
 									TangoSys_OMemStream o;
 									o << "Archive event properties (archive_abs_change or archive_rel_change or archive_period) for attribute ";
-									o << attr_name;
+									o << obj_name;
 									o << " are not set" << ends;
 
 									Except::throw_exception(API_EventPropertiesNotSet,
@@ -585,17 +585,32 @@ void DServer::event_subscription(string &dev_name,string &attr_name,string &acti
 		if (client_lib != 0)
 			attribute.set_client_lib(client_lib,event);
 	}
+	else if (event == EventName[PIPE_EVENT])
+	{
+		if (action == "subscribe")
+		{
+			DeviceClass *cl = dev_impl->get_device_class();
+			Pipe &pi = cl->get_pipe_by_name(obj_name);
+
+			cout4 << "DServer::event_subscription(): update pipe subscription\n";
+
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			pi.set_event_subscription(time(NULL));
+
+// TODO: Pipe: Do we support multicast for pipe event
+
+			rate = 0;
+			ivl = 0;
+		}
+	}
 	else
 	{
 		if (action == "subscribe")
 		{
-			if (event == EventName[INTERFACE_CHANGE_EVENT])
-			{
-				cout4 << "DServer::event_subscription(): update device interface_change subscription\n";
+			cout4 << "DServer::event_subscription(): update device interface_change subscription\n";
 
-				omni_mutex_lock oml(EventSupplier::get_event_mutex());
-				dev_impl->set_event_intr_change_subscription(time(NULL));
-			}
+			omni_mutex_lock oml(EventSupplier::get_event_mutex());
+			dev_impl->set_event_intr_change_subscription(time(NULL));
 
 // TODO: Do we support multicast for interface change event
 
@@ -648,7 +663,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     if (argin->length() > 1 && argin->length() < 4)
     {
 		TangoSys_OMemStream o;
-		o << "Not enough input arguments, needs at least 4 i.e. device name, attribute name, action, event name, <Tango lib release>" << ends;
+		o << "Not enough input arguments, needs at least 4 i.e. device name, attribute/pipe name, action, event name, <Tango lib release>" << ends;
 
 		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 								o.str(),
@@ -660,13 +675,12 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
     if (argin->length() == 1)
     {
-
         string arg((*argin)[0]);
         transform(arg.begin(),arg.end(),arg.begin(),::tolower);
         if (arg != "info")
         {
             TangoSys_OMemStream o;
-            o << "Not enough input arguments, needs 4 i.e. device name, attribute name, action, event name" << ends;
+            o << "Not enough input arguments, needs 4 i.e. device name, attribute/pipe name, action, event name" << ends;
 
             Except::throw_exception((const char *)API_WrongNumberOfArgs,
                                     o.str(),
@@ -707,9 +721,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
     }
     else
     {
-        string dev_name, attr_name, action, event, attr_name_lower;
+        string dev_name, obj_name, action, event, obj_name_lower;
         dev_name = (*argin)[0];
-        attr_name = (*argin)[1];
+        obj_name = (*argin)[1];
         action = (*argin)[2];
         event = (*argin)[3];
 
@@ -717,8 +731,12 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
         if (event == EventName[INTERFACE_CHANGE_EVENT])
 			intr_change = true;
 
-        attr_name_lower = attr_name;
-        transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
+        bool pipe_event = false;
+        if (event == EventName[PIPE_EVENT])
+			pipe_event = true;
+
+        obj_name_lower = obj_name;
+        transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
         int client_release = 4;
 		if (event == EventName[ATTR_CONF_EVENT])
@@ -771,7 +789,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 			}
 		}
 
-        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute " << attr_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
+        cout4 << "ZmqEventSubscriptionChangeCmd: subscription for device " << dev_name << " attribute/pipe " << obj_name << " action " << action << " event " << event << " client lib = " << client_release << endl;
 
 //
 // If we receive this command while the DS is in its shuting down sequence, do nothing
@@ -844,7 +862,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 		if (pos != string::npos)
 			event.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
-        event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_release);
+        event_subscription(dev_name,obj_name,action,event,obj_name_lower,ZMQ,mcast,rate,ivl,dev,client_release);
 
 //
 // Check if the client is a new one
@@ -869,7 +887,7 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 
         ev_name = ev_name + dev->get_name_lower();
         if (intr_change == false)
-			ev_name = ev_name + '/' + attr_name_lower;
+			ev_name = ev_name + '/' + obj_name_lower;
         if (Util::_FileDb == true && ev != NULL)
             ev_name = ev_name + MODIFIER_DBASE_NO;
         ev_name = ev_name + '.' +  event;
@@ -916,9 +934,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 // For forwarded attribute, eventually subscribe to events coming from root attribute
 //
 
-		if (intr_change == false)
+		if (intr_change == false && pipe_event == false)
 		{
-			Attribute &attribute = dev->get_device_attr()->get_attr_by_name(attr_name.c_str());
+			Attribute &attribute = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
 			EventType et;
 			tg->event_name_2_event_type(event,et);
 
@@ -1004,7 +1022,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
     if ((argin->length() == 0) || (argin->length()  % 3) != 0)
     {
 		TangoSys_OMemStream o;
-		o << "Wrong number of input arguments: 3 needed per event: device name, attribute name and event name" << endl;
+		o << "Wrong number of input arguments: 3 needed per event: device name, attribute/pipe name and event name" << endl;
 
 		Except::throw_exception((const char *)API_WrongNumberOfArgs,o.str(),
 								(const char *)"DServer::event_confirm_subscription");
@@ -1035,16 +1053,16 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 
 	for (unsigned int loop = 0;loop < nb_event;loop++)
 	{
-		string dev_name, attr_name, event, attr_name_lower;
+		string dev_name, obj_name, event, obj_name_lower;
 		int base = loop * 3;
 		dev_name = (*argin)[base];
-		attr_name = (*argin)[base + 1];
+		obj_name = (*argin)[base + 1];
 		event = (*argin)[base + 2];
 
-		attr_name_lower = attr_name;
-		transform(attr_name_lower.begin(),attr_name_lower.end(),attr_name_lower.begin(),::tolower);
+		obj_name_lower = obj_name;
+		transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
-		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << attr_name << " event " << event << endl;
+		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << obj_name << " event " << event << endl;
 
 //
 // Find device
@@ -1094,7 +1112,7 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 				client_lib = 4;		// Command implemented only with Tango 8 -> IDL 4 for event data
 		}
 
-		event_subscription(dev_name,attr_name,action,event,attr_name_lower,ZMQ,mcast,rate,ivl,dev,client_lib);
+		event_subscription(dev_name,obj_name,action,event,obj_name_lower,ZMQ,mcast,rate,ivl,dev,client_lib);
 	}
 
 }

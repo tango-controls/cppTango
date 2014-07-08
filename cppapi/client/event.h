@@ -409,6 +409,88 @@ public:
 	}
 };
 
+/********************************************************************************
+ * 																				*
+ * 						PipeEventData class										*
+ * 																				*
+ *******************************************************************************/
+
+/**
+ * Pipe event callback execution data
+ *
+ * This class is used to pass data to the callback method when a pipe event is sent to the client
+ *
+ * $Author$
+ * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Client
+ */
+
+class PipeEventData
+{
+public :
+///@privatesection
+	PipeEventData() {}
+	PipeEventData(DeviceProxy *dev,string &nam,string &evt,Tango::DevicePipe *pipe_value_in,DevErrorList &errors_in);
+
+	~PipeEventData();
+	PipeEventData(const PipeEventData &);
+	PipeEventData & operator=(const PipeEventData &);
+	/**
+	 * The date when the event arrived
+	 */
+	Tango::TimeVal reception_date;
+	Tango::TimeVal &get_date() {return reception_date;}
+
+///@publicsection
+	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
+	string          pipe_name;      ///< The pipe name
+	string          event;          ///< The event name
+	DevicePipe 		*pie_value;   	///< The pipe data
+	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
+	DevErrorList    errors;         ///< The error stack
+
+private:
+	void set_time();
+};
+
+/********************************************************************************
+ * 																				*
+ * 						PipeEventDataList class									*
+ * 																				*
+ *******************************************************************************/
+
+class PipeEventDataList:public vector<PipeEventData *>
+{
+public:
+	PipeEventDataList(): vector<PipeEventData *>(0) {};
+	~PipeEventDataList()
+	{
+		if (size() > 0)
+		{
+			PipeEventDataList::iterator vpos;
+			for (vpos=begin(); vpos!=end(); ++vpos)
+			{
+				delete (*vpos);
+			}
+		}
+	}
+	void clear()
+	{
+		if (size() > 0)
+		{
+			PipeEventDataList::iterator vpos;
+			for (vpos=begin(); vpos!=end(); ++vpos)
+			{
+				delete (*vpos);
+			}
+
+			this->vector<PipeEventData *>::clear();
+		}
+	}
+};
+
 
 /********************************************************************************
  * 																				*
@@ -426,6 +508,7 @@ public:
 	void insert_event(AttrConfEventData 		*new_event);
 	void insert_event(DataReadyEventData 		*new_event);
 	void insert_event(DevIntrChangeEventData 	*new_event);
+	void insert_event(PipeEventData 			*new_event);
 
 	int      size();
 	TimeVal get_last_event_date();
@@ -435,6 +518,7 @@ public:
 	void get_events(AttrConfEventDataList 		&event_list);
 	void get_events(DataReadyEventDataList		&event_list);
 	void get_events(DevIntrChangeEventDataList  &event_list);
+	void get_events(PipeEventDataList  			&event_list);
 	void get_events(CallBack *cb);
 
 private:
@@ -444,6 +528,7 @@ private:
 	vector<AttrConfEventData *> 		conf_event_buffer;
 	vector<DataReadyEventData *>		ready_event_buffer;
 	vector<DevIntrChangeEventData *>	dev_inter_event_buffer;
+	vector<PipeEventData *>				pipe_event_buffer;
 
 	long	max_elt;
 	long	insert_elt;
