@@ -7706,6 +7706,29 @@ void DeviceProxy::get_events (int event_id, DevIntrChangeEventDataList &event_li
     }
 }
 
+void DeviceProxy::get_events (int event_id, PipeEventDataList &event_list)
+{
+    ApiUtil *api_ptr = ApiUtil::instance();
+	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		stringstream desc;
+		desc << "Could not find event consumer object, \n";
+		desc << "probably no event subscription was done before!";
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
+	}
+
+    if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
+    {
+        api_ptr->get_zmq_event_consumer()->get_events(event_id, event_list);
+    }
+    else
+    {
+		stringstream desc;
+		desc << "Pipe event not implemented in old Tango event system (notifd)";
+		Tango::Except::throw_exception(API_UnsupportedFeature,desc.str(),"DeviceProxy::get_events()");
+    }
+}
+
 //-----------------------------------------------------------------------------
 //
 // method :       DeviceProxy::get_events()

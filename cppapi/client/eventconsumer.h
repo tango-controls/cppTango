@@ -374,6 +374,7 @@ public :
 	void get_events (int event_id, AttrConfEventDataList &event_list);
 	void get_events (int event_id, DataReadyEventDataList &event_list);
 	void get_events (int event_id, DevIntrChangeEventDataList &event_list);
+	void get_events (int event_id, PipeEventDataList &event_list);
 	void get_events (int event_id, CallBack *cb);
 	int  event_queue_size(int event_id);
 	TimeVal get_last_event_date(int event_id);

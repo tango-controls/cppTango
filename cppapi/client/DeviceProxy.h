@@ -1533,6 +1533,20 @@ public :
  */
 	virtual void get_events (int event_id, DevIntrChangeEventDataList &event_list);
 /**
+ * Get arrived events from event queue in event pull model
+ *
+ * The method extracts all waiting pipe events from the event reception buffer. The returned
+ * event_list is a vector of PipeEventData pointers. The PipeEventData object contains the event
+ * information as for the callback methods.
+ * During event subscription the client must have chosen the <B>pull model</B> for this event. event_id is the
+ * event identifier returned by the DeviceProxy::subscribe_event() method.
+ *
+ * @param [in] event_id The event identifier
+ * @param [out] event_list The event(s) list
+ * @throws EventSystemFailed
+ */
+	virtual void get_events (int event_id, PipeEventDataList &event_list);
+/**
  * Get event number in event queue
  *
  * Returns the number of stored events in the event reception buffer. After every call to DeviceProxy:get_events(),

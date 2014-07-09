@@ -51,6 +51,7 @@ class EventDataList;
 class AttrConfEventDataList;
 class DataReadyEventDataList;
 class DevIntrChangeEventDataList;
+class PipeEventDataList;
 class EventConsumer;
 class EventConsumerKeepAliveThread;
 

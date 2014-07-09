@@ -832,6 +832,85 @@ void EventQueue::get_events(DevIntrChangeEventDataList &event_list)
 //		EventQueue::get_events
 //
 // description :
+//		Return a vector with all events in the circular buffer. Events are kept in the buffer since the last extraction
+//      with get_events(). After returning the event data, the circular buffer gets emptied!
+//
+// argument :
+//		out :
+//			- event_list : Reference to the array where events should be stored
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void EventQueue::get_events(PipeEventDataList &event_list)
+{
+	cout3 << "Entering EventQueue::get_events" << endl;
+
+//
+// lock the event queue
+//
+
+	omni_mutex_lock l(modification_mutex);
+
+//
+// Set index to read the ring buffer and to initialise the vector of pointers to return.
+// In the returned sequence , indice 0 is the oldest data
+//
+
+	long index = insert_elt;
+	if (index == 0)
+		index = max_elt;
+	index--;
+
+	long seq_index = nb_elt - 1;
+
+//
+// prepare the vector to be returned
+//
+
+	event_list.clear();
+	event_list.resize(nb_elt);
+
+//
+// Read buffer
+//
+
+	for (long i=0; i < nb_elt; i++)
+	{
+		event_list[seq_index] = pipe_event_buffer[index];
+
+//
+// we do not want to free the event data when cleaning-up
+// the vector
+//
+
+		pipe_event_buffer[index] = NULL;
+
+		if (index == 0)
+			index = max_elt;
+		index--;
+		seq_index--;
+	}
+
+//
+// empty the event queue now
+//
+
+	pipe_event_buffer.clear();
+	insert_elt  = 0;
+	nb_elt      = 0;
+
+	cout3 << "EventQueue::get_events() : size = " << event_list.size() << endl;
+
+	return;
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventQueue::get_events
+//
+// description :
 //		Call the callback method for all events in the circular buffer. Events are kept in the buffer since the last
 //		extraction with get_events(). After returning the event data, the circular buffer gets emptied!
 //
