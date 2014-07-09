@@ -491,7 +491,8 @@ public :
 	    ATT_CONF = 0,
 	    ATT_READY,
 	    ATT_VALUE,
-	    DEV_INTR
+	    DEV_INTR,
+	    PIPE
 	};
 
     enum SocketCmd
@@ -530,6 +531,7 @@ private :
     AttributeConfig_5_var					ac5;
     AttDataReady_var                        adr;
     DevIntrChange_var						dic;
+    DevPipeData_var							dpd;
     DevErrorList_var                        del;
 
     int                                     old_poll_nb;

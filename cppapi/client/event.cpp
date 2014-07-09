@@ -3045,7 +3045,64 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	}
 	else if (event == PIPE_EVENT)
 	{
-// TODO: Pipe: What to do here in case of pipe event?
+		DevErrorList err;
+		err.length(0);
+
+		string domain_name;
+		string::size_type pos;
+
+		if ((pos = device_name.find(MODIFIER_DBASE_NO)) != string::npos)
+		{
+            domain_name = device_name;
+            string tmp = '/' + obj_name_lower;
+            domain_name.insert(pos,tmp);
+		}
+		else
+            domain_name = device_name + '/' + obj_name_lower;
+
+		DevicePipe *da = Tango_nullptr;
+		PipeEventData *event_data;
+
+		try
+		{
+			da = new DevicePipe();
+			*da = device->read_pipe(obj_name);
+		}
+		catch (DevFailed &e)
+		{
+			err = e.errors;
+		}
+
+		event_data = new PipeEventData(device,domain_name,event_name,da,err);
+
+		AutoTangoMonitor _mon(cb.callback_monitor);
+
+//
+// If a callback method was specified, call it!
+//
+
+		if (callback != NULL )
+		{
+			try
+			{
+				callback->push_event(event_data);
+			}
+			catch (...)
+			{
+				cerr << "EventConsumer::subscribe_event() exception in callback method of " << callback_key << endl;
+			}
+
+			delete event_data;
+		}
+
+//
+// No calback method, the event has to be inserted into the event queue
+//
+
+		else
+		{
+			ev_queue->insert_event(event_data);
+		}
 	}
 }
 
@@ -3666,5 +3723,116 @@ void DevIntrChangeEventData::set_time()
 		reception_date.tv_nsec = 0;
 #endif
 }
+
+/************************************************************************/
+/*		       															*/
+/* 			PipepEventData class 										*/
+/*			---------------												*/
+/*		       															*/
+/************************************************************************/
+
+//+----------------------------------------------------------------------
+//
+// 	PipeEventData constructor
+//
+//-----------------------------------------------------------------------
+
+PipeEventData::PipeEventData(DeviceProxy *dev,string &nam,string &evt,
+          Tango::DevicePipe *pipe_value_in, DevErrorList &errors_in) :
+          device(dev),pipe_name(nam),event(evt),pipe_value(pipe_value_in),
+          errors(errors_in)
+{
+	if (errors.length()==0)
+		err=false;
+	else err = true;
+
+	set_time();
+}
+
+//+----------------------------------------------------------------------
+//
+// 	PipeEventData copy constructor
+//
+//-----------------------------------------------------------------------
+
+PipeEventData::PipeEventData(const PipeEventData &sou)
+{
+	device = sou.device;
+	pipe_name = sou.pipe_name;
+	event = sou.event;
+	if (sou.pipe_value)
+		pipe_value = new DevicePipe(*(sou.pipe_value));
+	else
+		pipe_value = NULL;
+	err = sou.err;
+	errors = sou.errors;
+	reception_date = sou.reception_date;
+}
+
+//+----------------------------------------------------------------------
+//
+// 	PipeEventData assignement operator
+//
+//-----------------------------------------------------------------------
+
+PipeEventData & PipeEventData::operator=(const PipeEventData &ri)
+{
+	if (&ri == this)
+		return *this;
+
+	device = ri.device;
+	pipe_name = ri.pipe_name;
+	event = ri.event;
+	if (ri.pipe_value)
+		pipe_value = new DevicePipe(*(ri.pipe_value));
+	else
+		pipe_value = NULL;
+	err = ri.err;
+	errors = ri.errors;
+	reception_date = ri.reception_date;
+
+	return *this;
+}
+
+//+----------------------------------------------------------------------
+//
+// 	PipeEventData destructor
+//
+//-----------------------------------------------------------------------
+
+PipeEventData::~PipeEventData()
+{
+    delete pipe_value;
+}
+
+
+//+-------------------------------------------------------------------------
+//
+// method : 		PipeEventData::set_time
+//
+// description : 	Set the event reception data
+//
+//--------------------------------------------------------------------------
+
+void PipeEventData::set_time()
+{
+#ifdef _TG_WINDOWS_
+		struct _timeb t;
+		_ftime(&t);
+
+		reception_date.tv_sec  = (CORBA::Long)t.time;
+		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_nsec = 0;
+#else
+		struct timezone tz;
+		struct timeval tv;
+		gettimeofday(&tv,&tz);
+
+		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
+		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_nsec = 0;
+#endif
+}
+
 } /* End of Tango namespace */
 

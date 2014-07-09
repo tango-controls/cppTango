@@ -373,6 +373,61 @@ void EventQueue::insert_event (DevIntrChangeEventData *new_event)
     inc_indexes();
 }
 
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventQueue::insert_event
+//
+// description :
+//		Insert a new pipe event in the event queue
+//
+// argument :
+//		in :
+//			- new_event : A pointer to the allocated pipe event data structure.
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void EventQueue::insert_event (PipeEventData *new_event)
+{
+	cout3 << "Entering EventQueue::insert_event" << endl;
+
+	// lock the event queue
+	omni_mutex_lock l(modification_mutex);
+
+	//
+	// Insert data in the event queue
+	//
+
+	// when no maximum queue size is given, just add the new event
+	if ( max_elt == 0 )
+    {
+		pipe_event_buffer.push_back (new_event);
+    }
+
+	// when a maximum size is given, handle a circular buffer
+	else
+    {
+		// allocate ring buffer when not yet done
+		if ( pipe_event_buffer.empty() == true )
+        {
+			pipe_event_buffer.resize (max_elt, NULL);
+        }
+
+		// free data when necessary
+		if ( pipe_event_buffer[insert_elt] != NULL )
+        {
+			delete pipe_event_buffer[insert_elt];
+        }
+
+		// insert the event data pointer into the queue
+		pipe_event_buffer[insert_elt] = new_event;
+    }
+
+		// Manage insert and read indexes
+    inc_indexes();
+}
+
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :

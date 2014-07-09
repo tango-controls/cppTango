@@ -187,14 +187,25 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 	vector<string> f_names_lg;
 	vector<long> f_data_lg;
 
-	event_supplier_zmq->push_event(dev,"pipe",f_names,f_data,f_names_lg,f_data_lg,ad,name,except,false);
+	event_supplier_zmq->push_event(dev,"pipe",f_names,f_data,f_names_lg,f_data_lg,ad,name,except,true);
 }
 
 #ifdef _TG_WINDOWS_
-void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct _timeb &t)
-#else
+void Pipe::fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat)
+{
+	struct _timeb now_win;
+	struct timeval now;
+
+	_ftime(&now_win);
+	now.tv_sec = (unsigned long)now_win.time;
+	now.tv_usec = (long)now_win.millitm * 1000;
+
+	fire_event(_dev,_dat,now);
+}
+#endif // _TG_WINDOWS_
+
+
 void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t)
-#endif
 {
 	cout4 << "Pipe::fire_event() entering ..." << endl;
 
@@ -236,11 +247,28 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t)
 // Init the structure sent with the event
 //
 
+	ad.pipe_val = new DevPipeData();
 	ad.pipe_val->name = CORBA::string_dup(name.c_str());
 
+	::memset(&(ad.pipe_val->time),0,sizeof(ad.pipe_val->time));
 	ad.pipe_val->time.tv_sec = t.tv_sec;
 	ad.pipe_val->time.tv_usec = t.tv_usec;
-	ad.pipe_val->time.tv_nsec = 0;
+
+
+	const string &bl_name = p_data->get_name();
+	if (bl_name.size() != 0)
+		ad.pipe_val->data_blob.name = bl_name.c_str();
+
+	DevVarPipeDataEltArray *tmp_ptr = p_data->get_insert_data();
+	if (tmp_ptr == Tango_nullptr)
+	{
+		Except::throw_exception(API_PipeNoDataElement,"No data in DevicePipeBlob!","Pipe::fire_event()");
+	}
+
+	CORBA::ULong max,len;
+	max = tmp_ptr->maximum();
+	len = tmp_ptr->length();
+	ad.pipe_val->data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
 
 //
 // Fire event
@@ -251,7 +279,12 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t)
 	vector<string> f_names_lg;
 	vector<long> f_data_lg;
 
-	event_supplier_zmq->push_event(dev,"pipe",f_names,f_data,f_names_lg,f_data_lg,ad,name,NULL,false);
+	event_supplier_zmq->push_event(dev,"pipe",f_names,f_data,f_names_lg,f_data_lg,ad,name,NULL,true);
+
+	p_data->reset_insert_ctr();
+	delete tmp_ptr;
+
+	delete ad.pipe_val;
 }
 
 } // End of Tango namespace

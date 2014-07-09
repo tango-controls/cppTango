@@ -1062,8 +1062,8 @@ void DServer::event_confirm_subscription(const Tango::DevVarStringArray *argin)
 		obj_name_lower = obj_name;
 		transform(obj_name_lower.begin(),obj_name_lower.end(),obj_name_lower.begin(),::tolower);
 
-		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute " << obj_name << " event " << event << endl;
-
+		cout4 << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute/pipe " << obj_name << " event " << event << endl;
+cout << "EventConfirmSubscriptionCmd: confirm subscription for device " << dev_name << " attribute/pipe " << obj_name << " event " << event << endl;
 //
 // Find device
 //

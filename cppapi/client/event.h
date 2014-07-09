@@ -447,7 +447,7 @@ public :
 	DeviceProxy     *device;        ///< The DeviceProxy object on which the call was executed
 	string          pipe_name;      ///< The pipe name
 	string          event;          ///< The event name
-	DevicePipe 		*pie_value;   	///< The pipe data
+	DevicePipe 		*pipe_value;   	///< The pipe data
 	bool            err;            ///< A boolean flag set to true if the request failed. False otherwise
 	DevErrorList    errors;         ///< The error stack
 

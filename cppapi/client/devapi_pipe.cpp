@@ -2141,7 +2141,7 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 // Print blob name (if any)
 //
 
-	if (name.size() != 0)
+	if (name.size() != 0 && insert_extract == true)
 	{
 		for (int loop = 0;loop < indent;loop++)
 			o_str << "\t";
@@ -2274,9 +2274,11 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 				}
 				break;
 
-				case ATT_NO_DATA:
 				case DEVICE_STATE:
 				o_str << "Unsupported data type in data element (ATT_NO_DATA, DEVICE_STATE)!" << endl;
+				break;
+
+				default:
 				break;
 			}
 
@@ -2286,7 +2288,8 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 
 			if ((*dvpdea)[ctr].inner_blob.length() != 0)
 			{
-				DevicePipeBlob dpb((*dvpdea)[ctr].name.in());
+				DevicePipeBlob dpb((*dvpdea)[ctr].inner_blob_name.in());
+				dpb.set_extract_data(&(*dvpdea)[ctr].inner_blob);
 				dpb.print(o_str,indent + 1,true);
 				dpb.print(o_str,indent + 1,false);
 			}

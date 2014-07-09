@@ -84,6 +84,7 @@ omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
 	adr = new AttDataReady();
 	dic = new DevIntrChange();
 	del = new DevErrorList();
+	dpd = new DevPipeData();
 
 	start_undetached();
 }
@@ -1957,6 +1958,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             const AttributeConfig_5 *attr_conf_5 = NULL;
             AttDataReady *att_ready = NULL;
             DevIntrChange *dev_intr_change = NULL;
+            DevPipeData *dev_pipe_data = NULL;
             const DevErrorList *err_ptr;
             DevErrorList errors;
             AttributeInfoEx *attr_info_ex = NULL;
@@ -1964,6 +1966,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             bool ev_attr_conf = false;
             bool ev_attr_ready = false;
             bool ev_dev_intr = false;
+            bool pipe_event = false;
 
             EventCallBackStruct &evt_cb = ipos->second;
 
@@ -2028,6 +2031,8 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 data_type = ATT_READY;
 			else if (event_name == EventName[INTERFACE_CHANGE_EVENT])
 				data_type = DEV_INTR;
+			else if (event_name == EventName[PIPE_EVENT])
+				data_type = PIPE;
             else
                 data_type = ATT_VALUE;
 
@@ -2037,6 +2042,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
             long vers = 0;
             DeviceAttribute *dev_attr = NULL;
+            DevicePipe *dev_pipe = NULL;
             bool no_unmarshalling = false;
 
 			if (evt_cb.fwd_att == true && data_type != ATT_CONF && error == false)
@@ -2377,6 +2383,42 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							}
 						}
 						break;
+
+						case PIPE:
+						try
+						{
+							(DevPipeData &)dpd <<= event_data_cdr;
+							dev_pipe_data = &dpd.inout();
+							pipe_event = true;
+
+							string pipe_name = dev_pipe_data->name.in();
+							string root_blob_name = dev_pipe_data->data_blob.name.in();
+
+							dev_pipe = new DevicePipe(pipe_name,root_blob_name);
+							dev_pipe->set_time(dev_pipe_data->time);
+
+							CORBA::ULong max,len;
+							max = dev_pipe_data->data_blob.blob_data.maximum();
+							len = dev_pipe_data->data_blob.blob_data.length();
+							DevPipeDataElt *buf = dev_pipe_data->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+							DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
+
+							dev_pipe->get_root_blob().set_extract_data(dvpdea);
+							dev_pipe->get_root_blob().set_extract_delete(true);
+						}
+						catch(...)
+						{
+							TangoSys_OMemStream o;
+							o << "Received malformed data for event ";
+							o << ev_name << ends;
+
+							errors.length(1);
+							errors[0].reason = API_WrongEventData;
+							errors[0].origin = "ZmqEventConsumer::push_zmq_event()";
+							errors[0].desc = CORBA::string_dup(o.str().c_str());
+							errors[0].severity = ERR;
+						}
+						break;
 					}
 				}
 			}
@@ -2385,6 +2427,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             FwdAttrConfEventData *missed_conf_event_data = NULL;
             DataReadyEventData *missed_ready_event_data = NULL;
             DevIntrChangeEventData *missed_dev_intr_event_data = NULL;
+			PipeEventData *missed_dev_pipe_data = NULL;
 
             try
             {
@@ -2403,16 +2446,19 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                     missed_errors[0].desc = "Missed some events! Zmq queue has reached HWM?";
                     missed_errors[0].severity = ERR;
 
-                    if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false))
+                    if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false) && (pipe_event == false))
                         missed_event_data = new FwdEventData (event_callback_map[ev_name].device,
                                                         full_att_name,event_name,NULL,missed_errors);
-                    else if (ev_attr_ready == false && ev_dev_intr == false)
+                    else if (ev_attr_ready == false && ev_dev_intr == false && pipe_event == false)
                         missed_conf_event_data = new FwdAttrConfEventData(event_callback_map[ev_name].device,
                                                                     full_att_name,event_name,
                                                                     NULL,missed_errors);
-                    else if (ev_dev_intr == false)
+                    else if (ev_dev_intr == false && pipe_event == false)
                         missed_ready_event_data = new DataReadyEventData(event_callback_map[ev_name].device,
                                                                     NULL,event_name,missed_errors);
+					else if (ev_dev_intr == false)
+						missed_dev_pipe_data = new PipeEventData(event_callback_map[ev_name].device,full_att_name,
+																	event_name,NULL,missed_errors);
 					else
 						missed_dev_intr_event_data = new DevIntrChangeEventData(event_callback_map[ev_name].device,
 																			event_name,full_att_name,
@@ -2440,7 +2486,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                         EventQueue *ev_queue;
                         ev_queue = esspos->ev_queue;
 
-                        if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false))
+                        if ((ev_attr_conf == false) && (ev_attr_ready == false) && (ev_dev_intr == false) && (pipe_event == false))
                         {
                             FwdEventData *event_dat;
 
@@ -2554,7 +2600,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                     delete dev_attr;
                             }
                         }
-                        else if (ev_attr_ready == false && ev_dev_intr == false)
+                        else if (ev_attr_ready == false && ev_dev_intr == false && pipe_event == false)
                         {
                             FwdAttrConfEventData *event_data;
 
@@ -2615,7 +2661,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 ev_queue->insert_event(event_data);
                             }
                         }
-                        else if (ev_attr_ready == false)
+                        else if (ev_attr_ready == false && pipe_event == false)
 						{
                             DevIntrChangeEventData *event_data = new DevIntrChangeEventData(event_callback_map[new_tango_host].device,
                                                                     event_name,full_att_name,&dev_intr_change->cmds,
@@ -2648,6 +2694,55 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 									*missed_dev_intr_data_copy = *missed_dev_intr_event_data;
 
                                     ev_queue->insert_event(missed_dev_intr_data_copy);
+								}
+                                ev_queue->insert_event(event_data);
+                            }
+						}
+                        else if (ev_attr_ready == false)
+						{
+							PipeEventData *event_data;
+
+                            if (cb_ctr != cb_nb)
+                            {
+                                DevicePipe *dev_pipe_copy = new DevicePipe();
+                                *dev_pipe_copy = *dev_pipe;
+                                event_data = new PipeEventData(event_callback_map[new_tango_host].device,full_att_name,
+                                                                  event_name,dev_pipe_copy,errors);
+                            }
+                            else
+                            {
+								event_data = new PipeEventData(event_callback_map[new_tango_host].device,
+															   full_att_name,event_name,dev_pipe,errors);
+                            }
+
+                            // if a callback method was specified, call it!
+                            if (callback != NULL )
+                            {
+                                try
+                                {
+                                    if (err_missed_event == true)
+                                        callback->push_event(missed_dev_pipe_data);
+                                    callback->push_event(event_data);
+                                }
+                                catch (...)
+                                {
+                                    string st("Tango::ZmqEventConsumer::push_structured_event() exception in callback method of ");
+									st = st + ipos->first;
+									print_error_message(st.c_str());
+                                }
+                                delete event_data;
+                            }
+
+                            // no calback method, the event has to be instered
+                            // into the event queue
+                            else
+                            {
+                                if (err_missed_event == true)
+                                {
+									PipeEventData *missed_dev_pipe_data_copy = new PipeEventData;
+									*missed_dev_pipe_data_copy = *missed_dev_pipe_data;
+
+                                    ev_queue->insert_event(missed_dev_pipe_data_copy);
 								}
                                 ev_queue->insert_event(event_data);
                             }
@@ -2699,6 +2794,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 delete missed_conf_event_data;
                 delete missed_ready_event_data;
                 delete missed_dev_intr_event_data;
+                delete missed_dev_pipe_data;
 
                 break;
             }
@@ -2708,6 +2804,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                 delete missed_conf_event_data;
                 delete missed_ready_event_data;
 				delete missed_dev_intr_event_data;
+				delete missed_dev_pipe_data;
 
                 // free the map lock if not already done
                 if ( map_lock == true )

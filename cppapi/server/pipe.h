@@ -400,12 +400,12 @@ public:
 
 	void fire_event(DeviceImpl *,DevFailed *);
 #ifdef _TG_WINDOWS_
-	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat) {struct _timeb _t;gettimeofday(&_t,NULL);fire_event(_dev,_dat,_t);}
-	void fire_event(DeviceImpl *,DevicePipeBlob *,struct _timeb &);
+	void fire_event(DeviceImpl *,DevicePipeBlob *);
 #else
 	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat) {struct timeval now;gettimeofday(&now,NULL);fire_event(_dev,_dat,now);}
-	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &);
 #endif
+	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &);
+
 	void set_event_subscription(time_t _t) {event_subscription = _t;}
 
 	friend class EventSupplier;

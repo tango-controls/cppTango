@@ -1000,6 +1000,7 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 	errors[0].desc = CORBA::string_dup("Event channel is not responding anymore, maybe the server or event system is down");
 	DeviceAttribute *dev_attr = NULL;
 	AttributeInfoEx *dev_attr_conf = NULL;
+	DevicePipe *dev_pipe = NULL;
 
 	for (epos = event_consumer->event_callback_map.begin(); epos != event_consumer->event_callback_map.end(); ++epos)
 	{
@@ -1131,6 +1132,41 @@ void EventConsumerKeepAliveThread::main_reconnect(ZmqEventConsumer *event_consum
 																			(CommandInfoList *)NULL,
 																			(AttributeInfoListEx *)NULL,
 																			false,errors);
+						// if a callback method was specified, call it!
+						if (callback != NULL )
+						{
+							try
+							{
+								callback->push_event(event_data);
+							}
+							catch (...)
+							{
+								ApiUtil *au = ApiUtil::instance();
+								stringstream ss;
+
+								ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
+								au->print_error_message(ss.str().c_str());
+							}
+
+							delete event_data;
+						}
+
+						// no calback method, the event has to be instered
+						// into the event queue
+						else
+						{
+							ev_queue->insert_event(event_data);
+						}
+					}
+					else if (event_name == EventName[PIPE_EVENT])
+					{
+						PipeEventData *event_data = new PipeEventData(epos->second.device,
+										domain_name,
+										event_name,
+										dev_pipe,
+										errors);
+
+
 						// if a callback method was specified, call it!
 						if (callback != NULL )
 						{
@@ -1576,6 +1612,91 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				}
 			}
 		}
+		else if (epos->second.event_name == EventName[PIPE_EVENT])
+		{
+
+//
+// For pipe event
+//
+
+			DevicePipe *dp = Tango_nullptr;
+			DevErrorList err;
+			err.length(0);
+
+			bool old_transp = epos->second.device->get_transparency_reconnection();
+			epos->second.device->set_transparency_reconnection(true);
+
+			try
+			{
+				dp = new DevicePipe();
+				*dp = epos->second.device->read_pipe(epos->second.obj_name);
+			}
+			catch (DevFailed &e)
+			{
+				err = e.errors;
+			}
+			epos->second.device->set_transparency_reconnection(old_transp);
+
+			unsigned int cb_nb = epos->second.callback_list.size();
+			unsigned int cb_ctr = 0;
+
+			DevicePipe *dp_copy = NULL;
+
+			for (esspos = epos->second.callback_list.begin(); esspos != epos->second.callback_list.end(); ++esspos)
+			{
+				cb_ctr++;
+				PipeEventData *event_data;
+
+				if (cb_ctr != cb_nb)
+				{
+					dp_copy = new DevicePipe();
+					*dp_copy = *dp;
+
+					event_data = new PipeEventData(epos->second.device,
+									domain_name,
+									epos->second.event_name,
+									dp_copy,
+									err);
+				}
+				else
+				{
+					event_data = new PipeEventData(epos->second.device,
+									domain_name,
+									epos->second.event_name,
+									dp,
+									err);
+				}
+
+				CallBack   *callback = esspos->callback;
+				EventQueue *ev_queue = esspos->ev_queue;
+
+				if (callback != NULL )
+				{
+					try
+					{
+						callback->push_event(event_data);
+					}
+					catch (...)
+					{
+						ApiUtil *au = ApiUtil::instance();
+						stringstream ss;
+
+						ss << "EventConsumerKeepAliveThread::run_undetached() exception in callback method of " << epos->first;
+						au->print_error_message(ss.str().c_str());
+					}
+
+					delete event_data;
+				}
+
+				// no calback method, the event has to be inserted
+				// into the event queue
+				else
+				{
+					ev_queue->insert_event(event_data);
+				}
+			}
+
+		}
 	}
 }
 
@@ -1743,6 +1864,38 @@ void EventConsumerKeepAliveThread::stateless_subscription_failed(vector<EventNot
         DevIntrChangeEventData *event_data = new DevIntrChangeEventData(vpos->device,vpos->event_name,
 																		domain_name,(CommandInfoList *)NULL,
 																		(AttributeInfoListEx *)NULL,false,err);
+
+//
+// If a callback method was specified, call it!
+//
+
+        if (vpos->callback != NULL )
+        {
+            try
+            {
+                vpos->callback->push_event(event_data);
+            }
+            catch (...)
+            {
+				ApiUtil *au = ApiUtil::instance();
+				stringstream ss;
+
+				ss << "EventConsumerKeepAliveThread::stateless_subscription_failed() exception in callback method of " << domain_name;
+				au->print_error_message(ss.str().c_str());
+            }
+            delete event_data;
+        }
+
+//
+// No callback method, the event has to be inserted into the event queue
+//
+        else
+            vpos->ev_queue->insert_event(event_data);
+    }
+    else if (vpos->event_name == EventName[PIPE_EVENT])
+    {
+        PipeEventData *event_data = new PipeEventData(vpos->device,domain_name,vpos->event_name,
+																		(DevicePipe *)NULL,err);
 
 //
 // If a callback method was specified, call it!
