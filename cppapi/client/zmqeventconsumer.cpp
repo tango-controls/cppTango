@@ -84,7 +84,6 @@ omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
 	adr = new AttDataReady();
 	dic = new DevIntrChange();
 	del = new DevErrorList();
-	dpd = new DevPipeData();
 
 	start_undetached();
 }
@@ -1914,7 +1913,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
-//	cout << "Received event for " << ev_name << endl;
+	cout << "Lib: Received event for " << ev_name << endl;
 
 //
 // Search for entry within the event_callback map using the event name received in the event
@@ -2054,8 +2053,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
 //
 // For 64 bits data (double, long64 and ulong64), omniORB unmarshalling
-// methods required that the 64 bits data are aligned on a 8 bytes
-// memory address.
+// methods required that the 64 bits data are aligned on a 8 bytes memory address.
 // ZMQ returned memory which is sometimes aligned on a 8 bytes boundary but
 // not always (seems to depend on the host architecture)
 // The attribute data transfert starts with the union discriminator
@@ -2067,7 +2065,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // and 64 bits data type), shift the whole buffer by 4 bytes erasing the
 // additional 4 bytes sent.
 //
-// Note: The buffer is not correctly aligned if it is retruned on a
+// Note: The buffer is not correctly aligned if it is returned on a
 // 8 bytes boundary because we have the 4 extra bytes + 8 bytes for
 // union discriminator + elt nb. This means 64 bits data not on a
 // 8 bytes boundary
@@ -2075,6 +2073,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
 				char *data_ptr = (char *)event_data.data();
 				size_t data_size = (size_t)event_data.size();
+cout << "Data ptr = " << hex << (void *)data_ptr << dec << ", size = " << data_size << endl;
 
 				bool data64 = false;
 				if (data_type == ATT_VALUE && error == false)
@@ -2129,8 +2128,17 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				}
 				else
 				{
-					data_ptr = data_ptr + sizeof(CORBA::Long);
-					data_size = data_size - sizeof(CORBA::Long);
+					if (data_type == PIPE)
+					{
+						data_ptr = data_ptr;
+						data_size = data_size;
+					}
+					else
+					{
+						data_ptr = data_ptr + sizeof(CORBA::Long);
+						data_size = data_size - sizeof(CORBA::Long);
+					}
+
 				}
 
 				TangoCdrMemoryStream event_data_cdr(data_ptr,data_size);
@@ -2150,6 +2158,28 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 					}
 					catch(...)
 					{
+						switch (data_type)
+						{
+							case ATT_CONF:
+							ev_attr_conf = true;
+							break;
+
+							case ATT_READY:
+							ev_attr_ready = true;
+							break;
+
+							case DEV_INTR:
+							ev_dev_intr = true;
+							break;
+
+							case PIPE:
+							pipe_event = true;
+							break;
+
+							default:
+							break;
+						}
+
 						TangoSys_OMemStream o;
 						o << "Received malformed data for event ";
 						o << ev_name << ends;
@@ -2175,12 +2205,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
 							try
 							{
+								ev_attr_conf = true;
 								(AttributeConfig_5 &)ac5 <<= event_data_cdr;
 								attr_conf_5 = &ac5.in();
 								vers = 5;
 								attr_info_ex = new AttributeInfoEx();
 								*attr_info_ex = const_cast<AttributeConfig_5 *>(attr_conf_5);
-								ev_attr_conf = true;
 							}
 							catch(...)
 							{
@@ -2199,12 +2229,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						{
 							try
 							{
+								ev_attr_conf = true;
 								(AttributeConfig_3 &)ac3 <<= event_data_cdr;
 								attr_conf_3 = &ac3.in();
 								vers = 3;
 								attr_info_ex = new AttributeInfoEx();
 								*attr_info_ex = const_cast<AttributeConfig_3 *>(attr_conf_3);
-								ev_attr_conf = true;
 							}
 							catch(...)
 							{
@@ -2221,21 +2251,21 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						}
 						else if (evt_cb.device_idl == 2)
 						{
+							ev_attr_conf = true;
 							(AttributeConfig_2 &)ac2 <<= event_data_cdr;
 							attr_conf_2 = &ac2.in();
 							vers = 2;
 							attr_info_ex = new AttributeInfoEx();
 							*attr_info_ex = const_cast<AttributeConfig_2 *>(attr_conf_2);
-							ev_attr_conf = true;
 						}
 						break;
 
 						case ATT_READY:
 						try
 						{
+							ev_attr_ready = true;
 							(AttDataReady &)adr <<= event_data_cdr;
 							att_ready = &adr.inout();
-							ev_attr_ready = true;
 							att_ready->name = full_att_name.c_str();
 						}
 						catch(...)
@@ -2255,9 +2285,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						case DEV_INTR:
 						try
 						{
+							ev_dev_intr = true;
 							(DevIntrChange &)dic <<= event_data_cdr;
 							dev_intr_change = &dic.inout();
-							ev_dev_intr = true;
 						}
 						catch(...)
 						{
@@ -2276,6 +2306,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						case ATT_VALUE:
 						if (evt_cb.device_idl >= 5)
 						{
+							event_data_cdr.set_un_marshal_type(TangoCdrMemoryStream::UN_ATT);
 							try
 							{
 								vers = 5;
@@ -2385,22 +2416,22 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						break;
 
 						case PIPE:
+						event_data_cdr.set_un_marshal_type(TangoCdrMemoryStream::UN_PIPE);
 						try
 						{
-							(DevPipeData &)dpd <<= event_data_cdr;
-							dev_pipe_data = &dpd.inout();
 							pipe_event = true;
+							zdpd.operator<<=(event_data_cdr);
 
-							string pipe_name = dev_pipe_data->name.in();
-							string root_blob_name = dev_pipe_data->data_blob.name.in();
+							string pipe_name = zdpd.name.in();
+							string root_blob_name = zdpd.data_blob.name.in();
 
 							dev_pipe = new DevicePipe(pipe_name,root_blob_name);
-							dev_pipe->set_time(dev_pipe_data->time);
+							dev_pipe->set_time(zdpd.time);
 
 							CORBA::ULong max,len;
-							max = dev_pipe_data->data_blob.blob_data.maximum();
-							len = dev_pipe_data->data_blob.blob_data.length();
-							DevPipeDataElt *buf = dev_pipe_data->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+							max = zdpd.data_blob.blob_data.maximum();
+							len = zdpd.data_blob.blob_data.length();
+							DevPipeDataElt *buf = zdpd.data_blob.blob_data.get_buffer((CORBA::Boolean)true);
 							DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 							dev_pipe->get_root_blob().set_extract_data(dvpdea);
@@ -2711,6 +2742,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                             }
                             else
                             {
+cout << "Error length = " << errors.length() << endl;
 								event_data = new PipeEventData(event_callback_map[new_tango_host].device,
 															   full_att_name,event_name,dev_pipe,errors);
                             }
@@ -2983,7 +3015,10 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 
     if (_pd__d == ATT_STRING || _pd__d == DEVICE_STATE)
     {
-        _n.rewindPtrs();
+    	if (_n.get_un_marshal_type() == TangoCdrMemoryStream::UN_ATT)
+			_n.rewindPtrs();
+		else
+			_n.rewind_in(4);
         AttrValUnion::operator<<=(_n);
     }
     else
@@ -3009,24 +3044,36 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
         {
             case ATT_SHORT:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_2);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevShort,DevVarShortArray>(data_ptr,length,_n);
             }
             break;
 
             case ATT_DOUBLE:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_8);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevDouble,DevVarDoubleArray>(data_ptr,length,_n);
             }
             break;
 
             case ATT_FLOAT:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_4);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevFloat,DevVarFloatArray>(data_ptr,length,_n);
             }
             break;
 
             case ATT_USHORT:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_2);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevUShort,DevVarUShortArray>(data_ptr,length,_n);
             }
             break;
@@ -3039,24 +3086,36 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 
             case ATT_LONG:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_4);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevLong,DevVarLongArray>(data_ptr,length,_n);
             }
             break;
 
             case ATT_LONG64:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_8);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevLong64,DevVarLong64Array>(data_ptr,length,_n);
             }
             break;
 
             case ATT_ULONG:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_4);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevULong,DevVarULongArray>(data_ptr,length,_n);
             }
             break;
 
             case ATT_ULONG64:
             {
+            	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
+				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_8);
+				_n.set_mkr_in_buf((void *)p1);
                 init_seq<DevULong64,DevVarULong64Array>(data_ptr,length,_n);
             }
             break;
@@ -3161,6 +3220,99 @@ void Tango::ZmqAttributeValue_5::operator<<= (TangoCdrMemoryStream &_n)
     (DevErrorList&)err_list <<= _n;
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqDevPipeData::operator<<=()
+//
+// description :
+//
+// argument :
+//		in :
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Tango::ZmqDevPipeData::operator<<= (TangoCdrMemoryStream &_n)
+{
+	name = _n.unmarshalString(0);
+	(TimeVal&)time <<= _n;
+std::cout << "Before 111" << std::endl;
+	(ZmqDevPipeBlob&)data_blob <<= _n;
+std::cout << "After 111" << std::endl;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqDevPipeBlob::operator<<=()
+//
+// description :
+//
+// argument :
+//		in :
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Tango::ZmqDevPipeBlob::operator<<= (TangoCdrMemoryStream &_n)
+{
+	name = _n.unmarshalString(0);
+std::cout << "Before 222" << std::endl;
+	(ZmqDevVarPipeDataEltArray&)blob_data <<= _n;
+std::cout << "After 222" << std::endl;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqDevVarPipeDataEltArray::operator<<=()
+//
+// description :
+//
+// argument :
+//		in :
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Tango::ZmqDevVarPipeDataEltArray::operator<<= (TangoCdrMemoryStream &_n)
+{
+	_CORBA_ULong _l;
+	_l <<= _n;
+std::cout << "Sequence length = " << _l << std::endl;
+if (_l > 1000)
+assert(false);
+	if (!_n.checkInputOverrun(1,_l))
+	{
+		_CORBA_marshal_sequence_range_check_error(_n);
+// never reach here
+	}
+	length(_l);
+	for( _CORBA_ULong _i = 0; _i < _l; _i++ )
+	{
+		DevPipeDataElt &dpde = pd_buf[_i];
+		ZmqDevPipeDataElt &z_dpde = static_cast<ZmqDevPipeDataElt &>(dpde);
+		z_dpde <<= _n;
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqDevPipeDataElt::operator<<=()
+//
+// description :
+//
+// argument :
+//		in :
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Tango::ZmqDevPipeDataElt::operator<<= (TangoCdrMemoryStream &_n)
+{
+	name = _n.unmarshalString(0);
+	(ZmqAttrValUnion&)value <<= _n;
+	(ZmqDevVarPipeDataEltArray&)inner_blob <<= _n;
+	inner_blob_name = _n.unmarshalString(0);
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 //

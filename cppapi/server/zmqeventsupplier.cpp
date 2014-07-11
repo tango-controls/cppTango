@@ -1005,8 +1005,11 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 		CORBA::Long padding = 0XDEC0DEC0;
 		data_call_cdr.rewindPtrs();
-		padding >>= data_call_cdr;
-		padding >>= data_call_cdr;
+		if (pipe_event == false)
+		{
+			padding >>= data_call_cdr;
+			padding >>= data_call_cdr;
+		}
 
 		if (except == NULL)
 		{
@@ -1108,8 +1111,16 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			except->errors >>= data_call_cdr;
 		}
 
-		mess_size = data_call_cdr.bufSize() - sizeof(CORBA::Long);
-		mess_ptr = (char *)data_call_cdr.bufPtr() + sizeof(CORBA::Long);
+		if (pipe_event == false)
+		{
+			mess_size = data_call_cdr.bufSize() - sizeof(CORBA::Long);
+			mess_ptr = (char *)data_call_cdr.bufPtr() + sizeof(CORBA::Long);
+		}
+		else
+		{
+			mess_size = data_call_cdr.bufSize();
+			mess_ptr = (char *)data_call_cdr.bufPtr();
+		}
 
 //
 // For event with small amount of data, use memcpy to initialize the zmq message. For large amount of data, use

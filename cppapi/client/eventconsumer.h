@@ -77,13 +77,37 @@ void leavefunc();
 class TangoCdrMemoryStream : public cdrMemoryStream
 {
 public:
+	enum Unmarshal_type
+	{
+		UN_ATT,
+		UN_PIPE
+	};
+
     TangoCdrMemoryStream(void *buf,size_t si):cdrMemoryStream(buf,si) {}
     TangoCdrMemoryStream():cdrMemoryStream(512,false) {}
 
-//    void get_octet_array(_CORBA_Octet*,int,omni::alignment_t align=omni::ALIGN_1);
     void tango_get_octet_array(int size);
     void *get_end_out_buf() {return pd_outb_end;}
+    void *get_mkr_out_buf() {return pd_outb_mkr;}
+    void *get_end_in_buf() {return pd_inb_end;}
+    void *get_mkr_in_buf() {return pd_inb_mkr;}
+
+    void set_mkr_in_buf(void *_ptr) {pd_inb_mkr=_ptr;}
+
+    void rewind_in(int _nb) {pd_inb_mkr = (char *)pd_inb_mkr - _nb;}
+    void set_un_marshal_type(Unmarshal_type _ty) {un_type=_ty;}
+    Unmarshal_type get_un_marshal_type() {return un_type;}
+
+    omni::ptr_arith_t align_to(omni::ptr_arith_t p,omni::alignment_t align);
+
+protected:
+	Unmarshal_type		un_type;
 };
+
+inline omni::ptr_arith_t TangoCdrMemoryStream::align_to(omni::ptr_arith_t p,omni::alignment_t align)
+{
+    return (p + ((omni::ptr_arith_t) align - 1)) & ~((omni::ptr_arith_t) align - 1);
+}
 
 inline void TangoCdrMemoryStream::tango_get_octet_array(int size)
 {
@@ -123,6 +147,35 @@ struct ZmqAttributeValue_5:public AttributeValue_5
     void operator<<= (TangoCdrMemoryStream &);
 };
 
+/***            ZmqDevPipeData              	***/
+
+struct ZmqDevPipeData:public DevPipeData
+{
+    void operator<<= (TangoCdrMemoryStream &);
+};
+
+/***            ZmqDevPipeBlob             		***/
+
+struct ZmqDevPipeBlob:public DevPipeBlob
+{
+    void operator<<= (TangoCdrMemoryStream &);
+};
+
+/***            ZmqDevVarPipeDataEltArray     	***/
+
+class ZmqDevVarPipeDataEltArray:public DevVarPipeDataEltArray
+{
+public:
+    void operator<<= (TangoCdrMemoryStream &);
+};
+
+/***            ZmqDevPipeDataElt              	***/
+
+struct ZmqDevPipeDataElt:public DevPipeDataElt
+{
+    void operator<<= (TangoCdrMemoryStream &);
+};
+
 /***    Macros to help coding       ***/
 
 #ifndef Swap16
@@ -140,11 +193,11 @@ struct ZmqAttributeValue_5:public AttributeValue_5
 #error "Swap32 has already been defined"
 #endif
 
-// These template specialization allow us to
-// set or get sequences within a AttrValUnion
-// union. Union method to get/set sequence
-// value are named short_att_value(), double_att_value(),
+//
+// These template specialization allow us to set or get sequences within a AttrValUnion union.
+// Union method to get/set sequence value are named short_att_value(), double_att_value(),
 // float_att_value()....
+//
 
 #define SEQ_METH(NAME,TYPE) \
 template <> \
@@ -170,13 +223,12 @@ SEQ_METH(state,DevVarStateArray)
 /**     Template methods definition     ***/
 
 //
-// Create a dummy empty sequence and init union
-// with this dummy sequence (minimun data copy)
-// Retrieve a reference to that sequence once it is
-// in the union and replace its data pointer
-// by the data in the CdrMemoryStream
-// Use set_seq(), get_seq() specialized template
-// created just above to set/get union sequences
+// Create a dummy empty sequence and init union with this dummy sequence (minimun data copy)
+// Retrieve a reference to that sequence once it is in the union and replace its data pointer
+// by the data in the CdrMemoryStream.
+// Use set_seq(), get_seq() specialized template created just above to set/get union sequences
+// T is the basic data type (DevShort)
+// TA is the sequence data type (DevVarShortArray)
 //
 // Also manage big and litle endian!!
 //
@@ -532,7 +584,7 @@ private :
     AttributeConfig_5_var					ac5;
     AttDataReady_var                        adr;
     DevIntrChange_var						dic;
-    DevPipeData_var							dpd;
+    ZmqDevPipeData							zdpd;
     DevErrorList_var                        del;
 
     int                                     old_poll_nb;

@@ -92,7 +92,6 @@ void leavefunc()
 	if (already_executed == false)
 		au->clean_locking_threads();
 
-
 //
 // Manage event stuff
 //
@@ -132,7 +131,6 @@ void leavefunc()
 		already_executed = true;
 		au->need_reset_already_flag(false);
 	}
-
 }
 
 

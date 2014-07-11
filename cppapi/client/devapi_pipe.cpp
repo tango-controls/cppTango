@@ -893,6 +893,7 @@ void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 	{
 		(*insert_elt_array)[loop].name = CORBA::string_dup(elt_names[loop].c_str());
 		(*insert_elt_array)[loop].value.union_no_data(true);
+		(*insert_elt_array)[loop].inner_blob.length(0);
 	}
 
 	insert_ctr = 0;
@@ -923,6 +924,7 @@ void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 	for (size_t loop = 0;loop < _nb;loop++)
 	{
 		(*insert_elt_array)[loop].value.union_no_data(true);
+		(*insert_elt_array)[loop].inner_blob.length(0);
 	}
 
 	insert_ctr = 0;
@@ -2143,7 +2145,10 @@ void DevicePipeBlob::print(ostream &o_str,int indent,bool insert_extract)
 
 	if (name.size() != 0 && insert_extract == true)
 	{
-		for (int loop = 0;loop < indent;loop++)
+		int max = indent;
+		if (indent > 1)
+			max--;
+		for (int loop = 0;loop < max;loop++)
 			o_str << "\t";
 		o_str << "Blob name = " << name << endl;
 	}
