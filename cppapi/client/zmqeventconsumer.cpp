@@ -3236,9 +3236,7 @@ void Tango::ZmqDevPipeData::operator<<= (TangoCdrMemoryStream &_n)
 {
 	name = _n.unmarshalString(0);
 	(TimeVal&)time <<= _n;
-std::cout << "Before 111" << std::endl;
 	(ZmqDevPipeBlob&)data_blob <<= _n;
-std::cout << "After 111" << std::endl;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -3256,9 +3254,7 @@ std::cout << "After 111" << std::endl;
 void Tango::ZmqDevPipeBlob::operator<<= (TangoCdrMemoryStream &_n)
 {
 	name = _n.unmarshalString(0);
-std::cout << "Before 222" << std::endl;
 	(ZmqDevVarPipeDataEltArray&)blob_data <<= _n;
-std::cout << "After 222" << std::endl;
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -3277,9 +3273,6 @@ void Tango::ZmqDevVarPipeDataEltArray::operator<<= (TangoCdrMemoryStream &_n)
 {
 	_CORBA_ULong _l;
 	_l <<= _n;
-std::cout << "Sequence length = " << _l << std::endl;
-if (_l > 1000)
-assert(false);
 	if (!_n.checkInputOverrun(1,_l))
 	{
 		_CORBA_marshal_sequence_range_check_error(_n);
