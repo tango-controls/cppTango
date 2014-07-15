@@ -77,7 +77,7 @@ void _t_handler (TANGO_UNUSED(int signum))
 	_KillProc_ *t = new _KillProc_;
 	t->start();
 #endif
-	sleep(10);
+	Tango_sleep(3);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
