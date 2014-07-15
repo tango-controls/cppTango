@@ -401,10 +401,12 @@ public:
 	void fire_event(DeviceImpl *,DevFailed *);
 #ifdef _TG_WINDOWS_
 	void fire_event(DeviceImpl *,DevicePipeBlob *);
+	void fire_event(DeviceImpl *,DevicePipeBlob *, omni_mutex *);
 #else
-	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat) {struct timeval now;gettimeofday(&now,NULL);fire_event(_dev,_dat,now);}
+	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat) {struct timeval now;gettimeofday(&now,NULL);fire_event(_dev,_dat,now,(omni_mutex *)NULL);}
+	void fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat,omni_mutex *_m) {struct timeval now;gettimeofday(&now,NULL);fire_event(_dev,_dat,now,_m);}
 #endif
-	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &);
+	void fire_event(DeviceImpl *,DevicePipeBlob *,struct timeval &,omni_mutex *);
 
 	void set_event_subscription(time_t _t) {event_subscription = _t;}
 

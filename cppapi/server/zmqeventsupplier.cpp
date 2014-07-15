@@ -1098,7 +1098,10 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			}
 			else if (ev_value.pipe_val != NULL)
 			{
-// TODO: Pipe: Do we support large data no copy here?
+				size_t nb_data = get_blob_data_nb(ev_value.pipe_val->data_blob.blob_data);
+				if (nb_data >= LARGE_DATA_THRESHOLD)
+					large_data = true;
+
 				*(ev_value.pipe_val) >>= data_call_cdr;
 			}
 			else
@@ -1557,6 +1560,164 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
 			ev_name = EventName[event_type];
 	}
 
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqEventSupplier::get_blob_data_elt()
+//
+// description :
+//		Get how many data are transferred in the blob given as parameter. For instance, for a blob transporting
+//		one array of 1000 double, the returned value will be 1000
+//
+// argument :
+//		in :
+//			- dvpdea : The sequence of data element in the blob
+//
+// return :
+//		Size (in number of data) of the data blob
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+size_t ZmqEventSupplier::get_blob_data_nb(DevVarPipeDataEltArray &dvpdea)
+{
+	size_t ret = 0;
+
+	size_t nb_blob = dvpdea.length();
+	for (size_t loop = 0;loop < nb_blob;loop++)
+	{
+		ret = ret + get_data_elt_data_nb(dvpdea[loop]);
+	}
+
+	return ret;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqEventSupplier::get_data_elt_data_nb()
+//
+// description :
+//		Get how many data are transferred in the data element given as parameter. For instance, for a data element
+//		transporting one array of 250 floats, the returned value will be 250
+//
+// argument :
+//		in :
+//			- dvde : The data element
+//
+// return :
+//		Size (in number of data) of the data element
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+size_t ZmqEventSupplier::get_data_elt_data_nb(DevPipeDataElt &dvde)
+{
+	size_t ret = 0;
+
+	if (dvde.inner_blob.length() != 0)
+		ret = get_blob_data_nb(dvde.inner_blob);
+	else
+	{
+		switch (dvde.value._d())
+		{
+			case ATT_BOOL:
+			{
+				const DevVarBooleanArray &dvba = dvde.value.bool_att_value();
+				ret = dvba.length();
+			}
+			break;
+
+			case ATT_SHORT:
+			{
+				const DevVarShortArray &dvsa = dvde.value.short_att_value();
+				ret = dvsa.length();
+			}
+			break;
+
+			case ATT_LONG:
+			{
+				const DevVarLongArray &dvla = dvde.value.long_att_value();
+				ret = dvla.length();
+			}
+			break;
+
+			case ATT_LONG64:
+			{
+				const DevVarLong64Array &dvlo64 = dvde.value.long64_att_value();
+				ret = dvlo64.length();
+			}
+			break;
+
+			case ATT_FLOAT:
+			{
+				const DevVarFloatArray &dvfa = dvde.value.float_att_value();
+				ret = dvfa.length();
+			}
+			break;
+
+			case ATT_DOUBLE:
+			{
+				const DevVarDoubleArray &dvda = dvde.value.double_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_UCHAR:
+			{
+				const DevVarCharArray &dvda = dvde.value.uchar_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_USHORT:
+			{
+				const DevVarUShortArray &dvda = dvde.value.ushort_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_ULONG:
+			{
+				const DevVarULongArray &dvda = dvde.value.ulong_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_ULONG64:
+			{
+				const DevVarULong64Array &dvda = dvde.value.ulong64_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_STRING:
+			{
+				const DevVarStringArray &dvda = dvde.value.string_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_STATE:
+			{
+				const DevVarStateArray &dvda = dvde.value.state_att_value();
+				ret = dvda.length();
+			}
+			break;
+
+			case ATT_ENCODED:
+			{
+				const DevVarEncodedArray &dvda = dvde.value.encoded_att_value();
+				ret = dvda[0].encoded_data.length();
+			}
+			break;
+
+			default:
+			break;
+		}
+	}
+
+	return ret;
 }
 
 } /* End of Tango namespace */

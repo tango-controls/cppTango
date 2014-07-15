@@ -1913,7 +1913,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
-	cout << "Lib: Received event for " << ev_name << endl;
+//	cout << "Lib: Received event for " << ev_name << endl;
 
 //
 // Search for entry within the event_callback map using the event name received in the event
@@ -1957,7 +1957,6 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
             const AttributeConfig_5 *attr_conf_5 = NULL;
             AttDataReady *att_ready = NULL;
             DevIntrChange *dev_intr_change = NULL;
-            DevPipeData *dev_pipe_data = NULL;
             const DevErrorList *err_ptr;
             DevErrorList errors;
             AttributeInfoEx *attr_info_ex = NULL;
@@ -2073,7 +2072,6 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
 				char *data_ptr = (char *)event_data.data();
 				size_t data_size = (size_t)event_data.size();
-cout << "Data ptr = " << hex << (void *)data_ptr << dec << ", size = " << data_size << endl;
 
 				bool data64 = false;
 				if (data_type == ATT_VALUE && error == false)
@@ -2150,6 +2148,28 @@ cout << "Data ptr = " << hex << (void *)data_ptr << dec << ", size = " << data_s
 
 				if (error == true)
 				{
+					switch (data_type)
+					{
+						case ATT_CONF:
+						ev_attr_conf = true;
+						break;
+
+						case ATT_READY:
+						ev_attr_ready = true;
+						break;
+
+						case DEV_INTR:
+						ev_dev_intr = true;
+						break;
+
+						case PIPE:
+						pipe_event = true;
+						break;
+
+						default:
+						break;
+					}
+
 					try
 					{
 						(DevErrorList &)del <<= event_data_cdr;
@@ -2158,28 +2178,6 @@ cout << "Data ptr = " << hex << (void *)data_ptr << dec << ", size = " << data_s
 					}
 					catch(...)
 					{
-						switch (data_type)
-						{
-							case ATT_CONF:
-							ev_attr_conf = true;
-							break;
-
-							case ATT_READY:
-							ev_attr_ready = true;
-							break;
-
-							case DEV_INTR:
-							ev_dev_intr = true;
-							break;
-
-							case PIPE:
-							pipe_event = true;
-							break;
-
-							default:
-							break;
-						}
-
 						TangoSys_OMemStream o;
 						o << "Received malformed data for event ";
 						o << ev_name << ends;
@@ -2742,7 +2740,6 @@ cout << "Data ptr = " << hex << (void *)data_ptr << dec << ", size = " << data_s
                             }
                             else
                             {
-cout << "Error length = " << errors.length() << endl;
 								event_data = new PipeEventData(event_callback_map[new_tango_host].device,
 															   full_att_name,event_name,dev_pipe,errors);
                             }

@@ -52,8 +52,6 @@
 
 
 
-
-
 _CORBA_MODULE Tango
 
 _CORBA_MODULE_BEG
@@ -130,7 +128,7 @@ _CORBA_MODULE_BEG
     inline DevVarBooleanArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Boolean* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_Boolean(_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarBooleanArray& operator = (const DevVarBooleanArray& _s) {
       _CORBA_Unbounded_Sequence_Boolean::operator=(_s);
@@ -149,7 +147,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarBooleanArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarBooleanArray_var& operator = (DevVarBooleanArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -169,7 +167,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarBooleanArray* operator -> () { return _pd_seq; }
     inline const DevVarBooleanArray* operator -> () const { return _pd_seq; }
@@ -179,7 +177,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarBooleanArray& () const { return *_pd_seq; }
     inline operator DevVarBooleanArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarBooleanArray& in() const { return *_pd_seq; }
     inline DevVarBooleanArray&       inout()    { return *_pd_seq; }
     inline DevVarBooleanArray*&      out() {
@@ -187,9 +185,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarBooleanArray* _retn() { DevVarBooleanArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarBooleanArray_out;
-    
+
   private:
     DevVarBooleanArray* _pd_seq;
   };
@@ -216,7 +214,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarBooleanArray*& _data;
 
@@ -241,7 +239,7 @@ _CORBA_MODULE_BEG
     inline DevVarDoubleArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Double* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Double, 8, 8 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarDoubleArray& operator = (const DevVarDoubleArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Double, 8, 8 > ::operator=(_s);
@@ -260,7 +258,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarDoubleArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarDoubleArray_var& operator = (DevVarDoubleArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -280,7 +278,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarDoubleArray* operator -> () { return _pd_seq; }
     inline const DevVarDoubleArray* operator -> () const { return _pd_seq; }
@@ -290,7 +288,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarDoubleArray& () const { return *_pd_seq; }
     inline operator DevVarDoubleArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarDoubleArray& in() const { return *_pd_seq; }
     inline DevVarDoubleArray&       inout()    { return *_pd_seq; }
     inline DevVarDoubleArray*&      out() {
@@ -298,9 +296,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarDoubleArray* _retn() { DevVarDoubleArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarDoubleArray_out;
-    
+
   private:
     DevVarDoubleArray* _pd_seq;
   };
@@ -327,7 +325,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarDoubleArray*& _data;
 
@@ -352,7 +350,7 @@ _CORBA_MODULE_BEG
     inline DevVarFloatArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Float* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Float, 4, 4 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarFloatArray& operator = (const DevVarFloatArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Float, 4, 4 > ::operator=(_s);
@@ -371,7 +369,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarFloatArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarFloatArray_var& operator = (DevVarFloatArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -391,7 +389,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarFloatArray* operator -> () { return _pd_seq; }
     inline const DevVarFloatArray* operator -> () const { return _pd_seq; }
@@ -401,7 +399,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarFloatArray& () const { return *_pd_seq; }
     inline operator DevVarFloatArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarFloatArray& in() const { return *_pd_seq; }
     inline DevVarFloatArray&       inout()    { return *_pd_seq; }
     inline DevVarFloatArray*&      out() {
@@ -409,9 +407,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarFloatArray* _retn() { DevVarFloatArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarFloatArray_out;
-    
+
   private:
     DevVarFloatArray* _pd_seq;
   };
@@ -438,7 +436,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarFloatArray*& _data;
 
@@ -463,7 +461,7 @@ _CORBA_MODULE_BEG
     inline DevVarShortArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Short* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Short, 2, 2 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarShortArray& operator = (const DevVarShortArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Short, 2, 2 > ::operator=(_s);
@@ -482,7 +480,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarShortArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarShortArray_var& operator = (DevVarShortArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -502,7 +500,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarShortArray* operator -> () { return _pd_seq; }
     inline const DevVarShortArray* operator -> () const { return _pd_seq; }
@@ -512,7 +510,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarShortArray& () const { return *_pd_seq; }
     inline operator DevVarShortArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarShortArray& in() const { return *_pd_seq; }
     inline DevVarShortArray&       inout()    { return *_pd_seq; }
     inline DevVarShortArray*&      out() {
@@ -520,9 +518,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarShortArray* _retn() { DevVarShortArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarShortArray_out;
-    
+
   private:
     DevVarShortArray* _pd_seq;
   };
@@ -549,7 +547,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarShortArray*& _data;
 
@@ -574,7 +572,7 @@ _CORBA_MODULE_BEG
     inline DevVarLongArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Long* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Long, 4, 4 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarLongArray& operator = (const DevVarLongArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::Long, 4, 4 > ::operator=(_s);
@@ -593,7 +591,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarLongArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarLongArray_var& operator = (DevVarLongArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -613,7 +611,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarLongArray* operator -> () { return _pd_seq; }
     inline const DevVarLongArray* operator -> () const { return _pd_seq; }
@@ -623,7 +621,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarLongArray& () const { return *_pd_seq; }
     inline operator DevVarLongArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarLongArray& in() const { return *_pd_seq; }
     inline DevVarLongArray&       inout()    { return *_pd_seq; }
     inline DevVarLongArray*&      out() {
@@ -631,9 +629,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarLongArray* _retn() { DevVarLongArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarLongArray_out;
-    
+
   private:
     DevVarLongArray* _pd_seq;
   };
@@ -660,7 +658,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarLongArray*& _data;
 
@@ -685,7 +683,7 @@ _CORBA_MODULE_BEG
     inline DevVarLong64Array(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::LongLong* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::LongLong, 8, 8 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarLong64Array& operator = (const DevVarLong64Array& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::LongLong, 8, 8 > ::operator=(_s);
@@ -704,7 +702,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarLong64Array_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarLong64Array_var& operator = (DevVarLong64Array* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -724,7 +722,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarLong64Array* operator -> () { return _pd_seq; }
     inline const DevVarLong64Array* operator -> () const { return _pd_seq; }
@@ -734,7 +732,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarLong64Array& () const { return *_pd_seq; }
     inline operator DevVarLong64Array& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarLong64Array& in() const { return *_pd_seq; }
     inline DevVarLong64Array&       inout()    { return *_pd_seq; }
     inline DevVarLong64Array*&      out() {
@@ -742,9 +740,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarLong64Array* _retn() { DevVarLong64Array* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarLong64Array_out;
-    
+
   private:
     DevVarLong64Array* _pd_seq;
   };
@@ -771,7 +769,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarLong64Array*& _data;
 
@@ -796,7 +794,7 @@ _CORBA_MODULE_BEG
     inline DevVarCharArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Octet* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_Octet(_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarCharArray& operator = (const DevVarCharArray& _s) {
       _CORBA_Unbounded_Sequence_Octet::operator=(_s);
@@ -815,7 +813,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarCharArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarCharArray_var& operator = (DevVarCharArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -835,7 +833,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarCharArray* operator -> () { return _pd_seq; }
     inline const DevVarCharArray* operator -> () const { return _pd_seq; }
@@ -845,7 +843,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarCharArray& () const { return *_pd_seq; }
     inline operator DevVarCharArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarCharArray& in() const { return *_pd_seq; }
     inline DevVarCharArray&       inout()    { return *_pd_seq; }
     inline DevVarCharArray*&      out() {
@@ -853,9 +851,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarCharArray* _retn() { DevVarCharArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarCharArray_out;
-    
+
   private:
     DevVarCharArray* _pd_seq;
   };
@@ -882,7 +880,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarCharArray*& _data;
 
@@ -907,7 +905,7 @@ _CORBA_MODULE_BEG
     inline DevVarStringArray(_CORBA_ULong _max, _CORBA_ULong _len, char** _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_String(_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarStringArray& operator = (const DevVarStringArray& _s) {
       _CORBA_Unbounded_Sequence_String::operator=(_s);
@@ -926,7 +924,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarStringArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarStringArray_var& operator = (DevVarStringArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -946,7 +944,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarStringArray* operator -> () { return _pd_seq; }
     inline const DevVarStringArray* operator -> () const { return _pd_seq; }
@@ -956,7 +954,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarStringArray& () const { return *_pd_seq; }
     inline operator DevVarStringArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarStringArray& in() const { return *_pd_seq; }
     inline DevVarStringArray&       inout()    { return *_pd_seq; }
     inline DevVarStringArray*&      out() {
@@ -964,9 +962,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarStringArray* _retn() { DevVarStringArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarStringArray_out;
-    
+
   private:
     DevVarStringArray* _pd_seq;
   };
@@ -993,7 +991,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarStringArray*& _data;
 
@@ -1018,7 +1016,7 @@ _CORBA_MODULE_BEG
     inline DevVarUShortArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::UShort* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::UShort, 2, 2 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarUShortArray& operator = (const DevVarUShortArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::UShort, 2, 2 > ::operator=(_s);
@@ -1037,7 +1035,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarUShortArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarUShortArray_var& operator = (DevVarUShortArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -1057,7 +1055,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarUShortArray* operator -> () { return _pd_seq; }
     inline const DevVarUShortArray* operator -> () const { return _pd_seq; }
@@ -1067,7 +1065,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarUShortArray& () const { return *_pd_seq; }
     inline operator DevVarUShortArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarUShortArray& in() const { return *_pd_seq; }
     inline DevVarUShortArray&       inout()    { return *_pd_seq; }
     inline DevVarUShortArray*&      out() {
@@ -1075,9 +1073,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarUShortArray* _retn() { DevVarUShortArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarUShortArray_out;
-    
+
   private:
     DevVarUShortArray* _pd_seq;
   };
@@ -1104,7 +1102,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarUShortArray*& _data;
 
@@ -1129,7 +1127,7 @@ _CORBA_MODULE_BEG
     inline DevVarULongArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::ULong* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::ULong, 4, 4 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarULongArray& operator = (const DevVarULongArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::ULong, 4, 4 > ::operator=(_s);
@@ -1148,7 +1146,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarULongArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarULongArray_var& operator = (DevVarULongArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -1168,7 +1166,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarULongArray* operator -> () { return _pd_seq; }
     inline const DevVarULongArray* operator -> () const { return _pd_seq; }
@@ -1178,7 +1176,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarULongArray& () const { return *_pd_seq; }
     inline operator DevVarULongArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarULongArray& in() const { return *_pd_seq; }
     inline DevVarULongArray&       inout()    { return *_pd_seq; }
     inline DevVarULongArray*&      out() {
@@ -1186,9 +1184,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarULongArray* _retn() { DevVarULongArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarULongArray_out;
-    
+
   private:
     DevVarULongArray* _pd_seq;
   };
@@ -1215,7 +1213,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarULongArray*& _data;
 
@@ -1240,7 +1238,7 @@ _CORBA_MODULE_BEG
     inline DevVarULong64Array(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::ULongLong* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::ULongLong, 8, 8 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarULong64Array& operator = (const DevVarULong64Array& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< ::CORBA::ULongLong, 8, 8 > ::operator=(_s);
@@ -1259,7 +1257,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarULong64Array_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarULong64Array_var& operator = (DevVarULong64Array* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -1279,7 +1277,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarULong64Array* operator -> () { return _pd_seq; }
     inline const DevVarULong64Array* operator -> () const { return _pd_seq; }
@@ -1289,7 +1287,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarULong64Array& () const { return *_pd_seq; }
     inline operator DevVarULong64Array& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarULong64Array& in() const { return *_pd_seq; }
     inline DevVarULong64Array&       inout()    { return *_pd_seq; }
     inline DevVarULong64Array*&      out() {
@@ -1297,9 +1295,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarULong64Array* _retn() { DevVarULong64Array* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarULong64Array_out;
-    
+
   private:
     DevVarULong64Array* _pd_seq;
   };
@@ -1326,7 +1324,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarULong64Array*& _data;
 
@@ -1338,12 +1336,12 @@ _CORBA_MODULE_BEG
   struct DevVarLongStringArray {
     typedef _CORBA_ConstrType_Variable_Var<DevVarLongStringArray> _var_type;
 
-    
+
     DevVarLongArray lvalue;
 
     DevVarStringArray svalue;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1358,12 +1356,12 @@ _CORBA_MODULE_BEG
   struct DevVarDoubleStringArray {
     typedef _CORBA_ConstrType_Variable_Var<DevVarDoubleStringArray> _var_type;
 
-    
+
     DevVarDoubleArray dvalue;
 
     DevVarStringArray svalue;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1378,12 +1376,12 @@ _CORBA_MODULE_BEG
   struct DevEncoded {
     typedef _CORBA_ConstrType_Variable_Var<DevEncoded> _var_type;
 
-    
+
     ::CORBA::String_member encoded_format;
 
     DevVarCharArray encoded_data;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1411,7 +1409,7 @@ _CORBA_MODULE_BEG
     inline DevVarEncodedArray(_CORBA_ULong _max, _CORBA_ULong _len, DevEncoded* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevEncoded > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarEncodedArray& operator = (const DevVarEncodedArray& _s) {
       _CORBA_Unbounded_Sequence< DevEncoded > ::operator=(_s);
@@ -1430,7 +1428,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarEncodedArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarEncodedArray_var& operator = (DevVarEncodedArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -1450,7 +1448,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarEncodedArray* operator -> () { return _pd_seq; }
     inline const DevVarEncodedArray* operator -> () const { return _pd_seq; }
@@ -1460,7 +1458,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarEncodedArray& () const { return *_pd_seq; }
     inline operator DevVarEncodedArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarEncodedArray& in() const { return *_pd_seq; }
     inline DevVarEncodedArray&       inout()    { return *_pd_seq; }
     inline DevVarEncodedArray*&      out() {
@@ -1468,9 +1466,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarEncodedArray* _retn() { DevVarEncodedArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarEncodedArray_out;
-    
+
   private:
     DevVarEncodedArray* _pd_seq;
   };
@@ -1497,7 +1495,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarEncodedArray*& _data;
 
@@ -1520,22 +1518,22 @@ _CORBA_MODULE_BEG
     JavaUUID_slice* _data = JavaUUID_alloc();
     if (_data) {
       for (_CORBA_ULong _0i0 = 0; _0i0 < 2; _0i0++){
-        
+
         _data[_0i0] = _s[_0i0];
 
       }
-  
+
     }
     return _data;
   }
 
   _CORBA_MODULE_INLINE void JavaUUID_copy(JavaUUID_slice* _to, const JavaUUID_slice* _from){
     for (_CORBA_ULong _0i0 = 0; _0i0 < 2; _0i0++){
-      
+
       _to[_0i0] = _from[_0i0];
 
     }
-  
+
   }
 
   _CORBA_MODULE_INLINE void JavaUUID_free(JavaUUID_slice* _s) {
@@ -1562,12 +1560,12 @@ _CORBA_MODULE_BEG
   struct JavaClntIdent {
     typedef _CORBA_ConstrType_Variable_Var<JavaClntIdent> _var_type;
 
-    
+
     ::CORBA::String_member MainClass;
 
     JavaUUID uuid;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1589,12 +1587,12 @@ _CORBA_MODULE_BEG
 
     typedef _CORBA_ConstrType_Variable_Var<ClntIdent> _var_type;
 
-    
+
 
     ClntIdent(): _pd__initialised(0) {
-      
+
     }
-    
+
     ClntIdent(const ClntIdent& _value) {
       _pd__initialised = _value._pd__initialised;
       switch(_value._pd__d) {
@@ -1604,10 +1602,10 @@ _CORBA_MODULE_BEG
 
           default: break;
 
-      
+
       }
       _pd__d = _value._pd__d;
-  
+
     }
 
     ~ClntIdent() {}
@@ -1621,10 +1619,10 @@ _CORBA_MODULE_BEG
 
           default: break;
 
-      
+
       }
       _pd__d = _value._pd__d;
-  
+
       return *this;
     }
 
@@ -1642,16 +1640,16 @@ _CORBA_MODULE_BEG
         default: goto fail;
 
       };
-      
+
 
       fail:
       OMNIORB_THROW(BAD_PARAM,_OMNI_NS(BAD_PARAM_InvalidUnionDiscValue),::CORBA::COMPLETED_NO);
 
 
-  
+
     }
 
-    
+
 
     CppClntIdent cpp_clnt () const { return _pd_cpp_clnt; }
     void cpp_clnt (CppClntIdent  _value) {
@@ -1670,8 +1668,8 @@ _CORBA_MODULE_BEG
       _pd_java_clnt = _value;
     }
 
-  
-    
+
+
     void operator>>= (cdrStream&) const;
     void operator<<= (cdrStream&);
 
@@ -1686,10 +1684,10 @@ _CORBA_MODULE_BEG
 
     };
 
-  
+
     JavaClntIdent _pd_java_clnt;
 
-  
+
   };
 
   typedef ClntIdent::_var_type ClntIdent_var;
@@ -1755,7 +1753,7 @@ _CORBA_MODULE_BEG
     inline DevVarStateArray(_CORBA_ULong _max, _CORBA_ULong _len, DevState* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< DevState, 4, 4 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevVarStateArray& operator = (const DevVarStateArray& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< DevState, 4, 4 > ::operator=(_s);
@@ -1774,7 +1772,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevVarStateArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarStateArray_var& operator = (DevVarStateArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -1794,7 +1792,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarStateArray* operator -> () { return _pd_seq; }
     inline const DevVarStateArray* operator -> () const { return _pd_seq; }
@@ -1804,7 +1802,7 @@ _CORBA_MODULE_BEG
     inline operator const DevVarStateArray& () const { return *_pd_seq; }
     inline operator DevVarStateArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarStateArray& in() const { return *_pd_seq; }
     inline DevVarStateArray&       inout()    { return *_pd_seq; }
     inline DevVarStateArray*&      out() {
@@ -1812,9 +1810,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevVarStateArray* _retn() { DevVarStateArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarStateArray_out;
-    
+
   private:
     DevVarStateArray* _pd_seq;
   };
@@ -1841,7 +1839,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarStateArray*& _data;
 
@@ -1853,14 +1851,14 @@ _CORBA_MODULE_BEG
   struct TimeVal {
     typedef _CORBA_ConstrType_Fix_Var<TimeVal> _var_type;
 
-    
+
     ::CORBA::Long tv_sec;
 
     ::CORBA::Long tv_usec;
 
     ::CORBA::Long tv_nsec;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1875,7 +1873,7 @@ _CORBA_MODULE_BEG
   struct DevCmdInfo {
     typedef _CORBA_ConstrType_Variable_Var<DevCmdInfo> _var_type;
 
-    
+
     ::CORBA::String_member cmd_name;
 
     ::CORBA::Long cmd_tag;
@@ -1888,7 +1886,7 @@ _CORBA_MODULE_BEG
 
     ::CORBA::String_member out_type_desc;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1903,7 +1901,7 @@ _CORBA_MODULE_BEG
   struct DevCmdInfo_2 {
     typedef _CORBA_ConstrType_Variable_Var<DevCmdInfo_2> _var_type;
 
-    
+
     ::CORBA::String_member cmd_name;
 
     DispLevel level;
@@ -1918,7 +1916,7 @@ _CORBA_MODULE_BEG
 
     ::CORBA::String_member out_type_desc;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -1946,7 +1944,7 @@ _CORBA_MODULE_BEG
     inline DevCmdInfoList(_CORBA_ULong _max, _CORBA_ULong _len, DevCmdInfo* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevCmdInfo > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevCmdInfoList& operator = (const DevCmdInfoList& _s) {
       _CORBA_Unbounded_Sequence< DevCmdInfo > ::operator=(_s);
@@ -1965,7 +1963,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevCmdInfoList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevCmdInfoList_var& operator = (DevCmdInfoList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -1985,7 +1983,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevCmdInfoList* operator -> () { return _pd_seq; }
     inline const DevCmdInfoList* operator -> () const { return _pd_seq; }
@@ -1995,7 +1993,7 @@ _CORBA_MODULE_BEG
     inline operator const DevCmdInfoList& () const { return *_pd_seq; }
     inline operator DevCmdInfoList& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevCmdInfoList& in() const { return *_pd_seq; }
     inline DevCmdInfoList&       inout()    { return *_pd_seq; }
     inline DevCmdInfoList*&      out() {
@@ -2003,9 +2001,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevCmdInfoList* _retn() { DevCmdInfoList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevCmdInfoList_out;
-    
+
   private:
     DevCmdInfoList* _pd_seq;
   };
@@ -2032,7 +2030,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevCmdInfoList*& _data;
 
@@ -2057,7 +2055,7 @@ _CORBA_MODULE_BEG
     inline DevCmdInfoList_2(_CORBA_ULong _max, _CORBA_ULong _len, DevCmdInfo_2* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevCmdInfo_2 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevCmdInfoList_2& operator = (const DevCmdInfoList_2& _s) {
       _CORBA_Unbounded_Sequence< DevCmdInfo_2 > ::operator=(_s);
@@ -2076,7 +2074,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevCmdInfoList_2_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevCmdInfoList_2_var& operator = (DevCmdInfoList_2* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -2096,7 +2094,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevCmdInfoList_2* operator -> () { return _pd_seq; }
     inline const DevCmdInfoList_2* operator -> () const { return _pd_seq; }
@@ -2106,7 +2104,7 @@ _CORBA_MODULE_BEG
     inline operator const DevCmdInfoList_2& () const { return *_pd_seq; }
     inline operator DevCmdInfoList_2& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevCmdInfoList_2& in() const { return *_pd_seq; }
     inline DevCmdInfoList_2&       inout()    { return *_pd_seq; }
     inline DevCmdInfoList_2*&      out() {
@@ -2114,9 +2112,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevCmdInfoList_2* _retn() { DevCmdInfoList_2* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevCmdInfoList_2_out;
-    
+
   private:
     DevCmdInfoList_2* _pd_seq;
   };
@@ -2143,7 +2141,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevCmdInfoList_2*& _data;
 
@@ -2155,7 +2153,7 @@ _CORBA_MODULE_BEG
   struct DevError {
     typedef _CORBA_ConstrType_Variable_Var<DevError> _var_type;
 
-    
+
     ::CORBA::String_member reason;
 
     ErrSeverity severity;
@@ -2164,7 +2162,7 @@ _CORBA_MODULE_BEG
 
     ::CORBA::String_member origin;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2192,7 +2190,7 @@ _CORBA_MODULE_BEG
     inline DevErrorList(_CORBA_ULong _max, _CORBA_ULong _len, DevError* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevError > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevErrorList& operator = (const DevErrorList& _s) {
       _CORBA_Unbounded_Sequence< DevError > ::operator=(_s);
@@ -2211,7 +2209,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~DevErrorList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevErrorList_var& operator = (DevErrorList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -2231,7 +2229,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevErrorList* operator -> () { return _pd_seq; }
     inline const DevErrorList* operator -> () const { return _pd_seq; }
@@ -2241,7 +2239,7 @@ _CORBA_MODULE_BEG
     inline operator const DevErrorList& () const { return *_pd_seq; }
     inline operator DevErrorList& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevErrorList& in() const { return *_pd_seq; }
     inline DevErrorList&       inout()    { return *_pd_seq; }
     inline DevErrorList*&      out() {
@@ -2249,9 +2247,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline DevErrorList* _retn() { DevErrorList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevErrorList_out;
-    
+
   private:
     DevErrorList* _pd_seq;
   };
@@ -2278,7 +2276,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     DevErrorList*& _data;
 
@@ -2290,14 +2288,14 @@ _CORBA_MODULE_BEG
   struct NamedDevError {
     typedef _CORBA_ConstrType_Variable_Var<NamedDevError> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     ::CORBA::Long index_in_call;
 
     DevErrorList err_list;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2325,7 +2323,7 @@ _CORBA_MODULE_BEG
     inline NamedDevErrorList(_CORBA_ULong _max, _CORBA_ULong _len, NamedDevError* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< NamedDevError > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline NamedDevErrorList& operator = (const NamedDevErrorList& _s) {
       _CORBA_Unbounded_Sequence< NamedDevError > ::operator=(_s);
@@ -2344,7 +2342,7 @@ _CORBA_MODULE_BEG
       else              _pd_seq = 0;
     }
     inline ~NamedDevErrorList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline NamedDevErrorList_var& operator = (NamedDevErrorList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -2364,7 +2362,7 @@ _CORBA_MODULE_BEG
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline NamedDevErrorList* operator -> () { return _pd_seq; }
     inline const NamedDevErrorList* operator -> () const { return _pd_seq; }
@@ -2374,7 +2372,7 @@ _CORBA_MODULE_BEG
     inline operator const NamedDevErrorList& () const { return *_pd_seq; }
     inline operator NamedDevErrorList& () { return *_pd_seq; }
 #endif
-      
+
     inline const NamedDevErrorList& in() const { return *_pd_seq; }
     inline NamedDevErrorList&       inout()    { return *_pd_seq; }
     inline NamedDevErrorList*&      out() {
@@ -2382,9 +2380,9 @@ _CORBA_MODULE_BEG
       return _pd_seq;
     }
     inline NamedDevErrorList* _retn() { NamedDevErrorList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class NamedDevErrorList_out;
-    
+
   private:
     NamedDevErrorList* _pd_seq;
   };
@@ -2411,7 +2409,7 @@ _CORBA_MODULE_BEG
       return (*_data)[_i];
     }
 
-  
+
 
     NamedDevErrorList*& _data;
 
@@ -2422,10 +2420,10 @@ _CORBA_MODULE_BEG
 
   class DevFailed : public ::CORBA::UserException {
   public:
-    
+
     DevErrorList errors;
 
-  
+
 
     inline DevFailed() {
       pd_insertToAnyFn    = insertToAnyFn;
@@ -2441,7 +2439,7 @@ _CORBA_MODULE_BEG
     static inline DevFailed* _narrow(::CORBA::Exception* _e) {
       return _downcast(_e);
     }
-    
+
     void operator>>=(cdrStream&) const ;
     void operator<<=(cdrStream&) ;
 
@@ -2463,10 +2461,10 @@ _CORBA_MODULE_BEG
 
   class MultiDevFailed : public ::CORBA::UserException {
   public:
-    
+
     NamedDevErrorList errors;
 
-  
+
 
     inline MultiDevFailed() {
       pd_insertToAnyFn    = insertToAnyFn;
@@ -2482,7 +2480,7 @@ _CORBA_MODULE_BEG
     static inline MultiDevFailed* _narrow(::CORBA::Exception* _e) {
       return _downcast(_e);
     }
-    
+
     void operator>>=(cdrStream&) const ;
     void operator<<=(cdrStream&) ;
 
@@ -2505,7 +2503,7 @@ _CORBA_MODULE_BEG
   struct AttributeConfig {
     typedef _CORBA_ConstrType_Variable_Var<AttributeConfig> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     AttrWriteType writable;
@@ -2542,7 +2540,7 @@ _CORBA_MODULE_BEG
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2557,7 +2555,7 @@ _CORBA_MODULE_BEG
   struct AttributeConfig_2 {
     typedef _CORBA_ConstrType_Variable_Var<AttributeConfig_2> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     AttrWriteType writable;
@@ -2596,7 +2594,7 @@ _CORBA_MODULE_BEG
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2611,7 +2609,7 @@ _CORBA_MODULE_BEG
   struct AttributeValue {
     typedef _CORBA_ConstrType_Variable_Var<AttributeValue> _var_type;
 
-    
+
     ::CORBA::Any value;
 
     AttrQuality quality;
@@ -2624,7 +2622,7 @@ _CORBA_MODULE_BEG
 
     ::CORBA::Long dim_y;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2639,12 +2637,12 @@ _CORBA_MODULE_BEG
   struct AttributeDim {
     typedef _CORBA_ConstrType_Fix_Var<AttributeDim> _var_type;
 
-    
+
     ::CORBA::Long dim_x;
 
     ::CORBA::Long dim_y;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2659,7 +2657,7 @@ _CORBA_MODULE_BEG
   struct AttributeValue_3 {
     typedef _CORBA_ConstrType_Variable_Var<AttributeValue_3> _var_type;
 
-    
+
     ::CORBA::Any value;
 
     AttrQuality quality;
@@ -2674,7 +2672,7 @@ _CORBA_MODULE_BEG
 
     DevErrorList err_list;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -2696,12 +2694,12 @@ _CORBA_MODULE_BEG
 
     typedef _CORBA_ConstrType_Variable_Var<AttrValUnion> _var_type;
 
-    
+
 
     AttrValUnion(): _pd__initialised(0) {
-      
+
     }
-    
+
     AttrValUnion(const AttrValUnion& _value) {
       _pd__initialised = _value._pd__initialised;
       switch(_value._pd__d) {
@@ -2737,10 +2735,10 @@ _CORBA_MODULE_BEG
 
           default: break;
 
-      
+
       }
       _pd__d = _value._pd__d;
-  
+
     }
 
     ~AttrValUnion() {}
@@ -2780,10 +2778,10 @@ _CORBA_MODULE_BEG
 
           default: break;
 
-      
+
       }
       _pd__d = _value._pd__d;
-  
+
       return *this;
     }
 
@@ -2814,16 +2812,16 @@ _CORBA_MODULE_BEG
         default: goto fail;
 
       };
-      
+
 
       fail:
       OMNIORB_THROW(BAD_PARAM,_OMNI_NS(BAD_PARAM_InvalidUnionDiscValue),::CORBA::COMPLETED_NO);
 
 
-  
+
     }
 
-    
+
 
     const DevVarBooleanArray &bool_att_value () const { return _pd_bool_att_value; }
     DevVarBooleanArray &bool_att_value () { return _pd_bool_att_value; }
@@ -2958,8 +2956,8 @@ _CORBA_MODULE_BEG
       _pd_union_no_data = _value;
     }
 
-  
-    
+
+
     void operator>>= (cdrStream&) const;
     void operator<<= (cdrStream&);
 
@@ -2976,7 +2974,7 @@ _CORBA_MODULE_BEG
 
     };
 
-  
+
     DevVarBooleanArray _pd_bool_att_value;
 
     DevVarShortArray _pd_short_att_value;
@@ -3003,7 +3001,7 @@ _CORBA_MODULE_BEG
 
     DevVarEncodedArray _pd_encoded_att_value;
 
-  
+
   };
 
   typedef AttrValUnion::_var_type AttrValUnion_var;
@@ -3020,7 +3018,7 @@ virtual ~AttributeValue_4() {if (mut_ptr != NULL)mut_ptr->unlock();}
 AttributeValue_4() {mut_ptr=NULL;}
 void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}
 void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
-    
+
     AttrValUnion value;
 
     AttrQuality quality;
@@ -3038,7 +3036,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3058,7 +3056,7 @@ virtual ~AttributeValue_5() {if (mut_ptr != NULL)mut_ptr->unlock();}
 AttributeValue_5() {mut_ptr=NULL;}
 void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}
 void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
-    
+
     AttrValUnion value;
 
     AttrQuality quality;
@@ -3078,7 +3076,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3093,14 +3091,14 @@ omni_mutex *mut_ptr;
   struct ChangeEventProp {
     typedef _CORBA_ConstrType_Variable_Var<ChangeEventProp> _var_type;
 
-    
+
     ::CORBA::String_member rel_change;
 
     ::CORBA::String_member abs_change;
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3115,12 +3113,12 @@ omni_mutex *mut_ptr;
   struct PeriodicEventProp {
     typedef _CORBA_ConstrType_Variable_Var<PeriodicEventProp> _var_type;
 
-    
+
     ::CORBA::String_member period;
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3135,7 +3133,7 @@ omni_mutex *mut_ptr;
   struct ArchiveEventProp {
     typedef _CORBA_ConstrType_Variable_Var<ArchiveEventProp> _var_type;
 
-    
+
     ::CORBA::String_member rel_change;
 
     ::CORBA::String_member abs_change;
@@ -3144,7 +3142,7 @@ omni_mutex *mut_ptr;
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3159,14 +3157,14 @@ omni_mutex *mut_ptr;
   struct EventProperties {
     typedef _CORBA_ConstrType_Variable_Var<EventProperties> _var_type;
 
-    
+
     ChangeEventProp ch_event;
 
     PeriodicEventProp per_event;
 
     ArchiveEventProp arch_event;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3181,7 +3179,7 @@ omni_mutex *mut_ptr;
   struct AttributeAlarm {
     typedef _CORBA_ConstrType_Variable_Var<AttributeAlarm> _var_type;
 
-    
+
     ::CORBA::String_member min_alarm;
 
     ::CORBA::String_member max_alarm;
@@ -3196,7 +3194,7 @@ omni_mutex *mut_ptr;
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3211,7 +3209,7 @@ omni_mutex *mut_ptr;
   struct AttributeConfig_3 {
     typedef _CORBA_ConstrType_Variable_Var<AttributeConfig_3> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     AttrWriteType writable;
@@ -3252,7 +3250,7 @@ omni_mutex *mut_ptr;
 
     DevVarStringArray sys_extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3267,7 +3265,7 @@ omni_mutex *mut_ptr;
   struct AttributeConfig_5 {
     typedef _CORBA_ConstrType_Variable_Var<AttributeConfig_5> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     AttrWriteType writable;
@@ -3316,7 +3314,7 @@ omni_mutex *mut_ptr;
 
     DevVarStringArray sys_extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3344,7 +3342,7 @@ omni_mutex *mut_ptr;
     inline AttributeConfigList(_CORBA_ULong _max, _CORBA_ULong _len, AttributeConfig* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeConfig > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeConfigList& operator = (const AttributeConfigList& _s) {
       _CORBA_Unbounded_Sequence< AttributeConfig > ::operator=(_s);
@@ -3363,7 +3361,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeConfigList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeConfigList_var& operator = (AttributeConfigList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -3383,7 +3381,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeConfigList* operator -> () { return _pd_seq; }
     inline const AttributeConfigList* operator -> () const { return _pd_seq; }
@@ -3393,7 +3391,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeConfigList& () const { return *_pd_seq; }
     inline operator AttributeConfigList& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeConfigList& in() const { return *_pd_seq; }
     inline AttributeConfigList&       inout()    { return *_pd_seq; }
     inline AttributeConfigList*&      out() {
@@ -3401,9 +3399,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeConfigList* _retn() { AttributeConfigList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeConfigList_out;
-    
+
   private:
     AttributeConfigList* _pd_seq;
   };
@@ -3430,7 +3428,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeConfigList*& _data;
 
@@ -3455,7 +3453,7 @@ omni_mutex *mut_ptr;
     inline AttributeConfigList_2(_CORBA_ULong _max, _CORBA_ULong _len, AttributeConfig_2* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeConfig_2 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeConfigList_2& operator = (const AttributeConfigList_2& _s) {
       _CORBA_Unbounded_Sequence< AttributeConfig_2 > ::operator=(_s);
@@ -3474,7 +3472,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeConfigList_2_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeConfigList_2_var& operator = (AttributeConfigList_2* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -3494,7 +3492,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeConfigList_2* operator -> () { return _pd_seq; }
     inline const AttributeConfigList_2* operator -> () const { return _pd_seq; }
@@ -3504,7 +3502,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeConfigList_2& () const { return *_pd_seq; }
     inline operator AttributeConfigList_2& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeConfigList_2& in() const { return *_pd_seq; }
     inline AttributeConfigList_2&       inout()    { return *_pd_seq; }
     inline AttributeConfigList_2*&      out() {
@@ -3512,9 +3510,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeConfigList_2* _retn() { AttributeConfigList_2* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeConfigList_2_out;
-    
+
   private:
     AttributeConfigList_2* _pd_seq;
   };
@@ -3541,7 +3539,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeConfigList_2*& _data;
 
@@ -3566,7 +3564,7 @@ omni_mutex *mut_ptr;
     inline AttributeConfigList_3(_CORBA_ULong _max, _CORBA_ULong _len, AttributeConfig_3* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeConfig_3 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeConfigList_3& operator = (const AttributeConfigList_3& _s) {
       _CORBA_Unbounded_Sequence< AttributeConfig_3 > ::operator=(_s);
@@ -3585,7 +3583,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeConfigList_3_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeConfigList_3_var& operator = (AttributeConfigList_3* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -3605,7 +3603,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeConfigList_3* operator -> () { return _pd_seq; }
     inline const AttributeConfigList_3* operator -> () const { return _pd_seq; }
@@ -3615,7 +3613,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeConfigList_3& () const { return *_pd_seq; }
     inline operator AttributeConfigList_3& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeConfigList_3& in() const { return *_pd_seq; }
     inline AttributeConfigList_3&       inout()    { return *_pd_seq; }
     inline AttributeConfigList_3*&      out() {
@@ -3623,9 +3621,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeConfigList_3* _retn() { AttributeConfigList_3* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeConfigList_3_out;
-    
+
   private:
     AttributeConfigList_3* _pd_seq;
   };
@@ -3652,7 +3650,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeConfigList_3*& _data;
 
@@ -3677,7 +3675,7 @@ omni_mutex *mut_ptr;
     inline AttributeConfigList_5(_CORBA_ULong _max, _CORBA_ULong _len, AttributeConfig_5* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeConfig_5 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeConfigList_5& operator = (const AttributeConfigList_5& _s) {
       _CORBA_Unbounded_Sequence< AttributeConfig_5 > ::operator=(_s);
@@ -3696,7 +3694,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeConfigList_5_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeConfigList_5_var& operator = (AttributeConfigList_5* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -3716,7 +3714,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeConfigList_5* operator -> () { return _pd_seq; }
     inline const AttributeConfigList_5* operator -> () const { return _pd_seq; }
@@ -3726,7 +3724,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeConfigList_5& () const { return *_pd_seq; }
     inline operator AttributeConfigList_5& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeConfigList_5& in() const { return *_pd_seq; }
     inline AttributeConfigList_5&       inout()    { return *_pd_seq; }
     inline AttributeConfigList_5*&      out() {
@@ -3734,9 +3732,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeConfigList_5* _retn() { AttributeConfigList_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeConfigList_5_out;
-    
+
   private:
     AttributeConfigList_5* _pd_seq;
   };
@@ -3763,7 +3761,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeConfigList_5*& _data;
 
@@ -3788,7 +3786,7 @@ omni_mutex *mut_ptr;
     inline AttributeValueList(_CORBA_ULong _max, _CORBA_ULong _len, AttributeValue* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeValue > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeValueList& operator = (const AttributeValueList& _s) {
       _CORBA_Unbounded_Sequence< AttributeValue > ::operator=(_s);
@@ -3807,7 +3805,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeValueList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeValueList_var& operator = (AttributeValueList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -3827,7 +3825,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeValueList* operator -> () { return _pd_seq; }
     inline const AttributeValueList* operator -> () const { return _pd_seq; }
@@ -3837,7 +3835,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeValueList& () const { return *_pd_seq; }
     inline operator AttributeValueList& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeValueList& in() const { return *_pd_seq; }
     inline AttributeValueList&       inout()    { return *_pd_seq; }
     inline AttributeValueList*&      out() {
@@ -3845,9 +3843,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeValueList* _retn() { AttributeValueList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeValueList_out;
-    
+
   private:
     AttributeValueList* _pd_seq;
   };
@@ -3874,7 +3872,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeValueList*& _data;
 
@@ -3899,7 +3897,7 @@ omni_mutex *mut_ptr;
     inline AttributeValueList_3(_CORBA_ULong _max, _CORBA_ULong _len, AttributeValue_3* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeValue_3 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeValueList_3& operator = (const AttributeValueList_3& _s) {
       _CORBA_Unbounded_Sequence< AttributeValue_3 > ::operator=(_s);
@@ -3918,7 +3916,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeValueList_3_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeValueList_3_var& operator = (AttributeValueList_3* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -3938,7 +3936,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeValueList_3* operator -> () { return _pd_seq; }
     inline const AttributeValueList_3* operator -> () const { return _pd_seq; }
@@ -3948,7 +3946,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeValueList_3& () const { return *_pd_seq; }
     inline operator AttributeValueList_3& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeValueList_3& in() const { return *_pd_seq; }
     inline AttributeValueList_3&       inout()    { return *_pd_seq; }
     inline AttributeValueList_3*&      out() {
@@ -3956,9 +3954,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeValueList_3* _retn() { AttributeValueList_3* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeValueList_3_out;
-    
+
   private:
     AttributeValueList_3* _pd_seq;
   };
@@ -3985,7 +3983,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeValueList_3*& _data;
 
@@ -4010,7 +4008,7 @@ omni_mutex *mut_ptr;
     inline AttributeValueList_4(_CORBA_ULong _max, _CORBA_ULong _len, AttributeValue_4* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeValue_4 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeValueList_4& operator = (const AttributeValueList_4& _s) {
       _CORBA_Unbounded_Sequence< AttributeValue_4 > ::operator=(_s);
@@ -4029,7 +4027,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeValueList_4_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeValueList_4_var& operator = (AttributeValueList_4* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -4049,7 +4047,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeValueList_4* operator -> () { return _pd_seq; }
     inline const AttributeValueList_4* operator -> () const { return _pd_seq; }
@@ -4059,7 +4057,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeValueList_4& () const { return *_pd_seq; }
     inline operator AttributeValueList_4& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeValueList_4& in() const { return *_pd_seq; }
     inline AttributeValueList_4&       inout()    { return *_pd_seq; }
     inline AttributeValueList_4*&      out() {
@@ -4067,9 +4065,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeValueList_4* _retn() { AttributeValueList_4* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeValueList_4_out;
-    
+
   private:
     AttributeValueList_4* _pd_seq;
   };
@@ -4096,7 +4094,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeValueList_4*& _data;
 
@@ -4121,7 +4119,7 @@ omni_mutex *mut_ptr;
     inline AttributeValueList_5(_CORBA_ULong _max, _CORBA_ULong _len, AttributeValue_5* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeValue_5 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeValueList_5& operator = (const AttributeValueList_5& _s) {
       _CORBA_Unbounded_Sequence< AttributeValue_5 > ::operator=(_s);
@@ -4140,7 +4138,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeValueList_5_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeValueList_5_var& operator = (AttributeValueList_5* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -4160,7 +4158,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeValueList_5* operator -> () { return _pd_seq; }
     inline const AttributeValueList_5* operator -> () const { return _pd_seq; }
@@ -4170,7 +4168,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeValueList_5& () const { return *_pd_seq; }
     inline operator AttributeValueList_5& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeValueList_5& in() const { return *_pd_seq; }
     inline AttributeValueList_5&       inout()    { return *_pd_seq; }
     inline AttributeValueList_5*&      out() {
@@ -4178,9 +4176,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeValueList_5* _retn() { AttributeValueList_5* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeValueList_5_out;
-    
+
   private:
     AttributeValueList_5* _pd_seq;
   };
@@ -4207,7 +4205,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeValueList_5*& _data;
 
@@ -4224,7 +4222,7 @@ omni_mutex *mut_ptr;
   struct PipeConfig {
     typedef _CORBA_ConstrType_Variable_Var<PipeConfig> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     ::CORBA::String_member description;
@@ -4237,7 +4235,7 @@ omni_mutex *mut_ptr;
 
     DevVarStringArray extensions;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4265,7 +4263,7 @@ omni_mutex *mut_ptr;
     inline PipeConfigList(_CORBA_ULong _max, _CORBA_ULong _len, PipeConfig* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< PipeConfig > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline PipeConfigList& operator = (const PipeConfigList& _s) {
       _CORBA_Unbounded_Sequence< PipeConfig > ::operator=(_s);
@@ -4284,7 +4282,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~PipeConfigList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline PipeConfigList_var& operator = (PipeConfigList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -4304,7 +4302,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline PipeConfigList* operator -> () { return _pd_seq; }
     inline const PipeConfigList* operator -> () const { return _pd_seq; }
@@ -4314,7 +4312,7 @@ omni_mutex *mut_ptr;
     inline operator const PipeConfigList& () const { return *_pd_seq; }
     inline operator PipeConfigList& () { return *_pd_seq; }
 #endif
-      
+
     inline const PipeConfigList& in() const { return *_pd_seq; }
     inline PipeConfigList&       inout()    { return *_pd_seq; }
     inline PipeConfigList*&      out() {
@@ -4322,9 +4320,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline PipeConfigList* _retn() { PipeConfigList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class PipeConfigList_out;
-    
+
   private:
     PipeConfigList* _pd_seq;
   };
@@ -4351,7 +4349,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     PipeConfigList*& _data;
 
@@ -4379,7 +4377,7 @@ omni_mutex *mut_ptr;
     inline DevVarPipeDataEltArray(_CORBA_ULong _max, _CORBA_ULong _len, DevPipeDataElt* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_Forward< DevPipeDataElt > (_max, _len, _val, _rel) {}
 
-  
+
 
     virtual ~DevVarPipeDataEltArray();
 
@@ -4407,7 +4405,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~DevVarPipeDataEltArray_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevVarPipeDataEltArray_var& operator = (DevVarPipeDataEltArray* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -4427,7 +4425,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevVarPipeDataEltArray* operator -> () { return _pd_seq; }
     inline const DevVarPipeDataEltArray* operator -> () const { return _pd_seq; }
@@ -4437,7 +4435,7 @@ omni_mutex *mut_ptr;
     inline operator const DevVarPipeDataEltArray& () const { return *_pd_seq; }
     inline operator DevVarPipeDataEltArray& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevVarPipeDataEltArray& in() const { return *_pd_seq; }
     inline DevVarPipeDataEltArray&       inout()    { return *_pd_seq; }
     inline DevVarPipeDataEltArray*&      out() {
@@ -4445,9 +4443,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline DevVarPipeDataEltArray* _retn() { DevVarPipeDataEltArray* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevVarPipeDataEltArray_out;
-    
+
   private:
     DevVarPipeDataEltArray* _pd_seq;
   };
@@ -4474,7 +4472,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     DevVarPipeDataEltArray*& _data;
 
@@ -4486,7 +4484,7 @@ omni_mutex *mut_ptr;
   struct DevPipeDataElt {
     typedef _CORBA_ConstrType_Variable_Var<DevPipeDataElt> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     AttrValUnion value;
@@ -4495,7 +4493,7 @@ omni_mutex *mut_ptr;
 
     ::CORBA::String_member inner_blob_name;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4510,12 +4508,12 @@ omni_mutex *mut_ptr;
   struct DevPipeBlob {
     typedef _CORBA_ConstrType_Variable_Var<DevPipeBlob> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     DevVarPipeDataEltArray blob_data;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4535,7 +4533,7 @@ virtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}
 DevPipeData() {mut_ptr=NULL;}
 void set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}
 void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
-    
+
     ::CORBA::String_member name;
 
     TimeVal time;
@@ -4543,7 +4541,7 @@ void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevPipeBlob data_blob;
 
 // Added by ET for LockedPipe class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4558,14 +4556,14 @@ omni_mutex *mut_ptr;
   struct AttDataReady {
     typedef _CORBA_ConstrType_Variable_Var<AttDataReady> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     ::CORBA::Long data_type;
 
     ::CORBA::Long ctr;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4580,14 +4578,14 @@ omni_mutex *mut_ptr;
   struct DevIntrChange {
     typedef _CORBA_ConstrType_Variable_Var<DevIntrChange> _var_type;
 
-    
+
     ::CORBA::Boolean dev_started;
 
     DevCmdInfoList_2 cmds;
 
     AttributeConfigList_5 atts;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4602,7 +4600,7 @@ omni_mutex *mut_ptr;
   struct DevInfo {
     typedef _CORBA_ConstrType_Variable_Var<DevInfo> _var_type;
 
-    
+
     ::CORBA::String_member dev_class;
 
     ::CORBA::String_member server_id;
@@ -4613,7 +4611,7 @@ omni_mutex *mut_ptr;
 
     ::CORBA::String_member doc_url;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4628,7 +4626,7 @@ omni_mutex *mut_ptr;
   struct DevInfo_3 {
     typedef _CORBA_ConstrType_Variable_Var<DevInfo_3> _var_type;
 
-    
+
     ::CORBA::String_member dev_class;
 
     ::CORBA::String_member server_id;
@@ -4641,7 +4639,7 @@ omni_mutex *mut_ptr;
 
     ::CORBA::String_member dev_type;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4656,7 +4654,7 @@ omni_mutex *mut_ptr;
   struct DevCmdHistory {
     typedef _CORBA_ConstrType_Variable_Var<DevCmdHistory> _var_type;
 
-    
+
     TimeVal time;
 
     ::CORBA::Boolean cmd_failed;
@@ -4665,7 +4663,7 @@ omni_mutex *mut_ptr;
 
     DevErrorList errors;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4693,7 +4691,7 @@ omni_mutex *mut_ptr;
     inline DevCmdHistoryList(_CORBA_ULong _max, _CORBA_ULong _len, DevCmdHistory* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevCmdHistory > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevCmdHistoryList& operator = (const DevCmdHistoryList& _s) {
       _CORBA_Unbounded_Sequence< DevCmdHistory > ::operator=(_s);
@@ -4712,7 +4710,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~DevCmdHistoryList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevCmdHistoryList_var& operator = (DevCmdHistoryList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -4732,7 +4730,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevCmdHistoryList* operator -> () { return _pd_seq; }
     inline const DevCmdHistoryList* operator -> () const { return _pd_seq; }
@@ -4742,7 +4740,7 @@ omni_mutex *mut_ptr;
     inline operator const DevCmdHistoryList& () const { return *_pd_seq; }
     inline operator DevCmdHistoryList& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevCmdHistoryList& in() const { return *_pd_seq; }
     inline DevCmdHistoryList&       inout()    { return *_pd_seq; }
     inline DevCmdHistoryList*&      out() {
@@ -4750,9 +4748,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline DevCmdHistoryList* _retn() { DevCmdHistoryList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevCmdHistoryList_out;
-    
+
   private:
     DevCmdHistoryList* _pd_seq;
   };
@@ -4779,7 +4777,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     DevCmdHistoryList*& _data;
 
@@ -4791,14 +4789,14 @@ omni_mutex *mut_ptr;
   struct DevAttrHistory {
     typedef _CORBA_ConstrType_Variable_Var<DevAttrHistory> _var_type;
 
-    
+
     ::CORBA::Boolean attr_failed;
 
     AttributeValue value;
 
     DevErrorList errors;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4813,12 +4811,12 @@ omni_mutex *mut_ptr;
   struct DevAttrHistory_3 {
     typedef _CORBA_ConstrType_Variable_Var<DevAttrHistory_3> _var_type;
 
-    
+
     ::CORBA::Boolean attr_failed;
 
     AttributeValue_3 value;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4833,12 +4831,12 @@ omni_mutex *mut_ptr;
   struct EltInArray {
     typedef _CORBA_ConstrType_Fix_Var<EltInArray> _var_type;
 
-    
+
     ::CORBA::Long start;
 
     ::CORBA::Long nb_elt;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4866,7 +4864,7 @@ omni_mutex *mut_ptr;
     inline EltInArrayList(_CORBA_ULong _max, _CORBA_ULong _len, EltInArray* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< EltInArray > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline EltInArrayList& operator = (const EltInArrayList& _s) {
       _CORBA_Unbounded_Sequence< EltInArray > ::operator=(_s);
@@ -4885,7 +4883,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~EltInArrayList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline EltInArrayList_var& operator = (EltInArrayList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -4905,7 +4903,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline EltInArrayList* operator -> () { return _pd_seq; }
     inline const EltInArrayList* operator -> () const { return _pd_seq; }
@@ -4915,7 +4913,7 @@ omni_mutex *mut_ptr;
     inline operator const EltInArrayList& () const { return *_pd_seq; }
     inline operator EltInArrayList& () { return *_pd_seq; }
 #endif
-      
+
     inline const EltInArrayList& in() const { return *_pd_seq; }
     inline EltInArrayList&       inout()    { return *_pd_seq; }
     inline EltInArrayList*&      out() {
@@ -4923,9 +4921,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline EltInArrayList* _retn() { EltInArrayList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class EltInArrayList_out;
-    
+
   private:
     EltInArrayList* _pd_seq;
   };
@@ -4952,7 +4950,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     EltInArrayList*& _data;
 
@@ -4977,7 +4975,7 @@ omni_mutex *mut_ptr;
     inline TimeValList(_CORBA_ULong _max, _CORBA_ULong _len, TimeVal* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< TimeVal > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline TimeValList& operator = (const TimeValList& _s) {
       _CORBA_Unbounded_Sequence< TimeVal > ::operator=(_s);
@@ -4996,7 +4994,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~TimeValList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline TimeValList_var& operator = (TimeValList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -5016,7 +5014,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline TimeValList* operator -> () { return _pd_seq; }
     inline const TimeValList* operator -> () const { return _pd_seq; }
@@ -5026,7 +5024,7 @@ omni_mutex *mut_ptr;
     inline operator const TimeValList& () const { return *_pd_seq; }
     inline operator TimeValList& () { return *_pd_seq; }
 #endif
-      
+
     inline const TimeValList& in() const { return *_pd_seq; }
     inline TimeValList&       inout()    { return *_pd_seq; }
     inline TimeValList*&      out() {
@@ -5034,9 +5032,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline TimeValList* _retn() { TimeValList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class TimeValList_out;
-    
+
   private:
     TimeValList* _pd_seq;
   };
@@ -5063,7 +5061,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     TimeValList*& _data;
 
@@ -5094,7 +5092,7 @@ omni_mutex *mut_ptr;
     inline AttrQualityList(_CORBA_ULong _max, _CORBA_ULong _len, AttrQuality* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence_w_FixSizeElement< AttrQuality, 4, 4 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttrQualityList& operator = (const AttrQualityList& _s) {
       _CORBA_Unbounded_Sequence_w_FixSizeElement< AttrQuality, 4, 4 > ::operator=(_s);
@@ -5113,7 +5111,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttrQualityList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttrQualityList_var& operator = (AttrQualityList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -5133,7 +5131,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttrQualityList* operator -> () { return _pd_seq; }
     inline const AttrQualityList* operator -> () const { return _pd_seq; }
@@ -5143,7 +5141,7 @@ omni_mutex *mut_ptr;
     inline operator const AttrQualityList& () const { return *_pd_seq; }
     inline operator AttrQualityList& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttrQualityList& in() const { return *_pd_seq; }
     inline AttrQualityList&       inout()    { return *_pd_seq; }
     inline AttrQualityList*&      out() {
@@ -5151,9 +5149,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttrQualityList* _retn() { AttrQualityList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttrQualityList_out;
-    
+
   private:
     AttrQualityList* _pd_seq;
   };
@@ -5180,7 +5178,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttrQualityList*& _data;
 
@@ -5205,7 +5203,7 @@ omni_mutex *mut_ptr;
     inline AttributeDimList(_CORBA_ULong _max, _CORBA_ULong _len, AttributeDim* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< AttributeDim > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline AttributeDimList& operator = (const AttributeDimList& _s) {
       _CORBA_Unbounded_Sequence< AttributeDim > ::operator=(_s);
@@ -5224,7 +5222,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~AttributeDimList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline AttributeDimList_var& operator = (AttributeDimList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -5244,7 +5242,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline AttributeDimList* operator -> () { return _pd_seq; }
     inline const AttributeDimList* operator -> () const { return _pd_seq; }
@@ -5254,7 +5252,7 @@ omni_mutex *mut_ptr;
     inline operator const AttributeDimList& () const { return *_pd_seq; }
     inline operator AttributeDimList& () { return *_pd_seq; }
 #endif
-      
+
     inline const AttributeDimList& in() const { return *_pd_seq; }
     inline AttributeDimList&       inout()    { return *_pd_seq; }
     inline AttributeDimList*&      out() {
@@ -5262,9 +5260,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline AttributeDimList* _retn() { AttributeDimList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class AttributeDimList_out;
-    
+
   private:
     AttributeDimList* _pd_seq;
   };
@@ -5291,7 +5289,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     AttributeDimList*& _data;
 
@@ -5316,7 +5314,7 @@ omni_mutex *mut_ptr;
     inline DevErrorListList(_CORBA_ULong _max, _CORBA_ULong _len, DevErrorList* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevErrorList > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevErrorListList& operator = (const DevErrorListList& _s) {
       _CORBA_Unbounded_Sequence< DevErrorList > ::operator=(_s);
@@ -5335,7 +5333,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~DevErrorListList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevErrorListList_var& operator = (DevErrorListList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -5355,7 +5353,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevErrorListList* operator -> () { return _pd_seq; }
     inline const DevErrorListList* operator -> () const { return _pd_seq; }
@@ -5365,7 +5363,7 @@ omni_mutex *mut_ptr;
     inline operator const DevErrorListList& () const { return *_pd_seq; }
     inline operator DevErrorListList& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevErrorListList& in() const { return *_pd_seq; }
     inline DevErrorListList&       inout()    { return *_pd_seq; }
     inline DevErrorListList*&      out() {
@@ -5373,9 +5371,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline DevErrorListList* _retn() { DevErrorListList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevErrorListList_out;
-    
+
   private:
     DevErrorListList* _pd_seq;
   };
@@ -5402,7 +5400,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     DevErrorListList*& _data;
 
@@ -5414,7 +5412,7 @@ omni_mutex *mut_ptr;
   struct DevAttrHistory_4 {
     typedef _CORBA_ConstrType_Variable_Var<DevAttrHistory_4> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     TimeValList dates;
@@ -5437,7 +5435,7 @@ omni_mutex *mut_ptr;
 
     EltInArrayList errors_array;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -5452,7 +5450,7 @@ omni_mutex *mut_ptr;
   struct DevAttrHistory_5 {
     typedef _CORBA_ConstrType_Variable_Var<DevAttrHistory_5> _var_type;
 
-    
+
     ::CORBA::String_member name;
 
     AttrDataFormat data_format;
@@ -5479,7 +5477,7 @@ omni_mutex *mut_ptr;
 
     EltInArrayList errors_array;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -5494,7 +5492,7 @@ omni_mutex *mut_ptr;
   struct DevCmdHistory_4 {
     typedef _CORBA_ConstrType_Variable_Var<DevCmdHistory_4> _var_type;
 
-    
+
     TimeValList dates;
 
     ::CORBA::Any value;
@@ -5509,7 +5507,7 @@ omni_mutex *mut_ptr;
 
     ::CORBA::Long cmd_type;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -5537,7 +5535,7 @@ omni_mutex *mut_ptr;
     inline DevAttrHistoryList(_CORBA_ULong _max, _CORBA_ULong _len, DevAttrHistory* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevAttrHistory > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevAttrHistoryList& operator = (const DevAttrHistoryList& _s) {
       _CORBA_Unbounded_Sequence< DevAttrHistory > ::operator=(_s);
@@ -5556,7 +5554,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~DevAttrHistoryList_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevAttrHistoryList_var& operator = (DevAttrHistoryList* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -5576,7 +5574,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevAttrHistoryList* operator -> () { return _pd_seq; }
     inline const DevAttrHistoryList* operator -> () const { return _pd_seq; }
@@ -5586,7 +5584,7 @@ omni_mutex *mut_ptr;
     inline operator const DevAttrHistoryList& () const { return *_pd_seq; }
     inline operator DevAttrHistoryList& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevAttrHistoryList& in() const { return *_pd_seq; }
     inline DevAttrHistoryList&       inout()    { return *_pd_seq; }
     inline DevAttrHistoryList*&      out() {
@@ -5594,9 +5592,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline DevAttrHistoryList* _retn() { DevAttrHistoryList* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevAttrHistoryList_out;
-    
+
   private:
     DevAttrHistoryList* _pd_seq;
   };
@@ -5623,7 +5621,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     DevAttrHistoryList*& _data;
 
@@ -5648,7 +5646,7 @@ omni_mutex *mut_ptr;
     inline DevAttrHistoryList_3(_CORBA_ULong _max, _CORBA_ULong _len, DevAttrHistory_3* _val, _CORBA_Boolean _rel=0)
       : _CORBA_Unbounded_Sequence< DevAttrHistory_3 > (_max, _len, _val, _rel) {}
 
-  
+
 
     inline DevAttrHistoryList_3& operator = (const DevAttrHistoryList_3& _s) {
       _CORBA_Unbounded_Sequence< DevAttrHistory_3 > ::operator=(_s);
@@ -5667,7 +5665,7 @@ omni_mutex *mut_ptr;
       else              _pd_seq = 0;
     }
     inline ~DevAttrHistoryList_3_var() { if( _pd_seq )  delete _pd_seq; }
-      
+
     inline DevAttrHistoryList_3_var& operator = (DevAttrHistoryList_3* _s) {
       if( _pd_seq )  delete _pd_seq;
       _pd_seq = _s;
@@ -5687,7 +5685,7 @@ omni_mutex *mut_ptr;
       return (*_pd_seq)[_s];
     }
 
-  
+
 
     inline DevAttrHistoryList_3* operator -> () { return _pd_seq; }
     inline const DevAttrHistoryList_3* operator -> () const { return _pd_seq; }
@@ -5697,7 +5695,7 @@ omni_mutex *mut_ptr;
     inline operator const DevAttrHistoryList_3& () const { return *_pd_seq; }
     inline operator DevAttrHistoryList_3& () { return *_pd_seq; }
 #endif
-      
+
     inline const DevAttrHistoryList_3& in() const { return *_pd_seq; }
     inline DevAttrHistoryList_3&       inout()    { return *_pd_seq; }
     inline DevAttrHistoryList_3*&      out() {
@@ -5705,9 +5703,9 @@ omni_mutex *mut_ptr;
       return _pd_seq;
     }
     inline DevAttrHistoryList_3* _retn() { DevAttrHistoryList_3* tmp = _pd_seq; _pd_seq = 0; return tmp; }
-      
+
     friend class DevAttrHistoryList_3_out;
-    
+
   private:
     DevAttrHistoryList_3* _pd_seq;
   };
@@ -5734,7 +5732,7 @@ omni_mutex *mut_ptr;
       return (*_data)[_i];
     }
 
-  
+
 
     DevAttrHistoryList_3*& _data;
 
@@ -5746,7 +5744,7 @@ omni_mutex *mut_ptr;
   struct ZmqCallInfo {
     typedef _CORBA_ConstrType_Variable_Var<ZmqCallInfo> _var_type;
 
-    
+
     ::CORBA::Long version;
 
     ::CORBA::ULong ctr;
@@ -5757,7 +5755,7 @@ omni_mutex *mut_ptr;
 
     ::CORBA::Boolean call_is_except;
 
-  
+
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -5775,7 +5773,7 @@ omni_mutex *mut_ptr;
   class Device;
   class _objref_Device;
   class _impl_Device;
-  
+
   typedef _objref_Device* Device_ptr;
   typedef Device_ptr DeviceRef;
 
@@ -5806,7 +5804,7 @@ omni_mutex *mut_ptr;
     static _ptr_type _duplicate(_ptr_type);
     static _ptr_type _narrow(::CORBA::Object_ptr);
     static _ptr_type _unchecked_narrow(::CORBA::Object_ptr);
-    
+
     static _ptr_type _nil();
 
     static inline void _marshalObjRef(_ptr_type, cdrStream&);
@@ -5822,7 +5820,7 @@ omni_mutex *mut_ptr;
     static _core_attr const char* _PD_repoId;
 
     // Other IDL defined within this scope.
-    
+
   };
 
   class _objref_Device :
@@ -5852,7 +5850,7 @@ omni_mutex *mut_ptr;
   protected:
     virtual ~_objref_Device();
 
-    
+
   private:
     virtual void* _ptrToObjRef(const char*);
 
@@ -5893,14 +5891,14 @@ omni_mutex *mut_ptr;
     virtual DevState state() = 0;
     virtual char* status() = 0;
     virtual char* adm_name() = 0;
-    
+
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
 
   private:
     virtual void* _ptrToInterface(const char*);
     virtual const char* _mostDerivedRepoId();
-    
+
   };
 
 
@@ -5912,7 +5910,7 @@ omni_mutex *mut_ptr;
   class Device_2;
   class _objref_Device_2;
   class _impl_Device_2;
-  
+
   typedef _objref_Device_2* Device_2_ptr;
   typedef Device_2_ptr Device_2Ref;
 
@@ -5943,7 +5941,7 @@ omni_mutex *mut_ptr;
     static _ptr_type _duplicate(_ptr_type);
     static _ptr_type _narrow(::CORBA::Object_ptr);
     static _ptr_type _unchecked_narrow(::CORBA::Object_ptr);
-    
+
     static _ptr_type _nil();
 
     static inline void _marshalObjRef(_ptr_type, cdrStream&);
@@ -5959,7 +5957,7 @@ omni_mutex *mut_ptr;
     static _core_attr const char* _PD_repoId;
 
     // Other IDL defined within this scope.
-    
+
   };
 
   class _objref_Device_2 :
@@ -5980,7 +5978,7 @@ omni_mutex *mut_ptr;
   protected:
     virtual ~_objref_Device_2();
 
-    
+
   private:
     virtual void* _ptrToObjRef(const char*);
 
@@ -6013,14 +6011,14 @@ omni_mutex *mut_ptr;
     virtual DevCmdInfo_2* command_query_2(const char* command) = 0;
     virtual DevCmdHistoryList* command_inout_history_2(const char* command, ::CORBA::Long n) = 0;
     virtual DevAttrHistoryList* read_attribute_history_2(const char* name, ::CORBA::Long n) = 0;
-    
+
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
 
   private:
     virtual void* _ptrToInterface(const char*);
     virtual const char* _mostDerivedRepoId();
-    
+
   };
 
 
@@ -6032,7 +6030,7 @@ omni_mutex *mut_ptr;
   class Device_3;
   class _objref_Device_3;
   class _impl_Device_3;
-  
+
   typedef _objref_Device_3* Device_3_ptr;
   typedef Device_3_ptr Device_3Ref;
 
@@ -6063,7 +6061,7 @@ omni_mutex *mut_ptr;
     static _ptr_type _duplicate(_ptr_type);
     static _ptr_type _narrow(::CORBA::Object_ptr);
     static _ptr_type _unchecked_narrow(::CORBA::Object_ptr);
-    
+
     static _ptr_type _nil();
 
     static inline void _marshalObjRef(_ptr_type, cdrStream&);
@@ -6079,7 +6077,7 @@ omni_mutex *mut_ptr;
     static _core_attr const char* _PD_repoId;
 
     // Other IDL defined within this scope.
-    
+
   };
 
   class _objref_Device_3 :
@@ -6099,7 +6097,7 @@ omni_mutex *mut_ptr;
   protected:
     virtual ~_objref_Device_3();
 
-    
+
   private:
     virtual void* _ptrToObjRef(const char*);
 
@@ -6131,14 +6129,14 @@ omni_mutex *mut_ptr;
     virtual DevInfo_3* info_3() = 0;
     virtual AttributeConfigList_3* get_attribute_config_3(const ::Tango::DevVarStringArray& names) = 0;
     virtual void set_attribute_config_3(const ::Tango::AttributeConfigList_3& new_conf) = 0;
-    
+
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
 
   private:
     virtual void* _ptrToInterface(const char*);
     virtual const char* _mostDerivedRepoId();
-    
+
   };
 
 
@@ -6150,7 +6148,7 @@ omni_mutex *mut_ptr;
   class Device_4;
   class _objref_Device_4;
   class _impl_Device_4;
-  
+
   typedef _objref_Device_4* Device_4_ptr;
   typedef Device_4_ptr Device_4Ref;
 
@@ -6181,7 +6179,7 @@ omni_mutex *mut_ptr;
     static _ptr_type _duplicate(_ptr_type);
     static _ptr_type _narrow(::CORBA::Object_ptr);
     static _ptr_type _unchecked_narrow(::CORBA::Object_ptr);
-    
+
     static _ptr_type _nil();
 
     static inline void _marshalObjRef(_ptr_type, cdrStream&);
@@ -6197,7 +6195,7 @@ omni_mutex *mut_ptr;
     static _core_attr const char* _PD_repoId;
 
     // Other IDL defined within this scope.
-    
+
   };
 
   class _objref_Device_4 :
@@ -6218,7 +6216,7 @@ omni_mutex *mut_ptr;
   protected:
     virtual ~_objref_Device_4();
 
-    
+
   private:
     virtual void* _ptrToObjRef(const char*);
 
@@ -6251,14 +6249,14 @@ omni_mutex *mut_ptr;
     virtual void write_attributes_4(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual void set_attribute_config_4(const ::Tango::AttributeConfigList_3& new_conf, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual AttributeValueList_4* write_read_attributes_4(const ::Tango::AttributeValueList_4& values, const ::Tango::ClntIdent& cl_ident) = 0;
-    
+
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
 
   private:
     virtual void* _ptrToInterface(const char*);
     virtual const char* _mostDerivedRepoId();
-    
+
   };
 
 
@@ -6270,7 +6268,7 @@ omni_mutex *mut_ptr;
   class Device_5;
   class _objref_Device_5;
   class _impl_Device_5;
-  
+
   typedef _objref_Device_5* Device_5_ptr;
   typedef Device_5_ptr Device_5Ref;
 
@@ -6301,7 +6299,7 @@ omni_mutex *mut_ptr;
     static _ptr_type _duplicate(_ptr_type);
     static _ptr_type _narrow(::CORBA::Object_ptr);
     static _ptr_type _unchecked_narrow(::CORBA::Object_ptr);
-    
+
     static _ptr_type _nil();
 
     static inline void _marshalObjRef(_ptr_type, cdrStream&);
@@ -6317,7 +6315,7 @@ omni_mutex *mut_ptr;
     static _core_attr const char* _PD_repoId;
 
     // Other IDL defined within this scope.
-    
+
   };
 
   class _objref_Device_5 :
@@ -6340,7 +6338,7 @@ omni_mutex *mut_ptr;
   protected:
     virtual ~_objref_Device_5();
 
-    
+
   private:
     virtual void* _ptrToObjRef(const char*);
 
@@ -6375,14 +6373,14 @@ omni_mutex *mut_ptr;
     virtual DevPipeData* read_pipe_5(const char* name, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual void write_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident) = 0;
     virtual DevPipeData* write_read_pipe_5(const ::Tango::DevPipeData& value, const ::Tango::ClntIdent& cl_ident) = 0;
-    
+
   public:  // Really protected, workaround for xlC
     virtual _CORBA_Boolean _dispatch(omniCallHandle&);
 
   private:
     virtual void* _ptrToInterface(const char*);
     virtual const char* _mostDerivedRepoId();
-    
+
   };
 
 

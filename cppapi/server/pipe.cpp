@@ -172,6 +172,14 @@ void Pipe::fire_event(DeviceImpl *dev,DevFailed *except)
 	}
 
 //
+// Make sure the severity field is initialized (this field is never used!!)
+//
+
+	size_t err_nb = except->errors.length();
+	for (size_t loop = 0;loop < err_nb;loop++)
+		(except->errors)[loop].severity = Tango::ERR;
+
+//
 // Create the structure used to send data to event system
 //
 
@@ -200,12 +208,25 @@ void Pipe::fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat)
 	now.tv_sec = (unsigned long)now_win.time;
 	now.tv_usec = (long)now_win.millitm * 1000;
 
-	fire_event(_dev,_dat,now);
+	fire_event(_dev,_dat,now,(omni_mutex *)NULL);
 }
+
+void Pipe::fire_event(DeviceImpl *_dev,DevicePipeBlob *_dat,omni_mutex *_m)
+{
+	struct _timeb now_win;
+	struct timeval now;
+
+	_ftime(&now_win);
+	now.tv_sec = (unsigned long)now_win.time;
+	now.tv_usec = (long)now_win.millitm * 1000;
+
+	fire_event(_dev,_dat,now,_m);
+}
+
 #endif // _TG_WINDOWS_
 
 
-void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t)
+void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,omni_mutex *p_mut)
 {
 	cout4 << "Pipe::fire_event() entering ..." << endl;
 
@@ -269,6 +290,14 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t)
 	max = tmp_ptr->maximum();
 	len = tmp_ptr->length();
 	ad.pipe_val->data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+
+	PipeSerialModel pism = get_pipe_serial_model();
+	if (pism != PIPE_NO_SYNC)
+	{
+		cout4 << "Giving pipe mutex to CORBA structure for pipe " << name << endl;
+		if (pism == PIPE_BY_USER && p_mut != NULL)
+			ad.pipe_val->set_pipe_mutex(p_mut);
+	}
 
 //
 // Fire event

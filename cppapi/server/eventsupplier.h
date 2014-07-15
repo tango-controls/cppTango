@@ -357,6 +357,8 @@ private :
 	void tango_bind(zmq::socket_t *,string &);
 	unsigned char test_endian();
     void create_mcast_socket(string &,int,McastSocketPub &);
+    size_t get_blob_data_nb(DevVarPipeDataEltArray &);
+	size_t get_data_elt_data_nb(DevPipeDataElt &);
 };
 
 //
