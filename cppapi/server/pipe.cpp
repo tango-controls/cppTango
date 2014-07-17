@@ -53,8 +53,8 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::DispLevel _level,PipeWriteType _pwt)
-:name(_name),desc(_desc),label(_label),disp_level(_level),writable(_pwt),ext(new PipeExt)
+Pipe::Pipe(const string &_name,Tango::DispLevel _level,PipeWriteType _pwt)
+:name(_name),disp_level(_level),writable(_pwt),ext(new PipeExt)
 {
 	lower_name = name;
 	transform(lower_name.begin(),lower_name.end(),lower_name.begin(),::tolower);
@@ -62,6 +62,40 @@ Pipe::Pipe(const string &_name,const string &_desc,const string &_label,Tango::D
 	pipe_serial_model = PIPE_BY_KERNEL;
 
 	event_subscription = 0;
+
+//
+// Set lib default value for pipe label and desc
+//
+
+	label = name;
+	desc = DescNotSpec;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::set_default_properties
+//
+// description :
+//		This method set the default user properties in the Pipe object.
+//
+// arguments :
+//		in :
+//			- prop_list : The user property list
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Pipe::set_default_properties(UserDefaultPipeProp &prop_list)
+{
+	if ((prop_list.label.empty() == false) &&
+		(TG_strcasecmp(prop_list.label.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.label.c_str(),NotANumber) != 0))
+		label = prop_list.label;
+
+	if (prop_list.description.empty() == false &&
+		(TG_strcasecmp(prop_list.description.c_str(),AlrmValueNotSpec) != 0) &&
+		(TG_strcasecmp(prop_list.description.c_str(),NotANumber) != 0))
+		desc = prop_list.description;
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

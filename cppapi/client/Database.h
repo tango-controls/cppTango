@@ -764,6 +764,152 @@ public :
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	void get_device_attribute_list(string &dev_name,vector<string> &att_list);
+/**
+ * Get list of pipe with data in database for a specific device
+ *
+ * Get the list of pipe(s) with some data defined in database for a specified device.
+ * Note that this is not the list of all device pipes because not all pipe(s) have
+ * some data in database
+ *
+ * @param [in] dev_name The device name
+ * @param [in] pipe_list The pipe name list
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_device_pipe_list(string &dev_name,vector<string> &pipe_list);
+//@}
+
+/**@name device pipe property oriented methods */
+//@{
+/**
+ * Get device pipe property value
+ *
+ * Query the database for a list of device pipe properties for the specified object. The pipe names
+ * are specified by the vector of DbDatum structures. The method returns all the properties for the specified
+ * pipes. The pipe names are returned with the number of properties specified as their value. The
+ * first DbDatum element of the returned DbData vector contains the first pipe name and the first pipe
+ * property number. The following DbDatum element contains the first pipe property name and property
+ * values. To retrieve the properties use the extract operator >>. Here is an example of how to use the DbData
+ * type to specify and extract pipe properties :
+ * @code
+ * DbData db_data;
+ *
+ * db_data.push_back(DbDatum("velocity"));
+ * db_data.push_back(DbDatum("acceleration"));
+ *
+ * db->get_device_pipe_property("id11/motor/1", db_data);
+ *
+ * float vel_max, vel_min, acc_max, acc_min;
+ * for (int i=0;i < db_data.size();i++)
+ * {
+ *    long nb_prop;
+ *    string &pipe_name = db_data[i].name;
+ *    db_data[i] >> nb_prop;
+ *    i++;
+ *    for (int k=0;k < nb_prop;k++)
+ *    {
+ *        string &prop_name = db_data[i].name;
+ *        if (pipe_name == "velocity")
+ *        {
+ *           if (prop_name == "min")
+ *              db_data[i] >> vel_min;
+ *           else if (att_name == "max")
+ *              db_data[i] >> vel_max;
+ *        }
+ *        else
+ *        {
+ *           if (prop_name == "min")
+ *              db_data[i] >> acc_min;
+ *           else
+ *              db_data[i] >> acc_max;
+ *        }
+ *        i++;
+ *     }
+ * }
+ * @endcode
+ *
+ * @param [in] dev_name The device name
+ * @param [in,out] db The pipe/property names and values
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_device_pipe_property(string dev_name, DbData &db) {get_device_pipe_property(dev_name,db,NULL);}
+/**
+ * Put device pipe property value in database
+ *
+ * Insert or update a list of pipe properties for the specified device. The pipe property names and their
+ * values are specified by the vector of DbDatum structures. Use the insert operator >> to insert the properties
+ * into the DbDatum structures. Here is an example of how to insert/update properties min, max for pipe
+ * velocity and properties min, max for pipe acceleration of device id11/motor/1 into the database using
+ * this method :
+ * @code
+ * DbDatum vel("velocity");                // We want to put properties for pipe "velocity"
+ * DbDatum vel_min("min"), vel_max("max");
+ * DbDatum acc("acceleration")             // We want to put properties for pipe "acceleration"
+ * DbDatum acc_min("min"), acc_max("max");
+ * DbData db_data;
+ *
+ * vel << 2;                               // Two properties for pipe "velocity"
+ * vel_min << 0.0;                         // Value for property min
+ * vel_max << 1000000.0;                   // Value for property max
+ *
+ * db_data.push_back(vel);
+ * db_data.push_back(vel_min);
+ * db_data.push_back(vel_max);
+ *
+ * acc << 2;                               // Two properties for pipe "acceleration"
+ * acc_min << 0.0;                         // Value for property min
+ * acc_max << 8000000;                     // Value for property max
+ *
+ * db_data.push_back(acc);
+ * db_data.push_back(acc_min);
+ * db_data.push_back(acc_max);
+ *
+ * db->put_device_pipe_property(“id11/motor/1”, db_data);
+ * @endcode
+ *
+ * @param [in] dev_name The device name
+ * @param [in] db The pipe/property names and values
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void put_device_pipe_property(string dev_name, DbData &db);
+/**
+ * Delete device pipe property from database
+ *
+ * Delete a list of pipe properties for the specified device. The pipe names are specified by the vector
+ * of DbDatum structures. Here is an example of how to delete the unit property of the velocity pipe of
+ * the id11/motor/1 device using this method :
+ * @code
+ * DbData db_data;
+ * db_data.push_back(DbDatum("velocity"));
+ * db_data.push_back(DbDatum("unit"));
+ *
+ * db->delete_device_attribute_property("id11/motor/1", db_data);
+ * @endcode
+ *
+ * @param [in] dev_name The device name
+ * @param [in] db The pipe/property names
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void delete_device_pipe_property(string dev_name, DbData &db);
+/**
+ * Get device pipe property history from database
+ *
+ * Get the list of the last 10 modifications of the specifed device pipe property. Note that prop_name
+ * and pipe_name can contain
+ * a wildcard character (eg: "prop*"). An example of usage of a similar function can be found in the
+ * documentation of the get_property_history() function.
+ *
+ * @param [in] dev_name The device name
+ * @param [in] pipe_name The property name
+ * @param [in] prop_name The pipe name
+ * @return A vector of DbHistory instances
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	vector<DbHistory> get_device_pipe_property_history(string &dev_name,string &pipe_name,string &prop_name);
 //@}
 
 /**@name class property oriented methods */
@@ -982,6 +1128,135 @@ public :
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
 	vector<DbHistory> get_class_attribute_property_history(string &class_name,string &att_name,string &prop_name);
+//@}
+
+/**@name class pipe property oriented methods */
+//@{
+/**
+ * Get class pipe property value
+ *
+ * Query the database for a list of class pipe properties for the specified object. The pipe names are
+ * specified by the vector of DbDatum structures. The method returns all the properties for the specified
+ * pipes. The pipe names are returned with the number of properties specified as their value. The
+ * first DbDatum element of the returned DbData vector contains the first pipe name and the first pipe
+ * property number. The following DbDatum element contains the first pipe property name and property
+ * values. To retrieve the properties use the extract operator >>. Here is an example of how to use the DbData
+ * type to specify and extract pipe properties :
+ * @code
+ * DbData db_data;
+ * db_data.push_back(DbDatum("pipe_image"));
+ * db_data.push_back(DbDatum("pipe_misc"));
+ *
+ * db->get_class_pipe_property("MyDetector", db_data);
+ *
+ * int max_x, min_x, size;
+ * for (int i=0; i< db_data.size(); i++)
+ * {
+ *    long nb_prop;
+ *    string &pipe_name = db_data[i].name;
+ *    db_data[i] >> nb_prop;
+ *    i++;
+ *    for (int k=0;k < nb_prop;k++)
+ *    {
+ *        string &prop_name = db_data[i].name;
+ *        if (pipe_name == "pipe_image")
+ *        {
+ *           if (prop_name == "min_x")
+ *              db_data[i] >> min_x;
+ *           else if (att_name == "max_x")
+ *              db_data[i] >> max_x;
+ *        }
+ *        else
+ *        {
+ *           if (prop_name == "size")
+ *              db_data[i] >> size;
+ *        }
+ *        i++;
+ *    }
+ * }
+ * @endcode
+ *
+ * @param [in] class_name The class name
+ * @param [in,out] db The pipe/property names and values
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void get_class_pipe_property(string class_name,DbData &db) {get_class_pipe_property(class_name,db,NULL);}
+/**
+ * Put class pipe property value in database
+ *
+ * Insert or update a list of pipe properties for the specified class. The pipe property names and their
+ * values are specified by the vector of DbDatum structures. Use the insert operator >> to insert the properties
+ * into the DbDatum structures. Here is an example of how to insert/update min, max properties for pipe
+ * velocity and min, max properties for pipe acceleration properties belonging to class StepperMotor into
+ * the database using this method :
+ * @code
+ * DbDatum velocity("velocity"), vel_min("min"), vel_max("max");
+ * DbDatum acceleration("acceleration"), acc_min("min"), acc_max("max");
+ * DbData db_data;
+ *
+ * velocity << 2;
+ * vel_min << 0.0;
+ * vel_max << 1000000.0;
+ *
+ * db_data.push_back(velocity);
+ * db_data.push_back(vel_min);
+ * db_data.push_back(vel_max);
+ *
+ * acceleration << 2;
+ * acc_min << 0.0;
+ * acc_max << 8000000;
+ *
+ * db_data.push_back(acceleration);
+ * db_data.push_back(acc_min);
+ * db_data.push_back(acc_max);
+ *
+ * db->put_class_pipe_property("StepperMotor", db_data);
+ * @endcode
+ *
+ * @param [in] class_name The class name
+ * @param [in] db The pipe/property names and values
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void put_class_pipe_property(string class_name, DbData &db);
+/**
+ * Delete class pipe property from database
+ *
+ * Delete a list of pipe properties for the specified class. The pipe names are specified by the vector
+ * of DbDatum structures. All properties belonging to the listed pipes are deleted. Here is an example of
+ * how to delete the unit property of the velocity pipe of the StepperMotor class from the database using
+ * this method :
+ * @code
+ * DbData db_data;
+ * db_data.push_back(DbDatum("velocity"));
+ * db_data.push_back(DbDatum("unit"));
+ *
+ * db->delete_class_pipe_property("StepperMotor", db_data);
+ * @endcode
+ *
+ * @param [in] class_name The class name
+ * @param [in] db The pipe/property names
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	void delete_class_pipe_property(string class_name, DbData &db);
+/**
+ * Get class pipe property history from database
+ *
+ * Get the list of the last 10 modifications of the specifed class pipe property. Note that prop_name
+ * and pipe_name can contain
+ * a wildcard character (eg: "prop*"). An example of usage of a similar function can be found in the
+ * documentation of the get_property_history() function.
+ *
+ * @param [in] class_name The class name
+ * @param [in] pipe_name The pipe name
+ * @param [in] prop_name The property name
+ * @return A vector of DbHistory instances
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	vector<DbHistory> get_class_pipe_property_history(string &class_name,string &pipe_name,string &prop_name);
 //@}
 
 /**@name alias oriented methods */
@@ -1468,6 +1743,27 @@ public :
  */
 	DbDatum get_class_attribute_list(string &class_name,string &wildcard);
 /**
+ * Get class pipe list
+ *
+ * Query the database for a list of pipes defined for the specified class which match the specified wildcard.
+ * @code
+ * string classname("MyClass");
+ * string wildcard("*");
+ *
+ * DbDatum db_datum = db->get_class_pipe_list(classname,wildcard);
+ *
+ * vector<string> pipe_list;
+ * db_datum >> pipe_list;
+ * @endcode
+ *
+ * @param [in] class_name The class name
+ * @param [in] wildcard The wildcard
+ * @return The class pipe list
+ *
+ * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
+ */
+	DbDatum get_class_pipe_list(string &class_name,string &wildcard);
+/**
  * Get device alias list
  *
  * Get device alias list. The parameter is a string to filter the alias list returned. Wildcard (*) is supported.
@@ -1580,9 +1876,12 @@ public :
 	DbDatum get_device_property_list(string &,string &);
 	void get_device_property_list(string &,const string &,vector<string> &,DbServerCache *dsc = NULL);
 	void get_device_attribute_property(string, DbData &, DbServerCache *dsc);
+	void get_device_pipe_property(string, DbData &, DbServerCache *dsc);
 	void delete_all_device_attribute_property(string, DbData &);
+	void delete_all_device_pipe_property(string, DbData &);
 	void get_class_property(string, DbData &, DbServerCache *dsc);
 	void get_class_attribute_property(string, DbData &, DbServerCache *dsc);
+	void get_class_pipe_property(string, DbData &, DbServerCache *dsc);
 
 //
 // event methods

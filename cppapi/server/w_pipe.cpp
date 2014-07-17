@@ -52,8 +52,8 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-WPipe::WPipe(const string &_name,const string &_desc,const string &_label,Tango::DispLevel _level)
-:Pipe(_name,_desc,_label,_level,PIPE_READ_WRITE),w_ext(new WPipeExt)
+WPipe::WPipe(const string &_name,Tango::DispLevel _level)
+:Pipe(_name,_level,PIPE_READ_WRITE),w_ext(new WPipeExt)
 {
 }
 

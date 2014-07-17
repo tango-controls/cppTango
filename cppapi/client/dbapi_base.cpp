@@ -4665,4 +4665,684 @@ void Database::rename_server(const string &old_ds_name, const string &new_ds_nam
 	CALL_DB_SERVER_NO_RET("DbRenameServer",send);
 }
 
+//-----------------------------------------------------------------------------------------------------------------
+//
+// Database::get_class_pipe_property() - public method to get class pipe properties from the Database
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+void Database::get_class_pipe_property(string device_class, DbData &db_data, DbServerCache *db_cache)
+{
+	unsigned int i;
+	Any_var received;
+	const DevVarStringArray *property_values = NULL;
+
+	check_access_and_get();
+
+	DevVarStringArray *property_names = new DevVarStringArray;
+	property_names->length(db_data.size()+1);
+	(*property_names)[0] = string_dup(device_class.c_str());
+	for (i=0; i<db_data.size(); i++)
+	{
+		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
+	}
+
+	if (db_cache == NULL)
+	{
+
+//
+// Get property(ies) from DB server
+//
+
+		Any send;
+		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+		send <<= property_names;
+
+		if (filedb != 0)
+		{
+			received = filedb->DbGetClassPipeProperty(send);
+		}
+		else
+		{
+			try
+			{
+				CALL_DB_SERVER("DbGetClassPipeProperty",send,received);
+			}
+			catch (Tango::DevFailed &)
+			{
+				throw;
+			}
+		}
+		received.inout() >>= property_values;
+	}
+	else
+	{
+
+//
+// Try to get property(ies) from cache
+//
+
+		try
+		{
+			property_values = db_cache->get_class_pipe_property(property_names);
+			delete property_names;
+		}
+		catch (Tango::DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"DB_ClassNotFoundInCache") == 0)
+			{
+
+//
+// The class is not defined in cache, get property(ies) from DB server
+//
+
+				Any send;
+				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+				send <<= property_names;
+
+				if (filedb != 0)
+				{
+					received = filedb->DbGetClassPipeProperty(send);
+				}
+				else
+				{
+					CALL_DB_SERVER("DbGetClassPipeProperty",send,received);
+				}
+				received.inout() >>= property_values;
+			}
+			else
+			{
+				delete property_names;
+				throw;
+			}
+		}
+	}
+
+
+	unsigned int n_pipes, index;
+	int i_total_props;
+	stringstream iostream;
+
+	iostream << (*property_values)[1].in() << ends;
+	iostream >> n_pipes;
+	index = 2;
+	i_total_props = 0;
+
+
+	long old_size = 0;
+	for (i=0; i<n_pipes; i++)
+	{
+		old_size++;
+		db_data.resize(old_size);
+		short n_props;
+		db_data[i_total_props].name = (*property_values)[index]; index++;
+		iostream.seekp(0); iostream.seekg(0); iostream.clear();
+		iostream << (*property_values)[index].in() << ends;
+		iostream >> n_props;
+		db_data[i_total_props] << n_props;
+		db_data.resize(old_size + n_props);
+		old_size = old_size + n_props;
+		i_total_props++;
+		index++;
+		for (int j=0; j<n_props; j++)
+		{
+			db_data[i_total_props].name = (*property_values)[index];
+			index++;
+			int n_values;
+			iostream.seekp(0); iostream.seekg(0); iostream.clear();
+			iostream << (*property_values)[index].in() << ends;
+			iostream >> n_values;
+			index++;
+
+			db_data[i_total_props].value_string.resize(n_values);
+			if (n_values == 0)
+			{
+				index++; // skip dummy returned value ""
+			}
+			else
+			{
+				for (int k=0; k<n_values; k++)
+				{
+					db_data[i_total_props].value_string[k] = (*property_values)[index].in();
+					index++;
+				}
+			}
+			i_total_props++;
+		}
+	}
+
+	return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_device_pipe_property() - public method to get device pipe properties from the Database
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCache *db_cache)
+{
+	unsigned int i,j;
+	Any_var received;
+	const DevVarStringArray *property_values = NULL;
+
+	check_access_and_get();
+
+	DevVarStringArray *property_names = new DevVarStringArray;
+	property_names->length(db_data.size()+1);
+	(*property_names)[0] = string_dup(dev.c_str());
+	for (i=0; i<db_data.size(); i++)
+	{
+		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
+	}
+
+	if (db_cache == NULL)
+	{
+
+//
+// Get propery(ies) from DB server
+//
+
+		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+		Any send;
+
+		send <<= property_names;
+
+		if (filedb != 0)
+		{
+			received = filedb->DbGetDevicePipeProperty(send);
+		}
+		else
+		{
+			try
+			{
+				CALL_DB_SERVER("DbGetDevicePipeProperty",send,received);
+			}
+			catch (Tango::DevFailed &)
+			{
+				throw;
+			}
+		}
+		received.inout() >>= property_values;
+	}
+	else
+	{
+
+//
+// Try  to get property(ies) from cache
+//
+
+		try
+		{
+			property_values = db_cache->get_dev_pipe_property(property_names);
+			delete property_names;
+		}
+		catch (Tango::DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason.in(),"DB_DeviceNotFoundInCache") == 0)
+			{
+
+//
+// The device is not in cache, ask the db server
+//
+
+				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+				Any send;
+
+				send <<= property_names;
+
+				if (filedb != 0)
+				{
+					received = filedb->DbGetDeviceAttributeProperty(send);
+				}
+				else
+				{
+					CALL_DB_SERVER("DbGetDevicePipeProperty",send,received);
+				}
+				received.inout() >>= property_values;
+			}
+			else
+			{
+				delete property_names;
+				throw;
+			}
+		}
+	}
+
+	unsigned int n_pipes, index;
+	int i_total_props;
+	stringstream iostream;
+
+	iostream << (*property_values)[1].in() << ends;
+	iostream >> n_pipes;
+	index = 2;
+
+	i_total_props = 0;
+
+	long old_size = 0;
+	for (i=0; i<n_pipes; i++)
+	{
+		old_size++;
+		db_data.resize(old_size);
+		unsigned short n_props;
+		db_data[i_total_props].name = (*property_values)[index]; index++;
+		iostream.seekp(0); iostream.seekg(0); iostream.clear();
+		iostream << (*property_values)[index].in() << ends;
+		iostream >> n_props;
+		db_data[i_total_props] << n_props;
+		db_data.resize(old_size + n_props);
+		old_size = old_size + n_props;
+		i_total_props++;
+		index++;
+		for (j=0; j<n_props; j++)
+		{
+			db_data[i_total_props].name = (*property_values)[index];
+			index++;
+			int n_values;
+			iostream.seekp (0);  iostream.seekg (0); iostream.clear();
+			iostream << (*property_values)[index].in() << ends;
+			iostream >> n_values;
+			index++;
+
+			db_data[i_total_props].value_string.resize(n_values);
+			if (n_values == 0)
+			{
+				index++; // skip dummy returned value " "
+			}
+			else
+			{
+				for (int k=0; k<n_values; k++)
+				{
+					db_data[i_total_props].value_string[k] = (*property_values)[index].in();
+					index++;
+				}
+			}
+			i_total_props++;
+		}
+	}
+
+    cout4 << "Leaving get_device_pipe_property" << endl;
+	return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// Database::delete_class_pipe_property() - public method to delete class pipe properties from the Database
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void Database::delete_class_pipe_property(string device_class, DbData &db_data)
+{
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *property_values = new DevVarStringArray;
+	unsigned int nb_prop = db_data.size() - 1;
+	property_values->length(nb_prop + 2);
+	(*property_values)[0] = string_dup(device_class.c_str());
+	(*property_values)[1] = string_dup(db_data[0].name.c_str());
+	for (unsigned int i=0; i < nb_prop;i++)
+		(*property_values)[i + 2] = string_dup(db_data[i + 1].name.c_str());
+
+	send <<= property_values;
+
+	if (filedb != 0)
+		filedb->DbDeleteClassPipeProperty(send);
+	else
+		CALL_DB_SERVER_NO_RET("DbDeleteClassPipeProperty",send);
+
+	return;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// Database::delete_device_pipe_property() - public method to delete device pipe properties from the Database
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Database::delete_device_pipe_property(string dev, DbData &db_data)
+{
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *property_values = new DevVarStringArray;
+	unsigned int nb_prop = db_data.size() - 1;
+	property_values->length(nb_prop + 2);
+	(*property_values)[0] = string_dup(dev.c_str());
+	(*property_values)[1] = string_dup(db_data[0].name.c_str());
+	for (unsigned int i=0; i < nb_prop;i++)
+		(*property_values)[i + 2] = string_dup(db_data[i + 1].name.c_str());
+
+	send <<= property_values;
+
+	if (filedb != 0)
+		filedb->DbDeleteDevicePipeProperty(send);
+	else
+		CALL_DB_SERVER_NO_RET("DbDeleteDevicePipeProperty",send);
+
+	return;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_class_pipe_list() - Query the database for a list of pipes defined for the specified class.
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+DbDatum Database::get_class_pipe_list(string &classname,string &wildcard)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *class_info = new DevVarStringArray;
+
+	class_info->length(2);
+	(*class_info)[0] = string_dup(classname.c_str());
+	(*class_info)[1] = string_dup(wildcard.c_str());
+
+	send <<= class_info;
+
+	CALL_DB_SERVER("DbGetClassPipeList",send,received);
+
+	return make_string_array(string("class"),received);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_device_pipe_list() - Get list of pipes with data in db for a specified device
+//
+//-------------------------------------------------------------------------------------------------------------------
+void Database::get_device_pipe_list(string &dev_name, vector<string> &pipe_list)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *sent_names = new DevVarStringArray;
+	sent_names->length(2);
+	(*sent_names)[0] = string_dup(dev_name.c_str());
+	(*sent_names)[1] = string_dup("*");
+
+	send <<= sent_names;
+
+	CALL_DB_SERVER("DbGetDevicePipeList",send,received);
+
+	const DevVarStringArray *recv_names = NULL;
+	received.inout() >>= recv_names;
+
+	pipe_list << *recv_names;
+}
+
+//----------------------------------------------------------------------------------------------------------------
+//
+// Database::delete_all_device_pipe_property() - Call Db server to delete all the property(ies) belonging to the
+// specified device pipe(s)
+//
+//----------------------------------------------------------------------------------------------------------------
+
+void Database::delete_all_device_pipe_property(string dev_name,DbData &db_data)
+{
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	Any send;
+
+	DevVarStringArray *att_names = new DevVarStringArray;
+	att_names->length(db_data.size()+1);
+	(*att_names)[0] = string_dup(dev_name.c_str());
+	for (unsigned int i=0; i<db_data.size(); i++)
+	{
+		(*att_names)[i+1] = string_dup(db_data[i].name.c_str());
+	}
+	send <<= att_names;
+
+	if (filedb != 0)
+	{
+		Tango::Except::throw_exception(API_NotSupportedFeature,
+				       		"The underlying database command is not implemented when the database is a file",
+				       		"Database::delete_all_device_pipe_property");
+	}
+	else
+		CALL_DB_SERVER_NO_RET("DbDeleteAllDevicePipeProperty",send);
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::put_class_pipe_property() - public method to put class pipe properties into the Database
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Database::put_class_pipe_property(string device_class, DbData &db_data)
+{
+	ostringstream ostream;
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	int index, n_pipes;
+	bool retry = true;
+
+	check_access_and_get();
+
+	while (retry == true)
+	{
+		DevVarStringArray *property_values = new DevVarStringArray;
+		property_values->length(2); index = 2;
+		(*property_values)[0] = string_dup(device_class.c_str());
+		n_pipes = 0;
+
+		for (unsigned int i=0; i<db_data.size(); )
+		{
+			short n_props = 0;
+			index++; property_values->length(index);
+			(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
+			db_data[i] >> n_props;
+			ostream.seekp(0); ostream.clear();
+			ostream << n_props << ends;
+			index++; property_values->length(index);
+
+			string st = ostream.str();
+			(*property_values)[index-1] = string_dup(st.c_str());
+
+			for (int j=0; j<n_props; j++)
+			{
+				index++; property_values->length(index);
+				(*property_values)[index-1] = string_dup(db_data[i+j+1].name.c_str());
+				index++; property_values->length(index);
+				int prop_size = db_data[i+j+1].size();
+				ostream.seekp(0); ostream.clear();
+				ostream << prop_size << ends;
+
+				string st = ostream.str();
+				(*property_values)[index-1] = string_dup(st.c_str());
+
+				property_values->length(index + prop_size);
+				for (int q=0; q<prop_size; q++)
+				{
+					(*property_values)[index+q] = string_dup(db_data[i+j+1].value_string[q].c_str());
+				}
+				index = index + prop_size;
+			}
+			i = i+n_props+1;
+			n_pipes++;
+		}
+
+		ostream.seekp(0); ostream.clear();
+		ostream << n_pipes << ends;
+
+		string st = ostream.str();
+		(*property_values)[1] = string_dup(st.c_str());
+
+		send <<= property_values;
+
+		if (filedb != 0)
+		{
+			filedb->DbPutClassPipeProperty(send);
+			retry = false;
+		}
+		else
+		{
+			CALL_DB_SERVER_NO_RET("DbPutClassPipeProperty",send);
+			retry = false;
+		}
+	}
+
+	return;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::put_device_pipe_property() - public method to put device pipe properties into the Database
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Database::put_device_pipe_property(string dev, DbData &db_data)
+{
+	ostringstream ostream;
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	int index, n_pipes ;
+	bool retry = true;
+
+	check_access_and_get();
+
+	while (retry == true)
+	{
+		DevVarStringArray *property_values = new DevVarStringArray;
+		property_values->length(2); index = 2;
+		(*property_values)[0] = string_dup(dev.c_str());
+		n_pipes = 0;
+
+		for (unsigned int i=0; i<db_data.size();)
+		{
+			short n_props = 0;
+			index++; property_values->length(index);
+			(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
+			db_data[i] >> n_props;
+			ostream.seekp(0); ostream.clear();
+			ostream << n_props << ends;
+			index++; property_values->length(index);
+
+			string st = ostream.str();
+			(*property_values)[index-1] = string_dup(st.c_str());
+
+			for (int j=0; j<n_props; j++)
+			{
+				index++; property_values->length(index);
+				(*property_values)[index-1] = string_dup(db_data[i+j+1].name.c_str());
+				index++; property_values->length(index);
+				int prop_size = db_data[i+j+1].size();
+				ostream.seekp(0); ostream.clear();
+				ostream << prop_size << ends;
+
+				string st = ostream.str();
+				(*property_values)[index-1] = string_dup(st.c_str());
+
+				property_values->length(index + prop_size);
+				for (int q=0; q<prop_size; q++)
+				{
+					(*property_values)[index+q] = string_dup(db_data[i+j+1].value_string[q].c_str());
+				}
+				index = index + prop_size;
+			}
+			i = i+n_props+1;
+			n_pipes++;
+		}
+
+		ostream.seekp(0); ostream.clear();
+		ostream << n_pipes << ends;
+
+		string st = ostream.str();
+		(*property_values)[1] = string_dup(st.c_str());
+
+		send <<= property_values;
+
+
+		if (filedb != 0)
+		{
+			filedb->DbPutDevicePipeProperty(send);
+			retry = false;
+		}
+		else
+		{
+			try
+			{
+				CALL_DB_SERVER_NO_RET("DbPutDevicePipeProperty",send);
+				retry = false;
+			}
+			catch (Tango::DevFailed &)
+			{
+				throw;
+			}
+		}
+	}
+
+	return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_class_pipe_property_history() - Returns the history of the specified class pipe property
+//
+//------------------------------------------------------------------------------------------------------------------
+
+vector<DbHistory> Database::get_class_pipe_property_history(string &classname,string &pipename,string &propname)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	DevVarStringArray *obj_info = new DevVarStringArray;
+
+	check_access_and_get();
+
+	obj_info->length(3);
+	(*obj_info)[0] = string_dup(classname.c_str());
+	(*obj_info)[1] = string_dup(pipename.c_str());
+	(*obj_info)[2] = string_dup(propname.c_str());
+
+	send <<= obj_info;
+
+	CALL_DB_SERVER("DbGetClassPipePropertyHist",send,received);
+
+	return make_history_array(true,received);
+
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//
+// Database::get_device_pipe_property_history() - Returns the history of the specified device pipe property
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+vector<DbHistory> Database::get_device_pipe_property_history(string &devname,string &pipename,string &propname) {
+
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *obj_info = new DevVarStringArray;
+
+	obj_info->length(3);
+	(*obj_info)[0] = string_dup(devname.c_str());
+	(*obj_info)[1] = string_dup(pipename.c_str());
+	(*obj_info)[2] = string_dup(propname.c_str());
+
+	send <<= obj_info;
+
+	CALL_DB_SERVER("DbGetDevicePipePropertyHist",send,received);
+
+	return make_history_array(true,received);
+
+}
+
 } // End of Tango namespace

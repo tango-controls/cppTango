@@ -68,12 +68,10 @@ public:
  * name, its description, its label and its display level
  *
  * @param 	na		The pipe name
- * @param	desc	The pipe description
- * @param	label 	The pipe label
  * @param	level	The pipe display level
  *
  */
-	WPipe(const string &na,const string &desc,const string &label,const Tango::DispLevel level);
+	WPipe(const string &na,const Tango::DispLevel level);
 //@}
 
 /**@name Destructor

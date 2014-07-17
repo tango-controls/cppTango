@@ -322,6 +322,7 @@ void FwdAttr::read(DeviceImpl *dev,Attribute &attr)
 		switch(fwd_attr.get_data_type())
 		{
 		case DEV_SHORT:
+		case DEV_ENUM:
 			fwd_attr.set_local_attribute(da,fwd_attr.get_root_ptr().sh_seq);
 			break;
 
@@ -602,6 +603,7 @@ void FwdAttr::init_conf(AttrConfEventData *ev_data)
 	udap.set_format(ev_data->attr_conf->format.c_str());
 	udap.set_min_value(ev_data->attr_conf->min_value.c_str());
 	udap.set_max_value(ev_data->attr_conf->max_value.c_str());
+	udap.set_enum_labels(ev_data->attr_conf->enum_labels);
 
 	udap.set_min_alarm(ev_data->attr_conf->alarms.min_alarm.c_str());
 	udap.set_max_alarm(ev_data->attr_conf->alarms.max_alarm.c_str());

@@ -116,6 +116,7 @@
 	#include <device_4.h>
 	#include <device_5.h>
 	#include <command.h>
+	#include <pipedesc.h>
 	#include <pipe.h>
 	#include <w_pipe.h>
 	#include <pipe.tpp>

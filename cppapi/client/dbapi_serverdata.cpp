@@ -48,7 +48,7 @@ namespace Tango
 // 		DbServerData::DbServerData
 //
 // description:
-//		constructor for the DbServerData class. This class data stotred in the database related to a device server
+//		constructor for the DbServerData class. This class data stored in the database related to a device server
 //		process. It allows easy insert/remove of one device server process from one database to another
 //
 // argument:

@@ -1272,4 +1272,25 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 	return &imp_tac_data;
 }
 
+const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArray *in_param)
+{
+	stringstream ss;
+	ss << "Class " << (*in_param)[0] << " not found in DB cache";
+
+	Tango::Except::throw_exception("DB_ClassNotFoundInCache",ss.str(),"DbServerCache::get_class_pipe_property");
+
+	DevVarStringArray *out = Tango_nullptr;
+	return out;
+}
+const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray *in_param)
+{
+	stringstream ss;
+	ss << "Device " << (*in_param)[0] << " not found in DB cache";
+
+	Tango::Except::throw_exception("DB_DeviceNotFoundInCache",ss.str(),"DbServerCache::get_dev_pipe_property");
+
+	DevVarStringArray *out = Tango_nullptr;
+	return out;
+}
+
 } // End of Tango namespace

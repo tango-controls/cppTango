@@ -36,6 +36,7 @@
 #include <tango.h>
 #include <blackbox.h>
 #include <classattribute.h>
+#include <classpipe.h>
 #include <attrdesc.h>
 #include <attribute.h>
 #include <w_attribute.h>
@@ -3572,6 +3573,12 @@ private:
 		FWD
 	}AttErrorType;
 
+	typedef enum _PipePropType
+	{
+		LABEL = 0,
+		DESCRIPTION
+	}PipePropType;
+
 //
 // Some private methods and variables
 //
@@ -3585,6 +3592,8 @@ private:
     void build_att_list_in_status_mess(size_t,AttErrorType);
 	void lock_root_devices(int,bool);
 	void push_dev_intr(bool);
+	void end_pipe_config();
+	void set_pipe_prop(vector<PipeProperty> &,Pipe *,PipePropType);
 
 #ifdef TANGO_HAS_LOG4TANGO
   	log4tango::Logger *get_logger_i (void);

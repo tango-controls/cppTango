@@ -915,6 +915,8 @@ public:
 	const DevVarStringArray *get_dev_att_property(DevVarStringArray *);
 	const DevVarStringArray *get_obj_property(DevVarStringArray *);
 	const DevVarStringArray *get_device_property_list(DevVarStringArray *);
+	const DevVarStringArray *get_class_pipe_property(DevVarStringArray *);
+	const DevVarStringArray *get_dev_pipe_property(DevVarStringArray *);
 	const DevVarLongStringArray *import_tac_dev(string &);
 
 	const EltIdx &get_imp_dat() {return imp_adm;}

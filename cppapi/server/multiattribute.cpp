@@ -257,8 +257,6 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 					fwc.full_root_att_name = fwdattr.get_full_root_att();
 					fwc.fae = fwdattr.get_err_kind();
 					fwd_wrong_conf.push_back(fwc);
-
-					fwd_ok = true;
 				}
 			}
 

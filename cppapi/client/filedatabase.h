@@ -162,6 +162,12 @@ public:
 	CORBA::Any*      DbGetDeviceAliasList(CORBA::Any&);
 	CORBA::Any*      DbGetAttributeAliasList(CORBA::Any&);
 
+	CORBA::Any*		 DbGetClassPipeProperty(CORBA::Any&);
+	CORBA::Any*		 DbGetDevicePipeProperty(CORBA::Any&);
+	CORBA::Any*		 DbDeleteClassPipeProperty(CORBA::Any&);
+	CORBA::Any*		 DbDeleteDevicePipeProperty(CORBA::Any&);
+	CORBA::Any* 	 DbPutClassPipeProperty(CORBA::Any&);
+	CORBA::Any* 	 DbPutDevicePipeProperty(CORBA::Any&);
 
 	void write_file();
 

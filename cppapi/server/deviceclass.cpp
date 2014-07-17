@@ -45,6 +45,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <blackbox.h>
 #include <dserversignal.h>
 #include <classattribute.h>
+#include <classpipe.h>
 #include <eventsupplier.h>
 
 #include <apiexcept.h>
@@ -116,6 +117,12 @@ DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
 //
 
 	class_attr = new MultiClassAttribute();
+
+//
+// Create the multi class pipe object
+//
+
+	class_pipe = new MultiClassPipe();
 
 //
 // Give a default value for device type
@@ -731,6 +738,12 @@ DeviceClass::~DeviceClass()
 //
 
 	delete class_attr;
+
+//
+// Destroy the MultiClassPipe object
+//
+
+	delete class_pipe;
 
 //
 // Unregister the class from signal handler

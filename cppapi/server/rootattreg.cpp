@@ -670,7 +670,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 // When the device is not there, subscribing to att change event throws one exception
 // and it does call the callback with error flag set. Because we want to know that the root device is not yet
 // ready, implement a two steps subscription
-// First subsccription is in statefull mode while the second one is in stateless mode
+// First subscription is in statefull mode while the second one is in stateless mode
 //
 
 	string a_name = device_name + '/' + att_name;

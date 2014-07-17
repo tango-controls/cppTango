@@ -196,14 +196,15 @@ void DeviceImpl::real_ctor()
 // Create the multi attribute object
 //
 
-	try
-	{
-		dev_attr = new MultiAttribute(device_name,device_class,this);
-	}
-	catch (Tango::DevFailed)
-	{
-		throw;
-	}
+	dev_attr = new MultiAttribute(device_name,device_class,this);
+
+//
+// Finish the pipe config init since we now have device name
+//
+
+cout << "Device class name = " << device_class->get_name() << endl;
+	if (device_class->get_name() != "DServer")
+		end_pipe_config();
 
 //
 // Build adm device name
@@ -220,22 +221,6 @@ void DeviceImpl::real_ctor()
 	init_logger();
 #endif
 
-//
-// write the polling
-//
-
-// This code has been moved to Device_3Impl class ctor.
-// This is this ctor which make state and status available
-// as attributes. This is needed in case, state or status
-// is polled.
-
-/*	init_cmd_poll_period();
-	init_attr_poll_period();
-
-	if (tg->_UseDb == false)
-	{
-	    init_poll_no_db();
-	}*/
 }
 
 //+-------------------------------------------------------------------------
@@ -5892,6 +5877,224 @@ void DeviceImpl::push_dev_intr(bool ev_client)
 			}
 		}
 	}
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::end_pipe_config
+//
+// description :
+//		Get all pipe properties defined at device level and aggregate all the pipe properties defined at different
+//		level (device, user default, class default
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::end_pipe_config()
+{
+	cout << "Entering end_pipe_config for device " << device_name << endl;
+
+	vector<Pipe *> &pipe_list = device_class->get_pipe_list();
+	size_t nb_pipe = pipe_list.size();
+
+//
+// First get device pipe configuration from db
+//
+
+    cout4 << nb_pipe << " pipe(s)" << endl;
+
+	if (nb_pipe != 0)
+	{
+		Tango::Util *tg = Tango::Util::instance();
+		Tango::DbData db_list;
+
+		if (tg->_UseDb == true)
+		{
+			for (size_t i = 0;i < nb_pipe;i++)
+				db_list.push_back(DbDatum(pipe_list[i]->get_name()));
+
+//
+// On some small and old computers, this request could take time if at the same time some other processes also access
+// the device pipe properties table. This has been experimented at ESRF. Increase timeout to cover this case
+//
+
+
+            int old_db_timeout = 0;
+            if (Util::_FileDb == false)
+                old_db_timeout = tg->get_database()->get_timeout_millis();
+			try
+			{
+			    if (old_db_timeout != 0)
+                    tg->get_database()->set_timeout_millis(6000);
+				tg->get_database()->get_device_pipe_property(device_name,db_list,tg->get_db_cache());
+				if (old_db_timeout != 0)
+                    tg->get_database()->set_timeout_millis(old_db_timeout);
+			}
+			catch (Tango::DevFailed &)
+			{
+			    cout4 << "Exception while accessing database" << endl;
+
+				tg->get_database()->set_timeout_millis(old_db_timeout);
+				stringstream ss;
+				ss << "Can't get device pipe properties for device " << device_name << ends;
+
+				Except::throw_exception(API_DatabaseAccess,ss.str(),"DeviceImpl::end_pipe_config");
+			}
+
+//
+// A loop for each pipe
+//
+
+			long ind = 0;
+			for (size_t i = 0;i < nb_pipe;i++)
+			{
+//
+// If pipe has some properties defined at device level, build a vector of PipeProperty with them
+//
+
+				long nb_prop = 0;
+				vector<PipeProperty> dev_prop;
+
+				db_list[ind] >> nb_prop;
+				ind++;
+
+				for (long j = 0;j < nb_prop;j++)
+				{
+					if (db_list[ind].size() > 1)
+					{
+						string tmp(db_list[ind].value_string[0]);
+						long nb = db_list[ind].size();
+						for (int k = 1;k < nb;k++)
+						{
+							tmp = tmp + ",";
+							tmp = tmp + db_list[ind].value_string[k];
+						}
+						dev_prop.push_back(PipeProperty(db_list[ind].name,tmp));
+					}
+					else
+						dev_prop.push_back(PipeProperty(db_list[ind].name,db_list[ind].value_string[0]));
+					ind++;
+				}
+
+				Pipe *pi_ptr = pipe_list[i];
+
+//
+// Call method which will aggregate prop definition retrieved at different levels
+//
+
+				set_pipe_prop(dev_prop,pi_ptr,LABEL);
+				set_pipe_prop(dev_prop,pi_ptr,DESCRIPTION);
+			}
+		}
+	}
+
+	cout << "Leaving end_pipe_config for device " << device_name << endl;
+}
+
+//+-----------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::set_pipe_prop
+//
+// description :
+//		Set a pipe property. A pipe property can be defined at device level in DB, by a user default or at
+//		class level in DB. Properties defined in DB at device level are given to the method as the first
+//		parameter. If the user has defined some user default, the pipe object already has them. The properties
+//		defined at class level are available in the MultiClassPipe object available in the DeviceClass instance
+//
+// argument :
+//		in:
+//			- dev_prop : Pipe properties defined at device level
+//			- pi_ptr : Pipe instance pointer
+//			- ppt : Property type (label or description)
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop,Pipe *pi_ptr,PipePropType ppt)
+{
+	cout << "Entering set_pipe_prop() method" << endl;
+//
+// Final init of pipe prop with following priorities:
+// - Device pipe
+// - User default
+// - Class pipe
+// The pipe instance we have here already has config set to user default (if any)
+//
+
+	bool found = false;
+	string req_p_name;
+	if (ppt == LABEL)
+		req_p_name = "label";
+	else
+		req_p_name = "description";
+
+	vector<PipeProperty>::iterator dev_ite;
+	for (dev_ite = dev_prop.begin();dev_ite != dev_prop.end();++dev_ite)
+	{
+		string p_name = dev_ite->get_name();
+		transform(p_name.begin(),p_name.end(),p_name.begin(),::tolower);
+
+		if (p_name == req_p_name)
+		{
+			found = true;
+			break;
+		}
+	}
+
+	if (found == true)
+	{
+		if (ppt == LABEL)
+			pi_ptr->set_label(dev_ite->get_value());
+		else
+			pi_ptr->set_desc(dev_ite->get_value());
+	}
+	else
+	{
+
+//
+// Prop not defined at device level. If the prop is still the lib default one, search if it is defined at class
+// level
+//
+
+		bool still_default;
+		if (ppt == LABEL)
+			still_default = pi_ptr->is_label_lib_default();
+		else
+			still_default = pi_ptr->is_desc_lib_default();
+
+		if (still_default == true)
+		{
+			try
+			{
+				vector<PipeProperty> &cl_pi_prop = device_class->get_class_pipe()->get_prop_list(pi_ptr->get_name());
+
+				bool found = false;
+				vector<PipeProperty>::iterator class_ite;
+				for (class_ite = cl_pi_prop.begin();class_ite != cl_pi_prop.end();++class_ite)
+				{
+					string p_name = class_ite->get_name();
+					transform(p_name.begin(),p_name.end(),p_name.begin(),::tolower);
+
+					if (p_name == req_p_name)
+					{
+						found = true;
+						break;
+					}
+				}
+
+				if (found == true)
+				{
+					if (ppt == LABEL)
+						pi_ptr->set_label(class_ite->get_value());
+					else
+						pi_ptr->set_desc(class_ite->get_value());
+				}
+			}
+			catch (Tango::DevFailed &) {}
+		}
+	}
+
+	cout << "Leaving set_pipe_prop() method" << endl;
 }
 
 } // End of Tango namespace

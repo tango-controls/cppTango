@@ -236,7 +236,9 @@ void DServer::init_device()
 // Build class pipes
 //
 
+				MultiClassPipe *c_pipe = class_list[i]->get_class_pipe();
 				class_list[i]->pipe_factory();
+				c_pipe->init_class_pipe(class_list[i]);
 
 //
 // Sort the Pipe list array

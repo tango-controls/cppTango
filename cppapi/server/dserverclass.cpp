@@ -1496,6 +1496,7 @@ bool less_than_dserver (Command *a,Command *b)
 
 DServerClass::DServerClass(string &s):DeviceClass(s)
 {
+
 	try
 	{
 

@@ -264,6 +264,12 @@ public:
  */
  	MultiClassAttribute *get_class_attr() {return class_attr;}
 /**
+ * Get a pointer to the class pipes object
+ *
+ * @return A pointer to the instance of the MultiClassPipe
+ */
+ 	MultiClassPipe *get_class_pipe() {return class_pipe;}
+/**
  * Set the TANGO device type name.
  *
  * @param dev_type The new TANGO device type name
@@ -419,6 +425,10 @@ protected:
  * Pointer to the class multi attribute object
  */
  	MultiClassAttribute		*class_attr;
+/**
+ * Pointer to the class multi pipe object
+ */
+ 	MultiClassPipe			*class_pipe;
 /**
  * The pipe(s) list
  */

@@ -174,6 +174,7 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/utils_shut.o \
 		$(OBJS_DIR)/subdev_diag.o \
 		$(OBJS_DIR)/encoded_attribute.o \
+		$(OBJS_DIR)/classpipe.o \
 		$(OBJS_DIR)/jpeg_bitstream.o \
 		$(OBJS_DIR)/jpeg_color.o \
 		$(OBJS_DIR)/jpeg_color_mmx.o \
@@ -275,6 +276,7 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/utils_shut.so.o \
 		$(OBJS_DIR_SL)/subdev_diag.so.o \
 		$(OBJS_DIR_SL)/encoded_attribute.so.o \
+		$(OBJS_DIR_SL)/classpipe.so.o \
 		$(OBJS_DIR_SL)/jpeg_bitstream.so.o \
 		$(OBJS_DIR_SL)/jpeg_color.so.o \
 		$(OBJS_DIR_SL)/jpeg_color_mmx.so.o \
@@ -360,6 +362,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			basiccommand.h \
 			blackbox.h \
 			classattribute.h \
+			classpipe.h \
 			command.h \
 			pipe.h \
 			pipe.tpp \
@@ -389,6 +392,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			logstream.h \
 			multiattribute.h \
 			ntservice.h \
+			pipedesc.h \
 			pollcmds.h \
 			pollext.h \
 			pollext.tpp \

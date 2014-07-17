@@ -90,20 +90,18 @@ public:
 
 /**
  * Constructs a newly allocated Pipe object from its
- * name, its description, its label and its display level
+ * name and its display level
  *
- * @param 	na		The pipe name
- * @param	desc	The pipe description
- * @param	label 	The pipe label
+ * @param 	name	The pipe name
  * @param	level	The pipe display level
  * @param	pwt		The pipe R/W type (default to READ)
  *
  */
-	Pipe(const string &na,const string &desc,const string &label,const Tango::DispLevel level,const PipeWriteType pwt=PIPE_READ);
+	Pipe(const string &name,const Tango::DispLevel level,const PipeWriteType pwt=PIPE_READ);
 //@}
 
 /**@name Destructor
- * Only one desctructor is defined for this class */
+ * Only one destructor is defined for this class */
 //@{
 /**
  * The object desctructor.
@@ -140,6 +138,13 @@ public:
 	void set_name(string &new_name) {name=new_name;}
 
 /**
+ * Set default attribute properties
+ *
+ * @param	prop	The user default property class
+ */
+ 	void set_default_properties(UserDefaultPipeProp &prop);
+
+/**
  * Return the pipe name in lower case letters.
  *
  * @return The pipe name
@@ -168,25 +173,11 @@ public:
 	string &get_desc() {return desc;}
 
 /**
- * Set the pipe description field.
- *
- * @param [in] new_desc The new description
- */
-	void set_desc(const char *new_desc) {desc = new_desc;}
-
-/**
  * Return the pipe label.
  *
  * @return The pipe label
  */
 	string &get_label() {return label;}
-
-/**
- * Set the pipe label field.
- *
- * @param [in] new_label The new label
- */
-	void set_label(const char *new_label) {label = new_label;}
 
 /**
  * Return the pipe display level.
@@ -196,18 +187,12 @@ public:
 	Tango::DispLevel get_disp_level() {return disp_level;}
 
 /**
- * Set the pipe display level.
- *
- * @param [in] new_level The pipe display level
- */
-	void set_disp_level(Tango::DispLevel new_level) {disp_level = new_level;}
-
-/**
  * Get the pipe writable type (RO/RW).
  *
  * @return The pipe write type.
  */
 	Tango::PipeWriteType get_writable() {return writable;}
+
 /**
  * Set pipe serialization model
  *
@@ -392,6 +377,10 @@ public:
 	void set_time();
 	Tango::TimeVal &get_when() {return when;}
 	void set_returned_data_ptr(DevPipeData *_p) {ret_data=_p;}
+	void set_label(const string &_lab) {label=_lab;}
+	void set_desc(const string &_desc) {desc=_desc;}
+	bool is_label_lib_default() {return label==name;}
+	bool is_desc_lib_default() {return desc==DescNotSpec;}
 
 	DevicePipeBlob &get_blob() {return the_blob;}
 

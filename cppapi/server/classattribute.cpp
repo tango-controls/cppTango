@@ -189,7 +189,7 @@ MultiClassAttribute::MultiClassAttribute()
 //		MultiClassAttribute::init_class_attribute
 //
 // description :
-//		Ask the database for prperties defined at class level and build the ClassAttribute object for each attribute
+//		Ask the database for properties defined at class level and build the ClassAttribute object for each attribute
 //		with defined properties
 //
 // argument :
