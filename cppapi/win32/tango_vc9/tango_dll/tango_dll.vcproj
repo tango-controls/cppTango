@@ -524,6 +524,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\classpipe.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\command.cpp"
 				>
 				<FileConfiguration
@@ -1905,6 +1909,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\classpipe.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\command.h"
 				>
 			</File>
@@ -2082,6 +2090,10 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\pipe.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\pipedesc.h"
 				>
 			</File>
 			<File
