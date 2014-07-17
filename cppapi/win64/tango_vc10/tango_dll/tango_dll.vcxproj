@@ -440,6 +440,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\classpipe.cpp" />
     <ClCompile Include="..\..\..\server\class_factory.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Disabled</Optimization>
@@ -1201,6 +1202,7 @@
     <ClInclude Include="..\..\..\server\blackbox.h" />
     <ClInclude Include="..\..\..\client\cbthread.h" />
     <ClInclude Include="..\..\..\server\classattribute.h" />
+    <ClInclude Include="..\..\..\server\classpipe.h" />
     <ClInclude Include="..\..\..\server\command.h" />
     <ClInclude Include="..\..\..\server\coutappender.h" />
     <ClInclude Include="..\..\..\server\coutbuf.h" />
@@ -1240,6 +1242,7 @@
     <ClInclude Include="..\..\..\server\multiattribute.h" />
     <ClInclude Include="..\..\..\server\ntservice.h" />
     <ClInclude Include="..\..\..\server\pipe.h" />
+    <ClInclude Include="..\..\..\server\pipedesc.h" />
     <ClInclude Include="..\..\..\server\pollcmds.h" />
     <ClInclude Include="..\..\..\server\pollext.h" />
     <ClInclude Include="..\..\..\server\pollobj.h" />
