@@ -202,7 +202,6 @@ void DeviceImpl::real_ctor()
 // Finish the pipe config init since we now have device name
 //
 
-cout << "Device class name = " << device_class->get_name() << endl;
 	if (device_class->get_name() != "DServer")
 		end_pipe_config();
 

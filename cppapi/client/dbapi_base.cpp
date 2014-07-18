@@ -5322,8 +5322,8 @@ vector<DbHistory> Database::get_class_pipe_property_history(string &classname,st
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-vector<DbHistory> Database::get_device_pipe_property_history(string &devname,string &pipename,string &propname) {
-
+vector<DbHistory> Database::get_device_pipe_property_history(string &devname,string &pipename,string &propname)
+{
 	Any send;
 	Any_var received;
 	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);

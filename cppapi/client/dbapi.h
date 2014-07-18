@@ -891,12 +891,14 @@ public:
 	{
 		PropEltIdx		dev_prop;
 		AttPropEltIdx 	dev_att_prop;
+		AttPropEltIdx	dev_pipe_prop;
 	}DevEltIdx;
 
 	typedef struct
 	{
 		PropEltIdx 		class_prop;
 		AttPropEltIdx 	class_att_prop;
+		AttPropEltIdx	class_pipe_prop;
 		EltIdx 			dev_list;
 		int 			dev_nb;
 		DevEltIdx		*devs_idx;
@@ -933,6 +935,7 @@ public:
 private:
 	void prop_indexes(int &,int &,PropEltIdx &,const DevVarStringArray *);
 	void prop_att_indexes(int &,int &,AttPropEltIdx &,const DevVarStringArray *);
+	void prop_pipe_indexes(int &,int &,AttPropEltIdx &,const DevVarStringArray *);
 	void get_obj_prop(DevVarStringArray *,PropEltIdx &,bool dev_prop=false);
 	int find_class(DevString );
 	int find_dev_att(DevString,int &,int &);
@@ -942,6 +945,7 @@ private:
 	CORBA::Any_var			received;
 	const DevVarStringArray *data_list;
 	int 					n_data;
+	int						proc_release;
 
 	EltIdx					imp_adm;
 	EltIdx					imp_notifd_event;
@@ -961,6 +965,7 @@ private:
 	DevVarStringArray		ret_obj_prop;
 	DevVarStringArray		ret_dev_list;
 	DevVarStringArray		ret_obj_att_prop;
+	DevVarStringArray		ret_obj_pipe_prop;
 	DevVarStringArray		ret_prop_list;
 };
 
