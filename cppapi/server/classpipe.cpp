@@ -178,7 +178,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 #ifdef INIT_LIST
 				pipe_prop_list.insert({pipe_name,prop_list});
 #else
-				pipe_prop_list.insert(make_pair(pipe_name_name,prop_list));
+				pipe_prop_list.insert(make_pair(pipe_name,prop_list));
 #endif
 			}
 		}

@@ -5035,7 +5035,7 @@ void Database::delete_device_pipe_property(string dev, DbData &db_data)
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-DbDatum Database::get_class_pipe_list(string &classname,string &wildcard)
+DbDatum Database::get_class_pipe_list(const string &classname,const string &wildcard)
 {
 	Any send;
 	Any_var received;
@@ -5061,7 +5061,7 @@ DbDatum Database::get_class_pipe_list(string &classname,string &wildcard)
 // Database::get_device_pipe_list() - Get list of pipes with data in db for a specified device
 //
 //-------------------------------------------------------------------------------------------------------------------
-void Database::get_device_pipe_list(string &dev_name, vector<string> &pipe_list)
+void Database::get_device_pipe_list(const string &dev_name, vector<string> &pipe_list)
 {
 	Any send;
 	Any_var received;

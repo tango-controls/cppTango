@@ -776,7 +776,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	void get_device_pipe_list(string &dev_name,vector<string> &pipe_list);
+	void get_device_pipe_list(const string &dev_name,vector<string> &pipe_list);
 //@}
 
 /**@name device pipe property oriented methods */
@@ -1762,7 +1762,7 @@ public :
  *
  * @exception ConnectionFailed,CommunicationFailed,DevFailed from device
  */
-	DbDatum get_class_pipe_list(string &class_name,string &wildcard);
+	DbDatum get_class_pipe_list(const string &class_name,const string &wildcard);
 /**
  * Get device alias list
  *
