@@ -271,7 +271,11 @@ void EventConsumer::get_cs_tango_host(Database *db)
 			{
 				if (alias_map.find(db_host_lower) == alias_map.end())
 				{
+#ifdef INIT_LIST
 					alias_map.insert({db_host_lower,lower_vs});
+#else
+					alias_map.insert(make_pair(db_host_lower,lower_vs));
+#endif
 				}
 			}
 		}
