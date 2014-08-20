@@ -1388,6 +1388,18 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 	{
 		EventChannelStruct new_event_channel_struct;
 
+//
+// If we have a CS for which TANGO_HOST is one alias, replace alias by original name in map key
+//
+
+		string::size_type pos = channel_name.find(':',6);
+		string tg_host = channel_name.substr(8,pos - 8);
+		map<string,string>::iterator ite = alias_map.find(tg_host);
+		if (ite != alias_map.end())
+		{
+			channel_name.replace(8,tg_host.size(),ite->second);
+		}
+
 		new_event_channel_struct.last_heartbeat = time(NULL);
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
@@ -1922,6 +1934,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
     map<std::string,EventCallBackStruct>::iterator ipos;
     size_t loop;
     bool no_db_dev = false;
+    bool first_search_succeed = false;
 
     size_t pos = ev_name.find('/',8);
     string base_tango_host = ev_name.substr(0,pos + 1);
@@ -1948,6 +1961,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
         if (ipos != event_callback_map.end())
         {
+        	if (loop == 0)
+				first_search_succeed = true;
+
             const AttributeValue *attr_value = NULL;
             const AttributeValue_3 *attr_value_3 = NULL;
             const ZmqAttributeValue_4 *z_attr_value_4 = NULL;
@@ -2017,9 +2033,24 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 			if (pos1 != string::npos)
 				event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
-			string full_att_name = ev_name.substr(0,pos);
-            pos = full_att_name.rfind('/');
-            string att_name = full_att_name.substr(pos + 1);
+			string full_att_name;
+			if (evt_cb.alias_used == true)
+			{
+				pos = evt_cb.fully_qualified_event_name.rfind('.');
+				full_att_name = evt_cb.fully_qualified_event_name.substr(0,pos);
+			}
+			else
+			{
+				if (first_search_succeed == true)
+					full_att_name = ev_name.substr(0,pos);
+				else
+				{
+					pos = evt_cb.fully_qualified_event_name.rfind('.');
+					full_att_name = evt_cb.fully_qualified_event_name.substr(0,pos);
+				}
+			}
+			pos = full_att_name.rfind('/');
+			string att_name = full_att_name.substr(pos + 1);
 
             UserDataEventType data_type;
 

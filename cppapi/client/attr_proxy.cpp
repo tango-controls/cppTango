@@ -89,6 +89,8 @@ void AttributeProxy::real_constructor (string &name)
 		{
 			ApiUtil *ui = ApiUtil::instance();
 			dev_proxy = new DeviceProxy(device_name);
+			if (alias_name.empty() == false && dev_proxy != Tango_nullptr)
+				device_name = dev_proxy->dev_name();
 			if (ui->in_server() == true)
 				db_attr = new DbAttribute(attr_name,device_name,Tango::Util::instance()->get_database());
 			else
@@ -263,6 +265,7 @@ AttributeProxy::AttributeProxy(const AttributeProxy &prev):ext(Tango_nullptr)
 //
 
 	device_name = prev.device_name;
+	alias_name = prev.alias_name;
 
 	if (dbase_used == true)
 	{
@@ -339,6 +342,7 @@ AttributeProxy &AttributeProxy::operator=(const AttributeProxy &rval)
 
         attr_name = rval.attr_name;
         device_name = rval.device_name;
+        alias_name = rval.alias_name;
 
         if (dbase_used == true)
         {
@@ -769,8 +773,9 @@ void AttributeProxy::parse_name(string &full_name)
 				pos = name_wo_db_mod.rfind(DEVICE_SEP);
 				device_name = name_wo_db_mod.substr(0,pos);
 			}
-		}
 
+			alias_name = device_name;
+		}
 
 		pos = cased_name.rfind(DEVICE_SEP);
 		string::size_type pos_mod = cased_name.rfind(MODIFIER);

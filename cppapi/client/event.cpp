@@ -59,6 +59,7 @@ ReadersWritersLock 	EventConsumer::map_modification_lock;
 vector<EventNotConnected> EventConsumer::event_not_connected;
 int EventConsumer::subscribe_event_id = 0;
 vector<string> EventConsumer::env_var_fqdn_prefix;
+map<string,string> EventConsumer::alias_map;
 
 KeepAliveThCmd EventConsumer::cmd;
 
@@ -249,6 +250,35 @@ void EventConsumer::get_cs_tango_host(Database *db)
 		dd = db->command_inout("DbGetCSDbServerList");
 		vector<string> vs;
 		dd >> vs;
+
+//
+// Do we have a CS with a host alias used as TANGO_HOST?
+// It true and if we don know this alias, store its definition in the alias map
+//
+
+		if (vs.size() == 1)
+		{
+			string lower_vs(vs[0]);
+			transform(lower_vs.begin(),lower_vs.end(),lower_vs.begin(),::tolower);
+			string::size_type pos = lower_vs.find(':');
+			if (pos != string::npos)
+				lower_vs.erase(pos);
+
+			string db_host_lower(db->get_db_host());
+			transform(db_host_lower.begin(),db_host_lower.end(),db_host_lower.begin(),::tolower);
+
+			if (lower_vs != db_host_lower)
+			{
+				if (alias_map.find(db_host_lower) == alias_map.end())
+				{
+					alias_map.insert({db_host_lower,lower_vs});
+				}
+			}
+		}
+
+//
+// Serveral Db servers for one TANGO_HOST case
+//
 
 		vector<string>::iterator pos;
 
@@ -1611,6 +1641,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.obj_name = obj_name_lower;
     new_event_callback.event_name = event_name;
     new_event_callback.channel_name = evt_it->first;
+    new_event_callback.alias_used = false;
+
     if (inter_event == true)
 		new_event_callback.fully_qualified_event_name = device_name + '.' + event_name;
 	else
@@ -1676,6 +1708,23 @@ int EventConsumer::connect_event(DeviceProxy *device,
 
     new_event_callback.callback_monitor = new TangoMonitor();
     new_event_callback.callback_monitor->timeout(1000);
+
+//
+// If we have a CS for which TANGO_HOST is one alias, replace alias by original name in map key
+//
+
+	pos = local_callback_key.find(':',6);
+	string tg_host = local_callback_key.substr(8,pos - 8);
+	map<string,string>::iterator ite = alias_map.find(tg_host);
+	if (ite != alias_map.end())
+	{
+		local_callback_key.replace(8,tg_host.size(),ite->second);
+		new_event_callback.alias_used = true;
+	}
+
+//
+// Insert new entry in map
+//
 
     pair<EvCbIte, bool> ret = event_callback_map.insert(pair<string, EventCallBackStruct>(local_callback_key, new_event_callback));
     if (!ret.second)

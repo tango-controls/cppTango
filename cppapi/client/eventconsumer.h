@@ -337,6 +337,7 @@ typedef struct event_callback_base
 	time_t 							last_subscribed;
 	TangoMonitor					*callback_monitor;
 	vector<EventSubscribeStruct>	callback_list;
+	bool							alias_used;
 } EventCallBackBase;
 
 typedef struct event_callback_zmq
@@ -457,6 +458,7 @@ protected :
 	static vector<EventNotConnected> 						event_not_connected;
 	static int 												subscribe_event_id; 	// unique event id
 	static vector<string> 									env_var_fqdn_prefix;
+	static map<std::string,std::string>						alias_map;				// key - alias, value - real host name
 
 	static omni_mutex										ev_consumer_inst_mutex;
 

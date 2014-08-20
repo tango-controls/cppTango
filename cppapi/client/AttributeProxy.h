@@ -59,6 +59,7 @@ class AttributeProxy
 private :
 	string 				attr_name;
 	string 				device_name;
+	string 				alias_name;
 	Tango::DeviceProxy 	*dev_proxy;
 	Tango::DbAttribute 	*db_attr;
 	bool    			dbase_used;		// Dev. with database
