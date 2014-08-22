@@ -285,10 +285,12 @@ void DbServerData::put_properties(Database *db_ptr)
 	{
 		classes[loop].put_properties(db_ptr);
 		classes[loop].put_attribute_properties(db_ptr);
+		classes[loop].put_pipe_properties(db_ptr);
 		for (size_t ctr = 0;ctr < classes[loop].size();ctr++)
 		{
 			classes[loop][ctr].put_properties(db_ptr);
 			classes[loop][ctr].put_attribute_properties(db_ptr);
+			classes[loop][ctr].put_pipe_properties(db_ptr);
 		}
 	}
 }
@@ -431,7 +433,7 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 	}
 
 //
-// Then, get attribute list from db
+// Get attribute list from db
 //
 
 	ApiUtil *au = ApiUtil::instance();
@@ -456,6 +458,30 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 			}
 		}
 	}
+
+//
+// Then get pipe list from db
+//
+
+	vector<string> pipe_list;
+	db->get_device_pipe_list(name,pipe_list);
+
+	for (size_t loop = 0; loop < pipe_list.size();loop++)
+	{
+		DbData db_data;
+		db_data.push_back(DbDatum(pipe_list[loop]));
+		db->get_device_pipe_property(na,db_data);
+		for (size_t lo = 1;lo < db_data.size();lo++)
+		{
+			if (db_data[lo].is_empty() == false)
+			{
+				TangoPipe ta(pipe_list[loop]);
+				ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
+				pipes.push_back(ta);
+			}
+		}
+	}
+
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -526,6 +552,44 @@ void DbServerData::TangoDevice::put_attribute_properties(Database *db_ptr)
 	}
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method:
+// 		DbServerData::TangoDevice::put_pipe_properties
+//
+// description:
+//		Store in database all the properties belonging to the device pipe(s)
+//
+// argument:
+// 		in :
+//			db_ptr : Pointer to the database instance
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void DbServerData::TangoDevice::put_pipe_properties(Database *db_ptr)
+{
+	if (pipes.empty() == false)
+	{
+		DbData db_data;
+		for (size_t loop = 0;loop < pipes.size();loop++)
+		{
+			if (pipes[loop].empty() == false)
+			{
+				DbDatum db_d(pipes[loop].name);
+				db_d << (DevLong)pipes[loop].size();
+				db_data.push_back(db_d);
+				for (size_t ctr = 0;ctr < pipes[loop].size();ctr++)
+				{
+					DbDatum db(pipes[loop][ctr].name);
+					db.value_string = pipes[loop][ctr].values;
+					db_data.push_back(db);
+				}
+			}
+		}
+
+		db_ptr->put_device_pipe_property(name,db_data);
+	}
+}
 
 //--------------------------------------------------------------------------------------------------------------------
 //
@@ -589,6 +653,29 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 				TangoAttribute ta(vs[loop]);
 				ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
 				attributes.push_back(ta);
+			}
+		}
+	}
+
+//
+//  Get class pipe list
+//
+
+	DbDatum cl_pipe_list = db->get_class_pipe_list(name,all);
+	if (cl_pipe_list.is_empty() == false)
+	{
+		vector<string> vs;
+		cl_pipe_list >> vs;
+
+		for (size_t loop = 0;loop < vs.size();loop++)
+		{
+			DbData db_data;
+			db->get_class_pipe_property(vs[loop],db_data);
+			for (size_t lo = 0;lo < db_data.size();lo++)
+			{
+				TangoPipe ta(vs[loop]);
+				ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
+				pipes.push_back(ta);
 			}
 		}
 	}
@@ -677,6 +764,45 @@ void DbServerData::TangoClass::put_attribute_properties(Database *db_ptr)
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method:
+// 		DbServerData::TangoClass::put_pipe_properties
+//
+// description:
+//		Store in database all the class pipe properties
+//
+// argument:
+// 		in :
+//			- db_ptr : Pointer to the database instance
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void DbServerData::TangoClass::put_pipe_properties(Database *db_ptr)
+{
+	if (pipes.empty() == false)
+	{
+		DbData db_data;
+		for (size_t loop = 0;loop < pipes.size();loop++)
+		{
+			if (pipes[loop].empty() == false)
+			{
+				DbDatum db_d(pipes[loop].name);
+				db_d << (DevLong)pipes[loop].size();
+				db_data.push_back(db_d);
+				for (size_t ctr = 0;ctr < pipes[loop].size();ctr++)
+				{
+					DbDatum db(pipes[loop][ctr].name);
+					db.value_string = pipes[loop][ctr].values;
+					db_data.push_back(db);
+				}
+			}
+		}
+
+		db_ptr->put_class_pipe_property(name,db_data);
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method:
 // 		DbServerData::TangoClass::remove_properties
 //
 // description:
@@ -718,6 +844,25 @@ void DbServerData::TangoClass::remove_properties(Database *db_ptr)
 				for (size_t ctr = 0;ctr < attributes[loop].size();ctr++)
 					db_data.push_back(DbDatum(attributes[loop][ctr].name));
 				db_ptr->delete_class_attribute_property(name,db_data);
+			}
+		}
+	}
+
+//
+// Delete class pipe properties if any
+//
+
+	if (pipes.empty() == false)
+	{
+		for (size_t loop = 0;loop < pipes.size();loop++)
+		{
+			if (pipes[loop].empty() == false)
+			{
+				DbData db_data;
+				db_data.push_back(DbDatum(pipes[loop].name));
+				for (size_t ctr = 0;ctr < pipes[loop].size();ctr++)
+					db_data.push_back(DbDatum(pipes[loop][ctr].name));
+				db_ptr->delete_class_pipe_property(name,db_data);
 			}
 		}
 	}

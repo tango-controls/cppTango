@@ -1007,20 +1007,30 @@ private:
         TangoAttribute(string na):name(na) {}
     };
 
+    struct TangoPipe: vector<TangoProperty>
+    {
+        string   				name;
+
+        TangoPipe(string na):name(na) {}
+    };
+
 	struct TangoDevice: DeviceProxy
 	{
         string 	name;
         vector<TangoProperty>   properties;
         vector<TangoAttribute>  attributes;
+        vector<TangoPipe>		pipes;
 
         TangoDevice(string &);
 
 		string get_name() {return name;}
         vector<TangoProperty> &get_properties() {return properties;}
         vector<TangoAttribute> &get_attributes() {return attributes;}
+        vector<TangoPipe> &get_pipes() {return pipes;}
 
 		void put_properties(Database *);
         void put_attribute_properties(Database *);
+        void put_pipe_properties(Database *);
 	};
 
 	struct TangoClass: vector<TangoDevice>
@@ -1028,15 +1038,18 @@ private:
         string  name;
         vector<TangoProperty>   	properties;
         vector<TangoAttribute>   	attributes;
+        vector<TangoPipe>			pipes;
 
 		TangoClass(const string &,const string &,Database *);
 
 		string get_name() {return name;}
         vector<TangoProperty> &get_properties() {return properties;}
         vector<TangoAttribute> &get_attributes() {return attributes;}
+        vector<TangoPipe> &get_pipes() {return pipes;}
 
 		void put_properties(Database *);
         void put_attribute_properties(Database *);
+		void put_pipe_properties(Database *);
         void remove_properties(Database *);
 	};
 

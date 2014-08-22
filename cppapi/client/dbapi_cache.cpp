@@ -1439,6 +1439,17 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
 const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArray *in_param)
 {
+
+//
+// Throw exception if stored procedure does not support pipe
+//
+
+	if (proc_release < 109)
+	{
+		string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
+		Tango::Except::throw_exception("DB_TooOldStoredProc",mess,"DbServerCache::get_class_pipe_property");
+	}
+
 	int found_pipe = 0;
 	char n_pipe_str[256];
 
@@ -1505,8 +1516,8 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 		TangoSys_OMemStream o;
 		o << "Class " << (*in_param)[0] << " not found in DB cache" << ends;
 
-		Tango::Except::throw_exception((const char *)"DB_ClassNotFoundInCache",o.str(),
-										   (const char *)"DbServerCache::get_dev_property");
+		Tango::Except::throw_exception("DB_ClassNotFoundInCache",o.str(),
+										   "DbServerCache::get_class_pipe_property");
 	}
 
 //	cout4 << "DbCache --> Returned data for a get_class_pipe_property for class " << (*in_param)[0] << endl;
@@ -1536,6 +1547,17 @@ const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArra
 
 const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray *in_param)
 {
+
+//
+// Throw exception if stored procedure does not support pipe
+//
+
+	if (proc_release < 109)
+	{
+		string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
+		Tango::Except::throw_exception("DB_TooOldStoredProc",mess,"DbServerCache::get_dev_pipe_property");
+	}
+
 	int found_pipe = 0;
 	char n_pipe_str[256];
 

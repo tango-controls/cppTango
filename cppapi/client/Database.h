@@ -115,7 +115,7 @@ public :
 	Database(CORBA::ORB *orb=NULL);
 // @}
 
-/**@name general methods */
+/**@name General methods */
 //@{
 /**
  * Get database info.
@@ -145,7 +145,7 @@ public :
 	string get_info();
 //@}
 
-/**@name device oriented methods */
+/**@name Device oriented methods */
 //@{
 /**
  * Add a device into the database.
@@ -285,7 +285,7 @@ public :
 	DbDatum get_class_inheritance_for_device(string &dev_name);
 //@}
 
-/**@name server oriented methods */
+/**@name Server oriented methods */
 //@{
 /**
  * Create a device server process in database.
@@ -343,7 +343,7 @@ public :
 	void rename_server(const string &old_ds_name,const string &new_ds_name);
 //@}
 
-/**@name services oriented methods */
+/**@name Services oriented methods */
 //@{
 /**
  * Get services list from database
@@ -424,7 +424,7 @@ public :
 	void unregister_service(string &service_name,string &inst_name);
 //@}
 
-/**@name object property oriented methods */
+/**@name Object property oriented methods */
 //@{
 /**
  * Get object property value
@@ -534,7 +534,7 @@ public :
 	vector<DbHistory> get_property_history(string &obj_name,string &prop_name);
 //@}
 
-/**@name device property oriented methods */
+/**@name Device property oriented methods */
 //@{
 /**
  * Get device property value
@@ -620,7 +620,7 @@ public :
 	vector<DbHistory> get_device_property_history(string &dev_name,string &prop_name);
 //@}
 
-/**@name device attribute property oriented methods */
+/**@name Device attribute property oriented methods */
 //@{
 /**
  * Get device attribute property value
@@ -779,7 +779,7 @@ public :
 	void get_device_pipe_list(const string &dev_name,vector<string> &pipe_list);
 //@}
 
-/**@name device pipe property oriented methods */
+/**@name Device pipe property oriented methods */
 //@{
 /**
  * Get device pipe property value
@@ -912,7 +912,7 @@ public :
 	vector<DbHistory> get_device_pipe_property_history(string &dev_name,string &pipe_name,string &prop_name);
 //@}
 
-/**@name class property oriented methods */
+/**@name Class property oriented methods */
 //@{
 /**
  * Get class property value
@@ -999,7 +999,7 @@ public :
 	vector<DbHistory> get_class_property_history(string &class_name,string &prop_name);
 //@}
 
-/**@name class attribute property oriented methods */
+/**@name Class attribute property oriented methods */
 //@{
 /**
  * Get class attribute property value
@@ -1130,7 +1130,7 @@ public :
 	vector<DbHistory> get_class_attribute_property_history(string &class_name,string &att_name,string &prop_name);
 //@}
 
-/**@name class pipe property oriented methods */
+/**@name Class pipe property oriented methods */
 //@{
 /**
  * Get class pipe property value
@@ -1259,7 +1259,7 @@ public :
 	vector<DbHistory> get_class_pipe_property_history(string &class_name,string &pipe_name,string &prop_name);
 //@}
 
-/**@name alias oriented methods */
+/**@name Alias oriented methods */
 //@{
 /**
  * Get device name from its alias
@@ -1395,7 +1395,7 @@ public :
 	void delete_attribute_alias(string &att_alias);
 //@}
 
-/**@name database browsing oriented methods */
+/**@name Database browsing oriented methods */
 //@{
 /**
  * Get host list

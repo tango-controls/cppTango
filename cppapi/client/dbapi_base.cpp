@@ -4730,8 +4730,17 @@ void Database::get_class_pipe_property(string device_class, DbData &db_data, DbS
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"DB_ClassNotFoundInCache") == 0)
+			string err_reason(e.errors[0].reason.in());
+
+			if (err_reason == "DB_ClassNotFoundInCache" || err_reason == "DB_TooOldStoredProc")
 			{
+
+				if (err_reason == "DB_TooOldStoredProc")
+				{
+					cout << "WARNING: You database stored procedure is too old to support device pipe" << endl;
+					cout << "Please, update to stored procedure release 1.9 or more" << endl;
+					cout << "Trying direct Db access" << endl;
+				}
 
 //
 // The class is not defined in cache, get property(ies) from DB server
@@ -4881,8 +4890,16 @@ void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCac
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (::strcmp(e.errors[0].reason.in(),"DB_DeviceNotFoundInCache") == 0)
+			string err_reason(e.errors[0].reason.in());
+
+			if (err_reason == "DB_DeviceNotFoundInCache" || err_reason == "DB_TooOldStoredProc")
 			{
+				if (err_reason == "DB_TooOldStoredProc")
+				{
+					cout << "WARNING: You database stored procedure is too old to support device pipe" << endl;
+					cout << "Please, update to stored procedure release 1.9 or more" << endl;
+					cout << "Trying direct Db access" << endl;
+				}
 
 //
 // The device is not in cache, ask the db server

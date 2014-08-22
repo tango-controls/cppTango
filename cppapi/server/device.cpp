@@ -165,8 +165,7 @@ void DeviceImpl::real_ctor()
 		  device_name_lower.begin(),::tolower);
 
 //
-//  Write the device name into the per thread data for
-//  sub device diagnostics
+//  Write the device name into the per thread data for sub device diagnostics
 //
 
     Tango::Util *tg = Tango::Util::instance();

@@ -142,7 +142,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 		}
 
 //
-// Sort property for each pipe and create a ClassAttribute object for each of them
+// Sort property for each pipe
 //
 
 		long ind = 0;
