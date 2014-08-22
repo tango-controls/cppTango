@@ -381,6 +381,39 @@ public :
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
 	void delete_attribute_property(DbData &db);
+/**
+ * Get class pipe property from database
+ *
+ * Query the database for the list of pipe properties of this class. See Database::get_class_pipe_property()
+ * for an example of how to specify and retrieve the properties.
+ *
+ * @param [in,out] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void get_pipe_property(DbData &db);
+/**
+ * Update class pipe property in database
+ *
+ * Update the list of pipe properties for this class in the database. See Database::put_class_pipe_property()
+ * for an example of how to specify the properties.
+ *
+ * @param [in] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void put_pipe_property(DbData &db);
+/**
+ * Remove class pipe property from database
+ *
+ * Delete all properties for the list of specified pipes for this class in the database. See Database::delete_class_pipe_property()
+ * for an example of how to specify the properties.
+ *
+ * @param [in] db Property name(s)
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void delete_pipe_property(DbData &db);
 //@}
 
 /// @privatesection
@@ -737,7 +770,7 @@ public:
 private:
 
   string  propname;   // Property name
-  string  attname;    // Attribute name (Not used for device properties)
+  string  attname;    // Attribute name (Not used for device/pipe properties)
   DbDatum value;      // Property value
   string  date;       // Update date
   bool    deleted;    // Deleted flag

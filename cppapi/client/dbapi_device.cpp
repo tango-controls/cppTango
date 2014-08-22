@@ -321,6 +321,72 @@ void DbDevice::delete_attribute_property(DbData &db_data)
 	return;
 }
 
+//------------------------------------------------------------------------------------------------------------------
+//
+//	method :
+// 		DbDevice::get_pipe_property()
+//
+//	description:
+//		Public method to get device pipe properties from the database
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DbDevice::get_pipe_property(DbData &db_data)
+{
+	if (ext_dbase == true)
+		dbase->get_device_pipe_property(name, db_data);
+	else
+	{
+		ApiUtil *au = ApiUtil::instance();
+		(au->get_db_vect())[db_ind]->get_device_pipe_property(name,db_data);
+	}
+	return;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+//	method :
+// 		DbDevice::put_pipe_property()
+//
+//	description :
+//		Public method to put device pipe properties from the database
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void DbDevice::put_pipe_property(DbData &db_data)
+{
+	if (ext_dbase == true)
+		dbase->put_device_pipe_property(name, db_data);
+	else
+	{
+		ApiUtil *au = ApiUtil::instance();
+		(au->get_db_vect())[db_ind]->put_device_pipe_property(name,db_data);
+	}
+	return;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+//	method :
+// 		DbDevice::delete_pipe_property()
+//
+//	description :
+//		Public method to delete device pipe properties from the database
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DbDevice::delete_pipe_property(DbData &db_data)
+{
+	if (ext_dbase == true)
+		dbase->delete_device_pipe_property(name, db_data);
+	else
+	{
+		ApiUtil *au = ApiUtil::instance();
+		(au->get_db_vect())[db_ind]->delete_device_pipe_property(name,db_data);
+	}
+	return;
+}
+
 //--------------------------------------------------------------------------------------------------------------------
 //
 //	method :

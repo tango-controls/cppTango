@@ -95,7 +95,7 @@ public :
 //@}
 
 
-/**@name device oriented methods */
+/**@name Device oriented methods */
 //@{
 /**
  * Import the device from database
@@ -119,7 +119,7 @@ public :
 	void export_device(DbDevExportInfo &dev_info);
 //@}
 
-/**@name property oriented methods */
+/**@name Property oriented methods */
 //@{
 /**
  * Get device property from database
@@ -187,6 +187,39 @@ public :
  * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
  */
 	void delete_attribute_property(DbData &db);
+/**
+ * Get device pipe property from database
+ *
+ * Query the database for the list of pipe properties of this device. See Database::get_device_pipe_property()
+ * for an example of how to specify and retrieve the properties.
+ *
+ * @param [in,out] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void get_pipe_property(DbData &db);
+/**
+ * Update device pipe property in database
+ *
+ * Update the list of pipe properties for this device in the database. See Database::put_device_pipe_property()
+ * for an example of how to specify the properties.
+ *
+ * @param [in] db Property name(s) and value
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void put_pipe_property(DbData &db);
+/**
+ * Remove device pipe property from database
+ *
+ * Delete all properties for the list of specified pipes for this device in the database. See Database::delete_device_pipe_property()
+ * for an example of how to specify the properties.
+ *
+ * @param [in] db Property name(s)
+ *
+ * @exception ConnectionFailed, CommunnicationFailed, DevFailed from device
+ */
+	void delete_pipe_property(DbData &db);
 //@}
 
 /// @privatesection
