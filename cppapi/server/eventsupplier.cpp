@@ -39,10 +39,10 @@ static const char *RcsId = "$Id$";
 
 namespace Tango {
 
-omni_mutex	EventSupplier::event_mutex;
-omni_mutex	EventSupplier::push_mutex;
-omni_mutex	EventSupplier::detect_mutex;
-string      EventSupplier::fqdn_prefix;
+omni_mutex		EventSupplier::event_mutex;
+omni_semaphore	EventSupplier::push_sema;
+omni_mutex		EventSupplier::detect_mutex;
+string      	EventSupplier::fqdn_prefix;
 
 //---------------------------------------------------------------------------------------------------------------------
 //

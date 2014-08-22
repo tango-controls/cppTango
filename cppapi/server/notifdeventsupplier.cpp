@@ -852,8 +852,8 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	if (attr_value.attr_conf_5 != Tango_nullptr || attr_value.attr_val_5 != Tango_nullptr)
 		return;
 
-// get the mutex to synchronize the sending of events
-	omni_mutex_lock l(push_mutex);
+// get the semaphore to synchronize the sending of events
+	push_sema.wait();
 
 	string loc_attr_name = attr_name;
 	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
@@ -927,6 +927,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 			cerr << str << endl;
 
+			push_sema.post();
 			Except::throw_exception(API_NotSupported,str,"NotifdEventSupplier::push_event");
 		}
 	    else if (attr_value.attr_conf_2 != NULL)
@@ -971,10 +972,13 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
    		cout3 << "EventSupplier::push_event() caught a CORBA::SystemException ! " << endl;
 		fail = true;
 	}
+	catch(...)
+	{
+		fail = true;
+	}
 
 //
-// If it was not possible to communicate with notifd,
-// try a reconnection
+// If it was not possible to communicate with notifd, try a reconnection
 //
 
 	if (fail == true)
@@ -985,6 +989,8 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		}
 		catch (...) {}
 	}
+
+	push_sema.post();
 }
 
 //+----------------------------------------------------------------------------

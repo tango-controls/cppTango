@@ -829,8 +829,8 @@ void ZmqEventSupplier::push_heartbeat_event()
 void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 {
     EventSupplier *ev = (EventSupplier *)hint;
-    omni_mutex &the_mutex = ev->get_push_mutex();
-    the_mutex.unlock();
+    omni_semaphore &the_sem = ev->get_push_sema();
+    the_sem.post();
 }
 
 void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
@@ -849,7 +849,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // threads. The mutex used here is also a memory barrier
 //
 
-    push_mutex.lock();
+    push_sema.wait();
 
 //
 // Create full event name
@@ -1352,7 +1352,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 //
 
 		if (large_data == false)
-			push_mutex.unlock();
+			push_sema.post();
 
 //
 // For reference counting on zmq messages which do not have a local scope
@@ -1367,7 +1367,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			endian_mess.copy(&endian_mess_2);
 
 		if (large_message_created == false)
-			push_mutex.unlock();
+			push_sema.post();
 
 		TangoSys_OMemStream o;
 		o << "Can't push ZMQ event for event ";
