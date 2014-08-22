@@ -2062,7 +2062,9 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			pipe.set_data_elt_names(de_names);
 
 			dl = 666;
-			v_db = {1.11,2.22};
+			v_db.clear();
+			v_db.push_back(1.11);
+			v_db.push_back(2.22);
 
 			unsigned short *array = new unsigned short [100];
 			for (unsigned short i = 0;i < 100;i++)
@@ -2160,7 +2162,8 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			inner_inner_blob.set_name("InnerInner");
 
 			dl = 111;
-			v_db = {3.33};
+			v_db.clear();
+			v_db.push_back(3.33);
 
 			inner_inner_blob["InnerInnerSecondDE"] << v_db;
 			inner_inner_blob["InnerInnerFirstDE"] << dl;
@@ -2268,7 +2271,9 @@ void DevTest::read_RWPipe(Tango::Pipe &pipe)
 
 	pipe.set_root_blob_name("RWPipeBlob");
 
-	vector<string> de_names = {"RW_1DE","RW_2DE"};
+	vector<string> de_names;
+	de_names.push_back("RW_1DE");
+	de_names.push_back("RW_2DE");
 	pipe.set_data_elt_names(de_names);
 
 	dl = 666;
@@ -2305,7 +2310,9 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase0");
 
-		vector<string> de_inner_inner_names = {"InnerInnerFirstDE","InneraaaaaaaInnerSecondDE"};
+		vector<string> de_inner_inner_names;
+		de_inner_inner_names.push_back("InnerInnerFirstDE");
+		de_inner_inner_names.push_back("InneraaaaaaaInnerSecondDE");
 		inner_inner_blob.set_data_elt_names(de_inner_inner_names);
 		inner_inner_blob.set_name("InnerInner");
 
