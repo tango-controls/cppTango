@@ -2053,7 +2053,12 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase0");
 
-			vector<string> de_names = {"FirstDE","SecondDE","ThirdDE","ForthDE"};
+			vector<string> de_names;
+			de_names.push_back(string("FirstDE"));
+			de_names.push_back(string("SecondDE"));
+			de_names.push_back(string("ThirdDE"));
+			de_names.push_back(string("ForthDE"));
+
 			pipe.set_data_elt_names(de_names);
 
 			dl = 666;
@@ -2100,7 +2105,10 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			pipe_enc.value.encoded_data[1] = 1;
 
 			pipe_v_str.name = "VectorStringDE";
-			pipe_v_str.value = {"Bonjour","le","monde"};
+			pipe_v_str.value.clear();
+			pipe_v_str.value.push_back(string("Bonjour"));
+			pipe_v_str.value.push_back(string("le"));
+			pipe_v_str.value.push_back(string("monde"));
 
 			pipe_dvsa.name = "DevVarStringArrayDE";
 			pipe_dvsa.value.length(1);
@@ -2123,11 +2131,16 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase2");
 
-			vector<string> de_names = {"FirstDE","SecondDE"};
+			vector<string> de_names;
+			de_names.push_back(string("FirstDE"));
+			de_names.push_back(string("SecondDE"));
 			pipe.set_data_elt_names(de_names);
 
 			dl = 999;
-			v_db = {3.33,4.44,5.55};
+			v_db.clear();
+			v_db.push_back(3.33);
+			v_db.push_back(4.44);
+			v_db.push_back(5.55);
 
 			pipe["SecondDE"] << v_db;
 			pipe["FirstDE"] << dl;
@@ -2140,7 +2153,9 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase3");
 
-			vector<string> de_inner_inner_names = {"InnerInnerFirstDE","InnerInnerSecondDE"};
+			vector<string> de_inner_inner_names;
+			de_inner_inner_names.push_back(string("InnerInnerFirstDE"));
+			de_inner_inner_names.push_back("InnerInnerSecondDE");
 			inner_inner_blob.set_data_elt_names(de_inner_inner_names);
 			inner_inner_blob.set_name("InnerInner");
 
@@ -2150,7 +2165,10 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			inner_inner_blob["InnerInnerSecondDE"] << v_db;
 			inner_inner_blob["InnerInnerFirstDE"] << dl;
 
-			vector<string> de_inner_names = {"InnerFirstDE","InnerSecondDE","InnerThirdDE"};
+			vector<string> de_inner_names;
+			de_inner_names.push_back("InnerFirstDE");
+			de_inner_names.push_back("InnerSecondDE");
+			de_inner_names.push_back("InnerThirdDE");
 			inner_blob.set_data_elt_names(de_inner_names);
 			inner_blob.set_name("Inner");
 
@@ -2159,10 +2177,16 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 
 			inner_blob << inner_str << inner_inner_blob << inner_bool;
 
-			vector<string> de_names = {"1DE","2DE"};
+			vector<string> de_names;
+			de_names.push_back("1DE");
+			de_names.push_back("2DE");
 			pipe.set_data_elt_names(de_names);
 
-			v_dl = {3,4,5,6};
+			v_dl.clear();
+			v_dl.push_back(3);
+			v_dl.push_back(4);
+			v_dl.push_back(5);
+			v_dl.push_back(6);
 
 			pipe << inner_blob << v_dl;
 
@@ -2173,7 +2197,9 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		case 4:
 		{
 			pipe.set_root_blob_name("BlobCase4");
-			vector<string> de_names = {"1DE","2DE"};
+			vector<string> de_names;
+			de_names.push_back("1DE");
+			de_names.push_back("2DE");
 			pipe.set_data_elt_names(de_names);
 
 			pipe << dl;
@@ -2185,7 +2211,8 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		case 5:
 		{
 			pipe.set_root_blob_name("BlobCase5");
-			vector<string> de_names = {"1DE"};
+			vector<string> de_names;
+			de_names.push_back("1DE");
 			pipe.set_data_elt_names(de_names);
 
 			cout << "Data type 5 inserted in pipe" << endl;
@@ -2195,7 +2222,10 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		case 6:
 		{
 			pipe.set_root_blob_name("BlobCase6");
-			vector<string> de_names = {"1DE","2DE","1de"};
+			vector<string> de_names;
+			de_names.push_back("1DE");
+			de_names.push_back("2DE");
+			de_names.push_back("1de");
 			pipe.set_data_elt_names(de_names);
 		}
 		break;
@@ -2211,7 +2241,10 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 		{
 			pipe.set_root_blob_name("BlobCase8");
 
-			vector<string> de_names = {"1DE","2DE","3de"};
+			vector<string> de_names;
+			de_names.push_back("1DE");
+			de_names.push_back("2DE");
+			de_names.push_back("3de");
 			pipe.set_data_elt_names(de_names);
 
 			pipe << dl;
@@ -2239,7 +2272,9 @@ void DevTest::read_RWPipe(Tango::Pipe &pipe)
 	pipe.set_data_elt_names(de_names);
 
 	dl = 666;
-	v_db = {1.11,2.22};
+	v_db.clear();
+	v_db.push_back(1.11);
+	v_db.push_back(2.22);
 
 	try
 	{
@@ -2275,12 +2310,17 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 		inner_inner_blob.set_name("InnerInner");
 
 		dl = 111;
-		v_db = {3.33,3.33};
+		v_db.clear();
+		v_db.push_back(3.33);
+		v_db.push_back(3.33);
 
 		inner_inner_blob["InneraaaaaaaInnerSecondDE"] << v_db;
 		inner_inner_blob["InnerInnerFirstDE"] << dl;
 
-		vector<string> de_inner_names = {"InnerFirstDE","InnerSecondDE","InnerThirdDE"};
+		vector<string> de_inner_names;
+		de_inner_names.push_back("InnerFirstDE");
+		de_inner_names.push_back("InnerSecondDE");
+		de_inner_names.push_back("InnerThirdDE");
 		inner_blob.set_data_elt_names(de_inner_names);
 		inner_blob.set_name("Inner");
 
@@ -2289,10 +2329,16 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 
 		inner_blob << inner_str << inner_inner_blob << inner_bool;
 
-		vector<string> de_names = {"1DE","2DE"};
+		vector<string> de_names;
+		de_names.push_back("1DE");
+		de_names.push_back("2DE");
 		dpb.set_data_elt_names(de_names);
 
-		v_dl = {3,4,5,6};
+		v_dl.clear();
+		v_dl.push_back(3);
+		v_dl.push_back(4);
+		v_dl.push_back(5);
+		v_dl.push_back(6);
 
 		dpb << inner_blob << v_dl;
 		this->push_pipe_event("RWPipe",&dpb);
@@ -2300,10 +2346,13 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	else if (in == 1)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase1");
-		vector<string> de_names = {"Another_1DE","Another_2DE"};
+		vector<string> de_names;
+		de_names.push_back("Another_1DE");
+		de_names.push_back("Another_2DE");
 		dpb.set_data_elt_names(de_names);
 
-		v_dl = {2};
+		v_dl.clear();
+		v_dl.push_back(2);
 		string str("Barcelona");
 
 		dpb << v_dl << str;
@@ -2313,7 +2362,9 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	else if (in == 2)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase2");
-		vector<string> de_names = {"Qwerty_1DE","Azerty_2DE"};
+		vector<string> de_names;
+		de_names.push_back("Qwerty_1DE");
+		de_names.push_back("Azerty_2DE");
 		dpb.set_data_elt_names(de_names);
 
 		string str("Barcelona");
@@ -2338,7 +2389,9 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 	else if (in == 4)
 	{
 		Tango::DevicePipeBlob dpb("PipeEventCase4");
-		vector<string> de_names = {"Lunes","Martes"};
+		vector<string> de_names;
+		de_names.push_back("Lunes");
+		de_names.push_back("Martes");
 		dpb.set_data_elt_names(de_names);
 
 		string str("Girona");

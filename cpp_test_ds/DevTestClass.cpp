@@ -879,9 +879,16 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
 void DevTestClass::pipe_factory()
 {
 	RPipeClass	*pRPipe = new RPipeClass("RPipe",Tango::OPERATOR);
+	Tango::UserDefaultPipeProp udpp;
+	udpp.set_description("The read pipe");
+	udpp.set_label("ReadPipeLabel");
+	pRPipe->set_default_properties(udpp);
 	pipe_list.push_back(pRPipe);
 
 	RWPipeClass	*pRWPipe = new RWPipeClass("RWPipe",Tango::OPERATOR);
+	udpp.set_description("The read_write pipe");
+	udpp.set_label("ReadWritePipeLabel");
+	pRWPipe->set_default_properties(udpp);
 	pipe_list.push_back(pRWPipe);
 }
 
