@@ -4157,3 +4157,96 @@ CORBA::Any *ForbiddenEnumValue::execute(Tango::DeviceImpl *device, const CORBA::
 	dev->enum_value = new_value;
 	return insert();
 }
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		SetPipeOutput::SetPipeOutput()
+//
+// description : 	constructor for the SetPipeOutput command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+SetPipeOutput::SetPipeOutput(const char *name, Tango::CmdArgType in,
+								   Tango::CmdArgType out, const char *in_desc,
+								   const char *out_desc)
+	: Command(name, in, out, in_desc, out_desc)
+{
+}
+
+
+bool SetPipeOutput::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *SetPipeOutput::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	Tango::DevShort new_value;
+	extract(in_any, new_value);
+
+	DevTest *dev = (static_cast<DevTest *>(device));
+	dev->rpipe_type = new_value;
+	return insert();
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		PushPipeEvent::PushPipeEvent()
+//
+// description : 	constructor for the PushPipeEvent command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+PushPipeEvent::PushPipeEvent(const char *name, Tango::CmdArgType in,
+								   Tango::CmdArgType out, const char *in_desc,
+								   const char *out_desc)
+	: Command(name, in, out, in_desc, out_desc)
+{
+}
+
+
+bool PushPipeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *PushPipeEvent::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	Tango::DevShort new_value;
+	extract(in_any, new_value);
+
+	DevTest *dev = (static_cast<DevTest *>(device));
+	dev->cmd_push_pipe_event(new_value);
+	return insert();
+}

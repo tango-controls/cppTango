@@ -1080,7 +1080,7 @@ public:
 class EnumAttr: public Tango::Attr
 {
 public:
-	EnumAttr():Attr("Enum_attr_rw",Tango::DEV_ENUM,Tango::READ_WRITE) {set_memorized();}
+	EnumAttr():Attr("Enum_attr_rw",Tango::DEV_ENUM,Tango::READ_WRITE) {}
 	~EnumAttr() {};
 
 	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
@@ -1117,6 +1117,38 @@ public:
 	{(static_cast<DevTest *>(dev))->read_DynEnum_attr(att);}
 };
 
+//	Pipe classes declaration
+
+class RPipeClass : public Tango::Pipe
+{
+public:
+	RPipeClass(const string &name,Tango::DispLevel  level)
+	:Pipe(name,level) {};
+
+	~RPipeClass() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *dev,Tango::PipeReqType _prt)
+		{return (static_cast<DevTest *>(dev))->is_RPipe_allowed(_prt);}
+	virtual void read(Tango::DeviceImpl *dev)
+		{(static_cast<DevTest *>(dev))->read_RPipe(*this);}
+};
+
+class RWPipeClass : public Tango::WPipe
+{
+public:
+	RWPipeClass(const string &name,Tango::DispLevel  level)
+	:WPipe(name,level) {};
+
+	~RWPipeClass() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *dev,Tango::PipeReqType _prt)
+		{return (static_cast<DevTest *>(dev))->is_RWPipe_allowed(_prt);}
+	virtual void read(Tango::DeviceImpl *dev)
+		{(static_cast<DevTest *>(dev))->read_RWPipe(*this);}
+	virtual void write(Tango::DeviceImpl *dev)
+		{(static_cast<DevTest *>(dev))->write_RWPipe(*this);}
+};
+
 // ----------------------------------------------------------------------------
 
 
@@ -1139,6 +1171,7 @@ protected:
 	static DevTestClass *_instance;
 	void command_factory();
 	void attribute_factory(vector<Tango::Attr *> &);
+	void pipe_factory();
 
 private:
 	void device_factory(const Tango::DevVarStringArray *);

@@ -58,6 +58,7 @@ public :
 	void push_data_ready(const Tango::DevVarLongStringArray *);
 	void set_enum_labels();
 	void add_enum_label(Tango::DevString);
+	void cmd_push_pipe_event(Tango::DevShort);
 
 	Tango::DevVarLongArray *IOTemplOut();
 	Tango::DevVarDoubleArray *IOTemplInOut(Tango::DevDouble);
@@ -210,6 +211,15 @@ public :
 
 	virtual void write_attr_hardware(vector<long> &);
 
+// Pipe related  methods
+
+	bool is_RPipe_allowed(Tango::PipeReqType);
+	void read_RPipe(Tango::Pipe &);
+
+	bool is_RWPipe_allowed(Tango::PipeReqType);
+	void read_RWPipe(Tango::Pipe &);
+	void write_RWPipe(Tango::WPipe &);
+
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
 	friend class IORemoveOneElt;
@@ -221,6 +231,7 @@ public :
 	friend class ChangeEncodedData;
 	friend class IOAddCommand;
 	friend class ForbiddenEnumValue;
+	friend class SetPipeOutput;
 
 protected :
 	Tango::DevDouble 	attr_double;
@@ -309,6 +320,26 @@ protected :
     CardinalPoints		cp;
     CardinalPoints		cp_array[5];
     Tango::DevShort		enum_value;
+
+	Tango::DevLong 							dl;
+	vector<double> 							v_db;
+	Tango::DevVarStateArray 				dvsa;
+
+	Tango::DataElement<string>						pipe_str;
+	Tango::DataElement<Tango::DevString>			pipe_devstr;
+	Tango::DataElement<Tango::DevEncoded>			pipe_enc;
+	Tango::DataElement<vector<string> >				pipe_v_str;
+	Tango::DataElement<Tango::DevVarStringArray>	pipe_dvsa;
+
+	Tango::DevicePipeBlob 					inner_inner_blob;
+	Tango::DevicePipeBlob 					inner_blob;
+
+	string									inner_str;
+	Tango::DevBoolean						inner_bool;
+    vector<Tango::DevLong>					v_dl;
+    omni_mutex								pipe_mutex;
+
+    Tango::DevShort							rpipe_type;
 };
 
 #endif

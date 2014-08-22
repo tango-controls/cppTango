@@ -394,3 +394,21 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
+
+class SetPipeOutput : public Tango::Command {
+public:
+	SetPipeOutput(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~SetPipeOutput() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+class PushPipeEvent : public Tango::Command {
+public:
+	PushPipeEvent(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~PushPipeEvent() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};

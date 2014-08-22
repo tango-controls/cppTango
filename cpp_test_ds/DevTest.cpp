@@ -189,6 +189,10 @@ void DevTest::init_device()
 		multi_prop.enum_labels.push_back("Dummy_label");
 	att.set_properties(multi_prop);
 
+	rpipe_type = 0;
+	Tango::Pipe &pi = get_device_class()->get_pipe_by_name("RWPipe");
+	pi.set_pipe_serial_model(Tango::PIPE_BY_USER);
+
 	cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << endl;
 
 }
@@ -2023,4 +2027,329 @@ void DevTest::read_DynEnum_attr(Tango::Attribute &att)
 {
 	cout << "[DevTest::read_attr] attribute name DynEnum_attr" << endl;
 	att.set_value(&enum_value);
+}
+
+//***********************************************************************************************
+//
+//				Pipe related methods
+//
+//***********************************************************************************************
+
+// RPipe
+
+bool DevTest::is_RPipe_allowed(Tango::PipeReqType)
+{
+	if (get_state() == Tango::ON)
+		return true;
+	else
+		return false;
+}
+
+void DevTest::read_RPipe(Tango::Pipe &pipe)
+{
+	switch (rpipe_type)
+	{
+		case 0:
+		{
+			pipe.set_root_blob_name("BlobCase0");
+
+			vector<string> de_names = {"FirstDE","SecondDE","ThirdDE","ForthDE"};
+			pipe.set_data_elt_names(de_names);
+
+			dl = 666;
+			v_db = {1.11,2.22};
+
+			unsigned short *array = new unsigned short [100];
+			for (unsigned short i = 0;i < 100;i++)
+				array[i] = i;
+			Tango::DevVarUShortArray *dvush = create_DevVarUShortArray(array,100);
+
+			dvsa.length(2);
+			dvsa[0] = Tango::ON;
+			dvsa[1] = Tango::OFF;
+
+			try
+			{
+				pipe << dl << v_db << dvush << dvsa;
+				cout << "Data type 0 inserted in pipe" << endl;
+			}
+			catch (Tango::DevFailed &e)
+			{
+				Tango::Except::print_exception(e);
+				throw e;
+			}
+		}
+		break;
+
+		case 1:
+		{
+			pipe.set_root_blob_name("BlobCase1");
+
+			pipe.set_data_elt_nb(5);
+
+			pipe_str.name = "stringDE";
+			pipe_str.value = "Hello";
+
+			pipe_devstr.name = "DevStringDE";
+			pipe_devstr.value = const_cast<Tango::DevString>("Hola");
+
+			pipe_enc.name = "DevEncodedDE";
+			pipe_enc.value.encoded_format = "Format";
+			pipe_enc.value.encoded_data.length(2);
+			pipe_enc.value.encoded_data[0] = 0;
+			pipe_enc.value.encoded_data[1] = 1;
+
+			pipe_v_str.name = "VectorStringDE";
+			pipe_v_str.value = {"Bonjour","le","monde"};
+
+			pipe_dvsa.name = "DevVarStringArrayDE";
+			pipe_dvsa.value.length(1);
+			(pipe_dvsa.value)[0] = "Why not?";
+
+			try
+			{
+				pipe << pipe_str << pipe_devstr << pipe_enc << pipe_v_str << pipe_dvsa;
+				cout << "Data type 1 inserted in pipe" << endl;
+			}
+			catch (Tango::DevFailed &e)
+			{
+				Tango::Except::print_exception(e);
+				throw e;
+			}
+		}
+		break;
+
+		case 2:
+		{
+			pipe.set_root_blob_name("BlobCase2");
+
+			vector<string> de_names = {"FirstDE","SecondDE"};
+			pipe.set_data_elt_names(de_names);
+
+			dl = 999;
+			v_db = {3.33,4.44,5.55};
+
+			pipe["SecondDE"] << v_db;
+			pipe["FirstDE"] << dl;
+
+			cout << "Data type 2 inserted in pipe" << endl;
+		}
+		break;
+
+		case 3:
+		{
+			pipe.set_root_blob_name("BlobCase3");
+
+			vector<string> de_inner_inner_names = {"InnerInnerFirstDE","InnerInnerSecondDE"};
+			inner_inner_blob.set_data_elt_names(de_inner_inner_names);
+			inner_inner_blob.set_name("InnerInner");
+
+			dl = 111;
+			v_db = {3.33};
+
+			inner_inner_blob["InnerInnerSecondDE"] << v_db;
+			inner_inner_blob["InnerInnerFirstDE"] << dl;
+
+			vector<string> de_inner_names = {"InnerFirstDE","InnerSecondDE","InnerThirdDE"};
+			inner_blob.set_data_elt_names(de_inner_names);
+			inner_blob.set_name("Inner");
+
+			inner_str = "Grenoble";
+			inner_bool = true;
+
+			inner_blob << inner_str << inner_inner_blob << inner_bool;
+
+			vector<string> de_names = {"1DE","2DE"};
+			pipe.set_data_elt_names(de_names);
+
+			v_dl = {3,4,5,6};
+
+			pipe << inner_blob << v_dl;
+
+			cout << "Data type 3 inserted in pipe" << endl;
+		}
+		break;
+
+		case 4:
+		{
+			pipe.set_root_blob_name("BlobCase4");
+			vector<string> de_names = {"1DE","2DE"};
+			pipe.set_data_elt_names(de_names);
+
+			pipe << dl;
+
+			cout << "Data type 4 inserted in pipe" << endl;
+		}
+		break;
+
+		case 5:
+		{
+			pipe.set_root_blob_name("BlobCase5");
+			vector<string> de_names = {"1DE"};
+			pipe.set_data_elt_names(de_names);
+
+			cout << "Data type 5 inserted in pipe" << endl;
+		}
+		break;
+
+		case 6:
+		{
+			pipe.set_root_blob_name("BlobCase6");
+			vector<string> de_names = {"1DE","2DE","1de"};
+			pipe.set_data_elt_names(de_names);
+		}
+		break;
+
+		case 7:
+		{
+			pipe.set_root_blob_name("BlobCase7");
+			pipe << dl;
+		}
+		break;
+
+		case 8:
+		{
+			pipe.set_root_blob_name("BlobCase8");
+
+			vector<string> de_names = {"1DE","2DE","3de"};
+			pipe.set_data_elt_names(de_names);
+
+			pipe << dl;
+			pipe["2DE"] << v_dl;
+		}
+		break;
+	}
+}
+
+// RWPipe
+
+bool DevTest::is_RWPipe_allowed(Tango::PipeReqType)
+{
+	return true;
+}
+
+void DevTest::read_RWPipe(Tango::Pipe &pipe)
+{
+	pipe_mutex.lock();
+	pipe.set_user_pipe_mutex(&pipe_mutex);
+
+	pipe.set_root_blob_name("RWPipeBlob");
+
+	vector<string> de_names = {"RW_1DE","RW_2DE"};
+	pipe.set_data_elt_names(de_names);
+
+	dl = 666;
+	v_db = {1.11,2.22};
+
+	try
+	{
+		pipe << dl << v_db;
+	}
+	catch (Tango::DevFailed &e)
+	{
+		Tango::Except::print_exception(e);
+		throw e;
+	}
+}
+
+void DevTest::write_RWPipe(Tango::WPipe &w_pipe)
+{
+	string str;
+	vector<float> v_fl;
+
+	vector<string> de_names = w_pipe.get_data_elt_names();
+	for (size_t loop = 0;loop < de_names.size();loop++)
+		cout << "RWPipe: Received data element name = " << de_names[loop] << endl;
+
+	w_pipe >> str >> v_fl;
+}
+
+void DevTest::cmd_push_pipe_event(Tango::DevShort in)
+{
+    if (in == 0)
+	{
+		Tango::DevicePipeBlob dpb("PipeEventCase0");
+
+		vector<string> de_inner_inner_names = {"InnerInnerFirstDE","InneraaaaaaaInnerSecondDE"};
+		inner_inner_blob.set_data_elt_names(de_inner_inner_names);
+		inner_inner_blob.set_name("InnerInner");
+
+		dl = 111;
+		v_db = {3.33,3.33};
+
+		inner_inner_blob["InneraaaaaaaInnerSecondDE"] << v_db;
+		inner_inner_blob["InnerInnerFirstDE"] << dl;
+
+		vector<string> de_inner_names = {"InnerFirstDE","InnerSecondDE","InnerThirdDE"};
+		inner_blob.set_data_elt_names(de_inner_names);
+		inner_blob.set_name("Inner");
+
+		inner_str = "Grenoble";
+		inner_bool = true;
+
+		inner_blob << inner_str << inner_inner_blob << inner_bool;
+
+		vector<string> de_names = {"1DE","2DE"};
+		dpb.set_data_elt_names(de_names);
+
+		v_dl = {3,4,5,6};
+
+		dpb << inner_blob << v_dl;
+		this->push_pipe_event("RWPipe",&dpb);
+	}
+	else if (in == 1)
+	{
+		Tango::DevicePipeBlob dpb("PipeEventCase1");
+		vector<string> de_names = {"Another_1DE","Another_2DE"};
+		dpb.set_data_elt_names(de_names);
+
+		v_dl = {2};
+		string str("Barcelona");
+
+		dpb << v_dl << str;
+
+		this->push_pipe_event("RWPipe",&dpb);
+	}
+	else if (in == 2)
+	{
+		Tango::DevicePipeBlob dpb("PipeEventCase2");
+		vector<string> de_names = {"Qwerty_1DE","Azerty_2DE"};
+		dpb.set_data_elt_names(de_names);
+
+		string str("Barcelona");
+
+		dpb << str << v_dl;
+
+		struct timeval tv;
+		tv.tv_sec = 10;
+		tv.tv_usec = 0;
+		this->push_pipe_event("RWPipe",&dpb,tv);
+	}
+	else if (in == 3)
+	{
+		Tango::DevErrorList del;
+		del.length(1);
+		del[0].reason = CORBA::string_dup("aaa");
+		del[0].desc = CORBA::string_dup("bbb");
+		del[0].origin = CORBA::string_dup("ccc");
+		Tango::DevFailed df(del);
+		this->push_pipe_event("RWPipe",&df);
+	}
+	else if (in == 4)
+	{
+		Tango::DevicePipeBlob dpb("PipeEventCase4");
+		vector<string> de_names = {"Lunes","Martes"};
+		dpb.set_data_elt_names(de_names);
+
+		string str("Girona");
+
+		v_dl.clear();
+		for (int loop = 0;loop < 3000;loop++)
+			v_dl.push_back(loop);
+
+		dpb << str << v_dl;
+
+		pipe_mutex.lock();
+		this->push_pipe_event("RWPipe",&dpb,&pipe_mutex);
+	}
 }

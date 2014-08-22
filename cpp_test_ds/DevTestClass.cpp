@@ -589,6 +589,18 @@ void DevTestClass::command_factory()
 					   "New value for setting enum (Must be > 100)",
 					   "void"));
 
+	command_list.push_back(new SetPipeOutput("SetPipeOutput",
+					   Tango::DEV_SHORT,
+					   Tango::DEV_VOID,
+					   "Select RPipe output type",
+					   "void"));
+
+	command_list.push_back(new PushPipeEvent("PushPipeEvent",
+					   Tango::DEV_SHORT,
+					   Tango::DEV_VOID,
+					   "Pipe data type",
+					   "void"));
+
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 
@@ -853,6 +865,8 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_enum_prop.set_enum_labels(v_s);
   Tango::Attr *en_att = new EnumAttr();
   en_att->set_default_properties(att_enum_prop);
+  en_att->set_memorized();
+  en_att->set_memorized_init(true);
   att_list.push_back(en_att);
 
   Tango::Attr *en_s_att = new EnumSpecAttr();
@@ -862,6 +876,14 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(new DynEnumAttr());
 }
 
+void DevTestClass::pipe_factory()
+{
+	RPipeClass	*pRPipe = new RPipeClass("RPipe",Tango::OPERATOR);
+	pipe_list.push_back(pRPipe);
+
+	RWPipeClass	*pRWPipe = new RWPipeClass("RWPipe",Tango::OPERATOR);
+	pipe_list.push_back(pRWPipe);
+}
 
 
 
