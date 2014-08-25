@@ -1149,6 +1149,20 @@ public:
 		{(static_cast<DevTest *>(dev))->write_RWPipe(*this);}
 };
 
+class ConfPipeClass : public Tango::Pipe
+{
+public:
+	ConfPipeClass(const string &name,Tango::DispLevel  level)
+	:Pipe(name,level) {};
+
+	~ConfPipeClass() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *dev,Tango::PipeReqType _prt)
+		{return (static_cast<DevTest *>(dev))->is_ConfPipe_allowed(_prt);}
+	virtual void read(Tango::DeviceImpl *dev)
+		{(static_cast<DevTest *>(dev))->read_ConfPipe(*this);}
+};
+
 // ----------------------------------------------------------------------------
 
 

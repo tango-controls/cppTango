@@ -890,6 +890,27 @@ void DevTestClass::pipe_factory()
 	udpp.set_label("ReadWritePipeLabel");
 	pRWPipe->set_default_properties(udpp);
 	pipe_list.push_back(pRWPipe);
+
+	ConfPipeClass	*pPipe1 = new ConfPipeClass("PipeConf1",Tango::OPERATOR);
+	pipe_list.push_back(pPipe1);
+
+	ConfPipeClass	*pPipe2 = new ConfPipeClass("PipeConf2",Tango::OPERATOR);
+	udpp.set_description("A Tango pipe with user defined desc");
+	udpp.set_label("PipeLabel");
+	pPipe2->set_default_properties(udpp);
+	pipe_list.push_back(pPipe2);
+
+	ConfPipeClass	*pPipe3 = new ConfPipeClass("PipeConf3",Tango::OPERATOR);
+	udpp.description.clear();
+	udpp.set_label("BasePipeLabel");
+	pPipe3->set_default_properties(udpp);
+	pipe_list.push_back(pPipe3);
+
+	ConfPipeClass	*pPipe4 = new ConfPipeClass("PipeConf4",Tango::OPERATOR);
+	pipe_list.push_back(pPipe4);
+
+	ConfPipeClass	*pPipe5 = new ConfPipeClass("PipeConf5",Tango::OPERATOR);
+	pipe_list.push_back(pPipe5);
 }
 
 

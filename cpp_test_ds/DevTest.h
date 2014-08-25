@@ -220,6 +220,9 @@ public :
 	void read_RWPipe(Tango::Pipe &);
 	void write_RWPipe(Tango::WPipe &);
 
+	bool is_ConfPipe_allowed(Tango::PipeReqType);
+	void read_ConfPipe(Tango::Pipe &);
+
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
 	friend class IORemoveOneElt;

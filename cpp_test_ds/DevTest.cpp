@@ -2420,3 +2420,18 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 		this->push_pipe_event("RWPipe",&dpb,&pipe_mutex);
 	}
 }
+
+// ConfPipe
+
+bool DevTest::is_ConfPipe_allowed(Tango::PipeReqType)
+{
+	if (get_state() == Tango::ON)
+		return true;
+	else
+		return false;
+}
+
+void DevTest::read_ConfPipe(Tango::Pipe &pipe)
+{
+
+}
