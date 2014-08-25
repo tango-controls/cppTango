@@ -2382,7 +2382,7 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 		struct _timeb tv;
 		tv.time = 10;
 		tv.millitm = 0;
-		this->push_event("RWPipe",&dpb,tv);
+		this->push_pipe_event("RWPipe",&dpb,tv);
 #else
 		struct timeval tv;
 		tv.tv_sec = 10;
