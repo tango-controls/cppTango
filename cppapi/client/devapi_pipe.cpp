@@ -808,7 +808,7 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 	{
 		string reason(e.errors[0].reason.in());
 		if (reason != API_PipeNoDataElement)
-			throw e;
+			throw;
 	}
 
 	try
@@ -820,7 +820,7 @@ DevicePipeBlob &DevicePipeBlob::operator[](const string &_na)
 	{
 		string reason(e.errors[0].reason.in());
 		if (reason != API_PipeNoDataElement)
-			throw e;
+			throw;
 	}
 
 	return *this;

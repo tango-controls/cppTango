@@ -94,7 +94,6 @@ MultiClassPipe::MultiClassPipe()
 void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 {
 	cout4 << "Entering MultiClassPipe::init_class_pipe" << endl;
-	size_t i;
 
 	Tango::Util *tg = Tango::Util::instance();
 
@@ -109,6 +108,7 @@ void MultiClassPipe::init_class_pipe(DeviceClass *cl_ptr)
 
 	if ((nb_pipe != 0) && (Tango::Util::_UseDb == true))
 	{
+		size_t i;
 		Tango::DbData db_list;
 		string &class_name = cl_ptr->get_name();
 		size_t nb_db_requested_pipe = 0;

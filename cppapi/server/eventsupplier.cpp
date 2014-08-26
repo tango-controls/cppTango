@@ -156,7 +156,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
 
 	}
 
-    if (client_libs.size() != 0)
+    if (client_libs.empty() == false)
     {
         if (detect_and_push_change_event(device_impl,attr_value,attr,attr_name,except) == true)
             ret.change = true;
@@ -192,7 +192,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
 
 	}
 
-    if (client_libs.size() != 0)
+    if (client_libs.empty() == false)
     {
         if (detect_and_push_periodic_event(device_impl,attr_value,attr,attr_name,except,time_bef_attr) == true)
             ret.periodic = true;
@@ -228,7 +228,7 @@ SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,stru
 
 	}
 
-    if (client_libs.size() != 0)
+    if (client_libs.empty() == false)
     {
         if (detect_and_push_archive_event(device_impl,attr_value,attr,attr_name,except,time_bef_attr) == true)
             ret.archive = true;

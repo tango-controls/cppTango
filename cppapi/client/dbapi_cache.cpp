@@ -653,7 +653,6 @@ int DbServerCache::find_class(DevString cl_name)
 
 const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray *in_param)
 {
-	int found_att = 0;
 	char n_att_str[256];
 
 	ret_obj_att_prop.length(2);
@@ -662,6 +661,7 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 	int cl_idx = find_class((*in_param)[0]);
 	if (cl_idx != -1)
 	{
+		int found_att = 0;
 
 //
 // The class is found

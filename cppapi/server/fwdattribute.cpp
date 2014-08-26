@@ -551,13 +551,13 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 void FwdAttribute::convert_event_prop(string &prop_str,double *ptr)
 {
 	stringstream ss;
-	double tmp_db;
 
 	if (prop_str != AlrmValueNotSpec)
 	{
 		string::size_type pos = prop_str.find(',');
 		if (pos == string::npos)
 		{
+			double tmp_db;
 			ss << prop_str;
 			ss >> tmp_db;
 			ptr[0] = tmp_db;

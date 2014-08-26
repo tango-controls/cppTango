@@ -210,11 +210,10 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 			for (size_t loop = 0;loop < nb_names;loop++)
 			{
 				Attribute &att = dev_attr->get_attr_by_name(real_names[loop]);
-				size_t nb_fwd = 0;
-				size_t nb_local = 0;
 
 				if (att.is_fwd_att() == true)
 				{
+					size_t nb_fwd = 0;
 					fwd_att_in_call = true;
 					nb_fwd++;
 					fwd_names.length(nb_fwd);
@@ -223,6 +222,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 				}
 				else
 				{
+					size_t nb_local = 0;
 					nb_local++;
 					local_names.length(nb_local);
 					local_names[nb_local - 1] = real_names[loop];

@@ -4197,7 +4197,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			}
 		}
 
-		if (client_libs.size() == 0)
+		if (client_libs.empty() == true)
 		{
 			if ( (name_lower != "state") && (name_lower != "status"))
 			{
@@ -4595,7 +4595,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			}
 		}
 
-		if (client_libs.size() == 0)
+		if (client_libs.empty() == true)
         {
 			if ( (name_lower != "state") && (name_lower != "status") )
             {
@@ -5035,7 +5035,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
         if (use_zmq_event() == true)
             event_supplier_zmq = tg->get_zmq_event_supplier();
 
-		if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.size() == 0)
+		if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.empty() == true)
 		{
 			if (name_lower != "state")
 			{
@@ -5285,7 +5285,7 @@ void Attribute::fire_error_periodic_event(DevFailed *except)
 	if (use_zmq_event() == true)
 		event_supplier_zmq = tg->get_zmq_event_supplier();
 
-	if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.size() == 0)
+	if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.empty() == true)
 	{
 		return;
 	}
