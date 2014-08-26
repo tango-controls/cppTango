@@ -4657,6 +4657,128 @@ PipeInfo DeviceProxy::get_pipe_config(const string &pipe_name)
 
 //-----------------------------------------------------------------------------
 //
+// DeviceProxy::set_pipe_config() - set config for a list of pipes
+//
+//-----------------------------------------------------------------------------
+
+void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
+{
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use set_pipe_config() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::set_pipe_config()");
+	}
+
+	PipeConfigList pipe_config_list;
+	int ctr = 0;
+
+	pipe_config_list.length(dev_pipe_list.size());
+
+	for (unsigned int i=0; i<pipe_config_list.length(); i++)
+	{
+		pipe_config_list[i].name = dev_pipe_list[i].name.c_str();
+		pipe_config_list[i].writable = dev_pipe_list[i].writable;
+		pipe_config_list[i].description = dev_pipe_list[i].description.c_str();
+		pipe_config_list[i].label = dev_pipe_list[i].label.c_str();
+		pipe_config_list[i].level = dev_pipe_list[i].disp_level;
+		pipe_config_list[i].extensions.length(dev_pipe_list[i].extensions.size());
+		for (unsigned int j=0; j<dev_pipe_list[i].extensions.size(); j++)
+		{
+			pipe_config_list[i].extensions[j] = string_dup(dev_pipe_list[i].extensions[j].c_str());
+		}
+	}
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			dev->set_pipe_config_5(pipe_config_list,ci);
+
+			ctr = 2;
+
+		}
+		catch (Tango::DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
+			{
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+
+				DeviceUnlockedExcept::re_throw_exception(e,DEVICE_UNLOCKED_REASON,
+							desc.str(), "DeviceProxy::set_pipe_config()");
+			}
+			else
+				throw;
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_pipe_config",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(one,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::set_pipe_config()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(comm,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::set_pipe_config()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+			ApiCommExcept::re_throw_exception(ce,
+						      (const char*)"API_CommunicationFailed",
+                        			      desc.str(),
+						      (const char*)"DeviceProxy::set_pipe_config()");
+		}
+	}
+
+
+	return;
+}
+
+//-----------------------------------------------------------------------------
+//
 // DeviceProxy::get_pipe_list() - get list of pipes
 //
 //-----------------------------------------------------------------------------

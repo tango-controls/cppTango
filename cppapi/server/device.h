@@ -3368,6 +3368,7 @@ public:
 	TangoMonitor &get_dev_monitor() {return only_one;}
 	TangoMonitor &get_poll_monitor() {return poll_mon;}
 	TangoMonitor &get_att_conf_monitor() {return att_conf_mon;}
+	TangoMonitor &get_pipe_conf_monitor() {return pipe_conf_mon;}
 
 	long get_dev_idl_version() {return idl_version;}
 	long get_cmd_poll_ring_depth(string &);
@@ -3525,6 +3526,7 @@ protected:
     bool						store_in_bb;
     TangoMonitor				poll_mon;		        // Polling list monitor
     TangoMonitor				att_conf_mon;		    // Attribute config monitor
+    TangoMonitor				pipe_conf_mon;			// Pipe config monitor
     bool						state_from_read;
     vector<long>				alrmd_not_read;
 

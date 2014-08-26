@@ -381,6 +381,12 @@ public:
 	void set_desc(const string &_desc) {desc=_desc;}
 	bool is_label_lib_default() {return label==name;}
 	bool is_desc_lib_default() {return desc==DescNotSpec;}
+	void set_upd_properties(const PipeConfig &,DeviceImpl *);
+	void set_properties(const Tango::PipeConfig &,DeviceImpl *,vector<Attribute::AttPropDb> &);
+	void upd_database(vector<Attribute::AttPropDb> &,string &);
+	vector<PipeProperty> &get_user_default_properties() {return user_def_prop;}
+	void set_one_str_prop(const char *,const CORBA::String_member &,string &,vector<Attribute::AttPropDb> &,vector<PipeProperty> &,vector<PipeProperty> &,const char *);
+	bool prop_in_list(const char *,string &,size_t,vector<PipeProperty> &);
 
 	DevicePipeBlob &get_blob() {return the_blob;}
 
@@ -459,6 +465,7 @@ private:
 	omni_mutex					*user_pipe_mutex;	// Ptr for user mutex in case he manages exclusion
 
     time_t						event_subscription;	// Last time() a subscription was made
+    vector<PipeProperty>		user_def_prop;		// User default properties
 };
 
 template <typename T>
@@ -484,6 +491,52 @@ Pipe &operator<<(Pipe &, DataElement<T> &);
 	} \
 	else \
 		(void)0
+
+
+//
+// Some inline methods
+//
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::prop_in_list
+//
+// description :
+//		Search for a property in a list
+//		A similar method exists in Attribute class!!
+//
+// args:
+//		in :
+//			- prop_name : The property name
+//          - list_size : The size list
+//          - list : The list
+//      out :
+//			- prop_str : String initialized with prop. value (if found)
+//
+//------------------------------------------------------------------------------------------------------------------
+
+inline bool Pipe::prop_in_list(const char *prop_name,string &prop_str,size_t list_size,vector<PipeProperty> &list)
+{
+    bool ret = false;
+
+    if (list_size != 0)
+    {
+        size_t i;
+        for (i = 0;i < list_size;i++)
+        {
+            if (list[i].get_name() == prop_name)
+                break;
+        }
+        if (i != list_size)
+        {
+            prop_str = list[i].get_value();
+            ret = true;
+        }
+    }
+
+    return ret;
+}
 
 } // End of Tango namespace
 

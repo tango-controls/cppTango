@@ -843,6 +843,15 @@ public :
  */
 	virtual PipeInfo get_pipe_config(const string &pipe_name);
 /**
+ * Set pipe configuration
+ *
+ * Change the pipe configuration for the specified pipes.
+ *
+ * @param [in] pipes New pipes configuration
+ * @throws ConnectionFailed, CommunicationFailed, DevUnlocked, DevFailed from device
+ */
+	virtual void set_pipe_config(PipeInfoList &pipes);
+/**
  * Query all pipes name
  *
  * Return the names of all pipes implemented for this device as a vector of strings. This method allocates

@@ -87,6 +87,11 @@ Pipe::Pipe(const string &_name,Tango::DispLevel _level,PipeWriteType _pwt)
 
 void Pipe::set_default_properties(UserDefaultPipeProp &prop_list)
 {
+
+//
+// Init value in Pipe instance
+//
+
 	if ((prop_list.label.empty() == false) &&
 		(TG_strcasecmp(prop_list.label.c_str(),AlrmValueNotSpec) != 0) &&
 		(TG_strcasecmp(prop_list.label.c_str(),NotANumber) != 0))
@@ -96,6 +101,529 @@ void Pipe::set_default_properties(UserDefaultPipeProp &prop_list)
 		(TG_strcasecmp(prop_list.description.c_str(),AlrmValueNotSpec) != 0) &&
 		(TG_strcasecmp(prop_list.description.c_str(),NotANumber) != 0))
 		desc = prop_list.description;
+
+//
+// Memorize user default (if any) for case of user requesting a "return to user default"
+//
+
+	user_def_prop.clear();
+	if (prop_list.label.empty() == false)
+	{
+		PipeProperty pp("label",prop_list.label);
+		user_def_prop.push_back(pp);
+	}
+
+	if (prop_list.description.empty() == false)
+	{
+		PipeProperty pp("description",prop_list.description);
+		user_def_prop.push_back(pp);
+	}
+}
+
+//+-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::set_upd_properties
+//
+// description :
+//		Update pipe properties
+//
+// arguments :
+//		in :
+//			- new_conf : The pipe new configuration
+//			- dev : The device
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Pipe::set_upd_properties(const PipeConfig &new_conf,DeviceImpl *dev)
+{
+//
+// Backup current configuration (only label and description)
+//
+
+	PipeConfig old_conf = new_conf;
+	old_conf.label = CORBA::string_dup(label.c_str());
+	old_conf.description = CORBA::string_dup(desc.c_str());
+
+	try
+	{
+
+//
+// Set properties locally. In case of exception bring the backed-up values
+//
+
+		vector<Attribute::AttPropDb> v_db;
+		set_properties(new_conf,dev,v_db);
+
+//
+// Update database
+//
+
+		try
+		{
+			upd_database(v_db,dev->get_name());
+		}
+		catch(DevFailed &)
+		{
+
+//
+// In case of exception, try to store old properties in the database and inform the user about the error
+//
+
+			try
+			{
+				v_db.clear();
+				set_properties(old_conf,dev,v_db);
+				upd_database(v_db,dev->get_name());
+			}
+			catch(DevFailed &)
+			{
+
+//
+// If the old values could not be restored, notify the user about possible database corruption
+//
+
+				TangoSys_OMemStream o;
+
+				o << "Device " << dev->get_name() << "-> Pipe : " << name;
+				o << "\nDatabase error occurred whilst setting pipe properties. The database may be corrupted." << ends;
+				Except::throw_exception(API_CorruptedDatabase,o.str(),"Pipe::set_upd_properties()");
+			}
+
+			throw;
+		}
+	}
+	catch(DevFailed &)
+	{
+		vector<Attribute::AttPropDb> v_db;
+		set_properties(old_conf,dev,v_db);
+
+		throw;
+	}
+}
+
+//+--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::upd_database
+//
+// description :
+//		Update database according to the info received in the v_db parameter. We update or delete info in db for
+//		pipe configuration.
+//
+// Arguments:
+//		in :
+//			- v_db : The vector of info with what has to be done in DB
+//			- dev_name : The device name
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+void Pipe::upd_database(vector<Attribute::AttPropDb> &v_db,string &dev_name)
+{
+
+//
+// Build info needed for the method upddating DB
+//
+
+	long prop_to_update = 0;
+	long prop_to_delete = 0;
+
+	Tango::DbData db_d;
+	Tango::DbData db_del;
+
+	db_d.push_back(DbDatum(name));
+	db_del.push_back(DbDatum(name));
+
+	vector<Attribute::AttPropDb>::iterator ite;
+
+//
+// A loop for each db action
+//
+
+	for (ite = v_db.begin();ite != v_db.end();++ite)
+	{
+		switch (ite->dba)
+		{
+			case Attribute::UPD:
+			{
+				DbDatum desc(ite->name);
+				desc << ite->db_value;
+				db_d.push_back(desc);
+				prop_to_update++;
+			}
+			break;
+
+			case Attribute::UPD_FROM_DB:
+			{
+				DbDatum desc(ite->name);
+				desc << ite->db_value_db;
+				db_d.push_back(desc);
+				prop_to_update++;
+			}
+			break;
+
+			case Attribute::UPD_FROM_VECT_STR:
+			{
+				DbDatum desc(ite->name);
+				desc << ite->db_value_v_str;
+				db_d.push_back(desc);
+				prop_to_update++;
+			}
+			break;
+
+			case Attribute::DEL:
+			{
+				DbDatum desc(ite->name);
+				db_del.push_back(desc);
+				prop_to_delete++;
+			}
+			break;
+		}
+	}
+
+//
+// Update database
+//
+
+	struct Attribute::CheckOneStrProp cosp;
+	cosp.prop_to_delete = &prop_to_delete;
+	cosp.prop_to_update = &prop_to_update;
+	cosp.db_d = &db_d;
+	cosp.db_del = &db_del;
+
+//
+// Update db only if needed
+//
+
+	if (*cosp.prop_to_update != 0)
+	{
+		cout4 << *cosp.prop_to_update << " properties to update in db" << endl;
+		(*cosp.db_d)[0] << *cosp.prop_to_update;
+//for (const auto &elem: *cosp.db_d)
+//	cout << "prop_to_update name = " << elem.name << endl;
+
+		Tango::Util *tg = Tango::Util::instance();
+
+//
+// Implement a reconnection schema. The first exception received if the db server is down is a COMM_FAILURE exception.
+// Following exception received from following calls are TRANSIENT exception
+//
+
+		bool retry = true;
+		while (retry == true)
+		{
+			try
+			{
+				tg->get_database()->put_device_pipe_property(dev_name,*cosp.db_d);
+				retry = false;
+			}
+			catch (CORBA::COMM_FAILURE)
+			{
+				tg->get_database()->reconnect(true);
+			}
+		}
+	}
+
+	if (*cosp.prop_to_delete != 0)
+	{
+		cout4 << *cosp.prop_to_delete << " properties to delete in db" << endl;
+		(*cosp.db_del)[0] << *cosp.prop_to_delete;
+//for (const auto &elem: *cosp.db_del)
+//	cout << "prop_to_delete name = " << elem.name << endl;
+
+		Tango::Util *tg = Tango::Util::instance();
+
+//
+// Implement a reconnection schema. The first exception received if the db server is down is a COMM_FAILURE exception.
+// Following exception received from following calls are TRANSIENT exception
+//
+
+		bool retry = true;
+		while (retry == true)
+		{
+			try
+			{
+				tg->get_database()->delete_device_pipe_property(dev_name,*cosp.db_del);
+				retry = false;
+			}
+			catch (CORBA::COMM_FAILURE)
+			{
+				tg->get_database()->reconnect(true);
+			}
+		}
+	}
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::set_properties
+//
+// description :
+//		Set the pipe properties value for PipeConfig
+//
+// argument :
+// 		in :
+//			- conf : The new properties sent by client
+//			- dev : The device
+//		out :
+//			- v_db : Vector of data used for database update/delete
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Pipe::set_properties(const Tango::PipeConfig &conf,DeviceImpl *dev,vector<Attribute::AttPropDb> &v_db)
+{
+
+//
+// Check if the caller try to change "hard coded"properties. Throw exception in case of
+//
+
+	string user_pipe_name(conf.name.in());
+	transform(user_pipe_name.begin(),user_pipe_name.end(),user_pipe_name.begin(),::tolower);
+	if (user_pipe_name != lower_name)
+	{
+		Except::throw_exception(API_AttrNotAllowed,"Pipe name is not changeable at run time","Pipe::set_properties()");
+	}
+
+	if (conf.writable != writable)
+	{
+		Except::throw_exception(API_AttrNotAllowed,"Pipe writable property is not changeable at run time","Pipe::set_properties()");
+	}
+
+//
+// Copy only a sub-set of the new properties
+// For each "string" property, an empty string means returns to its default value which could be the library default
+// value or the user defined default value
+//
+
+	Tango::DeviceClass *dev_class = dev->get_device_class();
+
+	vector<PipeProperty> &def_user_prop = get_user_default_properties();
+	vector<PipeProperty> def_class_prop;
+	try
+	{
+		def_class_prop = dev_class->get_class_pipe()->get_prop_list(name);
+	}
+	catch (DevFailed &e) {}
+
+//
+// First the string properties
+//
+
+	set_one_str_prop("description",conf.description,desc,v_db,def_user_prop,def_class_prop,DescNotSpec);
+	set_one_str_prop("label",conf.label,label,v_db,def_user_prop,def_class_prop,name.c_str());
+
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Pipe::set_one_str_prop
+//
+// description :
+//		Analyse one of the string properties. String properties are description and  label
+//		A similar method exist in Attribute class. It's difficult to make it static and use it in this Pipe class
+//
+// argument :
+// 		in :
+//			- prop_name : The property name
+//			- conf_val : The new property value
+//			- def_user_prop : The set of user defined default values
+//			- def_class_prop : The set of class defined default values
+//			- lib_def : The property library default value
+//		out :
+//			- pipe_conf : The new property in Pipe object
+//			- v_db : Vector of data used for database update/delete
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Pipe::set_one_str_prop(const char *prop_name,const CORBA::String_member &conf_val,
+								 string &pipe_conf,vector<Attribute::AttPropDb> &v_db,vector<PipeProperty> &def_user_prop,
+								vector<PipeProperty> &def_class_prop,const char *lib_def)
+{
+	Attribute::AttPropDb apd;
+	apd.name = prop_name;
+
+	bool user_defaults, class_defaults;
+	string usr_def_val, class_def_val;
+	size_t nb_user = def_user_prop.size();
+	size_t nb_class = def_class_prop.size();
+
+    user_defaults = prop_in_list(prop_name,usr_def_val,nb_user,def_user_prop);
+    class_defaults = prop_in_list(prop_name,class_def_val,nb_class,def_class_prop);
+
+	if (TG_strcasecmp(conf_val,AlrmValueNotSpec) == 0)
+	{
+
+//
+// Return to lib default. If something defined as user default or class default, put entry in DB to overwrite
+// these defaults
+//
+
+		string old_val = pipe_conf;
+		pipe_conf = lib_def;
+
+		if (old_val != pipe_conf)
+		{
+			if (user_defaults == true || class_defaults == true)
+			{
+				apd.dba = Attribute::UPD;
+				apd.db_value = pipe_conf;
+				v_db.push_back(apd);
+			}
+			else
+			{
+				apd.dba = Attribute::DEL;
+				v_db.push_back(apd);
+			}
+		}
+	}
+	else if (strlen(conf_val) == 0)
+	{
+
+//
+// Return to user default or lib default. If something defined as class default, put entry in DB in order to
+// overwrite this default value.
+//
+
+		string old_val = pipe_conf;
+
+        if (user_defaults == true)
+			pipe_conf = usr_def_val;
+		else
+		{
+			pipe_conf = lib_def;
+		}
+
+		if (old_val != pipe_conf)
+		{
+			if (class_defaults == true)
+			{
+				apd.dba = Attribute::UPD;
+				apd.db_value = pipe_conf;
+				v_db.push_back(apd);
+			}
+			else
+			{
+				apd.dba = Attribute::DEL;
+				v_db.push_back(apd);
+			}
+		}
+	}
+	else if (TG_strcasecmp(conf_val,NotANumber) == 0)
+	{
+
+//
+// Return to class default or user default or lib default
+//
+
+		string old_val = pipe_conf;
+
+		if (class_defaults == true)
+			pipe_conf = class_def_val;
+		else if (user_defaults == true)
+			pipe_conf = usr_def_val;
+		else
+		{
+			pipe_conf = lib_def;
+		}
+
+		if (old_val != pipe_conf)
+		{
+			apd.dba = Attribute::DEL;
+			v_db.push_back(apd);
+		}
+	}
+	else
+	{
+
+//
+// Set property
+//
+
+		string old_val = pipe_conf;
+		pipe_conf = conf_val;
+
+		if (user_defaults == true && pipe_conf == usr_def_val)
+		{
+
+//
+// Property value is the same than the user default value
+//
+
+			if (old_val != pipe_conf)
+			{
+				if (class_defaults == true)
+				{
+					apd.dba = Attribute::UPD;
+					apd.db_value = pipe_conf;
+					v_db.push_back(apd);
+				}
+				else
+				{
+					apd.dba = Attribute::DEL;
+					v_db.push_back(apd);
+				}
+			}
+		}
+		else if (class_defaults == true && pipe_conf == class_def_val)
+		{
+
+//
+// Property value is the same than the class default value
+//
+
+			if (old_val != pipe_conf)
+			{
+				apd.dba = Attribute::DEL;
+				v_db.push_back(apd);
+			}
+		}
+   	 	else if (class_defaults == false && TG_strcasecmp(pipe_conf.c_str(),lib_def) == 0)
+		{
+
+//
+// Property value is the same than the lib default value
+//
+
+			if (old_val != pipe_conf)
+			{
+				apd.dba = Attribute::DEL;
+				v_db.push_back(apd);
+			}
+		}
+		else if (class_defaults == false && strcmp(prop_name,"label") == 0)
+		{
+
+//
+// Property Label: Property value is the same than the lib default value
+//
+
+			if (old_val != pipe_conf)
+			{
+				if (TG_strcasecmp(pipe_conf.c_str(),LabelNotSpec) == 0)
+				{
+					apd.dba = Attribute::DEL;
+					v_db.push_back(apd);
+				}
+				else
+				{
+					apd.dba = Attribute::UPD;
+					apd.db_value = pipe_conf;
+					v_db.push_back(apd);
+				}
+			}
+		}
+		else
+		{
+			if (old_val != pipe_conf)
+			{
+				apd.dba = Attribute::UPD;
+				apd.db_value = pipe_conf;
+				v_db.push_back(apd);
+			}
+		}
+	}
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

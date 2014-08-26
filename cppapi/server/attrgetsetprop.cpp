@@ -699,7 +699,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_
 //		Attribute::set_one_str_prop
 //
 // description :
-//		Analyse one of the string properties. Strin properties are description, label, unit, standard_unit,
+//		Analyse one of the string properties. String properties are description, label, unit, standard_unit,
 //		display_unit and format
 //
 // argument :
@@ -710,7 +710,7 @@ void Attribute::set_properties(const Tango::AttributeConfig_5 &conf,string &dev_
 //			- def_class_prop : The set of class defined default values
 //			- lib_def : The property library default value
 //		out :
-//			- att_conf ; The new property in Attribute object
+//			- att_conf : The new property in Attribute object
 //			- v_db : Vector of data used for database update/delete
 //
 //--------------------------------------------------------------------------------------------------------------------

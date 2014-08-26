@@ -827,6 +827,9 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 
 Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarStringArray& names)
 {
+	TangoMonitor &mon = get_pipe_conf_monitor();
+	AutoTangoMonitor sync(&mon);
+
 	cout4 << "Device_5Impl::get_pipe_config_5 arrived" << endl;
 
 	long nb_pipe = names.length();
@@ -909,6 +912,98 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 	cout4 << "Leaving Device_5Impl::get_pipe_config_5" << endl;
 
 	return back;
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Device_5Impl::set_pipe_config_5
+//
+// description :
+//		CORBA operation to set pipe configuration locally and in the Tango database
+//
+// argument:
+//		in :
+//			- new_conf: The new pipe(s) configuration. One PipeConfig structure is needed for each
+//				    	pipe to update
+//			- cl_id : client identifier
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
+										  const Tango::ClntIdent &cl_id)
+{
+	AutoTangoMonitor sync(this,true);
+	cout4 << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << " pipe(s)" << endl;
+cout << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << " pipe(s)" << endl;
+//
+// The pipe conf. is protected by two monitors. One protects access between
+// get and set attribute conf. The second one protects access between set and
+// usage. This is the classical device monitor
+//
+
+	TangoMonitor &mon1 = get_pipe_conf_monitor();
+	AutoTangoMonitor sync1(&mon1);
+
+//
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_op(Op_Set_Pipe_Config_5,cl_id);
+
+//
+// Check if the device is locked and by who
+//
+
+	check_lock("set_pipe_config_5");
+
+//
+// Return exception if the device does not have any pipe
+//
+
+	size_t dev_nb_pipe = device_class->get_pipe_list().size();
+	if (dev_nb_pipe == 0)
+	{
+		Except::throw_exception(API_PipeNotFound,"The device does not have any pipe","Device_5Impl::set_pipe_config_5");
+	}
+
+//
+// Update pipe config first locally then in database
+//
+
+	long nb_pipe = new_conf.length();
+	long i;
+
+	try
+	{
+		for (i = 0;i < nb_pipe;i++)
+		{
+			Pipe &pi = device_class->get_pipe_by_name(new_conf[i].name.in());
+cout << "Calling set_upd_properties() for pipe " << new_conf[i].name << endl;
+			pi.set_upd_properties(new_conf[i],this);
+		}
+	}
+	catch (Tango::DevFailed &e)
+	{
+
+//
+// Change the exception reason flag
+//
+
+		TangoSys_OMemStream o;
+
+		o << e.errors[0].reason;
+		if (i != 0)
+			o << "\nAll previous pipe(s) have been successfully updated";
+		if (i != (nb_pipe - 1))
+			o << "\nAll remaining pipe(s) have not been updated";
+		o << ends;
+
+		string s = o.str();
+		e.errors[0].reason = CORBA::string_dup(s.c_str());
+		throw;
+	}
+
 }
 
 //+------------------------------------------------------------------------------------------------------------------

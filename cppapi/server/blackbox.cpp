@@ -1346,6 +1346,10 @@ void BlackBox::build_info_as_str(long index)
 			elt_str = elt_str + "get_pipe_config_5 ";
 			break;
 
+		case Op_Set_Pipe_Config_5 :
+			elt_str = elt_str + "set_pipe_config_5 ";
+			break;
+
 		case Op_Read_Pipe_5 :
 			elt_str = elt_str + "read_pipe_5 (";
 			nb_in_vect = box[index].attr_names.size();

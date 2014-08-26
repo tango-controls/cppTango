@@ -295,6 +295,26 @@ public:
 	virtual Tango::PipeConfigList *get_pipe_config_5(const Tango::DevVarStringArray& names);
 
 /**
+ * Set pipe(s) configuration.
+ *
+ * Invoked when the client request the set_pipe_config_5 CORBA operation.
+ * It updates the device pipe configuration actually used by the device but
+ * this method also updates the Tango database. One structure of the
+ * PipeConfig type is needed for each pipe to update configuration.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#PipeConfig">here</a>
+ * to read <b>PipeConfig</b> structure specification.
+ *
+ * @param new_conf The pipe(s) new configuration structure sequence
+ * @param cl_ident The client identificator. This parameter is new in release 4.
+ * It allows device locking feature implemented in Tango V7
+ * @exception DevFailed Thrown if the command does not exist.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+    	virtual void set_pipe_config_5(const Tango::PipeConfigList& new_conf,
+    										const Tango::ClntIdent &cl_ident);
+
+/**
  * Read pipe value.
  *
  * Invoked when the client request the read_pipe_5 CORBA operation.

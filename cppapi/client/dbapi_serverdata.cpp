@@ -464,22 +464,31 @@ DbServerData::TangoDevice::TangoDevice(string &na):DeviceProxy(na),name(na)
 //
 
 	vector<string> pipe_list;
-	db->get_device_pipe_list(name,pipe_list);
-
-	for (size_t loop = 0; loop < pipe_list.size();loop++)
+	try
 	{
-		DbData db_data;
-		db_data.push_back(DbDatum(pipe_list[loop]));
-		db->get_device_pipe_property(na,db_data);
-		for (size_t lo = 1;lo < db_data.size();lo++)
+		db->get_device_pipe_list(name,pipe_list);
+
+		for (size_t loop = 0; loop < pipe_list.size();loop++)
 		{
-			if (db_data[lo].is_empty() == false)
+			DbData db_data;
+			db_data.push_back(DbDatum(pipe_list[loop]));
+			db->get_device_pipe_property(na,db_data);
+			for (size_t lo = 1;lo < db_data.size();lo++)
 			{
-				TangoPipe ta(pipe_list[loop]);
-				ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
-				pipes.push_back(ta);
+				if (db_data[lo].is_empty() == false)
+				{
+					TangoPipe ta(pipe_list[loop]);
+					ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
+					pipes.push_back(ta);
+				}
 			}
 		}
+	}
+	catch (DevFailed &e)
+	{
+		string reason(e.errors[0].reason.in());
+		if (reason != "API_CommandNotFound")
+			throw;
 	}
 
 }
@@ -661,23 +670,32 @@ DbServerData::TangoClass::TangoClass(const string &na,const string &full_ds_name
 //  Get class pipe list
 //
 
-	DbDatum cl_pipe_list = db->get_class_pipe_list(name,all);
-	if (cl_pipe_list.is_empty() == false)
+	try
 	{
-		vector<string> vs;
-		cl_pipe_list >> vs;
-
-		for (size_t loop = 0;loop < vs.size();loop++)
+		DbDatum cl_pipe_list = db->get_class_pipe_list(name,all);
+		if (cl_pipe_list.is_empty() == false)
 		{
-			DbData db_data;
-			db->get_class_pipe_property(vs[loop],db_data);
-			for (size_t lo = 0;lo < db_data.size();lo++)
+			vector<string> vs;
+			cl_pipe_list >> vs;
+
+			for (size_t loop = 0;loop < vs.size();loop++)
 			{
-				TangoPipe ta(vs[loop]);
-				ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
-				pipes.push_back(ta);
+				DbData db_data;
+				db->get_class_pipe_property(vs[loop],db_data);
+				for (size_t lo = 0;lo < db_data.size();lo++)
+				{
+					TangoPipe ta(vs[loop]);
+					ta.push_back(TangoProperty(db_data[lo].name,db_data[lo].value_string));
+					pipes.push_back(ta);
+				}
 			}
 		}
+	}
+	catch (DevFailed &e)
+	{
+		string reason(e.errors[0].reason.in());
+		if (reason != "API_CommandNotFound")
+			throw;
 	}
 
 //

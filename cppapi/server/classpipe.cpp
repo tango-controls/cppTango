@@ -212,7 +212,7 @@ vector<Tango::PipeProperty> &MultiClassPipe::get_prop_list(const string &pipe_na
 	if (ite == pipe_prop_list.end())
 	{
 		stringstream ss;
-		ss << "Pipe " << pipe_name << " not found in class attribute(s) properties" << ends;
+		ss << "Pipe " << pipe_name << " not found in class pipe(s) properties" << ends;
 
 		Except::throw_exception(API_PipeNotFound,ss.str(),"MultiClassPipe::get_prop_list");
 	}
