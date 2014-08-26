@@ -5890,7 +5890,7 @@ void DeviceImpl::push_dev_intr(bool ev_client)
 
 void DeviceImpl::end_pipe_config()
 {
-	cout << "Entering end_pipe_config for device " << device_name << endl;
+	cout4 << "Entering end_pipe_config for device " << device_name << endl;
 
 	vector<Pipe *> &pipe_list = device_class->get_pipe_list();
 	size_t nb_pipe = pipe_list.size();
@@ -5986,7 +5986,7 @@ void DeviceImpl::end_pipe_config()
 		}
 	}
 
-	cout << "Leaving end_pipe_config for device " << device_name << endl;
+	cout4 << "Leaving end_pipe_config for device " << device_name << endl;
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -6010,7 +6010,7 @@ void DeviceImpl::end_pipe_config()
 
 void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop,Pipe *pi_ptr,PipePropType ppt)
 {
-	cout << "Entering set_pipe_prop() method" << endl;
+	cout4 << "Entering set_pipe_prop() method" << endl;
 //
 // Final init of pipe prop with following priorities:
 // - Device pipe
@@ -6092,7 +6092,7 @@ void DeviceImpl::set_pipe_prop(vector<PipeProperty> &dev_prop,Pipe *pi_ptr,PipeP
 		}
 	}
 
-	cout << "Leaving set_pipe_prop() method" << endl;
+	cout4 << "Leaving set_pipe_prop() method" << endl;
 }
 
 } // End of Tango namespace

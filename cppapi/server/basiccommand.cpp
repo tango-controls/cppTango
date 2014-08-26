@@ -330,8 +330,6 @@ CORBA::Any *DevInitCmd::execute(DeviceImpl *device, TANGO_UNUSED(const CORBA::An
 		device->enable_intr_change_ev();
 		if (di.has_changed(device) == true)
 		{
-			cout << "Device interface has changed !!!!!!!!!!!!!!!!!!!" << endl;
-
 			Device_5Impl *dev_5 = static_cast<Device_5Impl *>(device);
 			DevCmdInfoList_2 *cmds_list = dev_5->command_list_query_2();
 

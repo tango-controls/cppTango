@@ -935,7 +935,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 {
 	AutoTangoMonitor sync(this,true);
 	cout4 << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << " pipe(s)" << endl;
-cout << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << " pipe(s)" << endl;
+
 //
 // The pipe conf. is protected by two monitors. One protects access between
 // get and set attribute conf. The second one protects access between set and
@@ -979,7 +979,6 @@ cout << "Device_5Impl::set_pipe_config_5 arrived for " << new_conf.length() << "
 		for (i = 0;i < nb_pipe;i++)
 		{
 			Pipe &pi = device_class->get_pipe_by_name(new_conf[i].name.in());
-cout << "Calling set_upd_properties() for pipe " << new_conf[i].name << endl;
 			pi.set_upd_properties(new_conf[i],this);
 		}
 	}
