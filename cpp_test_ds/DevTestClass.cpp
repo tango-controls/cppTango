@@ -911,6 +911,16 @@ void DevTestClass::pipe_factory()
 
 	ConfPipeClass	*pPipe5 = new ConfPipeClass("PipeConf5",Tango::OPERATOR);
 	pipe_list.push_back(pPipe5);
+
+	ConfPipeClass	*pPipe6 = new ConfPipeClass("PipeConf6",Tango::OPERATOR);
+	udpp.description.clear();
+	udpp.label.clear();
+	udpp.set_description("UserDefinedDesc");
+	pPipe6->set_default_properties(udpp);
+	pipe_list.push_back(pPipe6);
+
+	ConfPipeClass	*pPipe7 = new ConfPipeClass("PipeConf7",Tango::OPERATOR);
+	pipe_list.push_back(pPipe7);
 }
 
 
