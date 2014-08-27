@@ -564,7 +564,9 @@ public:
 		de_names.push_back("aaaWR");
 		de_names.push_back("bbbWR");
 		string str("Writing Reading pipe");
-		vector<float> v_fl = {1.11,8.88};
+		vector<float> v_fl;
+		v_fl.push_back(1.11);
+		v_fl.push_back(8.88);
 
 		dp.set_data_elt_names(de_names);
 		dp << str << v_fl;
