@@ -132,6 +132,117 @@ public:
 		transform(full_att_name.begin(),full_att_name.end(),full_att_name.begin(),::tolower);
 		TS_ASSERT(a_name == full_att_name);
 	}
+
+// Pipe class oriented calls
+
+	void test_class_pipe_oriented_calls()
+	{
+		DbDatum velocity("_tst_pipe"), vel_min("_tst_pipe_propA"), vel_max("_tst_pipe_propB");
+		DbData db_data;
+
+		velocity << 2;
+		vel_min << 3.0;
+		vel_max << 33.0;
+
+		db_data.push_back(velocity);
+		db_data.push_back(vel_min);
+		db_data.push_back(vel_max);
+
+		TS_ASSERT_THROWS_NOTHING(db->put_class_pipe_property("MyStepperMotor",db_data));
+
+		DbData get_db_data;
+		get_db_data.push_back(DbDatum("_tst_pipe"));
+
+		TS_ASSERT_THROWS_NOTHING(db->get_class_pipe_property("MyStepperMotor",get_db_data));
+
+		int nb_prop;
+		get_db_data[0] >> nb_prop;
+		TS_ASSERT(nb_prop == 2);
+
+		float propA, propB;
+		string prop1_name,prop2_name;
+		TS_ASSERT(get_db_data[1].name == "_tst_pipe_propA");
+		TS_ASSERT(get_db_data[2].name == "_tst_pipe_propB");
+
+		get_db_data[1] >> propA;
+		get_db_data[2] >> propB;
+		TS_ASSERT(propA == 3.0);
+		TS_ASSERT(propB == 33.0);
+
+		DbDatum db_datum;
+ 		TS_ASSERT_THROWS_NOTHING(db_datum = db->get_class_pipe_list("MyStepperMotor","*"));
+
+		vector<string> pipe_list;
+		db_datum >> pipe_list;
+
+		TS_ASSERT(pipe_list.size() == 1);
+		TS_ASSERT(pipe_list[0] == "_tst_pipe");
+
+
+		DbData del_db_data;
+		del_db_data.push_back(DbDatum("_tst_pipe"));
+		del_db_data.push_back(DbDatum("_tst_pipe_propA"));
+		del_db_data.push_back(DbDatum("_tst_pipe_propB"));
+
+		TS_ASSERT_THROWS_NOTHING(db->delete_class_pipe_property("MyStepperMotor", del_db_data));
+	}
+
+// Pipe device oriented calls
+
+	void test_device_pipe_oriented_calls()
+	{
+		DbDatum velocity("_tst_pipe"), vel_min("_tst_pipe_propA"), vel_max("_tst_pipe_propB");
+		DbData db_data;
+
+		velocity << 2;
+		vel_min << 3.0;
+		vel_max << 33.0;
+
+		db_data.push_back(velocity);
+		db_data.push_back(vel_min);
+		db_data.push_back(vel_max);
+
+		TS_ASSERT_THROWS_NOTHING(db->put_device_pipe_property("a/b/c",db_data));
+
+		DbData get_db_data;
+		get_db_data.push_back(DbDatum("_tst_pipe"));
+
+		TS_ASSERT_THROWS_NOTHING(db->get_device_pipe_property("a/b/c",get_db_data));
+
+		int nb_prop;
+		get_db_data[0] >> nb_prop;
+		TS_ASSERT(nb_prop == 2);
+
+		float propA, propB;
+		string prop1_name,prop2_name;
+		TS_ASSERT(get_db_data[1].name == "_tst_pipe_propA");
+		TS_ASSERT(get_db_data[2].name == "_tst_pipe_propB");
+
+		get_db_data[1] >> propA;
+		get_db_data[2] >> propB;
+		TS_ASSERT(propA == 3.0);
+		TS_ASSERT(propB == 33.0);
+
+		vector<string> pipe_list;
+ 		TS_ASSERT_THROWS_NOTHING(db->get_device_pipe_list("a/b/c",pipe_list));
+
+		TS_ASSERT(pipe_list.size() == 1);
+		TS_ASSERT(pipe_list[0] == "_tst_pipe");
+
+
+		DbData del_db_data;
+		del_db_data.push_back(DbDatum("_tst_pipe"));
+		del_db_data.push_back(DbDatum("_tst_pipe_propA"));
+		del_db_data.push_back(DbDatum("_tst_pipe_propB"));
+
+		TS_ASSERT_THROWS_NOTHING(db->delete_device_pipe_property("a/b/c", del_db_data));
+
+		TS_ASSERT_THROWS_NOTHING(db->put_device_pipe_property("a/b/c",db_data));
+
+		DbData del_all;
+		del_all.push_back(DbDatum("_tst_pipe"));
+		TS_ASSERT_THROWS_NOTHING(db->delete_all_device_pipe_property("a/b/c",del_all));
+	}
 };
 #undef cout
 #endif // DatabaseTestSuite_h

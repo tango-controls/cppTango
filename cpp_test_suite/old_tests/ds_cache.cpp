@@ -5,7 +5,7 @@
 #include <tango.h>
 #include <assert.h>
 
-#define	BASE	64
+#define	BASE	75
 #define	coutv	if (verbose == true) cout
 bool verbose = false;
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
 // Check indexes in cache
 //
 
-		int first = 0, last = 0;
+		int first = 1, last = 0;
 		const DbServerCache::EltIdx &imp_data = dsc->get_imp_dat();
 		coutv << "Adm dev import data between " << imp_data.first_idx << " and " << imp_data.last_idx << endl;
 		last = first + 7;

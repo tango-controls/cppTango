@@ -276,6 +276,11 @@ $DIR/dev_intr_event $DEV1
 ret=$?
 check_return_value $ret
 #
+$echo "\nTesting pipe event"
+$DIR/pipe_event $DEV1
+ret=$?
+check_return_value $ret
+#
 $echo "\nTesting device locking and event usage within the same process (memory pb at process exit)"
 $DIR/event_lock $DEV1
 ret=$?
