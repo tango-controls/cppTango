@@ -470,9 +470,13 @@ public:
 	{
 		DevicePipe dp("RwPiPe","WritenBlob");
 
-		vector<string> de_names = {"aaa","bbb"};
+		vector<string> de_names;
+		de_names.push_back(string("aaa"));
+		de_names.push_back(string("bbb"));
 		string str("Writing pipe");
-		vector<float> v_fl = {1.11,8.88};
+		vector<float> v_fl;
+		v_fl.push_back(1.11);
+		v_fl.push_back(8.88);
 
 		dp.set_data_elt_names(de_names);
 		dp << str << v_fl;
@@ -487,9 +491,13 @@ public:
 
 		DevicePipe dp("RwPiPe","WritenBlob");
 
-		vector<string> de_names = {"aaa","bbb"};
+		vector<string> de_names;
+		de_names.push_back(string("aaa"));
+		de_names.push_back(string("bbb"));
 		string str("Writing pipe");
-		vector<float> v_fl = {1.11,8.88};
+		vector<float> v_fl;
+		v_fl.push_back(1.11);
+		v_fl.push_back(8.88);
 
 		TS_ASSERT_THROWS_ASSERT(device1->write_pipe(dp);, Tango::DevFailed &e,
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeNoDataElement"
@@ -526,7 +534,8 @@ public:
 // Wrong data sent to pipe
 
 		dp.set_name("RWpipe");
-		de_names = {"111"};
+		de_names.clear();
+		de_names.push_back("111");
 		dp.set_data_elt_names(de_names);
 		dp << v_fl;
 
@@ -534,7 +543,10 @@ public:
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_IncompatibleArgumentType"
 								&& e.errors[0].severity == Tango::ERR));
 
-		de_names = {"111","222","333"};
+		de_names.clear();
+		de_names.push_back("111");
+		de_names.push_back("222");
+		de_names.push_back("333");
 		dp.set_data_elt_names(de_names);
 
 		dp << str << str;
@@ -548,7 +560,9 @@ public:
 	{
 		DevicePipe dp("RwPiPe","WritenBlob");
 
-		vector<string> de_names = {"aaaWR","bbbWR"};
+		vector<string> de_names;
+		de_names.push_back("aaaWR");
+		de_names.push_back("bbbWR");
 		string str("Writing Reading pipe");
 		vector<float> v_fl = {1.11,8.88};
 
