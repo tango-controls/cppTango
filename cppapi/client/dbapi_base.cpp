@@ -4160,6 +4160,78 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 	}
 
 //
+// Read Db device "StoredProcedureRelease" attribute. In case the stored procedure release is >= 1.9,
+// add Tango major release at the end the host name. This is required to manage compatibility between different
+// Tango releases used by device server(s) process when stored procedure supporting pipes is installed
+// (release 1.9 or higher)
+// To read the attribute, we do not have a DeviceProxy.
+//
+
+	string ds_host(loc_host);
+	int db_proc_release = 0;
+
+	AttributeValueList_3 *attr_value_list_3 = NULL;
+	AttributeValueList_4 *attr_value_list_4 = NULL;
+	AttributeValueList_5 *attr_value_list_5 = NULL;
+
+	DevVarStringArray attr_list;
+	attr_list.length(1);
+	attr_list[0] = CORBA::string_dup("StoredProcedureRelease");
+	DeviceAttribute da;
+
+	try
+	{
+		ClntIdent ci;
+		ApiUtil *au = ApiUtil::instance();
+		ci.cpp_clnt(au->get_client_pid());
+
+		if (version >= 5)
+		{
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			attr_value_list_5 = dev->read_attributes_5(attr_list,DEV,ci);
+
+			ApiUtil::attr_to_device(&((*attr_value_list_5)[0]),version,&da);
+			delete attr_value_list_5;
+		}
+		else if (version == 4)
+		{
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			attr_value_list_4 = dev->read_attributes_4(attr_list,DEV,ci);
+
+			ApiUtil::attr_to_device(&((*attr_value_list_4)[0]),version,&da);
+			delete attr_value_list_4;
+		}
+		else
+		{
+			Device_3_var dev = Device_3::_duplicate(device_3);
+			attr_value_list_3 = dev->read_attributes_3(attr_list,DEV);
+
+			ApiUtil::attr_to_device(NULL,&((*attr_value_list_3)[0]),version,&da);
+			delete attr_value_list_3;
+		}
+
+		string sp_rel;
+		da >> sp_rel;
+
+		string rel = sp_rel.substr(8);
+		string::size_type pos = rel.find('.');
+		if (pos != string::npos)
+		{
+			string maj_str = rel.substr(0,pos);
+			string min_str = rel.substr(pos + 1);
+
+			int maj = atoi(maj_str.c_str());
+			int min = atoi(min_str.c_str());
+
+			db_proc_release = (maj * 100) + min;
+		}
+	}
+	catch (DevFailed &) {}
+
+	if (db_proc_release >= 109)
+		ds_host = ds_host + "%%" + TgLibMajorVers;
+
+//
 // Filling the cache is always possible whatever access rights are
 //
 
@@ -4179,7 +4251,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 
 		sent_info->length(2);
 		(*sent_info)[0] = string_dup(ds_name.c_str());
-		(*sent_info)[1] = string_dup(loc_host.c_str());
+		(*sent_info)[1] = string_dup(ds_host.c_str());
 		send <<= sent_info;
 
 		try
