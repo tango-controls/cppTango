@@ -140,7 +140,7 @@ public:
 		DbDatum velocity("_tst_pipe"), vel_min("_tst_pipe_propA"), vel_max("_tst_pipe_propB");
 		DbData db_data;
 
-		velocity << 2;
+		velocity << (short)2;
 		vel_min << 3.0;
 		vel_max << 33.0;
 
@@ -194,7 +194,7 @@ public:
 		DbDatum velocity("_tst_pipe"), vel_min("_tst_pipe_propA"), vel_max("_tst_pipe_propB");
 		DbData db_data;
 
-		velocity << 2;
+		velocity << (short)2;
 		vel_min << 3.0;
 		vel_max << 33.0;
 
