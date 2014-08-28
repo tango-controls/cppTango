@@ -209,7 +209,7 @@ public:
 
 		TS_ASSERT_THROWS_NOTHING(db->get_device_pipe_property("a/b/c",get_db_data));
 
-		int nb_prop;
+		short nb_prop;
 		get_db_data[0] >> nb_prop;
 		TS_ASSERT(nb_prop == 2);
 
