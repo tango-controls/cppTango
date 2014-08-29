@@ -239,7 +239,16 @@ inline void ZmqAttrValUnion::init_seq(char *base_ptr,_CORBA_ULong &length,TangoC
     TA dummy_val;
     set_seq<TA>(dummy_val);
 
-    T *ptr = (T *)(base_ptr + _n.currentInputPtr());
+    T *ptr;
+	if (_n.get_un_marshal_type() == TangoCdrMemoryStream::UN_ATT)
+		ptr = (T *)(base_ptr + _n.currentInputPtr());
+	else
+	{
+		char *tmp = (char *)_n.get_mkr_in_buf();
+		int delta = tmp - base_ptr;
+		ptr = (T *)(base_ptr + delta);
+	}
+
     if (_n.unmarshal_byte_swap() == true)
     {
         if (sizeof(T) == 2)

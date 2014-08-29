@@ -853,7 +853,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		return;
 
 // get the semaphore to synchronize the sending of events
-	push_sema.wait();
+	omni_semaphore_lock osl(push_sema);
 
 	string loc_attr_name = attr_name;
 	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
@@ -926,8 +926,6 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			str = str + ("Please, re-compile your client with at least Tango 8");
 
 			cerr << str << endl;
-
-			push_sema.post();
 			Except::throw_exception(API_NotSupported,str,"NotifdEventSupplier::push_event");
 		}
 	    else if (attr_value.attr_conf_2 != NULL)
@@ -990,7 +988,6 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		catch (...) {}
 	}
 
-	push_sema.post();
 }
 
 //+----------------------------------------------------------------------------

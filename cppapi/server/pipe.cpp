@@ -875,7 +875,7 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,o
 	p_data->reset_insert_ctr();
 	delete tmp_ptr;
 
-	delete ad.pipe_val;
+	delete ad.pipe_val;		// This will release the mutex received as argument
 }
 
 } // End of Tango namespace

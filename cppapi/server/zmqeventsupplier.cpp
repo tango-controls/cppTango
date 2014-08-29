@@ -1005,11 +1005,9 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 		CORBA::Long padding = 0XDEC0DEC0;
 		data_call_cdr.rewindPtrs();
-		if (pipe_event == false)
-		{
-			padding >>= data_call_cdr;
-			padding >>= data_call_cdr;
-		}
+
+		padding >>= data_call_cdr;
+		padding >>= data_call_cdr;
 
 		if (except == NULL)
 		{
@@ -1113,6 +1111,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		{
 			except->errors >>= data_call_cdr;
 		}
+
 
 		if (pipe_event == false)
 		{

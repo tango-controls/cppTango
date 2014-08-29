@@ -2105,7 +2105,9 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				size_t data_size = (size_t)event_data.size();
 
 				bool data64 = false;
-				if (data_type == ATT_VALUE && error == false)
+				if (data_type == PIPE)
+					data64 = true;
+				else if (data_type == ATT_VALUE && error == false)
 				{
 					int disc = ((int *)data_ptr)[1];
 					if (disc == ATT_DOUBLE || disc == ATT_LONG64 || disc == ATT_ULONG64)
@@ -2123,35 +2125,30 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 // Shift buffer if required
 //
 
-				if (data64 == true && buffer_aligned64 == true)
+				if (data_type == PIPE && data64 == true && buffer_aligned64 == false)
 				{
-					int nb_loop = (data_size >> 2) - 1;
-					int remaining = data_size & 0x3;
-
 					if (omniORB::trace(30))
 					{
-						{
-							omniORB::logger log;
-							log << "ZMQ: Shifting received buffer!!!" << '\n';
-						}
+						omniORB::logger log;
+						log << "ZMQ: Pipe event -> Shifting received buffer to be aligned on a 8 bytes boundary" << '\n';
 					}
+					char *src = data_ptr + 8;
+					char *dest = data_ptr + 4;
+					memmove((void *)dest,(void *)src,data_size - 8);
 
-					int *src,*dest;
-					dest = (int *)data_ptr;
-					src = dest + 1;
-					for (int loop = 0;loop < nb_loop;++loop)
+					data_ptr = data_ptr + 4;
+					data_size = data_size - 4;
+				}
+				else if (data_type != PIPE && data64 == true && buffer_aligned64 == true)
+				{
+					if (omniORB::trace(30))
 					{
-						*dest = *src;
-						++dest;
-						++src;
+						omniORB::logger log;
+						log << "ZMQ: Classical event -> Shifting received buffer to be aligned on a 8 bytes boundary" << '\n';
 					}
-
-					for (int loop = 0;loop < remaining;++loop)
-					{
-						*dest = *src;
-						++dest;
-						++src;
-					}
+					char *src = data_ptr + 4;
+					char *dest = data_ptr;
+					memmove((void *)dest,(void *)src,data_size - 4);
 
 					data_size = data_size - 4;
 				}
@@ -2159,8 +2156,8 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				{
 					if (data_type == PIPE)
 					{
-						data_ptr = data_ptr;
-						data_size = data_size;
+						data_ptr = data_ptr + (sizeof(CORBA::Long) << 1);
+						data_size = data_size - (sizeof(CORBA::Long) << 1);
 					}
 					else
 					{
@@ -3031,7 +3028,11 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 
 void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
 {
-    char *data_ptr = (char *)_n.bufPtr();
+    char *data_ptr;
+	if (_n.get_un_marshal_type() == TangoCdrMemoryStream::UN_ATT)
+		data_ptr = (char *)_n.bufPtr();
+	else
+		data_ptr = (char *)_n.get_mkr_in_buf();
 
 //
 // Get union discriminator from cdr and if data type is string or device_state let omniORB do its stuff.
