@@ -2254,6 +2254,25 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			pipe["2DE"] << v_dl;
 		}
 		break;
+
+		case 9:
+		{
+			vector<string> de_names;
+			de_names.push_back("Another_1DE");
+			de_names.push_back("Another_2DE");
+
+			v_dl.clear();
+			v_dl.push_back(2);
+			string str("Barcelona");
+
+			pipe.set_root_blob_name("BlobCase9");
+			pipe.set_data_elt_names(de_names);
+			pipe << v_dl << str;
+
+			Tango::DevicePipeBlob &bl = pipe.get_blob();
+			this->push_pipe_event("RPipe",&bl,true);
+		}
+		break;
 	}
 }
 
@@ -2416,8 +2435,7 @@ void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 
 		dpb << str << v_dl;
 
-		pipe_mutex.lock();
-		this->push_pipe_event("RWPipe",&dpb,&pipe_mutex);
+		this->push_pipe_event("RWPipe",&dpb);
 	}
 }
 
