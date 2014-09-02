@@ -219,7 +219,33 @@ int main(int argc, char **argv)
 
 		device->unsubscribe_event(eve_id1);
 		
-		cout << "   unsubscribe_event --> OK" << endl;					
+		cout << "   unsubscribe_event --> OK" << endl;
+
+//
+// subscribe to a another pipe
+//
+
+		cb.cb_executed = 0;
+		cb.cb_err = 0;
+
+		DeviceData d_in;
+		d_in << (short)9;
+		device->command_inout("SetPipeOutput",d_in);
+
+		eve_id1 = device->subscribe_event("RPipe",Tango::PIPE_EVENT,&cb);
+
+		Tango_sleep(1);
+		assert (cb.cb_executed == 2);
+
+		DevicePipe pipe_data = device->read_pipe("rPipe");
+
+		Tango_sleep(1);
+
+		assert (cb.cb_executed == 3);
+
+		device->unsubscribe_event(eve_id1);
+		
+		cout << "   read_pipe which trigger a push_pipe_event --> OK" << endl;			
 	}
 	catch (Tango::DevFailed &e)
 	{
