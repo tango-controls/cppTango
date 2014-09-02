@@ -188,6 +188,12 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
     heartbeat_event_name = fqdn_prefix;
     heartbeat_event_name = heartbeat_event_name + "dserver/";
     heartbeat_name_init = false;
+
+//
+// Set Tango monitor name for monitor used in no-copy Zmq API
+//
+
+	push_mon.set_name("PushMonitor");
 }
 
 
@@ -826,11 +832,32 @@ void ZmqEventSupplier::push_heartbeat_event()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
+//
+// Small callback used by ZMQ when using the no-copy API to signal that the message has been sent.
+// Take care, this method is also called when ZMQ connection is closed. In such a case, the calling thread is the
+// thread doing the zmq::send() call and it's not the ZMQ thread. When this happens, we do not need to send
+// a signal to the calling thread.
+//
+
 void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 {
-    EventSupplier *ev = (EventSupplier *)hint;
-    omni_semaphore &the_sem = ev->get_push_sema();
-    the_sem.post();
+	omni_thread *th_id = omni_thread::self();
+	if (th_id == NULL)
+		th_id = omni_thread::create_dummy();
+
+    ZmqEventSupplier *ev = (ZmqEventSupplier *)hint;
+    TangoMonitor &the_mon = ev->get_push_mon();
+
+	if (th_id->id() != ev->get_calling_th())
+	{
+		omni_mutex_lock oml(the_mon);
+		the_mon.signal();
+		ev->set_require_wait(true);
+	}
+	else
+	{
+		ev->set_require_wait(false);
+	}
 }
 
 void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
@@ -838,6 +865,9 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
             TANGO_UNUSED(vector<string> &filterable_names_lg),TANGO_UNUSED(vector<long> &filterable_data_lg),
             struct SuppliedEventData &ev_value,string &obj_name,DevFailed *except,bool inc_cptr)
 {
+	if (device_impl == NULL)
+		return;
+
 	cout3 << "ZmqEventSupplier::push_event(): called for attribute/pipe " << obj_name << endl;
 
 //
@@ -849,7 +879,12 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // threads. The mutex used here is also a memory barrier
 //
 
-    push_sema.wait();
+	omni_thread *th_id = omni_thread::self();
+	if (th_id == NULL)
+		th_id = omni_thread::create_dummy();
+
+	push_mon.get_monitor();
+	calling_th = th_id->id();
 
 //
 // Create full event name
@@ -1351,7 +1386,20 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 //
 
 		if (large_data == false)
-			push_sema.post();
+		{
+			push_mon.rel_monitor();
+		}
+		else
+		{
+			if (require_wait == true)
+			{
+				push_mon.wait();
+				push_mon.release();
+				push_mon.rel_monitor();
+			}
+			else
+				push_mon.rel_monitor();
+		}
 
 //
 // For reference counting on zmq messages which do not have a local scope
@@ -1366,7 +1414,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			endian_mess.copy(&endian_mess_2);
 
 		if (large_message_created == false)
-			push_sema.post();
+			push_mon.rel_monitor();
 
 		TangoSys_OMemStream o;
 		o << "Can't push ZMQ event for event ";
@@ -1380,6 +1428,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 									o.str(),
 									(const char *)"ZmqEventSupplier::push_event");
 	}
+
 }
 
 //+------------------------------------------------------------------------------------------------------------------

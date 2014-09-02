@@ -141,7 +141,7 @@ public :
 
 	void push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &,DevFailed *,string &);
 
-	omni_semaphore &get_push_sema() {return push_sema;}
+	TangoMonitor &get_push_mon() {return push_mon;}
 	static omni_mutex &get_event_mutex() {return event_mutex;}
 	string &get_fqdn_prefix() {return fqdn_prefix;}
 
@@ -171,7 +171,7 @@ protected :
 	//	push_event which is used
 	// from different threads. Do not use a mutex because in some cases
 	// it is taken by Tango threads and released by ZMQ threads
-	static omni_semaphore	push_sema;
+	TangoMonitor 			push_mon;
 
 	// Added a mutex to synchronize the access to
 	//	detect_event which is used
@@ -296,6 +296,8 @@ public :
     void set_double_send() {double_send++;double_send_heartbeat=true;}
 
     int get_zmq_release() {return zmq_release;}
+    int get_calling_th() {return calling_th;}
+    void set_require_wait(bool bo) {require_wait=bo;}
 
 protected :
 	ZmqEventSupplier(Util *);
@@ -354,6 +356,9 @@ private :
 	bool                        double_send_heartbeat;
 
 	int							zmq_release;			// ZMQ lib release
+
+	int 						calling_th;
+	bool 						require_wait;
 
 	void tango_bind(zmq::socket_t *,string &);
 	unsigned char test_endian();

@@ -71,6 +71,7 @@ public :
 	int get_locking_thread_id();
 	long get_locking_ctr();
 	string &get_name() {return name;}
+	void set_name(const string &na) {name = na;}
 
 private :
 	long 			_timeout;

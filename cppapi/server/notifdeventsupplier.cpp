@@ -852,8 +852,8 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	if (attr_value.attr_conf_5 != Tango_nullptr || attr_value.attr_val_5 != Tango_nullptr)
 		return;
 
-// get the semaphore to synchronize the sending of events
-	omni_semaphore_lock osl(push_sema);
+// get the monitor to synchronize the sending of events
+	omni_mutex_lock oml(push_mon);
 
 	string loc_attr_name = attr_name;
 	transform(loc_attr_name.begin(),loc_attr_name.end(),loc_attr_name.begin(),::tolower);
