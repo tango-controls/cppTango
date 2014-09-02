@@ -3137,21 +3137,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	void push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data);
-/**
- * Push a pipe event.
- *
- * The method needs the pipe name and a pointer to the pipe blob to be pushed as input.
- * The time stamp of the event is set to the actual time.
- *
- * @param pipe_name The name of the pipe
- * @param p_data Pointer to the Pipe blob to be sent with the event
- * @param p_mut Pointer to mutex used to protect data sent within the event
- * @exception DevFailed If the pipe data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	void push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data,omni_mutex *p_mut);
+	void push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data,bool reuse_it=false);
 /**
  * Push a pipe event with a specified timestamp.
  *
@@ -3166,28 +3152,9 @@ public:
  * <b>DevFailed</b> exception specification
  */
 #ifdef _TG_WINDOWS_
-	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct _timeb &t);
+	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct _timeb &t,bool reuse_it=false);
 #else
-	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct timeval &t);
-#endif
-/**
- * Push a pipe event with a specified timestamp.
- *
- * The method needs the pipe name, a pointer to the pipe blob to be pushed and the time stamp
- * for the data as input.
- *
- * @param pipe_name The name of the pipe
- * @param p_data Pointer to the data to be pushed
- * @param t The time stamp
- * @param p_mut Pointer to mutex used to protect data sent within the event
- * @exception DevFailed If the pipe data type is not coherent.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-#ifdef _TG_WINDOWS_
-	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct _timeb &t,omni_mutex *p_mut);
-#else
-	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct timeval &t,omni_mutex *p_mut);
+	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct timeval &t,bool reuse_it=false);
 #endif
 //@}
 

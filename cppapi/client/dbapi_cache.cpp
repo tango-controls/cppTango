@@ -923,6 +923,8 @@ DbServerCache::~DbServerCache()
 			delete [] classes_idx[cl_loop].class_prop.props_idx;
 		if (classes_idx[cl_loop].class_att_prop.atts_idx != NULL)
 			delete [] classes_idx[cl_loop].class_att_prop.atts_idx;
+		if (classes_idx[cl_loop].class_pipe_prop.atts_idx != NULL)
+			delete [] classes_idx[cl_loop].class_pipe_prop.atts_idx;
 
 		for (int dev_loop = 0;dev_loop < classes_idx[cl_loop].dev_nb;dev_loop++)
 		{
@@ -930,6 +932,8 @@ DbServerCache::~DbServerCache()
 				delete [] classes_idx[cl_loop].devs_idx[dev_loop].dev_prop.props_idx;
 			if (classes_idx[cl_loop].devs_idx[dev_loop].dev_att_prop.atts_idx != NULL)
 				delete [] classes_idx[cl_loop].devs_idx[dev_loop].dev_att_prop.atts_idx;
+			if (classes_idx[cl_loop].devs_idx[dev_loop].dev_pipe_prop.atts_idx != NULL)
+				delete [] classes_idx[cl_loop].devs_idx[dev_loop].dev_pipe_prop.atts_idx;
 		}
 		delete [] classes_idx[cl_loop].devs_idx;
 	}

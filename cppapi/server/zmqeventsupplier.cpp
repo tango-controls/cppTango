@@ -194,6 +194,7 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 //
 
 	push_mon.set_name("PushMonitor");
+	require_wait = false;
 }
 
 

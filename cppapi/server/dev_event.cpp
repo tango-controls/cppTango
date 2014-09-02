@@ -2067,7 +2067,7 @@ void DeviceImpl::push_pipe_event(const string &pipe_name, DevFailed *except)
 //
 //-----------------------------------------------------------------------------------------------------------------
 
-void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data)
+void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data,bool reuse_it)
 {
 	// get the tango synchroisation monitor
 	Tango::AutoTangoMonitor synch(this);
@@ -2076,19 +2076,7 @@ void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob 
 	Tango::Pipe &pi = get_device_class()->get_pipe_by_name(pipe_name);
 
 	// push the event
-	pi.fire_event(this,p_data);
-}
-
-void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data,omni_mutex *p_mut)
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-
-	// search the pipe from the pipe list
-	Tango::Pipe &pi = get_device_class()->get_pipe_by_name(pipe_name);
-
-	// push the event
-	pi.fire_event(this,p_data,p_mut);
+	pi.fire_event(this,p_data,reuse_it);
 }
 
 //+-----------------------------------------------------------------------------------------------------------------
@@ -2108,9 +2096,9 @@ void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob 
 //-----------------------------------------------------------------------------------------------------------------
 
 #ifdef _TG_WINDOWS_
-void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct _timeb &t)
+void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct _timeb &t,bool reuse_it)
 #else
-void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct timeval &tv)
+void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct timeval &tv,bool reuse_it)
 #endif
 {
 	// get the tango synchroisation monitor
@@ -2126,29 +2114,8 @@ void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob
 #endif // _TG_WINDOWS_
 
 	// push the event
-	pi.fire_event(this,p_data,tv,(omni_mutex *)NULL);
+	pi.fire_event(this,p_data,tv,reuse_it);
 }
 
-#ifdef _TG_WINDOWS_
-void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct _timeb &t,omni_mutex *p_mut)
-#else
-void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data,struct timeval &tv,omni_mutex *p_mut)
-#endif
-{
-	// get the tango synchroisation monitor
-	Tango::AutoTangoMonitor synch(this);
-
-	// search the pipe from the pipe list
-	Tango::Pipe &pi = get_device_class()->get_pipe_by_name (pipe_name);
-
-#ifdef _TG_WINDOWS_
-	struct timeval tv;
-	tv.tv_sec = (unsigned long)t.time;
-	tv.tv_usec = (long)t.millitm * 1000;
-#endif // _TG_WINDOWS_
-
-	// push the event
-	pi.fire_event(this,p_data,tv,p_mut);
-}
 
 } // End of Tango namespace
