@@ -273,7 +273,7 @@ void reset_to_default(Tango::AttributeInfoEx &ai,string &att_name)
 {
 	ai.description = "No description";
 	ai.label = att_name.c_str();
-	ai.unit = "No unit";
+	ai.unit = "";
 	ai.standard_unit = "No standard unit";
 	ai.display_unit = "No display unit";
 	ai.format = "%6.2f";

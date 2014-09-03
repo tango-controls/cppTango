@@ -102,7 +102,7 @@ public:
 		TS_ASSERT(att_inf.max_dim_y == 0);
 		TS_ASSERT(att_inf.description == "No description");
 		TS_ASSERT(att_inf.label == "Double_attr");
-		TS_ASSERT(att_inf.unit == "No unit");
+		TS_ASSERT(att_inf.unit == "");
 		TS_ASSERT(att_inf.standard_unit == "No standard unit");
 		TS_ASSERT(att_inf.display_unit == "No display unit");
 		TS_ASSERT(att_inf.format == "%6.2f");
@@ -281,7 +281,7 @@ public:
 		TS_ASSERT(att_inf.max_dim_y == 0);
 		TS_ASSERT(att_inf.description == "No description");
 		TS_ASSERT(att_inf.label == "Double_attr");
-		TS_ASSERT(att_inf.unit == "No unit");
+		TS_ASSERT(att_inf.unit == "");
 		TS_ASSERT(att_inf.standard_unit == "No standard unit");
 		TS_ASSERT(att_inf.display_unit == "No display unit");
 		TS_ASSERT(att_inf.format == "%6.2f");
@@ -315,7 +315,7 @@ public:
 		TS_ASSERT(att_inf.max_dim_y == 0);
 		TS_ASSERT(att_inf.description == "Test description");
 		TS_ASSERT(att_inf.label == "From db (class)");
-		TS_ASSERT(att_inf.unit == "No unit");
+		TS_ASSERT(att_inf.unit == "");
 		TS_ASSERT(att_inf.standard_unit == "No standard unit");
 		TS_ASSERT(att_inf.display_unit == "No display unit");
 		TS_ASSERT(att_inf.format == "From db (device)");

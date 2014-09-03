@@ -466,7 +466,7 @@ public:
 		TS_ASSERT((*confs)[1].max_dim_y == 0);
 		TS_ASSERT((*confs)[1].description == "No description");
 		TS_ASSERT((*confs)[1].label == "fwd_string_w");
-		TS_ASSERT((*confs)[1].unit == "No unit");
+		TS_ASSERT((*confs)[1].unit == "");
 		TS_ASSERT((*confs)[1].standard_unit == "No standard unit");
 		TS_ASSERT((*confs)[1].display_unit == "No display unit");
 		TS_ASSERT((*confs)[1].format == "%s");
@@ -487,7 +487,7 @@ public:
 		TS_ASSERT((*confs)[2].max_dim_y == 0);
 		TS_ASSERT((*confs)[2].description == "No description");
 		TS_ASSERT((*confs)[2].label == "fwd_spec_double");
-		TS_ASSERT((*confs)[2].unit == "No unit");
+		TS_ASSERT((*confs)[2].unit == "");
 		TS_ASSERT((*confs)[2].standard_unit == "No standard unit");
 		TS_ASSERT((*confs)[2].display_unit == "No display unit");
 		TS_ASSERT((*confs)[2].format == "%6.2f");
@@ -508,7 +508,7 @@ public:
 		TS_ASSERT((*confs)[3].max_dim_y == 2);
 		TS_ASSERT((*confs)[3].description == "No description");
 		TS_ASSERT((*confs)[3].label == "fwd_ima_string_rw");
-		TS_ASSERT((*confs)[3].unit == "No unit");
+		TS_ASSERT((*confs)[3].unit == "");
 		TS_ASSERT((*confs)[3].standard_unit == "No standard unit");
 		TS_ASSERT((*confs)[3].display_unit == "No display unit");
 		TS_ASSERT((*confs)[3].format == "%s");
