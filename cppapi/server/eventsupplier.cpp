@@ -41,6 +41,8 @@ namespace Tango {
 
 omni_mutex		EventSupplier::event_mutex;
 omni_mutex		EventSupplier::detect_mutex;
+omni_mutex		EventSupplier::push_mutex;
+omni_condition 	EventSupplier::push_cond(&EventSupplier::push_mutex);
 string      	EventSupplier::fqdn_prefix;
 
 //---------------------------------------------------------------------------------------------------------------------

@@ -190,11 +190,10 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
     heartbeat_name_init = false;
 
 //
-// Set Tango monitor name for monitor used in no-copy Zmq API
+// Init data used in no-copy Zmq API
 //
 
-	push_mon.set_name("PushMonitor");
-	require_wait = false;
+	require_wait = true;
 }
 
 
@@ -847,13 +846,13 @@ void tg_unlock(TANGO_UNUSED(void *data),void *hint)
 		th_id = omni_thread::create_dummy();
 
     ZmqEventSupplier *ev = (ZmqEventSupplier *)hint;
-    TangoMonitor &the_mon = ev->get_push_mon();
+    omni_mutex &the_mut = ev->get_push_mutex();
+    omni_condition &the_cond = ev->get_push_cond();
 
 	if (th_id->id() != ev->get_calling_th())
 	{
-		omni_mutex_lock oml(the_mon);
-		the_mon.signal();
-		ev->set_require_wait(true);
+		omni_mutex_lock oml(the_mut);
+		the_cond.signal();
 	}
 	else
 	{
@@ -884,8 +883,9 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 	if (th_id == NULL)
 		th_id = omni_thread::create_dummy();
 
-	push_mon.get_monitor();
+	push_mutex.lock();
 	calling_th = th_id->id();
+	require_wait = true;
 
 //
 // Create full event name
@@ -1388,18 +1388,16 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 		if (large_data == false)
 		{
-			push_mon.rel_monitor();
+			push_mutex.release();
 		}
 		else
 		{
 			if (require_wait == true)
 			{
-				push_mon.wait();
-				push_mon.release();
-				push_mon.rel_monitor();
+				push_cond.wait();
 			}
-			else
-				push_mon.rel_monitor();
+
+			push_mutex.release();
 		}
 
 //
@@ -1415,7 +1413,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			endian_mess.copy(&endian_mess_2);
 
 		if (large_message_created == false)
-			push_mon.rel_monitor();
+			push_mutex.release();
 
 		TangoSys_OMemStream o;
 		o << "Can't push ZMQ event for event ";

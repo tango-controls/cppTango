@@ -141,7 +141,8 @@ public :
 
 	void push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &,DevFailed *,string &);
 
-	TangoMonitor &get_push_mon() {return push_mon;}
+	omni_mutex &get_push_mutex() {return push_mutex;}
+	omni_condition &get_push_cond() {return push_cond;}
 	static omni_mutex &get_event_mutex() {return event_mutex;}
 	string &get_fqdn_prefix() {return fqdn_prefix;}
 
@@ -169,9 +170,10 @@ protected :
 
 	// Added a semaphore to synchronize the access to
 	//	push_event which is used
-	// from different threads. Do not use a mutex because in some cases
+	// from different threads. Do not use a simple mutex because in some cases
 	// it is taken by Tango threads and released by ZMQ threads
-	TangoMonitor 			push_mon;
+	static omni_mutex 		push_mutex;
+	static omni_condition	push_cond;
 
 	// Added a mutex to synchronize the access to
 	//	detect_event which is used
