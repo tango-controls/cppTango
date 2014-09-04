@@ -165,6 +165,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dev_intr_event", "dev_intr_
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_dev_event", "multi_dev_event\multi_dev_event.vcxproj", "{B0341BD0-497A-4969-B045-1D259C59B32D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pipe_event", "pipe_event\pipe_event.vcxproj", "{A3A424FA-E965-45B6-957D-3EE630C8AE91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -813,6 +815,13 @@ Global
 		{B0341BD0-497A-4969-B045-1D259C59B32D}.Release|Win32.Build.0 = Release|Win32
 		{B0341BD0-497A-4969-B045-1D259C59B32D}.Release|x64.ActiveCfg = Release|x64
 		{B0341BD0-497A-4969-B045-1D259C59B32D}.Release|x64.Build.0 = Release|x64
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Debug|Win32.Build.0 = Debug|Win32
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Debug|x64.ActiveCfg = Debug|Win32
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Release|Win32.ActiveCfg = Release|Win32
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Release|Win32.Build.0 = Release|Win32
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Release|x64.ActiveCfg = Release|x64
+		{A3A424FA-E965-45B6-957D-3EE630C8AE91}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

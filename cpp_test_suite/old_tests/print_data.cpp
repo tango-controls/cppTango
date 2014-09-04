@@ -310,14 +310,17 @@ int main(int argc, char **argv)
 
 	DeviceAttribute da;
 	cout << da << endl;
+cout << "Empty attribute OK" << endl;
 	
 	short s_attr = 20;
 	da << s_attr;
 	cout << da << endl;
+cout << "DA with init value OK" << endl;
 	
 	DeviceProxy dev(device_name);
 	
 	da = dev.read_attribute("Long_attr");
+cout << "Attribute read" << endl;
 	cout << da  << endl;
 	Tango::DevLong la;
 	da >> la;
