@@ -3133,6 +3133,8 @@ public:
  *
  * @param pipe_name The name of the pipe
  * @param p_data Pointer to the Pipe blob to be sent with the event
+ * @param reuse_it Flag set to true if you don want the push_pipe_event to consume Pipe internal memory. Default value
+ * is false which covers 95% of use cases
  * @exception DevFailed If the pipe data type is not coherent.
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
@@ -3147,6 +3149,8 @@ public:
  * @param pipe_name The name of the pipe
  * @param p_data Pointer to the data to be pushed
  * @param t The time stamp
+ * @param reuse_it Flag set to true if you don want the push_pipe_event to consume Pipe internal memory. Default value
+ * is false which covers 95% of use cases
  * @exception DevFailed If the pipe data type is not coherent.
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
