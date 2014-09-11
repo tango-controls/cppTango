@@ -43,6 +43,15 @@
 namespace Tango
 {
 
+#ifndef _USRDLL
+extern "C"
+{
+#endif
+void leavefunc();
+#ifndef _USRDLL
+}
+#endif
+
 /********************************************************************************
  * 																				*
  * 						EventData class											*

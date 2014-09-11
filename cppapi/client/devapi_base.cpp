@@ -3157,6 +3157,17 @@ CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
 {
 	CommandInfoList *all_cmds = command_list_query();
 
+//
+// Leave method if the user requires config for all commands
+//
+
+	if (cmd_names.size() == 1 && cmd_names[0] == AllCmd)
+		return all_cmds;
+
+//
+// Return only the required commands config
+//
+
 	CommandInfoList *ret_cmds = new CommandInfoList;
 	vector<string>::iterator ite;
 	for (ite = cmd_names.begin();ite != cmd_names.end();++ite)

@@ -1230,6 +1230,8 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			{ \
 				if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
 					ext_state.set(isempty_flag); \
+				else \
+					ext_state.set(wrongtype_flag); \
 			} \
 			else \
 				ext_state.set(wrongtype_flag); \
@@ -1290,6 +1292,8 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			{ \
 				if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
 					ext_state.set(isempty_flag); \
+				else \
+					ext_state.set(wrongtype_flag); \
 			} \
 			else \
 				ext_state.set(wrongtype_flag); \
@@ -1350,6 +1354,8 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			{ \
 				if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
 					ext_state.set(isempty_flag); \
+				else \
+					ext_state.set(wrongtype_flag); \
 			} \
 			else \
 				ext_state.set(wrongtype_flag); \

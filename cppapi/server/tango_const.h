@@ -76,6 +76,7 @@ const bool  DefaultWritAttrProp            = false;
 const char* const AllAttr                  = "All attributes";
 const char* const AllAttr_3                = "All attributes_3";
 const char* const AllPipe				   = "All pipes";
+const char* const AllCmd				   = "All commands";
 
 const char* const PollCommand              = "command";
 const char* const PollAttribute            = "attribute";
