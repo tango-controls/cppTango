@@ -52,7 +52,7 @@ namespace Tango
 const char * const TgLibVers               = XTBS(TANGO_VERSION_MAJOR.TANGO_VERSION_MINOR.TANGO_VERSION_PATCH);
 const char * const TgLibMajorVers		   = XTBS(TANGO_VERSION_MAJOR);
 
-const int   TgLibVersNb                    = TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_MINOR;
+const int   TgLibVersNb                    = TANGO_VERSION_MAJOR*10000 + TANGO_VERSION_MINOR*100 + TANGO_VERSION_PATCH;
 
 const int   DevVersion                     = 5;           // IDL version number
 const int   DefaultMaxSeq                  = 20;

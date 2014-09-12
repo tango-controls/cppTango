@@ -169,6 +169,7 @@ template void Attribute::get_properties(MultiAttrProp<DevFloat> &);
 template void Attribute::get_properties(MultiAttrProp<DevDouble> &);
 template void Attribute::get_properties(MultiAttrProp<DevState> &);
 template void Attribute::get_properties(MultiAttrProp<DevEncoded> &);
+template void Attribute::get_properties(MultiAttrProp<DevString> &);
 
 
 template void Attribute::set_properties(MultiAttrProp<DevBoolean> &);
@@ -183,6 +184,7 @@ template void Attribute::set_properties(MultiAttrProp<DevFloat> &);
 template void Attribute::set_properties(MultiAttrProp<DevDouble> &);
 template void Attribute::set_properties(MultiAttrProp<DevState> &);
 template void Attribute::set_properties(MultiAttrProp<DevEncoded> &);
+template void Attribute::set_properties(MultiAttrProp<DevString> &);
 
 template void Attribute::check_hard_coded_properties(const AttributeConfig &);
 template void Attribute::check_hard_coded_properties(const AttributeConfig_3 &);
