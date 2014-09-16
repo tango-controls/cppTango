@@ -293,7 +293,13 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 
 const DevVarLongStringArray *DbServerCache::import_adm_dev()
 {
-	if (imp_adm.last_idx == 1)
+	int last_index;
+	if (proc_release >= 109)
+		last_index = 2;
+	else
+		last_index = 1;
+
+	if (imp_adm.last_idx == last_index)
 	{
 		Tango::Except::throw_exception("aaa","bbb","ccc");
 	}
