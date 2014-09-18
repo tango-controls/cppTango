@@ -67,6 +67,7 @@
     <IntDir>$(Configuration)\</IntDir>
     <TargetName>pipe_event</TargetName>
     <LinkIncremental>false</LinkIncremental>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

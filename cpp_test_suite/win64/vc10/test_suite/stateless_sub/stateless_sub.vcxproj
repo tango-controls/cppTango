@@ -81,6 +81,7 @@
     <OutDir>$(PREFIX)\win64\bin\</OutDir>
     <TargetName>stateless_sub</TargetName>
     <IntDir>$(Configuration)\</IntDir>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

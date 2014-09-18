@@ -80,6 +80,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(PREFIX)\win64\bin\</OutDir>
     <TargetName>reco_zmq</TargetName>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

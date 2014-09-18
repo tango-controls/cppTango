@@ -81,6 +81,7 @@
     <OutDir>$(PREFIX)\win64\bin\</OutDir>
     <IntDir>$(Configuration)\</IntDir>
     <TargetName>attr_conf_test</TargetName>
+    <GenerateManifest>false</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
