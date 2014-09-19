@@ -163,7 +163,7 @@ public:
 		str = device1_name;
 		din << str;
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer", din));
-		Tango_sleep(3);
+		Tango_sleep(6);
 
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("State"));
 		dout >> state_out;
