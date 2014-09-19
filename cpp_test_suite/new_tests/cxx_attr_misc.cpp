@@ -971,6 +971,7 @@ cout << "Calling SetGetProperties at " << ctime(&ti) << endl;
 		TS_ASSERT(state == Tango::ALARM);
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("Status"));
 		dout >> status;
+cout << "status = " << status << endl;
 		TS_ASSERT(strcmp(status,"The device is in ALARM state.\nAlarm : Value too low for Long_attr") == 0);
 
 		lg = 1200;

@@ -449,6 +449,15 @@ public:
 						TS_ASSERT(string(e.errors[0].reason.in()) == "API_NotSupportedFeature"
 								&& e.errors[0].severity == Tango::ERR));
 
+// Not enough data element
+
+		d_in << (short)10;
+		device1->command_inout("SetPipeOutput",d_in);
+
+		TS_ASSERT_THROWS_ASSERT(pipe_data = device1->read_pipe("rpipe");, Tango::DevFailed &e,
+						TS_ASSERT(string(e.errors[0].reason.in()) == "API_PipeWrongArg"
+								&& e.errors[0].severity == Tango::ERR));
+
 // Mixing extraction method type
 
 		d_in << (short)0;
