@@ -2732,6 +2732,10 @@ void SetGetProperties::set_vect(vector<double> &vect, double v1, double v2)
 CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
 {
 
+	Tango::Util *tg = Tango::Util::instance();
+	Tango::Database *db = tg->get_database();
+	db->set_timeout_millis(Tango::DB_TIMEOUT * 3);
+
 //
 // Sets properties using functions executed on the server side. Reads the previously set values
 // with functions called also on the server side and creates a vector of string representations
@@ -2864,6 +2868,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -2983,6 +2988,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3102,6 +3108,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3221,6 +3228,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3340,6 +3348,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3459,6 +3468,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3578,6 +3588,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3697,6 +3708,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3816,6 +3828,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -3935,6 +3948,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 		}
 		catch (Tango::DevFailed &e)
 		{
+			db->set_timeout_millis(Tango::DB_TIMEOUT);
 			if (attr_ptr != NULL)
 				attr_ptr->set_upd_properties(conf);
 			throw e;
@@ -4001,6 +4015,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 //		}
 //		catch(Tango::DevFailed &e)
 //		{
+//			db->set_timeout_millis(Tango::DB_TIMEOUT);
 //			if(attr_ptr != NULL)
 //				attr_ptr->set_upd_properties(conf);
 //			throw e;
@@ -4019,6 +4034,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 	}
 	catch (CORBA::Exception &e)
 	{
+		db->set_timeout_millis(Tango::DB_TIMEOUT);
 		cout << "Exception while setting properties" << endl;
 		Tango::Except::print_exception(e);
 		throw ;
