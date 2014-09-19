@@ -79,6 +79,8 @@ public:
 
 	virtual ~SUITE_NAME()
 	{
+time_t ti = time(NULL);
+cout << "Destroying suite at " << ctime(&ti) << endl;
 		DevLong lg;
 		DeviceData din;
 		lg = 1246;
@@ -262,6 +264,8 @@ public:
 		device1->set_timeout_millis(15*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
+time_t ti = time(NULL);
+cout << "Calling SetGetProperties at " << ctime(&ti) << endl;
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetProperties"));
 		TS_ASSERT_THROWS_NOTHING(dout >> props);
 

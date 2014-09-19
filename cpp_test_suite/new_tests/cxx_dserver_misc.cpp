@@ -185,6 +185,7 @@ public:
 		TS_ASSERT(str == "A device server device !!");
 
 		TS_ASSERT_THROWS_NOTHING(str = dserver->status());
+cout << "str = " << str << endl;
 		TS_ASSERT(str == "The device is ON\nThe polling is ON");
 
 		TS_ASSERT_THROWS_NOTHING(state_out = dserver->state());
