@@ -42,10 +42,10 @@
 #######################################################################################################################
 
 EXCLUDE_FILES = 64.cpp helper.cpp zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
-COMPILE_FILES = w_r_attr.cpp
+#COMPILE_FILES = pipe_event.cpp
 #COMPILE_FILES = add_rem_attr.cpp
 #COMPILE_FILES = cxx_zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
-#COMPILE_FILES = cxx_class_dev_signal.cpp
+#COMPILE_FILES = cxx_pipe_conf.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
 #COMPILE_FILES = att_type_event.cpp
 

@@ -53,7 +53,7 @@ public:
 			dserver->ping();
 
 			dserver->command_inout("RestartServer");
-			Tango_sleep(5);
+			Tango_sleep(10);
 
 			vector<string> attr_list;
 			attr_list.push_back("Double_attr");
