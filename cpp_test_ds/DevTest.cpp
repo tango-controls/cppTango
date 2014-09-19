@@ -2273,6 +2273,22 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			this->push_pipe_event("RPipe",&bl,true);
 		}
 		break;
+
+		case 10:
+		{
+			pipe.set_root_blob_name("BlobCase10");
+
+			vector<string> de_names;
+			de_names.push_back("1DE");
+			pipe.set_data_elt_names(de_names);
+
+			v_dl.clear();
+			v_dl.push_back(22);
+			string str("Barcelona");
+
+			pipe << v_dl << str;
+		}
+		break;
 	}
 }
 
