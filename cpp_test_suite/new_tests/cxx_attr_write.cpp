@@ -183,7 +183,7 @@ public:
 	void test_memorized_attributes(void)
 	{
 		TS_ASSERT_THROWS_NOTHING(dserver->command_inout("RestartServer"));
-		Tango_sleep(3);
+		Tango_sleep(6);
 
 		DevShort sh;
 		string str;
