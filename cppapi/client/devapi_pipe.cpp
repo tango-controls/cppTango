@@ -2025,6 +2025,7 @@ void DevicePipeBlob::throw_too_many(const string &_meth,bool _extract)
 	m_name = m_name + _meth;
 
 	delete insert_elt_array;
+	insert_elt_array = Tango_nullptr;
 	if (extract_delete == true)
 	{
 		delete extract_elt_array;
