@@ -1407,8 +1407,10 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 	string last_associated_device = sub.get_associated_device();
 	sub.set_associated_device(get_name());
 
-// Catch all exceptions to set back the associated device after
-// execution
+//
+// Catch all exceptions to set back the associated device after execution
+//
+
 	try
 	{
 
@@ -1426,7 +1428,6 @@ CORBA::Any *DeviceImpl::command_inout(const char *in_cmd,
 
 		out_any = device_class->command_handler(this,command,in_any);
 	}
-
 	catch (...)
 	{
 		// set back the device attribution for the thread

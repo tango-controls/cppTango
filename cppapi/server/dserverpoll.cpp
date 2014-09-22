@@ -1387,6 +1387,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
 	PollingThreadInfo *th_info;
 	int poll_th_id;
+	int th_id = omni_thread::self()->id();
 
 //
 // Find out which thread is in charge of the device.
@@ -1421,7 +1422,6 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			TangoMonitor &mon = th_info->poll_mon;
 			PollThCmd &shared_cmd = th_info->shared_data;
 
-			int th_id = omni_thread::self()->id();
 			if (th_id != poll_th_id)
 			{
 				omni_mutex_lock sync(mon);
@@ -1446,7 +1446,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 // Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
-				int th_id = omni_thread::self()->id();
+
 				if (th_id != poll_th_id)
 				{
 					if (local_request == false)
@@ -1642,10 +1642,11 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		tg->remove_dev_from_polling_map(dev_name);
 
 //
-// Kill the thread if needed and join
+// Kill the thread if needed and join but don do this now if the executing thread is the polling thread itself
+// (case of a polled command which itself decide to stop its own polling)
 //
 
-		if (kill_thread == true  && tg->is_svr_shutting_down() == false)
+		if (kill_thread == true  && tg->is_svr_shutting_down() == false && th_id != poll_th_id)
 		{
 			TangoMonitor &mon = th_info->poll_mon;
 			PollThCmd &shared_cmd = th_info->shared_data;
@@ -1704,6 +1705,20 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			dev->push_archive_event(obj_name,&ex);
 		if (att.change_event_subscribed() == true && att.is_change_event() == false)
 			dev->push_change_event(obj_name,&ex);
+	}
+
+//
+// In case of local_request and executing thread is the polling thread, ask our self to exit now that eveything else
+// is done
+//
+
+	if (kill_thread == true  && tg->is_svr_shutting_down() == false && th_id == poll_th_id && local_request == true)
+	{
+		tg->remove_polling_thread_info_by_id(poll_th_id);
+
+		PollThCmd &shared_cmd = th_info->shared_data;
+		shared_cmd.cmd_pending = true;
+		shared_cmd.cmd_code = POLL_EXIT;
 	}
 }
 
