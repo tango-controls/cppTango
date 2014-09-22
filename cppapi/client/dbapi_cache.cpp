@@ -215,6 +215,8 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 
 		if (proc_release >= 109)
 			prop_pipe_indexes(start_idx,stop_idx,classes_idx[cl_loop].class_pipe_prop,data_list);
+		else
+			classes_idx[cl_loop].class_pipe_prop.atts_idx = NULL;
 
 //
 // Device list
@@ -250,6 +252,8 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 
 			if (proc_release >= 109)
 				prop_pipe_indexes(start_idx,stop_idx,classes_idx[cl_loop].devs_idx[loop].dev_pipe_prop,data_list);
+			else
+				classes_idx[cl_loop].devs_idx[loop].dev_pipe_prop.atts_idx = NULL;
 		}
 	}
 
