@@ -98,6 +98,8 @@ public:
 		delete device2;
 		delete dserver;
 		delete dbserver;
+
+		Tango_sleep(5);
 	}
 
 	static SUITE_NAME *createSuite()
