@@ -264,7 +264,7 @@ else
 	sleep 2
 #	$INSTALL_DIR/$OS/bin/shared/$FWD_DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 	$INSTALL_DIR/$OS/bin/shared/$FWD_DS_NAME $DS_INST_NAME 1>/tmp/fwd_ds.out 2>&1 &
-	nohup $INSTALL_DIR/$OS/bin/shared/$DS_NAME $MCAST_INST_NAME 1>/dev/null 2>&1 &
+#	nohup $INSTALL_DIR/$OS/bin/shared/$DS_NAME $MCAST_INST_NAME 1>/dev/null 2>&1 &
 fi
 
 #
