@@ -101,9 +101,21 @@ public:
 			att_r.push_back("short_attr_rw");
 			confs_root_init = device1->get_attribute_config_ex(att_r);
 		}
+		catch (Tango::DevFailed &e)
+		{
+			cerr << "cxx_fwd_att.cpp test suite - DevFailed exception" << endl;
+			Except::print_exception(e);
+			string reason(e.errors[0].reason);
+			if (reason == "API_AttrNotFound")
+			{
+				string status = fwd_device->status();
+				cout << "Forward device status = " << status << endl;
+			}
+			exit(-1);
+		}
 		catch (CORBA::Exception &e)
 		{
-			cerr << "cxx_fwd_att.cpp test suite" << endl;
+			cerr << "cxx_fwd_att.cpp test suite - CORBA exception" << endl;
 			Except::print_exception(e);
 			exit(-1);
 		}
