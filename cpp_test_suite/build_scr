@@ -256,6 +256,8 @@ then
 else
 	echo "Shared libs used by device server"
 	ldd $INSTALL_DIR/$OS/bin/shared/$DS_NAME
+	rm /tmp/main_ds.out
+	rm /tmp/fwd_ds.out
 #	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME 1>/dev/null 2>&1 &
 	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME 1>/tmp/main_ds.out 2>&1 &
 	$INSTALL_DIR/$OS/bin/shared/$DS_NAME $DS_INST_NAME_2 1>/dev/null 2>&1 &
