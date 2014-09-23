@@ -103,6 +103,7 @@ public:
 		}
 		catch (CORBA::Exception &e)
 		{
+			cerr << "cxx_fwd_att.cpp test suite" << endl;
 			Except::print_exception(e);
 			exit(-1);
 		}
