@@ -339,6 +339,7 @@ else
 	
 	# run test suite
 	echo "runner command="$RUN_CMD
+	rm /tmp/orb.trace
 	export ORBtraceLevel=40
 	export ORBtraceTime=1
 	export ORBtraceFile=/tmp/orb.trace
