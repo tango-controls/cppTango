@@ -8518,7 +8518,7 @@ bool DeviceProxy::is_locked_by_me()
 // If the call is local, as the PID is already the good one, the caller is the locker
 //
 
-			if (full_ip_str == LOCAL_HOST)
+			if (full_ip_str == TG_LOCAL_HOST)
 				ret = true;
 			else
 			{
@@ -8603,7 +8603,7 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
 // Convert locker IP address to its name
 //
 
-		if (full_ip != LOCAL_HOST)
+		if (full_ip != TG_LOCAL_HOST)
 		{
 			struct sockaddr_in si;
 			si.sin_family = AF_INET;
@@ -8703,7 +8703,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 
 	if (f_addr.find(":unix:") != string::npos)
 	{
-		ip_addr = LOCAL_HOST;
+		ip_addr = TG_LOCAL_HOST;
 	}
 	else
 	{

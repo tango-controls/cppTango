@@ -146,7 +146,7 @@ const char* const NOTIFD_CHANNEL           = "notifd_channel";
 const int   DEFAULT_LOCK_VALIDITY          = 10;
 const char* const DEVICE_UNLOCKED_REASON   = "API_DeviceUnlocked";
 const int   MIN_LOCK_VALIDITY              = 2;
-const char* const LOCAL_HOST               = "localhost";
+const char* const TG_LOCAL_HOST            = "localhost";
 
 //
 // Client timeout as defined by omniORB4.0.0
