@@ -125,13 +125,16 @@ void leavefunc()
 
 	if (already_executed == false)
 	{
-		CORBA::ORB_ptr orb = au->get_orb();
-		orb->shutdown(true);
-		orb->destroy();
-
+		if (notifd_ec == NULL)
+		{
+			CORBA::ORB_ptr orb = au->get_orb();
+			orb->shutdown(true);
+			orb->destroy();
+		}
 		already_executed = true;
 		au->need_reset_already_flag(false);
 	}
+
 }
 
 
@@ -1675,6 +1678,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Check if this subscription is for a fwd attribute root attribute (when relevant)
 //
 
+	new_event_callback.fwd_att = false;
 	if (inter_event == false && pipe_event == false)
 	{
 		ApiUtil *au = ApiUtil::instance();
