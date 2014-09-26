@@ -403,13 +403,17 @@ void Connection::connect(string &corba_name)
 
 //
 // Narrow CORBA string name to CORBA object
-// First, try as a Device_3, then as a Device_2 and finally as a Device
-// In case of device server running on a crate which is suddently turned off,
-// the _narrow call takes several seconds before returning. Change the global
-// timeout before doing the _narrow() in order to limit this timeout
-// If the device is already connected, we can change the device timeout.
-// If the device is not already connected, we have to change the omniORB
-// global timeout
+// First, try as a Device_5, then as a Device_4, then as .... and finally as a Device
+//
+// But we have want to know if the connection to the device is OK or not.
+// The _narrow() call does not necessary generates a remote call. It all depends on the object IDL type
+// stored in the IOR. If in the IOR, the IDL is the same than the one on which the narrow is done (Device_5 on both
+// side for instance), then the _narrow call will not generate any remote call and therefore, we don know
+// if the connection is OK or NOT. This is the reason of the _non_existent() call.
+// In case the IDl in the IOR and in the narrow() call are different, then the _narrow() call try to execute a
+// remote _is_a() call and therefore tries to connect to the device. IN this case, the _non_existent() call is
+// useless. But because we don want to analyse the IOR ourself, we always call _non_existent()
+// Reset the connection timeout only after the _non_existent call.
 //
 
 			if (corba_name.find(DbObjName) != string::npos)
@@ -424,9 +428,6 @@ void Connection::connect(string &corba_name)
 			}
 
 			device_5 = Device_5::_narrow(obj);
-
-			if (connect_to_db == false)
-				omniORB::setClientConnectTimeout(0);
 
             if (CORBA::is_nil(device_5))
             {
@@ -456,17 +457,20 @@ void Connection::connect(string &corba_name)
                             }
                             else
                             {
+                            	device->_non_existent();
                                 version = 1;
                             }
                         }
                         else
                         {
+                        	device_2->_non_existent();
                             version = 2;
                             device = Device_2::_duplicate(device_2);
                         }
                     }
                     else
                     {
+						device_3->_non_existent();
                         version = 3;
                         device_2 = Device_3::_duplicate(device_3);
                         device = Device_3::_duplicate(device_3);
@@ -474,6 +478,7 @@ void Connection::connect(string &corba_name)
                 }
                 else
                 {
+					device_4->_non_existent();
                     version = 4;
                     device_3 = Device_4::_duplicate(device_4);
                     device_2 = Device_4::_duplicate(device_4);
@@ -482,12 +487,16 @@ void Connection::connect(string &corba_name)
             }
             else
             {
+				device_5->_non_existent();
                 version = 5;
                 device_4 = Device_5::_duplicate(device_5);
                 device_3 = Device_5::_duplicate(device_5);
                 device_2 = Device_5::_duplicate(device_5);
                 device = Device_5::_duplicate(device_5);
             }
+
+			if (connect_to_db == false)
+				omniORB::setClientConnectTimeout(0);
 			retry = false;
 
 //
