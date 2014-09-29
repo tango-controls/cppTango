@@ -530,11 +530,11 @@ check_return_value $ret
 #
 #	Now, test asynchronous features
 #
-#cd asyn;./runtest $*
+cd asyn;./runtest $*
 #
 #
 #	Now, test events
 #
-#cd ../event;./runtest $*
+cd ../event;./runtest $*
 
 
