@@ -30,14 +30,14 @@ int main(int argc, char **argv)
 	check_size("SpectrumAttr",sizeof(SpectrumAttr),84);	// Was 60 in V4	
 	check_size("ImageAttr",sizeof(ImageAttr),92);	// Was 68 in V4
 		
-	check_size("DeviceImpl",sizeof(DeviceImpl),804);
-	check_size("Device_2Impl",sizeof(Device_2Impl),812);
+	check_size("DeviceImpl",sizeof(DeviceImpl),1080);
+	check_size("Device_2Impl",sizeof(Device_2Impl),1088);
 	
-	check_size("DeviceClass",sizeof(DeviceClass),220);  	// Was 48 in V4
-	check_size("Util",sizeof(Util),560);	// Was 68 in V4
+	check_size("DeviceClass",sizeof(DeviceClass),236);  	// Was 48 in V4
+	check_size("Util",sizeof(Util),924);	// Was 68 in V4
 
-	check_size("Attribute",sizeof(Attribute),1448);		// Was 208 in V4
-	check_size("WAttribute",sizeof(WAttribute),1884);	// Was 252 in V4
+	check_size("Attribute",sizeof(Attribute),1608);		// Was 208 in V4
+	check_size("WAttribute",sizeof(WAttribute),2044);	// Was 252 in V4
 	check_size("MultiAttribute",sizeof(MultiAttribute),40);
 	
 	check_size("Command",sizeof(Command),40);
@@ -47,10 +47,10 @@ int main(int argc, char **argv)
 	check_size("TemplCommandInOut",sizeof(TemplCommandInOut<int,int>),72);
 
 	check_size("DeviceProxy",sizeof(DeviceProxy),360);	// Was 100 in V4
-	check_size("DeviceData",sizeof(DeviceData),12);
-	check_size("DeviceDataHistory",sizeof(DeviceDataHistory),44);
-	check_size("DeviceAttribute",sizeof(DeviceAttribute),112);	// Was 52 in V4
-	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),136);   // Was 76 in V4
+	check_size("DeviceData",sizeof(DeviceData),16);
+	check_size("DeviceDataHistory",sizeof(DeviceDataHistory),48);
+	check_size("DeviceAttribute",sizeof(DeviceAttribute),120);	// Was 52 in V4
+	check_size("DeviceAttributeHistory",sizeof(DeviceAttributeHistory),144);   // Was 76 in V4
 
 	check_size("ApiUtil",sizeof(ApiUtil),176);				
 	check_size("Database",sizeof(Database),380);    // Was 108 in V4
@@ -69,9 +69,12 @@ int main(int argc, char **argv)
 
 	check_size("Group",sizeof(Group),80);
 
-	check_size("MultiAttrProp<T>",sizeof(MultiAttrProp<DevShort>),284);
+	check_size("MultiAttrProp<T>",sizeof(MultiAttrProp<DevShort>),296);
 	check_size("AttrProp<T>",sizeof(AttrProp<DevShort>),16);
 	check_size("DoubleAttrProp<T>",sizeof(DoubleAttrProp<DevShort>),24);
+
+	check_size("DevicePipe",sizeof(DevicePipe),12);
+	check_size("DevicePipeBlob",sizeof(DevicePipeBlob),12);
 }
 
 void check_size(const char *class_name,long class_size,long std_size)
