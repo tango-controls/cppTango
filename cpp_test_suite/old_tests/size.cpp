@@ -73,8 +73,8 @@ int main(int argc, char **argv)
 	check_size("AttrProp<T>",sizeof(AttrProp<DevShort>),16);
 	check_size("DoubleAttrProp<T>",sizeof(DoubleAttrProp<DevShort>),24);
 
-	check_size("DevicePipe",sizeof(DevicePipe),12);
-	check_size("DevicePipeBlob",sizeof(DevicePipeBlob),12);
+	check_size("DevicePipe",sizeof(DevicePipe),68);
+	check_size("DevicePipeBlob",sizeof(DevicePipeBlob),48);
 }
 
 void check_size(const char *class_name,long class_size,long std_size)
