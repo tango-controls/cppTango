@@ -36,9 +36,9 @@ endif
 
 ifdef ubuntu
 ifdef dev
-OS=ubuntu1204
+OS=ubuntu1404
 else
-OS=ubuntu1004
+OS=ubuntu1204
 endif
 endif
 
