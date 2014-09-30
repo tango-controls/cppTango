@@ -45,11 +45,11 @@ EXCLUDE_FILES = 64.cpp helper.cpp zmcast01_simple.cpp zmcast02_local_remote.cpp 
 #COMPILE_FILES = pipe_event.cpp
 #COMPILE_FILES = add_rem_attr.cpp
 #COMPILE_FILES = cxx_zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
-#COMPILE_FILES = cxx_pipe_conf.cpp
+#COMPILE_FILES = cxx_attr_misc.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
 #COMPILE_FILES = att_type_event.cpp
 
-OS_DIR = ubuntu1204
+OS_DIR = ubuntu1404
 
 TANGO_BASE = /home/taurel/tango/cppapi_900
 TANGO_INCLUDE_DIR = $(TANGO_BASE)/client $(TANGO_BASE)/server

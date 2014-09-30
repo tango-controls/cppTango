@@ -13,7 +13,7 @@ fi
 if [ $# = 0 ]
 then
 	$echo "\nusage:  runtest ds_system\n"
-	$echo "ds_system can be ubuntu1204, python or \"jenkins <dir>\""
+	$echo "ds_system can be ubuntu1404, python or \"jenkins <dir>\""
 	exit 1
 fi
 
@@ -22,27 +22,17 @@ fi
 #
 
 PYTHON_HOST=controls02
-UBUNTU1204_HOST=pcrogucki
+UBUNTU1404_HOST=pcrogucki
 
 HOST=`hostname`
 DS_NAME=devTest
 
 
 case $1 in
-trogucki )
-	DIR=../bin
-	DEV1="dev/tomasz/1"
-	DEV2="dev/tomasz/2"
-	DEV3="dev/tomasz/3"
-	DEV1_ALIAS="et_alias"
-	ATTR_ALIAS="et_attr_alias"
-	INST_NAME=tomasz
-	;;
-#
-ubuntu1204 )
-	if [ $HOST != $UBUNTU1204_HOST ]
+ubuntu1404 )
+	if [ $HOST != $UBUNTU1404_HOST ]
 	then
-		$echo "For ubuntu12.04, test should run on "$UBUNTU1204_HOST
+		$echo "For ubuntu14.04, test should run on "$UBUNTU1404_HOST
 		exit 1
 	fi
 	DIR=../bin
