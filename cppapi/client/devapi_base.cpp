@@ -952,6 +952,7 @@ void Connection::get_fqdn(string &the_host)
             ptr = info;
             int nb_loop = 0;
             string myhost;
+            string::size_type pos;
 
             while (ptr != NULL)
             {
@@ -959,7 +960,7 @@ void Connection::get_fqdn(string &the_host)
                 {
                 	nb_loop++;
                     myhost = tmp_host;
-                    string::size_type pos = myhost.find('.');
+                    pos = myhost.find('.');
                     if (pos != string::npos)
                     {
                         string canon = myhost.substr(0,pos);
@@ -976,7 +977,15 @@ void Connection::get_fqdn(string &the_host)
             freeaddrinfo(info);
 
             if (host_found == false && nb_loop == 1)
-				the_host = myhost;
+			{
+				if (pos != string::npos)
+				{
+					the_host = the_host + myhost.substr(pos);
+				}
+				else
+					the_host = myhost;
+			}
+
         }
     }
 }
