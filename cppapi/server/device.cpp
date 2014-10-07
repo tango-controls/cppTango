@@ -1081,9 +1081,6 @@ Tango::DevState DeviceImpl::dev_state()
             (device_state == Tango::ALARM))
         {
 
-			if (device_state == Tango::ALARM)
-				device_state = Tango::ON;
-
 //
 // Build attribute lists
 //
@@ -1258,11 +1255,7 @@ Tango::DevState DeviceImpl::dev_state()
                     }
                 }
             }
-			else
-			{
-				if (device_state == Tango::ALARM)
-					device_state = Tango::ON;
-			}
+
 
 //
 // Check if one of the remaining attributes has its quality factor set to ALARM or WARNING. It is not necessary to do
