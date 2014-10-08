@@ -1390,14 +1390,19 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 //
 // If we have a CS for which TANGO_HOST is one alias, replace alias by original name in map key
+// but don't do this if the TANGO_HOSt has been specified as aone IP address
 //
 
 		string::size_type pos = channel_name.find(':',6);
 		string tg_host = channel_name.substr(8,pos - 8);
-		map<string,string>::iterator ite = alias_map.find(tg_host);
-		if (ite != alias_map.end())
+		int nb_point = count(tg_host.begin(),tg_host.end(),'.');
+		if (nb_point != 3)
 		{
-			channel_name.replace(8,tg_host.size(),ite->second);
+			map<string,string>::iterator ite = alias_map.find(tg_host);
+			if (ite != alias_map.end())
+			{
+				channel_name.replace(8,tg_host.size(),ite->second);
+			}
 		}
 
 		new_event_channel_struct.last_heartbeat = time(NULL);
