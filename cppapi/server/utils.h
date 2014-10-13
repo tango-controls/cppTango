@@ -970,6 +970,7 @@ private:
 	DeviceImpl *find_device_name_core(string &);
 	void check_orb_endpoint(int,char **);
 	void validate_sort(vector<string> &);
+    void check_end_point_specified(int,char **);
 
 	bool  							display_help;	// display help message flag
 	const vector<DeviceClass *>		*cl_list_ptr;	// Ptr to server device class list

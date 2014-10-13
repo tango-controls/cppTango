@@ -233,6 +233,15 @@ void Util::effective_job(int argc,char *argv[])
 		DServerSignal::instance();
 
 //
+// Check if the user specified a endPoint on the command line or using one
+// env. variable
+// If true, extract the IP address from the end point and store it
+// for future use in the ZMQ publiher(s)
+//
+
+        check_end_point_specified(argc,argv);
+
+//
 // Destroy the ORB created as a client (in case there is one)
 // Also destroy database objsect stored in the ApiUtil object. This is needed in case of CS running TAC
 // because the TAC device is stored in the db object and it references the destroyed ORB
@@ -316,37 +325,6 @@ void Util::effective_job(int argc,char *argv[])
 
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
-
-//
-// Check if the user specified a endPoint on the command line, using one env. variable
-// or in the omniORB config file.
-// If true, extract the IP address from the end point and store it
-// for future use in the ZMQ publiher(s)
-//
-
-		omni::orbOptions::sequenceString *seqStr = omni::orbOptions::singleton().dumpCurrentSet();
-		for (unsigned int loop = 0;loop < seqStr->length();loop++)
-		{
-			string str((*seqStr)[loop]);
-			string::size_type pos = str.find("giop:tcp:");
-			if (pos != string::npos)
-			{
-				string::size_type start,stop;
-				start = str.find(':');
-				++start;
-				start = str.find(':',start);
-				stop = str.find(':',start + 1);
-				++start;
-				string ip = str.substr(start,stop - start);
-
-				if (ip.empty() == false)
-				{
-					set_endpoint_specified(true);
-					set_specified_ip(ip);
-				}
-			}
-		}
-		delete seqStr;
 
 #ifndef TANGO_HAS_LOG4TANGO
 
@@ -447,6 +425,7 @@ void Util::effective_job(int argc,char *argv[])
 	{
 		throw;
 	}
+
 }
 
 
@@ -2651,6 +2630,166 @@ void Util::tango_host_from_fqan(string &fqan,string &host,int &port)
 	ss << tmp_port;
 	ss >> port;
 }
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::check_end_point_specified()
+//
+// description :
+//      Check if the user specified a endPoint
+//          - on the command line
+//          - using one env. variable
+//          - in  the omniORB config file (/etc/omniORB.cfg)
+//      If true, extract the IP address from the end point and store it for future use in the ZMQ publiher(s)
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Util::check_end_point_specified(int argc,char *argv[])
+{
+
+//
+// First look at command line arg
+//
+
+    for (int i = 2;i < argc;i++)
+    {
+        if (::strcmp("-ORBendPoint",argv[i]) == 0)
+        {
+            set_endpoint_specified(true);
+
+            string endPoint(argv[i + 1]);
+            string::size_type start,stop;
+            start = endPoint.find(':');
+            ++start;
+            start = endPoint.find(':',start);
+            stop = endPoint.find(':',start + 1);
+            ++start;
+            string ip = endPoint.substr(start,stop - start);
+
+            set_specified_ip(ip);
+            break;
+        }
+
+    }
+
+//
+// Then look in env. variables
+//
+
+    if (get_endpoint_specified() == false)
+    {
+        DummyDeviceProxy d;
+        string env_var;
+        if (d.get_env_var("ORBendPoint",env_var) == 0)
+        {
+            set_endpoint_specified(true);
+
+            string::size_type start,stop;
+            start = env_var.find(':');
+            ++start;
+            start = env_var.find(':',start);
+            stop = env_var.find(':',start + 1);
+            ++start;
+            string ip = env_var.substr(start,stop - start);
+
+            set_specified_ip(ip);
+        }
+    }
+
+//
+// Finally, look in config file but file name may be specified as command line option or as env. variable!!
+//
+
+    if (get_endpoint_specified() == false)
+    {
+
+//
+// First get file name
+//
+
+        string fname;
+        bool found = false;
+        for (int i = 2;i < argc;i++)
+        {
+            if (::strcmp("-ORBconfigFile",argv[i]) == 0)
+            {
+                fname = argv[i + 1];
+                found = true;
+                break;
+            }
+        }
+
+        if (found == false)
+        {
+            DummyDeviceProxy d;
+            string env_var;
+            if (d.get_env_var("ORBconfigFile",env_var) == 0)
+            {
+                fname = env_var;
+                found = true;
+            }
+        }
+
+        if (found == false)
+            fname = "/etc/omniORB.cfg";
+
+//
+// Now, look into the file if it exist
+//
+
+        string line;
+        ifstream conf_file(fname);
+
+        if (conf_file.is_open())
+        {
+            while (getline(conf_file,line))
+            {
+                if (line[0] == '#')
+                    continue;
+
+                string::size_type pos = line.find("endPoint");
+                if (pos != string::npos)
+                {
+                    string::iterator ite = remove(line.begin(),line.end(),' ');
+                    line.erase(ite,line.end());
+
+                    pos = line.find('=');
+                    if (pos != string::npos)
+                    {
+                        string value = line.substr(pos+1);
+                        if ((pos = value.find('#')) != string::npos)
+                            value.erase(pos);
+
+                        set_endpoint_specified(true);
+
+//
+// Option found in file, extract host ip
+//
+
+                        string::size_type start,stop;
+                        start = value.find(':');
+                        ++start;
+                        start = value.find(':',start);
+                        stop = value.find(':',start + 1);
+                        ++start;
+                        string ip = value.substr(start,stop - start);
+
+                        set_specified_ip(ip);
+                    }
+                }
+            }
+            conf_file.close();
+        }
+        else
+        {
+            stringstream ss;
+            ss << "Can't open omniORB configuration file (" << fname << ") to check endPoint option" << endl;
+            Except::throw_exception(API_InvalidArgs,ss.str(),"Util::check_end_point_specified");
+        }
+    }
+}
+
 
 #ifdef _TG_WINDOWS_
 //+------------------------------------------------------------------------------------------------------------------
