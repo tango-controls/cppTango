@@ -2739,7 +2739,7 @@ void Util::check_end_point_specified(int argc,char *argv[])
 //
 
         string line;
-        ifstream conf_file(fname);
+        ifstream conf_file(fname.c_str());
 
         if (conf_file.is_open())
         {
