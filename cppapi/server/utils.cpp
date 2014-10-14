@@ -283,6 +283,15 @@ void Util::effective_job(int argc,char *argv[])
 		}
 #endif
 
+//
+// Starting with omniORB 4.2, we need to add the throwTransientOnTimeout option for compatibility
+//
+
+        bool omni_42_compat = false;
+        CORBA::ULong omni_vers_hex = omniORB::versionHex();
+        if (omni_vers_hex > 0x04020000)
+            omni_42_compat = true;
+
 		if (get_endpoint_specified() == true)
 		{
 			const char *options[][2] = {
@@ -298,8 +307,16 @@ void Util::effective_job(int argc,char *argv[])
 #ifndef _TG_WINDOWS_
 				{"endPoint","giop:unix:"},
 #endif
+                {"throwTransientOnTimeout","1"},
 				{0,0}
 			};
+
+            if (omni_42_compat == false)
+            {
+                int nb_opt = sizeof(options) / sizeof (char *[2]);
+                options[nb_opt - 2][0] = NULL;
+                options[nb_opt - 2][1] = NULL;
+            }
 
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
@@ -320,8 +337,16 @@ void Util::effective_job(int argc,char *argv[])
 				{"endPoint","giop:tcp::"},
 				{"endPoint","giop:unix:"},
 #endif
+                {"throwTransientOnTimeout","1"},
 				{0,0}
 			};
+
+            if (omni_42_compat == false)
+            {
+                int nb_opt = sizeof(options) / sizeof (char *[2]);
+                options[nb_opt - 2][0] = NULL;
+                options[nb_opt - 2][1] = NULL;
+            }
 
 			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
 		}
@@ -2732,7 +2757,7 @@ void Util::check_end_point_specified(int argc,char *argv[])
         }
 
         if (found == false)
-            fname = "/etc/omniORB.cfg";
+            fname = DEFAULT_OMNI_CONF_FILE;
 
 //
 // Now, look into the file if it exist
@@ -2783,9 +2808,12 @@ void Util::check_end_point_specified(int argc,char *argv[])
         }
         else
         {
-            stringstream ss;
-            ss << "Can't open omniORB configuration file (" << fname << ") to check endPoint option" << endl;
-            Except::throw_exception(API_InvalidArgs,ss.str(),"Util::check_end_point_specified");
+            if (fname != DEFAULT_OMNI_CONF_FILE)
+            {
+                 stringstream ss;
+                ss << "Can't open omniORB configuration file (" << fname << ") to check endPoint option" << endl;
+                Except::throw_exception(API_InvalidArgs,ss.str(),"Util::check_end_point_specified");
+            }
         }
     }
 }

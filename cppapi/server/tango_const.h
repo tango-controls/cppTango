@@ -105,6 +105,16 @@ const int   TANGO_FLOAT_PRECISION          = 15;
 const char * const NoClass				   = "noclass";
 
 //
+// omniORB default configuration file
+//
+
+#ifdef _TG_WINDOWS_
+const char* const DEFAULT_OMNI_CONF_FILE   = "C:\\OMNIORB.CFG";
+#else
+const char* const DEFAULT_OMNI_CONF_FILE   = "/etc/omniORB.cfg";
+#endif
+
+//
 // Event related define
 //
 
