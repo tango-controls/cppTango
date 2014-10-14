@@ -307,7 +307,7 @@ void Util::effective_job(int argc,char *argv[])
 #ifndef _TG_WINDOWS_
 				{"endPoint","giop:unix:"},
 #endif
-                {"throwTransientOnTimeout","1"},
+                {"throwTransientOnTimeOut","1"},
 				{0,0}
 			};
 
@@ -337,7 +337,7 @@ void Util::effective_job(int argc,char *argv[])
 				{"endPoint","giop:tcp::"},
 				{"endPoint","giop:unix:"},
 #endif
-                {"throwTransientOnTimeout","1"},
+                {"throwTransientOnTimeOut","1"},
 				{0,0}
 			};
 
