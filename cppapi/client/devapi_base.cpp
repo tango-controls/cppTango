@@ -943,7 +943,8 @@ void Connection::get_fqdn(string &the_host)
 // Try to get FQDN
 //
 
-    for(size_t i = 0; i < ip_list.size() && !host_found; i++)
+    size_t i;
+    for(i = 0; i < ip_list.size() && !host_found; i++)
     {
         int result = getaddrinfo(ip_list[i].c_str(),NULL,&hints,&info);
 
@@ -976,7 +977,7 @@ void Connection::get_fqdn(string &the_host)
             }
             freeaddrinfo(info);
 
-            if (host_found == false && nb_loop == 1)
+            if (host_found == false && nb_loop == 1 && i == (ip_list.size() - 1))
 			{
 				if (pos != string::npos)
 				{
@@ -985,7 +986,6 @@ void Connection::get_fqdn(string &the_host)
 				else
 					the_host = myhost;
 			}
-
         }
     }
 }
