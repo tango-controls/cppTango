@@ -2115,6 +2115,15 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				else if (data_type == ATT_VALUE && error == false)
 				{
 					int disc = ((int *)data_ptr)[1];
+					if (endian == 0)
+                    {
+                        char first_byte = disc & 0xFF;
+                        char second_byte = (disc & 0xFF00) >> 8;
+                        char third_byte = (disc & 0xFF0000) >> 16;
+                        char forth_byte = (disc & 0xFF000000) >> 24;
+                        disc = 0;
+                        disc = forth_byte + (third_byte << 8) + (second_byte << 16) + (first_byte << 24);
+                    }
 					if (disc == ATT_DOUBLE || disc == ATT_LONG64 || disc == ATT_ULONG64)
 						data64 = true;
 				}
@@ -3089,7 +3098,7 @@ void ZmqAttrValUnion::operator<<= (TangoCdrMemoryStream& _n)
             {
             	omni::ptr_arith_t in = (omni::ptr_arith_t)_n.get_mkr_in_buf();
 				omni::ptr_arith_t p1 = _n.align_to(in,omni::ALIGN_8);
-				_n.set_mkr_in_buf((void *)p1);
+                _n.set_mkr_in_buf((void *)p1);
                 init_seq<DevDouble,DevVarDoubleArray>(data_ptr,length,_n);
             }
             break;
