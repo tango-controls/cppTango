@@ -467,7 +467,7 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  *
  * The following piece of code is an example of how to use this class exception
  * @code
- * catch (Tango::NamedDevFailed &e)
+ * catch (Tango::NamedDevFailedList &e)
  * {
  *    long nb_faulty = e.get_faulty_attr_nb();
  *    for (long i = 0;i < nb_faulty;i++)
