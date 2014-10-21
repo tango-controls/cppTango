@@ -117,6 +117,8 @@ DbDatum &DbDatum::operator=(const DbDatum &rval)
 #else
 	if (rval.ext != NULL)
 	{
+	    if (ext != Tango_nullptr)
+            delete ext;
 		ext = new DbDatumExt;
 		*ext = *rval.ext;
 	}
