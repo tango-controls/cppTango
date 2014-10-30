@@ -1100,7 +1100,7 @@ public :
  * @code
  * string parity;
  * DeviceAttribute sl_parity = my_device->read_attribute("parity");
- * sl_parity.reset_exceptions(DeviceData::isempty_flag);
+ * sl_parity.reset_exceptions(DeviceAttribute::isempty_flag);
  *
  * if (! sl_parity.is_empty())
  * {
