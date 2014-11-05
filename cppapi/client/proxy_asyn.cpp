@@ -732,7 +732,18 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 		names[i] = attr_names[i].c_str();
 
 	CORBA::Request_ptr request;
-	if (version >= 4)
+	if (version >= 5)
+    {
+		ClntIdent ci;
+		ApiUtil *au = ApiUtil::instance();
+		ci.cpp_clnt(au->get_client_pid());
+		request = Connection::device_5->_request("read_attributes_5");
+		request->add_in_arg() <<= names;
+		request->add_in_arg() <<= source;
+		request->add_in_arg() <<= ci;
+		request->set_return_type(Tango::_tc_AttributeValueList_5);
+    }
+	else if (version == 4)
 	{
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();
@@ -870,34 +881,46 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		const Tango::AttributeValueList *received;
 		const Tango::AttributeValueList_3 *received_3;
 		const Tango::AttributeValueList_4 *received_4;
+		const Tango::AttributeValueList_5 *received_5;
+
 		CORBA::Any &dii_any = req.request->return_value();
 		unsigned long nb_received;
 
-		if (version < 3)
-		{
-			dii_any >>= received;
-			nb_received = received->length();
-		}
-		else if (version == 3)
-		{
-			dii_any >>= received_3;
-			nb_received = received_3->length();
-		}
-		else
-		{
+        switch (version)
+        {
+            case 5:
+			dii_any >>= received_5;
+			nb_received = received_5->length();
+            break;
+
+            case 4:
 			dii_any >>= received_4;
 			nb_received = received_4->length();
-		}
+            break;
+
+            case 3:
+			dii_any >>= received_3;
+			nb_received = received_3->length();
+            break;
+
+            default:
+			dii_any >>= received;
+			nb_received = received->length();
+            break;
+        }
+
 		dev_attr->resize(nb_received);
 
 		for (unsigned long i=0; i < nb_received; i++)
 		{
 			if (version >= 3)
 			{
-				if (version == 3)
-					ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
-				else
+			    if (version == 5)
+                    ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
+				else if (version == 4)
 					ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
+				else
+					ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
 
 //
 // Add an error in the error stack in case there is one
@@ -1026,22 +1049,37 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 		const Tango::AttributeValueList *received;
 		const Tango::AttributeValueList_3 *received_3;
 		const Tango::AttributeValueList_4 *received_4;
+		const Tango::AttributeValueList_5 *received_5;
 
 		CORBA::Any &dii_any = req.request->return_value();
 
-		if (version < 3)
-			dii_any >>= received;
-		else if (version == 3)
-			dii_any >>= received_3;
-		else
-			dii_any >>= received_4;
+        switch (version)
+        {
+            case 5:
+            dii_any >>= received_5;
+            break;
+
+            case 4:
+            dii_any >>= received_4;
+            break;
+
+            case 3:
+            dii_any >>= received_3;
+            break;
+
+            default:
+            dii_any >>= received;
+            break;
+        }
 
 		if (version >= 3)
 		{
-			if (version == 3)
-				ApiUtil::attr_to_device(NULL,&((*received_3)[0]),version,dev_attr);
-			else
+		    if (version == 5)
+                ApiUtil::attr_to_device(&((*received_5)[0]),version,dev_attr);
+			else if (version == 4)
 				ApiUtil::attr_to_device(&((*received_4)[0]),version,dev_attr);
+			else
+                ApiUtil::attr_to_device(NULL,&((*received_3)[0]),version,dev_attr);
 
 //
 // Add an error in the error stack in case there is one
@@ -1206,24 +1244,33 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	const Tango::AttributeValueList *received;
 	const Tango::AttributeValueList_3 *received_3;
 	const Tango::AttributeValueList_4 *received_4;
+	const Tango::AttributeValueList_5 *received_5;
 	unsigned long nb_received;
 
 	CORBA::Any &dii_any = req.request->return_value();
-	if (version < 3)
-	{
-		dii_any >>= received;
-		nb_received = received->length();
-	}
-	else if (version == 3)
-	{
-		dii_any >>= received_3;
-		nb_received = received_3->length();
-	}
-	else
-	{
+
+    switch (version)
+    {
+        case 5:
+        dii_any >>= received_5;
+        nb_received = received_5->length();
+        break;
+
+        case 4:
 		dii_any >>= received_4;
 		nb_received = received_4->length();
-	}
+        break;
+
+        case 3:
+		dii_any >>= received_3;
+		nb_received = received_3->length();
+        break;
+
+        default:
+		dii_any >>= received;
+		nb_received = received->length();
+        break;
+    }
 
 	dev_attr->resize(nb_received);
 
@@ -1231,11 +1278,12 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	{
 		if (version >= 3)
 		{
-			if (version == 3)
-				ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
-			else
+			if (version == 5)
+                ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
+			else if (version == 4)
 				ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
-
+            else
+				ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
 
 //
 // Add an error in the error stack in case there is one
@@ -1398,22 +1446,37 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 	const Tango::AttributeValueList *received;
 	const Tango::AttributeValueList_3 *received_3;
 	const Tango::AttributeValueList_4 *received_4;
+	const Tango::AttributeValueList_5 *received_5;
 
 	CORBA::Any &dii_any = req.request->return_value();
 
-	if (version < 3)
-		dii_any >>= received;
-	else if (version == 3)
-		dii_any >>= received_3;
-	else
+    switch (version)
+    {
+        case 5:
+		dii_any >>= received_5;
+        break;
+
+        case 4:
 		dii_any >>= received_4;
+        break;
+
+        case 3:
+		dii_any >>= received_3;
+        break;
+
+        default:
+        dii_any >>= received;
+        break;
+    }
 
 	if (version >= 3)
 	{
-		if (version == 3)
-			ApiUtil::attr_to_device(NULL,&((*received_3)[0]),version,dev_attr);
-		else
+	    if (version == 5)
+            ApiUtil::attr_to_device(&((*received_5)[0]),version,dev_attr);
+		else if (version == 4)
 			ApiUtil::attr_to_device(&((*received_4)[0]),version,dev_attr);
+		else
+			ApiUtil::attr_to_device(NULL,&((*received_3)[0]),version,dev_attr);
 
 //
 // Add an error in the error stack in case there is one

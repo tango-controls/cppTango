@@ -465,35 +465,46 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 		const Tango::AttributeValueList *received;
 		const Tango::AttributeValueList_3 *received_3;
 		const Tango::AttributeValueList_4 *received_4;
+		const Tango::AttributeValueList_5 *received_5;
 		unsigned long nb_received;
 
 		CORBA::Any &dii_any = req->return_value();
 
-		if (version < 3)
-		{
-			dii_any >>= received;
-			nb_received = received->length();
-		}
-		else if (version == 3)
-		{
-			dii_any >>= received_3;
-			nb_received = received_3->length();
-		}
-		else
-		{
+        switch (version)
+        {
+            case 5:
+			dii_any >>= received_5;
+			nb_received = received_5->length();
+            break;
+
+            case 4:
 			dii_any >>= received_4;
 			nb_received = received_4->length();
-		}
+            break;
+
+            case 3:
+			dii_any >>= received_3;
+			nb_received = received_3->length();
+            break;
+
+            default:
+			dii_any >>= received;
+			nb_received = received->length();
+            break;
+        }
+
 		dev_attr->resize(nb_received);
 
 		for (unsigned long i=0; i < nb_received; i++)
 		{
 			if (version >= 3)
 			{
-				if (version == 3)
-					ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
-				else
+			    if (version == 5)
+                    ApiUtil::attr_to_device(&((*received_5)[i]),version,&((*dev_attr)[i]));
+				else if (version == 4)
 					ApiUtil::attr_to_device(&((*received_4)[i]),version,&((*dev_attr)[i]));
+				else
+					ApiUtil::attr_to_device(NULL,&((*received_3)[i]),version,&((*dev_attr)[i]));
 
 
 //
@@ -1119,7 +1130,19 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 	for (int i = 0;i < nb_names;i++)
 		names[i] = attr_names[i].c_str();
 
-	if (version >= 4)
+	if (version >= 5)
+	{
+		ClntIdent ci;
+		ApiUtil *au = ApiUtil::instance();
+		ci.cpp_clnt(au->get_client_pid());
+
+		req_seq[0] = Connection::device_5->_request("read_attributes_5");
+		req_seq[0]->add_in_arg() <<= names;
+		req_seq[0]->add_in_arg() <<= source;
+		req_seq[0]->add_in_arg() <<= ci;
+		req_seq[0]->set_return_type(Tango::_tc_AttributeValueList_5);
+	}
+	else if (version == 4)
 	{
 		ClntIdent ci;
 		ApiUtil *au = ApiUtil::instance();
