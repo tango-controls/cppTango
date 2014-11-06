@@ -599,7 +599,8 @@ private :
     DevErrorList_var                        del;
 
     int                                     old_poll_nb;
-    omni_mutex								subscription_mutex;
+    TangoMonitor							subscription_monitor;
+    omni_mutex                              sock_bound_mutex;
     bool									ctrl_socket_bound;
 
 	void *run_undetached(void *arg);
@@ -611,8 +612,8 @@ private :
     void process_event(zmq_msg_t &,zmq_msg_t &,zmq_msg_t &,zmq_msg_t &);
     void multi_tango_host(zmq::socket_t *,SocketCmd,string &);
 	void print_error_message(const char *mess) {ApiUtil *au=ApiUtil::instance();au->print_error_message(mess);}
-	void set_ctrl_sock_bound() {subscription_mutex.lock();ctrl_socket_bound=true;subscription_mutex.unlock();}
-	bool is_ctrl_sock_bound() {bool _b;subscription_mutex.lock();_b=ctrl_socket_bound;subscription_mutex.unlock();return _b;}
+	void set_ctrl_sock_bound() {sock_bound_mutex.lock();ctrl_socket_bound=true;sock_bound_mutex.unlock();}
+	bool is_ctrl_sock_bound() {bool _b;sock_bound_mutex.lock();_b=ctrl_socket_bound;sock_bound_mutex.unlock();return _b;}
 
     friend class DelayEvent;
 };
