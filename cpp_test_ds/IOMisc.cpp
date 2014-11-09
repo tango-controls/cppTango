@@ -2786,6 +2786,8 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
 
+Tango_sleep(1);
+
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Double_attr");
@@ -2811,7 +2813,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -2841,7 +2843,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
-
+Tango_sleep(1);
 			props_vec.push_back("Double_attr");
 			props_vec.push_back(multi_prop_get.label);
 			props_vec.push_back(multi_prop_get.description);
@@ -2865,6 +2867,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -2905,7 +2908,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Float_attr");
@@ -2931,7 +2934,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -2961,7 +2964,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			attr.set_properties(multi_prop);
 
 			attr.get_properties(multi_prop_get);
-
+Tango_sleep(1);
 			props_vec.push_back("Float_attr");
 			props_vec.push_back(multi_prop_get.label);
 			props_vec.push_back(multi_prop_get.description);
@@ -2985,6 +2988,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -2993,6 +2997,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 				attr_ptr->set_upd_properties(conf);
 			throw e;
 		}
+
 
 		try
 		{
@@ -3025,7 +3030,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Long_attr");
@@ -3051,7 +3056,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3079,7 +3084,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Long_attr");
@@ -3105,6 +3110,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3145,7 +3151,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Long64_attr");
@@ -3171,7 +3177,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3199,7 +3205,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Long64_attr");
@@ -3225,6 +3231,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3233,6 +3240,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 				attr_ptr->set_upd_properties(conf);
 			throw e;
 		}
+
 
 		try
 		{
@@ -3265,7 +3273,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Short_attr");
@@ -3291,7 +3299,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3319,7 +3327,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Short_attr");
@@ -3345,6 +3353,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3353,6 +3362,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 				attr_ptr->set_upd_properties(conf);
 			throw e;
 		}
+
 
 		try
 		{
@@ -3385,7 +3395,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("UChar_attr");
@@ -3411,7 +3421,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3439,7 +3449,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("UChar_attr");
@@ -3465,6 +3475,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3505,7 +3516,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong_attr");
@@ -3531,7 +3542,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3559,7 +3570,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong_attr");
@@ -3585,6 +3596,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3593,6 +3605,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 				attr_ptr->set_upd_properties(conf);
 			throw e;
 		}
+
 
 		try
 		{
@@ -3625,7 +3638,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong64_attr");
@@ -3651,7 +3664,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3679,7 +3692,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("ULong64_attr");
@@ -3705,6 +3718,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3745,7 +3759,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("UShort_attr");
@@ -3771,7 +3785,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3799,7 +3813,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("UShort_attr");
@@ -3825,6 +3839,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -3865,7 +3880,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			multi_prop.archive_rel_change = "0.6,0.7";
 			multi_prop.archive_abs_change = "80,90";
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Encoded_attr");
@@ -3891,7 +3906,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
-
+Tango_sleep(1);
 			// test properties provided as actual values
 			attr.get_properties(multi_prop);
 			multi_prop.label = "Test_label";
@@ -3919,7 +3934,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			set_vect(changes, 81.0, 91.0);
 			multi_prop.archive_abs_change = changes;
 			attr.set_properties(multi_prop);
-
+Tango_sleep(1);
 			attr.get_properties(multi_prop_get);
 
 			props_vec.push_back("Encoded_attr");
@@ -3945,6 +3960,7 @@ CORBA::Any *SetGetProperties::execute(Tango::DeviceImpl *device, const CORBA::An
 			props_vec.push_back(multi_prop_get.archive_abs_change);
 
 			attr.set_upd_properties(conf);
+Tango_sleep(1);
 		}
 		catch (Tango::DevFailed &e)
 		{
