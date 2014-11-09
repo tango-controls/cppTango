@@ -120,10 +120,12 @@ endif
 
 ifdef prefix
 #ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq4.0.5/$(BIN_DIR)
 else
 #ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
-ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq4.0.5/$(BIN_DIR)
 endif
 
 ##############################################################################
