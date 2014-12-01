@@ -1,21 +1,21 @@
 #
-#		Rules for Tango lib generation
+#       Rules for Tango lib generation
 #
 
 
 ##############################################################################
 #
-#		PLEASE, Update library version here (for versioning support)
+#       PLEASE, Update library version here (for versioning support)
 #
 ##############################################################################
 
-MAJOR_VERS = 8
+MAJOR_VERS = 9
 MINOR_VERS = 0
 PATCH_VERS = 5
 
 ##############################################################################
 #
-# 		The base directory
+#       The base directory
 #
 ##############################################################################
 
@@ -36,17 +36,17 @@ endif
 
 ifdef ubuntu
 ifdef dev
-OS=ubuntu1204
+OS=ubuntu1404
 else
-OS=ubuntu1004
+OS=ubuntu1204
 endif
 endif
 
 ##############################################################################
 #
-# 		The directory where generated libs will be placed
-#		They will automatically be created if they do not
-#		already exist.
+#       The directory where generated libs will be placed
+#       They will automatically be created if they do not
+#       already exist.
 #
 ##############################################################################
 
@@ -73,7 +73,7 @@ endif
 
 ##############################################################################
 #
-# 		Installation directory for include files and libraries
+#       Installation directory for include files and libraries
 #
 ##############################################################################
 
@@ -88,44 +88,49 @@ endif
 
 ##############################################################################
 #
-# 		OmniORB base directory
+#       OmniORB base directory
 #
 ##############################################################################
 
 ifdef prefix
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.6/$(BIN_DIR)
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.7/$(BIN_DIR)
 else
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.6/$(BIN_DIR)
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.7/$(BIN_DIR)
+#OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.2.0/$(BIN_DIR)
 endif
 
 ##############################################################################
 #
-# 		Log4tango base directory
+#       Log4tango base directory
 #
 ##############################################################################
 
 ifdef prefix
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango5.0.1/$(BIN_DIR)
 else
-LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango4.0.6/$(BIN_DIR)
+LOG4TANGO_BASE = $(TANGO_HOME)/tools/log4tango-release/log4tango5.0.1/$(BIN_DIR)
 endif
 
 ##############################################################################
 #
-# 		ZMQ base directory
+#       ZMQ base directory
 #
 ##############################################################################
 
 
 ifdef prefix
-ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq4.0.5/$(BIN_DIR)
 else
-ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq/$(BIN_DIR)
+#ZMQ_BASE = $(TANGO_HOME)/transport/zmq3.2.4/$(BIN_DIR)
+ZMQ_BASE = $(TANGO_HOME)/transport/zmq4.0.5/$(BIN_DIR)
 endif
 
 ##############################################################################
 #
-# 		doxygen base directory
+#       doxygen base directory
 #
 ##############################################################################
 

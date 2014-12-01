@@ -1,39 +1,36 @@
-//=============================================================================
+//====================================================================================================================
 //
 // file :               BlackBox.h
 //
-// description :        Include for the BlackBox object. This class implements
-//                      the black box objects which keep tracks of all
-//			operation invoke on a device or attribute retrieved.
-//			This black box is managed as a circular buffer
+// description :        Include for the BlackBox object. This class implements the black box objects which keep tracks
+//						of all operation invoke on a device or attribute retrieved.
+//						This black box is managed as a circular buffer
 //
 // project :            TANGO
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//====================================================================================================================
 
 #ifndef _BLACKBOX_H
 #define _BLACKBOX_H
@@ -75,14 +72,14 @@ public:
 	friend ostream &operator<<(ostream &o_str,const client_addr &ca);
 };
 
-//=============================================================================
+//==================================================================================================================
 //
 //			The BlackBoxElt class
 //
-// description :	Class to store all the necessary information which will
-//			be stored and returned to client on request
+// description :
+//		Class to store all the necessary information which will be stored and returned to client on request
 //
-//=============================================================================
+//==================================================================================================================
 
 #define 	DEFAULT_ATTR_NB		10
 
@@ -135,7 +132,17 @@ enum BlackBoxElt_OpType
 	Op_Write_Attr_4,
 	Op_Read_Attr_4,
 	Op_Set_Attr_Config_4,
-	Op_Write_Read_Attributes_4
+	Op_Write_Read_Attributes_4,
+	Op_Get_Attr_Config_5,
+	Op_Set_Attr_Config_5,
+	Op_Read_Attr_5,
+	Op_Write_Read_Attributes_5,
+	Op_Read_Attr_history_5,
+	Op_Get_Pipe_Config_5,
+	Op_Set_Pipe_Config_5,
+	Op_Read_Pipe_5,
+	Op_Write_Pipe_5,
+	Op_Write_Read_Pipe_5
 };
 
 class BlackBoxElt
@@ -169,14 +176,14 @@ inline bool operator==(const BlackBoxElt &,const BlackBoxElt &)
 	return true;
 }
 
-//=============================================================================
+//==================================================================================================================
 //
 //			The BlackBox class
 //
-// description :	Class to implement the black box itself. This is mainly
-//			a vector of BlackBoxElt managed as a circular vector
+// description :
+//		Class to implement the black box itself. This is mainly a vector of BlackBoxElt managed as a circular vector
 //
-//=============================================================================
+//===================================================================================================================
 
 class BlackBox
 {
@@ -188,9 +195,11 @@ public:
 	void insert_cmd(const char *,long vers=1,DevSource=Tango::DEV);
 	void insert_attr(const Tango::DevVarStringArray &,long vers=1,DevSource=Tango::DEV);
 	void insert_attr(const Tango::DevVarStringArray &,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
+	void insert_attr(const char *,const ClntIdent &,long);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
 	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
-	void insert_wr_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
+	void insert_attr(const Tango::DevPipeData &,const ClntIdent &,long vers);
+	void insert_wr_attr(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,const ClntIdent &,long vers);
 	void insert_op(BlackBoxElt_OpType);
 	void insert_op(BlackBoxElt_OpType,const ClntIdent &);
 
@@ -211,7 +220,7 @@ private:
 	void insert_op_nl(BlackBoxElt_OpType);
 	void insert_attr_nl(const Tango::AttributeValueList &,long);
 	void insert_attr_nl_4(const Tango::AttributeValueList_4 &);
-	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,long);
+	void insert_attr_wr_nl(const Tango::AttributeValueList_4 &,const Tango::DevVarStringArray &,long);
 
 	vector<BlackBoxElt>	box;
 	long				insert_elt;

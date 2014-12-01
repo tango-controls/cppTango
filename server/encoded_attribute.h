@@ -8,7 +8,7 @@
 //
 // author(s) :		JL Pons
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //                      European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -45,6 +45,9 @@ namespace Tango
 
 /**
  * This class provides method to deal with Tango::DevEncoded attribute format.
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class EncodedAttribute
@@ -192,6 +195,8 @@ public:
  void decode_gray16(DeviceAttribute *attr,int *width,int *height,unsigned short **gray16);
 
 //@}
+
+/// @privatesection
 
  DevUChar  *get_data()
  {if (index==0)

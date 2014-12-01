@@ -20,7 +20,7 @@
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -85,9 +85,9 @@ public:
 #endif
 
 private:
-	string		attr_name;
-	string		attr_value;
-	long		attr_lg;
+	string			attr_name;
+	string			attr_value;
+	long			attr_lg;
 };
 
 
@@ -114,7 +114,7 @@ public:
 
 	vector<Tango::Attr *> &get_attr_list() {return attr_list;}
 	Attr &get_attr(string &attr_name);
-	void remove_attr(string &,const string &);
+	void remove_attr(const string &,const string &);
 
 protected:
 	vector<Tango::Attr *>			attr_list;

@@ -1,9 +1,8 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :		attrdesc.h
 //
-// description :	Include file for the Attr classes hierarchy.
-//			Three classes are declared in this file :
+// description :	Include file for the Attr classes hierarchy. Three classes are declared in this file :
 //				The Attr class
 //				The SpectrumAttr class
 //				The ImageAttr class
@@ -12,29 +11,27 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//===================================================================================================================
 
 #ifndef _ATTRDESC_H
 #define _ATTRDESC_H
@@ -59,6 +56,9 @@ class WAttribute;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class UserDefaultAttrProp
@@ -71,10 +71,8 @@ public:
 /**
  * Constructs a newly allocated UserDefaultAttrProp object.
  */
-	UserDefaultAttrProp():ext(Tango_NullPtr) {}
+	UserDefaultAttrProp():ext(Tango_nullptr) {}
 //@}
-
-	~UserDefaultAttrProp() {}
 
 /**@name Set default property methods */
 //@{
@@ -277,33 +275,51 @@ public:
 	{
 		archive_period = def_archive_period;
 	}
+
+/**
+ * Set default enumeration labels
+ *
+ * @param	def_enum_labels	The enumeration labels
+ */
+	void set_enum_labels(vector<string> &def_enum_labels)
+	{
+		for (size_t loop = 0;loop < def_enum_labels.size();loop++)
+		{
+			enum_labels = enum_labels + def_enum_labels[loop];
+			if (loop != def_enum_labels.size() - 1)
+				enum_labels = enum_labels + ',';
+		}
+	}
 //@}
-	
+
+/// @privatesection
+	~UserDefaultAttrProp() {}
+
 	void set_abs_change(const char *def_abs_change)
 	{
 		set_event_abs_change(def_abs_change);
 	}
-	
+
 	void set_rel_change(const char *def_rel_change)
 	{
 		set_event_rel_change(def_rel_change);
 	}
-	
+
 	void set_period(const char *def_period)
 	{
 		set_event_period(def_period);
 	}
-	
+
 	void set_archive_abs_change(const char *def_archive_abs_change)
 	{
 		set_archive_event_abs_change(def_archive_abs_change);
 	}
-	
+
 	void set_archive_rel_change(const char *def_archive_rel_change)
 	{
 		set_archive_event_rel_change(def_archive_rel_change);
 	}
-	
+
 	void set_archive_period(const char *def_archive_period)
 	{
 		set_archive_event_period(def_archive_period);
@@ -329,6 +345,7 @@ public:
 	string			archive_abs_change;
 	string			archive_rel_change;
 	string			archive_period;
+	string			enum_labels;
 
 private:
     class UserDefaultAttrPropExt
@@ -351,6 +368,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Attr
@@ -389,6 +409,8 @@ public:
 	Attr(const char *name,long data_type,Tango::DispLevel disp,
 	     Tango::AttrWriteType w_type = Tango::READ,
 	     const char *assoc = AssocWritNotSpec);
+
+	Attr(const char *name,Tango::DispLevel disp = Tango::OPERATOR);
 //@}
 
 /**@name Destructor
@@ -413,17 +435,18 @@ public:
  *
  * @param	level	The attribute display level
  */
- 	void set_disp_level(Tango::DispLevel level) {ext->disp_level = level;}
+ 	void set_disp_level(Tango::DispLevel level) {disp_level = level;}
 /**
  * Set the attribute polling update period
  *
  * @param	update	The attribute polling period (in mS)
  */
- 	void set_polling_period(long update) {ext->poll_period = update;}
+ 	void set_polling_period(long update) {poll_period = update;}
 /**
  * Set the attribute as memorized in database (only for scalar and writable
  * attribute)
- * With no argument the setpoint will be written to the attribute during initialisation!
+ * By default the setpoint will be written to the attribute during initialisation!
+ * Use method set_memorized_init() with false as argument if you don't want this feature
  */
  	void set_memorized();
 /**
@@ -445,21 +468,21 @@ public:
  * @param detect Triggers the verification of the change event properties when set to true.
  */
 	void set_change_event(bool implemented, bool detect)
-			{ ext->fire_change_event  = implemented;
-			  ext->check_change_event = detect; }
+			{ fire_change_event  = implemented;
+			  check_change_event = detect; }
 /**
  * Check if the change event is fired manually for this attribute.
  *
  * @return A boolean set to true if a manual fire change event is implemented.
  */
-	bool is_change_event() {return ext->fire_change_event;}
+	bool is_change_event() {return fire_change_event;}
 /**
  * Check if the change event criteria should be checked when firing
  * the event manually.
  *
  * @return A boolean set to true if a change event criteria will be checked.
  */
-	bool is_check_change_criteria() {return ext->check_change_event;}
+	bool is_check_change_criteria() {return check_change_event;}
 /**
  * Set a flag to indicate that the server fires archive events manually without
  * the polling to be started for the attribute
@@ -471,48 +494,49 @@ public:
  * @param detect Triggers the verification of the archive event properties when set to true.
  */
 	void set_archive_event(bool implemented, bool detect)
-			{ext->fire_archive_event  = implemented;
-			 ext->check_archive_event = detect;}
+			{fire_archive_event  = implemented;
+			 check_archive_event = detect;}
 
 /**
  * Check if the archive event is fired manually for this attribute.
  *
  * @return A boolean set to true if a manual fire archive event is implemented.
  */
-	bool is_archive_event() {return ext->fire_archive_event;}
+	bool is_archive_event() {return fire_archive_event;}
 /**
  * Check if the archive event criteria should be checked when firing
  * the event manually.
  *
  * @return A boolean set to true if a archive event criteria will be checked.
  */
-	bool is_check_archive_criteria() {return ext->check_archive_event;}
+	bool is_check_archive_criteria() {return check_archive_event;}
 
 /**
  * Set a flag to indicate that the server fires data ready events
  *
  * @param implemented True when the server fires data ready events
  */
-	void set_data_ready_event(bool implemented) { ext->fire_dr_event  = implemented;}
+	void set_data_ready_event(bool implemented) { fire_dr_event  = implemented;}
 /**
  * Check if the data ready event is fired for this attribute.
  *
  * @return A boolean set to true if firing data ready event is implemented.
  */
-	bool is_data_ready_event() {return ext->fire_dr_event;}
+	bool is_data_ready_event() {return fire_dr_event;}
 //@}
 
+/// @privatesection
 	string  &get_name() {return name;}
 	Tango::AttrDataFormat get_format() {return format;}
 	Tango::AttrWriteType get_writable() {return writable;}
 	long get_type() {return type;}
-	Tango::DispLevel get_disp_level() {return ext->disp_level;}
-	long get_polling_period() {return ext->poll_period;}
+	Tango::DispLevel get_disp_level() {return disp_level;}
+	long get_polling_period() {return poll_period;}
 	bool get_memorized() {return mem;}
 	bool get_memorized_init() {return mem_init;}
 	string	&get_assoc() {return assoc_name;}
-	const string &get_cl_name() {return ext->cl_name;}
-	void set_cl_name(const string &cl) {ext->cl_name = cl;}
+	const string &get_cl_name() {return cl_name;}
+	void set_cl_name(const string &cl) {cl_name = cl;}
 	bool is_assoc() {if (assoc_name != AssocWritNotSpec)return true;else return false;}
 
 	vector<AttrProperty>	&get_class_properties() {return class_properties;}
@@ -520,16 +544,21 @@ public:
 	void set_class_properties(vector<AttrProperty> &in_prop) {class_properties=in_prop;}
 	void check_type();
 
+	virtual bool is_fwd() {return false;}
+
 	virtual void read(DeviceImpl *,Attribute &) {};
 	virtual void write(DeviceImpl *,WAttribute &) {};
 	virtual bool is_allowed(DeviceImpl *,AttReqType) {return true;}
 
+	virtual bool same_type(const type_info &) {return false;}
+	virtual string get_enum_type() {return string("Unknown");}
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,const Attr &);
 #endif
 
 protected:
+/// @privatesection
 	string					name;
 	Tango::AttrDataFormat	format;
 	Tango::AttrWriteType	writable;
@@ -537,6 +566,19 @@ protected:
 	string					assoc_name;
 	bool					mem;
 	bool					mem_init;
+
+//
+// Ported from the extension class
+//
+
+    Tango::DispLevel		disp_level;			// Display  level
+    long					poll_period;		// Polling period
+
+    bool					fire_change_event;
+    bool					fire_archive_event;
+    bool					check_change_event;
+    bool					check_archive_event;
+    bool					fire_dr_event;
 
 	vector<AttrProperty>	class_properties;
 	vector<AttrProperty>	user_default_properties;
@@ -551,25 +593,7 @@ private:
     class AttrExt
     {
     public:
-        AttrExt():poll_period(0),fire_change_event(false),fire_archive_event(false),
-                  check_change_event(false),check_archive_event(false),
-                  fire_dr_event(false),cl_name("Attr")
-                  {disp_level = Tango::OPERATOR;}
-        AttrExt(DispLevel level):poll_period(0),fire_change_event(false),fire_archive_event(false),
-                                 check_change_event(false),check_archive_event(false),
-                                 fire_dr_event(false),cl_name("Attr")
-                                 {disp_level = level;}
-
-        Tango::DispLevel	disp_level;			// Display  level
-        long				poll_period;		// Polling period
-
-        bool				fire_change_event;
-        bool				fire_archive_event;
-        bool				check_change_event;
-        bool				check_archive_event;
-        bool				fire_dr_event;
-
-        string				cl_name;
+        AttrExt() {}
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -577,6 +601,8 @@ private:
 #else
 	AttrExt					*ext;
 #endif
+
+    string					cl_name;
 };
 
 /**
@@ -588,6 +614,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class SpectrumAttr: public Attr
@@ -645,6 +674,7 @@ public:
  */
 	SpectrumAttr(const char *name,long data_type,Tango::AttrWriteType w_type,long max_x,DispLevel level);
 
+	SpectrumAttr(const char *_n):Attr(_n) {}
 //@}
 
 /**@name Destructor
@@ -656,6 +686,7 @@ public:
 	~SpectrumAttr() {}
 //@}
 
+/// @privatesection
 	long 			get_max_x() {return max_x;}
 
 protected:
@@ -683,6 +714,9 @@ private:
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class ImageAttr: public SpectrumAttr
@@ -748,6 +782,7 @@ public:
 	ImageAttr(const char *name,long data_type,Tango::AttrWriteType w_type,
 		  long max_x, long max_y, Tango::DispLevel level);
 
+	ImageAttr(const char *name):SpectrumAttr(name) {}
 //@}
 
 /**@name Destructor
@@ -759,9 +794,11 @@ public:
 	~ImageAttr() {}
 //@}
 
+/// @privatesection
 	long 			get_max_y() {return max_y;}
 
 protected:
+/// @privatesection
 	long			max_y;
 
 private:

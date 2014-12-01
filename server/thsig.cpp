@@ -14,7 +14,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -199,7 +199,7 @@ void *DServerSignal::ThSig::run_undetached(TANGO_UNUSED(void *ptr))
 			{
 				try
 				{
-					tg->shutdown_server();
+					tg->shutdown_ds();
 				}
 				catch(...)
 				{

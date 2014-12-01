@@ -88,7 +88,7 @@
 //
 // $Author$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						Synchrotron SOLEIL
 //                		L'Orme des Merisiers
 //                		Saint-Aubin - BP 48 - France
@@ -894,6 +894,7 @@ public:
 						break;
 					}
 				case Tango::DEV_SHORT:
+				case Tango::DEV_ENUM:
 					{
 						w_attr_value = da_out_.ShortSeq[1];
 						break;

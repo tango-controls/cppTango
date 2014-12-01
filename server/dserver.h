@@ -11,7 +11,7 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -55,7 +55,8 @@ namespace Tango
 typedef Tango::DeviceClass *(*Cpp_creator_ptr)(const char *);
 typedef void (*ClassFactoryFuncPtr)(DServer *);
 
-class DServer: public Device_4Impl
+
+class DServer: public TANGO_BASE_CLASS
 {
 public :
 	DServer(DeviceClass *,const char *,const char *,Tango::DevState,const char *);
@@ -88,6 +89,7 @@ public :
 
 	Tango::DevLong event_subscription_change(const Tango::DevVarStringArray *);
 	Tango::DevVarLongStringArray *zmq_event_subscription_change(const Tango::DevVarStringArray *);
+	void event_confirm_subscription(const Tango::DevVarStringArray *);
 
 	void delete_devices();
 
@@ -125,6 +127,11 @@ public :
 	void _create_cpp_class(const char *c1,const char *c2) {this->create_cpp_class(c1,c2);}
 
 	void mcast_event_for_att(string &,string &,vector<string> &);
+	void mem_event_par(map<string, vector<EventPar> > &);
+	void apply_event_par(map<string,vector<EventPar> > &);
+
+	void mem_devices_interface(map<string,DevIntr> &);
+	void changed_devices_interface(map<string,DevIntr> &);
 
 	friend class NotifdEventSupplier;
 	friend class ZmqEventSupplier;
@@ -156,7 +163,7 @@ private:
 	void add_class(DeviceClass *);
 	void create_cpp_class(const char *,const char *);
 	void get_dev_prop(Tango::Util *);
-    void event_subscription(string &,string &,string &,string &,string &,ChannelType,string &,int &,int &,DeviceImpl *);
+    void event_subscription(string &,string &,string &,string &,string &,ChannelType,string &,int &,int &,DeviceImpl *,int l=0);
 	void get_event_misc_prop(Tango::Util *);
 	bool is_event_name(string &);
 	bool is_ip_address(string &);
