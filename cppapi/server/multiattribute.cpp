@@ -593,13 +593,13 @@ void MultiAttribute::check_associated(long index,string &dev_name)
 //		MultiAttribute::check_idl_release
 //
 // description :
-//		Check some featires according to which IDL release the device implement. This could not be done in
-//		DeviceImpl class ctor becasue when the DeviceImpl ctor is executed, it is always IDl release 1
-//		The real supported IDl release number is set during each Device_XImpl ctor which is executed after
+//		Check some features according to which IDL release the device implement. This can not be done in
+//		DeviceImpl class ctor because when the DeviceImpl ctor is executed, it is always IDL release 1.
+//		The real supported IDL release number is set during each Device_XImpl ctor which is executed after
 //		DeviceImpl ctor.
-//		Tody, we check :
+//		Today, we check :
 //			- Enum attribute with IDL5
-//			- Forwarded attribute with IDl 5
+//			- Forwarded attribute with IDL 5
 //
 // argument :
 //		in :

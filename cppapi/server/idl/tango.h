@@ -3038,7 +3038,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_4 class
-omni_mutex *mut_ptr;  
+omni_mutex *mut_ptr;   
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -3078,7 +3078,7 @@ void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevErrorList err_list;
 
 // Added by ET for LockedAttributeValue_5 class
-omni_mutex *mut_ptr;   
+omni_mutex *mut_ptr;     
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);
@@ -4535,7 +4535,7 @@ virtual ~DevPipeData() {if (mut_ptr != NULL)mut_ptr->unlock();}
 DevPipeData() {mut_ptr=NULL;}
 void set_pipe_mutex(omni_mutex *ptr) {mut_ptr=ptr;}
 void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
-   
+    
     ::CORBA::String_member name;
 
     TimeVal time;
@@ -4543,7 +4543,7 @@ void rel_pipe_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}
     DevPipeBlob data_blob;
 
 // Added by ET for LockedPipe class
-omni_mutex *mut_ptr;
+omni_mutex *mut_ptr;  
 
     void operator>>= (cdrStream &) const;
     void operator<<= (cdrStream &);

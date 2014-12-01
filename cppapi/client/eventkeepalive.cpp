@@ -549,6 +549,16 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 
 		cout4 << "KeepAliveThread at work" << endl;
 
+//
+// Be sure to have valid event consumer object (In case of long startup OS with some notifd event(s) subscribed at the
+// end of the process startup. Verified with some ESRF HdbEventHandler process)
+//
+
+        if (event_consumer)
+            event_consumer = ApiUtil::instance()->get_zmq_event_consumer();
+        if (notifd_event_consumer == NULL)
+            notifd_event_consumer = ApiUtil::instance()->get_notifd_event_consumer();
+
 		// lock the maps only for reading
 		event_consumer->map_modification_lock.writerIn();
 		now = time(NULL);
