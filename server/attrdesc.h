@@ -438,7 +438,7 @@ public:
  * Set a flag to indicate that the server fires change events manually without
  * the polling to be started for the attribute.
  * If the detect parameter is set to true, the criteria specified for the change
- * event are verified and the event is only pushed if they are fullfilled.
+ * event are verified and the event is only pushed if they are fulfilled.
  * If detect is set to false the event is fired without checking!
  *
  * @param implemented True when the server fires change events manually.
@@ -464,7 +464,7 @@ public:
  * Set a flag to indicate that the server fires archive events manually without
  * the polling to be started for the attribute
  * If the detect parameter is set to true, the criteria specified for the archive
- * event are verified and the event is only pushed if they are fullfilled.
+ * event are verified and the event is only pushed if they are fulfilled.
  * If detect is set to false the event is fired without checking!
  *
  * @param implemented True when the server fires archive events manually.

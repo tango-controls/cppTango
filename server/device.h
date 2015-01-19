@@ -439,7 +439,7 @@ public:
  *
  * Default method to implement an action necessary on a device before any
  * command is executed. This method can be redefined in
- * sub-classes in case of the default behaviour does not fullfill the needs
+ * sub-classes in case of the default behaviour does not fulfill the needs
  *
  * @exception DevFailed This method does not throw exception but a
  * redefined method can.
@@ -502,10 +502,10 @@ public:
  * on the device state. If the device state is ON or ALARM, it reads
  * the attribute(s) with an alarm level defined, check if the read value is
  * above/below the alarm and eventually change the state to ALARM, return the
- * device state. For all th eother device state, ti smethod simply returns
+ * device state. For all th eother device state, this method simply returns
  * the state
  * This method can be redefined in
- * sub-classes in case of the default behaviour does not fullfill the needs
+ * sub-classes in case of the default behaviour does not fulfill the needs
  *
  * @return The device state
  * @exception DevFailed If it is necessary to read attribute(s) and a problem
@@ -521,7 +521,7 @@ public:
  * Default method to get device status. It returns the contents of the device
  * dev_status field. If the device state is ALARM, alarm messages are
  * added to the device status. This method can be redefined in
- * sub-classes in case of the default behaviour does not fullfill the needs
+ * sub-classes in case of the default behaviour does not fulfill the needs
  *
  * @return The device status
  * @exception DevFailed This method does not throw exception but a
@@ -1025,7 +1025,7 @@ public:
  * Set an implemented flag for the attribute to indicate that the server fires change events manually,
   * without the polling to be started.
  * If the detect parameter is set to true, the criteria specified for the change
- * event are verified and the event is only pushed if they are fullfilled.
+ * event are verified and the event is only pushed if they are fulfilled.
  * If detect is set to false the event is fired without any value checking!
  *
  * @param attr_name The name of the attribute
@@ -1772,7 +1772,7 @@ public:
  * Set an implemented flag for the attribute to indicate that the server fires archive events manually,
   * without the polling to be started.
  * If the detect parameter is set to true, the criteria specified for the archive
- * event are verified and the event is only pushed if they are fullfilled.
+ * event are verified and the event is only pushed if they are fulfilled.
  * If detect is set to false the event is fired without any value checking!
  *
  * @param attr_name The name of the attribute
