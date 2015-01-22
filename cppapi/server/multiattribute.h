@@ -290,6 +290,7 @@ public:
 	void add_attr(Attribute *att) {attr_list.push_back(att);}
 	void update(Attribute &,string &);
 	void check_idl_release(DeviceImpl *);
+    bool is_opt_prop(const string &);
 
 private:
     class MultiAttributeExt

@@ -1195,7 +1195,14 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 // Set properties and update database
 //
 
-	set_upd_properties(conf,d_name,true);
+    if (is_fwd_att() == true)
+    {
+        FwdAttribute *fwd_attr = static_cast<FwdAttribute *>(this);
+        fwd_attr->upd_att_config_base(conf.label.in());
+        fwd_attr->upd_att_config(conf);
+    }
+    else
+        set_upd_properties(conf,d_name,true);
 
 //
 // Push a att conf event

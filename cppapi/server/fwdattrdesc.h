@@ -98,6 +98,8 @@ private:
 #endif
 };
 
+class MultiAttribute;
+
 /**
  * User class to create a forwarded attribute object.
  *
@@ -156,6 +158,7 @@ public:
 	bool validate_fwd_att(vector<AttrProperty> &,const string &);
 	void get_root_conf(string &,DeviceImpl *);
 
+    void remove_useless_prop(vector<AttrProperty> &,string &,MultiAttribute *);
  	string &get_label_from_default_properties();
 
 protected:

@@ -6185,33 +6185,33 @@ int DeviceAttribute::check_set_value_size(int seq_length)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void DeviceAttribute::del_mem(int data_type)
+void DeviceAttribute::del_mem(int _data_type)
 {
-	if ((data_type != Tango::DEV_STRING) && (StringSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_STRING) && (StringSeq.operator->() != NULL))
 			delete StringSeq._retn();
-	if ((data_type != Tango::DEV_LONG) && (LongSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_LONG) && (LongSeq.operator->() != NULL))
 			delete LongSeq._retn();
-	if ((data_type != Tango::DEV_SHORT) && (ShortSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_SHORT) && (ShortSeq.operator->() != NULL))
 			delete ShortSeq._retn();
-	if ((data_type != Tango::DEV_DOUBLE) && (DoubleSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_DOUBLE) && (DoubleSeq.operator->() != NULL))
 		delete DoubleSeq._retn();
-	if ((data_type != Tango::DEV_FLOAT) && (FloatSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_FLOAT) && (FloatSeq.operator->() != NULL))
 		delete FloatSeq._retn();
-	if ((data_type != Tango::DEV_BOOLEAN) && (BooleanSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_BOOLEAN) && (BooleanSeq.operator->() != NULL))
 		delete BooleanSeq._retn();
-	if ((data_type != Tango::DEV_USHORT) && (UShortSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_USHORT) && (UShortSeq.operator->() != NULL))
 		delete UShortSeq._retn();
-	if ((data_type != Tango::DEV_UCHAR) && (UCharSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_UCHAR) && (UCharSeq.operator->() != NULL))
 		delete UCharSeq._retn();
-	if ((data_type != Tango::DEV_LONG64) && (Long64Seq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_LONG64) && (Long64Seq.operator->() != NULL))
 		delete Long64Seq._retn();
-	if ((data_type != Tango::DEV_ULONG) && (ULongSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_ULONG) && (ULongSeq.operator->() != NULL))
 		delete ULongSeq._retn();
-	if ((data_type != Tango::DEV_ULONG64) && (ULong64Seq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_ULONG64) && (ULong64Seq.operator->() != NULL))
 		delete ULong64Seq._retn();
-	if ((data_type != Tango::DEV_STATE) && (StateSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_STATE) && (StateSeq.operator->() != NULL))
 		delete StateSeq._retn();
-	if ((data_type != Tango::DEV_ENCODED) && (EncodedSeq.operator->() != NULL))
+	if ((_data_type != Tango::DEV_ENCODED) && (EncodedSeq.operator->() != NULL))
 		delete EncodedSeq._retn();
 }
 

@@ -673,4 +673,45 @@ string &FwdAttr::get_label_from_default_properties()
 	return user_default_properties[ctr].get_value();
 }
 
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		FwdAttribute::remove_useless_prop
+//
+// description :
+//		Remove classical attribute property(ies) if found in prop_list input argument. For forwarded attribute,
+//      the configuration is taken from the root att and should not be taken from the DB. If we found some
+//      useless properties, remove them from the prop list and inform the user to clean up the database.
+//
+// argument :
+//		in :
+//			- prop_list : The property list
+//          - dev_name : The device name
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void FwdAttr::remove_useless_prop(vector<AttrProperty> &prop_list,string &dev_name,MultiAttribute *m_attr)
+{
+    vector<AttrProperty>::iterator ite;
+
+    for (ite = prop_list.begin();ite != prop_list.end();)
+    {
+        if (ite->get_name() == "label" || ite->get_name() == "__root_att")
+        {
+            ++ite;
+            continue;
+        }
+
+        if (m_attr->is_opt_prop(ite->get_name()) == true)
+        {
+            cerr << "Warning: The forwarded attribute " << get_name()  << " belonging to device "  << dev_name;
+            cerr << "  has the property " << ite->get_name() << " defined in DB.\n";
+            cerr << "This property will not be taken into account. Please clean up your DB." << endl;
+            ite = prop_list.erase(ite);
+        }
+        else
+            ++ite;
+    }
+}
+
 } // End of Tango namespace

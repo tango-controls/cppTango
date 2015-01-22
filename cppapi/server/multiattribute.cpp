@@ -225,6 +225,7 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 					try
 					{
 						fwdattr.get_root_conf(dev_name,dev);
+						fwdattr.remove_useless_prop(prop_list,dev_name,this);
 						add_user_default(prop_list,def_user_prop);
 						add_default(prop_list,dev_name,attr.get_name(),attr.get_type());
 					}
@@ -1761,6 +1762,42 @@ void MultiAttribute::update(Attribute &att,string &dev_name)
 //
 
 	check_associated(ind,dev_name);
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		MultiAttribute::is_opt_prop()
+//
+// description :
+//		This method returns true if the property name passed as argument is the name of one of the attribute optional
+//      properties
+//
+// argument:
+//		in :
+//			- prop_name : The property name
+//
+// return:
+//      True if prop_name is the name of one of the optional properties. False otherwise
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+bool MultiAttribute::is_opt_prop(const string &prop_name)
+{
+    bool ret = false;
+
+	long nb_opt_prop = sizeof(Tango_OptAttrProp)/sizeof(OptAttrProp);
+
+	for (long i = 0;i < nb_opt_prop;i++)
+	{
+	    if (prop_name == Tango_OptAttrProp[i].name)
+        {
+            ret = true;
+            break;
+        }
+	}
+
+    return ret;
 }
 
 } // End of Tango namespace

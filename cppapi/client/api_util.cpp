@@ -1149,12 +1149,21 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,const AttributeVal
 			default:
 				break;
 		}
+        dev_attr->data_type = Tango::DEV_SHORT;
 	}
 }
 
 void ApiUtil::attr_to_device(const AttributeValue_4 *attr_value_4,TANGO_UNUSED(long vers),DeviceAttribute *dev_attr)
 {
 	attr_to_device_base(attr_value_4,dev_attr);
+
+//
+// Warning: Since Tango 9, data type SHORT is used for both short attribute and enumeration attribute!
+// Therefore, we need to store somewhere which exact type it is. With IDL 5, it is easy, because the data type is
+// transferred on the network (modified IDL), For previous release, we do not have enumerated data type and therefore
+// the data type could be used only for SHORT.
+//
+    dev_attr->data_type = Tango::DEV_SHORT;
 }
 
 void ApiUtil::attr_to_device(const AttributeValue_5 *attr_value_5,TANGO_UNUSED(long vers),DeviceAttribute *dev_attr)
