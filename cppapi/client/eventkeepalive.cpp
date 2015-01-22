@@ -1343,6 +1343,8 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 				da = new DeviceAttribute();
 				*da = epos->second.device->read_attribute(epos->second.obj_name.c_str());
 
+                if (da->has_failed() == true)
+                    err = da->get_err_stack();
 //
 // The reconnection worked fine. The heartbeat should come back now, when the notifd has not closed the connection.
 // Increase the counter to detect when the heartbeat is not coming back.
