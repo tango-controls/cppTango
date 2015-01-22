@@ -1432,8 +1432,25 @@ void EventConsumerKeepAliveThread::re_subscribe_after_reconnect(ZmqEventConsumer
 			if (ipos->second.channel_type == NOTIFD)
 				prefix = notifd_event_consumer->env_var_fqdn_prefix[0];
 			else
-				prefix = event_consumer->env_var_fqdn_prefix[0];
-			string dom_name = prefix + epos->second.device->dev_name() + "/" + epos->second.obj_name;
+            {
+                if (epos->second.device->get_from_env_var() == false)
+                {
+                    prefix = "tango://";
+                    if (epos->second.device->is_dbase_used() == false)
+                        prefix = prefix + epos->second.device->get_dev_host() + ':' + epos->second.device->get_dev_port() + '/';
+                    else
+                        prefix = prefix + epos->second.device->get_db_host() + ':' + epos->second.device->get_db_port() + '/';
+                }
+                else
+                {
+                    prefix = event_consumer->env_var_fqdn_prefix[0];
+                }
+            }
+
+			string dom_name = prefix + epos->second.device->dev_name();
+            if (epos->second.device->is_dbase_used() == false)
+                dom_name = dom_name + MODIFIER_DBASE_NO;
+			dom_name = dom_name + "/" + epos->second.obj_name;
 
 			bool old_transp = epos->second.device->get_transparency_reconnection();
 			epos->second.device->set_transparency_reconnection(true);
