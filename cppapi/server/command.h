@@ -251,7 +251,7 @@ public:
  * associated command is requested by a client to check if the command is allowed
  * in the actual device state. This method is the default is_allowed method which
  * always allows the command to be executed. It is possible to re-define it
- * if this default behaviour does not fullfill the device needs.
+ * if this default behaviour does not fulfill the device needs.
  *
  * @param dev The device on which the command must be executed
  * @param in_any The incoming data still packed in a CORBA Any object. This

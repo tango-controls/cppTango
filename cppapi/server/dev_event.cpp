@@ -699,7 +699,7 @@ void DeviceImpl::push_event (string attr_name,vector<string> &filt_names,vector<
 // description :
 //		Set a flag to indicate that the server pushes change events manually, without the polling to be started for
 //		the attribute. If the detect parameter is set to true, the criteria specified for the change event are
-//		verified and the event is only pushed if they are fullfilled. If detect is set to false the event is fired
+//		verified and the event is only pushed if they are fulfilled. If detect is set to false the event is fired
 //		without any value checking!
 //
 //	args :
@@ -1343,7 +1343,7 @@ void DeviceImpl::push_change_event (string attr_name, Tango::DevString *p_str_da
 // description :
 //		Set a flag to indicate that the server pushes archive events manually, without the polling to be started
 //		for the attribute. If the detect parameter is set to true, the criteria specified for the archive
-// 		event are verified and the event is only pushed if they are fullfilled. If detect is set to false the event
+// 		event are verified and the event is only pushed if they are fulfilled. If detect is set to false the event
 //		is fired without any value checking!
 //
 // args :
