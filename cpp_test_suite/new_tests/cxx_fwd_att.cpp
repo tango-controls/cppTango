@@ -446,7 +446,7 @@ public:
 		AttributeInfoListEx *confs = fwd_device->get_attribute_config_ex(att_names);
 
 		TS_ASSERT((*confs)[0].name == "fwd_short_rw");
-		string local_root_base("tango://acucentos.esrf.fr:10000/");
+		string local_root_base("tango://acudebian7.esrf.fr:10000/");
 		local_root_base = local_root_base + device1_name;
 		string local_root = local_root_base + "/short_attr_rw";
 		TS_ASSERT((*confs)[0].root_attr_name == local_root);
@@ -511,7 +511,7 @@ public:
 		TS_ASSERT((*confs)[2].writable_attr_name == "None");
 
 		TS_ASSERT((*confs)[3].name == "fwd_ima_string_rw");
-		local_root = "tango://acucentos.esrf.fr:10000/" + device2_name + "/string_ima_attr_rw";
+		local_root = "tango://acudebian7.esrf.fr:10000/" + device2_name + "/string_ima_attr_rw";
 		TS_ASSERT((*confs)[3].root_attr_name == local_root);
 
 		TS_ASSERT((*confs)[3].writable == Tango::READ_WRITE);
