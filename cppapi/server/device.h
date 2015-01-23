@@ -228,8 +228,7 @@ public:
  *
  * @param new_state The new device state
  */
-	void set_state (const Tango::DevState &new_state) {device_prev_state = device_state; device_state = new_state;}
-
+	void set_state (const Tango::DevState &new_state);
 /**
  * Get device name.
  *
@@ -3432,7 +3431,10 @@ private:
     class DeviceImplExt
     {
     public:
-        DeviceImplExt() {};
+        DeviceImplExt():alarm_state_user(0),alarm_state_kernel(0) {};
+
+        time_t      alarm_state_user;
+        time_t      alarm_state_kernel;
     };
 
 
@@ -3578,6 +3580,16 @@ private:
 
 protected:
 };
+
+inline void DeviceImpl::set_state(const Tango::DevState &new_state)
+{
+    device_prev_state = device_state;
+    device_state = new_state;
+    if (new_state == Tango::ALARM)
+        ext->alarm_state_user = time(NULL);
+    else
+        ext->alarm_state_user = 0;
+}
 
 #define DATA_IN_NET_OBJECT(A,B,C,D,E) \
 	do \

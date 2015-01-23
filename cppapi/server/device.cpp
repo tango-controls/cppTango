@@ -1230,7 +1230,11 @@ Tango::DevState DeviceImpl::dev_state()
                 if (dev_attr->check_alarm() == true)
                 {
                     set_alrm = true;
-                    device_state = Tango::ALARM;
+                    if (device_state != Tango::ALARM)
+                    {
+                        device_state = Tango::ALARM;
+                        ext->alarm_state_kernel = time(NULL);
+                    }
                 }
                 else
                     device_state = Tango::ON;
@@ -1255,6 +1259,12 @@ Tango::DevState DeviceImpl::dev_state()
                     }
                 }
             }
+            else
+            {
+                if (ext->alarm_state_kernel > ext->alarm_state_user)
+                    device_state = Tango::ON;
+            }
+
 
 
 //
@@ -1265,7 +1275,13 @@ Tango::DevState DeviceImpl::dev_state()
             if ((set_alrm == false) && (device_state != Tango::ALARM))
             {
                 if (dev_attr->is_att_quality_alarmed() == true)
-                    device_state = Tango::ALARM;
+                {
+                    if (device_state != Tango::ALARM)
+                    {
+                        device_state = Tango::ALARM;
+                        ext->alarm_state_kernel = time(NULL);
+                    }
+                }
                 else
                     device_state = Tango::ON;
             }
