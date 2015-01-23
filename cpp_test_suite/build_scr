@@ -189,7 +189,7 @@ then
 	
 	echo "#!/bin/bash" > $EXPORT_VARIABLES
 	echo "export LD_LIBRARY_PATH=$INSTALL_DIR/$OS/lib/debug:/segfs/tango/transport/zmq4.0.5/$OS/lib:/segfs/tango/tools/log4tango-release/log4tango5.0.1/$OS/lib:/segfs/tango/ORB/omniORB4.1.7/$OS/lib:$LD_LIBRARY_PATH" >> $EXPORT_VARIABLES 
-	echo "export TANGO_HOST=acucentos:10000" >> $EXPORT_VARIABLES
+	echo "export TANGO_HOST=acudebian7:10000" >> $EXPORT_VARIABLES
 fi
 
 
@@ -227,7 +227,7 @@ ORB_LIB=/segfs/tango/ORB/omniORB4.1.7/$OS/lib
 ZMQ_LIB=/segfs/tango/transport/zmq4.0.5/$OS/lib
 
 export LD_LIBRARY_PATH=$TANGO_LIB:$LOG4TANGO_LIB:$ORB_LIB:$ZMQ_LIB:$LD_LIBRARY_PATH
-export TANGO_HOST=acucentos:10000
+export TANGO_HOST=acudebian7:10000
 
 if [ $OS_TYPE = "Windows" ]
 then
