@@ -10,7 +10,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -48,14 +48,17 @@ class DeviceClass;
 
 struct EventPar
 {
-	long		attr_id;
-	bool		change;
-	bool		archive;
-	bool		quality;
-	bool		periodic;
-	bool		user;
-	bool        notifd;
-	bool        zmq;
+	long			attr_id;
+	vector<int>		change;
+	vector<int>		archive;
+	bool			quality;
+	vector<int>		periodic;
+	vector<int>		user;
+	vector<int>		att_conf;
+	bool			data_ready;
+	bool			dev_intr_change;
+	bool        	notifd;
+	bool        	zmq;
 };
 
 //=============================================================================
@@ -76,6 +79,9 @@ struct EventPar
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class MultiAttribute
@@ -92,11 +98,12 @@ public:
  *
  * @param dev_name The device name
  * @param dev_class Reference to the device DeviceClass object
+ * @param dev The device pointer
  * @exception DevFailed If the command sent to the database failed.
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	MultiAttribute(string &dev_name,DeviceClass *dev_class);
+	MultiAttribute(string &dev_name,DeviceClass *dev_class,DeviceImpl *dev);
 //@}
 
 /**@name Destructor
@@ -268,15 +275,22 @@ protected:
 //@}
 
 public:
+/// @privatesection
+
 	void add_write_value(Attribute &);
 	void add_attribute(string &,DeviceClass *,long);
+	void add_fwd_attribute(string &,DeviceClass *,long);
 	void remove_attribute(string &,bool);
 	vector<long> &get_w_attr_list() {return writable_attr_list;}
-	bool is_att_quality_alarmed(bool);
+	bool is_att_quality_alarmed();
 	void get_event_param(vector<EventPar> &);
+	void set_event_param(vector<EventPar> &);
 	void add_alarmed_quality_factor(string &);
-	void add_default(vector<AttrProperty> &,string &,string &);
+	void add_default(vector<AttrProperty> &,string &,string &,long);
 	void add_attr(Attribute *att) {attr_list.push_back(att);}
+	void update(Attribute &,string &);
+	void check_idl_release(DeviceImpl *);
+    bool is_opt_prop(const string &);
 
 private:
     class MultiAttributeExt

@@ -46,8 +46,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
     <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreLinkEventUseInBuild>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tango805d</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tango805</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tango902d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tango902</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -61,7 +61,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32_dll\include;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32\include\vc10;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;LOG4TANGO_HAS_DLL;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
@@ -74,6 +74,7 @@
       <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <CompileAs>Default</CompileAs>
+      <AdditionalOptions>/MP2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -81,16 +82,16 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango805 release\*.obj</Command>
+      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango902 release\*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>log4tango.lib;omniorb416_rt.lib;omnidynamic416_rt.lib;omnithread34_rt.lib;COS416_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango805.dll</OutputFile>
-      <Version>8.0.5</Version>
+      <AdditionalDependencies>log4tango.lib;omniorb417_rt.lib;omnidynamic417_rt.lib;omnithread34_rt.lib;COS417_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango902.dll</OutputFile>
+      <Version>9.0.2</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(OMNI_BASE)\win32_dll\lib;$(ZMQ_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OMNI_BASE)\win32\lib\vc10_dll;$(ZMQ_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
-      <ProgramDatabaseFile>.\Release/tango805.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Release/tango902.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -110,7 +111,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32_dll\include;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32\include\vc10;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_TANGO_LIB;LOG4TANGO_HAS_DLL;JPG_USE_ASM;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -120,11 +121,12 @@
       <PrecompiledHeaderOutputFile>.\Debug/tango_dll.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>$(PREFIX)\win32\lib\vc10_dll\tangod.8.0.5.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(PREFIX)\win32\lib\vc10_dll\tangod.9.0.2.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
+      <AdditionalOptions>/MP2 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -132,17 +134,17 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango805d debug\*.obj</Command>
+      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango902d debug\*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>log4tangod.lib;omniORB416_rtd.lib;omniDynamic416_rtd.lib;COS416_rtd.lib;omnithread34_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4tangod.lib;omniORB417_rtd.lib;omniDynamic417_rtd.lib;COS417_rtd.lib;omnithread34_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
-      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango805d.dll</OutputFile>
-      <Version>8.0.5</Version>
-      <AdditionalLibraryDirectories>$(ZMQ_BASE)\win32\lib\vc9_dll;$(OMNI_BASE)\win32_dll\lib;$(LOG4TANGO_BASE)\win32\lib\vc9_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango902d.dll</OutputFile>
+      <Version>9.0.2</Version>
+      <AdditionalLibraryDirectories>$(ZMQ_BASE)\win32\lib\vc10_dll;$(OMNI_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/tango805d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Debug/tango902d.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -184,6 +186,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\client\dbapi_serverdata.cpp" />
     <ClCompile Include="..\..\..\server\attrdesc.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -192,6 +195,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\attrgetsetprop.cpp" />
     <ClCompile Include="..\..\..\server\attribute.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -208,6 +212,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\attrsetval.cpp" />
     <ClCompile Include="..\..\..\server\basiccommand.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -322,6 +327,8 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\device_5.cpp" />
+    <ClCompile Include="..\..\..\server\devintr.cpp" />
     <ClCompile Include="..\..\..\server\dev_event.cpp" />
     <ClCompile Include="..\..\..\server\dev_poll.cpp" />
     <ClCompile Include="..\..\..\client\devapi_attr.cpp">
@@ -398,6 +405,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\dintrthread.cpp" />
     <ClCompile Include="..\..\..\server\dserver.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -490,6 +498,8 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\fwdattrdesc.cpp" />
+    <ClCompile Include="..\..\..\server\fwdattribute.cpp" />
     <ClCompile Include="..\..\..\server\jpeg\jpeg_bitstream.cpp" />
     <ClCompile Include="..\..\..\server\jpeg\jpeg_color.cpp" />
     <ClCompile Include="..\..\..\server\jpeg_mmx\jpeg_color_mmx.cpp" />
@@ -589,6 +599,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\rootattreg.cpp" />
     <ClCompile Include="..\..\..\server\seqvec.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -630,6 +641,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">_OMNIORB_STUB_DLL;__x86__;__NT__;__OSVERSION__=4;__WIN32__;_WIN32_WINNT=0x0400;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\templ_inst.cpp" />
     <ClCompile Include="..\..\..\server\thsig.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -689,6 +701,9 @@
     <ClInclude Include="..\..\..\server\device_3.h" />
     <ClInclude Include="..\..\..\server\device_4.h" />
     <ClInclude Include="..\..\..\server\deviceclass.h" />
+    <ClInclude Include="..\..\..\server\device_5.h" />
+    <ClInclude Include="..\..\..\server\devintr.h" />
+    <ClInclude Include="..\..\..\server\dintrthread.h" />
     <ClInclude Include="..\..\..\server\dserver.h" />
     <ClInclude Include="..\..\..\server\dserverclass.h" />
     <ClInclude Include="..\..\..\server\dserversignal.h" />
@@ -700,6 +715,8 @@
     <ClInclude Include="..\..\..\server\except.h" />
     <ClInclude Include="..\..\..\client\filedatabase.h" />
     <ClInclude Include="..\..\..\client\group.h" />
+    <ClInclude Include="..\..\..\server\fwdattrdesc.h" />
+    <ClInclude Include="..\..\..\server\fwdattribute.h" />
     <ClInclude Include="..\..\..\server\jpeg\jpeg_bitstream.h" />
     <ClInclude Include="..\..\..\server\jpeg\jpeg_const.h" />
     <ClInclude Include="..\..\..\server\jpeg\jpeg_lib.h" />
@@ -716,6 +733,7 @@
     <ClInclude Include="..\..\..\server\pollobj.h" />
     <ClInclude Include="..\..\..\server\pollring.h" />
     <ClInclude Include="..\..\..\server\pollthread.h" />
+    <ClInclude Include="..\..\..\server\rootattreg.h" />
     <ClInclude Include="..\..\..\server\seqvec.h" />
     <ClInclude Include="..\..\..\server\subdev_diag.h" />
     <ClInclude Include="..\..\..\server\idl\tango.h" />
@@ -728,6 +746,19 @@
     <ClInclude Include="..\..\..\server\utils.h" />
     <ClInclude Include="..\..\..\server\w32win.h" />
     <ClInclude Include="..\..\..\server\w_attribute.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\server\attribute.tpp" />
+    <None Include="..\..\..\server\attribute_spec.tpp" />
+    <None Include="..\..\..\server\attrprop.tpp" />
+    <None Include="..\..\..\server\device_3.tpp" />
+    <None Include="..\..\..\server\fwdattribute.tpp" />
+    <None Include="..\..\..\server\fwdattribute_spec.tpp" />
+    <None Include="..\..\..\server\pollext.tpp" />
+    <None Include="..\..\..\server\utils.tpp" />
+    <None Include="..\..\..\server\utils_spec.tpp" />
+    <None Include="..\..\..\server\w_attribute.tpp" />
+    <None Include="..\..\..\server\w_attribute_spec.tpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

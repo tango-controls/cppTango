@@ -10,7 +10,7 @@ INCLUDES = -I$(top_srcdir)/lib/cpp/server \
 # therefore the automake noinst variable
 noinst_LTLIBRARIES = libclient.la
 
-AM_CXXFLAGS=-D_TANGO_LIB @CPP_ELEVEN@
+AM_CXXFLAGS=-D_TANGO_LIB
 
 # These are the sources for the library.
 libclient_la_SOURCES = dbapi_class.cpp     	\
@@ -19,13 +19,15 @@ libclient_la_SOURCES = dbapi_class.cpp     	\
                        dbapi_base.cpp      	\
                        dbapi_device.cpp    	\
 					   dbapi_history.cpp   	\
-					   dbapi_attribute.cpp 	\
+					   dbapi_attribute.cpp  \
 					   dbapi_cache.cpp		\
+					   dbapi_serverdata.cpp \
                        devapi_attr.cpp     	\
                        devapi_base.cpp     	\
                        devapi_data.cpp     	\
                        devapi_datahist.cpp 	\
 					   devapi_utils.cpp		\
+					   devapi_pipe.cpp      \
                        api_util.cpp        	\
                        asynreq.cpp	   		\
                        cbthread.cpp	   		\
@@ -43,8 +45,6 @@ libclient_la_SOURCES = dbapi_class.cpp     	\
 					   notifdeventconsumer.cpp \
 					   zmqeventconsumer.cpp
 
-					   
-
 tangoincludedir = $(includedir)/tango
 
 tangoinclude_HEADERS = accessproxy.h		\
@@ -57,5 +57,16 @@ tangoinclude_HEADERS = accessproxy.h		\
 				  eventconsumer.h	\
 		  		  filedatabase.h    \
 		  		  group.h			\
-				  lockthread.h  \
+				  lockthread.h      \
+				  Database.h 		\
+				  DbDevice.h 		\
+				  ApiUtil.h 		\
+				  DeviceData.h 		\
+				  DeviceAttribute.h \
+				  DevicePipe.h 		\
+				  Connection.h 		\
+				  DeviceProxy.h 	\
+				  AttributeProxy.h 	\
+				  event.tpp 		\
+				  devapi_attr.tpp 	\
 				  zmq.hpp

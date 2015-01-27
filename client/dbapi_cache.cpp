@@ -1,6 +1,6 @@
 static const char *RcsId = "$Id$";
 
-//+============================================================================
+//+=================================================================================================================
 //
 // file :			Deviceclass.cpp
 //
@@ -10,29 +10,27 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -45,18 +43,22 @@ using namespace CORBA;
 namespace Tango
 {
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DbServerCache::DbServerCache() - constructor of the DbServerCache class
+// method:
+// 		DbServerCache::DbServerCache()
 //
-//	This class manage a data cache used during the device server
-//	process startup phase. The 2 ctor parameters are
+// description:
+//		Constructor of the DbServerCache class. This class manage a data cache used during the device server
+//		process startup phase.
 //
-// 	in :	db : The database object
-//			ds_name : The device server name (exec_name/inst_name)
-//			host : The host name
+// arguments:
+// 		in :
+//			- db : The database object
+//			- ds_name : The device server name (exec_name/inst_name)
+//			- host : The host name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 {
@@ -79,17 +81,47 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 	n_data = data_list->length();
 
 //
-// Extract the different blocks from the big list
+// Extract the different blocks from the big list. First the stored procedure release nb
+// The release number is stored as:
+//		(major_number * 100) + minor_number
+// Ex: 1.9 -> 109
+//
+
+	proc_release = 0;
+	string proc_rel((*data_list)[0]);
+	if (proc_rel.find("release") != string::npos)
+	{
+		string rel = proc_rel.substr(8);
+		string::size_type pos = rel.find('.');
+		if (pos != string::npos)
+		{
+			string maj_str = rel.substr(0,pos);
+			string min_str = rel.substr(pos + 1);
+
+			int maj = atoi(maj_str.c_str());
+			int min = atoi(min_str.c_str());
+
+			proc_release = (maj * 100) + min;
+		}
+	}
+
+//
 // First, the device server admin device parameters
 //
 
 	int start_idx = 0;
 	int stop_idx = 0;
 
-	if (n_data == 2)
+	if (proc_release != 0)
+	{
+		start_idx++;
+		stop_idx++;
+	}
+
+	if (n_data == 2 || n_data == 3)
 	{
 		imp_adm.first_idx = start_idx;
-		imp_adm.last_idx = 1;
+		imp_adm.last_idx = start_idx + 1;
 
 		ctrl_serv_prop.first_idx = -1;
 		DServer_class_prop.first_idx = -1;
@@ -178,6 +210,15 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 		prop_att_indexes(start_idx,stop_idx,classes_idx[cl_loop].class_att_prop,data_list);
 
 //
+// Embedded class pipe prop
+//
+
+		if (proc_release >= 109)
+			prop_pipe_indexes(start_idx,stop_idx,classes_idx[cl_loop].class_pipe_prop,data_list);
+		else
+			classes_idx[cl_loop].class_pipe_prop.atts_idx = NULL;
+
+//
 // Device list
 //
 
@@ -204,6 +245,15 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 //
 
 			prop_att_indexes(start_idx,stop_idx,classes_idx[cl_loop].devs_idx[loop].dev_att_prop,data_list);
+
+//
+// Device pipe properties
+//
+
+			if (proc_release >= 109)
+				prop_pipe_indexes(start_idx,stop_idx,classes_idx[cl_loop].devs_idx[loop].dev_pipe_prop,data_list);
+			else
+				classes_idx[cl_loop].devs_idx[loop].dev_pipe_prop.atts_idx = NULL;
 		}
 	}
 
@@ -231,21 +281,29 @@ DbServerCache::DbServerCache(Database *db,string &ds_name,string &host)
 
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::import_adm_dev()
+// method:
+//  	DbServerCache::import_adm_dev()
 //
-//	This method returns to the caller of the info necessary to import the
-//	DS admin device. The returned data are the same than the one returned by
-//  the classical API
+// description:
+//		This method returns to the caller of the info necessary to import the DS admin device. The returned data
+//		are the same than the one returned by the classical API
 //
-//	This method returns a pointer to a DevVarLongStringArray initilised
-//  with the adm device import data
-//-----------------------------------------------------------------------------
+// return:
+//		This method returns a pointer to a DevVarLongStringArray initilised with the adm device import data
+//
+//------------------------------------------------------------------------------------------------------------------
 
 const DevVarLongStringArray *DbServerCache::import_adm_dev()
 {
-	if (imp_adm.last_idx == 1)
+	int last_index;
+	if (proc_release >= 109)
+		last_index = 2;
+	else
+		last_index = 1;
+
+	if (imp_adm.last_idx == last_index)
 	{
 		Tango::Except::throw_exception("aaa","bbb","ccc");
 	}
@@ -262,18 +320,19 @@ const DevVarLongStringArray *DbServerCache::import_adm_dev()
 	return &imp_adm_data;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::import_notifd_event()
+// method :
+//  	DbServerCache::import_notifd_event()
 //
-//	This method returns to the caller of the info necessary to import the
-//	event associated to the notifd running on the DS host.
-//	The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller of the info necessary to import the event associated to the notifd running
+// 		on the DS host. The returned data are the same than the one returned by the classical API
 //
-//	This method returns a pointer to a DevVarLongStringArray initilised
-//  with the notifd event  import data
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns a pointer to a DevVarLongStringArray initilised with the notifd event  import data
+//
+//------------------------------------------------------------------------------------------------------------------
 
 const DevVarLongStringArray *DbServerCache::import_notifd_event()
 {
@@ -294,18 +353,19 @@ const DevVarLongStringArray *DbServerCache::import_notifd_event()
 	return &imp_notifd_event_data;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::import_adm_event()
+// method :
+// 		DbServerCache::import_adm_event()
 //
-//	This method returns to the caller of the info necessary to import the
-//	event associated to the DS server.
-//	The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller of the info necessary to import the event associated to the DS server.
+//		The returned data are the same than the one returned by the classical API
 //
-//	This method returns a pointer to a DevVarLongStringArray initilised
-//  with the DS event  import data
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns a pointer to a DevVarLongStringArray initilised with the DS event  import data
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 
 const DevVarLongStringArray *DbServerCache::import_adm_event()
@@ -327,20 +387,23 @@ const DevVarLongStringArray *DbServerCache::import_adm_event()
 	return &imp_adm_event_data;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::get_class_property()
+// method :
+//  	DbServerCache::get_class_property()
 //
-//	This method returns to the caller the wanted class properties
-//	The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller the wanted class properties. The returned data are the same than the one
+//		returned by the classical API
 //
-// 	in :	in_param : The class name followed by the wanted
-//					   property names
+// argument :
+// 		in :
+//			- in_param : The class name followed by the wanted property names
 //
-//	This method returns a pointer to a DevVarStringArray initilised
-//  with the class properties
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns a pointer to a DevVarStringArray initilised with the class properties
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 
 const DevVarStringArray *DbServerCache::get_class_property(DevVarStringArray *in_param)
@@ -384,23 +447,24 @@ const DevVarStringArray *DbServerCache::get_class_property(DevVarStringArray *in
 	return &ret_obj_prop;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::get_obj_prop()
+// method:
+//  	DbServerCache::get_obj_prop()
 //
-//	This method searches the index(es) of the object wanted property within
-//  all the data returne by the DB server. A structure will be initialised
-//  with the indexes
+// description :
+//		This method searches the index(es) of the object wanted property within all the data returne by the DB server.
+// 		A structure will be initialised with the indexes
 //
-// 	in :	in_param : The object name followed by the wanted
-//					   property names
-//			dev_prop : Boolean set to true in case of device property.
-//					   For device property, a undefined prop is returned with
-//					   a value set to " " !
-//  out : obj : Reference to the structure which will be initialsed by this
-//				method
+// argument :
+// 		in :
+//			- in_param : The object name followed by the wanted property names
+//			- dev_prop : Boolean set to true in case of device property. For device property, a undefined prop is
+//						 returned with a value set to " " !
+//  	out :
+//			- obj : Reference to the structure which will be initialsed by this method
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,bool dev_prop)
 {
@@ -454,25 +518,28 @@ void DbServerCache::get_obj_prop(DevVarStringArray *in_param,PropEltIdx &obj,boo
 	::sprintf(n_prop_str,"%d",found_prop);
 	ret_obj_prop[1] = CORBA::string_dup(n_prop_str);
 
-	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << endl;
-	for (unsigned int ll=0;ll< ret_obj_prop.length();ll++)
-		cout4 << "    DbCache --> Returned string = " << ret_obj_prop[ll] << endl;
+//	cout4 << "DbCache --> Data returned for a get_obj_property for object " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned string = " << ret_obj_prop[ll] << endl;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::get_dev_property()
+// method :
+//  	DbServerCache::get_dev_property()
 //
-//	This method returns to the caller the wanted device properties
-//	The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller the wanted device properties The returned data are the same than the one
+//		returned by the classical API
 //
-// 	in :	in_param : The device name followed by the wanted
-//					   property names
+// argument :
+// 		in :
+//			- in_param : The device name followed by the wanted property names
 //
-//	This method returns a pointer to a DevVarStringArray initilised
-//  with the device properties
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns a pointer to a DevVarStringArray initilised with the device properties
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 
 const DevVarStringArray *DbServerCache::get_dev_property(DevVarStringArray *in_param)
@@ -596,7 +663,6 @@ int DbServerCache::find_class(DevString cl_name)
 
 const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray *in_param)
 {
-	int found_att = 0;
 	char n_att_str[256];
 
 	ret_obj_att_prop.length(2);
@@ -605,6 +671,7 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 	int cl_idx = find_class((*in_param)[0]);
 	if (cl_idx != -1)
 	{
+		int found_att = 0;
 
 //
 // The class is found
@@ -666,9 +733,9 @@ const DevVarStringArray *DbServerCache::get_class_att_property(DevVarStringArray
 										   (const char *)"DbServerCache::get_dev_property");
 	}
 
-	cout4 << "DbCache --> Returned data for a get_class_att_property for class " << (*in_param)[0] << endl;
-	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
-		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
+//	cout4 << "DbCache --> Returned data for a get_class_att_property for class " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
 
 	return &ret_obj_att_prop;
 }
@@ -748,34 +815,48 @@ const DevVarStringArray *DbServerCache::get_dev_att_property(DevVarStringArray *
 	}
 	else
 	{
-		TangoSys_OMemStream o;
-		o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+		if (TG_strncasecmp("dserver/",(*in_param)[0],8) != 0)
+		{
+			TangoSys_OMemStream o;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
 
-		Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
-									   (const char *)"DbServerCache::get_dev_att_property");
+			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
+											(const char *)"DbServerCache::get_dev_att_property");
+		}
+		else
+		{
+			::sprintf(n_att_str,"%d",found_att);
+			ret_obj_att_prop[1] = CORBA::string_dup(n_att_str);
+		}
 	}
 
-	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << endl;
-	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
-		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
+//	cout4 << "DbCache --> Returned data for a get_dev_att_property for device " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_att_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned object att prop = " << ret_obj_att_prop[ll] << endl;
 
 	return &ret_obj_att_prop;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::find_dev_att()
+// method :
+//  	DbServerCache::find_dev_att()
 //
-//	This method sets the class and device index for the device with name
-//  passed in the in parameter. These indexes are indexes in the local
-//	structure arrays
+// description :
+//		This method sets the class and device index for the device with name passed in the in parameter. These indexes
+// 		are indexes in the local structure arrays
 //
-// 	in :	dev_name : The device name
-//  out :   class_ind : The index of the data related to the device class
-//			dev_ind : The index of the data related to the device itself
+// argument :
+// 		in :
+//			- dev_name : The device name
+// 	 	out :
+//			- class_ind : The index of the data related to the device class
+//			- dev_ind : The index of the data related to the device itself
 //
-//	This method returns 0 if everything OK or -1 if the device is not found
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns 0 if everything OK or -1 if the device is not found
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 int DbServerCache::find_dev_att(DevString dev_name,int &class_ind,int &dev_ind)
 {
@@ -794,19 +875,25 @@ int DbServerCache::find_dev_att(DevString dev_name,int &class_ind,int &dev_ind)
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::find_obj()
+//	method
+//  	DbServerCache::find_obj()
 //
-//	This method sets the class and device index for the device with name
-//  passed in the in parameter. These indexes are indexes in the local
-//	structure arrays
+//	description :
+//		This method sets the class and device index for the device with name passed in the in parameter.
+//		These indexes are indexes in the local structure arrays
 //
-// 	in :	obj_name : The object name
-//  out :   obj_ind : The index of the data related to the object
+// argument
+// 		in :
+//			- obj_name : The object name
+//  	out :
+//			- obj_ind : The index of the data related to the object
 //
-//	This method returns 0 if everything OK or -1 if the device is not found
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns 0 if everything OK or -1 if the device is not found
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 int DbServerCache::find_obj(DevString obj_name,int &obj_ind)
 {
@@ -823,11 +910,15 @@ int DbServerCache::find_obj(DevString obj_name,int &obj_ind)
 	return -1;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DbServerCache::~DbServerCache() - destructor of the DbServerCache class
+// method :
+// 		DbServerCache::~DbServerCache()
 //
-//-----------------------------------------------------------------------------
+// description :
+//		destructor of the DbServerCache class
+//
+//------------------------------------------------------------------------------------------------------------------
 
 DbServerCache::~DbServerCache()
 {
@@ -842,6 +933,8 @@ DbServerCache::~DbServerCache()
 			delete [] classes_idx[cl_loop].class_prop.props_idx;
 		if (classes_idx[cl_loop].class_att_prop.atts_idx != NULL)
 			delete [] classes_idx[cl_loop].class_att_prop.atts_idx;
+		if (classes_idx[cl_loop].class_pipe_prop.atts_idx != NULL)
+			delete [] classes_idx[cl_loop].class_pipe_prop.atts_idx;
 
 		for (int dev_loop = 0;dev_loop < classes_idx[cl_loop].dev_nb;dev_loop++)
 		{
@@ -849,6 +942,8 @@ DbServerCache::~DbServerCache()
 				delete [] classes_idx[cl_loop].devs_idx[dev_loop].dev_prop.props_idx;
 			if (classes_idx[cl_loop].devs_idx[dev_loop].dev_att_prop.atts_idx != NULL)
 				delete [] classes_idx[cl_loop].devs_idx[dev_loop].dev_att_prop.atts_idx;
+			if (classes_idx[cl_loop].devs_idx[dev_loop].dev_pipe_prop.atts_idx != NULL)
+				delete [] classes_idx[cl_loop].devs_idx[dev_loop].dev_pipe_prop.atts_idx;
 		}
 		delete [] classes_idx[cl_loop].devs_idx;
 	}
@@ -901,21 +996,25 @@ void DbServerCache::prop_indexes(int &start,int &stop,PropEltIdx &obj,const DevV
 	obj.prop_nb = nb_prop;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::prop_att_indexes()
+// method :
+//  	DbServerCache::prop_att_indexes()
 //
-//	This method computes where is the last data related to the object
-//	(for attribute related object) in the big array coming from the Db server
+// description :
+//		This method computes where is the last data related to the object (for attribute related object) in the big
+//		array coming from the Db server
 //
-// 	args (in) :	start : The index in the array of the first data related
-//					    to the object
-//			    list : The string array coming from Db server
+// argument :
+// 		in :
+//			- start : The index in the array of the first data related to the object
+//			- list : The string array coming from Db server
 //
-//  args (out) : stop : The index in the array of the last data related
-//						to the object
-//				 obj : Structure where all object parameters must be stored
-//-----------------------------------------------------------------------------
+//  	out :
+//			- stop : The index in the array of the last data related to the object
+//			- obj : Structure where all object parameters must be stored
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbServerCache::prop_att_indexes(int &start,int &stop,AttPropEltIdx &obj,const DevVarStringArray *list)
 {
@@ -955,21 +1054,80 @@ void DbServerCache::prop_att_indexes(int &start,int &stop,AttPropEltIdx &obj,con
 	obj.first_idx = start;
 }
 
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//  	DbServerCache::prop_pipe_indexes()
+//
+// description :
+//		This method computes where is the last data related to the object (for attribute related object) in the big
+//		array coming from the Db server
+//
+// argument :
+//		in :
+//			- start : The index in the array of the first data related to the object
+//			- list : The string array coming from Db server
+//		out :
+//			- stop : The index in the array of the last data related to the object
+//			- obj : Structure where all object parameters must be stored
+//
+//------------------------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
+void DbServerCache::prop_pipe_indexes(int &start,int &stop,AttPropEltIdx &obj,const DevVarStringArray *list)
+{
+	start = stop + 1;
+	int nb_att = atoi((*list)[start + 1]);
+	if (nb_att == 0)
+	{
+		stop = start + 1;
+		obj.last_idx = stop;
+		obj.first_idx = start;
+		obj.att_nb = 0;
+		obj.atts_idx = NULL;
+		return;
+	}
+
+	int id = 0;
+	obj.att_nb = nb_att;
+	obj.atts_idx = new int[nb_att];
+	stop = start + 2;
+
+	for (int ll = 0;ll < nb_att;ll++)
+	{
+		obj.atts_idx[id++] = stop;
+		int nb_prop = atoi((*list)[stop + 1]);
+		stop = stop + 2;
+
+		for (int loop = 0;loop < nb_prop;loop++)
+		{
+			int nb_elt = atoi((*list)[stop + 1]);
+			stop = stop + nb_elt + 2;
+		}
+		if (ll == (nb_att - 1))
+			stop--;
+	}
+
+	obj.last_idx = stop;
+	obj.first_idx = start;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::get_obj_property()
+// method
+//  	DbServerCache::get_obj_property()
 //
-//	This method returns to the caller the wanted object properties
-//	The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller the wanted object properties. The returned data are the same than the one
+//		returned by the classical API
 //
-// 	in :	in_param : The object name followed by the wanted
-//					   property names
+// argument :
+// 		in :
+//			- in_param : The object name followed by the wanted property names
 //
-//	This method returns a pointer to a DevVarStringArray initilised
-//  with the object properties
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns a pointer to a DevVarStringArray initilised with the object properties
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 
 const DevVarStringArray *DbServerCache::get_obj_property(DevVarStringArray *in_param)
@@ -997,19 +1155,23 @@ const DevVarStringArray *DbServerCache::get_obj_property(DevVarStringArray *in_p
 	return &ret_obj_prop;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::get_device_property_list()
+// method :
+//  	DbServerCache::get_device_property_list()
 //
-//	This method returns to the caller the device property names
-//	The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller the device property names. The returned data are the same than the one
+//		returned by the classical API
 //
-// 	in :	in_param : The device name followed by a wildcard
+// argument :
+// 		in :
+//			- in_param : The device name followed by a wildcard
 //
-//	This method returns a pointer to a DevVarStringArray initilised
-//  with the device property names
-//-----------------------------------------------------------------------------
+// return :
+//	This method returns a pointer to a DevVarStringArray initilised with the device property names
+//
+//------------------------------------------------------------------------------------------------------------------
 
 
 const DevVarStringArray *DbServerCache::get_device_property_list(DevVarStringArray *in_param)
@@ -1046,18 +1208,23 @@ const DevVarStringArray *DbServerCache::get_device_property_list(DevVarStringArr
 	return &ret_prop_list;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::get_obj_prop_list()
+// method :
+//  	DbServerCache::get_obj_prop_list()
 //
-//	This method retrieves device property list for a device
+// description :
+//		This method retrieves device property list for a device
 //
-// 	in :	in_param : The device name followed by a wildcard
-//			obj : The device object in the cache
+// argument :
+// 		in :
+//			- in_param : The device name followed by a wildcard
+//			- obj : The device object in the cache
 //
-//	This method returns a pointer to a DevVarStringArray initialised
-//  with the device property names
-//-----------------------------------------------------------------------------
+// retrun :
+//		This method returns a pointer to a DevVarStringArray initialised with the device property names
+//
+//------------------------------------------------------------------------------------------------------------------
 
 void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &obj)
 {
@@ -1185,17 +1352,19 @@ void DbServerCache::get_obj_prop_list(DevVarStringArray *in_param,PropEltIdx &ob
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-//  DbServerCache::import_tac_dev()
+// method :
+//  	DbServerCache::import_tac_dev()
 //
-//	This method returns to the caller of the info necessary to import the
-//	TAC device. The returned data are the same than the one returned by
-//  the classical API
+// description :
+//		This method returns to the caller of the info necessary to import the TAC device.
+//		The returned data are the same than the one returned by the classical API
 //
-//	This method returns a pointer to a DevVarLongStringArray initilised
-//  with the Tango access control import data
-//-----------------------------------------------------------------------------
+// return :
+//		This method returns a pointer to a DevVarLongStringArray initilised with the Tango access control import data
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 {
@@ -1206,7 +1375,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
 	if (imp_tac.last_idx == -1 || imp_tac.first_idx >= (int)data_list->length())
 	{
-		Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+		Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"No TAC device in Db cache",
                                        (const char *)"DbServerCache::import_tac_dev");
 	}
@@ -1217,7 +1386,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
     if (tac_dev.size() != strlen((*data_list)[imp_tac.first_idx]))
     {
-		Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+		Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"Device not available from cache",
                                        (const char *)"DbServerCache::import_tac_dev");
     }
@@ -1230,7 +1399,7 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 
     if (local_tac_dev != cache_tac_dev)
     {
-        Tango::Except::throw_exception((const char *)"API_DatabaseCacheAccess",
+        Tango::Except::throw_exception((const char *)API_DatabaseCacheAccess,
                                        (const char *)"Device not available from cache",
                                        (const char *)"DbServerCache::import_tac_dev");
     }
@@ -1262,6 +1431,223 @@ const DevVarLongStringArray *DbServerCache::import_tac_dev(string &tac_dev)
 		imp_tac_data.svalue[loop] = CORBA::string_dup((*data_list)[imp_tac.first_idx + loop]);
 
 	return &imp_tac_data;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//  	DbServerCache::get_class_pipe_property()
+//
+// description :
+//		This method returns to the caller the class pipe properties for the class and pipes specified in
+// 		the in parameters. The returned data are the same than the one returned by the classical API
+//
+// argument
+// 		in :
+//			- in_param : The class name followed by the wanted pipe names
+//
+// return :
+//		This method returns a pointer to a DevVarStringArray initilised with the class pipe properties
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+const DevVarStringArray *DbServerCache::get_class_pipe_property(DevVarStringArray *in_param)
+{
+
+//
+// Throw exception if stored procedure does not support pipe
+//
+
+	if (proc_release < 109)
+	{
+		string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
+		Tango::Except::throw_exception("DB_TooOldStoredProc",mess,"DbServerCache::get_class_pipe_property");
+	}
+
+	int found_pipe = 0;
+	char n_pipe_str[256];
+
+	ret_obj_pipe_prop.length(2);
+	ret_obj_pipe_prop[0] = CORBA::string_dup((*in_param)[0]);
+
+	int cl_idx = find_class((*in_param)[0]);
+	if (cl_idx != -1)
+	{
+
+//
+// The class is found
+//
+
+		int wanted_pipe_nb = in_param->length() - 1;
+		int class_pipe_nb = classes_idx[cl_idx].class_pipe_prop.att_nb;
+		for (int loop = 0;loop < wanted_pipe_nb;loop++)
+		{
+			int ll;
+			for (ll = 0;ll < class_pipe_nb;ll++)
+			{
+				if (TG_strcasecmp((*in_param)[loop + 1],(*data_list)[classes_idx[cl_idx].class_pipe_prop.atts_idx[ll]]) == 0)
+				{
+
+//
+// The pipe is found, copy all its properties
+//
+
+					int pipe_index = classes_idx[cl_idx].class_pipe_prop.atts_idx[ll];
+					int nb_prop = ::atoi((*data_list)[pipe_index + 1]);
+					int nb_elt = 0;
+					int nb_to_copy = 0;
+					int tmp_idx = pipe_index + 2;
+					nb_to_copy = 2;
+					for (int k = 0;k < nb_prop;k++)
+					{
+						nb_elt = ::atoi((*data_list)[tmp_idx + 1]);
+						tmp_idx = tmp_idx + nb_elt + 2;
+						nb_to_copy = nb_to_copy + 2 + nb_elt;
+					}
+
+					int old_length = ret_obj_pipe_prop.length();
+					ret_obj_pipe_prop.length(old_length + nb_to_copy);
+					for (int j = 0;j < nb_to_copy;j++)
+						ret_obj_pipe_prop[old_length + j] = CORBA::string_dup((*data_list)[pipe_index + j]);
+					found_pipe++;
+					break;
+				}
+			}
+			if (ll == class_pipe_nb)
+			{
+				found_pipe++;
+				int old_length = ret_obj_pipe_prop.length();
+				ret_obj_pipe_prop.length(old_length + 2);
+				ret_obj_pipe_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
+				ret_obj_pipe_prop[old_length + 1] = CORBA::string_dup("0");
+			}
+		}
+		::sprintf(n_pipe_str,"%d",found_pipe);
+		ret_obj_pipe_prop[1] = CORBA::string_dup(n_pipe_str);
+	}
+	else
+	{
+		TangoSys_OMemStream o;
+		o << "Class " << (*in_param)[0] << " not found in DB cache" << ends;
+
+		Tango::Except::throw_exception("DB_ClassNotFoundInCache",o.str(),
+										   "DbServerCache::get_class_pipe_property");
+	}
+
+//	cout4 << "DbCache --> Returned data for a get_class_pipe_property for class " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_pipe_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned object pipe prop = " << ret_obj_pipe_prop[ll] << endl;
+
+	return &ret_obj_pipe_prop;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//  	DbServerCache::get_dev_pipe_property()
+//
+// description :
+//		This method returns to the caller the device pipe properties for the device and pipes specified in
+//		the in parameters. The returned data are the same than the one returned by the classical API
+//
+// argument
+// 		in :
+//			- in_param : The device name followed by the wanted pipe names
+//
+// return :
+//		This method returns a pointer to a DevVarStringArray initialised with the device pipe properties
+//
+//------------------------------------------------------------------------------------------------------------------
+
+const DevVarStringArray *DbServerCache::get_dev_pipe_property(DevVarStringArray *in_param)
+{
+
+//
+// Throw exception if stored procedure does not support pipe
+//
+
+	if (proc_release < 109)
+	{
+		string mess("Your database stored procedure is too old to support pipe. Please update to stored procedure release 1.9 or more");
+		Tango::Except::throw_exception("DB_TooOldStoredProc",mess,"DbServerCache::get_dev_pipe_property");
+	}
+
+	int found_pipe = 0;
+	char n_pipe_str[256];
+
+	ret_obj_pipe_prop.length(2);
+	ret_obj_pipe_prop[0] = CORBA::string_dup((*in_param)[0]);
+
+	int class_ind,dev_ind;
+
+	int ret_value = find_dev_att((*in_param)[0],class_ind,dev_ind);
+	if (ret_value != -1)
+	{
+		int wanted_pipe_nb = in_param->length() - 1;
+		int dev_pipe_nb = classes_idx[class_ind].devs_idx[dev_ind].dev_pipe_prop.att_nb;
+		for (int loop = 0;loop < wanted_pipe_nb;loop++)
+		{
+			int ll;
+			for (ll = 0;ll < dev_pipe_nb;ll++)
+			{
+				if (TG_strcasecmp((*in_param)[loop + 1],(*data_list)[classes_idx[class_ind].devs_idx[dev_ind].dev_pipe_prop.atts_idx[ll]]) == 0)
+				{
+					int pipe_index = classes_idx[class_ind].devs_idx[dev_ind].dev_pipe_prop.atts_idx[ll];
+					int nb_prop = ::atoi((*data_list)[pipe_index + 1]);
+					int nb_elt = 0;
+					int nb_to_copy = 0;
+					int tmp_idx = pipe_index + 2;
+					nb_to_copy = 2;
+					for (int k = 0;k < nb_prop;k++)
+					{
+						nb_elt = ::atoi((*data_list)[tmp_idx + 1]);
+						tmp_idx = tmp_idx + nb_elt + 2;
+						nb_to_copy = nb_to_copy + 2 + nb_elt;
+					}
+
+					int old_length = ret_obj_pipe_prop.length();
+					ret_obj_pipe_prop.length(old_length + nb_to_copy);
+					for (int j = 0;j < nb_to_copy;j++)
+						ret_obj_pipe_prop[old_length + j] = CORBA::string_dup((*data_list)[pipe_index + j]);
+					found_pipe++;
+					break;
+				}
+			}
+			if (ll == dev_pipe_nb)
+			{
+				found_pipe++;
+				int old_length = ret_obj_pipe_prop.length();
+
+				ret_obj_pipe_prop.length(old_length + 2);
+				ret_obj_pipe_prop[old_length] = CORBA::string_dup((*in_param)[loop + 1]);
+				ret_obj_pipe_prop[old_length + 1] = CORBA::string_dup("0");
+			}
+		}
+		::sprintf(n_pipe_str,"%d",found_pipe);
+		ret_obj_pipe_prop[1] = CORBA::string_dup(n_pipe_str);
+	}
+	else
+	{
+		if (TG_strncasecmp("dserver/",(*in_param)[0],8) != 0)
+		{
+			TangoSys_OMemStream o;
+			o << "Device " << (*in_param)[0] << " not found in DB cache" << ends;
+
+			Tango::Except::throw_exception((const char *)"DB_DeviceNotFoundInCache",o.str(),
+											(const char *)"DbServerCache::get_dev_pipe_property");
+		}
+		else
+		{
+			::sprintf(n_pipe_str,"%d",found_pipe);
+			ret_obj_pipe_prop[1] = CORBA::string_dup(n_pipe_str);
+		}
+	}
+
+//	cout4 << "DbCache --> Returned data for a get_dev_pipe_property for device " << (*in_param)[0] << endl;
+//	for (unsigned int ll=0;ll< ret_obj_pipe_prop.length();ll++)
+//		cout4 << "    DbCache --> Returned object pipe prop = " << ret_obj_pipe_prop[ll] << endl;
+
+	return &ret_obj_pipe_prop;
 }
 
 } // End of Tango namespace

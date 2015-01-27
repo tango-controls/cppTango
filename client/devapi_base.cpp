@@ -1,6 +1,6 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-///////////////////////////////////////////////////////////////////////////////
+//===================================================================================================================
 //
 // devapi_base.cpp 	- C++ source code file for TANGO device api
 //
@@ -8,29 +8,26 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 		- March 2001
 //
-// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-//		$Revision$
+// $Revision$
 //
-/////////////////////////////////////////////////////////////////////////////////
+//===================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -38,6 +35,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <tango.h>
 #include <eventconsumer.h>
+#include <devapi_utils.tpp>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -70,16 +68,8 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-Connection::ConnectionExt &Connection::ConnectionExt::operator=(const Connection::ConnectionExt &rval)
+Connection::ConnectionExt &Connection::ConnectionExt::operator=(TANGO_UNUSED(const Connection::ConnectionExt &rval))
 {
-	tr_reco  = rval.tr_reco;
-	device_3 = rval.device_3;
-
-	prev_failed    = rval.prev_failed;
-	prev_failed_t0 = rval.prev_failed_t0;
-
-	device_4 = rval.device_4;
-
 	return *this;
 }
 
@@ -92,7 +82,9 @@ Connection::ConnectionExt &Connection::ConnectionExt::operator=(const Connection
 
 Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 				    timeout(CLNT_TIMEOUT),
-				    version(0),source(Tango::CACHE_DEV),ext(new ConnectionExt())
+				    version(0),source(Tango::CACHE_DEV),ext(new ConnectionExt()),
+				    tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
+				    user_connect_timeout(-1),tango_host_localhost(false)
 {
 
 //
@@ -126,10 +118,13 @@ Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 
 	int ucto = au->get_user_connect_timeout();
 	if (ucto != -1)
-		ext->user_connect_timeout = ucto;
+		user_connect_timeout = ucto;
 }
 
-Connection::Connection(bool dummy):ext(Tango_NullPtr)
+
+
+Connection::Connection(bool dummy):ext(Tango_nullptr),tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
+				    user_connect_timeout(-1),tango_host_localhost(false)
 {
 	if (dummy)
 	{
@@ -160,7 +155,7 @@ Connection::~Connection()
 //
 //-----------------------------------------------------------------------------
 
-Connection::Connection(const Connection &sou):ext(Tango_NullPtr)
+Connection::Connection(const Connection &sou):ext(Tango_nullptr)
 {
 	dbase_used = sou.dbase_used;
 	from_env_var = sou.from_env_var;
@@ -187,6 +182,19 @@ Connection::Connection(const Connection &sou):ext(Tango_NullPtr)
 
 	check_acc = sou.check_acc;
 	access = sou.access;
+
+    tr_reco = sou.tr_reco;
+    device_3 = sou.device_3;
+
+    prev_failed = sou.prev_failed;
+    prev_failed_t0 = sou.prev_failed_t0;
+
+    device_4 = sou.device_4;
+
+    user_connect_timeout = sou.user_connect_timeout;
+    tango_host_localhost = sou.tango_host_localhost;
+
+    device_5 = sou.device_5;
 
 #ifdef HAS_UNIQUE_PTR
     if (sou.ext.get() != NULL)
@@ -239,6 +247,19 @@ Connection &Connection::operator=(const Connection &rval)
 	check_acc = rval.check_acc;
 	access = rval.access;
 
+    tr_reco = rval.tr_reco;
+    device_3 = rval.device_3;
+
+    prev_failed = rval.prev_failed;
+    prev_failed_t0 = rval.prev_failed_t0;
+
+    device_4 = rval.device_4;
+
+    user_connect_timeout = rval.user_connect_timeout;
+    tango_host_localhost = rval.tango_host_localhost;
+
+    device_5 = rval.device_5;
+
 #ifdef HAS_UNIQUE_PTR
     if (rval.ext.get() != NULL)
     {
@@ -246,7 +267,7 @@ Connection &Connection::operator=(const Connection &rval)
         *(ext.get()) = *(rval.ext.get());
     }
     else
-        ext.reset(Tango_NullPtr);
+        ext.reset(Tango_nullptr);
 #else
 	if (rval.ext != NULL)
 	{
@@ -275,12 +296,12 @@ void Connection::check_and_reconnect()
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
 			reconnect(dbase_used);
 	}
@@ -290,13 +311,13 @@ void Connection::check_and_reconnect(Tango::DevSource &sou)
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 		sou = source;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
 			reconnect(dbase_used);
 	}
@@ -306,15 +327,18 @@ void Connection::check_and_reconnect(Tango::AccessControlType &act)
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 		act = access;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
+		{
 			reconnect(dbase_used);
+			act = access;
+		}
 	}
 }
 
@@ -322,34 +346,37 @@ void Connection::check_and_reconnect(Tango::DevSource &sou,Tango::AccessControlT
 {
 	int local_connection_state;
 	{
-		ReaderLock guard(ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_connection_state = connection_state;
 		act = access;
 		sou = source;
 	}
 	if (local_connection_state != CONNECTION_OK)
 	{
-		WriterLock guard(ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (connection_state != CONNECTION_OK)
+		{
 			reconnect(dbase_used);
+			act = access;
+		}
 	}
 }
 
 void Connection::set_connection_state(int con)
 {
-	WriterLock guard(ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 	connection_state = con;
 }
 
 Tango::DevSource Connection::get_source()
 {
-	ReaderLock guard(ext->con_to_mon);
+	ReaderLock guard(con_to_mon);
 	return source;
 }
 
 void Connection::set_source(Tango::DevSource sou)
 {
-	WriterLock guard(ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 	source = sou;
 }
 
@@ -376,13 +403,17 @@ void Connection::connect(string &corba_name)
 
 //
 // Narrow CORBA string name to CORBA object
-// First, try as a Device_3, then as a Device_2 and finally as a Device
-// In case of device server running on a crate which is suddently turned off,
-// the _narrow call takes several seconds before returning. Change the global
-// timeout before doing the _narrow() in order to limit this timeout
-// If the device is already connected, we can change the device timeout.
-// If the device is not already connected, we have to change the omniORB
-// global timeout
+// First, try as a Device_5, then as a Device_4, then as .... and finally as a Device
+//
+// But we have want to know if the connection to the device is OK or not.
+// The _narrow() call does not necessary generates a remote call. It all depends on the object IDL type
+// stored in the IOR. If in the IOR, the IDL is the same than the one on which the narrow is done (Device_5 on both
+// side for instance), then the _narrow call will not generate any remote call and therefore, we don know
+// if the connection is OK or NOT. This is the reason of the _non_existent() call.
+// In case the IDl in the IOR and in the narrow() call are different, then the _narrow() call try to execute a
+// remote _is_a() call and therefore tries to connect to the device. IN this case, the _non_existent() call is
+// useless. But because we don want to analyse the IOR ourself, we always call _non_existent()
+// Reset the connection timeout only after the _non_existent call.
 //
 
 			if (corba_name.find(DbObjName) != string::npos)
@@ -390,64 +421,82 @@ void Connection::connect(string &corba_name)
 
 			if (connect_to_db == false)
 			{
-				if (ext->user_connect_timeout != -1)
-					omniORB::setClientConnectTimeout(ext->user_connect_timeout);
+				if (user_connect_timeout != -1)
+					omniORB::setClientConnectTimeout(user_connect_timeout);
 				else
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 			}
 
-			ext->device_4 = Device_4::_narrow(obj);
+			device_5 = Device_5::_narrow(obj);
+
+            if (CORBA::is_nil(device_5))
+            {
+                device_4 = Device_4::_narrow(obj);
+
+                if (CORBA::is_nil(device_4))
+                {
+                    device_3 = Device_3::_narrow(obj);
+
+                    if (CORBA::is_nil(device_3))
+                    {
+                        device_2 = Device_2::_narrow(obj);
+                        if (CORBA::is_nil(device_2))
+                        {
+                            device = Device::_narrow(obj);
+                            if (CORBA::is_nil(device))
+                            {
+                                cerr << "Can't build connection to object " << corba_name <<  endl;
+                                connection_state = CONNECTION_NOTOK;
+
+                                TangoSys_OMemStream desc;
+                                desc << "Failed to connect to device " << dev_name();
+                                desc << " (device nil after _narrowing)" << ends;
+                                ApiConnExcept::throw_exception((const char*)API_CantConnectToDevice,
+                                                        desc.str(),
+                                                        (const char*)"Connection::connect()");
+                            }
+                            else
+                            {
+                            	device->_non_existent();
+                                version = 1;
+                            }
+                        }
+                        else
+                        {
+                        	device_2->_non_existent();
+                            version = 2;
+                            device = Device_2::_duplicate(device_2);
+                        }
+                    }
+                    else
+                    {
+						device_3->_non_existent();
+                        version = 3;
+                        device_2 = Device_3::_duplicate(device_3);
+                        device = Device_3::_duplicate(device_3);
+                    }
+                }
+                else
+                {
+					device_4->_non_existent();
+                    version = 4;
+                    device_3 = Device_4::_duplicate(device_4);
+                    device_2 = Device_4::_duplicate(device_4);
+                    device = Device_4::_duplicate(device_4);
+                }
+            }
+            else
+            {
+				device_5->_non_existent();
+                version = 5;
+                device_4 = Device_5::_duplicate(device_5);
+                device_3 = Device_5::_duplicate(device_5);
+                device_2 = Device_5::_duplicate(device_5);
+                device = Device_5::_duplicate(device_5);
+            }
 
 			if (connect_to_db == false)
 				omniORB::setClientConnectTimeout(0);
-
-			if (CORBA::is_nil(ext->device_4))
-			{
-				ext->device_3 = Device_3::_narrow(obj);
-
-				if (CORBA::is_nil(ext->device_3))
-				{
-					device_2 = Device_2::_narrow(obj);
-					if (CORBA::is_nil(device_2))
-					{
-						device = Device::_narrow(obj);
-						if (CORBA::is_nil(device))
-						{
-							cerr << "Can't build connection to object " << corba_name <<  endl;
-							connection_state = CONNECTION_NOTOK;
-
-							TangoSys_OMemStream desc;
-							desc << "Failed to connect to device " << dev_name();
-							desc << " (device nil after _narrowing)" << ends;
-							ApiConnExcept::throw_exception((const char*)"API_CantConnectToDevice",
-                        			       			desc.str(),
-                        			       			(const char*)"Connection::connect()");
-						}
-						else
-						{
-							version = 1;
-						}
-					}
-					else
-					{
-						version = 2;
-						device = Device_2::_duplicate(device_2);
-					}
-				}
-				else
-				{
-					version = 3;
-					device_2 = Device_3::_duplicate(ext->device_3);
-					device = Device_3::_duplicate(ext->device_3);
-				}
-			}
-			else
-			{
-				version = 4;
-				ext->device_3 = Device_4::_duplicate(ext->device_4);
-				device_2 = Device_4::_duplicate(ext->device_4);
-				device = Device_4::_duplicate(ext->device_4);
-			}
 			retry = false;
 
 //
@@ -474,7 +523,7 @@ void Connection::connect(string &corba_name)
 			if (pos == string::npos)
 			{
 				desc << "device " << dev_name() << ends;
-				reason << "API_CantConnectToDevice" << ends;
+				reason << API_CantConnectToDevice << ends;
 			}
 			else
 			{
@@ -497,26 +546,25 @@ void Connection::connect(string &corba_name)
 						}
 						else
 						{
-							CORBA::SystemException *se;
 							desc << "device " << dev_name() << ends;
-							if ((se = CORBA::OBJECT_NOT_EXIST::_downcast(&ce)) != 0)
+							if (CORBA::OBJECT_NOT_EXIST::_downcast(&ce) != 0)
 								reason << "API_DeviceNotDefined" << ends;
-							else if ((se = CORBA::TRANSIENT::_downcast(&ce)) != 0)
+							else if (CORBA::TRANSIENT::_downcast(&ce) != 0)
 								reason << "API_ServerNotRunning" << ends;
 							else
-								reason << "API_CantConnectToDevice" << ends;
+								reason << API_CantConnectToDevice << ends;
 						}
 					}
 					else
 					{
 						desc << "device " << dev_name() << ends;
-						reason << "API_CantConnectToDevice" << ends;
+						reason << API_CantConnectToDevice << ends;
 					}
 				}
 				else
 				{
 					desc << "device " << dev_name() << ends;
-					reason << "API_CantConnectToDevice" << ends;
+					reason << API_CantConnectToDevice << ends;
 				}
 			}
 
@@ -549,19 +597,19 @@ void Connection::reconnect(bool db_used)
 #endif /* _TG_WINDOWS_ */
 
 	double	t = (double)now.tv_sec + ((double)now.tv_usec / 1000000);
-	double	delay = t - ext->prev_failed_t0;
+	double	delay = t - prev_failed_t0;
 
 	if (connection_state != CONNECTION_OK)
 	{
 		//	Do not reconnect if to soon
-		if ( (ext->prev_failed == true) && delay < (RECONNECTION_DELAY / 1000) )
+		if ( (prev_failed == true) && delay < (RECONNECTION_DELAY / 1000) )
 		{
 			TangoSys_OMemStream desc;
 			desc << "Failed to connect to device " << dev_name() << endl;
 			desc << "The connection request was delayed." << endl;
 			desc << "The last connection request was done less than " << RECONNECTION_DELAY << " ms ago" << ends;
 
-			Tango::Except::throw_exception ( (const char *)"API_CantConnectToDevice",
+			Tango::Except::throw_exception ( (const char *)API_CantConnectToDevice,
 													desc.str(),
 													(const char *)"Connection::reconnect");
 		}
@@ -602,15 +650,15 @@ void Connection::reconnect(bool db_used)
 		{
 			try
 			{
-				if (ext->user_connect_timeout != -1)
-					omniORB::setClientConnectTimeout(ext->user_connect_timeout);
+				if (user_connect_timeout != -1)
+					omniORB::setClientConnectTimeout(user_connect_timeout);
 				else
 					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 				device->ping();
 				omniORB::setClientConnectTimeout(0);
 
-				ext->prev_failed_t0 = t;
-				ext->prev_failed    = false;
+				prev_failed_t0 = t;
+				prev_failed    = false;
 
 //
 // If the device is the database, call its post-reconnection method
@@ -633,7 +681,7 @@ void Connection::reconnect(bool db_used)
 				desc << "Failed to connect to device " << dev_name() << ends;
 
 				ApiConnExcept::re_throw_exception(ce,
-						  (const char *)"API_CantConnectToDevice",
+						  (const char *)API_CantConnectToDevice,
 						  desc.str(),
 					     (const char *)"Connection::reconnect");
 			}
@@ -641,11 +689,26 @@ void Connection::reconnect(bool db_used)
 	}
 	catch (DevFailed &)
 	{
-		ext->prev_failed    = true;
-		ext->prev_failed_t0 = t;
+		prev_failed    = true;
+		prev_failed_t0 = t;
 
 		throw;
 	}
+}
+
+//-----------------------------------------------------------------------------
+//
+// Connection::is_connected() - returns true if connection is in the OK state
+//
+//-----------------------------------------------------------------------------
+
+bool Connection::is_connected()
+{
+	bool connected = true;
+	ReaderLock guard(con_to_mon);
+	if(connection_state != CONNECTION_OK)
+		connected = false;
+	return connected;
 }
 
 //-----------------------------------------------------------------------------
@@ -818,16 +881,19 @@ int Connection::get_env_var_from_file(string &f_name,const char *env_var,string 
     return ret;
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// Connection::get_fqdn() - Get a host fqdn (Fully Qualified domain name)
+// method:
+//		Connection::get_fqdn()
 //
-// This method gets the host fully qualified domain name (from DNS) and
-// modified the passed string accordingly
+// description:
+// 		This method gets the host fully qualified domain name (from DNS) and modified the passed string accordingly
 //
-// in :	- the_host : The host name
+// argument:
+// 		in/out :
+//			- the_host: The original host name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void Connection::get_fqdn(string &the_host)
 {
@@ -877,19 +943,25 @@ void Connection::get_fqdn(string &the_host)
 // Try to get FQDN
 //
 
-    for(size_t i = 0; i < ip_list.size() && !host_found; i++)
+    size_t i;
+    for(i = 0; i < ip_list.size() && !host_found; i++)
     {
         int result = getaddrinfo(ip_list[i].c_str(),NULL,&hints,&info);
 
         if (result == 0)
         {
             ptr = info;
+            int nb_loop = 0;
+            string myhost;
+            string::size_type pos;
+
             while (ptr != NULL)
             {
                 if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
                 {
-                    string myhost(tmp_host);
-                    string::size_type pos = myhost.find('.');
+                	nb_loop++;
+                    myhost = tmp_host;
+                    pos = myhost.find('.');
                     if (pos != string::npos)
                     {
                         string canon = myhost.substr(0,pos);
@@ -904,6 +976,16 @@ void Connection::get_fqdn(string &the_host)
                 ptr = ptr->ai_next;
             }
             freeaddrinfo(info);
+
+            if (host_found == false && nb_loop == 1 && i == (ip_list.size() - 1))
+			{
+				if (pos != string::npos)
+				{
+					the_host = the_host + myhost.substr(pos);
+				}
+				else
+					the_host = myhost;
+			}
         }
     }
 }
@@ -916,7 +998,7 @@ void Connection::get_fqdn(string &the_host)
 
 int Connection::get_timeout_millis()
 {
-	ReaderLock guard(ext->con_to_mon);
+	ReaderLock guard(con_to_mon);
 	return timeout;
 }
 
@@ -929,7 +1011,7 @@ int Connection::get_timeout_millis()
 
 void Connection::set_timeout_millis(int millisecs)
 {
-	WriterLock guard(ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 
 	timeout = millisecs;
 
@@ -940,20 +1022,32 @@ void Connection::set_timeout_millis(int millisecs)
 
 		omniORB::setClientCallTimeout(device,millisecs);
 
-		if (version == 4)
-		{
-			omniORB::setClientCallTimeout(ext->device_4,millisecs);
-			omniORB::setClientCallTimeout(ext->device_3,millisecs);
+        switch (version)
+        {
+        case 5:
+			omniORB::setClientCallTimeout(device_5,millisecs);
+			omniORB::setClientCallTimeout(device_4,millisecs);
+			omniORB::setClientCallTimeout(device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
-		}
-		else if (version == 3)
-		{
-			omniORB::setClientCallTimeout(ext->device_3,millisecs);
+			break;
+
+        case 4:
+			omniORB::setClientCallTimeout(device_4,millisecs);
+			omniORB::setClientCallTimeout(device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
-		}
-		else if (version == 2)
-		{
+			break;
+
+        case 3:
+			omniORB::setClientCallTimeout(device_3,millisecs);
 			omniORB::setClientCallTimeout(device_2,millisecs);
+			break;
+
+        case 2:
+			omniORB::setClientCallTimeout(device_2,millisecs);
+			break;
+
+        default:
+            break;
 		}
 	}
 	catch (Tango::DevFailed &) {}
@@ -1014,7 +1108,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 
 				vector<Database *> & v_d = au->get_db_vect();
 				Database *db;
-				if (v_d.size() == 0)
+				if (v_d.empty() == true)
 					db = static_cast<Database *>(this);
 				else
 				{
@@ -1044,7 +1138,8 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 				{
 					try
 					{
-						device->ping();
+						Device_var dev = Device::_duplicate(device);
+						dev->ping();
 					}
 					catch(...)
 					{
@@ -1071,7 +1166,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 						desc << ends;
 					}
 
-					NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+					NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 													  (const char *)"Connection::command_inout()");
 				}
 			}
@@ -1087,12 +1182,19 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				received = ext->device_4->command_inout_4(command.c_str(),data_in.any,local_source,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				received = dev->command_inout_4(command.c_str(),data_in.any,local_source,ci);
 			}
 			else if (version >= 2)
-				received = device_2->command_inout_2(command.c_str(),data_in.any,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				received = dev->command_inout_2(command.c_str(),data_in.any,local_source);
+			}
 			else
-				received = device->command_inout(command.c_str(),data_in.any);
+			{
+				Device_var dev = Device::_duplicate(device);
+				received = dev->command_inout(command.c_str(),data_in.any);
+			}
 
 			ctr = 2;
 			data_out.any = received;
@@ -1102,7 +1204,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout on device " << dev_name();
 			desc << ", command " << command << ends;
-			ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+			ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         	desc.str(), (const char*)"Connection::command_inout()");
 		}
 		catch (Tango::DevFailed &e)
@@ -1115,7 +1217,7 @@ DeviceData Connection::command_inout(string &command, DeviceData &data_in)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"Connection::command_inout()");
 			else
-				Except::re_throw_exception(e,(const char*)"API_CommandFailed",
+				Except::re_throw_exception(e,(const char*)API_CommandFailed,
                         	desc.str(), (const char*)"Connection::command_inout()");
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -1207,7 +1309,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 
 				vector<Database *> & v_d = au->get_db_vect();
 				Database *db;
-				if (v_d.size() == 0)
+				if (v_d.empty() == true)
 					db = static_cast<Database *>(this);
 				else
 				{
@@ -1236,7 +1338,8 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 				{
 					try
 					{
-						device->ping();
+						Device_var dev = Device::_duplicate(device);
+						dev->ping();
 					}
 					catch(...)
 					{
@@ -1263,7 +1366,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 						desc << ends;
 					}
 
-					NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+					NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 													  (const char *)"Connection::command_inout()");
 				}
 			}
@@ -1274,12 +1377,19 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				return (ext->device_4->command_inout_4(command.c_str(),any,local_source,ci));
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				return (dev->command_inout_4(command.c_str(),any,local_source,ci));
 			}
 			else if (version >= 2)
-				return (device_2->command_inout_2(command.c_str(),any,local_source));
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				return (dev->command_inout_2(command.c_str(),any,local_source));
+			}
 			else
-				return (device->command_inout(command.c_str(),any));
+			{
+				Device_var dev = Device::_duplicate(device);
+				return (dev->command_inout(command.c_str(),any));
+			}
 			ctr = 2;
 		}
 		catch (Tango::ConnectionFailed &e)
@@ -1287,7 +1397,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout on device " << dev_name();
 			desc << ", command " << command << ends;
-			ApiConnExcept::re_throw_exception(e,(const char*)"API_CommandFailed",
+			ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
                         	desc.str(), (const char*)"Connection::command_inout()");
 		}
 		catch (Tango::DevFailed &e)
@@ -1300,7 +1410,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"Connection::command_inout()");
 			else
-				Except::re_throw_exception(e,(const char*)"API_CommandFailed",
+				Except::re_throw_exception(e,(const char*)API_CommandFailed,
                         	desc.str(), (const char*)"Connection::command_inout()");
 		}
 		catch (CORBA::TRANSIENT &trans)
@@ -1444,7 +1554,7 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (strcmp(e.errors[0].reason.in(),"API_TangoHostNotSet") == 0)
+			if (strcmp(e.errors[0].reason.in(),API_TangoHostNotSet) == 0)
 			{
 				cerr << e.errors[0].desc.in() << endl;
 			}
@@ -1467,7 +1577,7 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 					 	desc.str(),
 						(const char *)"DeviceProxy::DeviceProxy");
 			}
-			else if (strcmp(dfe.errors[0].reason,"API_DeviceNotExported") == 0)
+			else if (strcmp(dfe.errors[0].reason,API_DeviceNotExported) == 0)
 				exported = false;
 		}
 	}
@@ -1537,9 +1647,10 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 		}
 	}
 
-
+//
 // get the name of the asscociated device when connecting
 // inside a device server
+//
 
 	try
 	{
@@ -1565,7 +1676,7 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 //
 //-----------------------------------------------------------------------------
 
-DeviceProxy::DeviceProxy(const DeviceProxy &sou):Connection(sou),ext_proxy(Tango_NullPtr)
+DeviceProxy::DeviceProxy(const DeviceProxy &sou):Connection(sou),ext_proxy(Tango_nullptr)
 {
 
 //
@@ -1719,7 +1830,7 @@ void DeviceProxy::parse_name(string &full_name)
 		desc << "The given name is an empty string!!! " << full_name << endl;
 		desc << "Device name syntax is domain/family/member" << ends;
 
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+		ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 	}
@@ -1763,7 +1874,6 @@ void DeviceProxy::parse_name(string &full_name)
 			ApiWrongNameExcept::throw_exception((const char*)"API_UnsupportedProtocol",
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
-			exit(-1);
 		}
 		else
 		{
@@ -1828,7 +1938,7 @@ void DeviceProxy::parse_name(string &full_name)
 			TangoSys_OMemStream desc;
 			desc << "Host and port not correctly defined in device name " << full_name << ends;
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
 		}
@@ -1840,7 +1950,7 @@ void DeviceProxy::parse_name(string &full_name)
 			TangoSys_OMemStream desc;
 			desc << "Host and port not correctly defined in device name " << full_name << ends;
 
-			ApiWrongNameExcept::throw_exception((const char*)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char*)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char*)"DeviceProxy::parse_name()");
 		}
@@ -1862,7 +1972,7 @@ void DeviceProxy::parse_name(string &full_name)
 			desc << "Wrong device name syntax (domain/family/member) in " << full_name << endl;
 			desc << "Rem: Alias are forbidden when not using a database" << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 		}
@@ -1874,7 +1984,7 @@ void DeviceProxy::parse_name(string &full_name)
 			desc << "Wrong device name syntax (domain/family/member) in " << full_name << endl;
 			desc << "Rem: Alias are forbidden when not using a database" << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 		}
@@ -1886,7 +1996,7 @@ void DeviceProxy::parse_name(string &full_name)
 			desc << "Wrong device name syntax (domain/family/member) in " << full_name << endl;
 			desc << "Rem: Alias are forbidden when not using a database" << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 		}
@@ -1916,7 +2026,7 @@ void DeviceProxy::parse_name(string &full_name)
 				TangoSys_OMemStream desc;
 				desc << "Wrong alias name syntax in " << full_name << " (: is not allowed in alias name)" << ends;
 
-				ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 			}
@@ -1927,7 +2037,7 @@ void DeviceProxy::parse_name(string &full_name)
 				TangoSys_OMemStream desc;
 				desc << "Wrong alias name syntax in " << full_name << " (-> is not allowed in alias name)" << ends;
 
-				ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+				ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 			}
@@ -1960,7 +2070,7 @@ void DeviceProxy::parse_name(string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-					ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+					ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 				}
@@ -1973,7 +2083,7 @@ void DeviceProxy::parse_name(string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-					ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+					ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 				}
@@ -1985,7 +2095,7 @@ void DeviceProxy::parse_name(string &full_name)
 					TangoSys_OMemStream desc;
 					desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-					ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+					ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 				}
@@ -2026,7 +2136,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong alias name syntax in " << full_name << " (: is not allowed in alias name)" << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2037,7 +2147,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong alias name syntax in " << full_name << " (-> is not allowed in alias name)" << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2064,7 +2174,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2076,7 +2186,7 @@ void DeviceProxy::parse_name(string &full_name)
 						TangoSys_OMemStream desc;
 						desc << "Wrong device name syntax (domain/family/member) in " << full_name << ends;
 
-						ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+						ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 						desc.str(),
 						(const char *)"DeviceProxy::parse_name()");
 					}
@@ -2128,9 +2238,8 @@ string DeviceProxy::get_corba_name(bool need_check_acc)
 
 			TangoSys_OMemStream desc;
 			desc << "Device " << device_name << " is not exported (hint: try starting the device server)" << ends;
-			ApiConnExcept::throw_exception((const char*)"API_DeviceNotExported",
-						       desc.str(),
-						       (const char*)"DeviceProxy::get_corba_name()");
+			ApiConnExcept::throw_exception(API_DeviceNotExported,desc.str(),
+						       "DeviceProxy::get_corba_name()");
 		}
 	}
 
@@ -2208,7 +2317,7 @@ DbDevImportInfo DeviceProxy::import_info()
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					        desc.str(),
 					        (const char *)"DeviceProxy::import_info");
 	}
@@ -2229,7 +2338,6 @@ DbDevImportInfo DeviceProxy::import_info()
 
 DeviceProxy::~DeviceProxy()
 {
-
 	if (dbase_used == true)
 		delete db_dev;
 
@@ -2289,18 +2397,19 @@ int DeviceProxy::ping()
 		{
 			check_and_reconnect();
 
-			device->ping();
+			Device_var dev = Device::_duplicate(device);
+			dev->ping();
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","ping");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","ping",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","ping");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","ping",this);
 			}
 			else
 			{
@@ -2317,7 +2426,7 @@ int DeviceProxy::ping()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","ping");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","ping",this);
 			}
 			else
 			{
@@ -2372,19 +2481,20 @@ string DeviceProxy::name()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var n = device->name();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var n = dev->name();
 			ctr = 2;
 			na = n;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","name");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","name",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","name");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","name",this);
 			}
 			else
 			{
@@ -2401,7 +2511,7 @@ string DeviceProxy::name()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","name");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","name",this);
 			}
 			else
 			{
@@ -2471,18 +2581,19 @@ DevState DeviceProxy::state()
 		{
 			check_and_reconnect();
 
-			sta = device->state();
+			Device_var dev = Device::_duplicate(device);
+			sta = dev->state();
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &transp)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","state");
+			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","state",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","state");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","state",this);
 			}
 			else
 			{
@@ -2499,7 +2610,7 @@ DevState DeviceProxy::state()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","state");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","state",this);
 			}
 			else
 			{
@@ -2545,19 +2656,20 @@ string DeviceProxy::status()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var st = device->status();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var st = dev->status();
 			ctr = 2;
 			status_str = st;
 		}
 		catch (CORBA::TRANSIENT &transp)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","status");
+			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","status",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","status");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","status",this);
 			}
 			else
 			{
@@ -2574,7 +2686,7 @@ string DeviceProxy::status()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","status");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","status",this);
 			}
 			else
 			{
@@ -2620,7 +2732,8 @@ string DeviceProxy::adm_name()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var st = device->adm_name();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var st = dev->adm_name();
 			ctr = 2;
 			adm_name_str = st;
 
@@ -2640,13 +2753,13 @@ string DeviceProxy::adm_name()
 		}
 		catch (CORBA::TRANSIENT &transp)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","adm_name");
+			TRANSIENT_NOT_EXIST_EXCEPT(transp,"DeviceProxy","adm_name",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","adm_name");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","adm_name",this);
 			}
 			else
 			{
@@ -2663,7 +2776,7 @@ string DeviceProxy::adm_name()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","adm_name");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","adm_name",this);
 			}
 			else
 			{
@@ -2709,19 +2822,20 @@ string DeviceProxy::description()
 		{
 			check_and_reconnect();
 
-			CORBA::String_var st = device->description();
+			Device_var dev = Device::_duplicate(device);
+			CORBA::String_var st = dev->description();
 			ctr = 2;
 			description_str = st;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","description");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","description",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","description");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","description",this);
 			}
 			else
 			{
@@ -2738,7 +2852,7 @@ string DeviceProxy::description()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","description");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","description",this);
 			}
 			else
 			{
@@ -2785,18 +2899,19 @@ vector<string> *DeviceProxy::black_box(int last_n_commands)
 		{
 			check_and_reconnect();
 
-			last_commands = device->black_box(last_n_commands);
+			Device_var dev = Device::_duplicate(device);
+			last_commands = dev->black_box(last_n_commands);
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","black_box");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","black_box",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","black_box");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","black_box",this);
 			}
 			else
 			{
@@ -2813,7 +2928,7 @@ vector<string> *DeviceProxy::black_box(int last_n_commands)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","black_box");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","black_box",this);
 			}
 			else
 			{
@@ -2870,7 +2985,8 @@ DeviceInfo const &DeviceProxy::info()
 
 			if (version >= 3)
 			{
-				dev_info_3 = ext->device_3->info_3();
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev_info_3 = dev->info_3();
 
 				_info.dev_class = dev_info_3->dev_class;
 				_info.server_id = dev_info_3->server_id;
@@ -2881,7 +2997,8 @@ DeviceInfo const &DeviceProxy::info()
 			}
 			else
 			{
-				dev_info = device->info();
+				Device_var dev = Device::_duplicate(device);
+				dev_info = dev->info();
 
 				_info.dev_class = dev_info->dev_class;
 				_info.server_id = dev_info->server_id;
@@ -2894,13 +3011,13 @@ DeviceInfo const &DeviceProxy::info()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","info");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","info",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","info");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","info",this);
 			}
 			else
 			{
@@ -2917,7 +3034,7 @@ DeviceInfo const &DeviceProxy::info()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","info");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","info",this);
 			}
 			else
 			{
@@ -2968,7 +3085,8 @@ CommandInfo DeviceProxy::command_query(string cmd)
 
 			if (version == 1)
 			{
-				cmd_info = device->command_query(cmd.c_str());
+				Device_var dev = Device::_duplicate(device);
+				cmd_info = dev->command_query(cmd.c_str());
 
 				command_info.cmd_name = cmd_info->cmd_name;
 				command_info.cmd_tag = cmd_info->cmd_tag;
@@ -2980,7 +3098,8 @@ CommandInfo DeviceProxy::command_query(string cmd)
 			}
 			else
 			{
-				cmd_info_2 = device_2->command_query_2(cmd.c_str());
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				cmd_info_2 = dev->command_query_2(cmd.c_str());
 
 				command_info.cmd_name = cmd_info_2->cmd_name;
 				command_info.cmd_tag = cmd_info_2->cmd_tag;
@@ -2994,13 +3113,13 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_query");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_query",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_query",this);
 			}
 			else
 			{
@@ -3017,7 +3136,7 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_query",this);
 			}
 			else
 			{
@@ -3043,11 +3162,52 @@ CommandInfo DeviceProxy::command_query(string cmd)
 		}
 	}
 
-
-
 	return(command_info);
 }
 
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_command_config() - return the command info for a set of commands
+//
+//-----------------------------------------------------------------------------
+
+CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
+{
+	CommandInfoList *all_cmds = command_list_query();
+
+//
+// Leave method if the user requires config for all commands
+//
+
+	if (cmd_names.size() == 1 && cmd_names[0] == AllCmd)
+		return all_cmds;
+
+//
+// Return only the required commands config
+//
+
+	CommandInfoList *ret_cmds = new CommandInfoList;
+	vector<string>::iterator ite;
+	for (ite = cmd_names.begin();ite != cmd_names.end();++ite)
+	{
+		string w_str(*ite);
+		transform(w_str.begin(),w_str.end(),w_str.begin(),::tolower);
+
+		vector<CommandInfo>::iterator pos;
+		for (pos = all_cmds->begin();pos != all_cmds->end();++pos)
+		{
+			string lower_cmd(pos->cmd_name);
+			transform(lower_cmd.begin(),lower_cmd.end(),lower_cmd.begin(),::tolower);
+			if (w_str == lower_cmd)
+			{
+				ret_cmds->push_back(*pos);
+				break;
+			}
+		}
+	}
+
+	return ret_cmds;
+}
 
 //-----------------------------------------------------------------------------
 //
@@ -3070,7 +3230,8 @@ CommandInfoList *DeviceProxy::command_list_query()
 
 			if (version == 1)
 			{
-				cmd_info_list = device->command_list_query();
+				Device_var dev = Device::_duplicate(device);
+				cmd_info_list = dev->command_list_query();
 
 				command_info_list = new CommandInfoList(cmd_info_list->length());
 //				command_info_list->resize(cmd_info_list->length());
@@ -3088,7 +3249,8 @@ CommandInfoList *DeviceProxy::command_list_query()
 			}
 			else
 			{
-				cmd_info_list_2 = device_2->command_list_query_2();
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				cmd_info_list_2 = dev->command_list_query_2();
 
 				command_info_list = new CommandInfoList(cmd_info_list_2->length());
 //				command_info_list->resize(cmd_info_list_2->length());
@@ -3108,13 +3270,13 @@ CommandInfoList *DeviceProxy::command_list_query()
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_list_query");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_list_query",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_list_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_list_query",this);
 			}
 			else
 			{
@@ -3131,7 +3293,7 @@ CommandInfoList *DeviceProxy::command_list_query()
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_list_query");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_list_query",this);
 			}
 			else
 			{
@@ -3157,9 +3319,30 @@ CommandInfoList *DeviceProxy::command_list_query()
 		}
 	}
 
-
-
 	return(command_info_list);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_command_list() - return the list of commands implemented for this TANGO device (only names)
+//
+//-----------------------------------------------------------------------------
+
+vector<string> *DeviceProxy::get_command_list()
+{
+	CommandInfoList *all_cmd_config;
+
+	all_cmd_config = command_list_query();
+
+	vector<string> *cmd_list = new vector<string>;
+	cmd_list->resize(all_cmd_config->size());
+	for (unsigned int i=0; i<all_cmd_config->size(); i++)
+	{
+		(*cmd_list)[i] = (*all_cmd_config)[i].cmd_name;
+	}
+	delete all_cmd_config;
+
+	return cmd_list;
 }
 
 //-----------------------------------------------------------------------------
@@ -3177,7 +3360,7 @@ void DeviceProxy::get_property(string &property_name, DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property");
 	}
@@ -3207,7 +3390,7 @@ void DeviceProxy::get_property(vector<string> &property_names, DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property");
 	}
@@ -3240,7 +3423,7 @@ void DeviceProxy::get_property(DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property");
 	}
@@ -3267,7 +3450,7 @@ void DeviceProxy::put_property(DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::put_property");
 	}
@@ -3294,7 +3477,7 @@ void DeviceProxy::delete_property(string &property_name)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::delete_property");
 	}
@@ -3325,7 +3508,7 @@ void DeviceProxy::delete_property(vector<string> &property_names)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::delete_property");
 	}
@@ -3359,7 +3542,7 @@ void DeviceProxy::delete_property(DbData &db_data)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::delete_property");
 	}
@@ -3387,7 +3570,7 @@ void DeviceProxy::get_property_list(const string &wildcard,vector<string> &prop_
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::get_property_list");
 	}
@@ -3451,7 +3634,8 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 
 			if (version == 1)
 			{
-				attr_config_list = device->get_attribute_config(attr_list);
+				Device_var dev = Device::_duplicate(device);
+				attr_config_list = dev->get_attribute_config(attr_list);
 
 				dev_attr_config->resize(attr_config_list->length());
 
@@ -3484,7 +3668,8 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 			}
 			else
 			{
-				attr_config_list_2 = device_2->get_attribute_config_2(attr_list);
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_config_list_2 = dev->get_attribute_config_2(attr_list);
 
 				dev_attr_config->resize(attr_config_list_2->length());
 
@@ -3519,13 +3704,13 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -3542,7 +3727,7 @@ AttributeInfoList *DeviceProxy::get_attribute_config(vector<string>& attr_string
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -3587,6 +3772,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 	AttributeConfigList_var attr_config_list;
 	AttributeConfigList_2_var attr_config_list_2;
 	AttributeConfigList_3_var attr_config_list_3;
+	AttributeConfigList_5_var attr_config_list_5;
 	AttributeInfoListEx *dev_attr_config = new AttributeInfoListEx();
 	DevVarStringArray attr_list;
 	int ctr = 0;
@@ -3618,160 +3804,124 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 		{
 			check_and_reconnect();
 
-			if (version == 1)
+			switch (version)
 			{
-				attr_config_list = device->get_attribute_config(attr_list);
-
-				dev_attr_config->resize(attr_config_list->length());
-
-				for (unsigned int i=0; i<attr_config_list->length(); i++)
+			case 1:
 				{
-					(*dev_attr_config)[i].name = attr_config_list[i].name;
-					(*dev_attr_config)[i].writable = attr_config_list[i].writable;
-					(*dev_attr_config)[i].data_format = attr_config_list[i].data_format;
-					(*dev_attr_config)[i].data_type = attr_config_list[i].data_type;
-					(*dev_attr_config)[i].max_dim_x = attr_config_list[i].max_dim_x;
-					(*dev_attr_config)[i].max_dim_y = attr_config_list[i].max_dim_y;
-					(*dev_attr_config)[i].description = attr_config_list[i].description;
-					(*dev_attr_config)[i].label = attr_config_list[i].label;
-					(*dev_attr_config)[i].unit = attr_config_list[i].unit;
-					(*dev_attr_config)[i].standard_unit = attr_config_list[i].standard_unit;
-					(*dev_attr_config)[i].display_unit = attr_config_list[i].display_unit;
-					(*dev_attr_config)[i].format = attr_config_list[i].format;
-					(*dev_attr_config)[i].min_value = attr_config_list[i].min_value;
-					(*dev_attr_config)[i].max_value = attr_config_list[i].max_value;
-					(*dev_attr_config)[i].min_alarm = attr_config_list[i].min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list[i].max_alarm;
-					(*dev_attr_config)[i].writable_attr_name = attr_config_list[i].writable_attr_name;
-					(*dev_attr_config)[i].extensions.resize(attr_config_list[i].extensions.length());
-					for (unsigned int j=0; j<attr_config_list[i].extensions.length(); j++)
+					Device_var dev = Device::_duplicate(device);
+					attr_config_list = dev->get_attribute_config(attr_list);
+					dev_attr_config->resize(attr_config_list->length());
+
+					for (size_t i=0; i<attr_config_list->length(); i++)
 					{
-						(*dev_attr_config)[i].extensions[j] = attr_config_list[i].extensions[j];
-					}
-					(*dev_attr_config)[i].disp_level = Tango::OPERATOR;
-				}
-			}
-			else if (version == 2)
-			{
-				attr_config_list_2 = device_2->get_attribute_config_2(attr_list);
-
-				dev_attr_config->resize(attr_config_list_2->length());
-
-				for (unsigned int i=0; i<attr_config_list_2->length(); i++)
-				{
-					(*dev_attr_config)[i].name = attr_config_list_2[i].name;
-					(*dev_attr_config)[i].writable = attr_config_list_2[i].writable;
-					(*dev_attr_config)[i].data_format = attr_config_list_2[i].data_format;
-					(*dev_attr_config)[i].data_type = attr_config_list_2[i].data_type;
-					(*dev_attr_config)[i].max_dim_x = attr_config_list_2[i].max_dim_x;
-					(*dev_attr_config)[i].max_dim_y = attr_config_list_2[i].max_dim_y;
-					(*dev_attr_config)[i].description = attr_config_list_2[i].description;
-					(*dev_attr_config)[i].label = attr_config_list_2[i].label;
-					(*dev_attr_config)[i].unit = attr_config_list_2[i].unit;
-					(*dev_attr_config)[i].standard_unit = attr_config_list_2[i].standard_unit;
-					(*dev_attr_config)[i].display_unit = attr_config_list_2[i].display_unit;
-					(*dev_attr_config)[i].format = attr_config_list_2[i].format;
-					(*dev_attr_config)[i].min_value = attr_config_list_2[i].min_value;
-					(*dev_attr_config)[i].max_value = attr_config_list_2[i].max_value;
-					(*dev_attr_config)[i].min_alarm = attr_config_list_2[i].min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list_2[i].max_alarm;
-					(*dev_attr_config)[i].writable_attr_name = attr_config_list_2[i].writable_attr_name;
-					(*dev_attr_config)[i].extensions.resize(attr_config_list_2[i].extensions.length());
-					for (unsigned int j=0; j<attr_config_list_2[i].extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].extensions[j] = attr_config_list_2[i].extensions[j];
-					}
-					(*dev_attr_config)[i].disp_level = attr_config_list_2[i].level;
-				}
-
-				get_remaining_param(dev_attr_config);
-			}
-			else
-			{
-				attr_config_list_3 = ext->device_3->get_attribute_config_3(attr_list);
-
-				dev_attr_config->resize(attr_config_list_3->length());
-
-				for (unsigned int i=0; i<attr_config_list_3->length(); i++)
-				{
-					unsigned int j;
-					(*dev_attr_config)[i].name = attr_config_list_3[i].name;
-					(*dev_attr_config)[i].writable = attr_config_list_3[i].writable;
-					(*dev_attr_config)[i].data_format = attr_config_list_3[i].data_format;
-					(*dev_attr_config)[i].data_type = attr_config_list_3[i].data_type;
-					(*dev_attr_config)[i].max_dim_x = attr_config_list_3[i].max_dim_x;
-					(*dev_attr_config)[i].max_dim_y = attr_config_list_3[i].max_dim_y;
-					(*dev_attr_config)[i].description = attr_config_list_3[i].description;
-					(*dev_attr_config)[i].label = attr_config_list_3[i].label;
-					(*dev_attr_config)[i].unit = attr_config_list_3[i].unit;
-					(*dev_attr_config)[i].standard_unit = attr_config_list_3[i].standard_unit;
-					(*dev_attr_config)[i].display_unit = attr_config_list_3[i].display_unit;
-					(*dev_attr_config)[i].format = attr_config_list_3[i].format;
-					(*dev_attr_config)[i].min_value = attr_config_list_3[i].min_value;
-					(*dev_attr_config)[i].max_value = attr_config_list_3[i].max_value;
-					(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
-					(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
-					(*dev_attr_config)[i].writable_attr_name = attr_config_list_3[i].writable_attr_name;
-					(*dev_attr_config)[i].extensions.resize(attr_config_list_3[i].extensions.length());
-					for (j=0; j<attr_config_list_3[i].extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].extensions[j] = attr_config_list_3[i].extensions[j];
-					}
-					for (j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_3[i].sys_extensions[j];
-					}
-					(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
-
-					(*dev_attr_config)[i].alarms.min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
-					(*dev_attr_config)[i].alarms.max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
-					(*dev_attr_config)[i].alarms.min_warning = attr_config_list_3[i].att_alarm.min_warning;
-					(*dev_attr_config)[i].alarms.max_warning = attr_config_list_3[i].att_alarm.max_warning;
-					(*dev_attr_config)[i].alarms.delta_t = attr_config_list_3[i].att_alarm.delta_t;
-					(*dev_attr_config)[i].alarms.delta_val = attr_config_list_3[i].att_alarm.delta_val;
-					(*dev_attr_config)[i].alarms.extensions.resize(attr_config_list_3[i].att_alarm.extensions.length());
-					for (j=0; j<attr_config_list_3[i].att_alarm.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].alarms.extensions[j] = attr_config_list_3[i].att_alarm.extensions[j];
-					}
-
-					(*dev_attr_config)[i].events.ch_event.rel_change = attr_config_list_3[i].event_prop.ch_event.rel_change;
-					(*dev_attr_config)[i].events.ch_event.abs_change = attr_config_list_3[i].event_prop.ch_event.abs_change;
-					(*dev_attr_config)[i].events.ch_event.extensions.resize(attr_config_list_3[i].event_prop.ch_event.extensions.length());
-					for (j=0; j<attr_config_list_3[i].event_prop.ch_event.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].events.ch_event.extensions[j] = attr_config_list_3[i].event_prop.ch_event.extensions[j];
-					}
-
-					(*dev_attr_config)[i].events.per_event.period = attr_config_list_3[i].event_prop.per_event.period;
-					(*dev_attr_config)[i].events.per_event.extensions.resize(attr_config_list_3[i].event_prop.per_event.extensions.length());
-					for (j=0; j<attr_config_list_3[i].event_prop.per_event.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].events.per_event.extensions[j] = attr_config_list_3[i].event_prop.per_event.extensions[j];
-					}
-
-					(*dev_attr_config)[i].events.arch_event.archive_rel_change = attr_config_list_3[i].event_prop.arch_event.rel_change;
-					(*dev_attr_config)[i].events.arch_event.archive_abs_change = attr_config_list_3[i].event_prop.arch_event.abs_change;
-					(*dev_attr_config)[i].events.arch_event.archive_period = attr_config_list_3[i].event_prop.arch_event.period;
-					(*dev_attr_config)[i].events.arch_event.extensions.resize(attr_config_list_3[i].event_prop.arch_event.extensions.length());
-					for (j=0; j<attr_config_list_3[i].event_prop.arch_event.extensions.length(); j++)
-					{
-						(*dev_attr_config)[i].events.arch_event.extensions[j] = attr_config_list_3[i].event_prop.arch_event.extensions[j];
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list)
+						(*dev_attr_config)[i].min_alarm = attr_config_list[i].min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list[i].max_alarm;
+						(*dev_attr_config)[i].disp_level = Tango::OPERATOR;
 					}
 				}
+				break;
+
+
+			case 2:
+				{
+					Device_2_var dev = Device_2::_duplicate(device_2);
+					attr_config_list_2 = dev->get_attribute_config_2(attr_list);
+					dev_attr_config->resize(attr_config_list_2->length());
+
+					for (size_t i=0; i<attr_config_list_2->length(); i++)
+					{
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list_2)
+						(*dev_attr_config)[i].min_alarm = attr_config_list_2[i].min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list_2[i].max_alarm;
+						(*dev_attr_config)[i].disp_level = attr_config_list_2[i].level;
+					}
+
+					get_remaining_param(dev_attr_config);
+				}
+				break;
+
+			case 3:
+			case 4:
+				{
+					Device_3_var dev = Device_3::_duplicate(device_3);
+					attr_config_list_3 = dev->get_attribute_config_3(attr_list);
+					dev_attr_config->resize(attr_config_list_3->length());
+
+					for (size_t i=0; i<attr_config_list_3->length(); i++)
+					{
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list_3)
+
+						for (size_t j=0; j<attr_config_list_3[i].sys_extensions.length(); j++)
+						{
+							(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_3[i].sys_extensions[j];
+						}
+						(*dev_attr_config)[i].min_alarm = attr_config_list_3[i].att_alarm.min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list_3[i].att_alarm.max_alarm;
+						(*dev_attr_config)[i].disp_level = attr_config_list_3[i].level;
+						(*dev_attr_config)[i].memorized = NOT_KNOWN;
+
+						COPY_ALARM_CONFIG((*dev_attr_config),attr_config_list_3)
+
+						COPY_EVENT_CONFIG((*dev_attr_config),attr_config_list_3)
+					}
+				}
+				break;
+
+			case 5:
+				{
+					Device_5_var dev = Device_5::_duplicate(device_5);
+					attr_config_list_5 = dev->get_attribute_config_5(attr_list);
+					dev_attr_config->resize(attr_config_list_5->length());
+
+					for (size_t i=0; i<attr_config_list_5->length(); i++)
+					{
+						COPY_BASE_CONFIG((*dev_attr_config),attr_config_list_5)
+
+						for (size_t j=0; j<attr_config_list_5[i].sys_extensions.length(); j++)
+						{
+							(*dev_attr_config)[i].sys_extensions[j] = attr_config_list_5[i].sys_extensions[j];
+						}
+						(*dev_attr_config)[i].disp_level = attr_config_list_5[i].level;
+						(*dev_attr_config)[i].min_alarm = attr_config_list_5[i].att_alarm.min_alarm;
+						(*dev_attr_config)[i].max_alarm = attr_config_list_5[i].att_alarm.max_alarm;
+						(*dev_attr_config)[i].root_attr_name = attr_config_list_5[i].root_attr_name;
+						if (attr_config_list_5[i].memorized == false)
+							(*dev_attr_config)[i].memorized	= NONE;
+						else
+						{
+							if (attr_config_list_5[i].mem_init == false)
+								(*dev_attr_config)[i].memorized	= MEMORIZED;
+							else
+								(*dev_attr_config)[i].memorized	= MEMORIZED_WRITE_INIT;
+						}
+						if (attr_config_list_5[i].data_type == DEV_ENUM)
+						{
+							for(size_t loop = 0;loop < attr_config_list_5[i].enum_labels.length();loop++)
+								(*dev_attr_config)[i].enum_labels.push_back(attr_config_list_5[i].enum_labels[loop].in());
+						}
+						COPY_ALARM_CONFIG((*dev_attr_config),attr_config_list_5)
+
+						COPY_EVENT_CONFIG((*dev_attr_config),attr_config_list_5)
+					}
+				}
+				break;
+
+			default:
+				break;
 			}
 
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -3788,7 +3938,7 @@ AttributeInfoListEx *DeviceProxy::get_attribute_config_ex(vector<string>& attr_s
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_attribute_config",this);
 			}
 			else
 			{
@@ -4099,7 +4249,8 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 		{
 			check_and_reconnect();
 
-			device->set_attribute_config(attr_config_list);
+			Device_var dev = Device::_duplicate(device);
+			dev->set_attribute_config(attr_config_list);
 			ctr = 2;
 
 		}
@@ -4118,13 +4269,13 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4141,7 +4292,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoList &dev_attr_list)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4176,11 +4327,22 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 {
 	AttributeConfigList attr_config_list;
 	AttributeConfigList_3 attr_config_list_3;
+	AttributeConfigList_5 attr_config_list_5;
 	DevVarStringArray attr_list;
 	int ctr = 0;
 	unsigned int i,j;
 
-	if (version >= 3)
+
+	if (version >= 5)
+	{
+		attr_config_list_5.length(dev_attr_list.size());
+
+		for (i=0; i<attr_config_list_5.length(); i++)
+		{
+			ApiUtil::AttributeInfoEx_to_AttributeConfig(&dev_attr_list[i],&attr_config_list_5[i]);
+		}
+	}
+	else if (version >= 3)
 	{
 		attr_config_list_3.length(dev_attr_list.size());
 
@@ -4288,12 +4450,27 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				ext->device_4->set_attribute_config_4(attr_config_list_3,ci);
+				if (version == 5)
+				{
+					Device_5_var dev = Device_5::_duplicate(device_5);
+					dev->set_attribute_config_5(attr_config_list_5,ci);
+				}
+				else
+				{
+					Device_4_var dev = Device_4::_duplicate(device_4);
+					dev->set_attribute_config_4(attr_config_list_3,ci);
+				}
 			}
 			else if (version == 3)
-				ext->device_3->set_attribute_config_3(attr_config_list_3);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->set_attribute_config_3(attr_config_list_3);
+			}
 			else
+			{
+				Device_var dev = Device::_duplicate(device);
 				device->set_attribute_config(attr_config_list);
+			}
 			ctr = 2;
 
 		}
@@ -4312,13 +4489,13 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_attribute_config",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4335,7 +4512,7 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_attribute_config",this);
 			}
 			else
 			{
@@ -4367,7 +4544,677 @@ void DeviceProxy::set_attribute_config(AttributeInfoListEx &dev_attr_list)
 
 //-----------------------------------------------------------------------------
 //
-// DeviceProxy::read_attributes() - return a list of attributes
+// DeviceProxy::get_pipe_config() - return a list of pipe config
+//
+//-----------------------------------------------------------------------------
+
+PipeInfoList *DeviceProxy::get_pipe_config(vector<string>& pipe_string_list)
+{
+	PipeConfigList_var pipe_config_list_5;
+	PipeInfoList *dev_pipe_config = new PipeInfoList();
+	DevVarStringArray pipe_list;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use get_pipe_config() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,
+									  ss.str(),"DeviceProxy::get_pipe_config()");
+	}
+
+//
+// Prepare sent parameters
+//
+
+	pipe_list.length(pipe_string_list.size());
+	for (unsigned int i=0; i<pipe_string_list.size(); i++)
+	{
+		if (pipe_string_list[i] == AllPipe)
+			pipe_list[i] = string_dup(AllPipe);
+		else
+			pipe_list[i] = string_dup(pipe_string_list[i].c_str());
+	}
+
+//
+// Call device
+//
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			pipe_config_list_5 = dev->get_pipe_config_5(pipe_list);
+			dev_pipe_config->resize(pipe_config_list_5->length());
+
+			for (size_t i=0; i<pipe_config_list_5->length(); i++)
+			{
+				(*dev_pipe_config)[i].disp_level = pipe_config_list_5[i].level;
+				(*dev_pipe_config)[i].name = pipe_config_list_5[i].name;
+				(*dev_pipe_config)[i].description = pipe_config_list_5[i].description;
+				(*dev_pipe_config)[i].label = pipe_config_list_5[i].label;
+				(*dev_pipe_config)[i].writable = pipe_config_list_5[i].writable;
+				for (size_t j=0; j<pipe_config_list_5[i].extensions.length(); j++)
+				{
+					(*dev_pipe_config)[i].extensions[j] = pipe_config_list_5[i].extensions[j];
+				}
+			}
+
+			ctr = 2;
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","get_pipe_config",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","get_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute get_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",
+                        				      desc.str(),"DeviceProxy::get_pipe_config()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","get_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute get_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",
+                        				      desc.str(),"DeviceProxy::get_pipe_config()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute get_pipe_config on device " << device_name << ends;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",
+                       				   desc.str(),"DeviceProxy::get_pipe_config()");
+		}
+		catch (Tango::DevFailed)
+		{
+			delete dev_pipe_config;
+			throw;
+		}
+	}
+
+	return(dev_pipe_config);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_pipe_config() - return a pipe config
+//
+//-----------------------------------------------------------------------------
+
+PipeInfo DeviceProxy::get_pipe_config(const string &pipe_name)
+{
+	vector<string> pipe_string_list;
+	PipeInfoList *dev_pipe_config_list;
+	PipeInfo dev_pipe_config;
+
+	pipe_string_list.push_back(pipe_name);
+	dev_pipe_config_list = get_pipe_config(pipe_string_list);
+
+	dev_pipe_config = (*dev_pipe_config_list)[0];
+	delete(dev_pipe_config_list);
+
+	return(dev_pipe_config);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::set_pipe_config() - set config for a list of pipes
+//
+//-----------------------------------------------------------------------------
+
+void DeviceProxy::set_pipe_config(PipeInfoList &dev_pipe_list)
+{
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use set_pipe_config() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::set_pipe_config()");
+	}
+
+	PipeConfigList pipe_config_list;
+	int ctr = 0;
+
+	pipe_config_list.length(dev_pipe_list.size());
+
+	for (unsigned int i=0; i<pipe_config_list.length(); i++)
+	{
+		pipe_config_list[i].name = dev_pipe_list[i].name.c_str();
+		pipe_config_list[i].writable = dev_pipe_list[i].writable;
+		pipe_config_list[i].description = dev_pipe_list[i].description.c_str();
+		pipe_config_list[i].label = dev_pipe_list[i].label.c_str();
+		pipe_config_list[i].level = dev_pipe_list[i].disp_level;
+		pipe_config_list[i].extensions.length(dev_pipe_list[i].extensions.size());
+		for (unsigned int j=0; j<dev_pipe_list[i].extensions.size(); j++)
+		{
+			pipe_config_list[i].extensions[j] = string_dup(dev_pipe_list[i].extensions[j].c_str());
+		}
+	}
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			dev->set_pipe_config_5(pipe_config_list,ci);
+
+			ctr = 2;
+
+		}
+		catch (Tango::DevFailed &e)
+		{
+			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
+			{
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+
+				DeviceUnlockedExcept::re_throw_exception(e,DEVICE_UNLOCKED_REASON,
+							desc.str(), "DeviceProxy::set_pipe_config()");
+			}
+			else
+				throw;
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","set_pipe_config",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","set_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(one,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::set_pipe_config()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","set_pipe_config",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(comm,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::set_pipe_config()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute set_pipe_config on device " << device_name << ends;
+			ApiCommExcept::re_throw_exception(ce,
+						      (const char*)"API_CommunicationFailed",
+                        			      desc.str(),
+						      (const char*)"DeviceProxy::set_pipe_config()");
+		}
+	}
+
+
+	return;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::get_pipe_list() - get list of pipes
+//
+//-----------------------------------------------------------------------------
+
+vector<string> *DeviceProxy::get_pipe_list()
+{
+	vector<string> all_pipe;
+	PipeInfoList *all_pipe_config;
+
+	all_pipe.push_back(AllPipe);
+	all_pipe_config = get_pipe_config(all_pipe);
+
+	vector<string> *pipe_list = new vector<string>;
+	pipe_list->resize(all_pipe_config->size());
+	for (unsigned int i=0; i<all_pipe_config->size(); i++)
+	{
+		(*pipe_list)[i] = (*all_pipe_config)[i].name;
+	}
+	delete all_pipe_config;
+
+	return pipe_list;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::read_pipe() - read a single pipe
+//
+//-----------------------------------------------------------------------------
+
+
+DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
+{
+	DevPipeData_var pipe_value_5;
+	DevicePipe dev_pipe;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use read_pipe() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::read_pipe()");
+	}
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			pipe_value_5 = dev->read_pipe_5(pipe_name.c_str(),ci);
+
+			ctr = 2;
+		}
+		catch (Tango::ConnectionFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to read_pipe on device " << device_name << ", pipe " << pipe_name;
+			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::read_pipe()");
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to read_pipe on device " << device_name << ", pipe " << pipe_name;
+			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::read_pipe()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_pipe",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",desc.str(),"DeviceProxy::read_pipe()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",desc.str(),"DeviceProxy::read_pipe()");
+			}
+		}
+		catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+			stringstream desc;
+			desc << "Failed to read_pipe on device " << device_name;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",desc.str(),"DeviceProxy::read_pipe()");
+		}
+	}
+
+//
+// Pass received data to the caller.
+// For thw data elt sequence, we create a new one with size and buffer from the original one.
+// This is required because the whole object received by the call will be deleted at the end of this method
+//
+
+	dev_pipe.set_name(pipe_value_5->name.in());
+	dev_pipe.set_time(pipe_value_5->time);
+
+	CORBA::ULong max,len;
+	max = pipe_value_5->data_blob.blob_data.maximum();
+	len = pipe_value_5->data_blob.blob_data.length();
+	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
+
+	dev_pipe.get_root_blob().reset_extract_ctr();
+	dev_pipe.get_root_blob().reset_insert_ctr();
+	dev_pipe.get_root_blob().set_name(pipe_value_5->data_blob.name.in());
+	delete dev_pipe.get_root_blob().get_extract_data();
+	dev_pipe.get_root_blob().set_extract_data(dvpdea);
+	dev_pipe.get_root_blob().set_extract_delete(true);
+
+	return dev_pipe;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::write_pipe() - write a single pipe
+//
+//-----------------------------------------------------------------------------
+
+
+void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
+{
+	DevPipeData pipe_value_5;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use write_pipe() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::write_pipe()");
+	}
+
+//
+// Prepare data sent to device
+//
+
+	pipe_value_5.name = dev_pipe.get_name().c_str();
+	const string &bl_name = dev_pipe.get_root_blob().get_name();
+	if (bl_name.size() != 0)
+		pipe_value_5.data_blob.name = bl_name.c_str();
+
+	DevVarPipeDataEltArray *tmp_ptr = dev_pipe.get_root_blob().get_insert_data();
+	if (tmp_ptr == Tango_nullptr)
+	{
+		Except::throw_exception(API_PipeNoDataElement,"No data in pipe!","DeviceProxy::write_pipe()");
+	}
+
+	CORBA::ULong max,len;
+	max = tmp_ptr->maximum();
+	len = tmp_ptr->length();
+	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			dev->write_pipe_5(pipe_value_5,ci);
+
+			ctr = 2;
+		}
+		catch (Tango::ConnectionFailed &e)
+		{
+			dev_pipe.get_root_blob().reset_insert_ctr();
+			delete tmp_ptr;
+
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
+			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
+		}
+		catch (Tango::DevFailed &e)
+		{
+			dev_pipe.get_root_blob().reset_insert_ctr();
+			delete tmp_ptr;
+
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << dev_pipe.get_name();
+			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_pipe()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_pipe",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_pipe",this);
+			}
+			else
+			{
+				dev_pipe.get_root_blob().reset_insert_ctr();
+				delete tmp_ptr;
+
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_pipe()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_pipe",this);
+			}
+			else
+			{
+				dev_pipe.get_root_blob().reset_insert_ctr();
+				delete tmp_ptr;
+
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_pipe()");
+			}
+		}
+		catch (CORBA::SystemException &ce)
+        {
+			dev_pipe.get_root_blob().reset_insert_ctr();
+			delete tmp_ptr;
+
+			set_connection_state(CONNECTION_NOTOK);
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_pipe()");
+		}
+	}
+
+	dev_pipe.get_root_blob().reset_insert_ctr();
+	delete tmp_ptr;
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::write_read_pipe() - write then read a single pipe
+//
+//-----------------------------------------------------------------------------
+
+DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
+{
+	DevPipeData pipe_value_5;
+	DevPipeData_var r_pipe_value_5;
+	DevicePipe r_dev_pipe;
+	int ctr = 0;
+
+//
+// Error if device does not support IDL 5
+//
+
+	if (version > 0 && version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << device_name << " too old to use write_read_pipe() call. Please upgrade to Tango 9/IDL5";
+
+		ApiNonSuppExcept::throw_exception(API_UnsupportedFeature,ss.str(),"DeviceProxy::write_read_pipe()");
+	}
+
+//
+// Prepare data sent to device
+//
+
+	pipe_value_5.name = pipe_data.get_name().c_str();
+	const string &bl_name = pipe_data.get_root_blob().get_name();
+	if (bl_name.size() != 0)
+		pipe_value_5.data_blob.name = bl_name.c_str();
+
+	DevVarPipeDataEltArray *tmp_ptr = pipe_data.get_root_blob().get_insert_data();
+	CORBA::ULong max,len;
+	max = tmp_ptr->maximum();
+	len = tmp_ptr->length();
+	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+
+	delete tmp_ptr;
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect();
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			r_pipe_value_5 = dev->write_read_pipe_5(pipe_value_5,ci);
+
+			ctr = 2;
+		}
+		catch (Tango::ConnectionFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to write_read_pipe on device " << device_name << ", pipe " << pipe_data.get_name();
+			ApiConnExcept::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_read_pipe()");
+		}
+		catch (Tango::DevFailed &e)
+		{
+			stringstream desc;
+			desc << "Failed to write_pipe on device " << device_name << ", pipe " << pipe_data.get_name();
+			Except::re_throw_exception(e,API_PipeFailed,desc.str(),"DeviceProxy::write_read_pipe()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_pipe",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(one,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_read_pipe()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_pipe",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				stringstream desc;
+				desc << "Failed to write_read_pipe on device " << device_name;
+				ApiCommExcept::re_throw_exception(comm,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_read_pipe()");
+			}
+		}
+		catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+			stringstream desc;
+			desc << "Failed to write_read_pipe on device " << device_name;
+			ApiCommExcept::re_throw_exception(ce,"API_CommunicationFailed",desc.str(),"DeviceProxy::write_read_pipe()");
+		}
+	}
+
+//
+// Pass received data to the caller.
+// For thw data elt sequence, we create a new one with size and buffer from the original one.
+// This is required because the whole object received by the call will be deleted at the end of this method
+//
+
+	r_dev_pipe.set_name(r_pipe_value_5->name.in());
+	r_dev_pipe.set_time(r_pipe_value_5->time);
+
+	max = r_pipe_value_5->data_blob.blob_data.maximum();
+	len = r_pipe_value_5->data_blob.blob_data.length();
+	DevPipeDataElt *buf = r_pipe_value_5->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
+
+	r_dev_pipe.get_root_blob().reset_extract_ctr();
+	r_dev_pipe.get_root_blob().reset_insert_ctr();
+	r_dev_pipe.get_root_blob().set_name(r_pipe_value_5->data_blob.name.in());
+	r_dev_pipe.get_root_blob().set_extract_data(dvpdea);
+	r_dev_pipe.get_root_blob().set_extract_delete(true);
+
+	return r_dev_pipe;
+
+}
+
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::read_attributes() - Read attributes
 //
 //-----------------------------------------------------------------------------
 
@@ -4376,6 +5223,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 	AttributeValueList_var attr_value_list;
 	AttributeValueList_3_var attr_value_list_3;
 	AttributeValueList_4_var attr_value_list_4;
+	AttributeValueList_5_var attr_value_list_5;
 	DevVarStringArray attr_list;
 
 //
@@ -4383,10 +5231,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 //
 
 	same_att_name(attr_string_list,"Deviceproxy::read_attributes()");
-
-
 	unsigned long i;
-	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
 
 	attr_list.length(attr_string_list.size());
 	for (i = 0;i < attr_string_list.size();i++)
@@ -4396,7 +5241,6 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 
 	int ctr = 0;
 	Tango::DevSource local_source;
-	bool already_deleted = false;
 
 	while (ctr < 2)
 	{
@@ -4404,28 +5248,40 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		{
 			check_and_reconnect(local_source);
 
-			if (version >= 4)
-			{
-				ClntIdent ci;
-				ApiUtil *au = ApiUtil::instance();
-				ci.cpp_clnt(au->get_client_pid());
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
 
-				attr_value_list_4 = ext->device_4->read_attributes_4(attr_list,local_source,ci);
+			if (version == 5)
+			{
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			}
+			else if (version == 4)
+			{
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = ext->device_3->read_attributes_3(attr_list,local_source);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				attr_value_list_3 = dev->read_attributes_3(attr_list,local_source);
+			}
 			else if (version == 2)
-				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_value_list = dev->read_attributes_2(attr_list,local_source);
+			}
 			else
-				attr_value_list = device->read_attributes(attr_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				attr_value_list = dev->read_attributes(attr_list);
+			}
 
 			ctr = 2;
 		}
 		catch (Tango::ConnectionFailed &e)
 		{
-			if (already_deleted == false)
-				delete dev_attr;
-
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
 			desc << ", attributes ";
@@ -4437,14 +5293,11 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 					desc << ", ";
 			}
 			desc << ends;
-            ApiConnExcept::re_throw_exception(e,(const char*)"API_AttributeFailed",
+            ApiConnExcept::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::read_attributes()");
 		}
 		catch (Tango::DevFailed &e)
 		{
-			if (already_deleted == false)
-				delete dev_attr;
-
 			TangoSys_OMemStream desc;
 			desc << "Failed to read_attributes on device " << device_name;
 			desc << ", attributes ";
@@ -4456,30 +5309,21 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 					desc << ", ";
 			}
 			desc << ends;
-        	Except::re_throw_exception(e,(const char*)"API_AttributeFailed",
+        	Except::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::read_attributes()");
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			if ((trans.minor() == omni::TRANSIENT_CallTimedout) || (ctr == 1))
-			{
-				delete dev_attr;
-				already_deleted = true;
-			}
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attributes");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","read_attributes",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				if (ctr == 1)
-					delete dev_attr;
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","read_attributes",this);
 			}
 			else
 			{
-				delete dev_attr;
-
 				set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Failed to execute read_attributes on device " << device_name << ends;
@@ -4493,14 +5337,10 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				if (ctr == 1)
-					delete dev_attr;
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","read_attributes",this);
 			}
 			else
 			{
-				delete dev_attr;
-
 				set_connection_state(CONNECTION_NOTOK);
 				TangoSys_OMemStream desc;
 				desc << "Failed to execute read_attributes on device " << device_name << ends;
@@ -4512,8 +5352,6 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		}
         catch (CORBA::SystemException &ce)
         {
-			delete dev_attr;
-
 			set_connection_state(CONNECTION_NOTOK);
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute read_attributes on device " << device_name << ends;
@@ -4529,18 +5367,24 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 		nb_received = attr_value_list->length();
 	else if (version == 3)
 		nb_received = attr_value_list_3->length();
-	else
+	else if (version == 4)
 		nb_received = attr_value_list_4->length();
+	else
+		nb_received = attr_value_list_5->length();
+
+	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
 	dev_attr->resize(nb_received);
 
 	for (i=0; i < nb_received; i++)
 	{
 		if (version >= 3)
 		{
-			if (version == 3)
-				ApiUtil::attr_to_device(NULL,&(attr_value_list_3[i]),version,&(*dev_attr)[i]);
-			else
+			if (version == 5)
+				ApiUtil::attr_to_device(&(attr_value_list_5[i]),version,&(*dev_attr)[i]);
+			else if (version == 4)
 				ApiUtil::attr_to_device(&(attr_value_list_4[i]),version,&(*dev_attr)[i]);
+			else
+				ApiUtil::attr_to_device(NULL,&(attr_value_list_3[i]),version,&(*dev_attr)[i]);
 
 //
 // Add an error in the error stack in case there is one
@@ -4555,7 +5399,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 				desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attributes()");
 
 				string st = desc.str();
@@ -4584,6 +5428,7 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 	AttributeValueList_var attr_value_list;
 	AttributeValueList_3_var attr_value_list_3;
 	AttributeValueList_4_var attr_value_list_4;
+	AttributeValueList_5_var attr_value_list_5;
 	DeviceAttribute dev_attr;
 	DevVarStringArray attr_list;
 	int ctr = 0;
@@ -4598,30 +5443,50 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 		{
 			check_and_reconnect(local_source);
 
-			if (version >= 4)
+			if (version >= 5)
 			{
 				ClntIdent ci;
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
-				attr_value_list_4 = ext->device_4->read_attributes_4(attr_list,local_source,ci);
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			}
+			else if (version == 4)
+			{
+				ClntIdent ci;
+				ApiUtil *au = ApiUtil::instance();
+				ci.cpp_clnt(au->get_client_pid());
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = ext->device_3->read_attributes_3(attr_list,local_source);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				attr_value_list_3 = dev->read_attributes_3(attr_list,local_source);
+			}
 			else if (version == 2)
-				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_value_list = dev->read_attributes_2(attr_list,local_source);
+			}
 			else
-				attr_value_list = device->read_attributes(attr_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				attr_value_list = dev->read_attributes(attr_list);
+			}
 			ctr = 2;
 		}
-		READ_ATT_EXCEPT(attr_string)
+		READ_ATT_EXCEPT(attr_string,this)
 	}
 
 	if (version >= 3)
 	{
-		if (version == 3)
-			ApiUtil::attr_to_device(NULL,&(attr_value_list_3[0]),version,&dev_attr);
-		else
+		if (version >= 5)
+			ApiUtil::attr_to_device(&(attr_value_list_5[0]),version,&dev_attr);
+		else if (version == 4)
 			ApiUtil::attr_to_device(&(attr_value_list_4[0]),version,&dev_attr);
+		else
+			ApiUtil::attr_to_device(NULL,&(attr_value_list_3[0]),version,&dev_attr);
 
 //
 // Add an error in the error stack in case there is one
@@ -4636,7 +5501,7 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 			desc << ", attribute " << dev_attr.name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
 
 			string st = desc.str();
@@ -4658,6 +5523,7 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 	AttributeValueList *attr_value_list = NULL;
 	AttributeValueList_3 *attr_value_list_3 = NULL;
 	AttributeValueList_4 *attr_value_list_4 = NULL;
+	AttributeValueList_5 *attr_value_list_5 = NULL;
 	DevVarStringArray attr_list;
 	int ctr = 0;
 	Tango::DevSource local_source;
@@ -4671,36 +5537,57 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 		{
 			check_and_reconnect(local_source);
 
-			if (version >= 4)
-			{
-				ClntIdent ci;
-				ApiUtil *au = ApiUtil::instance();
-				ci.cpp_clnt(au->get_client_pid());
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
 
-				attr_value_list_4 = ext->device_4->read_attributes_4(attr_list,local_source,ci);
+			if (version >= 5)
+			{
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			}
+			else if (version == 4)
+			{
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
 			}
 			else if (version == 3)
-				attr_value_list_3 = ext->device_3->read_attributes_3(attr_list,local_source);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				attr_value_list_3 = dev->read_attributes_3(attr_list,local_source);
+			}
 			else if (version == 2)
-				attr_value_list = device_2->read_attributes_2(attr_list,local_source);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				attr_value_list = dev->read_attributes_2(attr_list,local_source);
+			}
 			else
-				attr_value_list = device->read_attributes(attr_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				attr_value_list = dev->read_attributes(attr_list);
+			}
 			ctr = 2;
 		}
-		READ_ATT_EXCEPT(attr_str)
+		READ_ATT_EXCEPT(attr_str,this)
 	}
 
 	if (version >= 3)
 	{
-		if (version == 3)
+
+		if (version >= 5)
 		{
-			ApiUtil::attr_to_device(NULL,&((*attr_value_list_3)[0]),version,&dev_attr);
-			delete attr_value_list_3;
+			ApiUtil::attr_to_device(&((*attr_value_list_5)[0]),version,&dev_attr);
+			delete attr_value_list_5;
 		}
-		else
+		else if (version == 4)
 		{
 			ApiUtil::attr_to_device(&((*attr_value_list_4)[0]),version,&dev_attr);
 			delete attr_value_list_4;
+		}
+		else
+		{
+			ApiUtil::attr_to_device(NULL,&((*attr_value_list_3)[0]),version,&dev_attr);
+			delete attr_value_list_3;
 		}
 
 //
@@ -4716,7 +5603,7 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 			desc << ", attribute " << dev_attr.name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
 
 			string st = desc.str();
@@ -4730,6 +5617,120 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 		delete attr_value_list;
 	}
 
+}
+
+void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_4 *&av_4)
+{
+	DevVarStringArray attr_list;
+	int ctr = 0;
+	Tango::DevSource local_source;
+
+	if (version < 4)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " is too old to support this call. Please, update to IDL 4 (Tango 7.x or more)";
+		Except::throw_exception(API_NotSupported,ss.str(),"DeviceProxy::read_attribute");
+	}
+
+	attr_list.length(1);
+	attr_list[0] = CORBA::string_dup(attr_str.c_str());
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect(local_source);
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			AttributeValueList_4 *attr_value_list_4 = dev->read_attributes_4(attr_list,local_source,ci);
+			av_4 = attr_value_list_4->get_buffer(true);
+			delete attr_value_list_4;
+
+			ctr = 2;
+		}
+		READ_ATT_EXCEPT(attr_str,this)
+	}
+
+//
+// Add an error in the error stack in case there is one
+//
+
+	long nb_except = av_4->err_list.length();
+	if (nb_except != 0)
+	{
+		TangoSys_OMemStream desc;
+		desc << "Failed to read_attribute on device " << device_name;
+		desc << ", attribute " << attr_str << ends;
+
+		av_4->err_list.length(nb_except + 1);
+		av_4->err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
+		av_4->err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+
+		string st = desc.str();
+		av_4->err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		av_4->err_list[nb_except].severity = Tango::ERR;
+	}
+}
+
+void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_5 *&av_5)
+{
+	DevVarStringArray attr_list;
+	int ctr = 0;
+	Tango::DevSource local_source;
+
+	if (version < 5)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " is too old to support this call. Please, update to IDL 5 (Tango 9.x or more)";
+		Except::throw_exception(API_NotSupported,ss.str(),"DeviceProxy::read_attribute");
+	}
+
+	attr_list.length(1);
+	attr_list[0] = CORBA::string_dup(attr_str.c_str());
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect(local_source);
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			AttributeValueList_5 *attr_value_list_5 = dev->read_attributes_5(attr_list,local_source,ci);
+			av_5 = attr_value_list_5->get_buffer(true);
+			delete attr_value_list_5;
+
+			ctr = 2;
+		}
+		READ_ATT_EXCEPT(attr_str,this)
+	}
+
+//
+// Add an error in the error stack in case there is one
+//
+
+	long nb_except = av_5->err_list.length();
+	if (nb_except != 0)
+	{
+		TangoSys_OMemStream desc;
+		desc << "Failed to read_attribute on device " << device_name;
+		desc << ", attribute " << attr_str << ends;
+
+		av_5->err_list.length(nb_except + 1);
+		av_5->err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
+		av_5->err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+
+		string st = desc.str();
+		av_5->err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		av_5->err_list[nb_except].severity = Tango::ERR;
+	}
 }
 
 //-----------------------------------------------------------------------------
@@ -4776,12 +5777,12 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				attr_value_list[i].value <<= attr_list[i].LongSeq.in();
 			continue;
 		}
-		if (attr_list[i].get_Long64_data().operator->() != NULL)
+		if (attr_list[i].Long64Seq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.long64_att_value(attr_list[i].get_Long64_data().in());
+				attr_value_list_4[i].value.long64_att_value(attr_list[i].Long64Seq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_Long64_data().in();
+				attr_value_list[i].value <<= attr_list[i].Long64Seq.in();
 			continue;
 		}
 		if (attr_list[i].ShortSeq.operator->() != NULL)
@@ -4840,28 +5841,28 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				attr_value_list[i].value  <<= attr_list[i].UCharSeq.in();
 			continue;
 		}
-		if (attr_list[i].get_ULong_data().operator->() != NULL)
+		if (attr_list[i].ULongSeq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.ulong_att_value(attr_list[i].get_ULong_data().in());
+				attr_value_list_4[i].value.ulong_att_value(attr_list[i].ULongSeq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_ULong_data().in();
+				attr_value_list[i].value <<= attr_list[i].ULongSeq.in();
 			continue;
 		}
-		if (attr_list[i].get_ULong64_data().operator->() != NULL)
+		if (attr_list[i].ULong64Seq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.ulong64_att_value(attr_list[i].get_ULong64_data().in());
+				attr_value_list_4[i].value.ulong64_att_value(attr_list[i].ULong64Seq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_ULong64_data().in();
+				attr_value_list[i].value <<= attr_list[i].ULong64Seq.in();
 			continue;
 		}
-		if (attr_list[i].get_State_data().operator->() != NULL)
+		if (attr_list[i].StateSeq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.state_att_value(attr_list[i].get_State_data().in());
+				attr_value_list_4[i].value.state_att_value(attr_list[i].StateSeq.in());
 			else
-				attr_value_list[i].value <<= attr_list[i].get_State_data().in();
+				attr_value_list[i].value <<= attr_list[i].StateSeq.in();
 			continue;
 		}
 	}
@@ -4883,7 +5884,8 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -4894,7 +5896,7 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"DeviceProxy::write_attributes()");
 			}
 
@@ -4908,12 +5910,19 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				ext->device_4->write_attributes_4(attr_value_list_4,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				dev->write_attributes_4(attr_value_list_4,ci);
 			}
 			else if (version == 3)
-				ext->device_3->write_attributes_3(attr_value_list);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->write_attributes_3(attr_value_list);
+			}
 			else
-				device->write_attributes(attr_value_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				dev->write_attributes(attr_value_list);
+			}
 			ctr = 2;
 		}
 		catch (Tango::MultiDevFailed &e)
@@ -4921,7 +5930,7 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 			throw Tango::NamedDevFailedList(e,
 						       device_name,
 						       (const char *)"DeviceProxy::write_attributes",
-						       (const char *)"API_AttributeFailed");
+						       (const char *)API_AttributeFailed);
 		}
 		catch (Tango::DevFailed &e)
 		{
@@ -4941,18 +5950,18 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"DeviceProxy::write_attribute()");
 			else
-                Except::re_throw_exception(e,(const char*)"API_AttributeFailed",
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attributes");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attributes",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attributes",this);
 			}
 			else
 			{
@@ -4969,7 +5978,7 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attributes");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attributes",this);
 			}
 			else
 			{
@@ -5022,8 +6031,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 
 		if (dev_attr.LongSeq.operator->() != NULL)
 			attr_value_list_4[0].value.long_att_value(dev_attr.LongSeq.in());
-		else if (dev_attr.get_Long64_data().operator->() != NULL)
-			attr_value_list_4[0].value.long64_att_value(dev_attr.get_Long64_data().in());
+		else if (dev_attr.Long64Seq.operator->() != NULL)
+			attr_value_list_4[0].value.long64_att_value(dev_attr.Long64Seq.in());
 		else if (dev_attr.ShortSeq.operator->() != NULL)
 			attr_value_list_4[0].value.short_att_value(dev_attr.ShortSeq.in());
 		else if (dev_attr.DoubleSeq.operator->() != NULL)
@@ -5038,14 +6047,14 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			attr_value_list_4[0].value.ushort_att_value(dev_attr.UShortSeq.in());
 		else if (dev_attr.UCharSeq.operator->() != NULL)
 			attr_value_list_4[0].value.uchar_att_value(dev_attr.UCharSeq.in());
-		else if (dev_attr.get_ULong_data().operator->() != NULL)
-			attr_value_list_4[0].value.ulong_att_value(dev_attr.get_ULong_data().in());
-		else if (dev_attr.get_ULong64_data().operator->() != NULL)
-			attr_value_list_4[0].value.ulong64_att_value(dev_attr.get_ULong64_data().in());
-		else if (dev_attr.get_State_data().operator->() != NULL)
-			attr_value_list_4[0].value.state_att_value(dev_attr.get_State_data().in());
-		else if (dev_attr.get_Encoded_data().operator->() != NULL)
-			attr_value_list_4[0].value.encoded_att_value(dev_attr.get_Encoded_data().in());
+		else if (dev_attr.ULongSeq.operator->() != NULL)
+			attr_value_list_4[0].value.ulong_att_value(dev_attr.ULongSeq.in());
+		else if (dev_attr.ULong64Seq.operator->() != NULL)
+			attr_value_list_4[0].value.ulong64_att_value(dev_attr.ULong64Seq.in());
+		else if (dev_attr.StateSeq.operator->() != NULL)
+			attr_value_list_4[0].value.state_att_value(dev_attr.StateSeq.in());
+		else if (dev_attr.EncodedSeq.operator->() != NULL)
+			attr_value_list_4[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
 	}
 	else
 	{
@@ -5059,8 +6068,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 
 		if (dev_attr.LongSeq.operator->() != NULL)
 			attr_value_list[0].value <<= dev_attr.LongSeq.in();
-		else if (dev_attr.get_Long64_data().operator->() != NULL)
-			 attr_value_list[0].value <<= dev_attr.get_Long64_data().in();
+		else if (dev_attr.Long64Seq.operator->() != NULL)
+			 attr_value_list[0].value <<= dev_attr.Long64Seq.in();
 		else if (dev_attr.ShortSeq.operator->() != NULL)
 			attr_value_list[0].value <<= dev_attr.ShortSeq.in();
 		else if (dev_attr.DoubleSeq.operator->() != NULL)
@@ -5075,12 +6084,12 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			attr_value_list[0].value  <<= dev_attr.UShortSeq.in();
 		else if (dev_attr.UCharSeq.operator->() != NULL)
 			attr_value_list[0].value  <<= dev_attr.UCharSeq.in();
-		else if (dev_attr.get_ULong_data().operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.get_ULong_data().in();
-		else if (dev_attr.get_ULong64_data().operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.get_ULong64_data().in();
-		else if (dev_attr.get_State_data().operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.get_State_data().in();
+		else if (dev_attr.ULongSeq.operator->() != NULL)
+			attr_value_list[0].value <<= dev_attr.ULongSeq.in();
+		else if (dev_attr.ULong64Seq.operator->() != NULL)
+			attr_value_list[0].value <<= dev_attr.ULong64Seq.in();
+		else if (dev_attr.StateSeq.operator->() != NULL)
+			attr_value_list[0].value <<= dev_attr.StateSeq.in();
 	}
 
 	int ctr = 0;
@@ -5100,7 +6109,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -5111,7 +6121,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"DeviceProxy::write_attribute()");
 			}
 
@@ -5125,12 +6135,19 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 				ApiUtil *au = ApiUtil::instance();
 				ci.cpp_clnt(au->get_client_pid());
 
-				ext->device_4->write_attributes_4(attr_value_list_4,ci);
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				dev->write_attributes_4(attr_value_list_4,ci);
 			}
 			else if (version == 3)
-				ext->device_3->write_attributes_3(attr_value_list);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->write_attributes_3(attr_value_list);
+			}
 			else
-				device->write_attributes(attr_value_list);
+			{
+				Device_var dev = Device::_duplicate(device);
+				dev->write_attributes(attr_value_list);
+			}
 			ctr = 2;
 
 		}
@@ -5147,7 +6164,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			desc << ", attribute ";
 			desc << dev_attr.name;
 			desc << ends;
-                	Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+                	Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 
 		}
@@ -5163,18 +6180,18 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"DeviceProxy::write_attribute()");
 			else
-            	Except::re_throw_exception(e,(const char*)"API_AttributeFailed",
+            	Except::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5191,7 +6208,7 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5246,7 +6263,8 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -5257,7 +6275,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  		(const char *)"DeviceProxy::write_attribute()");
 			}
 
@@ -5267,9 +6285,15 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 
 
 			if (version >= 3)
-				ext->device_3->write_attributes_3(attr_val);
+			{
+				Device_3_var dev = Device_3::_duplicate(device_3);
+				dev->write_attributes_3(attr_val);
+			}
 			else
-				device->write_attributes(attr_val);
+			{
+				Device_var dev = Device::_duplicate(device);
+				dev->write_attributes(attr_val);
+			}
 			ctr = 2;
 
 		}
@@ -5286,7 +6310,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 			desc << ", attribute ";
 			desc << attr_val[0].name.in();
 			desc << ends;
-                	Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+                	Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 
 		}
@@ -5302,18 +6326,18 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"DeviceProxy::write_attribute()");
 			else
-                Except::re_throw_exception(e,(const char*)"API_AttributeFailed",
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5330,7 +6354,7 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5375,7 +6399,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 		desc << attr_val[0].name.in();
 		desc << ". The device does not support thi stype of data (Bad IDL release)";
 		desc << ends;
-		Tango::Except::throw_exception((const char*)"API_NotSupportedFeature",
+		Tango::Except::throw_exception((const char*)API_NotSupportedFeature,
                     	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 	}
 	int ctr = 0;
@@ -5395,7 +6419,8 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -5406,7 +6431,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 									  	  		(const char *)"DeviceProxy::write_attribute()");
 			}
 
@@ -5418,7 +6443,8 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			ext->device_4->write_attributes_4(attr_val,ci);
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			dev->write_attributes_4(attr_val,ci);
 			ctr = 2;
 
 		}
@@ -5435,7 +6461,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 			desc << ", attribute ";
 			desc << attr_val[0].name.in();
 			desc << ends;
-                	Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+                	Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 
 		}
@@ -5451,18 +6477,18 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"DeviceProxy::write_attribute()");
 			else
-                Except::re_throw_exception(e,(const char*)"API_AttributeFailed",
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5479,7 +6505,7 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_attribute",this);
 			}
 			else
 			{
@@ -5517,10 +6543,10 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 vector<string> *DeviceProxy::get_attribute_list()
 {
 	vector<string> all_attr;
-	AttributeInfoList * all_attr_config;
+	AttributeInfoListEx * all_attr_config;
 
 	all_attr.push_back(AllAttr_3);
-	all_attr_config = get_attribute_config(all_attr);
+	all_attr_config = get_attribute_config_ex(all_attr);
 
 	vector<string> *attr_list = new vector<string>;
 	attr_list->resize(all_attr_config->size());
@@ -5580,7 +6606,7 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 		TangoSys_OMemStream desc;
 		desc << "Device " << device_name;
 		desc << " does not support command_history feature" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  desc.str(),
 						  (const char *)"DeviceProxy::command_history");
 	}
@@ -5597,20 +6623,26 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 			check_and_reconnect();
 
 			if (version <= 3)
-				hist = device_2->command_inout_history_2(cmd_name.c_str(),depth);
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
+				hist = dev->command_inout_history_2(cmd_name.c_str(),depth);
+			}
 			else
-				hist_4 = ext->device_4->command_inout_history_4(cmd_name.c_str(),depth);
+			{
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				hist_4 = dev->command_inout_history_4(cmd_name.c_str(),depth);
+			}
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_history");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","command_history",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","command_history",this);
 			}
 			else
 			{
@@ -5627,7 +6659,7 @@ vector<DeviceDataHistory> *DeviceProxy::command_history(string &cmd_name,int dep
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","command_history",this);
 			}
 			else
 			{
@@ -5694,7 +6726,7 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 		TangoSys_OMemStream desc;
 		desc << "Device " << device_name;
 		desc << " does not support attribute_history feature" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  desc.str(),
 						  (const char *)"DeviceProxy::attribute_history");
 	}
@@ -5702,6 +6734,7 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 	DevAttrHistoryList_var hist;
 	DevAttrHistoryList_3_var hist_3;
 	DevAttrHistory_4_var hist_4;
+	DevAttrHistory_5_var hist_5;
 
 	int ctr = 0;
 
@@ -5712,25 +6745,39 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 			check_and_reconnect();
 
 			if (version == 2)
+			{
+				Device_2_var dev = Device_2::_duplicate(device_2);
 				hist = device_2->read_attribute_history_2(cmd_name.c_str(),depth);
+			}
 			else
 			{
 				if (version == 3)
-					hist_3 = ext->device_3->read_attribute_history_3(cmd_name.c_str(),depth);
+				{
+					Device_3_var dev = Device_3::_duplicate(device_3);
+					hist_3 = dev->read_attribute_history_3(cmd_name.c_str(),depth);
+				}
+				else if (version == 4)
+				{
+					Device_4_var dev = Device_4::_duplicate(device_4);
+					hist_4 = dev->read_attribute_history_4(cmd_name.c_str(),depth);
+				}
 				else
-					hist_4 = ext->device_4->read_attribute_history_4(cmd_name.c_str(),depth);
+				{
+					Device_5_var dev = Device_5::_duplicate(device_5);
+					hist_5 = dev->read_attribute_history_5(cmd_name.c_str(),depth);
+				}
 			}
 			ctr = 2;
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","attribute_history");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","attribute_history",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","attribute_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","attribute_history",this);
 			}
 			else
 			{
@@ -5747,7 +6794,7 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","attribute_history");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","attribute_history",this);
 			}
 			else
 			{
@@ -5774,13 +6821,21 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 
 	vector<DeviceAttributeHistory> *ddh = new vector<DeviceAttributeHistory>;
 
-	if (version == 2)
+	if (version > 4)
 	{
-		ddh->reserve(hist->length());
-		for (unsigned int i = 0;i < hist->length();i++)
-		{
-			ddh->push_back(DeviceAttributeHistory(i,hist));
-		}
+		ddh->reserve(hist_5->dates.length());
+		for (unsigned int i = 0;i < hist_5->dates.length();i++)
+			ddh->push_back(DeviceAttributeHistory());
+		from_hist_2_AttHistory(hist_5,ddh);
+		for (unsigned int i = 0;i < hist_5->dates.length();i++)
+			(*ddh)[i].data_type = hist_5->data_type;
+	}
+	else if (version == 4)
+	{
+		ddh->reserve(hist_4->dates.length());
+		for (unsigned int i = 0;i < hist_4->dates.length();i++)
+			ddh->push_back(DeviceAttributeHistory());
+		from_hist_2_AttHistory(hist_4,ddh);
 	}
 	else if (version == 3)
 	{
@@ -5792,23 +6847,25 @@ vector<DeviceAttributeHistory> *DeviceProxy::attribute_history(string &cmd_name,
 	}
 	else
 	{
-		ddh->reserve(hist_4->dates.length());
-		for (unsigned int i = 0;i < hist_4->dates.length();i++)
-			ddh->push_back(DeviceAttributeHistory());
-		from_hist4_2_AttHistory(hist_4,ddh);
+		ddh->reserve(hist->length());
+		for (unsigned int i = 0;i < hist->length();i++)
+		{
+			ddh->push_back(DeviceAttributeHistory(i,hist));
+		}
 	}
 
 	return ddh;
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::connect_to_adm_device() - get device polling status
+// method:
+//		DeviceProxy::connect_to_adm_device()
 //
-// Please, note that this method is called when the mutex called adm_dev_mutex
-// is locked
+// description:
+//		Create a connection to the admin device of the Tango device server process where the device is running.
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::connect_to_adm_device()
 {
@@ -5872,7 +6929,7 @@ bool DeviceProxy::is_polled(polled_object obj, string &obj_name,string &upd)
 	vector<string> *poll_str;
 
 	poll_str = polling_status();
-	if (poll_str->size() == 0)
+	if (poll_str->empty() == true)
 	{
 		delete poll_str;
 		return ret;
@@ -6103,8 +7160,9 @@ void DeviceProxy::poll_attribute(string &attr_name, int period)
 	{
 
 //
-// If object is polled and the polling period is the same, simply retruns
+// If object is polled and the polling period is the same, simply returns
 //
+
 		TangoSys_MemStream stream;
 		int per;
 
@@ -6426,12 +7484,15 @@ void DeviceProxy::set_logging_level (int level)
 
 
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::subscribe_event - Subscribe to an event
-//                                Old interface for compatibility
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Subscribe to an event - Old interface for compatibility
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
                                  CallBack *callback, const vector<string> &filters)
@@ -6439,13 +7500,15 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	return subscribe_event (attr_name, event, callback, filters, false);
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::subscribe_event - Subscribe to an event
-//                                Adds the statless flag for stateless
-//                                event subscription.
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Subscribe to an event- Adds the statless flag for stateless event subscription.
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
                                  CallBack *callback, const vector<string> &filters,
@@ -6458,8 +7521,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	}
 
 //
-// First, try using zmq. If it fails with the error "Command Not Found",
-// try using notifd
+// First, try using zmq. If it fails with the error "Command Not Found", try using notifd
 //
 
     int ret;
@@ -6470,7 +7532,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	catch (DevFailed &e)
 	{
 	    string reason(e.errors[0].reason.in());
-	    if (reason == "API_CommandNotFound")
+	    if (reason == API_CommandNotFound)
 	    {
             if (api_ptr->get_notifd_event_consumer() == NULL)
             {
@@ -6486,15 +7548,16 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	return ret;
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::subscribe_event - Subscribe to an event with the usage of
-//                                the event queue for data reception.
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//                                Adds the statless flag for stateless
-//                                event subscription.
+// description :
+//		Subscribe to an event with the usage of the event queue for data reception. Adds the statless flag for
+//		stateless event subscription.
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
                                  int event_queue_size, const vector<string> &filters,
@@ -6507,8 +7570,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	}
 
 //
-// First, try using zmq. If it fails with the error "Command Not Found",
-// try using notifd
+// First, try using zmq. If it fails with the error "Command Not Found", try using notifd
 //
 
     int ret;
@@ -6519,7 +7581,7 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	catch (DevFailed &e)
 	{
 	    string reason(e.errors[0].reason.in());
-	    if (reason == "API_CommandNotFound")
+	    if (reason == API_CommandNotFound)
 	    {
             if (api_ptr->get_notifd_event_consumer() == NULL)
             {
@@ -6535,12 +7597,82 @@ int DeviceProxy::subscribe_event (const string &attr_name, EventType event,
 	return ret;
 }
 
+//-------------------------------------------------------------------------------------------------------------------
+//
+// method :
+// 		DeviceProxy::subscribe_event
+//
+// description :
+//		Subscribe to a device event- Add the statless flag for stateless event subscription.
+//
+//-------------------------------------------------------------------------------------------------------------------
 
-//-----------------------------------------------------------------------------
+int DeviceProxy::subscribe_event (EventType event,CallBack *callback,bool stateless)
+{
+	if (version < MIN_IDL_DEV_INTR)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " does not support device interface change event\n";
+		ss << "Available since Tango release 9 AND for device inheriting from IDL release 5 (Device_5Impl)";
+
+		Tango::Except::throw_exception(API_NotSupportedFeature,ss.str(),"DeviceProxy::subscribe_event()");
+	}
+
+    ApiUtil *api_ptr = ApiUtil::instance();
+  	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		api_ptr->create_zmq_event_consumer();
+	}
+
+    int ret;
+	ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this,event,callback,stateless);
+
+	return ret;
+}
+
+//------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::unsubscribe_event - Unsubscribe to an event
+// method :
+// 		DeviceProxy::subscribe_event
 //
-//-----------------------------------------------------------------------------
+// description :
+//		Subscribe to an event with the usage of the event queue for data reception. Adds the statless flag for
+//		stateless event subscription.
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+int DeviceProxy::subscribe_event (EventType event,int event_queue_size,bool stateless)
+{
+	if (version < MIN_IDL_DEV_INTR)
+	{
+		stringstream ss;
+		ss << "Device " << dev_name() << " does not support device interface change event\n";
+		ss << "Available since Tango release 9 AND for device inheriting from IDL release 5 (Device_5Impl)";
+
+		Tango::Except::throw_exception(API_NotSupportedFeature,ss.str(),"DeviceProxy::subscribe_event()");
+	}
+
+    ApiUtil *api_ptr = ApiUtil::instance();
+  	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		api_ptr->create_zmq_event_consumer();
+	}
+
+    int ret;
+	ret = api_ptr->get_zmq_event_consumer()->subscribe_event(this,event,event_queue_size,stateless);
+
+	return ret;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+// 		DeviceProxy::unsubscribe_event
+//
+// description :
+//		Unsubscribe to an event
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::unsubscribe_event (int event_id)
 {
@@ -6651,10 +7783,7 @@ void DeviceProxy::get_events (int event_id, AttrConfEventDataList &event_list)
 		desc << "Could not find event consumer object, \n";
 		desc << "probably no event subscription was done before!";
 		desc << ends;
-		Tango::Except::throw_exception(
-						(const char*)"API_EventConsumer",
-						desc.str(),
-						(const char*)"DeviceProxy::get_events()");
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
 	}
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -6669,10 +7798,7 @@ void DeviceProxy::get_events (int event_id, AttrConfEventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << ends;
-            Tango::Except::throw_exception(
-                            (const char*)"API_EventConsumer",
-                            desc.str(),
-                            (const char*)"DeviceProxy::get_events()");
+            Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
     }
@@ -6687,10 +7813,7 @@ void DeviceProxy::get_events (int event_id, DataReadyEventDataList &event_list)
 		desc << "Could not find event consumer object, \n";
 		desc << "probably no event subscription was done before!";
 		desc << ends;
-		Tango::Except::throw_exception(
-						(const char*)"API_EventConsumer",
-						desc.str(),
-						(const char*)"DeviceProxy::get_events()");
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
 	}
 
     if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
@@ -6705,12 +7828,55 @@ void DeviceProxy::get_events (int event_id, DataReadyEventDataList &event_list)
             desc << "Could not find event consumer object, \n";
             desc << "probably no event subscription was done before!";
             desc << ends;
-            Tango::Except::throw_exception(
-                            (const char*)"API_EventConsumer",
-                            desc.str(),
-                            (const char*)"DeviceProxy::get_events()");
+            Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
         }
         api_ptr->get_notifd_event_consumer()->get_events(event_id,event_list);
+    }
+}
+
+void DeviceProxy::get_events (int event_id, DevIntrChangeEventDataList &event_list)
+{
+    ApiUtil *api_ptr = ApiUtil::instance();
+	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		stringstream desc;
+		desc << "Could not find event consumer object, \n";
+		desc << "probably no event subscription was done before!";
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
+	}
+
+    if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
+    {
+        api_ptr->get_zmq_event_consumer()->get_events(event_id, event_list);
+    }
+    else
+    {
+		stringstream desc;
+		desc << "Event Device Interface Change not implemented in old Tango event system (notifd)";
+		Tango::Except::throw_exception(API_UnsupportedFeature,desc.str(),"DeviceProxy::get_events()");
+    }
+}
+
+void DeviceProxy::get_events (int event_id, PipeEventDataList &event_list)
+{
+    ApiUtil *api_ptr = ApiUtil::instance();
+	if (api_ptr->get_zmq_event_consumer() == NULL)
+	{
+		stringstream desc;
+		desc << "Could not find event consumer object, \n";
+		desc << "probably no event subscription was done before!";
+		Tango::Except::throw_exception(API_EventConsumer,desc.str(),"DeviceProxy::get_events()");
+	}
+
+    if (api_ptr->get_zmq_event_consumer()->get_event_system_for_event_id(event_id) == ZMQ)
+    {
+        api_ptr->get_zmq_event_consumer()->get_events(event_id, event_list);
+    }
+    else
+    {
+		stringstream desc;
+		desc << "Pipe event not implemented in old Tango event system (notifd)";
+		Tango::Except::throw_exception(API_UnsupportedFeature,desc.str(),"DeviceProxy::get_events()");
     }
 }
 
@@ -6962,7 +8128,7 @@ void DeviceProxy::lock(int lock_validity)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::lock");
 	}
@@ -6976,12 +8142,12 @@ void DeviceProxy::lock(int lock_validity)
 		TangoSys_OMemStream desc;
 		desc << "Lock validity can not be lower than " << MIN_LOCK_VALIDITY << " seconds" << ends;
 
-		Except::throw_exception((const char*)"API_MethodArgument",desc.str(),
+		Except::throw_exception((const char*)API_MethodArgument,desc.str(),
 								(const char*)"DeviceProxy::lock");
 	}
 
 	{
-		omni_mutex_lock guard(ext_proxy->lock_mutex);
+		omni_mutex_lock guard(lock_mutex);
 		if (lock_ctr != 0)
 		{
 			if (lock_validity != lock_valid)
@@ -6991,7 +8157,7 @@ void DeviceProxy::lock(int lock_validity)
 				desc << "Device " << device_name << " is already locked with another lock validity (";
 				desc << lock_valid << " sec)" << ends;
 
-				Except::throw_exception((const char*)"API_MethodArgument",desc.str(),
+				Except::throw_exception((const char*)API_MethodArgument,desc.str(),
 									(const char*)"DeviceProxy::lock");
 			}
 		}
@@ -7005,6 +8171,7 @@ void DeviceProxy::lock(int lock_validity)
 	if (au->is_lock_exit_installed() == false)
 	{
 		atexit(clean_lock);
+		au->set_sig_handler();
 		au->set_lock_exit_installed(true);
 	}
 
@@ -7034,7 +8201,7 @@ void DeviceProxy::lock(int lock_validity)
 //
 
 	{
-		omni_mutex_lock guard(ext_proxy->lock_mutex);
+		omni_mutex_lock guard(lock_mutex);
 
 		lock_ctr++;
 		lock_valid = lock_validity;
@@ -7084,7 +8251,7 @@ void DeviceProxy::lock(int lock_validity)
 					if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 					{
 						cout4 << "TIME OUT" << endl;
-						Except::throw_exception((const char *)"API_CommandTimedOut",
+						Except::throw_exception((const char *)API_CommandTimedOut,
 								        		(const char *)"Locking thread blocked !!!",
 								        		(const char *)"DeviceProxy::lock");
 					}
@@ -7093,7 +8260,7 @@ void DeviceProxy::lock(int lock_validity)
 				pos->second.shared->cmd_code = LOCK_ADD_DEV;
 				pos->second.shared->dev_name = device_name;
 				{
-					omni_mutex_lock guard(ext_proxy->lock_mutex);
+					omni_mutex_lock guard(lock_mutex);
 					pos->second.shared->lock_validity = lock_valid;
 				}
 
@@ -7108,7 +8275,7 @@ void DeviceProxy::lock(int lock_validity)
 					if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 					{
 						cout4 << "TIME OUT" << endl;
-						Except::throw_exception((const char *)"API_CommandTimedOut",
+						Except::throw_exception((const char *)API_CommandTimedOut,
 								        		(const char *)"Locking thread blocked !!!",
 								        		(const char *)"DeviceProxy::lock");
 					}
@@ -7138,7 +8305,7 @@ void DeviceProxy::unlock(bool force)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::unlock");
 	}
@@ -7178,7 +8345,7 @@ void DeviceProxy::unlock(bool force)
 	int local_lock_ctr;
 
 	{
-		omni_mutex_lock guard(ext_proxy->lock_mutex);
+		omni_mutex_lock guard(lock_mutex);
 
 		lock_ctr--;
 		if (glob_ctr != lock_ctr)
@@ -7204,7 +8371,7 @@ void DeviceProxy::unlock(bool force)
 //				TangoSys_OMemStream o;
 
 //				o << "Can't find the locking thread for device " << device_name << " and admin device " << adm_dev_name << ends;
-//				Tango::Except::throw_exception((const char *)"API_CantFindLockingThread",o.str(),
+//				Tango::Except::throw_exception((const char *)API_CantFindLockingThread,o.str(),
 //                                           		(const char *)"DeviceProxy::unlock()");
 			}
 			else
@@ -7227,7 +8394,7 @@ void DeviceProxy::unlock(bool force)
 						if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 						{
 							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)"API_CommandTimedOut",
+							Except::throw_exception((const char *)API_CommandTimedOut,
 								        		(const char *)"Locking thread blocked !!!",
 								        		(const char *)"DeviceProxy::unlock");
 						}
@@ -7247,7 +8414,7 @@ void DeviceProxy::unlock(bool force)
 						if ((pos->second.shared->cmd_pending == true) && (interupted == 0))
 						{
 							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)"API_CommandTimedOut",
+							Except::throw_exception((const char *)API_CommandTimedOut,
 										        		(const char *)"Locking thread blocked !!!",
 										        		(const char *)"DeviceProxy::unlock");
 						}
@@ -7278,7 +8445,7 @@ void DeviceProxy::create_locking_thread(ApiUtil *au,DevLong dl)
 	{
 		TangoSys_OMemStream o;
 		o << "Can't create the locking thread for device " << device_name << " and admin device " << adm_dev_name << ends;
-		Tango::Except::throw_exception((const char *)"API_CantCreateLockingThread",o.str(),
+		Tango::Except::throw_exception((const char *)API_CantCreateLockingThread,o.str(),
 	                               (const char *)"DeviceProxy::create_locking_thread()");
 	}
 	else
@@ -7369,7 +8536,7 @@ bool DeviceProxy::is_locked_by_me()
 // If the call is local, as the PID is already the good one, the caller is the locker
 //
 
-			if (full_ip_str == LOCAL_HOST)
+			if (full_ip_str == TG_LOCAL_HOST)
 				ret = true;
 			else
 			{
@@ -7454,7 +8621,7 @@ bool DeviceProxy::get_locker(LockerInfo &lock_info)
 // Convert locker IP address to its name
 //
 
-		if (full_ip != LOCAL_HOST)
+		if (full_ip != TG_LOCAL_HOST)
 		{
 			struct sockaddr_in si;
 			si.sin_family = AF_INET;
@@ -7507,7 +8674,7 @@ void DeviceProxy::ask_locking_status(vector<string> &v_str,vector<DevLong> &v_l)
 		desc << device_name;
 		desc << " which is a non database device";
 
-		ApiNonDbExcept::throw_exception((const char *)"API_NonDatabaseDevice",
+		ApiNonDbExcept::throw_exception((const char *)API_NonDatabaseDevice,
 					desc.str(),
 					(const char *)"DeviceProxy::locking_status");
 	}
@@ -7554,21 +8721,21 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 
 	if (f_addr.find(":unix:") != string::npos)
 	{
-		ip_addr = LOCAL_HOST;
+		ip_addr = TG_LOCAL_HOST;
 	}
 	else
 	{
 		string::size_type pos;
 		if ((pos = f_addr.find(':')) == string::npos)
 		{
-			Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+			Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 		}
 		pos++;
 		if ((pos = f_addr.find(':',pos)) == string::npos)
 		{
-			Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+			Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 		}
@@ -7579,7 +8746,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 			pos = pos + 3;
 			if ((pos = f_addr.find(':',pos)) == string::npos)
 			{
-				Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+				Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 			}
@@ -7587,7 +8754,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 			string ip_str = f_addr.substr(pos);
 			if ((pos = ip_str.find(']')) == string::npos)
 			{
-				Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+				Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 			}
@@ -7598,7 +8765,7 @@ void DeviceProxy::get_locker_host(string &f_addr,string &ip_addr)
 			string ip_str = f_addr.substr(pos);
 			if ((pos = ip_str.find(':')) == string::npos)
 			{
-				Tango::Except::throw_exception((const char*)"API_WrongLockingStatus",
+				Tango::Except::throw_exception((const char*)API_WrongLockingStatus,
 											(const char *)"Locker IP address returned by server is unvalid",
 											(const char *)"DeviceProxy::get_locker_host()");
 			}
@@ -7625,7 +8792,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		TangoSys_OMemStream desc;
 		desc << "Device " << device_name;
 		desc << " does not support write_read_attribute feature" << ends;
-		ApiNonSuppExcept::throw_exception((const char *)"API_UnsupportedFeature",
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
 						  desc.str(),
 						  (const char *)"DeviceProxy::write_read_attribute");
 	}
@@ -7646,8 +8813,8 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
 	if (dev_attr.LongSeq.operator->() != NULL)
 		attr_value_list[0].value.long_att_value(dev_attr.LongSeq.in());
-	else if (dev_attr.get_Long64_data().operator->() != NULL)
-		attr_value_list[0].value.long64_att_value(dev_attr.get_Long64_data().in());
+	else if (dev_attr.Long64Seq.operator->() != NULL)
+		attr_value_list[0].value.long64_att_value(dev_attr.Long64Seq.in());
 	else if (dev_attr.ShortSeq.operator->() != NULL)
 		attr_value_list[0].value.short_att_value(dev_attr.ShortSeq.in());
 	else if (dev_attr.DoubleSeq.operator->() != NULL)
@@ -7662,17 +8829,22 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		attr_value_list[0].value.ushort_att_value(dev_attr.UShortSeq.in());
 	else if (dev_attr.UCharSeq.operator->() != NULL)
 		attr_value_list[0].value.uchar_att_value(dev_attr.UCharSeq.in());
-	else if (dev_attr.get_ULong_data().operator->() != NULL)
-		attr_value_list[0].value.ulong_att_value(dev_attr.get_ULong_data().in());
-	else if (dev_attr.get_ULong64_data().operator->() != NULL)
-		attr_value_list[0].value.ulong64_att_value(dev_attr.get_ULong64_data().in());
-	else if (dev_attr.get_State_data().operator->() != NULL)
-		attr_value_list[0].value.state_att_value(dev_attr.get_State_data().in());
-	else if (dev_attr.get_Encoded_data().operator->() != NULL)
-		attr_value_list[0].value.encoded_att_value(dev_attr.get_Encoded_data().in());
+	else if (dev_attr.ULongSeq.operator->() != NULL)
+		attr_value_list[0].value.ulong_att_value(dev_attr.ULongSeq.in());
+	else if (dev_attr.ULong64Seq.operator->() != NULL)
+		attr_value_list[0].value.ulong64_att_value(dev_attr.ULong64Seq.in());
+	else if (dev_attr.StateSeq.operator->() != NULL)
+		attr_value_list[0].value.state_att_value(dev_attr.StateSeq.in());
+	else if (dev_attr.EncodedSeq.operator->() != NULL)
+		attr_value_list[0].value.encoded_att_value(dev_attr.EncodedSeq.in());
+
+	Tango::DevVarStringArray dvsa;
+	dvsa.length(1);
+	dvsa[0] = CORBA::string_dup(dev_attr.name.c_str());
 
 	int ctr = 0;
 	AttributeValueList_4_var attr_value_list_4;
+	AttributeValueList_5_var attr_value_list_5;
 	Tango::AccessControlType local_act;
 
 	while (ctr < 2)
@@ -7689,7 +8861,8 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			{
 				try
 				{
-					device->ping();
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
 				}
 				catch(...)
 				{
@@ -7700,7 +8873,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 				TangoSys_OMemStream desc;
 				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-				NotAllowedExcept::throw_exception((const char *)"API_ReadOnlyMode",desc.str(),
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
 											  	  (const char *)"DeviceProxy::write_read_attribute()");
 			}
 
@@ -7712,7 +8885,16 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			ApiUtil *au = ApiUtil::instance();
 			ci.cpp_clnt(au->get_client_pid());
 
-			attr_value_list_4 = ext->device_4->write_read_attributes_4(attr_value_list,ci);
+			if (version >= 5)
+			{
+				Device_5_var dev = Device_5::_duplicate(device_5);
+				attr_value_list_5 = dev->write_read_attributes_5(attr_value_list,dvsa,ci);
+			}
+			else
+			{
+				Device_4_var dev = Device_4::_duplicate(device_4);
+				attr_value_list_4 = dev->write_read_attributes_4(attr_value_list,ci);
+			}
 
 			ctr = 2;
 
@@ -7730,7 +8912,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 			desc << ", attribute ";
 			desc << attr_value_list[0].name.in();
 			desc << ends;
-			Except::re_throw_exception(ex,(const char*)"API_AttributeFailed",
+			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_read_attribute()");
 
 		}
@@ -7746,18 +8928,18 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
 							desc.str(), (const char*)"DeviceProxy::write_read_attribute()");
 			else
-                Except::re_throw_exception(e,(const char*)"API_AttributeFailed",
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
                         	desc.str(), (const char*)"DeviceProxy::write_read_attribute()");
 		}
 		catch (CORBA::TRANSIENT &trans)
 		{
-			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_attribute()");
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_attribute()",this);
 		}
 		catch (CORBA::OBJECT_NOT_EXIST &one)
 		{
 			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_attribute",this);
 			}
 			else
 			{
@@ -7774,7 +8956,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		{
 			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
 			{
-				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_attribute");
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_attribute",this);
 			}
 			else
 			{
@@ -7805,7 +8987,10 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 //
 
 	DeviceAttribute ret_dev_attr;
-	ApiUtil::attr_to_device(&(attr_value_list_4[0]),version,&ret_dev_attr);
+	if (version >= 5)
+		ApiUtil::attr_to_device(&(attr_value_list_5[0]),version,&ret_dev_attr);
+	else
+		ApiUtil::attr_to_device(&(attr_value_list_4[0]),version,&ret_dev_attr);
 
 //
 // Add an error in the error stack in case there is one
@@ -7820,7 +9005,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		desc << ", attribute " << dev_attr.name << ends;
 
 		err_list.inout().length(nb_except + 1);
-		err_list[nb_except].reason = CORBA::string_dup("API_AttributeFailed");
+		err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
 		err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::write_read_attribute()");
 
 		string st = desc.str();
@@ -7829,6 +9014,252 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 	}
 
 	return(ret_dev_attr);
+}
+
+//-----------------------------------------------------------------------------
+//
+// DeviceProxy::write_read_attributes() - write then read a single attribute
+//
+//-----------------------------------------------------------------------------
+
+vector<DeviceAttribute> *DeviceProxy::write_read_attributes(vector<DeviceAttribute> &attr_list,vector<string> &r_names)
+{
+
+//
+// This call is available only for Devices implemented IDL V5
+//
+
+	if (version < 5)
+	{
+		TangoSys_OMemStream desc;
+		desc << "Device " << device_name;
+		desc << " does not support write_read_attributes feature" << ends;
+		ApiNonSuppExcept::throw_exception((const char *)API_UnsupportedFeature,
+						  desc.str(),
+						  (const char *)"DeviceProxy::write_read_attributes");
+	}
+
+//
+// Data into the AttributeValue object
+//
+
+	AttributeValueList_4 attr_value_list;
+	attr_value_list.length(attr_list.size());
+
+	for (unsigned int i=0; i<attr_list.size(); i++)
+	{
+		attr_value_list[i].name = attr_list[i].name.c_str();
+		attr_value_list[i].quality = attr_list[i].quality;
+		attr_value_list[i].data_format = attr_list[i].data_format;
+		attr_value_list[i].time = attr_list[i].time;
+		attr_value_list[i].w_dim.dim_x = attr_list[i].dim_x;
+		attr_value_list[i].w_dim.dim_y = attr_list[i].dim_y;
+
+		if (attr_list[i].LongSeq.operator->() != NULL)
+			attr_value_list[i].value.long_att_value(attr_list[i].LongSeq.in());
+		else if (attr_list[i].Long64Seq.operator->() != NULL)
+			attr_value_list[i].value.long64_att_value(attr_list[i].Long64Seq.in());
+		else if (attr_list[i].ShortSeq.operator->() != NULL)
+			attr_value_list[i].value.short_att_value(attr_list[i].ShortSeq.in());
+		else if (attr_list[i].DoubleSeq.operator->() != NULL)
+			attr_value_list[i].value.double_att_value(attr_list[i].DoubleSeq.in());
+		else if (attr_list[i].StringSeq.operator->() != NULL)
+			attr_value_list[i].value.string_att_value(attr_list[i].StringSeq.in());
+		else if (attr_list[i].FloatSeq.operator->() != NULL)
+			attr_value_list[i].value.float_att_value(attr_list[i].FloatSeq.in());
+		else if (attr_list[i].BooleanSeq.operator->() != NULL)
+			attr_value_list[i].value.bool_att_value(attr_list[i].BooleanSeq.in());
+		else if (attr_list[i].UShortSeq.operator->() != NULL)
+			attr_value_list[i].value.ushort_att_value(attr_list[i].UShortSeq.in());
+		else if (attr_list[i].UCharSeq.operator->() != NULL)
+			attr_value_list[i].value.uchar_att_value(attr_list[i].UCharSeq.in());
+		else if (attr_list[i].ULongSeq.operator->() != NULL)
+			attr_value_list[i].value.ulong_att_value(attr_list[i].ULongSeq.in());
+		else if (attr_list[i].ULong64Seq.operator->() != NULL)
+			attr_value_list[i].value.ulong64_att_value(attr_list[i].ULong64Seq.in());
+		else if (attr_list[i].StateSeq.operator->() != NULL)
+			attr_value_list[i].value.state_att_value(attr_list[i].StateSeq.in());
+		else if (attr_list[i].EncodedSeq.operator->() != NULL)
+			attr_value_list[i].value.encoded_att_value(attr_list[i].EncodedSeq.in());
+	}
+
+//
+// Create remaining parameter
+//
+
+	Tango::DevVarStringArray dvsa;
+	dvsa << r_names;
+
+//
+// Call device
+//
+
+	int ctr = 0;
+	AttributeValueList_5_var attr_value_list_5;
+	Tango::AccessControlType local_act;
+
+	while (ctr < 2)
+	{
+		try
+		{
+			check_and_reconnect(local_act);
+
+//
+// Throw exception if caller not allowed to write_attribute
+//
+
+			if (local_act == ACCESS_READ)
+			{
+				try
+				{
+					Device_var dev = Device::_duplicate(device);
+					dev->ping();
+				}
+				catch(...)
+				{
+					set_connection_state(CONNECTION_NOTOK);
+					throw;
+				}
+
+				TangoSys_OMemStream desc;
+				desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
+
+				NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
+											  	  (const char *)"DeviceProxy::write_read_attribute()");
+			}
+
+//
+// Now, call the server
+//
+
+			ClntIdent ci;
+			ApiUtil *au = ApiUtil::instance();
+			ci.cpp_clnt(au->get_client_pid());
+
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			attr_value_list_5 = dev->write_read_attributes_5(attr_value_list,dvsa,ci);
+
+			ctr = 2;
+		}
+		catch (Tango::MultiDevFailed &e)
+		{
+
+//
+// Transfer this exception into a DevFailed exception
+//
+
+			Tango::DevFailed ex(e.errors[0].err_list);
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attributes on device " << device_name;
+			desc << ", attribute ";
+			desc << attr_value_list[0].name.in();
+			desc << ends;
+			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
+                        	desc.str(), (const char*)"DeviceProxy::write_read_attributes()");
+
+		}
+		catch (Tango::DevFailed &e)
+		{
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attributes on device " << device_name;
+			desc << ", attribute ";
+			desc << attr_value_list[0].name.in();
+			desc << ends;
+
+			if (::strcmp(e.errors[0].reason,DEVICE_UNLOCKED_REASON) == 0)
+				DeviceUnlockedExcept::re_throw_exception(e,(const char*)DEVICE_UNLOCKED_REASON,
+							desc.str(), (const char*)"DeviceProxy::write_read_attributes()");
+			else
+                Except::re_throw_exception(e,(const char*)API_AttributeFailed,
+                        	desc.str(), (const char*)"DeviceProxy::write_read_attributes()");
+		}
+		catch (CORBA::TRANSIENT &trans)
+		{
+			TRANSIENT_NOT_EXIST_EXCEPT(trans,"DeviceProxy","write_read_attributes()",this);
+		}
+		catch (CORBA::OBJECT_NOT_EXIST &one)
+		{
+			if (one.minor() == omni::OBJECT_NOT_EXIST_NoMatch || one.minor() == 0)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(one,"DeviceProxy","write_read_attributes",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute write_read_attributes on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(one,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::write_read_attributes()");
+			}
+		}
+		catch (CORBA::COMM_FAILURE &comm)
+		{
+			if (comm.minor() == omni::COMM_FAILURE_WaitingForReply)
+			{
+				TRANSIENT_NOT_EXIST_EXCEPT(comm,"DeviceProxy","write_read_attributes",this);
+			}
+			else
+			{
+				set_connection_state(CONNECTION_NOTOK);
+				TangoSys_OMemStream desc;
+				desc << "Failed to execute write_attributes on device " << device_name << ends;
+				ApiCommExcept::re_throw_exception(comm,
+							      (const char*)"API_CommunicationFailed",
+                        				      desc.str(),
+							      (const char*)"DeviceProxy::write_read_attributes()");
+			}
+		}
+        catch (CORBA::SystemException &ce)
+        {
+			set_connection_state(CONNECTION_NOTOK);
+
+			TangoSys_OMemStream desc;
+			desc << "Failed to execute write_read_attributes on device " << device_name << ends;
+			ApiCommExcept::re_throw_exception(ce,
+						      (const char*)"API_CommunicationFailed",
+                        			      desc.str(),
+						      (const char*)"DeviceProxy::write_read_attributes()");
+		}
+	}
+
+//
+// Init the returned DeviceAttribute vector
+
+	unsigned long nb_received;
+	nb_received = attr_value_list_5->length();
+
+	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
+	dev_attr->resize(nb_received);
+
+	for (unsigned int i=0; i < nb_received; i++)
+	{
+		ApiUtil::attr_to_device(&(attr_value_list_5[i]),5,&(*dev_attr)[i]);
+
+//
+// Add an error in the error stack in case there is one
+//
+
+		DevErrorList_var &err_list = (*dev_attr)[i].get_error_list();
+		long nb_except = err_list.in().length();
+		if (nb_except != 0)
+		{
+			TangoSys_OMemStream desc;
+			desc << "Failed to write_read_attribute on device " << device_name;
+			desc << ", attribute " << (*dev_attr)[i].name << ends;
+
+			err_list.inout().length(nb_except + 1);
+			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
+			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::write_read_attributes()");
+
+			string st = desc.str();
+			err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+			err_list[nb_except].severity = Tango::ERR;
+		}
+	}
+
+	return(dev_attr);
 }
 
 //-----------------------------------------------------------------------------
@@ -7846,7 +9277,6 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
 void DeviceProxy::same_att_name(vector<string> &attr_list,const char *met_name)
 {
-
 	if (attr_list.size() > 1)
 	{
 	    unsigned int i;
@@ -7878,7 +9308,7 @@ void DeviceProxy::same_att_name(vector<string> &attr_list,const char *met_name)
 				}
 			}
 			desc << ends;
-			ApiConnExcept::throw_exception((const char*)"API_AttributeFailed",desc.str(), met_name);
+			ApiConnExcept::throw_exception((const char*)API_AttributeFailed,desc.str(), met_name);
 		}
 	}
 }
@@ -7933,6 +9363,132 @@ void DeviceProxy::local_import(string &local_ior)
 			}
 		}
 	}
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method:
+//		DeviceProxy::get_tango_lib_version()
+//
+// description:
+//		Returns the Tango lib version number used by the remote device
+//
+// return:
+//		The device Tango lib version as a 3 or 4 digits number
+//		Possible return value are: 100,200,500,520,700,800,810,...
+//
+//---------------------------------------------------------------------------------------------------------------------
+
+int DeviceProxy::get_tango_lib_version()
+{
+	int ret = 0;
+
+	check_connect_adm_device();
+
+//
+// Get admin device IDL release and command list
+//
+
+	int admin_idl_vers = adm_device->get_idl_version();
+	Tango::CommandInfoList *cmd_list;
+	cmd_list = adm_device->command_list_query();
+
+	switch (admin_idl_vers)
+	{
+	case 1:
+		ret = 100;
+		break;
+
+	case 2:
+		ret = 200;
+		break;
+
+	case 3:
+	{
+
+//
+// IDL 3 is for Tango 5 and 6. Unfortunately, there is no way from the client side to determmine if it is
+// Tango 5 or 6. The beast we can do is to get the info that it is Tango 5.2 (or above)
+//
+
+#ifdef HAS_LAMBDA_FUNC
+		auto pos = find_if((*cmd_list).begin(),(*cmd_list).end(),
+					[] (Tango::CommandInfo &cc) -> bool
+					{
+						return cc.cmd_name == "QueryWizardClassProperty";
+					});
+#else
+		vector<CommandInfo>::iterator pos,end;
+		for (pos = (*cmd_list).begin(), end = (*cmd_list).end();pos != end;++pos)
+		{
+			if (pos->cmd_name == "QueryWizardClassProperty")
+				break;
+		}
+#endif
+		if (pos != (*cmd_list).end())
+			ret = 520;
+		else
+			ret = 500;
+		break;
+	}
+
+	case 4:
+	{
+
+//
+// IDL 4 is for Tango 7 and 8.
+//
+
+		bool ecs = false;
+		bool zesc = false;
+
+#ifdef HAS_RANGE_BASE_FOR
+		for (const auto &cmd : *cmd_list)
+		{
+			if (cmd.cmd_name == "EventConfirmSubscription")
+			{
+				ecs = true;
+				break;
+			}
+
+			if (cmd.cmd_name == "ZmqEventSubscriptionChange")
+				zesc = true;
+		}
+#else
+		vector<CommandInfo>::iterator pos,pos_end;
+		for (pos = (*cmd_list).begin(), pos_end = (*cmd_list).end();pos != pos_end;++pos)
+		{
+			if (pos->cmd_name == "EventConfirmSubscription")
+			{
+				ecs = true;
+				break;
+			}
+
+			if  (pos->cmd_name == "ZmqEventSubscriptionChange")
+				zesc = true;
+		}
+#endif
+		if (ecs == true)
+			ret = 810;
+		else if (zesc == true)
+			ret = 800;
+		else
+			ret = 700;
+
+		break;
+	}
+
+	case 5:
+		ret = 902;
+		break;
+
+	default:
+		break;
+	}
+
+	delete cmd_list;
+
+	return ret;
 }
 
 } // End of Tango namespace

@@ -1,40 +1,38 @@
-///=============================================================================
+//==================================================================================================================
 //
 // file :		AttrProp.h
 //
 // description :	Include file for the AttrProp, DoubleAttrProp and MultiAttrProp classes.
-//			Three classes are declared in this file :
-//				The AttrProp class
-//				The DoubleAttrProp class
-//				The MultiAttrProp class
+//					Three classes are declared in this file :
+//						The AttrProp class
+//						The DoubleAttrProp class
+//						The MultiAttrProp class
 //
 // project :		TANGO
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision: 19431 $
 //
-//=============================================================================
+//==================================================================================================================
 
 #ifndef _ATTRPROP_H
 #define _ATTRPROP_H
@@ -44,21 +42,23 @@
 namespace Tango
 {
 
-//=============================================================================
+//=================================================================================================================
 //
 //			The AttrProp class
 //
+// description :
+//		This is a template class which holds a value of attribute property and its string representation.
 //
-// description :	This is a template class which holds a value of attribute
-//			property and its string representation.
-//
-//=============================================================================
+//=================================================================================================================
 
 /**
  * This class represents a Tango attribute property.
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -71,20 +71,17 @@ public:
 /**
  * Default constructor.
  */
-	AttrProp() : is_value(false),ext(Tango_NullPtr) {}
+	AttrProp() : is_value(false),ext(Tango_nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value The attribute property value.
  */
-	AttrProp(const T &value) : val(value), is_value(true), ext(Tango_NullPtr)
+	AttrProp(const T &value) : val(value), is_value(true), ext(Tango_nullptr)
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 	}
 /**
@@ -92,23 +89,14 @@ public:
  *
  * @param value_str The 'C string' representation of attribute property.
  */
-	AttrProp(const char *value_str) : str(string(value_str)), is_value(false), ext(Tango_NullPtr) {}
+	AttrProp(const char *value_str) : str(string(value_str)), is_value(false), ext(Tango_nullptr) {}
 /**
  * Create a new AttrProp object.
  *
  * @param value_str The string representation of attribute property value.
  */
-	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_NullPtr) {}
+	AttrProp(const string &value_str) : str(value_str), is_value(false), ext(Tango_nullptr) {}
 //@}
-
-	operator string()
-	{
-		return str;
-	}
-	operator const char *()
-	{
-		return str.c_str();
-	}
 
 /**@name Assignment operators
  * These operators allow to assign the value of the property by providing
@@ -126,10 +114,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val = value;
 		is_value = true;
@@ -178,7 +163,7 @@ public:
 		if(is_value == false)
 		{
 			string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
-			Tango::Except::throw_exception("API_AttrPropValueNotSet",err_msg,"AttrProp::get_val",Tango::ERR);
+			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
 		}
 		return val;
 	}
@@ -199,10 +184,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val = value;
 		is_value = true;
@@ -236,6 +218,17 @@ public:
 	bool is_val() {return is_value;}
 //@}
 
+/// @privatesection
+
+	operator string()
+	{
+		return str;
+	}
+	operator const char *()
+	{
+		return str.c_str();
+	}
+
 private:
 	T val;
 	string str;
@@ -254,17 +247,15 @@ private:
 #endif
 };
 
-//=============================================================================
+//===================================================================================================================
 //
 //			The DoubleAttrProp class
 //
+// description :	This is a template class which holds values of a compound attribute property (like rel_change,
+//					abs_change, archive_rel_change, archive_abs_change) which consists of two values, and its string
+//					representation.
 //
-// description :	This is a template class which holds values of a compound
-//			attribute property (like rel_change, abs_change, archive_rel_change,
-//			archive_abs_change) which consists of two values, and its string
-//			representation.
-//
-//=============================================================================
+//==================================================================================================================
 
 /**
  * This class represents a Tango compound attribute property which consists of
@@ -272,6 +263,9 @@ private:
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -299,10 +293,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 	}
@@ -314,10 +305,7 @@ public:
 	DoubleAttrProp(const T &value) : is_value(true) {
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val.push_back(value);
 	}
@@ -334,15 +322,6 @@ public:
  */
 	DoubleAttrProp(const string &value_str) : str(value_str), is_value(false) {}
 //@}
-
-	operator string()
-	{
-		return str;
-	}
-	operator const char *()
-	{
-		return str.c_str();
-	}
 
 /**@name Assignment operators
  * These operators allow to assign the values of the compound attribute property
@@ -365,10 +344,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 		val = values;
@@ -441,7 +417,7 @@ public:
 		if(is_value == false)
 		{
 			string err_msg = "Numeric representation of the property's value (" + str + ") has not been set";
-			Tango::Except::throw_exception("API_AttrPropValueNotSet",err_msg,"AttrProp::get_val",Tango::ERR);
+			Tango::Except::throw_exception(API_AttrPropValueNotSet,err_msg,"AttrProp::get_val",Tango::ERR);
 		}
 		return val;
 	}
@@ -466,10 +442,7 @@ public:
 		{
 			if(i > 0)
 				st << ",";
-			if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-				st << (short)values[i]; // to represent the numeric value
-			else
-				st << values[i];
+			st << values[i];
 		}
 		str = st.str();
 		val = values;
@@ -487,10 +460,7 @@ public:
 	{
 		TangoSys_MemStream st;
 		st.precision(TANGO_FLOAT_PRECISION);
-		if(ranges_type2const<T>::enu == Tango::DEV_UCHAR)
-			st << (short)value; // to represent the numeric value
-		else
-			st << value;
+		st << value;
 		str = st.str();
 		val.push_back(value);
 		is_value = true;
@@ -525,10 +495,21 @@ public:
 	bool is_val() {return is_value;}
 //@}
 
+/// @privatesection
+
+	operator string()
+	{
+		return str;
+	}
+	operator const char *()
+	{
+		return str.c_str();
+	}
+
 private:
-        vector<T> val;
-        string str;
-        bool is_value;
+	vector<T> val;
+	string str;
+	bool is_value;
 
 //
 // The extension class
@@ -543,15 +524,13 @@ private:
 #endif
 };
 
-//=============================================================================
+//==================================================================================================================
 //
 //			The MultiAttrProp class
 //
+// description :	This is a template class which holds values of modifiable attribute properties.
 //
-// description :	This is a template class which holds values of modifiable
-//		attribute properties.
-//
-//=============================================================================
+//=================================================================================================================
 
 /**
  * This class represents Tango modifiable attribute properties grouped in
@@ -559,6 +538,9 @@ private:
  *
  * $Author: trogucki $
  * $Revision: 19431 $
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 template <typename T>
@@ -574,6 +556,7 @@ public:
 	MultiAttrProp()
 	{
 		CmdArgType type = ranges_type2const<T>::enu; // restricts template initialisation to supported types
+		if(type){}; // prevents compiler warning about unused variable type
 	}
 //@}
 /**@name Class data members */
@@ -581,27 +564,27 @@ public:
 /**
  * Attribute label
  */
-		string 					label;
+		string 						label;
 /**
  * Attribute description
  */
-		string 					description;
+		string 						description;
 /**
  * Attribute unit
  */
-		string 					unit;
+		string 						unit;
 /**
  * Attribute standard_unit
  */
-		string 					standard_unit;
+		string 						standard_unit;
 /**
  * Attribute display_unit
  */
-		string 					display_unit;
+		string 						display_unit;
 /**
  * Attribute format
  */
-		string 					format;
+		string 						format;
 /**
  * Attribute min_value
  */
@@ -637,27 +620,31 @@ public:
 /**
  * Attribute event_period
  */
-        AttrProp<DevLong>                 	event_period;
+        AttrProp<DevLong>			event_period;
 /**
  * Attribute archive_period
  */
-        AttrProp<DevLong>                 	archive_period;
+        AttrProp<DevLong>			archive_period;
 /**
  * Attribute rel_change
  */
-        DoubleAttrProp<DevDouble>	        rel_change;
+        DoubleAttrProp<DevDouble>	rel_change;
 /**
  * Attribute abs_change
  */
-        DoubleAttrProp<DevDouble>	        abs_change;
+        DoubleAttrProp<DevDouble>	abs_change;
 /**
  * Attribute archive_rel_change
  */
-        DoubleAttrProp<DevDouble>	        archive_rel_change;
+        DoubleAttrProp<DevDouble>	archive_rel_change;
 /**
  * Attribute archive_abs_change
  */
-        DoubleAttrProp<DevDouble>	        archive_abs_change;
+        DoubleAttrProp<DevDouble>	archive_abs_change;
+/**
+ * Enumeration labels (For DevEnum data type)
+ */
+        vector<string>				enum_labels;
 //@}
 private:
 
