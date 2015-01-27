@@ -10,7 +10,7 @@ static const char *RcsId = "$Id$";
 //
 //	original : 			  August 2011
 //
-// Copyright (C) :      2011,2012,2013,2014
+// Copyright (C) :      2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE

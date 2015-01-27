@@ -12,7 +12,7 @@ static const char *RcsId = "$Id$";
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -1237,7 +1237,11 @@ Tango::DevState DeviceImpl::dev_state()
                     }
                 }
                 else
-                    device_state = Tango::ON;
+                {
+                    if (ext->alarm_state_kernel > ext->alarm_state_user)
+                        device_state = Tango::ON;
+                }
+
 
 //
 // Free the sequence created to store the attribute value
