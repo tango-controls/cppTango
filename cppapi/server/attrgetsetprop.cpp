@@ -2241,7 +2241,8 @@ void Attribute::set_one_event_prop(const char *prop_name,const CORBA::String_mem
 		prop_val[1] = rel_change_tmp[1];
 	}
 
-	prop_val[0] = fabs(prop_val[0]);
+    if (strcmp(prop_name,"archive_rel_change") == 0 || strcmp(prop_name,"rel_change") == 0)
+	    prop_val[0] = fabs(prop_val[0]);
 	prop_val[1] = fabs(prop_val[1]);
 
 
