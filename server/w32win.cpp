@@ -14,7 +14,7 @@ static const char *Vers = "$Revision$";
 //
 // $Revision$
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -99,7 +99,7 @@ void W32Win::RegisterTangoClass(HINSTANCE hInstance)
 	ATOM at = RegisterClass(&wc);
 	if (at == 0)
 	{
-                Except::throw_exception((LPCSTR)"API_NtDebugWindowError",
+                Except::throw_exception((LPCSTR)API_NtDebugWindowError,
 				      (LPCSTR)"Can't register class for server main output window",
                                       (LPCSTR)"W32Win::RegisterTangoClass");
 	}
@@ -128,7 +128,7 @@ void W32Win::InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	if (!hWnd)
 	{
-                Except::throw_exception((LPCSTR)"API_NtDebugWindowError",
+                Except::throw_exception((LPCSTR)API_NtDebugWindowError,
 				      (LPCSTR)"Can't create main device server window",
                                       (LPCSTR)"W32Win::InitInstance");
 

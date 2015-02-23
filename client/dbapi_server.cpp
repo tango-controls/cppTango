@@ -6,7 +6,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- November 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -46,7 +46,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DbServer::DbServer(string server_name, Database *server_dbase):ext(Tango_NullPtr)
+DbServer::DbServer(string server_name, Database *server_dbase):ext(Tango_nullptr)
 {
 	name = string(server_name);
 	dbase = server_dbase;
@@ -61,7 +61,7 @@ DbServer::DbServer(string server_name, Database *server_dbase):ext(Tango_NullPtr
 //
 //-----------------------------------------------------------------------------
 
-DbServer::DbServer(string server_name):ext(Tango_NullPtr)
+DbServer::DbServer(string server_name):ext(Tango_nullptr)
 {
 	name = string(server_name);
 	db_ind = ApiUtil::instance()->get_db_ind();

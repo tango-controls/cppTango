@@ -1,42 +1,37 @@
 static const char *RcsId = "$Id$\n$Name$";
 
-//+=============================================================================
+//+==================================================================================================================
 //
 // file :               DServer.cpp
 //
-// description :        C++ source for the DServer class and its commands.
-//			The class is derived from Device. It represents the
-//			CORBA servant object which will be accessed from the
-//			network. All commands which can be executed on a
-//			DServer object are implemented in this file.
+// description :        C++ source for the DServer class and its commands. The class is derived from Device. It
+//						represents the CORBA servant object which will be accessed from the network.
+//						All commands which can be executed on a DServer object are implemented in this file.
 //
 // project :            TANGO
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU Lesser General Public License for more details.
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-=============================================================================
+//-=================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -56,16 +51,18 @@ static const char *RcsId = "$Id$\n$Name$";
 namespace Tango
 {
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::polled_device()
+// method :
+//		DServer::polled_device()
 //
-// description : 	command to read all the devices actually polled by the
-//			device server
+// description :
+//		command to read all the devices actually polled by the device server
 //
-// out :		The device name list in a strings sequence
+// retrun :
+//		The device name list in a strings sequence
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::polled_device()
 {
@@ -92,7 +89,7 @@ Tango::DevVarStringArray *DServer::polled_device()
 	}
 	catch (bad_alloc)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"DServer::polled_device");
 	}
@@ -123,15 +120,22 @@ Tango::DevVarStringArray *DServer::polled_device()
 
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::dev_polled_status()
+// method :
+//		DServer::dev_polled_status()
 //
-// description : 	command to read device polling status
+// description :
+//		command to read device polling status
 //
-// out :		The device polling status as a string (multiple lines)
+// args :
+//		in :
+//			- dev_name : The device name
 //
-//-----------------------------------------------------------------------------
+// return :
+//		The device polling status as a string (multiple lines)
+//
+//-----------------------------------------------------------------------------------------------------------------
 
 Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 {
@@ -167,10 +171,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 	long i,nb_cmd,nb_attr;
 
 //
-// Compute how many cmds and/or attributes are polled
-// Since IDL V3, state and status are polled as attributes
-// For compatibility, if one of these "attributes" is polled,
-// also returned the info as the command is polled
+// Compute how many cmds and/or attributes are polled. Since IDL V3, state and status are polled as attributes
+// For compatibility, if one of these "attributes" is polled, also returned the info as the command is polled
 //
 
 	nb_cmd = nb_attr = 0;
@@ -182,8 +184,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 		else
 		{
 			nb_attr++;
-			if ((poll_list[i]->get_name() == "state") ||
-     			    (poll_list[i]->get_name() == "status"))
+			if ((poll_list[i]->get_name() == "state") || (poll_list[i]->get_name() == "status"))
 			{
 				nb_cmd++;
 				nb_to_add++;
@@ -206,10 +207,23 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 	long cmd_ind = 0;
 	long attr_ind = nb_cmd;
 	string returned_info;
+	map<string,vector<string> *> root_dev_poll_status;
 
 	for(i = 0;i < nb_poll_obj;i++)
 	{
 		bool duplicate = false;
+
+		if (i == nb_poll_obj - 1)
+		{
+#ifdef HAS_RANGE_BASE_FOR
+			for (auto &elem:root_dev_poll_status)
+				delete elem.second;
+#else
+			map<string,vector<string> *>::iterator pos;
+			for (pos = root_dev_poll_status.begin();pos != root_dev_poll_status.end();++pos)
+				delete pos->second;
+#endif
+		}
 
 //
 // First, the name
@@ -255,11 +269,12 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 // Add update period
 //
 
-//		TangoSys_MemStream s;
 		stringstream s;
 		string tmp_str;
+		string per;
 
 		long po = poll_list[i]->get_upd();
+
 		if (po == 0)
 		{
 			returned_info = returned_info + "\nPolling externally triggered";
@@ -280,7 +295,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 //
 
 		returned_info = returned_info + "\nPolling ring buffer depth = ";
-		long depth;
+		long depth = 0;
+
 		if (type == Tango::POLL_CMD)
 			depth = dev->get_cmd_poll_ring_depth(poll_list[i]->get_name());
 		else
@@ -289,7 +305,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 		s << depth;
 		returned_info = returned_info + s.str();
 
-		s.str("");	// Clear the underlying string
+		s.str(""); // Clear the underlying string
 
 //
 // Add a message if the data ring is empty
@@ -303,9 +319,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 		{
 
 //
-// Take polled object ownership in order to have coherent info returned to caller
-// We don't want the polling thread to insert a new elt in polling ring while
-// we are getting these data. Therefore, use the xxx_i methods
+// Take polled object ownership in order to have coherent info returned to caller. We don't want the polling thread
+// to insert a new elt in polling ring while we are getting these data. Therefore, use the xxx_i methods
 //
 
 			{
@@ -475,9 +490,8 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 			attr_ind++;
 
 //
-// If the attribute is state or status, also add the string in command list
-// after replacing all occurences of "attributes" by "command" in the returned
-// string
+// If the attribute is state or status, also add the string in command list after replacing all occurences of
+// "attributes" by "command" in the returned string
 //
 
 			if (duplicate == true)
@@ -500,22 +514,27 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
 }
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::add_obj_polling()
+// method :
+//		DServer::add_obj_polling()
 //
-// description : 	command to add one object to be polled
+// description :
+//		command to add one object to be polled
 //
-// in :			The polling parameters :
-//				device name
-//				object type (command or attribute)
-//				object name
-//				update period in mS (in the long array)
+// args :
+// 		in :
+//			- argin : The polling parameters :
+//						device name
+//						object type (command or attribute)
+//						object name
+//						update period in mS (in the long array)
+//			- with_db_upd : set to true if db has to be updated
+//			- delta_ms :
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
-void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
-			      bool with_db_upd,int delta_ms)
+void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool with_db_upd,int delta_ms)
 {
 	NoSyncModelTangoMonitor nosyn_mon(this);
 
@@ -532,7 +551,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 
 	if ((argin->svalue.length() != 3) || (argin->lvalue.length() != 1))
 	{
-		Except::throw_exception((const char *)"API_WrongNumberOfArgs",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 					(const char *)"Incorrect number of inout arguments",
 					(const char *)"DServer::add_obj_polling");
 	}
@@ -552,20 +571,18 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		TangoSys_OMemStream o;
 		o << "Device " << (argin->svalue)[0] << " not found" << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+		Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
 				   	   (const char *)"DServer::add_obj_polling");
 	}
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev,"add_obj_polling",(argin->svalue)[0]);
 
 //
-// Check that the command (or the attribute) exists. For command, also checks
-// that it does not need input value.
+// Check that the command (or the attribute) exists. For command, also checks that it does not need input value.
 //
 
 	string obj_type((argin->svalue)[1]);
@@ -573,6 +590,15 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	string obj_name((argin->svalue)[2]);
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
+	Attribute *attr_ptr;
+
+	bool local_request = false;
+	string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
+	if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE)
+	{
+		local_request = true;
+		obj_type.erase(pos);
+	}
 
 	if (obj_type == PollCommand)
 	{
@@ -581,14 +607,15 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	}
 	else if (obj_type == PollAttribute)
 	{
-		dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
+		Attribute &att = dev->get_device_attr()->get_attr_by_name((argin->svalue)[2]);
+		attr_ptr = &att;
 		type = Tango::POLL_ATTR;
 	}
 	else
 	{
 		TangoSys_OMemStream o;
 		o << "Object type " << obj_type << " not supported" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::add_obj_polling");
 	}
 
@@ -602,13 +629,12 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		{
 			TangoSys_OMemStream o;
 			o << "It's not possible to poll the Init command!" << ends;
-			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+			Except::throw_exception((const char *)API_NotSupported,o.str(),
 						(const char *)"DServer::add_obj_polling");
 		}
 
 //
-// Since IDl release 3, state and status command must be polled
-// as attributes to be able to generate event on state or
+// Since IDl release 3, state and status command must be polled as attributes to be able to generate event on state or
 // status.
 //
 
@@ -635,7 +661,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 				else
 					o << "Attribute ";
 				o << obj_name << " already polled" << ends;
-				Except::throw_exception((const char *)"API_AlreadyPolled",
+				Except::throw_exception((const char *)API_AlreadyPolled,
 							o.str(),
 							(const char *)"DServer::add_obj_polling");
 			}
@@ -651,13 +677,12 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << (argin->lvalue)[0] << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::add_obj_polling");
 	}
 
 //
-// Check that the requested polling period is not below the one authorized
-// (if defined)
+// Check that the requested polling period is not below the one authorized (if defined)
 // 0 as polling period is always authorized for polling buffer externally filled
 //
 
@@ -665,12 +690,28 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		check_upd_authorized(dev,upd,type,obj_name);
 
 //
-// Create a new PollObj instance for this object
-// Protect this code by a monitor in case of the polling thread using one of
-// the vector element.
+// Refuse to do the job for forwarded attribute
 //
 
-	long depth;
+	if (obj_type == PollAttribute && attr_ptr->is_fwd_att() == true)
+	{
+		stringstream ss;
+		ss << "Attribute " << obj_name << " is a forwarded attribute.\n";
+		ss << "It's not supported to poll a forwarded attribute.\n";
+		FwdAttribute *fwd = static_cast<FwdAttribute *>(attr_ptr);
+		ss << "Polling has to be done on the root attribute (";
+		ss << fwd->get_fwd_dev_name() << "/" << fwd->get_fwd_att_name() << ")";
+
+		Except::throw_exception(API_NotSupportedFeature,ss.str(),"DServer::add_obj_polling");
+	}
+
+//
+// Create a new PollObj instance for this object. Protect this code by a monitor in case of the polling thread using
+// one of the vector element.
+//
+
+	long depth = 0;
+
 	if (obj_type == PollCommand)
 		depth = dev->get_cmd_poll_ring_depth(obj_name);
 	else
@@ -680,13 +721,12 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	poll_list.push_back(new PollObj(dev,type,obj_name,upd,depth));
 	dev->get_poll_monitor().rel_monitor();
 
-//
-// Find out which thread is in charge of the device.
-// If none exists already, create one
-//
-
 	PollingThreadInfo *th_info;
 	int thread_created = -2;
+
+//
+// Find out which thread is in charge of the device. If none exists already, create one
+//
 
 	int poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
 	if (poll_th_id == 0)
@@ -700,8 +740,7 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	th_info = tg->get_polling_thread_info_by_id(poll_th_id);
 
 //
-// Send command to the polling thread but wait in case of previous cmd
-// still not executed
+// Send command to the polling thread but wait in case of previous cmd still not executed
 //
 
 	cout4 << "Sending cmd to polling thread" << endl;
@@ -728,13 +767,12 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 		omni_thread *th = omni_thread::self();
 		int th_id = th->id();
-		if (th_id != poll_th_id)
+		if (th_id != poll_th_id && local_request == false)
 		{
 			while (shared_cmd.cmd_pending == true)
 			{
@@ -756,9 +794,9 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 
 						mon.signal();
 					}
-					Except::throw_exception((const char *)"API_CommandTimedOut",
-					        		(const char *)"Polling thread blocked !!!",
-					        		(const char *)"DServer::add_obj_polling");
+					Except::throw_exception((const char *)API_CommandTimedOut,
+									(const char *)"Polling thread blocked !!!",
+									(const char *)"DServer::add_obj_polling");
 				}
 			}
 		}
@@ -781,9 +819,8 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 	th_info->nb_polled_objects++;
 
 //
-// Update polling parameters in database (if wanted and possible)
-// If the property is already there (it should not but...), only update its
-// polling period
+// Update polling parameters in database (if wanted and possible). If the property is already there
+// (it should not but...), only update its polling period
 //
 
 	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
@@ -902,28 +939,42 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 		{
 			DbData send_data;
 			send_data.push_back(DbDatum("polling_threads_pool_conf"));
-			send_data[0] << tg->get_poll_pool_conf();
 
+			vector<string> &ppc = tg->get_poll_pool_conf();
+
+			vector<string>::iterator iter;
+			vector<string> new_ppc;
+
+			for (iter = ppc.begin();iter != ppc.end();++iter)
+			{
+				string v_entry = *iter;
+				unsigned int length = v_entry.size();
+				int nb_lines = (length / MaxDevPropLength) + 1;
+
+				if (nb_lines > 1)
+				{
+					string::size_type start;
+					start = 0;
+
+					for (int i = 0;i < nb_lines;i++)
+					{
+						string sub = v_entry.substr(start,MaxDevPropLength);
+						if (i < (nb_lines - 1))
+							sub = sub + '\\';
+						start = start + MaxDevPropLength;
+						new_ppc.push_back(sub);
+					}
+				}
+				else
+					new_ppc.push_back(v_entry);
+			}
+
+			send_data[0] << new_ppc;
 			tg->get_dserver_device()->get_db_device()->put_property(send_data);
 		}
 	}
 
 	cout4 << "Polling properties updated" << endl;
-
-//
-// Update info in Attribute/Command object
-//
-
-    if (type == POLL_ATTR)
-    {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name(argin->svalue[2]);
-        att.set_polling_period(upd);
-    }
-    else
-    {
-        Command &cmd = dev->get_device_class()->get_cmd_by_name(argin->svalue[2].in());
-        cmd.set_polling_period(upd);
-    }
 
 //
 // Mark the device as polled
@@ -933,22 +984,26 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::upd_obj_polling_period()
+// method :
+//		DServer::upd_obj_polling_period()
 //
-// description : 	command to upadte an already polled object update period
+// description :
+//		command to upadte an already polled object update period
 //
-// in :			The polling parameters :
-//				device name
-//				object type (command or attribute)
-//				object name
-//				update period in mS (in the long array)
+// args :
+// 		in :
+//			- argin : The polling parameters :
+//						device name
+//						object type (command or attribute)
+//						object name
+//						update period in mS (in the long array)
+//			- with_db_upd : Flag set to true if db has to be updated
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
-void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
-				     bool with_db_upd)
+void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,bool with_db_upd)
 {
 	NoSyncModelTangoMonitor nosync_mon(this);
 
@@ -965,7 +1020,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 
 	if ((argin->svalue.length() != 3) || (argin->lvalue.length() != 1))
 	{
-		Except::throw_exception((const char *)"API_WrongNumberOfArgs",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 					(const char *)"Incorrect number of inout arguments",
 					(const char *)"DServer::upd_obj_polling_period");
 	}
@@ -985,7 +1040,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		TangoSys_OMemStream o;
 		o << "Device " << (argin->svalue)[0] << " not found" << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+		Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
 				   	   (const char *)"DServer::upd_obj_polling_period");
 	}
 
@@ -998,13 +1053,12 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		TangoSys_OMemStream o;
 		o << "Device " << (argin->svalue)[0] << " is not polled" << ends;
 
-		Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"DServer::upd_obj_polling_period");
 	}
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev,"upd_obj_polling_period",(argin->svalue)[0]);
@@ -1019,12 +1073,18 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
 	PollObjType type = Tango::POLL_CMD;
 
+	string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
+	if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE)
+	{
+		obj_type.erase(pos);
+	}
+
+
 	if (obj_type == PollCommand)
 	{
 		type = Tango::POLL_CMD;
 //
-// Since IDl release 3, state and status command must be polled
-// as attributes to be able to generate event on state or
+// Since IDl release 3, state and status command must be polled as attributes to be able to generate event on state or
 // status.
 //
 
@@ -1039,23 +1099,21 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << "Object type " << obj_type << " not supported" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling_period");
 	}
 
 	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type,obj_name);
 
 //
-// Check that the requested polling period is not below the one authorized
-// (if defined)
+// Check that the requested polling period is not below the one authorized (if defined)
 //
 
 	int upd = (argin->lvalue)[0];
 	check_upd_authorized(dev,upd,type,obj_name);
 
 //
-// Check that it is not an externally triggered polling object. In this
-// case, throw exception
+// Check that it is not an externally triggered polling object. In this case, throw exception
 //
 
 /*	long tmp_upd = (*ite)->get_upd();
@@ -1072,7 +1130,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		o << " (device " << (argin->svalue)[0] << ") ";
 		o << " is externally triggered. Remove and add object to change its polling period";
 		o << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling_period");
 	}*/
 
@@ -1084,13 +1142,12 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << (argin->lvalue)[0] << " is below the min authorized period (" << MIN_POLL_PERIOD << " mS)" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling");
 	}
 
 //
-// Find out which thread is in charge of the device.
-// If none exists already, create one
+// Find out which thread is in charge of the device. If none exists already, create one
 //
 
 	PollingThreadInfo *th_info;
@@ -1100,7 +1157,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	{
 		TangoSys_OMemStream o;
 		o << "Can't find a polling thread for device " << (argin->svalue)[0] << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::upd_obj_polling");
 	}
 
@@ -1110,7 +1167,7 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 // Update polling period
 //
 
-	(*ite)->update_upd((argin->lvalue)[0]);
+	(*ite)->update_upd(upd);
 
 //
 // Send command to the polling thread
@@ -1155,9 +1212,8 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 	}
 
 //
-// Update database property --> Update polling period if this object is already
-// defined in the polling property. Add object name and update period if the
-// object is not known in the property
+// Update database property --> Update polling period if this object is already defined in the polling property.
+// Add object name and update period if the object is not known in the property
 //
 
 	if ((with_db_upd == true) && (Tango::Util::_UseDb == true))
@@ -1210,38 +1266,26 @@ void DServer::upd_obj_polling_period(const Tango::DevVarLongStringArray *argin,
 		send_data.push_back(db_info);
 		dev->get_db_device()->put_property(send_data);
 	}
-
-//
-// Update info in Attribute/Command object
-//
-
-    if (type == POLL_ATTR)
-    {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name(argin->svalue[2]);
-        att.set_polling_period(upd);
-    }
-    else
-    {
-        Command &cmd = dev->get_device_class()->get_cmd_by_name(argin->svalue[2].in());
-        cmd.set_polling_period(upd);
-    }
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::rem_obj_polling()
+// method :
+//		DServer::rem_obj_polling()
 //
-// description : 	command to remove an already polled object from the device
-//			        polled object list
+// description :
+//		command to remove an already polled object from the device polled object list
 //
-// in :	- argin: The polling parameters :
+// args :
+// 		in :
+//			- argin: The polling parameters :
 //				    device name
 //				    object type (command or attribute)
 //				    object name
-//      - with_db_upd : Update db flag
+//      	- with_db_upd : Update db flag
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db_upd)
 {
@@ -1258,7 +1302,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 
 	if (argin->length() != 3)
 	{
-		Except::throw_exception((const char *)"API_WrongNumberOfArgs",
+		Except::throw_exception((const char *)API_WrongNumberOfArgs,
 					(const char *)"Incorrect number of inout arguments",
 					(const char *)"DServer::rem_obj_polling");
 	}
@@ -1278,7 +1322,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		TangoSys_OMemStream o;
 		o << "Device " << (*argin)[0] << " not found" << ends;
 
-		Except::re_throw_exception(e,(const char *)"API_DeviceNotFound",o.str(),
+		Except::re_throw_exception(e,(const char *)API_DeviceNotFound,o.str(),
 				   	   (const char *)"DServer::rem_obj_polling");
 	}
 
@@ -1291,13 +1335,12 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		TangoSys_OMemStream o;
 		o << "Device " << (*argin)[0] << " is not polled" << ends;
 
-		Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+		Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
 				   	(const char *)"DServer::rem_obj_polling");
 	}
 
 //
-// If the device is locked and if the client is not the lock owner,
-// refuse to do the job
+// If the device is locked and if the client is not the lock owner, refuse to do the job
 //
 
 	check_lock_owner(dev,"rem_obj_polling",(*argin)[0]);
@@ -1310,6 +1353,15 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	transform(obj_type.begin(),obj_type.end(),obj_type.begin(),::tolower);
 	string obj_name((*argin)[2]);
 	transform(obj_name.begin(),obj_name.end(),obj_name.begin(),::tolower);
+
+	bool local_request = false;
+	string::size_type pos = obj_type.rfind(LOCAL_POLL_REQUEST);
+	if (pos == obj_type.size() - LOCAL_REQUEST_STR_SIZE)
+	{
+		local_request = true;
+		obj_type.erase(pos);
+	}
+
 	PollObjType type = Tango::POLL_CMD;
 
 	if (obj_type == PollCommand)
@@ -1326,19 +1378,20 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	{
 		TangoSys_OMemStream o;
 		o << "Object type " << obj_type << " not supported" << ends;
-		Except::throw_exception((const char *)"API_NotSupported",o.str(),
+		Except::throw_exception((const char *)API_NotSupported,o.str(),
 					(const char *)"DServer::rem_obj_polling");
 	}
 
 	vector<PollObj *>::iterator ite = dev->get_polled_obj_by_type_name(type,obj_name);
 	long tmp_upd = (*ite)->get_upd();
 
+	PollingThreadInfo *th_info;
+	int poll_th_id;
+	int th_id = omni_thread::self()->id();
+
 //
 // Find out which thread is in charge of the device.
 //
-
-	PollingThreadInfo *th_info;
-	int poll_th_id;
 
 	if (tg->is_svr_shutting_down() == false)
 	{
@@ -1347,7 +1400,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		{
 			TangoSys_OMemStream o;
 			o << "Can't find a polling thread for device " << (*argin)[0] << ends;
-			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+			Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"DServer::rem_obj_polling");
 		}
 
@@ -1369,7 +1422,6 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			TangoMonitor &mon = th_info->poll_mon;
 			PollThCmd &shared_cmd = th_info->shared_data;
 
-			int th_id = omni_thread::self()->id();
 			if (th_id != poll_th_id)
 			{
 				omni_mutex_lock sync(mon);
@@ -1391,22 +1443,24 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 				cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
-				int th_id = omni_thread::self()->id();
+
 				if (th_id != poll_th_id)
 				{
-					while (shared_cmd.cmd_pending == true)
+					if (local_request == false)
 					{
-						int interupted = mon.wait(DEFAULT_TIMEOUT);
-						if ((shared_cmd.cmd_pending == true) && (interupted == false))
+						while (shared_cmd.cmd_pending == true)
 						{
-							cout4 << "TIME OUT" << endl;
-							Except::throw_exception((const char *)"API_CommandTimedOut",
-										(const char *)"Polling thread blocked !!!",
-										(const char *)"DServer::rem_obj_polling");
+							int interupted = mon.wait(DEFAULT_TIMEOUT);
+							if ((shared_cmd.cmd_pending == true) && (interupted == false))
+							{
+								cout4 << "TIME OUT" << endl;
+								Except::throw_exception((const char *)API_CommandTimedOut,
+											(const char *)"Polling thread blocked !!!",
+											(const char *)"DServer::rem_obj_polling");
+							}
 						}
 					}
 				}
@@ -1455,9 +1509,8 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		dev->is_polled(false);
 
 //
-// Update database property. This means remove object entry in the polling
-// properties if they exist or add it to the list of device not polled
-// for automatic polling defined at command/attribute level.
+// Update database property. This means remove object entry in the polling properties if they exist or add it to the
+// list of device not polled for automatic polling defined at command/attribute level.
 // Do this if possible and wanted.
 //
 
@@ -1549,25 +1602,8 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	}
 
 //
-// Update info in Attribute/Command object
-//
-
-    if (type == POLL_ATTR)
-    {
-        Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
-        att.set_polling_period(0);
-    }
-    else
-    {
-        Command &cmd = dev->get_device_class()->get_cmd_by_name((*argin)[2].in());
-        cmd.set_polling_period(0);
-    }
-
-//
-// If the device is not polled any more, update the pool conf first locally.
-// Also update the map<device name,thread id>
-// If this device was the only one for a polling thread, kill the thread
-// Then in Db if possible
+// If the device is not polled any more, update the pool conf first locally. Also update the map<device name,thread id>
+// If this device was the only one for a polling thread, kill the thread then in Db if possible
 //
 
 	bool kill_thread = false;
@@ -1581,7 +1617,7 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		{
 			TangoSys_OMemStream o;
 			o << "Can't find entry for device " << (*argin)[0] << " in polling threads pool configuration !"<< ends;
-			Except::throw_exception((const char *)"API_NotSupported",o.str(),
+			Except::throw_exception((const char *)API_NotSupported,o.str(),
 							(const char *)"DServer::rem_obj_polling");
 		}
 
@@ -1606,10 +1642,11 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		tg->remove_dev_from_polling_map(dev_name);
 
 //
-// Kill the thread if needed and join
+// Kill the thread if needed and join but don do this now if the executing thread is the polling thread itself
+// (case of a polled command which itself decide to stop its own polling)
 //
 
-		if (kill_thread == true  && tg->is_svr_shutting_down() == false)
+		if (kill_thread == true  && tg->is_svr_shutting_down() == false && th_id != poll_th_id)
 		{
 			TangoMonitor &mon = th_info->poll_mon;
 			PollThCmd &shared_cmd = th_info->shared_data;
@@ -1643,15 +1680,57 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 			tg->get_dserver_device()->get_db_device()->put_property(send_data);
 		}
 	}
+
+//
+// In case there are some subscribers for event on this attribute relying on polling, fire event with error
+//
+
+	if (type == POLL_ATTR)
+	{
+		Attribute &att = dev->get_device_attr()->get_attr_by_name((*argin)[2]);
+
+		DevFailed ex;
+		ex.errors.length(1);
+
+		ex.errors[0].severity = ERR;
+		ex.errors[0].reason = CORBA::string_dup(API_PollObjNotFound);
+		ex.errors[0].origin = CORBA::string_dup("DServer::rem_obj_polling");
+		stringstream ss;
+		ss << "No event possible on attribute " << obj_name << ". Polling has just being stopped!";
+		ex.errors[0].desc = CORBA::string_dup(ss.str().c_str());
+
+		if (att.periodic_event_subscribed() == true)
+			att.fire_error_periodic_event(&ex);
+		if (att.archive_event_subscribed() == true && att.is_archive_event() == false)
+			dev->push_archive_event(obj_name,&ex);
+		if (att.change_event_subscribed() == true && att.is_change_event() == false)
+			dev->push_change_event(obj_name,&ex);
+	}
+
+//
+// In case of local_request and executing thread is the polling thread, ask our self to exit now that eveything else
+// is done
+//
+
+	if (kill_thread == true  && tg->is_svr_shutting_down() == false && th_id == poll_th_id && local_request == true)
+	{
+		tg->remove_polling_thread_info_by_id(poll_th_id);
+
+		PollThCmd &shared_cmd = th_info->shared_data;
+		shared_cmd.cmd_pending = true;
+		shared_cmd.cmd_code = POLL_EXIT;
+	}
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::stop_polling()
+// method :
+//		DServer::stop_polling()
 //
-// description : 	command to stop the polling thread
+// description :
+//		command to stop the polling thread
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DServer::stop_polling()
 {
@@ -1692,7 +1771,7 @@ void DServer::stop_polling()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 						        	(const char *)"Polling thread blocked !!!",
 						        	(const char *)"DServer::stop_polling");
 				}
@@ -1710,13 +1789,15 @@ void DServer::stop_polling()
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::start_polling()
+// method :
+//		DServer::start_polling()
 //
-// description : 	command to start the polling thread
+// description :
+//		command to start the polling thread
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::start_polling()
 {
@@ -1756,7 +1837,7 @@ void DServer::start_polling()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 						        	(const char *)"Polling thread blocked !!!",
 						        	(const char *)"DServer::start_polling");
 				}
@@ -1796,7 +1877,7 @@ void DServer::start_polling(PollingThreadInfo *th_info)
 			if ((shared_cmd.cmd_pending == true) && (interupted == false))
 			{
 				cout4 << "TIME OUT" << endl;
-				Except::throw_exception((const char *)"API_CommandTimedOut",
+				Except::throw_exception((const char *)API_CommandTimedOut,
 						    (const char *)"Polling thread blocked while trying to start thread polling!!!",
 						    (const char *)"DServer::start_polling");
 			}
@@ -1804,14 +1885,15 @@ void DServer::start_polling(PollingThreadInfo *th_info)
 	}
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::add_event_heartbeat()
+// method :
+//		DServer::add_event_heartbeat()
 //
-// description : 	command to ask the heartbeat thread to send
-//			the event heartbeat every 10 seconds
+// description :
+//		command to ask the heartbeat thread to send the event heartbeat every 9 seconds
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void DServer::add_event_heartbeat()
 {
@@ -1820,8 +1902,7 @@ void DServer::add_event_heartbeat()
 	cout4 << "In add_event_heartbeat method" << endl;
 
 //
-// Send command to the heartbeat thread but wait in case of previous cmd
-// still not executed
+// Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
 	cout4 << "Sending cmd to polling thread" << endl;
@@ -1844,8 +1925,7 @@ void DServer::add_event_heartbeat()
 		cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 		int th_id = omni_thread::self()->id();
@@ -1857,7 +1937,7 @@ void DServer::add_event_heartbeat()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 					        		(const char *)"Polling thread blocked !!!",
 					        		(const char *)"DServer::add_event_heartbeat");
 				}
@@ -1868,14 +1948,15 @@ void DServer::add_event_heartbeat()
 }
 
 
-//+----------------------------------------------------------------------------
+//+----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::rem_event_heartbeat()
+// method :
+//		DServer::rem_event_heartbeat()
 //
-// description : 	command to ask the heartbeat thread to stop sending
-//			the event heartbeat
+// description :
+//		command to ask the heartbeat thread to stop sending the event heartbeat
 //
-//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------------------------------
 
 void DServer::rem_event_heartbeat()
 {
@@ -1884,8 +1965,7 @@ void DServer::rem_event_heartbeat()
 	cout4 << "In rem_event_heartbeat method" << endl;
 
 //
-// Send command to the heartbeat thread but wait in case of previous cmd
-// still not executed
+// Send command to the heartbeat thread but wait in case of previous cmd still not executed
 //
 
 	cout4 << "Sending cmd to polling thread" << endl;
@@ -1907,8 +1987,7 @@ void DServer::rem_event_heartbeat()
 		cout4 << "Cmd sent to polling thread" << endl;
 
 //
-// Wait for thread to execute command except if the command is
-// requested by the polling thread itself
+// Wait for thread to execute command except if the command is requested by the polling thread itself
 //
 
 		int th_id = omni_thread::self()->id();
@@ -1920,7 +1999,7 @@ void DServer::rem_event_heartbeat()
 				if ((shared_cmd.cmd_pending == true) && (interupted == false))
 				{
 					cout4 << "TIME OUT" << endl;
-					Except::throw_exception((const char *)"API_CommandTimedOut",
+					Except::throw_exception((const char *)API_CommandTimedOut,
 					        		(const char *)"Polling thread blocked !!!",
 					        		(const char *)"DServer::rem_event_heartbeat");
 				}
@@ -1930,20 +2009,23 @@ void DServer::rem_event_heartbeat()
 	cout4 << "Thread cmd normally executed" << endl;
 }
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		DServer::check_upd_authorized()
+// method :
+//		DServer::check_upd_authorized()
 //
-// description : 	In case a minimun update polling period is defined (via the
-//					min_poll_period, cmd_min_poll_period,attr_min_poll_period)
-//					check if the requested period is not smaller
+// description :
+//		In case a minimun update polling period is defined (via the min_poll_period, cmd_min_poll_period,
+//		attr_min_poll_period) check if the requested period is not smaller
 //
-// argin: dev : The device
-//		  upd : The requested update period
-//		  type : The polled object type (cmd / attr)
-//		  obj_name : The polled object name
+// args :
+// 		in:
+//			- dev : The device
+//		  	- upd : The requested update period
+//		  	- type : The polled object type (cmd / attr)
+//		  	- obj_name : The polled object name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
 void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,string &obj_name)
 {
@@ -1965,7 +2047,7 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 		++ite;
 		TangoSys_MemStream s;
 		s << *ite;
-		if ((s >> min_upd) == false)
+		if (!(s >> min_upd))
 		{
 			TangoSys_OMemStream o;
 			o << "System property ";
@@ -1974,7 +2056,7 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 			else
 				o << "attr_min_poll_period";
 			o << " for device " << dev->get_name() << " has wrong syntax" << ends;
-			Except::throw_exception((const char *)"API_BadConfigurationProperty",
+			Except::throw_exception((const char *)API_BadConfigurationProperty,
 				        			o.str(),
 				        			(const char *)"DServer::check_upd_uthorized()");
 		}
@@ -1997,7 +2079,7 @@ void DServer::check_upd_authorized(DeviceImpl *dev,int upd,PollObjType obj_type,
 		else
 			o << "attribute ";
 		o << obj_name << " is below the min authorized (" << min_upd << ")" << ends;
-		Except::throw_exception((const char *)"API_MethodArgument",o.str(),
+		Except::throw_exception((const char *)API_MethodArgument,o.str(),
 					(const char *)"DServer::check_upd_authorized");
 	}
 

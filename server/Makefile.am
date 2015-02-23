@@ -20,7 +20,7 @@ libtango_la_LIBADD = ../client/libclient.la	\
 # generate the correct .so version
 libtango_la_LDFLAGS=-version-info $(VERSION_INFO)
 
-AM_CXXFLAGS=-D_TANGO_LIB @CPP_ELEVEN@
+AM_CXXFLAGS=-D_TANGO_LIB
 
 if DARWIN_ENABLED
 AM_LDFLAGS=-flat_namespace --disable-dependency-tracking
@@ -30,7 +30,9 @@ endif
 libtango_la_SOURCES = tangoSK.cpp 		\
 		      tangoDynSK.cpp 			\
 		      attrdesc.cpp 				\
+		      attrgetsetprop.cpp		\
 		      attribute.cpp 			\
+		      attrsetval.cpp			\
 		      attrmanip.cpp 			\
 		      basiccommand.cpp 			\
 		      blackbox.cpp 				\
@@ -44,8 +46,11 @@ libtango_la_SOURCES = tangoSK.cpp 		\
 		      device_2.cpp 				\
 		      device_3.cpp 				\
 			  device_4.cpp 				\
+			  device_5.cpp				\
 		      deviceclass.cpp 			\
 		      devicelog.cpp 			\
+		      devintr.cpp				\
+		      dintrthread.cpp			\
 		      dserver.cpp 				\
 		      dserverclass.cpp 			\
 			  dserverlock.cpp			\
@@ -56,25 +61,31 @@ libtango_la_SOURCES = tangoSK.cpp 		\
 		      eventcmds.cpp 			\
 		      eventsupplier.cpp 		\
 		      except.cpp 				\
+		      fwdattrdesc.cpp			\
+		      fwdattribute.cpp			\
 		      logcmds.cpp 				\
 		      logging.cpp 				\
 		      logstream.cpp 			\
 		      multiattribute.cpp 		\
 			  notifdeventsupplier.cpp	\
+			  pipe.cpp					\
 		      pollcmds.cpp 				\
 		      pollobj.cpp 				\
 		      pollring.cpp 				\
 		      pollthread.cpp  			\
+		      rootattreg.cpp			\
 		      seqvec.cpp 				\
 			  subdev_diag.cpp			\
 		      tangoappender.cpp 		\
 		      tangorollingfileappender.cpp 	\
+		      templ_inst.cpp			\
 		      thsig.cpp 				\
 		      utils.cpp 				\
 			  utils_polling.cpp			\
 			  utils_shut.cpp			\
 		      w_attribute.cpp			\
 			  zmqeventsupplier.cpp
+
 
 tangoincludedir = $(includedir)/tango
 
@@ -93,28 +104,33 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  device_2.h 		\
 		  		  device_3.h		\
 				  device_4.h		\
+				  device_5.h		\
 		  		  deviceclass.h		\
+		  		  devintr.h			\
+		  		  dintrthread.h		\
 		  		  dserver.h			\
 		  		  dserverclass.h	\
 		  		  dserversignal.h	\
 				  encoded_attribute.h \
 				  encoded_format.h	\
-		  		  eventcmds.h		\
 		  		  eventsupplier.h	\
 		  		  except.h			\
-				  locked_att_value.h \
+				  fwdattrdesc.h 	\
+				  fwdattribute.h 	\
 		  		  log4tango.h		\
 		  		  logcmds.h			\
 		  		  logging.h			\
 		  		  logstream.h		\
 		  		  multiattribute.h	\
 		  		  ntservice.h		\
+		  		  pipe.h			\
 		  		  pollcmds.h		\
 		  		  pollext.h			\
 		  		  pollobj.h			\
 		  		  pollring.h		\
 		  		  pollthread.h		\
 		  		  readers_writers_lock.h \
+		  		  rootattreg.h		\
 		  		  seqvec.h			\
 				  subdev_diag.h		\
 		  		  tango.h			\
@@ -126,10 +142,17 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  utils.h 			\
 		  		  w_attribute.h		\
 				  attribute.tpp     \
+				  attribute_spec.tpp	\
+				  attrprop.tpp		\
+				  attrsetval.tpp	\
+				  device_3.tpp		\
+				  fwdattribute.tpp	\
+				  fwdattribute_spec.tpp	\
+				  pipe.tpp			\
+				  pollext.tpp		\
+				  pollring.tpp		\
 				  utils.tpp         \
+				  utils_spec.tpp	\
 				  w_attribute.tpp	\
-				  attrprop.tpp
-
-
-
-
+				  w_attribute_spec.tpp	\
+				  w_attrsetval.tpp
