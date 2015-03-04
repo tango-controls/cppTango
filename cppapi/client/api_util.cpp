@@ -174,6 +174,7 @@ notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consume
 
 ApiUtil::~ApiUtil()
 {
+
 //
 // Release Asyn stuff
 //

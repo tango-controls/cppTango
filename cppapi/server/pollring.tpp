@@ -339,9 +339,9 @@ void PollRing::get_attr_history(long n,T *ptr,long type)
 // Copy date in output structure
 //
 
-		ptr->dates[seq_index].tv_sec = ring[index].when.tv_sec + DELTA_T;
-		ptr->dates[seq_index].tv_usec = ring[index].when.tv_usec;
-		ptr->dates[seq_index].tv_nsec = 0;
+        ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_5)[0].time.tv_sec;
+        ptr->dates[seq_index].tv_usec = (*ring[index].attr_value_5)[0].time.tv_usec;
+        ptr->dates[seq_index].tv_nsec = 0;
 
 //
 // Copy element only if they are different than the previous one
