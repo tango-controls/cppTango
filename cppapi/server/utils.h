@@ -1075,14 +1075,13 @@ inline bool Util::is_device_restarting(string &d_name)
 
 //-----------------------------------------------------------------------------
 //
-// method : 		Util::is_device_restarting()
+// method : 		Util::check_orb_endpoint()
 //
-// description : 	Return a boolean if the device with name given as parameter
-//                  is actually executing a RestartDevice command
+// description :
 //
-// args: - d_name : - The device name
+// args: - argc :
+//       - argv
 //
-// Returns true if the devce is restarting. False otherwise
 //
 //-----------------------------------------------------------------------------
 
@@ -1111,6 +1110,18 @@ inline void Util::check_orb_endpoint(int argc, char *argv[])
 		print_usage(argv[0]);
 	}
 }
+
+//-----------------------------------------------------------------------------
+//
+// method : 		Util::event_name_2_event_type()
+//
+// description :
+//
+// args: - event_name :
+//       - et
+//
+//
+//-----------------------------------------------------------------------------
 
 inline void Util::event_name_2_event_type(string &event_name,EventType &et)
 {

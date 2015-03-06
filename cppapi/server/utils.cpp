@@ -840,6 +840,16 @@ void Util::check_args(int argc,char *argv[])
 		o << "The device server name is too long! Max length is " << MaxServerNameLength << " characters" << ends;
 		print_err_message(o.str(),Tango::INFO);
 	}
+
+//
+// If the server is the database server (DS started with _UseDb set to false but without the
+// nodb option), we need its port
+//
+
+    if (_UseDb == false)
+    {
+        check_orb_endpoint(argc,argv);
+    }
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

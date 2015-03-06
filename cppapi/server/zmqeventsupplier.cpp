@@ -691,7 +691,22 @@ void ZmqEventSupplier::push_heartbeat_event()
 
         heartbeat_event_name = heartbeat_event_name + adm_dev->get_full_name();
         if (Util::_FileDb == true || Util::_UseDb == false)
-            heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
+        {
+            bool db_ds = false;
+            const vector<DeviceClass *> *cl_ptr = tg->get_class_list();
+            for (size_t loop = 0;loop < cl_ptr->size();loop++)
+            {
+                if ((*cl_ptr)[loop]->get_name() == DATABASE_CLASS)
+                {
+                    db_ds = true;
+                    break;
+                }
+            }
+
+            if (db_ds == false)
+                heartbeat_event_name = heartbeat_event_name + MODIFIER_DBASE_NO;
+        }
+
         heartbeat_event_name = heartbeat_event_name + ".heartbeat";
 		transform(heartbeat_event_name.begin(),heartbeat_event_name.end(),heartbeat_event_name.begin(),::tolower);
 	    heartbeat_name_init = true;
