@@ -846,7 +846,7 @@ void Util::check_args(int argc,char *argv[])
 // nodb option), we need its port
 //
 
-    if (_UseDb == false)
+    if ((_UseDb == false) && (svr_port_num.empty() == true))
     {
         check_orb_endpoint(argc,argv);
     }
