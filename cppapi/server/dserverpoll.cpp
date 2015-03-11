@@ -1502,6 +1502,16 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 	dev->get_poll_monitor().rel_monitor();
 
 //
+// Set attribute polling period to 0
+//
+
+    if (type == Tango::POLL_ATTR)
+    {
+        Attribute &att = dev->get_device_attr()->get_attr_by_name(obj_name.c_str());
+        att.set_polling_period(0);
+    }
+
+//
 // Mark the device as non polled if this was the last polled object
 //
 
