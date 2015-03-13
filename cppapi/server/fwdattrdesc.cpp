@@ -118,6 +118,9 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 	string root_att_db;
 	bool root_att_db_defined = false;
 
+    Util *tg = Util::instance();
+    Database *db = tg->get_database();
+
 	try
 	{
 #ifdef HAS_LAMBDA_FUNC
@@ -139,6 +142,29 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 			root_att_db = pos->get_value();
 			root_att_db_defined = true;
 		}
+		else
+        {
+
+//
+// Write something in DB to help user to create the right entry
+//
+
+            DbDatum att(get_name());
+            att << 1;
+            DbDatum root_name(RootAttrPropName);
+            root_name << RootAttNotDef;
+
+            DbData db_dat;
+            db_dat.push_back(att);
+            db_dat.push_back(root_name);
+
+            try
+            {
+                if (db != Tango_nullptr)
+                    db->put_device_attribute_property(dev_name,db_dat);
+            }
+            catch(...) {}
+        }
 	}
 	catch (...) {}
 
@@ -150,8 +176,6 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 // Also add dns suffix if not defined in provided TANGO_HOST host name
 //
 
-	Util *tg = Util::instance();
-	Database *db = tg->get_database();
 	string fq;
 	if (db != Tango_nullptr)
 	{

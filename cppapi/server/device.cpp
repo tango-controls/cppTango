@@ -5428,6 +5428,8 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 
 			alarm_status = alarm_status + "Root attribute name = ";
 			alarm_status = alarm_status + fwd_att_wrong_conf[i].full_root_att_name;
+			if (fwd_att_wrong_conf[i].fae != FWD_ROOT_DEV_NOT_STARTED)
+                alarm_status = alarm_status + "\nYou can update it using the Jive tool";
 			alarm_status = alarm_status + "\nError: ";
 			switch(fwd_att_wrong_conf[i].fae)
 			{
@@ -5444,7 +5446,7 @@ void DeviceImpl::build_att_list_in_status_mess(size_t nb_att,AttErrorType att_ty
 				break;
 
 			case FWD_MISSING_ROOT:
-				alarm_status = alarm_status + "Missing root attribute definition";
+				alarm_status = alarm_status + "Missing or wrong root attribute definition";
 				break;
 
 			case FWD_ROOT_DEV_LOCAL_DEV:
