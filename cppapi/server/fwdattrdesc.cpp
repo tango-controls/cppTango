@@ -150,7 +150,7 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 //
 
             DbDatum att(get_name());
-            att << 1;
+            att << 1L;
             DbDatum root_name(RootAttrPropName);
             root_name << RootAttNotDef;
 
