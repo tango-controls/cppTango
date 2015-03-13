@@ -146,24 +146,27 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
         {
 
 //
-// Write something in DB to help user to create the right entry
+// Write something in DB to help user to create the right entry except if the root att name is hard coded
 //
 
-            DbDatum att(get_name());
-            att << (DevShort)1;
-            DbDatum root_name(RootAttrPropName);
-            root_name << RootAttNotDef;
-
-            DbData db_dat;
-            db_dat.push_back(att);
-            db_dat.push_back(root_name);
-
-            try
+            if (full_root_att == RootAttNotDef)
             {
-                if (db != Tango_nullptr)
-                    db->put_device_attribute_property(dev_name,db_dat);
+                DbDatum att(get_name());
+                att << (DevShort)1;
+                DbDatum root_name(RootAttrPropName);
+                root_name << RootAttNotDef;
+
+                DbData db_dat;
+                db_dat.push_back(att);
+                db_dat.push_back(root_name);
+
+                try
+                {
+                    if (db != Tango_nullptr)
+                        db->put_device_attribute_property(dev_name,db_dat);
+                }
+                catch(...) {}
             }
-            catch(...) {}
         }
 	}
 	catch (...) {}
