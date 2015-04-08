@@ -1702,7 +1702,10 @@ public:
  */
 	void set_archive_event(bool implemented, bool detect = true)
 			{archive_event_implmented = implemented;
-			 check_archive_event_criteria = detect;}
+			 check_archive_event_criteria = detect;
+             if(detect==false){
+			  prev_archive_event.err=false;
+			  prev_archive_event.quality=Tango::ATTR_VALID;}}
 
 /**
  * Check if the archive event is fired manually for this attribute.

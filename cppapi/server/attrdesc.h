@@ -468,8 +468,10 @@ public:
  * @param detect Triggers the verification of the change event properties when set to true.
  */
 	void set_change_event(bool implemented, bool detect)
-			{ fire_change_event  = implemented;
-			  check_change_event = detect; }
+    {
+        fire_change_event  = implemented;check_change_event = detect;
+    }
+
 /**
  * Check if the change event is fired manually for this attribute.
  *
@@ -494,8 +496,9 @@ public:
  * @param detect Triggers the verification of the archive event properties when set to true.
  */
 	void set_archive_event(bool implemented, bool detect)
-			{fire_archive_event  = implemented;
-			 check_archive_event = detect;}
+    {
+        fire_archive_event  = implemented;check_archive_event = detect;
+    }
 
 /**
  * Check if the archive event is fired manually for this attribute.

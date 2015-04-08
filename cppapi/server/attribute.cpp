@@ -579,10 +579,16 @@ void Attribute::init_event_prop(vector<AttrProperty> &prop_list,const string &de
 	archive_periodic_counter = 0;
 	last_periodic = 0.;
 	archive_last_periodic = 0.;
-	prev_change_event.inited = false;
-	prev_quality_event.inited = false;
-	prev_archive_event.inited = false;
 
+	prev_change_event.inited = false;
+    prev_change_event.err=false;
+    prev_change_event.quality=Tango::ATTR_VALID;
+
+	prev_archive_event.inited = false;
+    prev_archive_event.err=false;
+    prev_archive_event.quality=Tango::ATTR_VALID;
+
+	prev_quality_event.inited = false;
 //
 // do not start sending events automatically, wait for the first client to subscribe. Sending events automatically
 // will put an unnecessary load on the server because all attributes will be polled
@@ -1650,8 +1656,9 @@ void Attribute::add_startup_exception(string prop_name,const DevFailed &except)
 //
 // argument :
 // 		in :
-//			- prop_name : The property name as a key for which the
-//			- exception is to be deleted from startup_exceptions map
+//			- prop_name : The property name as a key for which the exception is to be deleted from
+//                        startup_exceptions map
+//          - dev_name : The device name
 //
 //-------------------------------------------------------------------------------------------------------------------
 
@@ -4810,19 +4817,9 @@ void Attribute::fire_archive_event(DevFailed *except)
 			double delta_change_abs = 0.0;
 
             if (event_supplier_nd != NULL)
-                event_supplier_nd->detect_change(*this, ad,true,
-							delta_change_rel,
-							delta_change_abs,
-							except,
-							force_change,
-							dev);
+                event_supplier_nd->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
             else if (event_supplier_zmq != NULL)
-                event_supplier_zmq->detect_change(*this, ad,true,
-							delta_change_rel,
-							delta_change_abs,
-							except,
-							force_change,
-							dev);
+                event_supplier_zmq->detect_change(*this, ad,true,delta_change_rel,delta_change_abs,except,force_change,dev);
 
 
 			vector<string> filterable_names;
@@ -4855,7 +4852,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					the_quality = send_attr->quality;
 				}
 
-				if (prev_archive_event.quality !=  the_quality)
+				if (prev_archive_event.quality != the_quality)
 				{
 					quality_change = true;
 				}
