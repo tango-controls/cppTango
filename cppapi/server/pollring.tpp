@@ -211,7 +211,6 @@ void PollRing::force_copy_data(T *attr_value)
 	}
 }
 
-
 template <typename T>
 void PollRing::get_attr_history(long n,T *ptr,long type)
 {

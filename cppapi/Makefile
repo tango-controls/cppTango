@@ -400,6 +400,7 @@ SERVER_INCLUDE =	attrdesc.h \
 			pollring.h \
 			pollring.tpp \
 			pollthread.h \
+			pollthread.tpp \
 			readers_writers_lock.h \
 			rootattreg.h \
 			seqvec.h \

@@ -79,7 +79,7 @@ struct WorkItem
 	struct timeval		wake_up_date;	// The next wake up date
 	int 				update;			// The update period (mS)
 	PollObjType			type;			// Object type (command/attr)
-	string				name;			// Object name
+	vector<string>		name;			// Object name(s)
 	struct timeval		needed_time;	// Time needed to execute action
 };
 
@@ -126,9 +126,12 @@ protected:
 
 	void print_list();
 	void insert_in_list(WorkItem &);
-	void add_random_delay(struct timeval &);
+	void add_insert_in_list(WorkItem &);
 	void tune_list(bool,long);
 	void err_out_of_sync(WorkItem &);
+
+    template <typename T> void robb_data(T &,T &);
+    template <typename T> void copy_remaining(T &,T &);
 
 	PollThCmd			&shared_cmd;
 	TangoMonitor		&p_mon;
@@ -158,6 +161,7 @@ private:
 	long				tune_ctr;
 	bool				need_two_tuning;
 	long				auto_upd;
+	string              auto_name;
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
 
