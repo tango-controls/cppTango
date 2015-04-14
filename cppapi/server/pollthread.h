@@ -165,7 +165,7 @@ private:
 	string              auto_name;
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
-	uint32_t            previous_nb_late;
+	u_int               previous_nb_late;
 	bool                strict_period;
 
 	ClntIdent 			dummy_cl_id;

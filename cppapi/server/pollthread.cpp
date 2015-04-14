@@ -1257,7 +1257,7 @@ void PollThread::compute_sleep_time()
 		after_d = (double)after.tv_sec + ((double)after.tv_usec / 1000000);
 
         bool discard = false;
-        uint32_t nb_late = 0;
+        u_int nb_late = 0;
 
         if (strict_period == false)
         {
