@@ -170,7 +170,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
 //
 // Compute how many cmds and/or attributes are polled. Since IDL V3, state and status are polled as attributes
-// For compatibility, if one of these "attributes" is polled, also returned the info as the command is polled
+// For compatibility, if one of these "attributes" is polled, also returns the info as the command is polled
 //
 
 	nb_cmd = nb_attr = 0;
@@ -197,6 +197,34 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 	Tango::DevVarStringArray *ret;
 	ret = new DevVarStringArray(nb_poll_obj + nb_to_add);
 	ret->length(nb_poll_obj + nb_to_add);
+
+//
+// Create map of polled attributes read by the same call
+//
+
+    map<int,vector<string> > polled_together;
+
+	for (i = 0;i < nb_poll_obj;i++)
+	{
+		if (poll_list[i]->get_type() == Tango::POLL_CMD)
+			continue;
+		else
+		{
+            long po = poll_list[i]->get_upd();
+            map<int,vector<string> >::iterator ite = polled_together.find(po);
+
+            Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+
+            if (ite == polled_together.end())
+            {
+                vector<string> tmp_name;
+                tmp_name.push_back(att.get_name());
+                polled_together.insert(pair<int,vector<string> >(po,tmp_name));
+            }
+            else
+                ite->second.push_back(att.get_name());
+		}
+	}
 
 //
 // Populate returned strings
@@ -341,7 +369,22 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 					if (type == Tango::POLL_CMD)
 						returned_info = returned_info + "command execution (mS) = ";
 					else
-						returned_info = returned_info + "attribute reading (mS) = ";
+                    {
+                        map<int,vector<string> >::iterator ite = polled_together.find(po);
+                        if (ite->second.size() == 1)
+                            returned_info = returned_info + "attribute reading (mS) = ";
+                        else
+                        {
+                            returned_info = returned_info + "attributes (";
+                            for (size_t loop = 0;loop < ite->second.size();loop++)
+                            {
+                                returned_info = returned_info + ite->second[loop];
+                                if (loop <= ite->second.size() - 2)
+                                    returned_info = returned_info + " + ";
+                            }
+                            returned_info = returned_info + ") reading (mS) = ";
+                        }
+                    }
 
 					s.setf(ios::fixed);
 					s << setprecision(3) << tmp_db;
@@ -724,7 +767,14 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	if (poll_th_id == 0)
 	{
 		cout4 << "POLLING: Creating a thread to poll device " << (argin->svalue)[0] << endl;
-		thread_created = tg->create_poll_thread((argin->svalue)[0],false);
+
+        bool strict_poll = false;
+        if (strict_polling_def == true)
+            strict_poll = strict_polling;
+        else if (tg->is_polling_strict_period_def() == true)
+            strict_poll = tg->get_polling_strict_period();
+
+		thread_created = tg->create_poll_thread((argin->svalue)[0],false,strict_poll);
 		poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
 	}
 

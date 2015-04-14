@@ -498,6 +498,13 @@ public:
  * @return The maximun number of threads in the polling threads pool
  */
 	unsigned long get_polling_threads_pool_size() {return poll_pool_size;}
+
+/**
+ * Set the polling period algorithm
+ *
+ * @param val Polling strict period flag
+ */
+	void set_polling_strict_period(bool val) {strict_polling_def=true;strict_polling=val;}
 //@}
 
 /**@name Miscellaneous methods */
@@ -850,7 +857,7 @@ public:
 	void clean_cmd_polled_prop();
 	void clean_dyn_attr_prop();
 
-	int create_poll_thread(const char *dev_name,bool startup,int smallest_upd = -1);
+	int create_poll_thread(const char *,bool,bool,int smallest_upd = -1);
 	void stop_all_polling_threads();
 	vector<PollingThreadInfo *> &get_polling_threads_info() {return poll_ths;}
 	PollingThreadInfo *get_polling_thread_info_by_id(int);
@@ -896,6 +903,9 @@ public:
 
 	static void tango_host_from_fqan(string &,string &);
 	static void tango_host_from_fqan(string &,string &,int &);
+
+    bool is_polling_strict_period_def() {return strict_polling_def;}
+    bool get_polling_strict_period() {return strict_polling;}
 
 private:
 	TANGO_IMP static Util	*_instance;
@@ -1037,6 +1047,9 @@ private:
 	vector<string>              restarting_devices;     // Restarting devices name
 	bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
 	RootAttRegistry				root_att_reg;			// Root attribute(s) registry
+
+	bool                        strict_polling_def;     // Is strict polling defined
+	bool                        strict_polling;         // Strict polling flag
 };
 
 //***************************************************************************

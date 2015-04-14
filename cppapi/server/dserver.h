@@ -133,6 +133,9 @@ public :
 	void mem_devices_interface(map<string,DevIntr> &);
 	void changed_devices_interface(map<string,DevIntr> &);
 
+    bool is_polling_strict_period_def() {return strict_polling_def;}
+    bool get_polling_strict_period() {return strict_polling;}
+
 	friend class NotifdEventSupplier;
 	friend class ZmqEventSupplier;
 
@@ -176,6 +179,9 @@ private:
 	DevLong         mcast_ivl;
 	DevLong         zmq_pub_event_hwm;
 	DevLong         zmq_sub_event_hwm;
+
+	bool            strict_polling_def;
+	bool            strict_polling;
 };
 
 class KillThread: public omni_thread

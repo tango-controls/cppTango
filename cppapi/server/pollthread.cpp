@@ -50,8 +50,6 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <iomanip>
 
-//#include <chrono>
-
 extern omni_thread::key_t key_py_data;
 namespace Tango
 {
@@ -87,6 +85,8 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 
 	cci = 0;
 	dummy_cl_id.cpp_clnt(cci);
+	previous_nb_late = 0;
+	strict_period = false;
 
 	if (heartbeat == true)
 		polling_stop = false;
@@ -931,21 +931,21 @@ void PollThread::print_list()
 		{
 			if ( ite->type != STORE_SUBDEV)
 			{
-				cout4 << "Dev name = " << ite->dev->get_name() << ", obj name = ";
+				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = ";
 				for (size_t ctr = 0;ctr < ite->name.size();ctr++)
 				{
-                    cout4 << ite->name[ctr];
+                    cout5 << ite->name[ctr];
                     if (ctr < (ite->name.size() - 1))
-                        cout4 << ", ";
+                        cout5 << ", ";
 				}
 
-                cout4 << ", next wake_up at " << + ite->wake_up_date.tv_sec
+                cout5 << ", next wake_up at " << + ite->wake_up_date.tv_sec
 					<< "," << setw(6) << setfill('0')
 					<< ite->wake_up_date.tv_usec << endl;
 			}
 			else
 			{
-				cout4 <<  ite->name[0]
+				cout5 <<  ite->name[0]
 					<< ", next wake_up at " << + ite->wake_up_date.tv_sec
 					<< "," << setw(6) << setfill('0')
 					<< ite->wake_up_date.tv_usec << endl;
@@ -953,7 +953,7 @@ void PollThread::print_list()
 		}
 		else
 		{
-			cout4 << "Event heartbeat, next wake_up at " << + ite->wake_up_date.tv_sec
+			cout5 << "Event heartbeat, next wake_up at " << + ite->wake_up_date.tv_sec
           		<< "," << setw(6) << setfill('0')
           		<< ite->wake_up_date.tv_usec << endl;
 		}
@@ -1064,11 +1064,6 @@ void PollThread::add_insert_in_list(WorkItem &new_work)
 
 void PollThread::tune_list(bool from_needed, long min_delta)
 {
-//auto n = std::chrono::system_clock::now();
-//time_t t = chrono::system_clock::to_time_t(n);
-//string date_str = ctime(&t);
-//date_str.resize(date_str.size() - 1);
-//cout << date_str << ": Entering tune_list........." << endl;
 	list<WorkItem>::iterator ite,ite_next,ite_prev;
 
 	unsigned long nb_works = works.size();
@@ -1259,39 +1254,105 @@ void PollThread::compute_sleep_time()
 	if (works.empty() == false)
 	{
 		double next,after_d,diff;
-		next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
 		after_d = (double)after.tv_sec + ((double)after.tv_usec / 1000000);
-		diff = next - after_d;
 
-		if (diff < 0)
-		{
-			if (fabs(diff) < DISCARD_THRESHOLD)
-				sleep = -1;
-			else
-			{
-				while((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD))
-				{
-					cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
-					WorkItem tmp = works.front();
-					if (tmp.type == POLL_ATTR)
-						err_out_of_sync(tmp);
+        bool discard = false;
+        uint32_t nb_late = 0;
 
-					compute_new_date(tmp.wake_up_date,tmp.update);
-					insert_in_list(tmp);
-					works.pop_front();
-					tune_ctr--;
+        if (strict_period == false)
+        {
 
-					next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
-					diff = next - after_d;
-				}
-				if (fabs(diff) < DISCARD_THRESHOLD)
-					sleep = -1;
-				else
-					sleep = (long)(diff * 1000);
-			}
-		}
-		else
-			sleep = (long)(diff * 1000);
+//
+// Compute for how many items the polling thread is late
+//
+
+            list<WorkItem>::iterator ite;
+
+            for (ite = works.begin();ite != works.end();++ite)
+            {
+                next = (double)ite->wake_up_date.tv_sec + ((double)ite->wake_up_date.tv_usec / 1000000);
+                diff = next - after_d;
+                if (diff < 0 && fabs(diff) > DISCARD_THRESHOLD)
+                    nb_late++;
+            }
+
+//
+// If we are late for some item(s):
+//  - Seriously late (number of late items equal number of items) --> We will discard items
+//  - Late for the first time: Poll immediately but memorize the number of items for which we are late
+//  - Late again: If the number of late items increase --> Discard items
+//
+
+            if (nb_late != 0)
+            {
+                if (nb_late == works.size())
+                    discard = true;
+                else
+                {
+                    if (previous_nb_late != 0)
+                    {
+                        if (nb_late < previous_nb_late)
+                        {
+                            previous_nb_late = nb_late;
+                            cout5 << "Late but trying to catch up"  << endl;
+                        }
+                        else
+                        {
+                            previous_nb_late = 0;
+                            discard = true;
+                        }
+                    }
+                    else
+                        previous_nb_late = nb_late;
+                    sleep = -1;
+                }
+            }
+        }
+        else
+            discard = true;
+
+//
+// Analyse work list
+//
+
+        if (nb_late == 0 || discard == true)
+        {
+            previous_nb_late = 0;
+
+            next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
+            diff = next - after_d;
+
+            if (diff < 0)
+            {
+                if (fabs(diff) < DISCARD_THRESHOLD)
+                    sleep = -1;
+                else
+                {
+                    while((diff < 0) && (fabs(diff) > DISCARD_THRESHOLD))
+                    {
+                        cout5 << "Discard one elt !!!!!!!!!!!!!" << endl;
+                        WorkItem tmp = works.front();
+                        if (tmp.type == POLL_ATTR)
+                            err_out_of_sync(tmp);
+
+                        compute_new_date(tmp.wake_up_date,tmp.update);
+                        insert_in_list(tmp);
+                        works.pop_front();
+                        tune_ctr--;
+
+                        next = (double)works.front().wake_up_date.tv_sec + ((double)works.front().wake_up_date.tv_usec / 1000000);
+                        diff = next - after_d;
+                    }
+
+                    if (fabs(diff) < DISCARD_THRESHOLD)
+                        sleep = -1;
+                    else
+                        sleep = (long)(diff * 1000);
+                }
+            }
+            else
+                sleep = (long)(diff * 1000);
+        }
 
 		cout5 << "Sleep for : " << sleep << endl;
 	}
@@ -1314,11 +1375,6 @@ void PollThread::compute_sleep_time()
 
 void PollThread::err_out_of_sync(WorkItem &to_do)
 {
-//auto n = std::chrono::system_clock::now();
-//time_t t = chrono::system_clock::to_time_t(n);
-//string date_str = ctime(&t);
-//date_str.resize(date_str.size() - 1);
-//cout << date_str << ": Polling thread late............................." << endl;
 	EventSupplier *event_supplier_nd = NULL;
 	EventSupplier *event_supplier_zmq = NULL;
 

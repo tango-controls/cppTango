@@ -1559,7 +1559,7 @@ void DServer::create_cpp_class(const char *cl_name,const char *par_name)
 
 void DServer::get_dev_prop(Tango::Util *tg)
 {
-
+	strict_polling_def = false;
 //
 // Try to retrieve device properties (Polling threads pool conf.)
 //
@@ -1570,6 +1570,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 
 		db_data.push_back(DbDatum("polling_threads_pool_size"));
 		db_data.push_back(DbDatum("polling_threads_pool_conf"));
+		db_data.push_back(DbDatum("polling_strict_period"));
 
 		try
 		{
@@ -1597,6 +1598,7 @@ void DServer::get_dev_prop(Tango::Util *tg)
 			if (p_size != ULONG_MAX)
 				polling_th_pool_size = p_size;
 		}
+
 		if (db_data[1].is_empty() == false)
 		{
 			vector<string> tmp_vect;
@@ -1634,7 +1636,20 @@ void DServer::get_dev_prop(Tango::Util *tg)
 		}
 		else
 			polling_th_pool_conf.clear();
+
+//
+// Polling strict period property
+//
+
+        if (db_data[2].is_empty() == false)
+        {
+            strict_polling_def = true;
+            db_data[2] >> strict_polling;
+        }
+        else
+            strict_polling_def = false;
 	}
+
 }
 
 //+-----------------------------------------------------------------------------------------------------------------

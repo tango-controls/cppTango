@@ -245,7 +245,13 @@ void Util::polling_configure()
 			unsigned long nb_cmd = v_poll_cmd.size();
 			if (nb_cmd != 0)
 			{
-				create_poll_thread(v_poll_cmd[0]->svalue[0],true,smallest_upd);
+			    bool strict_poll = false;
+			    if (admin_dev->is_polling_strict_period_def() == true)
+                    strict_poll = admin_dev->get_polling_strict_period();
+                else if (strict_polling_def == true)
+                    strict_poll = strict_polling;
+
+				create_poll_thread(v_poll_cmd[0]->svalue[0],true,strict_poll,smallest_upd);
 				first_loop = true;
 
 //
@@ -848,6 +854,7 @@ void Util::clean_cmd_polled_prop()
 // 			- dev_name : The device name
 //		   	- startup : True if this method is called during DS startup. In such a case, some exception should not
 //						be thrown
+//          - strict_poll : The polling strict period flag
 //		   	- smallest_upd : The smallest upd !
 //
 // return :
@@ -857,7 +864,7 @@ void Util::clean_cmd_polled_prop()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
+int Util::create_poll_thread(const char *dev_name,bool startup,bool strict_period,int smallest_upd)
 {
 	int ret = -2;
 	string local_dev_name(dev_name);
@@ -934,6 +941,9 @@ int Util::create_poll_thread(const char *dev_name,bool startup,int smallest_upd)
 		if (smallest_upd != -1)
 			pti_ptr->smallest_upd = smallest_upd;
 		pti_ptr->poll_th = new PollThread(pti_ptr->shared_data,pti_ptr->poll_mon,false);
+
+		if (strict_period == true)
+            pti_ptr->poll_th->set_strict_period(true);
 		pti_ptr->poll_th->start();
 		int poll_th_id = pti_ptr->poll_th->id();
 		pti_ptr->thread_id = poll_th_id;
