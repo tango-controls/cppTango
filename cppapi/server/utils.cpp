@@ -394,7 +394,11 @@ void Util::effective_job(int argc,char *argv[])
 			}
 		}
 		else
-			db = NULL;
+        {
+ 			db = NULL;
+            ApiUtil *au = ApiUtil::instance();
+            au->in_server(true);
+        }
 
 //
 // Create the server CORBA objects

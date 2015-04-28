@@ -134,7 +134,6 @@ void leavefunc()
 		already_executed = true;
 		au->need_reset_already_flag(false);
 	}
-
 }
 
 
@@ -237,7 +236,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
 //		EventConsumer::get_cs_tango_host()
 //
 // description :
-//		Get from a Tango control system which TANGO_HOST are available/ This info comes from teh Tango CS database
+//		Get from a Tango control system which TANGO_HOST are available. This info comes from the Tango CS database
 //
 // argument :
 //		in :
@@ -256,7 +255,7 @@ void EventConsumer::get_cs_tango_host(Database *db)
 
 //
 // Do we have a CS with a host alias used as TANGO_HOST?
-// It true and if we don know this alias, store its definition in the alias map
+// It true and if we don't know this alias, store its definition in the alias map
 //
 
 		if (vs.size() == 1)
@@ -1356,7 +1355,12 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	{
 		string prot("tango://");
 		if (device->is_dbase_used() == false)
-			prot = prot + device->get_dev_host() + ':' + device->get_dev_port() + '/';
+        {
+            string &ho = device->get_dev_host();
+            if (ho.find('.') == string::npos)
+                Connection::get_fqdn(ho);
+ 			prot = prot + ho + ':' + device->get_dev_port() + '/';
+        }
 		else
 			prot = prot + device->get_db_host() + ':' + device->get_db_port() + '/';
 		device_name.insert(0,prot);

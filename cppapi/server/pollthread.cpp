@@ -931,15 +931,16 @@ void PollThread::print_list()
 		{
 			if ( ite->type != STORE_SUBDEV)
 			{
-				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = ";
+			    string obj_list;
 				for (size_t ctr = 0;ctr < ite->name.size();ctr++)
 				{
-                    cout5 << ite->name[ctr];
+                    obj_list = obj_list + ite->name[ctr];
                     if (ctr < (ite->name.size() - 1))
-                        cout5 << ", ";
+                        obj_list = obj_list + ", ";
 				}
 
-                cout5 << ", next wake_up at " << + ite->wake_up_date.tv_sec
+				cout5 << "Dev name = " << ite->dev->get_name() << ", obj name = " << obj_list
+                     << ", next wake_up at " << + ite->wake_up_date.tv_sec
 					<< "," << setw(6) << setfill('0')
 					<< ite->wake_up_date.tv_usec << endl;
 			}
@@ -1596,18 +1597,19 @@ void PollThread::poll_cmd(WorkItem &to_do)
 
 void PollThread::poll_attr(WorkItem &to_do)
 {
+    size_t nb_obj = to_do.name.size();
+    string att_list;
+    for (size_t ctr = 0;ctr < nb_obj;ctr++)
+    {
+        att_list =  att_list + to_do.name[ctr];
+        if (ctr < (nb_obj - 1))
+            att_list = att_list + ", ";
+    }
+
 	cout5 << "----------> Time = " << now.tv_sec << ","
 	      << setw(6) << setfill('0') << now.tv_usec
 	      << " Dev name = " << to_do.dev->get_name()
-        << ", Attr name = ";
-    size_t nb_obj = to_do.name.size();
-    for (size_t ctr = 0;ctr < nb_obj;ctr++)
-    {
-        cout5 << to_do.name[ctr];
-        if (ctr < (nb_obj - 1))
-            cout5 << ", ";
-    }
-    cout5 << endl;
+        << ", Attr name = " << att_list << endl;
 
 	struct timeval before_cmd,after_cmd,needed_time;
 #ifdef _TG_WINDOWS_
@@ -1885,7 +1887,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                             event_supplier_zmq->push_event_loop(to_do.dev,ARCHIVE_EVENT,f_names,f_data,f_names_lg,f_data_lg,ad,att,tmp_except);
                     }
                     else
-                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[0],&before_cmd);
+                        event_supplier_zmq->detect_and_push_events(to_do.dev,ad,tmp_except,to_do.name[ctr],&before_cmd);
                 }
             }
 		}

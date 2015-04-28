@@ -1215,6 +1215,7 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
 
 void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(Database *db),bool reconnect,DeviceData &dd)
 {
+
 //
 // Extract server command result
 //
@@ -1249,7 +1250,7 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 	}
 #endif
 
-	if (found == false)
+	if (found == false && db != NULL)
 	{
 		get_cs_tango_host(db);
 	}
@@ -2378,6 +2379,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						}
 						else if (evt_cb.device_idl == 4)
 						{
+							event_data_cdr.set_un_marshal_type(TangoCdrMemoryStream::UN_ATT);
 							try
 							{
 								vers = 4;
@@ -2409,6 +2411,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 						}
 						else if (evt_cb.device_idl == 3)
 						{
+							event_data_cdr.set_un_marshal_type(TangoCdrMemoryStream::UN_ATT);
 							try
 							{
 								vers = 3;

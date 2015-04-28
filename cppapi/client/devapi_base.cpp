@@ -2740,6 +2740,8 @@ string DeviceProxy::adm_name()
 			if (dbase_used == false)
 			{
 				string prot("tango://");
+                if (host.find('.') == string::npos)
+                    Connection::get_fqdn(host);
 				prot = prot + host + ':' + port + '/';
 				adm_name_str.insert(0,prot);
 				adm_name_str.append(MODIFIER_DBASE_NO);
