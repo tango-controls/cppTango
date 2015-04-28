@@ -105,7 +105,7 @@ int main(int argc, char **argv)
 		int index;
 		for (i = 0;i < poll_sta->size();i++)
 		{
-			if ((*poll_sta)[i].find("State") != string::npos)
+			if ((*poll_sta)[i].find("name = State") != string::npos)
 			{
 				index = i;
 				break;
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 
 		for (i = 0;i < poll_sta->size();i++)
 		{
-			if ((*poll_sta)[i].find("Double_attr") != string::npos)
+			if ((*poll_sta)[i].find("name = Double_attr") != string::npos)
 			{
 				index = i;
 				break;

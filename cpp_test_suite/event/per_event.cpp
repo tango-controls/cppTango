@@ -435,7 +435,7 @@ int main(int argc, char **argv)
 // This will force out of sync exception on Short_attr attribute
 //
 
-		vector<short> data_in_out(2);
+/*		vector<short> data_in_out(2);
 		data_in_out[0] = 3;
 		data_in_out[1] = 1;
 		di << data_in_out;
@@ -473,7 +473,7 @@ int main(int argc, char **argv)
 		assert (cb.cb_err == 0);
 		assert (cb.cb_err_out_of_sync == 0);
 
-		cout << "   Back to periodic event after out_of_sync exception --> OK" << endl;
+		cout << "   Back to periodic event after out_of_sync exception --> OK" << endl;*/
 	
 //
 // unsubscribe to the event
