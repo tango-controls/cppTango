@@ -116,8 +116,8 @@ public:
 /**
  * Set asynchronous callback sub-model
  *
- * Set the asynchronous callback sub-model between the pull and push sub-model. See chapter 4.5 to read
- * the definition of these sub-model
+ * Set the asynchronous callback sub-model between the pull and push sub-model. See Tango book chapter 4.5 to read
+ * the definition of these sub-models.
  * By default, all Tango client using asynchronous callback model are in pull sub-model. This call must be
  * used to switch to the push sub-model. NOTE that in push sub-model, a separate thread is spawned to deal
  * with server replies.

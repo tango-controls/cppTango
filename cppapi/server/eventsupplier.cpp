@@ -1570,6 +1570,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                 {
                     curr_seq_nb = curr_seq_db->length();
                     prev_seq_nb = prev_seq_db->length();
+
                     if (curr_seq_nb != prev_seq_nb)
                     {
                         force_change = true;
@@ -1579,6 +1580,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                     {
                         if (rel_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_db)[i]) != 0 && Tango_isnan((*curr_seq_db)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             if ((*prev_seq_db)[i] != 0)
                             {
                                 delta_change_rel = ((*curr_seq_db)[i] - (*prev_seq_db)[i])*100/(*prev_seq_db)[i];
@@ -1597,6 +1604,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                         }
                         if (abs_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_db)[i]) != 0 && Tango_isnan((*curr_seq_db)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             delta_change_abs = (*curr_seq_db)[i] - (*prev_seq_db)[i];
 
                             // Correct for rounding errors !
@@ -1697,6 +1710,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                     {
                         if (rel_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_fl)[i]) != 0 && Tango_isnan((*curr_seq_fl)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             if ((*prev_seq_fl)[i] != 0)
                             {
                                 delta_change_rel = ((*curr_seq_fl)[i] - (*prev_seq_fl)[i])*100/(*prev_seq_fl)[i];
@@ -1714,6 +1733,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr
                         }
                         if (abs_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_fl)[i]) != 0 && Tango_isnan((*curr_seq_fl)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             delta_change_abs = (*curr_seq_fl)[i] - (*prev_seq_fl)[i];
 
                             // Correct for rounding errors !
