@@ -37,6 +37,10 @@ static const char *RcsId = "$Id$";
 #include <tango.h>
 #include <eventsupplier.h>
 
+#ifdef _TG_WINDOWS_
+#include <float.h>
+#endif // _TG_WINDOWS_
+
 namespace Tango {
 
 omni_mutex		EventSupplier::event_mutex;
