@@ -1739,7 +1739,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     if ((attr_failed == false) && ((*argout_5)[ctr].err_list.length() != 0))
                     {
                         Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_5)[ctr].err_list);
-                        map_except.insert(pair<int,Tango::DevFailed *>(ctr,tmp_except));
+                        map_except.insert(pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
                     }
                 }
             }
@@ -1762,7 +1762,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     if ((attr_failed == false) && ((*argout_4)[ctr].err_list.length() != 0))
                     {
                         Tango::DevFailed *tmp_except = new Tango::DevFailed((*argout_4)[ctr].err_list);
-                        map_except.insert(pair<int,Tango::DevFailed *>(ctr,tmp_except));
+                        map_except.insert(pair<size_t,Tango::DevFailed *>(ctr,tmp_except));
                     }
                 }
             }
