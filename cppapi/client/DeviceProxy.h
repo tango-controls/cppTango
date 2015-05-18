@@ -85,10 +85,14 @@ private :
 		MULTIPLE
 	};
 
-
 	void read_attr_except(CORBA::Request_ptr,long,read_attr_type);
 	void write_attr_except(CORBA::Request_ptr,long,TgRequest::ReqType);
 	void check_connect_adm_device();
+
+    void omni420_timeout_attr(int,char *,read_attr_type);
+    void omni420_except_attr(int,char *,read_attr_type);
+    void omni420_timeout_wattr(int,char *);
+    void omni420_except_wattr(int,char *);
 
 	friend class AttributeProxy;
 

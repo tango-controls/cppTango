@@ -78,7 +78,7 @@ public:
 	long get_lg_value() {return attr_lg;}
 	string &get_name() {return attr_name;}
 
-	void convert();
+	void convert(const char *);
 
 #ifndef TANGO_HAS_LOG4TANGO
 	friend ostream &operator<<(ostream &,const AttrProperty &);

@@ -110,7 +110,7 @@ public:
 	void start() {start_undetached();}
 	void execute_cmd();
 	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
-	void set_strict_period(bool _v) {strict_period = _v;}
+	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 
 protected:
 	PollCmdType get_command(long);
@@ -166,7 +166,7 @@ private:
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
 	u_int               previous_nb_late;
-	bool                strict_period;
+	bool                polling_bef_9;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;

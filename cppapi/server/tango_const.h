@@ -41,8 +41,8 @@ namespace Tango
 //
 
 #define   TANGO_VERSION_MAJOR        9
-#define   TANGO_VERSION_MINOR        0
-#define   TANGO_VERSION_PATCH        7
+#define   TANGO_VERSION_MINOR        1
+#define   TANGO_VERSION_PATCH        0
 
 #define   TANGO_BASE_CLASS           Tango::Device_5Impl
 

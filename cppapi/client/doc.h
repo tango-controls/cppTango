@@ -84,11 +84,11 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * \section intro_sec Introduction
  *
  * This is the reference documentation for all classes provided by the Tango C++ API.
- * These classes are divied in two groups (modules) which are
+ * These classes are divided in two groups (modules) which are
  * \li \ref Client
  * \li \ref Server
  *
- * Client classes are mostly used in application dealing with Tango devices.
+ * Client classes are mostly used in application(s) acting as clients and dealing with Tango devices.
  * Server classes are mostly used in Tango class or device server process main function.
  *
  * In order to develop Tango's related software, it's a good idea to have  a look at the

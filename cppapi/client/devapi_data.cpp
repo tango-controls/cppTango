@@ -47,7 +47,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-DeviceData::DeviceData():ext(Tango_nullptr)
+DeviceData::DeviceData():ext(new DeviceDataExt)
 {
 //
 // For omniORB, it is necessary to do the ORB::init before creating the Any.
@@ -68,7 +68,7 @@ DeviceData::DeviceData():ext(Tango_nullptr)
 //
 //-----------------------------------------------------------------------------
 
-DeviceData::DeviceData(const DeviceData & source):ext(Tango_nullptr)
+DeviceData::DeviceData(const DeviceData & source):ext(new DeviceDataExt)
 {
 	exceptions_flags = source.exceptions_flags;
 #ifdef HAS_RVALUE
@@ -101,7 +101,7 @@ DeviceData::DeviceData(const DeviceData & source):ext(Tango_nullptr)
 //-----------------------------------------------------------------------------
 
 #ifdef HAS_RVALUE
-DeviceData::DeviceData(DeviceData &&source):ext(Tango_nullptr)
+DeviceData::DeviceData(DeviceData &&source):ext(new DeviceDataExt)
 {
 	exceptions_flags = source.exceptions_flags;
 	any = source.any._retn();
@@ -193,10 +193,7 @@ DeviceData::~DeviceData()
 
 bool DeviceData::is_empty()
 {
-	bitset<numFlags> bs = exceptions_flags;
-	exceptions_flags.reset((size_t)isempty_flag);
 	bool ret = any_is_null();
-	exceptions_flags = bs;
 	return(ret);
 }
 
@@ -208,11 +205,13 @@ bool DeviceData::is_empty()
 
 bool DeviceData::any_is_null()
 {
+    ext->ext_state.reset(isempty_flag);
 	CORBA::TypeCode_ptr tc;
 
 	tc = any->type();
 	if (tc->equal(CORBA::_tc_null))
 	{
+	    ext->ext_state.set(isempty_flag);
 		if (exceptions_flags.test(isempty_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)"API_EmptyDeviceData",
@@ -394,13 +393,15 @@ int DeviceData::get_type()
 
 bool DeviceData::operator >> (bool& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= CORBA::Any::to_boolean(datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -419,13 +420,15 @@ bool DeviceData::operator >> (bool& datum)
 
 bool DeviceData::operator >> (short& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -445,13 +448,15 @@ bool DeviceData::operator >> (short& datum)
 
 bool DeviceData::operator >> (unsigned short& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -470,13 +475,15 @@ bool DeviceData::operator >> (unsigned short& datum)
 
 bool DeviceData::operator >> (DevLong& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -495,13 +502,15 @@ bool DeviceData::operator >> (DevLong& datum)
 
 bool DeviceData::operator >> (DevULong& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -520,13 +529,15 @@ bool DeviceData::operator >> (DevULong& datum)
 
 bool DeviceData::operator >> (DevLong64 & datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -545,13 +556,15 @@ bool DeviceData::operator >> (DevLong64 & datum)
 
 bool DeviceData::operator >> (DevULong64 & datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -570,13 +583,15 @@ bool DeviceData::operator >> (DevULong64 & datum)
 
 bool DeviceData::operator >> (float& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -596,13 +611,15 @@ bool DeviceData::operator >> (float& datum)
 
 bool DeviceData::operator >> (double& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -621,14 +638,16 @@ bool DeviceData::operator >> (double& datum)
 
 bool DeviceData::operator >> (string& datum)
 {
+    ext->ext_state.reset();
+
 	const char *c_string = NULL;
 	bool ret = (any >>= c_string);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -651,13 +670,15 @@ bool DeviceData::operator >> (string& datum)
 
 bool DeviceData::operator >> (const char*& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = any >>= datum;
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -676,13 +697,15 @@ bool DeviceData::operator >> (const char*& datum)
 
 bool DeviceData::operator >> (DevState& datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -701,14 +724,16 @@ bool DeviceData::operator >> (DevState& datum)
 
 bool DeviceData::operator >> (vector<unsigned char>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarCharArray *char_array = NULL;
 	bool ret = (any.inout() >>= char_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -720,6 +745,7 @@ bool DeviceData::operator >> (vector<unsigned char>& datum)
 	{
 	    if (char_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -746,13 +772,15 @@ bool DeviceData::operator >> (vector<unsigned char>& datum)
 
 bool DeviceData::operator >> (const DevVarCharArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -771,14 +799,16 @@ bool DeviceData::operator >> (const DevVarCharArray* &datum)
 
 bool DeviceData::operator >> (vector<short>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarShortArray *short_array = NULL;
 	bool ret = (any.inout() >>= short_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -790,6 +820,7 @@ bool DeviceData::operator >> (vector<short>& datum)
 	{
 	    if (short_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -816,14 +847,16 @@ bool DeviceData::operator >> (vector<short>& datum)
 
 bool DeviceData::operator >> (const DevVarShortArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -842,14 +875,16 @@ bool DeviceData::operator >> (const DevVarShortArray* &datum)
 
 bool DeviceData::operator >> (vector<unsigned short>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarUShortArray *ushort_array = NULL;
 	bool ret = (any.inout() >>= ushort_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -861,6 +896,7 @@ bool DeviceData::operator >> (vector<unsigned short>& datum)
 	{
 	    if (ushort_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -887,13 +923,15 @@ bool DeviceData::operator >> (vector<unsigned short>& datum)
 
 bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -912,15 +950,16 @@ bool DeviceData::operator >> (const DevVarUShortArray* &datum)
 
 bool DeviceData::operator >> (vector<DevLong>& datum)
 {
+    ext->ext_state.reset();
 	const DevVarLongArray *long_array = NULL;
 
 	bool ret = (any.inout() >>= long_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -932,6 +971,7 @@ bool DeviceData::operator >> (vector<DevLong>& datum)
 	{
 	    if (long_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -958,13 +998,15 @@ bool DeviceData::operator >> (vector<DevLong>& datum)
 
 bool DeviceData::operator >> (const DevVarLongArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -983,15 +1025,17 @@ bool DeviceData::operator >> (const DevVarLongArray* &datum)
 
 bool DeviceData::operator >> (vector<DevULong>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarULongArray *ulong_array = NULL;
 
 	bool ret = (any.inout() >>= ulong_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1003,6 +1047,7 @@ bool DeviceData::operator >> (vector<DevULong>& datum)
 	{
 	    if (ulong_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1029,13 +1074,15 @@ bool DeviceData::operator >> (vector<DevULong>& datum)
 
 bool DeviceData::operator >> (const DevVarULongArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1056,13 +1103,15 @@ bool DeviceData::operator >> (const DevVarULongArray* &datum)
 
 bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1082,13 +1131,15 @@ bool DeviceData::operator >> (const DevVarLong64Array* &datum)
 
 bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1107,14 +1158,16 @@ bool DeviceData::operator >> (const DevVarULong64Array* &datum)
 
 bool DeviceData::operator >> (vector<DevLong64>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarLong64Array *ll_array = NULL;
 	bool ret = (any.inout() >>= ll_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1126,6 +1179,7 @@ bool DeviceData::operator >> (vector<DevLong64>& datum)
 	{
 	    if (ll_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1150,14 +1204,16 @@ bool DeviceData::operator >> (vector<DevLong64>& datum)
 
 bool DeviceData::operator >> (vector<DevULong64>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarULong64Array *ull_array = NULL;
 	bool ret = (any.inout() >>= ull_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return  ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1169,6 +1225,7 @@ bool DeviceData::operator >> (vector<DevULong64>& datum)
 	{
 	    if (ull_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1193,14 +1250,16 @@ bool DeviceData::operator >> (vector<DevULong64>& datum)
 
 bool DeviceData::operator >> (vector<float>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarFloatArray *float_array = NULL;
 	bool ret = (any.inout() >>= float_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1212,6 +1271,7 @@ bool DeviceData::operator >> (vector<float>& datum)
 	{
 	    if (float_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1238,13 +1298,15 @@ bool DeviceData::operator >> (vector<float>& datum)
 
 bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1263,15 +1325,17 @@ bool DeviceData::operator >> (const DevVarFloatArray* &datum)
 
 bool DeviceData::operator >> (vector<double>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarDoubleArray *double_array = NULL;
 
 	bool ret = (any.inout() >>= double_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1283,6 +1347,7 @@ bool DeviceData::operator >> (vector<double>& datum)
 	{
 	    if (double_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1309,13 +1374,15 @@ bool DeviceData::operator >> (vector<double>& datum)
 
 bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1334,15 +1401,17 @@ bool DeviceData::operator >> (const DevVarDoubleArray* &datum)
 
 bool DeviceData::operator >> (vector<string>& datum)
 {
+    ext->ext_state.reset();
+
 	const DevVarStringArray *string_array = NULL;
 
 	bool ret = (any.inout() >>= string_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1354,6 +1423,7 @@ bool DeviceData::operator >> (vector<string>& datum)
 	{
 	    if (string_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1379,13 +1449,15 @@ bool DeviceData::operator >> (vector<string>& datum)
 
 bool DeviceData::operator >> (const DevVarStringArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1405,13 +1477,15 @@ bool DeviceData::operator >> (const DevVarStringArray* &datum)
 
 bool DeviceData::operator >> (const DevEncoded* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1431,14 +1505,16 @@ bool DeviceData::operator >> (const DevEncoded* &datum)
 
 bool DeviceData::operator >> (DevEncoded &datum)
 {
+    ext->ext_state.reset();
+
     const DevEncoded *tmp_enc = NULL;
 	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1450,6 +1526,7 @@ bool DeviceData::operator >> (DevEncoded &datum)
 	{
 	    if (tmp_enc == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1675,14 +1752,16 @@ void DeviceData::insert (vector<DevLong> &long_datum, vector<string>& string_dat
 bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_datum)
 {
 	bool ret;
+	ext->ext_state.reset();
+
 	const DevVarLongStringArray *long_string_array = NULL;
 	ret = (any.inout() >>= long_string_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1694,6 +1773,7 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_dat
 	{
 	    if (long_string_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1725,13 +1805,15 @@ bool DeviceData::extract(vector<DevLong> &long_datum, vector<string>& string_dat
 
 bool DeviceData::operator >> (const DevVarLongStringArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1778,14 +1860,16 @@ void DeviceData::insert (vector<double> &double_datum, vector<string>& string_da
 bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_datum)
 {
 	bool ret;
+	ext->ext_state.reset();
+
 	const DevVarDoubleStringArray *double_string_array = NULL;
 	ret = (any.inout() >>= double_string_array);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1797,6 +1881,7 @@ bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_d
 	{
 	    if (double_string_array == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::operator>>");
@@ -1828,13 +1913,15 @@ bool DeviceData::extract (vector<double> &double_datum, vector<string>& string_d
 
 bool DeviceData::operator >> (const DevVarDoubleStringArray* &datum)
 {
+    ext->ext_state.reset();
+
 	bool ret = (any.inout() >>= datum);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1903,14 +1990,16 @@ void DeviceData::insert (const char *str_datum,unsigned char *data,unsigned int 
 
 bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigned int &data_size)
 {
+    ext->ext_state.reset();
+
     const DevEncoded *tmp_enc = NULL;
 	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1922,6 +2011,7 @@ bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigne
 	{
 	    if (tmp_enc == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::extract");
@@ -1946,14 +2036,16 @@ bool DeviceData::extract(const char *&str,const unsigned char *&data_ptr,unsigne
 
 bool DeviceData::extract(string &str,vector<unsigned char> &datum)
 {
+    ext->ext_state.reset();
+
     const DevEncoded *tmp_enc = NULL;
 	bool ret = (any.inout() >>= tmp_enc);
 	if (ret == false)
 	{
-		if (exceptions_flags.test(isempty_flag))
-		{
-			any_is_null();
-		}
+        if (any_is_null())
+            return ret;
+
+        ext->ext_state.set(wrongtype_flag);
 		if (exceptions_flags.test(wrongtype_flag))
 		{
 			ApiDataExcept::throw_exception((const char*)API_IncompatibleCmdArgumentType,
@@ -1965,6 +2057,7 @@ bool DeviceData::extract(string &str,vector<unsigned char> &datum)
 	{
 	    if (tmp_enc == NULL)
 	    {
+            ext->ext_state.set(wrongtype_flag);
             ApiDataExcept::throw_exception((const char *)API_IncoherentDevData,
                                        (const char *)"Incoherent data received from server",
                                        (const char *)"DeviceData::extract");

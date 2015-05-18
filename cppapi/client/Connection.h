@@ -561,6 +561,10 @@ public :
 	AccessControlType get_access_right() {return get_access_control();}
 
 	friend class FwdAttribute;
+
+private:
+    void omni420_timeout(int,char *);
+    DeviceData omni420_except(int,char *,TgRequest &);
 };
 
 

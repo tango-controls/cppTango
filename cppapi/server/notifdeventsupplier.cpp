@@ -291,9 +291,11 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 	{
 		CORBA::Object *event_factory_obj;
     	event_factory_obj = _orb -> string_to_object(factory_ior.c_str());
+
+		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 #ifndef _TG_WINDOWS_
     	if (event_factory_obj -> _non_existent())
-		event_factory_obj = CORBA::Object::_nil();
+            event_factory_obj = CORBA::Object::_nil();
 #endif /* _TG_WINDOWS_ */
 
 //
@@ -301,7 +303,6 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 // reference so we can invoke its methods
 //
 
-		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 		_eventChannelFactory = CosNotifyChannelAdmin::EventChannelFactory::_narrow(event_factory_obj);
 		omniORB::setClientConnectTimeout(0);
 

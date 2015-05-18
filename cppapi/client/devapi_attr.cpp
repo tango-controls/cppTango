@@ -49,11 +49,13 @@ namespace Tango
 
 DeviceAttribute::DeviceAttributeExt &DeviceAttribute::DeviceAttributeExt::operator=(TANGO_UNUSED(const DeviceAttribute::DeviceAttributeExt &rval))
 {
+    ext_state = rval.ext_state;
 	return *this;
 }
 
 void DeviceAttribute::DeviceAttributeExt::deep_copy(TANGO_UNUSED(const DeviceAttribute::DeviceAttributeExt &rval))
 {
+    ext_state = rval.ext_state;
 }
 
 //-----------------------------------------------------------------------------
@@ -1960,6 +1962,8 @@ DeviceAttribute::~DeviceAttribute()
 
 bool DeviceAttribute::is_empty()
 {
+    ext->ext_state.reset(isempty_flag);
+
 	if (LongSeq.operator->() != NULL)
 	{
 		if (LongSeq->length() != 0)
@@ -2040,6 +2044,8 @@ bool DeviceAttribute::is_empty()
 
 	if (d_state_filled == true)
 		return false;
+
+    ext->ext_state.set(isempty_flag);
 
 	if (exceptions_flags.test(isempty_flag))
 	{
@@ -6081,10 +6087,14 @@ bool DeviceAttribute::extract_set (vector<DevState>& datum)
 //--------------------------------------------------------------------------
 bool DeviceAttribute::check_for_data()
 {
+    ext->ext_state.reset();
+
 	if (err_list.operator->() != NULL)
 	{
 		if (err_list.in().length() != 0)
 		{
+		    ext->ext_state.set(failed_flag);
+
 			if (exceptions_flags.test(failed_flag))
 				throw DevFailed(err_list.in());
 			else
@@ -6113,6 +6123,8 @@ bool DeviceAttribute::check_for_data()
 //-------------------------------------------------------------------------------------------------------------------
 bool DeviceAttribute::check_wrong_type_exception()
 {
+    ext->ext_state.set(wrongtype_flag);
+
 	if (exceptions_flags.test(wrongtype_flag))
 	{
 		ApiDataExcept::throw_exception("API_IncompatibleAttrArgumentType",

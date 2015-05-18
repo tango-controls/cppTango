@@ -1972,7 +1972,7 @@ long Attribute::get_lg_attr_value(vector <AttrProperty> &prop_list,const char *p
 		Except::throw_exception(API_AttrOptProp,o.str(),"Attribute::get_attr_value()");
 	}
 
-	pos->convert();
+	pos->convert(prop_name);
 	return pos->get_lg_value();
 }
 

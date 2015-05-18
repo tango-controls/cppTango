@@ -167,7 +167,7 @@ only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(
 db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
 zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
-strict_polling_def(false)
+polling_bef_9_def(false)
 # ifndef TANGO_HAS_LOG4TANGO
     ,cout_tmp(cout.rdbuf())
 # endif
@@ -178,7 +178,7 @@ only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(
 db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
 zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
-strict_polling_def(false)
+polling_bef_9_def(false)
 # ifndef TANGO_HAS_LOG4TANGO
     ,cout_tmp(cout.rdbuf())
 # endif

@@ -120,15 +120,17 @@ AttrProperty::AttrProperty(const char *name,string &value):attr_name(name),attr_
 //
 //------------------------------------------------------------------------------------------------------------------
 
-void AttrProperty::convert()
+void AttrProperty::convert(const char *prop_name)
 {
 	TangoSys_MemStream o;
 	o << attr_value;
 	if (!(o >> attr_lg && o.eof()))
 	{
-		Except::throw_exception((const char *)API_AttrOptProp,
-				      (const char *)"Can't convert property value",
-				      (const char *)"AttrProperty::convert");
+	    stringstream ss;
+	    ss << "Can't convert property value for property " << prop_name;
+		Except::throw_exception(API_AttrOptProp,
+				      ss.str(),
+				      "AttrProperty::convert");
 	}
 }
 

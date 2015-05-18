@@ -204,27 +204,36 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
     map<int,vector<string> > polled_together;
 
-	for (i = 0;i < nb_poll_obj;i++)
-	{
-		if (poll_list[i]->get_type() == Tango::POLL_CMD)
-			continue;
-		else
-		{
-            long po = poll_list[i]->get_upd();
-            map<int,vector<string> >::iterator ite = polled_together.find(po);
+    bool poll_bef_9 = false;
+    if (polling_bef_9_def == true)
+        poll_bef_9 = polling_bef_9;
+    else if (tg->is_polling_bef_9_def() == true)
+        poll_bef_9 = tg->get_polling_bef_9();
 
-            Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
-
-            if (ite == polled_together.end())
-            {
-                vector<string> tmp_name;
-                tmp_name.push_back(att.get_name());
-                polled_together.insert(pair<int,vector<string> >(po,tmp_name));
-            }
+    if (poll_bef_9 == false)
+    {
+        for (i = 0;i < nb_poll_obj;i++)
+        {
+            if (poll_list[i]->get_type() == Tango::POLL_CMD)
+                continue;
             else
-                ite->second.push_back(att.get_name());
-		}
-	}
+            {
+                long po = poll_list[i]->get_upd();
+                map<int,vector<string> >::iterator ite = polled_together.find(po);
+
+                Attribute &att = dev->get_device_attr()->get_attr_by_name(poll_list[i]->get_name().c_str());
+
+                if (ite == polled_together.end())
+                {
+                    vector<string> tmp_name;
+                    tmp_name.push_back(att.get_name());
+                    polled_together.insert(pair<int,vector<string> >(po,tmp_name));
+                }
+                else
+                    ite->second.push_back(att.get_name());
+            }
+        }
+    }
 
 //
 // Populate returned strings
@@ -371,19 +380,24 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 					else
                     {
                         map<int,vector<string> >::iterator ite = polled_together.find(po);
-                        if (ite->second.size() == 1)
-                            returned_info = returned_info + "attribute reading (mS) = ";
-                        else
+                        if (ite != polled_together.end())
                         {
-                            returned_info = returned_info + "attributes (";
-                            for (size_t loop = 0;loop < ite->second.size();loop++)
+                            if (ite->second.size() == 1)
+                                returned_info = returned_info + "attribute reading (mS) = ";
+                            else
                             {
-                                returned_info = returned_info + ite->second[loop];
-                                if (loop <= ite->second.size() - 2)
-                                    returned_info = returned_info + " + ";
+                                returned_info = returned_info + "attributes (";
+                                for (size_t loop = 0;loop < ite->second.size();loop++)
+                                {
+                                    returned_info = returned_info + ite->second[loop];
+                                    if (loop <= ite->second.size() - 2)
+                                        returned_info = returned_info + " + ";
+                                }
+                                returned_info = returned_info + ") reading (mS) = ";
                             }
-                            returned_info = returned_info + ") reading (mS) = ";
                         }
+                        else
+                            returned_info = returned_info + "attribute reading(ms) = ";
                     }
 
 					s.setf(ios::fixed);
@@ -768,13 +782,13 @@ void DServer::add_obj_polling(const Tango::DevVarLongStringArray *argin,bool wit
 	{
 		cout4 << "POLLING: Creating a thread to poll device " << (argin->svalue)[0] << endl;
 
-        bool strict_poll = false;
-        if (strict_polling_def == true)
-            strict_poll = strict_polling;
-        else if (tg->is_polling_strict_period_def() == true)
-            strict_poll = tg->get_polling_strict_period();
+        bool poll_bef_9 = false;
+        if (polling_bef_9_def == true)
+            poll_bef_9 = polling_bef_9;
+        else if (tg->is_polling_bef_9_def() == true)
+            poll_bef_9 = tg->get_polling_bef_9();
 
-		thread_created = tg->create_poll_thread((argin->svalue)[0],false,strict_poll);
+		thread_created = tg->create_poll_thread((argin->svalue)[0],false,poll_bef_9);
 		poll_th_id = tg->get_polling_thread_id_by_name((argin->svalue)[0]);
 	}
 

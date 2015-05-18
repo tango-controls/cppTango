@@ -86,7 +86,7 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 	cci = 0;
 	dummy_cl_id.cpp_clnt(cci);
 	previous_nb_late = 0;
-	strict_period = false;
+	polling_bef_9 = false;
 
 	if (heartbeat == true)
 		polling_stop = false;
@@ -346,7 +346,7 @@ void PollThread::execute_cmd()
         PollObjType new_type = (*wo.poll_list)[local_cmd.index]->get_type();
 
         bool found = false;
-        if (new_type == POLL_ATTR && wo.dev->get_dev_idl_version() >= 4)
+        if (new_type == POLL_ATTR && wo.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
         {
 #ifdef HAS_LAMBDA_FUNC
             ite = find_if(works.begin(),works.end(),
@@ -1022,7 +1022,7 @@ void PollThread::insert_in_list(WorkItem &new_work)
 
 void PollThread::add_insert_in_list(WorkItem &new_work)
 {
-    if (new_work.type == POLL_ATTR && new_work.dev->get_dev_idl_version() >= 4)
+    if (new_work.type == POLL_ATTR && new_work.dev->get_dev_idl_version() >= 4 && polling_bef_9 == false)
     {
         list<WorkItem>::iterator ite;
 #ifdef HAS_LAMBDA_FUNC
@@ -1260,7 +1260,7 @@ void PollThread::compute_sleep_time()
         bool discard = false;
         u_int nb_late = 0;
 
-        if (strict_period == false)
+        if (polling_bef_9 == false)
         {
 
 //

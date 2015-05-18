@@ -500,11 +500,11 @@ public:
 	unsigned long get_polling_threads_pool_size() {return poll_pool_size;}
 
 /**
- * Set the polling period algorithm
+ * Set the polling thread algorithm to the algorithum used before Tango 9
  *
- * @param val Polling strict period flag
+ * @param val Polling algorithm flag
  */
-	void set_polling_strict_period(bool val) {strict_polling_def=true;strict_polling=val;}
+	void set_polling_before_9(bool val) {polling_bef_9_def=true;polling_bef_9=val;}
 //@}
 
 /**@name Miscellaneous methods */
@@ -904,8 +904,8 @@ public:
 	static void tango_host_from_fqan(string &,string &);
 	static void tango_host_from_fqan(string &,string &,int &);
 
-    bool is_polling_strict_period_def() {return strict_polling_def;}
-    bool get_polling_strict_period() {return strict_polling;}
+    bool is_polling_bef_9_def() {return polling_bef_9_def;}
+    bool get_polling_bef_9() {return polling_bef_9;}
 
 private:
 	TANGO_IMP static Util	*_instance;
@@ -1048,8 +1048,8 @@ private:
 	bool                        wattr_nan_allowed;      // NaN allowed when writing attribute
 	RootAttRegistry				root_att_reg;			// Root attribute(s) registry
 
-	bool                        strict_polling_def;     // Is strict polling defined
-	bool                        strict_polling;         // Strict polling flag
+	bool                        polling_bef_9_def;      // Is polling algo requirement defined
+	bool                        polling_bef_9;          // use Tango < 9 polling algo. flag
 };
 
 //***************************************************************************

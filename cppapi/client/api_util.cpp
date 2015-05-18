@@ -319,14 +319,28 @@ void ApiUtil::create_orb()
 
 //
 // Init the ORB
+// Starting with omniORB 4.2, we need to add the throwTransientOnTimeout option for compatibility
 //
+
+    bool omni_42_compat = false;
+    CORBA::ULong omni_vers_hex = omniORB::versionHex();
+    if (omni_vers_hex > 0x04020000)
+        omni_42_compat = true;
 
 	const char *options[][2] = {
 			{"clientCallTimeOutPeriod",CLNT_TIMEOUT_STR},
 			{"verifyObjectExistsAndType","0"},
 			{"maxGIOPConnectionPerServer",MAX_GIOP_PER_SERVER},
 			{"giopMaxMsgSize",MAX_TRANSFER_SIZE},
+            {"throwTransientOnTimeOut","1"},
 			{0,0}};
+
+    if (omni_42_compat == false)
+    {
+        int nb_opt = sizeof(options) / sizeof (char *[2]);
+        options[nb_opt - 2][0] = NULL;
+        options[nb_opt - 2][1] = NULL;
+    }
 
 	_orb = CORBA::ORB_init(_argc,_argv,"omniORB4",options);
 

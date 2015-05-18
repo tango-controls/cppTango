@@ -38,6 +38,18 @@ static const char *RcsId = "$Id$";
 #include <omniORB4/internal/giopStream.h>
 
 #include <iterator>
+#include <arpa/inet.h>
+
+#ifdef _TG_WINDOWS_
+#include <sys/timeb.h>
+#include <ws2tcpip.h>
+#else
+#include <sys/time.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif /* _TG_WINDOWS_ */
 
 using namespace CORBA;
 
@@ -54,7 +66,8 @@ ZmqEventSupplier *ZmqEventSupplier::_instance = NULL;
 /************************************************************************/
 
 
-ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),event_pub_sock(NULL),double_send(0),double_send_heartbeat(false)
+ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),event_pub_sock(NULL),
+name_specified(false),double_send(0),double_send_heartbeat(false)
 {
 	_instance = this;
 
@@ -69,6 +82,8 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 //
 // Create the Publisher socket for heartbeat event and bind it
 // If the user has specified one IP address on the command line, re-use it in the endpoint
+// But if the address was specified as a name (supported by omniORB), convert this name to IP address
+// but uses the name in the endpoint given to client
 //
 
     heartbeat_pub_sock = new zmq::socket_t(zmq_context,ZMQ_PUB);
@@ -89,18 +104,59 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
 
     heartbeat_endpoint = "tcp://";
 
-    string &specified_ip = tg->get_specified_ip();
+    string &specified_addr = tg->get_specified_ip();
+    unsigned char buf[sizeof(struct in_addr)];
+    bool specified_name = false;
+
+    if (specified_addr.empty() == false && inet_pton(AF_INET,specified_addr.c_str(),buf) == 0)
+        specified_name = true;
+
     string &h_name = tg->get_host_name();
     string canon_name;
+    string specified_ip;
+
+    if (specified_name == true)
+    {
+        struct addrinfo hints;
+
+        memset(&hints,0,sizeof(struct addrinfo));
+
+        hints.ai_flags     = AI_ADDRCONFIG;
+        hints.ai_family    = AF_INET;
+        hints.ai_socktype  = SOCK_STREAM;
+
+        struct addrinfo	*info;
+
+        int result = getaddrinfo(specified_addr.c_str(),NULL,&hints,&info);
+
+        if (result == 0)
+        {
+            struct sockaddr_in *s_in = (sockaddr_in *)info->ai_addr;
+            specified_ip = inet_ntoa(s_in->sin_addr);
+
+            freeaddrinfo(info);
+        }
+        else
+        {
+            stringstream ss;
+            ss << "Can't convert " << specified_addr << " to IP address";
+
+            EventSystemExcept::throw_exception(API_ZmqInitFailed,ss.str(),"ZmqEventSupplier::ZmqEventSupplier()");
+        }
+    }
+    else
+        specified_ip = specified_addr;
 
     string::size_type pos = h_name.find('.');
     if (pos != string::npos)
 		canon_name = h_name.substr(0,pos);
 
-    if (specified_ip.empty() == false && (canon_name != specified_ip))
+    if (specified_addr.empty() == false && (specified_addr != "localhost"))
     {
         heartbeat_endpoint = heartbeat_endpoint + specified_ip + ':';
         ip_specified = true;
+        if (specified_name == true)
+            name_specified = true;
         user_ip = specified_ip;
     }
     else
@@ -144,6 +200,13 @@ ZmqEventSupplier::ZmqEventSupplier(Util *tg):EventSupplier(tg),zmq_context(1),ev
            heartbeat_endpoint.replace(pos,1,adrs[0]);
            host_ip = adrs[0];
         }
+    }
+    else if (specified_name == true)
+    {
+        string::size_type start = heartbeat_endpoint.find("//");
+        start = start + 2;
+        string::size_type stop = heartbeat_endpoint.rfind(':');
+        heartbeat_endpoint.replace(start,stop - start,specified_addr);
     }
 
 //
@@ -388,6 +451,14 @@ void ZmqEventSupplier::create_event_socket()
         if (ip_specified == false)
         {
             event_endpoint.replace(6,1,host_ip);
+        }
+        else if (name_specified == true)
+        {
+            string::size_type start = event_endpoint.find("//");
+            start = start + 2;
+            string::size_type stop = event_endpoint.rfind(':');
+            string &specified_addr = tg->get_specified_ip();
+            event_endpoint.replace(start,stop - start,specified_addr);
         }
     }
 }

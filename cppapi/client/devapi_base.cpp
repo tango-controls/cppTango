@@ -5365,14 +5365,14 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 	}
 
 	unsigned long nb_received;
-	if (version < 3)
-		nb_received = attr_value_list->length();
-	else if (version == 3)
-		nb_received = attr_value_list_3->length();
-	else if (version == 4)
+	if (version >= 5)
+        nb_received = attr_value_list_5->length();
+    else if (version == 4)
 		nb_received = attr_value_list_4->length();
-	else
-		nb_received = attr_value_list_5->length();
+    else if (version == 3)
+        nb_received = attr_value_list_3->length();
+    else
+        nb_received = attr_value_list->length();
 
 	vector<DeviceAttribute> *dev_attr = new(vector<DeviceAttribute>);
 	dev_attr->resize(nb_received);

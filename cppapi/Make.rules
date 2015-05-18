@@ -10,8 +10,8 @@
 ##############################################################################
 
 MAJOR_VERS = 9
-MINOR_VERS = 0
-PATCH_VERS = 7
+MINOR_VERS = 1
+PATCH_VERS = 0
 
 ##############################################################################
 #
@@ -93,10 +93,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.7/$(BIN_DIR)
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.2.0/$(BIN_DIR)
 else
-OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.1.7/$(BIN_DIR)
-#OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.2.0/$(BIN_DIR)
+OMNI_BASE = $(TANGO_HOME)/ORB/omniORB4.2.0/$(BIN_DIR)
 endif
 
 ##############################################################################

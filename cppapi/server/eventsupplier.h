@@ -347,6 +347,7 @@ private :
 	bool                        heartbeat_name_init;
 
 	bool                        ip_specified;           // The user has specified an IP address
+	bool                        name_specified;         // The user has specified a name as IP address
 	string                      user_ip;                // The specified IP address
 
 	string                      event_endpoint;         // event publisher endpoint

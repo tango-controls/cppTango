@@ -533,6 +533,30 @@ public :
  * @param [in] fl The exception flag
  */
 	void set_exceptions(except_flags fl) {exceptions_flags.set((size_t)fl);}
+/**
+ * Get instance extraction state
+ *
+ * Allow the user to find out what was the reason of extraction from DeviceData failure. This
+ * method has to be used when exceptions are disabled.
+ * Here is an example of how method state() could be used
+ * @code
+ * DeviceData dd = ....
+ *
+ * bitset<DeviceData::numFlags> bs;
+ * da.exceptions(bs);
+ *
+ * DevLong dl;
+ * if ((da >> dl) == false)
+ * {
+ *    bitset<DeviceData::numFlags> bs_err = da.state();
+ *    if (bs_err.test(DeviceData::isempty_flag) == true)
+ *        .....
+ * }
+ * @endcode
+ *
+ * @return The error bit set.
+ */
+	bitset<numFlags> state() {return ext->ext_state;}
 //@}
 
 /**@name miscellaneous methods */
@@ -602,6 +626,8 @@ private:
     {
     public:
         DeviceDataExt() {};
+
+        bitset<numFlags>    ext_state;
     };
 
 #ifdef HAS_UNIQUE_PTR

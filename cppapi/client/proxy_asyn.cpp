@@ -54,7 +54,7 @@ namespace Tango
 //
 // method : 		Connection::command_inout_asyn()
 //
-// description : 	Send a command to a Tango device asynchrnously.
+// description : 	Send a command to a Tango device asynchronously.
 //			The client is not blocked until the command is executed
 //
 // argin(s) :		command : The command name
@@ -69,7 +69,7 @@ namespace Tango
 long Connection::command_inout_asynch(const char *command, DeviceData &data_in, bool faf)
 {
 //
-// Throw exception if caller not allowed to write_attribute
+// Throw exception if caller not allowed to do write action
 //
 
 	if (access == ACCESS_READ)
@@ -107,8 +107,8 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 			desc << "Command_inout_asynch on device " << dev_name() << " for command ";
 			desc << command << " is not authorized" << ends;
 
-			NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
-									  	  (const char *)"Connection::command_inout_asynch()");
+			NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
+									  	  "Connection::command_inout_asynch()");
 		}
 	}
 
@@ -125,8 +125,8 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute command_inout on device " << dev_name();
 		desc << ", command " << command << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"Connection::command_inout_asynch()");
+                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
+                        desc.str(),"Connection::command_inout_asynch()");
 	}
 
 //
@@ -232,7 +232,6 @@ long Connection::command_inout_asynch(string &command,bool faf)
 
 DeviceData Connection::command_inout_reply(long id)
 {
-
 	DeviceData data_out;
 //
 // Retrieve request object
@@ -246,9 +245,9 @@ DeviceData Connection::command_inout_reply(long id)
 
 	if (req.req_type != TgRequest::CMD_INOUT)
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::command_inout_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::command_inout_reply");
 	}
 
 //
@@ -261,16 +260,43 @@ DeviceData Connection::command_inout_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
-						       (const char *)"Connection::command_inout_reply");
+						       "Connection::command_inout_reply");
 	}
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-	CORBA::Environment_ptr env = req.request->env();
+    CORBA::Environment_ptr env;
+    try
+    {
+        env = req.request->env();
+    }
+    catch (CORBA::TRANSIENT &tra)
+    {
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        if (tra.minor() == omni::TRANSIENT_CallTimedout)
+        {
+            omni420_timeout(id,cb_excep_mess);
+        }
+        else
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            return omni420_except(id,cb_excep_mess,req);
+        }
+    }
+    catch(CORBA::SystemException &ex)
+    {
+        set_connection_state(CONNECTION_NOTOK);
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        return omni420_except(id,cb_excep_mess,req);
+    }
+
 	if (!CORBA::is_nil(env) && (env->exception() == NULL))
 	{
 
@@ -295,7 +321,7 @@ DeviceData Connection::command_inout_reply(long id)
 		CORBA::Exception *ex_ptr = env->exception();
 
 //
-// Special treatement for timeout exception (TRANSIENT with specific minor code)
+// Special treatment for timeout exception (TRANSIENT with specific minor code)
 //
 
 		CORBA::TRANSIENT *tra;
@@ -319,9 +345,9 @@ DeviceData Connection::command_inout_reply(long id)
 				remove_asyn_request(id);
 
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
-					  (const char *)"API_DeviceTimedOut",
+					  "API_DeviceTimedOut",
 					  desc.str(),
-					  (const char *)"Connection::command_inout_reply()");
+					  "Connection::command_inout_reply()");
 			}
 		}
 
@@ -329,7 +355,6 @@ DeviceData Connection::command_inout_reply(long id)
 		CORBA::UnknownUserException *unk_ex;
 		if ((unk_ex = CORBA::UnknownUserException::_downcast(ex_ptr)) != NULL)
 		{
-
 //
 // It is a UserUnknownException exception. This means that the
 // server has sent a DevFailed exception
@@ -353,9 +378,9 @@ DeviceData Connection::command_inout_reply(long id)
 			remove_asyn_request(id);
 
 			Except::re_throw_exception(ex,
-					   (const char*)API_CommandFailed,
+					   API_CommandFailed,
 					   desc.str(),
-					   (const char*)"Connection::command_inout_reply()");
+					   "Connection::command_inout_reply()");
 
 
 		}
@@ -414,9 +439,9 @@ DeviceData Connection::command_inout_reply(long id)
 			remove_asyn_request(id);
 
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  (const char*)"API_CommunicationFailed",
+						  "API_CommunicationFailed",
 						  desc.str(),
-						  (const char*)"Connection::command_inout_reply()");
+						  "Connection::command_inout_reply()");
 
 
 		}
@@ -463,9 +488,9 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 
 	if (req.req_type != TgRequest::CMD_INOUT)
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::command_inout_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::command_inout_reply");
 	}
 
 //
@@ -479,7 +504,11 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 	{
 		if (req.request->poll_response() == false)
 		{
-			req.request->get_response();
+            try
+            {
+                req.request->get_response();
+            }
+            catch (...) {}
 		}
 	}
 	else
@@ -512,23 +541,51 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			desc << "Device " << dev_name();
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       	       desc.str(),
-						               (const char *)"Connection::command_inout_reply");
+						               "Connection::command_inout_reply");
 		}
 	}
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
 	DeviceData data_out;
-	CORBA::Environment_ptr env = req.request->env();
+	CORBA::Environment_ptr env;
+
+    try
+    {
+        env = req.request->env();
+    }
+    catch (CORBA::TRANSIENT &tra)
+    {
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        if (tra.minor() == omni::TRANSIENT_CallTimedout)
+        {
+            omni420_timeout(id,cb_excep_mess);
+        }
+        else
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            return omni420_except(id,cb_excep_mess,req);
+        }
+    }
+    catch(CORBA::SystemException &ex)
+    {
+        set_connection_state(CONNECTION_NOTOK);
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        return omni420_except(id,cb_excep_mess,req);
+    }
+
 	if (!CORBA::is_nil(env) && (env->exception() == NULL))
 	{
 
 //
-// IT's not an exception, therefore get received value
+// It's not an exception, therefore get received value
 //
 
 		const CORBA::Any *received;
@@ -572,9 +629,9 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 				remove_asyn_request(id);
 
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  (const char *)"API_DeviceTimedOut",
+						  "API_DeviceTimedOut",
 						  desc.str(),
-						  (const char *)"Connection::command_inout_reply()");
+						  "Connection::command_inout_reply()");
 			}
 		}
 
@@ -605,9 +662,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			remove_asyn_request(id);;
 
 			Except::re_throw_exception(ex,
-						   (const char*)API_CommandFailed,
-                        			   desc.str(),
-						   (const char*)"Connection::command_inout_reply()");
+						   API_CommandFailed,desc.str(),
+						   "Connection::command_inout_reply()");
 
 
 		}
@@ -666,9 +722,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			remove_asyn_request(id);
 
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
-						          (const char*)"API_CommunicationFailed",
-                        			          desc.str(),
-						          (const char*)"Connection::command_inout_reply()");
+						          "API_CommunicationFailed",desc.str(),
+						          "Connection::command_inout_reply()");
 
 
 		}
@@ -711,8 +766,8 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute read_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"DeviceProxy::read_attributes_asynch()");
+                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
+                        desc.str(),"DeviceProxy::read_attributes_asynch()");
 	}
 
 //
@@ -823,9 +878,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::read_attributes_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::read_attributes_reply");
 	}
 
 //
@@ -838,18 +893,53 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
-						       (const char *)"DeviceProxy::read_attributes_reply");
+						       "DeviceProxy::read_attributes_reply");
 	}
 	else
 	{
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-		CORBA::Environment_ptr env = req.request->env();
+		CORBA::Environment_ptr env;
+		try
+		{
+            env = req.request->env();
+		}
+        catch (CORBA::TRANSIENT &tra)
+        {
+            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+            if (tra.minor() == omni::TRANSIENT_CallTimedout)
+            {
+                omni420_timeout_attr(id,cb_excep_mess,MULTIPLE);
+            }
+            else
+            {
+                set_connection_state(CONNECTION_NOTOK);
+                omni420_except_attr(id,cb_excep_mess,MULTIPLE);
+
+                vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+                remove_asyn_request(id);
+                return a_ptr;
+            }
+        }
+        catch(CORBA::SystemException &ex)
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+            omni420_except_attr(id,cb_excep_mess,MULTIPLE);
+
+            vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+            remove_asyn_request(id);
+            return a_ptr;
+        }
+
 		if (!CORBA::is_nil(env) && (env->exception() != NULL))
 		{
 			read_attr_except(req.request,id,MULTIPLE);
@@ -991,9 +1081,9 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::read_attribute_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::read_attribute_reply");
 	}
 
 //
@@ -1006,18 +1096,53 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
-						       (const char *)"DeviceProxy::read_attribute_reply");
+						       "DeviceProxy::read_attribute_reply");
 	}
 	else
 	{
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-		CORBA::Environment_ptr env = req.request->env();
+		CORBA::Environment_ptr env;
+		try
+		{
+            env = req.request->env();
+		}
+        catch (CORBA::TRANSIENT &tra)
+        {
+            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+            if (tra.minor() == omni::TRANSIENT_CallTimedout)
+            {
+                omni420_timeout_attr(id,cb_excep_mess,SIMPLE);
+            }
+            else
+            {
+                set_connection_state(CONNECTION_NOTOK);
+                omni420_except_attr(id,cb_excep_mess,SIMPLE);
+
+                DeviceAttribute *a_ptr = redo_synch_read_call(req);
+                remove_asyn_request(id);
+                return a_ptr;
+            }
+        }
+        catch(CORBA::SystemException &ex)
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+            omni420_except_attr(id,cb_excep_mess,SIMPLE);
+
+            DeviceAttribute *a_ptr = redo_synch_read_call(req);
+            remove_asyn_request(id);
+            return a_ptr;
+        }
+
 		if (!CORBA::is_nil(env) && (env->exception() != NULL))
 		{
 			read_attr_except(req.request,id,SIMPLE);
@@ -1152,9 +1277,9 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::read_attributes_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::read_attributes_reply");
 	}
 
 //
@@ -1168,7 +1293,11 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	{
 		if (req.request->poll_response() == false)
 		{
-			req.request->get_response();
+		    try
+		    {
+                req.request->get_response();
+		    }
+		    catch(...) {}
 		}
 	}
 	else
@@ -1201,17 +1330,52 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       	       desc.str(),
-						               (const char *)"DeviceProxy::read_attributes_reply");
+						               "DeviceProxy::read_attributes_reply");
 		}
 	}
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-	CORBA::Environment_ptr env = req.request->env();
+	CORBA::Environment_ptr env;
+	try
+	{
+        env = req.request->env();
+	}
+    catch (CORBA::TRANSIENT &tra)
+    {
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        if (tra.minor() == omni::TRANSIENT_CallTimedout)
+        {
+            omni420_timeout_attr(id,cb_excep_mess,MULTIPLE);
+        }
+        else
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            omni420_except_attr(id,cb_excep_mess,MULTIPLE);
+
+            vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+            remove_asyn_request(id);
+            return a_ptr;
+        }
+    }
+    catch(CORBA::SystemException &ex)
+    {
+        set_connection_state(CONNECTION_NOTOK);
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        omni420_except_attr(id,cb_excep_mess,MULTIPLE);
+
+		vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
+		remove_asyn_request(id);
+		return a_ptr;
+    }
+
 	if (!CORBA::is_nil(env) && (env->exception() != NULL))
 	{
 		read_attr_except(req.request,id,MULTIPLE);
@@ -1354,9 +1518,9 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 	if (req.req_type != TgRequest::READ_ATTR)
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::read_attribute_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::read_attribute_reply");
 	}
 
 //
@@ -1370,7 +1534,11 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 	{
 		if (req.request->poll_response() == false)
 		{
-			req.request->get_response();
+		    try
+		    {
+                req.request->get_response();
+		    }
+            catch(...) {}
 		}
 	}
 	else
@@ -1403,17 +1571,52 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       	       desc.str(),
-						               (const char *)"DeviceProxy::read_attributes_reply");
+						               "DeviceProxy::read_attribute_reply");
 		}
 	}
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-	CORBA::Environment_ptr env = req.request->env();
+	CORBA::Environment_ptr env;
+	try
+	{
+	    env = req.request->env();
+	}
+    catch (CORBA::TRANSIENT &tra)
+    {
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        if (tra.minor() == omni::TRANSIENT_CallTimedout)
+        {
+            omni420_timeout_attr(id,cb_excep_mess,SIMPLE);
+        }
+        else
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            omni420_except_attr(id,cb_excep_mess,SIMPLE);
+
+            DeviceAttribute *a_ptr = redo_synch_read_call(req);
+            remove_asyn_request(id);
+            return a_ptr;
+        }
+    }
+    catch(CORBA::SystemException &ex)
+    {
+        set_connection_state(CONNECTION_NOTOK);
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        omni420_except_attr(id,cb_excep_mess,SIMPLE);
+
+		DeviceAttribute *a_ptr = redo_synch_read_call(req);
+		remove_asyn_request(id);
+		return a_ptr;
+    }
+
 	if (!CORBA::is_nil(env) && (env->exception() != NULL))
 	{
 		read_attr_except(req.request,id,SIMPLE);
@@ -1435,7 +1638,6 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 		return a_ptr;
 	}
-
 
 	DeviceAttribute *dev_attr = new DeviceAttribute;
 
@@ -1563,17 +1765,16 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
 			if (type == SIMPLE)
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  (const char *)"API_DeviceTimedOut",
+							  "API_DeviceTimedOut",
 						  	  desc.str(),
-							  (const char *)"DeviceProxy::read_attribute_reply()");
+							  "DeviceProxy::read_attribute_reply()");
 			else
 				ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  (const char *)"API_DeviceTimedOut",
+							  "API_DeviceTimedOut",
 						  	  desc.str(),
-							  (const char *)"DeviceProxy::read_attributes_reply()");
+							  "DeviceProxy::read_attributes_reply()");
 		}
 	}
-
 
 	CORBA::UnknownUserException *unk_ex;
 	if ((unk_ex = CORBA::UnknownUserException::_downcast(ex_ptr)) != NULL)
@@ -1608,14 +1809,12 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
 		if (type == SIMPLE)
 	        	Except::re_throw_exception(ex,
-						   (const char*)API_AttributeFailed,
-                        		   	   desc.str(),
-						   (const char*)"DeviceProxy::read_attribute_reply()");
+						   API_AttributeFailed,desc.str(),
+						   "DeviceProxy::read_attribute_reply()");
 		else
 	        	Except::re_throw_exception(ex,
-						   (const char*)API_AttributeFailed,
-                        		   	   desc.str(),
-						   (const char*)"DeviceProxy::read_attributes_reply()");
+						   API_AttributeFailed,desc.str(),
+						   "DeviceProxy::read_attributes_reply()");
 
 
 	}
@@ -1670,14 +1869,12 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
 		if (type == SIMPLE)
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  (const char*)"API_CommunicationFailed",
-                        			  	  desc.str(),
-							  (const char*)"DeviceProxy::read_attribute_reply()");
+							  "API_CommunicationFailed",desc.str(),
+							  "DeviceProxy::read_attribute_reply()");
 		else
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  (const char*)"API_CommunicationFailed",
-                        			  	  desc.str(),
-							  (const char*)"DeviceProxy::read_attributes_reply()");
+							  "API_CommunicationFailed",desc.str(),
+							  "DeviceProxy::read_attributes_reply()");
 	}
 
 }
@@ -1708,8 +1905,8 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 		TangoSys_OMemStream desc;
 		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-		NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
-									  	  (const char *)"DeviceProxy::write_attributes_asynch()");
+		NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
+									  	  "DeviceProxy::write_attributes_asynch()");
 	}
 
 //
@@ -1724,8 +1921,8 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"DeviceProxy::write_attributes_asynch()");
+                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
+                        desc.str(),"DeviceProxy::write_attributes_asynch()");
 	}
 
 //
@@ -1797,8 +1994,8 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 		TangoSys_OMemStream desc;
 		desc << "Writing attribute(s) on device " << dev_name() << " is not authorized" << ends;
 
-		NotAllowedExcept::throw_exception((const char *)API_ReadOnlyMode,desc.str(),
-									  	  (const char *)"DeviceProxy::write_attribute_asynch()");
+		NotAllowedExcept::throw_exception(API_ReadOnlyMode,desc.str(),
+									  	  "DeviceProxy::write_attribute_asynch()");
 	}
 
 //
@@ -1813,8 +2010,8 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 	{
 		TangoSys_OMemStream desc;
 		desc << "Failed to execute write_attributes_asynch on device " << dev_name() << ends;
-                ApiConnExcept::re_throw_exception(e,(const char*)API_CommandFailed,
-                        desc.str(), (const char*)"DeviceProxy::write_attribute_asynch()");
+                ApiConnExcept::re_throw_exception(e,API_CommandFailed,
+                        desc.str(),"DeviceProxy::write_attribute_asynch()");
 	}
 
 //
@@ -1904,9 +2101,9 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 
 	if ((req.req_type == TgRequest::CMD_INOUT) || (req.req_type == TgRequest::READ_ATTR))
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::write_attributes_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::write_attributes_reply");
 	}
 
 //
@@ -1920,7 +2117,11 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 	{
 		if (req.request->poll_response() == false)
 		{
-			req.request->get_response();
+		    try
+		    {
+                req.request->get_response();
+		    }
+            catch (...) {}
 		}
 	}
 	else
@@ -1953,21 +2154,49 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 			desc << "Device " << device_name;
 			desc << ": Reply for asynchronous call (id = " << id;
 			desc << ") is not yet arrived" << ends;
-			ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+			ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       	       desc.str(),
-						               (const char *)"DeviceProxy::write_attributes_reply");
+						               "DeviceProxy::write_attributes_reply");
 		}
 	}
 
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-	CORBA::Environment_ptr env = req.request->env();
+	CORBA::Environment_ptr env;
+	try
+	{
+	    env = req.request->env();
+	}
+    catch (CORBA::TRANSIENT &tra)
+    {
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        if (tra.minor() == omni::TRANSIENT_CallTimedout)
+        {
+            omni420_timeout_wattr(id,cb_excep_mess);
+        }
+        else
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            omni420_except_wattr(id,cb_excep_mess);
+            redo_synch_write_call(req);
+        }
+    }
+    catch(CORBA::SystemException &ex)
+    {
+        set_connection_state(CONNECTION_NOTOK);
+        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        omni420_except_wattr(id,cb_excep_mess);
+        redo_synch_write_call(req);
+    }
+
 	if (!CORBA::is_nil(env) && (env->exception() != NULL))
 	{
 		write_attr_except(req.request,id,req.req_type);
-
 
 //
 // If we arrive here, this means the exception was there due to a server
@@ -2013,9 +2242,9 @@ void DeviceProxy::write_attributes_reply(long id)
 
 	if ((req.req_type == TgRequest::CMD_INOUT) || (req.req_type == TgRequest::READ_ATTR))
 	{
-		ApiAsynExcept::throw_exception((const char *)API_BadAsynReqType,
-					       (const char *)"Incompatible request type",
-					       (const char *)"Connection::write_attributes_reply");
+		ApiAsynExcept::throw_exception(API_BadAsynReqType,
+					       "Incompatible request type",
+					       "Connection::write_attributes_reply");
 	}
 
 //
@@ -2028,17 +2257,46 @@ void DeviceProxy::write_attributes_reply(long id)
 		desc << "Device " << dev_name();
 		desc << ": Reply for asynchronous call (id = " << id;
 		desc << ") is not yet arrived" << ends;
-		ApiAsynNotThereExcept::throw_exception((const char *)API_AsynReplyNotArrived,
+		ApiAsynNotThereExcept::throw_exception(API_AsynReplyNotArrived,
 						       desc.str(),
-						       (const char *)"DeviceProxy::write_attributes_reply");
+						       "DeviceProxy::write_attributes_reply");
 	}
 	else
 	{
 //
 // Check if the reply is an exception
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// we have to also handle CORBA::Request instance throwing exception in its env() and
+// other methods. This was not the case in omniORB 4.1!
 //
 
-		CORBA::Environment_ptr env = req.request->env();
+		CORBA::Environment_ptr env;
+		try
+		{
+		    env = req.request->env();
+		}
+        catch (CORBA::TRANSIENT &tra)
+        {
+            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+            if (tra.minor() == omni::TRANSIENT_CallTimedout)
+            {
+                omni420_timeout_wattr(id,cb_excep_mess);
+            }
+            else
+            {
+                set_connection_state(CONNECTION_NOTOK);
+                omni420_except_wattr(id,cb_excep_mess);
+                redo_synch_write_call(req);
+            }
+        }
+        catch(CORBA::SystemException &ex)
+        {
+            set_connection_state(CONNECTION_NOTOK);
+            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+            omni420_except_wattr(id,cb_excep_mess);
+			redo_synch_write_call(req);
+        }
+
 		if (!CORBA::is_nil(env) && (env->exception() != NULL))
 		{
 			write_attr_except(req.request,id,req.req_type);
@@ -2126,9 +2384,9 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 			remove_asyn_request(id);
 
 			ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  (const char *)"API_DeviceTimedOut",
+							  "API_DeviceTimedOut",
 						  	  desc.str(),
-							  (const char *)"DeviceProxy::write_attributes_reply()");
+							  "DeviceProxy::write_attributes_reply()");
 		}
 	}
 
@@ -2201,24 +2459,24 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
 		if (version < 3)
 		{
-			Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
+			Except::re_throw_exception(ex,API_AttributeFailed,
 						   desc.str(),
-						   (const char*)"DeviceProxy::write_attributes_reply()");
+						   "DeviceProxy::write_attributes_reply()");
 		}
 		else
 		{
 			if (serv_ex != NULL)
 			{
-				Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
+				Except::re_throw_exception(ex,API_AttributeFailed,
 							   desc.str(),
-							   (const char*)"DeviceProxy::write_attributes_reply()");
+							   "DeviceProxy::write_attributes_reply()");
 			}
 
 			if (req_type == TgRequest::WRITE_ATTR)
 				throw Tango::NamedDevFailedList(m_ex,
 					       			device_name,
-					       			(const char *)"DeviceProxy::write_attributes_reply()",
-					       			(const char *)API_AttributeFailed);
+					       			"DeviceProxy::write_attributes_reply()",
+					       			API_AttributeFailed);
 			else
 			{
 
@@ -2227,8 +2485,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 //
 
 				Tango::DevFailed ex(m_ex.errors[0].err_list);
-				Except::re_throw_exception(ex,(const char*)API_AttributeFailed,
-                        				   desc.str(), (const char*)"DeviceProxy::write_attributes_reply()");
+				Except::re_throw_exception(ex,API_AttributeFailed,
+                        				   desc.str(),"DeviceProxy::write_attributes_reply()");
 
 			}
 		}
@@ -2301,9 +2559,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 		remove_asyn_request(id);
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  (const char*)"API_CommunicationFailed",
-                        			  desc.str(),
-						  (const char*)"DeviceProxy::write_attributes_reply()");
+						  "API_CommunicationFailed",desc.str(),
+						  "DeviceProxy::write_attributes_reply()");
 	}
 }
 
@@ -2360,9 +2617,9 @@ void DeviceProxy::retrieve_read_args(TgRequest &req,vector<string> &att_list)
 		desc << ends;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  			  (const char*)"API_CommunicationFailed",
+							  			  "API_CommunicationFailed",
                         			  	  desc.str(),
-							  			  (const char*)"DeviceProxy::redo_simpl_call()");
+							  			  "DeviceProxy::redo_simpl_call()");
 	}
 }
 
@@ -2459,9 +2716,9 @@ void DeviceProxy::redo_synch_write_call(TgRequest &req)
 		desc << "Failed to redo the call synchronously on device " << device_name << ends;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  			  (const char*)"API_CommunicationFailed",
+							  			  "API_CommunicationFailed",
                         			  	  desc.str(),
-							  			  (const char*)"DeviceProxy::redo_synch_write_call()");
+							  			  "DeviceProxy::redo_synch_write_call()");
 	}
 
 //
@@ -2505,9 +2762,9 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 		desc << "Failed to redo the call synchronously on device " << dev_name() << ends;
 
 		ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  			  (const char*)"API_CommunicationFailed",
+							  			  "API_CommunicationFailed",
                         			  	  desc.str(),
-							  			  (const char*)"DeviceProxy::redo_synch_write_call()");
+							  			  "DeviceProxy::redo_synch_write_call()");
 	}
 
 //
@@ -2557,6 +2814,147 @@ void Connection::cancel_all_polling_asynch_request()
 	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->mark_all_polling_as_cancelled();
 	pasyn_ctr = 0;
+}
+
+//-----------------------------------------------------------------------------
+//
+// method : 		Connection::omni420_xxx
+//                  DeviceProxy::omni420_xxx
+//
+// description : 	These methods are there due to the compatibility pb with omniORB
+//                  4.2.0 about CORBA::Request class methods throwing exceptions while
+//                  it was not the case in omniORB 4.1!
+//
+//-----------------------------------------------------------------------------
+
+void Connection::omni420_timeout(int id,char *cb_excep_mess)
+{
+    stringstream ss;
+    ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+
+    remove_asyn_request(id);
+
+    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                          "API_DeviceTimedOut",ss.str(),
+                          "Connection::command_inout_reply()");
+}
+
+DeviceData Connection::omni420_except(int id,char *cb_excep_mess,TgRequest &req)
+{
+//
+// Check if the exception was a connection exception
+// If so, execute the command synchronously (tries to reconnect)
+// If successful just return, otherwise throw the first exception
+//
+
+    string ex(cb_excep_mess);
+    string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+    if (pos != string::npos)
+    {
+        try
+        {
+            DeviceData dd_out = redo_synch_cmd(req);
+
+//
+// Remove request from request global table and return
+//
+
+            remove_asyn_request(id);
+            return dd_out;
+        }
+        catch (Tango::DevFailed &) {}
+    }
+
+    stringstream ss;
+    ss << "Failed to execute command_inout_asynch on device " << dev_name();
+
+    remove_asyn_request(id);
+
+    ApiCommExcept::re_throw_exception(cb_excep_mess,
+						  "API_CommunicationFailed",ss.str(),"Connection::command_inout_reply");
+
+    DeviceData dummy;
+    return dummy;
+}
+
+void DeviceProxy::omni420_timeout_attr(int id,char *cb_excep_mess,read_attr_type type)
+{
+    stringstream ss;
+    ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+
+    remove_asyn_request(id);
+
+    string meth;
+    if (type == SIMPLE)
+        meth = "DeviceProxy::read_attribute_reply()";
+    else
+        meth = "DeviceProxy::read_attributes_reply()";
+
+    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                          "API_DeviceTimedOut",ss.str(),meth.c_str());
+}
+
+void DeviceProxy::omni420_except_attr(int id,char *cb_excep_mess,read_attr_type type)
+{
+    string ex(cb_excep_mess);
+    string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+    if (pos != string::npos)
+    {
+        try
+        {
+            ping();
+            return;
+        }
+        catch (Tango::DevFailed &) {}
+    }
+
+    stringstream ss;
+    ss << "Failed to execute read_attributes_asynch on device " << device_name;
+
+    remove_asyn_request(id);
+
+    string meth;
+    if (type == SIMPLE)
+        meth = "DeviceProxy::read_attribute_reply()";
+    else
+        meth = "DeviceProxy::read_attributes_reply()";
+
+    ApiCommExcept::re_throw_exception(cb_excep_mess,
+						  "API_CommunicationFailed",ss.str(),meth.c_str());
+}
+
+void DeviceProxy::omni420_timeout_wattr(int id,char *cb_excep_mess)
+{
+    stringstream ss;
+    ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+
+    remove_asyn_request(id);
+
+    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                          "API_DeviceTimedOut",ss.str(),"DeviceProxy::write_attributes_reply()");
+}
+
+void DeviceProxy::omni420_except_wattr(int id,char *cb_excep_mess)
+{
+    string ex(cb_excep_mess);
+    string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
+    if (pos != string::npos)
+    {
+        try
+        {
+            ping();
+            return;
+        }
+        catch (Tango::DevFailed &) {}
+    }
+
+    stringstream ss;
+    ss << "Failed to execute write_attributes_asynch on device " << device_name;
+
+    remove_asyn_request(id);
+
+    ApiCommExcept::re_throw_exception(cb_excep_mess,
+						  "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply()");
 }
 
 } // End of tango namespace

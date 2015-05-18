@@ -703,44 +703,39 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 		if (state_wanted == true)
 		{
-			if ((device_state == Tango::ON) || (device_state == Tango::ALARM))
-			{
-				long id = reading_state_necessary(wanted_attr);
-				if (id == -1)
-				{
-					try
-					{
-						alarmed_not_read(wanted_attr);
-						state_from_read = true;
-                        if (is_alarm_state_forced() == true)
-                            d_state = DeviceImpl::dev_state();
-                        else
-                            d_state = dev_state();
-						state_from_read = false;
-					}
-					catch (Tango::DevFailed &e)
-					{
-						state_from_read = false;
-						if (aid.data_5 != Tango_nullptr)
-							error_from_devfailed((*aid.data_5)[state_idx],e,names[state_idx]);
-						else if (aid.data_4 != Tango_nullptr)
-							error_from_devfailed((*aid.data_4)[state_idx],e,names[state_idx]);
-						else
-							error_from_devfailed((*aid.data_3)[state_idx],e,names[state_idx]);
-					}
-				}
-				else
-				{
-					if (aid.data_5 != Tango_nullptr)
-						error_from_errorlist((*aid.data_5)[state_idx],(*aid.data_5)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
-					else if (aid.data_4 != Tango_nullptr)
-						error_from_errorlist((*aid.data_4)[state_idx],(*aid.data_4)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
-					else
-						error_from_errorlist((*aid.data_3)[state_idx],(*aid.data_3)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
-				}
-			}
-			else
-				d_state = dev_state();
+            long id = reading_state_necessary(wanted_attr);
+            if (id == -1)
+            {
+                try
+                {
+                    alarmed_not_read(wanted_attr);
+                    state_from_read = true;
+                    if (is_alarm_state_forced() == true)
+                        d_state = DeviceImpl::dev_state();
+                    else
+                        d_state = dev_state();
+                    state_from_read = false;
+                }
+                catch (Tango::DevFailed &e)
+                {
+                    state_from_read = false;
+                    if (aid.data_5 != Tango_nullptr)
+                        error_from_devfailed((*aid.data_5)[state_idx],e,names[state_idx]);
+                    else if (aid.data_4 != Tango_nullptr)
+                        error_from_devfailed((*aid.data_4)[state_idx],e,names[state_idx]);
+                    else
+                        error_from_devfailed((*aid.data_3)[state_idx],e,names[state_idx]);
+                }
+            }
+            else
+            {
+                if (aid.data_5 != Tango_nullptr)
+                    error_from_errorlist((*aid.data_5)[state_idx],(*aid.data_5)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
+                else if (aid.data_4 != Tango_nullptr)
+                    error_from_errorlist((*aid.data_4)[state_idx],(*aid.data_4)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
+                else
+                    error_from_errorlist((*aid.data_3)[state_idx],(*aid.data_3)[wanted_attr[id].idx_in_names].err_list,names[state_idx]);
+            }
 		}
 
 		if (status_wanted == true)
@@ -2573,7 +2568,7 @@ void Device_3Impl::add_alarmed(vector<long> &att_list)
 //		Device_3Impl::reading_state_necessary
 //
 // description :
-//		Method to check ifi t is necessary to read state. If the device has some alarmed attribute and one of these
+//		Method to check if it is necessary to read state. If the device has some alarmed attribute and one of these
 //		attributes has already been read and failed, it is not necessary to read state. It will also fail.
 //
 // argument:

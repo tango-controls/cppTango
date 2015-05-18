@@ -604,7 +604,7 @@ public:
  * if (dpb.has_failed() == true)
  * {
  *    bitset<DevicePipeBlob::numFlags> bs_err = dpb.state();
- *    if (dpb.test(DevicePipeBlob::isempty_flag) == true)
+ *    if (bs_err.test(DevicePipeBlob::isempty_flag) == true)
  *        .....
  * }
  * @endcode
