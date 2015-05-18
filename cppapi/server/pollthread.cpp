@@ -1623,7 +1623,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 	Tango::DevFailed *save_except = NULL;
 	bool attr_failed = false;
 	vector<PollObj *>::iterator ite;
-	map<int,Tango::DevFailed *> map_except;
+	map<size_t,Tango::DevFailed *> map_except;
 
 	long idl_vers = to_do.dev->get_dev_idl_version();
 	try
@@ -1861,7 +1861,7 @@ void PollThread::poll_attr(WorkItem &to_do)
 
                 SendEventType send_event;
 
-                map<int,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                 Tango::DevFailed *tmp_except;
                 if (ite2 == map_except.end())
                     tmp_except = save_except;
@@ -1928,7 +1928,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                 {
                     if (idl_vers >= 5)
                     {
-                        map<int,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                        map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                         if (ite2 == map_except.end())
                         {
                             Tango::AttributeValueList_5 *new_argout_5 = new Tango::AttributeValueList_5(1);
@@ -1944,7 +1944,7 @@ void PollThread::poll_attr(WorkItem &to_do)
                     }
                     else
                     {
-                        map<int,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
+                        map<size_t,Tango::DevFailed *>::iterator ite2 = map_except.find(ctr);
                         if (ite2 == map_except.end())
                         {
                             Tango::AttributeValueList_4 *new_argout_4 = new Tango::AttributeValueList_4(1);
