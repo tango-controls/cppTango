@@ -38,12 +38,12 @@ static const char *RcsId = "$Id$";
 #include <omniORB4/internal/giopStream.h>
 
 #include <iterator>
-#include <arpa/inet.h>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
 #include <ws2tcpip.h>
 #else
+#include <arpa/inet.h>
 #include <sys/time.h>
 #include <netdb.h>
 #include <sys/socket.h>
@@ -108,7 +108,19 @@ name_specified(false),double_send(0),double_send_heartbeat(false)
     unsigned char buf[sizeof(struct in_addr)];
     bool specified_name = false;
 
+#ifndef _TG_WINDOWS_
     if (specified_addr.empty() == false && inet_pton(AF_INET,specified_addr.c_str(),buf) == 0)
+#else
+	struct sockaddr_storage ss;
+	int size = sizeof(ss);
+	char src_copy[INET6_ADDRSTRLEN+1];
+
+	ZeroMemory(&ss, sizeof(ss));
+	strncpy (src_copy, specified_addr.c_str(), INET6_ADDRSTRLEN+1);
+	src_copy[INET6_ADDRSTRLEN] = 0;
+
+	if (specified_addr.empty() == false && WSAStringToAddress(src_copy,AF_INET,NULL,(struct sockaddr *)&ss,&size) != 0)
+#endif
         specified_name = true;
 
     string &h_name = tg->get_host_name();
