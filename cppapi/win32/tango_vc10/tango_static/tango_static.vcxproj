@@ -50,7 +50,7 @@
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalIncludeDirectories>..\..\..\server\jpeg;..\..\..\server;..\..\..\client;..\..\resources;$(OMNI_BASE)\win32\include\vc10;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;STATIC_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -71,19 +71,22 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(PREFIX)\win32\lib\vc10\tango.lib</OutputFile>
+      <AdditionalDependencies>libpgm.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\openpgm5.2.122\lib_vc10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libpgm.lib</IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\resources;$(OMNI_BASE)\win32\include\vc10;$(ZMQ_BASE)\win32\include\vc10;$(LOG4TANGO_BASE)\win32\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;STATIC_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;JPG_USE_ASM;ZMQ_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeaderOutputFile>.\Debug/tango_static.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>$(PREFIX)\win32\lib\vc10\tangod.9.0.2.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(PREFIX)\win32\lib\vc10\tangod.9.1.0.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -95,7 +98,10 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(PREFIX)\win32\lib\vc10\tangod.lib</OutputFile>
-      <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <AdditionalDependencies>libpgmd.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\openpgm5.2.122\lib_vc10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>libpgmd.lib</IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
