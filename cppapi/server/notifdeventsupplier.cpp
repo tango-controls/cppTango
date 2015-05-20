@@ -261,7 +261,6 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 	}
 	else
 	{
-
 		Tango::DbDatum na;
 
 		string cl_name("notifd");
@@ -286,7 +285,6 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		factory_ior = na.value_string[0];
 	}
 
-
 	try
 	{
 		CORBA::Object *event_factory_obj;
@@ -296,6 +294,12 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 #ifndef _TG_WINDOWS_
     	if (event_factory_obj -> _non_existent())
             event_factory_obj = CORBA::Object::_nil();
+#else
+		if (Util::_FileDb == false)
+		{
+			if ((dev_import_list->lvalue)[0] == 0)
+				Tango::Except::throw_exception("aaa","bbb","ccc");
+		}
 #endif /* _TG_WINDOWS_ */
 
 //
