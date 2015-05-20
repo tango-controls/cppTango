@@ -123,7 +123,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="..\..\..\server\jpeg;..\..\..\server;..\..\..\client;..\..\..\win32\resources;&quot;$(OMNI_BASE)\include\vc9&quot;;&quot;$(ZMQ_BASE)\win64\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win64\include\vc9&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;STATIC_EXPORT"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_CRT_SECURE_NO_DEPRECATE;STATIC_EXPORT;ZMQ_STATIC"
 				StringPooling="true"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="true"
@@ -149,7 +149,10 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="libpgm.lib"
 				OutputFile="$(PREFIX)\win64\lib\vc9\tango.lib"
+				AdditionalLibraryDirectories="C:\cmake\openpgm5.2.122\vc9\static\lib\Release"
+				IgnoreDefaultLibraryNames="libpgm.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -271,7 +274,7 @@
 				AdditionalOptions="/MP8"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\..\..\server;..\..\..\client;..\..\..\server\jpeg;..\..\..\win32\resources;&quot;$(OMNI_BASE)\include\vc9&quot;;&quot;$(ZMQ_BASE)\win64\include\vc9&quot;;&quot;$(LOG4TANGO_BASE)\win64\include\vc9&quot;"
-				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;STATIC_EXPORT"
+				PreprocessorDefinitions="WIN32;_LIB;_DEBUG;_WINDOWS;_WINSTATIC;_TANGO_LIB;_MBCS;_CRT_SECURE_NO_DEPRECATE;ZMQ_STATIC"
 				RuntimeLibrary="1"
 				RuntimeTypeInfo="true"
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
@@ -296,8 +299,11 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
+				AdditionalDependencies="libpgmd.lib"
 				OutputFile="$(PREFIX)\win64\lib\vc9\tangod.lib"
-				IgnoreAllDefaultLibraries="true"
+				AdditionalLibraryDirectories="C:\cmake\openpgm5.2.122\vc9\static\lib\Debug"
+				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="libpgmd.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
