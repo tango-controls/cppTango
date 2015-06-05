@@ -401,7 +401,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		catch(CORBA::TRANSIENT &trans_ping) \
 		{ \
 			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed || \
-				trans_ping.minor() == omni::TRANSIENT_CallTimedout) \
+				trans_ping.minor() == omni::TRANSIENT_CallTimedout  || \
+                (OBJ->ext->has_alt_adr == true && trans_ping.minor() == omni::TRANSIENT_CallTimedout)) \
 			{ \
 				need_reconnect = true; \
 			} \
@@ -445,7 +446,6 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 	{ \
 \
 		bool need_reconnect = false; \
-		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT); \
 		try \
 		{ \
 			Device_var dev = Device::_duplicate(device); \
@@ -453,13 +453,13 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		} \
 		catch(CORBA::TRANSIENT &trans_ping) \
 		{ \
-			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed) \
+			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed || \
+               (ext->has_alt_adr == true && trans_ping.minor() == omni::TRANSIENT_CallTimedout)) \
 			{ \
 				need_reconnect = true; \
 			} \
 		} \
 		catch(...) {} \
-		omniORB::setClientConnectTimeout(0); \
 \
 		if (need_reconnect == false) \
 		{ \

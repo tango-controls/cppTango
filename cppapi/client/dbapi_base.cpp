@@ -641,15 +641,15 @@ void Database::reread_filedatabase()
 void Database::build_connection()
 {
 	string corba_name = get_corba_name(true);
-	omniORB::setClientConnectTimeout(CORBA::ULong(DB_CONNECT_TIMEOUT));
+//	omniORB::setClientConnectTimeout(CORBA::ULong(DB_CONNECT_TIMEOUT));
 	try
 	{
 		connect(corba_name);
-		omniORB::setClientConnectTimeout(0);
+//		omniORB::setClientConnectTimeout(0);
 	}
 	catch (Tango::DevFailed &)
 	{
-		omniORB::setClientConnectTimeout(0);
+//		omniORB::setClientConnectTimeout(0);
 		throw;
 	}
 

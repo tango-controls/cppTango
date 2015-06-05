@@ -52,7 +52,6 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <time.h>
 #include <signal.h>
-
 #include <algorithm>
 
 using namespace CORBA;
@@ -383,7 +382,7 @@ void Connection::set_source(Tango::DevSource sou)
 //-----------------------------------------------------------------------------
 //
 // Connection::connect() - method to create connection to a TANGO device
-//		using it's stringified CORBA reference i.e. IOR or corbaloc
+//		using its stringified CORBA reference i.e. IOR or corbaloc
 //
 //-----------------------------------------------------------------------------
 
@@ -495,8 +494,36 @@ void Connection::connect(string &corba_name)
                 device = Device_5::_duplicate(device_5);
             }
 
-			if (connect_to_db == false)
-				omniORB::setClientConnectTimeout(0);
+//
+// Warning! Some non standard code (omniORB specific).
+// Set a flag if the object is running on a host with several net addresses. This is used during re-connection
+// algo.
+//
+
+            if (corba_name[0] == 'I' && corba_name[1] == 'O' && corba_name[2] == 'R')
+            {
+                IOP::IOR ior;
+                toIOR(corba_name.c_str(),ior);
+                IIOP::ProfileBody pBody;
+                IIOP::unmarshalProfile(ior.profiles[0],pBody);
+
+                CORBA::ULong total = pBody.components.length();
+
+                for (CORBA::ULong index=0; index < total; index++)
+                {
+                    IOP::TaggedComponent& c = pBody.components[index];
+                    if (c.tag == 3)
+                    {
+                        ext->has_alt_adr = true;
+                        break;
+                    }
+                    else
+                        ext->has_alt_adr = false;
+                }
+            }
+
+//			if (connect_to_db == false)
+//				omniORB::setClientConnectTimeout(0);
 			retry = false;
 
 //
@@ -510,8 +537,8 @@ void Connection::connect(string &corba_name)
 		}
 		catch (CORBA::SystemException &ce)
 		{
-			if (connect_to_db == false)
-				omniORB::setClientConnectTimeout(0);
+//			if (connect_to_db == false)
+//				omniORB::setClientConnectTimeout(0);
 
 			TangoSys_OMemStream desc;
 			TangoSys_MemStream reason;
@@ -575,6 +602,78 @@ void Connection::connect(string &corba_name)
 			}
 		}
 	}
+}
+
+
+//-----------------------------------------------------------------------------
+//
+// Connection::toIOR() - Convert string IOR to omniORB IOR object
+// omniORB specific code !!!
+//
+//-----------------------------------------------------------------------------
+
+
+void Connection::toIOR(const char* iorstr,IOP::IOR& ior)
+{
+    size_t s = (iorstr ? strlen(iorstr) : 0);
+    if (s<4)
+        throw CORBA::MARSHAL(0,CORBA::COMPLETED_NO);
+    const char *p = iorstr;
+    if (p[0] != 'I' ||
+        p[1] != 'O' ||
+        p[2] != 'R' ||
+        p[3] != ':')
+        throw CORBA::MARSHAL(0,CORBA::COMPLETED_NO);
+
+    s = (s-4)/2;  // how many octets are there in the string
+    p += 4;
+
+    cdrMemoryStream buf((CORBA::ULong)s,0);
+
+    for (int i=0; i<(int)s; i++)
+    {
+        int j = i*2;
+        CORBA::Octet v;
+
+        if (p[j] >= '0' && p[j] <= '9')
+        {
+            v = ((p[j] - '0') << 4);
+        }
+        else if (p[j] >= 'a' && p[j] <= 'f')
+        {
+            v = ((p[j] - 'a' + 10) << 4);
+        }
+        else if (p[j] >= 'A' && p[j] <= 'F')
+        {
+            v = ((p[j] - 'A' + 10) << 4);
+        }
+        else
+            throw CORBA::MARSHAL(0,CORBA::COMPLETED_NO);
+
+        if (p[j+1] >= '0' && p[j+1] <= '9')
+        {
+            v += (p[j+1] - '0');
+        }
+        else if (p[j+1] >= 'a' && p[j+1] <= 'f')
+        {
+            v += (p[j+1] - 'a' + 10);
+        }
+        else if (p[j+1] >= 'A' && p[j+1] <= 'F')
+        {
+            v += (p[j+1] - 'A' + 10);
+        }
+        else
+            throw CORBA::MARSHAL(0,CORBA::COMPLETED_NO);
+
+        buf.marshalOctet(v);
+    }
+
+    buf.rewindInputPtr();
+    CORBA::Boolean b = buf.unmarshalBoolean();
+    buf.setByteSwapFlag(b);
+
+    ior.type_id = IOP::IOR::unmarshaltype_id(buf);
+    ior.profiles <<= buf;
 }
 
 
@@ -650,12 +749,12 @@ void Connection::reconnect(bool db_used)
 		{
 			try
 			{
-				if (user_connect_timeout != -1)
-					omniORB::setClientConnectTimeout(user_connect_timeout);
-				else
-					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
+//				if (user_connect_timeout != -1)
+//					omniORB::setClientConnectTimeout(user_connect_timeout);
+//				else
+//					omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 				device->ping();
-				omniORB::setClientConnectTimeout(0);
+//				omniORB::setClientConnectTimeout(0);
 
 				prev_failed_t0 = t;
 				prev_failed    = false;
@@ -674,7 +773,7 @@ void Connection::reconnect(bool db_used)
 			}
 			catch (CORBA::SystemException &ce)
 			{
-				omniORB::setClientConnectTimeout(0);
+//				omniORB::setClientConnectTimeout(0);
 				connection_state = CONNECTION_NOTOK;
 
 				TangoSys_OMemStream desc;

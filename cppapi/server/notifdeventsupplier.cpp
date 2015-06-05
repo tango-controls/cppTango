@@ -290,7 +290,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 		CORBA::Object *event_factory_obj;
     	event_factory_obj = _orb -> string_to_object(factory_ior.c_str());
 
-		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
+//		omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);
 #ifndef _TG_WINDOWS_
     	if (event_factory_obj -> _non_existent())
             event_factory_obj = CORBA::Object::_nil();
@@ -308,7 +308,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 //
 
 		_eventChannelFactory = CosNotifyChannelAdmin::EventChannelFactory::_narrow(event_factory_obj);
-		omniORB::setClientConnectTimeout(0);
+//		omniORB::setClientConnectTimeout(0);
 
 //
 // Make sure the CORBA object was really an EventChannelFactory
@@ -324,7 +324,7 @@ void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_or
 	}
 	catch (...)
 	{
-		omniORB::setClientConnectTimeout(0);
+//		omniORB::setClientConnectTimeout(0);
 
 //
 // Impossible to connect to notifd. In case there is already an entry in the db

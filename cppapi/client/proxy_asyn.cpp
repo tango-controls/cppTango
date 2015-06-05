@@ -329,25 +329,57 @@ DeviceData Connection::command_inout_reply(long id)
 		{
 			if (tra->minor() == omni::TRANSIENT_CallTimedout)
 			{
-				CORBA::NVList_ptr req_arg = req.request->arguments();
-				const char *cmd = NULL;
-				CORBA::NamedValue_ptr nv = req_arg->item(0);
-				*(nv->value()) >>= cmd;
-				char *tmp = CORBA::string_dup(cmd);
+                bool need_reconnect = false;
+                if (ext->has_alt_adr == true)
+                {
+                    try
+                    {
+                        Device_var dev = Device::_duplicate(device);
+                        dev->ping();
+                    }
+                    catch(CORBA::TRANSIENT &trans_ping)
+                    {
+                        if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                            trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+                        {
+                            need_reconnect = true;
+                        }
+                    }
+                    catch(...) {}
+                }
 
-				char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+                remove_asyn_request(id);
+                char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
-				TangoSys_OMemStream desc;
-				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-				desc << ", command " << tmp << ends;
-				CORBA::string_free(tmp);
+                if (need_reconnect == false)
+                {
+                    CORBA::NVList_ptr req_arg = req.request->arguments();
+                    const char *cmd = NULL;
+                    CORBA::NamedValue_ptr nv = req_arg->item(0);
+                    *(nv->value()) >>= cmd;
+                    char *tmp = CORBA::string_dup(cmd);
 
-				remove_asyn_request(id);
+                    TangoSys_OMemStream desc;
+                    desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+                    desc << ", command " << tmp << ends;
+                    CORBA::string_free(tmp);
 
-				ApiCommExcept::re_throw_exception(cb_excep_mess,
-					  "API_DeviceTimedOut",
-					  desc.str(),
-					  "Connection::command_inout_reply()");
+                    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                          "API_DeviceTimedOut",
+                          desc.str(),
+                          "Connection::command_inout_reply()");
+                }
+                else
+                {
+                    set_connection_state(CONNECTION_NOTOK);
+
+                    stringstream ss;
+                    ss << "Failed to execute command_inout_asynch on device " << dev_name();
+
+                    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                                          "API_CommunicationFailed",ss.str(),
+                                          "Connection::command_inout_reply()");
+                }
 			}
 		}
 
@@ -613,25 +645,57 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 		{
 			if (tra->minor() == omni::TRANSIENT_CallTimedout)
 			{
-				CORBA::NVList_ptr req_arg = req.request->arguments();
-				const char *cmd = NULL;
-				CORBA::NamedValue_ptr nv = req_arg->item(0);
-				*(nv->value()) >>= cmd;
-				char *tmp = CORBA::string_dup(cmd);
+                bool need_reconnect = false;
+                if (ext->has_alt_adr == true)
+                {
+                    try
+                    {
+                        Device_var dev = Device::_duplicate(device);
+                        dev->ping();
+                    }
+                    catch(CORBA::TRANSIENT &trans_ping)
+                    {
+                        if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                            trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+                        {
+                            need_reconnect = true;
+                        }
+                    }
+                    catch(...) {}
+                }
 
-				char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+                remove_asyn_request(id);
+                char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
-				TangoSys_OMemStream desc;
-				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
-				desc << ", command " << tmp << ends;
-				CORBA::string_free(tmp);
+                if (need_reconnect == false)
+                {
+                    CORBA::NVList_ptr req_arg = req.request->arguments();
+                    const char *cmd = NULL;
+                    CORBA::NamedValue_ptr nv = req_arg->item(0);
+                    *(nv->value()) >>= cmd;
+                    char *tmp = CORBA::string_dup(cmd);
 
-				remove_asyn_request(id);
+                    TangoSys_OMemStream desc;
+                    desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+                    desc << ", command " << tmp << ends;
+                    CORBA::string_free(tmp);
 
-				ApiCommExcept::re_throw_exception(cb_excep_mess,
-						  "API_DeviceTimedOut",
-						  desc.str(),
-						  "Connection::command_inout_reply()");
+                    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                              "API_DeviceTimedOut",
+                              desc.str(),
+                              "Connection::command_inout_reply()");
+                }
+                else
+                {
+                    set_connection_state(CONNECTION_NOTOK);
+
+                    stringstream ss;
+                    ss << "Failed to execute command_inout_asynch on device " << dev_name();
+
+                    ApiCommExcept::re_throw_exception(cb_excep_mess,
+                                          "API_CommunicationFailed",ss.str(),
+                                          "Connection::command_inout_reply()");
+                }
 			}
 		}
 
@@ -1743,36 +1807,62 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 	{
 		if (tra->minor() == omni::TRANSIENT_CallTimedout)
 		{
-			CORBA::NVList_ptr req_arg = req->arguments();
-			const Tango::DevVarStringArray *names;
-			CORBA::NamedValue_ptr nv = req_arg->item(0);
-			*(nv->value()) >>= names;
+            bool need_reconnect = false;
+            if (ext->has_alt_adr == true)
+            {
+                try
+                {
+                    Device_var dev = Device::_duplicate(device);
+                    dev->ping();
+                }
+                catch(CORBA::TRANSIENT &trans_ping)
+                {
+                    if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                        trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+                    {
+                        need_reconnect = true;
+                    }
+                }
+                catch(...) {}
+            }
 
+            remove_asyn_request(id);
 			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
-			TangoSys_OMemStream desc;
-			desc << "Timeout (" << timeout << " mS) exceeded on device " << device_name;
-			desc << "\nAttribute(s): ";
-			for (unsigned int i = 0;i < names->length();i++)
-			{
-				desc << (*names)[i];
-				if (i != (names->length() - 1))
-					desc << ", ";
-			}
-			desc << ends;
+            string meth;
+            if (type == SIMPLE)
+                meth = "DeviceProxy::read_attribute_replay()";
+            else
+                meth = "DeviceProxy::read_attributes_reply()";
 
-			remove_asyn_request(id);
+            if (need_reconnect == false)
+            {
+                CORBA::NVList_ptr req_arg = req->arguments();
+                const Tango::DevVarStringArray *names;
+                CORBA::NamedValue_ptr nv = req_arg->item(0);
+                *(nv->value()) >>= names;
 
-			if (type == SIMPLE)
-				ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  "API_DeviceTimedOut",
-						  	  desc.str(),
-							  "DeviceProxy::read_attribute_reply()");
-			else
-				ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  "API_DeviceTimedOut",
-						  	  desc.str(),
-							  "DeviceProxy::read_attributes_reply()");
+                TangoSys_OMemStream desc;
+                desc << "Timeout (" << timeout << " mS) exceeded on device " << device_name;
+                desc << "\nAttribute(s): ";
+                for (unsigned int i = 0;i < names->length();i++)
+                {
+                    desc << (*names)[i];
+                    if (i != (names->length() - 1))
+                        desc << ", ";
+                }
+                desc << ends;
+
+                ApiCommExcept::re_throw_exception(cb_excep_mess,"API_DeviceTimedOut",desc.str(),meth.c_str());
+            }
+            else
+            {
+                set_connection_state(CONNECTION_NOTOK);
+
+                stringstream ss;
+                ss << "Failed to execute read_attribute_asynch on device " << device_name;
+                ApiCommExcept::re_throw_exception(cb_excep_mess,"API_CommunicationFailed",ss.str(),meth.c_str());
+            }
 		}
 	}
 
@@ -2347,46 +2437,76 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 	{
 		if (tra->minor() == omni::TRANSIENT_CallTimedout)
 		{
-			CORBA::NVList_ptr req_arg = req->arguments();
-			const Tango::AttributeValueList *att;
-			const Tango::AttributeValueList_4 *att_4;
-			unsigned int nb_att = 0;
-			CORBA::NamedValue_ptr nv = req_arg->item(0);
+            bool need_reconnect = false;
+            if (ext->has_alt_adr == true)
+            {
+                try
+                {
+                    Device_var dev = Device::_duplicate(device);
+                    dev->ping();
+                }
+                catch(CORBA::TRANSIENT &trans_ping)
+                {
+                    if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                        trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+                    {
+                        need_reconnect = true;
+                    }
+                }
+                catch(...) {}
+            }
 
-			if (version < 4)
-			{
-				if ((*(nv->value()) >>= att) == true)
-					nb_att = att->length();
-			}
-			else
-			{
-				if ((*(nv->value()) >>= att_4) == true)
-					nb_att = att_4->length();
-			}
-
+            remove_asyn_request(id);
 			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
-			TangoSys_OMemStream desc;
-			desc << "Timeout (" << timeout << " mS) exceeded on device " << device_name;
-			if (nb_att != 0)
-			{
-				desc << "\nAttribute(s): ";
-				for (unsigned int i = 0;i < nb_att;i++)
-				{
-					(version < 4) ? desc << (*att)[i].name : desc << (*att_4)[i].name;
+            if (need_reconnect == false)
+            {
+                CORBA::NVList_ptr req_arg = req->arguments();
+                const Tango::AttributeValueList *att;
+                const Tango::AttributeValueList_4 *att_4;
+                unsigned int nb_att = 0;
+                CORBA::NamedValue_ptr nv = req_arg->item(0);
 
-					if (i != (nb_att - 1))
-						desc << ", ";
-				}
-				desc << ends;
-			}
+                if (version < 4)
+                {
+                    if ((*(nv->value()) >>= att) == true)
+                        nb_att = att->length();
+                }
+                else
+                {
+                    if ((*(nv->value()) >>= att_4) == true)
+                        nb_att = att_4->length();
+                }
 
-			remove_asyn_request(id);
+                TangoSys_OMemStream desc;
+                desc << "Timeout (" << timeout << " mS) exceeded on device " << device_name;
+                if (nb_att != 0)
+                {
+                    desc << "\nAttribute(s): ";
+                    for (unsigned int i = 0;i < nb_att;i++)
+                    {
+                        (version < 4) ? desc << (*att)[i].name : desc << (*att_4)[i].name;
 
-			ApiCommExcept::re_throw_exception(cb_excep_mess,
-							  "API_DeviceTimedOut",
-						  	  desc.str(),
-							  "DeviceProxy::write_attributes_reply()");
+                        if (i != (nb_att - 1))
+                            desc << ", ";
+                    }
+                    desc << ends;
+                }
+
+                ApiCommExcept::re_throw_exception(cb_excep_mess,
+                                  "API_DeviceTimedOut",
+                                  desc.str(),
+                                  "DeviceProxy::write_attributes_reply()");
+            }
+            else
+            {
+                set_connection_state(CONNECTION_NOTOK);
+
+                stringstream ss;
+                ss << "Failed to execute write_attribute_asynch on device " << device_name;
+                ApiCommExcept::re_throw_exception(cb_excep_mess,
+                                "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply");
+            }
 		}
 	}
 
@@ -2829,14 +2949,44 @@ void Connection::cancel_all_polling_asynch_request()
 
 void Connection::omni420_timeout(int id,char *cb_excep_mess)
 {
-    stringstream ss;
-    ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+    bool need_reconnect = false;
+    if (ext->has_alt_adr == true)
+    {
+		try
+		{
+			Device_var dev = Device::_duplicate(device);
+			dev->ping();
+		}
+		catch(CORBA::TRANSIENT &trans_ping)
+		{
+			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+			{
+				need_reconnect = true;
+			}
+		}
+		catch(...) {}
+    }
 
+    stringstream ss;
     remove_asyn_request(id);
 
-    ApiCommExcept::re_throw_exception(cb_excep_mess,
-                          "API_DeviceTimedOut",ss.str(),
-                          "Connection::command_inout_reply()");
+    if (need_reconnect == false)
+    {
+        ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+        ApiCommExcept::re_throw_exception(cb_excep_mess,
+                              "API_DeviceTimedOut",ss.str(),
+                              "Connection::command_inout_reply()");
+    }
+    else
+    {
+        set_connection_state(CONNECTION_NOTOK);
+
+        ss << "Failed to execute command_inout_asynch on device " << dev_name();
+        ApiCommExcept::re_throw_exception(cb_excep_mess,
+                              "API_CommunicationFailed",ss.str(),
+                              "Connection::command_inout_reply()");
+    }
 }
 
 DeviceData Connection::omni420_except(int id,char *cb_excep_mess,TgRequest &req)
@@ -2879,9 +3029,26 @@ DeviceData Connection::omni420_except(int id,char *cb_excep_mess,TgRequest &req)
 
 void DeviceProxy::omni420_timeout_attr(int id,char *cb_excep_mess,read_attr_type type)
 {
-    stringstream ss;
-    ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+    bool need_reconnect = false;
+    if (ext->has_alt_adr == true)
+    {
+		try
+		{
+			Device_var dev = Device::_duplicate(device);
+			dev->ping();
+		}
+		catch(CORBA::TRANSIENT &trans_ping)
+		{
+			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+			{
+				need_reconnect = true;
+			}
+		}
+		catch(...) {}
+    }
 
+    stringstream ss;
     remove_asyn_request(id);
 
     string meth;
@@ -2890,8 +3057,20 @@ void DeviceProxy::omni420_timeout_attr(int id,char *cb_excep_mess,read_attr_type
     else
         meth = "DeviceProxy::read_attributes_reply()";
 
-    ApiCommExcept::re_throw_exception(cb_excep_mess,
-                          "API_DeviceTimedOut",ss.str(),meth.c_str());
+    if (need_reconnect == false)
+    {
+        ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+        ApiCommExcept::re_throw_exception(cb_excep_mess,
+                              "API_DeviceTimedOut",ss.str(),meth.c_str());
+    }
+    else
+    {
+        set_connection_state(CONNECTION_NOTOK);
+
+        ss << "Failed to execute command_inout_asynch on device " << dev_name();
+        ApiCommExcept::re_throw_exception(cb_excep_mess,
+                              "API_CommunicationFailed",ss.str(),meth.c_str());
+    }
 }
 
 void DeviceProxy::omni420_except_attr(int id,char *cb_excep_mess,read_attr_type type)
@@ -2925,13 +3104,42 @@ void DeviceProxy::omni420_except_attr(int id,char *cb_excep_mess,read_attr_type 
 
 void DeviceProxy::omni420_timeout_wattr(int id,char *cb_excep_mess)
 {
-    stringstream ss;
-    ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+    bool need_reconnect = false;
+    if (ext->has_alt_adr == true)
+    {
+		try
+		{
+			Device_var dev = Device::_duplicate(device);
+			dev->ping();
+		}
+		catch(CORBA::TRANSIENT &trans_ping)
+		{
+			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed ||
+                trans_ping.minor() == omni::TRANSIENT_CallTimedout)
+			{
+				need_reconnect = true;
+			}
+		}
+		catch(...) {}
+    }
 
+    stringstream ss;
     remove_asyn_request(id);
 
-    ApiCommExcept::re_throw_exception(cb_excep_mess,
+    if (need_reconnect == false)
+    {
+        ss << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
+        ApiCommExcept::re_throw_exception(cb_excep_mess,
                           "API_DeviceTimedOut",ss.str(),"DeviceProxy::write_attributes_reply()");
+    }
+    else
+    {
+        set_connection_state(CONNECTION_NOTOK);
+
+        ss << "Failed to execute write_attribute_asynch on device " << dev_name();
+        ApiCommExcept::re_throw_exception(cb_excep_mess,
+                              "API_CommunicationFailed",ss.str(),"DeviceProxy::write_attributes_reply()");
+    }
 }
 
 void DeviceProxy::omni420_except_wattr(int id,char *cb_excep_mess)

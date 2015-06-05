@@ -110,9 +110,11 @@ protected :
     class ConnectionExt
     {
     public:
-        ConnectionExt() {}
+        ConnectionExt():has_alt_adr(false) {}
         ~ConnectionExt() {}
         ConnectionExt & operator=(const ConnectionExt &);
+
+        bool            has_alt_adr;
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -565,6 +567,7 @@ public :
 private:
     void omni420_timeout(int,char *);
     DeviceData omni420_except(int,char *,TgRequest &);
+    void toIOR(const char*,IOP::IOR&);
 };
 
 

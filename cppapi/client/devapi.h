@@ -1000,7 +1000,7 @@ class AutoConnectTimeout
 {
 public:
 	AutoConnectTimeout(unsigned int to) {omniORB::setClientConnectTimeout((CORBA::ULong)to);}
-	~AutoConnectTimeout() {omniORB::setClientConnectTimeout(0);}
+	~AutoConnectTimeout() {omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);}
 };
 
 } // End of Tango namespace
