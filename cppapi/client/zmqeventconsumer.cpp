@@ -42,6 +42,8 @@ static const char *RcsId = "$Id$";
 #include <omniORB4/internal/giopStream.h>
 
 #ifdef _TG_WINDOWS_
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include <sys/timeb.h>
 #include <process.h>
 #else
@@ -73,7 +75,6 @@ ZmqEventConsumer::ZmqEventConsumer(ApiUtil *ptr) : EventConsumer(ptr),
 omni_thread((void *)ptr),zmq_context(1),ctrl_socket_bound(false)
 {
 	cout3 << "calling Tango::ZmqEventConsumer::ZmqEventConsumer() \n";
-
 	_instance = this;
 
 //
@@ -3102,6 +3103,82 @@ bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
 	address.sin_port = htons(port);
 	len = sizeof(address);
 
+#ifdef _TG_WINDOWS_
+//
+// Put socket in non-blocking mode
+//
+
+	u_long iMode=1;
+	ioctlsocket(sockfd,FIONBIO,&iMode);
+
+//
+// Try to connect
+//
+
+	result = ::connect(sockfd, (struct sockaddr *)&address, len);
+
+	if (result == SOCKET_ERROR)
+	{
+		int err_code = WSAGetLastError();
+		if (err_code == WSAEWOULDBLOCK)
+		{
+            struct timeval tv;
+            fd_set myset;
+            int res;
+
+            tv.tv_sec = 0;
+            tv.tv_usec = 100000;
+
+            FD_ZERO(&myset);
+            FD_SET(sockfd,&myset);
+
+//
+// Because socket is in non-blocking mode, call select to get connection status
+//
+
+            res = select(sockfd + 1,NULL,&myset,NULL,&tv);
+
+            if (res == 0)
+            {
+				closesocket(sockfd);
+                return false;
+            }
+            else if (res < 0)
+            {
+				closesocket(sockfd);
+                return false;
+            }
+            else if (res > 0)
+            {
+                socklen_t lon = sizeof(int);
+                int valopt = 0;
+
+                if (getsockopt(sockfd,SOL_SOCKET,SO_ERROR,(char*)(&valopt),&lon) < 0)
+                {
+					closesocket(sockfd);
+                    return false;
+                }
+
+                if (valopt)
+                {
+					closesocket(sockfd);
+                    return false;
+                }
+            }
+        }
+        else
+        {
+			closesocket(sockfd);
+            return false;
+        }
+	}
+
+//
+// Connection is a success, return true
+//
+
+	closesocket(sockfd);
+#else
 //
 // Put socket in non-blocking mode
 //
@@ -3147,12 +3224,12 @@ bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
 
             if (res == 0)
             {
-                close(sockfd);
+				close(sockfd);
                 return false;
             }
             else if (res < 0 && errno != EINTR)
             {
-                close(sockfd);
+				close(sockfd);
                 return false;
             }
             else if (res > 0)
@@ -3162,20 +3239,20 @@ bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
 
                 if (getsockopt(sockfd,SOL_SOCKET,SO_ERROR,(void*)(&valopt),&lon) < 0)
                 {
-                    close(sockfd);
+					close(sockfd);
                     return false;
                 }
 
                 if (valopt)
                 {
-                    close(sockfd);
+					close(sockfd);
                     return false;
                 }
             }
         }
         else
         {
-            close(sockfd);
+			close(sockfd);
             return false;
         }
 	}
@@ -3184,7 +3261,8 @@ bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
 // Connection is a success, return true
 //
 
-    close(sockfd);
+	close(sockfd);
+#endif
 	return true;
 }
 
