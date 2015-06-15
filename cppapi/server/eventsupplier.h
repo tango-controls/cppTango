@@ -287,6 +287,9 @@ public :
 	string &get_heartbeat_endpoint() {return heartbeat_endpoint;}
 	string &get_event_endpoint() {return event_endpoint;}
 
+	vector<string> &get_alternate_heartbeat_endpoint() {return alternate_h_endpoint;}
+	vector<string> &get_alternate_event_endpoint() {return alternate_e_endpoint;}
+
     void create_event_socket();
     void create_mcast_event_socket(string &,string &,int,bool);
     bool is_event_mcast(string &);
@@ -330,11 +333,13 @@ private :
 
 	string                      heartbeat_endpoint;     // heartbeat publisher endpoint
 	string                      host_ip;                // Host IP address
+	vector<string>              alt_ip;                 // Host alternate IP addresses
 	string                      heartbeat_event_name;   // The event name used for the heartbeat
 	ZmqCallInfo                 heartbeat_call;         // The heartbeat call info
     cdrMemoryStream             heartbeat_call_cdr;     //
     TangoCdrMemoryStream        data_call_cdr;
     string                      event_name;
+    vector<string>              alternate_h_endpoint;   // Alternate heartbeat endpoint (host with several NIC)
 
     zmq::message_t              endian_mess;            // Zmq messages
     zmq::message_t              endian_mess_2;          //
@@ -351,6 +356,7 @@ private :
 	string                      user_ip;                // The specified IP address
 
 	string                      event_endpoint;         // event publisher endpoint
+    vector<string>              alternate_e_endpoint;   // Alternate event endpoint (host with several NIC)
 
 	map<string,unsigned int>    event_cptr;             // event counter map
 

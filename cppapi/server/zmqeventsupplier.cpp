@@ -103,6 +103,9 @@ name_specified(false),double_send(0),double_send_heartbeat(false)
 	}
 
     heartbeat_endpoint = "tcp://";
+    alt_ip.clear();
+    alternate_e_endpoint.clear();
+    alternate_h_endpoint.clear();
 
     string &specified_addr = tg->get_specified_ip();
     unsigned char buf[sizeof(struct in_addr)];
@@ -197,14 +200,29 @@ name_specified(false),double_send(0),double_send_heartbeat(false)
         string::size_type pos = heartbeat_endpoint.find('*');
         if (adrs.size() > 1)
         {
+            bool first_set = false;
+            string::size_type po = heartbeat_endpoint.rfind(':');
+            string port_str = heartbeat_endpoint.substr(po + 1);
+
             for (unsigned int i = 0;i < adrs.size();++i)
             {
                 string::size_type start;
                 if ((start = adrs[i].find("127.")) == 0)
                     continue;
-                heartbeat_endpoint.replace(pos,1,adrs[i]);
-                host_ip = adrs[i];
-                break;
+
+                if (first_set == false)
+                {
+                    heartbeat_endpoint.replace(pos,1,adrs[i]);
+                    host_ip = adrs[i];
+                    first_set = true;
+                }
+                else
+                {
+                    string str("tcp://");
+                    str = str + adrs[i] + ':' + port_str;
+                    alternate_h_endpoint.push_back(str);
+                    alt_ip.push_back(adrs[i]);
+                }
             }
         }
         else
@@ -463,6 +481,18 @@ void ZmqEventSupplier::create_event_socket()
         if (ip_specified == false)
         {
             event_endpoint.replace(6,1,host_ip);
+            if (alt_ip.empty() == false)
+            {
+                string::size_type pos = event_endpoint.rfind(':');
+                string port_str = event_endpoint.substr(pos + 1);
+
+                for (size_t loop = 0;loop < alt_ip.size();loop++)
+                {
+                    string tmp("tcp://");
+                    tmp = tmp + alt_ip[loop] + ':' + port_str;
+                    alternate_e_endpoint.push_back(tmp);
+                }
+            }
         }
         else if (name_specified == true)
         {

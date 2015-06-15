@@ -47,6 +47,10 @@ static const char *RcsId = "$Id$";
 #else
 #include <unistd.h>
 #include <sys/time.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <fcntl.h>
+#include <arpa/inet.h>
 #endif
 
 using namespace CORBA;
@@ -1256,6 +1260,35 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 	}
 
 //
+// If the server has returned several possible ZMQ endpoints (because several NIC boards on server host), check which
+// one is correct
+//
+
+    size_t nb_endpoint = ev_svr_data->svalue.length();
+    nb_endpoint = nb_endpoint >> 1;
+    size_t valid_endpoint = 0;
+
+    if (nb_endpoint != 1)
+    {
+        for (valid_endpoint = 0;valid_endpoint < nb_endpoint;valid_endpoint++)
+        {
+            string endpoint(ev_svr_data->svalue[valid_endpoint << 1]);
+            if (check_zmq_endpoint(endpoint) == true)
+                break;
+        }
+
+        if (valid_endpoint == nb_endpoint)
+        {
+            stringstream o;
+
+            o << "Failed to create connection to event channel!\n";
+            o << "Impossible to create a network connection to any of the event endpoints returned by server";
+
+            Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
+        }
+    }
+
+//
 // Create and connect the REQ socket used to send message to the ZMQ main thread
 //
 
@@ -1316,8 +1349,8 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 #endif
         length++;
 
-        ::strcpy(&(buffer[length]),ev_svr_data->svalue[0].in());
-        length = length + ::strlen(ev_svr_data->svalue[0].in()) + 1;
+        ::strcpy(&(buffer[length]),ev_svr_data->svalue[valid_endpoint].in());
+        length = length + ::strlen(ev_svr_data->svalue[valid_endpoint].in()) + 1;
 
         string sub(channel_name);
         sub = sub + '.' + HEARTBEAT_EVENT_NAME;
@@ -1338,16 +1371,14 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
     }
     catch(zmq::error_t &e)
     {
-        TangoSys_OMemStream o;
+        stringstream o;
 
         o << "Failed to create connection to event channel!\n";
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ error code = " << e.num() << "\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::connect_event_channel");
+        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
     }
 
 //
@@ -1360,15 +1391,13 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
         ::memcpy(err_mess,reply.data(),reply.size());
         err_mess[reply.size()] = '\0';
 
-        TangoSys_OMemStream o;
+        stringstream o;
 
         o << "Failed to create connection to event channel!\n";
         o << "Error while trying to connect or subscribe the heartbeat ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::connect_event_channel");
+        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_channel");
     }
 
 //
@@ -1383,7 +1412,8 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 		evt_ch.last_heartbeat = time(NULL);
 		evt_ch.heartbeat_skipped = false;
 		evt_ch.event_system_failed = false;
-		evt_ch.endpoint = ev_svr_data->svalue[0].in();
+		evt_ch.endpoint = ev_svr_data->svalue[valid_endpoint].in();
+		evt_ch.valid_endpoint = valid_endpoint;
 	}
 	else
 	{
@@ -1416,7 +1446,8 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 
 		new_event_channel_struct.event_system_failed = false;
 		set_channel_type(new_event_channel_struct);
-		new_event_channel_struct.endpoint = ev_svr_data->svalue[0].in();
+		new_event_channel_struct.endpoint = ev_svr_data->svalue[valid_endpoint].in();
+		new_event_channel_struct.valid_endpoint = valid_endpoint;
 
 		channel_map[channel_name] = new_event_channel_struct;
 	}
@@ -1630,12 +1661,13 @@ void ZmqEventConsumer::disconnect_event(string &event_name,string &endpoint)
 //			- evt_it : Iterator pointing to the event channel entry in channel_map map
 //			- new_event_callback : Structure used for the event callback entry in the event_callback_map
 //			- dd : The data returned by the DS admin device xxxSubscriptionChange command
+//          - valid_end : The valid endpoint in the list of endpoint returned by ZMQEventSubscriptionChange command
 //
 //--------------------------------------------------------------------------------------------------------------------
 
 void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name,string &event_name,TANGO_UNUSED(const vector<string> &filters),
                                             TANGO_UNUSED(EvChanIte &eve_it),TANGO_UNUSED(EventCallBackStruct &new_event_callback),
-                                            DeviceData &dd)
+                                            DeviceData &dd,size_t valid_end)
 {
 //
 // Build full event name
@@ -1692,7 +1724,7 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         bool mcast_transport = false;
         ApiUtil *au = ApiUtil::instance();
 
-        string endpoint(ev_svr_data->svalue[1].in());
+        string endpoint(ev_svr_data->svalue[(valid_end << 1) + 1].in());
         if (endpoint.find(MCAST_PROT) != string::npos)
         {
             mcast_transport = true;
@@ -1775,15 +1807,13 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
     }
     catch(zmq::error_t &e)
     {
-        TangoSys_OMemStream o;
+        stringstream o;
 
         o << "Failed to create connection to event!\n";
         o << "Error while communicating with the ZMQ main thread\n";
         o << "ZMQ message: " << e.what() << ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::connect_event_system");
+        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
 
 //
@@ -1796,15 +1826,13 @@ void ZmqEventConsumer::connect_event_system(string &device_name,string &obj_name
         ::memcpy(err_mess,reply.data(),reply.size());
         err_mess[reply.size()] = '\0';
 
-        TangoSys_OMemStream o;
+        stringstream o;
 
         o << "Failed to create connection to event!\n";
         o << "Error while trying to connect or subscribe the event ZMQ socket to the new publisher\n";
         o << "ZMQ message: " << err_mess << ends;
 
-        Except::throw_exception((const char *)API_ZmqFailed,
-                        o.str(),
-                        (const char *)"ZmqEventConsumer::connect_event_system");
+        Except::throw_exception(API_ZmqFailed,o.str(),"ZmqEventConsumer::connect_event_system");
     }
 }
 
@@ -3026,6 +3054,140 @@ void ZmqEventConsumer::zmq_specific(DeviceData &dd,string &adm_name,DeviceProxy 
 		}
 	}
 }
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		ZmqEventConsumer::check_zmq_endpoint()
+//
+// description :
+//		Check if the endpoint returned by the ZMQEventSubscriptionChange DS admin device command are valid on the
+//      client side.
+//
+// argument :
+//		in :
+//			- endpoint : The returned endpoint (contain
+//
+// return :
+//      A boolean set to true if it is possible to establish a connection with this endpoint. Otherwise, returns false
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
+{
+
+//
+// Isolate IP address in endpoint
+//
+
+    string::size_type pos = endpoint.rfind(':');
+    string ip = endpoint.substr(6,pos - 6);
+    string port_str = endpoint.substr(pos + 1);
+    int port = atoi(port_str.c_str());
+
+//
+// Open a socket
+//
+
+	struct sockaddr_in address;
+	int result, len;
+	long arg;
+
+	int sockfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	if (sockfd < 0)
+		return false;
+
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = inet_addr(ip.c_str());
+	address.sin_port = htons(port);
+	len = sizeof(address);
+
+//
+// Put socket in non-blocking mode
+//
+
+	if ((arg = fcntl(sockfd,F_GETFL,NULL)) < 0)
+	{
+		close(sockfd);
+		return false;
+	}
+
+	arg |= O_NONBLOCK;
+	if (fcntl(sockfd,F_SETFL,arg) < 0)
+	{
+		close(sockfd);
+		return false;
+	}
+
+//
+// Try to connect
+//
+
+	result = ::connect(sockfd, (struct sockaddr *)&address, len);
+
+	if (result < 0)
+	{
+		if (errno == EINPROGRESS)
+		{
+            struct timeval tv;
+            fd_set myset;
+            int res;
+
+            tv.tv_sec = 0;
+            tv.tv_usec = 100000;
+
+            FD_ZERO(&myset);
+            FD_SET(sockfd,&myset);
+
+//
+// Because socket is in non-blocking mode, call select to get connection status
+//
+
+            res = select(sockfd + 1,NULL,&myset,NULL,&tv);
+
+            if (res == 0)
+            {
+                close(sockfd);
+                return false;
+            }
+            else if (res < 0 && errno != EINTR)
+            {
+                close(sockfd);
+                return false;
+            }
+            else if (res > 0)
+            {
+                socklen_t lon = sizeof(int);
+                int valopt = 0;
+
+                if (getsockopt(sockfd,SOL_SOCKET,SO_ERROR,(void*)(&valopt),&lon) < 0)
+                {
+                    close(sockfd);
+                    return false;
+                }
+
+                if (valopt)
+                {
+                    close(sockfd);
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            close(sockfd);
+            return false;
+        }
+	}
+
+//
+// Connection is a success, return true
+//
+
+    close(sockfd);
+	return true;
+}
+
 
 //--------------------------------------------------------------------------------------------------------------------
 //

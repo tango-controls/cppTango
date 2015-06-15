@@ -1583,6 +1583,8 @@ int EventConsumer::connect_event(DeviceProxy *device,
 // Search (or create) entry for channel map
 //
 
+    int valid_endpoint_nb = 0;
+
 	if (ipos == device_channel_map.end())
 	{
 		cout3 << "device " << device_name << " is not connected, going to connect to the event channel !\n";
@@ -1617,6 +1619,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 		{
 			evt_it = channel_map.find(ipos->second);
 			evt_it->second.last_subscribed = time(NULL);
+			valid_endpoint_nb = evt_it->second.valid_endpoint;
 
 			if (new_entry_in_channel_map == true)
 			{
@@ -1630,6 +1633,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	else
 	{
 		evt_it = channel_map.find(ipos->second);
+		valid_endpoint_nb = evt_it->second.valid_endpoint;
 	}
 
 //
@@ -1671,12 +1675,12 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.ctr = 0;
     new_event_callback.discarded_event = false;
     if (zmq_used == true)
-		new_event_callback.endpoint = dvlsa->svalue[1].in();
+		new_event_callback.endpoint = dvlsa->svalue[(valid_endpoint_nb << 1) + 1].in();
 
     new_ess.callback = callback;
     new_ess.ev_queue = ev_queue;
 
-	connect_event_system(device_name,obj_name_lower,event_name,filters,evt_it,new_event_callback,dd);
+	connect_event_system(device_name,obj_name_lower,event_name,filters,evt_it,new_event_callback,dd,valid_endpoint_nb);
 
 //
 // Check if this subscription is for a fwd attribute root attribute (when relevant)

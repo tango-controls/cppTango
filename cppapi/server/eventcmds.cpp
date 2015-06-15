@@ -694,6 +694,9 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 		ret_data = new Tango::DevVarLongStringArray();
         ret_data->svalue.length(2);
 
+        ret_data->lvalue.length(1);
+        ret_data->lvalue[0] = (Tango::DevLong)tg->get_tango_lib_release();;
+
         ZmqEventSupplier *ev;
         if ((ev = tg->get_zmq_event_supplier()) != NULL)
         {
@@ -713,6 +716,28 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
 				tmp_str = tmp_str + "Some event(s) sent using multicast protocol";
 			}
             ret_data->svalue[1] = CORBA::string_dup(tmp_str.c_str());
+
+            size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
+            if (nb_alt != 0)
+            {
+                ret_data->svalue.length((nb_alt + 1) << 1);
+
+                for (size_t loop = 0;loop < nb_alt;loop++)
+                {
+                    string tmp_str("Alternate heartbeat: ");
+                    tmp_str = tmp_str + ev->get_alternate_heartbeat_endpoint()[loop];
+                    ret_data->svalue[(loop + 1) << 1] = CORBA::string_dup(tmp_str.c_str());
+
+                    tmp_str = "Alternate event: ";
+                    if (ev->get_alternate_event_endpoint().size() != 0)
+                    {
+                         string ev_end = ev->get_alternate_event_endpoint()[loop];
+                         if (ev_end.empty() == false)
+                            tmp_str = "Alternate event: " + ev_end;
+                    }
+                    ret_data->svalue[((loop + 1) << 1) + 1] = CORBA::string_dup(tmp_str.c_str());
+                }
+            }
         }
         else
         {
@@ -994,6 +1019,22 @@ DevVarLongStringArray *DServer::zmq_event_subscription_change(const Tango::DevVa
                 ret_data->svalue[1] = CORBA::string_dup(event_endpoint.c_str());
             }
         }
+
+        size_t nb_alt = ev->get_alternate_heartbeat_endpoint().size();
+        if (nb_alt != 0)
+        {
+            ret_data->svalue.length((nb_alt + 1) << 1);
+
+            for (size_t loop = 0;loop < nb_alt;loop++)
+            {
+                string tmp_str = ev->get_alternate_heartbeat_endpoint()[loop];
+                ret_data->svalue[(loop + 1) << 1] = CORBA::string_dup(tmp_str.c_str());
+
+                tmp_str = ev->get_alternate_event_endpoint()[loop];
+                ret_data->svalue[((loop + 1) << 1) + 1] = CORBA::string_dup(tmp_str.c_str());
+            }
+        }
+
     }
 
 	return ret_data;

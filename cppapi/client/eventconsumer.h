@@ -381,6 +381,7 @@ typedef struct event_channel_base
 typedef struct event_channel_zmq
 {
     string                        	endpoint;
+    size_t                          valid_endpoint;
 }EventChannelZmq;
 
 typedef struct channel_struct: public EventChannelBase, public EventChannelZmq
@@ -479,7 +480,7 @@ protected :
 
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &) = 0;
     virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint),TANGO_UNUSED(string &endpoint_event)) {}
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &) = 0;
+    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t) = 0;
     virtual void disconnect_event(string &,string &) {}
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
@@ -514,7 +515,7 @@ public :
 protected :
 	NotifdEventConsumer(ApiUtil *ptr);
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &);
+    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = NOTIFD;}
 	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) {}
@@ -569,7 +570,7 @@ protected :
 	ZmqEventConsumer(ApiUtil *ptr);
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
     virtual void disconnect_event_channel(string &channel_name,string &endpoint,string &endpoint_event);
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &);
+    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
     virtual void disconnect_event(string &,string &);
 
     virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = ZMQ;}
@@ -614,6 +615,8 @@ private :
 	void print_error_message(const char *mess) {ApiUtil *au=ApiUtil::instance();au->print_error_message(mess);}
 	void set_ctrl_sock_bound() {sock_bound_mutex.lock();ctrl_socket_bound=true;sock_bound_mutex.unlock();}
 	bool is_ctrl_sock_bound() {bool _b;sock_bound_mutex.lock();_b=ctrl_socket_bound;sock_bound_mutex.unlock();return _b;}
+
+    bool check_zmq_endpoint(const string &);
 
     friend class DelayEvent;
 };

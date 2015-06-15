@@ -231,12 +231,15 @@ void NotifdEventConsumer::cleanup_EventChannel_map()
 //                                         entry in the event_callback_map
 //                  - dd : The data returned by the DS admin device
 //                         xxxSubscriptionChange command
+//                  - valid_end : Valid endpoint in case the DS has retruned several
+//                                possible endpoints
 //
 //-----------------------------------------------------------------------------
 
 void NotifdEventConsumer::connect_event_system(string &device_name,string &att_name,string &event_name,
                                               const vector<string> &filters,EvChanIte &evt_it,
-                                              EventCallBackStruct &new_event_callback,TANGO_UNUSED(DeviceData &dd))
+                                              EventCallBackStruct &new_event_callback,TANGO_UNUSED(DeviceData &dd),
+                                              TANGO_UNUSED(size_t valid_end))
 {
 //
 // Build a filter using the CORBA Notify constraint Language

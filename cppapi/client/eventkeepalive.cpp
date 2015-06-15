@@ -450,11 +450,12 @@ void EventConsumerKeepAliveThread::reconnect_to_zmq_event(EvChanIte &ipos,EventC
 							disconnect_called = true;
 						}
 #endif
-						event_consumer->connect_event_system(d_name,epos->second.obj_name,epos->second.event_name,vs,ipos,ecbs,dd);
+						event_consumer->connect_event_system(d_name,epos->second.obj_name,epos->second.event_name,
+                                                             vs,ipos,ecbs,dd,ipos->second.valid_endpoint);
 
 						const DevVarLongStringArray *dvlsa;
 						dd >> dvlsa;
-						epos->second.endpoint = dvlsa->svalue[1].in();
+						epos->second.endpoint = dvlsa->svalue[(ipos->second.valid_endpoint << 1) + 1].in();
 
 						cout3 << "Reconnected to ZMQ event" << endl;
 					}
