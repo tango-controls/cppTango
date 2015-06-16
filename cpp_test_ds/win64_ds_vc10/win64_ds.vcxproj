@@ -224,7 +224,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>$(PREFIX)/win64/include;..;$(OMNI_BASE)\include\vc10;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(PREFIX)/win64/include;..;$(OMNI_BASE)\include\vc10;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_WINSTATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -245,7 +245,7 @@
       <AdditionalDependencies>tango.lib;log4tango.lib;omniORB4.lib;omniDynamic4.lib;omnithread.lib;COS4.lib;zmq.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>Release/devTest.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\lib\vc10;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10;$(OMNI_BASE)\lib\vc10;$(ZMQ_BASE)\win64\lib\vc10;$(LOG4TANGO_BASE)\win64\lib\vc10;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\Release/devTest.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>

@@ -43,6 +43,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseOfMfc>false</UseOfMfc>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>Windows7.1SDK</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -81,7 +82,7 @@
     <ExecutablePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.1A\Bin;$(ExecutablePath)</ExecutablePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.1A\Include;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files %28x86%29\Microsoft SDKs\Windows\v7.1A\Lib\x64;$(LibraryPath)</LibraryPath>
-    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</GenerateManifest>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -135,7 +136,7 @@
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
-      <AdditionalIncludeDirectories>C:\cppapi_5_2\server;C:\cppapi_5_2\client;$(OMNI_BASE)\win32_dll\include;$(LOG4TANGO_BASE)\win32_dll\include;F:\tango\tools\test_system\ref\device;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..;$(PREFIX)\win64\include;$(OMNI_BASE)\include\vc10;$(ZMQ_BASE)\win64\include\vc10;$(LOG4TANGO_BASE)\win64\include\vc10;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;LOG4TANGO_HAS_DLL;TANGO_HAS_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -153,10 +154,10 @@
       <Culture>0x040c</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>tango.lib;log4tango.lib;omniORB416_rt.lib;omniDynamic416_rt.lib;omnithread34_rt.lib;COS416_rt.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>tango.lib;log4tango.lib;omniORB420_rt.lib;omniDynamic420_rt.lib;omnithread40_rt.lib;COS420_rt.lib;zmq.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>Release/devTest.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\cppapi\server\winnt_lib\tango_dll\release;$(OMNI_BASE)\win32_dll\lib;$(LOG4TANGO_BASE)\win32_dll\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PREFIX)\win64\lib\vc10_dll;$(OMNI_BASE)\lib\vc10_dll;$(LOG4TANGO_BASE)\win64\lib\vc10_dll;$(ZMQ_BASE)\win64\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>.\Release/devTest.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
@@ -167,6 +168,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Release/win32_ds_dll.bsc</OutputFile>
     </Bscmake>
+    <Manifest>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Midl>
@@ -254,6 +258,10 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>.\Debug/win32_ds_dll.bsc</OutputFile>
     </Bscmake>
+    <Manifest>
+      <SuppressStartupBanner>false</SuppressStartupBanner>
+      <SuppressDependencyElement>false</SuppressDependencyElement>
+    </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\classfactory.cpp">
