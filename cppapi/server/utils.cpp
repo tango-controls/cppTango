@@ -536,7 +536,13 @@ void Util::create_CORBA_objects()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-Util::Util(HINSTANCE hInst,int nCmdShow):cl_list_ptr(NULL),mon("Windows startup"),ext(new UtilExt)
+Util::Util(HINSTANCE hInst,int nCmdShow):cl_list_ptr(NULL),mon("Windows startup"),ext(new UtilExt),
+heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
+only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
+db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
+conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
+zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
+polling_bef_9_def(false)
 #ifndef TANGO_HAS_LOG4TANGO
   ,cout_tmp(cout.rdbuf())
 #endif
@@ -547,6 +553,14 @@ Util::Util(HINSTANCE hInst,int nCmdShow):cl_list_ptr(NULL),mon("Windows startup"
 //
 
 	_win = true;
+
+//
+// Some more init
+//
+
+	shared_data.cmd_pending = false;
+	shared_data.trigger = false;
+    cr_py_lock = new CreatePyLock();
 
 //
 // Build UNIX like command argument(s)
@@ -1301,8 +1315,7 @@ void Util::misc_init()
 
 #ifdef _TG_WINDOWS_
 	main_win_text = "TANGO collaboration\n";
-	main_win_text = main_win_text + "(ALBA / DESY / ELETTRA / ESRF / FRMII / MAX-LAB / SOLEIL )\n";
-	main_win_text = main_win_text + "Developped by Tango team";
+	main_win_text = main_win_text + "http://www.tango-controls.org";
 #endif
 
 //
@@ -1804,7 +1817,12 @@ void Util::server_run()
 // The server is now started
 //
 
+#ifndef _TG_WINDOWS_
 	set_svr_starting(false);
+#else
+	if (_win == false)
+		set_svr_starting(false);
+#endif
 
 //
 // Get thread ID
@@ -2998,7 +3016,6 @@ void *Util::ORBWin32Loop::run_undetached(void *ptr)
 // Configure polling from polling properties
 //
 
-
 	util->polling_configure();
 
 //
@@ -3013,6 +3030,8 @@ void *Util::ORBWin32Loop::run_undetached(void *ptr)
 		delete util->db_cache;
 		util->db_cache = NULL;
 	}
+
+	util->set_svr_starting(false);
 
 //
 // Start the ORB
