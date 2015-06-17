@@ -41,12 +41,6 @@ int main(int argc, char **argv)
 	
 	try
 	{
-	
-// Change timeout (with a useless name as a workaround for ORBacus bug)
-
-//		device->set_timeout_millis(6000);
-//		device->name();			
-//		coutv << "Timeout set to 6 seconds" << endl;
 				
 // Send a command to check polling without blocking
 

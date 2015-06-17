@@ -242,58 +242,6 @@ public:
 		del_all.push_back(DbDatum("_tst_pipe"));
 		TS_ASSERT_THROWS_NOTHING(db->delete_all_device_pipe_property("a/b/c",del_all));
 	}
-
-// Add - Delete device server process
-
-	void test_add_delete_device_server_process()
-    {
-        DbDevInfos devs;
-        DbDevInfo one_dev;
-
-        one_dev._class = "Bidon";
-        one_dev.name = "et/bidon/01";
-        devs.push_back(one_dev);
-
-        one_dev._class = "Bidon";
-        one_dev.name = "et/bidon/02";
-        devs.push_back(one_dev);
-
-        one_dev._class = "Truc";
-        one_dev.name = "et/bidon/03";
-        devs.push_back(one_dev);
-
-        one_dev._class = "Truc";
-        one_dev.name = "et/bidon/04";
-        devs.push_back(one_dev);
-
-        string svr("Bidon/manu");
-        TS_ASSERT_THROWS_NOTHING(db->add_server(svr,devs));
-
-        string wildcard("Bidon/m*");
-        DbDatum db_datum = db->get_server_list(wildcard);
-        vector<string> server_list;
-        db_datum >> server_list;
-
-        TS_ASSERT(server_list.size() == 1);
-        TS_ASSERT(server_list[0] == "Bidon/manu");
-
-        db_datum = db->get_server_class_list(svr);
-        vector<string> class_list;
-        db_datum >> class_list;
-
-        string admin_dev("dserver/");
-        admin_dev = admin_dev + svr;
-        DbDevFullInfo dbfi = db->get_device_info(admin_dev);
-
-        TS_ASSERT(dbfi.class_name == "DServer");
-        TS_ASSERT(dbfi.ds_full_name == svr);
-
-        TS_ASSERT(class_list.size() == 2);
-        TS_ASSERT(class_list[0] == "Bidon");
-        TS_ASSERT(class_list[1] == "Truc");
-
-        TS_ASSERT_THROWS_NOTHING(db->delete_server(svr));
-    }
 	    
 };
 #undef cout
