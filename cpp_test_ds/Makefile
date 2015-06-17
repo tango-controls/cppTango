@@ -51,9 +51,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.2.0/$(BIN_DIR)
 else
-OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.2.0/$(BIN_DIR)
 endif
 
 ##############################################################################
