@@ -3009,7 +3009,8 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 	if ((event == CHANGE_EVENT) ||
 	    (event == QUALITY_EVENT) ||
 	    (event == ARCHIVE_EVENT) ||
-	    (event == USER_EVENT))
+	    (event == USER_EVENT) ||
+        (event == PERIODIC_EVENT))
 	{
 		DevErrorList err;
 		err.length(0);
