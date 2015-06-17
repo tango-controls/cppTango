@@ -150,15 +150,8 @@ cout << "Destroying suite at " << ctime(&ti) << endl;
 		device1->set_timeout_millis(10*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
-struct timeval start,stop;
-gettimeofday(&start,NULL);
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetAlarms"));
 		TS_ASSERT_THROWS_NOTHING(dout >> alarms);
-gettimeofday(&stop,NULL);
-double elapsed = (double)(stop.tv_sec - start.tv_sec) + (double)(stop.tv_usec - start.tv_usec) / 1000000.0;
-cout << "required time for command SetGetAlarms = " << elapsed << endl;
-cout << "Start at " << start.tv_sec << ", " << start.tv_usec << endl;
-cout << "Stop at " << stop.tv_sec << ", " << stop.tv_usec << endl;
 
 		TS_ASSERT((*alarms).length() == 45);
 		TS_ASSERT(string((*alarms)[0].in()) == "Double_attr");
@@ -223,13 +216,8 @@ cout << "Stop at " << stop.tv_sec << ", " << stop.tv_usec << endl;
 		device1->set_timeout_millis(6*def_timeout);
 		CxxTest::TangoPrinter::restore_set("timeout");
 
-struct timeval start,stop;
-gettimeofday(&start,NULL);
 		TS_ASSERT_THROWS_NOTHING(dout = device1->command_inout("SetGetRanges"));
 		TS_ASSERT_THROWS_NOTHING(dout >> ranges);
-gettimeofday(&stop,NULL);
-double elapsed = (double)(stop.tv_sec - start.tv_sec) + (double)(stop.tv_usec - start.tv_usec) / 1000000.0;
-cout << "required time for command SetGetRanges = " << elapsed << endl;
 
 		TS_ASSERT((*ranges).length() == 27);
 		TS_ASSERT(string((*ranges)[0].in()) == "Double_attr_w");
