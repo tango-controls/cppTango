@@ -71,10 +71,9 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libpgm.lib"
 				OutputFile="$(PREFIX)\win32\lib\vc9\tango.lib"
-				AdditionalLibraryDirectories="D:\openpgm5.2.122\lib_vc9\Release"
-				IgnoreDefaultLibraryNames="libpgm.lib"
+				AdditionalLibraryDirectories=""
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -147,11 +146,10 @@
 			/>
 			<Tool
 				Name="VCLibrarianTool"
-				AdditionalDependencies="libpgmd.lib"
 				OutputFile="$(PREFIX)\win32\lib\vc9\tangod.lib"
-				AdditionalLibraryDirectories="D:\openpgm5.2.122\lib_vc9\Debug"
+				AdditionalLibraryDirectories=""
 				IgnoreAllDefaultLibraries="false"
-				IgnoreDefaultLibraryNames="libpgmd.lib"
+				IgnoreDefaultLibraryNames=""
 			/>
 			<Tool
 				Name="VCALinkTool"

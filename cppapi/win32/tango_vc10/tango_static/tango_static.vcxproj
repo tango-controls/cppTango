@@ -71,9 +71,11 @@
     </ResourceCompile>
     <Lib>
       <OutputFile>$(PREFIX)\win32\lib\vc10\tango.lib</OutputFile>
-      <AdditionalDependencies>libpgm.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\openpgm5.2.122\lib_vc10\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libpgm.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -99,9 +101,11 @@
     <Lib>
       <OutputFile>$(PREFIX)\win32\lib\vc10\tangod.lib</OutputFile>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
-      <AdditionalDependencies>libpgmd.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\openpgm5.2.122\lib_vc10\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <IgnoreSpecificDefaultLibraries>libpgmd.lib</IgnoreSpecificDefaultLibraries>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

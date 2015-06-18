@@ -206,6 +206,7 @@ polling_bef_9_def(false)
 
 void Util::effective_job(int argc,char *argv[])
 {
+
 	try
 	{
 
