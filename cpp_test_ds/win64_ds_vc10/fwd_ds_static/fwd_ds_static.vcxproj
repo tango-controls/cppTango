@@ -96,6 +96,7 @@
       <AdditionalDependencies>tangod.lib;log4tangod.lib;omniORB4d.lib;omniDynamic4d.lib;omnithreadd.lib;COS4d.lib;zmqd.lib;comctl32.lib;ws2_32.lib;mswsock.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ProgramDatabaseFile>.\Debug/FwdTest.pdb</ProgramDatabaseFile>
       <SubSystem>Console</SubSystem>
+      <ShowProgress>NotSet</ShowProgress>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
