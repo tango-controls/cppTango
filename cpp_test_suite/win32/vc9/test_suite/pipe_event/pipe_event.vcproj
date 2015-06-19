@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="asyn_cmd"
-	ProjectGUID="{34BA4CE1-613B-42E0-8399-761DD96FD595}"
-	RootNamespace="asyn_cmd"
+	Name="pipe_event"
+	ProjectGUID="{A6D2A2C7-D277-4631-A030-EAB0D6C6CA99}"
+	RootNamespace="per_event"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -133,7 +133,6 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				ShowProgress="2"
 				LinkIncremental="1"
 				SubSystem="1"
 				OptimizeReferences="2"
@@ -172,7 +171,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\..\..\..\asyn\asyn_cmd.cpp"
+				RelativePath="..\..\..\..\event\pipe_event.cpp"
 				>
 			</File>
 		</Filter>

@@ -165,6 +165,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "multi_dev_event", "multi_de
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dev_intr_event", "dev_intr_event\dev_intr_event.vcproj", "{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "pipe_event", "pipe_event\pipe_event.vcproj", "{A6D2A2C7-D277-4631-A030-EAB0D6C6CA99}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -492,6 +494,10 @@ Global
 		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Debug|Win32.Build.0 = Debug|Win32
 		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Release|Win32.ActiveCfg = Release|Win32
 		{C9E16BC3-AB98-440C-9CFE-0D2FDB7D1FB6}.Release|Win32.Build.0 = Release|Win32
+		{A6D2A2C7-D277-4631-A030-EAB0D6C6CA99}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A6D2A2C7-D277-4631-A030-EAB0D6C6CA99}.Debug|Win32.Build.0 = Debug|Win32
+		{A6D2A2C7-D277-4631-A030-EAB0D6C6CA99}.Release|Win32.ActiveCfg = Release|Win32
+		{A6D2A2C7-D277-4631-A030-EAB0D6C6CA99}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
