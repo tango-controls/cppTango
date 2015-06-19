@@ -29,7 +29,6 @@ static const char *RcsId = "$Header$";
 
 int main(int argc,char *argv[])
 {
-
 	Tango::Util *tg;
 	try
 	{
