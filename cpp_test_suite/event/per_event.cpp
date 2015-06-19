@@ -201,7 +201,7 @@ int main(int argc, char **argv)
 			
 		coutv << "cb excuted = " << cb.cb_executed << endl;
 		assert (cb.cb_executed > 2);
-		assert (cb.cb_executed < 6);
+		assert (cb.cb_executed < 7);
 		assert (cb.delta_msec > 900);
 		assert (cb.delta_msec < 1100);
 		assert (cb.a_cb_err == 0);

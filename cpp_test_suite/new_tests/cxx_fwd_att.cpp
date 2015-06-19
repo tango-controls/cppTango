@@ -743,8 +743,8 @@ public:
 
 		Tango_sleep(3);
 
-		TS_ASSERT(cb.cb_err == 0);
-		TS_ASSERT(cb.cb_executed >= 2);
+		TS_ASSERT(cb.cb_err == 1);
+		TS_ASSERT(cb.cb_executed >= 3);
 
 		string at_name = fwd_device_name + "/fwd_short_rw";
 		string::size_type pos = cb.ev_name.find(at_name);
