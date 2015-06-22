@@ -454,7 +454,8 @@ MAKE_EXCEPT(NotAllowed,NotAllowedExcept)
 		catch(CORBA::TRANSIENT &trans_ping) \
 		{ \
 			if (trans_ping.minor() == omni::TRANSIENT_ConnectFailed || \
-               (ext->has_alt_adr == true && trans_ping.minor() == omni::TRANSIENT_CallTimedout)) \
+                trans_ping.minor() == omni::TRANSIENT_CallTimedout || \
+                (ext->has_alt_adr == true && trans_ping.minor() == omni::TRANSIENT_CallTimedout)) \
 			{ \
 				need_reconnect = true; \
 			} \
