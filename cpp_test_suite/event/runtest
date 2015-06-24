@@ -187,7 +187,7 @@ fi
 #
 
 $echo "Testing periodic event"
-$DIR/per_event $DEV1
+$DIR/per_event $DEV1 $DEV2
 ret=$?
 check_return_value $ret
 #

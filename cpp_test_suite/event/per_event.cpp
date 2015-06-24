@@ -86,21 +86,87 @@ void EventCallBack::push_event(Tango::EventData* event_data)
 
 }
 
+
+class EventCallBackSub : public Tango::CallBack
+{
+	void push_event(Tango::EventData*);
+	
+public:
+    string                  dev_name;
+    string                  attr_name;
+	int 					cb_executed;
+    int                     cb_executed_sub;
+	int 					cb_err;
+	DeviceProxy             *dev2;
+	int 					ev_id2;
+};
+
+void EventCallBackSub::push_event(Tango::EventData* event_data)
+{
+	cb_executed++;
+	coutv << "I have received an event for attribute " << event_data->attr_name << endl;
+
+	if (event_data->err == true)
+	{
+		coutv << "The event is an error" << endl;
+		Tango::Except::print_error_stack(event_data->errors);
+        cb_err++;
+	}
+	else
+	{
+        if (cb_executed == 2)
+        {
+            coutv << "Going to subscribe to another event" << endl;
+            try
+            {
+                dev2 = new Tango::DeviceProxy(dev_name);
+                coutv << "DeviceProxy object created" << endl;
+                ev_id2 = dev2->subscribe_event(attr_name,Tango::PERIODIC_EVENT,this,true);
+                coutv << "Subscribed to event, id = " << ev_id2 << endl;
+            }
+            catch (Tango::DevFailed &e)
+            {
+                Tango::Except::print_exception(e);
+            }
+        }
+
+        if (cb_executed == 12)
+        {
+            try
+            {
+                coutv << "Going to unsubscribe, ev_id2 = " << ev_id2 << endl;
+                dev2->unsubscribe_event(ev_id2);
+                delete dev2;
+            }
+            catch (Tango::DevFailed &e)
+            {
+                Tango::Except::print_exception(e);
+            }
+        }
+
+        string::size_type pos = event_data->attr_name.find(dev_name);
+        if (pos != string::npos)
+            cb_executed_sub++;
+	}
+}
+
+
 int main(int argc, char **argv)
 {
 	DeviceProxy *device;
 	
-	if (argc == 1)
+	if (argc < 3 || argc > 4)
 	{
-		cout << "usage: %s device [-v]" << endl;
+		cout << "usage: %s device1 device2 [-v]" << endl;
 		exit(-1);
 	}
 
 	string device_name = argv[1];
+    string device_name_sub = argv[2];
 
-	if (argc == 3)
+	if (argc == 4)
 	{
-		if (strcmp(argv[2],"-v") == 0)
+		if (strcmp(argv[3],"-v") == 0)
 			verbose = true;
 	}
 	
@@ -481,7 +547,38 @@ int main(int argc, char **argv)
 
 		device->unsubscribe_event(eve_id);
 		
-		cout << "   unsubscribe_event --> OK" << endl;	
+		cout << "   unsubscribe_event --> OK" << endl;
+
+//
+// subscribe again to test subsription in CB an dpoll attribute on second device
+//
+
+        EventCallBackSub cb_sub;
+        cb_sub.cb_err = 0;
+        cb_sub.cb_executed = 0;
+        cb_sub.cb_executed_sub = 0;
+        cb_sub.dev_name = device_name_sub;
+        cb_sub.attr_name = att_name;
+
+        DeviceProxy dev_sub(device_name_sub);
+        dev_sub.poll_attribute(att_name,500);
+
+		eve_id = device->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb_sub);
+
+        Tango_sleep(7);
+
+        device->unsubscribe_event(eve_id);
+        dev_sub.stop_poll_attribute(att_name);
+
+        coutv << "cb_executed = " << cb_sub.cb_executed << endl;
+        coutv << "cb_executed_sub = " << cb_sub.cb_executed_sub << endl;
+        coutv << "cb_err = " << cb_sub.cb_err << endl;
+
+		assert (cb_sub.cb_executed > 10);
+        assert (cb_sub.cb_executed_sub >= 3);
+		assert (cb_sub.cb_err == 0);
+
+        cout << "   subscription / unsubscription in event callback --> OK" << endl;
 		
 //
 // Stop polling

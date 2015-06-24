@@ -40,7 +40,7 @@ void EventCallBack::push_event(Tango::PipeEventData* event_data)
 		if (!event_data->err)
 		{
 			coutv << "Received pipe event for pipe " << event_data->pipe_name << endl;
-			coutv << *(event_data->pipe_value) << endl;
+//			coutv << *(event_data->pipe_value) << endl;
 			root_blob_name = event_data->pipe_value->get_root_blob_name();
 
 			if (root_blob_name == "PipeEventCase4")
