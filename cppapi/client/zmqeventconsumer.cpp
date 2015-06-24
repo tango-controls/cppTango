@@ -131,6 +131,12 @@ void *ZmqEventConsumer::run_undetached(TANGO_UNUSED(void *arg))
 	int send_hwm = SUB_SEND_HWM;
 
 //
+// Store thread ID
+//
+
+    thread_id = self()->id();
+
+//
 // Create the subscriber socket used to receive heartbeats coming from different DS. This socket subscribe to
 // everything because dedicated publishers are used to send the heartbeat events. This socket will be connected
 // to all needed publishers

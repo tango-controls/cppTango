@@ -218,6 +218,8 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
     if (keep_alive_thread == NULL)
         api_ptr->need_reset_already_flag(true);
 
+    thread_id = 0;
+
 //
 // Create and start the EventConsumerKeepAliveThread. Do this at the method's end because the keep_alive_thread
 // ptr is also used as a "init done" flag.
@@ -228,6 +230,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
         keep_alive_thread = new EventConsumerKeepAliveThread(cmd);
         keep_alive_thread->start();
     }
+
 }
 
 //+--------------------------------------------------------------------------------------------------------------------
@@ -1192,11 +1195,39 @@ int EventConsumer::subscribe_event (DeviceProxy *device,
 	if (event == QUALITY_EVENT)
 	{
         EventSystemExcept::throw_exception(API_InvalidArgs,
-            "The quality change event does not exist any more. A change event is fired on a qaulity change!",
+            "The quality change event does not exist any more. A change event is fired on a quality change!",
             "EventConsumer::subscribe_event()");
 	}
     else
         event_name = EventName[event];
+
+//
+// Following code is for the case of event subscription in one event callback
+// In such a case, we have to do  the subscription in a thread  otherwise we have a deadlock due to the
+// event consumer thread which can not at the same time execute the call back and register the new event
+//
+
+    if (thread_id != 0)
+    {
+        omni_thread::ensure_self se;
+        if (omni_thread::self()->id() == thread_id)
+        {
+            if (stateless == false)
+            {
+                EventSystemExcept::throw_exception(API_InvalidArgs,
+                "When subscribing to event within a event callback, only stateless subscription is allowed",
+                "EventConsumer::subscribe_event()");
+            }
+
+            subscribe_event_id++;
+            int ret_event_id = subscribe_event_id;
+
+            DelayedEventSubThread *th = new DelayedEventSubThread(this,device,attribute,event,callback,ev_queue,stateless,event_name,ret_event_id);
+            th->start();
+
+            return ret_event_id;
+        }
+    }
 
 //
 // Take a writer lock right now and not in the connect_event method. In case of stateless subscription and if the
@@ -1824,15 +1855,19 @@ void EventConsumer::unsubscribe_event(int event_id)
 // and start a thread which will do the unsubscribe when the callback execution will be finished
 //
 
-					if (epos->second.callback_monitor->get_locking_ctr() != 0)
-					{
-//						cout << event_id << ": Unsubscribing for an event while it is in its callback !!!!!!!!!!" << endl;
-						esspos->id = -event_id;
+                    if (thread_id != 0)
+                    {
+                        omni_thread::ensure_self se;
+                        if (omni_thread::self()->id() == thread_id)
+                        {
+ //                           cout << event_id << ": Unsubscribing for an event while it is in its callback !!!!!!!!!!" << endl;
+                            esspos->id = -event_id;
 
-						DelayedEventUnsubThread *th = new DelayedEventUnsubThread(this,event_id,epos->second.callback_monitor);
-						th->start();
+                            DelayedEventUnsubThread *th = new DelayedEventUnsubThread(this,event_id,epos->second.callback_monitor);
+                            th->start();
 
-						return;
+                            return;
+                        }
 					}
 				}
 			}
@@ -2047,6 +2082,75 @@ void DelayedEventUnsubThread::run(TANGO_UNUSED(void *ptr))
 		ev_cons->unsubscribe_event(-event_id);
 	}
 	catch(...) {}
+}
+
+
+void DelayedEventSubThread::run(TANGO_UNUSED(void *ptr))
+{
+
+//
+// Subscribe to the event
+//
+
+    vector<string> v_s;
+	try
+	{
+        DelayEvent de(ev_cons);
+        WriterLock w(EventConsumer::get_map_modification_lock());
+
+		ev_cons->connect_event(device,attribute,et,callback,ev_queue,v_s,event_name,ev_id);
+	}
+	catch (Tango::DevFailed &e)
+	{
+
+//
+// when the subscribe event has not worked, store the connection data in a vector of not
+// yet connected events.
+// Retry to connect in the next heartbeat period.
+//
+
+		EventNotConnected conn_params;
+		conn_params.device           = device;
+		conn_params.attribute        = attribute;
+		conn_params.event_type       = et;
+		conn_params.event_name       = event_name;
+		conn_params.callback         = callback;
+		conn_params.ev_queue         = ev_queue;
+		conn_params.filters          = v_s;
+		conn_params.last_heartbeat   = time(NULL);
+		conn_params.event_id = ev_id;
+
+		ev_cons->add_not_connected_event(e,conn_params);
+	}
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::add_not_connected_event()
+//
+// description :
+//		Add a not connected event to the list of not connected event managed in the event consumer in order  to
+//      periodically retry the subscription. This method is supposed to be called when event are subscribed
+//      within a event callback. In this case the subsciption is done in a thread (DelayedEventSubThread class)
+//
+// argument :
+//		in  :
+//			- e : The thrown exception
+//			- not_con : A structure describing the not connected event
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void EventConsumer::add_not_connected_event(DevFailed &e,EventNotConnected &not_con)
+{
+    if (env_var_fqdn_prefix.empty() == false)
+        not_con.prefix = env_var_fqdn_prefix[0];
+
+    event_not_connected.push_back (not_con);
+
+    vector<EventNotConnected>::iterator vpos = event_not_connected.end() - 1;
+    time_t now = time(NULL);
+    keep_alive_thread->stateless_subscription_failed(vpos,e,now);
 }
 
 //+------------------------------------------------------------------------------------------------------------------
@@ -3003,7 +3107,7 @@ void EventConsumer::get_fire_sync_event(DeviceProxy *device,CallBack *callback,E
 
 	nanosleep(&to_wait,&inter);
 #else
-	Sleep(10);
+	Sleep(25);
 #endif
 
 	if ((event == CHANGE_EVENT) ||

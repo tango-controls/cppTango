@@ -442,6 +442,9 @@ public :
 	int  event_queue_size(int event_id);
 	TimeVal get_last_event_date(int event_id);
 	bool is_event_queue_empty(int event_id);
+    int get_thread_id() {return thread_id;}
+    void add_not_connected_event(DevFailed &,EventNotConnected &);
+	static ReadersWritersLock &get_map_modification_lock() {return map_modification_lock;};
 
 	static KeepAliveThCmd                                   cmd;
 	static EventConsumerKeepAliveThread 	                *keep_alive_thread;
@@ -474,6 +477,7 @@ protected :
 
 	string													device_name;
 	string 													obj_name_lower;
+    int                                                     thread_id;
 
 	int add_new_callback(EvCbIte &,CallBack *,EventQueue *,int);
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);
@@ -604,6 +608,7 @@ private :
     omni_mutex                              sock_bound_mutex;
     bool									ctrl_socket_bound;
 
+
 	void *run_undetached(void *arg);
 	void push_heartbeat_event(string &);
     void push_zmq_event(string &,unsigned char,zmq::message_t &,bool,const DevULong &);
@@ -685,6 +690,40 @@ private:
 	int 			event_id;
 	EventConsumer 	*ev_cons;
 	TangoMonitor	*the_mon;
+};
+
+/********************************************************************************
+ * 																				*
+ * 						DelayedEventSubThread class							    *
+ * 																				*
+ *******************************************************************************/
+
+class DelayedEventSubThread: public omni_thread
+{
+public:
+	DelayedEventSubThread(EventConsumer *ec,DeviceProxy *_device,
+				   const string &_attribute,
+				   EventType _event,
+				   CallBack *_callback,
+				   EventQueue *_ev_queue,
+				   bool _stateless,
+				   const string &_ev_name,
+				   int _id):omni_thread(),ev_cons(ec),device(_device),
+				   attribute(_attribute),et(_event),callback(_callback),ev_queue(_ev_queue),
+				   stateless(_stateless),ev_id(_id),event_name(_ev_name) {}
+
+	void run(void *);
+
+private:
+	EventConsumer 	*ev_cons;
+	DeviceProxy     *device;
+	string          attribute;
+	EventType       et;
+	CallBack        *callback;
+	EventQueue      *ev_queue;
+	bool            stateless;
+	int             ev_id;
+	string          event_name;
 };
 
 } // End of namespace
