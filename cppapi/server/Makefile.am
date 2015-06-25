@@ -40,6 +40,7 @@ libtango_la_SOURCES = tangoSK.cpp 		\
 		      classattribute.cpp 		\
 		      command.cpp 				\
 		      coutappender.cpp 			\
+              classpipe.cpp             \
 		      dev_event.cpp				\
 		      dev_poll.cpp              \
 		      device.cpp 				\
@@ -84,6 +85,7 @@ libtango_la_SOURCES = tangoSK.cpp 		\
 			  utils_polling.cpp			\
 			  utils_shut.cpp			\
 		      w_attribute.cpp			\
+              w_pipe.cpp                \
 			  zmqeventsupplier.cpp
 
 
@@ -97,6 +99,7 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  basiccommand.h	\
 		  		  blackbox.h		\
 		  		  classattribute.h	\
+                  classpipe.h       \
 		  		  command.h			\
 		  		  coutappender.h	\
 		  		  coutbuf.h			\
@@ -155,4 +158,6 @@ tangoinclude_HEADERS = attrdesc.h		\
 				  utils_spec.tpp	\
 				  w_attribute.tpp	\
 				  w_attribute_spec.tpp	\
-				  w_attrsetval.tpp
+				  w_attrsetval.tpp  \
+                  w_pipe.h          \
+                  w_pipe.tpp 
