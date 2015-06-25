@@ -1,7 +1,7 @@
 
 
 # We need the ORB to compile and the tango header files to compile
-INCLUDES = -I$(top_srcdir)/lib/cpp/server \
+AM_CPPFLAGS = -I$(top_srcdir)/lib/cpp/server \
            -I$(top_srcdir)/lib/cpp/log4tango/include \
 	       -I$(top_builddir)/lib/cpp/log4tango/include \
            $(ORB_INCLUDE_PREFIX) $(LIBZMQ_CFLAGS)

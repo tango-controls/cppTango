@@ -1,7 +1,7 @@
 SUBDIRS=idl jpeg jpeg_mmx .
 
 # We need the ORB to compile and the tango header files to compile
-INCLUDES = -I$(top_srcdir)/lib/cpp/client \
+AM_CPPFLAGS = -I$(top_srcdir)/lib/cpp/client \
 	   -I$(top_srcdir)/lib/cpp/log4tango/include \
 	   -I$(top_builddir)/lib/cpp/log4tango/include \
              $(ORB_INCLUDE_PREFIX) $(LIBZMQ_CFLAGS)
