@@ -114,6 +114,7 @@ endif
 
 AR_EXT = a
 
+
 IDL_OBJS =	$(OBJS_DIR)/tangoSK.o \
 		$(OBJS_DIR)/tangoDynSK.o
 
@@ -340,11 +341,13 @@ CLIENT_INCLUDE =	apiexcept.h \
 			Database.h \
 			DbDevice.h \
 			ApiUtil.h \
+			api_util.tpp \
 			DeviceData.h \
 			DeviceAttribute.h \
 			DevicePipe.h \
 			devapi_attr.tpp \
 			devapi_pipe.tpp \
+			devapi_utils.tpp \
 			Connection.h \
 			DeviceProxy.h \
 			AttributeProxy.h \
