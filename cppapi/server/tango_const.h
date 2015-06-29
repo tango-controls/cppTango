@@ -281,10 +281,10 @@ const char* const kLogTargetSep            = "::";
 
 // Min RollingFileAppender threshold (~500kB)
 const size_t kMinRollingThreshold          = 500;
-// Default RollingFileAppender threshold (~2MB)
-const size_t kDefaultRollingThreshold      = 2 * 1024;
-// Max RollingFileAppender threshold (~20MB)
-const size_t kMaxRollingThreshold          = 20 * 1024;
+// Default RollingFileAppender threshold (~20MB)
+const size_t kDefaultRollingThreshold      = 20 * 1024;
+// Max RollingFileAppender threshold (~1GB)
+const size_t kMaxRollingThreshold          = 1024 * 1024;
 
 #endif // TANGO_HAS_LOG4TANGO
 
