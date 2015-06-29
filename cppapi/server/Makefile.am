@@ -127,6 +127,7 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  multiattribute.h	\
 		  		  ntservice.h		\
 		  		  pipe.h			\
+		  		  pipedesc.h		\
 		  		  pollcmds.h		\
 		  		  pollext.h			\
 		  		  pollobj.h			\
@@ -144,6 +145,7 @@ tangoinclude_HEADERS = attrdesc.h		\
 		  		  tangorollingfileappender.h \
 		  		  utils.h 			\
 		  		  w_attribute.h		\
+		  		  w_pipe.h			\
 				  attribute.tpp     \
 				  attribute_spec.tpp	\
 				  attrprop.tpp		\
@@ -159,5 +161,4 @@ tangoinclude_HEADERS = attrdesc.h		\
 				  w_attribute.tpp	\
 				  w_attribute_spec.tpp	\
 				  w_attrsetval.tpp  \
-                  w_pipe.h          \
-                  w_pipe.tpp 
+                  w_pipe.tpp
