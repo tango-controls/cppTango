@@ -156,6 +156,7 @@ tangoinclude_HEADERS = attrdesc.h		\
 				  pipe.tpp			\
 				  pollext.tpp		\
 				  pollring.tpp		\
+				  pollthread.tpp	\
 				  utils.tpp         \
 				  utils_spec.tpp	\
 				  w_attribute.tpp	\
