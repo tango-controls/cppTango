@@ -69,4 +69,7 @@ tangoinclude_HEADERS = accessproxy.h		\
 				  AttributeProxy.h 	\
 				  event.tpp 		\
 				  devapi_attr.tpp 	\
+				  devapi_utils.tpp	\
+				  api_utils.tpp 	\
+				  devapi_pipe.tpp 	\
 				  zmq.hpp
