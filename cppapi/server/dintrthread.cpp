@@ -94,7 +94,15 @@ void DevIntrThread::run(TANGO_UNUSED(void *ptr))
 				break;
 
 			case DEV_INTR_TIME_OUT:
-				push_event();
+			    try
+			    {
+                    push_event();
+			    }
+			    catch (Tango::DevFailed &e)
+			    {
+			        cerr << "Received a DevFailed exception while trying to push the device interface change event!!!" << endl;
+			        cerr << e.errors[0].desc.in() << endl;
+			    }
 				exit = true;
 				break;
 			}

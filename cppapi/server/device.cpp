@@ -5886,7 +5886,7 @@ void DeviceImpl::push_dev_intr(bool ev_client)
 				{
 					cout4 << "TIME OUT" << endl;
 					Except::throw_exception(API_CommandTimedOut,"Device interface change event thread blocked !!!",
-											"DeviceProxy::add_attribute");
+											"DeviceImpl::push_dev_intr");
 				}
 			}
 		}
