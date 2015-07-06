@@ -6,14 +6,28 @@ AM_CPPFLAGS = -I$(top_srcdir)/lib/cpp/server \
               -I$(top_builddir)/lib/cpp/log4tango/include \
               $(ORB_INCLUDE_PREFIX) $(LIBZMQ_CFLAGS)
 
-# We're making a libtool convenience library which is not to be installed,
-# therefore the automake noinst variable
-noinst_LTLIBRARIES = libclient.la
+# We're making a shared library with libtool (That's why we use LTLIBRARIES)
+lib_LTLIBRARIES = libtango.la
+
+# We need the libserver to link
+libtango_la_LIBADD = ../server/libserver.la	\
+		     ../server/jpeg/libjpeg.la \
+		     ../server/jpeg_mmx/libjpeg_mmx.la \
+		     ../log4tango/src/liblog4tango.la \
+		     $(LIBZMQ_LIBS)
+
+# We need to set the -version-info for libtool so that libtool will
+# generate the correct .so version
+libtango_la_LDFLAGS=-version-info $(VERSION_INFO)
 
 AM_CXXFLAGS=-D_TANGO_LIB
 
+if DARWIN_ENABLED
+AM_LDFLAGS=-flat_namespace --disable-dependency-tracking
+endif
+
 # These are the sources for the library.
-libclient_la_SOURCES = dbapi_class.cpp         \
+libtango_la_SOURCES =  dbapi_class.cpp         \
                        dbapi_server.cpp        \
                        dbapi_datum.cpp         \
                        dbapi_base.cpp          \
