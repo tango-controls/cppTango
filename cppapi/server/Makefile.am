@@ -14,9 +14,7 @@ noinst_LTLIBRARIES=libserver.la
 AM_CXXFLAGS=-D_TANGO_LIB
 
 # The sources
-libserver_la_SOURCES = tangoSK.cpp                   \
-                      tangoDynSK.cpp                \
-                      attrdesc.cpp                  \
+libserver_la_SOURCES = attrdesc.cpp                 \
                       attrgetsetprop.cpp            \
                       attribute.cpp                 \
                       attrsetval.cpp                \
