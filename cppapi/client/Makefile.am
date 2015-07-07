@@ -4,6 +4,7 @@ SUBDIRS=helpers .
 AM_CPPFLAGS = -I$(top_srcdir)/lib/cpp/server \
               -I$(top_srcdir)/lib/cpp/log4tango/include \
               -I$(top_builddir)/lib/cpp/log4tango/include \
+              -I$(top_builddir)/lib/cpp/server \
               $(ORB_INCLUDE_PREFIX) $(LIBZMQ_CFLAGS)
 
 # We're making a shared library with libtool (That's why we use LTLIBRARIES)

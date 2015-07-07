@@ -4,6 +4,7 @@ SUBDIRS=idl jpeg jpeg_mmx .
 AM_CPPFLAGS = -I$(top_srcdir)/lib/cpp/client \
               -I$(top_srcdir)/lib/cpp/log4tango/include \
               -I$(top_builddir)/lib/cpp/log4tango/include \
+              -I$(top_builddir)/lib/cpp/server \
               $(ORB_INCLUDE_PREFIX) $(LIBZMQ_CFLAGS)
 
 # We're making a libtool convenience library which is not to be installed,

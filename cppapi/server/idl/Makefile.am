@@ -1,4 +1,7 @@
 
+# We need the ORB to compile and the tango header files to compile
+AM_CPPFLAGS = $(ORB_INCLUDE_PREFIX)
+
 IDL_BASE_DIR = $(top_srcdir)/lib/idl
 
 BUILT_SOURCES = tangoSK.cpp
@@ -25,9 +28,16 @@ void set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\
 void rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\
 omni_mutex *get_attr_mutex() {return mut_ptr;}\
 omni_mutex *mut_ptr;' tango.h
-	cp tangoSK.cpp $(top_srcdir)/lib/cpp/server
-	cp tangoDynSK.cpp $(top_srcdir)/lib/cpp/server
-	cp tango.h $(top_srcdir)/lib/cpp/server/idl
+
+# We're making a libtool convenience library which is not to be installed,
+# therefore the automake noinst variable
+noinst_LTLIBRARIES = libidl.la
+
+
+# These are the sources for the library.
+libidl_la_SOURCES =       tangoSK.cpp  \
+                          tangoDynSK.cpp \
+                          tango.h
 
 idldir=${includedir}/tango/idl
 idl_HEADERS=tango.h
