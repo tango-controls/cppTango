@@ -494,26 +494,31 @@ void Attribute::set_properties(const Tango::AttributeConfig &conf,string &dev_na
 // Min, max and most of the alarm related properties
 //
 
-	set_one_alarm_prop("min_value",conf.min_value,min_value_str,min_value,v_db,def_user_prop,def_class_prop,check_min_value);
-	delete_startup_exception("min_value",dev_name);
+	if ((data_type != Tango::DEV_STRING) &&
+		(data_type != Tango::DEV_BOOLEAN) &&
+		(data_type != Tango::DEV_STATE))
+    {
+        set_one_alarm_prop("min_value",conf.min_value,min_value_str,min_value,v_db,def_user_prop,def_class_prop,check_min_value);
+        delete_startup_exception("min_value",dev_name);
 
-	set_one_alarm_prop("max_value",conf.max_value,max_value_str,max_value,v_db,def_user_prop,def_class_prop,check_max_value);
-	delete_startup_exception("max_value",dev_name);
+        set_one_alarm_prop("max_value",conf.max_value,max_value_str,max_value,v_db,def_user_prop,def_class_prop,check_max_value);
+        delete_startup_exception("max_value",dev_name);
 
-	bool alrm_set;
-	set_one_alarm_prop("min_alarm",conf.min_alarm,min_alarm_str,min_alarm,v_db,def_user_prop,def_class_prop,alrm_set);
-	if (alrm_set == false)
-		alarm_conf.reset(min_level);
-	else
-		alarm_conf.set(min_level);
-	delete_startup_exception("min_alarm",dev_name);
+        bool alrm_set;
+        set_one_alarm_prop("min_alarm",conf.min_alarm,min_alarm_str,min_alarm,v_db,def_user_prop,def_class_prop,alrm_set);
+        if (alrm_set == false)
+            alarm_conf.reset(min_level);
+        else
+            alarm_conf.set(min_level);
+        delete_startup_exception("min_alarm",dev_name);
 
-	set_one_alarm_prop("max_alarm",conf.max_alarm,max_alarm_str,max_alarm,v_db,def_user_prop,def_class_prop,alrm_set);
-	if (alrm_set == false)
-		alarm_conf.reset(max_level);
-	else
-		alarm_conf.set(max_level);
-	delete_startup_exception("max_alarm",dev_name);
+        set_one_alarm_prop("max_alarm",conf.max_alarm,max_alarm_str,max_alarm,v_db,def_user_prop,def_class_prop,alrm_set);
+        if (alrm_set == false)
+            alarm_conf.reset(max_level);
+        else
+            alarm_conf.set(max_level);
+        delete_startup_exception("max_alarm",dev_name);
+    }
 }
 
 
@@ -591,7 +596,10 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 	vector<AttrProperty> &def_user_prop = state_or_status == false ? att_ptr->get_user_default_properties() : fake_attr_prop;
 	vector<AttrProperty> &def_class_prop = state_or_status == false ? att_ptr->get_class_properties() : fake_attr_prop;
 
-	if (state_or_status == false)
+	if (state_or_status == false &&
+     	((data_type != Tango::DEV_STRING) &&
+		 (data_type == Tango::DEV_BOOLEAN) &&
+		 (data_type == Tango::DEV_STATE)))
 	{
 
 //
