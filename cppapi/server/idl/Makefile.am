@@ -35,10 +35,27 @@ noinst_LTLIBRARIES = libidl.la
 
 
 # These are the sources for the library.
-libidl_la_SOURCES =       tangoSK.cpp  \
-                          tangoDynSK.cpp \
-                          tango.h
+nodist_libidl_la_SOURCES = tangoSK.cpp  \
+                           tangoDynSK.cpp \
+                           tango.h
 
 idldir=${includedir}/tango/idl
-idl_HEADERS=tango.h
+
+install-data-local:
+	mkdir -p $(DESTDIR)/$(idldir)
+	cp -f tango.h $(DESTDIR)/$(idldir)/tango.h
+	chmod u+w $(DESTDIR)/$(idldir)/tango.h
+
+uninstall-local:
+	rm $(DESTDIR)/$(idldir)/tango.h
+	rmdir $(DESTDIR)/$(idldir)
+
+clean-local: clean-local-check
+.PHONY: clean-local-check
+clean-local-check:
+	rm *.cpp
+	rm *.h
+	
+
+#idl_HEADERS=tango.h
 

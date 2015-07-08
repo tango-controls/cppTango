@@ -596,10 +596,10 @@ void Attribute::set_properties(const Tango::AttributeConfig_3 &conf,string &dev_
 	vector<AttrProperty> &def_user_prop = state_or_status == false ? att_ptr->get_user_default_properties() : fake_attr_prop;
 	vector<AttrProperty> &def_class_prop = state_or_status == false ? att_ptr->get_class_properties() : fake_attr_prop;
 
-	if (state_or_status == false &&
+	if ((state_or_status == false) &&
      	((data_type != Tango::DEV_STRING) &&
-		 (data_type == Tango::DEV_BOOLEAN) &&
-		 (data_type == Tango::DEV_STATE)))
+		 (data_type != Tango::DEV_BOOLEAN) &&
+		 (data_type != Tango::DEV_STATE)))
 	{
 
 //
