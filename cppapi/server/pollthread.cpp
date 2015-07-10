@@ -1319,7 +1319,7 @@ void PollThread::compute_sleep_time()
 // Analyse work list
 //
 
-        cout5 << "discard = " << boolalpha << discard << endl;
+//        cout5 << "discard = " << boolalpha << discard << endl;
         if (nb_late == 0 || discard == true)
         {
             previous_nb_late = 0;
