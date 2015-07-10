@@ -1287,7 +1287,10 @@ void PollThread::compute_sleep_time()
             if (nb_late != 0)
             {
                 if (nb_late == works.size())
+                {
+                    cout5 << "Setting discard to true because nb_late == works.size() --> " << nb_late << endl;
                     discard = true;
+                }
                 else
                 {
                     if (previous_nb_late != 0)
@@ -1316,6 +1319,7 @@ void PollThread::compute_sleep_time()
 // Analyse work list
 //
 
+        cout5 << "discard = " << boolalpha << discard << endl;
         if (nb_late == 0 || discard == true)
         {
             previous_nb_late = 0;
