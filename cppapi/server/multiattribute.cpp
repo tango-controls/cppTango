@@ -314,10 +314,10 @@ MultiAttribute::MultiAttribute(string &dev_name,DeviceClass *dev_class_ptr,Devic
 // Remove attdesc entry in class object for forwarded attribute with root device not started
 //
 
-		for (unsigned int loop = 0;loop < rem_att_name.size();loop++)
-		{
-			dev_class_ptr->get_class_attr()->remove_attr(rem_att_name[loop],rem_att_cl_name[loop]);
-		}
+//		for (unsigned int loop = 0;loop < rem_att_name.size();loop++)
+//		{
+//			dev_class_ptr->get_class_attr()->remove_attr(rem_att_name[loop],rem_att_cl_name[loop]);
+//		}
 
 	}
 
@@ -858,7 +858,7 @@ void MultiAttribute::add_attribute(string &dev_name,DeviceClass *dev_class_ptr,l
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_ptr,long index)
+void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_ptr,long index, Attr *new_attr)
 {
 	cout4 << "Entering MultiAttribute::add_fwd_attribute" << endl;
 
@@ -891,7 +891,7 @@ void MultiAttribute::add_fwd_attribute(string &dev_name,DeviceClass *dev_class_p
 	vector<Attribute *>::iterator ite;
 	ite = attr_list.end() - 2;
 
-	attr_list.insert(ite,new FwdAttribute(prop_list,attr,dev_name,index));
+	attr_list.insert(ite,new FwdAttribute(prop_list,*new_attr,dev_name,index));
 	index = attr_list.size() - 3;
 
 //

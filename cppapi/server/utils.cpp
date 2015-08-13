@@ -1796,6 +1796,21 @@ void Util::server_init(TANGO_UNUSED(bool with_window))
 			delete db_cache;
 			db_cache = NULL;
 		}
+
+//
+// In case of process with forwarded attributes with root attribute inside this process as well
+//
+
+        RootAttRegistry &rar = get_root_att_reg();
+        if (rar.empty() == false && rar.is_root_dev_not_started_err() == true)
+        {
+            if (EventConsumer::keep_alive_thread != NULL)
+            {
+                ZmqEventConsumer *event_consumer = ApiUtil::instance()->get_zmq_event_consumer();
+                EventConsumer::keep_alive_thread->fwd_not_conected_event(event_consumer);
+            }
+        }
+
 #ifdef _TG_WINDOWS_
 	}
 #endif /* _TG_WINDOWS_ */

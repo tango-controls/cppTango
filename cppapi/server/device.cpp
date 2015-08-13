@@ -3229,7 +3229,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 
 	if (new_attr->is_fwd() == true)
 	{
-		dev_attr->add_fwd_attribute(device_name,device_class,i);
+		dev_attr->add_fwd_attribute(device_name,device_class,i,new_attr);
 	}
 	else
 		dev_attr->add_attribute(device_name,device_class,i);

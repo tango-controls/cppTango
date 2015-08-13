@@ -159,6 +159,26 @@ Attr::Attr(const char *att_name,Tango::DispLevel disp)
 	fire_dr_event = false;
 }
 
+Attr::Attr(const Attr &sou)
+{
+	name = sou.name;
+	format = sou.format;
+	writable = sou.writable;
+	type = sou.type;
+	assoc_name = sou.assoc_name;
+	mem = sou.mem;
+	mem_init = sou.mem_init;
+    disp_level = sou.disp_level;
+    poll_period = sou.poll_period;
+    fire_change_event = sou.fire_change_event;
+    fire_archive_event = sou.fire_archive_event;
+    check_change_event = sou.check_change_event;
+    check_archive_event = sou.check_archive_event;
+    fire_dr_event = sou.fire_dr_event;
+	class_properties = sou.class_properties;
+	user_default_properties = sou.user_default_properties;
+}
+
 Attr::~Attr()
 {
 #ifndef HAS_UNIQUE_PTR
@@ -800,6 +820,11 @@ SpectrumAttr::SpectrumAttr(const char *att_name,long att_type,Tango::AttrWriteTy
 	max_x = x;
 }
 
+SpectrumAttr::SpectrumAttr(const SpectrumAttr &sou):Attr(sou)
+{
+    max_x = sou.max_x;
+}
+
 //+-------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -885,5 +910,9 @@ ImageAttr::ImageAttr(const char *att_name,long att_type,Tango::AttrWriteType w_t
 	max_y = y;
 }
 
+ImageAttr::ImageAttr(const ImageAttr &sou):SpectrumAttr(sou)
+{
+    max_y = sou.max_y;
+}
 
 } // End of Tango namespace

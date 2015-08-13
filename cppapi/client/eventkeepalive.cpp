@@ -666,7 +666,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
 void EventConsumerKeepAliveThread::not_conected_event(ZmqEventConsumer *event_consumer,time_t now,
 													NotifdEventConsumer *notifd_event_consumer)
 {
-
 	if ( !event_consumer->event_not_connected.empty() )
 	{
 		std::vector<EventNotConnected>::iterator vpos;
@@ -751,6 +750,88 @@ void EventConsumerKeepAliveThread::not_conected_event(ZmqEventConsumer *event_co
 				++vpos;
 		}
 	}
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumerKeepAliveThread::fwd_not_connected_event
+//
+// description :
+//		Try to connect not yet connected event(s). This method is called only in case of forwarded attribute with
+//      root attribute inside the same process than the fwd attribute!
+//
+// argument :
+//		in :
+//			- event_consumer : The ZMQ event consumer object
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void EventConsumerKeepAliveThread::fwd_not_conected_event(ZmqEventConsumer *event_consumer)
+{
+
+//
+// lock the maps only for reading
+//
+
+    event_consumer->map_modification_lock.writerIn();
+
+	if ( !event_consumer->event_not_connected.empty() )
+	{
+        time_t now = time(NULL);
+		std::vector<EventNotConnected>::iterator vpos;
+		for (vpos = event_consumer->event_not_connected.begin();
+			 vpos != event_consumer->event_not_connected.end();
+			 /*vpos++*/)
+		{
+			bool inc_vpos = true;
+
+//
+// check wether it is necessary to try to subscribe again!
+//
+
+            try
+            {
+                // try to subscribe
+
+                event_consumer->connect_event (vpos->device,vpos->attribute,vpos->event_type,
+                                                                            vpos->callback,
+                                                                            vpos->ev_queue,
+                                                                            vpos->filters,
+                                                                            vpos->event_name,
+                                                                            vpos->event_id);
+
+//
+// delete element from vector when subscribe worked
+//
+
+                vpos = event_consumer->event_not_connected.erase(vpos);
+                inc_vpos = false;
+            }
+            catch (Tango::DevFailed &e)
+            {
+                stateless_subscription_failed(vpos,e,now);
+            }
+            catch (...)
+            {
+
+//
+// subscribe has not worked, try again in the next hearbeat period
+//
+
+                vpos->last_heartbeat = now;
+
+                ApiUtil *au = ApiUtil::instance();
+                au->print_error_message("During the event subscription an exception was sent which is not a Tango::DevFailed exception!");
+            }
+
+            if (inc_vpos)
+                ++vpos;
+		}
+	}
+
+    event_consumer->map_modification_lock.writerOut();
 }
 
 //---------------------------------------------------------------------------------------------------------------------

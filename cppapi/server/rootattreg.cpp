@@ -77,7 +77,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 				ite = map_attrdesc.find(att_name);
 				if (ite != map_attrdesc.end())
 				{
-					if (ite->second.fwd_attr == Tango_nullptr)
+					if (ite->second.fwd_attr == Tango_nullptr || ite->second.fwd_attr_cl == Tango_nullptr)
 					{
 //
 // Event received while everything is OK for the fwd attribute
@@ -167,7 +167,6 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 									MultiAttribute *m_att = the_dev->get_device_attr();
 									m_att->update(the_fwd_att,ite->second.local_name);
 
-									ite->second.fwd_attr->set_err_kind(FWD_NO_ERROR);
 									ite->second.fwd_attr = Tango_nullptr;
 
 									the_dev->rem_wrong_fwd_att(att_name);
@@ -219,8 +218,8 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 // Classical event due to synchronous call during subscription
 //
 
-							ite->second.fwd_attr->init_conf(ev);
-							ite->second.fwd_attr = Tango_nullptr;
+							ite->second.fwd_attr_cl->init_conf(ev);
+							ite->second.fwd_attr_cl = Tango_nullptr;
 						}
 					}
 				}
@@ -386,7 +385,8 @@ void RootAttRegistry::RootAttConfCallBack::add_att(string &root_att_name,string 
 		struct NameFwdAttr nf;
 		nf.local_name = local_dev_name;
 		nf.local_att_name = local_att_name;
-		nf.fwd_attr = att;
+		nf.fwd_attr = new FwdAttr(*att);
+		nf.fwd_attr_cl = att;
 
 		vector<AttrProperty> &def_user_prop = att->get_user_default_properties();
 		vector<AttrProperty>::iterator pos;
@@ -610,6 +610,61 @@ void RootAttRegistry::RootAttConfCallBack::update_device_impl(string &local_dev_
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		RootAttRegistry::RootAttConfCallBack::update_err_kind
+//
+// description :
+//		Update error type in map for one specific root attribute
+//
+// argument :
+//		in :
+//			- root_att_name : The root attribute name
+//			- err : The new error code
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void RootAttRegistry::RootAttConfCallBack::update_err_kind(string &root_att_name,FwdAttError err)
+{
+	omni_mutex_lock oml(the_lock);
+	map<string,struct NameFwdAttr>::iterator ite;
+	ite = map_attrdesc.find(root_att_name);
+	if (ite != map_attrdesc.end())
+	{
+		ite->second.fwd_attr->set_err_kind(err);
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		RootAttRegistry::RootAttConfCallBack::is_root_dev_not_started_err
+//
+// description :
+//		Check if there is some forwarded attribute with error set to FWD_ROOT_DEV_NOT_STARTED
+//
+// return :
+//		True if one of the process fwd attribute has its error set to root device not started yet.
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+bool RootAttRegistry::RootAttConfCallBack::is_root_dev_not_started_err()
+{
+	omni_mutex_lock oml(the_lock);
+	map<string,struct NameFwdAttr>::iterator ite;
+	for (ite = map_attrdesc.begin();ite != map_attrdesc.end();++ite)
+    {
+        if (ite->second.fwd_attr != NULL)
+        {
+            if (ite->second.fwd_attr->get_err_kind() == FWD_ROOT_DEV_NOT_STARTED)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		RootAttRegistry::add_root_att
 //
 // description :
@@ -703,6 +758,16 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 					 ::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0 ||
 					 ::strcmp(e.errors[0].reason.in(),API_ZmqFailed) == 0)
 				attdesc->set_err_kind(FWD_ROOT_DEV_NOT_STARTED);
+            else if (e.errors.length() > 1 && ::strcmp(e.errors[1].reason.in(),API_CantConnectToDevice) == 0)
+            {
+                Util *tg = Util::instance();
+                string ds_name = tg->get_ds_name();
+                transform(ds_name.begin(),ds_name.end(),ds_name.begin(),::tolower);
+                string err_desc(e.errors[1].desc.in());
+
+                if (err_desc.find(ds_name) != string::npos)
+                    attdesc->set_err_kind(FWD_ROOT_DEV_NOT_STARTED);
+            }
 			else
 				attdesc->set_err_kind(FWD_WRONG_DEV);
 
@@ -713,6 +778,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 			map_event_id.insert(make_pair(a_name,event_id));
 #endif
 
+            cbp.update_err_kind(a_name,attdesc->get_err_kind());
 			Tango::Except::re_throw_exception(e,"API_DummyException","nothing","RootAttRegistry::add_root_att");
 		}
 	}
@@ -722,6 +788,7 @@ void RootAttRegistry::add_root_att(string &device_name,string &att_name,string &
 		if (tg->is_device_restarting(local_dev_name) == false)
 		{
 			attdesc->set_err_kind(FWD_DOUBLE_USED);
+            cbp.update_err_kind(a_name,attdesc->get_err_kind());
 
 			string desc("It's not supported to have in the same device server process two times the same root attribute (");
 			desc = desc + a_name + ")";
@@ -1416,5 +1483,6 @@ bool RootAttRegistry::check_loop(string &device_name,string &att_name,string &lo
 
 	return ret;
 }
+
 
 } // End of Tango namespace

@@ -88,6 +88,15 @@ ImageAttr(att_name.c_str()),full_root_att(root_attribute),fwd_wrongly_conf(false
     set_err_kind(FWD_NO_ERROR);
 }
 
+FwdAttr::FwdAttr(const FwdAttr &sou):ImageAttr(sou)
+{
+	full_root_att = sou.full_root_att;
+	fwd_dev_name = sou.fwd_dev_name;
+	fwd_root_att = sou.fwd_root_att;
+	fwd_wrongly_conf = sou.fwd_wrongly_conf;
+	err_kind = sou.err_kind;
+}
+
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :

@@ -141,6 +141,7 @@ public:
 //@}
 
 /// @privatesection
+    FwdAttr(const FwdAttr &);
 	virtual bool is_fwd() {return true;}
 
 	string &get_fwd_root_att() {return fwd_root_att;}

@@ -45,6 +45,7 @@ struct NameFwdAttr
 	string			local_att_name;		// Local attribute name
 	string			local_label;		// Local attribute label
 	FwdAttr			*fwd_attr;
+	FwdAttr         *fwd_attr_cl;
 };
 
 struct UserEvent
@@ -75,6 +76,8 @@ public:
 	void auto_unsub();
 
 	bool is_root_attribute(string &_s) {return cbp.is_root_att_in_map(_s);}
+	bool empty() {return dps.empty();}
+	bool is_root_dev_not_started_err() {return cbp.is_root_dev_not_started_err();}
 
 protected:
 	bool check_loop(string &,string &,string &,string &);
@@ -96,7 +99,9 @@ private:
 		DeviceImpl *get_local_dev(string &);
 		void update_label(string &,string &);
 		void update_device_impl(string &,DeviceImpl *);
+        void update_err_kind(string &,FwdAttError);
 		void device_restarting(string &);
+        bool is_root_dev_not_started_err();
 
 	private:
 		ClntIdent 							ci;

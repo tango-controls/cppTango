@@ -70,7 +70,11 @@ void FwdAttribute::set_local_attribute(DeviceAttribute &da,T* &seq_ptr)
 	{
 		set_write_value(seq_ptr->get_buffer() + da.get_nb_read(),da.get_written_dim_x(),da.get_written_dim_y());
 	}
-	set_value_date_quality(seq_ptr->get_buffer(true),tv,qual,da.get_dim_x(),da.get_dim_y(),true);
+
+    if (seq_ptr->release() == true)
+        set_value_date_quality(seq_ptr->get_buffer(true),tv,qual,da.get_dim_x(),da.get_dim_y(),true);
+    else
+        set_value_date_quality(seq_ptr->get_buffer(),tv,qual,da.get_dim_x(),da.get_dim_y());
 
 	delete seq_ptr;
 }

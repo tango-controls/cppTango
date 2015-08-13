@@ -654,6 +654,7 @@ public :
 	EventConsumerKeepAliveThread(KeepAliveThCmd &cmd):shared_cmd(cmd){};
 	void start() {start_undetached();}
     void stateless_subscription_failed(vector<EventNotConnected>::iterator &,DevFailed &,time_t &);
+    void fwd_not_conected_event(ZmqEventConsumer *);
 
 protected :
 	KeepAliveThCmd		&shared_cmd;
@@ -666,7 +667,6 @@ private :
 
     bool reconnect_to_zmq_channel(EvChanIte &,EventConsumer *,DeviceData &);
 	void reconnect_to_zmq_event(EvChanIte &,EventConsumer *,DeviceData &);
-
 	void not_conected_event(ZmqEventConsumer *,time_t,NotifdEventConsumer *);
 	void confirm_subscription(ZmqEventConsumer *,map<string,EventChannelStruct>::iterator &);
 	void main_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &);

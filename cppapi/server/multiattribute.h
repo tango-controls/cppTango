@@ -279,7 +279,7 @@ public:
 
 	void add_write_value(Attribute &);
 	void add_attribute(string &,DeviceClass *,long);
-	void add_fwd_attribute(string &,DeviceClass *,long);
+	void add_fwd_attribute(string &,DeviceClass *,long,Attr *);
 	void remove_attribute(string &,bool);
 	vector<long> &get_w_attr_list() {return writable_attr_list;}
 	bool is_att_quality_alarmed();

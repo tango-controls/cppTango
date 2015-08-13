@@ -529,6 +529,7 @@ public:
 //@}
 
 /// @privatesection
+    Attr(const Attr &);
 	string  &get_name() {return name;}
 	Tango::AttrDataFormat get_format() {return format;}
 	Tango::AttrWriteType get_writable() {return writable;}
@@ -690,6 +691,7 @@ public:
 //@}
 
 /// @privatesection
+    SpectrumAttr(const SpectrumAttr &);
 	long 			get_max_x() {return max_x;}
 
 protected:
@@ -798,6 +800,7 @@ public:
 //@}
 
 /// @privatesection
+    ImageAttr(const ImageAttr &);
 	long 			get_max_y() {return max_y;}
 
 protected:
