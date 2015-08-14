@@ -137,6 +137,7 @@ void RootAttRegistry::RootAttConfCallBack::push_event(Tango::AttrConfEventData *
 // was started while the root device was off
 //
 
+//cout << "Err kind = " << ite->second.fwd_attr->get_err_kind() << endl;
 						if (ite->second.fwd_attr->get_err_kind() == FWD_ROOT_DEV_NOT_STARTED)
 						{
 							map<string,DeviceImpl *>::iterator ite3;

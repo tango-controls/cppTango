@@ -182,6 +182,8 @@ bool FwdAttr::validate_fwd_att(vector<AttrProperty> &prop_list,const string &dev
 
 	if (root_att_db_defined == true)
 		full_root_att = root_att_db;
+    else
+        full_root_att = RootAttNotDef;
 
 //
 // Check root att syntax and add TANGO_HOST info in root device name of not given
