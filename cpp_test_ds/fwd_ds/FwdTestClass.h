@@ -63,7 +63,7 @@ public:
 class FwdAttrScaStr: public Tango::FwdAttr
 {
 public:
-    FwdAttrScaStr(const string &_n,const string &_d):FwdAttr(_n,_d) {};
+	FwdAttrScaStr(const string &_n):FwdAttr(_n) {};
 	~FwdAttrScaStr() {};
 };
 

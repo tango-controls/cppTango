@@ -434,18 +434,7 @@ void FwdTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
 	att1->set_default_properties(att1_prop);
 	att_list.push_back(att1);
 
-	Tango::Util *tg = Tango::Util::instance();
-	string &inst_name = tg->get_ds_inst_name();
-	string r_dev;
-	if (inst_name == "api")
-		r_dev = "dev/test/10/string_attr_w2";
-	else
-	{
-		r_dev = "test/";
-		r_dev = r_dev + inst_name + "/10/string_attr_w2";
-	}
-
-	FwdAttrScaStr	*att2 = new FwdAttrScaStr("fwd_string_w",r_dev);
+	FwdAttrScaStr	*att2 = new FwdAttrScaStr("fwd_string_w");
 	att_list.push_back(att2);
 
 	FwdAttrSpecDb	*att3 = new FwdAttrSpecDb("fwd_spec_double");
