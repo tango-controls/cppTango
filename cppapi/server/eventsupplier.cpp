@@ -575,6 +575,8 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Suppli
 			arch_period = (int)eve_round;
 		}
 
+        cout3 << "EventSupplier::detect_and_push_archive_event(): ms_since_last_periodic = " << ms_since_last_periodic << ", arch_period = " << arch_period << ", attr.prev_archive_event.inited = " << attr.prev_archive_event.inited << endl;
+
 		if ((ms_since_last_periodic > arch_period) && (attr.prev_archive_event.inited == true))
 		{
 			is_change = true;

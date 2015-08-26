@@ -1773,6 +1773,7 @@ int Util::get_th_polled_devs(string &dev,vector<string> &th_polled_devs)
 	for (iter = poll_pool_conf.begin();iter != poll_pool_conf.end();++iter)
 	{
 		string tmp = *iter;
+		transform(tmp.begin(),tmp.end(),tmp.begin(),::tolower);
 		string::size_type pos,end_pos;
 		pos = tmp.find(dev);
 		if (pos != string::npos)
