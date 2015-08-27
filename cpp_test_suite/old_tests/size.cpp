@@ -34,10 +34,10 @@ int main(int argc, char **argv)
 	check_size("Device_2Impl",sizeof(Device_2Impl),1088);
 	
 	check_size("DeviceClass",sizeof(DeviceClass),236);  	// Was 48 in V4
-	check_size("Util",sizeof(Util),924);	// Was 68 in V4
+	check_size("Util",sizeof(Util),908);	// Was 68 in V4
 
-	check_size("Attribute",sizeof(Attribute),1608);		// Was 208 in V4
-	check_size("WAttribute",sizeof(WAttribute),2044);	// Was 252 in V4
+	check_size("Attribute",sizeof(Attribute),984);		// Was 208 in V4
+	check_size("WAttribute",sizeof(WAttribute),1420);	// Was 252 in V4
 	check_size("MultiAttribute",sizeof(MultiAttribute),40);
 	
 	check_size("Command",sizeof(Command),40);
