@@ -136,6 +136,22 @@ template class CLASS<DevVarStringArray>; \
 template class CLASS<DevVarLongStringArray>; \
 template class CLASS<DevVarDoubleStringArray>;
 
+
+RANGES_TYPE2CONST(Tango::DevDouble,DEV_DOUBLE)
+RANGES_TYPE2CONST(Tango::DevFloat,DEV_FLOAT)
+RANGES_TYPE2CONST(Tango::DevLong,DEV_LONG)
+RANGES_TYPE2CONST(Tango::DevLong64,DEV_LONG64)
+RANGES_TYPE2CONST(Tango::DevShort,DEV_SHORT)
+RANGES_TYPE2CONST(Tango::DevUChar,DEV_UCHAR)
+RANGES_TYPE2CONST(Tango::DevULong,DEV_ULONG)
+RANGES_TYPE2CONST(Tango::DevULong64,DEV_ULONG64)
+RANGES_TYPE2CONST(Tango::DevUShort,DEV_USHORT)
+RANGES_TYPE2CONST(Tango::DevEncoded,DEV_ENCODED)
+
+RANGES_TYPE2CONST(Tango::DevBoolean,DEV_BOOLEAN)
+RANGES_TYPE2CONST(Tango::DevString,DEV_STRING)
+RANGES_TYPE2CONST(Tango::DevState,DEV_STATE)
+
 //+----------------------------------------------------------------------------
 //
 // Instanciate Attribute::XXX methods and associate template classes
