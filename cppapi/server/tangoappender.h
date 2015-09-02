@@ -95,7 +95,8 @@ private:
   /**
    *
    **/
-  DeviceProxy *_dev_proxy;
+  DeviceProxy   *_dev_proxy;
+  uint32_t      _req_ctr;
 };
 
 } // namespace tango

@@ -60,6 +60,7 @@ namespace Tango
       _src_name(src_name),
       _dev_proxy(0)
   {
+    _req_ctr = 0;
     if (open_connection == true)
       reopen();
   }
@@ -134,7 +135,10 @@ namespace Tango
         DeviceData argin;
         argin << dvsa;
 #ifdef USE_ASYNC_CALL
-        _dev_proxy->command_inout_asynch("Log", argin, true);
+        _dev_proxy->command_inout_asynch("Log", argin, false);
+        _req_ctr++;
+        if ((_req_ctr % 10) == 0)
+            _dev_proxy->cancel_all_polling_asynch_request();
 #else
         _dev_proxy->command_inout("Log", argin);
 #endif
