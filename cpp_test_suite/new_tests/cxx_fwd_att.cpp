@@ -130,7 +130,8 @@ public:
 			Tango::DbDatum fwd_att("fwd_short_rw");
 			Tango::DbDatum root_att("__root_att");
 			fwd_att << (short)1;
-			root_att << "dev/test/10/short_attr_rw";
+			string r_name = device1_name + "/short_attr_rw";;
+			root_att << r_name;
 			Tango::DbData dd;
 			dd.push_back(fwd_att);
 			dd.push_back(root_att);
