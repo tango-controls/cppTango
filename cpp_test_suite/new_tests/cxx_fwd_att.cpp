@@ -207,7 +207,7 @@ public:
 		CxxTest::TangoPrinter::restore_set("fwd_att_conf");
 
 		ad->command_inout("RestartServer");
-		Tango_sleep(2);
+		Tango_sleep(4);
 
 		Tango::DevState ds = fwd_device->state();
 		string dev_status = fwd_device->status();
@@ -224,7 +224,7 @@ public:
 		db.put_device_attribute_property(fwd_device_name,dd);
 
 		ad->command_inout("RestartServer");
-		Tango_sleep(2);
+		Tango_sleep(4);
 
 		ds = fwd_device->state();
 		dev_status = fwd_device->status();
@@ -239,7 +239,7 @@ public:
 		db.put_device_attribute_property(fwd_device_name,dd);
 
 		ad->command_inout("RestartServer");
-		Tango_sleep(2);
+		Tango_sleep(4);
 
 		ds = fwd_device->state();
 		dev_status = fwd_device->status();
@@ -256,7 +256,7 @@ public:
 		db.put_device_attribute_property(fwd_device_name,dd);
 
 		ad->command_inout("RestartServer");
-		Tango_sleep(2);
+		Tango_sleep(4);
 
 		ds = fwd_device->state();
 		dev_status = fwd_device->status();
