@@ -1855,6 +1855,11 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
 //
 
         device_name = rval.device_name;
+        alias_name = rval.alias_name;
+        is_alias = rval.is_alias;
+        adm_dev_name = rval.adm_dev_name;
+        lock_ctr = rval.lock_ctr;
+        lock_valid = rval.lock_valid;
 
         if (dbase_used == true)
         {
