@@ -1222,13 +1222,13 @@ template <typename T>
 struct ranges_type2const
 {
 	static CmdArgType enu;
-	static string str;
+	static TANGO_CXX11_ABI string str;
 };
 
 template <CmdArgType>
 struct ranges_const2type
 {
-	static string str;
+	static TANGO_CXX11_ABI string str;
 };
 
 #define RANGES_TYPE2CONST(type,constant) \
@@ -1236,17 +1236,17 @@ struct ranges_const2type
 	struct ranges_type2const<type> \
 	{ \
 		static CmdArgType enu; \
-		static string str; \
+		TANGO_CXX11_ABI static string str; \
 	}; \
 	CmdArgType ranges_type2const<type>::enu = constant; \
-	string ranges_type2const<type>::str = #type; \
+	TANGO_CXX11_ABI string ranges_type2const<type>::str = #type; \
 	template<> \
 	struct ranges_const2type<Tango::constant> \
 	{ \
 		typedef type Type; \
-		static string str; \
+		TANGO_CXX11_ABI static string str; \
 	}; \
-	string ranges_const2type<Tango::constant>::str = #type;
+	TANGO_CXX11_ABI string ranges_const2type<Tango::constant>::str = #type;
 
 
 } // End of Tango namespace

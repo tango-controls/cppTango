@@ -204,6 +204,16 @@
 #endif
 
 //
+// For gcc 5 new ABI
+//
+
+#ifdef _GLIBCXX_USE_CXX11_ABI
+    #define TANGO_CXX11_ABI __attribute((abi_tag("cxx11")))
+#else
+    #define TANGO_CXX11_ABI
+#endif
+
+//
 // Some helper define
 //
 
