@@ -1,4 +1,4 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :		Device.h
 //
@@ -8,29 +8,27 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//===================================================================================================================
 
 #ifndef _DEVICE_H
 #define _DEVICE_H
@@ -38,12 +36,16 @@
 #include <tango.h>
 #include <blackbox.h>
 #include <classattribute.h>
+#include <classpipe.h>
 #include <attrdesc.h>
 #include <attribute.h>
 #include <w_attribute.h>
+#include <fwdattribute.h>
 #include <multiattribute.h>
 #include <pollobj.h>
 #include <deviceclass.h>
+#include <devintr.h>
+#include <dintrthread.h>
 
 namespace Tango
 {
@@ -55,7 +57,9 @@ class NoSyncModelTangoMonitor;
 class EventSupplier;
 class EventSubscriptionChangeCmd;
 class Util;
+class FwdWrongConf;
 
+/** @defgroup Server Server classes */
 
 //=============================================================================
 //
@@ -78,6 +82,9 @@ class Util;
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class DeviceImpl : public virtual POA_Tango::Device
@@ -215,14 +222,13 @@ public:
  *
  * @return Device previous state
  */
-	Tango::DevState &get_prev_state() {return ext->device_prev_state;}
+	Tango::DevState &get_prev_state() {return device_prev_state;}
 /**
  * Set device state.
  *
  * @param new_state The new device state
  */
-	void set_state (const Tango::DevState &new_state) {ext->device_prev_state = device_state; device_state = new_state;}
-
+	void set_state (const Tango::DevState &new_state);
 /**
  * Get device name.
  *
@@ -391,7 +397,7 @@ protected:
  *
  * @param   att_name    The attribute name
  */
-    void stop_poll_attribute(const string &);
+    void stop_poll_attribute(const string &att_name);
 /**
  * Stop polling one command.
  *
@@ -399,7 +405,7 @@ protected:
  *
  * @param   cmd_name    The command name
  */
-    void stop_poll_command(const string &);
+    void stop_poll_command(const string &cmd_name);
 //@}
 
 public:
@@ -464,7 +470,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void read_attr_hardware(vector<long> &) {};
+	virtual void read_attr_hardware(vector<long> &attr_list) {(void)attr_list;};
 /**
  * Set the attribute read value.
  *
@@ -477,7 +483,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void read_attr(Attribute &) {};
+	virtual void read_attr(Attribute &attr) {(void)attr;};
 /**
  * Write the hardware for attributes.
  *
@@ -494,7 +500,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual void write_attr_hardware(vector<long> &) {};
+	virtual void write_attr_hardware(vector<long> &attr_list) {(void)attr_list;};
 /**
  * Get device state.
  *
@@ -502,7 +508,7 @@ public:
  * on the device state. If the device state is ON or ALARM, it reads
  * the attribute(s) with an alarm level defined, check if the read value is
  * above/below the alarm and eventually change the state to ALARM, return the
- * device state. For all th eother device state, this method simply returns
+ * device state. For all the other device state, this method simply returns
  * the state
  * This method can be redefined in
  * sub-classes in case of the default behaviour does not fulfill the needs
@@ -558,7 +564,7 @@ public:
  * Attributes are normally
  * constructed in the DeviceClass::attribute_factory() method. Nevertheless, it
  * is still possible to add a new attribute to a device with the DeviceImpl::add_attribute method.
- * This remove_Attribute method delete the attribute from the
+ * This remove_attribute method delete the attribute from the
  * device attribute list.
  *
  * @param rem_attr Pointer to the attribute to be removed
@@ -578,11 +584,11 @@ public:
  * Attributes are normally
  * constructed in the DeviceClass::attribute_factory() method. Nevertheless, it
  * is still possible to add a new attribute to a device with the DeviceImpl::add_attribute method.
- * This remove_Attribute method delete the attribute from the
+ * This remove_attribute method delete the attribute from the
  * device attribute list.
  *
  * @param rem_attr_name The name of the attribute to be removed
- * @param free_it  Boolean set to true if the object passed as first argument
+ * @param free_it  Boolean set to true if the attribute object
  *		   must be freed. Default value is false.
  * @param clean_db  Clean all attributes related information (included polling
  *         info if the attribute is polled) from database. Default value is true
@@ -591,6 +597,68 @@ public:
  * <b>DevFailed</b> exception specification
  */
  	void remove_attribute(string &rem_attr_name,bool free_it = false,bool clean_db = true);
+
+/**
+ * Add a new command to the device command list.
+ *
+ * Commands are normally
+ * constructed in the DeviceClass::command_factory() method. Nevertheless, it
+ * is still possible to add a new command to a device with this method.
+ * Please, note that if you add a command to a device at device creation
+ * time, this command will
+ * be added to the device class command list. Therefore, all devices
+ * belonging to the same class created after this command addition
+ * will also have this command.
+ *
+ * @param new_cmd Pointer to the new command to be added to the list. This pointer
+ * must point to "heap" allocated memory (or to static memory) and not to "stack"
+ * allocated memory
+ * @param device Set this flag to true if the command must be added for only this device
+ * Default is false (command added for the device class)
+ * @exception DevFailed
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+ 	void add_command(Command *new_cmd, bool device = false);
+/**
+ * Remove one command from the device command list.
+ *
+ * Commands are normally
+ * constructed in the DeviceClass::command_factory() method. Nevertheless, it
+ * is still possible to add a new command to a device with the DeviceImpl::add_command method.
+ * This remove_command method delete the command from the
+ * device command list.
+ *
+ * @param rem_cmd Pointer to the command to be removed
+ * @param free_it  Boolean set to true if the object passed as first argument
+ *		   must be freed. Default value is false.
+ * @param clean_db  Clean command related information (included polling
+ *         info if the command is polled) from database. Default value is true
+ * @exception DevFailed
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+ 	void remove_command(Command *rem_cmd,bool free_it = false,bool clean_db = true);
+
+/**
+ * Remove one command from the device command list.
+ *
+ * Commands are normally
+ * constructed in the DeviceClass::command_factory() method. Nevertheless, it
+ * is still possible to add a new command to a device with the DeviceImpl::add_command method.
+ * This remove_command method delete the command from the
+ * device command list.
+ *
+ * @param rem_cmd_name The name of the command to be removed
+ * @param free_it  Boolean set to true if the command object
+ *		   must be freed. Default value is false.
+ * @param clean_db  Clean command related information (included polling
+ *         info if the command is polled) from database. Default value is true
+ * @exception DevFailed
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+ 	void remove_command(const string &rem_cmd_name,bool free_it = false,bool clean_db = true);
 
 /**
  * Retrieve a polled object from the polled object list.
@@ -606,6 +674,22 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	vector<PollObj *>::iterator get_polled_obj_by_type_name(Tango::PollObjType obj_type,const string &obj_name);
+/**
+ * Check if there is subscriber(s) listening for the event
+ *
+ * This method returns a boolean set to true if there are some subscriber(s) listening on the event specified
+ * by the two method arguments. Be aware that there is some delay (up to 600 sec) between this method returning false
+ * and the last subscriber unsubscription or crash... The device interface change event is not supported
+ * by this method.
+ *
+ * @param att_name The attribute name
+ * @param event_type The event type
+ * @return A boolean set to true if there are some subscriber listening on this event
+ * @exception DevFailed Thrown if the attribute is not found.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	bool is_there_subscriber(const string &att_name,EventType event_type);
 //@}
 
 
@@ -782,239 +866,6 @@ public:
 //@}
 
 
-/**@name CORBA attribute methods
- * Method defined to implement TANGO device CORBA attribute */
-//@{
-/**
- * Get device name.
- *
- * It's the master method executed when the device name is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device name
- *
- * @return The device name
- */
-	virtual char *name() throw (CORBA::SystemException);
-
-/**
- * Get administrator device name.
- *
- * It's the master method executed when the administrator device name is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * administrator device name
- *
- * @return The device name
- */
-	virtual char *adm_name() throw (CORBA::SystemException);
-
-/**
- * Get device description.
- *
- * It's the master method executed when the device description is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device description field
- *
- * @return The device description
- */
-	virtual char *description() throw (CORBA::SystemException);
-
-/**
- * Get device status.
- *
- * It's the master method executed when the device status is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device state. This method calls the <i>status_cmd</i> device method but
- * catch all the execption and does not re-throw them because exception can't
- * be thrown to a client for CORBA attribute
- *
- * @return The device status
- */
-	virtual char *status() throw (CORBA::SystemException);
-
-/**
- * Get device state.
- *
- * It's the master method executed when the device state is requested
- * via a CORBA attribute. It updates the device black-box and return the
- * device state. This method calls the <i>state_cmd</i> device method but
- * catch all the execption and does not re-throw them because exception can't
- * be thrown to a client for CORBA attribute
- *
- * @return The device state
- */
-	virtual Tango::DevState state() throw (CORBA::SystemException);
-//@}
-
-
-/**@name CORBA operation methods
- * Method defined to implement TANGO device CORBA operation */
-//@{
-/**
- * Execute a command.
- *
- * It's the master method executed when a "command_inout" CORBA operation is
- * requested by a client. It updates the device black-box, call the
- * TANGO command handler and returned the output Any
- *
- * @param in_cmd The command name
- * @param in_data The command input data packed in a CORBA Any
- * @return The command output data packed in a CORBA Any object
- * @exception DevFailed Re-throw of the exception thrown by the command_handler
- * method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual CORBA::Any *command_inout(const char *in_cmd,
-					  const CORBA::Any &in_data)
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Get device black box.
- *
- * It's the master method executed when the device black box is requested.
- * It reads the device black box, update it and return black-box data to the
- * client
- *
- * @param n The number of actions description which must be returned to the
- * client. The number of returned element is limited to the number of elements
- * stored in the black-box or to the complete black-box depth if it is full.
- * @return The device black box with one String for each action requested on
- * the device
- * @exception DevFailed If it is not possible to read the device black box.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual Tango::DevVarStringArray *black_box(CORBA::Long n)
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Get device command list.
- *
- * Invoked when the client request the command_list_query CORBA operation.
- * It updates the device black box and returns an array of DevCmdInfo object
- * with one object for each command.
- *
- * @return The device command list. One DevCmdInfo is initialised for each
- * device command
- */
-	virtual Tango::DevCmdInfoList *command_list_query()
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Get command info.
- *
- * Invoked when the client request the command_query CORBA operation.
- * It updates the device black box and returns a DevCmdInfo object for the
- * command with name passed
- * to the method as parameter.
- *
- * @param command The command name
- * @return A DevCmdInfo initialised for the wanted command
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-	virtual Tango::DevCmdInfo *command_query(const char *command)
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Get device info.
- *
- * Invoked when the client request the info CORBA operation.
- * It updates the black box and returns a DevInfo object
- * with miscellaneous device info
- *
- * @return A DevInfo object
- */
-	virtual Tango::DevInfo *info() throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Ping the device to check if it is still alive.
- *
- * Invoked when the client request the ping CORBA operation.
- * It updates the device black box and simply returns
- *
- */
-	virtual void ping() throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Get attribute(s) configuration.
- *
- * Invoked when the client request the get_attribute_config CORBA operation.
- * It returns to the client one AttributeConfig structure for each wanted
- * attribute. All the attribute properties value are returned in this
- * AttributeConfig structure.
- *
- * @param names The attribute(s) name list
- * @return A sequence of AttributeConfig structure. One structure is initialised
- * for each wanted attribute. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig">here</a>
- * to read <b>AttributeConfig</b> structure specification.
- *
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-    	virtual Tango::AttributeConfigList* get_attribute_config(const Tango::DevVarStringArray& names)
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Set attribute(s) configuration.
- *
- * Invoked when the client request the set_attribute_config CORBA operation.
- * It updates the device attribute configuration actually used by the device but
- * this method also updates the Tango database. One structure of the
- * AttributeConfig type is needed for each attribute to update configuration.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeConfig">here</a>
- * to read <b>AttributeConfig</b> structure specification.
- *
- * @param new_conf The attribute(s) new configuration structure sequence
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-    	virtual void set_attribute_config(const Tango::AttributeConfigList& new_conf)
-    	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Read attribute(s) value.
- *
- * Invoked when the client request the read_attributes CORBA operation.
- * It returns to the client one AttributeValue structure for each wanted
- * attribute.
- *
- * @param names The attribute(s) name list
- * @return A sequence of AttributeValue structure. One structure is initialised
- * for each wanted attribute with the attribute value, the date and the attribute
- * value quality. Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue">here</a>
- * to read <b>AttributeValue</b> structure definition.
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-    	virtual Tango::AttributeValueList* read_attributes(const Tango::DevVarStringArray& names)
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-/**
- * Write attribute(s) value.
- *
- * Invoked when the client request the write_attributes CORBA operation.
- * It sets the attribute(s) with the new value(s) passed as parameter.
- *
- * @param values The attribute(s) new value(s). One structure is initialised
- * for each wanted attribute with the attribute value. The attribute quality and
- * date are not used by this method.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#AttributeValue">here</a>
- * to read <b>AttributeValue</b> structure definition.
- * @exception DevFailed Thrown if the command does not exist.
- * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
- * <b>DevFailed</b> exception specification
- */
-    	virtual void write_attributes(const Tango::AttributeValueList& values)
-	throw (Tango::DevFailed, CORBA::SystemException);
-
-//@}
-
-
 /**@name Push change event methods.
  * These methods allow to fire change events for attributes manually,
  *  without the polling to be started.
@@ -1037,7 +888,7 @@ public:
 /**
  * Push a change event for a state or status attribute or return an exception as change
  * event for any attribute.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name as input.
  * For the state and status attributes the actual state and status values are pushed.
@@ -1050,7 +901,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1073,7 +924,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1096,7 +947,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1119,7 +970,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1142,7 +993,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1165,7 +1016,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1188,7 +1039,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1211,7 +1062,7 @@ public:
 
 /**void push_change_event (string attr_name, Tango::DevBoolea
  * Push a change event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1234,7 +1085,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1257,7 +1108,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1280,7 +1131,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1303,7 +1154,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1326,7 +1177,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1350,7 +1201,7 @@ public:
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type
  * when the DevEncoded data are specified by two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1373,7 +1224,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1400,7 +1251,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1428,7 +1279,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1456,7 +1307,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1483,7 +1334,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1510,7 +1361,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1537,7 +1388,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1564,7 +1415,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1591,7 +1442,7 @@ public:
 #endif
 /**
  * Push a change event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1619,7 +1470,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1647,7 +1498,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1675,7 +1526,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1703,7 +1554,7 @@ public:
 
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1732,7 +1583,7 @@ public:
 /**
  * Push a change event for an attribute with Tango::DevEncoded attribute data type
  * when the data rea specified with two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -1782,9 +1633,9 @@ public:
 	void set_archive_event  (string attr_name, bool implemented, bool detect = true);
 
 /**
- * Push an archive event for a state or status attribute or return an exception as archive
+ * Push an archive event for state or status attribute or push an exception as archive
  * event for any attribute.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name as input.
  * For the state and status attributes the actual state and status values are pushed.
@@ -1797,7 +1648,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1820,7 +1671,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1843,7 +1694,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1866,7 +1717,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1889,7 +1740,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1912,7 +1763,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1935,7 +1786,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1958,7 +1809,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -1981,7 +1832,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2004,7 +1855,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2027,7 +1878,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2050,7 +1901,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2073,7 +1924,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2097,7 +1948,7 @@ public:
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type
  * when the data are specified using two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2120,7 +1971,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2147,7 +1998,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2174,7 +2025,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2201,7 +2052,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2228,7 +2079,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2255,7 +2106,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2282,7 +2133,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2309,7 +2160,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2336,7 +2187,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2363,7 +2214,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2390,7 +2241,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2417,7 +2268,7 @@ public:
 #endif
 /**
  * Push an archive event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2445,7 +2296,7 @@ public:
 
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2474,7 +2325,7 @@ public:
 /**
  * Push an archive event for an attribute with Tango::DevEncoded attribute data type
  * when it is specified using two pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2513,7 +2364,7 @@ public:
 /**
  * Push a user event for a state or status attribute or return an exception as user
  * event for any attribute.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name as input.
  * For the state and status attributes the actual state and status values are pushed.
@@ -2528,7 +2379,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2551,7 +2402,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2574,7 +2425,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2597,7 +2448,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2620,7 +2471,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2643,7 +2494,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2666,7 +2517,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2689,7 +2540,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2712,7 +2563,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2735,7 +2586,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2758,7 +2609,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2781,7 +2632,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2804,7 +2655,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2828,7 +2679,7 @@ public:
 /**
  * Push a user event for an attribute with Tango::DevEncoded attribute data type
  * when the attribute data are specified with 2 pointers.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name and a pointer to the data to be pushed as input.
  * Depending on the attribute type the dimensions x and why need to be given.
@@ -2851,7 +2702,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2878,7 +2729,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevLong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2906,7 +2757,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevLong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2934,7 +2785,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevFloat attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2961,7 +2812,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevDouble attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -2988,7 +2839,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevString attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3015,7 +2866,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevBoolean attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3042,7 +2893,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevUShort attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3069,7 +2920,7 @@ public:
 #endif
 /**
  * Push a user event for an attribute with Tango::DevUChar attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3097,7 +2948,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3125,7 +2976,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevULong64 attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3153,7 +3004,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevState attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3181,7 +3032,7 @@ public:
 
 /**
  * Push a user event for an attribute with Tango::DevEncoded attribute data type.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3211,7 +3062,7 @@ public:
  * Push a user event for an attribute with Tango::DevEncoded attribute data type
  * when the string part and the data part of the DevEncoded data are specified
  * separately.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs the attribue name, a pointer to the data to be pushed, the time stamp
  * for the data and the attribute quality factor as input.
@@ -3245,7 +3096,7 @@ public:
 /**
  * Push a data ready event for the attribute with name specified as the first
  * parameter.
- * The event is pushed to the notification daemon.
+ * The event is pushed to the event system.
  *
  * The method needs only the attribue name and an optional "counter" which
  * will be passed unchanged within the event
@@ -3260,11 +3111,60 @@ public:
 	void push_data_ready_event (const string &attr_name,Tango::DevLong ctr = 0);
 //@}
 
+/**@name Push pipe event methods.
+ * These methods allow to fire pipe events
+ */
+
+//@{
+/**
+ * Push a pipe event with exception data as value
+ * The method needs the pipe name as input.
+ *
+ * @param pipe_name The name of the pipe
+ * @param except Pointer to a Tango::DevFailed exception.
+ */
+	void push_pipe_event (const string &pipe_name, DevFailed *except);
+/**
+ * Push a pipe event.
+ *
+ * The method needs the pipe name and a pointer to the pipe blob to be pushed as input.
+ * The time stamp of the event is set to the actual time.
+ *
+ * @param pipe_name The name of the pipe
+ * @param p_data Pointer to the Pipe blob to be sent with the event
+ * @param reuse_it Flag set to true if you don want the push_pipe_event to consume Pipe internal memory. Default value
+ * is false which covers 95% of use cases
+ * @exception DevFailed If the pipe data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+	void push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob *p_data,bool reuse_it=false);
+/**
+ * Push a pipe event with a specified timestamp.
+ *
+ * The method needs the pipe name, a pointer to the pipe blob to be pushed and the time stamp
+ * for the data as input.
+ *
+ * @param pipe_name The name of the pipe
+ * @param p_data Pointer to the data to be pushed
+ * @param t The time stamp
+ * @param reuse_it Flag set to true if you don want the push_pipe_event to consume Pipe internal memory. Default value
+ * is false which covers 95% of use cases
+ * @exception DevFailed If the pipe data type is not coherent.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ */
+#ifdef _TG_WINDOWS_
+	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct _timeb &t,bool reuse_it=false);
+#else
+	void push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob *p_data, struct timeval &t,bool reuse_it=false);
+#endif
+//@}
 
 /**@name Signal related methods
  * These methods allow a signal management at device level */
 //@{
-#if (defined __linux)
+#ifndef _TG_WINDOWS_
 /**
  * Register a signal to be executed in a signal handler.
  *
@@ -3383,43 +3283,71 @@ protected:
 
 
 public:
-	void set_exported_flag(bool exp) {ext->exported = exp;}
-	bool get_exported_flag() {return ext->exported;}
+/// @privatesection
 
-	void set_poll_ring_depth(long depth) {ext->poll_ring_depth = depth;}
-	long get_poll_ring_depth() {return ext->poll_ring_depth;}
+	typedef struct _FwdWrongConf
+	{
+		string 			att_name;
+		string 			full_root_att_name;
+		FwdAttError		fae;
+	}FwdWrongConf;
 
-	void set_poll_old_factor(long fact) {ext->poll_old_factor = fact;}
-	long get_poll_old_factor() {return ext->poll_old_factor;}
+	virtual char *name();
+	virtual char *adm_name();
+	virtual char *description();
+	virtual char *status();
+	virtual Tango::DevState state();
 
-	void is_polled(bool poll) {ext->polled = poll;}
-	bool is_polled() {return ext->polled;}
+	virtual CORBA::Any *command_inout(const char *in_cmd,const CORBA::Any &in_data);
+	virtual Tango::DevVarStringArray *black_box(CORBA::Long n);
+	virtual Tango::DevCmdInfoList *command_list_query();
+	virtual Tango::DevCmdInfo *command_query(const char *command);
+	virtual Tango::DevInfo *info();
+	virtual void ping();
+	virtual Tango::AttributeConfigList* get_attribute_config(const Tango::DevVarStringArray& names);
+	virtual void set_attribute_config(const Tango::AttributeConfigList& new_conf);
+	virtual Tango::AttributeValueList* read_attributes(const Tango::DevVarStringArray& names);
+	virtual void write_attributes(const Tango::AttributeValueList& values);
 
-	vector<string> &get_polled_cmd() {return ext->polled_cmd;}
-	vector<string> &get_polled_attr() {return ext->polled_attr;}
-	vector<string> &get_non_auto_polled_cmd() {return ext->non_auto_polled_cmd;}
-	vector<string> &get_non_auto_polled_attr() {return ext->non_auto_polled_attr;}
-	vector<PollObj *> &get_poll_obj_list() {return ext->poll_obj_list;}
+
+	void set_exported_flag(bool exp) {exported = exp;}
+	bool get_exported_flag() {return exported;}
+
+	void set_poll_ring_depth(long depth) {poll_ring_depth = depth;}
+	long get_poll_ring_depth() {return poll_ring_depth;}
+
+	void set_poll_old_factor(long fact) {poll_old_factor = fact;}
+	long get_poll_old_factor() {return poll_old_factor;}
+
+	void is_polled(bool poll) {polled = poll;}
+	bool is_polled() {return polled;}
+
+	vector<string> &get_polled_cmd() {return polled_cmd;}
+	vector<string> &get_polled_attr() {return polled_attr;}
+	vector<string> &get_non_auto_polled_cmd() {return non_auto_polled_cmd;}
+	vector<string> &get_non_auto_polled_attr() {return non_auto_polled_attr;}
+	vector<PollObj *> &get_poll_obj_list() {return poll_obj_list;}
 	void stop_polling(bool);
 	void stop_polling() {stop_polling(true);}
 
 	void check_command_exists(const string &);
 	Command *get_command(const string &);
 
-	string &get_name_lower() {return ext->device_name_lower;}
+	string &get_name_lower() {return device_name_lower;}
 
-	TangoMonitor &get_dev_monitor() {return ext->only_one;}
-	TangoMonitor &get_poll_monitor() {return ext->poll_mon;}
-	TangoMonitor &get_att_conf_monitor() {return ext->att_conf_mon;}
+	TangoMonitor &get_dev_monitor() {return only_one;}
+	TangoMonitor &get_poll_monitor() {return poll_mon;}
+	TangoMonitor &get_att_conf_monitor() {return att_conf_mon;}
+	TangoMonitor &get_pipe_conf_monitor() {return pipe_conf_mon;}
 
-	long get_dev_idl_version() {return ext->idl_version;}
+	long get_dev_idl_version() {return idl_version;}
 	long get_cmd_poll_ring_depth(string &);
 	long get_attr_poll_ring_depth(string &);
-	vector<long> &get_alarmed_not_read() {return ext->alarmed_not_read;}
+	vector<long> &get_alarmed_not_read() {return alrmd_not_read;}
 	void poll_lists_2_v5();
 
-	bool is_py_device() {return ext->py_device;}
-	void set_py_device(bool py) {ext->py_device=py;}
+	bool is_py_device() {return py_device;}
+	void set_py_device(bool py) {py_device=py;}
 
 	Tango::client_addr *get_client_ident();
 	void lock(client_addr *,int);
@@ -3429,36 +3357,64 @@ public:
 	bool valid_lock();
 	Tango::DevVarLongStringArray *lock_status();
 
-	bool is_device_locked() {return ext->device_locked;}
-	client_addr *get_locker() {return ext->locker_client;}
-	client_addr *get_old_locker() {return ext->old_locker_client;}
-	time_t get_locking_date() {return ext->locking_date;}
-	Tango::DevLong get_locking_ctr() {return ext->lock_ctr;}
-	Tango::DevLong get_lock_validity() {return ext->lock_validity;}
-	void clean_locker_ptrs() {ext->locker_client=NULL;ext->old_locker_client=NULL;}
+	bool is_device_locked() {return device_locked;}
+	client_addr *get_locker() {return locker_client;}
+	client_addr *get_old_locker() {return old_locker_client;}
+	time_t get_locking_date() {return locking_date;}
+	Tango::DevLong get_locking_ctr() {return lock_ctr;}
+	Tango::DevLong get_lock_validity() {return lock_validity;}
+	void clean_locker_ptrs() {locker_client=NULL;old_locker_client=NULL;}
 	void set_locking_param(client_addr *,client_addr *,time_t,DevLong,DevLong);
 
-	void set_alias_name_lower(string &al) {ext->alias_name_lower = al;}
-	string &get_alias_name_lower() {return ext->alias_name_lower;}
+	void set_alias_name_lower(string &al) {alias_name_lower = al;}
+	string &get_alias_name_lower() {return alias_name_lower;}
 
 	void push_att_conf_event(Attribute *);
 
-	void data_into_net_object(Attribute &,AttributeValueList_3 *,AttributeValueList_4 *,long,AttrWriteType,bool);
-	void polled_data_into_net_object(AttributeValueList_3 *,AttributeValueList_4 *,long,long,long,PollObj *,const DevVarStringArray &);
+	void data_into_net_object(Attribute &,AttributeIdlData &,long,AttrWriteType,bool);
+	void polled_data_into_net_object(AttributeIdlData &,long,long,long,PollObj *,const DevVarStringArray &);
 
-	int get_min_poll_period() {return ext->min_poll_period;}
-	vector<string> &get_cmd_min_poll_period() {return ext->cmd_min_poll_period;}
-	vector<string> &get_attr_min_poll_period() {return ext->attr_min_poll_period;}
+	int get_min_poll_period() {return min_poll_period;}
+	vector<string> &get_cmd_min_poll_period() {return cmd_min_poll_period;}
+	vector<string> &get_attr_min_poll_period() {return attr_min_poll_period;}
 
 	void init_cmd_poll_ext_trig (string cmd_name);
 	void init_attr_poll_ext_trig (string cmd_name);
 
-    void set_run_att_conf_loop(bool val) {ext->run_att_conf_loop=val;}
-    vector<string> &get_att_wrong_db_conf() {return ext->att_wrong_db_conf;}
+    void set_run_att_conf_loop(bool val) {run_att_conf_loop=val;}
+    vector<string> &get_att_wrong_db_conf() {return att_wrong_db_conf;}
+    void check_att_conf();
+    bool is_alarm_state_forced() {return force_alarm_state;}
+    vector<string> &get_att_mem_failed() {return att_mem_failed;}
+
+    vector<FwdWrongConf> &get_fwd_att_wrong_conf() {return fwd_att_wrong_conf;}
+    void rem_wrong_fwd_att(const string &);
+	void update_wrong_conf_att(const string &,FwdAttError);
+
+	void set_with_fwd_att(bool _b) {with_fwd_att=_b;}
+	bool get_with_fwd_att() {return with_fwd_att;}
+
+	void set_call_source(DevSource _s) {call_source=_s;}
+	DevSource get_call_source() {return call_source;}
+
+	vector<Command *> &get_local_command_list() {return command_list;}
+	Command &get_local_cmd_by_name(const string &);
+	void remove_local_command(const string &);
+
+	void set_event_intr_change_subscription(time_t _t) {event_intr_change_subscription=_t;}
+	time_t get_event_intr_change_subscription() {return event_intr_change_subscription;}
+	void enable_intr_change_ev() {intr_change_ev = true;}
+	void disable_intr_change_ev() {intr_change_ev = false;}
+	bool is_intr_change_ev_enable() {return intr_change_ev;}
+
+	void get_event_param(vector<EventPar> &);
+	void set_event_param(vector<EventPar> &);
+
+	void set_client_lib(int _l) {if (count(client_lib.begin(),client_lib.end(),_l)==0)client_lib.push_back(_l);}
 
 #ifdef TANGO_HAS_LOG4TANGO
  	inline log4tango::Logger *get_logger(void)
-	{return ext->logger ? ext->logger : get_logger_i();}
+	{return logger ? logger : get_logger_i();}
 
   	void init_logger(void);
   	void start_logging(void);
@@ -3475,78 +3431,15 @@ private:
     class DeviceImplExt
     {
     public:
-#ifdef TANGO_HAS_LOG4TANGO
-        DeviceImplExt(const char *d_name): exported(false),polled(false),
-        poll_ring_depth(0),poll_old_factor(0),only_one(d_name),
-        logger(NULL),saved_log_level(log4tango::Level::WARN),
-        rft(Tango::kDefaultRollingThreshold),idl_version(1),
-        store_in_bb(true),poll_mon("cache"),
-        att_conf_mon("att_config"),state_from_read(false),
-        py_device(false),
-        device_locked(false),locker_client(NULL),old_locker_client(NULL),
-        lock_ctr(0),min_poll_period(0),run_att_conf_loop(true),force_alarm_state(false) {};
-#else
-        DeviceImplExt(const char *d_name):exported(false),polled(false),poll_ring_depth(0)
-                only_one(d_name),store_in_bb(true),poll_mon("cache"),
-                att_conf_mon("att_config"),state_from_read(false),
-                py_device(false),device_locked(false),locker_client(NULL),
-                old_locker_client(NULL),lock_ctr(0),min_poll_period(0),
-                run_att_conf_loop(true),force_alarm_state(false) {};
-#endif
-        ~DeviceImplExt();
+        DeviceImplExt():alarm_state_user(0),alarm_state_kernel(0) {};
 
-        bool				exported;
-        bool				polled;
-        long				poll_ring_depth;
-        long				poll_old_factor;
-        vector<string>		polled_cmd;
-        vector<string>		polled_attr;
-        vector<string>		non_auto_polled_cmd;
-        vector<string>		non_auto_polled_attr;
-        vector<PollObj *>	poll_obj_list;
-
-        TangoMonitor		only_one;		        // Device monitor
-        Tango::DevState		device_prev_state;	    // Device previous state
-
-#ifdef TANGO_HAS_LOG4TANGO
-        log4tango::Logger* 	logger;
-        log4tango::Level::Value saved_log_level;
-        size_t              rft;
-#endif
-        string				device_name_lower;
-        long				idl_version;
-
-        vector<string>		cmd_poll_ring_depth;
-        vector<string>		attr_poll_ring_depth;
-
-        bool				store_in_bb;
-        TangoMonitor		poll_mon;		        // Polling list monitor
-        TangoMonitor		att_conf_mon;		    // Attribute config monitor
-        bool				state_from_read;
-        vector<long>		alarmed_not_read;
-
-        bool				py_device;
-        string				alias_name_lower;	    // Alias name (if any)
-
-        bool				device_locked;
-        client_addr			*locker_client;
-        client_addr			*old_locker_client;
-        DevLong				lock_validity;
-        time_t				locking_date;
-        string				lock_status;
-        DevLong				lock_ctr;
-
-        long				min_poll_period;
-        vector<string>		cmd_min_poll_period;
-        vector<string>		attr_min_poll_period;
-
-        bool                run_att_conf_loop;
-        bool                force_alarm_state;
-        vector<string>      att_wrong_db_conf;
+        time_t      alarm_state_user;
+        time_t      alarm_state_kernel;
     };
 
 
 protected:
+/// @privatesection
 	void check_lock(const char *,const char *cmd = NULL);
 	void throw_locked_exception(const char *meth);
 
@@ -3574,8 +3467,92 @@ protected:
 	DevVarStateArray			dummy_state_att_value;
 	DevVarEncodedArray			dummy_encoded_att_value;
 
+//
+// Ported from the extension class
+//
+
+#ifdef TANGO_HAS_LOG4TANGO
+	log4tango::Logger* 			logger;
+	log4tango::Level::Value 	saved_log_level;
+	size_t              		rft;
+#endif
+
+    long						poll_old_factor;
+    long						idl_version;
+
+    bool						exported;
+    bool						polled;
+    long						poll_ring_depth;
+    vector<string>				polled_cmd;
+    vector<string>				polled_attr;
+    vector<string>				non_auto_polled_cmd;
+    vector<string>				non_auto_polled_attr;
+    vector<PollObj *>			poll_obj_list;
+
+    TangoMonitor				only_one;		        // Device monitor
+    Tango::DevState				device_prev_state;	    // Device previous state
+    string						device_name_lower;
+
+    vector<string>				cmd_poll_ring_depth;
+    vector<string>				attr_poll_ring_depth;
+
+    bool						store_in_bb;
+    TangoMonitor				poll_mon;		        // Polling list monitor
+    TangoMonitor				att_conf_mon;		    // Attribute config monitor
+    TangoMonitor				pipe_conf_mon;			// Pipe config monitor
+    bool						state_from_read;
+    vector<long>				alrmd_not_read;
+
+    bool						py_device;
+    string						alias_name_lower;	    // Alias name (if any)
+
+    bool						device_locked;
+    client_addr					*locker_client;
+    client_addr					*old_locker_client;
+    DevLong						lock_validity;
+    time_t						locking_date;
+    string						lock_stat;
+    DevLong						lock_ctr;
+
+    long						min_poll_period;
+    vector<string>				cmd_min_poll_period;
+    vector<string>				attr_min_poll_period;
+
+    bool                		run_att_conf_loop;
+    bool                		force_alarm_state;
+    vector<string>      		att_wrong_db_conf;
+	vector<string>				att_mem_failed;
+	vector<FwdWrongConf>		fwd_att_wrong_conf;
+	bool						with_fwd_att;
+	DevSource					call_source;
+
+	vector<Command *>			command_list;
+	time_t						event_intr_change_subscription;
+	bool						intr_change_ev;
+
+	TangoMonitor				devintr_mon;
+	ShDevIntrTh					devintr_shared;
+	DevIntrThread				*devintr_thread;
+
+	vector<int>					client_lib;			// Dev Intr change event client(s) IDL
 
 private:
+//
+// Private enum
+//
+
+	typedef enum _AttErrorType
+	{
+		CONF = 0,
+		MEM,
+		FWD
+	}AttErrorType;
+
+	typedef enum _PipePropType
+	{
+		LABEL = 0,
+		DESCRIPTION
+	}PipePropType;
 
 //
 // Some private methods and variables
@@ -3587,6 +3564,11 @@ private:
     void poll_object(const string &,int,PollObjType);
     void stop_poll_object(const string &,PollObjType);
     void att_conf_loop();
+    void build_att_list_in_status_mess(size_t,AttErrorType);
+	void lock_root_devices(int,bool);
+	void push_dev_intr(bool);
+	void end_pipe_config();
+	void set_pipe_prop(vector<PipeProperty> &,Pipe *,PipePropType);
 
 #ifdef TANGO_HAS_LOG4TANGO
   	log4tango::Logger *get_logger_i (void);
@@ -3599,6 +3581,102 @@ private:
 protected:
 };
 
+inline void DeviceImpl::set_state(const Tango::DevState &new_state)
+{
+    device_prev_state = device_state;
+    device_state = new_state;
+    if (new_state == Tango::ALARM)
+        ext->alarm_state_user = time(NULL);
+    else
+        ext->alarm_state_user = 0;
+}
+
+#define DATA_IN_NET_OBJECT(A,B,C,D,E) \
+	do \
+	{ \
+		if (aid.data_5 != Tango_nullptr) \
+		{ \
+			AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
+			(*aid.data_5)[index].value.A(att_val.value.A()); \
+		} \
+		else if (aid.data_4 != Tango_nullptr) \
+		{ \
+			if (vers >= 5) \
+			{ \
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
+				(*aid.data_4)[index].value.A(att_val.value.A()); \
+			} \
+			else \
+			{ \
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false); \
+				(*aid.data_4)[index].value.A(att_val.value.A()); \
+			} \
+		} \
+		else \
+		{ \
+			if (vers >= 5) \
+			{ \
+				AttributeValue_5 &att_val = polled_att->get_last_attr_value_5(false); \
+				B &union_seq = att_val.value.A(); \
+				D = new B(union_seq.length(), \
+									union_seq.length(), \
+									const_cast<C *>(union_seq.get_buffer()), \
+									false); \
+			} \
+			else if (vers == 4) \
+			{ \
+				AttributeValue_4 &att_val = polled_att->get_last_attr_value_4(false); \
+				B &union_seq = att_val.value.A(); \
+				D = new B(union_seq.length(), \
+									union_seq.length(), \
+									const_cast<C *>(union_seq.get_buffer()), \
+									false); \
+			} \
+			else \
+			{ \
+				AttributeValue_3 &att_val = polled_att->get_last_attr_value_3(false); \
+				att_val.value >>= E; \
+				D = new B(E->length(), \
+						  E->length(), \
+						  const_cast<C *>(E->get_buffer()), \
+						  false); \
+			} \
+			(*aid.data_3)[index].value <<= D; \
+		} \
+	} \
+	while (false)
+
+
+
+#define DATA_IN_OBJECT(A,B,C,D) \
+	do \
+	{ \
+		Tango::A *ptr = att.B(); \
+		if (aid.data_5 != Tango_nullptr) \
+		{ \
+			(*aid.data_5)[index].value.D(C); \
+			A &the_seq = (*aid.data_5)[index].value.D(); \
+			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release()); \
+			if (ptr->release() == true) \
+				ptr->get_buffer(true); \
+		} \
+		else if (aid.data_4 != Tango_nullptr) \
+		{ \
+			(*aid.data_4)[index].value.D(C); \
+			A &the_seq = (*aid.data_4)[index].value.D(); \
+			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release()); \
+			if (ptr->release() == true) \
+				ptr->get_buffer(true); \
+		} \
+		else \
+		{ \
+			(*aid.data_3)[index].value <<= *ptr; \
+		} \
+\
+		if (del_seq == true) \
+			delete ptr; \
+	} \
+	while (false)
 
 
 

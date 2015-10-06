@@ -37,8 +37,8 @@ ifdef prefix
 OBJS_DIR = 	objs/$(BIN_DIR)
 OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
 else
-OBJS_DIR = 	objs/$(BIN_DIR)
-OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
+OBJS_DIR = 	objs
+OBJS_DIR_SL = 	objs_sl
 endif
 
 
@@ -114,6 +114,7 @@ endif
 
 AR_EXT = a
 
+
 IDL_OBJS =	$(OBJS_DIR)/tangoSK.o \
 		$(OBJS_DIR)/tangoDynSK.o
 
@@ -121,11 +122,16 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/device_2.o \
 		$(OBJS_DIR)/device_3.o \
 		$(OBJS_DIR)/device_4.o \
+		$(OBJS_DIR)/device_5.o \
 		$(OBJS_DIR)/dev_event.o \
 		$(OBJS_DIR)/dev_poll.o \
 		$(OBJS_DIR)/deviceclass.o \
 		$(OBJS_DIR)/command.o \
+		$(OBJS_DIR)/pipe.o \
+		$(OBJS_DIR)/w_pipe.o \
 		$(OBJS_DIR)/dserversignal.o \
+		$(OBJS_DIR)/devintr.o \
+		$(OBJS_DIR)/dintrthread.o \
 		$(OBJS_DIR)/thsig.o \
 		$(OBJS_DIR)/basiccommand.o \
 		$(OBJS_DIR)/utils.o \
@@ -135,9 +141,15 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
 		$(OBJS_DIR)/blackbox.o \
 		$(OBJS_DIR)/classattribute.o \
 		$(OBJS_DIR)/multiattribute.o \
+		$(OBJS_DIR)/templ_inst.o \
 		$(OBJS_DIR)/attribute.o \
+		$(OBJS_DIR)/attrsetval.o \
+		$(OBJS_DIR)/attrgetsetprop.o \
 		$(OBJS_DIR)/w_attribute.o \
 		$(OBJS_DIR)/attrdesc.o \
+		$(OBJS_DIR)/fwdattrdesc.o \
+		$(OBJS_DIR)/fwdattribute.o \
+		$(OBJS_DIR)/rootattreg.o \
 		$(OBJS_DIR)/except.o \
 		$(OBJS_DIR)/attrmanip.o \
 		$(OBJS_DIR)/seqvec.o \
@@ -159,11 +171,11 @@ SERVER_OBJS = 	$(OBJS_DIR)/device.o \
         $(OBJS_DIR)/notifdeventsupplier.o \
         $(OBJS_DIR)/zmqeventsupplier.o \
 		$(OBJS_DIR)/eventcmds.o \
-		$(OBJS_DIR)/eventqueue.o \
 		$(OBJS_DIR)/utils_polling.o \
 		$(OBJS_DIR)/utils_shut.o \
 		$(OBJS_DIR)/subdev_diag.o \
 		$(OBJS_DIR)/encoded_attribute.o \
+		$(OBJS_DIR)/classpipe.o \
 		$(OBJS_DIR)/jpeg_bitstream.o \
 		$(OBJS_DIR)/jpeg_color.o \
 		$(OBJS_DIR)/jpeg_color_mmx.o \
@@ -180,10 +192,12 @@ CLIENT_OBJS = 	$(OBJS_DIR)/dbapi_base.o \
 		$(OBJS_DIR)/dbapi_device.o \
 		$(OBJS_DIR)/dbapi_server.o \
 		$(OBJS_DIR)/dbapi_cache.o \
+		$(OBJS_DIR)/dbapi_serverdata.o \
 		$(OBJS_DIR)/devapi_attr.o \
 		$(OBJS_DIR)/devapi_base.o \
 		$(OBJS_DIR)/devapi_data.o \
 		$(OBJS_DIR)/devapi_datahist.o \
+		$(OBJS_DIR)/devapi_pipe.o \
 		$(OBJS_DIR)/api_util.o \
 		$(OBJS_DIR)/devapi_utils.o \
 		$(OBJS_DIR)/asynreq.o \
@@ -198,6 +212,7 @@ CLIENT_OBJS = 	$(OBJS_DIR)/dbapi_base.o \
 		$(OBJS_DIR)/apiexcept.o \
 		$(OBJS_DIR)/filedatabase.o \
 		$(OBJS_DIR)/event.o \
+		$(OBJS_DIR)/eventqueue.o \
         $(OBJS_DIR)/notifdeventconsumer.o \
         $(OBJS_DIR)/zmqeventconsumer.o \
 		$(OBJS_DIR)/eventkeepalive.o
@@ -209,11 +224,16 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/device_2.so.o \
 		$(OBJS_DIR_SL)/device_3.so.o \
 		$(OBJS_DIR_SL)/device_4.so.o \
+		$(OBJS_DIR_SL)/device_5.so.o \
 		$(OBJS_DIR_SL)/dev_event.so.o \
 		$(OBJS_DIR_SL)/dev_poll.so.o \
 		$(OBJS_DIR_SL)/deviceclass.so.o \
 		$(OBJS_DIR_SL)/command.so.o \
+		$(OBJS_DIR_SL)/pipe.so.o \
+		$(OBJS_DIR_SL)/w_pipe.so.o \
 		$(OBJS_DIR_SL)/dserversignal.so.o \
+		$(OBJS_DIR_SL)/devintr.so.o \
+		$(OBJS_DIR_SL)/dintrthread.so.o \
 		$(OBJS_DIR_SL)/thsig.so.o \
 		$(OBJS_DIR_SL)/basiccommand.so.o \
 		$(OBJS_DIR_SL)/utils.so.o \
@@ -222,10 +242,16 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
 		$(OBJS_DIR_SL)/class_factory.so.o \
 		$(OBJS_DIR_SL)/blackbox.so.o \
 		$(OBJS_DIR_SL)/classattribute.so.o \
+		$(OBJS_DIR_SL)/templ_inst.so.o \
 		$(OBJS_DIR_SL)/attribute.so.o \
+		$(OBJS_DIR_SL)/attrsetval.so.o \
+		$(OBJS_DIR_SL)/attrgetsetprop.so.o \
 		$(OBJS_DIR_SL)/w_attribute.so.o \
 		$(OBJS_DIR_SL)/multiattribute.so.o \
 		$(OBJS_DIR_SL)/attrdesc.so.o \
+		$(OBJS_DIR_SL)/fwdattrdesc.so.o \
+		$(OBJS_DIR_SL)/fwdattribute.so.o \
+		$(OBJS_DIR_SL)/rootattreg.so.o \
 		$(OBJS_DIR_SL)/except.so.o \
 		$(OBJS_DIR_SL)/attrmanip.so.o \
 		$(OBJS_DIR_SL)/seqvec.so.o \
@@ -247,11 +273,11 @@ SERVER_OBJS_SL =$(OBJS_DIR_SL)/device.so.o \
         $(OBJS_DIR_SL)/notifdeventsupplier.so.o \
         $(OBJS_DIR_SL)/zmqeventsupplier.so.o \
 		$(OBJS_DIR_SL)/eventcmds.so.o \
-		$(OBJS_DIR_SL)/eventqueue.so.o \
 		$(OBJS_DIR_SL)/utils_polling.so.o \
 		$(OBJS_DIR_SL)/utils_shut.so.o \
 		$(OBJS_DIR_SL)/subdev_diag.so.o \
 		$(OBJS_DIR_SL)/encoded_attribute.so.o \
+		$(OBJS_DIR_SL)/classpipe.so.o \
 		$(OBJS_DIR_SL)/jpeg_bitstream.so.o \
 		$(OBJS_DIR_SL)/jpeg_color.so.o \
 		$(OBJS_DIR_SL)/jpeg_color_mmx.so.o \
@@ -268,10 +294,12 @@ CLIENT_OBJS_SL = $(OBJS_DIR_SL)/dbapi_base.so.o \
 		$(OBJS_DIR_SL)/dbapi_device.so.o \
 		$(OBJS_DIR_SL)/dbapi_server.so.o \
 		$(OBJS_DIR_SL)/dbapi_cache.so.o \
+		$(OBJS_DIR_SL)/dbapi_serverdata.so.o \
 		$(OBJS_DIR_SL)/devapi_attr.so.o \
 		$(OBJS_DIR_SL)/devapi_base.so.o \
 		$(OBJS_DIR_SL)/devapi_data.so.o \
 		$(OBJS_DIR_SL)/devapi_datahist.so.o \
+		$(OBJS_DIR_SL)/devapi_pipe.so.o \
 		$(OBJS_DIR_SL)/api_util.so.o \
 		$(OBJS_DIR_SL)/devapi_utils.so.o \
 		$(OBJS_DIR_SL)/asynreq.so.o \
@@ -286,6 +314,7 @@ CLIENT_OBJS_SL = $(OBJS_DIR_SL)/dbapi_base.so.o \
 		$(OBJS_DIR_SL)/apiexcept.so.o \
 		$(OBJS_DIR_SL)/filedatabase.so.o \
 		$(OBJS_DIR_SL)/event.so.o \
+		$(OBJS_DIR_SL)/eventqueue.so.o \
         $(OBJS_DIR_SL)/notifdeventconsumer.so.o \
         $(OBJS_DIR_SL)/zmqeventconsumer.so.o \
 		$(OBJS_DIR_SL)/eventkeepalive.so.o
@@ -307,11 +336,28 @@ CLIENT_INCLUDE =	apiexcept.h \
 			group.h \
 			accessproxy.h \
 			eventconsumer.h \
-			event.h
+			event.h \
+			event.tpp \
+			Database.h \
+			DbDevice.h \
+			ApiUtil.h \
+			api_util.tpp \
+			DeviceData.h \
+			DeviceAttribute.h \
+			DevicePipe.h \
+			devapi_attr.tpp \
+			devapi_pipe.tpp \
+			devapi_utils.tpp \
+			Connection.h \
+			DeviceProxy.h \
+			AttributeProxy.h \
+			doc.h
 
 SERVER_INCLUDE =	attrdesc.h \
 			attribute.h \
             attribute.tpp \
+            attrsetval.tpp \
+            attribute_spec.tpp \
 			attrmanip.h \
 			attrprop.h \
 			attrprop.tpp \
@@ -319,31 +365,47 @@ SERVER_INCLUDE =	attrdesc.h \
 			basiccommand.h \
 			blackbox.h \
 			classattribute.h \
+			classpipe.h \
 			command.h \
+			pipe.h \
+			pipe.tpp \
 			coutappender.h \
 			coutbuf.h \
 			device.h \
 			device_2.h \
 			device_3.h \
+			device_3.tpp \
 			device_4.h \
+			device_5.h \
 			deviceclass.h \
+			devintr.h \
+			dintrthread.h \
 			dserver.h \
 			dserverclass.h \
 			dserversignal.h \
 			eventsupplier.h \
 			except.h \
+			fwdattrdesc.h \
+			fwdattribute.h \
+			fwdattribute.tpp \
+			fwdattribute_spec.tpp \
 			log4tango.h \
 			logcmds.h \
 			logging.h \
 			logstream.h \
 			multiattribute.h \
 			ntservice.h \
+			pipedesc.h \
 			pollcmds.h \
 			pollext.h \
+			pollext.tpp \
 			pollobj.h \
 			pollring.h \
+			pollring.tpp \
 			pollthread.h \
+			pollthread.tpp \
 			readers_writers_lock.h \
+			rootattreg.h \
 			seqvec.h \
 			tango.h \
 			tango_config.h \
@@ -353,13 +415,17 @@ SERVER_INCLUDE =	attrdesc.h \
 			tangorollingfileappender.h \
 			utils.h \
 			utils.tpp \
+			utils_spec.tpp \
 			w32win.h \
 			w_attribute.h \
 			w_attribute.tpp \
+			w_attrsetval.tpp \
+			w_attribute_spec.tpp \
+			w_pipe.h \
+			w_pipe.tpp \
 			subdev_diag.h \
 			encoded_attribute.h \
 			encoded_format.h
-
 
 #-----------------------------------------------------------------
 
@@ -454,7 +520,7 @@ ifndef macosx-darwin8
 $(LIBNAME).$(SL_EXT):	$(IDL_OBJS_SL) $(SERVER_OBJS_SL) $(CLIENT_OBJS_SL)
 	@./cr_dir $(INSTALL_BASE)/$(LIB_DIR)
 	$(AR_SL) -o $(INSTALL_BASE)/$(LIB_DIR)/$(LIBNAME).$(SL_EXT).$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS) \
-	$(VERS_OPT)$(LIBNAME).$(SL_EXT).$(MAJOR_VERS) \
+	$(VERS_OPT)$(LIBNAME).$(SL_EXT).$(MAJOR_VERS)$(MINOR_VERS) \
 	$(IDL_OBJS_SL) $(SERVER_OBJS_SL) $(CLIENT_OBJS_SL)
 
 install_link:
@@ -464,7 +530,6 @@ install_link:
 	rm $(LIBNAME).$(SL_EXT); ln -s $(LIBNAME).$(SL_EXT).$(MAJOR_VERS) $(LIBNAME).$(SL_EXT); \
 	rm $(LIBNAME).$(SL_EXT).$(MAJOR_VERS); ln -s $(LIBNAME).$(SL_EXT).$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS) $(LIBNAME).$(SL_EXT).$(MAJOR_VERS); \
 	cd $d
-
 else
 # MacOSX has to link the shared library
 $(LIBNAME).$(SL_EXT):	$(IDL_OBJS_SL) $(SERVER_OBJS_SL) $(CLIENT_OBJS_SL)

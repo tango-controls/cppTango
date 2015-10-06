@@ -8,7 +8,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -60,6 +60,9 @@ namespace Tango
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class WAttribute:public Attribute
@@ -216,7 +219,7 @@ public:
  * @param val A reference to a Tango::DevLong64 data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevLong64 &val) {val = w_ext->long64_val;}
+	void get_write_value(Tango::DevLong64 &val) {val = long64_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -226,7 +229,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevLong64 *&ptr) {ptr = w_ext->long64_ptr;}
+	void get_write_value(const Tango::DevLong64 *&ptr) {ptr = long64_ptr;}
 
 
 /**
@@ -350,7 +353,7 @@ public:
  * @param val A reference to a Tango::DevULong data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevULong &val) {val = w_ext->ulong_val;}
+	void get_write_value(Tango::DevULong &val) {val = ulong_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -360,7 +363,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevULong *&ptr) {ptr = w_ext->ulong_ptr;}
+	void get_write_value(const Tango::DevULong *&ptr) {ptr = ulong_ptr;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -369,7 +372,7 @@ public:
  * @param val A reference to a Tango::DevULong64 data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevULong64 &val) {val = w_ext->ulong64_val;}
+	void get_write_value(Tango::DevULong64 &val) {val = ulong64_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -379,7 +382,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevULong64 *&ptr) {ptr = w_ext->ulong64_ptr;}
+	void get_write_value(const Tango::DevULong64 *&ptr) {ptr = ulong64_ptr;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -388,7 +391,7 @@ public:
  * @param val A reference to a Tango::DevState data which will be initialised
  * with the new value
  */
-	void get_write_value(Tango::DevState &val) {val = w_ext->dev_state_val;}
+	void get_write_value(Tango::DevState &val) {val = dev_state_val;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -398,7 +401,7 @@ public:
  * to be written into the attribute. This pointer points into attribute
  * internal memory which must not be freed.
  */
-	void get_write_value(const Tango::DevState *&ptr) {ptr = w_ext->state_ptr;}
+	void get_write_value(const Tango::DevState *&ptr) {ptr = state_ptr;}
 
 /**
  * Retrieve the new value for writable attribute when attribute data type is
@@ -756,6 +759,31 @@ public:
 	void set_write_value(vector<Tango::DevState> &val, long x = 1, long y = 0);
 //@}
 
+/// @privatesection
+
+	template <typename T>
+	void get_write_value(T &);
+
+	template <typename T>
+	void get_write_value(const T *&);
+
+	template <typename T>
+	void check_type(T &,const string &);
+
+	template <typename T>
+	void set_write_value(T);
+
+	template <typename T>
+	void set_write_value(T *,long,long);
+
+	template <typename T>
+	void set_write_value(vector<T> &,long,long);
+
+
+
+
+
+
 	void set_write_value(Tango::DevEncoded *, long x = 1,long y = 0); // Dummy method for compiler
 
 	virtual void set_rvalue();
@@ -772,8 +800,8 @@ public:
 	long get_w_dim_x() {return w_dim_x;}
 	long get_w_dim_y() {return w_dim_y;}
 
-	void set_user_set_write_value(bool val) {w_ext->uswv = val;}
-	bool get_user_set_write_value() {return w_ext->uswv;}
+	void set_user_set_write_value(bool val) {uswv = val;}
+	bool get_user_set_write_value() {return uswv;}
 
 	Tango::DevVarShortArray *get_last_written_sh() {return &short_array_val;}
 	Tango::DevVarLongArray *get_last_written_lg() {return &long_array_val;}
@@ -783,22 +811,42 @@ public:
 	Tango::DevVarBooleanArray *get_last_written_boo() {return &boolean_array_val;}
 	Tango::DevVarUShortArray *get_last_written_ush() {return &ushort_array_val;}
 	Tango::DevVarCharArray *get_last_written_uch() {return &uchar_array_val;}
-	Tango::DevVarLong64Array *get_last_written_lg64() {return &w_ext->long64_array_val;}
-	Tango::DevVarULong64Array *get_last_written_ulg64() {return &w_ext->ulong64_array_val;}
-	Tango::DevVarULongArray *get_last_written_ulg() {return &w_ext->ulong_array_val;}
-	Tango::DevVarStateArray *get_last_written_state() {return &w_ext->state_array_val;}
+	Tango::DevVarLong64Array *get_last_written_lg64() {return &long64_array_val;}
+	Tango::DevVarULong64Array *get_last_written_ulg64() {return &ulong64_array_val;}
+	Tango::DevVarULongArray *get_last_written_ulg() {return &ulong_array_val;}
+	Tango::DevVarStateArray *get_last_written_state() {return &state_array_val;}
 	Tango::DevEncoded &get_last_written_encoded() {return encoded_val;}
 
 	bool is_memorized() {return memorized;}
+	bool get_memorized() {return memorized;}
 	void set_memorized(bool mem) {memorized = mem;}
 	bool is_memorized_init() {return memorized_init;}
+	bool get_memorized_init() {return memorized_init;}
 	void set_memorized_init(bool mem_init) {memorized_init = mem_init;}
 	string &get_mem_value() {return mem_value;}
 	void set_mem_value(const string &new_val) {mem_value = new_val;}
 	void set_written_date();
     bool mem_value_below_above(MinMaxValueCheck,string &);
 
+	void set_mem_exception(const DevErrorList &df)
+	{
+		mem_exception = df;
+		mem_write_failed = true;
+		att_mem_exception = true;
+	}
+	DevErrorList &get_mem_exception() {return mem_exception;}
+	void clear_mem_exception()
+	{
+		mem_exception.length(0);
+		mem_write_failed = false;
+		att_mem_exception = false;
+	}
+
+	void set_mem_write_failed(bool bo) {mem_write_failed=bo;}
+	bool get_mem_write_failed() {return mem_write_failed;}
+
 protected:
+/// @privatesection
 	virtual bool check_rds_alarm();
 
 private:
@@ -810,31 +858,7 @@ private:
     class WAttributeExt
     {
     public:
-        WAttributeExt():long64_ptr(NULL),ulong_ptr(NULL),
-                        ulong64_ptr(NULL),state_ptr(NULL),
-                        uswv(false)
-                        {}
-
-        Tango::DevLong64			long64_val;
-        Tango::DevLong64			old_long64_val;
-        Tango::DevULong				ulong_val;
-        Tango::DevULong				old_ulong_val;
-        Tango::DevULong64			ulong64_val;
-        Tango::DevULong64			old_ulong64_val;
-        Tango::DevState				dev_state_val;
-        Tango::DevState				old_dev_state_val;
-
-        Tango::DevVarLong64Array	long64_array_val;
-        Tango::DevVarULongArray		ulong_array_val;
-        Tango::DevVarULong64Array	ulong64_array_val;
-        Tango::DevVarStateArray		state_array_val;
-
-        const Tango::DevLong64		*long64_ptr;
-        const Tango::DevULong		*ulong_ptr;
-        const Tango::DevULong64		*ulong64_ptr;
-        const Tango::DevState		*state_ptr;
-
-        bool						uswv;					// User set_write_value
+        WAttributeExt() {}
     };
 
 // Defined prior to Tango IDL release 3
@@ -901,6 +925,34 @@ private:
 #else
 	WAttributeExt				*w_ext;
 #endif
+
+//
+// Ported from the extension class
+//
+
+    Tango::DevLong64			long64_val;
+    Tango::DevLong64			old_long64_val;
+    Tango::DevULong				ulong_val;
+    Tango::DevULong				old_ulong_val;
+    Tango::DevULong64			ulong64_val;
+    Tango::DevULong64			old_ulong64_val;
+    Tango::DevState				dev_state_val;
+    Tango::DevState				old_dev_state_val;
+
+    Tango::DevVarLong64Array	long64_array_val;
+    Tango::DevVarULongArray		ulong_array_val;
+    Tango::DevVarULong64Array	ulong64_array_val;
+    Tango::DevVarStateArray		state_array_val;
+
+    const Tango::DevLong64		*long64_ptr;
+    const Tango::DevULong		*ulong_ptr;
+    const Tango::DevULong64		*ulong64_ptr;
+    const Tango::DevState		*state_ptr;
+
+    bool						uswv;					// User set_write_value
+	DevErrorList				mem_exception;			// Exception received at start-up in case writing the
+														// memorized att. failed
+	bool						mem_write_failed;		// Flag set to true if the memorized att setting failed
 };
 
 
