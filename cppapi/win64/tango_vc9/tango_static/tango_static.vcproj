@@ -280,7 +280,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName="$(PREFIX)\win64\lib\vc9\tangod.9.0.2.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win64\lib\vc9\tangod.9.1.0.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -334,7 +334,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\client\api_util.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\apiexcept.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\ApiUtil.h"
 				>
 			</File>
 			<File
@@ -354,11 +362,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\client\AttributeProxy.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\attrmanip.h"
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\attrprop.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\attrprop.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\attrsetval.tpp"
 				>
 			</File>
 			<File
@@ -382,7 +402,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\classpipe.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\command.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\Connection.h"
 				>
 			</File>
 			<File
@@ -394,11 +422,31 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\client\Database.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\dbapi.h"
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\client\DbDevice.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\devapi.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\devapi_attr.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\devapi_pipe.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\devapi_utils.tpp"
 				>
 			</File>
 			<File
@@ -430,7 +478,23 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\client\DeviceAttribute.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\deviceclass.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\DeviceData.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\DevicePipe.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\DeviceProxy.h"
 				>
 			</File>
 			<File
@@ -458,7 +522,15 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\encoded_format.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\client\event.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\client\event.tpp"
 				>
 			</File>
 			<File
@@ -546,6 +618,18 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pipe.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\pipe.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\pipedesc.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollcmds.h"
 				>
 			</File>
@@ -566,7 +650,19 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pollring.tpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollthread.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\pollthread.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\readers_writers_lock.h"
 				>
 			</File>
 			<File
@@ -582,11 +678,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
@@ -635,6 +731,18 @@
 			</File>
 			<File
 				RelativePath="..\..\..\server\w_attribute_spec.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_attrsetval.tpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.tpp"
 				>
 			</File>
 		</Filter>
@@ -1181,6 +1289,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\classpipe.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\server\command.cpp"
@@ -1773,6 +1885,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\client\devapi_pipe.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\client\devapi_utils.cpp"
@@ -2747,6 +2863,10 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\..\server\pipe.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\..\server\pollcmds.cpp"
 				>
 				<FileConfiguration
@@ -3425,6 +3545,10 @@
 						PreprocessorDefinitions=""
 					/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\..\server\w_pipe.cpp"
+				>
 			</File>
 			<File
 				RelativePath="..\..\..\client\zmqeventconsumer.cpp"
