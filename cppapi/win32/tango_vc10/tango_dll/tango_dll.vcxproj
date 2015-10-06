@@ -46,8 +46,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
     <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreLinkEventUseInBuild>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tango902d</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tango902</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tango910d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tango910</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -85,7 +85,7 @@
       <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango910 release\*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>log4tango.lib;omniorb417_rt.lib;omnidynamic417_rt.lib;omnithread34_rt.lib;COS417_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4tango.lib;omniorb420_rt.lib;omnidynamic420_rt.lib;omnithread40_rt.lib;COS420_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango910.dll</OutputFile>
       <Version>9.1.0</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -138,14 +138,14 @@
       <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango910d debug\*.obj</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalDependencies>log4tangod.lib;omniORB417_rtd.lib;omniDynamic417_rtd.lib;COS417_rtd.lib;omnithread34_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>log4tangod.lib;omniORB420_rtd.lib;omniDynamic420_rtd.lib;COS420_rtd.lib;omnithread40_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
       <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango910d.dll</OutputFile>
       <Version>9.1.0</Version>
       <AdditionalLibraryDirectories>$(ZMQ_BASE)\win32\lib\vc10_dll;$(OMNI_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>.\Debug/tango910d.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(PREFIX)\win32\lib\vc10_dll\tangod.9.1.0.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -188,6 +188,7 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\..\..\client\dbapi_serverdata.cpp" />
+    <ClCompile Include="..\..\..\client\devapi_pipe.cpp" />
     <ClCompile Include="..\..\..\server\attrdesc.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -238,6 +239,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\classpipe.cpp" />
     <ClCompile Include="..\..\..\server\class_factory.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -552,6 +554,7 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="..\..\..\server\pipe.cpp" />
     <ClCompile Include="..\..\..\server\pollcmds.cpp">
       <Optimization Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Disabled</Optimization>
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -678,19 +681,31 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <ClCompile Include="..\..\..\client\zmqeventconsumer.cpp" />
+    <ClCompile Include="..\..\..\server\w_pipe.cpp" />
     <ClCompile Include="..\..\..\server\zmqeventsupplier.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\client\accessproxy.h" />
     <ClInclude Include="..\..\..\client\apiexcept.h" />
+    <ClInclude Include="..\..\..\client\ApiUtil.h" />
+    <ClInclude Include="..\..\..\client\AttributeProxy.h" />
+    <ClInclude Include="..\..\..\client\Connection.h" />
+    <ClInclude Include="..\..\..\client\Database.h" />
+    <ClInclude Include="..\..\..\client\DbDevice.h" />
+    <ClInclude Include="..\..\..\client\DeviceAttribute.h" />
+    <ClInclude Include="..\..\..\client\DeviceData.h" />
+    <ClInclude Include="..\..\..\client\DevicePipe.h" />
+    <ClInclude Include="..\..\..\client\DeviceProxy.h" />
     <ClInclude Include="..\..\..\server\attrdesc.h" />
     <ClInclude Include="..\..\..\server\attribute.h" />
     <ClInclude Include="..\..\..\server\attrmanip.h" />
+    <ClInclude Include="..\..\..\server\attrprop.h" />
     <ClInclude Include="..\..\..\server\auto_tango_monitor.h" />
     <ClInclude Include="..\..\..\server\basiccommand.h" />
     <ClInclude Include="..\..\..\server\blackbox.h" />
     <ClInclude Include="..\..\..\client\cbthread.h" />
     <ClInclude Include="..\..\..\server\classattribute.h" />
+    <ClInclude Include="..\..\..\server\classpipe.h" />
     <ClInclude Include="..\..\..\server\command.h" />
     <ClInclude Include="..\..\..\server\coutappender.h" />
     <ClInclude Include="..\..\..\server\coutbuf.h" />
@@ -710,6 +725,7 @@
     <ClInclude Include="..\..\..\server\dserversignal.h" />
     <ClInclude Include="..\..\..\server\encoded_attribute.h" />
     <ClInclude Include="..\..\..\client\event.h" />
+    <ClInclude Include="..\..\..\server\encoded_format.h" />
     <ClInclude Include="..\..\..\server\eventcmds.h" />
     <ClInclude Include="..\..\..\client\eventconsumer.h" />
     <ClInclude Include="..\..\..\server\eventsupplier.h" />
@@ -729,11 +745,14 @@
     <ClInclude Include="..\..\..\server\logstream.h" />
     <ClInclude Include="..\..\..\server\multiattribute.h" />
     <ClInclude Include="..\..\..\server\ntservice.h" />
+    <ClInclude Include="..\..\..\server\pipe.h" />
+    <ClInclude Include="..\..\..\server\pipedesc.h" />
     <ClInclude Include="..\..\..\server\pollcmds.h" />
     <ClInclude Include="..\..\..\server\pollext.h" />
     <ClInclude Include="..\..\..\server\pollobj.h" />
     <ClInclude Include="..\..\..\server\pollring.h" />
     <ClInclude Include="..\..\..\server\pollthread.h" />
+    <ClInclude Include="..\..\..\server\readers_writers_lock.h" />
     <ClInclude Include="..\..\..\server\rootattreg.h" />
     <ClInclude Include="..\..\..\server\seqvec.h" />
     <ClInclude Include="..\..\..\server\subdev_diag.h" />
@@ -747,19 +766,31 @@
     <ClInclude Include="..\..\..\server\utils.h" />
     <ClInclude Include="..\..\..\server\w32win.h" />
     <ClInclude Include="..\..\..\server\w_attribute.h" />
+    <ClInclude Include="..\..\..\server\w_pipe.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\client\api_util.tpp" />
+    <None Include="..\..\..\client\devapi_attr.tpp" />
+    <None Include="..\..\..\client\devapi_pipe.tpp" />
+    <None Include="..\..\..\client\devapi_utils.tpp" />
+    <None Include="..\..\..\client\event.tpp" />
     <None Include="..\..\..\server\attribute.tpp" />
     <None Include="..\..\..\server\attribute_spec.tpp" />
     <None Include="..\..\..\server\attrprop.tpp" />
+    <None Include="..\..\..\server\attrsetval.tpp" />
     <None Include="..\..\..\server\device_3.tpp" />
     <None Include="..\..\..\server\fwdattribute.tpp" />
     <None Include="..\..\..\server\fwdattribute_spec.tpp" />
+    <None Include="..\..\..\server\pipe.tpp" />
     <None Include="..\..\..\server\pollext.tpp" />
+    <None Include="..\..\..\server\pollring.tpp" />
+    <None Include="..\..\..\server\pollthread.tpp" />
     <None Include="..\..\..\server\utils.tpp" />
     <None Include="..\..\..\server\utils_spec.tpp" />
     <None Include="..\..\..\server\w_attribute.tpp" />
     <None Include="..\..\..\server\w_attribute_spec.tpp" />
+    <None Include="..\..\..\server\w_attrsetval.tpp" />
+    <None Include="..\..\..\server\w_pipe.tpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
