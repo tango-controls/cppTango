@@ -94,7 +94,6 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * In order to develop Tango's related software, it's a good idea to have  a look at the
  * so-called "Tango book" (maily chapter 4 but not only)
  * \li <a href=http://ftp.esrf.fr/pub/cs/tango/tango_80.pdf>In PDF</a>
- * \li <a href=http://www.esrf.eu/computing/cs/tango/tango_doc/kernel_doc/ds_prog/index.html target=new>In HTML</a>
  *
  * A look at the so-called "Related Pages" could also help the developper.
  *
