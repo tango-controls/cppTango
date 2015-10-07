@@ -340,8 +340,16 @@ void PollRing::get_attr_history(long n,T *ptr,long type)
 
         if (ring[index].except == NULL)
         {
-            ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_5)[0].time.tv_sec;
-            ptr->dates[seq_index].tv_usec = (*ring[index].attr_value_5)[0].time.tv_usec;
+            if (vers == 4)
+            {
+                ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_4)[0].time.tv_sec;
+                ptr->dates[seq_index].tv_usec = (*ring[index].attr_value_4)[0].time.tv_usec;
+            }
+            else
+            {
+                ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_5)[0].time.tv_sec;
+                ptr->dates[seq_index].tv_usec = (*ring[index].attr_value_5)[0].time.tv_usec;
+            }
         }
         else
         {
