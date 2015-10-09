@@ -336,18 +336,19 @@ void PollRing::get_attr_history(long n,T *ptr,long type)
 
 //
 // Copy date in output structure
+// In no error case, we take date from the attr_valie_X stucture and here the date is not biased
 //
 
         if (ring[index].except == NULL)
         {
             if (vers == 4)
             {
-                ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_4)[0].time.tv_sec + DELTA_T;
+                ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_4)[0].time.tv_sec;
                 ptr->dates[seq_index].tv_usec = (*ring[index].attr_value_4)[0].time.tv_usec;
             }
             else
             {
-                ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_5)[0].time.tv_sec + DELTA_T;
+                ptr->dates[seq_index].tv_sec = (*ring[index].attr_value_5)[0].time.tv_sec;
                 ptr->dates[seq_index].tv_usec = (*ring[index].attr_value_5)[0].time.tv_usec;
             }
         }
