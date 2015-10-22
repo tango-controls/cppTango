@@ -1861,6 +1861,7 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
         lock_ctr = rval.lock_ctr;
         lock_valid = rval.lock_valid;
 
+        delete db_dev;
         if (dbase_used == true)
         {
             if (from_env_var == true)
