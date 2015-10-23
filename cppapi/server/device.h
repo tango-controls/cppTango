@@ -3092,7 +3092,14 @@ public:
 /**@name Push data ready event methods
  * This method allows the user to push a data ready event */
 //@{
-
+/**
+ * Set an implemented flag for the attribute to indicate that the server fires data ready event
+ * for this attribute.
+ *
+ * @param attr_name The name of the attribute
+ * @param implemented True when the server fires data ready event.
+ */
+    void set_data_ready_event  (string attr_name, bool implemented);
 /**
  * Push a data ready event for the attribute with name specified as the first
  * parameter.

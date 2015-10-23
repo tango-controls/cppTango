@@ -1975,6 +1975,29 @@ void DeviceImpl::push_archive_event (string attr_name, Tango::DevString *p_str_d
 }
 
 
+//+---------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceImpl::set_data_ready_event
+//
+// description :
+//		Set a flag to indicate that the server pushes data ready events.
+//
+// args :
+//  	in :
+//			- attr_name  : The attribute name
+//  		- implemented  : True when the server fires change events manually.
+//
+//----------------------------------------------------------------------------------------------------------------
+
+void DeviceImpl::set_data_ready_event  (string attr_name, bool implemented)
+{
+	// search the attribute from the attribute list
+	Tango::MultiAttribute *attr_list = get_device_attr();
+	Tango::Attribute &attr           = attr_list->get_attr_by_name (attr_name.c_str());
+
+	attr.set_data_ready_event (implemented);
+}
 
 //+-----------------------------------------------------------------------------------------------------------------
 //
