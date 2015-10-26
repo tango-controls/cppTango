@@ -703,7 +703,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 
 		if (state_wanted == true)
 		{
-            long id = reading_state_necessary(wanted_attr);
+//            long id = reading_state_necessary(wanted_attr);
+            long id = -1;
             if (id == -1)
             {
                 try

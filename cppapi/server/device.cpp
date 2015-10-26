@@ -1219,7 +1219,7 @@ Tango::DevState DeviceImpl::dev_state()
                             }
                         }
                         att.wanted_date(true);
-                        throw;
+ //                       throw;
                     }
                 }
 
