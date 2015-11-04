@@ -1524,6 +1524,12 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			ev_cptr_ite->second++;
 
 //
+// For reference counting on zmq messages which do not have a local scope
+//
+
+		endian_mess.copy(&endian_mess_2);
+
+//
 // release mutex if we haven't use ZMQ no copy mode
 //
 
@@ -1540,12 +1546,6 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 			push_mutex.release();
 		}
-
-//
-// For reference counting on zmq messages which do not have a local scope
-//
-
-		endian_mess.copy(&endian_mess_2);
 	}
 	catch(...)
 	{
