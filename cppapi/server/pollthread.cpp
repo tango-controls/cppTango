@@ -101,6 +101,11 @@ PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cm
 		ctr_frequency = 0.0;
 #endif
 
+    dummy_att5.value.union_no_data(true);
+    dummy_att5.quality = ATTR_INVALID;
+    dummy_att4.value.union_no_data(true);
+    dummy_att4.quality = ATTR_INVALID;
+    dummy_att3.quality = ATTR_INVALID;
 }
 
 //+------------------------------------------------------------------------------------------------------------------

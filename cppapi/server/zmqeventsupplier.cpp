@@ -1698,28 +1698,31 @@ void ZmqEventSupplier::push_event_loop(DeviceImpl *device_impl,EventType event_t
 		struct SuppliedEventData sent_value;
 		::memset(&sent_value,0,sizeof(sent_value));
 
-		switch (*ite)
-		{
-			case 5:
-			{
-				convert_att_event_to_5(attr_value,sent_value,need_free,att);
-				ev_name = EVENT_COMPAT_IDL5 + ev_name;
-				name_changed = true;
-			}
-			break;
+        if (except == NULL)
+        {
+            switch (*ite)
+            {
+                case 5:
+                {
+                    convert_att_event_to_5(attr_value,sent_value,need_free,att);
+                    ev_name = EVENT_COMPAT_IDL5 + ev_name;
+                    name_changed = true;
+                }
+                break;
 
-			case 4:
-			{
-				convert_att_event_to_4(attr_value,sent_value,need_free,att);
-			}
-			break;
+                case 4:
+                {
+                    convert_att_event_to_4(attr_value,sent_value,need_free,att);
+                }
+                break;
 
-			default:
-			{
-				convert_att_event_to_3(attr_value,sent_value,need_free,att);
-			}
-			break;
-		}
+                default:
+                {
+                    convert_att_event_to_3(attr_value,sent_value,need_free,att);
+                }
+                break;
+            }
+        }
 
 		push_event(device_impl,
 			   ev_name,
