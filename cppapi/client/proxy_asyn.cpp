@@ -348,7 +348,6 @@ DeviceData Connection::command_inout_reply(long id)
                     catch(...) {}
                 }
 
-                remove_asyn_request(id);
                 char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
                 if (need_reconnect == false)
@@ -364,6 +363,8 @@ DeviceData Connection::command_inout_reply(long id)
                     desc << ", command " << tmp << ends;
                     CORBA::string_free(tmp);
 
+                    remove_asyn_request(id);
+
                     ApiCommExcept::re_throw_exception(cb_excep_mess,
                           "API_DeviceTimedOut",
                           desc.str(),
@@ -372,6 +373,7 @@ DeviceData Connection::command_inout_reply(long id)
                 else
                 {
                     set_connection_state(CONNECTION_NOTOK);
+                    remove_asyn_request(id);
 
                     stringstream ss;
                     ss << "Failed to execute command_inout_asynch on device " << dev_name();
@@ -664,7 +666,6 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     catch(...) {}
                 }
 
-                remove_asyn_request(id);
                 char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
                 if (need_reconnect == false)
@@ -680,6 +681,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     desc << ", command " << tmp << ends;
                     CORBA::string_free(tmp);
 
+                    remove_asyn_request(id);
+
                     ApiCommExcept::re_throw_exception(cb_excep_mess,
                               "API_DeviceTimedOut",
                               desc.str(),
@@ -688,6 +691,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                 else
                 {
                     set_connection_state(CONNECTION_NOTOK);
+                    remove_asyn_request(id);
 
                     stringstream ss;
                     ss << "Failed to execute command_inout_asynch on device " << dev_name();
@@ -1826,7 +1830,6 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
                 catch(...) {}
             }
 
-            remove_asyn_request(id);
 			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
             string meth;
@@ -1853,11 +1856,13 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
                 }
                 desc << ends;
 
+                remove_asyn_request(id);
                 ApiCommExcept::re_throw_exception(cb_excep_mess,"API_DeviceTimedOut",desc.str(),meth.c_str());
             }
             else
             {
                 set_connection_state(CONNECTION_NOTOK);
+                remove_asyn_request(id);
 
                 stringstream ss;
                 ss << "Failed to execute read_attribute_asynch on device " << device_name;
@@ -2456,7 +2461,6 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
                 catch(...) {}
             }
 
-            remove_asyn_request(id);
 			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
 
             if (need_reconnect == false)
@@ -2493,6 +2497,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
                     desc << ends;
                 }
 
+                remove_asyn_request(id);
                 ApiCommExcept::re_throw_exception(cb_excep_mess,
                                   "API_DeviceTimedOut",
                                   desc.str(),
@@ -2501,6 +2506,7 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
             else
             {
                 set_connection_state(CONNECTION_NOTOK);
+                remove_asyn_request(id);
 
                 stringstream ss;
                 ss << "Failed to execute write_attribute_asynch on device " << device_name;
