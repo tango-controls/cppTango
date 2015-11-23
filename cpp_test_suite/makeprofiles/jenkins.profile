@@ -46,7 +46,7 @@ EXCLUDE_FILES = 64.cpp helper.cpp
 
 TANGO_BASE = /segfs/tango/ci/Tango/$(OS)
 
-OMNI_BASE = /segfs/tango/ORB/omniORB4.2.0/$(OS)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.2.1/$(OS)
 LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango5.0.1/$(OS)
 ZMQ_BASE = /segfs/tango/transport/zmq4.0.5/$(OS)
 

@@ -45,7 +45,7 @@ EXCLUDE_FILES = 64.cpp helper.cpp zmcast01_simple.cpp zmcast02_local_remote.cpp 
 #COMPILE_FILES = pipe_event.cpp
 #COMPILE_FILES = add_rem_attr.cpp
 #COMPILE_FILES = cxx_zmcast01_simple.cpp zmcast02_local_remote.cpp zmcast03_svr_local_remote.cpp
-#COMPILE_FILES = cxx_database.cpp
+#COMPILE_FILES = cxx_fwd_att.cpp
 #COMPILE_FILES = cxx_svr_mcast_local_remote.cpp
 #COMPILE_FILES = att_type_event.cpp
 
@@ -55,10 +55,8 @@ TANGO_BASE = /home/taurel/tango/cppapi_900
 TANGO_INCLUDE_DIR = $(TANGO_BASE)/client $(TANGO_BASE)/server
 TANGO_LIB_DIR = $(TANGO_BASE)/../install/$(OS_DIR)/lib/debug
 
-#OMNI_BASE = /segfs/tango/ORB/omniORB4.1.7/$(OS_DIR)
-OMNI_BASE = /segfs/tango/ORB/omniORB4.2.0/$(OS_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.2.1/$(OS_DIR)
 LOG4TANGO_BASE = /segfs/tango/tools/log4tango-release/log4tango5.0.1/$(OS_DIR)
-#ZMQ_BASE = /segfs/tango/transport/zmq/$(OS_DIR)
-#ZMQ_BASE = /segfs/tango/transport/zmq3.2.4/$(OS_DIR)
 ZMQ_BASE = /segfs/tango/transport/zmq4.0.5/$(OS_DIR)
+
 
