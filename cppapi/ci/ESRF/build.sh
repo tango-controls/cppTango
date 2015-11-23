@@ -24,16 +24,6 @@ BRANCH_DIR=../..
 for i in $NODE_LABELS
 do
 	echo $i
-	if [ $i = "ubuntu10.04" ]
-	then
-		echo "Ubuntu 10.04 OS"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1 ubuntu=1"
-		CPU_BUS="64bits=1"
-		MAKE_PATH="make"
-		INSTALL_DIR=$UX_INSTALL_DIR
-	fi
-
 	if [ $i = "ubuntu12.04" ]
 	then
 		echo "Ubuntu 12.04 OS"
@@ -41,15 +31,6 @@ do
 		OS_SPEC="linux=1 ubuntu=1"
 		CPU_BUS="64bits=1"
 		MAKE_PATH="make"
-		INSTALL_DIR=$UX_INSTALL_DIR
-	fi
-	
-	if [ $i = "solaris10" ]
-	then
-		echo "Solaris 10 OS"
-		OS_TYPE="solaris"
-		OS_SPEC="_solaris=1"
-		MAKE_PATH="/usr/local/bin/make"
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -113,6 +94,16 @@ do
 	if [ $i = "debian7_tango" ]
 	then
 		echo "Debian 7 OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		CPU_BUS="64bits=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
+
+	if [ $i = "debian8_tango" ]
+	then
+		echo "Debian 8 OS"
 		OS_TYPE="linux"
 		OS_SPEC="linux=1"
 		CPU_BUS="64bits=1"
