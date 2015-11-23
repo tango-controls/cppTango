@@ -22,14 +22,6 @@ fi
 for i in $NODE_LABELS
 do
 	echo $i
-	if [ $i = "ubuntu10.04" ]
-	then
-		echo "Ubuntu 10.04 OS"
-		OS_TYPE="linux"
-		OS_SPEC="linux=1 ubuntu=1"
-		MAKE_PATH="make"
-		INSTALL_DIR=$UX_INSTALL_DIR
-	fi
 
 	if [ $i = "ubuntu12.04" ]
 	then
@@ -37,15 +29,6 @@ do
 		OS_TYPE="linux"
 		OS_SPEC="linux=1 ubuntu=1"
 		MAKE_PATH="make"
-		INSTALL_DIR=$UX_INSTALL_DIR
-	fi
-	
-	if [ $i = "solaris10" ]
-	then
-		echo "Solaris 10 OS"
-		OS_TYPE="solaris"
-		OS_SPEC="_solaris=1"
-		MAKE_PATH="/usr/local/bin/make"
 		INSTALL_DIR=$UX_INSTALL_DIR
 	fi
 
@@ -106,6 +89,15 @@ do
 	if [ $i = "debian7_tango" ]
 	then
 		echo "Debian 7 (64 bits) OS"
+		OS_TYPE="linux"
+		OS_SPEC="linux=1"
+		MAKE_PATH="make"
+		INSTALL_DIR=$UX_INSTALL_DIR
+	fi
+
+	if [ $i = "debian8_tango" ]
+	then
+		echo "Debian 8 (64 bits) OS"
 		OS_TYPE="linux"
 		OS_SPEC="linux=1"
 		MAKE_PATH="make"
