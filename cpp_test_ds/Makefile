@@ -51,9 +51,9 @@ endif
 ##############################################################################
 
 ifdef prefix
-OMNI_BASE = /segfs/tango/ORB/omniORB4.2.0/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.2.1/$(BIN_DIR)
 else
-OMNI_BASE = /segfs/tango/ORB/omniORB4.2.0/$(BIN_DIR)
+OMNI_BASE = /segfs/tango/ORB/omniORB4.2.1/$(BIN_DIR)
 endif
 
 ##############################################################################
@@ -81,10 +81,12 @@ ZMQ_BASE = /segfs/tango/transport/zmq4.0.5/$(BIN_DIR)
 else
 #ZMQ_BASE = /segfs/tango/transport/zmq/$(BIN_DIR)
 ZMQ_BASE = /segfs/tango/transport/zmq4.0.5/$(BIN_DIR)
+#ZMQ_BASE = /segfs/tango/transport/zmq4.1.3/$(BIN_DIR)
 endif
 
 ifdef linux
 CC = c++
+#CC = /home/taurel/bin/gcc-5.2/bin/c++5.2
 AR = ar
 endif
 
