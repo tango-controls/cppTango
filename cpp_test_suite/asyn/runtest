@@ -132,7 +132,7 @@ jenkins )
 			DEV1_ALIAS="debian6_alias"
 		fi
 
-		if [ $i = "debian7" ]
+		if [ $i = "debian7_tango" ]
 		then
 			echo "Debian 7 OS"
 			DIR="$BASE_DIR/debian7/bin"
@@ -142,7 +142,7 @@ jenkins )
 			DEV1_ALIAS="debian7_alias"
 		fi
 
-		if [ $i = "debian8" ]
+		if [ $i = "debian8_tango" ]
 		then
 			echo "Debian 8 OS"
 			DIR="$BASE_DIR/debian8/bin"
