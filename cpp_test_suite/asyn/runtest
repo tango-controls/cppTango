@@ -61,15 +61,6 @@ jenkins )
 	for i in $NODE_LABELS
 	do
 		echo $i
-		if [ $i = "ubuntu10.04" ]
-		then
-			echo "Ubuntu 10.04 OS"
-			DIR="$BASE_DIR/ubuntu1004/bin"
-			DEV1="test/ubuntu1004/10"
-			DEV2="test/ubuntu1004/11"
-			DEV3="test/ubuntu1004/12"
-			DEV1_ALIAS="ubuntu1004_alias"
-		fi
 
 		if [ $i = "ubuntu12.04" ]
 		then
@@ -140,6 +131,27 @@ jenkins )
 			DEV3="test/debian6/12"
 			DEV1_ALIAS="debian6_alias"
 		fi
+
+		if [ $i = "debian7" ]
+		then
+			echo "Debian 7 OS"
+			DIR="$BASE_DIR/debian7/bin"
+			DEV1="test/debian7/10"
+			DEV2="test/debian7/11"
+			DEV3="test/debian7/12"
+			DEV1_ALIAS="debian7_alias"
+		fi
+
+		if [ $i = "debian8" ]
+		then
+			echo "Debian 8 OS"
+			DIR="$BASE_DIR/debian8/bin"
+			DEV1="test/debian8/10"
+			DEV2="test/debian8/11"
+			DEV3="test/debian8/12"
+			DEV1_ALIAS="debian8_alias"
+		fi
+
 	done
 	;;
 #

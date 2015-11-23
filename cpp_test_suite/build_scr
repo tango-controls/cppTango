@@ -25,18 +25,6 @@ fi
 for i in $NODE_LABELS
 do
 	echo $i
-	if [ $i = "ubuntu10.04" ]
-	then
-		echo "Ubuntu 10.04 OS"
-		OS_TYPE="Linux"
-		OS="ubuntu1004"
-		MAKE_PATH="make"
-		DS_INST_NAME=ubuntu1004
-		DS_INST_NAME_2=ubuntu1004_2
-		MCAST_INST_NAME=ubuntu1004_mcast
-		INSTALL_DIR=$UX_INSTALL_DIR
-		PROF=jenkins_no_mcast
-	fi
 
 	if [ $i = "ubuntu12.04" ]
 	then
@@ -127,6 +115,32 @@ do
 		DS_INST_NAME=debian6
 		DS_INST_NAME_2=debian6_2
 		MCAST_INST_NAME=debian6_mcast
+		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins_no_mcast
+	fi
+
+	if [ $i = "debian7_tango" ]
+	then
+		echo "Debian 7 OS (64 bits)"
+		OS_TYPE="Linux"
+		OS="debian7"
+		MAKE_PATH="make"
+		DS_INST_NAME=debian7
+		DS_INST_NAME_2=debian7_2
+		MCAST_INST_NAME=debian7_mcast
+		INSTALL_DIR=$UX_INSTALL_DIR
+		PROF=jenkins_no_mcast
+	fi
+
+	if [ $i = "debian8_tango" ]
+	then
+		echo "Debian 8 OS (64 bits)"
+		OS_TYPE="Linux"
+		OS="debian8"
+		MAKE_PATH="make"
+		DS_INST_NAME=debian8
+		DS_INST_NAME_2=debian8_2
+		MCAST_INST_NAME=debian8_mcast
 		INSTALL_DIR=$UX_INSTALL_DIR
 		PROF=jenkins_no_mcast
 	fi
