@@ -3313,6 +3313,8 @@ CommandInfoList *DeviceProxy::get_command_config(vector<string> &cmd_names)
 		}
 	}
 
+    delete all_cmds;
+
 	return ret_cmds;
 }
 
