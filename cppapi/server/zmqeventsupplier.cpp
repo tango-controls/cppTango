@@ -911,14 +911,16 @@ void ZmqEventSupplier::push_heartbeat_event()
 // Push a dummy message in the event socket. This is required by the ZMQ layer. In case of reconnection, if nothing
 // is sent on the socket between two reconnections, some memory will be "leaked". ZMQ is deleting that memory at
 // process end (zmq context delete) OR when something is sent to the socket. Therefore, send a dummy message
-// to the socket to force ZMQ " garbage collection" because we cannot wait for process termination!
+// to the socket to force ZMQ "garbage collection" because we cannot wait for process termination!
 //
 
                 string dummy_message("I like beer");
                 zmq::message_t dummy_mess(dummy_message.size());
                 memcpy(dummy_mess.data(),(void *)dummy_message.data(),dummy_message.size());
 
+                push_mutex.lock();
                 event_pub_sock->send(dummy_mess);
+                push_mutex.unlock();
 
 //
 // For reference counting on zmq messages which do not have a local scope
