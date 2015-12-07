@@ -133,7 +133,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -152,7 +152,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -277,7 +277,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -296,7 +296,7 @@ inline void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHi
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,

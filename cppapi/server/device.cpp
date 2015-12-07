@@ -179,7 +179,7 @@ void DeviceImpl::real_ctor()
 	{
 		db_dev = new DbDevice(device_name,Tango::Util::instance()->get_database());
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 		throw;
 	}
@@ -486,7 +486,7 @@ void DeviceImpl::black_box_create()
 		else
 			blackbox_ptr = new BlackBox(blackbox_depth);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		throw;
 	}
@@ -1201,7 +1201,7 @@ Tango::DevState DeviceImpl::dev_state()
                             }
                         }
                     }
-                    catch (Tango::DevFailed)
+                    catch (Tango::DevFailed &)
                     {
                         for (j = 0;j < i;j++)
                         {
@@ -1864,7 +1864,7 @@ Tango::DevCmdInfoList* DeviceImpl::command_list_query()
 			(*back)[i] = tmp;
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 	Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -1913,7 +1913,7 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
 	{
 		back = new Tango::DevCmdInfo();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 					(const char *)"Can't allocate memory in server",
@@ -2003,7 +2003,7 @@ Tango::DevInfo *DeviceImpl::info()
 	{
 		back = new Tango::DevInfo();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -2185,7 +2185,7 @@ Tango::AttributeConfigList *DeviceImpl::get_attribute_config(const Tango::DevVar
 		back = new Tango::AttributeConfigList(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -2679,7 +2679,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 			back = new Tango::AttributeValueList(nb_names);
 			back->length(nb_names);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			Except::throw_exception((const char *)API_MemoryAllocation,
 						(const char *)"Can't allocate memory in server",
@@ -2992,7 +2992,7 @@ void DeviceImpl::write_attributes(const Tango::AttributeValueList& values)
 			{
 				dev_attr->get_w_attr_by_ind(updated_attr[i]).check_written_value(values[i].value,(unsigned long)1,(unsigned long)0);
 			}
-			catch (Tango::DevFailed)
+			catch (Tango::DevFailed &)
 			{
 				for (long j = 0;j < i;j++)
 					dev_attr->get_w_attr_by_ind(updated_attr[j]).rollback();
@@ -3122,7 +3122,7 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 			throw_ex = true;
 		}
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 		already_there = false;
 	}
@@ -3285,7 +3285,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 	{
 		dev_attr->get_attr_by_name(attr_name.c_str());
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 		TangoSys_OMemStream o;
 
@@ -3426,7 +3426,7 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 				if (attr_list[att.get_attr_idx()]->get_cl_name() != rem_attr->get_cl_name())
 					nb_except++;
 			}
-			catch (Tango::DevFailed)
+			catch (Tango::DevFailed &)
 			{
 				nb_except++;
 			}
@@ -3536,7 +3536,7 @@ void DeviceImpl::add_command(Tango::Command *new_cmd,bool device_level)
 			throw_ex = true;
 		}
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 		already_there = false;
 	}
@@ -3553,7 +3553,7 @@ void DeviceImpl::add_command(Tango::Command *new_cmd,bool device_level)
 				throw_ex = true;
 			}
 		}
-		catch (Tango::DevFailed)
+		catch (Tango::DevFailed &)
 		{
 			already_there = false;
 		}
@@ -3660,14 +3660,14 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it,bool clean
 	{
 		device_class->get_cmd_by_name(cmd_name);
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 		try
 		{
 			get_local_cmd_by_name(cmd_name);
 			device_cmd = true;
 		}
-		catch (Tango::DevFailed)
+		catch (Tango::DevFailed &)
 		{
 			TangoSys_OMemStream o;
 

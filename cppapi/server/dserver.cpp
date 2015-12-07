@@ -383,7 +383,7 @@ void DServer::init_device()
 			manager->activate();
 
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 //
 // If the class_factory method have not been successfully executed, erase all classes already built. If the error
@@ -471,7 +471,7 @@ void DServer::init_device()
 		Tango::Util::instance()->set_svr_shutting_down(true);
 		throw;
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 //
 // If the class_factory method have not been successfully executed, erase all classes already built. If the error
@@ -674,7 +674,7 @@ Tango::DevVarStringArray *DServer::query_class()
 			(*ret)[i] = class_list[i]->get_name().c_str();
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -721,7 +721,7 @@ Tango::DevVarStringArray *DServer::query_device()
 			}
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1211,7 +1211,7 @@ void ServRestartThread::run(void *ptr)
 	{
 		tmp_ptr = new MultiAttribute(dev->get_name(),dev->get_device_class(),dev);
 	}
-	catch (Tango::DevFailed)
+	catch (Tango::DevFailed &)
 	{
 		throw;
 	}
@@ -1317,7 +1317,7 @@ Tango::DevVarStringArray *DServer::query_class_prop(string &class_name)
 			(*ret)[i] = CORBA::string_dup(wiz[i].c_str());
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -1388,7 +1388,7 @@ Tango::DevVarStringArray *DServer::query_dev_prop(string &class_name)
 			(*ret)[i] = CORBA::string_dup(wiz[i].c_str());
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",

@@ -686,7 +686,7 @@ Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarSt
 					back = new Tango::AttributeValueList(nb_attr);
 					back->length(nb_attr);
 				}
-				catch (bad_alloc)
+				catch (bad_alloc &)
 				{
 					back = NULL;
 					Except::throw_exception((const char *)API_MemoryAllocation,
@@ -1060,7 +1060,7 @@ Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
 			(*back)[i + nb_cmd_class] = tmp;
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1114,7 +1114,7 @@ Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
 	{
 		back = new Tango::DevCmdInfo_2();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1278,7 +1278,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		back = new Tango::AttributeConfigList_2(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1441,7 +1441,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		back = new Tango::DevCmdHistoryList(n);
 		back->length(n);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1463,7 +1463,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			back_attr = new Tango::DevAttrHistoryList_3(n);
 			back_attr->length(n);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
@@ -1622,7 +1622,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			back_3->length(n);
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",

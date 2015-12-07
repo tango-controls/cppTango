@@ -77,7 +77,7 @@ DServerSignal *DServerSignal::instance()
 		{
 			_instance = new DServerSignal();
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			throw;
 		}

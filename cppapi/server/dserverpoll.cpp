@@ -87,7 +87,7 @@ Tango::DevVarStringArray *DServer::polled_device()
 			}
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server","DServer::polled_device");
 	}
@@ -494,7 +494,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 						returned_info = returned_info + ", ";
 				}
 			}
-			catch (Tango::DevFailed)
+			catch (Tango::DevFailed &)
 			{
 			}
 

@@ -215,7 +215,7 @@ AccessControlType AccessProxy::check_access_control(string &devname)
                         host_ips.push_back(at_least_one);
                     }
                 }
-                catch (DevFailed)
+                catch (DevFailed &)
                 {
                     cerr << "AccessProxy::check_access_control: Can't get my IP address !" << endl;
                     cerr << "Access right set to ACCESS_READ" << endl;

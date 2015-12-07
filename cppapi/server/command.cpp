@@ -342,7 +342,7 @@ void Command::alloc_any(CORBA::Any *&any_ptr)
 	{
 		any_ptr = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",

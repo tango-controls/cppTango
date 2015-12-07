@@ -181,7 +181,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
 
 			get_cs_tango_host(db);
 		}
-		catch (Tango::DevFailed)
+		catch (Tango::DevFailed &)
 		{
 			env_var_fqdn_prefix.push_back(TangoHostNotSet);
 		}

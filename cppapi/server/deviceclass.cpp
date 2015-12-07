@@ -95,7 +95,7 @@ DeviceClass::DeviceClass(string &s):name(s),ext(new DeviceClassExt),
 		command_list[1]->set_out_type_desc("Device state");
 		command_list.push_back(new DevInitCmd("Init",Tango::DEV_VOID,Tango::DEV_VOID));
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		if (command_list.empty() == false)
 		{

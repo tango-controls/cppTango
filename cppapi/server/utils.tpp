@@ -226,7 +226,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception(API_MemoryAllocation,
@@ -261,7 +261,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistory
                     aid.data_3->length(1);
                 }
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception(API_MemoryAllocation,
@@ -564,7 +564,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,
@@ -583,7 +583,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistorySt
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
                 Except::throw_exception((const char *)API_MemoryAllocation,

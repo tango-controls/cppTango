@@ -203,7 +203,7 @@ CORBA::Any *DevQueryClassCmd::execute(DeviceImpl *device,TANGO_UNUSED(const CORB
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in DevQueryClassCmd::execute()" << endl;
 		delete ret;
@@ -263,7 +263,7 @@ CORBA::Any *DevQueryDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const COR
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in DevQueryDeviceCmd::execute()" << endl;
 		delete ret;
@@ -322,7 +322,7 @@ CORBA::Any *DevQuerySubDeviceCmd::execute(DeviceImpl *device,TANGO_UNUSED(const 
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in DevQuerySubDeviceCmd::execute()" << endl;
 		delete ret;
@@ -759,7 +759,7 @@ CORBA::Any *QueryWizardClassPropertyCmd::execute(DeviceImpl *device,const CORBA:
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in QueryWizardClassPropertyCmd::execute()" << endl;
 		delete ret;
@@ -836,7 +836,7 @@ CORBA::Any *QueryWizardDevPropertyCmd::execute(DeviceImpl *device,const CORBA::A
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in QueryWizardDevPropertyCmd::execute()" << endl;
 		delete ret;
@@ -911,7 +911,7 @@ CORBA::Any *QueryEventChannelIORCmd::execute(TANGO_UNUSED(DeviceImpl *device),TA
 		{
 			out_any = new CORBA::Any();
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			cout3 << "Bad allocation while in QueryEventChannelIORCmd::execute()" << endl;
 			Except::throw_exception((const char *)API_MemoryAllocation,
@@ -1087,7 +1087,7 @@ CORBA::Any *UnLockDeviceCmd::execute(DeviceImpl *device,const CORBA::Any &in_any
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in UnLockDeviceCmd::execute()" << endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
@@ -1155,7 +1155,7 @@ CORBA::Any *DevLockStatusCmd::execute(DeviceImpl *device,const CORBA::Any &in_an
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in DevLockStatusCmd::execute()" << endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
@@ -1261,7 +1261,7 @@ CORBA::Any *EventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,const 
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in EventSubscriptionChangeCmd::execute()" << endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
@@ -1365,7 +1365,7 @@ CORBA::Any *ZmqEventSubscriptionChangeCmd::execute(Tango::DeviceImpl *device,con
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		cout3 << "Bad allocation while in ZmqEventSubscriptionChangeCmd::execute()" << endl;
 		Except::throw_exception((const char *)API_MemoryAllocation,
@@ -1533,7 +1533,7 @@ DServerClass::DServerClass(string &s):DeviceClass(s)
 		device_factory(&dev_list);
 
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		for (unsigned long i = 0;i < command_list.size();i++)
 			delete command_list[i];
@@ -1581,7 +1581,7 @@ DServerClass *DServerClass::init()
 			string s("DServer");
 			_instance = new DServerClass(s);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			throw;
 		}

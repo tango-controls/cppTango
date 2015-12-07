@@ -189,7 +189,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 		back = new Tango::DevAttrHistory_4;
 		back->dates.length(n);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception(API_MemoryAllocation,
 							"Can't allocate memory in server",
@@ -337,7 +337,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 		back = new Tango::DevCmdHistory_4;
 		back->dates.length(n);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -359,7 +359,7 @@ Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* comman
 			back_attr = new Tango::DevAttrHistory_4;
 			back_attr->dates.length(n);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
@@ -545,7 +545,7 @@ Tango::AttributeValueList_4* Device_4Impl::read_attributes_4(const Tango::DevVar
 		for (unsigned long loop = 0;loop < nb_names;loop++)
 			(*aid.data_4)[loop].value.union_no_data(true);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",

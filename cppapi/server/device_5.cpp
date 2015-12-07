@@ -160,7 +160,7 @@ Tango::AttributeValueList_5* Device_5Impl::read_attributes_5(const Tango::DevVar
 		for (unsigned long loop = 0;loop < nb_names;loop++)
 			(*aid.data_5)[loop].value.union_no_data(true);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
 				        "Device_5Impl::read_attributes_5");
@@ -561,7 +561,7 @@ Tango::AttributeConfigList_5 *Device_5Impl::get_attribute_config_5(const Tango::
 		back = new Tango::AttributeConfigList_5(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -779,7 +779,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 			back = new Tango::DevAttrHistory_5;
 			back->dates.length(n);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,
 								"Can't allocate memory in server",
@@ -862,7 +862,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 		back = new Tango::PipeConfigList(nb_pipe);
 		back->length(nb_pipe);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -1075,7 +1075,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		{
 			back = new Tango::DevPipeData;
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
 			Except::throw_exception(API_MemoryAllocation,"Can't allocate memory in server",
 									"Device_5Impl::read_pipe_5");

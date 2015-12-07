@@ -1699,7 +1699,7 @@ Tango::DevVarStringArray *BlackBox::read(long wanted_elt)
 				read_index = max_elt - 1;
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		sync.unlock();
 
@@ -1863,6 +1863,9 @@ client_addr::client_addr(const client_addr &rhs)
 
 client_addr & client_addr::operator=(const client_addr &rhs)
 {
+	if (this == &rhs)
+		return *this;
+
 	client_ident = rhs.client_ident;
 	client_lang = rhs.client_lang;
 	client_pid = rhs.client_pid;

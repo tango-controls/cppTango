@@ -2842,7 +2842,7 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 				tg->get_database()->put_device_attribute_property(dev_name,*cosp.db_d);
 				retry = false;
 			}
-			catch (CORBA::COMM_FAILURE)
+			catch (CORBA::COMM_FAILURE &)
 			{
 				tg->get_database()->reconnect(true);
 			}
@@ -2871,7 +2871,7 @@ void Attribute::db_access(Attribute::CheckOneStrProp &cosp,string &dev_name)
 				tg->get_database()->delete_device_attribute_property(dev_name,*cosp.db_del);
 				retry = false;
 			}
-			catch (CORBA::COMM_FAILURE)
+			catch (CORBA::COMM_FAILURE &)
 			{
 				tg->get_database()->reconnect(true);
 			}

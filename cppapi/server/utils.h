@@ -1187,7 +1187,7 @@ inline CORBA::Any *return_empty_any(const char *cmd)
 	{
 		out_any = new CORBA::Any();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		TangoSys_MemStream o;
 

@@ -153,7 +153,7 @@ long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false),m
 		{
 			mem_value = get_attr_value(prop_list,MemAttrPropName);
 		}
-		catch (Tango::DevFailed)
+		catch (Tango::DevFailed &)
 		{
 			mem_value = MemNotUsed;
 		}
@@ -327,25 +327,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = sh_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value against min or max_value if needed
@@ -421,24 +403,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = lg_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -515,24 +480,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = lg64_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -608,24 +556,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = db_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -717,24 +648,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = string_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 		str_ptr = string_ptr->get_buffer();
 
@@ -773,24 +687,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = fl_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -883,24 +780,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = ush_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -976,24 +856,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = uch_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1068,24 +931,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = ulo_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1160,24 +1006,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = ulg64_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1252,24 +1081,7 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 					      (const char *)"WAttribute::check_written_value()");
 		}
 		nb_data = boo_ptr->length();
-		if (y == 0)
-		{
-			if (nb_data != x)
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
-		else
-		{
-			if (nb_data != (x * y))
-			{
-				Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        (const char *)"Incorrect data number",
-					        (const char *)"WAttribute::check_written_value()");
-			}
-		}
+		check_length(nb_data,x,y);
 
 		boolean_ptr = boo_ptr->get_buffer();
 		if (data_format == Tango::SCALAR)
@@ -1325,24 +1137,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
 			const Tango::DevVarShortArray &sh_seq = att_union.short_att_value();
 			nb_data = sh_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+            check_length(nb_data,x,y);
 
 
 //
@@ -1351,38 +1146,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (sh_seq[i] < min_value.sh)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                        o.str(),
-                                        (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (sh_seq[i] > max_value.sh)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                         o.str(),
-                                        (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,sh_seq,min_value.sh,max_value.sh);
             }
 
 			short_ptr = sh_seq.get_buffer();
@@ -1438,24 +1202,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarLongArray &lg_seq = att_union.long_att_value();
 			nb_data = lg_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1463,38 +1210,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (lg_seq[i] < min_value.lg)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (lg_seq[i] > max_value.lg)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,lg_seq,min_value.lg,max_value.lg);
             }
 
 			long_ptr = lg_seq.get_buffer();
@@ -1531,24 +1247,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarLong64Array &lg64_seq = att_union.long64_att_value();
 			nb_data = lg64_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1556,38 +1255,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (lg64_seq[i] < min_value.lg64)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (lg64_seq[i] > max_value.lg64)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,lg64_seq,min_value.lg64,max_value.lg64);
             }
 
 			long64_ptr = lg64_seq.get_buffer();
@@ -1623,24 +1291,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarDoubleArray &db_seq = att_union.double_att_value();
 			nb_data = db_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1732,24 +1383,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarStringArray &string_seq = att_union.string_att_value();
 			nb_data = string_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 			str_ptr = string_seq.get_buffer();
 
@@ -1788,24 +1422,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarFloatArray &fl_seq = att_union.float_att_value();
 			nb_data = fl_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1897,24 +1514,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarUShortArray &ush_seq = att_union.ushort_att_value();
 			nb_data = ush_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -1922,38 +1522,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (ush_seq[i] < min_value.ush)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (ush_seq[i] > max_value.ush)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,ush_seq,min_value.ush,max_value.ush);
             }
 
 			ushort_ptr = ush_seq.get_buffer();
@@ -1989,24 +1558,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarCharArray &uch_seq = att_union.uchar_att_value();
 			nb_data = uch_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -2014,38 +1566,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (uch_seq[i] < min_value.uch)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (uch_seq[i] > max_value.uch)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,uch_seq,min_value.uch,max_value.uch);
             }
 
 			uchar_ptr = uch_seq.get_buffer();
@@ -2081,24 +1602,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarULongArray &ulo_seq = att_union.ulong_att_value();
 			nb_data = ulo_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -2106,38 +1610,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (ulo_seq[i] < min_value.ulg)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (ulo_seq[i] > max_value.ulg)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,ulo_seq,min_value.ulg,max_value.ulg);
             }
 
 			ulong_ptr = ulo_seq.get_buffer();
@@ -2173,24 +1646,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarULong64Array &ulo64_seq = att_union.ulong64_att_value();
 			nb_data = ulo64_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value
@@ -2198,38 +1654,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
             {
                 AutoTangoMonitor sync1(mon_ptr);
-                if (check_min_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (ulo64_seq[i] < min_value.ulg64)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is below the minimum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
-                if (check_max_value == true)
-                {
-                    for (i = 0;i < nb_data;i++)
-                    {
-                        if (ulo64_seq[i] > max_value.ulg64)
-                        {
-                            TangoSys_OMemStream o;
-
-                            o << "Set value for attribute " << name;
-                            o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                            Except::throw_exception((const char *)API_WAttrOutsideLimit,
-                                      o.str(),
-                                      (const char *)"WAttribute::check_written_value()");
-                        }
-                    }
-                }
+                check_min_max(nb_data,ulo64_seq,min_value.ulg64,max_value.ulg64);
             }
 
 			ulong64_ptr = ulo64_seq.get_buffer();
@@ -2265,61 +1690,13 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarStateArray &sta_seq = att_union.state_att_value();
 			nb_data = sta_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+            check_length(nb_data,x,y);
 
 //
 // Check the incoming value
 //
 
-			if (check_min_value == true)
-			{
-				for (i = 0;i < nb_data;i++)
-				{
-					if (sta_seq[i] < min_value.d_sta)
-					{
-						TangoSys_OMemStream o;
-
-						o << "Set value for attribute " << name;
-						o << " is below the minimum authorized (at least element " << i << ")" << ends;
-						Except::throw_exception((const char *)API_WAttrOutsideLimit,
-						    	  o.str(),
-						    	  (const char *)"WAttribute::check_written_value()");
-					}
-				}
-			}
-			if (check_max_value == true)
-			{
-				for (i = 0;i < nb_data;i++)
-				{
-					if (sta_seq[i] > max_value.d_sta)
-					{
-						TangoSys_OMemStream o;
-
-						o << "Set value for attribute " << name;
-						o << " is above the maximum authorized (at least element " << i << ")" << ends;
-						Except::throw_exception((const char *)API_WAttrOutsideLimit,
-						    	  o.str(),
-						    	  (const char *)"WAttribute::check_written_value()");
-					}
-				}
-			}
+            check_min_max(nb_data,sta_seq,min_value.d_sta,max_value.d_sta);
 
 			state_ptr = sta_seq.get_buffer();
 			if (data_format == Tango::SCALAR)
@@ -2354,24 +1731,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			}
 			const Tango::DevVarBooleanArray &boo_seq = att_union.bool_att_value();
 			nb_data = boo_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        	(const char *)"Incorrect data number",
-					        	(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 			boolean_ptr = boo_seq.get_buffer();
 			if (data_format == Tango::SCALAR)
@@ -2403,24 +1763,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 
 			const Tango::DevVarEncodedArray &enc_seq = att_union.encoded_att_value();
 			nb_data = enc_seq.length();
-			if (y == 0)
-			{
-				if (nb_data != x)
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        		(const char *)"Incorrect data number",
-					        		(const char *)"WAttribute::check_written_value()");
-				}
-			}
-			else
-			{
-				if (nb_data != (x * y))
-				{
-					Except::throw_exception((const char *)API_AttrIncorrectDataNumber,
-					        		(const char *)"Incorrect data number",
-					        		(const char *)"WAttribute::check_written_value()");
-				}
-			}
+			check_length(nb_data,x,y);
 
 //
 // Check the incoming value against min or max_value if needed

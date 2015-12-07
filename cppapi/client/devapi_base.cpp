@@ -160,7 +160,7 @@ Connection::Connection(const Connection &sou):ext(Tango_nullptr)
 	from_env_var = sou.from_env_var;
 	host = sou.host;
 	port = sou.port;
-	port_num = port_num;
+	port_num = sou.port_num;
 
 	db_host = sou.db_host;
 	db_port = sou.db_port;

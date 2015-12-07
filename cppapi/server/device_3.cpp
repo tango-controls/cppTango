@@ -179,7 +179,7 @@ Tango::AttributeValueList_3* Device_3Impl::read_attributes_3(const Tango::DevVar
 		aid.data_3 = new Tango::AttributeValueList_3(nb_names);
 		aid.data_3->length(nb_names);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -2007,7 +2007,7 @@ Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* 
 		back = new Tango::DevAttrHistoryList_3(n);
                 back->length(n);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
@@ -2055,7 +2055,7 @@ Tango::DevInfo_3 *Device_3Impl::info_3()
 	{
 		back = new Tango::DevInfo_3();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				      (const char *)"Can't allocate memory in server",
@@ -2188,7 +2188,7 @@ Tango::AttributeConfigList_3 *Device_3Impl::get_attribute_config_3(const Tango::
 		back = new Tango::AttributeConfigList_3(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
 		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",

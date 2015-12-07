@@ -161,7 +161,7 @@ void WAttribute::set_min_value(const T &new_min_value)
 					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
-				catch (CORBA::COMM_FAILURE)
+				catch (CORBA::COMM_FAILURE &)
 				{
 					tg->get_database()->reconnect(true);
 				}
@@ -371,7 +371,7 @@ void WAttribute::set_max_value(const T &new_max_value)
 					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
-				catch (CORBA::COMM_FAILURE)
+				catch (CORBA::COMM_FAILURE &)
 				{
 					tg->get_database()->reconnect(true);
 				}

@@ -2263,6 +2263,38 @@ private:
 	void throw_min_max_value(string &,string &,MinMaxValueCheck);
 	void log_quality();
 
+    inline void init_string_prop(vector<AttrProperty> &prop_list, string& attr, const char* attr_name)
+    {
+        try
+        {
+            attr = get_attr_value(prop_list, attr_name);
+        }
+        catch (DevFailed &e)
+        {
+            add_startup_exception(attr_name,e);
+        }
+    }
+
+    inline bool is_value_set(const char* attr_name)
+    {
+        if (!strcmp(attr_name,"min_alarm"))
+            return alarm_conf.test(max_level);
+        else if (!strcmp(attr_name,"max_alarm"))
+            return alarm_conf.test(min_level);
+        else if (!strcmp(attr_name,"min_value"))
+            return check_max_value;
+        else if (!strcmp(attr_name,"max_value"))
+            return check_min_value;
+        else if (!strcmp(attr_name,"min_warning"))
+            return alarm_conf.test(max_warn);
+        else if (!strcmp(attr_name,"max_warning"))
+            return alarm_conf.test(min_warn);
+        else
+            return false;
+    }
+
+    bool init_check_val_prop(vector<AttrProperty> &,string &,const char *,string &,Tango::Attr_CheckVal &,Tango::Attr_CheckVal &);
+
 	unsigned long 		name_size;
 	string 				name_lower;
 	DevEncoded			enc_help;

@@ -1204,7 +1204,7 @@ void ZmqEventConsumer::cleanup_EventChannel_map()
 
         sender.recv(&reply);
     }
-    catch(zmq::error_t) {}
+    catch(zmq::error_t &) {}
 }
 
 //--------------------------------------------------------------------------------------------------------------------
@@ -2711,29 +2711,29 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                         }
                         else if (ev_attr_ready == false && ev_dev_intr == false && pipe_event == false)
                         {
-                            FwdAttrConfEventData *event_data;
+                            FwdAttrConfEventData *event_data_;
 
                             if (cb_ctr != cb_nb)
                             {
                                 AttributeInfoEx *attr_info_copy = new AttributeInfoEx();
                                 *attr_info_copy = *attr_info_ex;
-                                event_data = new FwdAttrConfEventData(event_callback_map[new_tango_host].device,
+                                event_data_ = new FwdAttrConfEventData(event_callback_map[new_tango_host].device,
                                                                   full_att_name,
                                                                   event_name,
                                                                   attr_info_copy,
                                                                   errors);
 								if (attr_conf_5 != NULL)
-									event_data->set_fwd_attr_conf(attr_conf_5);
+									event_data_->set_fwd_attr_conf(attr_conf_5);
                             }
                             else
                             {
-                                event_data = new FwdAttrConfEventData(event_callback_map[new_tango_host].device,
+                                event_data_ = new FwdAttrConfEventData(event_callback_map[new_tango_host].device,
                                                                   full_att_name,
                                                                   event_name,
                                                                   attr_info_ex,
                                                                   errors);
 								if (attr_conf_5 != NULL)
-									event_data->set_fwd_attr_conf(attr_conf_5);
+									event_data_->set_fwd_attr_conf(attr_conf_5);
                             }
 
 
@@ -2744,7 +2744,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 {
                                     if (err_missed_event == true)
                                         callback->push_event(missed_conf_event_data);
-                                    callback->push_event(event_data);
+                                    callback->push_event(event_data_);
                                 }
                                 catch (...)
                                 {
@@ -2753,7 +2753,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 									print_error_message(st.c_str());
                                 }
 
-                                delete event_data;
+                                delete event_data_;
                             }
 
                             // no calback method, the event has to be instered
@@ -2767,12 +2767,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                                     ev_queue->insert_event(missed_conf_event_data_copy);
 								}
-                                ev_queue->insert_event(event_data);
+                                ev_queue->insert_event(event_data_);
                             }
                         }
                         else if (ev_attr_ready == false && pipe_event == false)
 						{
-                            DevIntrChangeEventData *event_data = new DevIntrChangeEventData(event_callback_map[new_tango_host].device,
+                            DevIntrChangeEventData *event_data_ = new DevIntrChangeEventData(event_callback_map[new_tango_host].device,
                                                                     event_name,full_att_name,&dev_intr_change->cmds,
                                                                     &dev_intr_change->atts,dev_intr_change->dev_started,errors);
                             // if a callback method was specified, call it!
@@ -2782,7 +2782,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 {
                                     if (err_missed_event == true)
                                         callback->push_event(missed_dev_intr_event_data);
-                                    callback->push_event(event_data);
+                                    callback->push_event(event_data_);
                                 }
                                 catch (...)
                                 {
@@ -2790,7 +2790,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
-                                delete event_data;
+                                delete event_data_;
                             }
 
                             // no calback method, the event has to be instered
@@ -2804,23 +2804,23 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                                     ev_queue->insert_event(missed_dev_intr_data_copy);
 								}
-                                ev_queue->insert_event(event_data);
+                                ev_queue->insert_event(event_data_);
                             }
 						}
                         else if (ev_attr_ready == false)
 						{
-							PipeEventData *event_data;
+							PipeEventData *event_data_;
 
                             if (cb_ctr != cb_nb)
                             {
                                 DevicePipe *dev_pipe_copy = new DevicePipe();
                                 *dev_pipe_copy = *dev_pipe;
-                                event_data = new PipeEventData(event_callback_map[new_tango_host].device,full_att_name,
+                                event_data_ = new PipeEventData(event_callback_map[new_tango_host].device,full_att_name,
                                                                   event_name,dev_pipe_copy,errors);
                             }
                             else
                             {
-								event_data = new PipeEventData(event_callback_map[new_tango_host].device,
+								event_data_ = new PipeEventData(event_callback_map[new_tango_host].device,
 															   full_att_name,event_name,dev_pipe,errors);
                             }
 
@@ -2831,7 +2831,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 {
                                     if (err_missed_event == true)
                                         callback->push_event(missed_dev_pipe_data);
-                                    callback->push_event(event_data);
+                                    callback->push_event(event_data_);
                                 }
                                 catch (...)
                                 {
@@ -2839,7 +2839,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
-                                delete event_data;
+                                delete event_data_;
                             }
 
                             // no calback method, the event has to be instered
@@ -2853,12 +2853,12 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                                     ev_queue->insert_event(missed_dev_pipe_data_copy);
 								}
-                                ev_queue->insert_event(event_data);
+                                ev_queue->insert_event(event_data_);
                             }
 						}
 						else
                         {
-                            DataReadyEventData *event_data = new DataReadyEventData(event_callback_map[new_tango_host].device,
+                            DataReadyEventData *event_data_ = new DataReadyEventData(event_callback_map[new_tango_host].device,
                                                                     const_cast<AttDataReady *>(att_ready),event_name,errors);
                             // if a callback method was specified, call it!
                             if (callback != NULL )
@@ -2867,7 +2867,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
                                 {
                                     if (err_missed_event == true)
                                         callback->push_event(missed_ready_event_data);
-                                    callback->push_event(event_data);
+                                    callback->push_event(event_data_);
                                 }
                                 catch (...)
                                 {
@@ -2875,7 +2875,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 									st = st + ipos->first;
 									print_error_message(st.c_str());
                                 }
-                                delete event_data;
+                                delete event_data_;
                             }
 
                             // no calback method, the event has to be instered
@@ -2889,7 +2889,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
                                     ev_queue->insert_event(missed_ready_event_data_copy);
 								}
-                                ev_queue->insert_event(event_data);
+                                ev_queue->insert_event(event_data_);
                             }
                         }
                     }

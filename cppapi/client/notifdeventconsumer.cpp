@@ -440,9 +440,9 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 		try
 		{
-			DeviceData dd;
-			dd = adm.command_inout("QueryEventChannelIOR");
-			dd >> channel_ior;
+			DeviceData ddd;
+			ddd = adm.command_inout("QueryEventChannelIOR");
+			ddd >> channel_ior;
 			channel_exported = true;
 
 			// get the hostname where the notifyd should be running

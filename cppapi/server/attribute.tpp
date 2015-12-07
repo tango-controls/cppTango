@@ -278,7 +278,7 @@ void Attribute::set_min_alarm(const T &new_min_alarm)
 					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
-				catch (CORBA::COMM_FAILURE)
+				catch (CORBA::COMM_FAILURE &)
 				{
 					tg->get_database()->reconnect(true);
 				}
@@ -499,7 +499,7 @@ void Attribute::set_max_alarm(const T &new_max_alarm)
 					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
-				catch (CORBA::COMM_FAILURE)
+				catch (CORBA::COMM_FAILURE &)
 				{
 					tg->get_database()->reconnect(true);
 				}
@@ -714,7 +714,7 @@ void Attribute::set_min_warning(const T &new_min_warning)
 					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
-				catch (CORBA::COMM_FAILURE)
+				catch (CORBA::COMM_FAILURE &)
 				{
 					tg->get_database()->reconnect(true);
 				}
@@ -928,7 +928,7 @@ void Attribute::set_max_warning(const T &new_max_warning)
 					tg->get_database()->delete_device_attribute_property(d_name,db_data);
 					retry = false;
 				}
-				catch (CORBA::COMM_FAILURE)
+				catch (CORBA::COMM_FAILURE &)
 				{
 					tg->get_database()->reconnect(true);
 				}
