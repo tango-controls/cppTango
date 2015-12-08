@@ -850,45 +850,13 @@ protected:
 	virtual bool check_rds_alarm();
 
 private:
-    template<typename T1, typename T2>
-    void check_min_max(const unsigned int nb_data, T1 seq, const T2& min_value, const T2& max_value)
-    {
-        if (check_min_value == true)
-        {
-            for (unsigned int i = 0; i < nb_data; i++)
-            {
-                if (seq[i] < min_value)
-                {
-                    TangoSys_OMemStream o;
-
-                    o << "Set value for attribute " << name;
-                    o << " is below the minimum authorized (at least element " << i << ")" << ends;
-
-                    Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
-                }
-            }
-        }
-        if (check_max_value == true)
-        {
-            for (unsigned int i = 0; i < nb_data; i++)
-            {
-                if (seq[i] > max_value)
-                {
-                    TangoSys_OMemStream o;
-
-                    o << "Set value for attribute " << name;
-                    o << " is above the maximum authorized (at least element " << i << ")" << ends;
-                    Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
-                }
-            }
-        }
-    }
-
     inline void check_length(const unsigned int nb_data, unsigned long x, unsigned long y)
     {
         if ((!y && nb_data != x ) || (y && nb_data != (x * y)))
             Except::throw_exception(API_AttrIncorrectDataNumber,"Incorrect data number","WAttribute::check_written_value()");
     }
+    template<typename T1, typename T2>
+    void check_min_max(const unsigned int,const T1 &,const T2 &,const T2 &);
 
 //
 // The extension class

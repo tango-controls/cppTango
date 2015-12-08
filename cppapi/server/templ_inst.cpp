@@ -298,6 +298,15 @@ TEMPL_EXPL_METH_INST(WAttribute,get_max_value)
 TEMPL_EXPL_METH_INST_CONST(WAttribute,set_min_value)
 TEMPL_EXPL_METH_INST_CONST(WAttribute,set_max_value)
 
+template void WAttribute::check_min_max(const unsigned int,const DevVarLongArray &,const DevLong &,const DevLong &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarShortArray &,const short &,const short &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarLong64Array &,const DevLong64 &,const DevLong64 &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarUShortArray &,const unsigned short &,const unsigned short &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarCharArray &,const unsigned char &,const unsigned char &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarULongArray &,const DevULong &,const DevULong &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarULong64Array &,const DevULong64 &,const DevULong64 &);
+template void WAttribute::check_min_max(const unsigned int,const DevVarStateArray &,const DevState &,const DevState &);
+
 //+----------------------------------------------------------------------------
 //
 // Instanciate DevicePipe helper functions

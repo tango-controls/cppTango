@@ -455,5 +455,57 @@ void WAttribute::get_max_value(T &max_val)
 	memcpy((void *)&max_val,(void *)&max_value,sizeof(T));
 }
 
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		WAttribute::check_min_max()
+//
+// description :
+//		Check if the data received from client is not below the min (if one defined) or above the max
+//      (if one defined). This method throws exception in case of threshold violation.
+//
+// args :
+//		in :
+// 			- nb_data : Data number
+//          - seq : The received data
+//          - min_value : The min allowed value
+//          - max_value : The max allowed value
+//
+//------------------------------------------------------------------------------------------------------------------
+
+template<typename T1, typename T2>
+void WAttribute::check_min_max(const unsigned int nb_data,const T1 &seq, const T2 &min_value, const T2 &max_value)
+{
+    if (check_min_value == true)
+    {
+        for (unsigned int i = 0; i < nb_data; i++)
+        {
+            if (seq[i] < min_value)
+            {
+                TangoSys_OMemStream o;
+
+                o << "Set value for attribute " << name;
+                o << " is below the minimum authorized (at least element " << i << ")" << ends;
+
+                Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
+            }
+        }
+    }
+    if (check_max_value == true)
+    {
+        for (unsigned int i = 0; i < nb_data; i++)
+        {
+            if (seq[i] > max_value)
+            {
+                TangoSys_OMemStream o;
+
+                o << "Set value for attribute " << name;
+                o << " is above the maximum authorized (at least element " << i << ")" << ends;
+                Except::throw_exception((const char *)API_WAttrOutsideLimit,o.str(),"WAttribute::check_written_value()");
+            }
+        }
+    }
+}
+
 } // End of Tango namespace
 #endif // _WATTRIBUTE_TPP
