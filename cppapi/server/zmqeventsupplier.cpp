@@ -424,6 +424,7 @@ void ZmqEventSupplier::create_event_socket()
     if (event_pub_sock == NULL)
     {
 
+        omni_mutex_lock oml(event_mutex);
 //
 // Create the Publisher socket for real events and bind it
 // If the user has specified one IP address on the command line, re-use it in the endpoint

@@ -3783,7 +3783,39 @@ void Attribute::fire_change_event(DevFailed *except)
 		change4_subscription = now - event_change4_subscription;
 		change5_subscription = now - event_change5_subscription;
 
-		vector<int> client_libs = get_client_lib(CHANGE_EVENT); 	// We want a copy
+//
+// Get the event supplier(s)
+//
+
+		EventSupplier *event_supplier_nd = NULL;
+		EventSupplier *event_supplier_zmq = NULL;
+        bool pub_socket_created = false;
+
+		Tango::Util *tg = Util::instance();
+		if (use_notifd_event() == true)
+        {
+            event_supplier_nd = tg->get_notifd_event_supplier();
+            pub_socket_created = true;
+        }
+        if (use_zmq_event() == true)
+            event_supplier_zmq = tg->get_zmq_event_supplier();
+
+
+//
+// Get client lib and if it's possible to send event (ZMQ socket created)
+//
+
+        vector<int> client_libs;
+        {
+            omni_mutex_lock oml(EventSupplier::get_event_mutex());
+            client_libs = get_client_lib(CHANGE_EVENT); 	// We want a copy
+            if (use_zmq_event() == true && event_supplier_zmq != NULL)
+            {
+                string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
+                if (sock_endpoint.empty() == false)
+                    pub_socket_created = true;
+            }
+        }
 
 		vector<int>::iterator ite;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
@@ -3830,17 +3862,8 @@ void Attribute::fire_change_event(DevFailed *except)
 		}
 
 //
-// Get the event supplier, and simply return if not created
+// Simply return if event supplier(s) are not created
 //
-
-		EventSupplier *event_supplier_nd = NULL;
-		EventSupplier *event_supplier_zmq = NULL;
-
-		Tango::Util *tg = Util::instance();
-		if (use_notifd_event() == true)
-            event_supplier_nd = tg->get_notifd_event_supplier();
-        if (use_zmq_event() == true)
-            event_supplier_zmq = tg->get_zmq_event_supplier();
 
 		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
 		{
@@ -3965,7 +3988,7 @@ void Attribute::fire_change_event(DevFailed *except)
             {
                 if (event_supplier_nd != NULL)
                 {
-                    if (send_event == true)
+                    if (send_event == true && pub_socket_created == true)
                     {
 
                         vector<string> f_names;
@@ -3977,7 +4000,11 @@ void Attribute::fire_change_event(DevFailed *except)
                     }
                 }
                 else
-                    event_supplier_zmq->detect_and_push_change_event(dev,ad,*this,name,except,true);
+                {
+                     if (pub_socket_created == true)
+                        event_supplier_zmq->detect_and_push_change_event(dev,ad,*this,name,except,true);
+                }
+
             }
 		}
 		else
@@ -4079,7 +4106,7 @@ void Attribute::fire_change_event(DevFailed *except)
                                         except,
                                         false);
 
-            if (event_supplier_zmq != NULL)
+            if (event_supplier_zmq != NULL && pub_socket_created == true)
 			{
 				event_supplier_zmq->push_event_loop(dev,CHANGE_EVENT,filterable_names,filterable_data,filterable_names_lg,filterable_data_lg,ad,*this,except);
 			}
@@ -4181,7 +4208,38 @@ void Attribute::fire_archive_event(DevFailed *except)
 		archive4_subscription = now - event_archive4_subscription;
 		archive5_subscription = now - event_archive5_subscription;
 
-		vector<int> client_libs = get_client_lib(ARCHIVE_EVENT); 	// We want a copy
+//
+// Get the event supplier(s)
+//
+
+		EventSupplier *event_supplier_nd = NULL;
+		EventSupplier *event_supplier_zmq = NULL;
+		bool pub_socket_created = false;
+
+		Tango::Util *tg = Util::instance();
+		if (use_notifd_event() == true)
+        {
+            event_supplier_nd = tg->get_notifd_event_supplier();
+            pub_socket_created = true;
+        }
+        if (use_zmq_event() == true)
+            event_supplier_zmq = tg->get_zmq_event_supplier();
+
+//
+// Get client lib and if it's possible to send event (ZMQ socket created)
+//
+
+        vector<int> client_libs;
+        {
+            omni_mutex_lock oml(EventSupplier::get_event_mutex());
+            client_libs = get_client_lib(ARCHIVE_EVENT);        // We want a copy
+            if (use_zmq_event() == true && event_supplier_zmq != NULL)
+            {
+                string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
+                if (sock_endpoint.empty() == false)
+                    pub_socket_created = true;
+            }
+        }
 
 		vector<int>::iterator ite;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
@@ -4236,17 +4294,8 @@ void Attribute::fire_archive_event(DevFailed *except)
         }
 
 //
-// Get the event supplier, and simply return if not created
+// Simply return if event supplier(s) are not created
 //
-
-		EventSupplier *event_supplier_nd = NULL;
-		EventSupplier *event_supplier_zmq = NULL;
-
-		Tango::Util *tg = Util::instance();
-		if (use_notifd_event() == true)
-            event_supplier_nd = tg->get_notifd_event_supplier();
-        if (use_zmq_event() == true)
-            event_supplier_zmq = tg->get_zmq_event_supplier();
 
 		if ((event_supplier_nd == NULL) && (event_supplier_zmq == NULL))
         {
@@ -4392,7 +4441,7 @@ void Attribute::fire_archive_event(DevFailed *except)
             {
                 if (event_supplier_nd != NULL)
                 {
-                    if (send_event == true)
+                    if (send_event == true && pub_socket_created == true)
                     {
                         vector<string> f_names;
                         vector<double> f_data;
@@ -4403,7 +4452,11 @@ void Attribute::fire_archive_event(DevFailed *except)
                     }
                 }
                 else
-                    event_supplier_zmq->detect_and_push_archive_event(dev,ad,*this,name,except,&now_timeval,true);
+                {
+                    if (pub_socket_created == true)
+                        event_supplier_zmq->detect_and_push_archive_event(dev,ad,*this,name,except,&now_timeval,true);
+                }
+
             }
 		}
 		else
@@ -4497,7 +4550,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 							except,
 							false);
 
-            if (event_supplier_zmq != NULL)
+            if (event_supplier_zmq != NULL && pub_socket_created == true)
 			{
 				event_supplier_zmq->push_event_loop(dev,ARCHIVE_EVENT,filterable_names,filterable_data,filterable_names_lg,filterable_data_lg,ad,*this,except);
 			}
@@ -4598,7 +4651,38 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 		user4_subscription = now - event_user4_subscription;
 		user5_subscription = now - event_user5_subscription;
 
-		vector<int> client_libs = get_client_lib(USER_EVENT); 	// We want a copy
+//
+// Get the event supplier(s)
+//
+
+		EventSupplier *event_supplier_nd = NULL;
+		EventSupplier *event_supplier_zmq = NULL;
+		bool pub_socket_created = false;
+
+		Tango::Util *tg = Util::instance();
+		if (use_notifd_event() == true)
+        {
+            event_supplier_nd = tg->get_notifd_event_supplier();
+            pub_socket_created = true;
+        }
+        if (use_zmq_event() == true)
+            event_supplier_zmq = tg->get_zmq_event_supplier();
+
+//
+// Get client lib and if it's possible to send event (ZMQ socket created)
+//
+
+        vector<int> client_libs;
+        {
+            omni_mutex_lock oml(EventSupplier::get_event_mutex());
+            client_libs = get_client_lib(USER_EVENT);        // We want a copy
+            if (use_zmq_event() == true && event_supplier_zmq != NULL)
+            {
+                string &sock_endpoint = static_cast<ZmqEventSupplier *>(event_supplier_zmq)->get_event_endpoint();
+                if (sock_endpoint.empty() == false)
+                    pub_socket_created = true;
+            }
+        }
 
 		vector<int>::iterator ite;
 		for (ite = client_libs.begin();ite != client_libs.end();++ite)
@@ -4623,17 +4707,8 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 		}
 
 //
-// Get the event supplier, and simply return if not created
+// Simply return if event suplier(s) are not created
 //
-
-		EventSupplier *event_supplier_nd = NULL;
-		EventSupplier *event_supplier_zmq = NULL;
-
-		Tango::Util *tg = Util::instance();
-		if (use_notifd_event() == true)
-            event_supplier_nd = tg->get_notifd_event_supplier();
-        if (use_zmq_event() == true)
-            event_supplier_zmq = tg->get_zmq_event_supplier();
 
 		if (((event_supplier_nd == NULL) && (event_supplier_zmq == NULL)) || client_libs.empty() == true)
 		{
@@ -4717,7 +4792,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 		}
 
 //
-// don`t try to access the attribute data when an exception was indicated
+// Don`t try to access the attribute data when an exception was indicated
 //
 
 		if ( except == NULL )
@@ -4762,7 +4837,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					   name,
 					   except,
 					   false);
-        if (event_supplier_zmq != NULL)
+        if (event_supplier_zmq != NULL & pub_socket_created == true)
 		{
 			event_supplier_zmq->push_event_loop(dev,USER_EVENT,filt_names,filt_vals,filterable_names_lg,filterable_data_lg,ad,*this,except);
 		}

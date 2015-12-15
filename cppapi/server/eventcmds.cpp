@@ -579,11 +579,15 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 		}
 
 //
-// Memorize client lib release
+// Memorize client lib release. Protect this setting in case of user thread pushing event when the subscription
+// command is received
 //
 
 		if (client_lib != 0)
+        {
+            omni_mutex_lock oml(EventSupplier::get_event_mutex());
 			attribute.set_client_lib(client_lib,event);
+        }
 	}
 	else if (event == EventName[PIPE_EVENT])
 	{
@@ -616,10 +620,10 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 
 			rate = 0;
 			ivl = 0;
-		}
 
-		if (client_lib != 0)
-			dev_impl->set_client_lib(client_lib);
+            if (client_lib != 0)
+                dev_impl->set_client_lib(client_lib);
+        }
 	}
 
 //
