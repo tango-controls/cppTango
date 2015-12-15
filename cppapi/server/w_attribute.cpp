@@ -274,6 +274,13 @@ void WAttribute::set_rvalue()
 			set_value(const_cast<DevULong64 *>(ulong64_array_val.get_buffer()),w_dim_x,w_dim_y,false);
 		break;
 
+	case Tango::DEV_STATE:
+		if (data_format == Tango::SCALAR)
+			set_value(&dev_state_val,1,0,false);
+		else
+			set_value(const_cast<DevState *>(state_array_val.get_buffer()),w_dim_x,w_dim_y,false);
+		break;
+
 	case Tango::DEV_ENCODED:
 		set_value(&encoded_val,1,0,false);
 		break;
@@ -1096,6 +1103,41 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 			w_dim_x = x;
 			w_dim_y = y;
 		}
+		break;
+
+	case Tango::DEV_STATE :
+        {
+//
+// Check data type inside the any
+//
+
+		const Tango::DevVarStateArray *sta_ptr;
+		if ((any >>= sta_ptr) == false)
+		{
+			TangoSys_OMemStream o;
+
+			o << "Incompatible attribute type, expected type is : Tango::DevVarStateArray (even for single value)" << ends;
+			Except::throw_exception((const char *)API_IncompatibleAttrDataType,
+					      o.str(),
+					      (const char *)"WAttribute::check_written_value()");
+		}
+		nb_data = sta_ptr->length();
+		check_length(nb_data,x,y);
+
+		state_ptr = sta_ptr->get_buffer();
+		if (data_format == Tango::SCALAR)
+		{
+			old_dev_state_val = dev_state_val;
+			dev_state_val = (*sta_ptr)[0];
+			w_dim_x = 1;
+			w_dim_y = 0;
+		}
+		else
+		{
+			w_dim_x = x;
+			w_dim_y = y;
+		}
+        }
 		break;
 	}
 }
