@@ -18,7 +18,9 @@ class PipeConfTestSuite: public CxxTest::TestSuite
 {
 protected:
 	DeviceProxy 			*device1;
+	DeviceProxy				*device2;
 	string 					device1_name;
+	string					device2_name;
 	DeviceProxy 			*root_admin;
 
 
@@ -33,6 +35,7 @@ public:
 
 		// user arguments, obtained from the command line sequentially
 		device1_name = CxxTest::TangoPrinter::get_param("device1");
+		device2_name = CxxTest::TangoPrinter::get_param("device2");
 		string full_ds_name = CxxTest::TangoPrinter::get_param("fulldsname");
 
 		verbose = CxxTest::TangoPrinter::is_param_set("verbose");
@@ -50,6 +53,9 @@ public:
 			device1 = new DeviceProxy(device1_name);
 			device1->ping();
 
+			device2 = new DeviceProxy(device2_name);
+			device2->ping();
+
 			string root_adm_name("dserver/");
 			root_adm_name = root_adm_name + full_ds_name;
 			root_admin = new DeviceProxy(root_adm_name);
@@ -64,6 +70,7 @@ public:
 	virtual ~SUITE_NAME()
 	{
 		delete device1;
+		delete device2;
 		delete root_admin;
 	}
 
@@ -171,6 +178,38 @@ public:
 	{
         string pipe_name("PipeConf6");
         check_description(pipe_name,"Dev desc","ClassDefinedDesc","UserDefinedDesc","No description");
+	}
+
+	void test_pipe_conf_on_diff_devices(void)
+	{
+		Tango::PipeInfo pi;
+		Tango::PipeInfo pi2;
+		Tango::PipeInfoList pi_list;
+
+		string pipe_name("PipeConf1");
+		pi = device1->get_pipe_config(pipe_name);
+
+		pi.description = "toto";
+		pi_list.clear();
+		pi_list.push_back(pi);
+		device1->set_pipe_config(pi_list);
+
+		pi = device1->get_pipe_config(pipe_name);
+		TS_ASSERT(pi.description == "toto");
+
+		pi2 = device2->get_pipe_config(pipe_name);
+cout << "pi2.description = " << pi2.description << endl;
+		TS_ASSERT(pi2.description == "No description");
+
+// Return to lib
+
+		pi.description = "not specified";
+		pi_list.clear();
+		pi_list.push_back(pi);
+		device1->set_pipe_config(pi_list);
+
+		pi = device1->get_pipe_config(pipe_name);
+		assert (pi.description == "No description");
 	}
 
 	void check_description(string &pipe_name,
