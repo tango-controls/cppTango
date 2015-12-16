@@ -118,14 +118,6 @@ bool less_than (Command *a,Command *b)
 		return false;
 }
 
-bool less_than_pipe (Pipe *a,Pipe *b)
-{
-	if (a->get_name() < b->get_name())
-		return true;
-	else
-		return false;
-}
-
 void DServer::init_device()
 {
 //
@@ -233,20 +225,6 @@ void DServer::init_device()
 				c_attr->init_class_attribute(class_list[i]->get_name());
 
 //
-// Build class pipes
-//
-
-				MultiClassPipe *c_pipe = class_list[i]->get_class_pipe();
-				class_list[i]->pipe_factory();
-				c_pipe->init_class_pipe(class_list[i]);
-
-//
-// Sort the Pipe list array
-//
-
-				sort(class_list[i]->get_pipe_list().begin(),class_list[i]->get_pipe_list().end(),less_than_pipe);
-
-//
 // Retrieve device(s) name list from the database. No need to implement a retry here (in case of db server restart)
 // because the db reconnection is forced by the get_property call executed during xxxClass construction
 // before we reach this code.
@@ -280,7 +258,7 @@ void DServer::init_device()
 					cout4 << dev_list.length() << " device(s) defined" << endl;
 
 //
-// Create all device(s)
+// Create all device(s) - Device creation creates device pipe(s)
 //
 
                     class_list[i]->set_device_factory_done(false);

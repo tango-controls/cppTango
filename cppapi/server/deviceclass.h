@@ -235,9 +235,11 @@ public:
 /**
  * Get the pipe object vector.
  *
- * @return A reference to the pipe vector
+ * @param dev_name The device name
+ *
+ * @return A reference to the pipe vector containing all device pipes
  */
-	vector<Pipe *> &get_pipe_list() {return pipe_list;}
+	vector<Pipe *> &get_pipe_list(const string &dev_name);
 /**
  * Get a reference to a command object.
  *
@@ -247,9 +249,12 @@ public:
 /**
  * Get a reference to a pipe object.
  *
+ * @param pipe_name The pipe name
+ * @param dev_name The device name
+ *
  * @return A reference to the pipe object
  */
-	Pipe &get_pipe_by_name(const string &);
+	Pipe &get_pipe_by_name(const string &pipe_name,const string &dev_name);
 /**
  * Get a pointer to the associated DbClass object.
  *
@@ -476,6 +481,9 @@ public:
 
 	void remove_command(const string &);
 
+	void create_device_pipe(DeviceClass *,DeviceImpl *);
+	vector<Pipe *> &get_pipe_list() {return pipe_list;}
+
 protected:
 /// @privatesection
 	Command *get_default_command() {return default_cmd;}
@@ -485,6 +493,8 @@ private:
     {
     public:
         DeviceClassExt() {};
+
+        map<string,vector<Pipe *> > dev_pipe_list;
     };
 
 	void get_class_system_resource();

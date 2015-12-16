@@ -63,6 +63,14 @@ static void lower_cmd_name(string &cmd)
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 }
 
+bool less_than_pipe (Pipe *a,Pipe *b)
+{
+	if (a->get_name() < b->get_name())
+		return true;
+	else
+		return false;
+}
+
 //+------------------------------------------------------------------------------------------------------------------
 //
 // method :
@@ -729,9 +737,13 @@ DeviceClass::~DeviceClass()
 // Destroy the pipe list
 //
 
-	for (i = 0;i < pipe_list.size();i++)
-		delete pipe_list[i];
-	pipe_list.clear();
+	map<string,vector<Pipe *> >::iterator ite;
+	for (ite = ext->dev_pipe_list.begin();ite != ext->dev_pipe_list.end();ite++)
+	{
+	    for (size_t loop = 0;loop < ite->second.size();loop++)
+            delete (ite->second)[loop];
+	}
+
 
 //
 // Destroy the MultiClassAttribute object
@@ -1539,15 +1551,26 @@ Command &DeviceClass::get_cmd_by_name(const string &cmd_name)
 // arguemt :
 // 		in :
 //			- pipe_name : The pipe name
+//          - dev_name : The device name (lower case letters)
 //
 //------------------------------------------------------------------------------------------------------------------
 
-Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name)
+Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name,const string &dev_name)
 {
+    map<string,vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(dev_name);
+    if (ite == ext->dev_pipe_list.end())
+    {
+		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << dev_name << " device not found in pipe map" << ends;
+		Except::throw_exception(API_PipeNotFound,o.str(),"DeviceClass::get_pipe_by_name");
+    }
+
 	vector<Pipe *>::iterator pos;
 
 #ifdef HAS_LAMBDA_FUNC
-	pos = find_if(pipe_list.begin(),pipe_list.end(),
+	pos = find_if(ite->second.begin(),ite->second.end(),
 					[&] (Pipe *pi) -> bool
 					{
 						if (pipe_name.size() != pi->get_lower_name().size())
@@ -1557,11 +1580,11 @@ Pipe &DeviceClass::get_pipe_by_name(const string &pipe_name)
 						return pi->get_lower_name() == tmp_name;
 					});
 #else
-	pos = find_if(pipe_list.begin(),pipe_list.end(),
+	pos = find_if(ite->second.begin(),ite->second.end(),
 				bind2nd(WantedPipe<Pipe *,const char *,bool>(),pipe_name.c_str()));
 #endif
 
-	if (pos == pipe_list.end())
+	if (pos == ite->second.end())
 	{
 		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
 		TangoSys_OMemStream o;
@@ -1657,6 +1680,73 @@ void DeviceClass::release_devices_mon()
 
 	for (ite = device_list.begin();ite != device_list.end();++ite)
 		(*ite)->get_dev_monitor().rel_monitor();
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceClass::create_device_pipe
+//
+// description :
+//		Create all devices for a device
+//
+// argument :
+// 		in :
+//			- cl : The device class (we need here the pointer to the real device class not to the base class)
+//          - dev : Device ptr
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void DeviceClass::create_device_pipe(DeviceClass *cl,DeviceImpl *dev)
+{
+
+//
+// Create pipe for device and store them in the pipe map
+//
+
+    cl->pipe_factory();
+
+    if (ext->dev_pipe_list.empty() == true)
+    {
+        MultiClassPipe *c_pipe = get_class_pipe();
+        c_pipe->init_class_pipe(this);
+    }
+
+    sort(pipe_list.begin(),pipe_list.end(),less_than_pipe);
+
+    string dev_name = dev->get_name_lower();
+    ext->dev_pipe_list.insert(make_pair(dev_name,pipe_list));
+
+    pipe_list.clear();
+}
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DeviceClass::get_pipe_list
+//
+// description :
+//		Get a reference to the Pipe list for a device
+//
+// argument :
+// 		in :
+//          - dev_name : The device name (lower case letters)
+//
+//------------------------------------------------------------------------------------------------------------------
+
+vector<Pipe *> &DeviceClass::get_pipe_list(const string &dev_name)
+{
+    map<string,vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(dev_name);
+    if (ite == ext->dev_pipe_list.end())
+    {
+		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;
+		TangoSys_OMemStream o;
+
+		o << dev_name << " device not found in pipe map" << ends;
+		Except::throw_exception(API_PipeNotFound,o.str(),"DeviceClass::get_pipe_list");
+    }
+
+    return ite->second;
 }
 
 } // End of Tango namespace

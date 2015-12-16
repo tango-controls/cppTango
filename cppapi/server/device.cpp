@@ -198,11 +198,14 @@ void DeviceImpl::real_ctor()
 	dev_attr = new MultiAttribute(device_name,device_class,this);
 
 //
-// Finish the pipe config init since we now have device name
+// Create device pipe and finish the pipe config init since we now have device name
 //
 
 	if (device_class->get_name() != "DServer")
+    {
+        device_class->create_device_pipe(device_class,this);
 		end_pipe_config();
+    }
 
 //
 // Build adm device name
@@ -5908,7 +5911,7 @@ void DeviceImpl::end_pipe_config()
 {
 	cout4 << "Entering end_pipe_config for device " << device_name << endl;
 
-	vector<Pipe *> &pipe_list = device_class->get_pipe_list();
+	vector<Pipe *> &pipe_list = device_class->get_pipe_list(device_name_lower);
 	size_t nb_pipe = pipe_list.size();
 
 //

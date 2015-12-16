@@ -594,7 +594,7 @@ void DServer::event_subscription(string &dev_name,string &obj_name,string &actio
 		if (action == "subscribe")
 		{
 			DeviceClass *cl = dev_impl->get_device_class();
-			Pipe &pi = cl->get_pipe_by_name(obj_name);
+			Pipe &pi = cl->get_pipe_by_name(obj_name,dev_impl->get_name_lower());
 
 			cout4 << "DServer::event_subscription(): update pipe subscription\n";
 

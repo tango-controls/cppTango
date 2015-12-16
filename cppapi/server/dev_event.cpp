@@ -2079,7 +2079,7 @@ void DeviceImpl::push_pipe_event(const string &pipe_name, DevFailed *except)
 	Tango::AutoTangoMonitor synch(this);
 
 	// search the pipe from the attribute list
-	Tango::Pipe &pi = get_device_class()->get_pipe_by_name(pipe_name);
+	Tango::Pipe &pi = get_device_class()->get_pipe_by_name(pipe_name,device_name_lower);
 
 	// push the event
 	pi.fire_event(this,except);
@@ -2106,7 +2106,7 @@ void DeviceImpl::push_pipe_event (const string &pipe_name,Tango::DevicePipeBlob 
 	Tango::AutoTangoMonitor synch(this);
 
 	// search the pipe from the pipe list
-	Tango::Pipe &pi = get_device_class()->get_pipe_by_name(pipe_name);
+	Tango::Pipe &pi = get_device_class()->get_pipe_by_name(pipe_name,device_name_lower);
 
 	// push the event
 	pi.fire_event(this,p_data,reuse_it);
@@ -2138,7 +2138,7 @@ void DeviceImpl::push_pipe_event (const string &pipe_name, Tango::DevicePipeBlob
 	Tango::AutoTangoMonitor synch(this);
 
 	// search the pipe from the pipe list
-	Tango::Pipe &pi = get_device_class()->get_pipe_by_name (pipe_name);
+	Tango::Pipe &pi = get_device_class()->get_pipe_by_name (pipe_name,device_name_lower);
 
 #ifdef _TG_WINDOWS_
 	struct timeval tv;

@@ -1129,7 +1129,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 		}
 		else if (pipe_event == true)
 		{
-			Pipe &pi = device_impl->get_device_class()->get_pipe_by_name(obj_name.c_str());
+			Pipe &pi = device_impl->get_device_class()->get_pipe_by_name(obj_name.c_str(),device_impl->get_name_lower());
 			if (pi.event_subscription != 0)
 				print = true;
 		}

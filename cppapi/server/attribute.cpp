@@ -4837,7 +4837,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					   name,
 					   except,
 					   false);
-        if (event_supplier_zmq != NULL & pub_socket_created == true)
+        if (event_supplier_zmq != NULL && pub_socket_created == true)
 		{
 			event_supplier_zmq->push_event_loop(dev,USER_EVENT,filt_names,filt_vals,filterable_names_lg,filterable_data_lg,ad,*this,except);
 		}

@@ -850,7 +850,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 	if (nb_pipe == 1 && in_name == AllPipe)
 	{
 		all_pipe = true;
-		nb_pipe = device_class->get_pipe_list().size();
+		nb_pipe = device_class->get_pipe_list(device_name_lower).size();
 	}
 
 //
@@ -873,7 +873,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 // Fill in these structures
 //
 
-	vector<Pipe *> &pipe_list = device_class->get_pipe_list();
+	vector<Pipe *> &pipe_list = device_class->get_pipe_list(device_name_lower);
 
 	for (long i = 0;i < nb_pipe;i++)
 	{
@@ -890,7 +890,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 			}
 			else
 			{
-				Pipe &pi = device_class->get_pipe_by_name(names[i].in());
+				Pipe &pi = device_class->get_pipe_by_name(names[i].in(),device_name_lower);
 				(*back)[i].name = Tango::string_dup(pi.get_name().c_str());
 				(*back)[i].description = Tango::string_dup(pi.get_desc().c_str());
 				(*back)[i].label = Tango::string_dup(pi.get_label().c_str());
@@ -961,7 +961,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 // Return exception if the device does not have any pipe
 //
 
-	size_t dev_nb_pipe = device_class->get_pipe_list().size();
+	size_t dev_nb_pipe = device_class->get_pipe_list(device_name_lower).size();
 	if (dev_nb_pipe == 0)
 	{
 		Except::throw_exception(API_PipeNotFound,"The device does not have any pipe","Device_5Impl::set_pipe_config_5");
@@ -978,7 +978,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 	{
 		for (i = 0;i < nb_pipe;i++)
 		{
-			Pipe &pi = device_class->get_pipe_by_name(new_conf[i].name.in());
+			Pipe &pi = device_class->get_pipe_by_name(new_conf[i].name.in(),device_name_lower);
 			pi.set_upd_properties(new_conf[i],this);
 		}
 	}
@@ -1063,7 +1063,7 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 // Retrieve requested pipe
 //
 		string pipe_name(name);
-		Pipe &pi = device_class->get_pipe_by_name(pipe_name);
+		Pipe &pi = device_class->get_pipe_by_name(pipe_name,device_name_lower);
 
 		pi.set_value_flag(false);
 
@@ -1295,7 +1295,7 @@ void Device_5Impl::write_pipe_5(const Tango::DevPipeData &pi_value, const Tango:
 // Retrieve requested pipe
 //
 
-		Pipe &tmp_pi = device_class->get_pipe_by_name(pipe_name);
+		Pipe &tmp_pi = device_class->get_pipe_by_name(pipe_name,device_name_lower);
 
 //
 // Check that pipe is writable
