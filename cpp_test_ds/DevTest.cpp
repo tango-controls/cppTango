@@ -190,7 +190,7 @@ void DevTest::init_device()
 	att.set_properties(multi_prop);
 
 	rpipe_type = 0;
-	Tango::Pipe &pi = get_device_class()->get_pipe_by_name("RWPipe");
+	Tango::Pipe &pi = get_device_class()->get_pipe_by_name("RWPipe",device_name_lower);
 	pi.set_pipe_serial_model(Tango::PIPE_BY_USER);
 
 	cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << endl;
