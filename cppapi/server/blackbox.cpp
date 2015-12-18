@@ -1057,8 +1057,12 @@ void BlackBox::inc_indexes()
 void BlackBox::get_client_host()
 {
 	omni_thread *th_id = omni_thread::self();
+	bool dummy = false;
 	if (th_id == NULL)
+    {
 		th_id = omni_thread::create_dummy();
+		dummy = true;
+    }
 
 	omni_thread::value_t *ip = th_id->get_value(key);
 	if (ip == NULL)
@@ -1071,6 +1075,9 @@ void BlackBox::get_client_host()
     }
 	else
 		strcpy(box[insert_elt].host_ip_str,(static_cast<client_addr *>(ip))->client_ip);
+
+    if (dummy == true)
+        omni_thread::release_dummy();
 }
 
 //+-------------------------------------------------------------------------------------------------------------------

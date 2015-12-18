@@ -5853,6 +5853,11 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 	AttributeValueList attr_value_list;
 	AttributeValueList_4 attr_value_list_4;
 
+	Tango::AccessControlType local_act;
+
+	if (version == 0)
+        check_and_reconnect(local_act);
+
 	if (version >= 4)
 		attr_value_list_4.length(attr_list.size());
 	else
@@ -5977,7 +5982,6 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 	}
 
 	int ctr = 0;
-	Tango::AccessControlType local_act;
 
 	while (ctr < 2)
 	{
@@ -6126,6 +6130,10 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 {
 	AttributeValueList attr_value_list;
 	AttributeValueList_4 attr_value_list_4;
+	Tango::AccessControlType local_act;
+
+    if (version == 0)
+        check_and_reconnect(local_act);
 
 	if (version >= 4)
 	{
@@ -6202,7 +6210,6 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 	}
 
 	int ctr = 0;
-	Tango::AccessControlType local_act;
 
 	while (ctr < 2)
 	{
@@ -6496,6 +6503,11 @@ void DeviceProxy::write_attribute(const AttributeValueList &attr_val)
 void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 {
 
+	Tango::AccessControlType local_act;
+
+    if (version == 0)
+        check_and_reconnect(local_act);
+
 //
 // Check that the device supports IDL V4
 //
@@ -6511,8 +6523,8 @@ void DeviceProxy::write_attribute(const AttributeValueList_4 &attr_val)
 		Tango::Except::throw_exception((const char*)API_NotSupportedFeature,
                     	desc.str(), (const char*)"DeviceProxy::write_attribute()");
 	}
+
 	int ctr = 0;
-	Tango::AccessControlType local_act;
 
 	while (ctr < 2)
 	{
