@@ -223,6 +223,9 @@ public :
 	bool is_ConfPipe_allowed(Tango::PipeReqType);
 	void read_ConfPipe(Tango::Pipe &);
 
+	bool is_RPipeDE_allowed(Tango::PipeReqType);
+	void read_RPipeDE(Tango::Pipe &);
+
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
 	friend class IORemoveOneElt;

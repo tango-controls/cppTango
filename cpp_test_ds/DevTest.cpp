@@ -2339,6 +2339,54 @@ void DevTest::write_RWPipe(Tango::WPipe &w_pipe)
 	w_pipe >> str >> v_fl;
 }
 
+// RPipeDE
+
+bool DevTest::is_RPipeDE_allowed(Tango::PipeReqType)
+{
+	if (get_state() == Tango::ON)
+		return true;
+	else
+		return false;
+}
+
+void DevTest::read_RPipeDE(Tango::Pipe &pipe)
+{
+	pipe.set_root_blob_name("BlobDE");
+
+	vector<string> de_names;
+	de_names.push_back(string("FirstDE"));
+	de_names.push_back(string("SecondDE"));
+	de_names.push_back(string("ThirdDE"));
+	de_names.push_back(string("ForthDE"));
+
+	pipe.set_data_elt_names(de_names);
+
+	dl = 666;
+	v_db.clear();
+	v_db.push_back(1.11);
+	v_db.push_back(2.22);
+
+	unsigned short *array = new unsigned short [100];
+	for (unsigned short i = 0;i < 100;i++)
+		array[i] = i;
+	Tango::DevVarUShortArray *dvush = create_DevVarUShortArray(array,100);
+
+	dvsa.length(2);
+	dvsa[0] = Tango::ON;
+	dvsa[1] = Tango::OFF;
+
+	try
+	{
+		pipe << dl << v_db << dvush << dvsa;
+		cout << "Data inserted in pipe (using DataElement classes)" << endl;
+	}
+	catch (Tango::DevFailed &e)
+	{
+		Tango::Except::print_exception(e);
+		throw e;
+	}
+}
+
 void DevTest::cmd_push_pipe_event(Tango::DevShort in)
 {
     if (in == 0)

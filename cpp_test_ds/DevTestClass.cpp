@@ -921,6 +921,9 @@ void DevTestClass::pipe_factory()
 
 	ConfPipeClass	*pPipe7 = new ConfPipeClass("PipeConf7",Tango::OPERATOR);
 	pipe_list.push_back(pPipe7);
+
+	RPipeDEClass	*pRPipeDE = new RPipeDEClass("RPipeDE",Tango::OPERATOR);
+	pipe_list.push_back(pRPipeDE);
 }
 
 

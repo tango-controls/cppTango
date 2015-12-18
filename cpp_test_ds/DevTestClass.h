@@ -1163,6 +1163,20 @@ public:
 		{(static_cast<DevTest *>(dev))->read_ConfPipe(*this);}
 };
 
+class RPipeDEClass : public Tango::Pipe
+{
+public:
+	RPipeDEClass(const string &name,Tango::DispLevel  level)
+	:Pipe(name,level) {};
+
+	~RPipeDEClass() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *dev,Tango::PipeReqType _prt)
+		{return (static_cast<DevTest *>(dev))->is_RPipeDE_allowed(_prt);}
+	virtual void read(Tango::DeviceImpl *dev)
+		{(static_cast<DevTest *>(dev))->read_RPipeDE(*this);}
+};
+
 // ----------------------------------------------------------------------------
 
 
