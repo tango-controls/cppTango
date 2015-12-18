@@ -485,7 +485,7 @@ public:
  *
  * @return The blob data element number
  */
-	size_t get_data_elt_nb() {return extract_elt_array->length();}
+	size_t get_data_elt_nb();
 /**
  * Get blob data elements name
  *
@@ -733,7 +733,7 @@ public:
 	DevicePipeBlob &operator[](const string &);
 
 	const char *get_current_delt_name() {return (*extract_elt_array)[extract_ctr].name.in();}
-	void set_current_delt_name(const string &_na) {(*insert_elt_array)[insert_ctr].name = CORBA::string_dup(_na.c_str());}
+	void set_current_delt_name(const string &);
 
 	size_t get_extract_ind_from_name(const string &);
 	size_t get_insert_ind_from_name(const string &);

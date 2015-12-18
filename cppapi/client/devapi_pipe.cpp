@@ -933,6 +933,76 @@ void DevicePipeBlob::set_data_elt_nb(size_t _nb)
 	extract_ind = -1;
 }
 
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::set_current_delt_name
+//
+// description :
+//		Set the data element name. This method create the pipe data elt array (insert) if not already done
+//
+// argument :
+//		in:
+//			- _na : The data elements name
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void DevicePipeBlob::set_current_delt_name(const string &_na)
+{
+    if (insert_elt_array == Tango_nullptr)
+    {
+        insert_elt_array = new DevVarPipeDataEltArray(10);
+        insert_elt_array->length(1);
+
+        (*insert_elt_array)[0].value.union_no_data(true);
+        (*insert_elt_array)[0].inner_blob.length(0);
+
+        insert_ctr = 0;
+        extract_ctr = 0;
+        insert_ind = -1;
+        extract_ind = -1;
+    }
+    else if (insert_ctr == (int)insert_elt_array->length())
+    {
+        insert_elt_array->length(insert_elt_array->length() + 1);
+
+        (*insert_elt_array)[insert_ctr].value.union_no_data(true);
+        (*insert_elt_array)[insert_ctr].inner_blob.length(0);
+    }
+
+    (*insert_elt_array)[insert_ctr].name = CORBA::string_dup(_na.c_str());
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		DevicePipeBlob::get_data_elt_nb()
+//
+// description :
+//		Get the data element number in the blob
+//
+// return :
+//		The data element number
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+size_t DevicePipeBlob::get_data_elt_nb()
+{
+    size_t ret;
+
+    if (extract_elt_array == Tango_nullptr)
+    {
+        if (insert_elt_array == Tango_nullptr)
+            ret = 0;
+        else
+            ret = insert_elt_array->length();
+    }
+    else
+        ret = extract_elt_array->length();
+
+    return ret;
+}
+
 //******************************************************************************************************************
 
 DevicePipeBlob & DevicePipeBlob::operator<<(DevBoolean &datum)

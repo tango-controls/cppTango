@@ -256,6 +256,14 @@ public:
  * @param [in] names The blob data element names
  */
 	void set_data_elt_names(vector<string> &names) {the_blob.set_data_elt_names(names);}
+/**
+ * Get blob data element number
+ *
+ * Get the blob data element number
+ *
+ * @return The blob data element number
+ */
+	size_t get_data_elt_nb() {return the_blob.get_data_elt_nb();}
 //@}
 
 
