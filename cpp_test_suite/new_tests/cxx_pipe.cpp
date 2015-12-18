@@ -269,6 +269,33 @@ public:
 		TS_ASSERT(dl == 999);
 	}
 
+	void test_reading_pipe_initialized_with_data_elt(void)
+	{		
+		DevicePipe pipe_data = device1->read_pipe("rPipeDE");
+
+		size_t de_nb = pipe_data.get_data_elt_nb();
+		vector<string> de_names = pipe_data.get_data_elt_names();
+
+		TS_ASSERT(pipe_data.get_root_blob_name() == "BlobDE");
+		TS_ASSERT(de_nb == 4);
+
+		TS_ASSERT(de_names.size() == 4);
+		TS_ASSERT(de_names[0] == "FirstDE");
+		TS_ASSERT(de_names[1] == "SecondDE");
+
+		vector<double> v_db;
+		DevLong dl;
+
+		pipe_data["SecondDE"] >> v_db;
+		pipe_data["FirstDE"] >> dl;
+
+		TS_ASSERT(v_db.size() == 2);
+		TS_ASSERT(v_db[0] == 1.11);
+		TS_ASSERT(v_db[1] == 2.22);
+
+		TS_ASSERT(dl == 666);
+	}
+
 	void test_reading_pipe_with_blob_inside_blob(void)
 	{
 		DeviceData d_in;
