@@ -201,11 +201,8 @@ void DeviceImpl::real_ctor()
 // Create device pipe and finish the pipe config init since we now have device name
 //
 
-	if (device_class->get_name() != "DServer")
-    {
-        device_class->create_device_pipe(device_class,this);
-		end_pipe_config();
-    }
+    device_class->create_device_pipe(device_class,this);
+    end_pipe_config();
 
 //
 // Build adm device name

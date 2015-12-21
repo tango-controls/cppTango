@@ -850,7 +850,7 @@ Tango::PipeConfigList *Device_5Impl::get_pipe_config_5(const Tango::DevVarString
 	if (nb_pipe == 1 && in_name == AllPipe)
 	{
 		all_pipe = true;
-		nb_pipe = device_class->get_pipe_list(device_name_lower).size();
+        nb_pipe = device_class->get_pipe_list(device_name_lower).size();
 	}
 
 //
