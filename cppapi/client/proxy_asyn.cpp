@@ -444,8 +444,9 @@ DeviceData Connection::command_inout_reply(long id)
 //
 
 			string ex(cb_excep_mess);
-			string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-			if (pos != string::npos)
+			string::size_type pos_con = ex.find("TRANSIENT_ConnectFailed");
+			string::size_type pos_one = ex.find("EXIST_NoMatch");
+			if (pos_con != string::npos || pos_one != string::npos)
 			{
 				try
 				{
@@ -739,7 +740,6 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 		CORBA::SystemException *sys_ex;
 		if ((sys_ex = CORBA::SystemException::_downcast(ex_ptr)) != NULL)
 		{
-
 			set_connection_state(CONNECTION_NOTOK);
 
 //
@@ -761,8 +761,9 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 //
 
 			string ex(cb_excep_mess);
-			string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-			if (pos != string::npos)
+			string::size_type pos_con = ex.find("TRANSIENT_ConnectFailed");
+			string::size_type pos_one = ex.find("EXIST_NoMatch");
+			if (pos_con != string::npos || pos_one != string::npos)
 			{
 				try
 				{
@@ -1939,7 +1940,8 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 
 		string ex(cb_excep_mess);
 		string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-		if (pos != string::npos)
+        string::size_type pos_one = ex.find("EXIST_NoMatch");
+		if (pos != string::npos || pos_one != string::npos)
 		{
 			try
 			{
@@ -2654,7 +2656,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 
 		string ex(cb_excep_mess);
 		string::size_type pos = ex.find("TRANSIENT_ConnectFailed");
-		if (pos != string::npos)
+        string::size_type pos_one = ex.find("EXIST_NoMatch");
+		if (pos != string::npos || pos_one != string::npos)
 		{
 			try
 			{

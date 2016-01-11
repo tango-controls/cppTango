@@ -13,6 +13,7 @@ SL_EXT = so
 #
 DOC_CONFIG = ../doxygen/Doxyfile
 GEN_DOC = $(DOXYGEN) $(DOC_CONFIG)
+MINOR_VERS_TMP = 1
 endif
 
 
@@ -520,7 +521,7 @@ ifndef macosx-darwin8
 $(LIBNAME).$(SL_EXT):	$(IDL_OBJS_SL) $(SERVER_OBJS_SL) $(CLIENT_OBJS_SL)
 	@./cr_dir $(INSTALL_BASE)/$(LIB_DIR)
 	$(AR_SL) -o $(INSTALL_BASE)/$(LIB_DIR)/$(LIBNAME).$(SL_EXT).$(MAJOR_VERS).$(MINOR_VERS).$(PATCH_VERS) \
-	$(VERS_OPT)$(LIBNAME).$(SL_EXT).$(MAJOR_VERS)$(MINOR_VERS) \
+	$(VERS_OPT)$(LIBNAME).$(SL_EXT).$(MAJOR_VERS)$(MINOR_VERS_TMP) \
 	$(IDL_OBJS_SL) $(SERVER_OBJS_SL) $(CLIENT_OBJS_SL)
 
 install_link:
