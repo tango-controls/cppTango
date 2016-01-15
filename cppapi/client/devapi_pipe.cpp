@@ -627,7 +627,7 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 				if (dvulo64.length() > 1)
 					ret = DEVVAR_ULONG64ARRAY;
 				else
-					ret = DEV_ULONG;
+					ret = DEV_ULONG64;
 			}
 			break;
 
