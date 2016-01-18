@@ -1417,11 +1417,13 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			if (insert_ind != -1) \
 			{ \
 				(*insert_elt_array)[insert_ind].value.B(dvsa); \
+                (*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup(SCALAR_PIPE); \
 				insert_ind = -1; \
 			} \
 			else \
 			{ \
 				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(SCALAR_PIPE); \
 				insert_ctr++; \
 			} \
 		} \
@@ -1466,6 +1468,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 				(*insert_elt_array)[insert_ind].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
 				dvsb.replace(datum.size(),datum.size(),&datum[0],false); \
+                (*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup(ARRAY_PIPE); \
 				insert_ind = -1; \
 			} \
 			else \
@@ -1473,6 +1476,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
 				dvsb.replace(datum.size(),datum.size(),&datum[0],false); \
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(ARRAY_PIPE); \
 				insert_ctr++; \
 			} \
 		} \
@@ -1521,6 +1525,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 				(*insert_elt_array)[insert_ind].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
 				dvsb.replace(max,len,datum.get_buffer(),false); \
+                (*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup(ARRAY_PIPE); \
 				insert_ind = -1; \
 			} \
 			else \
@@ -1528,6 +1533,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
 				dvsb.replace(max,len,datum.get_buffer(),false); \
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(ARRAY_PIPE); \
 				insert_ctr++; \
 			} \
 		} \
@@ -1581,6 +1587,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 				(*insert_elt_array)[insert_ind].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
 				dvsb.replace(max,len,datum->get_buffer((CORBA::Boolean)true),true); \
+                (*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup(ARRAY_PIPE); \
 				insert_ind = -1; \
 			} \
 			else \
@@ -1588,6 +1595,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
 				dvsb.replace(max,len,datum->get_buffer((CORBA::Boolean)true),true); \
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(ARRAY_PIPE); \
 				insert_ctr++; \
 			} \
 	\

@@ -529,125 +529,114 @@ int DevicePipeBlob::get_data_elt_type(size_t _ind)
 	}
 	else
 	{
+        string d_type = (*extract_elt_array)[_ind].inner_blob_name.in();
 		switch((*extract_elt_array)[_ind].value._d())
 		{
 			case ATT_BOOL:
 			{
-				const DevVarBooleanArray &dvba = (*extract_elt_array)[_ind].value.bool_att_value();
-				if (dvba.length() > 1)
-					ret = DEVVAR_BOOLEANARRAY;
-				else
-					ret = DEV_BOOLEAN;
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_BOOLEAN;
+                else
+                    ret = DEVVAR_BOOLEANARRAY;
 			}
 			break;
 
 			case ATT_SHORT:
 			{
-				const DevVarShortArray &dvsa = (*extract_elt_array)[_ind].value.short_att_value();
-				if (dvsa.length() > 1)
-					ret = DEVVAR_SHORTARRAY;
-				else
+				if (d_type == SCALAR_PIPE)
 					ret = DEV_SHORT;
+				else
+					ret = DEVVAR_SHORTARRAY;
 			}
 			break;
 
 			case ATT_LONG:
 			{
-				const DevVarLongArray &dvla = (*extract_elt_array)[_ind].value.long_att_value();
-				if (dvla.length() > 1)
-					ret = DEVVAR_LONGARRAY;
-				else
-					ret = DEV_LONG;
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_LONG;
+                else
+                    ret = DEVVAR_LONGARRAY;
 			}
 			break;
 
 			case ATT_LONG64:
 			{
-				const DevVarLong64Array &dvla = (*extract_elt_array)[_ind].value.long64_att_value();
-				if (dvla.length() > 1)
-					ret = DEVVAR_LONG64ARRAY;
-				else
+				if (d_type == SCALAR_PIPE)
 					ret = DEV_LONG64;
+				else
+					ret = DEVVAR_LONG64ARRAY;
 			}
 			break;
 
 			case ATT_FLOAT:
 			{
-				const DevVarFloatArray &dvfa = (*extract_elt_array)[_ind].value.float_att_value();
-				if (dvfa.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_FLOAT;
+                else
 					ret = DEVVAR_FLOATARRAY;
-				else
-					ret = DEV_FLOAT;
 			}
 			break;
 
 			case ATT_DOUBLE:
 			{
-				const DevVarDoubleArray &dvda = (*extract_elt_array)[_ind].value.double_att_value();
-				if (dvda.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_DOUBLE;
+                else
 					ret = DEVVAR_DOUBLEARRAY;
-				else
-					ret = DEV_DOUBLE;
 			}
 			break;
 
 			case ATT_UCHAR:
 			{
-				const DevVarUCharArray &dvuch = (*extract_elt_array)[_ind].value.uchar_att_value();
-				if (dvuch.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_UCHAR;
+                else
 					ret = DEVVAR_CHARARRAY;
-				else
-					ret = DEV_UCHAR;
 			}
 			break;
 
 			case ATT_USHORT:
 			{
-				const DevVarUShortArray &dvuch = (*extract_elt_array)[_ind].value.ushort_att_value();
-				if (dvuch.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_USHORT;
+                else
 					ret = DEVVAR_USHORTARRAY;
-				else
-					ret = DEV_USHORT;
 			}
 			break;
 
 			case ATT_ULONG:
 			{
-				const DevVarULongArray &dvulo = (*extract_elt_array)[_ind].value.ulong_att_value();
-				if (dvulo.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_ULONG;
+                else
 					ret = DEVVAR_ULONGARRAY;
-				else
-					ret = DEV_ULONG;
 			}
 			break;
 
 			case ATT_ULONG64:
 			{
-				const DevVarULong64Array &dvulo64 = (*extract_elt_array)[_ind].value.ulong64_att_value();
-				if (dvulo64.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_ULONG64;
+                else
 					ret = DEVVAR_ULONG64ARRAY;
-				else
-					ret = DEV_ULONG64;
 			}
 			break;
 
 			case ATT_STRING:
 			{
-				const DevVarStringArray &dvsa = (*extract_elt_array)[_ind].value.string_att_value();
-				if (dvsa.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_STRING;
+                else
 					ret = DEVVAR_STRINGARRAY;
-				else
-					ret = DEV_STRING;
 			}
 			break;
 
 			case ATT_STATE:
 			{
-				const DevVarStateArray &dvsa = (*extract_elt_array)[_ind].value.state_att_value();
-				if (dvsa.length() > 1)
+				if (d_type == SCALAR_PIPE)
+                    ret = DEV_STATE;
+                else
 					ret = DEVVAR_STATEARRAY;
-				else
-					ret = DEV_STATE;
 			}
 			break;
 
@@ -1098,11 +1087,13 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevString &datum)
 			if (insert_ind != -1)
 			{
 				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup("Scalar");
 				insert_ind = -1;
 			}
 			else
 			{
 				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup("Scalar");
 				insert_ctr++;
 			}
 		}
@@ -1161,11 +1152,13 @@ DevicePipeBlob & DevicePipeBlob::operator<<(const string &datum)
 			if (insert_ind != -1)
 			{
 				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
+                (*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup("Scalar");
 				insert_ind = -1;
 			}
 			else
 			{
 				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
+                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup("Scalar");
 				insert_ctr++;
 			}
 		}

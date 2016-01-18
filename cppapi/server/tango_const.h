@@ -104,6 +104,9 @@ const char* const DATABASE_CLASS           = "DataBase";
 const int   TANGO_FLOAT_PRECISION          = 15;
 const char * const NoClass				   = "noclass";
 
+const char * const SCALAR_PIPE             = "Scalar";
+const char * const ARRAY_PIPE              = "Array";
+
 //
 // omniORB default configuration file
 //
