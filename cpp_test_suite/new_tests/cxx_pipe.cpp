@@ -184,6 +184,79 @@ public:
 		delete dvush;
 	}
 
+	void test_reading_pipe_with_ulong64_and_boolean_array(void)
+	{
+		DeviceData d_in;
+		d_in << (short)11;
+		device1->command_inout("SetPipeOutput",d_in);
+
+		DevicePipe pipe_data = device1->read_pipe("rPipe");
+
+		DevULong64 udl64;
+		vector<Tango::DevBoolean> v_bool;
+
+		size_t de_nb = pipe_data.get_data_elt_nb();
+		vector<string> de_names = pipe_data.get_data_elt_names();
+
+		TS_ASSERT(pipe_data.get_root_blob_name() == "BlobCase11");
+		TS_ASSERT(de_nb == 2);
+
+		TS_ASSERT(de_names.size() == 2);
+		TS_ASSERT(de_names[0] == "1DE");
+		TS_ASSERT(de_names[1] == "2DE");
+
+		int type = pipe_data.get_data_elt_type(0);
+		TS_ASSERT(type == DEV_ULONG64);
+
+		type = pipe_data.get_data_elt_type(1);
+		TS_ASSERT(type == DEVVAR_BOOLEANARRAY);
+
+    	pipe_data >> udl64 >> v_bool;
+
+		TS_ASSERT(udl64 == 123456);
+
+		TS_ASSERT(v_bool.size() == 3);
+		TS_ASSERT(v_bool[0] == true);
+		TS_ASSERT(v_bool[1] == true);
+		TS_ASSERT(v_bool[2] == false);
+	}
+
+	void test_reading_pipe_with_arrays_length_1(void)
+	{
+		DeviceData d_in;
+		d_in << (short)12;
+		device1->command_inout("SetPipeOutput",d_in);
+
+		DevicePipe pipe_data = device1->read_pipe("rPipe");
+
+		vector<Tango::DevBoolean> v_bool;
+		vector<Tango::DevLong> v_dl;
+
+		size_t de_nb = pipe_data.get_data_elt_nb();
+		vector<string> de_names = pipe_data.get_data_elt_names();
+
+		TS_ASSERT(pipe_data.get_root_blob_name() == "BlobCase12");
+		TS_ASSERT(de_nb == 2);
+
+		TS_ASSERT(de_names.size() == 2);
+		TS_ASSERT(de_names[0] == "1DE_Array");
+		TS_ASSERT(de_names[1] == "2DE_Array");
+
+		int type = pipe_data.get_data_elt_type(0);
+		TS_ASSERT(type == DEVVAR_LONGARRAY);
+
+		type = pipe_data.get_data_elt_type(1);
+		TS_ASSERT(type == DEVVAR_BOOLEANARRAY);
+
+    	pipe_data >> v_dl >> v_bool;
+
+		TS_ASSERT(v_dl.size() == 1);
+		TS_ASSERT(v_dl[0] == 9);
+
+		TS_ASSERT(v_bool.size() == 1);
+		TS_ASSERT(v_bool[0] == false);
+	}
+
 	void test_reading_pipe_with_string_types(void)
 	{
 		DeviceData d_in;
