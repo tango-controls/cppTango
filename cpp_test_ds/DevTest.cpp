@@ -2289,6 +2289,43 @@ void DevTest::read_RPipe(Tango::Pipe &pipe)
 			pipe << v_dl << str;
 		}
 		break;
+
+		case 11:
+		{
+			pipe.set_root_blob_name("BlobCase11");
+
+			vector<string> de_names;
+			de_names.push_back("1DE");
+			de_names.push_back("2DE");
+			pipe.set_data_elt_names(de_names);
+
+			Tango::DevULong64 dul64 = 123456;
+			v_bool.clear();
+			v_bool.push_back(true);
+			v_bool.push_back(true);
+			v_bool.push_back(false);
+
+			pipe << dul64 << v_bool;
+		}
+		break;
+
+		case 12:
+		{
+			pipe.set_root_blob_name("BlobCase12");
+
+			vector<string> de_names;
+			de_names.push_back("1DE_Array");
+			de_names.push_back("2DE_Array");
+			pipe.set_data_elt_names(de_names);
+
+			v_bool.clear();
+			v_bool.push_back(false);
+            v_dl.clear();
+            v_dl.push_back(9);
+
+			pipe << v_dl << v_bool;
+		}
+		break;
 	}
 }
 

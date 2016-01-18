@@ -343,6 +343,7 @@ protected :
 	string									inner_str;
 	Tango::DevBoolean						inner_bool;
     vector<Tango::DevLong>					v_dl;
+    vector<Tango::DevBoolean>               v_bool;
     omni_mutex								pipe_mutex;
 
     Tango::DevShort							rpipe_type;
