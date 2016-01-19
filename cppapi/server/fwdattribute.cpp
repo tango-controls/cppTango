@@ -133,6 +133,15 @@ void FwdAttribute::set_att_config(const Tango::AttributeConfig_5 &conf)
 	disp_level = conf.level;
 
 //
+// Enum labels (in case of)
+//
+
+    enum_labels.clear();
+    size_t enum_labels_nb = conf.enum_labels.length();
+    for (size_t loop = 0;loop < enum_labels_nb;loop++)
+        enum_labels.push_back(conf.enum_labels[loop].in());
+
+//
 // min alarm
 //
 
@@ -318,6 +327,7 @@ void FwdAttribute::set_att_config(AttributeInfoEx *aie_ptr)
 	writable = aie_ptr->writable;
 	data_type = aie_ptr->data_type;
 	disp_level = aie_ptr->disp_level;
+	enum_labels = aie_ptr->enum_labels;
 
 	switch (aie_ptr->memorized)
 	{
