@@ -59,6 +59,7 @@ public :
 	void set_enum_labels();
 	void add_enum_label(Tango::DevString);
 	void cmd_push_pipe_event(Tango::DevShort);
+    void cmd_push_state_status_event();
 
 	Tango::DevVarLongArray *IOTemplOut();
 	Tango::DevVarDoubleArray *IOTemplInOut(Tango::DevDouble);

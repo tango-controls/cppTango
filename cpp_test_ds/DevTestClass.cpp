@@ -601,6 +601,12 @@ void DevTestClass::command_factory()
 					   "Pipe data type",
 					   "void"));
 
+	command_list.push_back(new PushStateStatusChangeEvent("PushStateStatusChangeEvent",
+					   Tango::DEV_VOID,
+					   Tango::DEV_VOID,
+					   "void",
+					   "void"));
+
 	command_list.push_back(new Tango::TemplCommand((const char *)"IOTempl",
 			       static_cast<Tango::CmdMethPtr>(&DevTest::IOTempl)));
 

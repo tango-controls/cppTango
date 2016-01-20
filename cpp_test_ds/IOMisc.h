@@ -412,3 +412,12 @@ public:
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
+
+class PushStateStatusChangeEvent : public Tango::Command {
+public:
+	PushStateStatusChangeEvent(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~PushStateStatusChangeEvent() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};

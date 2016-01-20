@@ -4282,3 +4282,47 @@ CORBA::Any *PushPipeEvent::execute(Tango::DeviceImpl *device, const CORBA::Any &
 	dev->cmd_push_pipe_event(new_value);
 	return insert();
 }
+
+//+----------------------------------------------------------------------------
+//
+// method : 		PushStateStatusChangeEvent::PushStateStatusChangeEvent()
+//
+// description : 	constructor for the PushStateStatusChangeEvent command of the
+//			DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+PushStateStatusChangeEvent::PushStateStatusChangeEvent(const char *name, Tango::CmdArgType in,
+								   Tango::CmdArgType out, const char *in_desc,
+								   const char *out_desc)
+	: Command(name, in, out, in_desc, out_desc)
+{
+}
+
+
+bool PushStateStatusChangeEvent::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+
+//
+// command allowed only if the device is on
+//
+
+	if (device->get_state() == Tango::ON)
+		return(true);
+	else
+		return(false);
+}
+
+CORBA::Any *PushStateStatusChangeEvent::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	DevTest *dev = (static_cast<DevTest *>(device));
+	dev->cmd_push_state_status_event();
+	return insert();
+}
+
