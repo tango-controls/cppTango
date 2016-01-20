@@ -206,6 +206,19 @@ int main(int argc, char **argv)
 		assert (cb.sta == Tango::ON);
 		
 		cout << "   Event on state change --> OK" << endl;
+
+//
+// Execute command manually push a change event on state
+//
+
+		device->command_inout("PushStateStatusChangeEvent");
+		Tango_sleep(1);
+
+		assert (cb.cb_executed >= 4);
+		assert (cb.cb_err == 0);
+		assert (cb.sta == Tango::ON);
+
+		cout << "   Event on state manually pushed --> OK" << endl;
 				
 //
 // unsubscribe to the event
@@ -264,7 +277,19 @@ int main(int argc, char **argv)
 		assert (cb.cb_err == 0);
 		
 		cout << "   Event on status change --> OK" << endl;
-		
+
+//
+// Execute command manually push a change event on status
+//
+
+		device->command_inout("PushStateStatusChangeEvent");
+		Tango_sleep(1);
+
+		assert (cb.cb_executed >= 4);
+		assert (cb.cb_err == 0);
+
+		cout << "   Event on status manually pushed --> OK" << endl;
+	
 //
 // unsubscribe to the event
 //
