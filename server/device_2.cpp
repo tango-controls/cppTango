@@ -15,7 +15,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -71,25 +71,25 @@ namespace Tango
 //--------------------------------------------------------------------------
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,string &dev_name):
-DeviceImpl(device_class,dev_name),ext_2(Tango_NullPtr)
+DeviceImpl(device_class,dev_name),ext_2(Tango_nullptr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 			   string &dev_name,
 			   string &desc):
-DeviceImpl(device_class,dev_name,desc),ext_2(Tango_NullPtr)
+DeviceImpl(device_class,dev_name,desc),ext_2(Tango_nullptr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
 	           	   string &dev_name,string &desc,
 	           	   Tango::DevState dev_state,string &dev_status):
-DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
+DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_nullptr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 Device_2Impl::Device_2Impl(DeviceClass *device_class,
@@ -97,9 +97,9 @@ Device_2Impl::Device_2Impl(DeviceClass *device_class,
                    const char *desc,
 	           	   Tango::DevState dev_state,
 	           	   const char *dev_status):
-DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
+DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_nullptr)
 {
-	ext->idl_version = 2;
+	idl_version = 2;
 }
 
 
@@ -117,7 +117,6 @@ DeviceImpl(device_class,dev_name,desc,dev_state,dev_status),ext_2(Tango_NullPtr)
 CORBA::Any *Device_2Impl::command_inout_2(const char *in_cmd,
 					  const CORBA::Any &in_data,
 					  Tango::DevSource source)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_2Impl::command_inout_2 arrived, source = " << source << ", command = " << in_cmd << endl;
 	PollObj *polled_cmd = NULL;
@@ -133,7 +132,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 // is already done
 //
 
-	if (ext->store_in_bb == true)
+	if (store_in_bb == true)
 	{
 		blackbox_ptr->insert_cmd(in_cmd,2,source);
 
@@ -155,7 +154,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			check_lock("command_inout2",in_cmd);
 		}
 	}
-	ext->store_in_bb = true;
+	store_in_bb = true;
 
 //
 // If the source parameter specifies device, call the command_inout method
@@ -165,7 +164,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	if (source == Tango::DEV)
 	{
 		AutoTangoMonitor sync(this);
-		ext->store_in_bb = false;
+		store_in_bb = false;
 		return command_inout(in_cmd,in_data);
 	}
 	else
@@ -236,7 +235,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			{
                 TangoSys_OMemStream o;
                 o << "Command " << in_cmd << " not polled" << ends;
-                Except::throw_exception((const char *)"API_CmdNotPolled",
+                Except::throw_exception((const char *)API_CmdNotPolled,
 							o.str(),
 							(const char *)"Device_2Impl::command_inout");
 			}
@@ -263,7 +262,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 					{
 						TangoSys_OMemStream o;
 						o << "Command " << in_cmd << " not polled" << ends;
-						Except::throw_exception((const char *)"API_CmdNotPolled",
+						Except::throw_exception((const char *)API_CmdNotPolled,
 								o.str(),
 								(const char *)"Device_2Impl::command_inout");
 					}
@@ -326,7 +325,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			{
 				TangoSys_OMemStream o;
 				o << "No data available in cache for command " << in_cmd << ends;
-				Except::throw_exception((const char *)"API_NoDataYet",
+				Except::throw_exception((const char *)API_NoDataYet,
 						o.str(),
 						(const char *)"Device_2Impl::command_inout");
 			}
@@ -357,7 +356,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 					TangoSys_OMemStream o;
 					o << "Data in cache for command " << in_cmd;
 					o << " not updated any more" << ends;
-					Except::throw_exception((const char *)"API_NotUpdatedAnyMore",
+					Except::throw_exception((const char *)API_NotUpdatedAnyMore,
 						o.str(),
 						(const char *)"Device_2Impl::command_inout");
 				}
@@ -381,15 +380,21 @@ throw (Tango::DevFailed, CORBA::SystemException)
 			cout4 << "Device_2Impl: Returning data from polling buffer" << endl;
 			if ((state_cmd == true) || (status_cmd == true))
 			{
+				long vers = get_dev_idl_version();
 				omni_mutex_lock sync(*polled_cmd);
-				if (get_dev_idl_version() < 4)
+				if (vers >= 5)
 				{
-					Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
+					Tango::AttributeValue_5 &att_val = polled_cmd->get_last_attr_value_5(false);
+					ret = attr2cmd(att_val,state_cmd,status_cmd);
+				}
+				else if (vers == 4)
+				{
+					Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
 					ret = attr2cmd(att_val,state_cmd,status_cmd);
 				}
 				else
 				{
-					Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
+					Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
 					ret = attr2cmd(att_val,state_cmd,status_cmd);
 				}
 			}
@@ -403,15 +408,21 @@ throw (Tango::DevFailed, CORBA::SystemException)
 				cout4 << "Device_2Impl: Returning data from polling buffer" << endl;
 				if ((state_cmd == true) || (status_cmd == true))
 				{
+					long vers = get_dev_idl_version();
 					omni_mutex_lock sync(*polled_cmd);
-					if (get_dev_idl_version() < 4)
+					if (vers >= 5)
 					{
-						Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
+						Tango::AttributeValue_5 &att_val = polled_cmd->get_last_attr_value_5(false);
+						ret = attr2cmd(att_val,state_cmd,status_cmd);
+					}
+					else if (vers == 4)
+					{
+						Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
 						ret = attr2cmd(att_val,state_cmd,status_cmd);
 					}
 					else
 					{
-						Tango::AttributeValue_4 &att_val = polled_cmd->get_last_attr_value_4(false);
+						Tango::AttributeValue_3 &att_val = polled_cmd->get_last_attr_value_3(false);
 						ret = attr2cmd(att_val,state_cmd,status_cmd);
 					}
 				}
@@ -425,7 +436,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	if ((source != Tango::CACHE) && (polling_failed == true))
 	{
 		AutoTangoMonitor sync(this);
-		ext->store_in_bb = false;
+		store_in_bb = false;
 		ret = command_inout(in_cmd,in_data);
 	}
 
@@ -444,7 +455,6 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 Tango::AttributeValueList* Device_2Impl::read_attributes_2(const Tango::DevVarStringArray& names,
 					     Tango::DevSource source)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 //	AutoTangoMonitor sync(this);
 
@@ -485,7 +495,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 		if (source == Tango::DEV)
 		{
 			AutoTangoMonitor sync(this,true);
-			ext->store_in_bb = false;
+			store_in_bb = false;
 			return read_attributes(names);
 		}
 		else
@@ -595,7 +605,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 						{
 							TangoSys_OMemStream o;
 							o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
-							Except::throw_exception((const char *)"API_AttrNotPolled",
+							Except::throw_exception((const char *)API_AttrNotPolled,
 									o.str(),
 									(const char *)"Device_2Impl::read_attributes");
 						}
@@ -617,7 +627,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 							{
 								TangoSys_OMemStream o;
 								o << "Attribute " << real_names[non_polled[i]] << " not polled" << ends;
-								Except::throw_exception((const char *)"API_AttrNotPolled",
+								Except::throw_exception((const char *)API_AttrNotPolled,
 										o.str(),
 										(const char *)"Device_2Impl::read_attributes");
 							}
@@ -676,10 +686,10 @@ throw (Tango::DevFailed, CORBA::SystemException)
 					back = new Tango::AttributeValueList(nb_attr);
 					back->length(nb_attr);
 				}
-				catch (bad_alloc)
+				catch (bad_alloc &)
 				{
 					back = NULL;
-					Except::throw_exception((const char *)"API_MemoryAllocation",
+					Except::throw_exception((const char *)API_MemoryAllocation,
 				        		(const char *)"Can't allocate memory in server",
 				        		(const char *)"DeviceImpl_2::read_attributes");
 				}
@@ -720,7 +730,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 						TangoSys_OMemStream o;
 						o << "No data available in cache for attribute " << real_names[i] << ends;
-						Except::throw_exception((const char *)"API_NoDataYet",
+						Except::throw_exception((const char *)API_NoDataYet,
 								o.str(),
 								(const char *)"Device_2Impl::read_attributes");
 					}
@@ -754,7 +764,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 							TangoSys_OMemStream o;
 							o << "Data in cache for attribute " << real_names[i];
 							o << " not updated any more" << ends;
-							Except::throw_exception((const char *)"API_NotUpdatedAnyMore",
+							Except::throw_exception((const char *)API_NotUpdatedAnyMore,
 									o.str(),
 									(const char *)"Device_2Impl::read_attributes");
 						}
@@ -791,7 +801,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 							o << "Client too old to get data for attribute " << real_names[i].in();
 							o << ".\nPlease, use a client linked with Tango V5";
 							o << " and a device inheriting from Device_3Impl" << ends;
-							Except::throw_exception((const char *)"API_NotSupportedFeature",
+							Except::throw_exception((const char *)API_NotSupportedFeature,
 								o.str(),
 								(const char *)"Device_2Impl::read_attributes");
 						}
@@ -827,7 +837,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
 										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
-										Except::throw_exception((const char *)"API_NotSupportedFeature",
+										Except::throw_exception((const char *)API_NotSupportedFeature,
 												o.str(),
 												(const char *)"Device_2Impl::read_attributes");
 									}
@@ -854,7 +864,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
 										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
-										Except::throw_exception((const char *)"API_NotSupportedFeature",
+										Except::throw_exception((const char *)API_NotSupportedFeature,
 												o.str(),
 												(const char *)"Device_2Impl::read_attributes");
 									}
@@ -882,7 +892,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
 										TangoSys_OMemStream o;
 										o << "Data type for attribute " << real_names[i] << " is DEV_ENCODED.";
 										o << " It's not possible to retrieve this data type through the interface you are using (IDL V2)" << ends;
-										Except::throw_exception((const char *)"API_NotSupportedFeature",
+										Except::throw_exception((const char *)API_NotSupportedFeature,
 												o.str(),
 												(const char *)"Device_2Impl::read_attributes");
 									}
@@ -933,7 +943,7 @@ throw (Tango::DevFailed, CORBA::SystemException)
             delete back;
 
 			AutoTangoMonitor sync(this,true);
-			ext->store_in_bb = false;
+			store_in_bb = false;
 			//return read_attributes(names);
 			back = read_attributes(names);
 		}
@@ -977,28 +987,35 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 
 Tango::DevCmdInfoList_2 *Device_2Impl::command_list_query_2()
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "Device_2Impl::command_list_query_2 arrived" << endl;
+
+//
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_op(Op_Command_list_2);
 
 //
 // Retrieve number of command and allocate memory to send back info
 //
 
-	long nb_cmd = device_class->get_command_list().size();
+	long nb_cmd_class = device_class->get_command_list().size();
+	long nb_cmd_dev = get_local_command_list().size();
+	long nb_cmd = nb_cmd_class + nb_cmd_dev;
 	cout4 << nb_cmd << " command(s) for device" << endl;
 	Tango::DevCmdInfoList_2 *back = NULL;
 
 	try
 	{
 		back = new Tango::DevCmdInfoList_2(nb_cmd);
-                back->length(nb_cmd);
+		back->length(nb_cmd);
 
 //
 // Populate the vector
 //
 
-		for (long i = 0;i < nb_cmd;i++)
+		for (long i = 0;i < nb_cmd_class;i++)
 		{
 			Tango::DevCmdInfo_2 tmp;
 			tmp.cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
@@ -1019,19 +1036,36 @@ throw (Tango::DevFailed, CORBA::SystemException)
 
 			(*back)[i] = tmp;
 		}
+
+		for (long i = 0;i < nb_cmd_dev;i++)
+		{
+			Command *cmd_ptr = get_local_command_list()[i];
+			Tango::DevCmdInfo_2 tmp;
+			tmp.cmd_name = CORBA::string_dup(cmd_ptr->get_name().c_str());
+			tmp.cmd_tag = 0;
+			tmp.level = cmd_ptr->get_disp_level();
+			tmp.in_type = (long)(cmd_ptr->get_in_type());
+			tmp.out_type = (long)(cmd_ptr->get_out_type());
+			string &str_in = cmd_ptr->get_in_type_desc();
+			if (str_in.size() != 0)
+				tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
+			else
+				tmp.in_type_desc = CORBA::string_dup(NotSet);
+			string &str_out = cmd_ptr->get_out_type_desc();
+			if (str_out.size() != 0)
+				tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
+			else
+				tmp.out_type_desc = CORBA::string_dup(NotSet);
+
+			(*back)[i + nb_cmd_class] = tmp;
+		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_2Impl::command_list_query_2");
 	}
-
-//
-// Record operation request in black box
-//
-
-	blackbox_ptr->insert_op(Op_Command_list_2);
 
 //
 // Return to caller
@@ -1059,13 +1093,18 @@ throw (Tango::DevFailed, CORBA::SystemException)
 //--------------------------------------------------------------------------
 
 Tango::DevCmdInfo_2 *Device_2Impl::command_query_2(const char *command)
-throw (Tango::DevFailed, CORBA::SystemException)
 {
 	cout4 << "DeviceImpl::command_query_2 arrived" << endl;
 
 	Tango::DevCmdInfo_2 *back = NULL;
 	string cmd(command);
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
+
+//
+// Record operation request in black box
+//
+
+	blackbox_ptr->insert_op(Op_Command_2);
 
 //
 // Allocate memory for the stucture sent back to caller. The ORB will free it
@@ -1075,46 +1114,69 @@ throw (Tango::DevFailed, CORBA::SystemException)
 	{
 		back = new Tango::DevCmdInfo_2();
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_2Impl::command_query_2");
 	}
 
 //
-// Try to retrieve the command in the command list
+// Try to retrieve the command in the command list first at class level then at device level
+// (in case of dyn command instaleld at device level)
 //
 
 	long i;
+	bool found = false;
+	Command *cmd_ptr = Tango_nullptr;
 	long nb_cmd = device_class->get_command_list().size();
 	for (i = 0;i < nb_cmd;i++)
 	{
 		if (device_class->get_command_list()[i]->get_lower_name() == cmd)
 		{
-			back->cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
-			back->cmd_tag = 0;
-			back->level = (device_class->get_command_list())[i]->get_disp_level();
-			back->in_type = (long)((device_class->get_command_list())[i]->get_in_type());
-			back->out_type = (long)((device_class->get_command_list())[i]->get_out_type());
-			string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
-			if (str_in.size() != 0)
-				back->in_type_desc = CORBA::string_dup(str_in.c_str());
-			else
-				back->in_type_desc = CORBA::string_dup(NotSet);
-			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
-			if (str_out.size() != 0)
-				back->out_type_desc = CORBA::string_dup(str_out.c_str());
-			else
-				back->out_type_desc = CORBA::string_dup(NotSet);
+			found = true;
+			cmd_ptr = device_class->get_command_list()[i];
 			break;
 		}
 	}
 
-	if (i == nb_cmd)
+	if (found == false)
+	{
+		nb_cmd = get_local_command_list().size();
+		for (i = 0;i < nb_cmd;i++)
+		{
+			if (get_local_command_list()[i]->get_lower_name() == cmd)
+			{
+				found = true;
+				cmd_ptr = get_local_command_list()[i];
+				break;
+			}
+		}
+	}
+
+
+	if (found == true)
+	{
+		back->cmd_name = CORBA::string_dup(cmd_ptr->get_name().c_str());
+		back->cmd_tag = 0;
+		back->level = cmd_ptr->get_disp_level();
+		back->in_type = (long)(cmd_ptr->get_in_type());
+		back->out_type = (long)(cmd_ptr->get_out_type());
+		string &str_in = cmd_ptr->get_in_type_desc();
+		if (str_in.size() != 0)
+			back->in_type_desc = CORBA::string_dup(str_in.c_str());
+		else
+			back->in_type_desc = CORBA::string_dup(NotSet);
+		string &str_out = cmd_ptr->get_out_type_desc();
+		if (str_out.size() != 0)
+			back->out_type_desc = CORBA::string_dup(str_out.c_str());
+		else
+			back->out_type_desc = CORBA::string_dup(NotSet);
+	}
+	else
 	{
 		delete back;
-		cout3 << "Device_2Impl::command_query_2(): operation " << command << " not found" << endl;
+		cout3 << "Device_2Impl::command_query_2(): command " << command << " not found" << endl;
 
 //
 // throw an exception to client
@@ -1123,16 +1185,10 @@ throw (Tango::DevFailed, CORBA::SystemException)
 		TangoSys_OMemStream o;
 
 		o << "Command " << command << " not found" << ends;
-		Except::throw_exception((const char *)"API_CommandNotFound",
+		Except::throw_exception((const char *)API_CommandNotFound,
 				        o.str(),
 				        (const char *)"Device_2Impl::command_query_2");
 	}
-
-//
-// Record operation request in black box
-//
-
-	blackbox_ptr->insert_op(Op_Command_2);
 
 //
 // Return to caller
@@ -1222,9 +1278,9 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		back = new Tango::AttributeConfigList_2(nb_attr);
 		back->length(nb_attr);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_2Impl::get_attribute_config_2");
 	}
@@ -1240,12 +1296,12 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			if (all_attr == true)
 			{
 				Attribute &attr = dev_attr->get_attr_by_ind(i);
-				attr.get_properties_2((*back)[i]);
+				attr.get_properties((*back)[i]);
 			}
 			else
 			{
 				Attribute &attr = dev_attr->get_attr_by_name(names[i]);
-				attr.get_properties_2((*back)[i]);
+				attr.get_properties((*back)[i]);
 			}
 		}
 		catch (Tango::DevFailed &)
@@ -1350,7 +1406,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "Command " << cmd_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_CmdNotPolled",
+		Except::throw_exception((const char *)API_CmdNotPolled,
 					o.str(),
 					(const char *)"Device_2Impl::command_inout_history_2");
 	}
@@ -1363,7 +1419,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for command " << cmd_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_2Impl::command_inout_history_2");
 	}
@@ -1385,9 +1441,9 @@ throw(Tango::DevFailed, CORBA::SystemException)
 		back = new Tango::DevCmdHistoryList(n);
 		back->length(n);
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_2Impl::command_inout_history_2");
 	}
@@ -1407,9 +1463,9 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			back_attr = new Tango::DevAttrHistoryList_3(n);
 			back_attr->length(n);
 		}
-		catch (bad_alloc)
+		catch (bad_alloc &)
 		{
-			Except::throw_exception((const char *)"API_MemoryAllocation",
+			Except::throw_exception((const char *)API_MemoryAllocation,
 				        	(const char *)"Can't allocate memory in server",
 				        	(const char *)"Device_2Impl::command_inout_history_2");
 		}
@@ -1526,7 +1582,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "Attribute " << attr_str << " not polled" << ends;
-		Except::throw_exception((const char *)"API_AttrNotPolled",
+		Except::throw_exception((const char *)API_AttrNotPolled,
 					o.str(),
 					(const char *)"Device_2Impl::read_attribute_history_2");
 	}
@@ -1539,7 +1595,7 @@ throw(Tango::DevFailed, CORBA::SystemException)
 	{
 		TangoSys_OMemStream o;
 		o << "No data available in cache for attribute " << attr_str << ends;
-		Except::throw_exception((const char *)"API_NoDataYet",
+		Except::throw_exception((const char *)API_NoDataYet,
 					o.str(),
 					(const char *)"Device_2Impl::read_attribute_history_2");
 	}
@@ -1566,9 +1622,9 @@ throw(Tango::DevFailed, CORBA::SystemException)
 			back_3->length(n);
 		}
 	}
-	catch (bad_alloc)
+	catch (bad_alloc &)
 	{
-		Except::throw_exception((const char *)"API_MemoryAllocation",
+		Except::throw_exception((const char *)API_MemoryAllocation,
 				        (const char *)"Can't allocate memory in server",
 				        (const char *)"Device_2Impl::read_attribute_history_2");
 	}
@@ -1628,6 +1684,23 @@ CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_3 &att_val,bool state,bool sta
 }
 
 CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_4 &att_val,bool state,bool status)
+{
+	CORBA::Any *any = new CORBA::Any();
+	if (state == true)
+	{
+		const Tango::DevState &sta = att_val.value.dev_state_att();
+		(*any) <<= sta;
+	}
+	else if (status == true)
+	{
+		Tango::DevVarStringArray &dvsa = att_val.value.string_att_value();
+		(*any) <<= dvsa[0];
+	}
+
+	return any;
+}
+
+CORBA::Any *Device_2Impl::attr2cmd(AttributeValue_5 &att_val,bool state,bool status)
 {
 	CORBA::Any *any = new CORBA::Any();
 	if (state == true)
@@ -1785,7 +1858,7 @@ void Device_2Impl::Polled_2_Live(TANGO_UNUSED(long data_type),Tango::AttrValUnio
 		break;
 
 		case ATT_ENCODED:
-		case NO_DATA:
+		case ATT_NO_DATA:
 		break;
 	}
 }
@@ -1820,6 +1893,7 @@ void Device_2Impl::Polled_2_Live(long data_type,CORBA::Any &hist_any,CORBA::Any 
 	switch (data_type)
 	{
 	case Tango::DEV_SHORT :
+	case Tango::DEV_ENUM :
 		hist_any >>= tmp_sh;
 		new_tmp_sh = new DevVarShortArray(
 		tmp_sh->length(),

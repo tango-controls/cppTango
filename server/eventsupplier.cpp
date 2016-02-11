@@ -1,63 +1,67 @@
 static const char *RcsId = "$Id$";
 
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 //
-//  file 	eventsupplier.cpp
+//  file : 				eventsupplier.cpp
 //
-//		C++ classes for implementing the event server and client
-//		singleton classes - EventSupplier and EventConsumer.
-//		These classes are used to send events from the server
-//		to the notification service and to receive events from
-//		the notification service.
+//	description : 		C++ classes for implementing the event server and client singleton classes - EventSupplier
+//						This class is used to send events from the server
 //
-//  	author(s) : E.Taurel (taurel@esrf.fr)
+//  author(s) : 		E.Taurel (taurel@esrf.fr)
 //
-//		original : 29 June 2004
+//	original : 			29 June 2004
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+//  Copyright (C) :     2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU
+// Lesser General Public License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
-//		$Revision$
+//	$Revision$
 //
 //
-////////////////////////////////////////////////////////////////////////////////
+//====================================================================================================================
 
 #include <tango.h>
 #include <eventsupplier.h>
 
+#ifdef _TG_WINDOWS_
+#include <float.h>
+#endif // _TG_WINDOWS_
+
 namespace Tango {
 
-omni_mutex	EventSupplier::event_mutex;
-omni_mutex	EventSupplier::push_mutex;
-omni_mutex	EventSupplier::detect_mutex;
-string      EventSupplier::fqdn_prefix;
+omni_mutex		EventSupplier::event_mutex;
+omni_mutex		EventSupplier::detect_mutex;
+omni_mutex		EventSupplier::push_mutex;
+omni_condition 	EventSupplier::push_cond(&EventSupplier::push_mutex);
+string      	EventSupplier::fqdn_prefix;
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::EventSupplier()
+// method :
+//		EventSupplier::EventSupplier()
 //
-// description : 	EventSupplier class ctor
+// description :
+//		EventSupplier class ctor
 //
-// argument : in :	tg : ptr to the Util class singleton
+// argument :
+//		in :
+//			- tg : ptr to the Util class singleton
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 
 EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
@@ -65,7 +69,7 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
     if (fqdn_prefix.empty() == true)
     {
         fqdn_prefix = "tango://";
-        if (Util::_FileDb == true)
+        if (Util::_UseDb == false || Util::_FileDb == true)
             fqdn_prefix = fqdn_prefix + tg->get_host_name() + ':' + tg->get_svr_port_num() + '/';
         else
         {
@@ -76,99 +80,188 @@ EventSupplier::EventSupplier(Util *tg):one_subscription_cmd(false)
     }
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_events()
+// method :
+//		EventSupplier::detect_and_push_events()
 //
-// description : 	Method to detect if it is necessary
-//			        to push an event
+// description :
+//		Method to detect if it is necessary to push an event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//			        attr_name : The attribute name
-//                  time_bef_attr : Exact date when the attribute has been read
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- attr_name : The attribute name
+//          - time_bef_attr : Exact date when the attribute has been read
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
-SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct AttributeData &attr_value,DevFailed *except,
-                                           string &attr_name,struct timeval *time_bef_attr)
+SendEventType EventSupplier::detect_and_push_events(DeviceImpl *device_impl,struct SuppliedEventData &attr_value,
+												DevFailed *except,string &attr_name,struct timeval *time_bef_attr)
 {
     string event, domain_name;
-    time_t now, change_subscription, periodic_subscription, archive_subscription;
+    time_t now, change3_subscription, periodic3_subscription, archive3_subscription;
+    time_t change4_subscription, periodic4_subscription,archive4_subscription;
+    time_t change5_subscription, periodic5_subscription,archive5_subscription;
     SendEventType ret;
     cout3 << "EventSupplier::detect_and_push_events(): called for attribute " << attr_name << endl;
 
     Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
     now = time(NULL);
-    change_subscription = now - attr.ext->event_change_subscription;
-    periodic_subscription = now - attr.ext->event_periodic_subscription;
-    archive_subscription = now - attr.ext->event_archive_subscription;
 
-    cout3 << "EventSupplier::detect_and_push_events(): last subscription for change " << change_subscription << " periodic " << periodic_subscription << " archive " << archive_subscription << endl;
+    {
+    	omni_mutex_lock oml(event_mutex);
+
+		change3_subscription = now - attr.event_change3_subscription;
+		periodic3_subscription = now - attr.event_periodic3_subscription;
+		archive3_subscription = now - attr.event_archive3_subscription;
+
+		change4_subscription = now - attr.event_change4_subscription;
+		periodic4_subscription = now - attr.event_periodic4_subscription;
+		archive4_subscription = now - attr.event_archive4_subscription;
+
+		change5_subscription = now - attr.event_change5_subscription;
+		periodic5_subscription = now - attr.event_periodic5_subscription;
+		archive5_subscription = now - attr.event_archive5_subscription;
+    }
+
+    cout3 << "EventSupplier::detect_and_push_events(): last subscription for change5 " << change5_subscription << " periodic5 " << periodic5_subscription << " archive5 " << archive5_subscription << endl;
 
 //
 // For change event
+// First check if it is necessary to send the event in case clients are not there any more
 //
 
     ret.change = false;
-    if (change_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    vector<int> client_libs = attr.get_client_lib(CHANGE_EVENT); 	// We want a copy
+
+    vector<int>::iterator ite;
+    for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (change5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(5,string(EventName[CHANGE_EVENT]));
+			break;
+
+			case 4:
+			if (change4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(4,string(EventName[CHANGE_EVENT]));
+			break;
+
+			default:
+			if (change3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(3,string(EventName[CHANGE_EVENT]));
+			break;
+		}
+
+	}
+
+    if (client_libs.empty() == false)
     {
         if (detect_and_push_change_event(device_impl,attr_value,attr,attr_name,except) == true)
             ret.change = true;
     }
-	else
-		attr.ext->event_change_client_3 = false;
 
 //
 // For periodic event
 //
 
     ret.periodic = false;
-    if (periodic_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    client_libs.clear();
+    client_libs = attr.get_client_lib(PERIODIC_EVENT); 	// We want a copy
+
+    for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (periodic5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(5,string(EventName[PERIODIC_EVENT]));
+			break;
+
+			case 4:
+			if (periodic4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(4,string(EventName[PERIODIC_EVENT]));
+			break;
+
+			default:
+			if (periodic3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(3,string(EventName[PERIODIC_EVENT]));
+			break;
+		}
+
+	}
+
+    if (client_libs.empty() == false)
     {
         if (detect_and_push_periodic_event(device_impl,attr_value,attr,attr_name,except,time_bef_attr) == true)
             ret.periodic = true;
     }
-	else
-		attr.ext->event_periodic_client_3 = false;
 
 //
 // For archive event
 //
 
     ret.archive = false;
-    if (archive_subscription < EVENT_RESUBSCRIBE_PERIOD)
+    client_libs.clear();
+    client_libs = attr.get_client_lib(ARCHIVE_EVENT); 	// We want a copy
+
+    for (ite = client_libs.begin();ite != client_libs.end();++ite)
+	{
+		switch (*ite)
+		{
+			case 5:
+			if (archive5_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(5,string(EventName[ARCHIVE_EVENT]));
+			break;
+
+			case 4:
+			if (archive4_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(4,string(EventName[ARCHIVE_EVENT]));
+			break;
+
+			default:
+			if (archive3_subscription >= EVENT_RESUBSCRIBE_PERIOD)
+				attr.remove_client_lib(3,string(EventName[ARCHIVE_EVENT]));
+			break;
+		}
+
+	}
+
+    if (client_libs.empty() == false)
     {
         if (detect_and_push_archive_event(device_impl,attr_value,attr,attr_name,except,time_bef_attr) == true)
             ret.archive = true;
     }
-	else
-		attr.ext->event_archive_client_3 = false;
 
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_change_event()
+// method :
+//		EventSupplier::detect_and_push_change_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push a change event
+// description :
+//		Method to detect if there it is necessary to push a change event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//                  user_push : Flag set to true if it is a user push
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+// 			- user_push : Flag set to true if it is a user push
 //
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
+bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct SuppliedEventData &attr_value,
                      Attribute &attr,string &attr_name,DevFailed *except,bool user_push)
 {
     string event, domain_name;
@@ -183,7 +276,9 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 
     Tango::AttrQuality the_quality;
 
-    if (attr_value.attr_val_4 != NULL)
+    if (attr_value.attr_val_5 != NULL)
+        the_quality = attr_value.attr_val_5->quality;
+    else if (attr_value.attr_val_4 != NULL)
         the_quality = attr_value.attr_val_4->quality;
     else if (attr_value.attr_val_3 != NULL)
         the_quality = attr_value.attr_val_3->quality;
@@ -197,30 +292,31 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     omni_mutex_lock l(event_mutex);
 
 //
-// if no attribute of this name is registered with change then
-// insert the current value
+// if no attribute of this name is registered with change then insert the current value
 //
 
-    if (!attr.ext->prev_change_event.inited)
+    if (!attr.prev_change_event.inited)
     {
         if (except != NULL)
         {
-            attr.ext->prev_change_event.err    = true;
-            attr.ext->prev_change_event.except = *except;
+            attr.prev_change_event.err    = true;
+            attr.prev_change_event.except = *except;
         }
         else
         {
-            if (attr_value.attr_val_4 != NULL)
-                attr.ext->prev_change_event.value_4 = attr_value.attr_val_4->value;
+			if (attr_value.attr_val_5 != NULL)
+                attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
+            else if (attr_value.attr_val_4 != NULL)
+                attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
             else if (attr_value.attr_val_3 != NULL)
-                attr.ext->prev_change_event.value = attr_value.attr_val_3->value;
+                attr.prev_change_event.value = attr_value.attr_val_3->value;
             else
-                attr.ext->prev_change_event.value = attr_value.attr_val->value;
+                attr.prev_change_event.value = attr_value.attr_val->value;
 
-            attr.ext->prev_change_event.quality = the_quality;
-            attr.ext->prev_change_event.err = false;
+            attr.prev_change_event.quality = the_quality;
+            attr.prev_change_event.err = false;
         }
-        attr.ext->prev_change_event.inited = true;
+        attr.prev_change_event.inited = true;
         if (user_push == true)
             is_change = true;
     }
@@ -228,7 +324,7 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     {
 
 //
-// determine delta_change in percent compared with previous event sent
+// Determine delta_change in percent compared with previous event sent
 //
 
         is_change = detect_change(attr,attr_value,false,delta_change_rel,delta_change_abs,except,force_change,device_impl);
@@ -236,11 +332,10 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
     }
 
 //
-// check whether the data quality has changed.
-// Fire event on a quality change.
+// Check whether the data quality has changed. Fire event on a quality change.
 //
 
-    if ((except == NULL) && (attr.ext->prev_change_event.quality != the_quality ))
+    if ((except == NULL) && (attr.prev_change_event.quality != the_quality ))
     {
         is_change = true;
         quality_change = true;
@@ -255,37 +350,26 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
 
         if (except != NULL)
         {
-            attr.ext->prev_change_event.err    = true;
-            attr.ext->prev_change_event.except = *except;
+            attr.prev_change_event.err    = true;
+            attr.prev_change_event.except = *except;
         }
         else
         {
-            if (attr_value.attr_val_4 != NULL)
-            {
-                attr.ext->prev_change_event.value_4 = attr_value.attr_val_4->value;
-            }
+            if (attr_value.attr_val_5 != NULL)
+                attr.prev_change_event.value_4 = attr_value.attr_val_5->value;
+            else if (attr_value.attr_val_4 != NULL)
+                attr.prev_change_event.value_4 = attr_value.attr_val_4->value;
             else if (attr_value.attr_val_3 != NULL)
-                attr.ext->prev_change_event.value   = attr_value.attr_val_3->value;
+                attr.prev_change_event.value   = attr_value.attr_val_3->value;
             else
-                attr.ext->prev_change_event.value   = attr_value.attr_val->value;
-            attr.ext->prev_change_event.quality = the_quality;
-            attr.ext->prev_change_event.err     = false;
+                attr.prev_change_event.value   = attr_value.attr_val->value;
+            attr.prev_change_event.quality = the_quality;
+            attr.prev_change_event.err     = false;
         }
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent
-// using an AttributeValue_3 data type
+// Prepare to push the event
 //
-
-        bool need_free = false;
-        if ((attr.ext->event_change_client_3 == true) && (attr_value.attr_val_3 == NULL))
-        {
-            AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
-            attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
-            attr_value.attr_val_3 = tmp_attr_val_3;
-            attr_value.attr_val_4 = NULL;
-            need_free = true;
-        }
 
         domain_name = device_impl->get_name() + "/" + attr_name;
         filterable_names.push_back("delta_change_rel");
@@ -305,49 +389,97 @@ bool EventSupplier::detect_and_push_change_event(DeviceImpl *device_impl,struct 
         else
             filterable_data.push_back((double)0.0);
 
-        push_event(device_impl,
-               "change",
-               filterable_names,
-               filterable_data,
-               filterable_names_lg,
-               filterable_data_lg,
-               attr_value,
-               attr_name,
-               except);
+		vector<int> &client_libs = attr.get_client_lib(CHANGE_EVENT);
+		vector<int>::iterator ite;
+		string ev_name = EventName[CHANGE_EVENT];
+		bool inc_ctr = true;
+
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			bool need_free = false;
+			bool name_changed = false;
+
+			struct SuppliedEventData sent_value;
+		    ::memset(&sent_value,0,sizeof(sent_value));
+
+			switch (*ite)
+			{
+				case 5:
+				{
+					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
+					ev_name = EVENT_COMPAT_IDL5 + ev_name;
+					name_changed = true;
+				}
+				break;
+
+				case 4:
+				{
+					convert_att_event_to_4(attr_value,sent_value,need_free,attr);
+				}
+				break;
+
+				default:
+				{
+					convert_att_event_to_3(attr_value,sent_value,need_free,attr);
+				}
+				break;
+			}
+
+			push_event(device_impl,
+				   ev_name,
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   sent_value,
+				   attr_name,
+				   except,
+				   inc_ctr);
+
+			inc_ctr = false;
+			if (need_free == true)
+			{
+				if (sent_value.attr_val_5 != NULL)
+					delete sent_value.attr_val_5;
+				else if (sent_value.attr_val_4 != NULL)
+					delete sent_value.attr_val_4;
+				else if (sent_value.attr_val_3 != NULL)
+					delete sent_value.attr_val_3;
+				else
+					delete sent_value.attr_val;
+			}
+			if (name_changed == true)
+				ev_name = EventName[CHANGE_EVENT];
+		}
         ret = true;
 
-        if (need_free == true)
-        {
-           if (attr_value.attr_val_4 != NULL)
-                delete attr_value.attr_val_4;
-            else if (attr_value.attr_val_3 != NULL)
-                delete attr_value.attr_val_3;
-            else
-                delete attr_value.attr_val;
-        }
     }
 
     cout3 << "EventSupplier::detect_and_push_change_event(): leaving for attribute " << attr_name << endl;
     return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_archive_event()
+// method :
+//		EventSupplier::detect_and_push_archive_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push an archive event
+// description :
+//		Method to detect if there it is necessary to push an archive event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- time_bef_attr : Date before the attribute was read
+//			- user_push : Flag set to true if it's the user who fires the event
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,AttributeData &attr_value,
+bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,SuppliedEventData &attr_value,
                     Attribute &attr,string &attr_name,DevFailed *except,struct timeval *time_bef_attr,
                     bool user_push)
 {
@@ -365,7 +497,9 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 	double now_ms, ms_since_last_periodic;
 	Tango::AttrQuality the_quality;
 
-    if (attr_value.attr_val_4 != NULL)
+    if (attr_value.attr_val_5 != NULL)
+        the_quality = attr_value.attr_val_5->quality;
+    else if (attr_value.attr_val_4 != NULL)
         the_quality = attr_value.attr_val_4->quality;
     else if (attr_value.attr_val_3 != NULL)
         the_quality = attr_value.attr_val_3->quality;
@@ -395,84 +529,90 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 
 //
 // Do not get time now. This method is executed after the attribute has been read.
-// For some device, reading one attribute could be long and even worse could have an
-// unstable reading time. If we takes time now, it will also be unstable.
-// Use the time taken in the polling thread before the attribute was read. This one is much
-// more stable
+// For some device, reading one attribute could be long and even worse could have an unstable reading time.
+// If we takes time now, it will also be unstable.
+// Use the time taken in the polling thread before the attribute was read. This one is much more stable
 //
 
 	if (time_bef_attr != NULL)
 		now_ms = (double)time_bef_attr->tv_sec * 1000. + (double)time_bef_attr->tv_usec / 1000.;
 	else
 		now_ms = (double)now.tv_sec * 1000. + (double)now.tv_usec / 1000.;
-	ms_since_last_periodic = now_ms - attr.ext->archive_last_periodic;
+	ms_since_last_periodic = now_ms - attr.archive_last_periodic;
 
 	int arch_period;
 	TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
 	mon1.get_monitor();
-	arch_period = attr.ext->archive_period;
+	arch_period = attr.archive_period;
 	mon1.rel_monitor();
 
 //
-// Specify the precision interval for the archive period testing
-// 2% are used for periods < 5000 ms and
+// Specify the precision interval for the archive period testing 2% are used for periods < 5000 ms and
 // 100ms are used for periods > 5000 ms.
+// If the attribute archive period is INT_MAX, this means that the user does not want the periodic part of the
+// archive event
 //
 
-	if ( arch_period >= 5000 )
+	if (arch_period != INT_MAX)
 	{
-		arch_period = arch_period - DELTA_PERIODIC_LONG;
-	}
-	else
-	{
-#ifdef _TG_WINDOWS_
-		double tmp = (double)arch_period * DELTA_PERIODIC;
-		double int_part,eve_round;
-		double frac = modf(tmp,&int_part);
-		if (frac >= 0.5)
-			eve_round = ceil(tmp);
+		if ( arch_period >= 5000 )
+		{
+			arch_period = arch_period - DELTA_PERIODIC_LONG;
+		}
 		else
-			eve_round = floor(tmp);
+		{
+#ifdef _TG_WINDOWS_
+			double tmp = (double)arch_period * DELTA_PERIODIC;
+			double int_part,eve_round;
+			double frac = modf(tmp,&int_part);
+			if (frac >= 0.5)
+				eve_round = ceil(tmp);
+			else
+				eve_round = floor(tmp);
 #else
-		double eve_round = round((double)arch_period * DELTA_PERIODIC);
+			double eve_round = round((double)arch_period * DELTA_PERIODIC);
 #endif
 			arch_period = (int)eve_round;
 		}
 
-		if ((ms_since_last_periodic > arch_period) && (attr.ext->prev_archive_event.inited == true))
+        cout3 << "EventSupplier::detect_and_push_archive_event(): ms_since_last_periodic = " << ms_since_last_periodic << ", arch_period = " << arch_period << ", attr.prev_archive_event.inited = " << attr.prev_archive_event.inited << endl;
+
+		if ((ms_since_last_periodic > arch_period) && (attr.prev_archive_event.inited == true))
 		{
 			is_change = true;
 			period_change = true;
 		}
+	}
 
 //
-// if no attribute of this name is registered with change then
-// insert the current value
+// If no attribute of this name is registered with change then insert the current value
 //
 
 
-	if (!attr.ext->prev_archive_event.inited)
+	if (!attr.prev_archive_event.inited)
 	{
 		if (except != NULL)
 		{
-			attr.ext->prev_archive_event.err    = true;
-			attr.ext->prev_archive_event.except = *except;
+			attr.prev_archive_event.err    = true;
+			attr.prev_archive_event.except = *except;
 		}
 		else
 		{
-           if (attr_value.attr_val_4 != NULL)
-                attr.ext->prev_archive_event.value_4 = attr_value.attr_val_4->value;
+			if (attr_value.attr_val_5 != NULL)
+                attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
+			else if (attr_value.attr_val_4 != NULL)
+                attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
             else if (attr_value.attr_val_3 != NULL)
-                attr.ext->prev_archive_event.value = attr_value.attr_val_3->value;
+                attr.prev_archive_event.value = attr_value.attr_val_3->value;
             else
-                attr.ext->prev_archive_event.value = attr_value.attr_val->value;
+                attr.prev_archive_event.value = attr_value.attr_val->value;
 
-			attr.ext->prev_archive_event.quality = the_quality;
-			attr.ext->prev_archive_event.err = false;
+			attr.prev_archive_event.quality = the_quality;
+			attr.prev_archive_event.err = false;
 		}
-		attr.ext->archive_last_periodic = now_ms;
-		attr.ext->archive_last_event = now_ms;
-		attr.ext->prev_archive_event.inited = true;
+		attr.archive_last_periodic = now_ms;
+		attr.archive_last_event = now_ms;
+		attr.prev_archive_event.inited = true;
 		if (user_push == true)
             is_change = true;
 	}
@@ -490,12 +630,11 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 	}
 
 //
-// check whether the data quality has changed.
-// Fire event on a quality change.
+// check whether the data quality has changed. Fire event on a quality change.
 //
 
 	if ( except == NULL &&
-		 attr.ext->prev_archive_event.quality != the_quality )
+		 attr.prev_archive_event.quality != the_quality )
 	{
 		is_change = true;
 		quality_change = true;
@@ -512,42 +651,33 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 
 		if (except != NULL)
 		{
-			attr.ext->prev_archive_event.err    = true;
-			attr.ext->prev_archive_event.except = *except;
+			attr.prev_archive_event.err    = true;
+			attr.prev_archive_event.except = *except;
 		}
 		else
 		{
-           if (attr_value.attr_val_4 != NULL)
-                attr.ext->prev_archive_event.value_4 = attr_value.attr_val_4->value;
+			if (attr_value.attr_val_5 != NULL)
+                attr.prev_archive_event.value_4 = attr_value.attr_val_5->value;
+			else if (attr_value.attr_val_4 != NULL)
+                attr.prev_archive_event.value_4 = attr_value.attr_val_4->value;
             else if (attr_value.attr_val_3 != NULL)
-                attr.ext->prev_archive_event.value   = attr_value.attr_val_3->value;
+                attr.prev_archive_event.value   = attr_value.attr_val_3->value;
             else
-                attr.ext->prev_archive_event.value   = attr_value.attr_val->value;
-			attr.ext->prev_archive_event.quality = the_quality;
-			attr.ext->prev_archive_event.err     = false;
+                attr.prev_archive_event.value   = attr_value.attr_val->value;
+			attr.prev_archive_event.quality = the_quality;
+			attr.prev_archive_event.err     = false;
 		}
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent
-// using an AttributeValue_3 data type
+// Prepare to push the event
 //
-
-		bool need_free = false;
-        if ((attr.ext->event_archive_client_3 == true) && (attr_value.attr_val_3 == NULL))
-        {
-            AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
-            attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
-            attr_value.attr_val_3 = tmp_attr_val_3;
-            attr_value.attr_val_4 = NULL;
-            need_free = true;
-        }
 
 		filterable_names_lg.push_back("counter");
 		if (period_change == true)
 		{
-			attr.ext->archive_periodic_counter++;
-			attr.ext->archive_last_periodic = now_ms;
-			filterable_data_lg.push_back(attr.ext->archive_periodic_counter);
+			attr.archive_periodic_counter++;
+			attr.archive_last_periodic = now_ms;
+			filterable_data_lg.push_back(attr.archive_periodic_counter);
 		}
 		else
 		{
@@ -571,51 +701,98 @@ bool EventSupplier::detect_and_push_archive_event(DeviceImpl *device_impl,Attrib
 			filterable_data.push_back((double)0.0);
 
 		filterable_names.push_back("delta_event");
-		filterable_data.push_back(now_ms - attr.ext->archive_last_event);
-		attr.ext->archive_last_event = now_ms;
+		filterable_data.push_back(now_ms - attr.archive_last_event);
+		attr.archive_last_event = now_ms;
 
-		push_event(device_impl,
-			   "archive",
-			   filterable_names,
-			   filterable_data,
-			   filterable_names_lg,
-			   filterable_data_lg,
-			   attr_value,
-			   attr_name,
-			   except);
+		vector<int> &client_libs = attr.get_client_lib(ARCHIVE_EVENT);
+		vector<int>::iterator ite;
+		string ev_name = EventName[ARCHIVE_EVENT];
+		bool inc_ctr = true;
+
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			bool need_free = false;
+			bool name_changed = false;
+
+			struct SuppliedEventData sent_value;
+		    ::memset(&sent_value,0,sizeof(sent_value));
+
+			switch (*ite)
+			{
+				case 5:
+				{
+					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
+					ev_name = EVENT_COMPAT_IDL5 + ev_name;
+					name_changed = true;
+				}
+				break;
+
+				case 4:
+				{
+					convert_att_event_to_4(attr_value,sent_value,need_free,attr);
+				}
+				break;
+
+				default:
+				{
+					convert_att_event_to_3(attr_value,sent_value,need_free,attr);
+				}
+				break;
+			}
+
+			push_event(device_impl,
+				   ev_name,
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   sent_value,
+				   attr_name,
+				   except,
+				   inc_ctr);
+
+			inc_ctr = false;
+			if (need_free == true)
+			{
+				if (sent_value.attr_val_5 != NULL)
+					delete sent_value.attr_val_5;
+				else if (sent_value.attr_val_4 != NULL)
+					delete sent_value.attr_val_4;
+				else if (sent_value.attr_val_3 != NULL)
+					delete sent_value.attr_val_3;
+				else
+					delete sent_value.attr_val;
+			}
+			if (name_changed == true)
+				ev_name = EventName[ARCHIVE_EVENT];
+		}
+
         ret = true;
-
-        if (need_free == true)
-        {
-           if (attr_value.attr_val_4 != NULL)
-                delete attr_value.attr_val_4;
-            else if (attr_value.attr_val_3 != NULL)
-                delete attr_value.attr_val_3;
-            else
-                delete attr_value.attr_val;
-        }
 	}
 
 	return ret;
 }
 
-//+----------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_and_push_periodic_event()
+// method :
+//		EventSupplier::detect_and_push_periodic_event()
 //
-// description : 	Method to detect if there it is necessary
-//			        to push a periodic event
+// description :
+//		Method to detect if there it is necessary to push a periodic event
 //
-// argument : in :	device_impl : The device
-//			        attr_value : The attribute value
-//			        attr : The attribute object
-//			        attr_name : The attribute name
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_value : The attribute value
+//			- attr : The attribute object
+//			- attr_name : The attribute name
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- time_bef_attr : Date before the attribute was read
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struct AttributeData &attr_value,
+bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struct SuppliedEventData &attr_value,
                     Attribute &attr,string &attr_name,DevFailed *except,struct timeval *time_bef_attr)
 {
 	string event, domain_name;
@@ -663,12 +840,11 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 	int eve_period;
 	TangoMonitor &mon1 = device_impl->get_att_conf_monitor();
 	mon1.get_monitor();
-	eve_period = attr.ext->event_period;
+	eve_period = attr.event_period;
 	mon1.rel_monitor();
 
 //
-// Specify the precision interval for the event period testing
-// 2% are used for periods < 5000 ms and
+// Specify the precision interval for the event period testing 2% are used for periods < 5000 ms and
 // 100ms are used for periods > 5000 ms.
 //
 
@@ -695,88 +871,122 @@ bool EventSupplier::detect_and_push_periodic_event(DeviceImpl *device_impl,struc
 //
 // calculate the time
 //
-	ms_since_last_periodic = now_ms - attr.ext->last_periodic;
+
+	ms_since_last_periodic = now_ms - attr.last_periodic;
 	cout3 << "EventSupplier::detect_and_push_is_periodic_event(): delta since last periodic " << ms_since_last_periodic << " event_period " << eve_period << " for " << device_impl->get_name()+"/"+attr_name << endl;
 
 	if ( ms_since_last_periodic > eve_period )
 	{
-		bool need_free = false;
 
 //
-// If one of the subscribed client is still using IDL 3, the attribute value has to be sent
-// using an AttributeValue_3 data type
+// Prepare to push the event
 //
-
-        if ((attr.ext->event_periodic_client_3 == true) && (attr_value.attr_val_3 == NULL))
-        {
-            AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
-            attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
-            attr_value.attr_val_3 = tmp_attr_val_3;
-            attr_value.attr_val_4 = NULL;
-            need_free = true;
-        }
 
 		vector<string> filterable_names;
 		vector<double> filterable_data;
 		vector<string> filterable_names_lg;
 		vector<long> filterable_data_lg;
 
-		attr.ext->periodic_counter++;
-		attr.ext->last_periodic = now_ms;
+		attr.periodic_counter++;
+		attr.last_periodic = now_ms;
 		filterable_names_lg.push_back("counter");
-		filterable_data_lg.push_back(attr.ext->periodic_counter);
+		filterable_data_lg.push_back(attr.periodic_counter);
+
+		vector<int> &client_libs = attr.get_client_lib(PERIODIC_EVENT);
+		vector<int>::iterator ite;
+		string ev_name = EventName[PERIODIC_EVENT];
+		bool inc_ctr = true;
 
 		cout3 << "EventSupplier::detect_and_push_is_periodic_event(): detected periodic event for " << device_impl->get_name()+"/"+attr_name << endl;
-		push_event(device_impl,
-			   "periodic",
-			   filterable_names,
-			   filterable_data,
-			   filterable_names_lg,
-			   filterable_data_lg,
-			   attr_value,
-			   attr_name,
-			   except);
-        ret = true;
 
-        if (need_free == true)
-        {
-           if (attr_value.attr_val_4 != NULL)
-                delete attr_value.attr_val_4;
-            else if (attr_value.attr_val_3 != NULL)
-                delete attr_value.attr_val_3;
-            else
-                delete attr_value.attr_val;
-        }
+		for (ite = client_libs.begin();ite != client_libs.end();++ite)
+		{
+			bool need_free = false;
+			bool name_changed = false;
+
+			struct SuppliedEventData sent_value;
+		    ::memset(&sent_value,0,sizeof(sent_value));
+
+			switch (*ite)
+			{
+				case 5:
+				{
+					convert_att_event_to_5(attr_value,sent_value,need_free,attr);
+					ev_name = EVENT_COMPAT_IDL5 + ev_name;
+					name_changed = true;
+				}
+				break;
+
+				case 4:
+				{
+					convert_att_event_to_4(attr_value,sent_value,need_free,attr);
+				}
+				break;
+
+				default:
+				{
+					convert_att_event_to_3(attr_value,sent_value,need_free,attr);
+				}
+				break;
+			}
+
+			push_event(device_impl,
+				   ev_name,
+				   filterable_names,
+				   filterable_data,
+				   filterable_names_lg,
+				   filterable_data_lg,
+				   sent_value,
+				   attr_name,
+				   except,
+				   inc_ctr);
+
+			inc_ctr = false;
+			if (need_free == true)
+			{
+				if (sent_value.attr_val_5 != NULL)
+					delete sent_value.attr_val_5;
+				else if (sent_value.attr_val_4 != NULL)
+					delete sent_value.attr_val_4;
+				else if (sent_value.attr_val_3 != NULL)
+					delete sent_value.attr_val_3;
+				else
+					delete sent_value.attr_val;
+			}
+			if (name_changed == true)
+				ev_name = EventName[PERIODIC_EVENT];
+		}
+        ret = true;
 	}
 
 	return ret;
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::detect_change()
+// method :
+//		EventSupplier::detect_change()
 //
-// description : 	Method to detect if there is a change according to the
-//			        criterions and return a boolean set to true if a change
-//			        is detected
+// description :
+//		Method to detect if there is a change according to the criterions and return a boolean set to true if a change
+//		is detected
 //
-// argument : in :	attr : The attribute object
-//			        attr_value : The current attribute value
-//			        archive :
-//			        delta_change_rel :
-//			        delta_change_abs :
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//			        force_change : A flag set to true if the change
-//				            is due to a non mathematical reason
-//				       (    array size change, from exception to
-//					        classic...)
-//			        dev : Pointer to the device
+// argument :
+//		in :
+//			- attr : The attribute object
+//			- attr_value : The current attribute value
+//			- archive :
+//			- delta_change_rel :
+//			- delta_change_abs :
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//			- force_change : A flag set to true if the change is due to a non mathematical reason
+//				       (array size change, from exception to classic...)
+//			- dev : Pointer to the device
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
-bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_value,bool archive,
+bool EventSupplier::detect_change(Attribute &attr,struct SuppliedEventData &attr_value,bool archive,
               double &delta_change_rel,double &delta_change_abs,DevFailed *except,
               bool &force_change,DeviceImpl *dev)
 {
@@ -787,7 +997,9 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     Tango::AttrQuality the_new_quality;
     const CORBA::Any *the_new_any = NULL;
 
-    if (attr_value.attr_val_4 != NULL)
+    if (attr_value.attr_val_5 != NULL)
+        the_new_quality = attr_value.attr_val_5->quality;
+    else if (attr_value.attr_val_4 != NULL)
         the_new_quality = attr_value.attr_val_4->quality;
     else if (attr_value.attr_val_3 != NULL)
     {
@@ -807,8 +1019,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     omni_mutex_lock l(detect_mutex);
 
 //
-// Send event, if the read_attribute failed or if it is the first time
-// that the read_attribute succeed after a failure.
+// Send event, if the read_attribute failed or if it is the first time that the read_attribute succeed after a failure.
 // Same thing if the attribute quality factor changes to INVALID
 //
 
@@ -816,15 +1027,14 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     {
 
 //
-// force an event only when the last reading was not returning an exception or
-// not returning the same exception
+// force an event only when the last reading was not returning an exception or not returning the same exception
 //
 
         if (except != NULL)
         {
-            if ( attr.ext->prev_archive_event.err == true )
+            if ( attr.prev_archive_event.err == true )
             {
-                if ( Except::compare_exception (*except, attr.ext->prev_archive_event.except) == true )
+                if ( Except::compare_exception (*except, attr.prev_archive_event.except) == true )
                 {
                     force_change = false;
                     return false;
@@ -839,20 +1049,19 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 // force an archive event when the last reading was still returning an exception
 //
 
-        if ((except == NULL) && (attr.ext->prev_archive_event.err == true))
+        if ((except == NULL) && (attr.prev_archive_event.err == true))
         {
             force_change = true;
             return true;
         }
 
 //
-// check wether the quality is invalid
-// Force an event only if the last reading was valid
+// check wether the quality is invalid. Force an event only if the last reading was valid
 //
 
         if (the_new_quality == Tango::ATTR_INVALID)
         {
-            if ( attr.ext->prev_archive_event.quality == Tango::ATTR_INVALID )
+            if ( attr.prev_archive_event.quality == Tango::ATTR_INVALID )
             {
                 force_change = false;
                 return false;
@@ -866,7 +1075,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 // force an archive event when the last reding was still marked as invalid data
 //
 
-        if ((the_new_quality != Tango::ATTR_INVALID) && (attr.ext->prev_archive_event.quality == Tango::ATTR_INVALID))
+        if ((the_new_quality != Tango::ATTR_INVALID) && (attr.prev_archive_event.quality == Tango::ATTR_INVALID))
         {
             force_change = true;
             return true;
@@ -876,15 +1085,14 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     {
 
 //
-// force an event only when the last reading was not returning an exception or
-// not returning the same exception
+// force an event only when the last reading was not returning an exception or not returning the same exception
 //
 
         if (except != NULL)
         {
-            if ( attr.ext->prev_change_event.err == true )
+            if ( attr.prev_change_event.err == true )
             {
-                if ( Except::compare_exception (*except, attr.ext->prev_change_event.except) == true )
+                if ( Except::compare_exception (*except, attr.prev_change_event.except) == true )
                 {
                     force_change = false;
                     return false;
@@ -899,20 +1107,19 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 // force an change event when the last reding was still returning an exception
 //
 
-        if ((except == NULL) && (attr.ext->prev_change_event.err == true))
+        if ((except == NULL) && (attr.prev_change_event.err == true))
         {
             force_change = true;
             return true;
         }
 
 //
-// check wether the quality is invalid
-// Force an event only if the last reading was valid
+// check wether the quality is invalid. Force an event only if the last reading was valid
 //
 
         if (the_new_quality == Tango::ATTR_INVALID)
         {
-            if ( attr.ext->prev_change_event.quality == Tango::ATTR_INVALID )
+            if ( attr.prev_change_event.quality == Tango::ATTR_INVALID )
             {
                     force_change = false;
                     return false;
@@ -926,7 +1133,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 // force an change event when the last reding was still marked as invalid data
 //
 
-        if ((the_new_quality != Tango::ATTR_INVALID) && (attr.ext->prev_change_event.quality == Tango::ATTR_INVALID))
+        if ((the_new_quality != Tango::ATTR_INVALID) && (attr.prev_change_event.quality == Tango::ATTR_INVALID))
         {
             force_change = true;
             return true;
@@ -957,22 +1164,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
     mon1.get_monitor();
     if (!archive)
     {
-        rel_change[0] = attr.ext->rel_change[0];
-        rel_change[1] = attr.ext->rel_change[1];
-        abs_change[0] = attr.ext->abs_change[0];
-        abs_change[1] = attr.ext->abs_change[1];
-        inited = attr.ext->prev_change_event.inited;
-        if ((attr.ext->prev_change_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
+        rel_change[0] = attr.rel_change[0];
+        rel_change[1] = attr.rel_change[1];
+        abs_change[0] = attr.abs_change[0];
+        abs_change[1] = attr.abs_change[1];
+        inited = attr.prev_change_event.inited;
+        if ((attr.prev_change_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
                 enable_check = true;
     }
     else
     {
-        rel_change[0] = attr.ext->archive_rel_change[0];
-        rel_change[1] = attr.ext->archive_rel_change[1];
-        abs_change[0] = attr.ext->archive_abs_change[0];
-        abs_change[1] = attr.ext->archive_abs_change[1];
-        inited = attr.ext->prev_archive_event.inited;
-        if ((attr.ext->prev_archive_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
+        rel_change[0] = attr.archive_rel_change[0];
+        rel_change[1] = attr.archive_rel_change[1];
+        abs_change[0] = attr.archive_abs_change[0];
+        abs_change[1] = attr.archive_abs_change[1];
+        inited = attr.prev_archive_event.inited;
+        if ((attr.prev_archive_event.quality != Tango::ATTR_INVALID) && (the_new_quality != Tango::ATTR_INVALID))
                 enable_check = true;
     }
     mon1.rel_monitor();
@@ -991,21 +1198,27 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 // First, analyse the DevEncoded data type
 //
 
-            if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_ENCODED))
+            if (((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_ENCODED)) ||
+				((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_ENCODED)))
             {
                 unsigned int curr_seq_str_nb,prev_seq_str_nb;
                 const char *curr_encoded_format,*prev_encoded_format;
                 const Tango::DevVarUCharArray *curr_data_ptr,*prev_data_ptr;
 
-                const Tango::DevVarEncodedArray &un_seq = attr_value.attr_val_4->value.encoded_att_value();
-                curr_seq_str_nb = strlen(un_seq[0].encoded_format.in());
-                curr_seq_nb = un_seq[0].encoded_data.length();
-                curr_encoded_format = un_seq[0].encoded_format.in();
-                curr_data_ptr = &un_seq[0].encoded_data;
+				const Tango::DevVarEncodedArray *un_seq;
+				if (attr_value.attr_val_5 != NULL)
+					un_seq = &(attr_value.attr_val_5->value.encoded_att_value());
+				else
+					un_seq = &(attr_value.attr_val_4->value.encoded_att_value());
+
+                curr_seq_str_nb = strlen((*un_seq)[0].encoded_format.in());
+                curr_seq_nb = (*un_seq)[0].encoded_data.length();
+                curr_encoded_format = (*un_seq)[0].encoded_format.in();
+                curr_data_ptr = &((*un_seq)[0].encoded_data);
 
                 if (archive == true)
                 {
-                    DevVarEncodedArray &union_seq = attr.ext->prev_archive_event.value_4.encoded_att_value();
+                    DevVarEncodedArray &union_seq = attr.prev_archive_event.value_4.encoded_att_value();
                     prev_seq_nb = union_seq[0].encoded_data.length();
                     prev_seq_str_nb = strlen(union_seq[0].encoded_format.in());
                     prev_encoded_format = union_seq[0].encoded_format.in();
@@ -1013,7 +1226,7 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
                 }
                 else
                 {
-                    DevVarEncodedArray &union_seq = attr.ext->prev_change_event.value_4.encoded_att_value();
+                    DevVarEncodedArray &union_seq = attr.prev_change_event.value_4.encoded_att_value();
                     prev_seq_nb = union_seq[0].encoded_data.length();
                     prev_seq_str_nb = strlen(union_seq[0].encoded_format.in());
                     prev_encoded_format = union_seq[0].encoded_format.in();
@@ -1075,23 +1288,32 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
             {
                 DevState curr_sta, prev_sta;
                 bool dev_state_type = false;
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == DEVICE_STATE))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == DEVICE_STATE))
+                {
+                    dev_state_type = true;
+                    curr_sta = attr_value.attr_val_5->value.dev_state_att();
+                    if (archive == true)
+                        prev_sta = attr.prev_archive_event.value_4.dev_state_att();
+                    else
+                        prev_sta = attr.prev_change_event.value_4.dev_state_att();
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == DEVICE_STATE))
                 {
                     dev_state_type = true;
                     curr_sta = attr_value.attr_val_4->value.dev_state_att();
                     if (archive == true)
-                        prev_sta = attr.ext->prev_archive_event.value_4.dev_state_att();
+                        prev_sta = attr.prev_archive_event.value_4.dev_state_att();
                     else
-                        prev_sta = attr.ext->prev_change_event.value_4.dev_state_att();
+                        prev_sta = attr.prev_change_event.value_4.dev_state_att();
                 }
                 else if ((the_new_any != NULL) && (ty->kind() == CORBA::tk_enum))
                 {
                     dev_state_type = true;
                     *the_new_any >>= curr_sta;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_sta;
+                        attr.prev_archive_event.value >>= prev_sta;
                     else
-                        attr.ext->prev_change_event.value >>= prev_sta;
+                        attr.prev_change_event.value >>= prev_sta;
 
                 }
 
@@ -1119,23 +1341,23 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 //
 
                 bool long_type = false;
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_LONG))
+
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_LONG))
                 {
-                    long_type = true;
-                    curr_seq_lo = &attr_value.attr_val_4->value.long_att_value();
-                    if (archive == true)
-                        prev_seq_lo = &(attr.ext->prev_archive_event.value_4.long_att_value());
-                    else
-                        prev_seq_lo = &(attr.ext->prev_change_event.value_4.long_att_value());
+                	GET_SEQ(long_type,curr_seq_lo,long_att_value,prev_seq_lo,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_LONG))
+                {
+                	GET_SEQ(long_type,curr_seq_lo,long_att_value,prev_seq_lo,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_long))
                 {
                     long_type = true;
                     *the_new_any >>= curr_seq_lo;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_lo;
+                        attr.prev_archive_event.value >>= prev_seq_lo;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_lo;
+                        attr.prev_change_event.value >>= prev_seq_lo;
                 }
 
                 if (long_type == true)
@@ -1186,23 +1408,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool long_long_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_LONG64))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_LONG64))
                 {
-                    long_long_type = true;
-                    curr_seq_64 = &attr_value.attr_val_4->value.long64_att_value();
-                    if (archive == true)
-                        prev_seq_64 = &attr.ext->prev_archive_event.value_4.long64_att_value();
-                    else
-                        prev_seq_64 = &attr.ext->prev_change_event.value_4.long64_att_value();
+                	GET_SEQ(long_long_type,curr_seq_64,long64_att_value,prev_seq_64,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_LONG64))
+                {
+                	GET_SEQ(long_long_type,curr_seq_64,long64_att_value,prev_seq_64,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_longlong))
                 {
                     long_long_type = true;
                     *the_new_any >>= curr_seq_64;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_64;
+                        attr.prev_archive_event.value >>= prev_seq_64;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_64;
+                        attr.prev_change_event.value >>= prev_seq_64;
                 }
 
                 if (long_long_type == true)
@@ -1252,23 +1473,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool short_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_SHORT))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_SHORT))
                 {
-                    short_type = true;
-                    curr_seq_sh = &attr_value.attr_val_4->value.short_att_value();
-                    if (archive == true)
-                        prev_seq_sh = &attr.ext->prev_archive_event.value_4.short_att_value();
-                    else
-                        prev_seq_sh = &attr.ext->prev_change_event.value_4.short_att_value();
+                	GET_SEQ(short_type,curr_seq_sh,short_att_value,prev_seq_sh,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_SHORT))
+                {
+                	GET_SEQ(short_type,curr_seq_sh,short_att_value,prev_seq_sh,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_short))
                 {
                     short_type = true;
                     *the_new_any >>= curr_seq_sh;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_sh;
+                        attr.prev_archive_event.value >>= prev_seq_sh;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_sh;
+                        attr.prev_change_event.value >>= prev_seq_sh;
                 }
 
                 if (short_type == true)
@@ -1280,36 +1500,52 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
                         force_change = true;
                         return true;
                     }
-                    for (i=0; i<curr_seq_sh->length(); i++)
-                    {
-                        if (rel_change[0] != INT_MAX)
-                        {
-                            if ((*prev_seq_sh)[i] != 0)
-                            {
-                                delta_change_rel = ((*curr_seq_sh)[i] - (*prev_seq_sh)[i])*100/(*prev_seq_sh)[i];
-                            }
-                            else
-                            {
-                                delta_change_rel = 100;
-                                if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
-                            }
-                            if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
-                            {
-                                is_change = true;
-                                return(is_change);
-                            }
-                        }
-                        if (abs_change[0] != INT_MAX)
-                        {
-                            delta_change_abs = (*curr_seq_sh)[i] - (*prev_seq_sh)[i];
-                            if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
-                            {
-                                is_change = true;
-                                return(is_change);
-                            }
-                        }
-                    }
-                    return false;
+
+					if (attr.data_type == DEV_ENUM)
+					{
+						for (i=0; i<curr_seq_sh->length(); i++)
+						{
+							if ((*curr_seq_sh)[i] != (*prev_seq_sh)[i])
+							{
+								delta_change_rel = delta_change_abs = 100.;
+								is_change = true;
+							}
+							return is_change;
+						}
+					}
+					else
+					{
+						for (i=0; i<curr_seq_sh->length(); i++)
+						{
+							if (rel_change[0] != INT_MAX)
+							{
+								if ((*prev_seq_sh)[i] != 0)
+								{
+									delta_change_rel = ((*curr_seq_sh)[i] - (*prev_seq_sh)[i])*100/(*prev_seq_sh)[i];
+								}
+								else
+								{
+									delta_change_rel = 100;
+									if ((*curr_seq_sh)[i] == (*prev_seq_sh)[i]) delta_change_rel = 0;
+								}
+								if (delta_change_rel <= rel_change[0] || delta_change_rel >= rel_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+							if (abs_change[0] != INT_MAX)
+							{
+								delta_change_abs = (*curr_seq_sh)[i] - (*prev_seq_sh)[i];
+								if (delta_change_abs <= abs_change[0] || delta_change_abs >= abs_change[1])
+								{
+									is_change = true;
+									return(is_change);
+								}
+							}
+						}
+						return false;
+					}
                 }
 
 //
@@ -1318,29 +1554,29 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool double_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_DOUBLE))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_DOUBLE))
                 {
-                    double_type = true;
-                    curr_seq_db = &attr_value.attr_val_4->value.double_att_value();
-                    if (archive == true)
-                        prev_seq_db = &attr.ext->prev_archive_event.value_4.double_att_value();
-                    else
-                        prev_seq_db = &attr.ext->prev_change_event.value_4.double_att_value();
+                	GET_SEQ(double_type,curr_seq_db,double_att_value,prev_seq_db,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_DOUBLE))
+                {
+                	GET_SEQ(double_type,curr_seq_db,double_att_value,prev_seq_db,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_double))
                 {
                     double_type = true;
                     *the_new_any >>= curr_seq_db;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_db;
+                        attr.prev_archive_event.value >>= prev_seq_db;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_db;
+                        attr.prev_change_event.value >>= prev_seq_db;
                 }
 
                 if (double_type == true)
                 {
                     curr_seq_nb = curr_seq_db->length();
                     prev_seq_nb = prev_seq_db->length();
+
                     if (curr_seq_nb != prev_seq_nb)
                     {
                         force_change = true;
@@ -1350,6 +1586,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
                     {
                         if (rel_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_db)[i]) != 0 && Tango_isnan((*curr_seq_db)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             if ((*prev_seq_db)[i] != 0)
                             {
                                 delta_change_rel = ((*curr_seq_db)[i] - (*prev_seq_db)[i])*100/(*prev_seq_db)[i];
@@ -1368,6 +1610,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
                         }
                         if (abs_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_db)[i]) != 0 && Tango_isnan((*curr_seq_db)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             delta_change_abs = (*curr_seq_db)[i] - (*prev_seq_db)[i];
 
                             // Correct for rounding errors !
@@ -1391,23 +1639,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool string_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_STRING))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_STRING))
                 {
-                    string_type = true;
-                    curr_seq_str = &attr_value.attr_val_4->value.string_att_value();
-                    if (archive == true)
-                        prev_seq_str = &attr.ext->prev_archive_event.value_4.string_att_value();
-                    else
-                        prev_seq_str = &attr.ext->prev_change_event.value_4.string_att_value();
+                	GET_SEQ(string_type,curr_seq_str,string_att_value,prev_seq_str,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_STRING))
+                {
+					GET_SEQ(string_type,curr_seq_str,string_att_value,prev_seq_str,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_string))
                 {
                     string_type = true;
                     *the_new_any >>= curr_seq_str;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_str;
+                        attr.prev_archive_event.value >>= prev_seq_str;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_str;
+                        attr.prev_change_event.value >>= prev_seq_str;
                 }
 
                 if (string_type == true)
@@ -1437,23 +1684,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool float_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_FLOAT))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_FLOAT))
                 {
-                    float_type = true;
-                    curr_seq_fl = &attr_value.attr_val_4->value.float_att_value();
-                    if (archive == true)
-                        prev_seq_fl = &attr.ext->prev_archive_event.value_4.float_att_value();
-                    else
-                        prev_seq_fl = &attr.ext->prev_change_event.value_4.float_att_value();
+                	GET_SEQ(float_type,curr_seq_fl,float_att_value,prev_seq_fl,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_FLOAT))
+                {
+                	GET_SEQ(float_type,curr_seq_fl,float_att_value,prev_seq_fl,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_float))
                 {
                     float_type = true;
                     *the_new_any >>= curr_seq_fl;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_fl;
+                        attr.prev_archive_event.value >>= prev_seq_fl;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_fl;
+                        attr.prev_change_event.value >>= prev_seq_fl;
                 }
 
                 if (float_type == true)
@@ -1470,6 +1716,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
                     {
                         if (rel_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_fl)[i]) != 0 && Tango_isnan((*curr_seq_fl)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             if ((*prev_seq_fl)[i] != 0)
                             {
                                 delta_change_rel = ((*curr_seq_fl)[i] - (*prev_seq_fl)[i])*100/(*prev_seq_fl)[i];
@@ -1487,6 +1739,12 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
                         }
                         if (abs_change[0] != INT_MAX)
                         {
+                            if (Tango_isnan((*prev_seq_fl)[i]) != 0 && Tango_isnan((*curr_seq_fl)[i]) == 0)
+                            {
+                                is_change = true;
+                                return (is_change);
+                            }
+
                             delta_change_abs = (*curr_seq_fl)[i] - (*prev_seq_fl)[i];
 
                             // Correct for rounding errors !
@@ -1510,23 +1768,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool unsigned_short_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_USHORT))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_USHORT))
                 {
-                    unsigned_short_type = true;
-                    curr_seq_ush = &attr_value.attr_val_4->value.ushort_att_value();
-                    if (archive == true)
-                        prev_seq_ush = &attr.ext->prev_archive_event.value_4.ushort_att_value();
-                    else
-                        prev_seq_ush = &attr.ext->prev_change_event.value_4.ushort_att_value();
+                	GET_SEQ(unsigned_short_type,curr_seq_ush,ushort_att_value,prev_seq_ush,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_USHORT))
+                {
+                	GET_SEQ(unsigned_short_type,curr_seq_ush,ushort_att_value,prev_seq_ush,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_ushort))
                 {
                     unsigned_short_type = true;
                     *the_new_any >>= curr_seq_ush;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_ush;
+                        attr.prev_archive_event.value >>= prev_seq_ush;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_ush;
+                        attr.prev_change_event.value >>= prev_seq_ush;
                 }
 
                 if (unsigned_short_type == true)
@@ -1576,23 +1833,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool boolean_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_BOOL))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_BOOL))
                 {
-                    boolean_type = true;
-                    curr_seq_bo = &attr_value.attr_val_4->value.bool_att_value();
-                    if (archive == true)
-                        prev_seq_bo = &attr.ext->prev_archive_event.value_4.bool_att_value();
-                    else
-                        prev_seq_bo = &attr.ext->prev_change_event.value_4.bool_att_value();
+                	GET_SEQ(boolean_type,curr_seq_bo,bool_att_value,prev_seq_bo,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_BOOL))
+                {
+                	GET_SEQ(boolean_type,curr_seq_bo,bool_att_value,prev_seq_bo,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_boolean))
                 {
                     boolean_type = true;
                     *the_new_any >>= curr_seq_bo;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_bo;
+                        attr.prev_archive_event.value >>= prev_seq_bo;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_bo;
+                        attr.prev_change_event.value >>= prev_seq_bo;
                 }
 
                 if (boolean_type == true)
@@ -1622,23 +1878,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool char_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_UCHAR))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_UCHAR))
                 {
-                    char_type = true;
-                    curr_seq_uch = &attr_value.attr_val_4->value.uchar_att_value();
-                    if (archive == true)
-                        prev_seq_uch = &attr.ext->prev_archive_event.value_4.uchar_att_value();
-                    else
-                        prev_seq_uch = &attr.ext->prev_change_event.value_4.uchar_att_value();
+                	GET_SEQ(char_type,curr_seq_uch,uchar_att_value,prev_seq_uch,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_UCHAR))
+                {
+                	GET_SEQ(char_type,curr_seq_uch,uchar_att_value,prev_seq_uch,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_octet))
                 {
                     char_type = true;
                     *the_new_any >>= curr_seq_uch;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_uch;
+                        attr.prev_archive_event.value >>= prev_seq_uch;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_uch;
+                        attr.prev_change_event.value >>= prev_seq_uch;
                 }
 
                 if (char_type == true)
@@ -1688,23 +1943,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool unsigned_long_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_ULONG))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_ULONG))
                 {
-                    unsigned_long_type = true;
-                    curr_seq_ulo = &attr_value.attr_val_4->value.ulong_att_value();
-                    if (archive == true)
-                        prev_seq_ulo = &attr.ext->prev_archive_event.value_4.ulong_att_value();
-                    else
-                        prev_seq_ulo = &attr.ext->prev_change_event.value_4.ulong_att_value();
+                	GET_SEQ(unsigned_long_type,curr_seq_ulo,ulong_att_value,prev_seq_ulo,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_ULONG))
+                {
+                	GET_SEQ(unsigned_long_type,curr_seq_ulo,ulong_att_value,prev_seq_ulo,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_ulong))
                 {
                     unsigned_long_type = true;
                     *the_new_any >>= curr_seq_ulo;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_ulo;
+                        attr.prev_archive_event.value >>= prev_seq_ulo;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_ulo;
+                        attr.prev_change_event.value >>= prev_seq_ulo;
                 }
 
                 if (unsigned_long_type == true)
@@ -1754,23 +2008,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool unsigned_64_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_ULONG64))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_ULONG64))
                 {
-                    unsigned_64_type = true;
-                    curr_seq_u64 = &attr_value.attr_val_4->value.ulong64_att_value();
-                    if (archive == true)
-                        prev_seq_u64 = &attr.ext->prev_archive_event.value_4.ulong64_att_value();
-                    else
-                        prev_seq_u64 = &attr.ext->prev_change_event.value_4.ulong64_att_value();
+                	GET_SEQ(unsigned_64_type,curr_seq_u64,ulong64_att_value,prev_seq_u64,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_ULONG64))
+                {
+                	GET_SEQ(unsigned_64_type,curr_seq_u64,ulong64_att_value,prev_seq_u64,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_ulonglong))
                 {
                     unsigned_64_type = true;
                     *the_new_any >>= curr_seq_u64;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_u64;
+                        attr.prev_archive_event.value >>= prev_seq_u64;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_u64;
+                        attr.prev_change_event.value >>= prev_seq_u64;
 
                 }
 
@@ -1821,23 +2074,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 
                 bool state_type = false;
 
-                if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_STATE))
+                if ((attr_value.attr_val_5 != NULL) && (attr_value.attr_val_5->value._d() == ATT_STATE))
                 {
-                    state_type = true;
-                    curr_seq_state = &attr_value.attr_val_4->value.state_att_value();
-                    if (archive == true)
-                        prev_seq_state = &attr.ext->prev_archive_event.value_4.state_att_value();
-                    else
-                        prev_seq_state = &attr.ext->prev_change_event.value_4.state_att_value();
+                	GET_SEQ(state_type,curr_seq_state,state_att_value,prev_seq_state,attr_value.attr_val_5);
+                }
+                else if ((attr_value.attr_val_4 != NULL) && (attr_value.attr_val_4->value._d() == ATT_STATE))
+                {
+                	GET_SEQ(state_type,curr_seq_state,state_att_value,prev_seq_state,attr_value.attr_val_4);
                 }
                 else if ((the_new_any != NULL) && (ty_seq->kind() == CORBA::tk_enum))
                 {
                     state_type = true;
                     *the_new_any >>= curr_seq_state;
                     if (archive == true)
-                        attr.ext->prev_archive_event.value >>= prev_seq_state;
+                        attr.prev_archive_event.value >>= prev_seq_state;
                     else
-                        attr.ext->prev_change_event.value >>= prev_seq_state;
+                        attr.prev_change_event.value >>= prev_seq_state;
                 }
 
                 if (state_type == true)
@@ -1869,13 +2121,22 @@ bool EventSupplier::detect_change(Attribute &attr,struct AttributeData &attr_val
 }
 
 
-//+----------------------------------------------------------------------------
+//+--------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::push_att_data_ready_event()
+// method :
+//		EventSupplier::push_att_data_ready_event()
 //
-// description :    Push a data ready event
+// description :
+//		Push a data ready event
 //
-//-----------------------------------------------------------------------------
+// argument :
+//		in :
+//			- device_impl : Pointer to device
+//			- attr_name : Attribute name
+//			- data_type : Attribute data type
+//			- ctr : Counter sent in event
+//
+//-------------------------------------------------------------------------------------------------------------
 
 void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const string &attr_name,long data_type,DevLong ctr)
 {
@@ -1893,7 +2154,7 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 	dat_ready.data_type = (int)data_type;
 	dat_ready.ctr = ctr;
 
-    AttributeData ad;
+    SuppliedEventData ad;
     ::memset(&ad,0,sizeof(ad));
     ad.attr_dat_ready = &dat_ready;
 
@@ -1905,51 +2166,88 @@ void EventSupplier::push_att_data_ready_event(DeviceImpl *device_impl,const stri
 		   filterable_data_lg,
 	       ad,
 		   const_cast<string &>(attr_name),
-		   NULL);
+		   NULL,true);
 }
 
 
-//+----------------------------------------------------------------------------
+//+-----------------------------------------------------------------------------------------------------------------
 //
-// method : 		EventSupplier::push_att_conf_event()
+// method :
+//		EventSupplier::push_att_conf_event()
 //
-// description : 	Method to push attribute configration event
+// description :
+//		Method to push attribute configration event
 //
-// argument : in :	device_impl : The device
-//			        attr_conf : The attribute configuration
-//			        except : The exception thrown during the last
-//				            attribute reading. NULL if no exception
-//                  attr_name : The attribute name
+// argument :
+//		in :
+//			- device_impl : The device
+//			- attr_conf : The attribute configuration
+//			- except : The exception thrown during the last attribute reading. NULL if no exception
+//          - attr_name : The attribute name
 //
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 
-void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &attr_conf,DevFailed *except,string &attr_name)
+void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,SuppliedEventData &attr_conf,DevFailed *except,string &attr_name)
 {
     string event, domain_name;
-    time_t now, att_conf_subscription;
+    time_t now,att_conf_subscription,attr_sub;
 
     cout3 << "EventSupplier::push_att_conf_events(): called for attribute " << attr_name << endl;
 
     Attribute &attr = device_impl->dev_attr->get_attr_by_name(attr_name.c_str());
 
 //
-// Return if there is no client
+// Called for AttributeConfig_3 or AttributeConfig_5 ?
 //
 
-    if (attr.ext->event_attr_conf_subscription == 0)
-        return;
+	bool conf5 = false;
+	int vers = 4;
+
+	if (attr_conf.attr_conf_5 != NULL)
+	{
+		conf5 = true;
+		vers = 5;
+	}
+
+//
+// Return if there is no client or if the last client subscription is more than 10 mins ago
+//
+
+    {
+    	omni_mutex_lock oml(event_mutex);
+
+		if (conf5 == true)
+			attr_sub = attr.event_attr_conf5_subscription;
+		else
+			attr_sub = attr.event_attr_conf_subscription;
+    }
+
+	if (attr_sub == 0)
+		return;
 
     now = time(NULL);
-    att_conf_subscription = now - attr.ext->event_attr_conf_subscription;
+	att_conf_subscription = now - attr_sub;
 
-    cout3 << "EventSupplier::push_att_conf_events(): last subscription " << att_conf_subscription << endl;
+    cout3 << "EventSupplier::push_att_conf_events(): delta since last subscription " << att_conf_subscription << endl;
+
+    if (att_conf_subscription > EVENT_RESUBSCRIBE_PERIOD)
+	{
+		attr.remove_client_lib(vers,string(EventName[ATTR_CONF_EVENT]));
+		return;
+	}
+
+//
+// Push event
+//
 
     vector<string> filterable_names;
     vector<double> filterable_data;
     vector<string> filterable_names_lg;
     vector<long> filterable_data_lg;
 
-    string ev_type(CONF_TYPE_EVENT);
+    string ev_type = CONF_TYPE_EVENT;
+	if (conf5 == true)
+		ev_type = EVENT_COMPAT_IDL5 + ev_type;
 
     push_event(device_impl,
            ev_type,
@@ -1959,7 +2257,180 @@ void EventSupplier::push_att_conf_events(DeviceImpl *device_impl,AttributeData &
            filterable_data_lg,
            attr_conf,
            attr_name,
-           except);
+           except,
+           true);
+}
+
+//+--------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventSupplier::push_dev_intr_change_event()
+//
+// description :
+//		Push a device interface change event
+//
+// argument :
+//		in :
+//			- device_impl : Pointer to device
+//			- dev_started : Device started flag
+//			- cmds_list: Device commands list
+//			- atts_list: Device attribute list
+//
+//-------------------------------------------------------------------------------------------------------------
+
+void EventSupplier::push_dev_intr_change_event(DeviceImpl *device_impl,bool dev_start,DevCmdInfoList_2 *cmds_list,AttributeConfigList_5 *atts_list)
+{
+	cout3 << "EventSupplier::push_dev_intr_change_event(): called for device " << device_impl->get_name() << endl;
+
+	vector<string> filterable_names;
+	vector<double> filterable_data;
+	vector<string> filterable_names_lg;
+	vector<long> filterable_data_lg;
+
+	string ev_type(EventName[INTERFACE_CHANGE_EVENT]);
+    time_t now, dev_intr_subscription;
+
+//
+// If no client, do not send event
+//
+
+    now = time(NULL);
+	dev_intr_subscription = now - device_impl->get_event_intr_change_subscription();
+
+    cout3 << "EventSupplier::push_dev_intr_event(): delta since last subscription " << dev_intr_subscription << endl;
+
+    if (dev_intr_subscription > EVENT_RESUBSCRIBE_PERIOD)
+	{
+		delete cmds_list;
+		delete atts_list;
+
+		return;
+	}
+
+	DevIntrChange dev_intr;
+
+	dev_intr.dev_started = dev_start;
+	dev_intr.cmds = *cmds_list;
+	dev_intr.atts = *atts_list;
+
+    SuppliedEventData ad;
+    ::memset(&ad,0,sizeof(ad));
+    ad.dev_intr_change = &dev_intr;
+
+	string att_name("dummy");
+	push_event(device_impl,
+		   ev_type,
+		   filterable_names,
+		   filterable_data,
+		   filterable_names_lg,
+		   filterable_data_lg,
+	       ad,
+		   att_name,
+		   NULL,
+		   true);
+
+//
+// Free memory allocated for the two pointers we receive
+//
+
+	delete cmds_list;
+	delete atts_list;
+}
+
+//+--------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventSupplier::any_dev_intr_client
+//
+// description :
+//		Check if there is at least a device interface change client
+//
+// argument :
+//		in :
+//			- device_impl : Pointer to device
+//
+//	return :
+//		True if there is at least one client listening for this event
+//
+//-------------------------------------------------------------------------------------------------------------
+
+bool EventSupplier::any_dev_intr_client(DeviceImpl *device_impl)
+{
+	bool ret = false;
+
+    time_t now = time(NULL);
+	time_t dev_intr_subscription = now - device_impl->get_event_intr_change_subscription();
+
+    if (dev_intr_subscription < EVENT_RESUBSCRIBE_PERIOD)
+		ret = true;
+
+	return ret;
+}
+
+void EventSupplier::convert_att_event_to_5(struct EventSupplier::SuppliedEventData &attr_value,
+										   struct EventSupplier::SuppliedEventData &sent_value,
+										   bool &need_free,Attribute &attr)
+{
+	if (attr_value.attr_val_3 != Tango_nullptr)
+	{
+		AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
+		attr.AttributeValue_3_2_AttributeValue_5(attr_value.attr_val_3,tmp_attr_val_5);
+		sent_value.attr_val_5 = tmp_attr_val_5;
+		need_free = true;
+	}
+	else if (attr_value.attr_val_4 != Tango_nullptr)
+	{
+		AttributeValue_5 *tmp_attr_val_5 = new AttributeValue_5();
+		attr.AttributeValue_4_2_AttributeValue_5(attr_value.attr_val_4,tmp_attr_val_5);
+		sent_value.attr_val_5 = tmp_attr_val_5;
+		need_free = true;
+	}
+	else
+		sent_value.attr_val_5 = attr_value.attr_val_5;
+}
+
+void EventSupplier::convert_att_event_to_4(struct EventSupplier::SuppliedEventData &attr_value,
+										   struct EventSupplier::SuppliedEventData &sent_value,
+										   bool &need_free,Attribute &attr)
+{
+	if (attr_value.attr_val_3 != Tango_nullptr)
+	{
+		AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
+		attr.AttributeValue_3_2_AttributeValue_4(attr_value.attr_val_3,tmp_attr_val_4);
+		sent_value.attr_val_4 = tmp_attr_val_4;
+		need_free = true;
+	}
+	else if (attr_value.attr_val_5 != Tango_nullptr)
+	{
+		AttributeValue_4 *tmp_attr_val_4 = new AttributeValue_4();
+		attr.AttributeValue_5_2_AttributeValue_4(attr_value.attr_val_5,tmp_attr_val_4);
+		sent_value.attr_val_4 = tmp_attr_val_4;
+		need_free = true;
+	}
+	else
+		sent_value.attr_val_4 = attr_value.attr_val_4;
+}
+
+void EventSupplier::convert_att_event_to_3(struct EventSupplier::SuppliedEventData &attr_value,
+										   struct EventSupplier::SuppliedEventData &sent_value,
+										   bool &need_free,Attribute &attr)
+{
+	if (attr_value.attr_val_4 != Tango_nullptr)
+	{
+		AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
+		attr.AttributeValue_4_2_AttributeValue_3(attr_value.attr_val_4,tmp_attr_val_3);
+		sent_value.attr_val_3 = tmp_attr_val_3;
+		need_free = true;
+	}
+	else if (attr_value.attr_val_5 != Tango_nullptr)
+	{
+		AttributeValue_3 *tmp_attr_val_3 = new AttributeValue_3();
+		attr.AttributeValue_5_2_AttributeValue_3(attr_value.attr_val_5,tmp_attr_val_3);
+		sent_value.attr_val_3 = tmp_attr_val_3;
+		need_free = true;
+	}
+	else
+		sent_value.attr_val_3 = attr_value.attr_val_3;
 }
 
 } /* End of Tango namespace */

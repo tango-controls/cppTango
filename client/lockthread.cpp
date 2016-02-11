@@ -1,41 +1,37 @@
 static const char *RcsId = "$Id$";
 
-//+============================================================================
+//+==================================================================================================================
 //
 // file :               LockThread.cpp
 //
-// description :        C++ source code for the LockThread class.
-//			This class is used for the locking thread. The rule of
-//			this thread is to regulary send the device locking command
-//			to a DS admin device
+// description :        C++ source code for the LockThread class. This class is used for the locking thread. The rule of
+//						this thread is to regulary send the device locking command to a DS admin device
 //
 // project :            TANGO
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//-============================================================================
+//-=================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -58,13 +54,15 @@ static const char *RcsId = "$Id$";
 namespace Tango
 {
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::LockThread
+// method :
+//		LockThread::LockThread
 //
-// description : 	The locking thread constructor.
+// description :
+//		The locking thread constructor.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 LockThread::LockThread(LockThCmd &cmd,TangoMonitor &m,DeviceProxy *adm,string &dev,DevLong per):
 shared_cmd(cmd),p_mon(m),admin_proxy(adm)
@@ -82,13 +80,15 @@ shared_cmd(cmd),p_mon(m),admin_proxy(adm)
 	sleep = period_ms;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::run_undetached
+// method :
+//		LockThread::run_undetached
 //
-// description : 	The locking thread main code
+// description :
+//		The locking thread main code
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void LockThread::run(TANGO_UNUSED(void *ptr))
 {
@@ -148,22 +148,24 @@ void LockThread::run(TANGO_UNUSED(void *ptr))
 
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::get_command
+// method :
+//		LockThread::get_command
 //
-// description : 	This method wait on the shared monitor for a new
-//			command to be sent to the polling thread. The
-//			thread waits with a timeout. If the thread is
-//			awaken due to the timeout, false is returned.
-//			If the work list is empty, the thread waits for ever.
+// description :
+//		This method wait on the shared monitor for a new command to be sent to the polling thread. The thread waits
+//		with a timeout. If the thread is awaken due to the timeout, false is returned. If the work list is empty,
+//		the thread waits for ever.
 //
-// argument : in : 	tout : The timeout in mS
+// argument :
+//		in :
+//			- tout : The timeout in mS
 //
-// The method returns true if the thread has been awaken due to a new
-// command sent by the main thread
+// returns :
+//		The command type enum: Is it a real command or a time-out
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 LockCmdType LockThread::get_command(DevLong tout)
 {
@@ -200,14 +202,15 @@ LockCmdType LockThread::get_command(DevLong tout)
 	return ret;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::execute_cmd
+// method :
+//		LockThread::execute_cmd
 //
-// description : 	This method is called when a command has been received
-//			It execute the command!
+// description :
+//		This method is called when a command has been received. It execute the command!
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 static bool LockThread_pred(LockedDevice lock_dev,string d_name)
 {
@@ -216,7 +219,6 @@ static bool LockThread_pred(LockedDevice lock_dev,string d_name)
 
 void LockThread::execute_cmd()
 {
-	vector<string>::iterator pos;
 	bool need_exit = false;
 
 	switch (local_cmd.cmd_code)
@@ -307,8 +309,7 @@ void LockThread::execute_cmd()
 	}
 
 //
-// If it is the last device, ask thread to exit buut delete the
-// proxy first
+// If it is the last device, ask thread to exit buut delete the proxy first
 //
 
 	if (locked_devices.empty() == true)
@@ -317,15 +318,15 @@ void LockThread::execute_cmd()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::one_more_lock
+// method :
+//		LockThread::one_more_lock
 //
 // description :
+//		Send ReLockDevices command to the admin device
 //
-// argument : in :
-//
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void LockThread::one_more_lock()
 {
@@ -352,9 +353,9 @@ void LockThread::one_more_lock()
 
 		for (unsigned long loop = 0;loop < e.errors.length();loop++)
 		{
-			if ((::strcmp(e.errors[loop].reason.in(),"API_DeviceLocked") == 0) ||
-			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotLocked") == 0) ||
-			    (::strcmp(e.errors[loop].reason.in(),"API_DeviceNotExported") == 0))
+			if ((::strcmp(e.errors[loop].reason.in(),API_DeviceLocked) == 0) ||
+			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotLocked) == 0) ||
+			    (::strcmp(e.errors[loop].reason.in(),API_DeviceNotExported) == 0))
 			{
 				string error_message(e.errors[loop].desc.in());
 				string::size_type pos = error_message.find(':');
@@ -381,15 +382,15 @@ void LockThread::one_more_lock()
 	}
 }
 
-//+-------------------------------------------------------------------------
+//+-------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::unlock_all_devs
+// method :
+//		LockThread::unlock_all_devs
 //
 // description :
+//		Unlock all devices handled by this thread
 //
-// argument : in :
-//
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void LockThread::unlock_all_devs()
 {
@@ -416,15 +417,16 @@ void LockThread::unlock_all_devs()
 
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::update_th_period
+// method :
+//		LockThread::update_th_period
 //
-// description : 	This method manage the thread update period
-//					The update period is the smallest lock validity of all the
-//					locked device minus 0.5 sec
+// description :
+//		This method manage the thread update period. The update period is the smallest lock validity of all the
+//		locked device minus 0.5 sec
 //
-//--------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void LockThread::update_th_period()
 {
@@ -451,14 +453,15 @@ void LockThread::update_th_period()
 	period_ms = tmp_usec / 1000;
 }
 
-//+-------------------------------------------------------------------------
+//+------------------------------------------------------------------------------------------------------------------
 //
-// method : 		LockThread::compute_sleep_time
+// method :
+//		LockThread::compute_sleep_time
 //
-// description : 	This method computes how many mS the thread should
-//			sleep before the next lock time.
+// description :
+//		This method computes how many mS the thread should sleep before the next lock time.
 //
-//--------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 
 void LockThread::compute_sleep_time(bool cmd)
 {

@@ -9,7 +9,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -38,6 +38,7 @@
 
 #include <tango.h>
 #include <pollobj.h>
+#include <utils.h>
 
 #include <list>
 
@@ -78,7 +79,7 @@ struct WorkItem
 	struct timeval		wake_up_date;	// The next wake up date
 	int 				update;			// The update period (mS)
 	PollObjType			type;			// Object type (command/attr)
-	string				name;			// Object name
+	vector<string>		name;			// Object name(s)
 	struct timeval		needed_time;	// Time needed to execute action
 };
 
@@ -109,6 +110,7 @@ public:
 	void start() {start_undetached();}
 	void execute_cmd();
 	void set_local_cmd(PollThCmd &cmd) {local_cmd = cmd;}
+	void set_polling_bef_9(bool _v) {polling_bef_9 = _v;}
 
 protected:
 	PollCmdType get_command(long);
@@ -121,12 +123,16 @@ protected:
 	void poll_attr(WorkItem &);
 	void eve_heartbeat();
 	void store_subdev();
+	void auto_unsub();
 
 	void print_list();
 	void insert_in_list(WorkItem &);
-	void add_random_delay(struct timeval &);
+	void add_insert_in_list(WorkItem &);
 	void tune_list(bool,long);
 	void err_out_of_sync(WorkItem &);
+
+    template <typename T> void robb_data(T &,T &);
+    template <typename T> void copy_remaining(T &,T &);
 
 	PollThCmd			&shared_cmd;
 	TangoMonitor		&p_mon;
@@ -152,10 +158,15 @@ private:
 	AttributeValue		dummy_att;
 	AttributeValue_3	dummy_att3;
 	AttributeValue_4 	dummy_att4;
+	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
 	long				auto_upd;
+	string              auto_name;
 	bool				send_heartbeat;
+	u_int				heartbeat_ctr;
+	u_int               previous_nb_late;
+	bool                polling_bef_9;
 
 	ClntIdent 			dummy_cl_id;
 	CppClntIdent 		cci;
@@ -165,7 +176,6 @@ public:
 	static string	   	name_to_del;
 	static PollObjType	type_to_del;
 };
-
 
 //
 // Three macros

@@ -1,4 +1,4 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :               except.h
 //
@@ -8,29 +8,27 @@
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//==================================================================================================================
 
 #ifndef _EXCEPT_H
 #define _EXCEPT_H
@@ -41,20 +39,25 @@
 
 using namespace std;
 
+
 namespace Tango
 {
 
-//=============================================================================
+class DeviceImpl;
+
+//==================================================================================================================
 //
-//			The Except class
+// Class :
+//		Except
 //
-// description :	This class is a container for all exceptions related
-//			methods to be used in aa Tango device server/client.
-//			Most of these methods are static.
+// description :
+//		This class is a container for all exceptions related methods to be used in aa Tango device server/client.
+//		Most of these methods are static.
 //
-//=============================================================================
+//==================================================================================================================
 
 #define NOSPACEINDOC_EXCEPT
+
 
 /**
  * Container class for all exception related methods. Most of these methods are
@@ -62,6 +65,10 @@ namespace Tango
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
+ * @ingroup Client
  */
 
 class Except
@@ -1700,6 +1707,144 @@ public:
 
 
 /**
+ * Throw a TANGO MultiDevFailed exception.
+ *
+ * Throw a MultiDevFailed exception with one more DevError
+ * object for the attribute with name given as first parameter.
+ * A default value "Tango::ERR" is defined for the new DevError
+ * severity field.
+ * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
+ * The memory used by the origin and desc parameters will be freed by this method
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ *
+ * @param att_name The attribute name
+ * @param reason The exception DevError object reason field
+ * @param desc The exception DevError object desc field
+ * @param origin The exception DevError object origin field
+ * @param sever The exception DevError object severity field
+ * @exception MultiDevFailed The thrown exception.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>MultiDevFailed</b> exception specification
+ */
+
+	static inline void throw_named_exception(const char *att_name,const char *reason,
+					   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR)
+	{
+		Tango::NamedDevErrorList errors(1);
+
+		errors.length(1);
+		errors[0].name = CORBA::string_dup(att_name);
+		errors[0].index_in_call = 999;
+		errors[0].err_list.length(1);
+		errors[0].err_list[0].desc = CORBA::string_dup(desc);
+		errors[0].err_list[0].severity = sever;
+		errors[0].err_list[0].reason = CORBA::string_dup(reason);
+		errors[0].err_list[0].origin = CORBA::string_dup(origin);
+
+		throw Tango::MultiDevFailed(errors);
+	}
+
+/**
+ * Throw a TANGO MultiDevFailed exception.
+ *
+ * Throw a MultiDevFailed exception with one more DevError
+ * object for the attribute list with names given as first parameter.
+ * A default value "Tango::ERR" is defined for the new DevError
+ * severity field.
+ * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
+ * The memory used by the origin and desc parameters will be freed by this method
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ *
+ * @param atts The attributes name vector
+ * @param reason The exception DevError object reason field
+ * @param desc The exception DevError object desc field
+ * @param origin The exception DevError object origin field
+ * @param sever The exception DevError object severity field
+ * @exception MultiDevFailed The thrown exception.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>MultiDevFailed</b> exception specification
+ */
+	static inline void throw_named_exception(vector<string> &atts,const char *reason,
+					   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR)
+	{
+		unsigned int a_size = (unsigned int)atts.size();
+		Tango::NamedDevErrorList errors(a_size);
+
+		errors.length(a_size);
+		for (unsigned int loop = 0;loop < a_size;loop++)
+		{
+			errors[loop].name = CORBA::string_dup(atts[loop].c_str());
+			errors[loop].index_in_call = 999;
+			errors[loop].err_list.length(1);
+			errors[loop].err_list[0].desc = CORBA::string_dup(desc);
+			errors[loop].err_list[0].severity = sever;
+			errors[loop].err_list[0].reason = CORBA::string_dup(reason);
+			errors[loop].err_list[0].origin = CORBA::string_dup(origin);
+		}
+
+		throw Tango::MultiDevFailed(errors);
+	}
+
+/**
+ * Throw a TANGO MultiDevFailed exception.
+ *
+ * Throw a MultiDevFailed exception with one more DevError
+ * object for one attribute with index given as second parameter.
+ * The attributes index is the index received by the write_attr_hardware() method.
+ * A default value "Tango::ERR" is defined for the new DevError
+ * severity field.
+ * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
+ *
+ * The memory used by the origin and desc parameters will be freed by this method
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ *
+ * @param d The device pointer
+ * @param att_idx The attributes index
+ * @param reason The exception DevError object reason field
+ * @param desc The exception DevError object desc field
+ * @param origin The exception DevError object origin field
+ * @param sever The exception DevError object severity field
+ * @exception MultiDevFailed The thrown exception.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>MultiDevFailed</b> exception specification
+ */
+
+	static void throw_named_exception(Tango::DeviceImpl *d,long att_idx,const char *reason,
+				   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR);
+
+/**
+ * Throw a TANGO MultiDevFailed exception.
+ *
+ * Throw a MultiDevFailed exception with one more DevError
+ * object for the attribute list with indexes given as second parameter.
+ * The attributes indexes are the index received by the write_attr_hardware() method.
+ * A default value "Tango::ERR" is defined for the new DevError
+ * severity field.
+ * Note that throwing MultiDevFailed exception is allowed only in attribute writing methods.
+ *
+ * The memory used by the origin and desc parameters will be freed by this method
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>DevFailed</b> exception specification
+ *
+ * @param d The device pointer
+ * @param atts The attributes indexes vector
+ * @param reason The exception DevError object reason field
+ * @param desc The exception DevError object desc field
+ * @param origin The exception DevError object origin field
+ * @param sever The exception DevError object severity field
+ * @exception MultiDevFailed The thrown exception.
+ * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
+ * <b>MultiDevFailed</b> exception specification
+ */
+
+	static void throw_named_exception(Tango::DeviceImpl *d,vector<long> &atts,const char *reason,
+				   const char *desc,const char *origin,Tango::ErrSeverity sever = Tango::ERR);
+
+
+/**
  * Compare two Tango DevFailed exceptions for equality
  *
  * The two DevFailed exceptions are verified by comparing the
@@ -1717,10 +1862,13 @@ public:
 
 //@}
 
+/// @privatesection
+
 	static char *print_CORBA_SystemException(const CORBA::SystemException *);
 	static omni_mutex the_mutex;
 
 protected:
+/// @privatesection
 	static char mess[256];
 };
 

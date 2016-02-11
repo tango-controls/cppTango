@@ -1,12 +1,14 @@
 static const char *RcsId = "$Id$\n$Name$";
+
+//==================================================================================================================
 //
 // dbapi_class.cpp - C++ source code file for TANGO dbapi class DbClass
 //
-// programmer 	- Andy Gotz (goetz@esrf.fr)
+// programmer 	- Andy Gotz (goetz@esrf.fr) - E. Taurel
 //
 // original 	- October 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -26,6 +28,7 @@ static const char *RcsId = "$Id$\n$Name$";
 // You should have received a copy of the GNU Lesser General Public License
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 //
+//====================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -38,57 +41,64 @@ using namespace CORBA;
 namespace Tango
 {
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::DbClass() - constructor to create a DbClass object for
-//			accessing a class of this name in the specified
-//			  TANGO database (import/export info and properties)
+// method:
+// 		DbClass::DbClass()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Constructor to create a DbClass object for accessing a class of this name in the specified
+//		TANGO database (import/export info and properties)
+//
+// argument:
+//		in :
+//			- class_name : The class name
+//			- class_dbase : The database object ptr
+//
+//------------------------------------------------------------------------------------------------------------------
 
-DbClass::DbClass(string class_name, Database *class_dbase):ext(Tango_NullPtr)
+DbClass::DbClass(string class_name, Database *class_dbase):ext(Tango_nullptr)
 {
 	name = string(class_name);
 	dbase = class_dbase;
 	ext_dbase = true;
 }
 
-//-----------------------------------------------------------------------------
-//
-// DbClass::DbClass() - constructor to create a DbClass object for
-//			accessing a class of this name without specifying
-//			the TANGO database.
-//
-//-----------------------------------------------------------------------------
-
-DbClass::DbClass(string class_name):ext(Tango_NullPtr)
+DbClass::DbClass(string class_name):ext(Tango_nullptr)
 {
 	name = string(class_name);
 	db_ind = ApiUtil::instance()->get_db_ind();
 	ext_dbase = false;
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::~DbClass() - destructor to destroy a DbClass object
+// method:
+// 		DbClass::~DbClass()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Destructor to destroy a DbClass object
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 DbClass::~DbClass()
 {
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::get_property() - public method to get class properties from the database
+// method:
+// 		DbClass::get_property()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Public method to get class properties from the database
+//
+//---------------------------------------------------------------------------------------------------------------------
 
 void DbClass::get_property(DbData &db_data)
 {
 //
-// Try to get db server cache in case we are called during a DS
-// startup sequence
+// Try to get db server cache in case we are called during a DS startup sequence
 //
 
 	ApiUtil *au = ApiUtil::instance();
@@ -113,11 +123,15 @@ void DbClass::get_property(DbData &db_data)
 	}
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::put_property() - public method to put class properties from the database
+// method:
+// 		DbClass::put_property()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Public method to put class properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DbClass::put_property(DbData &db_data)
 {
@@ -161,11 +175,15 @@ void DbClass::put_property(DbData &db_data)
 	}
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::delete_property() - public method to delete class properties from the database
+// method:
+// 		DbClass::delete_property()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Public method to delete class properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DbClass::delete_property(DbData &db_data)
 {
@@ -178,12 +196,15 @@ void DbClass::delete_property(DbData &db_data)
 	}
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::get_attribute_property() - public method to get class attribute
-//           properties from the database
+// method:
+//		DbClass::get_attribute_property()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Public method to get class attribute properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DbClass::get_attribute_property(DbData &db_data)
 {
@@ -196,12 +217,15 @@ void DbClass::get_attribute_property(DbData &db_data)
 	}
 }
 
-//-----------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::put_attribute_property() - public method to put class attribute
-//           properties from the database
+// method:
+// 		DbClass::put_attribute_property()
 //
-//-----------------------------------------------------------------------------
+// description:
+//		Public method to put class attribute properties from the database
+//
+//-------------------------------------------------------------------------------------------------------------------
 
 void DbClass::put_attribute_property(DbData &db_data)
 {
@@ -214,12 +238,15 @@ void DbClass::put_attribute_property(DbData &db_data)
 	}
 }
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------
 //
-// DbClass::delete_attribute_property() - public method to delete class attribute
-//           properties from the database
+// method:
+// 		DbClass::delete_attribute_property()
 //
-//-----------------------------------------------------------------------------
+// descriptio:
+//		Public method to delete class attribute properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
 
 void DbClass::delete_attribute_property(DbData &db_data)
 {
@@ -229,6 +256,69 @@ void DbClass::delete_attribute_property(DbData &db_data)
 	{
 		ApiUtil *au = ApiUtil::instance();
 		(au->get_db_vect())[db_ind]->delete_class_attribute_property(name, db_data);
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method:
+// 		DbClass::get_pipe_property()
+//
+// description:
+//		Public method to get class pipe properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void DbClass::get_pipe_property(DbData &db_data)
+{
+	if (ext_dbase == true)
+		dbase->get_class_pipe_property(name, db_data);
+	else
+	{
+		ApiUtil *au = ApiUtil::instance();
+		(au->get_db_vect())[db_ind]->get_class_pipe_property(name, db_data);
+	}
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method:
+// 		DbClass::put_pipe_property()
+//
+// description:
+//		Public method to put class pipe properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void DbClass::put_pipe_property(DbData &db_data)
+{
+	if (ext_dbase == true)
+		dbase->put_class_pipe_property(name, db_data);
+	else
+	{
+		ApiUtil *au = ApiUtil::instance();
+		(au->get_db_vect())[db_ind]->put_class_pipe_property(name, db_data);
+	}
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+//
+// method:
+// 		DbClass::delete_pipe_property()
+//
+// description:
+//		Public method to delete class pipe properties from the database
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void DbClass::delete_pipe_property(DbData &db_data)
+{
+	if (ext_dbase == true)
+		dbase->delete_class_pipe_property(name, db_data);
+	else
+	{
+		ApiUtil *au = ApiUtil::instance();
+		(au->get_db_vect())[db_ind]->delete_class_pipe_property(name, db_data);
 	}
 }
 

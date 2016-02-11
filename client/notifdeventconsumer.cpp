@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$";
 ///
 ///		original : 16 August 2011
 ///
-// Copyright (C) :      2011,2012
+// Copyright (C) :      2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -231,12 +231,15 @@ void NotifdEventConsumer::cleanup_EventChannel_map()
 //                                         entry in the event_callback_map
 //                  - dd : The data returned by the DS admin device
 //                         xxxSubscriptionChange command
+//                  - valid_end : Valid endpoint in case the DS has retruned several
+//                                possible endpoints
 //
 //-----------------------------------------------------------------------------
 
 void NotifdEventConsumer::connect_event_system(string &device_name,string &att_name,string &event_name,
                                               const vector<string> &filters,EvChanIte &evt_it,
-                                              EventCallBackStruct &new_event_callback,TANGO_UNUSED(DeviceData &dd))
+                                              EventCallBackStruct &new_event_callback,TANGO_UNUSED(DeviceData &dd),
+                                              TANGO_UNUSED(size_t valid_end))
 {
 //
 // Build a filter using the CORBA Notify constraint Language
@@ -258,13 +261,13 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
   	}
 	catch (CORBA::COMM_FAILURE &)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught CORBA::COMM_FAILURE exception while creating event filter (check filter)",
                        	(const char*)"NotifdEventConsumer::connect_event_system()");
   	}
 	catch (...)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while creating event filter (check filter)",
                        	(const char*)"NotifdEventConsumer::connect_event_system()");
   	}
@@ -343,7 +346,7 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
 		catch (...) { }
 
     	filter = CosNotifyFilter::Filter::_nil();
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while creating event filter (check filter)",
                        	(const char*)"NotifdEventConsumer::connect_event_system()");
   	}
@@ -419,7 +422,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 			o << channel_name;
 			o << " has no event channel defined in the database\n";
 			o << "Maybe the server is not running or is not linked with Tango release 4.x (or above)... " << ends;
-			Except::throw_exception((const char *)"API_NotificationServiceFailed",
+			Except::throw_exception((const char *)API_NotificationServiceFailed,
 			      			o.str(),
 			      			(const char *)"NotifdEventConsumer::connect_event_channel");
 		}
@@ -437,9 +440,9 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 		try
 		{
-			DeviceData dd;
-			dd = adm.command_inout("QueryEventChannelIOR");
-			dd >> channel_ior;
+			DeviceData ddd;
+			ddd = adm.command_inout("QueryEventChannelIOR");
+			ddd >> channel_ior;
 			channel_exported = true;
 
 			// get the hostname where the notifyd should be running
@@ -453,7 +456,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 			o << channel_name;
 			o << " has no event channel\n";
 			o << "Maybe the server is not running or is not linked with Tango release 4.x (or above)... " << ends;
-			Except::throw_exception((const char *)"API_NotificationServiceFailed",
+			Except::throw_exception((const char *)API_NotificationServiceFailed,
 			      			o.str(),
 			      			(const char *)"NotifdEventConsumer::connect_event_channel");
 		}
@@ -479,8 +482,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		}
 		catch (...)
 		{
-                        //cerr << "Failed to narrow EventChannel from notification daemon (hint: make sure the notifd process is running on this host)" << endl;
-         	EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+         	EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                         	(const char*)"Failed to narrow EventChannel from notification daemon (hint: make sure the notifd process is running on this host)",
                         	(const char*)"NotifdEventConsumer::connect_event_channel()");
 		}
@@ -507,15 +509,14 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		if (CORBA::is_nil(consumerAdmin))
 		{
         		//cerr << "Could not get CosNotifyChannelAdmin::ConsumerAdmin" << endl;
-			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to get default Consumer admin from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
-        	exit((void*)1);
     	}
 	}
 	catch (...)
 	{
-     	EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+     	EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Failed to get default Consumer admin from notification daemon (hint: make sure the notifd process is running on this host)",
                        	(const char*)"NotifdEventConsumer::connect_event_channel()");
 	}
@@ -535,7 +536,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		if (CORBA::is_nil(proxySupplier))
 		{
         		//cerr << "Could not get CosNotifyChannelAdmin::ProxySupplier" << endl;
-			EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+			EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to obtain a push supplier from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
     	}
@@ -546,7 +547,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		if (CORBA::is_nil(structuredProxyPushSupplier))
 		{
        			//cerr << "Tango::NotifdEventConsumer::NotifdEventConsumer() could not get CosNotifyChannelAdmin::StructuredProxyPushSupplier" << endl;
-       		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+       		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        		(const char*)"Failed to narrow the push supplier from notification daemon (hint: make sure the notifd process is running on this host)",
                        		(const char*)"NotifdEventConsumer::connect_event_channel()");
     	}
@@ -560,7 +561,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 	}
 	catch(const CosNotifyChannelAdmin::AdminLimitExceeded&)
 	{
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Failed to get PushSupplier from notification daemon due to AdminLimitExceeded (hint: make sure the notifd process is running on this host)",
                        	(const char*)"NotifdEventConsumer::connect_event_channel()");
 	}
@@ -600,9 +601,9 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
 		// create a channel monitor
-		new_event_channel_struct.channel_monitor = new TangoMonitor();
-		// set the timeout for the channel monitor to 500ms not to block the event consumer for to long.
-		new_event_channel_struct.channel_monitor->timeout(500);
+		new_event_channel_struct.channel_monitor = new TangoMonitor(channel_name.c_str());
+		// set the timeout for the channel monitor to 1000ms not to block the event consumer for to long.
+		new_event_channel_struct.channel_monitor->timeout(1000);
 		set_channel_type(new_event_channel_struct);
 
 		channel_map[channel_name] = new_event_channel_struct;
@@ -629,7 +630,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 	catch (...)
 	{
                 //cerr << "Caught exception obtaining filter object" << endl;
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while creating heartbeat filter (check filter)",
                        	(const char*)"NotifdEventConsumer::connect_event_channel()");
 	}
@@ -668,7 +669,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
 
 		filter = CosNotifyFilter::Filter::_nil();
 
-		EventSystemExcept::throw_exception((const char*)"API_NotificationServiceFailed",
+		EventSystemExcept::throw_exception((const char*)API_NotificationServiceFailed,
                        	(const char*)"Caught exception while adding constraint for heartbeat (check filter)",
                        	(const char*)"NotifdEventConsumer::connect_event_channel()");
 	}
@@ -860,9 +861,10 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 		if (ipos != event_callback_map.end())
 		{
 			EventCallBackStruct &evt_cb = ipos->second;
-			AutoTangoMonitor _mon(evt_cb.callback_monitor);
 			try
 			{
+				AutoTangoMonitor _mon(evt_cb.callback_monitor);
+
 				AttributeValue *attr_value = NULL;
 				AttributeValue_3 *attr_value_3 = NULL;
 				AttributeValue_4 *attr_value_4 = NULL;
@@ -936,7 +938,7 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 
 						errors[0].severity = Tango::ERR;
 						errors[0].origin = CORBA::string_dup("NotifdEventConsumer::push_structured_event()");
-						errors[0].reason = CORBA::string_dup("API_IncompatibleAttrDataType");
+						errors[0].reason = CORBA::string_dup(API_IncompatibleAttrDataType);
 						errors[0].desc = CORBA::string_dup("Unknown structure used to pass attribute value (Need compilation ?)");
 						dev_attr = NULL;
 					}
