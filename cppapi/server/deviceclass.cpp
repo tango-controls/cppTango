@@ -1730,13 +1730,16 @@ void DeviceClass::create_device_pipe(DeviceClass *cl,DeviceImpl *dev)
 //
 // argument :
 // 		in :
-//          - dev_name : The device name (lower case letters)
+//          - dev_name : The device name
 //
 //------------------------------------------------------------------------------------------------------------------
 
 vector<Pipe *> &DeviceClass::get_pipe_list(const string &dev_name)
 {
-    map<string,vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(dev_name);
+    string local_dev_name(dev_name);
+    transform(local_dev_name.begin(),local_dev_name.end(),local_dev_name.begin(),::tolower);
+
+    map<string,vector<Pipe *> >::iterator ite = ext->dev_pipe_list.find(local_dev_name);
     if (ite == ext->dev_pipe_list.end())
     {
 		cout3 << "DeviceClass::get_pipe_by_name throwing exception" << endl;

@@ -1078,11 +1078,11 @@ void Connection::get_fqdn(string &the_host)
 
             if (host_found == false && nb_loop == 1 && i == (ip_list.size() - 1))
 			{
-				if (pos != string::npos)
-				{
-					the_host = the_host + myhost.substr(pos);
-				}
-				else
+//				if (pos != string::npos)
+//				{
+//					the_host = the_host + myhost.substr(pos);
+//				}
+//				else
 					the_host = myhost;
 			}
         }
