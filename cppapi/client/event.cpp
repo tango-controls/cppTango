@@ -161,6 +161,7 @@ EventConsumer::EventConsumer(ApiUtil *api_ptr)
             Database *db = (api_ptr->get_db_vect())[api_ptr->get_db_ind()];
             string prefix = "tango://" + db->get_db_host() + ':' + db->get_db_port() + '/' ;
             env_var_fqdn_prefix.push_back(prefix);
+
             if (db->is_multi_tango_host() == true)
             {
                 vector<string> &tango_hosts = db->get_multi_host();
@@ -269,17 +270,17 @@ void EventConsumer::get_cs_tango_host(Database *db)
 			if (pos != string::npos)
 				lower_vs.erase(pos);
 
-			string db_host_lower(db->get_db_host());
-			transform(db_host_lower.begin(),db_host_lower.end(),db_host_lower.begin(),::tolower);
+			string tg_host(db->get_orig_tango_host());
+			transform(tg_host.begin(),tg_host.end(),tg_host.begin(),::tolower);
 
-			if (lower_vs != db_host_lower)
+			if (lower_vs != tg_host)
 			{
-				if (alias_map.find(db_host_lower) == alias_map.end())
+				if (alias_map.find(tg_host) == alias_map.end())
 				{
 #ifdef INIT_LIST
-					alias_map.insert({db_host_lower,lower_vs});
+					alias_map.insert({lower_vs,tg_host});
 #else
-					alias_map.insert(make_pair(db_host_lower,lower_vs));
+					alias_map.insert(make_pair(lower_vs,tg_host));
 #endif
 				}
 			}
@@ -1757,7 +1758,7 @@ int EventConsumer::connect_event(DeviceProxy *device,
     new_event_callback.callback_monitor->timeout(1000);
 
 //
-// If we have a CS for which TANGO_HOST is one alias, replace alias by original name in map key
+// If we have a CS for which TANGO_HOST is one alias (host name in alias map), set flag in map
 //
 
 	pos = local_callback_key.find(':',6);
@@ -1765,7 +1766,6 @@ int EventConsumer::connect_event(DeviceProxy *device,
 	map<string,string>::iterator ite = alias_map.find(tg_host);
 	if (ite != alias_map.end())
 	{
-		local_callback_key.replace(8,tg_host.size(),ite->second);
 		new_event_callback.alias_used = true;
 	}
 

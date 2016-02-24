@@ -61,6 +61,8 @@ private :
     {
     public:
         DatabaseExt() {};
+
+		string	orig_tango_host;
     };
 
 #ifdef HAS_UNIQUE_PTR
@@ -1840,6 +1842,7 @@ public :
 	vector<string> &get_multi_port() {return multi_db_port;}
 
 	const string &get_file_name();
+	const string &get_orig_tango_host() {return ext->orig_tango_host;}
 
 #ifdef _TG_WINDOWS_
 	Database(CORBA::ORB *orb,string &,string &);

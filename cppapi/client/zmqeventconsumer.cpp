@@ -1426,23 +1426,6 @@ void ZmqEventConsumer::connect_event_channel(string &channel_name,TANGO_UNUSED(D
 	{
 		EventChannelStruct new_event_channel_struct;
 
-//
-// If we have a CS for which TANGO_HOST is one alias, replace alias by original name in map key
-// but don't do this if the TANGO_HOSt has been specified as aone IP address
-//
-
-		string::size_type pos = channel_name.find(':',6);
-		string tg_host = channel_name.substr(8,pos - 8);
-		int nb_point = count(tg_host.begin(),tg_host.end(),'.');
-		if (nb_point != 3)
-		{
-			map<string,string>::iterator ite = alias_map.find(tg_host);
-			if (ite != alias_map.end())
-			{
-				channel_name.replace(8,tg_host.size(),ite->second);
-			}
-		}
-
 		new_event_channel_struct.last_heartbeat = time(NULL);
 		new_event_channel_struct.heartbeat_skipped = false;
 		new_event_channel_struct.adm_device_proxy = NULL;
@@ -1968,6 +1951,11 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
     bool map_lock = true;
 //	cout << "Lib: Received event for " << ev_name << endl;
 
+//	for (const auto &elem : event_callback_map)
+//		printf("Key in event_callback_map = %s\n",elem.first.c_str());
+//	for (const auto &elem : channel_map)
+//		printf("Key in channel_map = %s\n",elem.first.c_str());
+
 //
 // Search for entry within the event_callback map using the event name received in the event
 //
@@ -2074,11 +2062,20 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 			if (pos1 != string::npos)
 				event_name.erase(0,EVENT_COMPAT_IDL5_SIZE);
 
+//
+// If the client TANGO_HOST is one alias, replace in the event name the host name by the alias
+//
+
 			string full_att_name;
 			if (evt_cb.alias_used == true)
 			{
 				pos = evt_cb.fully_qualified_event_name.rfind('.');
 				full_att_name = evt_cb.fully_qualified_event_name.substr(0,pos);
+
+				string::size_type pos = full_att_name.find(':',8);
+				string host = full_att_name.substr(8,pos - 8);
+				map<string,string>::iterator ite = alias_map.find(host);
+				full_att_name.replace(8,pos - 8,ite->second);
 			}
 			else
 			{

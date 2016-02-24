@@ -471,7 +471,7 @@ protected :
 	static vector<EventNotConnected> 						event_not_connected;
 	static int 												subscribe_event_id; 	// unique event id
 	static vector<string> 									env_var_fqdn_prefix;
-	static map<std::string,std::string>						alias_map;				// key - alias, value - real host name
+	static map<std::string,std::string>						alias_map;				// key - real host name, value - alias
 
 	static omni_mutex										ev_consumer_inst_mutex;
 
