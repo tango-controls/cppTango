@@ -1,46 +1,59 @@
-//=============================================================================
+//===================================================================================================================
 //
 // file :               utils.tpp
 //
-// description :        C++ source code for the Attribute class template
-//                      methods
+// description :        C++ source code for the Attribute class template methods
 //
 // project :            TANGO
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2011,2012
+// Copyright (C) :      2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//=============================================================================
+//==================================================================================================================
 
 #ifndef _UTILS_TPP
 #define _UTILS_TPP
 
+namespace Tango
+{
+
+//+---------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::fill_attr_polling_buffer
+//
+// description :
+//		Fill attribute polling buffer with your own data
+//
+// args :
+//		in :
+// 			- dev : The device
+//			- att_name : The attribute name
+//			- data : The attribute data to be stored in the polling buffer
+//
+//----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Util::fill_attr_polling_buffer(DeviceImpl *dev,
-				      string &att_name,
-				      AttrHistoryStack<T>  &data)
+void Util::fill_attr_polling_buffer(DeviceImpl *dev,string &att_name,AttrHistoryStack<T>  &data)
 {
 //
 // Check that the device is polled
@@ -51,8 +64,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
         TangoSys_OMemStream o;
         o << "Device " << dev->get_name() << " is not polled" << ends;
 
-        Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -84,8 +96,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
         o << "Attribute " << att_name;
         o << " of device " << dev->get_name() << " is WRITE only" << ends;
 
-        Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -105,8 +116,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
                 o << " is not a READ_WRITE attribute. You can't set the attribute written part.";
                 o << "It is defined for record number " << i + 1 << ends;
 
-                Except::throw_exception((const char *)"API_NotSupportedFeature",o.str(),
-                                        (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
             }
         }
     }
@@ -124,8 +134,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
         o << " is of type DEV_ENCODED. Your device supports only IDL V3.";
         o << " DEV_ENCODED data type is supported starting with IDL V4" << ends;
 
-        Except::throw_exception((const char *)"API_NotSupportedFeature",o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -147,8 +156,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
                 o << " is of type DEV_ENCODED. Only Scalar attribute are supported for DEV_ENCODED";
                 o << "It is defined for record number " << i + 1 << ends;
 
-                Except::throw_exception((const char *)"API_NotSupportedFeature",o.str(),
-                                        (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
             }
         }
     }
@@ -163,8 +171,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
         o << "The device " << dev->get_name() << " is too old to support this feature. ";
         o << "Please update your device to IDL 3 or more" << ends;
 
-        Except::throw_exception((const char *)"API_NotSupportedFeature",o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_NotSupportedFeature,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -181,8 +188,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
         o << " is only " << nb_poll;
         o << " which is less than " << nb_elt << "!" << ends;
 
-        Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
-                    (const char *)"Util::fill_attr_polling_buffer");
+        Except::throw_exception(API_DeviceNotPolled,o.str(),"Util::fill_attr_polling_buffer");
     }
 
 //
@@ -191,8 +197,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 
     unsigned long i;
     Tango::DevFailed *save_except;
-    Tango::AttributeValueList_3 *back_3;
-    Tango::AttributeValueList_4 *back_4;
+    AttributeIdlData aid;
     bool attr_failed;
 
     struct timeval zero,when;
@@ -200,8 +205,7 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 
 //
 // Take the device monitor before the loop
-// In case of large element number, it is time cousuming to take/release
-// the monitor in the loop
+// In case of large element number, it is time cousuming to take/release the monitor in the loop
 //
 
     dev->get_poll_monitor().get_monitor();
@@ -213,8 +217,6 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
     for (i = 0;i < nb_elt;i++)
     {
         save_except = NULL;
-        back_3 = NULL;
-        back_4 = NULL;
         attr_failed = false;
 
         if ((data.get_data())[i].err.length() != 0)
@@ -224,12 +226,12 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
-                Except::throw_exception((const char *)"API_MemoryAllocation",
-                                (const char *)"Can't allocate memory in server",
-                                (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_MemoryAllocation,
+                                "Can't allocate memory in server",
+                                "Util::fill_attr_polling_buffer");
             }
         }
         else
@@ -241,24 +243,29 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 
             try
             {
-                if (idl_vers == 4)
+            	if (idl_vers >= 5)
+				{
+					aid.data_5 = new Tango::AttributeValueList_5(1);
+					aid.data_5->length(1);
+                    (*aid.data_5)[0].value.union_no_data(true);
+				}
+                else if (idl_vers == 4)
                 {
-                    back_4 = new Tango::AttributeValueList_4(1);
-                    back_4->length(1);
-                    (*back_4)[0].value.union_no_data(true);
+                    aid.data_4 = new Tango::AttributeValueList_4(1);
+                    aid.data_4->length(1);
+                    (*aid.data_4)[0].value.union_no_data(true);
                 }
                 else
                 {
-                    back_3 = new Tango::AttributeValueList_3(1);
-                    back_3->length(1);
+                    aid.data_3 = new Tango::AttributeValueList_3(1);
+                    aid.data_3->length(1);
                 }
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
-                Except::throw_exception((const char *)"API_MemoryAllocation",
-                                (const char *)"Can't allocate memory in server",
-                                (const char *)"Util::fill_attr_polling_buffer");
+                Except::throw_exception(API_MemoryAllocation,
+                                "Can't allocate memory in server","Util::fill_attr_polling_buffer");
             }
 
 //
@@ -266,35 +273,52 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 //
 
             Tango::AttrQuality qu = (data.get_data())[i].qual;
-            if (idl_vers==4)
+            if (idl_vers >= 5)
             {
-                (*back_4)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
-                (*back_4)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
-                (*back_4)[0].time.tv_nsec = 0;
+                (*aid.data_5)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
+                (*aid.data_5)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
+                (*aid.data_5)[0].time.tv_nsec = 0;
 
-                (*back_4)[0].quality = qu;
-                (*back_4)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_5)[0].quality = qu;
+                (*aid.data_5)[0].name = CORBA::string_dup(att_name.c_str());
 
-                (*back_4)[0].w_dim.dim_x = 0;
-                (*back_4)[0].w_dim.dim_y = 0;
-                (*back_4)[0].r_dim.dim_x = 0;
-                (*back_4)[0].r_dim.dim_y = 0;
+                (*aid.data_5)[0].w_dim.dim_x = 0;
+                (*aid.data_5)[0].w_dim.dim_y = 0;
+                (*aid.data_5)[0].r_dim.dim_x = 0;
+                (*aid.data_5)[0].r_dim.dim_y = 0;
 
-                (*back_4)[0].data_format = att.get_data_format();
+                (*aid.data_5)[0].data_format = att.get_data_format();
+                (*aid.data_5)[0].data_type = att.get_data_type();
+            }
+            else if (idl_vers == 4)
+            {
+                (*aid.data_4)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
+                (*aid.data_4)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
+                (*aid.data_4)[0].time.tv_nsec = 0;
+
+                (*aid.data_4)[0].quality = qu;
+                (*aid.data_4)[0].name = CORBA::string_dup(att_name.c_str());
+
+                (*aid.data_4)[0].w_dim.dim_x = 0;
+                (*aid.data_4)[0].w_dim.dim_y = 0;
+                (*aid.data_4)[0].r_dim.dim_x = 0;
+                (*aid.data_4)[0].r_dim.dim_y = 0;
+
+                (*aid.data_4)[0].data_format = att.get_data_format();
             }
             else
             {
-                (*back_3)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
-                (*back_3)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
-                (*back_3)[0].time.tv_nsec = 0;
+                (*aid.data_3)[0].time.tv_sec = (data.get_data())[i].t_val.tv_sec;
+                (*aid.data_3)[0].time.tv_usec = (data.get_data())[i].t_val.tv_usec;
+                (*aid.data_3)[0].time.tv_nsec = 0;
 
-                (*back_3)[0].quality = qu;
-                (*back_3)[0].name = CORBA::string_dup(att_name.c_str());
+                (*aid.data_3)[0].quality = qu;
+                (*aid.data_3)[0].name = CORBA::string_dup(att_name.c_str());
 
-                (*back_3)[0].w_dim.dim_x = 0;
-                (*back_3)[0].w_dim.dim_y = 0;
-                (*back_3)[0].r_dim.dim_x = 0;
-                (*back_3)[0].r_dim.dim_y = 0;
+                (*aid.data_3)[0].w_dim.dim_x = 0;
+                (*aid.data_3)[0].w_dim.dim_y = 0;
+                (*aid.data_3)[0].r_dim.dim_x = 0;
+                (*aid.data_3)[0].r_dim.dim_y = 0;
             }
             if ((qu == Tango::ATTR_VALID) ||
                 (qu == Tango::ATTR_ALARM) ||
@@ -346,34 +370,46 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 // Insert data into the AttributeValue object
 //
 
-                dev->data_into_net_object(att,back_3,back_4,0,w_type,true);
+                dev->data_into_net_object(att,aid,0,w_type,true);
 
 //
 // Init remaining fields
 //
 
-                if (idl_vers == 4)
-                {
-                    (*back_4)[0].r_dim.dim_x = (data.get_data())[i].x;
-                    (*back_4)[0].r_dim.dim_y = (data.get_data())[i].y;
+				if (idl_vers >= 5)
+				{
+                    (*aid.data_5)[0].r_dim.dim_x = (data.get_data())[i].x;
+                    (*aid.data_5)[0].r_dim.dim_y = (data.get_data())[i].y;
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*back_4)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*back_4)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_5)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
+                        (*aid.data_5)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                    }
+				}
+                else if (idl_vers == 4)
+                {
+                    (*aid.data_4)[0].r_dim.dim_x = (data.get_data())[i].x;
+                    (*aid.data_4)[0].r_dim.dim_y = (data.get_data())[i].y;
+
+                    if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
+                    {
+                        WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
+                        (*aid.data_4)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
+                        (*aid.data_4)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }
                 }
                 else
                 {
-                    (*back_3)[0].r_dim.dim_x = (data.get_data())[i].x;
-                    (*back_3)[0].r_dim.dim_y = (data.get_data())[i].y;
+                    (*aid.data_3)[0].r_dim.dim_x = (data.get_data())[i].x;
+                    (*aid.data_3)[0].r_dim.dim_y = (data.get_data())[i].y;
 
                     if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
                     {
                         WAttribute &assoc_att = dev->get_device_attr()->get_w_attr_by_ind(att.get_assoc_ind());
-                        (*back_3)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
-                        (*back_3)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
+                        (*aid.data_3)[0].w_dim.dim_x = assoc_att.get_w_dim_x();
+                        (*aid.data_3)[0].w_dim.dim_y = assoc_att.get_w_dim_y();
                     }
                 }
             }
@@ -389,17 +425,23 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
 
             if (attr_failed == false)
             {
-                if (idl_vers == 4)
+            	if (idl_vers >= 5)
+				{
+                    when.tv_sec  = (*aid.data_5)[0].time.tv_sec - DELTA_T;
+                    when.tv_usec = (*aid.data_5)[0].time.tv_usec;
+                    (*ite)->insert_data(aid.data_5,when,zero);
+				}
+                else if (idl_vers == 4)
                 {
-                    when.tv_sec  = (*back_4)[0].time.tv_sec - DELTA_T;
-                    when.tv_usec = (*back_4)[0].time.tv_usec;
-                    (*ite)->insert_data(back_4,when,zero);
+                    when.tv_sec  = (*aid.data_4)[0].time.tv_sec - DELTA_T;
+                    when.tv_usec = (*aid.data_4)[0].time.tv_usec;
+                    (*ite)->insert_data(aid.data_4,when,zero);
                 }
                 else
                 {
-                    when.tv_sec  = (*back_3)[0].time.tv_sec - DELTA_T;
-                    when.tv_usec = (*back_3)[0].time.tv_usec;
-                    (*ite)->insert_data(back_3,when,zero);
+                    when.tv_sec  = (*aid.data_3)[0].time.tv_sec - DELTA_T;
+                    when.tv_usec = (*aid.data_3)[0].time.tv_usec;
+                    (*ite)->insert_data(aid.data_3,when,zero);
                 }
             }
             else
@@ -412,10 +454,14 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
         catch (Tango::DevFailed &)
         {
             if (attr_failed == false)
-                if (idl_vers == 4)
-                    delete back_4;
-            else
-                    delete back_3;
+			{
+				if (idl_vers >= 5)
+					delete aid.data_5;
+                else if (idl_vers == 4)
+                    delete aid.data_4;
+				else
+                    delete aid.data_3;
+			}
             else
                 delete save_except;
         }
@@ -425,11 +471,24 @@ void Util::fill_attr_polling_buffer(DeviceImpl *dev,
     dev->get_poll_monitor().rel_monitor();
 }
 
+//+---------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		Util::fill_cmd_polling_buffer
+//
+// description :
+//		Fill command polling buffer with your own data
+//
+// args :
+//		in :
+// 			- dev : The device
+//			- cmd_name : The command name
+//			- data : The command data to be stored in the polling buffer
+//
+//----------------------------------------------------------------------------------------------------------------
 
 template <typename T>
-void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
-                 string &cmd_name,
-                 CmdHistoryStack<T>  &data)
+void Util::fill_cmd_polling_buffer(DeviceImpl *dev,string &cmd_name,CmdHistoryStack<T>  &data)
 {
 
 //
@@ -441,7 +500,7 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
         TangoSys_OMemStream o;
         o << "Device " << dev->get_name() << " is not polled" << ends;
 
-        Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+        Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
     }
 
@@ -469,14 +528,14 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
         o << " is only " << nb_poll;
         o << " which is less than " << nb_elt << "!" << ends;
 
-        Except::throw_exception((const char *)"API_DeviceNotPolled",o.str(),
+        Except::throw_exception((const char *)API_DeviceNotPolled,o.str(),
                     (const char *)"Util::fill_cmd_polling_buffer");
     }
 
 //
 // Take the device monitor before the loop
-// In case of large element number, it is time cousuming to take/release
-// the monitor in the loop
+// In case of large element number, it is time cousuming to take/release the monitor in the loop
+// In case of large element number, it is time cousuming to take/release the monitor in the loop
 //
 
     dev->get_poll_monitor().get_monitor();
@@ -505,10 +564,10 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
             {
                 save_except = new Tango::DevFailed((data.get_data())[i].err);
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
-                Except::throw_exception((const char *)"API_MemoryAllocation",
+                Except::throw_exception((const char *)API_MemoryAllocation,
                                 (const char *)"Can't allocate memory in server",
                                 (const char *)"Util::fill_cmd_polling_buffer");
             }
@@ -524,28 +583,23 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
             {
                 any_ptr = new CORBA::Any();
             }
-            catch (bad_alloc)
+            catch (bad_alloc &)
             {
                 dev->get_poll_monitor().rel_monitor();
-                Except::throw_exception((const char *)"API_MemoryAllocation",
+                Except::throw_exception((const char *)API_MemoryAllocation,
                                 (const char *)"Can't allocate memory in server",
                                 (const char *)"Util::fill_cmd_polling_buffer");
             }
 
 //
 // Set command value in Any object
-// If the Any insertion is by pointer, with omniORB, it copy data into the Any
-// and delete memory. Therefore, no need to delete memory if release is
-// true. If release is false, uses the insertion by reference which only
-// copy data.
 //
 
             T *tmp_ptr = (data.get_data())[i].ptr;
-            if ((data.get_data())[i].release == true)
-                (*any_ptr) <<= tmp_ptr;
-            else
-                (*any_ptr) <<= (*tmp_ptr);
+			(*any_ptr) <<= (*tmp_ptr);
 
+			if ((data.get_data())[i].release == true)
+				delete tmp_ptr;
         }
 
 //
@@ -575,6 +629,6 @@ void Util::fill_cmd_polling_buffer(DeviceImpl *dev,
     dev->get_poll_monitor().rel_monitor();
 }
 
-
+} // End of Tango namespace
 
 #endif /* UTILS_TPP */

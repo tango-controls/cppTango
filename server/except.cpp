@@ -11,7 +11,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // author(s) :          A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -39,13 +39,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango_config.h>
-#include <except.h>
-#include <apiexcept.h>
-
-#include <iostream>
-#include <sstream>
-#include <fstream>
+#include <tango.h>
 
 namespace Tango
 {
@@ -68,7 +62,6 @@ void Except::print_exception(const CORBA::Exception &e)
 {
 
 	const CORBA::SystemException *se;
-	const CORBA::UserException *ue;
 
 //
 // For a CORBA::SystemException, use the OB function
@@ -83,7 +76,7 @@ void Except::print_exception(const CORBA::Exception &e)
 // If it is a CORBA::UserException
 //
 
-	else if ((ue = dynamic_cast<const CORBA::UserException *>(&e)) != NULL)
+	else if (dynamic_cast<const CORBA::UserException *>(&e) != NULL)
 	{
 		const Tango::DevFailed *te;
 		const Tango::NamedDevFailedList *mdf;
@@ -227,7 +220,6 @@ void Except::print_exception(const CORBA::Exception &e)
 
 char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 {
-	const CORBA::UNKNOWN *unk;
 	const CORBA::BAD_PARAM *bad;
 	const CORBA::NO_MEMORY *mem;
 	const CORBA::IMP_LIMIT *lim;
@@ -254,7 +246,7 @@ char *Except::print_CORBA_SystemException(const CORBA::SystemException *e)
 // We are using CORBA _downcast() method !!!
 //
 
-	if ((unk = CORBA::UNKNOWN::_downcast(e)) != 0)
+	if (CORBA::UNKNOWN::_downcast(e) != 0)
 	{
 		::strcpy(mess,"UNKNOWN CORBA system exception");
 	}
@@ -523,7 +515,7 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const char *orig
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = CORBA::string_dup(origin);
-	errors[0].reason = CORBA::string_dup("API_CorbaSysException");
+	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 
 	throw Tango::DevFailed(errors);
@@ -537,7 +529,7 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,char *origin)
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = CORBA::string_dup(origin);
 	delete [] origin;
-	errors[0].reason = CORBA::string_dup("API_CorbaSysException");
+	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 
 	throw Tango::DevFailed(errors);
@@ -550,10 +542,31 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const string &or
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
 	errors[0].origin = CORBA::string_dup(origin.c_str());
-	errors[0].reason = CORBA::string_dup("API_CorbaSysException");
+	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
 	errors[0].desc = print_CORBA_SystemException(&c_ex);
 
 	throw Tango::DevFailed(errors);
+}
+
+void Except::throw_named_exception(Tango::DeviceImpl *d,long ind,const char *reason,
+				   const char *desc,const char *origin,Tango::ErrSeverity sever)
+{
+	throw_named_exception(d->get_device_attr()->get_attr_by_ind(ind).get_name().c_str(),
+						  reason,desc,origin,sever);
+}
+
+void Except::throw_named_exception(Tango::DeviceImpl *d,vector<long> &ind_atts,const char *reason,
+				   const char *desc,const char *origin,Tango::ErrSeverity sever)
+{
+	vector<string> vs;
+
+	vector<long>::iterator ite;
+	for (ite = ind_atts.begin();ite != ind_atts.end();++ite)
+	{
+		vs.push_back(d->get_device_attr()->get_attr_by_ind(*ite).get_name());
+	}
+
+	throw_named_exception(vs,reason,desc,origin,sever);
 }
 
 //+----------------------------------------------------------------------------
@@ -576,44 +589,44 @@ bool Except::compare_exception(Tango::DevFailed &ex1, Tango::DevFailed &ex2)
 
 	unsigned long nb_err = ex1.errors.length();
 	if ( nb_err != ex2.errors.length() )
-		{
+	{
 		return false;
-		}
+	}
 
 	// check all exceptions in the stack
 
 	for (unsigned long i=0; i<nb_err; i++)
-		{
+	{
 		// check the severity
 		if ( ex1.errors[i].severity != ex2.errors[i].severity )
-			{
+		{
 			return false;
-			}
+		}
 
 		// check the origin
 		string org1 = ex1.errors[i].origin.in();
 		string org2 = ex2.errors[i].origin.in();
 		if ( org1 != org2 )
-			{
+		{
 			return false;
-			}
+		}
 
 		// check the reason
 		string re1 = ex1.errors[i].reason.in();
 		string re2 = ex2.errors[i].reason.in();
 		if ( re1 != re2 )
-			{
+		{
 			return false;
-			}
+		}
 
 		// check the description
 		string desc1 = ex1.errors[i].desc.in();
 		string desc2 = ex2.errors[i].desc.in();
 		if ( desc1 != desc2 )
-			{
+		{
 			return false;
-			}
 		}
+	}
 
 	return true;
 }
