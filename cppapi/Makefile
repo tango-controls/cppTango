@@ -38,8 +38,8 @@ ifdef prefix
 OBJS_DIR = 	objs/$(BIN_DIR)
 OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
 else
-OBJS_DIR = 	objs
-OBJS_DIR_SL = 	objs_sl
+OBJS_DIR = 	objs/$(BIN_DIR)
+OBJS_DIR_SL = 	objs_sl/$(BIN_DIR)
 endif
 
 
@@ -338,7 +338,6 @@ CLIENT_INCLUDE =	apiexcept.h \
 			accessproxy.h \
 			eventconsumer.h \
 			event.h \
-			event.tpp \
 			Database.h \
 			DbDevice.h \
 			ApiUtil.h \
@@ -349,6 +348,7 @@ CLIENT_INCLUDE =	apiexcept.h \
 			devapi_attr.tpp \
 			devapi_pipe.tpp \
 			devapi_utils.tpp \
+			event.tpp \
 			Connection.h \
 			DeviceProxy.h \
 			AttributeProxy.h \
@@ -562,6 +562,7 @@ install_include:
 	@./cr_dir $(INSTALL_BASE)/include/V-1
 	@./cr_dir $(INSTALL_BASE)/include/V-1/idl
 #	cp $(INSTALL_BASE)/include/*.h $(INSTALL_BASE)/include/V-1
+#	cp $(INSTALL_BASE)/include/*.tpp $(INSTALL_BASE)/include/V-1
 #	cp $(INSTALL_BASE)/include/idl/*.h $(INSTALL_BASE)/include/V-1/idl
 	cd server/idl; cp $(IDL_INCLUDE) $(INSTALL_BASE)/include/idl; cd ../..
 	cd server; cp $(SERVER_INCLUDE) $(INSTALL_BASE)/include; cd ..

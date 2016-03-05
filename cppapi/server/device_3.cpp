@@ -390,7 +390,6 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 						wanted_w_attr.push_back(x);
 						wanted_attr.push_back(x);
-						att.set_value_flag(false);
 						att.get_when().tv_sec = 0;
                         att.save_alarm_quality();
 					}
@@ -412,7 +411,6 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 								if(att.is_startup_exception())
 									att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 								wanted_attr.push_back(x);
-								att.set_value_flag(false);
 								att.get_when().tv_sec = 0;
 								att.save_alarm_quality();
 							}
@@ -434,7 +432,6 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							if(att.is_startup_exception())
 								att.throw_startup_exception("Device_3Impl::read_attributes_no_except()");
 							wanted_attr.push_back(x);
-							att.set_value_flag(false);
 							att.get_when().tv_sec = 0;
                             att.save_alarm_quality();
 						}
@@ -537,6 +534,8 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 // Call the user read method except if the attribute is writable and memorized and if the write failed during the
 // device startup sequence
 //
+
+                    att.set_value_flag(false);
 
 					if (att.is_mem_exception() == false)
 						attr_vect[att.get_attr_idx()]->read(this,att);
