@@ -10,7 +10,7 @@
 //
 // author(s) :          E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -207,7 +207,7 @@ inline void operator<<(DevVarLong64Array &lval,const vector<DevLong64> &rval)
 inline void operator<<(vector<DevLong64> &lval,const DevVarLong64Array &rval)
 {
 	long nb_elt = rval.length();
-	if (lval.size() != 0)
+	if (lval.empty() == false)
 		lval.clear();
 	for (long i = 0;i < nb_elt;i++)
 		lval.push_back(rval[i]);
@@ -403,7 +403,7 @@ inline void operator<<(DevVarULongArray &lval,const vector<DevULong> &rval)
 inline void operator<<(vector<DevULong> &lval,const DevVarULongArray &rval)
 {
 	long nb_elt = rval.length();
-	if (lval.size() != 0)
+	if (lval.empty() == false)
 		lval.clear();
 	for (long i = 0;i < nb_elt;i++)
 		lval.push_back(rval[i]);
@@ -443,7 +443,7 @@ inline void operator<<(DevVarULong64Array &lval,const vector<DevULong64> &rval)
 inline void operator<<(vector<DevULong64> &lval,const DevVarULong64Array &rval)
 {
 	long nb_elt = rval.length();
-	if (lval.size() != 0)
+	if (lval.empty() == false)
 		lval.clear();
 	for (long i = 0;i < nb_elt;i++)
 		lval.push_back(rval[i]);

@@ -264,6 +264,13 @@ namespace zmq
                 throw error_t ();
         }
 
+		inline void disconnect (const char *addr_)
+		{
+    		int rc = zmq_disconnect (ptr, addr_);
+    		if (rc != 0)
+        		throw error_t ();
+		}
+
         inline bool send (message_t &msg_, int flags_ = 0)
         {
             int nbytes = zmq_sendmsg (ptr, &(msg_.msg), flags_);

@@ -8,7 +8,7 @@
 //
 // author(s) :          N.Leclercq
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -156,7 +156,7 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 		TangoSys_OMemStream desc;
 		desc << "Wrong device name syntax in " << p << ends;
 
-		ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+		ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 				desc.str(),
 				(const char *)"GroupElementFactory::parse_name()");
 	}
@@ -175,7 +175,7 @@ void GroupElementFactory::parse_name (const std::string& p, string &db_host,int 
 			TangoSys_OMemStream desc;
 			desc << "Wrong device name syntax in " << p << ends;
 
-			ApiWrongNameExcept::throw_exception((const char *)"API_WrongDeviceNameSyntax",
+			ApiWrongNameExcept::throw_exception((const char *)API_WrongDeviceNameSyntax,
 					desc.str(),
 					(const char *)"GroupElementFactory::parse_name()");
 		}
@@ -653,6 +653,11 @@ GroupElement* GroupElement::set_parent (GroupElement* _parent)
   parent = _parent;
   return previous_parent;
 }
+//-----------------------------------------------------------------------------
+bool GroupElement::is_connected ()
+{
+  return true;
+}
 
 //=============================================================================
 // class Group
@@ -1083,13 +1088,19 @@ long Group::command_inout_asynch_i (const std::string& c, bool fgt, bool fwd, lo
   if (id == -1) {
     id = next_asynch_request_id();
   }
+  GroupElements disconnected;
   GroupElementsIterator it = elements.begin();
   GroupElementsIterator end = elements.end();
   for (; it != end; ++it) {
     if ((*it)->is_device_i() || fwd) {
-      (*it)->command_inout_asynch_i(c, fgt, fwd, id);
+    	if((*it)->is_connected())
+    		(*it)->command_inout_asynch_i(c, fgt, fwd, id);
+    	else
+    		disconnected.push_back(*it);
     }
   }
+  for(size_t i = 0; i < disconnected.size(); i++)
+	  disconnected[i]->command_inout_asynch_i(c, fgt, fwd, id);
   if ( ! fgt ) {
     push_async_request(id, fwd);
   }
@@ -1144,7 +1155,7 @@ long Group::command_inout_asynch_i (const std::string& c, const std::vector<Devi
          << d.size()
          << "]"
          << ends;
-    ApiDataExcept::throw_exception((const char*)"API_MethodArgument",
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::command_inout_asynch");
   }
@@ -1239,13 +1250,19 @@ long Group::read_attribute_asynch_i (const std::string& a, bool fwd, long id)
   if (id == -1) {
     id = next_asynch_request_id();
   }
+  GroupElements disconnected;
   GroupElementsIterator it = elements.begin();
   GroupElementsIterator end = elements.end();
   for (; it != end; ++it) {
     if ((*it)->is_device_i() || fwd) {
-      id = (*it)->read_attribute_asynch_i(a, fwd, id);
+    	if((*it)->is_connected())
+    		id = (*it)->read_attribute_asynch_i(a, fwd, id);
+    	else
+    		disconnected.push_back(*it);
     }
   }
+  for(size_t i = 0; i < disconnected.size(); i++)
+	  id = disconnected[i]->read_attribute_asynch_i(a, fwd, id);
   push_async_request(id, fwd);
   return id;
 }
@@ -1379,13 +1396,19 @@ long Group::write_attribute_asynch_i (const DeviceAttribute& d, bool fwd, long i
   if (id == -1) {
     id = next_asynch_request_id();
   }
+  GroupElements disconnected;
   GroupElementsIterator it = elements.begin();
   GroupElementsIterator end = elements.end();
   for (; it != end; ++it) {
     if ((*it)->is_device_i() || fwd) {
-      id = (*it)->write_attribute_asynch_i(d, fwd, id);
+    	if((*it)->is_connected())
+    		id = (*it)->write_attribute_asynch_i(d, fwd, id);
+    	else
+    		disconnected.push_back(*it);
     }
   }
+  for(size_t i = 0; i < disconnected.size(); i++)
+	  id = disconnected[i]->write_attribute_asynch_i(d, fwd, id);
   push_async_request(id, fwd);
   return id;
 }
@@ -1411,7 +1434,7 @@ long Group::write_attribute_asynch_i (const std::vector<DeviceAttribute>& d, boo
          << d.size()
          << "]"
          << ends;
-    ApiDataExcept::throw_exception((const char*)"API_MethodArgument",
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::write_attribute_asynch");
   }
@@ -2184,6 +2207,11 @@ void GroupDeviceElement::dump (TangoSys_OMemStream& oms, int indent_level)
     oms << "\t";
   }
   oms << "|- DEVICE: " << get_name() << endl;
+}
+//-----------------------------------------------------------------------------
+bool GroupDeviceElement::is_connected ()
+{
+  return dev_proxy()->is_connected();
 }
 //-----------------------------------------------------------------------------
 bool GroupDeviceElement::is_device_i ()
