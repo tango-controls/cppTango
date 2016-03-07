@@ -174,19 +174,19 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango920 release\*.obj"
+				CommandLine="C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango921 release\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="log4tango.lib omniorb421_rt.lib omnidynamic421_rt.lib omnithread40_rt.lib COS421_rt.lib zmq.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
-				OutputFile="$(PREFIX)\win64\lib\vc9_dll\tango920.dll"
-				Version="9.2.0"
+				OutputFile="$(PREFIX)\win64\lib\vc9_dll\tango921.dll"
+				Version="9.2.1"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="&quot;$(OMNI_BASE)\lib\vc9_dll&quot;;&quot;$(ZMQ_BASE)\win64\lib\vc9_dll&quot;;&quot;$(LOG4TANGO_BASE)\win64\lib\vc9_dll&quot;"
 				ModuleDefinitionFile="tango.def"
-				ProgramDatabaseFile=".\Release/tango920.pdb"
+				ProgramDatabaseFile=".\Release/tango921.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(PREFIX)\win64\lib\vc9_dll\tango.lib"
@@ -359,7 +359,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_dll.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName="$(PREFIX)\win64\lib\vc9_dll\tangod.9.2.0.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win64\lib\vc9_dll\tangod.9.2.1.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
@@ -376,20 +376,20 @@
 			<Tool
 				Name="VCPreLinkEventTool"
 				Description="Build def file..."
-				CommandLine="C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango920d debug\*.obj"
+				CommandLine="C:\perl64\bin\perl ..\..\..\win32\makedef.pl tango.def tango921d debug\*.obj"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalDependencies="log4tangod.lib omniORB421_rtd.lib omniDynamic421_rtd.lib COS421_rtd.lib omnithread40_rtd.lib zmqd.lib ws2_32.lib mswsock.lib comctl32.lib odbc32.lib odbccp32.lib"
 				ShowProgress="2"
-				OutputFile="$(PREFIX)\win64\lib\vc9_dll\tango920d.dll"
-				Version="9.2.0"
+				OutputFile="$(PREFIX)\win64\lib\vc9_dll\tango921d.dll"
+				Version="9.2.1"
 				LinkIncremental="2"
 				AdditionalLibraryDirectories="&quot;$(ZMQ_BASE)\win64\lib\vc9_dll&quot;;&quot;$(OMNI_BASE)\lib\vc9_dll&quot;;&quot;$(LOG4TANGO_BASE)\win64\lib\vc9_dll&quot;"
 				ModuleDefinitionFile="tango.def"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\Debug/tango920d.pdb"
+				ProgramDatabaseFile=".\Debug/tango921d.pdb"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="$(PREFIX)\win64\lib\vc9_dll\tangod.lib"
@@ -3631,11 +3631,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\tango.h"
+				RelativePath="..\..\..\server\idl\tango.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\..\server\idl\tango.h"
+				RelativePath="..\..\..\server\tango.h"
 				>
 			</File>
 			<File
