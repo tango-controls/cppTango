@@ -1065,8 +1065,6 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		string pipe_name(name);
 		Pipe &pi = device_class->get_pipe_by_name(pipe_name,device_name_lower);
 
-		pi.set_value_flag(false);
-
 //
 // Allocate memory for the returned value
 //
@@ -1120,6 +1118,8 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 
 		try
 		{
+            pi.set_value_flag(false);
+
 			pi.set_time();
 			pi.set_returned_data_ptr(back);
 			pi.get_blob().reset_insert_ctr();
