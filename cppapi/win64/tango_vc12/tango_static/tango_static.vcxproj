@@ -169,7 +169,7 @@
       <PrecompiledHeaderOutputFile>.\Debug/tango_static.pch</PrecompiledHeaderOutputFile>
       <AssemblerListingLocation>.\Debug/</AssemblerListingLocation>
       <ObjectFileName>.\Debug/</ObjectFileName>
-      <ProgramDataBaseFileName>$(PREFIX)\win64\lib\vc12\tangod.9.2.1.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(PREFIX)\win64\lib\vc12\tangod.9.3.0.pdb</ProgramDataBaseFileName>
       <WarningLevel>Level2</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
