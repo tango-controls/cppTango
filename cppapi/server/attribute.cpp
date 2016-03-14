@@ -793,7 +793,7 @@ bool Attribute::init_check_val_prop (vector<AttrProperty> &prop_list,string &dev
             break;
 
         case Tango::DEV_ULONG:
-            is_err_format = !(str >> max_warning.db && str.eof());
+            is_err_format = !(str >> prop.db && str.eof());
             prop.ulg = (DevULong)prop.db;
             if (is_err_format == false)
             {
