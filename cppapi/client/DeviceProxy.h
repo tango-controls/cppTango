@@ -124,6 +124,9 @@ private:
     {
     public:
         DeviceProxyExt() {};
+
+        bool            nethost_alias;
+        string          orig_tango_host;
     };
 
 #ifdef HAS_UNIQUE_PTR

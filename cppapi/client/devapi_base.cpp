@@ -1056,7 +1056,7 @@ void Connection::get_fqdn(string &the_host)
 
             while (ptr != NULL)
             {
-                if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,0) == 0)
+                if (getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,512,0,0,NI_NAMEREQD) == 0)
                 {
                 	nb_loop++;
                     myhost = tmp_host;
@@ -1643,7 +1643,21 @@ void DeviceProxy::real_constructor (string &name,bool need_check_acc)
 			}
 			else
 			{
-				db_dev = new DbDevice(device_name,db_host,db_port);
+                db_dev = new DbDevice(device_name,db_host,db_port);
+			    if (ext_proxy->nethost_alias == true)
+			    {
+                    Database *tmp_db = db_dev->get_dbase();
+			        const string &orig = tmp_db->get_orig_tango_host();
+			        if (orig.empty() == true)
+                    {
+                        string orig_tg_host = ext_proxy->orig_tango_host;
+                        if (orig_tg_host.find('.') == string::npos)
+                        {
+                            get_fqdn(orig_tg_host);
+                        }
+                        tmp_db->set_orig_tango_host(ext_proxy->orig_tango_host);
+                    }
+			    }
 			}
 		}
 		catch (Tango::DevFailed &e)
@@ -2209,9 +2223,31 @@ void DeviceProxy::parse_name(string &full_name)
 			else
 			{
 				string tmp_host(bef_sep.substr(0,tmp));
+				string safe_tmp_host(tmp_host);
+
 				if (tmp_host.find('.') == string::npos)
 					get_fqdn(tmp_host);
-				db_host = tmp_host;
+
+                string::size_type pos2 = tmp_host.find('.');
+                bool alias_used = false;
+                string fq;
+                if (pos2 != string::npos)
+                {
+                    string h_name = tmp_host.substr(0,pos2);
+                    fq = tmp_host.substr(pos2);
+                    if (h_name != tmp_host)
+                        alias_used = true;
+                }
+
+                if (alias_used == true)
+                {
+                    ext_proxy->nethost_alias = true;
+                    ext_proxy->orig_tango_host = safe_tmp_host + fq;
+                }
+                else
+                    ext_proxy->nethost_alias = false;
+
+                db_host = tmp_host;
 				db_port = bef_sep.substr(tmp + 1);
 				TangoSys_MemStream s;
 				s << db_port << ends;

@@ -2075,7 +2075,8 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				string::size_type pos = full_att_name.find(':',8);
 				string host = full_att_name.substr(8,pos - 8);
 				map<string,string>::iterator ite = alias_map.find(host);
-				full_att_name.replace(8,pos - 8,ite->second);
+				if (ite != alias_map.end())
+                    full_att_name.replace(8,pos - 8,ite->second);
 			}
 			else
 			{

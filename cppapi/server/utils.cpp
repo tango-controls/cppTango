@@ -1378,6 +1378,7 @@ void Util::init_host_name()
 			struct addrinfo	*info, *ptr;
 			char tmp_host[NI_MAXHOST];
 			bool host_found = false;
+			vector<string>  host_names;
 
 			ApiUtil *au = ApiUtil::instance();
 			vector<string> ip_list;
@@ -1390,7 +1391,7 @@ void Util::init_host_name()
 					ptr = info;
 					while(ptr != NULL)
 					{
-						if(getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,NI_MAXHOST,NULL,0,0) == 0)
+						if(getnameinfo(ptr->ai_addr,ptr->ai_addrlen,tmp_host,NI_MAXHOST,NULL,0,NI_NAMEREQD) == 0)
 						{
 							string myhost(tmp_host);
 #ifdef _TG_WINDOWS_
@@ -1402,13 +1403,7 @@ void Util::init_host_name()
 							string::size_type pos = myhost.find('.');
 							if (pos != string::npos)
 							{
-								string canon = myhost.substr(0,pos);
-								if (hostname == canon)
-								{
-									hostname = myhost;
-									host_found = true;
-									break;
-								}
+                                host_names.push_back(myhost);
 							}
 						}
 						ptr = ptr->ai_next;
@@ -1416,6 +1411,103 @@ void Util::init_host_name()
 					freeaddrinfo(info);
 				}
 			}
+
+//
+// Several cases to find out the real name of the network interface on which the server is running.
+// First be sure that we got at least one name from call(s) to getnameinfo()
+// Then, we have to know if the -ORBendPoint option was specified on the command line
+// If it was not, select the name which is the same than the computer hostname. If not found, select the first name
+// returned by getnameinfo()
+// If the endPoint option is used by the host name is not specified within the option (Db case for instance), do the
+// same than in previous case
+// If a host is specified in endPOint option:
+// If it is specified as a name, search for this name in the list returned by getnameinfo calls and select it
+// If it is specified as a IP address, search for this IP in ip_list vector and select this name in the result
+// of getnameinfo() call
+//
+
+			if (host_names.size() != 0)
+            {
+                if (get_endpoint_specified() == false)
+                {
+                    bool found = false;
+                    for (size_t loop = 0;loop < host_names.size();loop++)
+                    {
+                        string::size_type pos = host_names[loop].find('.');
+                        string canon = host_names[loop].substr(0,pos);
+                        if (hostname == canon)
+                        {
+                            found = true;
+                            hostname = host_names[loop];
+                            break;
+                        }
+                    }
+
+                    if (found == false)
+                        hostname = host_names[0];
+                }
+                else
+                {
+                    string &spec_ip = get_specified_ip();
+                    if (spec_ip.empty() == true)
+                    {
+                        bool found = false;
+                        for (size_t loop = 0;loop < host_names.size();loop++)
+                        {
+                            string::size_type pos = host_names[loop].find('.');
+                            string canon = host_names[loop].substr(0,pos);
+                            if (hostname == canon)
+                            {
+                                found = true;
+                                hostname = host_names[loop];
+                                break;
+                            }
+                        }
+
+                        if (found == false)
+                            hostname = host_names[0];
+                    }
+                    else
+                    {
+                        int nb_dot = count(spec_ip.begin(),spec_ip.end(),'.');
+                        if (nb_dot == 3)
+                        {
+                            int ind = -1;
+                            for (int loop = 0;loop < (int)ip_list.size();loop++)
+                            {
+                                if (ip_list[loop] == spec_ip)
+                                {
+                                    ind = loop;
+                                    break;
+                                }
+
+                                if (ind != -1 && (((int)host_names.size() - 1) >= ind))
+                                    hostname = host_names[ind];
+                            }
+                        }
+                        else
+                        {
+                            string::size_type pos = spec_ip.find('.');
+                            string canon_spec;
+                            if (pos != string::npos)
+                                canon_spec = spec_ip.substr(0,pos);
+                            else
+                                canon_spec = spec_ip;
+
+                            for (size_t loop = 0;loop < host_names.size();loop++)
+                            {
+                                string::size_type pos = host_names[loop].find('.');
+                                string canon = host_names[loop].substr(0,pos);
+                                if (canon_spec == canon)
+                                {
+                                    hostname = host_names[loop];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
 		}
 	}
 	else

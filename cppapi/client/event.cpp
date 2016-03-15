@@ -273,7 +273,7 @@ void EventConsumer::get_cs_tango_host(Database *db)
 			string tg_host(db->get_orig_tango_host());
 			transform(tg_host.begin(),tg_host.end(),tg_host.begin(),::tolower);
 
-			if (lower_vs != tg_host)
+			if (tg_host.empty() == false && lower_vs != tg_host)
 			{
 				if (alias_map.find(tg_host) == alias_map.end())
 				{

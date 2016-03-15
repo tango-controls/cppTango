@@ -278,8 +278,11 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		{
 			get_fqdn(db_host);
 			string::size_type pos = db_host.find('.');
-			string fq = db_host.substr(pos);
-			ext->orig_tango_host = ext->orig_tango_host + fq;
+			if (pos != string::npos)
+            {
+                string fq = db_host.substr(pos);
+                ext->orig_tango_host = ext->orig_tango_host + fq;
+            }
 		}
 
 	}

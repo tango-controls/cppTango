@@ -1843,6 +1843,7 @@ public :
 
 	const string &get_file_name();
 	const string &get_orig_tango_host() {return ext->orig_tango_host;}
+	void set_orig_tango_host(const string &_s) {ext->orig_tango_host=_s;}
 
 #ifdef _TG_WINDOWS_
 	Database(CORBA::ORB *orb,string &,string &);
