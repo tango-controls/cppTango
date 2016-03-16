@@ -7,7 +7,7 @@ static const char *RcsId = "$Id$\n$Name$";
 //
 // original 	- September 2000
 //
-// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2000,2001,2002,2003,2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -57,7 +57,7 @@ namespace Tango
 
 Database::Database(ORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 //
 // get host and port from environment variable TANGO_HOST
@@ -65,7 +65,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 
 	string tango_host_env_var;
 	int ret;
-	filedb = Tango_NullPtr;
+	filedb = Tango_nullptr;
 	serv_version = 0;
 
 	ret = get_env_var(EnvVariable,tango_host_env_var);
@@ -74,7 +74,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 	{
 		TangoSys_MemStream desc;
 		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << ends;
-		ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+		ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       desc.str(),
 					       (const char *)"Database::Database");
 	}
@@ -93,13 +93,13 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 #ifdef _TG_WINDOWS_
 Database::Database(ORB *orb_in,string &ds_exec_name,string &ds_inst_name) : Connection(orb_in),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 //
 // get host and port from environment variable TANGO_HOST
 //
 	char *tango_host_env_c_str;
-	filedb = Tango_NullPtr;
+	filedb = Tango_nullptr;
 	serv_version = 0;
 
 	if (get_tango_host_from_reg(&tango_host_env_c_str,ds_exec_name,ds_inst_name) == -1)
@@ -109,7 +109,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 	{
 		TangoSys_MemStream desc;
 		desc << "TANGO_HOST env. variable not set, set it and retry (e.g. TANGO_HOST=<host>:<port>)" << ends;
-		ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+		ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       desc.str(),
 					       (const char *)"Database::Database");
 	}
@@ -142,7 +142,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 
 void Database::check_tango_host(const char *tango_host_env_c_str)
 {
-	filedb = Tango_NullPtr;
+	filedb = Tango_nullptr;
 	string tango_host_env(tango_host_env_c_str);
 	string::size_type separator;
 
@@ -171,7 +171,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 				{
 					TangoSys_MemStream desc;
 					desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
-					ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+					ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       				desc.str(),
 					       				(const char *)"Database::Database");
 				}
@@ -181,7 +181,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
-				ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       		desc.str(),
 					       		(const char *)"Database::Database");
 			}
@@ -198,7 +198,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
-				ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       				desc.str(),
 					       				(const char *)"Database::Database");
 			}
@@ -208,7 +208,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		{
 			TangoSys_MemStream desc;
 			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>,<host>:<port>)" << ends;
-			ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+			ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       		desc.str(),
 					       		(const char *)"Database::Database");
 		}
@@ -235,7 +235,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			{
 				TangoSys_MemStream desc;
 				desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << ends;
-				ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+				ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       				desc.str(),
 					       				(const char *)"Database::Database");
 			}
@@ -246,7 +246,7 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 		{
 			TangoSys_MemStream desc;
 			desc << "TANGO_HOST env. variable syntax incorrect (e.g. TANGO_HOST=<host>:<port>)" << ends;
-			ApiConnExcept::throw_exception((const char *)"API_TangoHostNotSet",
+			ApiConnExcept::throw_exception((const char *)API_TangoHostNotSet,
 					       		desc.str(),
 					       		(const char *)"Database::Database");
 		}
@@ -265,16 +265,26 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 			if (res == 0)
 			{
 				db_host = h_name;
-				Connection::ext->tango_host_localhost = true;
+				tango_host_localhost = true;
 			}
 		}
 
 //
-// Get FQDN
+// Get FQDN but store original TANGO_HOST (for event in case of alias used in TANGO_HOST)
 //
 
+		ext->orig_tango_host = db_host;
 		if (db_host.find('.') == string::npos)
+		{
 			get_fqdn(db_host);
+			string::size_type pos = db_host.find('.');
+			if (pos != string::npos)
+            {
+                string fq = db_host.substr(pos);
+                ext->orig_tango_host = ext->orig_tango_host + fq;
+            }
+		}
+
 	}
 
 	host = db_host;
@@ -296,9 +306,9 @@ void Database::check_tango_host(const char *tango_host_env_c_str)
 
 Database::Database(string &in_host, int in_port, ORB *orb_in) : Connection(orb_in),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
-	filedb = Tango_NullPtr;
+	filedb = Tango_nullptr;
 	serv_version = 0;
 	db_multi_svc = false;
 
@@ -327,7 +337,7 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 
 Database::Database(string &name) : Connection(true),
 ext(new DatabaseExt),
-access_proxy(NULL),access_checked(false),access_service_defined(false)
+access_proxy(NULL),access_checked(false),access_service_defined(false),db_tg(NULL)
 {
 	file_name = name;
 	filedb = new FileDatabase(file_name);
@@ -342,25 +352,25 @@ access_proxy(NULL),access_checked(false),access_service_defined(false)
 //
 //-----------------------------------------------------------------------------
 
-Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
+Database::Database(const Database &sou):Connection(sou),ext(Tango_nullptr)
 {
 
 //
-// Copy Databaase members
+// Copy Database members
 //
 
 	db_multi_svc = sou.db_multi_svc;
 	multi_db_port = sou.multi_db_port;
 	multi_db_host = sou.multi_db_host;
 	file_name = sou.file_name;
-	if (sou.filedb == Tango_NullPtr)
-        filedb = Tango_NullPtr;
+	if (sou.filedb == Tango_nullptr)
+        filedb = Tango_nullptr;
     else
         filedb = new FileDatabase(file_name);
 	serv_version = sou.serv_version;
 
-    if (sou.access_proxy == Tango_NullPtr)
-        access_proxy = Tango_NullPtr;
+    if (sou.access_proxy == Tango_nullptr)
+        access_proxy = Tango_nullptr;
     else
         access_proxy = new AccessProxy(sou.access_proxy->name().c_str());
 	access_checked = sou.access_checked;
@@ -370,6 +380,7 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
 	db_device_name = sou.db_device_name;
 
 	access_service_defined = sou.access_service_defined;
+	db_tg = sou.db_tg;
 
 //
 // Copy extension class
@@ -379,7 +390,6 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
     if (sou.ext.get() != NULL)
     {
         ext.reset(new DatabaseExt);
-        ext->db_tg = sou.ext->db_tg;
     }
 #else
 	if (sou.ext == NULL)
@@ -387,7 +397,6 @@ Database::Database(const Database &sou):Connection(sou),ext(Tango_NullPtr)
 	else
 	{
 		ext = new DatabaseExt();
-		ext->db_tg = sou.ext->db_tg;
 	}
 #endif
 
@@ -417,14 +426,14 @@ Database &Database::operator=(const Database &rval)
         serv_version = rval.serv_version;
 
         delete filedb;
-        if (rval.filedb == Tango_NullPtr)
-            filedb = Tango_NullPtr;
+        if (rval.filedb == Tango_nullptr)
+            filedb = Tango_nullptr;
         else
             filedb = new FileDatabase(file_name);
 
         delete access_proxy;
-        if (rval.access_proxy == Tango_NullPtr)
-            access_proxy = Tango_NullPtr;
+        if (rval.access_proxy == Tango_nullptr)
+            access_proxy = Tango_nullptr;
         else
             access_proxy = new AccessProxy(rval.access_proxy->name().c_str());
         access_checked = rval.access_checked;
@@ -434,12 +443,12 @@ Database &Database::operator=(const Database &rval)
         db_device_name = rval.db_device_name;
 
         access_service_defined = rval.access_service_defined;
+        db_tg = rval.db_tg;
 
 #ifdef HAS_UNIQUE_PTR
         if (rval.ext.get() != NULL)
         {
             ext.reset(new DatabaseExt);
-            ext->db_tg = rval.ext->db_tg;
         }
         else
             ext.reset();
@@ -448,7 +457,6 @@ Database &Database::operator=(const Database &rval)
         if (rval.ext != NULL)
         {
             ext = new DatabaseExt;
-            ext->db_tg = rval.ext->db_tg;
         }
         else
             ext = NULL;
@@ -471,12 +479,12 @@ void Database::check_access_and_get()
 {
 	bool local_access_checked;
 	{
-		ReaderLock guard(Connection::ext->con_to_mon);
+		ReaderLock guard(con_to_mon);
 		local_access_checked = access_checked;
 	}
 	if (local_access_checked == false)
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 		if (access_checked == false)
 			check_access();
 	}
@@ -500,7 +508,7 @@ void Database::set_server_release()
 	}
 	catch (Tango::DevFailed &e)
 	{
-		if (::strcmp(e.errors[0].reason.in(),"API_CommandNotFound") == 0)
+		if (::strcmp(e.errors[0].reason.in(),API_CommandNotFound) == 0)
 		{
 		    try
 		    {
@@ -528,7 +536,7 @@ const string &Database::get_file_name()
 {
 	if (filedb == 0)
 	{
-		Tango::Except::throw_exception ((const char *)"API_NotSupportedFeature",
+		Tango::Except::throw_exception ((const char *)API_NotSupportedFeature,
 										(const char *)"The database is not a file-based database",
 										(const char *)"Database::get_file_name");
 	}
@@ -643,15 +651,15 @@ void Database::reread_filedatabase()
 void Database::build_connection()
 {
 	string corba_name = get_corba_name(true);
-	omniORB::setClientConnectTimeout(CORBA::ULong(DB_CONNECT_TIMEOUT));
+//	omniORB::setClientConnectTimeout(CORBA::ULong(DB_CONNECT_TIMEOUT));
 	try
 	{
 		connect(corba_name);
-		omniORB::setClientConnectTimeout(0);
+//		omniORB::setClientConnectTimeout(0);
 	}
 	catch (Tango::DevFailed &)
 	{
-		omniORB::setClientConnectTimeout(0);
+//		omniORB::setClientConnectTimeout(0);
 		throw;
 	}
 
@@ -683,7 +691,7 @@ string Database::get_corba_name(TANGO_UNUSED(bool ch_acc))
 	else
 	{
 		db_corbaloc = "corbaloc:iiop:";
-		if (Connection::ext->tango_host_localhost == true)
+		if (tango_host_localhost == true)
 			db_corbaloc = db_corbaloc+"localhost:";
 		else
 			db_corbaloc = db_corbaloc+db_host+":";
@@ -759,7 +767,7 @@ DbDevImportInfo Database::import_device(string &dev)
 
 	DbDevImportInfo dev_import;
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
@@ -791,11 +799,11 @@ DbDevImportInfo Database::import_device(string &dev)
                 ApiUtil *au = ApiUtil::instance();
                 if (au->in_server() == true)
                 {
-                    if (ext->db_tg != NULL)
+                    if (db_tg != NULL)
                     {
                         try
                         {
-                            DbServerCache *dsc = ext->db_tg->get_db_cache();
+                            DbServerCache *dsc = db_tg->get_db_cache();
                             if (dsc != NULL)
                             {
                                 dev_import_list = dsc->import_tac_dev(dev);
@@ -834,7 +842,7 @@ DbDevImportInfo Database::import_device(string &dev)
 
 		if (dev_import_list->svalue.length() == 6)
 		{
-			omni_mutex_lock guard(ext->map_mutex);
+			omni_mutex_lock guard(map_mutex);
 
 			map<string,string>::iterator pos = dev_class_cache.find(dev);
 			if (pos == dev_class_cache.end())
@@ -846,7 +854,7 @@ DbDevImportInfo Database::import_device(string &dev)
 				{
 					TangoSys_OMemStream o;
 					o << "Can't insert device class for device " << dev << " in device class cache" << ends;
-					Tango::Except::throw_exception((const char *)"API_CantStoreDeviceClass",o.str(),
+					Tango::Except::throw_exception((const char *)API_CantStoreDeviceClass,o.str(),
 			                               (const char *)"DeviceProxy::import_device()");
 				}
 			}
@@ -1112,7 +1120,7 @@ DbServerInfo Database::get_server_info(string &server)
 	}
 	else
 	{
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                        (const char *)"Incoherent data received from database",
                                        (const char *)"Database::get_server_info()");
 	}
@@ -1290,8 +1298,8 @@ void Database::put_device_property(string dev, DbData &db_data)
 
 //-----------------------------------------------------------------------------
 //
-// Database::delete_device_property() - public method to delete device properties from
-//                                   the Database
+// Database::delete_device_property() - public method to delete device properties
+//                      from the Database
 //
 //-----------------------------------------------------------------------------
 
@@ -1322,8 +1330,7 @@ void Database::delete_device_property(string dev, DbData &db_data)
 //-----------------------------------------------------------------------------
 //
 // Database::get_device_attribute_property() - public method to get device
-//					       attribute properties from
-//                                             the Database
+//					attribute properties from the Database
 //
 //-----------------------------------------------------------------------------
 
@@ -2286,7 +2293,7 @@ DbDatum Database::get_device_exported(string &filter)
 	DbDatum db_datum;
     if (device_names == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_device_exported()");
     }
@@ -2332,7 +2339,7 @@ DbDatum Database::get_device_member(string &wildcard)
 	DbDatum db_datum;
     if (device_member == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_device_member()");
     }
@@ -2379,7 +2386,7 @@ DbDatum Database::get_device_family(string &wildcard)
 
     if (device_family == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_device_family()");
     }
@@ -2427,7 +2434,7 @@ DbDatum Database::get_device_domain(string &wildcard)
 
     if (device_domain == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_device_domain()");
     }
@@ -2455,7 +2462,7 @@ DbDatum Database::get_device_domain(string &wildcard)
 
 void Database::get_property_forced(string obj, DbData &db_data,DbServerCache *dsc)
 {
-	WriterLock guard(Connection::ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 
 	AccessControlType tmp_access = access;
 	access = ACCESS_WRITE;
@@ -2474,7 +2481,7 @@ void Database::get_property(string obj, DbData &db_data,DbServerCache *db_cache)
 	const DevVarStringArray *property_values = NULL;
 
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		if ((access == ACCESS_READ) && (access_checked == false))
 			check_access();
@@ -2736,7 +2743,7 @@ void Database::get_attribute_alias(string  attr_alias, string &attr_name)
 
     if (attr_name_tmp == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_attribute_alias()");
     }
@@ -2770,7 +2777,7 @@ DbDatum Database::get_device_alias_list(string &alias)
 
     if (alias_array == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_device_alias_list()");
     }
@@ -2815,7 +2822,7 @@ DbDatum Database::get_attribute_alias_list(string &alias)
 
     if (alias_array == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_attribute_alias_list()");
     }
@@ -2848,7 +2855,7 @@ DbDatum Database::make_string_array(string name,Any_var &received) {
 	received.inout() >>= prop_list;
     if (prop_list == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::make_string_array()");
     }
@@ -3019,7 +3026,7 @@ DbDatum Database::get_server_class_list(string &servname)
 	DbDatum db_datum;
     if (prop_list == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::get_server_class_list()");
     }
@@ -3336,7 +3343,7 @@ string Database::get_class_for_device(string &devname)
 	string ret_str;
 
 	{
-		omni_mutex_lock guard(ext->map_mutex);
+		omni_mutex_lock guard(map_mutex);
 
 		map<string,string>::iterator pos = dev_class_cache.find(devname);
 		if (pos == dev_class_cache.end())
@@ -3355,7 +3362,7 @@ string Database::get_class_for_device(string &devname)
 			{
 				TangoSys_OMemStream o;
 				o << "Can't insert device class for device " << devname << " in device class cache" << ends;
-				Tango::Except::throw_exception((const char *)"API_CantStoreDeviceClass",o.str(),
+				Tango::Except::throw_exception((const char *)API_CantStoreDeviceClass,o.str(),
 		                               (const char *)"DeviceProxy::get_class_for_device()");
 			}
 		}
@@ -3392,7 +3399,7 @@ DbDatum Database::get_class_inheritance_for_device(string &devname)
 	} catch (DevFailed &e) {
 
 	  // Check if an old API else re-throw
-	  if (strcmp(e.errors[0].reason.in(),"API_CommandNotFound") != 0) {
+	  if (strcmp(e.errors[0].reason.in(),API_CommandNotFound) != 0) {
 	    throw;
 	  } else {
 	    DbDatum db_datum;
@@ -3585,7 +3592,7 @@ vector<DbHistory> Database::make_history_array(bool is_attribute, Any_var &recei
 	vector<DbHistory> v;
     if (ret == NULL)
     {
-        Tango::Except::throw_exception((const char *)"API_IncoherentDbData",
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
                                    (const char *)"Incoherent data received from database",
                                    (const char *)"Database::make_history_array()");
     }
@@ -3820,8 +3827,8 @@ DbDatum Database::get_services(string &servname,string &instname)
 			catch (Tango::DevFailed &e)
 			{
 				string reason = e.errors[0].reason.in();
-				if (reason == "API_UtilSingletonNotCreated" && ext->db_tg != NULL)
-					dsc = ext->db_tg->get_db_cache();
+				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+					dsc = db_tg->get_db_cache();
 				else
 					dsc = NULL;
 			}
@@ -3867,6 +3874,93 @@ DbDatum Database::get_services(string &servname,string &instname)
 	return db_datum;
 }
 
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_service_list() - Query database for all devices for all
+//										 instances of a specified service
+//
+//-----------------------------------------------------------------------------
+
+DbDatum Database::get_device_service_list(string &servname)
+{
+	DbData data;
+	DbDatum db_datum;
+	vector<string> services;
+	vector<string> filter_services;
+
+//
+// Get list of services
+//
+
+	ApiUtil *au = ApiUtil::instance();
+	DbServerCache *dsc;
+	if (au->in_server() == true)
+	{
+		if (from_env_var == false)
+			dsc = NULL;
+		else
+		{
+			try
+			{
+				Tango::Util *tg = Tango::Util::instance(false);
+				dsc = tg->get_db_cache();
+			}
+			catch (Tango::DevFailed &e)
+			{
+				string reason = e.errors[0].reason.in();
+				if (reason == "API_UtilSingletonNotCreated" && db_tg != NULL)
+					dsc = db_tg->get_db_cache();
+				else
+					dsc = NULL;
+			}
+		}
+	}
+	else
+		dsc = NULL;
+
+	DbDatum db_d(SERVICE_PROP_NAME);
+	data.push_back(db_d);
+	get_property_forced(CONTROL_SYSTEM, data,dsc);
+	data[0] >> services;
+
+//
+// Filter the required service
+//
+
+	string filter = servname + "/";
+
+	transform(filter.begin(),filter.end(),filter.begin(),::tolower);
+
+	for(unsigned int i = 0;i < services.size();i++)
+	{
+		transform(services[i].begin(),services[i].end(),services[i].begin(),::tolower);
+		if (strncmp(services[i].c_str(),filter.c_str(),filter.length()) == 0)
+		{
+			string::size_type pos,pos_end;
+			pos = services[i].find('/');
+			if (pos != string::npos)
+			{
+				pos_end = services[i].find(':');
+				if (pos != string::npos)
+				{
+					filter_services.push_back(services[i].substr(pos + 1,pos_end - pos - 1));
+					filter_services.push_back(services[i].substr(pos_end + 1));
+				}
+			}
+		}
+	}
+
+//
+// Build return value
+//
+
+	db_datum.name = "services";
+	db_datum.value_string.resize(filter_services.size());
+	for (unsigned int i = 0;i < filter_services.size();i++)
+		db_datum.value_string[i] = filter_services[i];
+
+	return db_datum;
+}
 //-----------------------------------------------------------------------------
 //
 // Database::register_service() - Register a new service
@@ -4030,7 +4124,7 @@ CORBA::Any *Database::import_event(string &event)
 //
 
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
@@ -4070,10 +4164,82 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 	pos = ds_name.find('/');
 	if (pos == string::npos)
 	{
-		Tango::Except::throw_exception((const char *)"API_MethodArgument",
+		Tango::Except::throw_exception((const char *)API_MethodArgument,
 				       		(const char *)"The device server name parameter is incorrect. Should be: <ds_exec_name>/<inst_name>",
 				       		(const char *)"Database::fill_server_cache");
 	}
+
+//
+// Read Db device "StoredProcedureRelease" attribute. In case the stored procedure release is >= 1.9,
+// add Tango major release at the end the host name. This is required to manage compatibility between different
+// Tango releases used by device server(s) process when stored procedure supporting pipes is installed
+// (release 1.9 or higher)
+// To read the attribute, we do not have a DeviceProxy.
+//
+
+	string ds_host(loc_host);
+	int db_proc_release = 0;
+
+	AttributeValueList_3 *attr_value_list_3 = NULL;
+	AttributeValueList_4 *attr_value_list_4 = NULL;
+	AttributeValueList_5 *attr_value_list_5 = NULL;
+
+	DevVarStringArray attr_list;
+	attr_list.length(1);
+	attr_list[0] = CORBA::string_dup("StoredProcedureRelease");
+	DeviceAttribute da;
+
+	try
+	{
+		ClntIdent ci;
+		ApiUtil *au = ApiUtil::instance();
+		ci.cpp_clnt(au->get_client_pid());
+
+		if (version >= 5)
+		{
+			Device_5_var dev = Device_5::_duplicate(device_5);
+			attr_value_list_5 = dev->read_attributes_5(attr_list,DEV,ci);
+
+			ApiUtil::attr_to_device(&((*attr_value_list_5)[0]),version,&da);
+			delete attr_value_list_5;
+		}
+		else if (version == 4)
+		{
+			Device_4_var dev = Device_4::_duplicate(device_4);
+			attr_value_list_4 = dev->read_attributes_4(attr_list,DEV,ci);
+
+			ApiUtil::attr_to_device(&((*attr_value_list_4)[0]),version,&da);
+			delete attr_value_list_4;
+		}
+		else
+		{
+			Device_3_var dev = Device_3::_duplicate(device_3);
+			attr_value_list_3 = dev->read_attributes_3(attr_list,DEV);
+
+			ApiUtil::attr_to_device(NULL,&((*attr_value_list_3)[0]),version,&da);
+			delete attr_value_list_3;
+		}
+
+		string sp_rel;
+		da >> sp_rel;
+
+		string rel = sp_rel.substr(8);
+		string::size_type pos = rel.find('.');
+		if (pos != string::npos)
+		{
+			string maj_str = rel.substr(0,pos);
+			string min_str = rel.substr(pos + 1);
+
+			int maj = atoi(maj_str.c_str());
+			int min = atoi(min_str.c_str());
+
+			db_proc_release = (maj * 100) + min;
+		}
+	}
+	catch (DevFailed &) {}
+
+	if (db_proc_release >= 109)
+		ds_host = ds_host + "%%" + TgLibMajorVers;
 
 //
 // Filling the cache is always possible whatever access rights are
@@ -4081,7 +4247,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 
 	Any_var received;
 	{
-		WriterLock guard(Connection::ext->con_to_mon);
+		WriterLock guard(con_to_mon);
 
 		AccessControlType tmp_access = access;
 		access = ACCESS_WRITE;
@@ -4095,7 +4261,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 
 		sent_info->length(2);
 		(*sent_info)[0] = string_dup(ds_name.c_str());
-		(*sent_info)[1] = string_dup(loc_host.c_str());
+		(*sent_info)[1] = string_dup(ds_host.c_str());
 		send <<= sent_info;
 
 		try
@@ -4138,7 +4304,7 @@ void Database::delete_all_device_attribute_property(string dev_name,DbData &db_d
 
 	if (filedb != 0)
 	{
-		Tango::Except::throw_exception((const char *)"API_NotSupportedFeature",
+		Tango::Except::throw_exception((const char *)API_NotSupportedFeature,
 				       		(const char *)"The underlying database command is not implemented when the database is a file",
 				       		(const char *)"Database::delete_all_device_attribute_property");
 	}
@@ -4260,7 +4426,7 @@ AccessControlType Database::check_access_control(string &devname)
 	}
 	catch (Tango::DevFailed &e)
 	{
-		if (::strcmp(e.errors[0].reason.in(),"API_DeviceNotExported") == 0 || ::strcmp(e.errors[0].reason.in(),"DB_DeviceNotDefined") == 0)
+		if (::strcmp(e.errors[0].reason.in(),API_DeviceNotExported) == 0 || ::strcmp(e.errors[0].reason.in(),"DB_DeviceNotDefined") == 0)
 		{
 			string tmp_err_desc(e.errors[0].desc.in());
 			tmp_err_desc = tmp_err_desc + "\nControlled access service defined in Db but unreachable --> Read access given to all devices...";
@@ -4281,7 +4447,7 @@ AccessControlType Database::check_access_control(string &devname)
 
 bool Database::is_command_allowed(string &devname,string &cmd)
 {
-	WriterLock guard(Connection::ext->con_to_mon);
+	WriterLock guard(con_to_mon);
 
 	bool ret;
 
@@ -4352,12 +4518,930 @@ void Database::write_event_channel_ior_filedatabase(string &ec_ior)
 {
 	if (filedb == NULL)
 	{
-		Tango::Except::throw_exception((const char *)"API_NotSupportedFeature",
+		Tango::Except::throw_exception((const char *)API_NotSupportedFeature,
 				       		(const char *)"This call is supported only when the database is a file",
 				       		(const char *)"Database::write_event_channel_ior_filedatabase");
 	}
 
 	filedb->write_event_channel_ior(ec_ior);
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_info() - public method to get device information
+//
+//-----------------------------------------------------------------------------
+
+DbDevFullInfo Database::get_device_info(string &dev)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= dev.c_str();
+
+    CALL_DB_SERVER("DbGetDeviceInfo",send,received);
+
+	const DevVarLongStringArray *dev_info_db = NULL;
+	received.inout() >>= dev_info_db;
+
+	DbDevFullInfo dev_info;
+	if (dev_info_db != NULL)
+	{
+        dev_info.name = string(dev_info_db->svalue[0]);
+        dev_info.ior = string(dev_info_db->svalue[1]);
+        dev_info.version = string(dev_info_db->svalue[2]);
+        dev_info.ds_full_name = string(dev_info_db->svalue[3]);
+        dev_info.host = string(dev_info_db->svalue[4]);
+        if (::strlen(dev_info_db->svalue[5]) != 1)
+            dev_info.started_date = string(dev_info_db->svalue[5]);
+        if (::strlen(dev_info_db->svalue[6]) != 1)
+            dev_info.stopped_date = string(dev_info_db->svalue[6]);
+
+        if (dev_info_db->svalue.length() > 7)
+            dev_info.class_name = string(dev_info_db->svalue[7]);
+        else
+        {
+            try
+            {
+                dev_info.class_name = get_class_for_device(dev);
+            }
+            catch(...) {}
+        }
+
+        dev_info.exported = dev_info_db->lvalue[0];
+        dev_info.pid = dev_info_db->lvalue[1];
+	}
+	else
+	{
+        Tango::Except::throw_exception((const char *)API_IncoherentDbData,
+                                       (const char *)"Incoherent data received from database",
+                                       (const char *)"Database::get_device_info()");
+	}
+
+	return(dev_info);
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_from_alias() - Get device name from an alias
+//
+//-----------------------------------------------------------------------------
+void Database::get_device_from_alias(string alias_name, string &dev_name)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= alias_name.c_str();
+
+	if (filedb != 0)
+		received = filedb->DbGetAliasDevice(send);
+	else
+		CALL_DB_SERVER("DbGetAliasDevice",send,received);
+	const char *dev_name_tmp = NULL;
+	received.inout() >>= dev_name_tmp;
+	dev_name = dev_name_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_alias_from_device() - Get alias name from a device name
+//
+//-----------------------------------------------------------------------------
+void Database::get_alias_from_device(string dev_name, string &alias_name)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= dev_name.c_str();
+
+	if (filedb != 0)
+		received = filedb->DbGetDeviceAlias(send);
+	else
+		CALL_DB_SERVER("DbGetDeviceAlias",send,received);
+	const char *dev_name_tmp = NULL;
+	received.inout() >>= dev_name_tmp;
+	alias_name = dev_name_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_attribute_from_alias() - Get attribute name from an alias
+//
+//-----------------------------------------------------------------------------
+void Database::get_attribute_from_alias(string attr_alias, string &attr_name)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= attr_alias.c_str();
+
+/*	if (filedb != 0)
+		received = filedb->DbGetAliasAttribute(send);
+	else*/
+		CALL_DB_SERVER("DbGetAliasAttribute",send,received);
+	const char* attr_name_tmp = NULL;
+	received.inout() >>= attr_name_tmp;
+
+	if (attr_name_tmp == NULL)
+	{
+		Tango::Except::throw_exception((const char *)API_IncoherentDbData,
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_attribute_from_alias()");
+	}
+	else
+		attr_name = attr_name_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_alias_from_attribute() - Get alias name from an attribute name
+//
+//-----------------------------------------------------------------------------
+void Database::get_alias_from_attribute(string attr_name, string &attr_alias)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	send <<= attr_name.c_str();
+
+/*	if (filedb != 0)
+		received = filedb->DbGetAttributeAlias2(send);
+	else*/
+		CALL_DB_SERVER("DbGetAttributeAlias2",send,received);
+	const char* attr_alias_tmp = NULL;
+	received.inout() >>= attr_alias_tmp;
+
+	if (attr_alias_tmp == NULL)
+	{
+		Tango::Except::throw_exception((const char *)API_IncoherentDbData,
+                                   (const char *)"Incoherent data received from database",
+                                   (const char *)"Database::get_alias_from_attribute()");
+	}
+	else
+		attr_alias = attr_alias_tmp;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::get_device_attribute_list() - Get list of attributes with data in db
+// for a specified device
+//
+//-----------------------------------------------------------------------------
+void Database::get_device_attribute_list(string &dev_name, vector<string> &att_list)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *sent_names = new DevVarStringArray;
+	sent_names->length(2);
+	(*sent_names)[0] = string_dup(dev_name.c_str());
+	(*sent_names)[1] = string_dup("*");
+
+	send <<= sent_names;
+
+	CALL_DB_SERVER("DbGetDeviceAttributeList",send,received);
+
+	const DevVarStringArray *recv_names = NULL;
+	received.inout() >>= recv_names;
+
+	att_list << *recv_names;
+}
+
+//-----------------------------------------------------------------------------
+//
+// Database::rename_server() - Rename a device server process
+//
+//-----------------------------------------------------------------------------
+void Database::rename_server(const string &old_ds_name, const string &new_ds_name)
+{
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *sent_names = new DevVarStringArray;
+	sent_names->length(2);
+	(*sent_names)[0] = string_dup(old_ds_name.c_str());
+	(*sent_names)[1] = string_dup(new_ds_name.c_str());
+
+	send <<= sent_names;
+
+	CALL_DB_SERVER_NO_RET("DbRenameServer",send);
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//
+// Database::get_class_pipe_property() - public method to get class pipe properties from the Database
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+void Database::get_class_pipe_property(string device_class, DbData &db_data, DbServerCache *db_cache)
+{
+	unsigned int i;
+	Any_var received;
+	const DevVarStringArray *property_values = NULL;
+
+	check_access_and_get();
+
+	DevVarStringArray *property_names = new DevVarStringArray;
+	property_names->length(db_data.size()+1);
+	(*property_names)[0] = string_dup(device_class.c_str());
+	for (i=0; i<db_data.size(); i++)
+	{
+		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
+	}
+
+	if (db_cache == NULL)
+	{
+
+//
+// Get property(ies) from DB server
+//
+
+		Any send;
+		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+		send <<= property_names;
+
+		if (filedb != 0)
+		{
+			received = filedb->DbGetClassPipeProperty(send);
+		}
+		else
+		{
+			try
+			{
+				CALL_DB_SERVER("DbGetClassPipeProperty",send,received);
+			}
+			catch (Tango::DevFailed &)
+			{
+				throw;
+			}
+		}
+		received.inout() >>= property_values;
+	}
+	else
+	{
+
+//
+// Try to get property(ies) from cache
+//
+
+		try
+		{
+			property_values = db_cache->get_class_pipe_property(property_names);
+			delete property_names;
+		}
+		catch (Tango::DevFailed &e)
+		{
+			string err_reason(e.errors[0].reason.in());
+
+			if (err_reason == "DB_ClassNotFoundInCache" || err_reason == "DB_TooOldStoredProc")
+			{
+
+				if (err_reason == "DB_TooOldStoredProc")
+				{
+					cout << "WARNING: You database stored procedure is too old to support device pipe" << endl;
+					cout << "Please, update to stored procedure release 1.9 or more" << endl;
+					cout << "Trying direct Db access" << endl;
+				}
+
+//
+// The class is not defined in cache, get property(ies) from DB server
+//
+
+				Any send;
+				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+				send <<= property_names;
+
+				if (filedb != 0)
+				{
+					received = filedb->DbGetClassPipeProperty(send);
+				}
+				else
+				{
+					CALL_DB_SERVER("DbGetClassPipeProperty",send,received);
+				}
+				received.inout() >>= property_values;
+			}
+			else
+			{
+				delete property_names;
+				throw;
+			}
+		}
+	}
+
+
+	unsigned int n_pipes, index;
+	int i_total_props;
+	stringstream iostream;
+
+	iostream << (*property_values)[1].in() << ends;
+	iostream >> n_pipes;
+	index = 2;
+	i_total_props = 0;
+
+
+	long old_size = 0;
+	for (i=0; i<n_pipes; i++)
+	{
+		old_size++;
+		db_data.resize(old_size);
+		short n_props;
+		db_data[i_total_props].name = (*property_values)[index]; index++;
+		iostream.seekp(0); iostream.seekg(0); iostream.clear();
+		iostream << (*property_values)[index].in() << ends;
+		iostream >> n_props;
+		db_data[i_total_props] << n_props;
+		db_data.resize(old_size + n_props);
+		old_size = old_size + n_props;
+		i_total_props++;
+		index++;
+		for (int j=0; j<n_props; j++)
+		{
+			db_data[i_total_props].name = (*property_values)[index];
+			index++;
+			int n_values;
+			iostream.seekp(0); iostream.seekg(0); iostream.clear();
+			iostream << (*property_values)[index].in() << ends;
+			iostream >> n_values;
+			index++;
+
+			db_data[i_total_props].value_string.resize(n_values);
+			if (n_values == 0)
+			{
+				index++; // skip dummy returned value ""
+			}
+			else
+			{
+				for (int k=0; k<n_values; k++)
+				{
+					db_data[i_total_props].value_string[k] = (*property_values)[index].in();
+					index++;
+				}
+			}
+			i_total_props++;
+		}
+	}
+
+	return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_device_pipe_property() - public method to get device pipe properties from the Database
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void Database::get_device_pipe_property(string dev, DbData &db_data, DbServerCache *db_cache)
+{
+	unsigned int i,j;
+	Any_var received;
+	const DevVarStringArray *property_values = NULL;
+
+	check_access_and_get();
+
+	DevVarStringArray *property_names = new DevVarStringArray;
+	property_names->length(db_data.size()+1);
+	(*property_names)[0] = string_dup(dev.c_str());
+	for (i=0; i<db_data.size(); i++)
+	{
+		(*property_names)[i+1] = string_dup(db_data[i].name.c_str());
+	}
+
+	if (db_cache == NULL)
+	{
+
+//
+// Get propery(ies) from DB server
+//
+
+		AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+		Any send;
+
+		send <<= property_names;
+
+		if (filedb != 0)
+		{
+			received = filedb->DbGetDevicePipeProperty(send);
+		}
+		else
+		{
+			try
+			{
+				CALL_DB_SERVER("DbGetDevicePipeProperty",send,received);
+			}
+			catch (Tango::DevFailed &)
+			{
+				throw;
+			}
+		}
+		received.inout() >>= property_values;
+	}
+	else
+	{
+
+//
+// Try  to get property(ies) from cache
+//
+
+		try
+		{
+			property_values = db_cache->get_dev_pipe_property(property_names);
+			delete property_names;
+		}
+		catch (Tango::DevFailed &e)
+		{
+			string err_reason(e.errors[0].reason.in());
+
+			if (err_reason == "DB_DeviceNotFoundInCache" || err_reason == "DB_TooOldStoredProc")
+			{
+				if (err_reason == "DB_TooOldStoredProc")
+				{
+					cout << "WARNING: You database stored procedure is too old to support device pipe" << endl;
+					cout << "Please, update to stored procedure release 1.9 or more" << endl;
+					cout << "Trying direct Db access" << endl;
+				}
+
+//
+// The device is not in cache, ask the db server
+//
+
+				AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+				Any send;
+
+				send <<= property_names;
+
+				if (filedb != 0)
+				{
+					received = filedb->DbGetDeviceAttributeProperty(send);
+				}
+				else
+				{
+					CALL_DB_SERVER("DbGetDevicePipeProperty",send,received);
+				}
+				received.inout() >>= property_values;
+			}
+			else
+			{
+				delete property_names;
+				throw;
+			}
+		}
+	}
+
+	unsigned int n_pipes, index;
+	int i_total_props;
+	stringstream iostream;
+
+	iostream << (*property_values)[1].in() << ends;
+	iostream >> n_pipes;
+	index = 2;
+
+	i_total_props = 0;
+
+	long old_size = 0;
+	for (i=0; i<n_pipes; i++)
+	{
+		old_size++;
+		db_data.resize(old_size);
+		unsigned short n_props;
+		db_data[i_total_props].name = (*property_values)[index]; index++;
+		iostream.seekp(0); iostream.seekg(0); iostream.clear();
+		iostream << (*property_values)[index].in() << ends;
+		iostream >> n_props;
+		db_data[i_total_props] << n_props;
+		db_data.resize(old_size + n_props);
+		old_size = old_size + n_props;
+		i_total_props++;
+		index++;
+		for (j=0; j<n_props; j++)
+		{
+			db_data[i_total_props].name = (*property_values)[index];
+			index++;
+			int n_values;
+			iostream.seekp (0);  iostream.seekg (0); iostream.clear();
+			iostream << (*property_values)[index].in() << ends;
+			iostream >> n_values;
+			index++;
+
+			db_data[i_total_props].value_string.resize(n_values);
+			if (n_values == 0)
+			{
+				index++; // skip dummy returned value " "
+			}
+			else
+			{
+				for (int k=0; k<n_values; k++)
+				{
+					db_data[i_total_props].value_string[k] = (*property_values)[index].in();
+					index++;
+				}
+			}
+			i_total_props++;
+		}
+	}
+
+    cout4 << "Leaving get_device_pipe_property" << endl;
+	return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// Database::delete_class_pipe_property() - public method to delete class pipe properties from the Database
+//
+//------------------------------------------------------------------------------------------------------------------
+
+void Database::delete_class_pipe_property(string device_class, DbData &db_data)
+{
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *property_values = new DevVarStringArray;
+	unsigned int nb_prop = db_data.size() - 1;
+	property_values->length(nb_prop + 2);
+	(*property_values)[0] = string_dup(device_class.c_str());
+	(*property_values)[1] = string_dup(db_data[0].name.c_str());
+	for (unsigned int i=0; i < nb_prop;i++)
+		(*property_values)[i + 2] = string_dup(db_data[i + 1].name.c_str());
+
+	send <<= property_values;
+
+	if (filedb != 0)
+		filedb->DbDeleteClassPipeProperty(send);
+	else
+		CALL_DB_SERVER_NO_RET("DbDeleteClassPipeProperty",send);
+
+	return;
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// Database::delete_device_pipe_property() - public method to delete device pipe properties from the Database
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void Database::delete_device_pipe_property(string dev, DbData &db_data)
+{
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *property_values = new DevVarStringArray;
+	unsigned int nb_prop = db_data.size() - 1;
+	property_values->length(nb_prop + 2);
+	(*property_values)[0] = string_dup(dev.c_str());
+	(*property_values)[1] = string_dup(db_data[0].name.c_str());
+	for (unsigned int i=0; i < nb_prop;i++)
+		(*property_values)[i + 2] = string_dup(db_data[i + 1].name.c_str());
+
+	send <<= property_values;
+
+	if (filedb != 0)
+		filedb->DbDeleteDevicePipeProperty(send);
+	else
+		CALL_DB_SERVER_NO_RET("DbDeleteDevicePipeProperty",send);
+
+	return;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_class_pipe_list() - Query the database for a list of pipes defined for the specified class.
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+DbDatum Database::get_class_pipe_list(const string &classname,const string &wildcard)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *class_info = new DevVarStringArray;
+
+	class_info->length(2);
+	(*class_info)[0] = string_dup(classname.c_str());
+	(*class_info)[1] = string_dup(wildcard.c_str());
+
+	send <<= class_info;
+
+	CALL_DB_SERVER("DbGetClassPipeList",send,received);
+
+	return make_string_array(string("class"),received);
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_device_pipe_list() - Get list of pipes with data in db for a specified device
+//
+//-------------------------------------------------------------------------------------------------------------------
+void Database::get_device_pipe_list(const string &dev_name, vector<string> &pipe_list)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *sent_names = new DevVarStringArray;
+	sent_names->length(2);
+	(*sent_names)[0] = string_dup(dev_name.c_str());
+	(*sent_names)[1] = string_dup("*");
+
+	send <<= sent_names;
+
+	CALL_DB_SERVER("DbGetDevicePipeList",send,received);
+
+	const DevVarStringArray *recv_names = NULL;
+	received.inout() >>= recv_names;
+
+	pipe_list << *recv_names;
+}
+
+//----------------------------------------------------------------------------------------------------------------
+//
+// Database::delete_all_device_pipe_property() - Call Db server to delete all the property(ies) belonging to the
+// specified device pipe(s)
+//
+//----------------------------------------------------------------------------------------------------------------
+
+void Database::delete_all_device_pipe_property(string dev_name,DbData &db_data)
+{
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	Any send;
+
+	DevVarStringArray *att_names = new DevVarStringArray;
+	att_names->length(db_data.size()+1);
+	(*att_names)[0] = string_dup(dev_name.c_str());
+	for (unsigned int i=0; i<db_data.size(); i++)
+	{
+		(*att_names)[i+1] = string_dup(db_data[i].name.c_str());
+	}
+	send <<= att_names;
+
+	if (filedb != 0)
+	{
+		Tango::Except::throw_exception(API_NotSupportedFeature,
+				       		"The underlying database command is not implemented when the database is a file",
+				       		"Database::delete_all_device_pipe_property");
+	}
+	else
+		CALL_DB_SERVER_NO_RET("DbDeleteAllDevicePipeProperty",send);
+}
+
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::put_class_pipe_property() - public method to put class pipe properties into the Database
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Database::put_class_pipe_property(string device_class, DbData &db_data)
+{
+	ostringstream ostream;
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	int index, n_pipes;
+	bool retry = true;
+
+	check_access_and_get();
+
+	while (retry == true)
+	{
+		DevVarStringArray *property_values = new DevVarStringArray;
+		property_values->length(2); index = 2;
+		(*property_values)[0] = string_dup(device_class.c_str());
+		n_pipes = 0;
+
+		for (unsigned int i=0; i<db_data.size(); )
+		{
+			short n_props = 0;
+			index++; property_values->length(index);
+			(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
+			db_data[i] >> n_props;
+			ostream.seekp(0); ostream.clear();
+			ostream << n_props << ends;
+			index++; property_values->length(index);
+
+			string st = ostream.str();
+			(*property_values)[index-1] = string_dup(st.c_str());
+
+			for (int j=0; j<n_props; j++)
+			{
+				index++; property_values->length(index);
+				(*property_values)[index-1] = string_dup(db_data[i+j+1].name.c_str());
+				index++; property_values->length(index);
+				int prop_size = db_data[i+j+1].size();
+				ostream.seekp(0); ostream.clear();
+				ostream << prop_size << ends;
+
+				string st = ostream.str();
+				(*property_values)[index-1] = string_dup(st.c_str());
+
+				property_values->length(index + prop_size);
+				for (int q=0; q<prop_size; q++)
+				{
+					(*property_values)[index+q] = string_dup(db_data[i+j+1].value_string[q].c_str());
+				}
+				index = index + prop_size;
+			}
+			i = i+n_props+1;
+			n_pipes++;
+		}
+
+		ostream.seekp(0); ostream.clear();
+		ostream << n_pipes << ends;
+
+		string st = ostream.str();
+		(*property_values)[1] = string_dup(st.c_str());
+
+		send <<= property_values;
+
+		if (filedb != 0)
+		{
+			filedb->DbPutClassPipeProperty(send);
+			retry = false;
+		}
+		else
+		{
+			CALL_DB_SERVER_NO_RET("DbPutClassPipeProperty",send);
+			retry = false;
+		}
+	}
+
+	return;
+}
+
+//-------------------------------------------------------------------------------------------------------------------
+//
+// Database::put_device_pipe_property() - public method to put device pipe properties into the Database
+//
+//-------------------------------------------------------------------------------------------------------------------
+
+void Database::put_device_pipe_property(string dev, DbData &db_data)
+{
+	ostringstream ostream;
+	Any send;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	int index, n_pipes ;
+	bool retry = true;
+
+	check_access_and_get();
+
+	while (retry == true)
+	{
+		DevVarStringArray *property_values = new DevVarStringArray;
+		property_values->length(2); index = 2;
+		(*property_values)[0] = string_dup(dev.c_str());
+		n_pipes = 0;
+
+		for (unsigned int i=0; i<db_data.size();)
+		{
+			short n_props = 0;
+			index++; property_values->length(index);
+			(*property_values)[index-1] = string_dup(db_data[i].name.c_str());
+			db_data[i] >> n_props;
+			ostream.seekp(0); ostream.clear();
+			ostream << n_props << ends;
+			index++; property_values->length(index);
+
+			string st = ostream.str();
+			(*property_values)[index-1] = string_dup(st.c_str());
+
+			for (int j=0; j<n_props; j++)
+			{
+				index++; property_values->length(index);
+				(*property_values)[index-1] = string_dup(db_data[i+j+1].name.c_str());
+				index++; property_values->length(index);
+				int prop_size = db_data[i+j+1].size();
+				ostream.seekp(0); ostream.clear();
+				ostream << prop_size << ends;
+
+				string st = ostream.str();
+				(*property_values)[index-1] = string_dup(st.c_str());
+
+				property_values->length(index + prop_size);
+				for (int q=0; q<prop_size; q++)
+				{
+					(*property_values)[index+q] = string_dup(db_data[i+j+1].value_string[q].c_str());
+				}
+				index = index + prop_size;
+			}
+			i = i+n_props+1;
+			n_pipes++;
+		}
+
+		ostream.seekp(0); ostream.clear();
+		ostream << n_pipes << ends;
+
+		string st = ostream.str();
+		(*property_values)[1] = string_dup(st.c_str());
+
+		send <<= property_values;
+
+
+		if (filedb != 0)
+		{
+			filedb->DbPutDevicePipeProperty(send);
+			retry = false;
+		}
+		else
+		{
+			try
+			{
+				CALL_DB_SERVER_NO_RET("DbPutDevicePipeProperty",send);
+				retry = false;
+			}
+			catch (Tango::DevFailed &)
+			{
+				throw;
+			}
+		}
+	}
+
+	return;
+}
+
+//------------------------------------------------------------------------------------------------------------------
+//
+// Database::get_class_pipe_property_history() - Returns the history of the specified class pipe property
+//
+//------------------------------------------------------------------------------------------------------------------
+
+vector<DbHistory> Database::get_class_pipe_property_history(string &classname,string &pipename,string &propname)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+	DevVarStringArray *obj_info = new DevVarStringArray;
+
+	check_access_and_get();
+
+	obj_info->length(3);
+	(*obj_info)[0] = string_dup(classname.c_str());
+	(*obj_info)[1] = string_dup(pipename.c_str());
+	(*obj_info)[2] = string_dup(propname.c_str());
+
+	send <<= obj_info;
+
+	CALL_DB_SERVER("DbGetClassPipePropertyHist",send,received);
+
+	return make_history_array(true,received);
+
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+//
+// Database::get_device_pipe_property_history() - Returns the history of the specified device pipe property
+//
+//-----------------------------------------------------------------------------------------------------------------
+
+vector<DbHistory> Database::get_device_pipe_property_history(string &devname,string &pipename,string &propname)
+{
+	Any send;
+	Any_var received;
+	AutoConnectTimeout act(DB_RECONNECT_TIMEOUT);
+
+	check_access_and_get();
+
+	DevVarStringArray *obj_info = new DevVarStringArray;
+
+	obj_info->length(3);
+	(*obj_info)[0] = string_dup(devname.c_str());
+	(*obj_info)[1] = string_dup(pipename.c_str());
+	(*obj_info)[2] = string_dup(propname.c_str());
+
+	send <<= obj_info;
+
+	CALL_DB_SERVER("DbGetDevicePipePropertyHist",send,received);
+
+	return make_history_array(true,received);
+
 }
 
 } // End of Tango namespace

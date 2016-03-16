@@ -11,7 +11,7 @@
 //
 // author(s) :		A.Gotz + E.Taurel
 //
-// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2004,2005,2006,2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
@@ -77,6 +77,9 @@ struct AttIdx
  *
  * $Author$
  * $Revision$
+ *
+ * @headerfile tango.h
+ * @ingroup Server
  */
 
 class Device_3Impl : public virtual POA_Tango::Device_3,
@@ -192,9 +195,8 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeValueList_3 *read_attributes_3(const Tango::DevVarStringArray& names,
-							     Tango::DevSource source)
-	throw (Tango::DevFailed, CORBA::SystemException);
+	virtual Tango::AttributeValueList_3 *read_attributes_3(const Tango::DevVarStringArray& names,
+							     Tango::DevSource source);
 
 /**
  * Write attribute(s) value.
@@ -211,8 +213,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void write_attributes_3(const Tango::AttributeValueList& values)
-	throw (Tango::MultiDevFailed, Tango::DevFailed,CORBA::SystemException);
+	virtual void write_attributes_3(const Tango::AttributeValueList& values);
 
 /**
  * Read attribute value history.
@@ -235,8 +236,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistoryList_3 *read_attribute_history_3(const char* name,
-								  CORBA::Long n)
-	throw(Tango::DevFailed, CORBA::SystemException);
+								  CORBA::Long n);
 
 /**
  * Get device info.
@@ -247,7 +247,7 @@ public:
  *
  * @return A DevInfo object
  */
-	virtual Tango::DevInfo_3 *info_3() throw (Tango::DevFailed, CORBA::SystemException);
+	virtual Tango::DevInfo_3 *info_3();
 
 /**
  * Get attribute(s) configuration.
@@ -268,8 +268,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual Tango::AttributeConfigList_3 *get_attribute_config_3(const Tango::DevVarStringArray& names)
-        throw(Tango::DevFailed, CORBA::SystemException);
+	virtual Tango::AttributeConfigList_3 *get_attribute_config_3(const Tango::DevVarStringArray& names);
 
 /**
  * Set attribute(s) configuration.
@@ -286,28 +285,47 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-    	virtual void set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf)
-    	throw (Tango::DevFailed, CORBA::SystemException);
+	virtual void set_attribute_config_3(const Tango::AttributeConfigList_3& new_conf);
 //@}
+
+/// @privatesection
 	void write_attributes_in_db(vector<long> &,vector<long> &);
 	void add_state_status_attrs();
+	void read_attributes_from_cache(const Tango::DevVarStringArray&,Tango::AttributeIdlData &);
+	void delete_dev() {ext_3->delete_dev();}
+	void get_attr_props(const char *,vector<AttrProperty> &);
 
 protected:
-	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeValueList_3 *&,Tango::AttributeValueList_4 *&,bool,vector<long> &);
+/// @privatesection
+	void read_attributes_no_except(const Tango::DevVarStringArray&,Tango::AttributeIdlData &,bool,vector<long> &);
 	void write_attributes_in_db(vector<long> &,vector<AttIdx> &);
 	void add_alarmed(vector<long> &);
 	long reading_state_necessary(vector<AttIdx> &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_3 &);
 	void state2attr(Tango::DevState,Tango::AttributeValue_4 &);
+	void state2attr(Tango::DevState,Tango::AttributeValue_5 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_3 &);
 	void status2attr(Tango::ConstDevString,Tango::AttributeValue_4 &);
+	void status2attr(Tango::ConstDevString,Tango::AttributeValue_5 &);
 	void alarmed_not_read(vector<AttIdx> &);
 
 	void write_attributes_34(const Tango::AttributeValueList *,const Tango::AttributeValueList_4 *);
 
-public:
-	void read_attributes_from_cache(const Tango::DevVarStringArray&,Tango::AttributeValueList_3 *&,Tango::AttributeValueList_4 *&);
-	void delete_dev() {ext_3->delete_dev();}
+	template <typename T,typename V>
+	void set_attribute_config_3_local(const T &,const V &,bool,int);
+
+	template <typename T> void error_from_devfailed(T &,DevFailed &,const char *);
+	template <typename T> void error_from_errorlist(T &,DevErrorList &,const char *);
+
+	template <typename T> void one_error(T &,const char *,const char *,string &,Attribute &);
+	template <typename T> void one_error(T &,const char *,const char *,string &,const char *);
+
+	template <typename T,typename V> void init_polled_out_data(T &,V &);
+	template <typename T> void init_out_data(T &,Attribute &,AttrWriteType &);
+	template <typename T> void init_out_data_quality(T &,Attribute &,AttrQuality);
+
+	template <typename T> void base_state2attr(T &);
+	template <typename T> void base_status2attr(T &);
 
 private:
 

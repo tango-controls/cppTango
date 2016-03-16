@@ -1,35 +1,33 @@
 static const char *RcsId = "$Id$";
 
-//
+//+==================================================================================================================
 // devapi_utils.cpp 	- C++ source code file for TANGO device api
 //
-// programmer(s)	-Emmanuel Taurel(taurel@esrf.fr)
+// programmer(s)	- Emmanuel Taurel(taurel@esrf.fr)
 //
 // original 		- November 2007
 //
-// Copyright (C) :      2007,2008,2009,2010,2011,2012
+// Copyright (C) :      2007,2008,2009,2010,2011,2012,2013,2014,2015
 //						European Synchrotron Radiation Facility
 //                      BP 220, Grenoble 38043
 //                      FRANCE
 //
 // This file is part of Tango.
 //
-// Tango is free software: you can redistribute it and/or modify
-// it under the terms of the GNU Lesser General Public License as published by
-// the Free Software Foundation, either version 3 of the License, or
+// Tango is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+// License as published by the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
 //
-// Tango is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// Tango is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+// of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Lesser Public License for more details.
 //
-// You should have received a copy of the GNU Lesser General Public License
-// along with Tango.  If not, see <http://www.gnu.org/licenses/>.
+// You should have received a copy of the GNU Lesser General Public License along with Tango.
+// If not, see <http://www.gnu.org/licenses/>.
 //
 // $Revision$
 //
-//
+//+==================================================================================================================
 
 #if HAVE_CONFIG_H
 #include <ac_config.h>
@@ -43,380 +41,15 @@ using namespace CORBA;
 namespace Tango
 {
 
-
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------------------------------------------
 //
-// DeviceProxy::from_hist4_2_AttHistory()
+// method :
+// 		DeviceProxy::from_hist4_2_DataHistory()
 //
-// Convert the attribute history as returned by a IDL 4 device to the classical
-// DeviceAttributeHistory format
+// description :
+// 		Convert the command history as returned by a IDL 4 device to the classical DeviceDataHistory format
 //
-//-----------------------------------------------------------------------------
-
-void DeviceProxy::from_hist4_2_AttHistory(DevAttrHistory_4_var &hist_4,vector<DeviceAttributeHistory> *ddh)
-{
-
-//
-// Check received data validity
-//
-
-	if ((hist_4->quals.length() != hist_4->quals_array.length()) ||
-		(hist_4->r_dims.length() != hist_4->r_dims_array.length()) ||
-		(hist_4->w_dims.length() != hist_4->w_dims_array.length()) ||
-		(hist_4->errors.length() != hist_4->errors_array.length()))
-	{
-		Tango::Except::throw_exception((const char *)"API_WrongHistoryDataBuffer",
-									   (const char *)"Data buffer received from server is not valid !",
-									   (const char *)"DeviceProxy::from_hist4_2_AttHistory");
-	}
-
-//
-// Get history depth
-//
-
-	unsigned int h_depth = hist_4->dates.length();
-
-//
-// Copy date and name in each History list element
-//
-
-	unsigned int loop;
-	for (loop = 0;loop < h_depth;loop++)
-	{
-		(*ddh)[loop].time = hist_4->dates[loop];
-		(*ddh)[loop].name = hist_4->name.in();
-	}
-
-//
-// Copy the attribute quality factor
-//
-
-	int k;
-
-	for (loop = 0;loop < hist_4->quals.length();loop++)
-	{
-		int nb_elt = hist_4->quals_array[loop].nb_elt;
-		int start = hist_4->quals_array[loop].start;
-
-		for (k = 0;k < nb_elt;k++)
-			(*ddh)[start - k].quality = hist_4->quals[loop];
-	}
-
-//
-// Copy read dimension
-//
-
-	for (loop = 0;loop < hist_4->r_dims.length();loop++)
-	{
-		int nb_elt = hist_4->r_dims_array[loop].nb_elt;
-		int start = hist_4->r_dims_array[loop].start;
-
-		for (k = 0;k < nb_elt;k++)
-		{
-			(*ddh)[start - k].dim_x = hist_4->r_dims[loop].dim_x;
-			(*ddh)[start - k].dim_y = hist_4->r_dims[loop].dim_y;
-		}
-	}
-
-//
-// Copy write dimension
-//
-
-	for (loop = 0;loop < hist_4->w_dims.length();loop++)
-	{
-		int nb_elt = hist_4->w_dims_array[loop].nb_elt;
-		int start = hist_4->w_dims_array[loop].start;
-
-		for (k = 0;k < nb_elt;k++)
-		{
-			(*ddh)[start - k].set_w_dim_x(hist_4->w_dims[loop].dim_x);
-			(*ddh)[start - k].set_w_dim_y(hist_4->w_dims[loop].dim_y);
-		}
-	}
-
-//
-// Copy errors
-//
-
-	for (loop = 0;loop < hist_4->errors.length();loop++)
-	{
-		int nb_elt = hist_4->errors_array[loop].nb_elt;
-		int start = hist_4->errors_array[loop].start;
-
-		for (k = 0;k < nb_elt;k++)
-		{
-			(*ddh)[start - k].failed(true);
-			DevErrorList &err_list = (*ddh)[start - k].get_error_list();
-			err_list.length(hist_4->errors[loop].length());
-			for (unsigned int g = 0;g < hist_4->errors[loop].length();g++)
-			{
-				err_list[g] = (hist_4->errors[loop])[g];
-			}
-		}
-	}
-
-//
-// Get data type and data ptr
-//
-
-	const Tango::DevVarDoubleArray *tmp_db;
-	const Tango::DevVarShortArray *tmp_sh;
-	const Tango::DevVarLongArray *tmp_lg;
-	const Tango::DevVarLong64Array *tmp_lg64;
-	const Tango::DevVarStringArray *tmp_str;
-	const Tango::DevVarFloatArray *tmp_fl;
-	const Tango::DevVarBooleanArray *tmp_boo;
-	const Tango::DevVarUShortArray *tmp_ush;
-	const Tango::DevVarCharArray *tmp_uch;
-	const Tango::DevVarULongArray *tmp_ulg;
-	const Tango::DevVarULong64Array *tmp_ulg64;
-	const Tango::DevVarStateArray *tmp_state;
-	const Tango::DevVarEncodedArray *tmp_enc;
-
-	long data_type = -1;
-	unsigned int seq_size = 0;
-
-	CORBA::TypeCode_var ty = hist_4->value.type();
-	if (ty->kind() != tk_null)
-	{
-		CORBA::TypeCode_var ty_alias = ty->content_type();
-		CORBA::TypeCode_var ty_seq = ty_alias->content_type();
-
-		switch (ty_seq->kind())
-		{
-			case tk_long:
-			data_type = DEV_LONG;
-			hist_4->value >>= tmp_lg;
-			seq_size = tmp_lg->length();
-			break;
-
-			case tk_longlong:
-			data_type = DEV_LONG64;
-			hist_4->value >>= tmp_lg64;
-			seq_size = tmp_lg64->length();
-			break;
-
-			case tk_short:
-			data_type = DEV_SHORT;
-			hist_4->value >>= tmp_sh;
-			seq_size = tmp_sh->length();
-			break;
-
-			case tk_double:
-			data_type = DEV_DOUBLE;
-			hist_4->value >>= tmp_db;
-			seq_size = tmp_db->length();
-			break;
-
-			case tk_string:
-			data_type = DEV_STRING;
-			hist_4->value >>= tmp_str;
-			seq_size = tmp_str->length();
-			break;
-
-			case tk_float:
-			data_type = DEV_FLOAT;
-			hist_4->value >>= tmp_fl;
-			seq_size = tmp_fl->length();
-			break;
-
-			case tk_boolean:
-			data_type = DEV_BOOLEAN;
-			hist_4->value >>= tmp_boo;
-			seq_size = tmp_boo->length();
-			break;
-
-			case tk_ushort:
-			data_type = DEV_USHORT;
-			hist_4->value >>= tmp_ush;
-			seq_size = tmp_ush->length();
-			break;
-
-			case tk_octet:
-			data_type = DEV_UCHAR;
-			hist_4->value >>= tmp_uch;
-			seq_size = tmp_uch->length();
-			break;
-
-			case tk_ulong:
-			data_type = DEV_ULONG;
-			hist_4->value >>= tmp_ulg;
-			seq_size = tmp_ulg->length();
-			break;
-
-			case tk_ulonglong:
-			data_type = DEV_ULONG64;
-			hist_4->value >>= tmp_ulg64;
-			seq_size = tmp_ulg64->length();
-			break;
-
-			case tk_enum:
-			data_type = DEV_STATE;
-			hist_4->value >>= tmp_state;
-			seq_size = tmp_state->length();
-			break;
-
-			case tk_struct:
-			data_type = DEV_ENCODED;
-			hist_4->value >>= tmp_enc;
-			seq_size = tmp_enc->length();
-			break;
-
-			default:
-			break;
-		}
-	}
-
-//
-// Copy data
-//
-
-	int base = seq_size;
-	for (loop = 0;loop < h_depth;loop++)
-	{
-
-		if (((*ddh)[loop].failed() == true) || ((*ddh)[loop].quality == Tango::ATTR_INVALID))
-			continue;
-
-//
-// Get the data length for this record
-//
-
-		int r_dim_x = (*ddh)[loop].dim_x;
-		int r_dim_y = (*ddh)[loop].dim_y;
-		int w_dim_x = (*ddh)[loop].get_written_dim_x();
-		int w_dim_y = (*ddh)[loop].get_written_dim_y();
-
-		int data_length;
-		(r_dim_y == 0) ? data_length = r_dim_x : data_length = r_dim_x * r_dim_y;
-		(w_dim_y == 0) ? data_length += w_dim_x : data_length += (w_dim_x * w_dim_y);
-
-//
-// Real copy now
-//
-
-		int ll = 0;
-		switch (data_type)
-		{
-			case DEV_SHORT:
-			(*ddh)[loop].ShortSeq = new DevVarShortArray();
-			(*ddh)[loop].ShortSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].ShortSeq[ll] = (*tmp_sh)[(base - data_length) + ll];
-			break;
-
-			case DEV_LONG:
-			(*ddh)[loop].LongSeq = new DevVarLongArray();
-			(*ddh)[loop].LongSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].LongSeq[ll] = (*tmp_lg)[(base - data_length) + ll];
-			break;
-
-			case DEV_LONG64:
-			(*ddh)[loop].set_Long64_data(new DevVarLong64Array());
-			(*ddh)[loop].get_Long64_data()->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_Long64_data())[ll] = (*tmp_lg64)[(base - data_length) + ll];
-			break;
-
-			case DEV_FLOAT:
-			(*ddh)[loop].FloatSeq = new DevVarFloatArray();
-			(*ddh)[loop].FloatSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].FloatSeq[ll] = (*tmp_fl)[(base - data_length) + ll];
-			break;
-
-			case DEV_DOUBLE:
-			(*ddh)[loop].DoubleSeq = new DevVarDoubleArray();
-			(*ddh)[loop].DoubleSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].DoubleSeq[ll] = (*tmp_db)[(base - data_length) + ll];
-			break;
-
-			case DEV_STRING:
-			(*ddh)[loop].StringSeq = new DevVarStringArray();
-			(*ddh)[loop].StringSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].StringSeq[ll] = (*tmp_str)[(base - data_length) + ll];
-			break;
-
-			case DEV_BOOLEAN:
-			(*ddh)[loop].BooleanSeq = new DevVarBooleanArray();
-			(*ddh)[loop].BooleanSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].BooleanSeq[ll] = (*tmp_boo)[(base - data_length) + ll];
-			break;
-
-			case DEV_USHORT:
-			(*ddh)[loop].UShortSeq = new DevVarUShortArray();
-			(*ddh)[loop].UShortSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].UShortSeq[ll] = (*tmp_ush)[(base - data_length) + ll];
-			break;
-
-			case DEV_UCHAR:
-			(*ddh)[loop].UCharSeq = new DevVarUCharArray();
-			(*ddh)[loop].UCharSeq->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].UCharSeq[ll] = (*tmp_uch)[(base - data_length) + ll];
-			break;
-
-			case DEV_ULONG:
-			(*ddh)[loop].set_ULong_data(new DevVarULongArray());
-			(*ddh)[loop].get_ULong_data()->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_ULong_data())[ll] = (*tmp_ulg)[(base - data_length) + ll];
-			break;
-
-			case DEV_ULONG64:
-			(*ddh)[loop].set_ULong64_data(new DevVarULong64Array());
-			(*ddh)[loop].get_ULong64_data()->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_ULong64_data())[ll] = (*tmp_ulg64)[(base - data_length) + ll];
-			break;
-
-			case DEV_STATE:
-			(*ddh)[loop].set_State_data(new DevVarStateArray());
-			(*ddh)[loop].get_State_data()->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_State_data())[ll] = (*tmp_state)[(base - data_length) + ll];
-			break;
-
-			case DEV_ENCODED:
-			(*ddh)[loop].set_Encoded_data(new DevVarEncodedArray());
-			(*ddh)[loop].get_Encoded_data()->length(data_length);
-
-			for (ll = 0;ll < data_length;ll++)
-				((*ddh)[loop].get_Encoded_data())[ll] = (*tmp_enc)[(base - data_length) + ll];
-			break;
-		}
-
-		base = base - ll;
-
-	}
-
-}
-
-//-----------------------------------------------------------------------------
-//
-// DeviceProxy::from_hist4_2_DataHistory()
-//
-// Convert the command history as returned by a IDL 4 device to the classical
-// DeviceDataHistory format
-//
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<DeviceDataHistory> *ddh)
 {
@@ -428,7 +61,7 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 	if ((hist_4->dims.length() != hist_4->dims_array.length()) ||
 		(hist_4->errors.length() != hist_4->errors_array.length()))
 	{
-		Tango::Except::throw_exception((const char *)"API_WrongHistoryDataBuffer",
+		Tango::Except::throw_exception((const char *)API_WrongHistoryDataBuffer,
 									   (const char *)"Data buffer received from server is not valid !",
 									   (const char *)"DeviceProxy::from_hist4_2_DataHistory");
 	}
@@ -912,11 +545,11 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 	}
 }
 
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 //
 // Some operator method definition to make Python binding development easier
 //
-//-----------------------------------------------------------------------------
+//-------------------------------------------------------------------------------------------------------------------
 
 bool _DevCommandInfo::operator==(const _DevCommandInfo &dci)
 {
@@ -927,6 +560,22 @@ bool _CommandInfo::operator==(const _CommandInfo &ci)
 {
 	return _DevCommandInfo::operator==(ci) && disp_level == ci.disp_level;
 }
+
+ostream &operator<<(ostream &o_str,_CommandInfo &ci)
+{
+	o_str << "Command name = " << ci.cmd_name << endl;
+
+	o_str << "Command input parameter data type = Tango::" << CmdArgTypeName[ci.in_type] << endl;
+	if (ci.in_type_desc.empty() == false)
+		o_str << "Command input parameter description = " << ci.in_type_desc << endl;
+
+	o_str << "Command output parameter data type = Tango::" << CmdArgTypeName[ci.out_type] << endl;
+	if (ci.out_type_desc.empty() == false)
+		o_str << "Command output parameter description = " << ci.out_type_desc;
+
+	return o_str;
+}
+
 
 bool _DeviceAttributeConfig::operator==(const _DeviceAttributeConfig &dac)
 {
@@ -955,9 +604,39 @@ bool _AttributeInfo::operator==(const _AttributeInfo &ai)
 	return DeviceAttributeConfig::operator==(ai) && disp_level == ai.disp_level;
 }
 
+bool _AttributeAlarmInfo::operator==(const _AttributeAlarmInfo &aai)
+{
+	return min_alarm == aai.min_alarm &&
+		   max_alarm == aai.max_alarm &&
+		   min_warning == aai.min_warning &&
+		   max_warning == aai.max_warning &&
+		   delta_t == aai.delta_t &&
+		   delta_val == aai.delta_val &&
+		   extensions == aai.extensions;
+}
+
+bool _AttributeEventInfo::operator==(const _AttributeEventInfo &aei)
+{
+	return ch_event.rel_change == aei.ch_event.rel_change &&
+		   ch_event.abs_change == aei.ch_event.abs_change &&
+		   ch_event.extensions == aei.ch_event.extensions &&
+		   per_event.period == aei.per_event.period &&
+		   per_event.extensions == aei.per_event.extensions &&
+		   arch_event.archive_abs_change == aei.arch_event.archive_abs_change &&
+		   arch_event.archive_rel_change == aei.arch_event.archive_rel_change &&
+		   arch_event.archive_period == aei.arch_event.archive_period &&
+		   arch_event.extensions == aei.arch_event.extensions;
+}
+
 bool _AttributeInfoEx::operator==(const _AttributeInfoEx &aie)
 {
-	return AttributeInfo::operator==(aie) && sys_extensions == aie.sys_extensions;
+	return AttributeInfo::operator==(aie) &&
+		   alarms.AttributeAlarmInfo::operator==(aie.alarms) &&
+		   events.AttributeEventInfo::operator==(aie.events) &&
+		   sys_extensions == aie.sys_extensions &&
+		   root_attr_name == aie.root_attr_name &&
+		   memorized == aie.memorized &&
+		   enum_labels == aie.enum_labels;
 }
 
 
