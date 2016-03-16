@@ -1832,7 +1832,7 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou):Connection(sou),ext_proxy(Tango
     if (sou.ext_proxy.get() != NULL)
     {
         ext_proxy.reset(new DeviceProxyExt);
-//        *(ext_proxy.get()) = *(sou.ext_proxy.get());
+        *(ext_proxy.get()) = *(sou.ext_proxy.get());
     }
 #else
 	if (sou.ext_proxy == NULL)
@@ -1840,7 +1840,7 @@ DeviceProxy::DeviceProxy(const DeviceProxy &sou):Connection(sou),ext_proxy(Tango
 	else
 	{
 		ext_proxy = new DeviceProxyExt();
-//		*ext_proxy = *(sou.ext_proxy);
+		*ext_proxy = *(sou.ext_proxy);
 	}
 #endif
 
@@ -1900,7 +1900,7 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
         if (rval.ext_proxy.get() != NULL)
         {
             ext_proxy.reset(new DeviceProxyExt);
-//          *(ext_proxy.get()) = *(rval.ext_proxy.get());
+            *(ext_proxy.get()) = *(rval.ext_proxy.get());
         }
         else
             ext_proxy.reset();
@@ -1909,7 +1909,7 @@ DeviceProxy &DeviceProxy::operator=(const DeviceProxy &rval)
         if (rval.ext_proxy != NULL)
         {
             ext_proxy = new DeviceProxyExt;
-//		*ext_proxy = *(rval.ext_proxy);
+            *ext_proxy = *(rval.ext_proxy);
         }
         else
             ext_proxy = NULL;
