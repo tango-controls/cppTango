@@ -551,6 +551,12 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 																"Device_3::read_attributes_no_except");
 					}
 
+//
+// Check alarm
+//
+
+                    if ((att.is_alarmed().any() == true) && (att.get_quality() != Tango::ATTR_INVALID))
+                        att.check_alarm();
 				}
 				catch (Tango::DevFailed &e)
 				{
@@ -897,13 +903,6 @@ void Device_3Impl::read_attributes_no_except(const Tango::DevVarStringArray& nam
 							{
 								if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
 									dev_attr->add_write_value(att);
-
-//
-// Check attribute alarm
-//
-
-								if ((att.is_alarmed().any() == true) && (qual != Tango::ATTR_INVALID))
-									att.check_alarm();
 							}
 
 //
