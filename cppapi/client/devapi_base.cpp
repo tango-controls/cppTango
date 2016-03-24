@@ -2242,7 +2242,9 @@ void DeviceProxy::parse_name(string &full_name)
                 if (alias_used == true)
                 {
                     ext_proxy->nethost_alias = true;
-                    ext_proxy->orig_tango_host = safe_tmp_host + fq;
+                    ext_proxy->orig_tango_host = safe_tmp_host;
+                    if (safe_tmp_host.find('.') == string::npos)
+                        ext_proxy->orig_tango_host = ext_proxy->orig_tango_host + fq;
                 }
                 else
                     ext_proxy->nethost_alias = false;
