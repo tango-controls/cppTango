@@ -127,7 +127,7 @@
 				PrecompiledHeaderFile=".\Debug/tango_static.pch"
 				AssemblerListingLocation=".\Debug/"
 				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName="$(PREFIX)\win32\lib\vc9\tangod.9.2.2.pdb"
+				ProgramDataBaseFileName="$(PREFIX)\win32\lib\vc9\tangod.9.2.3.pdb"
 				WarningLevel="2"
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
