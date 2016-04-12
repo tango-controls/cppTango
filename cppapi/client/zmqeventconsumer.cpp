@@ -1949,7 +1949,7 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 {
     map_modification_lock.readerIn();
     bool map_lock = true;
-//	cout << "Lib: Received event for " << ev_name << endl;
+//  cout << "Lib: Received event for " << ev_name << endl;
 
 //	for (const auto &elem : event_callback_map)
 //		printf("Key in event_callback_map = %s\n",elem.first.c_str());

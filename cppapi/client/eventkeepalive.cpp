@@ -191,7 +191,14 @@ bool EventConsumerKeepAliveThread::reconnect_to_zmq_channel(EvChanIte &ipos,Even
 					string adm_name = ipos->second.full_adm_name;
 
 #ifdef ZMQ_HAS_DISCONNECT
-					event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint,epos->second.endpoint);
+//
+// Forget exception which could happen during massive restart of device server process running on the same host
+//
+                    try
+                    {
+                        event_consumer->disconnect_event_channel(adm_name,ipos->second.endpoint,epos->second.endpoint);
+                    }
+                    catch (Tango::DevFailed &e) {}
 #endif
 					event_consumer->connect_event_channel(adm_name,
 									      epos->second.device->get_device_db(),
@@ -560,17 +567,22 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
         if (notifd_event_consumer == NULL)
             notifd_event_consumer = ApiUtil::instance()->get_notifd_event_consumer();
 
-		// lock the maps only for reading
-		event_consumer->map_modification_lock.writerIn();
 		now = time(NULL);
+		if ( event_consumer->event_not_connected.empty() == false)
+        {
+            DelayEvent de(event_consumer);
+            event_consumer->map_modification_lock.writerIn();
+
 
 //
 // Check the list of not yet connected events and try to subscribe
 //
 
-		not_conected_event(event_consumer,now,notifd_event_consumer);
+            not_conected_event(event_consumer,now,notifd_event_consumer);
 
-		event_consumer->map_modification_lock.writerOut();
+            event_consumer->map_modification_lock.writerOut();
+        }
+
 
 //
 // Check for all other event reconnections
