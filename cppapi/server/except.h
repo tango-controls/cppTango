@@ -1865,6 +1865,7 @@ public:
 /// @privatesection
 
 	static char *print_CORBA_SystemException(const CORBA::SystemException *);
+	static char *print_CORBA_SystemException_r(const CORBA::SystemException *, char * err_msg); // reentrant version
 	static omni_mutex the_mutex;
 
 protected:

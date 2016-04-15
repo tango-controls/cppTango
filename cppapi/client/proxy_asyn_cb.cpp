@@ -324,7 +324,8 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 			{
 				to_except = true;
 				char *tmp = CORBA::string_dup(cmd);
-				char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+				char cb_excep_mess[256];
+				Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
 				TangoSys_OMemStream desc;
 				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
@@ -386,7 +387,8 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 
 			char *tmp = CORBA::string_dup(cmd);
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+			char cb_excep_mess[256];
+			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
@@ -559,7 +561,8 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 			if (tra->minor() == omni::TRANSIENT_CallTimedout)
 			{
 				to_except = true;
-				char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+				char cb_excep_mess[256];
+				Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
 				TangoSys_OMemStream desc;
 				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
@@ -629,7 +632,8 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 // Re-throw all CORBA system exceptions
 //
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+			char cb_excep_mess[256];
+			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute read_attributes_asynch on device " << dev_name();
@@ -731,7 +735,8 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 			if (tra->minor() == omni::TRANSIENT_CallTimedout)
 			{
 				to_except = true;
-				char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+				char cb_excep_mess[256];
+				Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
 				TangoSys_OMemStream desc;
 				desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
@@ -856,7 +861,8 @@ void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb
 // Re-throw all CORBA system exceptions
 //
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+			char cb_excep_mess[256];
+			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute write_attributes_asynch on device " << dev_name();

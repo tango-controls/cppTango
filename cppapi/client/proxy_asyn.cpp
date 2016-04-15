@@ -279,7 +279,8 @@ DeviceData Connection::command_inout_reply(long id)
     }
     catch (CORBA::TRANSIENT &tra)
     {
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
         if (tra.minor() == omni::TRANSIENT_CallTimedout)
         {
             omni420_timeout(id,cb_excep_mess);
@@ -293,7 +294,8 @@ DeviceData Connection::command_inout_reply(long id)
     catch(CORBA::SystemException &ex)
     {
         set_connection_state(CONNECTION_NOTOK);
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
         return omni420_except(id,cb_excep_mess,req);
     }
 
@@ -348,7 +350,8 @@ DeviceData Connection::command_inout_reply(long id)
                     catch(...) {}
                 }
 
-                char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+                char cb_excep_mess[256];
+                Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
                 if (need_reconnect == false)
                 {
@@ -435,7 +438,8 @@ DeviceData Connection::command_inout_reply(long id)
 			*(nv->value()) >>= cmd;
 			char *tmp = CORBA::string_dup(cmd);
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+			char cb_excep_mess[256];
+			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 //
 // Check if the exception was a connection exception
@@ -598,7 +602,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
     }
     catch (CORBA::TRANSIENT &tra)
     {
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
         if (tra.minor() == omni::TRANSIENT_CallTimedout)
         {
             omni420_timeout(id,cb_excep_mess);
@@ -612,7 +617,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
     catch(CORBA::SystemException &ex)
     {
         set_connection_state(CONNECTION_NOTOK);
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
         return omni420_except(id,cb_excep_mess,req);
     }
 
@@ -667,7 +673,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     catch(...) {}
                 }
 
-                char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+                char cb_excep_mess[256];
+                Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
                 if (need_reconnect == false)
                 {
@@ -752,7 +759,8 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			*(nv->value()) >>= cmd;
 			char *tmp = CORBA::string_dup(cmd);
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+			char cb_excep_mess[256];
+			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 //
 // Check if the exception was a connection exception
@@ -983,7 +991,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 		}
         catch (CORBA::TRANSIENT &tra)
         {
-            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
             if (tra.minor() == omni::TRANSIENT_CallTimedout)
             {
                 omni420_timeout_attr(id,cb_excep_mess,MULTIPLE);
@@ -1001,7 +1010,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
         catch(CORBA::SystemException &ex)
         {
             set_connection_state(CONNECTION_NOTOK);
-            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
             omni420_except_attr(id,cb_excep_mess,MULTIPLE);
 
             vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
@@ -1186,7 +1196,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 		}
         catch (CORBA::TRANSIENT &tra)
         {
-            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
             if (tra.minor() == omni::TRANSIENT_CallTimedout)
             {
                 omni420_timeout_attr(id,cb_excep_mess,SIMPLE);
@@ -1204,7 +1215,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
         catch(CORBA::SystemException &ex)
         {
             set_connection_state(CONNECTION_NOTOK);
-            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
             omni420_except_attr(id,cb_excep_mess,SIMPLE);
 
             DeviceAttribute *a_ptr = redo_synch_read_call(req);
@@ -1392,7 +1404,7 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 			nanosleep(&to_wait,&inter);
 #endif
 		}
-
+	
 		if (i == nb)
 		{
 			TangoSys_OMemStream desc;
@@ -1419,7 +1431,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 	}
     catch (CORBA::TRANSIENT &tra)
     {
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
         if (tra.minor() == omni::TRANSIENT_CallTimedout)
         {
             omni420_timeout_attr(id,cb_excep_mess,MULTIPLE);
@@ -1437,7 +1450,8 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
     catch(CORBA::SystemException &ex)
     {
         set_connection_state(CONNECTION_NOTOK);
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
         omni420_except_attr(id,cb_excep_mess,MULTIPLE);
 
 		vector<DeviceAttribute> *a_ptr = redo_synch_reads_call(req);
@@ -1648,7 +1662,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 
 //
 // Check if the reply is an exception
-// Due to a compatibility pb between omniORB 4.1 and omniORB 4.1 (at least 4.2.0),
+// Due to a compatibility pb between omniORB 4.1 and omniORB 4.2 (at least 4.2.0),
 // we have to also handle CORBA::Request instance throwing exception in its env() and
 // other methods. This was not the case in omniORB 4.1!
 //
@@ -1660,7 +1674,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 	}
     catch (CORBA::TRANSIENT &tra)
     {
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
         if (tra.minor() == omni::TRANSIENT_CallTimedout)
         {
             omni420_timeout_attr(id,cb_excep_mess,SIMPLE);
@@ -1678,7 +1693,8 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
     catch(CORBA::SystemException &ex)
     {
         set_connection_state(CONNECTION_NOTOK);
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
         omni420_except_attr(id,cb_excep_mess,SIMPLE);
 
 		DeviceAttribute *a_ptr = redo_synch_read_call(req);
@@ -1831,7 +1847,8 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
                 catch(...) {}
             }
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
             string meth;
             if (type == SIMPLE)
@@ -1930,7 +1947,8 @@ void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type
 		CORBA::NamedValue_ptr nv = req_arg->item(0);
 		*(nv->value()) >>= names;
 
-		char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+		char cb_excep_mess[256];
+		Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 //
 // Check if the exception was a connection exception
@@ -2271,7 +2289,8 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
 	}
     catch (CORBA::TRANSIENT &tra)
     {
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
         if (tra.minor() == omni::TRANSIENT_CallTimedout)
         {
             omni420_timeout_wattr(id,cb_excep_mess);
@@ -2286,7 +2305,8 @@ void DeviceProxy::write_attributes_reply(long id,long call_timeout)
     catch(CORBA::SystemException &ex)
     {
         set_connection_state(CONNECTION_NOTOK);
-        char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+        char cb_excep_mess[256];
+        Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
         omni420_except_wattr(id,cb_excep_mess);
         redo_synch_write_call(req);
     }
@@ -2374,7 +2394,8 @@ void DeviceProxy::write_attributes_reply(long id)
 		}
         catch (CORBA::TRANSIENT &tra)
         {
-            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&tra);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(&tra,cb_excep_mess);
             if (tra.minor() == omni::TRANSIENT_CallTimedout)
             {
                 omni420_timeout_wattr(id,cb_excep_mess);
@@ -2389,7 +2410,8 @@ void DeviceProxy::write_attributes_reply(long id)
         catch(CORBA::SystemException &ex)
         {
             set_connection_state(CONNECTION_NOTOK);
-            char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&ex);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(&ex,cb_excep_mess);
             omni420_except_wattr(id,cb_excep_mess);
 			redo_synch_write_call(req);
         }
@@ -2463,7 +2485,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
                 catch(...) {}
             }
 
-			char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(tra);
+            char cb_excep_mess[256];
+            Tango::Except::print_CORBA_SystemException_r(tra,cb_excep_mess);
 
             if (need_reconnect == false)
             {
@@ -2646,7 +2669,8 @@ void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::Re
 				nb_att = att_4->length();
 		}
 
-		char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(sys_ex);
+		char cb_excep_mess[256];
+		Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
 
 //
 // Check if the exception was a connection exception
@@ -2729,7 +2753,8 @@ void DeviceProxy::retrieve_read_args(TgRequest &req,vector<string> &att_list)
 	}
 	catch (CORBA::SystemException &e)
 	{
-		char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&e);
+		char cb_excep_mess[256];
+		Tango::Except::print_CORBA_SystemException_r(&e,cb_excep_mess);
 
 		TangoSys_OMemStream desc;
 		desc << "Failed to redo the call synchronously on device " << device_name;
@@ -2839,7 +2864,8 @@ void DeviceProxy::redo_synch_write_call(TgRequest &req)
 	}
 	catch (CORBA::SystemException &e)
 	{
-		char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&e);
+		char cb_excep_mess[256];
+		Tango::Except::print_CORBA_SystemException_r(&e,cb_excep_mess);
 
 		TangoSys_OMemStream desc;
 		desc << "Failed to redo the call synchronously on device " << device_name << ends;
@@ -2885,7 +2911,8 @@ DeviceData Connection::redo_synch_cmd(TgRequest &req)
 	}
 	catch (CORBA::SystemException &e)
 	{
-		char *cb_excep_mess = Tango::Except::print_CORBA_SystemException(&e);
+		char cb_excep_mess[256];
+		Tango::Except::print_CORBA_SystemException_r(&e,cb_excep_mess);
 
 		TangoSys_OMemStream desc;
 		desc << "Failed to redo the call synchronously on device " << dev_name() << ends;
