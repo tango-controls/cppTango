@@ -348,7 +348,7 @@ private:
 class UniqIdent: public omni_mutex
 {
 public:
-	UniqIdent() {omni_mutex_lock(*this);ctr = 0;}
+	UniqIdent() {omni_mutex_lock sync(*this);ctr = 0;}
 	long get_ident() {omni_mutex_lock sync(*this);return ++ctr;}
 
 	long ctr;
@@ -400,8 +400,8 @@ public:
 	void remove_request(long);
 	void remove_request(Connection *,CORBA::Request_ptr);
 
-	size_t get_request_nb() {omni_mutex_lock(*this);return asyn_poll_req_table.size();}
-	size_t get_cb_request_nb() {omni_mutex_lock(*this);return cb_req_table.size();}
+	size_t get_request_nb() {omni_mutex_lock sync(*this);return asyn_poll_req_table.size();}
+	size_t get_cb_request_nb() {omni_mutex_lock sync(*this);return cb_req_table.size();}
 	size_t get_cb_request_nb_i() {return cb_req_table.size();}
 
 	void mark_as_arrived(CORBA::Request_ptr req);
@@ -410,7 +410,7 @@ public:
 	void mark_as_cancelled(long);
 	void mark_all_polling_as_cancelled();
 	void wait() {cond.wait();}
-	void signal() {omni_mutex_lock(*this);cond.signal();}
+	void signal() {omni_mutex_lock sync(*this);cond.signal();}
 
 protected:
 	map<long,TgRequest>			asyn_poll_req_table;

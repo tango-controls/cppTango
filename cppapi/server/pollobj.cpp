@@ -126,7 +126,7 @@ PollObj::PollObj(DeviceImpl *d,PollObjType ty,const string &na,int user_upd,long
 
 void PollObj::insert_data(CORBA::Any *res,struct timeval &when,struct timeval &needed)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.insert_data(res,when);
 	needed_time = needed;
@@ -134,7 +134,7 @@ void PollObj::insert_data(CORBA::Any *res,struct timeval &when,struct timeval &n
 
 void PollObj::insert_data(Tango::AttributeValueList *res,struct timeval &when,struct timeval &needed)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.insert_data(res,when);
 	needed_time = needed;
@@ -142,7 +142,7 @@ void PollObj::insert_data(Tango::AttributeValueList *res,struct timeval &when,st
 
 void PollObj::insert_data(Tango::AttributeValueList_3 *res,struct timeval &when,struct timeval &needed)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.insert_data(res,when);
 	needed_time = needed;
@@ -150,7 +150,7 @@ void PollObj::insert_data(Tango::AttributeValueList_3 *res,struct timeval &when,
 
 void PollObj::insert_data(Tango::AttributeValueList_4 *res,struct timeval &when,struct timeval &needed)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.insert_data(res,when,true);
 	needed_time = needed;
@@ -158,7 +158,7 @@ void PollObj::insert_data(Tango::AttributeValueList_4 *res,struct timeval &when,
 
 void PollObj::insert_data(Tango::AttributeValueList_5 *res,struct timeval &when,struct timeval &needed)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.insert_data(res,when,true);
 	needed_time = needed;
@@ -184,7 +184,7 @@ void PollObj::insert_except(Tango::DevFailed *res,
 			    struct timeval &when,
 			    struct timeval &needed)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.insert_except(res,when);
 	needed_time = needed;
@@ -221,7 +221,7 @@ double PollObj::get_last_insert_date_i()
 
 CORBA::Any *PollObj::get_last_cmd_result()
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	return ring.get_last_cmd_result();
 }
@@ -240,7 +240,7 @@ CORBA::Any *PollObj::get_last_cmd_result()
 Tango::AttributeValue &PollObj::get_last_attr_value(bool lock)
 {
 	if (lock == true)
-		omni_mutex_lock(*this);
+		omni_mutex_lock sync(*this);
 
 	return ring.get_last_attr_value();
 }
@@ -248,7 +248,7 @@ Tango::AttributeValue &PollObj::get_last_attr_value(bool lock)
 Tango::AttributeValue_3 &PollObj::get_last_attr_value_3(bool lock)
 {
 	if (lock == true)
-		omni_mutex_lock(*this);
+		omni_mutex_lock sync(*this);
 
 	return ring.get_last_attr_value_3();
 }
@@ -256,7 +256,7 @@ Tango::AttributeValue_3 &PollObj::get_last_attr_value_3(bool lock)
 Tango::AttributeValue_4 &PollObj::get_last_attr_value_4(bool lock)
 {
 	if (lock == true)
-		omni_mutex_lock(*this);
+		omni_mutex_lock sync(*this);
 
 	return ring.get_last_attr_value_4();
 }
@@ -264,7 +264,7 @@ Tango::AttributeValue_4 &PollObj::get_last_attr_value_4(bool lock)
 Tango::AttributeValue_5 &PollObj::get_last_attr_value_5(bool lock)
 {
 	if (lock == true)
-		omni_mutex_lock(*this);
+		omni_mutex_lock sync(*this);
 
 	return ring.get_last_attr_value_5();
 }
@@ -315,14 +315,14 @@ void PollObj::update_upd(int new_upd)
 
 void PollObj::get_cmd_history(long n,Tango::DevCmdHistoryList *ptr)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_cmd_history(n,ptr);
 }
 
 void PollObj::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgType &loc_type)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_cmd_history(n,ptr,loc_type);
 }
@@ -345,14 +345,14 @@ void PollObj::get_cmd_history(long n,Tango::DevCmdHistory_4 *ptr,Tango::CmdArgTy
 
 void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList *ptr,long attr_type)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
 }
 
 void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long attr_type)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
 
@@ -372,14 +372,14 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long attr
 
 void PollObj::get_attr_history(long n,Tango::DevAttrHistory_4 *ptr,long attr_type,TANGO_UNUSED(AttrDataFormat attr_format))
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
 }
 
 void PollObj::get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long attr_type,AttrDataFormat attr_format)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_attr_history(n,ptr,attr_type);
 	ptr->data_format = attr_format;
@@ -388,7 +388,7 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistory_5 *ptr,long attr_typ
 
 void PollObj::get_attr_history_43(long n,Tango::DevAttrHistoryList_3 *ptr,long attr_type)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 
 	ring.get_attr_history_43(n,ptr,attr_type);
 }

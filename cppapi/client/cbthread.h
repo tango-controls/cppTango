@@ -46,9 +46,9 @@ class CbThreadCmd: public omni_mutex
 {
 public:
 	CbThreadCmd():stop(false) {};
-	void stop_thread() {omni_mutex_lock(*this);stop=true;}
-	void start_thread() {omni_mutex_lock(*this);stop=false;}
-	bool is_stopped() {omni_mutex_lock(*this);return stop;}
+	void stop_thread() {omni_mutex_lock sync(*this);stop=true;}
+	void start_thread() {omni_mutex_lock sync(*this);stop=false;}
+	bool is_stopped() {omni_mutex_lock sync(*this);return stop;}
 
 	bool stop;
 };

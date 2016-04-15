@@ -83,40 +83,40 @@ public:
 	Tango::AttributeValue_4 &get_last_attr_value_4(bool);
 	Tango::AttributeValue_5 &get_last_attr_value_5(bool);
 
-	bool is_ring_empty() {omni_mutex_lock(*this);return is_ring_empty_i();}
+	bool is_ring_empty() {omni_mutex_lock sync(*this);return is_ring_empty_i();}
 	bool is_ring_empty_i() {return ring.is_empty();}
 
-	long get_upd() {omni_mutex_lock(*this);return get_upd_i();}
+	long get_upd() {omni_mutex_lock sync(*this);return get_upd_i();}
 	long get_upd_i() {return ((upd.tv_sec * 1000) + (upd.tv_usec / 1000));}
 
-	string &get_name() {omni_mutex_lock(*this);return get_name_i();}
+	string &get_name() {omni_mutex_lock sync(*this);return get_name_i();}
 	string &get_name_i() {return name;}
 
-	inline double get_needed_time() {omni_mutex_lock(*this);return get_needed_time_i();}
+	inline double get_needed_time() {omni_mutex_lock sync(*this);return get_needed_time_i();}
 	inline double get_needed_time_i()
 	{
 		return ((needed_time.tv_sec * 1000) + (needed_time.tv_usec / 1000.0));
 	}
 
-	inline PollObjType get_type() {omni_mutex_lock(*this);return get_type_i();}
+	inline PollObjType get_type() {omni_mutex_lock sync(*this);return get_type_i();}
 	inline PollObjType get_type_i() {return type;}
 
-	double get_last_insert_date() {omni_mutex_lock(*this);return get_last_insert_date_i();}
+	double get_last_insert_date() {omni_mutex_lock sync(*this);return get_last_insert_date_i();}
 	double get_last_insert_date_i();
 
-	bool is_last_an_error() {omni_mutex_lock(*this);return is_last_an_error_i();}
+	bool is_last_an_error() {omni_mutex_lock sync(*this);return is_last_an_error_i();}
 	bool is_last_an_error_i() {return ring.is_last_an_error();}
 	bool is_last_an_error_i_3()
 	{if (type==POLL_CMD)return ring.is_last_cmd_an_error();else return ring.is_last_attr_an_error();}
 
-	Tango::DevFailed *get_last_except() {omni_mutex_lock(*this);return get_last_except_i();}
+	Tango::DevFailed *get_last_except() {omni_mutex_lock sync(*this);return get_last_except_i();}
 	Tango::DevFailed *get_last_except_i() {return ring.get_last_except();}
 	Tango::DevErrorList &get_last_attr_error_i() {return ring.get_last_attr_error();}
 
-	void get_delta_t(vector<double> &vd, long nb) {omni_mutex_lock(*this);get_delta_t_i(vd,nb);}
+	void get_delta_t(vector<double> &vd, long nb) {omni_mutex_lock sync(*this);get_delta_t_i(vd,nb);}
 	void get_delta_t_i(vector<double> &vd,long nb) {ring.get_delta_t(vd,nb);}
 
-	long get_elt_nb_in_buffer() {omni_mutex_lock(*this);return get_elt_nb_in_buffer_i();}
+	long get_elt_nb_in_buffer() {omni_mutex_lock sync(*this);return get_elt_nb_in_buffer_i();}
 	long get_elt_nb_in_buffer_i() {return ring.get_nb_elt();}
 
 	void get_cmd_history(long,Tango::DevCmdHistoryList *);

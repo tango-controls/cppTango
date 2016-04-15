@@ -376,7 +376,7 @@ void AsynReq::remove_request(Connection *dev,CORBA::Request_ptr req)
 
 void AsynReq::mark_as_cancelled(long req_id)
 {
-	omni_mutex_lock(*this);
+	omni_mutex_lock sync(*this);
 	map<long,TgRequest>::iterator pos;
 
 	pos = asyn_poll_req_table.find(req_id);
