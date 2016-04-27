@@ -1468,9 +1468,8 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 			cout << "The device polling configuration will be automatically updated" << endl;
 
 			ret = -1;
-			iter  = poll_cmd_list.erase(iter,iter + 2);
-			if (iter == poll_cmd_list.end())
-				break;
+			poll_cmd_list.erase(iter,iter + 2);
+			iter = iter - 2;
 		}
 	}
 
@@ -1484,7 +1483,7 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 // Check polled attributes
 //
 
-	for (iter = poll_attr_list.begin();iter != poll_attr_list.end();iter = iter + 2)
+    for (iter = poll_attr_list.begin();iter != poll_attr_list.end();iter = iter + 2)
 	{
 		string polled_attr = *iter;
 		transform(polled_attr.begin(),polled_attr.end(),polled_attr.begin(),::tolower);
@@ -1507,9 +1506,8 @@ int Util::check_dev_poll(vector<string> &poll_cmd_list,vector<string> &poll_attr
 				ret = -3;
 			else
 				ret = -2;
-			iter  = poll_attr_list.erase(iter,iter + 2);
-			if (iter == poll_attr_list.end())
-				break;
+            poll_attr_list.erase(iter,iter+2);
+            iter = iter - 2;
 		}
 	}
 

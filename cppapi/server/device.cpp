@@ -3241,6 +3241,15 @@ void DeviceImpl::add_attribute(Tango::Attr *new_attr)
 	push_dev_intr(ev_client);
 
 //
+// If attribute has to be polled (set by Pogo), start polling now
+//
+
+    long per = new_attr->get_polling_period();
+    Tango::Util *tg = Tango::Util::instance();
+    if (tg->is_svr_starting() == false && per != 0)
+        poll_attribute(attr_name,per);
+
+//
 // Free memory if needed
 //
 

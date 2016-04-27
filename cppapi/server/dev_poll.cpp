@@ -129,6 +129,9 @@ bool DeviceImpl::is_attribute_polled(const string &att_name)
 	transform(att.begin(),att.end(),att.begin(),::tolower);
 
 	vector<string> &att_list = get_polled_attr();
+	if (att_list.empty() == true)
+        return false;
+
 	for (unsigned int i = 0;i < att_list.size();i = i+2)
 	{
 
@@ -159,7 +162,7 @@ bool DeviceImpl::is_attribute_polled(const string &att_name)
 // now check wether a polling period is set (for example by pogo)
 //
 
-    Tango::Attribute &the_att = dev_attr->get_attr_by_name(att_name.c_str());
+/*    Tango::Attribute &the_att = dev_attr->get_attr_by_name(att_name.c_str());
 	if ( the_att.get_polling_period() > 0 )
 	{
 
@@ -181,7 +184,7 @@ bool DeviceImpl::is_attribute_polled(const string &att_name)
 		}
 
 		return true;
-	}
+	}*/
 
 	return false;
 }
@@ -206,6 +209,9 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 	transform(cmd.begin(),cmd.end(),cmd.begin(),::tolower);
 
 	vector<string> &cmd_list = get_polled_cmd();
+	if (cmd_list.empty() == true)
+        return false;
+
 	for (unsigned int i = 0;i < cmd_list.size();i = i+2)
 	{
 
@@ -236,7 +242,7 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 // now check wether a polling period is set (for example by pogo)
 //
 
-    Tango::Command &the_cmd = device_class->get_cmd_by_name(cmd_name);
+/*    Tango::Command &the_cmd = device_class->get_cmd_by_name(cmd_name);
 	if ( the_cmd.get_polling_period() > 0 )
 	{
 
@@ -258,7 +264,7 @@ bool DeviceImpl::is_command_polled(const string &cmd_name)
 		}
 
 		return true;
-	}
+	}*/
 
 	return false;
 }
