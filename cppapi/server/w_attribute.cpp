@@ -58,7 +58,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #else
 #include <sys/time.h>
 #endif /* _TG_WINDOWS_ */
-#include <math.h>
 
 namespace Tango
 {

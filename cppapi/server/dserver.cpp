@@ -46,7 +46,6 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <algorithm>
 #include <iterator>
 #include <sstream>
-#include <math.h>
 
 #ifndef _TG_WINDOWS_
 #include <unistd.h>

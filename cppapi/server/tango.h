@@ -74,6 +74,7 @@
 #include <typeinfo>
 #include <string>
 #include <vector>
+#include <cmath>
 
 //
 // Include API files (device and database)

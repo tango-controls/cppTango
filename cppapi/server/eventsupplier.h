@@ -65,7 +65,6 @@
 #ifndef _TG_WINDOWS_
 #include <sys/time.h>
 #endif
-#include <math.h>
 
 
 namespace Tango
