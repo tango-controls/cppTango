@@ -1550,7 +1550,7 @@ public :
  * Query the database for a list of devices served by the specified server (1st parameter)
  * and of the specified class (2nd parameter).
  *
- * @param [in] ds_name The host name
+ * @param [in] ds_name The device server name (executable/instance)
  * @param [in] class_name The class name
  * @return The list of devices
  *

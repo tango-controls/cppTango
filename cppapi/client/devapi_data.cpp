@@ -68,7 +68,7 @@ DeviceData::DeviceData():ext(new DeviceDataExt)
 //
 //-----------------------------------------------------------------------------
 
-DeviceData::DeviceData(const DeviceData & source):ext(new DeviceDataExt)
+DeviceData::DeviceData(const DeviceData & source)
 {
 	exceptions_flags = source.exceptions_flags;
 #ifdef HAS_RVALUE
