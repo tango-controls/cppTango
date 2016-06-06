@@ -46,8 +46,8 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\Debug\</IntDir>
     <PreLinkEventUseInBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</PreLinkEventUseInBuild>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tango924d</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tango924</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tango925d</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tango925</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -82,16 +82,16 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango924 release\*.obj</Command>
+      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango925 release\*.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>log4tango.lib;omniorb421_rt.lib;omnidynamic421_rt.lib;omnithread40_rt.lib;COS421_rt.lib;zmq.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango924.dll</OutputFile>
-      <Version>9.2.4</Version>
+      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango925.dll</OutputFile>
+      <Version>9.2.5</Version>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>$(OMNI_BASE)\win32\lib\vc10_dll;$(ZMQ_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
-      <ProgramDatabaseFile>.\Release/tango924.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>.\Release/tango925.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
@@ -135,17 +135,17 @@
     </ResourceCompile>
     <PreLinkEvent>
       <Message>Build def file...</Message>
-      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango924d debug\*.obj</Command>
+      <Command>C:\perl\bin\perl ..\..\makedef.pl tango.def tango925d debug\*.obj</Command>
     </PreLinkEvent>
     <Link>
       <AdditionalDependencies>log4tangod.lib;omniORB421_rtd.lib;omniDynamic421_rtd.lib;COS421_rtd.lib;omnithread40_rtd.lib;zmqd.lib;ws2_32.lib;mswsock.lib;comctl32.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ShowProgress>LinkVerboseLib</ShowProgress>
-      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango924d.dll</OutputFile>
-      <Version>9.2.4</Version>
+      <OutputFile>$(PREFIX)\win32\lib\vc10_dll\tango925d.dll</OutputFile>
+      <Version>9.2.5</Version>
       <AdditionalLibraryDirectories>$(ZMQ_BASE)\win32\lib\vc10_dll;$(OMNI_BASE)\win32\lib\vc10_dll;$(LOG4TANGO_BASE)\win32\lib\vc10_dll;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ModuleDefinitionFile>tango.def</ModuleDefinitionFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <ProgramDatabaseFile>$(PREFIX)\win32\lib\vc10_dll\tangod.9.2.4.pdb</ProgramDatabaseFile>
+      <ProgramDatabaseFile>$(PREFIX)\win32\lib\vc10_dll\tangod.9.2.5.pdb</ProgramDatabaseFile>
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention>
       </DataExecutionPrevention>
