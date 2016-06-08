@@ -199,7 +199,7 @@ public :
 	DeviceProxy & operator=(const DeviceProxy &);
 	virtual ~DeviceProxy();
 
-	DeviceProxy():Connection((CORBA::ORB *)NULL),db_dev(NULL),adm_device(NULL),ext_proxy(Tango_nullptr)
+	DeviceProxy():Connection((CORBA::ORB *)NULL),db_dev(NULL),adm_device(NULL),lock_ctr(0),ext_proxy(Tango_nullptr)
 	{dbase_used = false;}
 /// @publicsection
 

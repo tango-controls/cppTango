@@ -3857,7 +3857,7 @@ void Attribute::fire_change_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-						set_value_flag (false);
+//						set_value_flag (false);
 					}
 				}
 			}
@@ -3883,7 +3883,7 @@ void Attribute::fire_change_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-						set_value_flag (false);
+//						set_value_flag (false);
 					}
 				}
 			}
@@ -4137,7 +4137,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-				set_value_flag (false);
+//				set_value_flag (false);
 			}
 		}
 	}
@@ -4160,7 +4160,7 @@ void Attribute::fire_change_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-				set_value_flag (false);
+//				set_value_flag (false);
 			}
 		}
 
@@ -4185,7 +4185,7 @@ void Attribute::fire_change_event(DevFailed *except)
 
 void Attribute::fire_archive_event(DevFailed *except)
 {
-	cout4 << "Attribute::fire_archive_event() entring ..." << endl;
+	cout4 << "Attribute::fire_archive_event() entering ..." << endl;
 
 	if ( except != NULL )
 	{
@@ -4281,7 +4281,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 
 //
 // For writable scalar attributes the sequence for the
-// attribute data is not yet allcoated. This will happen
+// attribute data is not yet allocated. This will happen
 // only when adding the set point!
 //
 
@@ -4289,7 +4289,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-						set_value_flag (false);
+//						set_value_flag (false);
 					}
                 }
             }
@@ -4323,7 +4323,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-						set_value_flag (false);
+//						set_value_flag (false);
 					}
                 }
             }
@@ -4577,7 +4577,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-				set_value_flag (false);
+//				set_value_flag (false);
 			}
 		}
 	}
@@ -4601,7 +4601,7 @@ void Attribute::fire_archive_event(DevFailed *except)
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-				set_value_flag (false);
+//				set_value_flag (false);
 			}
 		}
 
@@ -4736,7 +4736,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 					{
 						if (quality != Tango::ATTR_INVALID)
 							delete_seq();
-						set_value_flag (false);
+//						set_value_flag (false);
 					}
 				}
 			}
@@ -4863,7 +4863,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-				set_value_flag (false);
+//				set_value_flag (false);
 			}
 		}
 	}
@@ -4887,7 +4887,7 @@ void Attribute::fire_event(vector<string> &filt_names,vector<double> &filt_vals,
 			{
 				if (quality != Tango::ATTR_INVALID)
 					delete_seq();
-				set_value_flag (false);
+//				set_value_flag (false);
 			}
 		}
 
