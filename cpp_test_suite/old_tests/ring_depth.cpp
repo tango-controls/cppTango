@@ -174,6 +174,29 @@ int main(int argc, char **argv)
 		assert (vs_poll[11] == "Command OULong polling period = 0");
 
 		cout << "   Polling related methods in DeviceImpl --> OK" << endl;
+
+// Change polling period in polled attribute !!!
+
+		device->command_inout("IOsophisticatedPollInDevice");
+		Tango_sleep(4);
+		dd = device->command_inout("IOGetPollMess");
+
+		vs_poll.clear();
+		dd >> vs_poll;
+
+		assert (vs_poll.size() == 9);
+		assert (vs_poll[0] == "Attribute Double_spec_attr polling period = 500");
+		assert (vs_poll[1] == "Attribute Short_attr polling period = 250");
+		assert (vs_poll[2] == "Attribute ReynaldPollAttr polling period = 250");
+		assert (vs_poll[3] == "Attribute Double_spec_attr polling period = 500");
+		assert (vs_poll[4] == "Attribute Short_attr polling period = 500");
+		assert (vs_poll[5] == "Attribute ReynaldPollAttr polling period = 500");
+		assert (vs_poll[6] == "Attribute Double_spec_attr polling period = 500");
+		assert (vs_poll[7] == "Attribute Short_attr polling period = 250");
+		assert (vs_poll[8] == "Attribute ReynaldPollAttr polling period = 250");
+
+		cout << "   Polled attributes changing their own polling period --> OK" << endl;
+
 	}
 	catch (Tango::DevFailed &e)
 	{
