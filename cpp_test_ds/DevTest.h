@@ -68,6 +68,8 @@ public :
 	void set_wattr_throw(Tango::DevShort in) {wattr_throw = in;}
 
 	Tango::DevVarStringArray *IOPollingInDevice();
+	void IOSophisticatedPollInDevice();
+	Tango::DevVarStringArray *IOGetPollMess();
 
 //
 // Attribute related methods
@@ -152,6 +154,7 @@ public :
 	void read_Enum_attr(Tango::Attribute &att);
 	void read_Enum_spec_attr_rw(Tango::Attribute &att);
 	void read_DynEnum_attr(Tango::Attribute &att);
+	void read_ReynaldPoll_attr(Tango::Attribute &att);
 
 	void write_Short_attr_rw(Tango::WAttribute &att);
 	void write_Long64_attr_rw(Tango::WAttribute &att);
@@ -227,6 +230,9 @@ public :
 	bool is_RPipeDE_allowed(Tango::PipeReqType);
 	void read_RPipeDE(Tango::Pipe &);
 
+    int get_att_poll_period(string &_s) {return get_attribute_poll_period(_s);}
+    void stop_poll_att(string &_s) {stop_poll_attribute(_s);}
+
 	friend class IOAttrThrowEx;
 	friend class IOAddOneElt;
 	friend class IORemoveOneElt;
@@ -239,6 +245,9 @@ public :
 	friend class IOAddCommand;
 	friend class ForbiddenEnumValue;
 	friend class SetPipeOutput;
+
+public:
+    vector<string>                          poll_messages;
 
 protected :
 	Tango::DevDouble 	attr_double;
@@ -348,6 +357,9 @@ protected :
     omni_mutex								pipe_mutex;
 
     Tango::DevShort							rpipe_type;
+
+    int                                     Reynald_ctr;
+    double                                  Reynald_val;
 };
 
 #endif

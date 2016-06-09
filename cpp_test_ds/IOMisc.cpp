@@ -1609,6 +1609,7 @@ void *AcquisitionThread::run_undetached (void *arg)
 	return NULL;
 }
 
+
 //+----------------------------------------------------------------------------
 //
 // method : 		SubDeviceTst::SubDeviceTst()
@@ -1774,6 +1775,173 @@ CORBA::Any *PollingInDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::
 	return insert(theOutputArray);
 }
 
+
+//+----------------------------------------------------------------------------
+//	A thread class to test the Reynald polling mode
+//
+//	The thread is executed when calling
+//	the command IOSophisticatedPollInDevice.
+//-----------------------------------------------------------------------------
+
+ReynaldPollThread::ReynaldPollThread(Tango::DeviceImpl *_d):dev(_d)
+{
+    start();
+}
+
+void ReynaldPollThread::run (void *arg)
+{
+    string att1_name("Double_spec_attr");
+    string att2_name("Short_attr");
+    string att3_name("ReynaldPollAttr");
+
+    stringstream ss;
+
+    struct timespec ts;
+    ts.tv_sec = 0;
+    ts.tv_nsec = 300000000;
+    nanosleep(&ts,NULL);
+
+    DevTest *local_dev = static_cast<DevTest *>(dev);
+
+    ss << "Attribute " << att1_name << " polling period = " << local_dev->get_att_poll_period(att1_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+    ss << "Attribute " << att2_name << " polling period = " << local_dev->get_att_poll_period(att2_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+    ss << "Attribute " << att3_name << " polling period = " << local_dev->get_att_poll_period(att3_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+// Sleep 600 mS and do the same
+
+    ts.tv_sec = 0;
+    ts.tv_nsec = 600000000;
+    nanosleep(&ts,NULL);
+
+    ss << "Attribute " << att1_name << " polling period = " << local_dev->get_att_poll_period(att1_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+    ss << "Attribute " << att2_name << " polling period = " << local_dev->get_att_poll_period(att2_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+    ss << "Attribute " << att3_name << " polling period = " << local_dev->get_att_poll_period(att3_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+// Sleep 1500 mS and do the same
+
+    ts.tv_sec = 1;
+    ts.tv_nsec = 500000000;
+    nanosleep(&ts,NULL);
+
+    ss << "Attribute " << att1_name << " polling period = " << local_dev->get_att_poll_period(att1_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+    ss << "Attribute " << att2_name << " polling period = " << local_dev->get_att_poll_period(att2_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+    ss << "Attribute " << att3_name << " polling period = " << local_dev->get_att_poll_period(att3_name);
+    local_dev->poll_messages.push_back(ss.str());
+    ss.str("");
+    ss.clear();
+
+// Stop polling
+
+    local_dev->stop_poll_att(att1_name);
+    local_dev->stop_poll_att(att2_name);
+    local_dev->stop_poll_att(att3_name);
+
+    cout << "ReynaldPollThread exiting" << endl;
+}
+
+//+----------------------------------------------------------------------------
+//
+// method : 		SophisPollInDeviceTst::SophisPollInDeviceTst()
+//
+// description : 	constructor for the SophisPollInDeviceTst command of the
+//					DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+SophisPollInDeviceTst::SophisPollInDeviceTst(const char *name, Tango::CmdArgType in,
+									   Tango::CmdArgType out, const char *in_desc,
+									   const char *out_desc)
+	: Tango::Command(name, in, out, in_desc, out_desc)
+{
+}
+
+bool SophisPollInDeviceTst::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+//
+// command always allowed
+//
+	return(true);
+}
+
+CORBA::Any *SophisPollInDeviceTst::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+    ReynaldPollThread *rpt = new ReynaldPollThread(device);
+	(static_cast<DevTest *>(device))->IOSophisticatedPollInDevice();
+	return insert();
+}
+
+
+//+----------------------------------------------------------------------------
+//
+// method : 		GetPollMess::GetPollMess()
+//
+// description : 	constructor for the GetPollMess command of the
+//					DevTest.
+//
+// In : - name : The command name
+//	- in : The input parameter type
+//	- out : The output parameter type
+//	- in_desc : The input parameter description
+//	- out_desc : The output parameter description
+//
+//-----------------------------------------------------------------------------
+
+GetPollMess::GetPollMess(const char *name, Tango::CmdArgType in,
+									   Tango::CmdArgType out, const char *in_desc,
+									   const char *out_desc)
+	: Tango::Command(name, in, out, in_desc, out_desc)
+{
+}
+
+bool GetPollMess::is_allowed(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+//
+// command always allowed
+//
+	return(true);
+}
+
+CORBA::Any *GetPollMess::execute(Tango::DeviceImpl *device, const CORBA::Any &in_any)
+{
+	Tango::DevVarStringArray *strs = (static_cast<DevTest *>(device))->IOGetPollMess();
+	return insert(strs);
+}
 
 //+----------------------------------------------------------------------------
 //

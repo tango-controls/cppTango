@@ -1004,6 +1004,7 @@ public:
 };
 
 
+
 // ----------------------------------------------------------------------------
 
 class Sub_device_tstAttr: public Tango::Attr
@@ -1073,6 +1074,16 @@ public:
 	{(static_cast<DevTest *>(dev))->read_DefClassUser_attr(att);}
 	virtual void write(Tango::DeviceImpl *dev,Tango::WAttribute &att)
 	{(static_cast<DevTest *>(dev))->write_DefClassUser_attr(att);}
+};
+
+class ReynaldPollAttr: public Tango::Attr
+{
+public:
+	ReynaldPollAttr():Attr("ReynaldPollAttr",Tango::DEV_DOUBLE,Tango::READ) {};
+	~ReynaldPollAttr() {};
+
+	virtual void read(Tango::DeviceImpl *dev,Tango::Attribute &att)
+	{(static_cast<DevTest *>(dev))->read_ReynaldPoll_attr(att);}
 };
 
 //-------------------------------------------------------------------------------------------------------

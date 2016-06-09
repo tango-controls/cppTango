@@ -558,6 +558,16 @@ void DevTestClass::command_factory()
 					    Tango::DEVVAR_STRINGARRAY,
 					    "void",
 					    "Polling in device test outputs"));
+	command_list.push_back(new SophisPollInDeviceTst("IOSophisticatedPollInDevice",
+					    Tango::DEV_VOID,
+					    Tango::DEV_VOID,
+					    "void",
+					    "void"));
+	command_list.push_back(new GetPollMess("IOGetPollMess",
+					    Tango::DEV_VOID,
+					    Tango::DEVVAR_STRINGARRAY,
+					    "void",
+					    "SophisticatedPollInDevice polling messages"));
 	command_list.push_back(new WriteAttrHardwareThrow("WriteAttrHardwareThrow",
 					    Tango::DEV_SHORT,
 					    Tango::DEV_VOID,
@@ -880,6 +890,7 @@ void DevTestClass::attribute_factory(vector<Tango::Attr *> &att_list)
   att_list.push_back(en_s_att);
 
   att_list.push_back(new DynEnumAttr());
+  att_list.push_back(new ReynaldPollAttr());
 }
 
 void DevTestClass::pipe_factory()

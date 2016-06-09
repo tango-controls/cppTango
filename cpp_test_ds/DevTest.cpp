@@ -193,6 +193,9 @@ void DevTest::init_device()
 	Tango::Pipe &pi = get_device_class()->get_pipe_by_name("RWPipe",device_name_lower);
 	pi.set_pipe_serial_model(Tango::PIPE_BY_USER);
 
+    Reynald_ctr = 0;
+    Reynald_val = 9.9;
+
 	cout << "DevTest::DevTest(): End of init_device() method for device " << device_name << endl;
 
 }
@@ -718,6 +721,32 @@ Tango::DevVarStringArray *DevTest::IOPollingInDevice()
     (*ret)[11] = Tango::string_dup(ss.str().c_str());
 
     return ret;
+}
+
+void DevTest::IOSophisticatedPollInDevice()
+{
+    string att1_name("Double_spec_attr");
+    string att2_name("Short_attr");
+    string att3_name("ReynaldPollAttr");
+
+// poll the 3 atts
+
+    poll_attribute(att1_name,500);
+    poll_attribute(att2_name,250);
+    poll_attribute(att3_name,250);
+}
+
+Tango::DevVarStringArray *DevTest::IOGetPollMess()
+{
+    Tango::DevVarStringArray *dvsa = new Tango::DevVarStringArray();
+    dvsa->length(poll_messages.size());
+
+    for (size_t loop = 0;loop < poll_messages.size();loop++)
+        (*dvsa)[loop] = Tango::string_dup(poll_messages[loop].c_str());
+
+    poll_messages.clear();
+
+    return dvsa;
 }
 
 void DevTest::set_enum_labels()
@@ -2027,6 +2056,29 @@ void DevTest::read_DynEnum_attr(Tango::Attribute &att)
 {
 	cout << "[DevTest::read_attr] attribute name DynEnum_attr" << endl;
 	att.set_value(&enum_value);
+}
+
+void DevTest::read_ReynaldPoll_attr(Tango::Attribute &att)
+{
+	cout << "[DevTest::read_attr] attribute name ReynaldPoll_attr" << endl;
+
+	Reynald_ctr++;
+	if ((Reynald_ctr % 3) == 0)
+    {
+        int poll_period = get_attribute_poll_period("Short_attr");
+        if (poll_period == 250)
+        {
+cout << "ReynaldPollAttr: Setting period to 500" << endl;
+            poll_attribute("Short_attr",500);
+            poll_attribute("ReynaldPollAttr",500);
+        }
+        else
+        {
+cout << "ReynaldPollAttr: Setting period to 250" << endl;
+            poll_attribute("Short_attr",250);
+            poll_attribute("ReynaldPollAttr",250);
+        }
+    }
 }
 
 //***********************************************************************************************

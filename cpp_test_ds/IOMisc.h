@@ -359,6 +359,24 @@ public:
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
 };
 
+class SophisPollInDeviceTst : public Tango::Command {
+public:
+	SophisPollInDeviceTst(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~SophisPollInDeviceTst() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+class GetPollMess : public Tango::Command {
+public:
+	GetPollMess(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
+	~GetPollMess() {};
+
+	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
+	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
 class WriteAttrHardwareThrow : public Tango::Command {
 public:
 	WriteAttrHardwareThrow(const char *,Tango::CmdArgType, Tango::CmdArgType,const char *,const char *);
@@ -420,4 +438,14 @@ public:
 
 	virtual bool is_allowed (Tango::DeviceImpl *, const CORBA::Any &);
 	virtual CORBA::Any *execute (Tango::DeviceImpl *, const CORBA::Any &);
+};
+
+class ReynaldPollThread : public omni_thread
+{
+public :
+	ReynaldPollThread(Tango::DeviceImpl *);
+
+private :
+	void run(void *arg);
+	Tango::DeviceImpl      *dev;
 };
