@@ -76,7 +76,7 @@ PollObjType PollThread::type_to_del = Tango::POLL_CMD;
 PollThread::PollThread(PollThCmd &cmd,TangoMonitor &m,bool heartbeat): shared_cmd(cmd),p_mon(m),
 					    sleep(1),polling_stop(true),
 					    attr_names(1),tune_ctr(1),
-					    need_two_tuning(false),auto_upd(-1),send_heartbeat(heartbeat),heartbeat_ctr(0)
+					    need_two_tuning(false),send_heartbeat(heartbeat),heartbeat_ctr(0)
 {
     local_cmd.cmd_pending = false;
 
@@ -543,44 +543,62 @@ void PollThread::execute_cmd()
             size_t i,nb_elt;
             nb_elt = works.size();
             ite = works.begin();
-            for (i = 0;i < nb_elt;i++)
-            {
-                if (ite->dev == PollThread::dev_to_del)
-                {
-                    if (ite->type == PollThread::type_to_del)
-                    {
-                        bool found = false;
-                        vector<string>::iterator ite_str;
-                        for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
-                        {
-                            if (*ite_str == PollThread::name_to_del)
-                            {
-                                ite->name.erase(ite_str);
-                                if (ite->name.empty() == true)
-                                    works.erase(ite);
-                                found = true;
-                                found_in_work_list = true;
-                                break;
-                            }
-                        }
-                        if (found == true)
-                            break;
-                    }
-                }
-                ++ite;
-            }
 
-            tmp_work.dev = PollThread::dev_to_del;
-            tmp_work.poll_list = &(tmp_work.dev->get_poll_obj_list());
-            tmp_work.type = PollThread::type_to_del;
-            tmp_work.update = local_cmd.new_upd;
-            tmp_work.name.push_back(PollThread::name_to_del);
-            tmp_work.needed_time.tv_sec = 0;
-            tmp_work.needed_time.tv_usec = 0;
-            compute_new_date(now,local_cmd.new_upd);
-            tmp_work.wake_up_date = now;
-            add_insert_in_list(tmp_work);
-            tune_ctr = 0;
+            if (nb_elt != 0)
+            {
+                bool found = false;
+
+                for (i = 0;i < nb_elt;i++)
+                {
+                    if (ite->dev == PollThread::dev_to_del)
+                    {
+                        if (ite->type == PollThread::type_to_del)
+                        {
+
+                            vector<string>::iterator ite_str;
+                            for (ite_str = ite->name.begin();ite_str != ite->name.end();++ite_str)
+                            {
+                                if (*ite_str == PollThread::name_to_del)
+                                {
+                                    ite->name.erase(ite_str);
+                                    if (ite->name.empty() == true)
+                                    {
+                                        works.erase(ite);
+                                    }
+
+                                    found = true;
+                                    found_in_work_list = true;
+                                    break;
+                                }
+                            }
+
+                            if (found == true)
+                                break;
+                        }
+                    }
+                    ++ite;
+                }
+
+                tmp_work.dev = PollThread::dev_to_del;
+                tmp_work.poll_list = &(tmp_work.dev->get_poll_obj_list());
+                tmp_work.type = PollThread::type_to_del;
+                tmp_work.update = local_cmd.new_upd;
+                tmp_work.name.push_back(PollThread::name_to_del);
+                tmp_work.needed_time.tv_sec = 0;
+                tmp_work.needed_time.tv_usec = 0;
+                compute_new_date(now,local_cmd.new_upd);
+                tmp_work.wake_up_date = now;
+                add_insert_in_list(tmp_work);
+                tune_ctr = 0;
+                found_in_work_list = true;
+
+                if (found == false)
+                {
+                    rem_upd.push_back(local_cmd.new_upd);
+                    rem_name.push_back(PollThread::name_to_del);
+                }
+
+            }
         }
         else
         {
@@ -668,10 +686,9 @@ void PollThread::execute_cmd()
 			}
 			else
             {
-				auto_upd = local_cmd.new_upd;
-				auto_name = name_to_del;
+				auto_upd.push_back(local_cmd.new_upd);
+				auto_name.push_back(name_to_del);
             }
-
 		}
 		break;
     }
@@ -802,24 +819,61 @@ void PollThread::one_more_poll()
 // For case where the polling thread itself modify the polling period of the object it already polls
 //
 
-	if (auto_upd != -1)
+	if (auto_upd.empty() == false)
 	{
-		remove(tmp.name.begin(),tmp.name.end(),auto_name);
-        compute_new_date(tmp.wake_up_date,tmp.update);
-        insert_in_list(tmp);
+        for (size_t loop = 0;loop < auto_upd.size();loop++)
+        {
+            vector<string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),auto_name[loop]);
+            tmp.name.erase(pos,tmp.name.end());
+        }
 
-        WorkItem new_tmp;
-		new_tmp.update = auto_upd;
-		new_tmp.name.push_back(auto_name);
-        new_tmp.dev = tmp.dev;
-        new_tmp.poll_list = tmp.poll_list;
-        new_tmp.type = tmp.type;
-        new_tmp.needed_time.tv_sec = 0;
-        new_tmp.needed_time.tv_usec = 0;
-        compute_new_date(now,local_cmd.new_upd);
-        add_insert_in_list(new_tmp);
+        if (tmp.name.empty() == false)
+        {
+            compute_new_date(tmp.wake_up_date,tmp.update);
+            insert_in_list(tmp);
+        }
 
-		auto_upd = -1;
+        list<WorkItem>::iterator ite;
+        vector<WorkItem>::iterator et_ite;
+
+        for (size_t loop = 0;loop < auto_upd.size();loop++)
+        {
+            size_t nb_elt = works.size();
+            ite = works.begin();
+
+            bool found = false;
+
+            for (size_t i = 0;i < nb_elt;i++)
+            {
+                if (ite->dev == tmp.dev &&
+                    ite->type == tmp.type &&
+                    ite->update == auto_upd[loop])
+                {
+                    ite->name.push_back(auto_name[loop]);
+                    found = true;
+                    break;
+                }
+                ++ite;
+            }
+
+            if (found == false)
+            {
+                WorkItem new_tmp;
+                new_tmp.update = auto_upd[loop];
+                new_tmp.name.push_back(auto_name[loop]);
+                new_tmp.dev = tmp.dev;
+                new_tmp.poll_list = tmp.poll_list;
+                new_tmp.type = tmp.type;
+                new_tmp.needed_time.tv_sec = 0;
+                new_tmp.needed_time.tv_usec = 0;
+                compute_new_date(now,local_cmd.new_upd);
+                new_tmp.wake_up_date = now;
+                insert_in_list(new_tmp);
+            }
+        }
+
+		auto_upd.clear();
+		auto_name.clear();
 	}
 
 //
@@ -828,8 +882,28 @@ void PollThread::one_more_poll()
 
     else
     {
-        compute_new_date(tmp.wake_up_date,tmp.update);
-        insert_in_list(tmp);
+        if (rem_upd.empty() == false)
+        {
+            for (size_t loop = 0;loop < rem_upd.size();loop++)
+            {
+                vector<string>::iterator pos = remove(tmp.name.begin(),tmp.name.end(),rem_name[loop]);
+                tmp.name.erase(pos,tmp.name.end());
+            }
+
+            if (tmp.name.empty() == false)
+            {
+                compute_new_date(tmp.wake_up_date,tmp.update);
+                insert_in_list(tmp);
+            }
+
+            rem_upd.clear();
+            rem_name.clear();
+        }
+        else
+        {
+            compute_new_date(tmp.wake_up_date,tmp.update);
+            insert_in_list(tmp);
+        }
     }
 
 	tune_ctr--;

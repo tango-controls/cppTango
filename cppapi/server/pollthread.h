@@ -161,8 +161,10 @@ private:
 	AttributeValue_5	dummy_att5;
 	long				tune_ctr;
 	bool				need_two_tuning;
-	long				auto_upd;
-	string              auto_name;
+	vector<long>		auto_upd;
+	vector<string>      auto_name;
+	vector<long>        rem_upd;
+	vector<string>      rem_name;
 	bool				send_heartbeat;
 	u_int				heartbeat_ctr;
 	u_int               previous_nb_late;
