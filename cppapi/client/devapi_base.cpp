@@ -2480,6 +2480,30 @@ DeviceProxy::~DeviceProxy()
 		delete db_dev;
 
 //
+// If the device has some subscribed event, unsubscribe them
+//
+
+    if (ApiUtil::_is_instance_null() == false)
+    {
+        ApiUtil *api_ptr = ApiUtil::instance();
+        ZmqEventConsumer *zmq = api_ptr->get_zmq_event_consumer();
+        if (zmq != Tango_nullptr)
+        {
+            vector<int> ids;
+            zmq->get_subscribed_event_ids(this,ids);
+            if (ids.empty() == false)
+            {
+                vector<int>::iterator ite;
+                for (ite = ids.begin();ite != ids.end();++ite)
+                {
+                    unsubscribe_event(*ite);
+                }
+
+            }
+        }
+    }
+
+//
 // If the device is locked, unlock it whatever the lock counter is
 //
 

@@ -555,6 +555,8 @@ public :
 	virtual void cleanup_EventChannel_map();
     virtual void get_subscription_command_name(string &cmd) {cmd="ZmqEventSubscriptionChange";}
 
+    void get_subscribed_event_ids(DeviceProxy *,vector<int> &);
+
 	enum UserDataEventType
 	{
 	    ATT_CONF = 0,

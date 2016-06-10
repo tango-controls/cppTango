@@ -583,7 +583,6 @@ void *EventConsumerKeepAliveThread::run_undetached(TANGO_UNUSED(void *arg))
             event_consumer->map_modification_lock.writerOut();
         }
 
-
 //
 // Check for all other event reconnections
 //

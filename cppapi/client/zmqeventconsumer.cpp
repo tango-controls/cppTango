@@ -3274,6 +3274,66 @@ bool ZmqEventConsumer::check_zmq_endpoint(const string &endpoint)
 //--------------------------------------------------------------------------------------------------------------------
 //
 // method :
+//		ZmqEventConsumer::get_subscribed_event_ids()
+//
+// description :
+//		Get event id for the DeviceProxy given as parameter
+//
+// argument :
+//		in :
+//			- _dev : The DeviceProxy object
+//      out :
+//          - _ids : Vector of event id for the given DeviceProxy
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+void ZmqEventConsumer::get_subscribed_event_ids(DeviceProxy *_dev,vector<int> &_ids)
+{
+
+    if (_ids.empty() == false)
+        _ids.clear();
+
+//
+// Lock the maps only for reading
+//
+
+    ReaderLock r(map_modification_lock);
+
+//
+// Search with the callback_list map
+//
+
+	EvCbIte epos;
+
+	for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
+	{
+		if (epos->second.device == _dev)
+		{
+            vector<EventSubscribeStruct>::iterator ite;
+            for (ite = epos->second.callback_list.begin();ite != epos->second.callback_list.end();++ite)
+            {
+                _ids.push_back(ite->id);
+            }
+		}
+	}
+
+//
+// Search as well in the not connected event(s) vector
+//
+
+    vector<EventNotConnected>::iterator ite;
+    for (ite = event_not_connected.begin();ite != event_not_connected.end();++ite)
+    {
+        if (ite->device == _dev)
+        {
+            _ids.push_back(ite->event_id);
+        }
+    }
+}
+
+//--------------------------------------------------------------------------------------------------------------------
+//
+// method :
 //		ZmqAttrValUnion::operator<<=()
 //
 // description :
