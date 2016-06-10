@@ -2391,11 +2391,17 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
 //
 // Update name in DeviceAttribute in case it is not coherent with name received in first ZMQ message part.
-// This happens in case of forwarded attribute
+// This happens in case of forwarded attribute but also in case of DS started with file as database
 //
 
-								if (att_name != dev_attr->get_name())
-									dev_attr->set_name(att_name);
+                                string::size_type pos = att_name.find(MODIFIER_DBASE_NO);
+                                string a_name;
+                                if (pos != string::npos)
+                                    a_name = att_name.substr(0,pos);
+                                else
+                                    a_name = att_name;
+								if (a_name != dev_attr->get_name())
+									dev_attr->set_name(a_name);
 							}
 							catch(...)
 							{
@@ -2423,11 +2429,17 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 
 //
 // Update name in DeviceAttribute in case it is not coherent with name received in first ZMQ message part.
-// This happens in case of forwarded attribute
+// This happens in case of forwarded attribute but also in case of DS started with file as database
 //
 
-								if (att_name != dev_attr->get_name())
-									dev_attr->set_name(att_name);
+                                string::size_type pos = att_name.find(MODIFIER_DBASE_NO);
+                                string a_name;
+                                if (pos != string::npos)
+                                    a_name = att_name.substr(0,pos);
+                                else
+                                    a_name = att_name;
+								if (a_name != dev_attr->get_name())
+									dev_attr->set_name(a_name);
 							}
 							catch(...)
 							{
