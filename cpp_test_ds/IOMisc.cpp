@@ -1796,11 +1796,14 @@ void ReynaldPollThread::run (void *arg)
 
     stringstream ss;
 
+#ifdef WIN32
+    Sleep(300);
+#else
     struct timespec ts;
     ts.tv_sec = 0;
     ts.tv_nsec = 300000000;
     nanosleep(&ts,NULL);
-
+#endif // WIN32
     DevTest *local_dev = static_cast<DevTest *>(dev);
 
     ss << "Attribute " << att1_name << " polling period = " << local_dev->get_att_poll_period(att1_name);
@@ -1820,9 +1823,13 @@ void ReynaldPollThread::run (void *arg)
 
 // Sleep 600 mS and do the same
 
+#ifdef WIN32
+    Sleep(600);
+#else
     ts.tv_sec = 0;
     ts.tv_nsec = 600000000;
     nanosleep(&ts,NULL);
+#endif
 
     ss << "Attribute " << att1_name << " polling period = " << local_dev->get_att_poll_period(att1_name);
     local_dev->poll_messages.push_back(ss.str());
@@ -1841,9 +1848,13 @@ void ReynaldPollThread::run (void *arg)
 
 // Sleep 1500 mS and do the same
 
+#ifdef WIN32
+    Sleep(1500);
+#else
     ts.tv_sec = 1;
     ts.tv_nsec = 500000000;
     nanosleep(&ts,NULL);
+#endif // WIN32
 
     ss << "Attribute " << att1_name << " polling period = " << local_dev->get_att_poll_period(att1_name);
     local_dev->poll_messages.push_back(ss.str());
