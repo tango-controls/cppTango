@@ -250,7 +250,38 @@ int main(int argc, char **argv)
 		device1->unsubscribe_event(eve_id1);
 		
 		cout << "   unsubscribe_event --> OK" << endl;
-									
+
+//
+// Check automatic unsubscription
+//
+
+		DeviceProxy *dev = new DeviceProxy(device2_name);
+
+		eve_id1 = device1->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb_evid1);
+		eve_id2 = dev->subscribe_event(att_name,Tango::PERIODIC_EVENT,&cb_evid2);
+		eve_id3 = dev->subscribe_event("Float_attr",Tango::PERIODIC_EVENT,&cb_evid2,true);
+
+#ifndef WIN32
+		rest = sleep(5);
+		if (rest != 0)
+			sleep(5);
+#else
+		Sleep(5000);
+#endif
+
+		delete dev;
+
+#ifndef WIN32
+		rest = sleep(15);
+		if (rest != 0)
+			sleep(15);
+#else
+		Sleep(15000);
+#endif
+
+		cout << "   DeviceProxy dtor automatically unsubscribe --> OK" << endl;		
+
+		device1->unsubscribe_event(eve_id1);							
 	}
 	catch (Tango::DevFailed &e)
 	{
