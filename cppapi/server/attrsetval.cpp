@@ -757,7 +757,11 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 					if (is_fwd_att() == true)
 						Tango::DevVarStringArray::freebuf(p_data);
 					else
+                    {
+                        for (int k = 0;k < data_size;k++)
+                            delete [] p_data[k];
 						delete [] p_data;
+                    }
 				}
 			}
 		}
