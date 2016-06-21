@@ -257,7 +257,10 @@ DevicePipeBlob::DevicePipeBlob(const DevicePipeBlob & source):ext(Tango_nullptr)
 	extract_ind = source.extract_ind;
 
 	if (source.insert_elt_array != Tango_nullptr)
+    {
+        insert_elt_array = new DevVarPipeDataEltArray();
 		(*insert_elt_array) = (*source.insert_elt_array);
+    }
 	else
 		insert_elt_array = Tango_nullptr;
 	insert_ctr = source.insert_ctr;
@@ -310,7 +313,10 @@ DevicePipeBlob &DevicePipeBlob::operator=(const DevicePipeBlob &rhs)
 		extract_ind = rhs.extract_ind;
 
 		if (rhs.insert_elt_array != Tango_nullptr)
+        {
+            insert_elt_array = new DevVarPipeDataEltArray();
 			(*insert_elt_array) = (*rhs.insert_elt_array);
+        }
 		else
 			insert_elt_array = Tango_nullptr;
 		insert_ctr = rhs.insert_ctr;
@@ -367,7 +373,10 @@ DevicePipeBlob::DevicePipeBlob(DevicePipeBlob && source):ext(Tango_nullptr)
 	extract_ind = source.extract_ind;
 
 	if (source.insert_elt_array != Tango_nullptr)
+    {
+        insert_elt_array = new DevVarPipeDataEltArray();
 		(*insert_elt_array) = (*source.insert_elt_array);
+    }
 	else
 		insert_elt_array = Tango_nullptr;
 	insert_ctr = source.insert_ctr;
@@ -449,6 +458,14 @@ DevicePipeBlob &DevicePipeBlob::operator=(DevicePipeBlob &&rhs)
 
 vector<string> DevicePipeBlob::get_data_elt_names()
 {
+    if (extract_elt_array == Tango_nullptr)
+    {
+		stringstream ss;
+
+		ss << "You try to get data element name(s) for a blob which has never been received from a device";
+		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_names()");
+    }
+
 	vector<string> v_str;
 	size_t nb_elt = extract_elt_array->length();
 
@@ -479,6 +496,14 @@ vector<string> DevicePipeBlob::get_data_elt_names()
 
 string DevicePipeBlob::get_data_elt_name(size_t _ind)
 {
+    if (extract_elt_array == Tango_nullptr)
+    {
+		stringstream ss;
+
+		ss << "You try to get data element name(s) for a blob which has never been received from a device";
+		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_names()");
+    }
+
 	if (_ind > extract_elt_array->length())
 	{
 		stringstream ss;
@@ -510,6 +535,14 @@ string DevicePipeBlob::get_data_elt_name(size_t _ind)
 int DevicePipeBlob::get_data_elt_type(size_t _ind)
 {
 	int ret = 0;
+
+    if (extract_elt_array == Tango_nullptr)
+    {
+		stringstream ss;
+
+		ss << "You try to get data element name(s) for a blob which has never been received from a device";
+		Except::throw_exception(API_PipeWrongArg,ss.str(),"DevicePipeBlob::get_data_elt_type()");
+    }
 
 	if (_ind > extract_elt_array->length())
 	{
@@ -1204,8 +1237,8 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 
 				if (insert_ind != -1)
 				{
-					(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
-					(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
+					(*insert_elt_array)[insert_ind].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+					(*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
 					insert_ind = -1;
 				}
 				else
@@ -1687,7 +1720,9 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevString &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (extract_ctr > (int)extract_elt_array->length() - 1)
+    if (extract_elt_array == Tango_nullptr)
+        ext_state.set(isempty_flag);
+	else if (extract_ctr > (int)extract_elt_array->length() - 1)
 		ext_state.set(notenoughde_flag);
 	else if (extract_ctr == -1 && extract_ind == -1)
 		ext_state.set(mixing_flag);
@@ -1764,7 +1799,9 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevicePipeBlob &datum)
 	failed = false;
 	ext_state.reset();
 
-	if (extract_ctr > (int)extract_elt_array->length() - 1)
+    if (extract_elt_array == Tango_nullptr)
+        ext_state.set(isempty_flag);
+	else if (extract_ctr > (int)extract_elt_array->length() - 1)
 		ext_state.set(notenoughde_flag);
 	else if (extract_ctr == -1 && extract_ind == -1)
 		ext_state.set(mixing_flag);

@@ -1211,7 +1211,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (extract_ctr > (int)extract_elt_array->length() - 1) \
+    if (extract_elt_array == Tango_nullptr) \
+        ext_state.set(isempty_flag); \
+	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
 	else if (extract_ctr == -1 && extract_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1273,7 +1275,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (extract_ctr > (int)extract_elt_array->length() - 1) \
+    if (extract_elt_array == Tango_nullptr) \
+        ext_state.set(isempty_flag); \
+	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
 	else if (extract_ctr == -1 && extract_ind == -1) \
 		ext_state.set(mixing_flag); \
@@ -1335,7 +1339,9 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 	failed = false; \
 	ext_state.reset(); \
 \
-	if (extract_ctr > (int)extract_elt_array->length() - 1) \
+    if (extract_elt_array == Tango_nullptr) \
+        ext_state.set(isempty_flag); \
+	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
 		ext_state.set(notenoughde_flag); \
 	else if (extract_ctr == -1 && extract_ind == -1) \
 		ext_state.set(mixing_flag); \
