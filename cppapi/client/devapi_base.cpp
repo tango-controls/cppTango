@@ -9504,7 +9504,7 @@ void DeviceProxy::local_import(string &local_ior)
 
 //
 // In case of controlled access used, this method is called while the
-// Util bject is still in its construction case.
+// Util object is still in its construction case.
 // Catch this exception and return from this method in this case
 //
 
@@ -9528,6 +9528,13 @@ void DeviceProxy::local_import(string &local_ior)
 		{
 			if (dev_list[lo]->get_name_lower() == device_name)
 			{
+                if (Tango::Util::_UseDb == true)
+                {
+                    Database *db = tg->get_database();
+                    if (db->get_db_host() != get_db_host())
+                        return;
+                }
+
 				Tango::Device_var d_var = dev_list[lo]->get_d_var();
 				CORBA::ORB_ptr orb_ptr = tg->get_orb();
 
