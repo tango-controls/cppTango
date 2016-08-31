@@ -1865,7 +1865,11 @@ void DServer::get_event_misc_prop(Tango::Util *tg)
 		}
 	}
 	else
+    {
 		mcast_event_prop.clear();
+        zmq_pub_event_hwm = PUB_HWM;
+        zmq_sub_event_hwm = SUB_HWM;
+    }
 
 }
 
