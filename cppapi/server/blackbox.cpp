@@ -300,14 +300,14 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 // Add basic info in the box
 //
 
+    long old_insert = insert_elt;
 	insert_cmd_nl(cmd,vers,sour);
 
 //
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
+	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
 	{
 		sync.unlock();
 		return;
@@ -317,6 +317,7 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 // Add client ident info into the client_addr instance and into the box
 //
 
+    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
 	update_client_host(static_cast<client_addr *>(ip));
 
@@ -420,14 +421,14 @@ void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
 {
 	sync.lock();
 
+    long old_insert = insert_elt;
 	insert_op_nl(op);
 
 //
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
+	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
 	{
 		sync.unlock();
 		return;
@@ -437,6 +438,7 @@ void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
 // Add client ident info into the client_addr instance and into the box
 //
 
+	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
 	update_client_host(static_cast<client_addr *>(ip));
 
@@ -631,21 +633,27 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 	get_client_host();
 
 //
-// manage insert and read indexes
+// manage insert and read indexes but before changing indexex, memorize if the request is done by polling or user
+// threads
 //
+
+    bool poll_user = false;
+    if (box[insert_elt].host_ip_str[0] == 'p' || box[insert_elt].host_ip_str[0] == 'u')
+        poll_user = true;
 
 	inc_indexes();
 
 //
-// Check if the command is executed due to polling. If true, simply return
+// If request is executed due to polling or from a user thread, simply return
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
+	if (poll_user == true)
 	{
 		sync.unlock();
 		return;
 	}
+
+    omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 
 //
 // Add client ident info into the client_addr instance and into the box
@@ -710,15 +718,22 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
 // manage insert and read indexes
 //
 
+    bool poll_user = false;
+    if (box[insert_elt].host_ip_str[0] == 'p' || box[insert_elt].host_ip_str[0] == 'u')
+        poll_user = true;
+
 	inc_indexes();
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    if (poll_user == false)
+    {
+        omni_thread::value_t *ip = omni_thread::self()->get_value(key);
+        add_cl_ident(cl_id,static_cast<client_addr *>(ip));
+        update_client_host(static_cast<client_addr *>(ip));
+    }
 
 //
 // Release mutex
@@ -779,15 +794,22 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
 // manage insert and read indexes
 //
 
+    bool poll_user = false;
+    if (box[insert_elt].host_ip_str[0] == 'p' || box[insert_elt].host_ip_str[0] == 'u')
+        poll_user = true;
+
 	inc_indexes();
 
 //
 // Add client ident info into the client_addr instance and into the box
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
-	update_client_host(static_cast<client_addr *>(ip));
+    if (poll_user == false)
+    {
+        omni_thread::value_t *ip = omni_thread::self()->get_value(key);
+        add_cl_ident(cl_id,static_cast<client_addr *>(ip));
+        update_client_host(static_cast<client_addr *>(ip));
+    }
 
 //
 // Release mutex
@@ -809,14 +831,14 @@ void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const Cl
 {
 	sync.lock();
 
+    long old_insert = insert_elt;
 	insert_attr_nl_4(att_list);
 
 //
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
+	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
 	{
 		sync.unlock();
 		return;
@@ -826,6 +848,7 @@ void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const Cl
 // Add client ident info into the client_addr instance and into the box
 //
 
+	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
 	update_client_host(static_cast<client_addr *>(ip));
 
@@ -939,7 +962,10 @@ void BlackBox::insert_attr_nl_4(const Tango::AttributeValueList_4 &att_list)
 //
 // argument :
 //		in :
-//			- names : The attribute(s) name
+//			- att_list : The attribute list
+//          - r_names : Attribute name(s)
+//          - cl_id : Client identifier
+//          - vers :
 //
 //---------------------------------------------------------------------------------------------------------------------
 
@@ -947,10 +973,14 @@ void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const 
 {
 	sync.lock();
 
+    long old_insert = insert_elt;
 	insert_attr_wr_nl(att_list,r_names,vers);
 
-	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
-	if (ip == NULL)
+//
+// If request coming from polling thread or user thread, leave method
+//
+
+	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
 	{
 		sync.unlock();
 		return;
@@ -960,6 +990,7 @@ void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const 
 // Add client ident info into the client_addr instance and into the box
 //
 
+	omni_thread::value_t *ip = omni_thread::self()->get_value(key);
 	add_cl_ident(cl_id,static_cast<client_addr *>(ip));
 	update_client_host(static_cast<client_addr *>(ip));
 
@@ -1071,7 +1102,28 @@ void BlackBox::get_client_host()
         if (tg->is_svr_starting() == true)
             strcpy(box[insert_elt].host_ip_str,"init");
         else
-            strcpy(box[insert_elt].host_ip_str,"polling");
+        {
+            vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
+            if (poll_ths.empty() == true)
+                strcpy(box[insert_elt].host_ip_str,"user thread");
+            else
+            {
+                int this_thread_id = th_id->id();
+                size_t nb_poll_th = poll_ths.size();
+                size_t loop;
+                for (loop = 0;loop < nb_poll_th;loop++)
+                {
+                    if (this_thread_id == poll_ths[loop]->thread_id)
+                    {
+                        strcpy(box[insert_elt].host_ip_str,"polling");
+                        break;
+                    }
+                }
+
+                if (loop == nb_poll_th)
+                    strcpy(box[insert_elt].host_ip_str,"user thread");
+            }
+        }
     }
 	else
 		strcpy(box[insert_elt].host_ip_str,(static_cast<client_addr *>(ip))->client_ip);
@@ -1443,7 +1495,8 @@ void BlackBox::build_info_as_str(long index)
 	if ((box[index].host_ip_str[0] != '\0') &&
 	    (box[index].host_ip_str[0] != 'p') &&
 		(box[index].host_ip_str[5] != 'u') &&
-        (box[index].host_ip_str[0] != 'i'))
+        (box[index].host_ip_str[0] != 'i') &&
+        (box[index].host_ip_str[0] != 'u'))
 	{
 		bool ipv6=false;
 		string omni_addr = box[index].host_ip_str;
@@ -1584,6 +1637,10 @@ void BlackBox::build_info_as_str(long index)
 	else if (box[index].host_ip_str[0] == 'i')
 	{
         elt_str = elt_str + "requested during device server process init sequence";
+	}
+	else if (box[index].host_ip_str[0] == 'u')
+	{
+        elt_str = elt_str + "requested from user thread";
 	}
 
 	return;
