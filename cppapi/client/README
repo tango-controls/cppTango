@@ -1,0 +1,17 @@
+			TANGO C++ API (client part) README
+			==================================
+		     	      
+			goetz@esrf.fr (25/6/2001)
+			taurel@esrf.fr (9/1/2003)
+
+This directory contains the files necessary to implement the easy-to-use 
+C++ client api to the TANGO database and devices. It contains the include 
+files and source files needed to support the api in the TANGO library. 
+Clients need to link with the TANGO library in order to use the api.
+
+There is no Makefile in this directory. The library must be build from the 
+../server directory. 
+
+
+		
+
