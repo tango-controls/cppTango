@@ -1,0 +1,51 @@
+#! /bin/sh
+
+# $Id$
+# This script is used to bootstrap the build process, that is, to
+# create the aclocal, the ac_config.h.tmp.in, the Makefile.in, and the
+# configure files
+# It must be run in order to let changes in configure.in be reflected
+# in configure.
+
+# from the info file for autoconf aclocal
+#    The `aclocal' program will automatically generate `aclocal.m4' files
+# based on the contents of `configure.in'.  This provides a convenient
+# way to get Automake-provided macros, without having to search around.
+# Also, the `aclocal' mechanism is extensible for use by other packages.
+echo "running aclocal -I m4"
+aclocal -I m4
+
+echo "running libtoolize --copy --force "
+libtoolize --copy --force
+
+# from the info file for autoconf
+#    The `autoheader' program can create a template file of C `#define'
+# statements for `configure' to use.  If `configure.ac' invokes
+# `AC_CONFIG_HEADERS(FILE)', `autoheader' creates `FILE.in'; if multiple
+# file arguments are given, the first one is used.  Otherwise,
+# `autoheader' creates `config.h.in'.
+echo "running autoheader"
+autoheader                  
+
+# from the info file for automake
+#    Automake is a tool for automatically generating `Makefile.in's from
+# files called `Makefile.am'.  Each `Makefile.am' is basically a series
+# of `make' macro definitions (with rules being thrown in occasionally).
+# The generated `Makefile.in's are compliant with the GNU Makefile
+# standards.
+#
+# creates the Makefile.ins
+echo "running automake --gnu --add-missing"
+automake --gnu --add-missing 
+
+# from the info file for autoconf
+#    Autoconf is a tool for producing shell scripts that automatically
+# configure software source code packages to adapt to many kinds of
+# UNIX-like systems.  The configuration scripts produced by Autoconf are
+# independent of Autoconf when they are run, so their users do not need
+# to have Autoconf.
+#
+# creates the configure script
+echo "running autoconf"
+autoconf
+
