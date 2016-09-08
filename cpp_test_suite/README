@@ -1,0 +1,401 @@
+#######################################################################################################################
+ Tango Test Suite
+#######################################################################################################################
+
+This is a guide to the Tango Test Suite use and development. The guide is split in 2 main sections addressed to the
+user and developer respectively. Please acquaint yourself with the contents of this file before the use of the framework.
+
+Outline:
+--------
+
+1. ======== User
+1.1. ~~~~~~ Compilation
+1.1.1. ---- Create a profile file
+1.1.2. ---- Execute `make profile=myprofile`
+1.2. ~~~~~~ Execution
+1.2.1. ---- Preconditions
+1.2.1. ---- Control System configuration
+1.2.2. ---- Test Suites execution
+
+2. ======== Developer
+2.1. ~~~~~~ Create a new test suite
+2.2. ~~~~~~ Command line arguments
+2.2.1. ---- Argument types
+2.2.2. ---- Declaring arguments
+2.2.3. ---- Predefined arguments
+2.3. ~~~~~~ Create a test case
+2.3.1. ---- Assertions
+2.3.2. ---- Loops
+2.3.3. ---- Restore mechanism
+2.4. ~~~~~~ Tango specific files in CxxTest framework
+
+=======================================================================================================================
+ 1. User
+=======================================================================================================================
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1.1. Compilation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The Test Suite currently comprises a set of independent executables examining different Tango features and one
+executable utilising CxxTest framework, which consists of test suites conforming to unit test standard.
+
+The source code of the independent executables is located in the following directories:
+- asyn
+- event
+- old_tests
+
+The source code of the CxxTest test suites resides in:
+- new_tests
+
+!! -- NB -- !!
+The source files are required to have '.cpp' extension and unique names. The files being a part of the CxxTest
+framework must have a 'cxx_' prefix.
+
+!! -- NB -- !!
+Store all files prefixed with 'cxx_' in one directory. 
+
+To compile the binaries you need to:
+- create a profile file
+- execute `make profile=myprofile`
+
+-----------------------------------------------------------------------------------------------------------------------
+ 1.1.1. Create a profile file
+-----------------------------------------------------------------------------------------------------------------------
+
+Go to 'makeprofiles' directory, copy the 'default.profile' file and rename it (to e.g. 'myprofile.profile').
+Open 'makeprofiles/myprofile.profile' file and define parameters. In this file you indicate paths to 'include' and 'lib'
+directories required to run the test suite. There are two sets of parameters: mandatory and optional. Acquaint yourself
+with the comments section in 'makeprofiles/default.profile' file to fully understand the meaning of the parameters.
+
+Below there is a brief tutorial on how to set the parameters:
+
+Define TANGO_BASE, OMNI_BASE, LOG4TANGO_BASE, ZMQ_BASE indicating the directories which contain 'include' and 'lib'
+folders for Tango, omniORB, log4tango and ZMQ libraries.
+If your Tango 'include' or 'lib' directories are different then TANGO_BASE/include or TANGO_BASE/lib define
+TANGO_INCLUDE_DIR or TANGO_LIB_DIR which will take precedence over TANGO_BASE/include or TANGO_BASE/lib respectively.
+Defining TANGO_INCLUDE_DIR you can provide more than one directory.
+
+By default all files from the following directories will be compiled:
+- asyn
+- event
+- old_tests
+- new_tests
+
+The '*.o' object files will be stored in 'obj' directory and the binaries in the 'bin' directory.
+
+If you want to:
+- modify the output directories - define OBJ_DIR and BIN_DIR parameters;
+- add a directory containing extra files to compile - define TEST_DIRS_EXTRA;
+- compile files only from the selected directories - define TEST_DIRS;
+
+All files prefixed with 'cxx_' will be compiled into one executable named 'runner' in the alphabetical order.
+
+If you wish to compile only the runner, define TEST_DIRS indicating only the folder containing the 'cxx_' files.
+
+You can also compile exclusive files of your choice by listing them in COMPILE_FILES parameter (both the independent
+ones and the 'cxx_' files). In such case, the 'cxx_' files will be compiled into the 'runner' executable in the
+provided order. To bring back the alphabetical order, set 'SORT_ALPHABETICALLY_CXX = true'.
+
+If there are any files you want to exclude from compilation list them in EXCLUDE_FILES property.
+
+By default 'c++' compiler is used. To choose a different one, redefine the CC property.
+
+If you need to add some extra compiler parameters on top of the default ones (-g -Wall -Wextra -DVALGRIND -D_PTHREADS
+-D_REENTRANT) list them in CXXFLAGS_EXTRA property. To totally redefine the compiler parameters set CXXFLAGS.
+
+To add extra linker options use LFLAGS_EXTRA.
+
+-----------------------------------------------------------------------------------------------------------------------
+ 1.1.2. Execute `make profile=myprofile`
+-----------------------------------------------------------------------------------------------------------------------
+
+After configuring the 'myprofile.profile' file, to compile the test suite binaries it is enough to execute:
+- `make profile=myprofile`
+
+The profile name 'myprofile' is the name of the '.profile' file created in the previous step.
+Executing mere `make` will load the 'default.profile' settings.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 1.2. Execution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-----------------------------------------------------------------------------------------------------------------------
+ 1.2.1. Preconditions
+-----------------------------------------------------------------------------------------------------------------------
+
+Before running the test suite make sure that Tango Starter process is not running.
+To check if the process is running type in command line:
+- `ps -ef | grep -i starter`
+
+In your control system there has to be a test device server set up (e.g. 'devTest'), consisting of at least 3 devices
+(e.g. 'dev/test/1', 'dev/test/2' and 'dev/test/3') from the 'DevTest' class.
+	
+-----------------------------------------------------------------------------------------------------------------------
+ 1.2.1. Control System configuration
+-----------------------------------------------------------------------------------------------------------------------
+
+Go to the 'bin' directory and execute 'conf_devtest' which will configure the 'devTest' device server properties in the database. These
+properties will then be tested in the test suite. Skipping this step will cause the test suites to fail.
+
+!! -- NB -- !!
+Upon execution of 'conf_devtest' a new pseudo device server is registered in the database, namely: 'DsCache/test'.
+Make sure no server of such name exists, otherwise refrain from executing 'conf_devtest'.
+
+-----------------------------------------------------------------------------------------------------------------------
+ 1.2.2. Test Suites execution
+-----------------------------------------------------------------------------------------------------------------------
+
+Use 'runtest' script to execute all test suites.
+You can also call each executable independently. Remember - the 'cxx' test suites are all embedded in one executable:
+'runner'.
+
+=======================================================================================================================
+ 2. Developer
+=======================================================================================================================
+
+This part is a guide to test suites development with the use of the CxxTest framework.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2.1. Create a new test suite
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To create a new test suite simply copy and rename the 'cxx_suite_template.cpp' file which can be found in the 'new_tests'
+directory.
+
+Modify the header guard 'TemplateTestSuite_h' (lines 1, 2 and the last one) by providing your test suite name. Follow
+the convention: if you name your file 'cxx_my_test.cpp' the header guard should take this form - 'MyTestTestSuite_h'.
+
+Define the test suite class name replacing 'TemplateTestSuite' (lines 15 and 17). Follow the convention (above example
+case: 'MyTestTestSuite').
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2.2. Command line arguments
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In the 'Arguments check' section define what command line arguments should be provided if your test suites are dependent
+on user configuration (like device names or loop repetitions).
+
+-----------------------------------------------------------------------------------------------------------------------
+ 2.2.1. Argument types
+-----------------------------------------------------------------------------------------------------------------------
+
+Some test suites require arguments which are common for all (e.g. the device on which to execute the test suite or the
+database server name), for this reason they have been predefined (just the definition of the argument, not its value);
+however some other test suites need custom arguments (which make sense only locally in the test suite);
+hence there are 3 types of arguments distinguished:
+  
+- params (predefined parameters) - commonly used in all test suites, like device1, device2 and device3 on which the
+  test suite will be executed or database server name, full device server name, etc.;
+  they are provided in the command line as follows: '--' + parameter name + '=' + parameter value, e.g.:
+  `./runner --device1=dev/test/1 --fulldsname=devTest/myname --dbserver=sys/database/2`
+  
+- params_opt (optional parameters) - same as params but not required by the test suite (like a loop parameter); they
+  are provided in the command line the same way as params but processed by the test suite in a different (optional) way
+  `./runner --loop=5`
+
+- params_loc (local parameters) - these are the test suite custom parameters which are not predefined within the CxxTest
+  framework as they have a meaning only locally in the test suite;
+  they are read from the command line the same way as params:
+  `./runner --my_param_loc=my_param_loc_value`
+
+-----------------------------------------------------------------------------------------------------------------------
+ 2.2.2. Declaring arguments
+-----------------------------------------------------------------------------------------------------------------------
+
+To declare an argument and obtain its value use the following methods, e.g.:
+  
+- std::string my_param_value = CxxTest::TangoPrinter::get_param("my_param");
+
+  this will declare a mandatory, predefined parameter (see the list below); predefined parameters are those which are
+  common for different test suites and therefore have been defined in the Test Framework itself (namely in TangoPrinter.h);
+  the params in the code are defined by the 'param_name' and provided by the user in the command line as
+  '--param_name=param_value';
+  
+  calling:
+  std::string full_ds_name_value = CxxTest::TangoPrinter::get_param("fulldsname");
+  and executing:
+  `./runner --fulldsname=devTest/myname`
+  will assign 'full_ds_name_value = "devTest/myname"'; if the user does not provide all mandatory parameters, the 'runner'
+  will terminate and print out all expected mandatory parameters along with their descriptions;
+  
+- std::string my_param_opt_value = CxxTest::TangoPrinter::get_param_opt("my_param_opt");
+
+  this will declare an optional parameter; optional parameters have the same definition, meaning and use as the
+  mandatory parameters apart from that they are not obligatory. If the user does not provide some/any optional
+  parameters the 'runner' will execute normally.
+  
+- std::string my_param_loc_value = CxxTest::TangoPrinter::get_param_loc("my_param_loc","description of what 'my_param_loc' is"); or
+  std::string my_param_loc_value = CxxTest::TangoPrinter::get_param_loc("my_param_loc");
+
+  this will declare a mandatory local parameter named 'my_param_loc' description of which is optional; their use in the
+  command line is the same as the use of 'params' with the only difference that their definitions (names) are not
+  registered in the global (Test Framework) scope.
+
+!! -- NB -- !!
+Note that 'params', 'params_opt' and 'params_loc' are order-independent and can be mixed up in the command line.
+
+!! -- NB -- !!
+There are parameters acting as toggles to which you do not assign any value (e.g. verbose: '--v'). To check if
+a parameter has been set by the user (provided in the command line) simply add in your code:
+'bool param_set = CxxTest::TangoPrinter::is_param_set("param_name");'
+e.g.:
+'bool verbose_on = CxxTest::TangoPrinter::is_param_set("verbose");'.
+
+!! -- NB -- !!
+Note that 'params' are the commonly recognised and defined parameters like 'device1' - device nr 1 on which the test
+suite will be run or 'fulldsname' - Tango fully qualified name of the device server.
+On the contrary 'params_loc' are these parameters which have a meaning only locally in the Test Suite therefore they
+are not defined on the global (Test Framework) scope thus their description has to be provided, e.g.:
+- std::string my_param_loc_value = CxxTest::TangoPrinter::get_param_loc("my_param_loc","description of what 'my_param_loc' is");
+
+
+All of the following calls are logically equivalent:
+`./runner --device1=dev/test/1 --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5`
+`./runner --fulldsname=devTest/myname --dbserver=sys/database/2 --loop=5 --device1=dev/test/1`
+`./runner --loop=5 --device1=dev/test/1 --dbserver=sys/database/2 --fulldsname=devTest/myname`
+
+-----------------------------------------------------------------------------------------------------------------------
+ 2.2.3. Predefined arguments
+-----------------------------------------------------------------------------------------------------------------------
+
+Below is the list of predefined parameters along with their descriptions:
+
+DEFINITION		COMMAND LINE		DESCRIPTION
+----------		------------		-----------
+?				--?					help, lists all possible parameters
+-?				-?					help, lists all possible parameters
+help			--help				help, lists all possible parameters
+-help			-help				help, lists all possible parameters
+verbose			--v					verbose mode
+loop			--loop=				execute test cases marked with '__loop' suffix the indicated number of times
+suiteloop		--suiteloop=		execute test suites marked with '__loop' suffix the indicated number of times
+device1			--device1=			device1 name, e.g. test/device/1
+device2			--device2=			device2 name, e.g. test/device/2
+device3			--device3=			device3 name, e.g. test/device/3
+fulldsname		--fulldsname=		full device server name, e.g. devTest/myserver
+clienthost		--clienthost=		client host's fully qualified domain name, e.g. mypc.myinstitute.com (small caps)
+serverhost		--serverhost=		fully qualified domain name of the host on which the server is running, e.g. myserver.myinstitute.com (small caps)
+serverversion	--serverversion=	IDL version, e.g. 4
+dbserver		--dbserver=			database server name, e.g. sys/database/2
+loglevel		--loglevel=			default device logging level, e.g. 0
+dsloglevel		--dsloglevel=		default device server logging level, e.g. 3
+devtype			--devtype=			device type, e.g. TestDevice
+docurl			--docurl=			current documentation URL, e.g. http://www.tango-controls.org
+outpath			--outpath=			device server logging target directory, e.g. /tmp/
+refpath			--refpath=			directory where the 'compare test' reference files (*.out) are stored
+devicealias		--devicealias=		device1 alias
+attributealias	--attributealias=	Short_attr alias
+
+!! -- NB -- !!
+To the developers of the test suite. If you find a parameter fequently apparing in different test suites which is not
+on the list above, please append it to the list which can be found in the body of 'create_params()' method in the
+'TangoPrinter.h' file in 'cxxtest/include/cxxtest' directory.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2.3. Create a test case
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To create your test case write a void function with empty arguments. Add prefix 'test_' to the name of the function, e.g.:
+- 'void test_MyTestCase() { /* your code here */ }'
+
+All functions with the 'test_' prefix are interpreted by the CxxTest framework as test cases. Other functions are
+ignored by the framework (but can be called from within the test case code).
+
+The test cases are executed in the order of their definition in the 'cpp' file.
+
+!! -- NB -- !!
+By convention use CAPITAL letters for each word in the name of your test case as the CxxTest framework will parse the
+name truncating the 'test_' prefix (and optionally '__loop' suffix) and print out the words separated by space, e.g.:
+'test_MyTestCase' --> 'my test case'.
+
+-----------------------------------------------------------------------------------------------------------------------
+ 2.3.1. Assertions
+-----------------------------------------------------------------------------------------------------------------------
+
+To perform assertions in your test cases, use one of the CxxTest macros:
+- TS_ASSERT(condition) - verifies the condition, if false - the test case fails
+- TS_ASSERT_THROWS_NOTHING(instruction) - fails if instruction throws any exception
+- TS_ASSERT_THROWS(instruction, exception) - succeeds if instruction throws the exception, otherwise fails
+- TS_ASSERT_THROWS_ASSERT(instruction, exception, TS_ASSERT(exception dependent condition)) - succeeds if instruction
+  throws the exception and if the condition (which can use the thrown exception) is true, otherwise fails
+- TS_FAIL(message) - fails unconditionally printing out the message
+
+For more information on assertions see:
+http://cxxtest.com/cxxtest/doc/guide.html
+
+!! -- NB -- !!
+The 'runner' terminates on the first test case failure.
+
+-----------------------------------------------------------------------------------------------------------------------
+ 2.3.2. Loops
+-----------------------------------------------------------------------------------------------------------------------
+
+To execute a test suite in a loop, append '__loop' suffix to the test suite name (lines 15 and 17 in cxx_template.cpp),
+e.g. 'MyTestTestSuite__loop'. The test suite will execute in a loop only if the 'suiteloop' parameter is defined.
+
+If the user executes:
+- `./runner --suiteloop=10`
+the test suite will be run 10 times.
+
+To execute a test case in a loop, append '__loop' suffix to the test case name, e.g. 'test_MyTestCase__loop()'. The
+test case will execute in a loop only if the 'loop' parameter is defined.
+
+If the test case fails, there is a piece of information printed out to indicate the test case and test suite iteration
+in which it happened.
+
+-----------------------------------------------------------------------------------------------------------------------
+ 2.3.3. Restore mechanism
+-----------------------------------------------------------------------------------------------------------------------
+
+If your test case modifies some default (device) configuration, use restore points to ensure the default configuration
+will always be recovered.
+
+Imagine you modify the default configuration in your test case then check if some feature works as expected and it fails
+before you bring back the old configuration. Setting restore points guarantees that the default configuration will be
+recovered by executing the corresponding code located in the test suite TearDown() method which is called always before
+the test suite terminates, even if a test case fails.
+
+To set the restore point, give it a name. e.g. 'my_restore_point' and use:
+- CxxTest::TangoPrinter::restore_set("my_restore_point");
+
+To remove the restore point call:
+- CxxTest::TangoPrinter::restore_unset("my_restore_point");
+
+In the 'Clean up' section write the code recovering the default configuration:
+- if(CxxTest::TangoPrinter::is_restore_set("my_restore_point")) { /* restore the defaults here */ }
+
+Example:
+
+virtual ~SUITE_NAME()
+{
+// Clean up --------------------------------------------------------
+	if(CxxTest::TangoPrinter::is_restore_set("my_restore_point"))
+	{
+		/* recover the default configuration */
+	}
+}
+
+void test_MyTestCase()
+{
+	/* modify the default configuration */
+	CxxTest::TangoPrinter::restore_set("my_restore_point");
+	// your code here, e.g. assertion which may fail
+	
+	// if it fails, the next line will not be executed, but thanks to the restore mechanism,
+	// the code from the 'Clean up' section will be called
+	
+	/* recover the default configuration */
+	CxxTest::TangoPrinter::restore_unset("my_restore_point");
+}
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2.4. Tango specific files in CxxTest framework
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To support Tango, the CxxTest framework requires 2 extra files:
+- 'cxxtest/template/tango_template.tpl' and
+- 'cxxtest/include/cxxtest/TangoPrinter.h'.
+
+If you wish to add some extra functionality to the testing framework, these are the only files you can modify. They are
+not shipped with the CxxTest and have to be manually added in case a new, plain version of CxxTest is downloaded.

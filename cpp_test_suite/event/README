@@ -1,0 +1,111 @@
+Several little test programs to test event API features
+		
+devTest : Classical test device server for Tango
+Start it as
+	
+		devTest api
+		
+This server creates three devices which are dev/test/10, dev/test/10
+and dev/test/12
+	
+To test event in a server, start a second instance of this devTest device server
+
+		devTest api2
+		
+which creates one device call dev/test/20
+	
+Start these two servers before running the test programs
+Don't forget the LD_LIBRARY_PATH setting
+
+------------------------------------------------------------------------------
+
+per_event : Test periodic event
+---------
+
+Must be started with one device of the test device server (dev/test/10)
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+change_event : Test change event
+------------
+
+Must be started with one device of the test device server (dev/test/10) 
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+quality_event : Test quality event
+-------------
+
+Must be started with one device of the test device server (dev/test/10) 
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+archive_event : Test archive event
+-------------
+
+Must be started with one device of the test device server (dev/test/10) 
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+user_event : Test user event
+----------
+
+Must be started with one device of the test device server (dev/test/10) 
+
+-------------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+server_event : Test server subscribing to event
+
+This test needs a second test device server to be started. Start it with
+
+	devTest api2
+	
+It creates one device which is dev/test/20
+
+Must be started with one device of the device server (dev/test/10)
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+state_event : Test state and status change events
+----------
+
+Must be started with one device of the test device server (dev/test/10)
+This test first change event on state "attribute" then, it tests change
+event on status "attribute"
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+scan : Test scan ready device with the quality change event
+----
+
+Must be started with one device of the test device server (dev/test/10)
+This test first tests quality change event generation for a simulated slow
+actuator and then tests quality change event generation for a simulated
+fast actuator
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+reco_event : Test client reconnection
+----------
+
+Must be started with one device of the test device server (dev/test/10)
+This test subscribes to two events.
+It needs  manual intervention.
+
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+reco_svc : Test server and client reconnection
+--------
+
+Must be started with one device of the test device server (dev/test/10)
+This test subscribes to two events.
+It needs  manual intervention.
