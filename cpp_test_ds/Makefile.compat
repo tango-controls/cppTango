@@ -1,0 +1,175 @@
+#
+#		Makefile to generate a Tango server
+#
+
+ifdef _solaris
+CC = CC
+DEST_BIN_DIR = bin/solaris7_CC
+BIN_DIR = solaris7_CC
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris7_CC
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris7_CC
+endif
+
+ifdef _solaris9
+CC = CC
+DEST_BIN_DIR = bin/solaris9_CC
+BIN_DIR = solaris9_CC
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris9_CC
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris9_CC
+endif
+
+ifdef _solaris7_gcc
+CC = c++
+DEST_BIN_DIR = bin/solaris7
+BIN_DIR = solaris7
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris7
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris7
+endif
+
+ifdef _solaris9_gcc
+CC = c++
+DEST_BIN_DIR = bin/solaris9
+BIN_DIR = solaris9
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/solaris9
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/solaris9
+endif
+
+ifdef linux
+CC = c++
+AR = ar
+ifdef suse82
+DEST_BIN_DIR = bin/suse82
+BIN_DIR =  suse82
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse82
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.1/suse82
+else
+ifdef debian30
+DEST_BIN_DIR = bin/debian30
+BIN_DIR =  debian30
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/debian30
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/debian30
+else
+ifdef suse72_gcc32
+DEST_BIN_DIR = bin/suse72_gcc32
+BIN_DIR =  suse72_gcc32
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse72_gcc32
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/suse72_gcc32
+else
+ifdef redhat40
+DEST_BIN_DIR = bin/redhat40
+BIN_DIR =  redhat40
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/redhat40
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/redhat40
+else
+ifdef suse90_64
+DEST_BIN_DIR = bin/suse90_64
+BIN_DIR =  suse90_64
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse90_64
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.2/suse90_64
+else
+DEST_BIN_DIR = bin/suse72
+BIN_DIR =  suse72
+OMNI_BASE = /segfs/tango/ORB/omniORB4.0.5/suse72
+LOG4TANGO_BASE = /segfs/tango/tools/log4tango4.0.0/suse72
+endif
+endif
+endif
+endif
+endif
+endif
+
+
+TANGO_HOME = /segfs/tango/cppapi
+
+#INCLUDE_DIRS = -I$(OMNI_BASE)/include \
+#		-I$(LOG4TANGO_BASE)/include \
+#		-I$(TANGO_HOME)/server \
+#		-I$(TANGO_HOME)/client \
+#		-I. 
+INCLUDE_DIRS = -I/segfs/tango/include/suse82 \
+	       -I.		      
+
+LIB_DIRS = -L $(OMNI_BASE)/lib \
+           -L /segfs/tango/lib/$(BIN_DIR)
+#LIB_DIRS = -L /segfs/tango/ORB/omniORB4.0.5/$(BIN_DIR)/lib \
+#	   -L $(LOG4TANGO_BASE)/lib \
+#           -L $(TANGO_HOME)/server/$(BIN_DIR)
+	   
+#LIB_TANGO = $(TANGO_HOME)/server/$(BIN_DIR)/libtango.a
+LIB_TANGO = -ltango
+
+ifdef _solaris
+CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
+LFLAGS =  -mt -g $(LIB_DIRS) $(LIB_TANGO) \
+	-llog4tango -lomniORB4 -lomniDynamic4 -lomnithread -lpthread \
+	-lCOS4 -lposix4 -lsocket -lnsl
+endif
+
+ifdef _solaris9
+CXXFLAGS =  -g -mt $(INCLUDE_DIRS)
+LFLAGS =  -mt -g $(LIB_DIRS) $(LIB_TANGO) \
+	-llog4tango -lomniORB4 -lomniDynamic4 -lomnithread -lpthread \
+	-lCOS4 -lposix4 -lsocket -lnsl
+endif
+
+ifdef _solaris7_gcc
+CXXFLAGS =  -g -D_REENTRANT $(INCLUDE_DIRS)
+LFLAGS =  $(LIB_DIRS) $(LIB_TANGO) \
+	-llog4tango -lomniORB4  -lomniDynamic4 \
+	-lCOS4 -lomnithread -lposix4 -lsocket -lnsl
+endif
+
+ifdef _solaris9_gcc
+CXXFLAGS =  -g -D_REENTRANT $(INCLUDE_DIRS)
+LFLAGS =  $(LIB_DIRS) $(LIB_TANGO) \
+	-llog4tango -lomniORB4  -lomniDynamic4 \
+	-lCOS4 -lomnithread -lposix4 -lsocket -lnsl
+endif
+
+ifdef linux
+CXXFLAGS =  -g -D_REENTRANT $(INCLUDE_DIRS)
+LFLAGS =  $(LIB_DIRS) $(LIB_TANGO) \
+	-llog4tango -lomniORB4  -lomniDynamic4 \
+	-lCOS4 -lomnithread -lpthread
+endif
+
+
+SVC_OBJS = 	main.o \
+		TypeCmds.o \
+		SigThrow.o \
+		IOMisc.o \
+		IOStr1.o \
+		IOStr2.o \
+		IOArray1.o \
+		IOArray2.o \
+		IOStrArray.o \
+		IOStruct.o \
+		IOSetAttr.o \
+		IOAddAttribute.o \
+		IOSeqVec.o \
+		FileDb.o \
+		classfactory.o \
+		DevTestClass.o \
+		DevTest.o
+
+
+
+.SUFFIXES:	.o .cpp
+.cpp.o:
+	$(CC) $(CXXFLAGS) -c $<
+
+
+all: DevTest
+
+DevTest:	$(SVC_OBJS)
+	$(CC) $(SVC_OBJS) -o $(DEST_BIN_DIR)/devTest $(LFLAGS) 
+
+ 
+clean:
+	rm -f *.o core
+
+
+
+
+
+
