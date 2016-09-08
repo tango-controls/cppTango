@@ -10,6 +10,7 @@ This repository is the result of svn2git migration of tango source code. It is c
 4. Code review: most projects (all except single-developer ones) should only allow commits to the master branch after peer review. This can be enforced by the convention that all commits to master must be done via a Pull request and the pull request approved by a person different from the author of the commit.
 5. Releases (named versions):
         Simple projects may be ok with just tagging certain (ideally, all) commits done to the master branch with a version number. With this system, only one release is actively maintained simultaneously.
+        
         More complex projects may require to simultaneously maintain more than one release (e.g. Tango may choose to support bugfixes in Tango9 even after Tango10 is released). In this case, releases may be done on release branches starting from master (see APPENDIX I for an example)
 6. Semantic versioning is recommended.
 7. Public automatic testing/continuous integration (e.g., via Travis) is recommended
@@ -18,4 +19,4 @@ This repository is the result of svn2git migration of tango source code. It is c
 
 # Links
 
-(Project web page)[http://tango-controls.org]
+[Tango Controls web page](http://tango-controls.org)
