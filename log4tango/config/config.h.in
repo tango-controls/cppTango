@@ -1,56 +1,56 @@
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#cmakedefine HAVE_DLFCN_H
+#cmakedefine LOG4TANGO_HAVE_DLFCN_H
 
 /* Define to 1 if you have the `ftime' function. */
-#cmakedefine HAVE_FTIME
+#cmakedefine LOG4TANGO_HAVE_FTIME
 
 /* Define to 1 if you have the `gettimeofday' function. */
-#cmakedefine HAVE_GETTIMEOFDAY
+#cmakedefine LOG4TANGO_HAVE_GETTIMEOFDAY
 
 /* define if the compiler has int64_t */
-#cmakedefine HAVE_INT64_T
+#cmakedefine LOG4TANGO_HAVE_INT64_T
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#cmakedefine HAVE_INTTYPES_H
+#cmakedefine LOG4TANGO_HAVE_INTTYPES_H
 
 /* Define to 1 if you have the <io.h> header file. */
-#cmakedefine HAVE_IO_H
+#cmakedefine LOG4TANGO_HAVE_IO_H
 
 /* Define to 1 if you have the <memory.h> header file. */
-#cmakedefine HAVE_MEMORY_H
+#cmakedefine LOG4TANGO_HAVE_MEMORY_H
 
 /* define if the compiler implements namespaces */
-#cmakedefine HAVE_NAMESPACES
+#cmakedefine LOG4TANGO_HAVE_NAMESPACES
 
 /* define if the C library has snprintf */
-#cmakedefine HAVE_SNPRINTF
+#cmakedefine LOG4TANGO_HAVE_SNPRINTF
 
 /* define if the compiler has stringstream */
-#cmakedefine HAVE_SSTREAM
+#cmakedefine LOG4TANGO_HAVE_SSTREAM
 
 /* define if you have the <stdint.h> header file. */
-#cmakedefine HAVE_STDINT_H
+#cmakedefine LOG4TANGO_HAVE_STDINT_H
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#cmakedefine HAVE_STDLIB_H
+#cmakedefine LOG4TANGO_HAVE_STDLIB_H
 
 /* Define to 1 if you have the <strings.h> header file. */
-#cmakedefine HAVE_STRINGS_H
+#cmakedefine LOG4TANGO_HAVE_STRINGS_H
 
 /* Define to 1 if you have the <string.h> header file. */
-#cmakedefine HAVE_STRING_H
+#cmakedefine LOG4TANGO_HAVE_STRING_H
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#cmakedefine HAVE_SYS_STAT_H
+#cmakedefine LOG4TANGO_HAVE_SYS_STAT_H
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#cmakedefine HAVE_SYS_TYPES_H
+#cmakedefine LOG4TANGO_HAVE_SYS_TYPES_H
 
 /* define if threading is enabled */
-#cmakedefine HAVE_THREADING
+#cmakedefine LOG4TANGO_HAVE_THREADING
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#cmakedefine HAVE_UNISTD_H
+#cmakedefine LOG4TANGO_HAVE_UNISTD_H
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.   */
 #cmakedefine LT_OBJDIR
