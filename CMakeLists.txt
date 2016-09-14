@@ -15,7 +15,7 @@ set (PACKAGE_BUGREPORT "https://github.com/tango-controls/cppTango/issues")
 set (PACKAGE_STRING "${CMAKE_PROJECT_NAME} ${LIBRARY_VERSION}")
 
 # Initialize CXXFLAGS.
-set(CMAKE_CXX_FLAGS                "-Wall -std=c++11")
+set(CMAKE_CXX_FLAGS                "-Wall -std=c++11 -fPIC")
 set(CMAKE_CXX_FLAGS_DEBUG          "-O0 -g")
 set(CMAKE_CXX_FLAGS_MINSIZEREL     "-Os -DNDEBUG")
 set(CMAKE_CXX_FLAGS_RELEASE        "-O4 -DNDEBUG")
@@ -34,6 +34,9 @@ else ()
     message(FATAL_ERROR "Your C++ compiler does not support C++11.")
 endif ()
 
+
+include_directories("log4tango/include")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/log4tango/include")
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
