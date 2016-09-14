@@ -131,7 +131,7 @@ set(HEADERS attrdesc.h
             encoded_attribute.h
             encoded_format.h)
 
-#add_subdirectory(idl)
+add_subdirectory(idl)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
