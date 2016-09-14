@@ -57,7 +57,8 @@ set(SOURCES attrdesc.cpp
             w_pipe.cpp
             zmqeventsupplier.cpp)
 
-add_subdirectory("jpeg")
-add_subdirectory("jpeg_mmx")
+add_subdirectory(idl)
+add_subdirectory(jpeg)
+add_subdirectory(jpeg_mmx)
 
 add_library(server_objects OBJECT ${SOURCES})
