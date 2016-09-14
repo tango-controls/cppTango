@@ -58,3 +58,4 @@ set(HEADERS accessproxy.h
             zmq.hpp)
 
 add_library(client_objects OBJECT ${SOURCES})
+target_compile_options(client_objects PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER})
