@@ -74,16 +74,16 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
 endif()
 
 #find libraries
+#ZMQ
 pkg_search_module(ZMQ_PKG REQUIRED libzmq)
 if(NOT ZMQ_PKG_FOUND)
     set(ZMQ_PKG_INCLUDE_DIRS ${ZMQ_BASE}/include)
 endif()
 
+#CORBA
 pkg_search_module(OMNIORB_PKG REQUIRED omniORB4)
 if(NOT OMNIORB_PKG_FOUND)
     set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
 endif()
-
-
 
 
