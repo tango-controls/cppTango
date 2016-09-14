@@ -1,15 +1,13 @@
 //
 // Created by ingvord on 9/13/16.
 //
-#include<iostream>
+#include <sstream>
 
 int main(int argc,char **arv)
 {
-    std::ostringstream oss;
+    std::stringstream ss;
 
-    oss << "Hello";
-
-    std::cout << oss << std::endl;
+    ss << "Hello";
 
     return 0;
 }

@@ -34,12 +34,27 @@ check_library_exists(pthread pthread_getattr_np "" HAVE_PTHREAD_GETATTR_NP)
 check_library_exists(pthread pthread_create "" HAVE_PTHREAD_CREATE)
 check_include_file("pthread.h;pthread_np.h" HAVE_PTHREAD_NP_H)
 
-#check compiler features
-file(READ "config/check_sstream.cpp" SSTREAM_CHECK_SOURCE)
-check_cxx_source_compiles("${SSTREAM_CHECK_SOURCE}"  SSTREAM_CHECK)
-if(NOT BIND_COMPILER_CHECK)
-    set(LOG4TANGO_HAVE_SSTREAM "/**/")
+if(CMAKE_THREAD_LIBS_INIT)
+    set(LOG4TANGO_HAVE_THREADING "/**/")
 endif()
+
+#check compiler features
+macro (LOG4TANGO_CHECK_COMPILER_FEATURE source var)
+    file(READ "${source}" ${var}_CHECK_SOURCE)
+    check_cxx_source_compiles("${${var}_CHECK_SOURCE}"  ${var}_CHECK)
+    if(${var}_CHECK)
+        set(LOG4TANGO_HAVE_${var} "/**/")
+    endif()
+endmacro()
+
+#sstream
+LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_sstream.cpp" SSTREAM)
+
+#namespace
+LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_namespace.cpp" NAMESPACES)
+
+#snprintf
+LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_snprintf.cpp" SNPRINTF)
 
 #check types
 check_type_size(int64_t INT64_SIZE)
