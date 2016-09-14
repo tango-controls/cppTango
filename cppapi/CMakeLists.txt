@@ -1,7 +1,6 @@
 link_directories(${ZMQ_PKG_LIBRARY_DIRS} ${OMNIORB_PKG_LIBRARY_DIRS})
 include_directories(${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS})
 
-add_definitions(-fPIC)
 add_subdirectory("client")
 add_subdirectory("server")
 
