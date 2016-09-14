@@ -16,6 +16,8 @@ set (PACKAGE_STRING "${CMAKE_PROJECT_NAME} ${LIBRARY_VERSION}")
 
 include(configure/CMakeLists.txt)
 
+add_definitions(-fPIC)
+
 include_directories("cppapi/client")
 include_directories("cppapi/client/helpers")
 include_directories("cppapi/server")
