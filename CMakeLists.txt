@@ -17,8 +17,6 @@ set (PACKAGE_STRING "${CMAKE_PROJECT_NAME} ${LIBRARY_VERSION}")
 
 include(configure/CMakeLists.txt)
 
-add_definitions(-fPIC)
-
 include_directories("cppapi/client")
 include_directories("cppapi/client/helpers")
 include_directories("cppapi/server")
@@ -26,8 +24,10 @@ include_directories("cppapi/server/idl")
 include_directories("log4tango/include")
 #required for generated config.h
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/log4tango/include")
+
 #externals
 include_directories(${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS})
+
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
@@ -36,7 +36,7 @@ add_subdirectory("cppapi")
 
 add_library(tango SHARED $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
-                            #$<TARGET_OBJECTS:idl_objects>
+                            $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>)

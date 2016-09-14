@@ -39,40 +39,6 @@ if(NOT ZMQ_BASE)
     message("Using ZMQ_BASE=${ZMQ_BASE}")
 endif()
 
-#setup for GNU CXX compiler
-if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    message("found GNU compiler ...")
-    add_definitions(-g -Wall)#-Wextra -pedantic
-    if(CMAKE_BUILD_TYPE MATCHES RELEASE)
-        message("setup for release build ...")
-        add_definitions(-O3)
-    elseif(CMAKE_BUILD_TYPE MATCHES DEBUG)
-        message("setup for debug build ...")
-        add_definitions(-O0)
-        add_definitions(-DDEBUG)
-    endif()
-
-    add_definitions(-std=c++11)
-    add_definitions(-DGNU_CXX)
-endif()
-
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    message("found clang compiler...")
-
-    add_definitions(-Wextra -pedantic -Wall)
-    if(CMAKE_BUILD_TYPE MATCHES RELEASE)
-        message("setup for release build ...")
-        add_definitions(-O3 -g)
-    elseif(CMAKE_BUILD_TYPE MATCHES DEBUG)
-        message("setup for debug build ...")
-        add_definitions(-O0 -g -fno-inline -DDEBUG)
-    endif()
-
-    #for this version the compiler has to support c++11 flag
-    add_definitions(-std=c++11)
-    add_definitions(-DCLANG_CXX)
-endif()
-
 #find libraries
 #ZMQ
 pkg_search_module(ZMQ_PKG REQUIRED libzmq)
@@ -86,4 +52,17 @@ if(NOT OMNIORB_PKG_FOUND)
     set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
 endif()
 
-
+#setup for GNU CXX compiler
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    message("found GNU compiler ...")
+    if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+        message("setup for release build ...")
+        add_definitions(-O2 -D_TANGO_LIB)
+    else()
+        message("setup for debug build ...")
+        add_definitions(-g -O0 -Wall -Wextra)# -pedantic
+    endif()
+    add_definitions(-std=c++11)
+    add_definitions(-DGNU_CXX -DOMNI_UNLOADABLE_STUBS -D_FORTIFY_SOURCE=2)
+    add_definitions(-fPIC)
+endif()
