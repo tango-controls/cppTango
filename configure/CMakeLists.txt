@@ -52,6 +52,12 @@ if(NOT OMNIORB_PKG_FOUND)
     set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
 endif()
 
+#COS
+pkg_search_module(OMNICOS_PKG REQUIRED omniCOS4)
+
+#dynamic CORBA
+pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
+
 #setup for GNU CXX compiler
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("found GNU compiler ...")
