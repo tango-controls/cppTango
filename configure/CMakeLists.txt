@@ -72,3 +72,5 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     add_definitions(-DGNU_CXX -DOMNI_UNLOADABLE_STUBS -D_FORTIFY_SOURCE=2)
     add_definitions(-fPIC)
 endif()
+
+include(GNUInstallDirs)
