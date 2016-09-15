@@ -3,4 +3,4 @@ set(SOURCES tangoSK.cpp
 
 add_library(idl_objects OBJECT ${SOURCES} tango.h)
 
-#TODO install
+#TODO generate source code from idl

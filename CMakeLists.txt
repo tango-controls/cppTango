@@ -7,8 +7,10 @@ enable_testing()
 set(MAJOR_VERSION "9")
 set(MINOR_VERSION "2")
 set(PATCH_VERSION "5")
+
+#convenient versions
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
-set(SO_VERSION "2")
+set(SO_VERSION "${MAJOR_VERSION}")
 
 
 set (PACKAGE_URL "https://github.com/tango-controls/cppTango")
@@ -42,4 +44,15 @@ target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_IN
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES})
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 
-#install
+set_target_properties(tango PROPERTIES
+        VERSION ${LIBRARY_VERSION}
+        SOVERSION ${SO_VERSION})
+
+#install code
+install(TARGETS tango LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
+
+#TODO
+#configure_file(tango.pc.cmake tango.pc @ONLY)
+
+#install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
+#        DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")

@@ -58,3 +58,5 @@ set(HEADERS accessproxy.h
             zmq.hpp)
 
 add_library(client_objects OBJECT ${SOURCES})
+
+install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
