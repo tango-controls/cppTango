@@ -36,18 +36,7 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp)
 target_include_directories(runner PUBLIC include)
 target_link_libraries(runner PUBLIC ${CMAKE_DL_LIBS} tango)
-
-#TODO different OS
-set(DEV1 "test/debian8/10")
-set(DEV2 "test/debian8/11")
-set(DEV3 "test/debian8/12")
-set(FWD_DEV "test/fwd_debian8/10")
-set(SERV_NAME "devTest")
-set(INST_NAME "debian8")
-set(DEV1_ALIAS "debian8_alias")
-set(ATTR_ALIAS "debian8_attr_alias")
-cmake_host_system_information(RESULT HOST_NAME QUERY HOSTNAME)
-set(FULL_HOSTNAME "${HOST_NAME}:10000")
+target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
 add_test("CXX::runner" runner
                         --device1=${DEV1}
