@@ -34,7 +34,7 @@ add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
 add_subdirectory("cpp_test_ds")
 
-add_library(tango SHARED $<TARGET_OBJECTS:log4tango_objects>
+add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
                             $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:jpeg_objects>

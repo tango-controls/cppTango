@@ -1,5 +1,10 @@
 include(FindPkgConfig)
 
+if(NOT CMAKE_BUILD_TYPE)
+    message("No build type specified - default is DEBUG")
+    set(CMAKE_BUILD_TYPE DEBUG)
+endif()
+
 #cNp from Make.rules
 if(NOT TANGO_HOME)
     set(TANGO_HOME /segfs/tango)
@@ -21,7 +26,7 @@ endif()
 
 if(NOT OS)
     set(BIN_DIR ${OS})
-    message("Using BIN_DIR=${BIN_DIR}")
+    message("Using OS=${OS}")
 endif()
 
 if(NOT BIN_DIR)
@@ -29,34 +34,37 @@ if(NOT BIN_DIR)
     message("Using BIN_DIR=${BIN_DIR}")
 endif()
 
-if(NOT OMNI_BASE)
-    set(OMNI_BASE ${TANGO_HOME}/ORB/omniORB4.2.1/bin)
-    message("Using OMNI_BASE=${OMNI_BASE}")
-endif()
-
-if(NOT ZMQ_BASE)
-    set(ZMQ_BASE ${TANGO_HOME}/transport/zmq4.0.5/bin)
-    message("Using ZMQ_BASE=${ZMQ_BASE}")
-endif()
-
-#find libraries
-#ZMQ
-pkg_search_module(ZMQ_PKG REQUIRED libzmq)
-if(NOT ZMQ_PKG_FOUND)
-    set(ZMQ_PKG_INCLUDE_DIRS ${ZMQ_BASE}/include)
-endif()
-
-#CORBA
-pkg_search_module(OMNIORB_PKG REQUIRED omniORB4)
-if(NOT OMNIORB_PKG_FOUND)
+if(OMNI_BASE)
+    set(OMNI_BASE ${TANGO_HOME}/ORB/omniORB4.2.1/${BIN_DIR})
     set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
+    set(OMNICOS_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
+    set(OMNIDYN_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
+    set(OMNIORB_PKG_LIBRARIES "-lomniORB4 -lomnithread -lCOS4 -lomniDynamic4")
+    link_directories(${OMNI_BASE}/lib)
+    message("Using OMNI_BASE=${OMNI_BASE}")
+else()
+    #CORBA
+    pkg_search_module(OMNIORB_PKG REQUIRED omniORB4)
+    #COS
+    pkg_search_module(OMNICOS_PKG REQUIRED omniCOS4)
+    #dynamic CORBA
+    pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
+    if(NOT OMNIORB_PKG_FOUND)
+        message(FATAL "omniORB4 library is required for Tango")
+    endif()
 endif()
 
-#COS
-pkg_search_module(OMNICOS_PKG REQUIRED omniCOS4)
-
-#dynamic CORBA
-pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
+if(ZMQ_BASE)
+    message("Using ZMQ_BASE=${ZMQ_BASE}")
+    set(ZMQ_PKG_INCLUDE_DIRS ${ZMQ_BASE}/include)
+    set(ZMQ_PKG_LIBRARIES "-lzmq")
+    link_directories(${ZMQ_BASE}/lib)
+else()
+    pkg_search_module(ZMQ_PKG REQUIRED libzmq)
+    if(NOT ZMQ_PKG_FOUND)
+        message(FATAL "ZMQ library is required for Tango")
+    endif()
+endif()
 
 #setup for GNU CXX compiler
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
