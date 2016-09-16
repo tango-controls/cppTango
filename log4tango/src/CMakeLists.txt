@@ -26,5 +26,3 @@ set(SOURCES
                 PortabilityImpl.cpp)
 
 add_library(log4tango_objects OBJECT ${SOURCES})
-
-#target_link_libraries(log4tango_objects -version-info ${LT_VERSION})
