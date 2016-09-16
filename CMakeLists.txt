@@ -12,11 +12,6 @@ set(PATCH_VERSION "5")
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 set(SO_VERSION "${MAJOR_VERSION}")
 
-
-set (PACKAGE_URL "https://github.com/tango-controls/cppTango")
-set (PACKAGE_BUGREPORT "https://github.com/tango-controls/cppTango/issues")
-set (PACKAGE_STRING "${CMAKE_PROJECT_NAME}-${LIBRARY_VERSION}")
-
 include(configure/CMakeLists.txt)
 
 include_directories(cppapi/client)
