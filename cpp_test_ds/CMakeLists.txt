@@ -1,22 +1,20 @@
-set(SOURCES classfactory.cpp
-            DevTest.cpp
-            IOAddAttribute.cpp
-            IOArray2.cpp
-            IOMisc.cpp
-            IOSetAttr.cpp
-            IOStr2.cpp
-            IOStruct.cpp
-#            main_win.cpp
+set(SOURCES main.cpp
             TypeCmds.cpp
-            DevTestClass.cpp
-            FileDb.cpp
-            IOArray1.cpp
-            IOLongVar.cpp
-            IOSeqVec.cpp
+            SigThrow.cpp
+            IOMisc.cpp
             IOStr1.cpp
+            IOStr2.cpp
+            IOArray1.cpp
+            IOArray2.cpp
             IOStrArray.cpp
-            main.cpp
-            SigThrow.cpp)
+            IOStruct.cpp
+            IOSetAttr.cpp
+            IOAddAttribute.cpp
+            IOSeqVec.cpp
+            FileDb.cpp
+            classfactory.cpp
+            DevTestClass.cpp
+            DevTest.cpp)
 
 add_subdirectory(fwd_ds)
 
