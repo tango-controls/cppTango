@@ -57,6 +57,8 @@ set(HEADERS accessproxy.h
             devapi_pipe.tpp
             zmq.hpp)
 
+add_subdirectory(helpers)
+
 add_library(client_objects OBJECT ${SOURCES})
 
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
