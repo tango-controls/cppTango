@@ -20,7 +20,6 @@ This repository is the result of svn2git migration of tango source code. It is c
 
 `mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
 
-
 # Links
 
 [Tango Controls web page](http://tango-controls.org)
