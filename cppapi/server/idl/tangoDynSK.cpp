@@ -4,7 +4,7 @@
 
 OMNI_USING_NAMESPACE(omni)
 
-static const char* _0RL_dyn_library_version = omniORB_4_2_dyn;
+//static const char* _0RL_dyn_library_version = omniORB_4_2_dyn;
 
 static ::CORBA::TypeCode::_Tracker _0RL_tcTrack(__FILE__);
 

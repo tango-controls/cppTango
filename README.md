@@ -16,6 +16,9 @@ This repository is the result of svn2git migration of tango source code. It is c
 7. Public automatic testing/continuous integration (e.g., via Travis) is recommended
 8. The main development should be done on the tango-controls hosted project (as opposed to using a private organization project and just pushing to the tango-controls repo from time to time). This allows for public visibility of the latest development and issues and encourages sharing and reuse. If a given organization needs special tweaks or has particular release/testing cycles, the recommendation is that the organization forks from the "canonical" repo
 
+# How to build and install using cmake
+
+`mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
 
 # Links
 
