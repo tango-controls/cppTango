@@ -51,8 +51,7 @@ set_target_properties(tango PROPERTIES
 #install code
 install(TARGETS tango LIBRARY DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}")
 
-#TODO
-#configure_file(tango.pc.cmake tango.pc @ONLY)
+configure_file(tango.pc.cmake tango.pc @ONLY)
 
-#install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
-#        DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
+        DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
