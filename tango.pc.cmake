@@ -8,4 +8,4 @@ Description: Tango client/server API library
 Version: @LIBRARY_VERSION@
 Cflags: -I${includedir}
 Requires: libzmq omniORB4 omniCOS4 omniDynamic4
-Libs: -L${libdir} -ltango
+Libs: -L${libdir} -ltango -lzmq -lomniORB4 -lomnithread -lCOS4 -lomniDynamic4
