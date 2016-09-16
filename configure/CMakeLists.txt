@@ -5,43 +5,12 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE DEBUG)
 endif()
 
-#cNp from Make.rules
-if(NOT TANGO_HOME)
-    set(TANGO_HOME /segfs/tango)
-    message("Using TANGO_HOME=${TANGO_HOME}")
-endif()
-
-if(NOT ubuntu)
-    execute_process(COMMAND /csadmin/common/scripts/get_os.share
-            OUTPUT_VARIABLE OS)
-endif()
-
-if(NOT OS)
-    if(dev)
-        set(OS ubuntu1404)
-    else()
-        set(OS ubuntu1204)
-    endif()
-endif()
-
-if(NOT OS)
-    set(BIN_DIR ${OS})
-    message("Using OS=${OS}")
-endif()
-
-if(NOT BIN_DIR)
-    set(BIN_DIR ${OS})
-    message("Using BIN_DIR=${BIN_DIR}")
-endif()
-
 if(OMNI_BASE)
-    set(OMNI_BASE ${TANGO_HOME}/ORB/omniORB4.2.1/${BIN_DIR})
-    set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
-    set(OMNICOS_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
-    set(OMNIDYN_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
-    set(OMNIORB_PKG_LIBRARIES "-lomniORB4 -lomnithread -lCOS4 -lomniDynamic4")
-    link_directories(${OMNI_BASE}/lib)
     message("Using OMNI_BASE=${OMNI_BASE}")
+    set(OMNIORB_PKG_INCLUDE_DIRS ${OMNI_BASE}/include)
+    set(OMNIORB_PKG_LIBRARIES "-lomniORB4 -lomnithread -lCOS4 -lomniDynamic4")
+    include_directories(${OMNI_BASE}/include)
+    link_directories(${OMNI_BASE}/lib)
 else()
     #CORBA
     pkg_search_module(OMNIORB_PKG REQUIRED omniORB4)
