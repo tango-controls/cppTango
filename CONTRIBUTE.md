@@ -4,7 +4,10 @@
 
 - fork
 - clone fork
+- start a new branch `git branch my-contrib`
+- switch to the new branch `git checkout my-contrib`
 - do changes
+- commit&push
 - create pull request
 
 # To update forked repo localy
