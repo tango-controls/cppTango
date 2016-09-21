@@ -38,6 +38,7 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
 target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES})
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
+target_compile_definitions(tango PUBLIC OMNI_UNLOADABLE_STUBS)
 
 set_target_properties(tango PROPERTIES
         VERSION ${LIBRARY_VERSION}
