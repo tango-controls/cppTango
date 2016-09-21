@@ -35,7 +35,7 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
 
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp)
 target_include_directories(runner PUBLIC include)
-target_link_libraries(runner PUBLIC ${CMAKE_DL_LIBS} tango)
+target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
 target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
 add_test("CXX::runner" runner
