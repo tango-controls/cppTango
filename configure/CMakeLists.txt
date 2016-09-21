@@ -36,19 +36,25 @@ else()
     endif()
 endif()
 
+#assuming build platform == target
+set(PLATFORM 32)
+if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)
+    set(PLATFORM 64)
+endif()
+
 #setup for GNU CXX compiler
 if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("found GNU compiler ...")
     if(CMAKE_BUILD_TYPE MATCHES RELEASE)
         message("setup for release build ...")
-        add_definitions(-O2 -D_TANGO_LIB)
+        add_compile_options(-O2)
+        add_definitions( -D_TANGO_LIB -D_FORTIFY_SOURCE=2)
     else()
         message("setup for debug build ...")
-        add_definitions(-g -O0 -Wall -Wextra)# -pedantic
+        add_compile_options(-g -O0 -Wall -Wextra)# -pedantic
     endif()
-    add_definitions(-std=c++11)
-    add_definitions(-DGNU_CXX -DOMNI_UNLOADABLE_STUBS -D_FORTIFY_SOURCE=2)
-    add_definitions(-fPIC)
+    add_compile_options(-std=c++11 -fPIC)
+    add_definitions(-DGNU_CXX)
 endif()
 
 include(GNUInstallDirs)
