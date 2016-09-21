@@ -1,0 +1,7 @@
+/typedef\ _CORBA_ConstrType_Variable_Var<AttributeValue_4>/a \/\/Added by Tango team\
+\t\tvirtual ~AttributeValue_4() {if (mut_ptr != NULL)mut_ptr->unlock();}\
+\t\tAttributeValue_4() {mut_ptr=NULL;}\
+\t\tvoid set_attr_mutex(omni_mutex *ptr) {mut_ptr=ptr;}\
+\t\tvoid rel_attr_mutex() {if (mut_ptr != NULL){mut_ptr->unlock();mut_ptr=NULL;}}\
+\t\tomni_mutex *get_attr_mutex() {return mut_ptr;}\
+\t\tomni_mutex *mut_ptr;
