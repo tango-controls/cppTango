@@ -20,4 +20,4 @@ add_subdirectory(fwd_ds)
 
 add_executable(devTest ${SOURCES})
 target_include_directories(devTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(devTest PUBLIC ${CMAKE_DL_LIBS} tango)
+target_link_libraries(devTest PUBLIC tango ${CMAKE_DL_LIBS})
