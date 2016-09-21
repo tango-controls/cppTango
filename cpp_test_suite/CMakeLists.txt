@@ -15,7 +15,7 @@ macro(TEST_SUITE_ADD_TEST test)
     add_executable(${test} ${test}.cpp)
     target_compile_definitions(${test} PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 #    target_include_directories(${test} PUBLIC ../cxxtest/include)
-    target_link_libraries(${test} ${CMAKE_DL_LIBS} tango)
+    target_link_libraries(${test} tango ${CMAKE_DL_LIBS})
     add_test(NAME "CPP::${test}"  COMMAND $<TARGET_FILE:${test}> ${DEV1})
 endmacro()
 
