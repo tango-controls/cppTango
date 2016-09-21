@@ -7,7 +7,7 @@ set(SERV_NAME "devTest")
 set(INST_NAME "debian8")
 set(DEV1_ALIAS "debian8_alias")
 set(ATTR_ALIAS "debian8_attr_alias")
-cmake_host_system_information(RESULT HOST_NAME QUERY HOSTNAME)
+site_name(HOST_NAME)
 set(FULL_HOSTNAME "${HOST_NAME}:10000")
 
 macro(TEST_SUITE_ADD_TEST test)
