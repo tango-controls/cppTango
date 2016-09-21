@@ -12,7 +12,7 @@ foreach(ENHANCEMENT ${ENHANCEMENTS})
 
         #non-zero
     if(${FAILED})
-        message(FATAL " Failed to apply ${ENHANCEMENT}. rv=${SUCCESS}")
+        message(FATAL " Failed to apply ${ENHANCEMENT}. rv=${FAILED}")
     endif()
 endforeach(ENHANCEMENT)
 
