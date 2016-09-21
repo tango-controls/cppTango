@@ -1,0 +1,151 @@
+[DRAFT]
+
+# How to install
+
+- clone
+- cd into cloned repo
+- mkdir build
+- cd build
+- cmake .. 
+- make [-j NUMBER_OF_CPUS]
+- sudo make install
+
+Typical output:
+
+```
+-- Install configuration: "DEBUG"
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so.9.2.5
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so.9
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/pkgconfig/tango.pc
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Appender.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/AppenderAttachable.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LayoutAppender.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/FileAppender.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/RollingFileAppender.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/OstreamAppender.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Layout.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/PatternLayout.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/XmlLayout.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Logger.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LogSeparator.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LoggerStream.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LogStream.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LogStreambuf.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LoggingEvent.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Level.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/NDC.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/TimeStamp.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Filter.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Export.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Portability.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/config.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/DummyThreads.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/PThreads.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/MSThreads.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/Threading.hh
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/accessproxy.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/apiexcept.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/cbthread.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dbapi.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devasyn.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/event.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/eventconsumer.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/filedatabase.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/group.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/lockthread.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/Database.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DbDevice.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/ApiUtil.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceData.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceAttribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DevicePipe.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/Connection.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceProxy.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/AttributeProxy.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/event.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi_attr.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi_utils.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/api_util.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi_pipe.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/zmq.hpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceProxyHelper.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/PogoHelper.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/TangoExceptionsHelper.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/Xstring.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrdesc.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attribute.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrsetval.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attribute_spec.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrmanip.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrprop.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrprop.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/auto_tango_monitor.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/basiccommand.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/blackbox.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/classattribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/classpipe.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/command.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pipe.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pipe.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/coutappender.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/coutbuf.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_2.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_3.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_3.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_4.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_5.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/deviceclass.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devintr.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dintrthread.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dserver.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dserverclass.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dserversignal.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/eventsupplier.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/except.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattrdesc.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattribute.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattribute_spec.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/logcmds.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/logging.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/logstream.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/multiattribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/ntservice.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pipedesc.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollcmds.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollext.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollext.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollobj.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollring.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollring.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollthread.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollthread.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/readers_writers_lock.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/rootattreg.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/seqvec.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango_config.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango_const.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango_monitor.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tangoappender.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tangorollingfileappender.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/utils.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/utils.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/utils_spec.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w32win.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attribute.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attrsetval.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attribute_spec.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_pipe.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_pipe.tpp
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/subdev_diag.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/encoded_attribute.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/encoded_format.h
+-- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/idl/tango.h
+```
