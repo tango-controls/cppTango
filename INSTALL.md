@@ -1,5 +1,10 @@
 [DRAFT]
 
+# Prerequisites
+
+* tango-idl
+* docker (for tests)
+
 # How to install
 
 - clone
