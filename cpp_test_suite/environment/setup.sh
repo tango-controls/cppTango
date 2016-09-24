@@ -25,4 +25,6 @@ TANGO_HOST=$IPADDR:10000
 echo "TANGO_HOST=$TANGO_HOST"
 export TANGO_HOST
 
-#TODO run test_devconf
+echo "Create tango_host file"
+echo "#!/bin/bash" > tango_host
+echo "export TANGO_HOST=$TANGO_HOST" >> tango_host
