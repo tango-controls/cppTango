@@ -27,6 +27,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
+add_subdirectory("cpp_test_ds")
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
