@@ -53,6 +53,33 @@ int main(int argc, char **argv)
 	DbDevInfos db_dev_infos;
 	DbDevInfo db_dev_info_1, db_dev_info_2, db_dev_info_3;
 
+	//Define device server
+	str = dserver_name;
+	db_dev_info_1.name = device1_name;
+	db_dev_info_1._class = CLASS_NAME;
+	db_dev_info_2.name = device2_name;
+	db_dev_info_2._class = CLASS_NAME;
+	db_dev_info_3.name = device3_name;
+	db_dev_info_3._class = CLASS_NAME;
+	db_dev_infos.push_back(db_dev_info_1);
+	db_dev_infos.push_back(db_dev_info_2);
+	db_dev_infos.push_back(db_dev_info_3);
+
+	try
+	{
+		db->add_server(str, db_dev_infos);
+		for(size_t i = 0; i < db_dev_infos.size(); i++)
+			cout << "Added test server : " << str << " -> " << db_dev_infos[i].name << ", class : " << db_dev_infos[i]._class << endl;
+		cout << endl;
+	}
+	catch(...)
+	{
+		cout << "Exception: cannot create test server" << endl;
+	}
+
+
+    db_dev_infos.clear();
+
 //
 // DsCache/test pseudo server (creation & properties)
 //

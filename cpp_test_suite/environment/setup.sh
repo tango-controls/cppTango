@@ -33,6 +33,4 @@ echo "export TANGO_HOST=$TANGO_HOST" >> tango_host
 #TODO notification?
 sleep 30
 
-./cpp_test_suite/new_tests/conf_devtest @SERV_NAME@ @DEV1@ @DEV2@ @DEV3@ @DEV1_ALIAS@ @ATTR_ALIAS@
-
 #ctest
