@@ -19,7 +19,7 @@ set(TESTS   archive_event
             dev_intr_event
             multi_dev_event
             per_event
-            reco_event
+#            reco_event
             reco_zmq
             server_event
             stateless_sub)
