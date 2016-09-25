@@ -43,29 +43,29 @@ int main(int argc, char **argv)
 // Start callback thread
 //
 
-		char key;		
-		cout << "Hit any key ";
-		cin >> key;
+//		char key;
+//		cout << "Hit any key ";
+//		cin >> key;
 		
 		au->set_asynch_cb_sub_model(PUSH_CALLBACK);
 
-		cout << "Hit any key ";
-		cin >> key;
+//		cout << "Hit any key ";
+//		cin >> key;
 		
 		au->set_asynch_cb_sub_model(PULL_CALLBACK);
 		
-		cout << "Hit any key ";
-		cin >> key;
+//		cout << "Hit any key ";
+//		cin >> key;
 		
 		au->set_asynch_cb_sub_model(PUSH_CALLBACK);
 
-		cout << "Hit any key ";
-		cin >> key;
+//		cout << "Hit any key ";
+//		cin >> key;
 
 		au->set_asynch_cb_sub_model(PULL_CALLBACK);
 		
-		cout << "Hit any key ";
-		cin >> key;		
+//		cout << "Hit any key ";
+//		cin >> key;
 	}
 	catch (Tango::DevFailed &e)
 	{
