@@ -29,7 +29,7 @@ echo "Create tango_host file"
 echo "#!/bin/bash" > tango_host
 echo "export TANGO_HOST=$TANGO_HOST" >> tango_host
 
-#wait till tango-cs is online
+echo "Wait till tango-cs is online"
 #TODO notification?
 sleep 30
 
