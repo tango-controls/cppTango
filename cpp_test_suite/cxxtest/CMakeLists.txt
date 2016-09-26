@@ -34,9 +34,18 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp)
-target_include_directories(runner PUBLIC include)
-target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
-target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
+if(CMAKE_VERSION VERSION_GREATER 2.8.12)
+    target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
+else()
+    target_link_libraries(runner LINK_PUBLIC tango ${CMAKE_DL_LIBS})
+endif()
+if(CMAKE_VERSION VERSION_GREATER 2.8.11)
+    target_include_directories(runner PUBLIC include)
+    target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
+else()
+    set_property(TARGET runner APPEND PROPERTY INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/include)
+	set_property(TARGET runner APPEND PROPERTY COMPILE_DEFINITIONS "VALGRIND;_PTHREADS;_REENTRANT")
+endif()
 
 add_test("CXX::runner" runner
                         --device1=${DEV1}

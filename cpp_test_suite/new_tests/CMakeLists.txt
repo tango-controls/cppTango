@@ -1,3 +1,7 @@
 add_executable(conf_devtest conf_devtest.cpp)
-target_link_libraries(conf_devtest PUBLIC tango ${CMAKE_DL_LIBS})
+if(CMAKE_VERSION VERSION_GREATER 2.8.12)
+    target_link_libraries(conf_devtest PUBLIC tango ${CMAKE_DL_LIBS})
+else()
+    target_link_libraries(conf_devtest LINK_PUBLIC tango ${CMAKE_DL_LIBS})
+endif()
 add_library(compare_test_object OBJECT compare_test.cpp compare_test.h)
