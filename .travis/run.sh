@@ -13,8 +13,14 @@ if [ $? -ne 0 ]; then
     echo "FAILED!" >&2
     exit $?
 fi
+docker exec cpp_tango make -C /src/build
+if [ $? -ne 0 ]; then
+    echo "FAILED!" >&2
+    exit $?
+fi
 
-docker exec cpp_tango make -C /src/build -- test
+echo "Test cppTango"
+docker exec cpp_tango make -C /src/build test
 if [ $? -ne 0 ]; then
     echo "FAILED!" >&2
     exit $?
