@@ -1,4 +1,4 @@
-FROM debian:wheezy
+FROM debian:wheezy-backports
 
 MAINTAINER TANGO Controls team <tango@esrf.fr>
 
