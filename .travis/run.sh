@@ -20,7 +20,8 @@ if [ RV -ne 0 ]; then
     echo "FAILED! RV=$RV" >&2
     exit RV
 fi
-docker exec cpp_tango make -C /src/build test
+echo "Test cppTango"
+docker exec cpp_tango /bin/sh -c 'cd /src/build; exec ctest -V'
 RV=$?
 if [ RV -ne 0 ]; then
     echo "FAILED! RV=$RV" >&2
