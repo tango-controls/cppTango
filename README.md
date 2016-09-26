@@ -20,6 +20,45 @@ This repository is the result of svn2git migration of tango source code. It is c
 
 `mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
 
+# How to test
+
+## With docker provided TANGO environment
+
+### 1. First build everything
+
+ `mkdir build; cd build; cmake ..; make`
+
+### 2. Start TANGO environment
+
+ `make start-tango`
+ 
+ Typical output:
+Note env.TANGO_HOST value: this is normal TANGO_HOST that can be used, for instance, in Jive
+
+```
+Setup test environment
+ 174fda8cad89ac457a6129c599368d2842547575eac05f1d9b4ad60966cf0018
+ CONTAINER=6130013cf55d420552df9dddd488b7564d58f49d10831d4880774443faf1a22b
+ TANGO_HOST=172.17.0.3:10000
+ Create tango_host file
+ Wait till tango-cs is online
+```
+
+### 3. Run tests
+ `make run-tests`
+
+ Before running tests CTest runs conf_devtest (located in cpp_test_suite/new_tests) and starts DevTest and FwdTest device servers (located in cpp_test_ds)
+
+### 4. Shutdown TANGO environment
+ `make stop-tango`
+
+## Without docker provided TANGO environment
+One can setup TANGO environment on the local machine manually. In this case CTest can be used directly:
+ 
+`ctest -V`
+
+See [CTest guide](https://cmake.org/Wiki/CMake/Testing_With_CTest)
+
 # Links
 
 [Tango Controls web page](http://tango-controls.org)
