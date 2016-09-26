@@ -10,20 +10,14 @@ docker exec cpp_tango make -C /src/idl/build install
 echo "Build cppTango"
 docker exec cpp_tango cmake -H/src -B/src/build -DCMAKE_VERBOSE_MAKEFILE=true
 if [ $? -ne 0 ]; then
-    RV=$?
-    echo "FAILED! RV=$RV" >&2
-    exit RV
+    exit $?
 fi
 docker exec cpp_tango make -C /src/build
 if [ $? -ne 0 ]; then
-    RV=$?
-    echo "FAILED! RV=$RV" >&2
-    exit RV
+    exit $?
 fi
 echo "Test cppTango"
 docker exec cpp_tango /bin/sh -c 'cd /src/build; exec ctest -V'
 if [ $? -ne 0 ]; then
-    RV=$?
-    echo "FAILED! RV=$RV" >&2
-    exit RV
+    exit $?
 fi
