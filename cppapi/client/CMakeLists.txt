@@ -54,8 +54,7 @@ set(HEADERS accessproxy.h
             devapi_attr.tpp
             devapi_utils.tpp
             api_util.tpp
-            devapi_pipe.tpp
-            zmq.hpp)
+            devapi_pipe.tpp)
 
 add_subdirectory(helpers)
 
