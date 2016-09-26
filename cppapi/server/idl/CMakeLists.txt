@@ -1,12 +1,11 @@
 message("Generate tango.h, tangoSK.cpp and tangoDybSK.cpp from idl")
-message("Using ${OMNIIDL_PATH}omniidl")
-execute_process(COMMAND ${OMNIIDL_PATH}omniidl -V)
+
 execute_process(COMMAND ${OMNIIDL_PATH}omniidl -I${IDL_PKG_INCLUDE_DIRS} -bcxx -Wbh=.h -Wbs=SK.cpp -Wbd=DynSK.cpp -Wba ${IDL_PKG_INCLUDE_DIRS}/tango.idl
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
                 RESULT_VARIABLE FAILED)
 
 if(${FAILED})
-    message(FATAL " Failed to generate source files from idl. rv=${FAILED}")
+    message(SEND_ERROR " Failed to generate source files from idl. rv=${FAILED}")
 endif()
 
 FILE(GLOB ENHANCEMENTS Enhance*)
@@ -19,7 +18,7 @@ foreach(ENHANCEMENT ${ENHANCEMENTS})
 
         #non-zero
     if(${FAILED})
-        message(FATAL " Failed to apply ${ENHANCEMENT}. rv=${FAILED}")
+        message(SEND_ERROR " Failed to apply ${ENHANCEMENT}. rv=${FAILED}")
     endif()
 endforeach(ENHANCEMENT)
 

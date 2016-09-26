@@ -43,6 +43,13 @@ else(ZMQ_BASE)
     endif()
 endif(ZMQ_BASE)
 
+message("Verifying ${OMNIIDL_PATH}omniidl")
+execute_process(COMMAND ${OMNIIDL_PATH}omniidl -V RESULT_VARIABLE FAILED)
+
+if(${FAILED})
+    message(SEND_ERROR " No omniidl was found! rv=${FAILED}")
+endif()
+
 #assuming build platform == target
 set(PLATFORM 32)
 if(${CMAKE_SIZEOF_VOID_P} EQUAL 8)

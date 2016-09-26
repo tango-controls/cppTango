@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-docker exec cpp_tango echo "TANGO_HOST=$TANGO_HOST"
-
 docker exec cpp_tango mkdir -p /src/idl/build
 docker exec cpp_tango mkdir -p /src/build
 
