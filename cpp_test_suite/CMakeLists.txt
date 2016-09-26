@@ -21,6 +21,6 @@ endmacro()
 
 add_subdirectory(asyn)
 add_subdirectory(event)
-#add_subdirectory(old_tests)
+add_subdirectory(old_tests)
 add_subdirectory(new_tests)
 add_subdirectory(cxxtest)
