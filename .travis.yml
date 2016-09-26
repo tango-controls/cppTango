@@ -23,8 +23,6 @@ before_install:
   - docker pull mliszcz/tango-cs:latest
   - git clone https://${CI_USER_TOKEN}@github.com/tango-controls/tango-idl.git idl
   - chmod +x .travis/run.sh
-  - chmod +x cpp_test_suite/environment/pre_test.sh
-  - chmod +x cpp_test_suite/environment/post_test.sh
 
 before_script:
   - docker run --name mysql_db -e MYSQL_ROOT_PASSWORD=root -d tangocs/mysql:9.2.2 --sql-mode=""
