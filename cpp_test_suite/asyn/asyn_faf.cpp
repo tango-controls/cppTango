@@ -39,9 +39,9 @@ int main(int argc, char **argv)
 
 		long id;
 
-		char key;		
-		cout << "Hit any key : ";
-		cin >> key;
+//		char key;
+//		cout << "Hit any key : ";
+//		cin >> key;
 
 		id = device->command_inout_asynch("State",true);
 		

@@ -18,6 +18,6 @@ set(SOURCES main.cpp
 
 add_subdirectory(fwd_ds)
 
-add_executable(devTest ${SOURCES})
-target_include_directories(devTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(devTest PUBLIC tango ${CMAKE_DL_LIBS})
+add_executable(DevTest ${SOURCES})
+target_include_directories(DevTest PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_link_libraries(DevTest PUBLIC tango ${CMAKE_DL_LIBS})

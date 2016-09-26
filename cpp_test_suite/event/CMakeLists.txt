@@ -7,7 +7,7 @@ set(TESTS   archive_event
             event_lock
             multi_event
             pipe_event
-            reco_svc
+#            reco_svc
             scan
             state_event
             user_event
@@ -19,7 +19,7 @@ set(TESTS   archive_event
             dev_intr_event
             multi_dev_event
             per_event
-            reco_event
+#            reco_event
             reco_zmq
             server_event
             stateless_sub)

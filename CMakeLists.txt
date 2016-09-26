@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 2.8)
 project(libtango)
 include(CTest)
 
+configure_file(CTestCustom.cmake CTestCustom.cmake)
 enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
