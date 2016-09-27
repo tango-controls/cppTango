@@ -1,5 +1,5 @@
 //
-// LayoutAppender.hh
+// OstreamAppender.hh
 //
 // Copyright (C) :  2000 - 2002
 //					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -25,42 +25,32 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _LOG4TANGO_LAYOUTAPPENDER_H
-#define _LOG4TANGO_LAYOUTAPPENDER_H
+#ifndef _LOG4TANGO_OSTREAMAPPENDER_H
+#define _LOG4TANGO_OSTREAMAPPENDER_H
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
 #include <string>
-#include <log4tango/Appender.hh>
-#include <log4tango/PatternLayout.hh>
+#include <iostream>
+#include "LayoutAppender.hh"
 
 namespace log4tango {
 
 //-----------------------------------------------------------------------------
-// class : LayoutAppender (superclass for appenders that require a Layout)
-//-----------------------------------------------------------------------------
-class LOG4TANGO_EXPORT LayoutAppender : public Appender 
-{
+// class : OstreamAppender (appends LoggingEvents to ostreams)
+//-----------------------------------------------------------------------------   
+class LOG4TANGO_EXPORT OstreamAppender : public LayoutAppender {
 public:
+  OstreamAppender(const std::string& name, std::ostream* stream);
+  virtual ~OstreamAppender();
 
-  typedef Layout DefaultLayoutType;
-
-  LayoutAppender(const std::string& name);
-
-  virtual ~LayoutAppender();
-
-  virtual bool requires_layout() const;
-
-  virtual void set_layout (Layout* layout = 0);
+  virtual bool reopen();
+  virtual void close();
 
 protected:
-
-  Layout& get_layout();
-
-private:
-  Layout* _layout;
+  virtual int _append (const LoggingEvent& event);
+  std::ostream* _stream;
 };
 
-} // namespace log4tango
+} // namespace log4tango 
 
-#endif // _LOG4TANGO_LAYOUTAPPENDER_H
-
+#endif // _LOG4TANGO_OSTREAMAPPENDER_HH

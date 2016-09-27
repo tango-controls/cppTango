@@ -1,5 +1,5 @@
 //
-// Layout.hh
+// Threading.hh
 //
 // Copyright (C) :  2000 - 2002
 //					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -25,42 +25,24 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _LOG4TANGO_LAYOUT_H
-#define _LOG4TANGO_LAYOUT_H
+#ifndef _LOG4TANGO_THREADING_THREADING_H
+#define _LOG4TANGO_THREADING_THREADING_H
 
-#include <log4tango/Portability.hh>
-#include <log4tango/threading/Threading.hh>
-#include <log4tango/LoggingEvent.hh>
-#include <string>
+#include "../Portability.hh"
 
-namespace log4tango {
+#ifdef LOG4TANGO_HAVE_THREADING
 
-//-----------------------------------------------------------------------------
-// class : Appender (abstract class)
-//-----------------------------------------------------------------------------
-class LOG4TANGO_EXPORT Layout 
-{
-public:
+# ifdef LOG4TANGO_USE_MSTHREADS
+#   include <log4tango/threading/MSThreads.hh>
+# endif
+# ifdef LOG4TANGO_USE_PTHREADS
+#   include "PThreads.hh"
+# endif
 
-  /**
-   * Constructor for Layout.
-   **/
-  Layout() {};
+#else 
 
-  /**
-   * Destructor for Layout.
-   **/
-  virtual ~Layout() {};
+# include <log4tango/threading/DummyThreads.hh>
 
-  /**
-   * Formats the LoggingEvent data to a string that appenders can log.
-   * Overload this method to create your own layout format.
-   * @param event The LoggingEvent.
-   * @returns an appendable string.
-   **/
-  virtual std::string format (const LoggingEvent& event);
-};  
-      
-} // namespace log4tango
+#endif
 
-#endif // _LOG4TANGO_LAYOUT_H
+#endif // _LOG4TANGO_THREADING_THREADING_H

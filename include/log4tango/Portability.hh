@@ -34,7 +34,7 @@
 # include <log4tango/config.h>
 #endif
 
-#include <log4tango/Export.hh>
+#include "Export.hh"
 
 #if defined(_MSC_VER)
 # pragma warning( disable : 4786 ) // 255 char debug symbol limit

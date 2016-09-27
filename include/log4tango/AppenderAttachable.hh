@@ -28,11 +28,11 @@
 #ifndef _LOG4TANGO_APPENDER_ATTACHABLE_H
 #define _LOG4TANGO_APPENDER_ATTACHABLE_H
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
 #include <map>
 #include <vector>
-#include <log4tango/Appender.hh>
-#include <log4tango/threading/Threading.hh>
+#include "Appender.hh"
+#include "threading/Threading.hh"
 
 namespace log4tango {
 

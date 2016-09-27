@@ -19,11 +19,12 @@ include_directories(cppapi/client)
 include_directories(cppapi/client/helpers)
 include_directories(cppapi/server)
 include_directories(cppapi/server/idl)
-include_directories(log4tango/include)
+
+include_directories(include)
 #required for generated config.h
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
+include_directories(${PROJECT_BINARY_DIR}/include)
 
-
+add_subdirectory(include)
 #source code
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")

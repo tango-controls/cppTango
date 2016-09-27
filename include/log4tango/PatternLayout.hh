@@ -28,8 +28,8 @@
 #ifndef _LOG4TANGO_PATTERNLAYOUT_H
 #define _LOG4TANGO_PATTERNLAYOUT_H
 
-#include <log4tango/Portability.hh>
-#include <log4tango/Layout.hh>
+#include "Portability.hh"
+#include "Layout.hh"
 #include <vector>
 #ifdef LOG4TANGO_HAVE_SSTREAM
 # include <sstream>

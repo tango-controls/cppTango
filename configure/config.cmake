@@ -48,13 +48,13 @@ macro (LOG4TANGO_CHECK_COMPILER_FEATURE source var)
 endmacro()
 
 #sstream
-LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_sstream.cpp" SSTREAM)
+LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_sstream.cpp" SSTREAM)
 
 #namespace
-LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_namespace.cpp" NAMESPACES)
+LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_namespace.cpp" NAMESPACES)
 
 #snprintf
-LOG4TANGO_CHECK_COMPILER_FEATURE("config/check_snprintf.cpp" SNPRINTF)
+LOG4TANGO_CHECK_COMPILER_FEATURE("configure/check_snprintf.cpp" SNPRINTF)
 
 #check types
 check_type_size(int64_t INT64_SIZE)
@@ -63,4 +63,4 @@ if(${INT64_SIZE} EQUAL 8)
 endif()
 
 
-configure_file(config/config.h.in ${PROJECT_BINARY_DIR}/log4tango/include/log4tango/config.h)
+configure_file(configure/config.h.in ${PROJECT_BINARY_DIR}/include/log4tango/config.h)

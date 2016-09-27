@@ -25,14 +25,14 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
 #include <string>
 #include <map>
 #include <set>
-#include <log4tango/Level.hh>
-#include <log4tango/Layout.hh>
-#include <log4tango/LoggingEvent.hh>
-#include <log4tango/threading/Threading.hh>
+#include "Level.hh"
+#include "Layout.hh"
+#include "LoggingEvent.hh"
+#include "threading/Threading.hh"
 
 #ifndef _LOG4TANGO_APPENDER_H
 #define _LOG4TANGO_APPENDER_H

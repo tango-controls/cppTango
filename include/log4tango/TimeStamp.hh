@@ -28,7 +28,7 @@
 #ifndef _LOG4TANGO_TIMESTAMP_H
 #define _LOG4TANGO_TIMESTAMP_H
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
 
 namespace log4tango {
 

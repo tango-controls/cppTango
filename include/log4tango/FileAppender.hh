@@ -28,8 +28,8 @@
 #ifndef _LOG4TANGO_FILEAPPENDER_H
 #define _LOG4TANGO_FILEAPPENDER_H
 
-#include <log4tango/Portability.hh>
-#include <log4tango/LayoutAppender.hh>
+#include "Portability.hh"
+#include "LayoutAppender.hh"
 
 namespace log4tango {
 

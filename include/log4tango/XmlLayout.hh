@@ -28,8 +28,8 @@
 #ifndef _LOG4TANGO_XML_LAYOUT_H
 #define _LOG4TANGO_XML_LAYOUT_H
 
-#include <log4tango/Portability.hh>
-#include <log4tango/Layout.hh>
+#include "Portability.hh"
+#include "Layout.hh"
 
 namespace log4tango {
 

@@ -8,8 +8,5 @@
 set (LOG4TANGO_PACKAGE_URL "https://github.com/tango-controls/cppTango/log4tango")
 set (LOG4TANGO_PACKAGE_BUGREPORT "https://github.com/tango-controls/cppTango/issues")
 
-include(${CMAKE_CURRENT_SOURCE_DIR}/config/config.cmake)
-
-add_subdirectory(include)
 add_subdirectory(src)
 add_subdirectory(tests)

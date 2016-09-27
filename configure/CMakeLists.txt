@@ -71,3 +71,5 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 include(GNUInstallDirs)
+
+include(configure/config.cmake)

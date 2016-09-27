@@ -28,11 +28,11 @@
 #ifndef _LOG4TANGO_LOGGINGEVENT_H
 #define _LOG4TANGO_LOGGINGEVENT_H
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
 #include <string>
 
-#include <log4tango/Level.hh>
-#include <log4tango/TimeStamp.hh>
+#include "Level.hh"
+#include "TimeStamp.hh"
 
 namespace log4tango {
 

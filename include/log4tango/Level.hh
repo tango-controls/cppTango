@@ -28,7 +28,7 @@
 #ifndef _LOG4TANGO_LEVEL_H
 #define _LOG4TANGO_LEVEL_H
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
 #include <string>
 #include <stdexcept>
 

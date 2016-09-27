@@ -33,12 +33,12 @@
 //----------------------------------------------------------------------------- 
 //#define LOG4TANGO_LOGGERS_USE_LOGSTREAM
  
-#include <log4tango/Portability.hh>
-#include <log4tango/AppenderAttachable.hh>
-#include <log4tango/LoggingEvent.hh>
-#include <log4tango/Level.hh>
+#include "Portability.hh"
+#include "AppenderAttachable.hh"
+#include "LoggingEvent.hh"
+#include "Level.hh"
 #ifndef LOG4TANGO_LOGGERS_USE_LOGSTREAM
-# include <log4tango/LoggerStream.hh>
+# include "LoggerStream.hh"
 #endif
 
 namespace log4tango {

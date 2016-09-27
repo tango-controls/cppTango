@@ -1,5 +1,5 @@
 //
-// OstreamAppender.hh
+// LogSeparator.hh
 //
 // Copyright (C) :  2000 - 2002
 //					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -25,32 +25,29 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _LOG4TANGO_OSTREAMAPPENDER_H
-#define _LOG4TANGO_OSTREAMAPPENDER_H
+#ifndef _LOG4TANGO_LOG_SEPARATOR_H
+#define _LOG4TANGO_LOG_SEPARATOR_H
 
-#include <log4tango/Portability.hh>
-#include <string>
-#include <iostream>
-#include <log4tango/LayoutAppender.hh>
+#include "Portability.hh"
 
 namespace log4tango {
 
 //-----------------------------------------------------------------------------
-// class : OstreamAppender (appends LoggingEvents to ostreams)
-//-----------------------------------------------------------------------------   
-class LOG4TANGO_EXPORT OstreamAppender : public LayoutAppender {
+// Class : LogInitiator
+//-----------------------------------------------------------------------------
+class LOG4TANGO_EXPORT LogInitiator {
 public:
-  OstreamAppender(const std::string& name, std::ostream* stream);
-  virtual ~OstreamAppender();
-
-  virtual bool reopen();
-  virtual void close();
-
-protected:
-  virtual int _append (const LoggingEvent& event);
-  std::ostream* _stream;
+  static LogInitiator _begin_log;
 };
 
-} // namespace log4tango 
+//-----------------------------------------------------------------------------
+// Class : LogSeparator
+//-----------------------------------------------------------------------------
+class LOG4TANGO_EXPORT LogSeparator {
+public:
+  static LogSeparator _end_log;
+};
 
-#endif // _LOG4TANGO_OSTREAMAPPENDER_HH
+} // namespace log4tango
+
+#endif // _LOG4TANGO_LOG_SEPARATOR_H

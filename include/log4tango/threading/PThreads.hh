@@ -28,7 +28,7 @@
 #ifndef _LOG4TANGO_THREADING_PTHREADS_H
 #define _LOG4TANGO_THREADING_PTHREADS_H
 
-#include <log4tango/Portability.hh>  
+#include "../Portability.hh"
 #include <stdio.h>
 #include <pthread.h>
 #include <string>

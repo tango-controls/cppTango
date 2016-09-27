@@ -1,5 +1,5 @@
 //
-// RollingFileAppender.hh
+// Layout.hh
 //
 // Copyright (C) :  2000 - 2002
 //					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -25,47 +25,42 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _LOG4TANGO_ROLLINGFILEAPPENDER_H
-#define _LOG4TANGO_ROLLINGFILEAPPENDER_H
+#ifndef _LOG4TANGO_LAYOUT_H
+#define _LOG4TANGO_LAYOUT_H
 
-#include <log4tango/Portability.hh>
-#include <log4tango/FileAppender.hh>
+#include "Portability.hh"
+#include "threading/Threading.hh"
+#include "LoggingEvent.hh"
+#include <string>
 
 namespace log4tango {
 
 //-----------------------------------------------------------------------------
-// class RollingFileAppender (olls over the logfile)
-//----------------------------------------------------------------------------- 
-class LOG4TANGO_EXPORT RollingFileAppender : public FileAppender
+// class : Appender (abstract class)
+//-----------------------------------------------------------------------------
+class LOG4TANGO_EXPORT Layout 
 {
- public:
+public:
 
-    RollingFileAppender(const std::string& name, 
-                        const std::string& file_name,
-                        size_t max_fs = 10*1024*1024, 
-                        unsigned int max_bi = 1,
-                        bool append = true,
-                        mode_t mode = 00644);
+  /**
+   * Constructor for Layout.
+   **/
+  Layout() {};
 
-    virtual void set_max_backup_index(unsigned int maxBackups);
+  /**
+   * Destructor for Layout.
+   **/
+  virtual ~Layout() {};
 
-    virtual unsigned int get_max_backup_index() const;
-
-    virtual void set_maximum_file_size (size_t max_fs);
-
-    virtual size_t get_max_file_size() const;
-
-    virtual void roll_over();
-
-protected:
-
-    virtual int _append (const LoggingEvent& event);
-
-    unsigned int _max_backup_index;
-
-    size_t _max_file_size;
-};
-
+  /**
+   * Formats the LoggingEvent data to a string that appenders can log.
+   * Overload this method to create your own layout format.
+   * @param event The LoggingEvent.
+   * @returns an appendable string.
+   **/
+  virtual std::string format (const LoggingEvent& event);
+};  
+      
 } // namespace log4tango
 
-#endif // _LOG4TANGO_ROLLINGFILEAPPENDER_H
+#endif // _LOG4TANGO_LAYOUT_H

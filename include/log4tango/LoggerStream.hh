@@ -28,12 +28,12 @@
 #ifndef _LOG4TANGO_LOGGER_STREAM_H
 #define _LOG4TANGO_LOGGER_STREAM_H
 
-#include <log4tango/Portability.hh>
-#include <log4tango/Level.hh>
+#include "Portability.hh"
+#include "Level.hh"
 #ifdef LOG4TANGO_HAVE_SSTREAM
 # include <sstream>
 #endif
-#include <log4tango/LogSeparator.hh>
+#include "LogSeparator.hh"
 
 namespace log4tango {
 

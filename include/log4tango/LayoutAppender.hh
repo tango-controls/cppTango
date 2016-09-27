@@ -1,5 +1,5 @@
 //
-// Threading.hh
+// LayoutAppender.hh
 //
 // Copyright (C) :  2000 - 2002
 //					LifeLine Networks BV (www.lifeline.nl). All rights reserved.
@@ -25,24 +25,42 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with Log4Tango.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef _LOG4TANGO_THREADING_THREADING_H
-#define _LOG4TANGO_THREADING_THREADING_H
+#ifndef _LOG4TANGO_LAYOUTAPPENDER_H
+#define _LOG4TANGO_LAYOUTAPPENDER_H
 
-#include <log4tango/Portability.hh>
+#include "Portability.hh"
+#include <string>
+#include "Appender.hh"
+#include "PatternLayout.hh"
 
-#ifdef LOG4TANGO_HAVE_THREADING
+namespace log4tango {
 
-# ifdef LOG4TANGO_USE_MSTHREADS
-#   include <log4tango/threading/MSThreads.hh>
-# endif
-# ifdef LOG4TANGO_USE_PTHREADS
-#   include <log4tango/threading/PThreads.hh>
-# endif
+//-----------------------------------------------------------------------------
+// class : LayoutAppender (superclass for appenders that require a Layout)
+//-----------------------------------------------------------------------------
+class LOG4TANGO_EXPORT LayoutAppender : public Appender 
+{
+public:
 
-#else 
+  typedef Layout DefaultLayoutType;
 
-# include <log4tango/threading/DummyThreads.hh>
+  LayoutAppender(const std::string& name);
 
-#endif
+  virtual ~LayoutAppender();
 
-#endif // _LOG4TANGO_THREADING_THREADING_H
+  virtual bool requires_layout() const;
+
+  virtual void set_layout (Layout* layout = 0);
+
+protected:
+
+  Layout& get_layout();
+
+private:
+  Layout* _layout;
+};
+
+} // namespace log4tango
+
+#endif // _LOG4TANGO_LAYOUTAPPENDER_H
+
