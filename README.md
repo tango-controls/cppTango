@@ -1,6 +1,10 @@
 # cppTango
 This repository is the result of svn2git migration of tango source code. It is combined from api/cppapi, api/log4tango, api/cpp_test_suite anf api/cpp_test_ds
 
+# Status
+
+[![Build Status](https://travis-ci.org/tango-controls/cppTango.png)](https://travis-ci.org/tango-controls/cppTango)
+
 # Usage workflow (draft)
 
 
