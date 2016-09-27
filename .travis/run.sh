@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-echo ${NUMCORES}
-echo $NUMCORES
-
 docker exec cpp_tango mkdir -p /src/idl/build
 docker exec cpp_tango mkdir -p /src/build
 
