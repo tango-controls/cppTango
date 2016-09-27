@@ -26,7 +26,7 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 
 add_subdirectory(include)
 #source code
-add_subdirectory("log4tango")
+add_subdirectory(src)
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
 add_subdirectory("cpp_test_ds")

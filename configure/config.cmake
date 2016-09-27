@@ -62,5 +62,14 @@ if(${INT64_SIZE} EQUAL 8)
     set(LOG4TANGO_HAVE_INT64_T "/**/")
 endif()
 
+#
+# +1 : ? : +1  == new interface that does not break old one
+# +1 : ? : 0   == new interface that breaks old one
+#  ? : ? : 0   == no new interfaces, but breaks apps
+#  ? :+1 : ?   == just some internal changes, nothing breaks but might work
+#                 better
+# CURRENT : REVISION : AGE
+set (LOG4TANGO_PACKAGE_URL "https://github.com/tango-controls/cppTango/log4tango")
+set (LOG4TANGO_PACKAGE_BUGREPORT "https://github.com/tango-controls/cppTango/issues")
 
 configure_file(configure/config.h.in ${PROJECT_BINARY_DIR}/include/log4tango/config.h)
