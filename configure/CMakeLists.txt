@@ -61,11 +61,10 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     message("found GNU compiler ...")
     if(CMAKE_BUILD_TYPE MATCHES RELEASE)
         message("setup for release build ...")
-        add_compile_options(-O2)
-        add_definitions( -D_TANGO_LIB -D_FORTIFY_SOURCE=2)
+        add_definitions(-D_FORTIFY_SOURCE=3)
     else()
         message("setup for debug build ...")
-        add_compile_options(-g -O0 -Wall -Wextra)# -pedantic
+        add_compile_options(-O0 -Wall -Wextra)# -pedantic
     endif()
     add_compile_options(-std=c++11 -fPIC)
     add_definitions(-DGNU_CXX)
