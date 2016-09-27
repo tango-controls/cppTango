@@ -1,5 +1,7 @@
 sudo: false
 
+language: cpp
+
 env:
   matrix:
     - OS_TYPE=debian8 CMAKE_BUILD_TYPE=DEBUG
