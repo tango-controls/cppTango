@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+echo $CMAKE_BUILD_TYPE
+
 docker exec cpp_tango mkdir -p /src/idl/build
 docker exec cpp_tango mkdir -p /src/build
 
