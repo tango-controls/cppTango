@@ -1,16 +1,11 @@
 sudo: false
 
-language: c++
-
 env:
   matrix:
     - OS_TYPE=debian8
     - OS_TYPE=debian7
 #    - OS_TYPE=win32
 # etc
-
-compiler:
-  - gcc
 
 notifications:
   email: false
