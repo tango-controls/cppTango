@@ -56,7 +56,7 @@ endforeach(TEST)
 
 
 
-add_test(NAME "old_tests::misc_devproxy"  COMMAND $<TARGET_FILE:misc_devproxy> ${DEV1} ${SERV_NAME}/{$INST_NAME})
+add_test(NAME "old_tests::misc_devproxy"  COMMAND $<TARGET_FILE:misc_devproxy> ${DEV1} ${SERV_NAME}/${INST_NAME})
 
 add_test(NAME "old_tests::cmd_types"  COMMAND $<TARGET_FILE:cmd_types> ${DEV1} 10)
 

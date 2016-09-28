@@ -3,7 +3,7 @@
 # Prerequisites
 
 * tango-idl
-* docker (for tests)
+* docker and docker-engine (for tests)
 
 # How to install
 
