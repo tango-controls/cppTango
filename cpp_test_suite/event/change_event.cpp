@@ -412,7 +412,8 @@ int main(int argc, char **argv)
 		string port = tg.substr(pos);
 
 		string full_device_name_fqdn("tango://");
-		full_device_name_fqdn = full_device_name_fqdn + host + ".esrf.fr" + port + '/';
+		//TODO get host fqdn name
+		full_device_name_fqdn = full_device_name_fqdn + host /*+ ".esrf.fr"*/ + port + '/';
 		full_device_name_fqdn = full_device_name_fqdn + device_name;
 		Tango::DeviceProxy full_dp_fq(full_device_name_fqdn);
 
