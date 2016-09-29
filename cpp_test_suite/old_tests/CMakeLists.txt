@@ -54,7 +54,8 @@ foreach(TEST ${TESTS})
 endforeach(TEST)
 
 
-
+configure_file(locked_device_cmd.h.cmake locked_device_cmd.h @ONLY)
+target_include_directories(lock PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 
 add_test(NAME "old_tests::misc_devproxy"  COMMAND $<TARGET_FILE:misc_devproxy> ${DEV1} ${SERV_NAME}/${INST_NAME})
 
