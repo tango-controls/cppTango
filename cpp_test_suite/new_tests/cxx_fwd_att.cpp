@@ -41,6 +41,7 @@ protected:
 	AttributeInfoListEx 	*confs;
 	string 					fwd_device_name;
 	DeviceProxy 			*root_admin,*ad;
+	string 					tango_prefix;
 
 	bool					verbose;
 
@@ -58,6 +59,8 @@ public:
 		device2_name = CxxTest::TangoPrinter::get_param("device2");
 		full_ds_name = CxxTest::TangoPrinter::get_param("fulldsname");
 		fwd_device_name = CxxTest::TangoPrinter::get_param_loc("fwd_device");
+
+		tango_prefix = CxxTest::TangoPrinter::get_param_loc("tango-prefix");
 
 		verbose = CxxTest::TangoPrinter::is_param_set("verbose");
 
@@ -447,7 +450,7 @@ public:
 		AttributeInfoListEx *confs = fwd_device->get_attribute_config_ex(att_names);
 
 		TS_ASSERT((*confs)[0].name == "fwd_short_rw");
-		string local_root_base("tango://acudebian7.esrf.fr:10000/");
+		string local_root_base(tango_prefix);//see conf_devtest
 		local_root_base = local_root_base + device1_name;
 		string local_root = local_root_base + "/short_attr_rw";
 		TS_ASSERT((*confs)[0].root_attr_name == local_root);
@@ -459,8 +462,8 @@ public:
 		TS_ASSERT((*confs)[0].max_dim_y == 0);
 		TS_ASSERT((*confs)[0].description == "No description");
 		TS_ASSERT((*confs)[0].label == "Gasp a fwd attribute");
-		TS_ASSERT((*confs)[0].unit == "Kg");
-		TS_ASSERT((*confs)[0].standard_unit == "1.0");
+		TS_ASSERT((*confs)[0].unit == "");//Kg
+		TS_ASSERT((*confs)[0].standard_unit == "No standard unit");//1.0
 		TS_ASSERT((*confs)[0].display_unit == "No display unit");
 		TS_ASSERT((*confs)[0].format == "%d");
 		TS_ASSERT((*confs)[0].min_value == "Not specified");
@@ -512,7 +515,7 @@ public:
 		TS_ASSERT((*confs)[2].writable_attr_name == "None");
 
 		TS_ASSERT((*confs)[3].name == "fwd_ima_string_rw");
-		local_root = "tango://acudebian7.esrf.fr:10000/" + device2_name + "/string_ima_attr_rw";
+		local_root = tango_prefix + device2_name + "/string_ima_attr_rw";
 		TS_ASSERT((*confs)[3].root_attr_name == local_root);
 
 		TS_ASSERT((*confs)[3].writable == Tango::READ_WRITE);

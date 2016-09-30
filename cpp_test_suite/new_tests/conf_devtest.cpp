@@ -399,6 +399,50 @@ int main(int argc, char **argv) {
         cout << "Exception: cannot set specific properties for the device: " << device2_name << endl;
     }
 
+    db_data.clear();
+
+
+    Tango::DbDatum fwd_att1("fwd_short_rw");
+    Tango::DbDatum root_att1("__root_att");
+    fwd_att1 << (short) 1;
+    string r_name = device1_name + "/short_attr_rw";;
+    root_att1 << r_name;
+    db_data.push_back(fwd_att1);
+    db_data.push_back(root_att1);
+
+    Tango::DbDatum fwd_att2("fwd_spec_double");
+    Tango::DbDatum root_att2("__root_att");
+    fwd_att2 << (short) 1;
+    r_name = device1_name + "/double_spec_attr";;
+    root_att2 << r_name;
+    db_data.push_back(fwd_att2);
+    db_data.push_back(root_att2);
+
+    Tango::DbDatum fwd_att3("fwd_string_w");
+    Tango::DbDatum root_att3("__root_att");
+    fwd_att3 << (short) 1;
+    r_name = device1_name + "/string_attr_w2";;
+    root_att3 << r_name;
+    db_data.push_back(fwd_att3);
+    db_data.push_back(root_att3);
+
+    Tango::DbDatum fwd_att4("fwd_ima_string_rw");
+    Tango::DbDatum root_att4("__root_att");
+    fwd_att4 << (short) 1;
+    r_name = device2_name + "/string_ima_attr_rw";;
+    root_att4 << r_name;
+    db_data.push_back(fwd_att4);
+    db_data.push_back(root_att4);
+
+
+    try {
+        db->put_device_attribute_property(fwd_dev_name, db_data);
+        print_changes("Device specific attribute properties", fwd_dev_name.c_str(), db_data);
+
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
+    }
     delete db;
 
     return 0;
