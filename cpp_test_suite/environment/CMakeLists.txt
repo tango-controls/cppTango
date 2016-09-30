@@ -1,6 +1,4 @@
 #TODO windows
-message("System TANGO_HOST=$ENV{TANGO_HOST}")
-set(TANGO_HOST $ENV{TANGO_HOST})
 configure_file(tango_host.cmake ${PROJECT_BINARY_DIR}/tango_host @ONLY)
 
 configure_file(pre_test.sh.cmake pre_test.sh @ONLY)
