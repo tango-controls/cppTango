@@ -57,7 +57,7 @@ add_test("CXX::runner" runner
         --outpath=/tmp/
         --refpath=${CMAKE_CURRENT_SOURCE_DIR}/../new_tests/out/
         --loglevel=0
-        --dsloglevel=3
+        --dsloglevel=5
         --suiteloop=1
         --devicealias=${DEV1_ALIAS}
         --attributealias=${ATTR_ALIAS}
