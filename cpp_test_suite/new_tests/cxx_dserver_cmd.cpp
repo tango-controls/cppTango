@@ -231,7 +231,7 @@ public:
 		din << dserver_name;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingTarget", din));
 		dout >> logging_target_out;
-		TS_ASSERT((*logging_target_out).length() == 0);
+		TS_ASSERT((*logging_target_out).length() == 1);//console::cout
 
 		// set logging level to 5
 		DevVarLongStringArray dserver_level_in;
@@ -292,7 +292,7 @@ public:
 		din << dserver_name;
 		TS_ASSERT_THROWS_NOTHING(dout = dserver->command_inout("GetLoggingTarget", din));
 		dout >> check_logging_target;
-		TS_ASSERT((*check_logging_target).length() == 0);
+		TS_ASSERT((*check_logging_target).length() == 1);//console::cout
 	}
 
 // Test comparing input with output

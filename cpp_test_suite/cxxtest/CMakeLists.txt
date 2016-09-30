@@ -45,8 +45,8 @@ add_test("CXX::runner" runner
                         --fwd_device=${FWD_DEV}
                         --loop=1
                         --fulldsname=${SERV_NAME}/${INST_NAME}
-                        --serverhost=${FULL_HOSTNAME}
-                        --clienthost=${FULL_HOSTNAME}
+                        --serverhost=${HOST_NAME}
+                        --clienthost=${HOST_NAME}
                         --serverversion=5
                         --docurl=http://www.tango-controls.org
                         --devtype=TestDevice
@@ -58,4 +58,5 @@ add_test("CXX::runner" runner
                         --suiteloop=1
                         --devicealias=${DEV1_ALIAS}
                         --attributealias=${ATTR_ALIAS}
+                        --verbose=true
 )

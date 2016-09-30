@@ -4,11 +4,11 @@ set(DEV2 "test/debian8/11")
 set(DEV3 "test/debian8/12")
 set(FWD_DEV "test/fwd_debian8/10")
 set(SERV_NAME "DevTest")
-set(INST_NAME "debian8")
+set(INST_NAME "test")
 set(DEV1_ALIAS "debian8_alias")
 set(ATTR_ALIAS "debian8_attr_alias")
 cmake_host_system_information(RESULT HOST_NAME QUERY HOSTNAME)
-set(FULL_HOSTNAME "${HOST_NAME}:10000")
+message("HOST_NAME=${HOST_NAME}")
 
 add_subdirectory(environment)
 
