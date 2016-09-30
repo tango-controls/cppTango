@@ -924,19 +924,28 @@ void DevTestClass::pipe_factory()
 	pipe_list.push_back(pPipe3);
 
 	ConfPipeClass	*pPipe4 = new ConfPipeClass("PipeConf4",Tango::OPERATOR);
+	udpp.set_label("DB_class_def_label");
+	udpp.set_description("DB_device_def_desc");
+	pPipe4->set_default_properties(udpp);
 	pipe_list.push_back(pPipe4);
 
 	ConfPipeClass	*pPipe5 = new ConfPipeClass("PipeConf5",Tango::OPERATOR);
+	udpp.description.clear();
+	udpp.set_label("ClassDefinedLabel");
+	pPipe5->set_default_properties(udpp);
 	pipe_list.push_back(pPipe5);
 
 	ConfPipeClass	*pPipe6 = new ConfPipeClass("PipeConf6",Tango::OPERATOR);
 	udpp.description.clear();
 	udpp.label.clear();
-	udpp.set_description("UserDefinedDesc");
+	udpp.set_description("ClassDefinedDesc");
 	pPipe6->set_default_properties(udpp);
 	pipe_list.push_back(pPipe6);
 
 	ConfPipeClass	*pPipe7 = new ConfPipeClass("PipeConf7",Tango::OPERATOR);
+    udpp.label.clear();
+    udpp.set_description("AnotherClassDefinedDesc");
+    pPipe7->set_default_properties(udpp);
 	pipe_list.push_back(pPipe7);
 
 	RPipeDEClass	*pRPipeDE = new RPipeDEClass("RPipeDE",Tango::OPERATOR);
