@@ -33,6 +33,39 @@ Typical output:
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/idl/tango.h
 ```
 
+## Ubuntu 16.04 compilation problem
+
+When compiling on Ubuntu 16.04 the following error occurs:
+
+```
+[ 17%] Building CXX object cppapi/client/CMakeFiles/client_objects.dir/zmqeventconsumer.cpp.o
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp: In member function ‘virtual void* Tango::ZmqEventConsumer::run_undetached(void*)’:
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:186:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+  items[0].socket = *control_sock;
+                  ^
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:187:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+  items[1].socket = *heartbeat_sub_sock;
+                  ^
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:188:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+  items[2].socket = *event_sub_sock;
+                  ^
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp: In member function ‘bool Tango::ZmqEventConsumer::process_ctrl(zmq::message_t&, zmq::pollitem_t*, int&)’:
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:1063:47: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+                 poll_list[old_poll_nb].socket = *tmp_sock;
+```
+
+This is due to incompatibility between libzmq3-dev:4.0.5 (debian jessie) and libzmq3-dev:4.1.7 (ubuntu 16.04), i.e. it is not possible to compile cppTango using libzmq provided in Ubuntu.
+
+The following workaround can be applied:
+
+Download and compile [zmq-4.0.5](https://github.com/zeromq/zeromq4-x/releases/tag/v4.0.5). Install it in some folder, e.g. cppTango/lib/zeromq-4.0.5.
+
+Download and copy into zmq-4.0.5 installation folder, e.g. cppTango/lib/zmq-4.0.5/include, all *.hpp files from [cppzmq](https://github.com/zeromq/cppzmq)
+
+Build cppTango using installed zmq-4.0.5: `cmake .. -DZMQ_BASE=../lib/zmq-4.0.5`
+
+This problem is addressed in issue #273
+
 # How to setup tests
 
 Using provided docker based TANGO environment:
