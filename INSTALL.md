@@ -107,11 +107,13 @@ $ cd build
 $ cat tango_host
 #!/bin/bash
 export TANGO_HOST=172.17.0.3:10000
-
-$ . tango_host
 ```
 
 TANGO_HOST must be the same as what `start-tango` has returned.
+
+```
+$ . tango_host
+```
 
 Now run some test:
 
