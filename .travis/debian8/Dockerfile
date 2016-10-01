@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y omniidl libomniorb4-dev libcos4-dev lib
 
 RUN useradd -ms /bin/bash tango
 
-ENV LD_LIBRARY_PATH=/home/tango
+ENV PKG_CONFIG_PATH=/home/tango/lib/pkgconfig
 
 USER tango
 
