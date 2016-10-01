@@ -1,0 +1,1 @@
+const bool kIsInDocker = @IS_IN_DOCKER@;
