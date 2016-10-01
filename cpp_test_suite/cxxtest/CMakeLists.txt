@@ -1,7 +1,5 @@
 message("Generate runner.cpp")
 
-configure_file(include/config.h.cmake include/config.h @ONLY)
-
 execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
         -o ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp
         ../../new_tests/cxx_syntax.cpp
@@ -37,7 +35,7 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp)
-target_include_directories(runner PUBLIC include ${CMAKE_CURRENT_BINARY_DIR}/include)
+target_include_directories(runner PUBLIC include)
 target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
 target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 

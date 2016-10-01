@@ -6,7 +6,6 @@
 #include <tango.h>
 #include <iostream>
 #include "compare_test.h"
-#include "config.h"
 
 using namespace Tango;
 using namespace std;
@@ -235,14 +234,9 @@ public:
         fake_logging_target[1] = string("file::/usr/lib/cxx_dserver_cmd.out").c_str();
         din << fake_logging_target;
 
-//        if (kIsInDocker) { //in Docker any user has root permissions
-//            TS_ASSERT_THROWS_NOTHING(dserver->command_inout("AddLoggingTarget", din));
-//        }
-//        else {
-            TS_ASSERT_THROWS_ASSERT(dserver->command_inout("AddLoggingTarget", din), Tango::DevFailed & e,
-                                    TS_ASSERT(string(e.errors[0].reason.in()) == "API_CannotOpenFile"
-                                              && e.errors[0].severity == Tango::ERR));
-//        }
+        TS_ASSERT_THROWS_ASSERT(dserver->command_inout("AddLoggingTarget", din), Tango::DevFailed & e,
+                                TS_ASSERT(string(e.errors[0].reason.in()) == "API_CannotOpenFile"
+                                          && e.errors[0].severity == Tango::ERR));
 
         // add logging target
         DevVarStringArray logging_target;
