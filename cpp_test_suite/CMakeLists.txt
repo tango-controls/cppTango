@@ -8,6 +8,7 @@ set(INST_NAME "test")
 set(DEV1_ALIAS "debian8_alias")
 set(ATTR_ALIAS "debian8_attr_alias")
 cmake_host_system_information(RESULT HOST_NAME QUERY HOSTNAME)
+string(TOLOWER ${HOST_NAME} HOST_NAME)
 message("HOST_NAME=${HOST_NAME}")
 
 add_subdirectory(environment)
