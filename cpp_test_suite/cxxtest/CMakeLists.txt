@@ -59,6 +59,5 @@ add_test("CXX::runner" runner
         --suiteloop=1
         --devicealias=${DEV1_ALIAS}
         --attributealias=${ATTR_ALIAS}
-        --tango-prefix=tango://${TANGO_HOST}/
         --verbose=true
 )

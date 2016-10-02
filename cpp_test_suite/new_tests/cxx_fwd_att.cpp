@@ -41,7 +41,6 @@ protected:
 	AttributeInfoListEx 	*confs;
 	string 					fwd_device_name;
 	DeviceProxy 			*root_admin,*ad;
-	string 					tango_prefix;
 
 	bool					verbose;
 
@@ -59,8 +58,6 @@ public:
 		device2_name = CxxTest::TangoPrinter::get_param("device2");
 		full_ds_name = CxxTest::TangoPrinter::get_param("fulldsname");
 		fwd_device_name = CxxTest::TangoPrinter::get_param_loc("fwd_device");
-
-		tango_prefix = CxxTest::TangoPrinter::get_param_loc("tango-prefix");
 
 		verbose = CxxTest::TangoPrinter::is_param_set("verbose");
 
@@ -450,9 +447,11 @@ public:
 		AttributeInfoListEx *confs = fwd_device->get_attribute_config_ex(att_names);
 
 		TS_ASSERT((*confs)[0].name == "fwd_short_rw");
-		string local_root_base(tango_prefix);//see conf_devtest
-		local_root_base = local_root_base + device1_name;
+		string tango_host(getenv("TANGO_HOST"));
+		string local_root_base("tango://");
+		local_root_base = local_root_base + tango_host + "/" +device1_name;
 		string local_root = local_root_base + "/short_attr_rw";
+		cout << (*confs)[0].root_attr_name << "==" << local_root << endl;
 		TS_ASSERT((*confs)[0].root_attr_name == local_root);
 
 		TS_ASSERT((*confs)[0].writable == Tango::READ_WRITE);
@@ -515,7 +514,7 @@ public:
 		TS_ASSERT((*confs)[2].writable_attr_name == "None");
 
 		TS_ASSERT((*confs)[3].name == "fwd_ima_string_rw");
-		local_root = tango_prefix + device2_name + "/string_ima_attr_rw";
+		local_root = "tango://" + tango_host + "/" + device2_name + "/string_ima_attr_rw";
 		TS_ASSERT((*confs)[3].root_attr_name == local_root);
 
 		TS_ASSERT((*confs)[3].writable == Tango::READ_WRITE);
