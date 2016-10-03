@@ -2,12 +2,9 @@
 check_return_value () {
     if [ $1 != "0" ]
     then
-        echo "Polling Test Suite has FAILED !!!!!!!!!!!!!!!!!!"
+        echo "Event Test Suite has FAILED !!!!!!!!!!!!!!!!!!"
         echo "Leaving test suite, try to fix it"
         date
-        sleep 120
-        date
-        ./StopPoll @DEV1@
         exit -1
     fi
 }
