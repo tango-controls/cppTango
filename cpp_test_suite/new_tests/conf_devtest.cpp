@@ -451,7 +451,7 @@ int main(int argc, char **argv) {
 
     //pipe class level configuration
     DbDatum pipeConf4("PipeConf4");
-    pipeConf4 << (short) 1;
+    pipeConf4 << (short) 2;
     DbDatum pipeConf4DbClassLabel("label");
     pipeConf4DbClassLabel << "DB_class_def_label";
     DbDatum pipeConf4DbClassDescription("description");
@@ -473,16 +473,10 @@ int main(int argc, char **argv) {
     pipeConf7DbClassDesc << "AnotherClassDefinedDesc";
 
 
-    db_data.push_back(pipeConf4);
-    db_data.push_back(pipeConf4DbClassLabel);
-    db_data.push_back(pipeConf4DbClassDescription);
-    db_data.push_back(pipeConf5);
-    db_data.push_back(pipeConf5DbClassLabel);
-    db_data.push_back(pipeConf6);
-    db_data.push_back(pipeConf6DbClassDesc);
-    db_data.push_back(pipeConf7);
-    db_data.push_back(pipeConf7DbClassDesc);
-
+    db_data = {pipeConf4, pipeConf4DbClassLabel, pipeConf4DbClassDescription,
+               pipeConf5, pipeConf5DbClassLabel,
+               pipeConf6, pipeConf6DbClassDesc,
+               pipeConf7, pipeConf7DbClassDesc};
 
     try{
         db->put_class_pipe_property(CLASS_NAME, db_data);
@@ -491,8 +485,6 @@ int main(int argc, char **argv) {
     catch (...){
         cout << "Exception: cannot set pipe properties at class level: " << CLASS_NAME << endl;
     }
-
-    db_data.clear();
 
     //pipe class level configuration
     DbDatum pipeConf3("PipeConf3");
@@ -505,10 +497,7 @@ int main(int argc, char **argv) {
     DbDatum pipeConf4_devDbClassDesc("description");
     pipeConf4_devDbClassDesc << "DB_device_def_desc";
 
-    db_data.push_back(pipeConf3);
-    db_data.push_back(pipeConf3DbClassLabel);
-    db_data.push_back(pipeConf4_dev);
-    db_data.push_back(pipeConf4_devDbClassDesc);
+    db_data = {pipeConf3, pipeConf3DbClassLabel, pipeConf4_dev, pipeConf4_devDbClassDesc};
 
     try{
         db->put_device_pipe_property(device1_name, db_data);
@@ -516,6 +505,25 @@ int main(int argc, char **argv) {
     }
     catch (...){
         cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
+    }
+
+    DbDatum short_attr_rw("short_attr_rw");
+    short_attr_rw << (short) 2;
+    DbDatum short_attr_rw_unit("unit");
+    str = "Kg";
+    short_attr_rw_unit << str;
+    DbDatum short_attr_rw_std_unit("standard_unit");
+    str = "1.0";
+    short_attr_rw_std_unit << str;
+
+    db_data = {short_attr_rw,short_attr_rw_unit,short_attr_rw_std_unit};
+
+    try {
+        db->put_device_attribute_property(device1_name, db_data);
+        print_changes("Device specific attribute properties", device1_name.c_str(), db_data);
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << endl;
     }
 
     delete db;
