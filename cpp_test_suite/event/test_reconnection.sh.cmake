@@ -12,7 +12,7 @@ check_return_value () {
 start_server(){
     @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest @INST_NAME@ -v5 1>@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.out 2>&1 &
     echo $! > @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid
-    echo "PID=" < @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid
+    echo "PID=" `cat @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid`
 }
 
 #
@@ -48,12 +48,6 @@ PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)
 kill $PID
 
 sleep 2
-
-#
-# Next command will restart server 2
-#
-PIDS=`ps -e | grep DevTest | grep -v grep`
-echo "PIDS = $PIDS"
 
 echo "Testing stateless event connection (takes time...)"
 sleep 24 &&  start_server &
