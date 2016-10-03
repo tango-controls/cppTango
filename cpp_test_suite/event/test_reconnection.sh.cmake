@@ -12,24 +12,19 @@ check_return_value () {
 start_server(){
     @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest @INST_NAME@ -v5 1>@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.out 2>&1 &
     echo $! > @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid
+    echo "PID=" < @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid
 }
 
 #
-# kill both servers
+# kill DevTest server
 #
-
-PIDS=`ps -e | grep DevTest | grep -v grep | awk '{print $1}'`
-echo "PIDS = $PIDS"
-for pid in $PIDS
-do
-echo "Killing process with PID $pid"
-kill $pid
-done
+PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)
+kill $PID
 
 sleep 2
 
 #
-# Start only one server
+# Start DevTest server
 #
 
 start_server
@@ -49,13 +44,8 @@ check_return_value $ret
 # kill servers
 #
 
-PIDS=`ps -e | grep DevTest | grep -v grep | awk '{print $1}'`
-echo "PIDS = $PIDS"
-for pid in $PIDS
-do
-echo "Killing process with PID $pid"
-kill $pid
-done
+PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)
+kill $PID
 
 sleep 2
 
