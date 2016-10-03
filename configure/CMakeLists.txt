@@ -71,9 +71,3 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 include(GNUInstallDirs)
-
-if($ENV{IS_IN_DOCKER})
-    set(IS_IN_DOCKER $ENV{IS_IN_DOCKER})
-else()
-    set(IS_IN_DOCKER "false")
-endif()
