@@ -24,7 +24,7 @@ before_install:
 
 before_script:
   - docker run --name mysql_db -e MYSQL_ROOT_PASSWORD=root -d tangocs/mysql:9.2.2 --sql-mode=""
-  - CONTAINER=$(docker run --name tango_cs -e TANGO_HOST=127.0.0.1:10000 -e MYSQL_HOST=mysql_db:3306 -e MYSQL_USER=tango -e MYSQL_PASSWORD=tango -e MYSQL_DATABASE=tango --link mysql_db:mysql_db -d mliszcz/tango-cs:latest)
+  - CONTAINER=$(docker run --name tango_cs -e TANGO_HOST=127.0.0.1:10000 -e MYSQL_HOST=mysql_db:3306 -e MYSQL_USER=tango -e MYSQL_PASSWORD=tango -e MYSQL_DATABASE=tango --link mysql_db:mysql_db -d tangocs/tango-cs:latest)
   - IPADDR=$(docker inspect -f '{{ .NetworkSettings.IPAddress }}' $CONTAINER)
   - TANGO_HOST=${IPADDR}:10000
   - docker build -t cpp_tango .travis/${OS_TYPE}
