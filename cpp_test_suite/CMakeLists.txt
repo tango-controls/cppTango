@@ -2,6 +2,7 @@
 set(DEV1 "test/debian8/10")
 set(DEV2 "test/debian8/11")
 set(DEV3 "test/debian8/12")
+set(DEV20 "test/debian8/20")
 set(FWD_DEV "test/fwd_debian8/10")
 set(SERV_NAME "DevTest")
 set(INST_NAME "test")

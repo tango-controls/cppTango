@@ -57,9 +57,8 @@ int main(int argc, char **argv) {
     db_dev_info_2._class = CLASS_NAME;
     db_dev_info_3.name = device3_name;
     db_dev_info_3._class = CLASS_NAME;
-    db_dev_infos.push_back(db_dev_info_1);
-    db_dev_infos.push_back(db_dev_info_2);
-    db_dev_infos.push_back(db_dev_info_3);
+
+    db_dev_infos = {db_dev_info_1, db_dev_info_2, db_dev_info_3};
 
     try {
         db->add_server(str, db_dev_infos);
