@@ -2,10 +2,10 @@
 
 # Prerequisites
 
-* tango-idl
-* docker (for tests)
+* [tango-idl](https://github.com/tango-controls/tango-idl)
+* docker and docker-engine (for tests)
 
-# How to install
+# How to build and install using cmake
 
 - clone
 - cd into cloned repo
@@ -14,6 +14,8 @@
 - cmake .. 
 - make [-j NUMBER_OF_CPUS]
 - sudo make install
+
+cmake options are: `[-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DIDL_BASE=<tango-idl installation folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]`
 
 Typical output:
 
@@ -24,133 +26,181 @@ Typical output:
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/libtango.so
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/lib/pkgconfig/tango.pc
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Appender.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/AppenderAttachable.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LayoutAppender.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/FileAppender.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/RollingFileAppender.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/OstreamAppender.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Layout.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/PatternLayout.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/XmlLayout.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Logger.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LogSeparator.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LoggerStream.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LogStream.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LogStreambuf.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/LoggingEvent.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Level.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/NDC.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/TimeStamp.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Filter.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Export.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/Portability.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/config.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/DummyThreads.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/PThreads.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/MSThreads.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango/threading/Threading.hh
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/accessproxy.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/apiexcept.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/cbthread.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dbapi.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devasyn.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/event.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/eventconsumer.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/filedatabase.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/group.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/lockthread.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/Database.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DbDevice.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/ApiUtil.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceData.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceAttribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DevicePipe.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/Connection.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceProxy.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/AttributeProxy.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/event.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi_attr.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi_utils.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/api_util.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devapi_pipe.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/zmq.hpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/DeviceProxyHelper.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/PogoHelper.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/TangoExceptionsHelper.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/Xstring.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrdesc.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attribute.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrsetval.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attribute_spec.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrmanip.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrprop.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/attrprop.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/auto_tango_monitor.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/basiccommand.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/blackbox.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/classattribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/classpipe.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/command.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pipe.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pipe.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/coutappender.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/coutbuf.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_2.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_3.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_3.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_4.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/device_5.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/deviceclass.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/devintr.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dintrthread.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dserver.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dserverclass.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/dserversignal.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/eventsupplier.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/except.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattrdesc.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattribute.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/fwdattribute_spec.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/log4tango.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/logcmds.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/logging.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/logstream.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/multiattribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/ntservice.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pipedesc.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollcmds.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollext.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollext.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollobj.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollring.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollring.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollthread.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/pollthread.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/readers_writers_lock.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/rootattreg.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/seqvec.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango_config.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango_const.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tango_monitor.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tangoappender.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/tangorollingfileappender.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/utils.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/utils.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/utils_spec.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w32win.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attribute.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attribute.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attrsetval.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_attribute_spec.tpp
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_pipe.h
--- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/w_pipe.tpp
+<snip>
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/subdev_diag.h
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/encoded_attribute.h
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/encoded_format.h
 -- Installing: /storage/Projects/org.tango/git/cppTango/build/install/include/idl/tango.h
+```
+
+## Ubuntu 16.04 compilation problem
+
+When compiling on Ubuntu 16.04 the following error occurs:
+
+```
+[ 17%] Building CXX object cppapi/client/CMakeFiles/client_objects.dir/zmqeventconsumer.cpp.o
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp: In member function ‘virtual void* Tango::ZmqEventConsumer::run_undetached(void*)’:
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:186:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+  items[0].socket = *control_sock;
+                  ^
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:187:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+  items[1].socket = *heartbeat_sub_sock;
+                  ^
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:188:18: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+  items[2].socket = *event_sub_sock;
+                  ^
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp: In member function ‘bool Tango::ZmqEventConsumer::process_ctrl(zmq::message_t&, zmq::pollitem_t*, int&)’:
+/home/ingvord/Projects/org.tango/git/cppTango/cppapi/client/zmqeventconsumer.cpp:1063:47: error: cannot convert ‘zmq::socket_t’ to ‘void*’ in assignment
+                 poll_list[old_poll_nb].socket = *tmp_sock;
+```
+
+This is due to incompatibility between libzmq3-dev:4.0.5 (debian jessie) and libzmq3-dev:4.1.7 (ubuntu 16.04), i.e. it is not possible to compile cppTango using libzmq provided in Ubuntu.
+
+The following workaround can be applied:
+
+Download and compile [zmq-4.0.5](https://github.com/zeromq/zeromq4-x/releases/tag/v4.0.5). Install it in some folder, e.g. cppTango/lib/zeromq-4.0.5.
+
+Download and copy into zmq-4.0.5 installation folder, e.g. cppTango/lib/zmq-4.0.5/include, all *.hpp files from [cppzmq](https://github.com/zeromq/cppzmq)
+
+Build cppTango using installed zmq-4.0.5: `cmake .. -DZMQ_BASE=../lib/zmq-4.0.5`
+
+This problem is addressed in issue #273
+
+# How to setup tests
+
+Using provided docker based TANGO environment:
+
+### Build the library:
+
+```
+$ mkdir build
+$ cd build
+$ cmake ..
+$ make
+```
+
+### Start TANGO environment
+
+```
+$ make start-tango
+Setup test environment
+557e3c8a3daa2b75aac4fe04562bac32570db0ace08edd06a23cebaa7fd86f5e
+CONTAINER=27bad3659305155c33d99505c4836b616d9c2a6de3431229e79b71a020f18455
+TANGO_HOST=172.17.0.3:10000
+Create tango_host file
+Wait till tango-cs is online
+```
+
+This process takes ~30 s
+
+### Run tests
+
+```
+$ make run-tests
+TANGO_HOST=172.17.0.3:10000
+Run conf_devtest
+Added test server : DevTest/test -> test/debian8/10, class : DevTest
+Added test server : DevTest/test -> test/debian8/11, class : DevTest
+Added test server : DevTest/test -> test/debian8/12, class : DevTest
+
+Added test server : FwdTest/test -> test/fwd_debian8/10, class : FwdTest
+
+Added pseudo server : DsCache/test -> test/cache1/1, class : CacheTest1
+Added pseudo server : DsCache/test -> test/cache1/2, class : CacheTest1
+Added pseudo server : DsCache/test -> test/cache2/1, class : CacheTest2
+
+<snip>
+
+Constructing a list of tests
+Done constructing a list of tests
+Checking test dependency graph...
+Checking test dependency graph end
+test 1
+      Start  1: log4tango_test
+      
+<snip>
+      
+100% tests passed, 0 tests failed out of 59
+
+Total Test time (real) = 843.30 sec
+
+Run command: /home/tango/src/build/cpp_test_suite/environment/post_test.sh      
+```
+
+The whole test suite takes ~ 15 min
+
+### Setup and run individual tests
+
+To run individual tests use TANGO_HOST provided by the `start-tango` target.
+
+Make sure TANGO_HOST is set correctly:
+
+```
+$ cd build
+$ cat tango_host
+#!/bin/bash
+export TANGO_HOST=172.17.0.3:10000
+```
+
+TANGO_HOST must be the same as what `start-tango` has returned.
+
+```
+$ . tango_host
+```
+
+Now run some test:
+
+```
+$ ctest -R attr_misc -V
+UpdateCTestConfiguration  from :/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
+Parse Config file:/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
+ Add coverage exclude regular expressions.
+UpdateCTestConfiguration  from :/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
+Parse Config file:/storage/Projects/org.tango/git/cppTango/build/DartConfiguration.tcl
+Test project /storage/Projects/org.tango/git/cppTango/build
+Run command: /storage/Projects/org.tango/git/cppTango/build/cpp_test_suite/environment/pre_test.sh
+TANGO_HOST=172.17.0.3:10000
+Run conf_devtest
+<snip>
+Constructing a list of tests
+Done constructing a list of tests
+Checking test dependency graph...
+Checking test dependency graph end
+test 12
+    Start 12: old_tests::attr_misc
+
+12: Test command: /storage/Projects/org.tango/git/cppTango/build/cpp_test_suite/old_tests/attr_misc "test/debian8/10"
+12: Test timeout computed to be: 1500
+12: 
+12: new DeviceProxy(test/debian8/10) returned
+12: 
+12:    Setting/Getting attribute info --> OK
+12:    Writing outside attribute limits --> OK
+12:    Min alarm detection (on a float spectrum) --> OK
+12:    Reset min alarm detection --> OK
+12:    Max alarm detection (on a float spectrum) --> OK
+12:    Reset max alarm detection --> OK
+12:    Min alarm detection (on a unsigned short spectrum) --> OK
+12:    Reset min alarm detection --> OK
+12:    Max alarm detection (on a unsigned short spectrum) --> OK
+12:    Reset max alarm detection --> OK
+12:    Setting/Getting V5 attribute info --> OK
+12:    Alarm, Warning level detection --> OK
+12:    Exception when trying to change "hard coded" properties --> OK
+1/1 Test #12: old_tests::attr_misc .............   Passed    0.29 sec
+
+The following tests passed:
+        old_tests::attr_misc
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.33 sec
+```
+
+See [CTest guide](https://cmake.org/Wiki/CMake/Testing_With_CTest)
+
+### Stop TANGO environment
+
+```
+$ make stop-tango
 ```

