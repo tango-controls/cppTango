@@ -435,6 +435,7 @@ int main(int argc, char **argv) {
     db_data.push_back(root_att4);
 
 
+
     try {
         db->put_device_attribute_property(fwd_dev_name, db_data);
         print_changes("Device specific attribute properties", fwd_dev_name.c_str(), db_data);
@@ -443,6 +444,80 @@ int main(int argc, char **argv) {
     catch (...) {
         cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
     }
+
+    db_data.clear();
+
+    //TODO rewrite using functional style
+
+    //pipe class level configuration
+    DbDatum pipeConf4("PipeConf4");
+    pipeConf4 << (short) 1;
+    DbDatum pipeConf4DbClassLabel("label");
+    pipeConf4DbClassLabel << "DB_class_def_label";
+    DbDatum pipeConf4DbClassDescription("description");
+    pipeConf4DbClassDescription << "Bidon";
+
+    DbDatum pipeConf5("PipeConf5");
+    pipeConf5 << (short) 1;
+    DbDatum pipeConf5DbClassLabel("label");
+    pipeConf5DbClassLabel << "ClassDefinedLabel";
+
+    DbDatum pipeConf6("PipeConf6");
+    pipeConf6 << (short) 1;
+    DbDatum pipeConf6DbClassDesc("description");
+    pipeConf6DbClassDesc << "ClassDefinedDesc";
+
+    DbDatum pipeConf7("PipeConf7");
+    pipeConf7 << (short) 1;
+    DbDatum pipeConf7DbClassDesc("description");
+    pipeConf7DbClassDesc << "AnotherClassDefinedDesc";
+
+
+    db_data.push_back(pipeConf4);
+    db_data.push_back(pipeConf4DbClassLabel);
+    db_data.push_back(pipeConf4DbClassDescription);
+    db_data.push_back(pipeConf5);
+    db_data.push_back(pipeConf5DbClassLabel);
+    db_data.push_back(pipeConf6);
+    db_data.push_back(pipeConf6DbClassDesc);
+    db_data.push_back(pipeConf7);
+    db_data.push_back(pipeConf7DbClassDesc);
+
+
+    try{
+        db->put_class_pipe_property(CLASS_NAME, db_data);
+        print_changes("Set pipe properties at class level",CLASS_NAME, db_data);
+    }
+    catch (...){
+        cout << "Exception: cannot set pipe properties at class level: " << CLASS_NAME << endl;
+    }
+
+    db_data.clear();
+
+    //pipe class level configuration
+    DbDatum pipeConf3("PipeConf3");
+    pipeConf3 << (short) 1;
+    DbDatum pipeConf3DbClassLabel("label");
+    pipeConf3DbClassLabel << "OverWrittenPipeLabel";
+
+    DbDatum pipeConf4_dev("PipeConf4");
+    pipeConf4_dev << (short) 1;
+    DbDatum pipeConf4_devDbClassDesc("description");
+    pipeConf4_devDbClassDesc << "DB_device_def_desc";
+
+    db_data.push_back(pipeConf3);
+    db_data.push_back(pipeConf3DbClassLabel);
+    db_data.push_back(pipeConf4_dev);
+    db_data.push_back(pipeConf4_devDbClassDesc);
+
+    try{
+        db->put_device_pipe_property(device1_name, db_data);
+        print_changes("Set pipe properties at device level" , device1_name.c_str(), db_data);
+    }
+    catch (...){
+        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
+    }
+
     delete db;
 
     return 0;
