@@ -10,32 +10,47 @@ check_return_value () {
 }
 
 start_server(){
-    @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest @INST_NAME@ -v5 1>@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.out 2>&1 &
+    @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest $1 -v5 1>@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.out 2>&1 &
     echo $! > @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid
     echo "PID=" `cat @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid`
 }
 
-#
-# kill DevTest server
-#
-PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)
-kill $PID
+kill_servers(){
+    PIDS=`ps -e | grep DevTest | grep -v grep | awk '{print $1}'`
+    echo "PIDS = $PIDS"
+    for pid in $PIDS
+    do
+        echo "Killing process with PID $pid"
+        kill $pid
+    done
 
-sleep 2
+    sleep 2
+}
+
+
+start_server @INST_NAME@2
+sleep 20
+
+./server_event @DEV1@ @DEV20@
+
+#
+# kill DevTest servers (/10 and /20)
+#
+kill_servers
 
 #
 # Start DevTest server
 #
 
-start_server
+start_server @INST_NAME@
 sleep 20
 #
 # Next test will restart server
 #
 
 echo "Testing event re-connection (takes time...)"
-sleep 18 &&  start_server &
-sleep 62 &&  start_server &
+sleep 18 &&  start_server @INST_NAME@ &
+sleep 62 &&  start_server @INST_NAME@ &
 ./reco_zmq @DEV1@ -v
 ret=$?
 check_return_value $ret
@@ -43,14 +58,20 @@ check_return_value $ret
 #
 # kill servers
 #
-
-PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)
-kill $PID
-
-sleep 2
+kill_servers
 
 echo "Testing stateless event connection (takes time...)"
-sleep 24 &&  start_server &
-./stateless_sub @DEV2@ -v
+sleep 24 &&  start_server @INST_NAME@2 &
+./stateless_sub @DEV20@ -v
 ret=$?
 check_return_value $ret
+
+#kill extra server
+kill_servers
+
+#restart DEV1
+start_server @INST_NAME@
+
+sleep 20
+
+echo "PID=$(<@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_@INST_NAME@.pid)"

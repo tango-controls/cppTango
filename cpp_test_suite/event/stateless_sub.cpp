@@ -99,7 +99,7 @@ int main(int argc, char **argv)
 // Wait for connection and event
 //
 
-		Tango_sleep(50);
+		Tango_sleep(40);
 		
 //
 // Check error and connection

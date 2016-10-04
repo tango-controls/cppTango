@@ -31,12 +31,12 @@ void print_changes(const char *desc, const char *server, DbData &db_data) {
  */
 int main(int argc, char **argv) {
     if (argc < 7) {
-        cout << "usage: " << argv[0] << " dserver device1 device2 device3 device1_alias attribute_alias fwd_device" <<
+        cout << "usage: " << argv[0] << " dserver device1 device2 device3 device1_alias attribute_alias fwd_device device20" <<
         endl;
         exit(-1);
     }
 
-    string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4], device1_alias = argv[5], attribute_alias = argv[6], fwd_dev_name = argv[7];;
+    string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4], device1_alias = argv[5], attribute_alias = argv[6], fwd_dev_name = argv[7], device20_name = argv[8];
 
     Database *db = new Database();
     DbData db_data;
@@ -62,9 +62,10 @@ int main(int argc, char **argv) {
 
     try {
         db->add_server(str, db_dev_infos);
-        for (size_t i = 0; i < db_dev_infos.size(); i++)
-            cout << "Added test server : " << str << " -> " << db_dev_infos[i].name << ", class : " <<
-            db_dev_infos[i]._class << endl;
+        for(auto info : db_dev_infos){
+            cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
+                 info._class << endl;
+        }
         cout << endl;
     }
     catch (...) {
@@ -74,16 +75,39 @@ int main(int argc, char **argv) {
 
     db_dev_infos.clear();
 
-    //Define device server
-    str = "FwdTest/test";
-    db_dev_info_1.name = fwd_dev_name;
-    db_dev_info_1._class = "FwdTest";
-    db_dev_infos.push_back(db_dev_info_1);
+    str = "DevTest/test2";//TODO pass as arg
+    DbDevInfo device20Info;
+    device20Info.name = device20_name;
+    device20Info._class = CLASS_NAME;
+
+    db_dev_infos = {device20Info};
+
     try {
         db->add_server(str, db_dev_infos);
-        for (size_t i = 0; i < db_dev_infos.size(); i++)
-            cout << "Added test server : " << str << " -> " << db_dev_infos[i].name << ", class : " <<
-            db_dev_infos[i]._class << endl;
+        for(auto info : db_dev_infos){
+            cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
+                 info._class << endl;
+        }
+
+        cout << endl;
+    }
+    catch (...) {
+        cout << "Exception: cannot create test server" << endl;
+    }
+
+
+    //Define device server
+    str = "FwdTest/test";//TODO pass as arg
+    DbDevInfo fwdTestInfo;
+    fwdTestInfo.name = fwd_dev_name;
+    fwdTestInfo._class = "FwdTest";
+    db_dev_infos.push_back(fwdTestInfo);
+    try {
+        db->add_server(str, db_dev_infos);
+        for(auto info : db_dev_infos){
+            cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
+                 info._class << endl;
+        }
         cout << endl;
     }
     catch (...) {
@@ -524,6 +548,8 @@ int main(int argc, char **argv) {
     catch (...) {
         cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << endl;
     }
+
+
 
     delete db;
 

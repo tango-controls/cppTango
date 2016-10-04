@@ -1,11 +1,15 @@
+project(test_suite)
+
+set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
+
 #TODO different OS
-set(DEV1 "test/debian8/10")
-set(DEV2 "test/debian8/11")
-set(DEV3 "test/debian8/12")
-set(DEV20 "test/debian8/20")
-set(FWD_DEV "test/fwd_debian8/10")
 set(SERV_NAME "DevTest")
 set(INST_NAME "test")
+set(DEV1 "${INST_NAME}/debian8/10")
+set(DEV2 "${INST_NAME}/debian8/11")
+set(DEV3 "${INST_NAME}/debian8/12")
+set(DEV20 "${INST_NAME}2/debian8/20")
+set(FWD_DEV "${INST_NAME}/fwd_debian8/10")
 set(DEV1_ALIAS "debian8_alias")
 set(ATTR_ALIAS "debian8_attr_alias")
 cmake_host_system_information(RESULT HOST_NAME QUERY HOSTNAME)
