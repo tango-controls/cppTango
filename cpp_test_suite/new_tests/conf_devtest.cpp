@@ -101,7 +101,7 @@ int main(int argc, char **argv) {
     DbDevInfo fwdTestInfo;
     fwdTestInfo.name = fwd_dev_name;
     fwdTestInfo._class = "FwdTest";
-    db_dev_infos.push_back(fwdTestInfo);
+    db_dev_infos= {fwdTestInfo};
     try {
         db->add_server(str, db_dev_infos);
         for(auto info : db_dev_infos){

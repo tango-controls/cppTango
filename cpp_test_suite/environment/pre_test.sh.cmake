@@ -4,7 +4,7 @@ source tango_host
 echo "TANGO_HOST=$TANGO_HOST"
 
 echo "Run conf_devtest"
-@PROJECT_BINARY_DIR@/cpp_test_suite/new_tests/conf_devtest @SERV_NAME@/@INST_NAME@ @DEV1@ @DEV2@ @DEV3@ @DEV1_ALIAS@ @ATTR_ALIAS@ @FWD_DEV@ @DEV20@
+@PROJECT_BINARY_DIR@/new_tests/conf_devtest @SERV_NAME@/@INST_NAME@ @DEV1@ @DEV2@ @DEV3@ @DEV1_ALIAS@ @ATTR_ALIAS@ @FWD_DEV@ @DEV20@
 
 echo "Start DevTest"
 echo "DevTest libraries:"

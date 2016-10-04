@@ -2,6 +2,8 @@ project(test_suite)
 
 set(CMAKE_CXX_FLAGS_RELEASE "-O0 -g")
 
+configure_file(CTestCustom.cmake CTestCustom.cmake)
+
 #TODO different OS
 set(SERV_NAME "DevTest")
 set(INST_NAME "test")
@@ -35,3 +37,5 @@ add_subdirectory(new_tests)
 
 add_subdirectory(asyn)
 add_subdirectory(event)
+
+add_subdirectory(cpp_test_ds)
