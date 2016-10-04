@@ -8,7 +8,7 @@
 
 #include <tango.h>
 
-void check_size(const char *,long,long);
+void check_size(const char *,long,long, bool*);
 
 #define	coutv	if (verbose == true) cout
 
