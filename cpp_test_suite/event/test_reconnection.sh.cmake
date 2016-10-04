@@ -10,9 +10,10 @@ check_return_value () {
 }
 
 start_server(){
+    echo "Starting DevTest $1"
     @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest $1 -v5 1>@PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_$1.out 2>&1 &
     echo $! > @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_$1.pid
-    echo "PID=" `cat @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_$1.pid`
+    echo "Done. PID="`cat @PROJECT_BINARY_DIR@/cpp_test_ds/DevTest_$1.pid`
 }
 
 kill_servers(){
@@ -31,7 +32,10 @@ kill_servers(){
 start_server "@INST_NAME@2"
 sleep 20
 
+echo "Testing server_event"
 ./server_event @DEV1@ @DEV20@
+ret=$?
+check_return_value $ret
 
 #
 # kill DevTest servers (/10 and /20)
