@@ -65,7 +65,7 @@ int main(int argc, char **argv)
 	check_size("CmdDoneEvent",sizeof(CmdDoneEvent),48, &isOK);
 	check_size("AttrReadEvent",sizeof(AttrReadEvent),48, &isOK);
 	check_size("AttrWrittenEvent",sizeof(AttrWrittenEvent),40, &isOK);
-	check_size("CallBack",sizeof(CallBack),18, &isOK);
+	check_size("CallBack",sizeof(CallBack),16, &isOK);
 
 	check_size("EncodedAttribute",sizeof(EncodedAttribute),56, &isOK);
 
