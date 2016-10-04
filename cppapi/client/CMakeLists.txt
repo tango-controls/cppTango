@@ -59,5 +59,6 @@ set(HEADERS accessproxy.h
 add_subdirectory(helpers)
 
 add_library(client_objects OBJECT ${SOURCES})
+target_compile_options(client_objects PRIVATE -fPIC)
 
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")

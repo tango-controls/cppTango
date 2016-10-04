@@ -66,7 +66,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         message("setup for debug build ...")
         add_compile_options(-O0 -Wall -Wextra)# -pedantic
     endif()
-    add_compile_options(-std=c++11 -fPIC)
+    add_compile_options(-std=c++11)
     add_definitions(-DGNU_CXX)
 endif()
 
