@@ -21,7 +21,7 @@ message("HOST_NAME=${HOST_NAME}")
 add_subdirectory(environment)
 
 macro(TEST_SUITE_ADD_TEST test)
-    message("Add test ${test}")
+    message("Add executable ${test}")
     add_executable(${test} ${test}.cpp)
     target_compile_definitions(${test} PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
     target_link_libraries(${test} tango ${CMAKE_DL_LIBS})

@@ -550,6 +550,35 @@ int main(int argc, char **argv) {
     }
 
 
+    //Define polling for DevTest/test2
+    DbDatum polled_attr("polled_attr");
+    vector<string> attrs{"event_change_tst","3000"};
+    polled_attr << attrs;
+
+    db_data = {polled_attr};
+    try {
+        db->put_device_property(device20_name, db_data);
+        print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << endl;
+    }
+
+    DbDatum eventProperties("event_change_tst");
+    eventProperties << (short) 2;
+    DbDatum eventPropertiesAbsCh("abs_change");
+    eventPropertiesAbsCh << 1;
+    DbDatum eventPropertiesRelCh("rel_change");
+    eventPropertiesRelCh << 1;
+
+    db_data = {eventProperties, eventPropertiesAbsCh, eventPropertiesRelCh};
+    try {
+        db->put_device_attribute_property(device20_name, db_data);
+        print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << endl;
+    }
 
     delete db;
 
