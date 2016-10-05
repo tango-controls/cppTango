@@ -38,7 +38,7 @@ static const char *RcsId = "$Id$";
 #endif
 
 #include <tango/tango.h>
-#include <lockthread.h>
+#include <tango/lockthread.h>
 
 #include <functional>
 #include <algorithm>

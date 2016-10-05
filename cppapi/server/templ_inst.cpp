@@ -46,13 +46,13 @@
 
 #include <tango/tango.h>
 
-#include <attribute.tpp>
-#include <pollext.tpp>
-#include <utils.tpp>
-#include <w_attribute.tpp>
-#include <devapi_pipe.tpp>
-#include <pipe.tpp>
-#include <w_pipe.tpp>
+#include <tango/attribute.tpp>
+#include <tango/pollext.tpp>
+#include <tango/utils.tpp>
+#include <tango/w_attribute.tpp>
+#include <tango/devapi_pipe.tpp>
+#include <tango/pipe.tpp>
+#include <tango/w_pipe.tpp>
 
 namespace Tango
 {

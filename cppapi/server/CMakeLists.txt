@@ -57,24 +57,6 @@ set(SOURCES attrdesc.cpp
             w_pipe.cpp
             zmqeventsupplier.cpp)
 
-set(TEMPLATES
-            attribute.tpp
-            attrsetval.tpp
-            attribute_spec.tpp
-            attrprop.tpp
-            pipe.tpp
-            device_3.tpp
-            fwdattribute.tpp
-            fwdattribute_spec.tpp
-            pollext.tpp
-            pollring.tpp
-            pollthread.tpp
-            utils.tpp
-            utils_spec.tpp
-            w_attribute.tpp
-            w_attrsetval.tpp
-            w_attribute_spec.tpp
-            w_pipe.tpp)
 
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)

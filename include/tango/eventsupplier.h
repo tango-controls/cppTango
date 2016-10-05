@@ -59,7 +59,7 @@
 #undef USE_stub_in_nt_dll
 #endif
 
-#include <eventconsumer.h>
+#include <tango/eventconsumer.h>
 
 #include <omnithread.h>
 #ifndef _TG_WINDOWS_

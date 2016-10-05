@@ -40,7 +40,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango/tango.h>
 #include <tango/pollobj.h>
 #include <tango/pollring.h>
-#include <pollring.tpp>
+#include <tango/pollring.tpp>
 
 
 #ifdef _TG_WINDOWS_

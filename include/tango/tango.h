@@ -80,13 +80,13 @@
 // Include API files (device and database)
 //
 
-#include <apiexcept.h>
-#include <devasyn.h>
-#include <dbapi.h>
-#include <devapi.h>
-#include <group.h>
-#include <filedatabase.h>
-#include <devapi_attr.tpp>
+#include <tango/apiexcept.h>
+#include <tango/devasyn.h>
+#include <tango/dbapi.h>
+#include <tango/devapi.h>
+#include <tango/group.h>
+#include <tango/filedatabase.h>
+#include <tango/devapi_attr.tpp>
 
 //
 // Include Tango utility files
@@ -120,17 +120,17 @@
 	#include <tango/pipedesc.h>
 	#include <tango/pipe.h>
 	#include <tango/w_pipe.h>
-	#include <pipe.tpp>
+	#include <tango/pipe.tpp>
 	#include <tango/dserver.h>
-	#include <attribute_spec.tpp>
-	#include <utils_spec.tpp>
-	#include <w_attribute_spec.tpp>
-	#include <attrprop.tpp>
-	#include <attrsetval.tpp>
-	#include <w_attrsetval.tpp>
+	#include <tango/attribute_spec.tpp>
+	#include <tango/utils_spec.tpp>
+	#include <tango/w_attribute_spec.tpp>
+	#include <tango/attrprop.tpp>
+	#include <tango/attrsetval.tpp>
+	#include <tango/w_attrsetval.tpp>
 #endif
 
-#include <event.h>
+#include <tango/event.h>
 
 //
 // minor is also defined (Linux) in sysmacros.h. We want the compiler to

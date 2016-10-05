@@ -40,7 +40,7 @@ static const char *Vers = "$Revision$";
 #include <ac_config.h>
 #endif
 
-#include <w32win.h>
+#include "../../include/tango/w32win.h"
 #include <resource.h>
 
 namespace Tango

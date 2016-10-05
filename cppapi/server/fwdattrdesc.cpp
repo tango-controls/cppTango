@@ -39,8 +39,8 @@ static const char *RcsId = "$Id$";
 #include <tango/tango.h>
 #include <tango/fwdattrdesc.h>
 
-#include <fwdattribute.tpp>
-#include <fwdattribute_spec.tpp>
+#include <tango/fwdattribute.tpp>
+#include <tango/fwdattribute_spec.tpp>
 
 namespace Tango
 {

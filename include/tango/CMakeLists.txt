@@ -1,4 +1,4 @@
-set(HEADERS attrdesc.h
+set(SERVER_HEADERS attrdesc.h
         attribute.h
         attrmanip.h
         attrprop.h
@@ -49,7 +49,6 @@ set(HEADERS attrdesc.h
         tangoappender.h
         tangorollingfileappender.h
         utils.h
-        utils.tpp
         w32win.h
         w_attribute.h
         w_pipe.h
@@ -57,4 +56,54 @@ set(HEADERS attrdesc.h
         encoded_attribute.h
         encoded_format.h)
 
-install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango")
+
+set(SERVER_TEMPLATES
+        attribute.tpp
+        attrsetval.tpp
+        attribute_spec.tpp
+        attrprop.tpp
+        utils.tpp
+        pipe.tpp
+        device_3.tpp
+        fwdattribute.tpp
+        fwdattribute_spec.tpp
+        pollext.tpp
+        pollring.tpp
+        pollthread.tpp
+        utils.tpp
+        utils_spec.tpp
+        w_attribute.tpp
+        w_attrsetval.tpp
+        w_attribute_spec.tpp
+        w_pipe.tpp)
+
+set(CLIENT_HEADERS
+        accessproxy.h
+        apiexcept.h
+        cbthread.h
+        dbapi.h
+        devapi.h
+        devasyn.h
+        event.h
+        eventconsumer.h
+        filedatabase.h
+        group.h
+        lockthread.h
+        Database.h
+        DbDevice.h
+        ApiUtil.h
+        DeviceData.h
+        DeviceAttribute.h
+        DevicePipe.h
+        Connection.h
+        DeviceProxy.h
+        AttributeProxy.h)
+
+set(CLIENT_TEMPLATES event.tpp
+        devapi_attr.tpp
+        devapi_utils.tpp
+        api_util.tpp
+        devapi_pipe.tpp)
+
+add_library(include_objects OBJECT ${SERVER_HEADERS} ${CLIENT_HEADERS})
+install(FILES ${SERVER_HEADERS} ${CLIENT_HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango")

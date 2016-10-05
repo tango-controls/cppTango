@@ -29,7 +29,7 @@
 
 #include <vector>
 #include <errno.h>
-#include <devapi.h>
+#include <tango/devapi.h>
 
 /** @defgroup DBase Database Client classes
  * @ingroup Client

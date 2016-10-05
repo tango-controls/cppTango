@@ -30,32 +30,6 @@ set(SOURCES dbapi_class.cpp
             notifdeventconsumer.cpp
             zmqeventconsumer.cpp)
 
-set(HEADERS accessproxy.h
-            apiexcept.h
-            cbthread.h
-            dbapi.h
-            devapi.h
-            devasyn.h
-            event.h
-            eventconsumer.h
-            filedatabase.h
-            group.h
-            lockthread.h
-            Database.h
-            DbDevice.h
-            ApiUtil.h
-            DeviceData.h
-            DeviceAttribute.h
-            DevicePipe.h
-            Connection.h
-            DeviceProxy.h
-            AttributeProxy.h
-            event.tpp
-            devapi_attr.tpp
-            devapi_utils.tpp
-            api_util.tpp
-            devapi_pipe.tpp)
-
 add_subdirectory(helpers)
 
 add_library(client_objects OBJECT ${SOURCES})

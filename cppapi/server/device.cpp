@@ -45,7 +45,7 @@ static const char *RcsId = "$Id$";
 #include <tango/dserversignal.h>
 #include <tango/classattribute.h>
 #include <tango/eventsupplier.h>
-#include <apiexcept.h>
+#include <tango/apiexcept.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
 #include <tango/logging.h>
