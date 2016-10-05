@@ -34,9 +34,9 @@
 #ifndef _EVENTAPI_H
 #define _EVENTAPI_H
 
-#include <attribute.h>
-#include <except.h>
-#include <tango_const.h>
+#include <tango/attribute.h>
+#include <tango/except.h>
+#include <tango/tango_const.h>
 
 #include <zmq.hpp>
 

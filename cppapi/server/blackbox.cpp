@@ -39,8 +39,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango.h>
-#include <blackbox.h>
+#include <tango/tango.h>
+#include <tango/blackbox.h>
 
 #include <stdio.h>
 

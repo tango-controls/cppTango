@@ -38,7 +38,7 @@
 #ifndef FwdTest_H
 #define FwdTest_H
 
-#include <tango.h>
+#include <tango/tango.h>
 
 
 /*----- PROTECTED REGION END -----*/	//	FwdTest.h

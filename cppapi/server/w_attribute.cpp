@@ -43,10 +43,10 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango.h>
-#include <attribute.h>
-#include <w_attribute.h>
-#include <classattribute.h>
+#include <tango/tango.h>
+#include <tango/attribute.h>
+#include <tango/w_attribute.h>
+#include <tango/classattribute.h>
 
 #include <functional>
 #include <algorithm>

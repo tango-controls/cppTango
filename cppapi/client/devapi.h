@@ -28,12 +28,12 @@
 #ifndef _DEVAPI_H
 #define _DEVAPI_H
 
-#include <tango.h>
-#include <tango_const.h>
+#include <tango/tango.h>
+#include <tango/tango_const.h>
 #include <apiexcept.h>
 #include <cbthread.h>
 #include <lockthread.h>
-#include <readers_writers_lock.h>
+#include <tango/readers_writers_lock.h>
 
 #include <bitset>
 

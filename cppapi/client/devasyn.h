@@ -26,7 +26,7 @@
 #ifndef _DEVASYN_H
 #define _DEVASYN_H
 
-#include <tango.h>
+#include <tango/tango.h>
 
 #include <map>
 

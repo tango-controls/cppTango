@@ -25,7 +25,7 @@
 #ifndef _ACCESSPROXY_H
 #define _ACCESSPROXY_H
 
-#include <tango.h>
+#include <tango/tango.h>
 
 using namespace std;
 

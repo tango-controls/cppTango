@@ -36,8 +36,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango.h>
-#include <eventsupplier.h>
+#include <tango/tango.h>
+#include <tango/eventsupplier.h>
 
 #ifdef _TG_WINDOWS_
 #include <sys/timeb.h>
@@ -46,7 +46,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #ifdef TANGO_HAS_LOG4TANGO
-#include <logging.h>
+#include <tango/logging.h>
 #endif
 
 namespace Tango

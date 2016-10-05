@@ -22,9 +22,9 @@ static const char *RcsId = "$Header$";
 //
 //-=============================================================================
 
-#include <tango.h>
-#include <dserverclass.h>
-#include <dserversignal.h>
+#include <tango/tango.h>
+#include <tango/dserverclass.h>
+#include <tango/dserversignal.h>
 
 
 int main(int argc,char *argv[])

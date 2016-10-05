@@ -34,7 +34,7 @@
 #ifndef _POLLEXT_TPP
 #define _POLLEXT_TPP
 
-#include <tango.h>
+#include <tango/tango.h>
 
 namespace Tango
 {

@@ -44,8 +44,8 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <algorithm>
 
-#include <tango.h>
-#include <pollcmds.h>
+#include <tango/tango.h>
+#include <tango/pollcmds.h>
 
 namespace Tango
 {

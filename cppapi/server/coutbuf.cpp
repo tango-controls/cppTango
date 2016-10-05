@@ -40,7 +40,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <coutbuf.h>
+#include "../../include/tango/coutbuf.h"
 #include <resource.h>
 #include <commctrl.h>
 

@@ -35,7 +35,7 @@
 #ifndef _GROUP_H_
 #define _GROUP_H_
 
-#include <tango.h>
+#include <tango/tango.h>
 
 namespace Tango {
 

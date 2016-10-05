@@ -2,7 +2,7 @@
  * example of a client using the TANGO device api.
  */
 
-#include <tango.h>
+#include <tango/tango.h>
 
 
 using namespace Tango;

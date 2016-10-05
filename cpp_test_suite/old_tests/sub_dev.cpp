@@ -2,7 +2,7 @@
  * Test module for sub device diagnostics in the Tango API.
  */
 
-#include <tango.h>
+#include <tango/tango.h>
 #include <assert.h>
 
 #define	coutv	if (verbose == true) cout

@@ -43,8 +43,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango.h>
-#include <device_2.h>
+#include <tango/tango.h>
+#include <tango/device_2.h>
 #include <new>
 
 #ifdef _TG_WINDOWS_

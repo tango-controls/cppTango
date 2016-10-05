@@ -2,7 +2,7 @@
  * example of a client using the TANGO device api.
  */
 
-#include <tango.h>
+#include <tango/tango.h>
 #include <assert.h>
 
 const int8_t	kBase	{74};//TODO was 75 on jenkis@esrf.fr

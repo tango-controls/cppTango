@@ -33,7 +33,7 @@
 //
 //=============================================================================
 
-#include <encoded_attribute.h>
+#include <tango/encoded_attribute.h>
 #include <jpeg/jpeg_lib.h>
 
 using namespace Tango;

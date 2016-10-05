@@ -1,4 +1,4 @@
-#include <tango.h>
+#include <tango/tango.h>
 #include <time.h>
 #include <assert.h>
 

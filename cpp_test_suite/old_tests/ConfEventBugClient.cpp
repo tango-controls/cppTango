@@ -20,7 +20,7 @@
 /// NO PRODUCTION CODE
 /// NO ERROR CHECKS
 
-#include "tango.h"
+#include "tango/tango.h"
 #include <assert.h>
 
 using namespace std;

@@ -36,7 +36,7 @@
 #ifndef _LOCKTHREAD_H
 #define _LOCKTHREAD_H
 
-#include <tango.h>
+#include <tango/tango.h>
 #ifndef _TG_WINDOWS_
 #include <sys/time.h>
 #endif

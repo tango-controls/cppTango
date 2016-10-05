@@ -22,7 +22,7 @@ static const char *RcsId = "$Header$";
 //
 //-=============================================================================
 
-#include <tango.h>
+#include <tango/tango.h>
 #include <DevTestClass.h>
 
 void Tango::DServer::class_factory()

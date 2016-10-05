@@ -35,7 +35,7 @@
 #include <ac_config.h>
 #endif
 
-#include <tango.h>
+#include <tango/tango.h>
 #include <accessproxy.h>
 
 #include <sys/types.h>

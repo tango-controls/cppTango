@@ -8,7 +8,7 @@
  *   2 : All other exceptions
  */
 
-#include <tango.h>
+#include <tango/tango.h>
 #include <assert.h>
 
 #define	coutv	if (verbose == true) cout

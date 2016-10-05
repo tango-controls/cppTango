@@ -44,7 +44,7 @@
 // See C++ template book chapter 6
 //
 
-#include <tango.h>
+#include <tango/tango.h>
 
 #include <attribute.tpp>
 #include <pollext.tpp>

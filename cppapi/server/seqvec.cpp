@@ -36,7 +36,7 @@
 #include <ac_config.h>
 #endif
 
-#include <seqvec.h>
+#include <tango/seqvec.h>
 
 namespace Tango
 {

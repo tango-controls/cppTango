@@ -1,4 +1,4 @@
-#include <tango.h>
+#include <tango/tango.h>
 
 //
 // Define classes for two commands

@@ -36,7 +36,7 @@
 #ifndef _CBTHREAD_H
 #define _CBTHREAD_H
 
-#include <tango.h>
+#include <tango/tango.h>
 
 
 namespace Tango

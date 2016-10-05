@@ -33,7 +33,7 @@ static const char *RcsId = "$Id$";
 //
 //====================================================================================================================
 
-#include <tango.h>
+#include <tango/tango.h>
 #include <eventconsumer.h>
 
 #include <stdio.h>

@@ -32,16 +32,16 @@
 #ifndef _EVENTCONSUMER_H
 #define _EVENTCONSUMER_H
 
-#include <attribute.h>
-#include <except.h>
-#include <tango_const.h>
+#include <tango/attribute.h>
+#include <tango/except.h>
+#include <tango/tango_const.h>
 #include <COS/CosNotification.hh>
 #include <COS/CosNotifyChannelAdmin.hh>
 #include <COS/CosNotifyComm.hh>
 #include <omnithread.h>
 #include <map>
 
-#include <readers_writers_lock.h>
+#include <tango/readers_writers_lock.h>
 
 #include <zmq.hpp>
 

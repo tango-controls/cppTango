@@ -23,9 +23,9 @@
 #include <ac_config.h>
 #endif
 
-#include <ntservice.h>
+#include "../../include/tango/ntservice.h"
 
-#include <tango.h>
+#include "../../include/tango/tango.h"
 
 namespace Tango
 {

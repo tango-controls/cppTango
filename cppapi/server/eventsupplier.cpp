@@ -34,8 +34,8 @@ static const char *RcsId = "$Id$";
 //
 //====================================================================================================================
 
-#include <tango.h>
-#include <eventsupplier.h>
+#include <tango/tango.h>
+#include <tango/eventsupplier.h>
 
 #ifdef _TG_WINDOWS_
 #include <float.h>

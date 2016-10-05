@@ -37,9 +37,9 @@ static const char *RcsId = "$Id: device_4.cpp 20742 2012-06-21 14:20:20Z taurel 
 #include <ac_config.h>
 #endif
 
-#include <tango.h>
-#include <device_5.h>
-#include <eventsupplier.h>
+#include <tango/tango.h>
+#include <tango/device_5.h>
+#include <tango/eventsupplier.h>
 #include <device_3.tpp>
 
 

@@ -32,8 +32,8 @@ static const char *RcsId = "$Id$";
 //
 //+==================================================================================================================
 
-#include <tango.h>
-#include <eventsupplier.h>
+#include <tango/tango.h>
+#include <tango/eventsupplier.h>
 
 #include <omniORB4/internal/giopStream.h>
 

@@ -1,1 +1,2 @@
 add_subdirectory(log4tango)
+add_subdirectory(tango)
