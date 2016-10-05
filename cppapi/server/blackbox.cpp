@@ -307,7 +307,9 @@ void BlackBox::insert_cmd_cl_ident(const char *cmd,const ClntIdent &cl_id,long v
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
+	if (box[old_insert].host_ip_str[0] == 'p' ||
+        box[old_insert].host_ip_str[0] == 'u' ||
+        box[old_insert].host_ip_str[0] == 'i')
 	{
 		sync.unlock();
 		return;
@@ -428,7 +430,9 @@ void BlackBox::insert_op(BlackBoxElt_OpType op,const ClntIdent &cl_id)
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
+	if (box[old_insert].host_ip_str[0] == 'p' ||
+        box[old_insert].host_ip_str[0] == 'u' ||
+        box[old_insert].host_ip_str[0] == 'i')
 	{
 		sync.unlock();
 		return;
@@ -638,7 +642,9 @@ void BlackBox::insert_attr(const Tango::DevVarStringArray &names,const ClntIdent
 //
 
     bool poll_user = false;
-    if (box[insert_elt].host_ip_str[0] == 'p' || box[insert_elt].host_ip_str[0] == 'u')
+    if (box[insert_elt].host_ip_str[0] == 'p' ||
+        box[insert_elt].host_ip_str[0] == 'u' ||
+        box[insert_elt].host_ip_str[0] == 'i')
         poll_user = true;
 
 	inc_indexes();
@@ -719,7 +725,9 @@ void BlackBox::insert_attr(const char *name,const ClntIdent &cl_id,TANGO_UNUSED(
 //
 
     bool poll_user = false;
-    if (box[insert_elt].host_ip_str[0] == 'p' || box[insert_elt].host_ip_str[0] == 'u')
+    if (box[insert_elt].host_ip_str[0] == 'p' ||
+        box[insert_elt].host_ip_str[0] == 'u' ||
+        box[insert_elt].host_ip_str[0] == 'i')
         poll_user = true;
 
 	inc_indexes();
@@ -795,7 +803,9 @@ void BlackBox::insert_attr(const Tango::DevPipeData &pipe_val,const ClntIdent &c
 //
 
     bool poll_user = false;
-    if (box[insert_elt].host_ip_str[0] == 'p' || box[insert_elt].host_ip_str[0] == 'u')
+    if (box[insert_elt].host_ip_str[0] == 'p' ||
+        box[insert_elt].host_ip_str[0] == 'u' ||
+        box[insert_elt].host_ip_str[0] == 'i')
         poll_user = true;
 
 	inc_indexes();
@@ -838,7 +848,9 @@ void BlackBox::insert_attr(const Tango::AttributeValueList_4 &att_list, const Cl
 // Check if the command is executed due to polling. If true, simply return
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
+	if (box[old_insert].host_ip_str[0] == 'p' ||
+        box[old_insert].host_ip_str[0] == 'u' ||
+        box[old_insert].host_ip_str[0] == 'i')
 	{
 		sync.unlock();
 		return;
@@ -980,7 +992,9 @@ void BlackBox::insert_wr_attr(const Tango::AttributeValueList_4 &att_list,const 
 // If request coming from polling thread or user thread, leave method
 //
 
-	if (box[old_insert].host_ip_str[0] == 'p' || box[old_insert].host_ip_str[0] == 'u')
+	if (box[old_insert].host_ip_str[0] == 'p' ||
+        box[old_insert].host_ip_str[0] == 'u' ||
+        box[old_insert].host_ip_str[0] == 'i')
 	{
 		sync.unlock();
 		return;
@@ -1099,30 +1113,37 @@ void BlackBox::get_client_host()
 	if (ip == NULL)
     {
         Tango::Util *tg = Tango::Util::instance();
+        vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
+
+        bool found_thread = false;
+        if (poll_ths.empty() == false)
+        {
+            int this_thread_id = th_id->id();
+            size_t nb_poll_th = poll_ths.size();
+            size_t loop;
+            for (loop = 0;loop < nb_poll_th;loop++)
+            {
+                if (this_thread_id == poll_ths[loop]->thread_id)
+                {
+                    found_thread = true;
+                    break;
+                }
+            }
+        }
+
         if (tg->is_svr_starting() == true)
-            strcpy(box[insert_elt].host_ip_str,"init");
+        {
+            if (found_thread == true)
+                strcpy(box[insert_elt].host_ip_str,"polling");
+            else
+                strcpy(box[insert_elt].host_ip_str,"init");
+        }
         else
         {
-            vector<PollingThreadInfo *> &poll_ths = tg->get_polling_threads_info();
-            if (poll_ths.empty() == true)
-                strcpy(box[insert_elt].host_ip_str,"user thread");
+            if (found_thread == true)
+                strcpy(box[insert_elt].host_ip_str,"polling");
             else
-            {
-                int this_thread_id = th_id->id();
-                size_t nb_poll_th = poll_ths.size();
-                size_t loop;
-                for (loop = 0;loop < nb_poll_th;loop++)
-                {
-                    if (this_thread_id == poll_ths[loop]->thread_id)
-                    {
-                        strcpy(box[insert_elt].host_ip_str,"polling");
-                        break;
-                    }
-                }
-
-                if (loop == nb_poll_th)
-                    strcpy(box[insert_elt].host_ip_str,"user thread");
-            }
+                strcpy(box[insert_elt].host_ip_str,"user thread");
         }
     }
 	else
