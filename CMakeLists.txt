@@ -27,7 +27,7 @@ include_directories(include)
 include_directories(${PROJECT_BINARY_DIR}/include)
 
 add_subdirectory(include)
-add_subdirectory(doc)
+add_subdirectory(docs)
 #source code
 add_subdirectory(src)
 add_subdirectory("cppapi")
