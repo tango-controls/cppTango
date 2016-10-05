@@ -159,7 +159,7 @@
 </log4j:event>
 
 <log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
-<log4j:message><![CDATA[Input long = 3]]></log4j:message>
+<log4j:message><![CDATA[Input long = 5]]></log4j:message>
 <log4j:NDC><![CDATA[]]></log4j:NDC>
 </log4j:event>
 

@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 2.8)
 project(libtango)
 include(CTest)
 
-configure_file(CTestCustom.cmake CTestCustom.cmake)
 enable_testing()
 #need to define the version of the library
 set(MAJOR_VERSION "9")
@@ -13,6 +12,9 @@ set(PATCH_VERSION "5")
 set(LIBRARY_VERSION "${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION}")
 set(SO_VERSION "${MAJOR_VERSION}")
 
+
+message("System TANGO_HOST=$ENV{TANGO_HOST}")
+set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
 include_directories(cppapi/client)
@@ -28,7 +30,6 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/log4tango/include)
 add_subdirectory("log4tango")
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
-add_subdirectory("cpp_test_ds")
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
@@ -39,6 +40,7 @@ add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
 target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES})
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
+target_compile_options(tango PRIVATE -fPIC)
 target_compile_definitions(tango PRIVATE OMNI_UNLOADABLE_STUBS _TANGO_LIB)
 
 set_target_properties(tango PROPERTIES

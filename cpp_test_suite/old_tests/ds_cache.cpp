@@ -5,7 +5,7 @@
 #include <tango.h>
 #include <assert.h>
 
-#define	BASE	75
+const int8_t	kBase	{74};//TODO was 75 on jenkis@esrf.fr
 #define	coutv	if (verbose == true) cout
 bool verbose = false;
 
@@ -91,7 +91,7 @@ int main(int argc, char **argv)
 				}
 			}
 		}
-		int cache_size = BASE		// unchanged number of information related to the admin device, DS events,
+		int cache_size = kBase		// unchanged number of information related to the admin device, DS events,
 									// DServer class properties, default properties, admin device properties,
 									// class properties, class attribute properties and control system object properties
 				+ notifd_size		// if there is at least one host on which there is notifd deamon running : 6 properties, if not : 2 properties
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
 		const DbServerCache::PropEltIdx &DServer_prop = dsc->get_DServer_class_prop();
 		coutv << "DServer class prop data between " << DServer_prop.first_idx << " and " << DServer_prop.last_idx << endl;
 		first = last + 1;
-		last = first + 14;
+		last = first + 13;
 		assert(DServer_prop.first_idx == first);
 		assert(DServer_prop.last_idx == last);
 
@@ -187,8 +187,8 @@ int main(int argc, char **argv)
 
 		const DbServerCache::PropEltIdx &ctrl_prop = dsc->get_ctrl_serv_prop();
 		coutv << "Control system object prop data between " << ctrl_prop.first_idx << " and " << ctrl_prop.last_idx << endl;
-		assert(ctrl_prop.first_idx == BASE + notifd_size);
-		assert(ctrl_prop.last_idx == (BASE + notifd_size + 2 + (2 * nb_prop) + prop_elt) - 1);
+		assert(ctrl_prop.first_idx == kBase + notifd_size);
+		assert(ctrl_prop.last_idx == (kBase + notifd_size + 2 + (2 * nb_prop) + prop_elt) - 1);
 
 		cout << "   Indexes in db cache --> OK" << endl;
 
@@ -236,8 +236,8 @@ int main(int argc, char **argv)
 		db_prop[0] >> vs;
 
 		coutv << "Prop nb = " << vs.size() << ", first value = " << vs[0] << endl;
-		assert(vs.size() == 11);
-		assert(vs[0] == "DevPollStatus");
+		assert(vs.size() == 10);
+		assert(vs[0] == "QueryClass");
 
 		cout << "   Getting class property --> OK" << endl;
 

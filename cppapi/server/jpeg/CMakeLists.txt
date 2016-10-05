@@ -6,3 +6,4 @@ set(SOURCES jpeg_bitstream.cpp
             jpeg_memory.cpp)
 
 add_library(jpeg_objects OBJECT ${SOURCES})
+target_compile_options(jpeg_objects PRIVATE -fPIC)

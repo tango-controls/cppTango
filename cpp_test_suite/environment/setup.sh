@@ -15,7 +15,7 @@ CONTAINER=$(docker run --name tango_cs \
     -e MYSQL_PASSWORD=tango \
     -e MYSQL_DATABASE=tango \
     --link mysql_db:mysql_db \
-    -d mliszcz/tango-cs:latest)
+    -d tangocs/tango-cs:latest)
 
 echo "CONTAINER=$CONTAINER"
 

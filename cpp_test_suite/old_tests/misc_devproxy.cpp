@@ -347,11 +347,12 @@ int main(int argc, char **argv)
 		cout << "NB prop = " << props.size() << endl;
 		for (unsigned long l = 0;l < props.size();l++)
 			cout << "prop = " << props[l] << endl;
-		assert (props.size() == 4);
+		//TODO conf_devtest defines only 3 properties
+		assert (props.size() == 3);
 		assert (props[0] == "cmd_min_poll_period");
 		assert (props[1] == "min_poll_period");
 		assert (props[2] == "tst_property");
-		assert (props[3] == "__SubDevices");
+//		assert (props[3] == "__SubDevices");
 
 		cout << "   Get property list --> OK" << endl;
 #endif

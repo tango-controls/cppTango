@@ -12,6 +12,8 @@
 #include <wait.h>
 #endif
 
+#include "locked_device_cmd.h"
+
 #define	coutv	if (verbose == true) cout
 
 bool verbose = false;
@@ -176,7 +178,7 @@ int main(int argc, char **argv)
 
 		assert ( result == 4 );
 
-		string sub_process_cmd("locked_device ");
+		string sub_process_cmd(LOCKED_DEVICE_CMD);
 		sub_process_cmd = sub_process_cmd + device_name;
 		int ret = system(sub_process_cmd.c_str());
 
@@ -203,7 +205,7 @@ int main(int argc, char **argv)
 // Check the allowed commands
 
 		device->lock();
-		string sub_proc("allowed_cmd ");
+		string sub_proc(ALLOWED_CMD);
 		sub_proc = sub_proc + device_name;
 		ret = system(sub_proc.c_str());
 
@@ -275,7 +277,7 @@ int main(int argc, char **argv)
 
 // Impossible to restart a locked device by another client
 
-		string restart_cmd("restart_device ");
+		string restart_cmd(RESTART_DEVICE_CMD);
 		restart_cmd = restart_cmd + device_name + " DevRestart";
 
 		ret = system(restart_cmd.c_str());
@@ -347,7 +349,7 @@ int main(int argc, char **argv)
 
 // Unlock a device using the back door
 
-		string unlock_cmd("unlock ");
+		string unlock_cmd(UNLOCK_CMD);
 		unlock_cmd = unlock_cmd + device_name;
 
 		device->lock();

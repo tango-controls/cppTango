@@ -1,4 +1,5 @@
 message("Generate runner.cpp")
+
 execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
         -o ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp
         ../../new_tests/cxx_syntax.cpp
@@ -8,6 +9,8 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         ../../new_tests/cxx_dserver_misc.cpp
         ../../new_tests/cxx_always_hook.cpp
         ../../new_tests/cxx_blackbox.cpp
+        ../../new_tests/cxx_class_dev_signal.cpp
+        ../../new_tests/cxx_class_signal.cpp
         ../../new_tests/cxx_attr_misc.cpp
         ../../new_tests/cxx_attrprop.cpp
         ../../new_tests/cxx_attr_write.cpp
@@ -18,6 +21,7 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         ../../new_tests/cxx_exception.cpp
         ../../new_tests/cxx_cmd_query.cpp
         ../../new_tests/cxx_seq_vec.cpp
+        ../../new_tests/cxx_signal.cpp
         ../../new_tests/cxx_test_state_on.cpp
         ../../new_tests/cxx_misc.cpp
         ../../new_tests/cxx_cmd_types.cpp
@@ -39,23 +43,24 @@ target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
 target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
 add_test("CXX::runner" runner
-                        --device1=${DEV1}
-                        --device2=${DEV2}
-                        --device3=${DEV3}
-                        --fwd_device=${FWD_DEV}
-                        --loop=1
-                        --fulldsname=${SERV_NAME}/${INST_NAME}
-                        --serverhost=${FULL_HOSTNAME}
-                        --clienthost=${FULL_HOSTNAME}
-                        --serverversion=5
-                        --docurl=http://www.tango-controls.org
-                        --devtype=TestDevice
-                        --dbserver=sys/database/2
-                        --outpath=/tmp/
-                        --refpath=${CMAKE_CURRENT_SOURCE_DIR}/../new_tests/out/
-                        --loglevel=0
-                        --dsloglevel=3
-                        --suiteloop=1
-                        --devicealias=${DEV1_ALIAS}
-                        --attributealias=${ATTR_ALIAS}
+        --device1=${DEV1}
+        --device2=${DEV2}
+        --device3=${DEV3}
+        --fwd_device=${FWD_DEV}
+        --loop=1
+        --fulldsname=${SERV_NAME}/${INST_NAME}
+        --serverhost=${HOST_NAME}
+        --clienthost=${HOST_NAME}
+        --serverversion=5
+        --docurl=http://www.tango-controls.org
+        --devtype=TestDevice
+        --dbserver=sys/database/2
+        --outpath=/tmp/
+        --refpath=${CMAKE_CURRENT_SOURCE_DIR}/../new_tests/out/
+        --loglevel=0
+        --dsloglevel=5
+        --suiteloop=1
+        --devicealias=${DEV1_ALIAS}
+        --attributealias=${ATTR_ALIAS}
+        --verbose=true
 )

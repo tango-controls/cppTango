@@ -156,6 +156,12 @@ public:
 		TS_ASSERT(pi.description == "No description");
 	}
 
+
+	/**
+	 * The following tests check that class and device level defined properties override user defined ones,
+	 * i.e. db->put_device_pipe_property => db->put_class_pipe_property => user (DevTestClass::pipe_factory)
+	 *
+	 */
 	void test_pipe_conf_return_to_xxx_no_class_no_lib(void)
 	{
 		string pipe_name("PipeConf1");
