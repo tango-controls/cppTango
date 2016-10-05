@@ -76,7 +76,6 @@ set(TEMPLATES
             w_attribute_spec.tpp
             w_pipe.tpp)
 
-add_subdirectory(idl)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 

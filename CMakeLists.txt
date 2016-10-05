@@ -20,7 +20,7 @@ include(configure/CMakeLists.txt)
 include_directories(cppapi/client)
 include_directories(cppapi/client/helpers)
 include_directories(cppapi/server)
-include_directories(cppapi/server/idl)
+include_directories(generated)
 
 include_directories(include)
 #required for generated config.h
@@ -29,6 +29,7 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 add_subdirectory(include)
 add_subdirectory(docs)
 #source code
+add_subdirectory(generated/idl)
 add_subdirectory(src)
 add_subdirectory("cppapi")
 add_subdirectory("cpp_test_suite")
