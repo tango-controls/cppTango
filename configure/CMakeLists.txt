@@ -1,4 +1,5 @@
 include(FindPkgConfig)
+include(FindDoxygen)
 
 if(NOT CMAKE_BUILD_TYPE)
     message("No build type specified - default is DEBUG")

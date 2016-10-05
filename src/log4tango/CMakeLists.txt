@@ -26,3 +26,4 @@ set(SOURCES
         PortabilityImpl.cpp)
 
 add_library(log4tango_objects OBJECT ${SOURCES})
+target_compile_options(log4tango_objects PRIVATE -fPIC)
