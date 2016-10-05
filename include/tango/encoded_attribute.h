@@ -38,7 +38,7 @@
 #ifndef _ENCODED_ATT_H
 #define _ENCODED_ATT_H
 
-#include <encoded_format.h>
+#include <tango/encoded_format.h>
 
 namespace Tango
 {
