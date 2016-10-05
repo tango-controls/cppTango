@@ -3,7 +3,7 @@
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
-#include <tango.h>
+#include <tango/tango.h>
 #include <iostream>
 
 using namespace Tango;

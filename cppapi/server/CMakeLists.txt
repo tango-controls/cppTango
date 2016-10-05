@@ -80,6 +80,6 @@ add_subdirectory(idl)
 add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
-add_library(server_objects OBJECT ${SOURCES} ${TEMPLATES})
+add_library(server_objects OBJECT ${SOURCES})
 target_compile_options(server_objects PRIVATE -fPIC)
 
