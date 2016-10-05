@@ -29,10 +29,13 @@ public:
 void EventCallback::push_event( Tango::EventData *ed )
 {
 	coutv << "In callback with error flag = " << std::boolalpha << ed->err << endl;
+    //TODO is it thread safe?
     if(ed->err == false)
 		cb_executed++;
-    else
+    else {
 		cb_err++;
+		coutv << "Error: " << ed->errors[0].reason << endl;
+	}
 }
 
 int main(int argc, char **argv)

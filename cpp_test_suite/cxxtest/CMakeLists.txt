@@ -9,6 +9,8 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         ../../new_tests/cxx_dserver_misc.cpp
         ../../new_tests/cxx_always_hook.cpp
         ../../new_tests/cxx_blackbox.cpp
+        ../../new_tests/cxx_class_dev_signal.cpp
+        ../../new_tests/cxx_class_signal.cpp
         ../../new_tests/cxx_attr_misc.cpp
         ../../new_tests/cxx_attrprop.cpp
         ../../new_tests/cxx_attr_write.cpp
@@ -19,6 +21,7 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         ../../new_tests/cxx_exception.cpp
         ../../new_tests/cxx_cmd_query.cpp
         ../../new_tests/cxx_seq_vec.cpp
+        ../../new_tests/cxx_signal.cpp
         ../../new_tests/cxx_test_state_on.cpp
         ../../new_tests/cxx_misc.cpp
         ../../new_tests/cxx_cmd_types.cpp

@@ -31,12 +31,12 @@ void print_changes(const char *desc, const char *server, DbData &db_data) {
  */
 int main(int argc, char **argv) {
     if (argc < 7) {
-        cout << "usage: " << argv[0] << " dserver device1 device2 device3 device1_alias attribute_alias fwd_device" <<
+        cout << "usage: " << argv[0] << " dserver device1 device2 device3 device1_alias attribute_alias fwd_device device20" <<
         endl;
         exit(-1);
     }
 
-    string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4], device1_alias = argv[5], attribute_alias = argv[6], fwd_dev_name = argv[7];;
+    string dserver_name = argv[1], device1_name = argv[2], device2_name = argv[3], device3_name = argv[4], device1_alias = argv[5], attribute_alias = argv[6], fwd_dev_name = argv[7], device20_name = argv[8];
 
     Database *db = new Database();
     DbData db_data;
@@ -57,15 +57,15 @@ int main(int argc, char **argv) {
     db_dev_info_2._class = CLASS_NAME;
     db_dev_info_3.name = device3_name;
     db_dev_info_3._class = CLASS_NAME;
-    db_dev_infos.push_back(db_dev_info_1);
-    db_dev_infos.push_back(db_dev_info_2);
-    db_dev_infos.push_back(db_dev_info_3);
+
+    db_dev_infos = {db_dev_info_1, db_dev_info_2, db_dev_info_3};
 
     try {
         db->add_server(str, db_dev_infos);
-        for (size_t i = 0; i < db_dev_infos.size(); i++)
-            cout << "Added test server : " << str << " -> " << db_dev_infos[i].name << ", class : " <<
-            db_dev_infos[i]._class << endl;
+        for(auto info : db_dev_infos){
+            cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
+                 info._class << endl;
+        }
         cout << endl;
     }
     catch (...) {
@@ -75,16 +75,39 @@ int main(int argc, char **argv) {
 
     db_dev_infos.clear();
 
-    //Define device server
-    str = "FwdTest/test";
-    db_dev_info_1.name = fwd_dev_name;
-    db_dev_info_1._class = "FwdTest";
-    db_dev_infos.push_back(db_dev_info_1);
+    str = "DevTest/test2";//TODO pass as arg
+    DbDevInfo device20Info;
+    device20Info.name = device20_name;
+    device20Info._class = CLASS_NAME;
+
+    db_dev_infos = {device20Info};
+
     try {
         db->add_server(str, db_dev_infos);
-        for (size_t i = 0; i < db_dev_infos.size(); i++)
-            cout << "Added test server : " << str << " -> " << db_dev_infos[i].name << ", class : " <<
-            db_dev_infos[i]._class << endl;
+        for(auto info : db_dev_infos){
+            cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
+                 info._class << endl;
+        }
+
+        cout << endl;
+    }
+    catch (...) {
+        cout << "Exception: cannot create test server" << endl;
+    }
+
+
+    //Define device server
+    str = "FwdTest/test";//TODO pass as arg
+    DbDevInfo fwdTestInfo;
+    fwdTestInfo.name = fwd_dev_name;
+    fwdTestInfo._class = "FwdTest";
+    db_dev_infos= {fwdTestInfo};
+    try {
+        db->add_server(str, db_dev_infos);
+        for(auto info : db_dev_infos){
+            cout << "Added test server : " << str << " -> " << info.name << ", class : " <<
+                 info._class << endl;
+        }
         cout << endl;
     }
     catch (...) {
@@ -435,6 +458,7 @@ int main(int argc, char **argv) {
     db_data.push_back(root_att4);
 
 
+
     try {
         db->put_device_attribute_property(fwd_dev_name, db_data);
         print_changes("Device specific attribute properties", fwd_dev_name.c_str(), db_data);
@@ -443,6 +467,119 @@ int main(int argc, char **argv) {
     catch (...) {
         cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
     }
+
+    db_data.clear();
+
+    //TODO rewrite using functional style
+
+    //pipe class level configuration
+    DbDatum pipeConf4("PipeConf4");
+    pipeConf4 << (short) 2;
+    DbDatum pipeConf4DbClassLabel("label");
+    pipeConf4DbClassLabel << "DB_class_def_label";
+    DbDatum pipeConf4DbClassDescription("description");
+    pipeConf4DbClassDescription << "Bidon";
+
+    DbDatum pipeConf5("PipeConf5");
+    pipeConf5 << (short) 1;
+    DbDatum pipeConf5DbClassLabel("label");
+    pipeConf5DbClassLabel << "ClassDefinedLabel";
+
+    DbDatum pipeConf6("PipeConf6");
+    pipeConf6 << (short) 1;
+    DbDatum pipeConf6DbClassDesc("description");
+    pipeConf6DbClassDesc << "ClassDefinedDesc";
+
+    DbDatum pipeConf7("PipeConf7");
+    pipeConf7 << (short) 1;
+    DbDatum pipeConf7DbClassDesc("description");
+    pipeConf7DbClassDesc << "AnotherClassDefinedDesc";
+
+
+    db_data = {pipeConf4, pipeConf4DbClassLabel, pipeConf4DbClassDescription,
+               pipeConf5, pipeConf5DbClassLabel,
+               pipeConf6, pipeConf6DbClassDesc,
+               pipeConf7, pipeConf7DbClassDesc};
+
+    try{
+        db->put_class_pipe_property(CLASS_NAME, db_data);
+        print_changes("Set pipe properties at class level",CLASS_NAME, db_data);
+    }
+    catch (...){
+        cout << "Exception: cannot set pipe properties at class level: " << CLASS_NAME << endl;
+    }
+
+    //pipe class level configuration
+    DbDatum pipeConf3("PipeConf3");
+    pipeConf3 << (short) 1;
+    DbDatum pipeConf3DbClassLabel("label");
+    pipeConf3DbClassLabel << "OverWrittenPipeLabel";
+
+    DbDatum pipeConf4_dev("PipeConf4");
+    pipeConf4_dev << (short) 1;
+    DbDatum pipeConf4_devDbClassDesc("description");
+    pipeConf4_devDbClassDesc << "DB_device_def_desc";
+
+    db_data = {pipeConf3, pipeConf3DbClassLabel, pipeConf4_dev, pipeConf4_devDbClassDesc};
+
+    try{
+        db->put_device_pipe_property(device1_name, db_data);
+        print_changes("Set pipe properties at device level" , device1_name.c_str(), db_data);
+    }
+    catch (...){
+        cout << "Exception: cannot set specific attribute properties for the device: " << fwd_dev_name << endl;
+    }
+
+    DbDatum short_attr_rw("short_attr_rw");
+    short_attr_rw << (short) 2;
+    DbDatum short_attr_rw_unit("unit");
+    str = "Kg";
+    short_attr_rw_unit << str;
+    DbDatum short_attr_rw_std_unit("standard_unit");
+    str = "1.0";
+    short_attr_rw_std_unit << str;
+
+    db_data = {short_attr_rw,short_attr_rw_unit,short_attr_rw_std_unit};
+
+    try {
+        db->put_device_attribute_property(device1_name, db_data);
+        print_changes("Device specific attribute properties", device1_name.c_str(), db_data);
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << device1_name << endl;
+    }
+
+
+    //Define polling for DevTest/test2
+    DbDatum polled_attr("polled_attr");
+    vector<string> attrs{"event_change_tst","3000"};
+    polled_attr << attrs;
+
+    db_data = {polled_attr};
+    try {
+        db->put_device_property(device20_name, db_data);
+        print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << endl;
+    }
+
+    DbDatum eventProperties("event_change_tst");
+    eventProperties << (short) 2;
+    DbDatum eventPropertiesAbsCh("abs_change");
+    eventPropertiesAbsCh << 1;
+    DbDatum eventPropertiesRelCh("rel_change");
+    eventPropertiesRelCh << 1;
+
+    db_data = {eventProperties, eventPropertiesAbsCh, eventPropertiesRelCh};
+    try {
+        db->put_device_attribute_property(device20_name, db_data);
+        print_changes("Device specific attribute properties", device20_name.c_str(), db_data);
+    }
+    catch (...) {
+        cout << "Exception: cannot set specific attribute properties for the device: " << device20_name << endl;
+    }
+
     delete db;
 
     return 0;

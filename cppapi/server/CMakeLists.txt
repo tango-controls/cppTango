@@ -136,5 +136,6 @@ add_subdirectory(jpeg)
 add_subdirectory(jpeg_mmx)
 
 add_library(server_objects OBJECT ${SOURCES})
+target_compile_options(server_objects PRIVATE -fPIC)
 
 install(FILES ${HEADERS} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")

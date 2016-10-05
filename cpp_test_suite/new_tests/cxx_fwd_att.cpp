@@ -461,8 +461,8 @@ public:
 		TS_ASSERT((*confs)[0].max_dim_y == 0);
 		TS_ASSERT((*confs)[0].description == "No description");
 		TS_ASSERT((*confs)[0].label == "Gasp a fwd attribute");
-		TS_ASSERT((*confs)[0].unit == "");//Kg
-		TS_ASSERT((*confs)[0].standard_unit == "No standard unit");//1.0
+		TS_ASSERT((*confs)[0].unit == "Kg");
+		TS_ASSERT((*confs)[0].standard_unit == "1.0");
 		TS_ASSERT((*confs)[0].display_unit == "No display unit");
 		TS_ASSERT((*confs)[0].format == "%d");
 		TS_ASSERT((*confs)[0].min_value == "Not specified");
