@@ -1,0 +1,184 @@
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Leaving Logging::add_logging_target (internal impl)]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Leaving Logging::add_logging_target]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Leaving DServer::add_logging_target]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Leaving DeviceClass::command_handler() method]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[SubDevDiag::set_associated_device() entering ... ]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[DeviceImpl::command_inout(): leaving method for command AddLoggingTarget]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In rel_monitor() DSERVER, ctr = 2, thread = 2]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In rel_monitor() DSERVER, ctr = 1, thread = 2]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Signalling !]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Signal thread awaken for signal 14]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DEVICE1" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[[Device signal handler] received signal number 14 for device DEVICE1]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DEVICE2" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[[Device signal handler] received signal number 14 for device DEVICE2]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Device_4Impl::command_inout_4 arrived, source = 2, command = SetLoggingLevel]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Device_2Impl::command_inout_2 arrived, source = 2, command = SetLoggingLevel]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In get_monitor() cache, thread = 2, ctr = 0]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In rel_monitor() cache, ctr = 1, thread = 2]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Signalling !]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In get_monitor() DSERVER, thread = 2, ctr = 0]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In get_monitor() DSERVER, thread = 2, ctr = 1]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[owner_thread !!]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[DeviceImpl::command_inout(): command received : SetLoggingLevel]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[SubDevDiag::get_associated_device() entering ... ]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[SubDevDiag::get_associated_device() found : No associated device name!]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[SubDevDiag::set_associated_device() entering ... ]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Entering DeviceClass::command_handler() method]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[SetLoggingLevel::execute(): arrived ]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Entering DServer::set_logging_level]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Entering Logging::set_logging_level]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Input string = DEVICE1]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Input string = DEVICE2]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Input string = DSERVER]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Input long = 0]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Input long = 0]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[Input long = 5]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In Util::get_device_list]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In Util::get_device_list]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
+
+<log4j:event logger="DSERVER" timestamp="10" level="DEBUG" thread="1">
+<log4j:message><![CDATA[In Util::get_device_list]]></log4j:message>
+<log4j:NDC><![CDATA[]]></log4j:NDC>
+</log4j:event>
