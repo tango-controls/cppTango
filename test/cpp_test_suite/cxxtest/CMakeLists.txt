@@ -1,7 +1,7 @@
 message("Generate runner.cpp")
 
 execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
-        -o runner.cpp
+        -o ${CMAKE_CURRENT_SOURCE_DIR}/runner.cpp
         ../../new_tests/cxx_syntax.cpp
         ../../new_tests/cxx_poll.cpp
         ../../new_tests/cxx_poll_admin.cpp
@@ -35,12 +35,17 @@ execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_D
         ../../new_tests/cxx_pipe_conf.cpp
         ../../new_tests/cxx_pipe.cpp
         ../../new_tests/cxx_z00_dyn_cmd.cpp
-        WORKING_DIRECTORY bin)
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin
+        RESULT_VARIABLE FAILED)
+
+if(${FAILED})
+    message(SEND_ERROR " Failed to generate runner. rv=${FAILED}")
+endif()
 
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> runner.cpp)
-target_include_directories(runner PUBLIC include)
-target_link_libraries(runner PUBLIC tango ${CMAKE_DL_LIBS})
-target_compile_definitions(runner PUBLIC "-DVALGRIND -D_PTHREADS -D_REENTRANT")
+target_include_directories(runner PRIVATE include)
+target_link_libraries(runner PRIVATE tango ${CMAKE_DL_LIBS})
+target_compile_definitions(runner PRIVATE "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
 add_test("CXX::runner" runner
         --device1=${DEV1}
