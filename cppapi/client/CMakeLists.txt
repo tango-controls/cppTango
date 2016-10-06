@@ -30,8 +30,6 @@ set(SOURCES dbapi_class.cpp
             notifdeventconsumer.cpp
             zmqeventconsumer.cpp)
 
-add_subdirectory(helpers)
-
 add_library(client_objects OBJECT ${SOURCES})
 target_compile_options(client_objects PRIVATE -fPIC)
 

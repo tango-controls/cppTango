@@ -4,7 +4,7 @@
 
 #include <tango.h>
 
-#include <DeviceProxyHelper.h>
+#include <tango/client/helpers/DeviceProxyHelper.h>
 
 
 using namespace Tango;
