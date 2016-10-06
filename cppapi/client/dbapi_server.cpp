@@ -31,7 +31,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
+#include <tango.h>
 
 using namespace CORBA;
 

@@ -42,9 +42,9 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
-#include <tango/pollring.h>
-#include <tango/pollring.tpp>
+#include <tango.h>
+#include <tango/server/pollring.h>
+#include <tango/server/pollring.tpp>
 
 
 #ifdef _TG_WINDOWS_

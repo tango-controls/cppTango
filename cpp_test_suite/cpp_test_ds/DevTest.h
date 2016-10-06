@@ -1,6 +1,6 @@
 #ifndef _DEV_TEST_H
 #define  _DEV_TEST_H
-#include <tango/tango.h>
+#include <tango.h>
 
 
 class EventCallBack : public Tango::CallBack

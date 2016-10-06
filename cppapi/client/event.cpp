@@ -32,9 +32,9 @@ static const char *RcsId = "$Id: event.cpp 30155 2016-09-16 15:31:47Z bourtemb $
 //
 //====================================================================================================================
 
-#include <tango/tango.h>
-#include <tango/eventconsumer.h>
-#include <tango/event.tpp>
+#include <tango.h>
+#include <tango/client/eventconsumer.h>
+#include <tango/client/event.tpp>
 
 #include <stdio.h>
 

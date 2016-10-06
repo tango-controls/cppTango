@@ -35,7 +35,7 @@
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
+#include <tango.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
 

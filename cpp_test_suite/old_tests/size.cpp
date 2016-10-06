@@ -6,7 +6,7 @@
  *
  */
 
-#include <tango/tango.h>
+#include <tango.h>
 
 void check_size(const char *,long,long, bool*);
 

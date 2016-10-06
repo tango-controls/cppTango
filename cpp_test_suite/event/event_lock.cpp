@@ -14,7 +14,7 @@
 //
 // GJK, 7/2009,  georg.kasper@frm2.tum.de
 
-#include "tango/tango.h"
+#include "tango.h"
 
 using namespace std;
 

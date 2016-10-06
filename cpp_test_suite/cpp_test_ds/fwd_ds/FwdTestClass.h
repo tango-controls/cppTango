@@ -42,7 +42,7 @@
 #ifndef FwdTestClass_H
 #define FwdTestClass_H
 
-#include <tango/tango.h>
+#include <tango.h>
 #include <FwdTest.h>
 
 

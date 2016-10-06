@@ -39,13 +39,13 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
+#include <tango.h>
 
 #include <iomanip>
 
 #ifdef TANGO_HAS_LOG4TANGO
 
-#include <tango/tangoappender.h>
+#include <tango/server/tangoappender.h>
 
 #define USE_ASYNC_CALL
 

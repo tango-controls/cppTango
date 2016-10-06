@@ -44,13 +44,13 @@ static const char *RcsId = "$Id$\n$Name$";
 
 #include <algorithm>
 
-#include <tango/tango.h>
-#include <tango/dserverclass.h>
-#include <tango/pollcmds.h>
+#include <tango.h>
+#include <tango/server/dserverclass.h>
+#include <tango/server/pollcmds.h>
 #ifdef TANGO_HAS_LOG4TANGO
-#include <tango/logcmds.h>
+#include <tango/server/logcmds.h>
 #endif
-#include <tango/eventsupplier.h>
+#include <tango/server/eventsupplier.h>
 
 namespace Tango
 {

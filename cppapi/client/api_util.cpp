@@ -33,9 +33,9 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
-#include <tango/eventconsumer.h>
-#include <tango/api_util.tpp>
+#include <tango.h>
+#include <tango/client/eventconsumer.h>
+#include <tango/client/api_util.tpp>
 
 #ifndef _TG_WINDOWS_
 	#include <sys/types.h>

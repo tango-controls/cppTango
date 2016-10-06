@@ -3,7 +3,7 @@
 
 #include <cxxtest/TestSuite.h>
 #include <cxxtest/TangoPrinter.h>
-#include <tango/tango.h>
+#include <tango.h>
 #include <iostream>
 
 #ifdef _TG_WINDOWS_

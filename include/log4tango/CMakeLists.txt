@@ -1,4 +1,4 @@
-set(HEADER_FILES
+set(HEADERS
         Appender.hh
         AppenderAttachable.hh
         LayoutAppender.hh
@@ -23,7 +23,9 @@ set(HEADER_FILES
 
 add_subdirectory(threading)
 
-install(FILES ${HEADER_FILES}
+add_library(include_log4tango_objects OBJECT ${HEADERS} $<TARGET_OBJECTS:include_log4tango_threading_objects>)
+
+install(FILES ${HEADERS}
         DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/config.h DESTINATION ${CMAKE_INSTALL_FULL_INCLUDEDIR}/log4tango)
 #TODO if windows 32 install config-win32.h

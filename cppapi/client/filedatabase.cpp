@@ -19,7 +19,7 @@
 // along with Tango.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <iostream>
-#include <tango/tango.h>
+#include <tango.h>
 
 // DbInfo                              done
 // DbImportDevice

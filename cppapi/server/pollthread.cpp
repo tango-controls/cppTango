@@ -37,9 +37,9 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
-#include <tango/eventsupplier.h>
-#include <tango/pollthread.tpp>
+#include <tango.h>
+#include <tango/server/eventsupplier.h>
+#include <tango/server/pollthread.tpp>
 
 #ifdef _TG_WINDOWS_
 	#include <sys/timeb.h>

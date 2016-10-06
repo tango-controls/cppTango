@@ -34,8 +34,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
-#include <tango/accessproxy.h>
+#include <tango.h>
+#include <tango/client/accessproxy.h>
 
 using namespace CORBA;
 

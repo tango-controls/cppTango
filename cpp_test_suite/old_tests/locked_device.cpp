@@ -9,7 +9,7 @@
  *   3 : State or Status command failed
  */
 
-#include <tango/tango.h>
+#include <tango.h>
 #include <assert.h>
 
 #define	coutv	if (verbose == true) cout

@@ -38,7 +38,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
+#include <tango.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
 
@@ -55,9 +55,9 @@ static const char *RcsId = "$Id$\n$Name$";
 # include <pwd.h>
 #endif
 
-#include <tango/coutappender.h>
-#include <tango/tangoappender.h>
-#include <tango/tangorollingfileappender.h>
+#include <tango/server/coutappender.h>
+#include <tango/server/tangoappender.h>
+#include <tango/server/tangorollingfileappender.h>
 
 namespace Tango
 {

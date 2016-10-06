@@ -2,7 +2,7 @@
  * Example of a client using the TANGO device api.
  */
 
-#include <tango/tango.h>
+#include <tango.h>
 #include <assert.h>
 
 

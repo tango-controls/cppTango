@@ -1,4 +1,4 @@
-#include <tango/tango.h>
+#include <tango.h>
 #include <DevTest.h>
 #include <assert.h>
 

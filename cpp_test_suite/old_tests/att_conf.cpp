@@ -14,7 +14,7 @@
 //
 // contact: georg.kasper@frm2.tum.de
 
-#include "tango/tango.h"
+#include "tango.h"
 
 const char * const notset = "Not specified";
 

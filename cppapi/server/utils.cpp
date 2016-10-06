@@ -36,14 +36,14 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
+#include <tango.h>
 
 #include <omniORB4/internal/orbOptions.h>
 
 #include <stdlib.h>
-#include <tango/dserversignal.h>
-#include <tango/dserverclass.h>
-#include <tango/eventsupplier.h>
+#include <tango/server/dserversignal.h>
+#include <tango/server/dserverclass.h>
+#include <tango/server/eventsupplier.h>
 
 #ifndef _TG_WINDOWS_
 #include <unistd.h>

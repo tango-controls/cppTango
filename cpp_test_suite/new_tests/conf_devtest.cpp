@@ -1,4 +1,4 @@
-#include <tango/tango.h>
+#include <tango.h>
 
 using namespace Tango;
 

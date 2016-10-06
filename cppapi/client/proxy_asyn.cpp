@@ -38,7 +38,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 
-#include <tango/tango.h>
+#include <tango.h>
 
 #define _dyn_attr
 #ifdef _TG_WINDOWS_

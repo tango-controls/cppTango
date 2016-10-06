@@ -102,11 +102,11 @@
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
+#include <tango.h>
 
 #ifdef TANGO_HAS_LOG4TANGO
 
-#include <tango/logging.h>
+#include <tango/server/logging.h>
 
 namespace Tango
 {

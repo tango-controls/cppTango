@@ -44,15 +44,15 @@
 // See C++ template book chapter 6
 //
 
-#include <tango/tango.h>
+#include <tango.h>
 
-#include <tango/attribute.tpp>
-#include <tango/pollext.tpp>
-#include <tango/utils.tpp>
-#include <tango/w_attribute.tpp>
-#include <tango/devapi_pipe.tpp>
-#include <tango/pipe.tpp>
-#include <tango/w_pipe.tpp>
+#include <tango/server/attribute.tpp>
+#include <tango/server/pollext.tpp>
+#include <tango/server/utils.tpp>
+#include <tango/server/w_attribute.tpp>
+#include <tango/client/devapi_pipe.tpp>
+#include <tango/server/pipe.tpp>
+#include <tango/server/w_pipe.tpp>
 
 namespace Tango
 {

@@ -42,8 +42,8 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <ac_config.h>
 #endif
 
-#include <tango/tango.h>
-#include <tango/dserversignal.h>
+#include <tango.h>
+#include <tango/server/dserversignal.h>
 
 extern omni_thread::key_t key_py_data;
 
