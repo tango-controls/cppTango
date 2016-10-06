@@ -743,7 +743,36 @@ WARN_LOGFILE           =
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = @PROJECT_SOURCE_DIR@/include
+INPUT                  = @PROJECT_SOURCE_DIR@/include/tango/server/device.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/deviceclass.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/command.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/utils.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/except.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/attrdesc.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/fwdattrdesc.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/pipedesc.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/tango_const.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/attribute.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/multiattribute.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/pollext.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/device_2.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/w_attribute.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/pipe.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/w_pipe.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/device_3.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/device_4.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/device_5.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/encoded_attribute.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/attrprop.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/dbapi.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/apiexcept.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/devapi.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/doc.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/devasyn.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/event.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/client/group.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/tango.h \
+                        @PROJECT_SOURCE_DIR@/include/tango/server/seqvec.h
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1035,7 +1064,7 @@ HTML_FILE_EXTENSION    = .html
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_HEADER            = @CMAKE_CURRENT_SOURCE_DIR@/header.html
+HTML_HEADER            =
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank doxygen will generate a standard
@@ -1045,7 +1074,7 @@ HTML_HEADER            = @CMAKE_CURRENT_SOURCE_DIR@/header.html
 # that doxygen normally uses.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_FOOTER            = @CMAKE_CURRENT_SOURCE_DIR@/footer.html
+HTML_FOOTER            =
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading style
 # sheet that is used by each HTML page. It can be used to fine-tune the look of

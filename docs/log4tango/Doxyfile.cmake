@@ -566,7 +566,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @PROJECT_SOURCE_DIR@/include/log4tango \
                          @PROJECT_SOURCE_DIR@/src/log4tango \
-                         @PROJECT_SOURCE_DIR@/doc/log4tango/mainPage.txt
+                         @PROJECT_SOURCE_DIR@/docs/log4tango/mainPage.txt
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
