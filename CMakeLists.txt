@@ -23,7 +23,7 @@ include_directories(include)
 include_directories(${PROJECT_BINARY_DIR}/include)
 
 add_subdirectory(include)
-add_subdirectory(docs)
+add_subdirectory(doxygen)
 #source code
 add_subdirectory(generated/idl)
 add_subdirectory(src)
