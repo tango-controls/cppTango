@@ -1,4 +1,3 @@
-add_subdirectory(server)
 
 
 #link_libraries()
