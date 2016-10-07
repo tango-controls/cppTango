@@ -44,7 +44,7 @@ endif()
 
 add_executable(runner $<TARGET_OBJECTS:compare_test_object> runner.cpp)
 target_include_directories(runner PRIVATE include)
-target_link_libraries(runner PRIVATE tango ${CMAKE_DL_LIBS})
+target_link_libraries(runner PRIVATE tango)
 target_compile_definitions(runner PRIVATE "-DVALGRIND -D_PTHREADS -D_REENTRANT")
 
 add_test("CXX::runner" runner

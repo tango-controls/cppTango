@@ -6,4 +6,4 @@ set(SOURCES ClassFactory.cpp
 
 add_executable(FwdTest ${SOURCES})
 target_include_directories(FwdTest PUBLIC .)
-target_link_libraries(FwdTest PUBLIC tango ${CMAKE_DL_LIBS})
+target_link_libraries(FwdTest PUBLIC tango)
