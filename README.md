@@ -1,6 +1,12 @@
 # cppTango [![Build Status](https://travis-ci.org/tango-controls/cppTango.png)](https://travis-ci.org/tango-controls/cppTango)
 This repository is the result of svn2git migration of tango source code. It is combined from api/cppapi, api/log4tango, api/cpp_test_suite anf api/cpp_test_ds
 
+# Documentation
+
+Generated: [tango-controls.github.io/cppTango-docs](https://tango-controls.github.io/cppTango-docs)
+
+Manuals: [tango-controls.org/resources/documentation/kernel](http://www.tango-controls.org/resources/documentation/kernel/)
+
 # How to build and install using cmake
 
 `mkdir build; cd build; cmake .. [-DCMAKE_INSTALL_PREFIX=<desired installation path>] [-DOMNI_BASE=<omniORB4 home folder>] [-DZMQ_BASE=<zmq home folder>] [-DCMAKE_BUILD_TYPE=RELEASE|DEBUG] [-DCMAKE_VERBOSE_MAKEFILE=true]; make; make install`
