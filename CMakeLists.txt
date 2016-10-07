@@ -53,3 +53,13 @@ configure_file(tango.pc.cmake tango.pc @ONLY)
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/tango.pc"
         DESTINATION "${CMAKE_INSTALL_FULL_LIBDIR}/pkgconfig")
+
+#TODO windows
+SET(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_FILE_NAME libtango_${LIBRARY_VERSION}_amd64) #TODO platform
+set(CPACK_DEBIAN_PACKAGE_NAME libtango-dev)
+set(CPACK_DEBIAN_PACKAGE_VERSION ${LIBRARY_VERSION})
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "omniDynamic4 >= 4.1.6, omniCOS4, libzmq") #TODO packages?
+SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "TANGO team <tango@esrf.fr>") #required
+
+include(CPack)
