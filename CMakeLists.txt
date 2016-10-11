@@ -17,7 +17,7 @@ message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
-include_directories(generated)
+#include_directories(generated)
 include_directories(include)
 #required for generated config.h
 include_directories(${PROJECT_BINARY_DIR}/include)

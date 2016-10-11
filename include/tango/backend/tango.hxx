@@ -1242,7 +1242,8 @@ namespace tango {
 
             AttributeValueList(size_t _max);
 
-            AttributeValueList(size_t _max, size_t _len, AttributeValue *_val,
+            template<typename T>
+            AttributeValueList(size_t _max, size_t _len, AttributeValue<T> *_val,
                                       bool _rel = 0);
 
 
@@ -1257,7 +1258,8 @@ namespace tango {
 
             AttributeValueList_3(size_t _max);
 
-            AttributeValueList_3(size_t _max, size_t _len, AttributeValue_3 *_val,
+            template<typename T>
+            AttributeValueList_3(size_t _max, size_t _len, AttributeValue_3<T> *_val,
                                         bool _rel = 0);
 
 
@@ -1502,16 +1504,18 @@ namespace tango {
 
             DevCmdHistoryList(size_t _max);
 
-            DevCmdHistoryList(size_t _max, size_t _len, DevCmdHistory *_val, bool _rel = 0);
+            template<typename T>
+            DevCmdHistoryList(size_t _max, size_t _len, DevCmdHistory<T> *_val, bool _rel = 0);
 
 
             DevCmdHistoryList &operator=(const DevCmdHistoryList &_s);
         };
 
+        template<typename T>
         struct DevAttrHistory {
             bool attr_failed;
 
-            AttributeValue value;
+            AttributeValue<T> value;
 
             DevErrorList errors;
 
@@ -1521,10 +1525,11 @@ namespace tango {
 //            void operator<<=(cdrStream &);
         };
 
+        template<typename T>
         struct DevAttrHistory_3 {
             bool attr_failed;
 
-            AttributeValue_3 value;
+            AttributeValue_3<T> value;
 
 
 //            void operator>>=(cdrStream &) const;
@@ -1706,6 +1711,7 @@ namespace tango {
 //            void operator<<=(cdrStream &);
         };
 
+        template <typename T>
         struct DevAttrHistoryList {
 
             DevAttrHistoryList();
@@ -1714,13 +1720,15 @@ namespace tango {
 
             DevAttrHistoryList(size_t _max);
 
-            DevAttrHistoryList(size_t _max, size_t _len, DevAttrHistory *_val,
+
+            DevAttrHistoryList(size_t _max, size_t _len, DevAttrHistory<T> *_val,
                                       bool _rel = 0);
 
 
             DevAttrHistoryList &operator=(const DevAttrHistoryList &_s);
         };
 
+        template <typename T>
         struct DevAttrHistoryList_3 {
 
             DevAttrHistoryList_3();
@@ -1729,7 +1737,7 @@ namespace tango {
 
             DevAttrHistoryList_3(size_t _max);
 
-            DevAttrHistoryList_3(size_t _max, size_t _len, DevAttrHistory_3 *_val,
+            DevAttrHistoryList_3(size_t _max, size_t _len, DevAttrHistory_3<T> *_val,
                                         bool _rel = 0);
 
 
@@ -1759,7 +1767,7 @@ namespace tango {
         public:
             template<typename IN,
                     typename OUT>
-            virtual OUT *command_inout(const std::string& command, const IN &argin) = 0;
+            auto command_inout(const std::string& command, const IN &argin) -> decltype(OUT::value_type);
 
             virtual AttributeConfigList *get_attribute_config(const ::tango::backend::DevVarStringArray &names) = 0;
 
@@ -1796,7 +1804,7 @@ namespace tango {
             virtual ~Device_2();
         public:
             template<typename IN, typename OUT>
-            virtual OUT* command_inout_2(const char *command, const IN& argin, ::tango::backend::DevSource source) = 0;
+            OUT* command_inout_2(const char *command, const IN& argin, ::tango::backend::DevSource source);
 
             virtual AttributeValueList *
             read_attributes_2(const ::tango::backend::DevVarStringArray &names, ::tango::backend::DevSource source) = 0;
@@ -1838,14 +1846,16 @@ namespace tango {
         protected:
             virtual ~Device_4();
         public:
-            virtual DevAttrHistory_4 *read_attribute_history_4(const char *name, int32_t n) = 0;
+            template<typename T>
+            DevAttrHistory_4<T> *read_attribute_history_4(const std::string& name, int32_t n);
 
-            virtual DevCmdHistory_4 *command_inout_history_4(const char *command, int32_t n) = 0;
+            template<typename T>
+            DevCmdHistory_4<T> *command_inout_history_4(const std::string& command, int32_t n);
 
             template <typename IN, typename OUT>
-            virtual OUT*
-            command_inout_4(const char *command, const IN &argin, ::tango::backend::DevSource source,
-                            const ::tango::backend::ClntIdent &cl_ident) = 0;
+            auto
+            command_inout_4(const std::string& command, const IN &argin, ::tango::backend::DevSource source,
+                            const ::tango::backend::ClntIdent &cl_ident) -> decltype(OUT::value_type);
 
             virtual AttributeValueList_4 *
             read_attributes_4(const ::tango::backend::DevVarStringArray &names, ::tango::backend::DevSource source,

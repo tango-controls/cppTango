@@ -29,13 +29,14 @@
 #ifndef _ReadersWritersLock_h_
 #define _ReadersWritersLock_h_
 
-#include <omnithread.h>
+#include <memory>
+#include <condition_variable>
 
 class ReadersWritersLock {
 
 public:
-  omni_mutex mut;
-  omni_condition cond;
+  std::mutex mut;
+  std::condition_variable cond;
   int n;	// 0 means no-one active, > 0 means n readers, < 0 means writer
 		// (-n times).
   int writerId;
@@ -133,7 +134,7 @@ public:
 			auto_self = NULL;
 		}
 
-		cond.broadcast();	// might as well wake up all readers
+		cond.notify_all();	// might as well wake up all readers
 	}
     mut.unlock();
   }

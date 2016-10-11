@@ -3,7 +3,5 @@
 //
 
 #include "backend_factory.hpp"
-#include "corba/corba.hpp"
-
 
 //TODO implement backend/tango using corba
