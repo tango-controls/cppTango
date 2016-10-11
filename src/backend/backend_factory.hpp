@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <tango/backend/tango.hpp>
+#include <tango/backend/tango.hxx>
 
 namespace tango {
 

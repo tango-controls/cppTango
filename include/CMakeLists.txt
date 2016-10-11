@@ -28,7 +28,7 @@ set(LOG4TANGO_THREADING
         log4tango/threading/Threading.hh)
 
 set(BACKEND_HEADERS
-        tango/backend/tango.hpp)
+        tango/backend/tango.hxx)
 
 set(CLIENT_HEADERS
         tango/client/accessproxy.h
