@@ -40,10 +40,12 @@
 #include <winsock.h>
 #endif
 #include <time.h>
-#include <omniORB4/omniInterceptors.h>
+//#include <omniORB4/omniInterceptors.h>
 
 namespace Tango
 {
+
+    using namespace tango::backend;
 
 #define		IP_ADDR_BUFFER_SIZE		80
 
@@ -192,9 +194,9 @@ public:
 	BlackBox(long);
 
 	void insert_corba_attr(BlackBoxElt_AttrType);
-	void insert_cmd(const char *,long vers=1,DevSource=Tango::DEV);
-	void insert_attr(const Tango::DevVarStringArray &,long vers=1,DevSource=Tango::DEV);
-	void insert_attr(const Tango::DevVarStringArray &,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
+	void insert_cmd(const char *,long vers=1,DevSource=DevSource::DEV);
+	void insert_attr(const Tango::DevVarStringArray &,long vers=1,DevSource=DevSource::DEV);
+	void insert_attr(const Tango::DevVarStringArray &,const ClntIdent &,long vers=1,DevSource=DevSource::DEV);
 	void insert_attr(const char *,const ClntIdent &,long);
 	void insert_attr(const Tango::AttributeValueList &,long vers=1);
 	void insert_attr(const Tango::AttributeValueList_4 &,const ClntIdent &,long vers);
@@ -204,7 +206,7 @@ public:
 	void insert_op(BlackBoxElt_OpType,const ClntIdent &);
 
 	void insert_cmd_nl(const char *,long,DevSource);
-	void insert_cmd_cl_ident(const char *,const ClntIdent &,long vers=1,DevSource=Tango::DEV);
+	void insert_cmd_cl_ident(const char *,const ClntIdent &,long vers=1,DevSource=DevSource::DEV);
 	void add_cl_ident(const ClntIdent &,client_addr *);
 	void update_client_host(client_addr *);
 
@@ -227,7 +229,7 @@ private:
 	long				nb_elt;
 	long				max_elt;
 
-	omni_mutex			sync;
+	std::mutex			sync;
 
 	string				elt_str;
 };

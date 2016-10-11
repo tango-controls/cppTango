@@ -516,6 +516,8 @@ namespace tango {
 
 
             DevErrorList &operator=(const DevErrorList &_s);
+
+            size_t length();
         };
 
         struct NamedDevError {

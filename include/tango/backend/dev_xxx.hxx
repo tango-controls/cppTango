@@ -4,4 +4,10 @@
 
 #pragma once
 
-using DevULong64 uint64_t;
+#include <cstdint>
+
+namespace tango {
+    namespace backend {
+        using DevULong64 = uint64_t;
+    }//backend
+}//tango
