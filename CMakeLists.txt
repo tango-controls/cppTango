@@ -27,7 +27,7 @@ add_subdirectory(doxygen)
 #source code
 add_subdirectory(generated/idl)
 add_subdirectory(src)
-add_subdirectory(test)
+#add_subdirectory(test)
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
@@ -59,7 +59,8 @@ SET(CPACK_GENERATOR "DEB")
 set(CPACK_PACKAGE_FILE_NAME libtango_${LIBRARY_VERSION}_amd64) #TODO platform
 set(CPACK_DEBIAN_PACKAGE_NAME libtango-dev)
 set(CPACK_DEBIAN_PACKAGE_VERSION ${LIBRARY_VERSION})
-set(CPACK_DEBIAN_PACKAGE_DEPENDS "omniDynamic4 >= 4.1.6, omniCOS4, libzmq") #TODO packages?
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libcos4-dev, libzmq5-dev | libzmq3-dev")
+set(CPACK_DEBIAN_PACKAGE_CONFLICTS "libtango7-dev, libtango8-dev, libtango9-dev")
 SET(CPACK_DEBIAN_PACKAGE_MAINTAINER "TANGO team <tango@esrf.fr>") #required
 
 include(CPack)
