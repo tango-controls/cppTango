@@ -40,7 +40,7 @@
 #include <winsock.h>
 #endif
 #include <time.h>
-//#include <omniORB4/omniInterceptors.h>
+#include <omniORB4/omniInterceptors.h>
 
 namespace Tango
 {
@@ -229,7 +229,7 @@ private:
 	long				nb_elt;
 	long				max_elt;
 
-	std::mutex			sync;
+	omni_mutex			sync;
 
 	string				elt_str;
 };
