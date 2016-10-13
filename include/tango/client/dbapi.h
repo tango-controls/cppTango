@@ -975,7 +975,7 @@ private:
 	int find_obj(DevString obj_name,int &);
 	void get_obj_prop_list(DevVarStringArray *,PropEltIdx &);
 
-	CORBA::Any_var			received;
+	Tango::Any				received;
 	const DevVarStringArray *data_list;
 	int 					n_data;
 	int						proc_release;

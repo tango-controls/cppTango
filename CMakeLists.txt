@@ -17,7 +17,7 @@ message("System TANGO_HOST=$ENV{TANGO_HOST}")
 set(TANGO_HOST $ENV{TANGO_HOST})
 include(configure/CMakeLists.txt)
 
-include_directories(generated)
+#include_directories(generated)
 include_directories(include)
 #required for generated config.h
 include_directories(${PROJECT_BINARY_DIR}/include)
@@ -25,18 +25,19 @@ include_directories(${PROJECT_BINARY_DIR}/include)
 add_subdirectory(include)
 add_subdirectory(doxygen)
 #source code
-add_subdirectory(generated/idl)
+#add_subdirectory(generated/idl)
 add_subdirectory(src)
 #add_subdirectory(test)
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
+                            $<TARGET_OBJECTS:corba_objects>
                             $<TARGET_OBJECTS:client_objects>
-                            $<TARGET_OBJECTS:idl_objects>
+#                            $<TARGET_OBJECTS:idl_objects>
                             $<TARGET_OBJECTS:jpeg_objects>
                             $<TARGET_OBJECTS:jpeg_mmx_objects>
                             $<TARGET_OBJECTS:server_objects>
                             $<TARGET_OBJECTS:include_objects>)
-target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS} ${OMNIORB_PKG_INCLUDE_DIRS} ${OMNIDYN_PKG_INCLUDE_DIRS})
+target_include_directories(tango PUBLIC ${ZMQ_PKG_INCLUDE_DIRS})
 target_link_libraries(tango PUBLIC ${ZMQ_PKG_LIBRARIES} ${OMNIORB_PKG_LIBRARIES} ${OMNICOS_PKG_LIBRARIES} ${OMNIDYN_PKG_LIBRARIES} ${CMAKE_DL_LIBS})
 target_compile_options(tango PUBLIC ${ZMQ_PKG_CFLAGS_OTHER} ${OMNIORB_PKG_CFLAGS_OTHER} ${OMNICOS_PKG_CFLAGS_OTHER} ${OMNIDYN_PKG_CFLAGS_OTHER})
 target_compile_options(tango PRIVATE -fPIC)

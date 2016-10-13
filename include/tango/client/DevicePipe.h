@@ -627,8 +627,6 @@ public:
 //	DevicePipeBlob & operator << (short &);
 	DevicePipeBlob & operator << (DevLong &);
 	DevicePipeBlob & operator << (DevLong64 &);
-	DevicePipeBlob & operator << (float &);
-	DevicePipeBlob & operator << (double &);
 	DevicePipeBlob & operator << (DevUChar &);
 	DevicePipeBlob & operator << (DevUShort &);
 	DevicePipeBlob & operator << (DevULong &);
@@ -641,11 +639,9 @@ public:
 	DevicePipeBlob & operator << (DevicePipeBlob &);
 
 	DevicePipeBlob & operator << (vector<DevBoolean> &);
-	DevicePipeBlob & operator << (vector<short> &);
+//	DevicePipeBlob & operator << (vector<short> &);
 	DevicePipeBlob & operator << (vector<DevLong> &);
 	DevicePipeBlob & operator << (vector<DevLong64> &);
-	DevicePipeBlob & operator << (vector<float> &);
-	DevicePipeBlob & operator << (vector<double> &);
 	DevicePipeBlob & operator << (vector<DevUChar> &);
 	DevicePipeBlob & operator << (vector<DevUShort> &);
 	DevicePipeBlob & operator << (vector<DevULong> &);
@@ -653,7 +649,6 @@ public:
 	DevicePipeBlob & operator << (vector<DevString> &);
 	DevicePipeBlob & operator << (vector<DevState> &);
 	DevicePipeBlob & operator << (vector<DevEncoded> &);
-	DevicePipeBlob & operator << (vector<string> &);
 
 	DevicePipeBlob & operator << (DevVarBooleanArray &);
 	DevicePipeBlob & operator << (DevVarShortArray &);
@@ -689,8 +684,6 @@ public:
 //	DevicePipeBlob & operator >> (short &);
 	DevicePipeBlob & operator >> (DevLong &);
 	DevicePipeBlob & operator >> (DevLong64 &);
-	DevicePipeBlob & operator >> (float &);
-	DevicePipeBlob & operator >> (double &);
 	DevicePipeBlob & operator >> (DevUChar &);
 	DevicePipeBlob & operator >> (DevUShort &);
 	DevicePipeBlob & operator >> (DevULong &);
@@ -698,21 +691,17 @@ public:
 	DevicePipeBlob & operator >> (DevString &);
 	DevicePipeBlob & operator >> (DevState &);
 	DevicePipeBlob & operator >> (DevEncoded &);
-	DevicePipeBlob & operator >> (string &);
 
 	DevicePipeBlob & operator >> (DevicePipeBlob &);
 
 	DevicePipeBlob & operator >> (vector<DevBoolean> &);
-	DevicePipeBlob & operator >> (vector<short> &);
+//	DevicePipeBlob & operator >> (vector<short> &);
 	DevicePipeBlob & operator >> (vector<DevLong> &);
 	DevicePipeBlob & operator >> (vector<DevLong64> &);
-	DevicePipeBlob & operator >> (vector<float> &);
-	DevicePipeBlob & operator >> (vector<double> &);
 	DevicePipeBlob & operator >> (vector<DevUChar> &);
 	DevicePipeBlob & operator >> (vector<DevUShort> &);
 	DevicePipeBlob & operator >> (vector<DevULong> &);
 	DevicePipeBlob & operator >> (vector<DevULong64> &);
-	DevicePipeBlob & operator >> (vector<string> &);
 	DevicePipeBlob & operator >> (vector<DevState> &);
 //	DevicePipeBlob & operator >> (vector<DevEncoded> &);
 

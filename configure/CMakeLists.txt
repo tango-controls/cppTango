@@ -26,9 +26,9 @@ else(OMNI_BASE)
     pkg_search_module(OMNICOS_PKG REQUIRED omniCOS4)
     #dynamic CORBA
     pkg_search_module(OMNIDYN_PKG REQUIRED omniDynamic4)
-    if(NOT OMNIORB_PKG_FOUND)
-        message(FATAL "omniORB4 library is required for Tango")
-    endif()
+#    if(NOT OMNIORB_PKG_FOUND)
+#        message(FATAL "omniORB4 library is required for Tango")
+#    endif()
 endif(OMNI_BASE)
 
 if(ZMQ_BASE)

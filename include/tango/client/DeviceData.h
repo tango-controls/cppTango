@@ -84,7 +84,7 @@ public :
 #endif
 	virtual ~DeviceData();
 
-	CORBA::Any_var any;
+	Tango::Any any;
 
 ///@publicsection
 /**@name Constructors */
@@ -225,7 +225,7 @@ public :
  * @param [in] datum The data to be inserted
  * @exception WrongData if requested
  */
-	void operator << (bool datum) {any <<= CORBA::Any::from_boolean(datum);}
+	void operator << (bool datum);
 /**
  * Insert data into a DeviceData for the DevVarLongStringArray data type
  *
@@ -371,10 +371,6 @@ public :
 	void operator << (DevULong datum) {any <<= datum;}
 	void operator << (DevLong64 datum) {any <<= datum;}
 	void operator << (DevULong64 datum) {any <<= datum;}
-	void operator << (float datum) {any <<= datum;}
-	void operator << (double datum) {any <<= datum;}
-	void operator << (char *&datum) {any <<= datum;}
-	void operator << (const char *&datum) {any <<= datum;}
 	void operator << (string &datum) {any <<= datum.c_str();}
 	void operator << (vector<unsigned char>&);
 	void operator << (vector<string>&);
@@ -386,8 +382,8 @@ public :
 	void operator << (vector<DevULong64> &);
 	void operator << (vector<float>&);
 	void operator << (vector<double>&);
-	void operator << (DevState datum) {(any.inout()) <<= datum;}
-	void operator << (DevEncoded &datum) {(any.inout()) <<= datum;}
+	void operator << (DevState datum);
+	void operator << (DevEncoded &datum);
 
 //	void insert(vector<DevLong>&, vector<string>&);
 //	void insert(vector<double>&, vector<string>&);
@@ -400,31 +396,32 @@ public :
 // insert methods for TANGO CORBA sequence types
 //
 
-	inline void operator << (DevVarCharArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarShortArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarUShortArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarLongArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarLong64Array *datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarULongArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarULong64Array* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarFloatArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarDoubleArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarStringArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarLongStringArray* datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarDoubleStringArray* datum) { any.inout() <<= datum;}
+    //TODO replace with template
+	inline void operator << (DevVarCharArray* datum);
+	inline void operator << (DevVarShortArray* datum);
+	inline void operator << (DevVarUShortArray* datum);
+	inline void operator << (DevVarLongArray* datum);
+	inline void operator << (DevVarLong64Array *datum);
+	inline void operator << (DevVarULongArray* datum);
+	inline void operator << (DevVarULong64Array* datum);
+	inline void operator << (DevVarFloatArray* datum);
+	inline void operator << (DevVarDoubleArray* datum);
+	inline void operator << (DevVarStringArray* datum);
+	inline void operator << (DevVarLongStringArray* datum);
+	inline void operator << (DevVarDoubleStringArray* datum);
 
-	inline void operator << (DevVarCharArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarShortArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarUShortArray datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarLongArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarLong64Array &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarULongArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarULong64Array &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarFloatArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarDoubleArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarStringArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarLongStringArray &datum) { any.inout() <<= datum;}
-	inline void operator << (DevVarDoubleStringArray &datum) { any.inout() <<= datum;}
+	inline void operator << (DevVarCharArray &datum);
+	inline void operator << (DevVarShortArray &datum);
+	inline void operator << (DevVarUShortArray datum);
+	inline void operator << (DevVarLongArray &datum);
+	inline void operator << (DevVarLong64Array &datum);
+	inline void operator << (DevVarULongArray &datum);
+	inline void operator << (DevVarULong64Array &datum);
+	inline void operator << (DevVarFloatArray &datum);
+	inline void operator << (DevVarDoubleArray &datum);
+	inline void operator << (DevVarStringArray &datum);
+	inline void operator << (DevVarLongStringArray &datum);
+	inline void operator << (DevVarDoubleStringArray &datum);
 
 //
 // extract methods for native C++ types
@@ -437,9 +434,6 @@ public :
 	bool operator >> (DevULong&);
 	bool operator >> (DevLong64&);
 	bool operator >> (DevULong64&);
-	bool operator >> (float&);
-	bool operator >> (double&);
-	bool operator >> (const char*&);
 	bool operator >> (string&);
 
 	bool operator >> (vector<unsigned char>&);

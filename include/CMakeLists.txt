@@ -27,6 +27,11 @@ set(LOG4TANGO_THREADING
         log4tango/threading/MSThreads.hh
         log4tango/threading/Threading.hh)
 
+set(BACKEND_HEADERS
+        tango/backend/tango.hxx
+        tango/backend/dev_xxx.hxx
+        tango/backend/utils.hxx)
+
 set(CLIENT_HEADERS
         tango/client/accessproxy.h
         tango/client/apiexcept.h
@@ -139,7 +144,8 @@ set(SERVER_TEMPLATES
         tango/server/w_attribute_spec.tpp
         tango/server/w_pipe.tpp)
 
-add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
+add_library(include_objects OBJECT tango.h ${BACKEND_HEADERS} ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
+target_include_directories(include_objects PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 install(FILES ${SERVER_HEADERS} ${SERVER_TEMPLATES} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server")

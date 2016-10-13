@@ -458,9 +458,9 @@ const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
 //
 // A short inline function to hide the CORBA::string_dup function
 //
-
-inline char * string_dup(char *s) {return CORBA::string_dup(s);}
-inline char * string_dup(const char *s) {return CORBA::string_dup(s);}
+//TODO moved to utils.hxx
+//inline char * string_dup(char *s);
+//inline char * string_dup(const char *s);
 
 //
 // Many, many typedef
@@ -471,7 +471,7 @@ typedef DevVarCharArray	DevVarUCharArray;
 
 class DeviceImpl;
 
-typedef bool (DeviceImpl::*StateMethPtr)(const CORBA::Any &);
+typedef bool (DeviceImpl::*StateMethPtr)(const Tango::Any &);
 
 typedef void (DeviceImpl::*CmdMethPtr)();
 

@@ -220,6 +220,7 @@ public :
  */
 	DeviceAttribute(string &name, vector<short> &val,int dim_x,int dim_y);
 //@}
+//TODO replace with template
 ///@privatesection
 	DeviceAttribute(string&, DevLong);
 	DeviceAttribute(string&, double);
@@ -340,24 +341,25 @@ public :
     void set_w_dim_y(int val) {w_dim_y = val;}
     void set_error_list(DevErrorList *ptr) {err_list = ptr;}
 
-	DevVarEncodedArray_var &get_Encoded_data() {return EncodedSeq;}
-    DevErrorList_var &get_error_list() {return err_list;}
+	DevVarEncodedArray &get_Encoded_data() {return EncodedSeq;}
+    DevErrorList &get_error_list() {return err_list;}
 
-	DevVarLongArray_var 	LongSeq;
-	DevVarShortArray_var 	ShortSeq;
-	DevVarDoubleArray_var 	DoubleSeq;
-	DevVarStringArray_var 	StringSeq;
-	DevVarFloatArray_var	FloatSeq;
-	DevVarBooleanArray_var	BooleanSeq;
-	DevVarUShortArray_var	UShortSeq;
-	DevVarCharArray_var		UCharSeq;
-	DevVarLong64Array_var	Long64Seq;
-	DevVarULongArray_var	ULongSeq;
-	DevVarULong64Array_var	ULong64Seq;
-	DevVarStateArray_var	StateSeq;
-	DevVarEncodedArray_var	EncodedSeq;
 
-	DevErrorList_var		err_list;
+	DevVarLongArray 	LongSeq;
+	DevVarShortArray 	ShortSeq;
+	DevVarDoubleArray 	DoubleSeq;
+	DevVarStringArray 	StringSeq;
+	DevVarFloatArray	FloatSeq;
+	DevVarBooleanArray	BooleanSeq;
+	DevVarUShortArray	UShortSeq;
+	DevVarCharArray		UCharSeq;
+	DevVarLong64Array	Long64Seq;
+	DevVarULongArray	ULongSeq;
+	DevVarULong64Array	ULong64Seq;
+	DevVarStateArray	StateSeq;
+	DevVarEncodedArray	EncodedSeq;
+
+	DevErrorList			err_list;
 
 //
 // For the state attribute
@@ -736,6 +738,8 @@ public :
 	bool extract_set  (vector<string> &data);
 //@}
 ///@privatesection
+
+//TODO replace with template
 //	void operator << (short);
 	void operator << (DevLong);
 	void operator << (double);
