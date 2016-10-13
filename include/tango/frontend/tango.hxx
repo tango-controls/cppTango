@@ -25,9 +25,10 @@ namespace Tango {
     //TODO more elegant solution?
     template<typename T>
     class DevVarArray {
+    public:
         size_t length();
 
-        T* operator[](size_t);
+        T& operator[](size_t);
     };
 
     class DevVarBooleanArray_var;
@@ -583,7 +584,7 @@ namespace Tango {
 
     class DevErrorList_var;
 
-    class DevErrorList {
+    class DevErrorList : DevVarArray<DevError> {
     public:
         typedef DevErrorList_var _var_type;
 
