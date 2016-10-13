@@ -4,9 +4,9 @@
 
 # TANGO distributed control system - shared library
 
-TANGO is an object-oriented distributed control system using CORBA. In TANGO all objects are representations of devices, which can be on the same computer or distributed over a network. Communication between devices uses CORBA and can be synchronous, asynchronous or event driven.
+TANGO is an object-oriented distributed control system. In TANGO all objects are representations of devices, which can be on the same computer or distributed over a network. Communication between devices can be synchronous, asynchronous or event driven.
 
-The object model in TANGO supports methods, attributes and properties. TANGO provides an API which hides all the details of network access and provides object browsing, discovery, and security features. Permanent data is stored in a MySQL database.
+The object model in TANGO supports methods, attributes and properties. TANGO provides an API which hides all the details of network access and provides object browsing, discovery, and security features. 
 
 TANGO is being actively developed as a collaborative effort between the ESRF ([www.esrf.eu](http://www.esrf.eu)), Soleil ([synchrotron-soleil.fr](http://synchrotron-soleil.fr)), Alba ([www.cells.es](http://www.cells.es)), and Elettra institutes ([www.elettra.trieste.it](http://www.elettra.trieste.it)).
 
