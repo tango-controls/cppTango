@@ -1874,13 +1874,9 @@ long Group::command_inout_asynch_i (const std::string& c, /*const*/ std::vector<
          << d.size()
          << "]"
          << ends;
-    //TODO fix apiexcept.h
-    Except::throw_exception((const char*)API_MethodArgument,
+    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
                                    (const char*)desc.str().c_str(),
                                    (const char*)"Group::command_inout_asynch");
-//    ApiDataExcept::throw_exception((const char*)API_MethodArgument,
-//                                   (const char*)desc.str().c_str(),
-//                                   (const char*)"Group::command_inout_asynch");
   }
 
   if (ari == -1)

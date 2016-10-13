@@ -201,8 +201,9 @@ public :
 	DeviceProxy & operator=(const DeviceProxy &);
 	virtual ~DeviceProxy();
 
-	DeviceProxy():Connection((CORBA::ORB *)NULL),db_dev(NULL),adm_device(NULL),lock_ctr(0),ext_proxy(Tango_nullptr)
-	{dbase_used = false;}
+	//TODO CORBA::ORB must be hidden from client/server code
+//	DeviceProxy():Connection((CORBA::ORB *)NULL),db_dev(NULL),adm_device(NULL),lock_ctr(0),ext_proxy(Tango_nullptr)
+//	{dbase_used = false;}
 /// @publicsection
 
 //
