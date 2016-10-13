@@ -20,13 +20,13 @@ namespace Tango {
 
     class Any{};
 
-    using CORBA::Any = Any;
-
     //TODO more elegant solution?
     template<typename T>
     class DevVarArray {
     public:
         size_t length();
+
+        void length(size_t);
 
         T& operator[](size_t);
     };
@@ -474,7 +474,7 @@ namespace Tango {
 
     class DevVarStateArray_var;
 
-    class DevVarStateArray {
+    class DevVarStateArray : DevVarArray<DevState> {
     public:
         typedef DevVarStateArray_var _var_type;
 
