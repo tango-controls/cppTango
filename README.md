@@ -1,4 +1,4 @@
-![logo](http://www.tango-controls.org/static/tango/img/logo_tangocontrols.png)
+[![logo](http://www.tango-controls.org/static/tango/img/logo_tangocontrols.png)](http://www.tango-controls.org)
 
 [![Build Status](https://travis-ci.org/tango-controls/cppTango.png)](https://travis-ci.org/tango-controls/cppTango)
 
