@@ -1,5 +1,5 @@
-set(SOURCES backend_factory.cpp)
-set(HEADERS backend_factory.hpp)
+set(SOURCES backend_factory.cxx)
+set(HEADERS backend_factory.hxx)
 
 add_subdirectory(corba)
 

@@ -29,7 +29,8 @@ set(LOG4TANGO_THREADING
 
 set(BACKEND_HEADERS
         tango/backend/tango.hxx
-        tango/backend/dev_xxx.hxx)
+        tango/backend/dev_xxx.hxx
+        tango/backend/utils.hxx)
 
 set(CLIENT_HEADERS
         tango/client/accessproxy.h

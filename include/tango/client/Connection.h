@@ -71,8 +71,8 @@ protected :
 	long 				pasyn_ctr;
 	long				pasyn_cb_ctr;
 
-	Tango::Device_var 	device;
-	Tango::Device_2_var device_2;
+	Tango::Device 	device;
+	Tango::Device_2 device_2;
 
 	int 				timeout;
 
@@ -100,11 +100,11 @@ protected :
 	void check_and_reconnect(Tango::AccessControlType &);
 	void check_and_reconnect(Tango::DevSource &,Tango::AccessControlType &);
 
-	long add_asyn_request(CORBA::Request_ptr,TgRequest::ReqType);
+	long add_asyn_request(Tango::Request,TgRequest::ReqType);
 	void remove_asyn_request(long);
 
-	void add_asyn_cb_request(CORBA::Request_ptr,CallBack *,Connection *,TgRequest::ReqType);
-	void remove_asyn_cb_request(Connection *,CORBA::Request_ptr);
+	void add_asyn_cb_request(Tango::Request,CallBack *,Connection *,TgRequest::ReqType);
+	void remove_asyn_cb_request(Connection *,Tango::Request);
 	long get_pasyn_cb_ctr();
 
     class ConnectionExt
@@ -124,12 +124,12 @@ protected :
 #endif
 
     bool				tr_reco;
-    Tango::Device_3_var device_3;
+    Tango::Device_3 device_3;
 
     bool			  	prev_failed;
     double		  		prev_failed_t0;
 
-    Tango::Device_4_var	device_4;
+    Tango::Device_4	device_4;
     omni_mutex			adm_dev_mutex;
     omni_mutex			asyn_mutex;
     ReadersWritersLock	con_to_mon;
@@ -137,7 +137,7 @@ protected :
     int					user_connect_timeout;
     bool				tango_host_localhost;
 
-    Tango::Device_5_var	device_5;
+    Tango::Device_5	device_5;
 
 public :
 ///@publicsection
@@ -518,7 +518,8 @@ public :
 ///@privatesection
 	virtual string dev_name()=0;
 
-	Connection(CORBA::ORB *orb = NULL);
+	//TODO this must be hidden from client/server code
+//	Connection(CORBA::ORB *orb = NULL);
 	Connection(bool dummy);
 	virtual ~Connection();
 	Connection(const Connection &);
@@ -549,9 +550,9 @@ public :
 // Asynchronous methods
 //
 
-	void Cb_Cmd_Request(CORBA::Request_ptr,Tango::CallBack *);
-	void Cb_ReadAttr_Request(CORBA::Request_ptr,Tango::CallBack *);
-	void Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr);
+	void Cb_Cmd_Request(Tango::Request,Tango::CallBack *);
+	void Cb_ReadAttr_Request(Tango::Request,Tango::CallBack *);
+	void Cb_WriteAttr_Request(Tango::Request req,Tango::CallBack *cb_ptr);
 	void dec_asynch_counter(asyn_req_type ty);
 
 //

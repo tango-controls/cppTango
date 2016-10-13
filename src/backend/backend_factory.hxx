@@ -4,8 +4,6 @@
 
 #pragma once
 
-#include <tango/backend/tango.hxx>
-
 namespace tango {
 
     namespace backend {

@@ -552,7 +552,7 @@ public :
  *
  * @return The record error stack
  */
-	const DevErrorList &get_err_stack() {return err.in();}
+	const DevErrorList &get_err_stack() {return err;}
 /**
  * Print a DeviceDataHistory instance
  *
@@ -585,14 +585,14 @@ public :
 	void failed(bool val) {fail = val;}
 	void set_date(TimeVal &tv) {time = tv;}
 	TimeVal &date() {return time;}
-	const DevErrorList &errors() {return err.in();}
-	void errors(DevErrorList_var &del) {err = del;}
+	const DevErrorList &errors() {return err;}
+	void errors(DevErrorList &del) {err = del;}
 
 protected:
 ///@privatesection
 	bool 				fail;
 	TimeVal 			time;
-	DevErrorList_var 	err;
+	DevErrorList	 	err;
 
 	DevCmdHistoryList 	*seq_ptr;
 	int 				*ref_ctr_ptr;
@@ -640,8 +640,8 @@ public :
 //
 
 	DeviceAttributeHistory();
-	DeviceAttributeHistory(int, DevAttrHistoryList_var &);
-	DeviceAttributeHistory(int, DevAttrHistoryList_3_var &);
+	DeviceAttributeHistory(int, DevAttrHistoryList &);
+	DeviceAttributeHistory(int, DevAttrHistoryList_3 &);
 	DeviceAttributeHistory(const DeviceAttributeHistory &);
 	DeviceAttributeHistory & operator=(const DeviceAttributeHistory &);
 #ifdef HAS_RVALUE
@@ -777,7 +777,7 @@ inline ApiUtil *ApiUtil::instance()
 	return _instance;
 }
 
-inline long Connection::add_asyn_request(CORBA::Request_ptr req,TgRequest::ReqType req_type)
+inline long Connection::add_asyn_request(Tango::Request req,TgRequest::ReqType req_type)
 {
 	omni_mutex_lock guard(asyn_mutex);
 	long id = ApiUtil::instance()->get_pasyn_table()->store_request(req,req_type);
@@ -793,14 +793,14 @@ inline void Connection::remove_asyn_request(long id)
 	pasyn_ctr--;
 }
 
-inline void Connection::add_asyn_cb_request(CORBA::Request_ptr req,CallBack *cb,Connection *con,TgRequest::ReqType req_type)
+inline void Connection::add_asyn_cb_request(Tango::Request* req,CallBack *cb,Connection *con,TgRequest::ReqType req_type)
 {
 	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->store_request(req,cb,con,req_type);
 	pasyn_cb_ctr++;
 }
 
-inline void Connection::remove_asyn_cb_request(Connection *con,CORBA::Request_ptr req)
+inline void Connection::remove_asyn_cb_request(Connection *con,Tango::Request* req)
 {
 	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->remove_request(con,req);
@@ -999,8 +999,8 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 class AutoConnectTimeout
 {
 public:
-	AutoConnectTimeout(unsigned int to) {omniORB::setClientConnectTimeout((CORBA::ULong)to);}
-	~AutoConnectTimeout() {omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);}
+	AutoConnectTimeout(unsigned int to) {Tango::setClientConnectTimeout(to);}
+	~AutoConnectTimeout() {Tango::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);}
 };
 
 } // End of Tango namespace

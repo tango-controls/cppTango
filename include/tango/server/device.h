@@ -87,7 +87,7 @@ class FwdWrongConf;
  * @ingroup Server
  */
 
-class DeviceImpl : public virtual POA_Tango::Device
+class DeviceImpl : public virtual Tango::Device
 {
 public:
 	friend class Tango::AutoTangoMonitor;
@@ -287,8 +287,8 @@ public:
  *
  * @param 	d	The CORBA object reference
  */
-
-	void set_d_var(Tango::Device_ptr d) {d_var = d;}
+//TODO this must not be visible to client/sever code
+//	void set_d_var(Tango::Device_ptr d) {d_var = d;}
 
 /**
  * Get the associated CORBA object reference.
@@ -298,8 +298,8 @@ public:
  *
  * @return The CORBA object reference
  */
-
-	Tango::Device_var get_d_var() {return d_var;}
+//TODO this must not be visible to client/sever code
+//	Tango::Device_var get_d_var() {return d_var;}
 
 /**
  * Set the associated CORBA object identifier.
@@ -728,7 +728,7 @@ public:
  */
 	inline Tango::DevVarShortArray *create_DevVarShortArray(short *ptr,long length)
 	{
-		return new Tango::DevVarShortArray(length,length,ptr,false);
+		return new Tango::DevVarShortArray(length,length, static_cast<int16_t *>(ptr),false);
 	}
 
 /**
@@ -3305,8 +3305,8 @@ public:
 	virtual char *status();
 	virtual Tango::DevState state();
 
-	virtual CORBA::Any *command_inout(const char *in_cmd,const CORBA::Any &in_data);
-	virtual Tango::DevVarStringArray *black_box(CORBA::Long n);
+	virtual Tango::Any *command_inout(const char *in_cmd,const Tango::Any &in_data);
+	virtual Tango::DevVarStringArray *black_box(DevLong n);
 	virtual Tango::DevCmdInfoList *command_list_query();
 	virtual Tango::DevCmdInfo *command_query(const char *command);
 	virtual Tango::DevInfo *info();
@@ -3582,7 +3582,7 @@ private:
 #endif
 
 	string							alarm_status;
-	Tango::Device_var				d_var;
+//	Tango::Device_var				d_var;
 	PortableServer::ObjectId_var	obj_id;
 
 protected:

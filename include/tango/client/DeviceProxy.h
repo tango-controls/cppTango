@@ -85,8 +85,8 @@ private :
 		MULTIPLE
 	};
 
-	void read_attr_except(CORBA::Request_ptr,long,read_attr_type);
-	void write_attr_except(CORBA::Request_ptr,long,TgRequest::ReqType);
+	void read_attr_except(Tango::Request,long,read_attr_type);
+	void write_attr_except(Tango::Request,long,TgRequest::ReqType);
 	void check_connect_adm_device();
 
     void omni420_timeout_attr(int,char *,read_attr_type);
@@ -113,7 +113,7 @@ protected :
 	virtual void reconnect(bool);
 	void get_remaining_param(AttributeInfoListEx *);
 	template <typename T> void from_hist_2_AttHistory(T &,vector<DeviceAttributeHistory> *);
-	void from_hist4_2_DataHistory(DevCmdHistory_4_var &,vector<DeviceDataHistory> *);
+	void from_hist4_2_DataHistory(DevCmdHistory_4 &,vector<DeviceDataHistory> *);
 	void ask_locking_status(vector<string> &,vector<DevLong> &);
 	void get_locker_host(string &,string &);
 
@@ -164,7 +164,8 @@ public :
  * @throws WrongNameSyntax, ConnectionFailed
  *
  */
-	DeviceProxy(string &name, CORBA::ORB *orb=NULL);
+//TODO this must be hidden from client/server code
+//	DeviceProxy(string &name, CORBA::ORB *orb=NULL);
 /**
  * Create a DeviceProxy instance.
  *
@@ -189,11 +190,12 @@ public :
  * @throws WrongNameSyntax, ConnectionFailed
  *
  */
-	DeviceProxy(const char *name, CORBA::ORB *orb=NULL);
+//TODO this must be hidden from client/server code
+//	DeviceProxy(const char *name, CORBA::ORB *orb=NULL);
 //@}
 /// @privatesection
-	DeviceProxy(string &name, bool ch_access, CORBA::ORB *orb=NULL);
-	DeviceProxy(const char *, bool ch_access, CORBA::ORB *orb=NULL);
+//	DeviceProxy(string &name, bool ch_access, CORBA::ORB *orb=NULL);
+//	DeviceProxy(const char *, bool ch_access, CORBA::ORB *orb=NULL);
 
 	DeviceProxy(const DeviceProxy &);
 	DeviceProxy & operator=(const DeviceProxy &);

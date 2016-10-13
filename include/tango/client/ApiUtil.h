@@ -136,9 +136,10 @@ public:
 
 /// @privatesection
 
-	CORBA::ORB_ptr get_orb() {return CORBA::ORB::_duplicate(_orb);}
-	void set_orb(CORBA::ORB_ptr orb_in) {_orb = orb_in;}
-	void create_orb();
+//TODO must e hidden from client/server code
+//	CORBA::ORB_ptr get_orb() {return CORBA::ORB::_duplicate(_orb);}
+//	void set_orb(CORBA::ORB_ptr orb_in) {_orb = orb_in;}
+//	void create_orb();
 	int	get_db_ind();
 	int	get_db_ind(string &host,int port);
 	vector<Database *> &get_db_vect() {return db_vect;}
@@ -214,7 +215,8 @@ protected:
 
 	vector<Database *>			db_vect;
 	omni_mutex					the_mutex;
-	CORBA::ORB_ptr				_orb;
+    //TODO must be hidden from client/server code
+//	CORBA::ORB_ptr				_orb;
 	bool						in_serv;
 
 	cb_sub_model				auto_cb;

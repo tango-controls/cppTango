@@ -90,8 +90,8 @@ private :
     Tango::Util         *db_tg;
     omni_mutex          map_mutex;
 
-	DbDatum         make_string_array(string, CORBA::Any_var &);
-	vector<DbHistory> make_history_array(bool, CORBA::Any_var &);
+	DbDatum         make_string_array(string, Tango::Any &);
+	vector<DbHistory> make_history_array(bool, Tango::Any &);
 
 	void check_access();
 	inline string dev_name();
@@ -114,7 +114,8 @@ public :
  * @param [in] orb	The CORBA ORB pointer. Default value is fine for 99 % of cases
  *
  */
-	Database(CORBA::ORB *orb=NULL);
+//TODO this must be hidden from client/server code
+//	Database(CORBA::ORB *orb=NULL);
 // @}
 
 /**@name General methods */
@@ -1812,7 +1813,8 @@ public :
 
 
 ///@privatesection
-	Database(string &host, int port, CORBA::ORB *orb=NULL);
+//TODO this must be hidden from client/server code
+//	Database(string &host, int port, CORBA::ORB *orb=NULL);
 	Database(string &file);
 
 	Database(const Database &);
@@ -1824,7 +1826,7 @@ public :
 	void build_connection ();
 	void post_reconnection();
 	~Database();
-	inline Device_var &get_dbase() { return device;}
+	inline Device &get_dbase() { return device;}
 	void check_tango_host(const char *);
 	AccessControlType check_access_control(string &);
 	bool is_control_access_checked() {return access_checked;}
@@ -1854,7 +1856,7 @@ public :
 // general methods
 //
 
-	CORBA::Any *fill_server_cache(string &,string &);
+	Tango::Any *fill_server_cache(string &,string &);
 
 //
 // device methods
@@ -1893,7 +1895,7 @@ public :
 
 	void export_event(DevVarStringArray *);
 	void unexport_event(string &);
-	CORBA::Any *import_event(string &);
+	Tango::Any *import_event(string &);
 
 };
 
@@ -1901,11 +1903,12 @@ public :
 // Some Database class inline methods
 //
 
+//TODO optimize, i.e. std::move etc
 inline string Database::dev_name()
 {
 	if (db_device_name.empty() == true)
 	{
-		CORBA::String_var n = device->name();
+		string n = device->name();
 		db_device_name = n;
 	}
 	return db_device_name;
