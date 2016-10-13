@@ -43,7 +43,8 @@
 // Include IDL generated files which includes CORBA include files
 //
 
-#include <idl/tango.h>
+//#include <idl/tango.h>
+#include <tango/frontend/tango.hxx>
 
 //
 // Some Windows specific include (necessary when used with MFC)
