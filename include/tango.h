@@ -43,6 +43,7 @@
 // Include IDL generated files which includes CORBA include files
 //
 
+#include <tango/frontend/DevVarStringArray.hxx>
 #include <tango/frontend/idl.h>
 
 //
