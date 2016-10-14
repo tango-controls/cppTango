@@ -1159,7 +1159,7 @@ void Attribute::init_enum_prop(vector<AttrProperty> &prop_list)
 			stringstream ss;
 			ss << "The attribute " << name << " has the DEV_ENUM data type but there is no enumeration label(s) defined";
 
-			e.errors[0].desc = CORBA::string_dup(ss.str().c_str());
+			e.errors[0].desc = Tango::string_dup(ss.str().c_str());
 		}
 		add_startup_exception("enum_labels",e);
 	}
@@ -3004,7 +3004,7 @@ void Attribute::add_write_value(Tango::DevVarStringArray *val_ptr)
 		{
 			char **strvec = Tango::DevVarStringArray::allocbuf(2);
 			strvec[0] = tmp_str[0];
-			strvec[1] = CORBA::string_dup((*val_ptr)[0]);
+			strvec[1] = Tango::string_dup((*val_ptr)[0]);
 			value.str_seq = new Tango::DevVarStringArray(2,2,strvec,true);
 		}
 		else
@@ -3018,7 +3018,7 @@ void Attribute::add_write_value(Tango::DevVarStringArray *val_ptr)
 		long nb_read = value.str_seq->length();
 		value.str_seq->length(nb_read + val_ptr->length());
 		for (unsigned int k = 0;k < val_ptr->length();k++)
-			(*value.str_seq)[nb_read + k] = CORBA::string_dup((*val_ptr)[k]);
+			(*value.str_seq)[nb_read + k] = Tango::string_dup((*val_ptr)[k]);
 	}
 }
 
@@ -3172,7 +3172,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 		{
 			Tango::DevVarStringArray str_seq(1);
 			str_seq.length(1);
-			str_seq[0] = CORBA::string_dup(d->get_status().c_str());
+			str_seq[0] = Tango::string_dup(d->get_status().c_str());
 
 			a <<= str_seq;
 		}
@@ -3197,7 +3197,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 		ptr->w_dim.dim_x = 0;
 		ptr->w_dim.dim_y = 0;
 
-		ptr->name = CORBA::string_dup(name.c_str());
+		ptr->name = Tango::string_dup(name.c_str());
 	}
 
 	else
@@ -3361,7 +3361,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 
 		ptr->time = when;
 		ptr->quality = quality;
-		ptr->name = CORBA::string_dup(name.c_str());
+		ptr->name = Tango::string_dup(name.c_str());
 	}
 }
 

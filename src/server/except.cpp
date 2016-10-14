@@ -753,11 +753,11 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const char *orig
 
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
-	errors[0].origin = CORBA::string_dup(origin);
-	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
+	errors[0].origin = Tango::string_dup(origin);
+	errors[0].reason = Tango::string_dup(API_CorbaSysException);
 	Tango::Except::the_mutex.lock();
 	char *tmp = print_CORBA_SystemException(&c_ex);
-	errors[0].desc = CORBA::string_dup(tmp);
+	errors[0].desc = Tango::string_dup(tmp);
 	Tango::Except::the_mutex.unlock();
 
 	throw Tango::DevFailed(errors);
@@ -769,12 +769,12 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,char *origin)
 
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
-	errors[0].origin = CORBA::string_dup(origin);
+	errors[0].origin = Tango::string_dup(origin);
 	delete [] origin;
-	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
+	errors[0].reason = Tango::string_dup(API_CorbaSysException);
 	Tango::Except::the_mutex.lock();
 	char *tmp = print_CORBA_SystemException(&c_ex);
-	errors[0].desc = CORBA::string_dup(tmp);
+	errors[0].desc = Tango::string_dup(tmp);
 	Tango::Except::the_mutex.unlock();
 
 	throw Tango::DevFailed(errors);
@@ -786,11 +786,11 @@ void Except::throw_exception(const CORBA::SystemException &c_ex,const string &or
 
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
-	errors[0].origin = CORBA::string_dup(origin.c_str());
-	errors[0].reason = CORBA::string_dup(API_CorbaSysException);
+	errors[0].origin = Tango::string_dup(origin.c_str());
+	errors[0].reason = Tango::string_dup(API_CorbaSysException);
 	Tango::Except::the_mutex.lock();
 	char *tmp = print_CORBA_SystemException(&c_ex);
-	errors[0].desc = CORBA::string_dup(tmp);
+	errors[0].desc = Tango::string_dup(tmp);
 	Tango::Except::the_mutex.unlock();
 
 	throw Tango::DevFailed(errors);

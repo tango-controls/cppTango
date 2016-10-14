@@ -108,11 +108,11 @@ NamedDevFailedList::NamedDevFailedList(const Tango::MultiDevFailed &corba_ex,
 
 	errors.length(1);
 	errors[0].severity = Tango::ERR;
-	errors[0].reason = CORBA::string_dup(reason);
-	errors[0].origin = CORBA::string_dup(op_name);
+	errors[0].reason = Tango::string_dup(reason);
+	errors[0].origin = Tango::string_dup(op_name);
 
 	string st = desc.str();
-	errors[0].desc = CORBA::string_dup(st.c_str());
+	errors[0].desc = Tango::string_dup(st.c_str());
 }
 
 

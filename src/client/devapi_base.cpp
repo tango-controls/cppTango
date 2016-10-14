@@ -5565,11 +5565,11 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes(vector<string>& attr_strin
 				desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attributes()");
+				err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+				err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attributes()");
 
 				string st = desc.str();
-				err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+				err_list[nb_except].desc = Tango::string_dup(st.c_str());
 				err_list[nb_except].severity = Tango::ERR;
 			}
 		}
@@ -5601,7 +5601,7 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 	Tango::DevSource local_source;
 
 	attr_list.length(1);
-	attr_list[0] = CORBA::string_dup(attr_string.c_str());
+	attr_list[0] = Tango::string_dup(attr_string.c_str());
 
 	while (ctr < 2)
 	{
@@ -5667,11 +5667,11 @@ DeviceAttribute DeviceProxy::read_attribute(string& attr_string)
 			desc << ", attribute " << dev_attr.name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+			err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+			err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute()");
 
 			string st = desc.str();
-			err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+			err_list[nb_except].desc = Tango::string_dup(st.c_str());
 			err_list[nb_except].severity = Tango::ERR;
 		}
 	}
@@ -5695,7 +5695,7 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 	Tango::DevSource local_source;
 
 	attr_list.length(1);
-	attr_list[0] = CORBA::string_dup(attr_str);
+	attr_list[0] = Tango::string_dup(attr_str);
 
 	while (ctr < 2)
 	{
@@ -5769,11 +5769,11 @@ void DeviceProxy::read_attribute(const char *attr_str,DeviceAttribute &dev_attr)
 			desc << ", attribute " << dev_attr.name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+			err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+			err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute()");
 
 			string st = desc.str();
-			err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+			err_list[nb_except].desc = Tango::string_dup(st.c_str());
 			err_list[nb_except].severity = Tango::ERR;
 		}
 	}
@@ -5799,7 +5799,7 @@ void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_4 *&av_4)
 	}
 
 	attr_list.length(1);
-	attr_list[0] = CORBA::string_dup(attr_str.c_str());
+	attr_list[0] = Tango::string_dup(attr_str.c_str());
 
 	while (ctr < 2)
 	{
@@ -5833,11 +5833,11 @@ void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_4 *&av_4)
 		desc << ", attribute " << attr_str << ends;
 
 		av_4->err_list.length(nb_except + 1);
-		av_4->err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-		av_4->err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+		av_4->err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+		av_4->err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute()");
 
 		string st = desc.str();
-		av_4->err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		av_4->err_list[nb_except].desc = Tango::string_dup(st.c_str());
 		av_4->err_list[nb_except].severity = Tango::ERR;
 	}
 }
@@ -5856,7 +5856,7 @@ void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_5 *&av_5)
 	}
 
 	attr_list.length(1);
-	attr_list[0] = CORBA::string_dup(attr_str.c_str());
+	attr_list[0] = Tango::string_dup(attr_str.c_str());
 
 	while (ctr < 2)
 	{
@@ -5890,11 +5890,11 @@ void DeviceProxy::read_attribute(const string &attr_str,AttributeValue_5 *&av_5)
 		desc << ", attribute " << attr_str << ends;
 
 		av_5->err_list.length(nb_except + 1);
-		av_5->err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-		av_5->err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+		av_5->err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+		av_5->err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute()");
 
 		string st = desc.str();
-		av_5->err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		av_5->err_list[nb_except].desc = Tango::string_dup(st.c_str());
 		av_5->err_list[nb_except].severity = Tango::ERR;
 	}
 }
@@ -7247,9 +7247,9 @@ void DeviceProxy::poll_command(string &cmd_name, int period)
 	in.lvalue.length(1);
 	in.svalue.length(3);
 
-	in.svalue[0] = CORBA::string_dup(device_name.c_str());
-	in.svalue[1] = CORBA::string_dup("command");
-	in.svalue[2] = CORBA::string_dup(cmd_name.c_str());
+	in.svalue[0] = Tango::string_dup(device_name.c_str());
+	in.svalue[1] = Tango::string_dup("command");
+	in.svalue[2] = Tango::string_dup(cmd_name.c_str());
 	in.lvalue[0] = period;
 
 	if (poll == true)
@@ -7329,9 +7329,9 @@ void DeviceProxy::poll_attribute(string &attr_name, int period)
 	in.lvalue.length(1);
 	in.svalue.length(3);
 
-	in.svalue[0] = CORBA::string_dup(device_name.c_str());
-	in.svalue[1] = CORBA::string_dup("attribute");
-	in.svalue[2] = CORBA::string_dup(attr_name.c_str());
+	in.svalue[0] = Tango::string_dup(device_name.c_str());
+	in.svalue[1] = Tango::string_dup("attribute");
+	in.svalue[2] = Tango::string_dup(attr_name.c_str());
 	in.lvalue[0] = period;
 
 	if (poll == true)
@@ -7432,9 +7432,9 @@ void DeviceProxy::stop_poll_command(string &cmd_name)
 	DevVarStringArray in;
 	in.length(3);
 
-	in[0] = CORBA::string_dup(device_name.c_str());
-	in[1] = CORBA::string_dup("command");
-	in[2] = CORBA::string_dup(cmd_name.c_str());
+	in[0] = Tango::string_dup(device_name.c_str());
+	in[1] = Tango::string_dup("command");
+	in[2] = Tango::string_dup(cmd_name.c_str());
 
 	DeviceData din;
 	string cmd("RemObjPolling");
@@ -7464,9 +7464,9 @@ void DeviceProxy::stop_poll_attribute(string &attr_name)
 	DevVarStringArray in;
 	in.length(3);
 
-	in[0] = CORBA::string_dup(device_name.c_str());
-	in[1] = CORBA::string_dup("attribute");
-	in[2] = CORBA::string_dup(attr_name.c_str());
+	in[0] = Tango::string_dup(device_name.c_str());
+	in[1] = Tango::string_dup("attribute");
+	in[2] = Tango::string_dup(attr_name.c_str());
 
 	DeviceData din;
 	string cmd("RemObjPolling");
@@ -7496,8 +7496,8 @@ void DeviceProxy::add_logging_target(const string &target_type_name)
 	DevVarStringArray in(2);
 	in.length(2);
 
-	in[0] = CORBA::string_dup(device_name.c_str());
-	in[1] = CORBA::string_dup(target_type_name.c_str());
+	in[0] = Tango::string_dup(device_name.c_str());
+	in[1] = Tango::string_dup(target_type_name.c_str());
 
 	DeviceData din;
 	string cmd("AddLoggingTarget");
@@ -7525,8 +7525,8 @@ void DeviceProxy::remove_logging_target (const string &target_type_name)
 	DevVarStringArray in(2);
 	in.length(2);
 
-	in[0] = CORBA::string_dup(device_name.c_str());
-	in[1] = CORBA::string_dup(target_type_name.c_str());
+	in[0] = Tango::string_dup(device_name.c_str());
+	in[1] = Tango::string_dup(target_type_name.c_str());
 
 	DeviceData din;
 	string cmd("RemoveLoggingTarget");
@@ -7588,7 +7588,7 @@ int DeviceProxy::get_logging_level (void)
 
   	DevVarStringArray in;
 	in.length(1);
-	in[0] = CORBA::string_dup(device_name.c_str());
+	in[0] = Tango::string_dup(device_name.c_str());
 
   	DeviceData din;
   	din.any <<= in;
@@ -7644,7 +7644,7 @@ void DeviceProxy::set_logging_level (int level)
 	in.lvalue.length(1);
 	in.lvalue[0] = level;
   	in.svalue.length(1);
-	in.svalue[0] = CORBA::string_dup(device_name.c_str());
+	in.svalue[0] = Tango::string_dup(device_name.c_str());
 
   	DeviceData din;
   	din.any <<= in;
@@ -8367,7 +8367,7 @@ void DeviceProxy::lock(int lock_validity)
   	DeviceData din;
   	DevVarLongStringArray sent_data;
   	sent_data.svalue.length(1);
-  	sent_data.svalue[0] = CORBA::string_dup(device_name.c_str());
+  	sent_data.svalue[0] = Tango::string_dup(device_name.c_str());
   	sent_data.lvalue.length(1);
   	sent_data.lvalue[0] = lock_validity;
   	din << sent_data;
@@ -8498,7 +8498,7 @@ void DeviceProxy::unlock(bool force)
   	DeviceData din,dout;
   	DevVarLongStringArray sent_data;
   	sent_data.svalue.length(1);
-  	sent_data.svalue[0] = CORBA::string_dup(device_name.c_str());
+  	sent_data.svalue[0] = Tango::string_dup(device_name.c_str());
   	sent_data.lvalue.length(1);
   	if (force == true)
   		sent_data.lvalue[0] = 1;
@@ -9018,7 +9018,7 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 
 	Tango::DevVarStringArray dvsa;
 	dvsa.length(1);
-	dvsa[0] = CORBA::string_dup(dev_attr.name.c_str());
+	dvsa[0] = Tango::string_dup(dev_attr.name.c_str());
 
 	int ctr = 0;
 	AttributeValueList_4_var attr_value_list_4;
@@ -9183,11 +9183,11 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		desc << ", attribute " << dev_attr.name << ends;
 
 		err_list.inout().length(nb_except + 1);
-		err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-		err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::write_read_attribute()");
+		err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+		err_list[nb_except].origin = Tango::string_dup("DeviceProxy::write_read_attribute()");
 
 		string st = desc.str();
-		err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+		err_list[nb_except].desc = Tango::string_dup(st.c_str());
 		err_list[nb_except].severity = Tango::ERR;
 	}
 
@@ -9428,11 +9428,11 @@ vector<DeviceAttribute> *DeviceProxy::write_read_attributes(vector<DeviceAttribu
 			desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::write_read_attributes()");
+			err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+			err_list[nb_except].origin = Tango::string_dup("DeviceProxy::write_read_attributes()");
 
 			string st = desc.str();
-			err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+			err_list[nb_except].desc = Tango::string_dup(st.c_str());
 			err_list[nb_except].severity = Tango::ERR;
 		}
 	}

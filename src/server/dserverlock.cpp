@@ -273,9 +273,9 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 		catch (Tango::DevFailed &e)
 		{
 			errors.length(nb_error + 1);
-			errors[nb_error].desc = CORBA::string_dup(e.errors[0].desc.in());
-			errors[nb_error].reason = CORBA::string_dup(e.errors[0].reason.in());
-			errors[nb_error].origin = CORBA::string_dup(e.errors[0].origin.in());
+			errors[nb_error].desc = Tango::string_dup(e.errors[0].desc.in());
+			errors[nb_error].reason = Tango::string_dup(e.errors[0].reason.in());
+			errors[nb_error].origin = Tango::string_dup(e.errors[0].origin.in());
 			errors[nb_error].severity = e.errors[0].severity;
 			nb_error++;
 		}
@@ -291,9 +291,9 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 		catch (Tango::DevFailed &e)
 		{
 			errors.length(nb_error + 1);
-			errors[nb_error].desc = CORBA::string_dup(e.errors[0].desc.in());
-			errors[nb_error].reason = CORBA::string_dup(e.errors[0].reason.in());
-			errors[nb_error].origin = CORBA::string_dup(e.errors[0].origin.in());
+			errors[nb_error].desc = Tango::string_dup(e.errors[0].desc.in());
+			errors[nb_error].reason = Tango::string_dup(e.errors[0].reason.in());
+			errors[nb_error].origin = Tango::string_dup(e.errors[0].origin.in());
 			errors[nb_error].severity = e.errors[0].severity;
 			nb_error++;
 		}

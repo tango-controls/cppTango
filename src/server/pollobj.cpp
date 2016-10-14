@@ -365,7 +365,7 @@ void PollObj::get_attr_history(long n,Tango::DevAttrHistoryList_3 *ptr,long attr
 	{
 		if ((*ptr)[i].attr_failed == true)
 		{
-			(*ptr)[i].value.name = CORBA::string_dup(name.c_str());
+			(*ptr)[i].value.name = Tango::string_dup(name.c_str());
 		}
 	}
 }

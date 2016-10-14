@@ -279,7 +279,7 @@ Tango::DevVarStringArray *SubDevDiag::get_sub_devices()
 		ret = new Tango::DevVarStringArray(DefaultMaxSeq);
 		ret->length(sub_dev_list.size());
 		for (unsigned int k = 0; k<sub_dev_list.size(); k++)
-			(*ret)[k] = CORBA::string_dup(sub_dev_list[k].c_str());
+			(*ret)[k] = Tango::string_dup(sub_dev_list[k].c_str());
 
 		return(ret);
 	}

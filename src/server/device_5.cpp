@@ -790,7 +790,7 @@ Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name
 // Init attribute name in the returned structure
 //
 
-		back->name = CORBA::string_dup(name);
+		back->name = Tango::string_dup(name);
 
 //
 // Get attribute value history
@@ -999,7 +999,7 @@ void Device_5Impl::set_pipe_config_5(const Tango::PipeConfigList& new_conf,
 		o << ends;
 
 		string s = o.str();
-		e.errors[0].reason = CORBA::string_dup(s.c_str());
+		e.errors[0].reason = Tango::string_dup(s.c_str());
 		throw;
 	}
 
@@ -1182,8 +1182,8 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 //
 
 		back->time = pi.get_when();
-		back->name = CORBA::string_dup(pipe_name.c_str());
-		back->data_blob.name = CORBA::string_dup(pi.get_blob().get_name().c_str());
+		back->name = Tango::string_dup(pipe_name.c_str());
+		back->data_blob.name = Tango::string_dup(pi.get_blob().get_name().c_str());
 
 		DevVarPipeDataEltArray *dvpdea = pi.get_blob().get_insert_data();
 		CORBA::ULong max,len;

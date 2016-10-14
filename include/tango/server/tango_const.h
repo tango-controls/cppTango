@@ -456,13 +456,6 @@ const char* const API_ZmqFailed                    = "API_ZmqFailed";
 const char* const API_ZmqInitFailed                = "API_ZmqInitFailed";
 
 //
-// A short inline function to hide the CORBA::string_dup function
-//
-
-inline char * string_dup(char *s) {return CORBA::string_dup(s);}
-inline char * string_dup(const char *s) {return CORBA::string_dup(s);}
-
-//
 // Many, many typedef
 //
 

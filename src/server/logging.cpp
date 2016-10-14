@@ -708,7 +708,7 @@ Tango::DevVarStringArray* Logging::get_logging_target (const std::string& dev_na
     // populate the CORBA::sequence
     for (unsigned int i = 0; i != al.size(); i++) {
       cout4 << "\tadding " << al[i]->get_name() << " to the returned target list" << endl;
-      (*ret)[i] = CORBA::string_dup(al[i]->get_name().c_str());
+      (*ret)[i] = Tango::string_dup(al[i]->get_name().c_str());
     } // for i
     // trace
     cout4 << "Leaving Logging::get_logging_target " << endl;
@@ -851,7 +851,7 @@ DevVarLongStringArray* Logging::get_logging_level (const DevVarStringArray *argi
         ret->lvalue.length(ret->lvalue.length() + 1);
         ret->svalue.length(ret->svalue.length() + 1);
         // populate ret
-        ret->svalue[ret->svalue.length() - 1] = CORBA::string_dup(dl[j]->get_name().c_str());
+        ret->svalue[ret->svalue.length() - 1] = Tango::string_dup(dl[j]->get_name().c_str());
         ret->lvalue[ret->lvalue.length() - 1] = tango_level;
       } // for j
     } // for i

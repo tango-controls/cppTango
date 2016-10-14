@@ -309,7 +309,7 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
   	CosNotifyFilter::ConstraintExpSeq exp;
   	exp.length(1);
   	exp[0].event_types = evs;
-  	exp[0].constraint_expr = CORBA::string_dup(constraint_expr);
+  	exp[0].constraint_expr = Tango::string_dup(constraint_expr);
   	CORBA::Boolean res = 0; // OK
 
   	try
@@ -643,7 +643,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
     CosNotifyFilter::ConstraintExpSeq exp;
     exp.length(1);
     exp[0].event_types = evs;
-    exp[0].constraint_expr = CORBA::string_dup(constraint_expr);
+    exp[0].constraint_expr = Tango::string_dup(constraint_expr);
     CORBA::Boolean res = 0; // OK
     try
 	{
@@ -937,9 +937,9 @@ void NotifdEventConsumer::push_structured_event(const CosNotification::Structure
 						errors.length(1);
 
 						errors[0].severity = Tango::ERR;
-						errors[0].origin = CORBA::string_dup("NotifdEventConsumer::push_structured_event()");
-						errors[0].reason = CORBA::string_dup(API_IncompatibleAttrDataType);
-						errors[0].desc = CORBA::string_dup("Unknown structure used to pass attribute value (Need compilation ?)");
+						errors[0].origin = Tango::string_dup("NotifdEventConsumer::push_structured_event()");
+						errors[0].reason = Tango::string_dup(API_IncompatibleAttrDataType);
+						errors[0].desc = Tango::string_dup("Unknown structure used to pass attribute value (Need compilation ?)");
 						dev_attr = NULL;
 					}
 

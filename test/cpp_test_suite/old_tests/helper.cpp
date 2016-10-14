@@ -412,8 +412,8 @@ int main(int argc, char **argv)
 			DevVarStringArray *in_dvstra = new DevVarStringArray(2);
 			const DevVarStringArray *received_dvstra;
 			in_dvstra->length(2);
-			(*in_dvstra)[0] = CORBA::string_dup("abc");
-			(*in_dvstra)[1] = CORBA::string_dup("def");
+			(*in_dvstra)[0] = Tango::string_dup("abc");
+			(*in_dvstra)[1] = Tango::string_dup("def");
 			dev_helper->command_inout("IOStringArray",in_dvstra,received_dvstra);
 			assert( !strcmp((*received_dvstra)[0],"def") );
 			assert( !strcmp((*received_dvstra)[1],"abc") );

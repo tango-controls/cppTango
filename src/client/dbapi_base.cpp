@@ -2918,8 +2918,8 @@ void Database::get_device_property_list(string &dev, const string &wildcard, vec
 
 		DevVarStringArray send_seq;
 		send_seq.length(2);
-		send_seq[0] = CORBA::string_dup(dev.c_str());
-		send_seq[1] = CORBA::string_dup(wildcard.c_str());
+		send_seq[0] = Tango::string_dup(dev.c_str());
+		send_seq[1] = Tango::string_dup(wildcard.c_str());
 
 		try
 		{
@@ -4186,7 +4186,7 @@ CORBA::Any *Database::fill_server_cache(string &ds_name,string &loc_host)
 
 	DevVarStringArray attr_list;
 	attr_list.length(1);
-	attr_list[0] = CORBA::string_dup("StoredProcedureRelease");
+	attr_list[0] = Tango::string_dup("StoredProcedureRelease");
 	DeviceAttribute da;
 
 	try
@@ -4430,7 +4430,7 @@ AccessControlType Database::check_access_control(string &devname)
 		{
 			string tmp_err_desc(e.errors[0].desc.in());
 			tmp_err_desc = tmp_err_desc + "\nControlled access service defined in Db but unreachable --> Read access given to all devices...";
-			e.errors[0].desc = CORBA::string_dup(tmp_err_desc.c_str());
+			e.errors[0].desc = Tango::string_dup(tmp_err_desc.c_str());
 		}
 		access_except_errors = e.errors;
 		local_access = ACCESS_READ;

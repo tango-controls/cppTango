@@ -913,7 +913,7 @@ void DevicePipeBlob::set_data_elt_names(vector<string> &elt_names)
 
 	for (size_t loop = 0;loop < elt_names.size();loop++)
 	{
-		(*insert_elt_array)[loop].name = CORBA::string_dup(elt_names[loop].c_str());
+		(*insert_elt_array)[loop].name = Tango::string_dup(elt_names[loop].c_str());
 		(*insert_elt_array)[loop].value.union_no_data(true);
 		(*insert_elt_array)[loop].inner_blob.length(0);
 	}
@@ -992,7 +992,7 @@ void DevicePipeBlob::set_current_delt_name(const string &_na)
         (*insert_elt_array)[insert_ctr].inner_blob.length(0);
     }
 
-    (*insert_elt_array)[insert_ctr].name = CORBA::string_dup(_na.c_str());
+    (*insert_elt_array)[insert_ctr].name = Tango::string_dup(_na.c_str());
 }
 
 //------------------------------------------------------------------------------------------------------------------
@@ -1115,18 +1115,18 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevString &datum)
 		{
 			DevVarStringArray dvsa;
 			dvsa.length(1);
-			dvsa[0] = CORBA::string_dup(datum);
+			dvsa[0] = Tango::string_dup(datum);
 
 			if (insert_ind != -1)
 			{
 				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
-                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup("Scalar");
+                (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup("Scalar");
 				insert_ind = -1;
 			}
 			else
 			{
 				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
-                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup("Scalar");
+                (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup("Scalar");
 				insert_ctr++;
 			}
 		}
@@ -1180,18 +1180,18 @@ DevicePipeBlob & DevicePipeBlob::operator<<(const string &datum)
 		{
 			DevVarStringArray dvsa;
 			dvsa.length(1);
-			dvsa[0] = CORBA::string_dup(datum.c_str());
+			dvsa[0] = Tango::string_dup(datum.c_str());
 
 			if (insert_ind != -1)
 			{
 				(*insert_elt_array)[insert_ind].value.string_att_value(dvsa);
-                (*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup("Scalar");
+                (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup("Scalar");
 				insert_ind = -1;
 			}
 			else
 			{
 				(*insert_elt_array)[insert_ctr].value.string_att_value(dvsa);
-                (*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup("Scalar");
+                (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup("Scalar");
 				insert_ctr++;
 			}
 		}
@@ -1238,13 +1238,13 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 				if (insert_ind != -1)
 				{
 					(*insert_elt_array)[insert_ind].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
-					(*insert_elt_array)[insert_ind].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
+					(*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(datum.get_name().c_str());
 					insert_ind = -1;
 				}
 				else
 				{
 					(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
-					(*insert_elt_array)[insert_ctr].inner_blob_name = CORBA::string_dup(datum.get_name().c_str());
+					(*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(datum.get_name().c_str());
 					insert_ctr++;
 				}
 
@@ -1422,7 +1422,7 @@ DevicePipeBlob & DevicePipeBlob::operator<<(vector<string> &datum)
 			size_t nb = datum.size();
 			char **strvec = DevVarStringArray::allocbuf(nb);
 			for (size_t i = 0;i < nb;i++)
-				strvec[i] = CORBA::string_dup(datum[i].c_str());
+				strvec[i] = Tango::string_dup(datum[i].c_str());
 			DevVarStringArray dvsa;
 
 			if (insert_ind != -1)
@@ -1747,7 +1747,7 @@ DevicePipeBlob &DevicePipeBlob::operator >> (DevString &datum)
 		}
 		else
 		{
-			datum = CORBA::string_dup((uni_ptr->string_att_value())[0].in());
+			datum = Tango::string_dup((uni_ptr->string_att_value())[0].in());
 			if (extract_ind != -1)
 				extract_ind = -1;
 			else

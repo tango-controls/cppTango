@@ -80,23 +80,23 @@ void Attribute::get_properties(Tango::AttributeConfig &conf)
 	conf.max_dim_x = max_x;
 	conf.max_dim_y = max_y;
 	conf.data_type = data_type;
-	conf.name = CORBA::string_dup(name.c_str());
+	conf.name = Tango::string_dup(name.c_str());
 
 //
 // Copy optional properties
 //
 
-	conf.label = CORBA::string_dup(label.c_str());
-	conf.description = CORBA::string_dup(description.c_str());
-	conf.unit = CORBA::string_dup(unit.c_str());
-	conf.standard_unit = CORBA::string_dup(standard_unit.c_str());
-	conf.display_unit = CORBA::string_dup(display_unit.c_str());
-	conf.format = CORBA::string_dup(format.c_str());
-	conf.writable_attr_name = CORBA::string_dup(writable_attr_name.c_str());
-	conf.min_alarm = CORBA::string_dup(min_alarm_str.c_str());
-	conf.max_alarm = CORBA::string_dup(max_alarm_str.c_str());
-	conf.min_value = CORBA::string_dup(min_value_str.c_str());
-	conf.max_value = CORBA::string_dup(max_value_str.c_str());
+	conf.label = Tango::string_dup(label.c_str());
+	conf.description = Tango::string_dup(description.c_str());
+	conf.unit = Tango::string_dup(unit.c_str());
+	conf.standard_unit = Tango::string_dup(standard_unit.c_str());
+	conf.display_unit = Tango::string_dup(display_unit.c_str());
+	conf.format = Tango::string_dup(format.c_str());
+	conf.writable_attr_name = Tango::string_dup(writable_attr_name.c_str());
+	conf.min_alarm = Tango::string_dup(min_alarm_str.c_str());
+	conf.max_alarm = Tango::string_dup(max_alarm_str.c_str());
+	conf.min_value = Tango::string_dup(min_value_str.c_str());
+	conf.max_value = Tango::string_dup(max_value_str.c_str());
 }
 
 void Attribute::get_properties(Tango::AttributeConfig_2 &conf)
@@ -111,23 +111,23 @@ void Attribute::get_properties(Tango::AttributeConfig_2 &conf)
 	conf.max_dim_x = max_x;
 	conf.max_dim_y = max_y;
 	conf.data_type = data_type;
-	conf.name = CORBA::string_dup(name.c_str());
+	conf.name = Tango::string_dup(name.c_str());
 
 //
 // Copy optional properties
 //
 
-	conf.label = CORBA::string_dup(label.c_str());
-	conf.description = CORBA::string_dup(description.c_str());
-	conf.unit = CORBA::string_dup(unit.c_str());
-	conf.standard_unit = CORBA::string_dup(standard_unit.c_str());
-	conf.display_unit = CORBA::string_dup(display_unit.c_str());
-	conf.format = CORBA::string_dup(format.c_str());
-	conf.writable_attr_name = CORBA::string_dup(writable_attr_name.c_str());
-	conf.min_alarm = CORBA::string_dup(min_alarm_str.c_str());
-	conf.max_alarm = CORBA::string_dup(max_alarm_str.c_str());
-	conf.min_value = CORBA::string_dup(min_value_str.c_str());
-	conf.max_value = CORBA::string_dup(max_value_str.c_str());
+	conf.label = Tango::string_dup(label.c_str());
+	conf.description = Tango::string_dup(description.c_str());
+	conf.unit = Tango::string_dup(unit.c_str());
+	conf.standard_unit = Tango::string_dup(standard_unit.c_str());
+	conf.display_unit = Tango::string_dup(display_unit.c_str());
+	conf.format = Tango::string_dup(format.c_str());
+	conf.writable_attr_name = Tango::string_dup(writable_attr_name.c_str());
+	conf.min_alarm = Tango::string_dup(min_alarm_str.c_str());
+	conf.max_alarm = Tango::string_dup(max_alarm_str.c_str());
+	conf.min_value = Tango::string_dup(min_value_str.c_str());
+	conf.max_value = Tango::string_dup(max_value_str.c_str());
 
 	conf.level = disp_level;
 }
@@ -158,36 +158,36 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	conf.max_dim_x = max_x;
 	conf.max_dim_y = max_y;
 	conf.data_type = data_type;
-	conf.name = CORBA::string_dup(name.c_str());
+	conf.name = Tango::string_dup(name.c_str());
 
 //
 // Copy optional properties
 //
 
-	conf.label = CORBA::string_dup(label.c_str());
-	conf.description = CORBA::string_dup(description.c_str());
-	conf.unit = CORBA::string_dup(unit.c_str());
-	conf.standard_unit = CORBA::string_dup(standard_unit.c_str());
-	conf.display_unit = CORBA::string_dup(display_unit.c_str());
-	conf.format = CORBA::string_dup(format.c_str());
-	conf.writable_attr_name = CORBA::string_dup(writable_attr_name.c_str());
-	conf.min_value = CORBA::string_dup(min_value_str.c_str());
-	conf.max_value = CORBA::string_dup(max_value_str.c_str());
+	conf.label = Tango::string_dup(label.c_str());
+	conf.description = Tango::string_dup(description.c_str());
+	conf.unit = Tango::string_dup(unit.c_str());
+	conf.standard_unit = Tango::string_dup(standard_unit.c_str());
+	conf.display_unit = Tango::string_dup(display_unit.c_str());
+	conf.format = Tango::string_dup(format.c_str());
+	conf.writable_attr_name = Tango::string_dup(writable_attr_name.c_str());
+	conf.min_value = Tango::string_dup(min_value_str.c_str());
+	conf.max_value = Tango::string_dup(max_value_str.c_str());
 	conf.level = disp_level;
 
 //
 // Copy alarm properties
 //
 
-	conf.att_alarm.min_alarm = CORBA::string_dup(min_alarm_str.c_str());
-	conf.att_alarm.max_alarm = CORBA::string_dup(max_alarm_str.c_str());
-	conf.att_alarm.min_warning = CORBA::string_dup(min_warning_str.c_str());
-	conf.att_alarm.max_warning = CORBA::string_dup(max_warning_str.c_str());
+	conf.att_alarm.min_alarm = Tango::string_dup(min_alarm_str.c_str());
+	conf.att_alarm.max_alarm = Tango::string_dup(max_alarm_str.c_str());
+	conf.att_alarm.min_warning = Tango::string_dup(min_warning_str.c_str());
+	conf.att_alarm.max_warning = Tango::string_dup(max_warning_str.c_str());
 	if (delta_t == 0)
-		conf.att_alarm.delta_t = CORBA::string_dup(AlrmValueNotSpec);
+		conf.att_alarm.delta_t = Tango::string_dup(AlrmValueNotSpec);
 	else
-		conf.att_alarm.delta_t = CORBA::string_dup(delta_t_str.c_str());
-	conf.att_alarm.delta_val = CORBA::string_dup(delta_val_str.c_str());
+		conf.att_alarm.delta_t = Tango::string_dup(delta_t_str.c_str());
+	conf.att_alarm.delta_val = Tango::string_dup(delta_val_str.c_str());
 
 //
 // Copy periodic event property
@@ -197,7 +197,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	str.precision(TANGO_FLOAT_PRECISION);
 
 	if (event_period == INT_MAX)
-		conf.event_prop.per_event.period = CORBA::string_dup((const char *)(DEFAULT_EVENT_PERIOD));
+		conf.event_prop.per_event.period = Tango::string_dup((const char *)(DEFAULT_EVENT_PERIOD));
 	else
 	{
 		int per = (int)((double)event_period);
@@ -212,7 +212,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	if (fabs(rel_change[0]) == fabs(rel_change[1]))
 	{
 		if (rel_change[0] == INT_MAX)
-			conf.event_prop.ch_event.rel_change = CORBA::string_dup(AlrmValueNotSpec);
+			conf.event_prop.ch_event.rel_change = Tango::string_dup(AlrmValueNotSpec);
 		else
 		{
 			str << fabs(rel_change[1]);
@@ -237,7 +237,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	if (fabs(abs_change[0]) == fabs(abs_change[1]))
 	{
 		if (abs_change[0] == INT_MAX)
-			conf.event_prop.ch_event.abs_change = CORBA::string_dup(AlrmValueNotSpec);
+			conf.event_prop.ch_event.abs_change = Tango::string_dup(AlrmValueNotSpec);
 		else
 		{
 			str << fabs(abs_change[1]);
@@ -264,7 +264,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 //
 
 	if (archive_period == INT_MAX)
-		conf.event_prop.arch_event.period = CORBA::string_dup(AlrmValueNotSpec);
+		conf.event_prop.arch_event.period = Tango::string_dup(AlrmValueNotSpec);
 	else
 	{
 		int per = (int)((double)archive_period);
@@ -275,7 +275,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	if (fabs(archive_rel_change[0]) == fabs(archive_rel_change[1]))
 	{
 		if (archive_rel_change[0] == INT_MAX)
-			conf.event_prop.arch_event.rel_change = CORBA::string_dup(AlrmValueNotSpec);
+			conf.event_prop.arch_event.rel_change = Tango::string_dup(AlrmValueNotSpec);
 		else
 		{
 			str << fabs(archive_rel_change[1]);
@@ -300,7 +300,7 @@ void Attribute::get_properties(Tango::AttributeConfig_3 &conf)
 	if (fabs(archive_abs_change[0]) == fabs(archive_abs_change[1]))
 	{
 		if (archive_abs_change[0] == INT_MAX)
-			conf.event_prop.arch_event.abs_change = CORBA::string_dup(AlrmValueNotSpec);
+			conf.event_prop.arch_event.abs_change = Tango::string_dup(AlrmValueNotSpec);
 		else
 		{
 			str << fabs(archive_abs_change[1]);
@@ -386,10 +386,10 @@ void Attribute::add_config_5_specific(AttributeConfig_5 &conf)
 	{
 		FwdAttribute *fwd = static_cast<FwdAttribute *>(this);
 		string str(fwd->get_fwd_dev_name() + '/' + fwd->get_fwd_att_name());
-		conf.root_attr_name = CORBA::string_dup(str.c_str());
+		conf.root_attr_name = Tango::string_dup(str.c_str());
 	}
 	else
-		conf.root_attr_name = CORBA::string_dup(AlrmValueNotSpec);
+		conf.root_attr_name = Tango::string_dup(AlrmValueNotSpec);
 
 //
 // Memorized info
@@ -415,7 +415,7 @@ void Attribute::add_config_5_specific(AttributeConfig_5 &conf)
 	{
 		conf.enum_labels.length(enum_labels.size());
 		for (size_t loop = 0;loop < enum_labels.size();loop++)
-			conf.enum_labels[loop] = CORBA::string_dup(enum_labels[loop].c_str());
+			conf.enum_labels[loop] = Tango::string_dup(enum_labels[loop].c_str());
 	}
 
 }
