@@ -483,11 +483,9 @@ inline void operator<<(vector<string> &lval,const DevVarStringArray &rval)
 	long nb_elt = rval.length();
 	if (lval.empty() == false)
 		lval.clear();
-	string str;
 	for (long i = 0;i < nb_elt;i++)
 	{
-		str = rval[i];
-		lval.push_back(str);
+		lval.push_back(rval[i]);
 	}
 }
 

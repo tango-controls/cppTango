@@ -4,33 +4,109 @@
 
 #pragma once
 
-#include <omniORB4/CORBA.h>
+#include <cstdlib>
+#include <string>
+#include <vector>
+
 
 namespace Tango {
+    class DevVarString : public std::string {
+    public:
+        DevVarString(char *value) : std::string(value) {};
+
+        DevVarString(const char *value) : std::string(value) {};
+
+        DevVarString in();
+
+        DevVarString out();
+
+        DevVarString in() const;
+
+        DevVarString out() const;
+
+        DevVarString &operator=(char *value);
+
+        operator char *() {
+            return const_cast<char *>(c_str());
+        }
+
+        operator const char *() const {
+            return c_str();
+        }
+    };
 
     class DevVarStringArray_var;
 
-    class DevVarStringArray : public _CORBA_Unbounded_Sequence_String {
+    class DevVarStringArray : public std::vector<DevVarString> {
     public:
-        typedef DevVarStringArray_var _var_type;
-
         inline DevVarStringArray() {}
 
-        inline DevVarStringArray(const DevVarStringArray &_s)
-                : _CORBA_Unbounded_Sequence_String(_s) {}
+        inline DevVarStringArray(const DevVarStringArray &_s);
 
-        inline DevVarStringArray(_CORBA_ULong _max)
-                : _CORBA_Unbounded_Sequence_String(_max) {}
+        inline DevVarStringArray(size_t _max);
 
-        inline DevVarStringArray(_CORBA_ULong _max, _CORBA_ULong _len, char **_val, _CORBA_Boolean _rel = 0)
-                : _CORBA_Unbounded_Sequence_String(_max, _len, _val, _rel) {}
+        inline DevVarStringArray(size_t _max, size_t _len, DevVarString *_val, bool _rel = 0);
+
+        inline DevVarStringArray(size_t _max, size_t _len, char **_val, bool _rel = 0);
 
 
         inline DevVarStringArray &operator=(const DevVarStringArray &_s) {
-            _CORBA_Unbounded_Sequence_String::operator=(_s);
+            //TODO copy content
             return *this;
         }
+
+        /**
+         *
+         *
+         * @return actual length
+         */
+        inline size_t length() {
+            return size();
+        }
+
+        inline size_t length() const {
+            return size();
+        }
+
+        //TODO initialize to default values
+        void length(size_t);
+
+        /**
+         *
+         * @return how many elements this array can have (was initialized with?)
+         */
+        size_t maximum();
+
+        size_t maximum() const;
+
+
+        void replace(size_t, size_t, char **, bool);
+
+
+        //TODO replace with actual type -> fails in devapi_pipe.cpp:1423
+        //TODO hide these methods
+        static char **allocbuf(size_t);
+
+        static void freebuf(void *);
+
+        /**
+        *
+        * @return underlying array
+        */
+        char* *get_buffer(bool = false);
+
+        /**
+        *
+        * @return underlying array
+        */
+        const char**get_buffer() const;
+
+
+        bool release();
+
+        bool release() const;
     };
+
 
     class DevVarStringArray_out;
 
@@ -64,7 +140,7 @@ namespace Tango {
             return *this;
         }
 
-        inline _CORBA_String_element operator[](_CORBA_ULong _s) {
+        inline DevVarString &operator[](size_t _s) {
             return (*_pd_seq)[_s];
         }
 
@@ -131,7 +207,7 @@ namespace Tango {
 
         inline DevVarStringArray *operator->() { return _data; }
 
-        inline _CORBA_String_element operator[](_CORBA_ULong _i) {
+        inline DevVarString &operator[](size_t _i) {
             return (*_data)[_i];
         }
 
