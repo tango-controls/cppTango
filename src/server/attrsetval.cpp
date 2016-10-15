@@ -751,7 +751,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 				value.str_seq = new Tango::DevVarStringArray(data_size);
 				value.str_seq->length(data_size);
 				for (int k = 0;k < data_size;k++)
-					(*value.str_seq)[k] = CORBA::string_dup(p_data[k]);
+					(*value.str_seq)[k] = Tango::string_dup(p_data[k]);
 				if (release == true)
 				{
 					if (is_fwd_att() == true)
@@ -773,7 +773,7 @@ void Attribute::set_value(Tango::DevString *p_data,long x, long y,bool release)
 				if (is_fwd_att() == true)
 				{
 					for (int i = 0;i < data_size;i++)
-						strvec[i] = CORBA::string_dup(p_data[i]);
+						strvec[i] = Tango::string_dup(p_data[i]);
 				}
 				else
 				{
@@ -1597,7 +1597,7 @@ void Attribute::set_value(Tango::DevString *p_data_str,Tango::DevUChar *p_data,l
 
 	if (release == false)
 	{
-		enc_help.encoded_format = CORBA::string_dup(*p_data_str);
+		enc_help.encoded_format = Tango::string_dup(*p_data_str);
 		enc_help.encoded_data.replace(size,size,p_data,false);
 
 		set_value(&enc_help);
@@ -1605,7 +1605,7 @@ void Attribute::set_value(Tango::DevString *p_data_str,Tango::DevUChar *p_data,l
 	else
 	{
 		DevEncoded *enc_ptr = new DevEncoded;
-		enc_ptr->encoded_format = CORBA::string_dup(*p_data_str);
+		enc_ptr->encoded_format = Tango::string_dup(*p_data_str);
 		delete [] *p_data_str;
 		enc_ptr->encoded_data.replace(size,size,p_data,true);
 

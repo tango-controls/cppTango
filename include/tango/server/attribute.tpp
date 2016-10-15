@@ -1166,30 +1166,30 @@ void Attribute::set_properties(Tango::MultiAttrProp<T> &props)
 	AttributeConfig_5 conf;
 	get_properties(conf);
 
-	conf.label = CORBA::string_dup(props.label.c_str());
-	conf.description = CORBA::string_dup(props.description.c_str());
-	conf.unit = CORBA::string_dup(props.unit.c_str());
-	conf.standard_unit = CORBA::string_dup(props.standard_unit.c_str());
-	conf.display_unit = CORBA::string_dup(props.display_unit.c_str());
-	conf.format = CORBA::string_dup(props.format.c_str());
-	conf.att_alarm.min_alarm = CORBA::string_dup(props.min_alarm);
-	conf.att_alarm.max_alarm = CORBA::string_dup(props.max_alarm);
-	conf.min_value = CORBA::string_dup(props.min_value);
-	conf.max_value = CORBA::string_dup(props.max_value);
-	conf.att_alarm.min_warning = CORBA::string_dup(props.min_warning);
-	conf.att_alarm.max_warning = CORBA::string_dup(props.max_warning);
-	conf.att_alarm.delta_t = CORBA::string_dup(props.delta_t);
-	conf.att_alarm.delta_val = CORBA::string_dup(props.delta_val);
-	conf.event_prop.per_event.period = CORBA::string_dup(props.event_period);
-	conf.event_prop.arch_event.period = CORBA::string_dup(props.archive_period);
-	conf.event_prop.ch_event.rel_change = CORBA::string_dup(props.rel_change);
-	conf.event_prop.ch_event.abs_change = CORBA::string_dup(props.abs_change);
-	conf.event_prop.arch_event.rel_change = CORBA::string_dup(props.archive_rel_change);
-	conf.event_prop.arch_event.abs_change = CORBA::string_dup(props.archive_abs_change);
+	conf.label = Tango::string_dup(props.label.c_str());
+	conf.description = Tango::string_dup(props.description.c_str());
+	conf.unit = Tango::string_dup(props.unit.c_str());
+	conf.standard_unit = Tango::string_dup(props.standard_unit.c_str());
+	conf.display_unit = Tango::string_dup(props.display_unit.c_str());
+	conf.format = Tango::string_dup(props.format.c_str());
+	conf.att_alarm.min_alarm = Tango::string_dup(props.min_alarm);
+	conf.att_alarm.max_alarm = Tango::string_dup(props.max_alarm);
+	conf.min_value = Tango::string_dup(props.min_value);
+	conf.max_value = Tango::string_dup(props.max_value);
+	conf.att_alarm.min_warning = Tango::string_dup(props.min_warning);
+	conf.att_alarm.max_warning = Tango::string_dup(props.max_warning);
+	conf.att_alarm.delta_t = Tango::string_dup(props.delta_t);
+	conf.att_alarm.delta_val = Tango::string_dup(props.delta_val);
+	conf.event_prop.per_event.period = Tango::string_dup(props.event_period);
+	conf.event_prop.arch_event.period = Tango::string_dup(props.archive_period);
+	conf.event_prop.ch_event.rel_change = Tango::string_dup(props.rel_change);
+	conf.event_prop.ch_event.abs_change = Tango::string_dup(props.abs_change);
+	conf.event_prop.arch_event.rel_change = Tango::string_dup(props.archive_rel_change);
+	conf.event_prop.arch_event.abs_change = Tango::string_dup(props.archive_abs_change);
 
 	conf.enum_labels.length(props.enum_labels.size());
 	for (size_t loop = 0;loop < props.enum_labels.size();loop++)
-		conf.enum_labels[loop] = CORBA::string_dup(props.enum_labels[loop].c_str());
+		conf.enum_labels[loop] = Tango::string_dup(props.enum_labels[loop].c_str());
 
 //
 // Set properties and update database
@@ -1357,7 +1357,7 @@ void Attribute::Attribute_2_AttributeValue_base(T *ptr,Tango::DeviceImpl *d)
 		{
 			Tango::DevVarStringArray str_seq(1);
 			str_seq.length(1);
-			str_seq[0] = CORBA::string_dup(d->get_status().c_str());
+			str_seq[0] = Tango::string_dup(d->get_status().c_str());
 
 			ptr->value.string_att_value(str_seq);
 		}
@@ -1383,7 +1383,7 @@ void Attribute::Attribute_2_AttributeValue_base(T *ptr,Tango::DeviceImpl *d)
 		ptr->w_dim.dim_x = 0;
 		ptr->w_dim.dim_y = 0;
 
-		ptr->name = CORBA::string_dup(name.c_str());
+		ptr->name = Tango::string_dup(name.c_str());
 		ptr->data_format = data_format;
 	}
 	else
@@ -1433,7 +1433,7 @@ void Attribute::Attribute_2_AttributeValue_base(T *ptr,Tango::DeviceImpl *d)
 		ptr->time = when;
 		ptr->quality = quality;
 		ptr->data_format = data_format;
-		ptr->name = CORBA::string_dup(name.c_str());
+		ptr->name = Tango::string_dup(name.c_str());
 	}
 }
 

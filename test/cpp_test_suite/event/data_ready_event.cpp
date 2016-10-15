@@ -173,7 +173,7 @@ int main(int argc, char **argv)
 		dvlsa.svalue.length(1);
 		dvlsa.lvalue.length(1);
 		dvlsa.lvalue[0] = 10;
-		dvlsa.svalue[0] = CORBA::string_dup(att_name.c_str());
+		dvlsa.svalue[0] = Tango::string_dup(att_name.c_str());
 		DeviceData d_in;
 		d_in << dvlsa;
 		device->command_inout("PushDataReady",d_in);
@@ -213,7 +213,7 @@ int main(int argc, char **argv)
 		bool received_err = false;
 		string err_reason;
 		
-		dvlsa.svalue[0] = CORBA::string_dup("bidon");
+		dvlsa.svalue[0] = Tango::string_dup("bidon");
 		d_in << dvlsa;
 		
 		try

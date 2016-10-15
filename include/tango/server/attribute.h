@@ -2692,7 +2692,7 @@ inline void Attribute::set_att_conf_event_sub(int cl_lib)
 	if (true) \
 	{ \
 		string s = B.str(); \
-		A = CORBA::string_dup(s.c_str()); \
+		A = Tango::string_dup(s.c_str()); \
 		B.str(""); \
 		B.clear(); \
 	} \

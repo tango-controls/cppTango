@@ -200,7 +200,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 // Init attribute name in the returned structure
 //
 
-	back->name = CORBA::string_dup(name);
+	back->name = Tango::string_dup(name);
 
 //
 // Get attribute value history
@@ -849,7 +849,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 
 	Tango::DevVarStringArray dvsa;
 	dvsa.length(1);
-	dvsa[0] = CORBA::string_dup(values[0].name);
+	dvsa[0] = Tango::string_dup(values[0].name);
 
 	blackbox_ptr->insert_wr_attr(values,dvsa,cl_id,4);
 
@@ -889,7 +889,7 @@ Tango::AttributeValueList_4* Device_4Impl::write_read_attributes_4(const Tango::
 
 	Tango::DevVarStringArray att_name(1);
 	att_name.length(1);
-	att_name[0] = CORBA::string_dup(values[0].name);
+	att_name[0] = Tango::string_dup(values[0].name);
 	Tango::ClntIdent dummy_cl_id;
 	Tango::CppClntIdent cci = 0;
 	dummy_cl_id.cpp_clnt(cci);

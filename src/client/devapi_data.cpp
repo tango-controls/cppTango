@@ -1538,7 +1538,7 @@ bool DeviceData::operator >> (DevEncoded &datum)
             {
                 datum.encoded_data[i] = tmp_enc->encoded_data[i];
             }
-            datum.encoded_format = CORBA::string_dup(tmp_enc->encoded_format);
+            datum.encoded_format = Tango::string_dup(tmp_enc->encoded_format);
         }
 	}
 	return ret;
@@ -1942,7 +1942,7 @@ bool DeviceData::operator >> (const DevVarDoubleStringArray* &datum)
 void DeviceData::insert (const string &str_datum, vector<unsigned char>& char_datum)
 {
 	DevEncoded *the_enc = new DevEncoded();
-	the_enc->encoded_format = CORBA::string_dup(str_datum.c_str());
+	the_enc->encoded_format = Tango::string_dup(str_datum.c_str());
 
 	the_enc->encoded_data.replace(char_datum.size(),char_datum.size(),&(char_datum[0]),false);
 	any.inout() <<= the_enc;
@@ -1958,7 +1958,7 @@ void DeviceData::insert (const string &str_datum, vector<unsigned char>& char_da
 void DeviceData::insert (const char *str_datum, DevVarCharArray *char_datum)
 {
 	DevEncoded *the_enc = new DevEncoded();
-	the_enc->encoded_format = CORBA::string_dup(str_datum);
+	the_enc->encoded_format = Tango::string_dup(str_datum);
 
 	the_enc->encoded_data.replace(char_datum->length(),char_datum->length(),char_datum->get_buffer(),false);
 	any.inout() <<= the_enc;
@@ -1974,7 +1974,7 @@ void DeviceData::insert (const char *str_datum, DevVarCharArray *char_datum)
 void DeviceData::insert (const char *str_datum,unsigned char *data,unsigned int length)
 {
 	DevEncoded *the_enc = new DevEncoded();
-	the_enc->encoded_format = CORBA::string_dup(str_datum);
+	the_enc->encoded_format = Tango::string_dup(str_datum);
 
 	the_enc->encoded_data.replace(length,length,data,false);
 	any.inout() <<= the_enc;

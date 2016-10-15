@@ -1397,12 +1397,12 @@ CORBA::Any *ChangeEncodedFormat::execute(Tango::DeviceImpl *device, const CORBA:
 #ifndef COMPAT
 	if (togle == false)
 	{
-		(static_cast<DevTest *>(device))->enc_attr.encoded_format = CORBA::string_dup("This format");
+		(static_cast<DevTest *>(device))->enc_attr.encoded_format = Tango::string_dup("This format");
 		togle = true;
 	}
 	else
 	{
-		(static_cast<DevTest *>(device))->enc_attr.encoded_format = CORBA::string_dup("Another format");
+		(static_cast<DevTest *>(device))->enc_attr.encoded_format = Tango::string_dup("Another format");
 		togle = false;
 	}
 #endif

@@ -1507,7 +1507,7 @@ char *DeviceImpl::name()
 //
 
 	cout4 << "Leaving DeviceImpl::name" << endl;
-	return CORBA::string_dup(device_name.c_str());
+	return Tango::string_dup(device_name.c_str());
 }
 
 //+-------------------------------------------------------------------------
@@ -1557,7 +1557,7 @@ char *DeviceImpl::adm_name()
 //
 
 	cout4 << "Leaving DeviceImpl::adm_name" << endl;
-	return CORBA::string_dup(adm_device_name.c_str());
+	return Tango::string_dup(adm_device_name.c_str());
 }
 
 
@@ -1609,7 +1609,7 @@ char *DeviceImpl::description()
 //
 
 	cout4 << "Leaving DeviceImpl::description" << endl;
-	return CORBA::string_dup(desc.c_str());
+	return Tango::string_dup(desc.c_str());
 }
 
 //+-------------------------------------------------------------------------
@@ -1744,7 +1744,7 @@ char *DeviceImpl::status()
 //
 
 		always_executed_hook();
-		tmp = CORBA::string_dup(dev_status());
+		tmp = Tango::string_dup(dev_status());
 	}
 	catch (Tango::DevFailed &e)
 	{
@@ -1755,9 +1755,9 @@ char *DeviceImpl::status()
 		}
 
 		if (strcmp(e.errors[0].reason,API_CommandTimedOut) == 0)
-			tmp = CORBA::string_dup("Not able to acquire device monitor");
+			tmp = Tango::string_dup("Not able to acquire device monitor");
 		else
-			tmp = CORBA::string_dup("Got exception	when trying to build device status");
+			tmp = Tango::string_dup("Got exception	when trying to build device status");
 	}
 	catch (...)
 	{
@@ -1846,20 +1846,20 @@ Tango::DevCmdInfoList* DeviceImpl::command_list_query()
 		for (long i = 0;i < nb_cmd;i++)
 		{
 			Tango::DevCmdInfo tmp;
-			tmp.cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
+			tmp.cmd_name = Tango::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
 			tmp.cmd_tag = (long)((device_class->get_command_list())[i]->get_disp_level());
 			tmp.in_type = (long)((device_class->get_command_list())[i]->get_in_type());
 			tmp.out_type = (long)((device_class->get_command_list())[i]->get_out_type());
 			string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
 			if (str_in.size() != 0)
-				tmp.in_type_desc = CORBA::string_dup(str_in.c_str());
+				tmp.in_type_desc = Tango::string_dup(str_in.c_str());
 			else
-				tmp.in_type_desc = CORBA::string_dup(NotSet);
+				tmp.in_type_desc = Tango::string_dup(NotSet);
 			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
 			if (str_out.size() != 0)
-				tmp.out_type_desc = CORBA::string_dup(str_out.c_str());
+				tmp.out_type_desc = Tango::string_dup(str_out.c_str());
 			else
-				tmp.out_type_desc = CORBA::string_dup(NotSet);
+				tmp.out_type_desc = Tango::string_dup(NotSet);
 
 			(*back)[i] = tmp;
 		}
@@ -1930,20 +1930,20 @@ Tango::DevCmdInfo *DeviceImpl::command_query(const char *command)
 	{
 		if (device_class->get_command_list()[i]->get_lower_name() == cmd)
 		{
-			back->cmd_name = CORBA::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
+			back->cmd_name = Tango::string_dup(((device_class->get_command_list())[i]->get_name()).c_str());
 			back->cmd_tag = (long)((device_class->get_command_list())[i]->get_disp_level());
 			back->in_type = (long)((device_class->get_command_list())[i]->get_in_type());
 			back->out_type = (long)((device_class->get_command_list())[i]->get_out_type());
 			string &str_in = (device_class->get_command_list())[i]->get_in_type_desc();
 			if (str_in.size() != 0)
-				back->in_type_desc = CORBA::string_dup(str_in.c_str());
+				back->in_type_desc = Tango::string_dup(str_in.c_str());
 			else
-				back->in_type_desc = CORBA::string_dup(NotSet);
+				back->in_type_desc = Tango::string_dup(NotSet);
 			string &str_out = (device_class->get_command_list())[i]->get_out_type_desc();
 			if (str_out.size() != 0)
-				back->out_type_desc = CORBA::string_dup(str_out.c_str());
+				back->out_type_desc = Tango::string_dup(str_out.c_str());
 			else
-				back->out_type_desc = CORBA::string_dup(NotSet);
+				back->out_type_desc = Tango::string_dup(NotSet);
 			break;
 		}
 	}
@@ -2015,14 +2015,14 @@ Tango::DevInfo *DeviceImpl::info()
 //
 
 	Tango::Util *tango_ptr = Tango::Util::instance();
-	back->server_host = CORBA::string_dup(tango_ptr->get_host_name().c_str());
+	back->server_host = Tango::string_dup(tango_ptr->get_host_name().c_str());
 
 //
 // Fill-in remaining structure fields
 //
 
-	back->dev_class = CORBA::string_dup(device_class->get_name().c_str());
-	back->server_id = CORBA::string_dup(tango_ptr->get_ds_name().c_str());
+	back->dev_class = Tango::string_dup(device_class->get_name().c_str());
+	back->server_id = Tango::string_dup(tango_ptr->get_ds_name().c_str());
 	back->server_version = DevVersion;
 
 //
@@ -2072,7 +2072,7 @@ Tango::DevInfo *DeviceImpl::info()
         }
 	}
 
-	back->doc_url = CORBA::string_dup(doc_url.c_str());
+	back->doc_url = Tango::string_dup(doc_url.c_str());
 
 //
 // Record operation request in black box
@@ -2412,7 +2412,7 @@ void DeviceImpl::set_attribute_config(const Tango::AttributeConfigList& new_conf
 		o << ends;
 
 		string s = o.str();
-		e.errors[0].reason = CORBA::string_dup(s.c_str());
+		e.errors[0].reason = Tango::string_dup(s.c_str());
 
 		throw;
 	}
@@ -2862,7 +2862,7 @@ Tango::AttributeValueList *DeviceImpl::read_attributes(const Tango::DevVarString
 
 			(*back)[i].time = att.get_when();
 			(*back)[i].quality = att.get_quality();
-			(*back)[i].name = CORBA::string_dup(att.get_name().c_str());
+			(*back)[i].name = Tango::string_dup(att.get_name().c_str());
 			(*back)[i].dim_x = att.get_x();
 			(*back)[i].dim_y = att.get_y();
 		}
@@ -3354,9 +3354,9 @@ void DeviceImpl::remove_attribute(Tango::Attr *rem_attr, bool free_it,bool clean
 		DevVarStringArray send;
 		send.length(3);
 
-		send[0] = CORBA::string_dup(device_name.c_str());
-		send[1] = CORBA::string_dup("attribute");
-		send[2] = CORBA::string_dup(attr_name.c_str());
+		send[0] = Tango::string_dup(device_name.c_str());
+		send[1] = Tango::string_dup("attribute");
+		send[2] = Tango::string_dup(attr_name.c_str());
 
 		if (tg->is_svr_shutting_down() == true)
 		{
@@ -3735,9 +3735,9 @@ void DeviceImpl::remove_command(Tango::Command *rem_cmd, bool free_it,bool clean
 		DevVarStringArray send;
 		send.length(3);
 
-		send[0] = CORBA::string_dup(device_name.c_str());
-		send[1] = CORBA::string_dup("command");
-		send[2] = CORBA::string_dup(cmd_name.c_str());
+		send[0] = Tango::string_dup(device_name.c_str());
+		send[1] = Tango::string_dup("command");
+		send[2] = Tango::string_dup(cmd_name.c_str());
 
 		if (tg->is_svr_shutting_down() == true)
 		{
@@ -4686,10 +4686,10 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 			dvlsa->lvalue[0] = 1;
 			dvlsa->lvalue[1] = locker_client->client_pid;
 			const char *tmp = locker_client->client_ip;
-			dvlsa->svalue[1] = CORBA::string_dup(tmp);
+			dvlsa->svalue[1] = Tango::string_dup(tmp);
 			if (locker_client->client_lang == Tango::JAVA)
 			{
-				dvlsa->svalue[2] = CORBA::string_dup(locker_client->java_main_class.c_str());
+				dvlsa->svalue[2] = Tango::string_dup(locker_client->java_main_class.c_str());
 
 				Tango::DevULong64 tmp_data = locker_client->java_ident[0];
 				dvlsa->lvalue[2] = (DevLong)((tmp_data & 0xFFFFFFFF00000000LL) >> 32);
@@ -4701,7 +4701,7 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 			}
 			else
 			{
-				dvlsa->svalue[2] = CORBA::string_dup("Not defined");
+				dvlsa->svalue[2] = Tango::string_dup("Not defined");
 				for (long loop = 2;loop < 6;loop++)
 					dvlsa->lvalue[loop] = 0;
 			}
@@ -4710,8 +4710,8 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 		{
 			basic_unlock();
 			lock_stat = "Device " + device_name + " is not locked";
-			dvlsa->svalue[1] = CORBA::string_dup("Not defined");
-			dvlsa->svalue[2] = CORBA::string_dup("Not defined");
+			dvlsa->svalue[1] = Tango::string_dup("Not defined");
+			dvlsa->svalue[2] = Tango::string_dup("Not defined");
 			for (long loop = 0;loop < 6;loop++)
 				dvlsa->lvalue[loop] = 0;
 		}
@@ -4719,13 +4719,13 @@ Tango::DevVarLongStringArray *DeviceImpl::lock_status()
 	else
 	{
 		lock_stat = "Device " + device_name + " is not locked";
-		dvlsa->svalue[1] = CORBA::string_dup("Not defined");
-		dvlsa->svalue[2] = CORBA::string_dup("Not defined");
+		dvlsa->svalue[1] = Tango::string_dup("Not defined");
+		dvlsa->svalue[2] = Tango::string_dup("Not defined");
 		for (long loop = 0;loop < 6;loop++)
 			dvlsa->lvalue[loop] = 0;
 	}
 
-	dvlsa->svalue[0] = CORBA::string_dup(lock_stat.c_str());
+	dvlsa->svalue[0] = Tango::string_dup(lock_stat.c_str());
 
 	return dvlsa;
 }
@@ -4974,11 +4974,11 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeIdlData &aid,
 			{
 				(*aid.data_3)[index].err_list.length(1);
 				(*aid.data_3)[index].err_list[0].severity = Tango::ERR;
-				(*aid.data_3)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
-				(*aid.data_3)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_no_except");
-				(*aid.data_3)[index].err_list[0].desc = CORBA::string_dup("The DevEncoded data type is available only for device implementing IDL 4 and above");
+				(*aid.data_3)[index].err_list[0].reason = Tango::string_dup(API_NotSupportedFeature);
+				(*aid.data_3)[index].err_list[0].origin = Tango::string_dup("Device_3Impl::read_attributes_no_except");
+				(*aid.data_3)[index].err_list[0].desc = Tango::string_dup("The DevEncoded data type is available only for device implementing IDL 4 and above");
 				(*aid.data_3)[index].quality = Tango::ATTR_INVALID;
-				(*aid.data_3)[index].name = CORBA::string_dup(att.get_name().c_str());
+				(*aid.data_3)[index].name = Tango::string_dup(att.get_name().c_str());
 				clear_att_dim((*aid.data_3)[index]);
 			}
 			else
@@ -4994,7 +4994,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeIdlData &aid,
 					else
 						the_seq.length(2);
 
-					the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
+					the_seq[0].encoded_format = Tango::string_dup((*ptr)[0].encoded_format);
 
 					if (ptr->release() == true)
 					{
@@ -5007,7 +5007,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeIdlData &aid,
 
 					if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
 					{
-						the_seq[1].encoded_format = CORBA::string_dup((*ptr)[1].encoded_format);
+						the_seq[1].encoded_format = Tango::string_dup((*ptr)[1].encoded_format);
 						the_seq[1].encoded_data.replace((*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.get_buffer());
 					}
 				}
@@ -5021,7 +5021,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeIdlData &aid,
 					else
 						the_seq.length(2);
 
-					the_seq[0].encoded_format = CORBA::string_dup((*ptr)[0].encoded_format);
+					the_seq[0].encoded_format = Tango::string_dup((*ptr)[0].encoded_format);
 
 					if (ptr->release() == true)
 					{
@@ -5034,7 +5034,7 @@ void DeviceImpl::data_into_net_object(Attribute &att,AttributeIdlData &aid,
 
 					if ((w_type == Tango::READ_WRITE) || (w_type == Tango::READ_WITH_WRITE))
 					{
-						the_seq[1].encoded_format = CORBA::string_dup((*ptr)[1].encoded_format);
+						the_seq[1].encoded_format = Tango::string_dup((*ptr)[1].encoded_format);
 						the_seq[1].encoded_data.replace((*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.length(),(*ptr)[1].encoded_data.get_buffer());
 					}
 				}
@@ -5263,7 +5263,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 			the_seq.length(nb_encoded);
 			for (unsigned int loop = 0;loop < nb_encoded;loop++)
 			{
-				the_seq[loop].encoded_format = CORBA::string_dup(polled_seq[loop].encoded_format);
+				the_seq[loop].encoded_format = Tango::string_dup(polled_seq[loop].encoded_format);
 				unsigned char *tmp_enc = polled_seq[loop].encoded_data.get_buffer();
 				unsigned int nb_data = polled_seq[loop].encoded_data.length();
 				the_seq[loop].encoded_data.replace(nb_data,nb_data,tmp_enc);
@@ -5284,7 +5284,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 				the_seq.length(nb_encoded);
 				for (unsigned int loop = 0;loop < nb_encoded;loop++)
 				{
-					the_seq[loop].encoded_format = CORBA::string_dup(polled_seq[loop].encoded_format);
+					the_seq[loop].encoded_format = Tango::string_dup(polled_seq[loop].encoded_format);
 					unsigned char *tmp_enc = polled_seq[loop].encoded_data.get_buffer();
 					unsigned int nb_data = polled_seq[loop].encoded_data.length();
 					the_seq[loop].encoded_data.replace(nb_data,nb_data,tmp_enc);
@@ -5303,7 +5303,7 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 				the_seq.length(nb_encoded);
 				for (unsigned int loop = 0;loop < nb_encoded;loop++)
 				{
-					the_seq[loop].encoded_format = CORBA::string_dup(polled_seq[loop].encoded_format);
+					the_seq[loop].encoded_format = Tango::string_dup(polled_seq[loop].encoded_format);
 					unsigned char *tmp_enc = polled_seq[loop].encoded_data.get_buffer();
 					unsigned int nb_data = polled_seq[loop].encoded_data.length();
 					the_seq[loop].encoded_data.replace(nb_data,nb_data,tmp_enc);
@@ -5318,13 +5318,13 @@ void DeviceImpl::polled_data_into_net_object(AttributeIdlData &aid,
 
 			(*aid.data_3)[index].err_list.length(1);
 			(*aid.data_3)[index].err_list[0].severity = Tango::ERR;
-			(*aid.data_3)[index].err_list[0].reason = CORBA::string_dup(API_NotSupportedFeature);
-			(*aid.data_3)[index].err_list[0].origin = CORBA::string_dup("Device_3Impl::read_attributes_from_cache");
+			(*aid.data_3)[index].err_list[0].reason = Tango::string_dup(API_NotSupportedFeature);
+			(*aid.data_3)[index].err_list[0].origin = Tango::string_dup("Device_3Impl::read_attributes_from_cache");
 
 			string s = o.str();
-			(*aid.data_3)[index].err_list[0].desc = CORBA::string_dup(s.c_str());
+			(*aid.data_3)[index].err_list[0].desc = Tango::string_dup(s.c_str());
 			(*aid.data_3)[index].quality = Tango::ATTR_INVALID;
-			(*aid.data_3)[index].name = CORBA::string_dup(names[index]);
+			(*aid.data_3)[index].name = Tango::string_dup(names[index]);
 			clear_att_dim((*aid.data_3)[index]);
 		}
 		break;

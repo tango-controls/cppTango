@@ -192,9 +192,9 @@
     Tango::DevErrorList errors(1); \
     errors.length(1); \
     errors[0].severity = Tango::ERR; \
-    errors[0].reason = CORBA::string_dup("OUT_OF_MEMORY"); \
-    errors[0].desc = CORBA::string_dup(d.str().c_str()); \
-    errors[0].origin = CORBA::string_dup(o.str().c_str()); \
+    errors[0].reason = Tango::string_dup("OUT_OF_MEMORY"); \
+    errors[0].desc = Tango::string_dup(d.str().c_str()); \
+    errors[0].origin = Tango::string_dup(o.str().c_str()); \
     Tango::DevFailed df(errors); \
     _ERROR_STREAM << df << std::endl; \
     throw df; \
@@ -210,9 +210,9 @@
     Tango::DevErrorList errors(1); \
     errors.length(1); \
     errors[0].severity = Tango::ERR; \
-    errors[0].reason = CORBA::string_dup("UNKNOWN_ERROR"); \
-    errors[0].desc = CORBA::string_dup(d.str().c_str()); \
-    errors[0].origin = CORBA::string_dup(o.str().c_str()); \
+    errors[0].reason = Tango::string_dup("UNKNOWN_ERROR"); \
+    errors[0].desc = Tango::string_dup(d.str().c_str()); \
+    errors[0].origin = Tango::string_dup(o.str().c_str()); \
     Tango::DevFailed df(errors); \
     _ERROR_STREAM << df << std::endl; \
     throw df; \

@@ -116,21 +116,21 @@ namespace Tango
                   << ts_ms
                   << ends;
         string st = ts_ms_str.str();
-        (*dvsa)[0] = CORBA::string_dup(st.c_str());
+        (*dvsa)[0] = Tango::string_dup(st.c_str());
 
-        (*dvsa)[1] = CORBA::string_dup(log4tango::Level::get_name(event.level).c_str());
-        (*dvsa)[2] = CORBA::string_dup(event.logger_name.c_str());
-        (*dvsa)[3] = CORBA::string_dup(event.message.c_str());
-        (*dvsa)[4] = CORBA::string_dup("");
+        (*dvsa)[1] = Tango::string_dup(log4tango::Level::get_name(event.level).c_str());
+        (*dvsa)[2] = Tango::string_dup(event.logger_name.c_str());
+        (*dvsa)[3] = Tango::string_dup(event.message.c_str());
+        (*dvsa)[4] = Tango::string_dup("");
         omni_thread* ct = omni_thread::self();
         if (ct) {
           TangoSys_OMemStream ctstr;
           ctstr << "@" << hex << event.thread_id << " [" << ct->id() << "]"<< ends;
 
           string st = ctstr.str();
-          (*dvsa)[5] = CORBA::string_dup(st.c_str());
+          (*dvsa)[5] = Tango::string_dup(st.c_str());
         } else {
-          (*dvsa)[5] = CORBA::string_dup("unknown");
+          (*dvsa)[5] = Tango::string_dup("unknown");
         }
         DeviceData argin;
         argin << dvsa;

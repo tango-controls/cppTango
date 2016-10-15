@@ -818,8 +818,8 @@ int main(int argc, char **argv)
 		DeviceData din,dout;
 		DevVarStringArray *in = new DevVarStringArray(2);
 		in->length(2);
-		(*in)[0] = CORBA::string_dup("abc");
-		(*in)[1] = CORBA::string_dup("def");
+		(*in)[0] = Tango::string_dup("abc");
+		(*in)[1] = Tango::string_dup("def");
 		din << in;
 		try
 		{	
@@ -881,8 +881,8 @@ int main(int argc, char **argv)
 		in->lvalue[0] = 111;
 		in->lvalue[1] = 222;
 		in->svalue.length(2);
-		in->svalue[0] = CORBA::string_dup("zxc");
-		in->svalue[1] = CORBA::string_dup("qwe");
+		in->svalue[0] = Tango::string_dup("zxc");
+		in->svalue[1] = Tango::string_dup("qwe");
 		din << in;
 		try
 		{	
@@ -910,8 +910,8 @@ int main(int argc, char **argv)
 		in.lvalue[0] = 111;
 		in.lvalue[1] = 222;
 		in.svalue.length(2);
-		in.svalue[0] = CORBA::string_dup("zxc");
-		in.svalue[1] = CORBA::string_dup("qwe");
+		in.svalue[0] = Tango::string_dup("zxc");
+		in.svalue[1] = Tango::string_dup("qwe");
 		din << in;
 		try
 		{	
@@ -980,9 +980,9 @@ int main(int argc, char **argv)
 		in->dvalue[0] = 1.11;
 		in->dvalue[1] = 22.2;
 		in->svalue.length(3);
-		in->svalue[0] = CORBA::string_dup("iop");
-		in->svalue[1] = CORBA::string_dup("jkl");
-		in->svalue[2] = CORBA::string_dup("bnm");
+		in->svalue[0] = Tango::string_dup("iop");
+		in->svalue[1] = Tango::string_dup("jkl");
+		in->svalue[2] = Tango::string_dup("bnm");
 		din << in;
 		try
 		{	
@@ -1012,9 +1012,9 @@ int main(int argc, char **argv)
 		in.dvalue[0] = 1.11;
 		in.dvalue[1] = 22.2;
 		in.svalue.length(3);
-		in.svalue[0] = CORBA::string_dup("iop");
-		in.svalue[1] = CORBA::string_dup("jkl");
-		in.svalue[2] = CORBA::string_dup("bnm");
+		in.svalue[0] = Tango::string_dup("iop");
+		in.svalue[1] = Tango::string_dup("jkl");
+		in.svalue[2] = Tango::string_dup("bnm");
 		din << in;
 		try
 		{	
@@ -1045,7 +1045,7 @@ int main(int argc, char **argv)
 		in.encoded_data.length(2);
 		in.encoded_data[0] = 11;
 		in.encoded_data[1] = 22;
-		in.encoded_format = CORBA::string_dup("Sent");
+		in.encoded_format = Tango::string_dup("Sent");
 		din << in;
 		try
 		{	

@@ -521,7 +521,7 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 /*				Tango::DevEncoded &tmp_data = (*tmp_enc)[base - 1];
 
 				Tango::DevEncoded EncSeq;
-				EncSeq.encoded_format = CORBA::string_dup(tmp_data.encoded_format);
+				EncSeq.encoded_format = Tango::string_dup(tmp_data.encoded_format);
 				unsigned int buffer_length = tmp_data.encoded_data.length();
 				EncSeq.encoded_data.length(buffer_length);
 				for (unsigned int ll = 0;ll << buffer_length;++ll)

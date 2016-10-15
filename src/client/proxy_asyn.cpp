@@ -359,7 +359,7 @@ DeviceData Connection::command_inout_reply(long id)
                     const char *cmd = NULL;
                     CORBA::NamedValue_ptr nv = req_arg->item(0);
                     *(nv->value()) >>= cmd;
-                    char *tmp = CORBA::string_dup(cmd);
+                    char *tmp = Tango::string_dup(cmd);
 
                     TangoSys_OMemStream desc;
                     desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
@@ -405,7 +405,7 @@ DeviceData Connection::command_inout_reply(long id)
 			const char *cmd = NULL;
 			CORBA::NamedValue_ptr nv = req_arg->item(0);
 			*(nv->value()) >>= cmd;
-			char *tmp = CORBA::string_dup(cmd);
+			char *tmp = Tango::string_dup(cmd);
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
@@ -436,7 +436,7 @@ DeviceData Connection::command_inout_reply(long id)
 			const char *cmd = NULL;
 			CORBA::NamedValue_ptr nv = req_arg->item(0);
 			*(nv->value()) >>= cmd;
-			char *tmp = CORBA::string_dup(cmd);
+			char *tmp = Tango::string_dup(cmd);
 
 			char cb_excep_mess[256];
 			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
@@ -682,7 +682,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
                     const char *cmd = NULL;
                     CORBA::NamedValue_ptr nv = req_arg->item(0);
                     *(nv->value()) >>= cmd;
-                    char *tmp = CORBA::string_dup(cmd);
+                    char *tmp = Tango::string_dup(cmd);
 
                     TangoSys_OMemStream desc;
                     desc << "Timeout (" << timeout << " mS) exceeded on device " << dev_name();
@@ -728,7 +728,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			const char *cmd = NULL;
 			CORBA::NamedValue_ptr nv = req_arg->item(0);
 			*(nv->value()) >>= cmd;
-			char *tmp = CORBA::string_dup(cmd);
+			char *tmp = Tango::string_dup(cmd);
 
 			TangoSys_OMemStream desc;
 			desc << "Failed to execute command_inout_asynch on device " << dev_name();
@@ -757,7 +757,7 @@ DeviceData Connection::command_inout_reply(long id,long call_timeout)
 			const char *cmd = NULL;
 			CORBA::NamedValue_ptr nv = req_arg->item(0);
 			*(nv->value()) >>= cmd;
-			char *tmp = CORBA::string_dup(cmd);
+			char *tmp = Tango::string_dup(cmd);
 
 			char cb_excep_mess[256];
 			Tango::Except::print_CORBA_SystemException_r(sys_ex,cb_excep_mess);
@@ -1104,11 +1104,11 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id)
 					desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 					err_list.inout().length(nb_except + 1);
-					err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-					err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute()");
+					err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+					err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute()");
 
 					string st = desc.str();
-					err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+					err_list[nb_except].desc = Tango::string_dup(st.c_str());
 					err_list[nb_except].severity = Tango::ERR;
 				}
 			}
@@ -1300,11 +1300,11 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id)
 				desc << ", attribute " << dev_attr->name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute_reply()");
+				err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+				err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute_reply()");
 
 				string st = desc.str();
-				err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+				err_list[nb_except].desc = Tango::string_dup(st.c_str());
 
 				err_list[nb_except].severity = Tango::ERR;
 			}
@@ -1545,11 +1545,11 @@ vector<DeviceAttribute> *DeviceProxy::read_attributes_reply(long id,long call_ti
 				desc << ", attribute " << (*dev_attr)[i].name << ends;
 
 				err_list.inout().length(nb_except + 1);
-				err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-				err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attributes_reply()");
+				err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+				err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attributes_reply()");
 
 				string st = desc.str();
-				err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+				err_list[nb_except].desc = Tango::string_dup(st.c_str());
 				err_list[nb_except].severity = Tango::ERR;
 			}
 		}
@@ -1778,11 +1778,11 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 			desc << ", attribute " << dev_attr->name << ends;
 
 			err_list.inout().length(nb_except + 1);
-			err_list[nb_except].reason = CORBA::string_dup(API_AttributeFailed);
-			err_list[nb_except].origin = CORBA::string_dup("DeviceProxy::read_attribute_reply()");
+			err_list[nb_except].reason = Tango::string_dup(API_AttributeFailed);
+			err_list[nb_except].origin = Tango::string_dup("DeviceProxy::read_attribute_reply()");
 
 			string st = desc.str();
-			err_list[nb_except].desc = CORBA::string_dup(st.c_str());
+			err_list[nb_except].desc = Tango::string_dup(st.c_str());
 			err_list[nb_except].severity = Tango::ERR;
 		}
 	}

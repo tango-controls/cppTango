@@ -101,12 +101,12 @@ long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false),m
 	ulong_val = old_ulong_val = 0;
 	ulong64_val = old_ulong64_val = 0;
 	dev_state_val = old_dev_state_val = Tango::UNKNOWN;
-	str_val = CORBA::string_dup("Not initialised");
-	old_str_val = CORBA::string_dup("Not initialised");
+	str_val = Tango::string_dup("Not initialised");
+	old_str_val = Tango::string_dup("Not initialised");
 	encoded_val.encoded_data.length(0);
-	encoded_val.encoded_format = CORBA::string_dup("Not initialised");
+	encoded_val.encoded_format = Tango::string_dup("Not initialised");
 	old_encoded_val.encoded_data.length(0);
-	old_encoded_val.encoded_format = CORBA::string_dup("Not initialised");
+	old_encoded_val.encoded_format = Tango::string_dup("Not initialised");
 
 	short_array_val.length(1);
 	short_array_val[0] = 0;
@@ -115,7 +115,7 @@ long64_ptr(NULL),ulong_ptr(NULL),ulong64_ptr(NULL),state_ptr(NULL),uswv(false),m
 	double_array_val.length(1);
 	double_array_val[0] = 0.0;
 	str_array_val.length(1);
-	str_array_val[0] = CORBA::string_dup("Not initialised");
+	str_array_val[0] = Tango::string_dup("Not initialised");
 	float_array_val.length(1);
 	float_array_val[0] = 0.0;
 	boolean_array_val.length(1);
@@ -661,10 +661,10 @@ void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsig
 		if (data_format == Tango::SCALAR)
 		{
 			CORBA::string_free(old_str_val);
-			old_str_val = CORBA::string_dup(str_val);
+			old_str_val = Tango::string_dup(str_val);
 			CORBA::string_free(str_val);
 
-			str_val = CORBA::string_dup((*string_ptr)[0]);
+			str_val = Tango::string_dup((*string_ptr)[0]);
 			w_dim_x = 1;
 			w_dim_y = 0;
 		}
@@ -1431,10 +1431,10 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
 			if (data_format == Tango::SCALAR)
 			{
 				CORBA::string_free(old_str_val);
-				old_str_val = CORBA::string_dup(str_val);
+				old_str_val = Tango::string_dup(str_val);
 				CORBA::string_free(str_val);
 
-				str_val = CORBA::string_dup(string_seq[0]);
+				str_val = Tango::string_dup(string_seq[0]);
 				w_dim_x = 1;
 				w_dim_y = 0;
 			}
@@ -2095,7 +2095,7 @@ void WAttribute::set_write_value(Tango::DevString val)
 {
 	Tango::DevVarStringArray tmp_seq(1);
 	tmp_seq.length(1);
-	tmp_seq[0] = CORBA::string_dup(val);
+	tmp_seq[0] = Tango::string_dup(val);
 
 	CORBA::Any tmp_any;
 	tmp_any <<= tmp_seq;
@@ -2502,7 +2502,7 @@ void WAttribute::rollback()
 
 	case Tango::DEV_STRING :
 		CORBA::string_free(str_val);
-		str_val = CORBA::string_dup(old_str_val);
+		str_val = Tango::string_dup(old_str_val);
 		break;
 
 	case Tango::DEV_FLOAT :

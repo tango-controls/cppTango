@@ -1138,7 +1138,7 @@ CORBA::Any *IOLongString::execute(Tango::DeviceImpl *device,const CORBA::Any &in
     ((*theReturned).svalue).length(((*theReceived).svalue).length());
     for (i=0; i<((*theReceived).svalue).length(); i++) {
       cout << "[IOLongString::execute] received string " << (*theReceived).svalue[i].in() << endl;
-      (*theReturned).svalue[i] = CORBA::string_dup((*theReceived).svalue[i]);
+      (*theReturned).svalue[i] = Tango::string_dup((*theReceived).svalue[i]);
       cout << "[IOLongString::execute] return string " << (*theReturned).svalue[i].in() << endl;
     }
     return insert(theReturned);
@@ -1549,7 +1549,7 @@ CORBA::Any *IOEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_an
       theReturned_enc->encoded_data[i] = the_enc->encoded_data[i] * 2;
       cout << "[IOEncoded::execute] returned number " << (int)theReturned_enc->encoded_data[i] << endl;
     }
-    theReturned_enc->encoded_format = CORBA::string_dup("Returned string");
+    theReturned_enc->encoded_format = Tango::string_dup("Returned string");
     return insert(theReturned_enc);
   }
   catch (CORBA::Exception &e)
@@ -1605,14 +1605,14 @@ CORBA::Any *OEncoded::execute(Tango::DeviceImpl *device,const CORBA::Any &in_any
     encoded_cmd_ctr++;
     if ((encoded_cmd_ctr % 2) == 0)
     {
-        theReturned->encoded_format = CORBA::string_dup("Odd - OEncoded format");
+        theReturned->encoded_format = Tango::string_dup("Odd - OEncoded format");
         theReturned->encoded_data.length(2);
         theReturned->encoded_data[0] = 11;
         theReturned->encoded_data[1] = 21;
     }
     else
     {
-        theReturned->encoded_format = CORBA::string_dup("Even - OEncoded format");
+        theReturned->encoded_format = Tango::string_dup("Even - OEncoded format");
         theReturned->encoded_data.length(4);
         theReturned->encoded_data[0] = 10;
         theReturned->encoded_data[1] = 20;

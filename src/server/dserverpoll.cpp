@@ -535,12 +535,12 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 
 		if (type == Tango::POLL_CMD)
 		{
-			(*ret)[cmd_ind] = CORBA::string_dup(returned_info.c_str());
+			(*ret)[cmd_ind] = Tango::string_dup(returned_info.c_str());
 			cmd_ind++;
 		}
 		else
 		{
-			(*ret)[attr_ind] = CORBA::string_dup(returned_info.c_str());
+			(*ret)[attr_ind] = Tango::string_dup(returned_info.c_str());
 			attr_ind++;
 
 //
@@ -558,7 +558,7 @@ Tango::DevVarStringArray *DServer::dev_poll_status(string &dev_name)
 					npos = returned_info.find("attribute",pos);
 					pos = npos;
 				}
-				(*ret)[cmd_ind] = CORBA::string_dup(returned_info.c_str());
+				(*ret)[cmd_ind] = Tango::string_dup(returned_info.c_str());
 				cmd_ind++;
 			}
 		}
@@ -1748,11 +1748,11 @@ void DServer::rem_obj_polling(const Tango::DevVarStringArray *argin,bool with_db
 		ex.errors.length(1);
 
 		ex.errors[0].severity = ERR;
-		ex.errors[0].reason = CORBA::string_dup(API_PollObjNotFound);
-		ex.errors[0].origin = CORBA::string_dup("DServer::rem_obj_polling");
+		ex.errors[0].reason = Tango::string_dup(API_PollObjNotFound);
+		ex.errors[0].origin = Tango::string_dup("DServer::rem_obj_polling");
 		stringstream ss;
 		ss << "No event possible on attribute " << obj_name << ". Polling has just being stopped!";
-		ex.errors[0].desc = CORBA::string_dup(ss.str().c_str());
+		ex.errors[0].desc = Tango::string_dup(ss.str().c_str());
 
 		if (att.periodic_event_subscribed() == true)
 			att.fire_error_periodic_event(&ex);

@@ -2861,7 +2861,7 @@ void DeviceAttribute::insert(char *&str,unsigned char *&ptr,unsigned int size)
 
 	DevVarEncodedArray *enc_vararr = new(DevVarEncodedArray);
 	enc_vararr->length(1);
-	(*enc_vararr)[0].encoded_format = CORBA::string_dup(str);
+	(*enc_vararr)[0].encoded_format = Tango::string_dup(str);
 	(*enc_vararr)[0].encoded_data.replace(size,size,(CORBA::Octet *)ptr);
 	EncodedSeq = enc_vararr;
 
@@ -2879,7 +2879,7 @@ void DeviceAttribute::insert(const char *str,unsigned char *ptr,unsigned int siz
 
 	DevVarEncodedArray *enc_vararr = new(DevVarEncodedArray);
 	enc_vararr->length(1);
-	(*enc_vararr)[0].encoded_format = CORBA::string_dup(str);
+	(*enc_vararr)[0].encoded_format = Tango::string_dup(str);
 	(*enc_vararr)[0].encoded_data.replace(size,size,(CORBA::Octet *)ptr);
 	EncodedSeq = enc_vararr;
 
@@ -2897,7 +2897,7 @@ void DeviceAttribute::insert(const string &str,vector<unsigned char> &array)
 
 	DevVarEncodedArray *enc_vararr = new(DevVarEncodedArray);
 	enc_vararr->length(1);
-	(*enc_vararr)[0].encoded_format = CORBA::string_dup(str.c_str());
+	(*enc_vararr)[0].encoded_format = Tango::string_dup(str.c_str());
 	(*enc_vararr)[0].encoded_data << array;
 	EncodedSeq = enc_vararr;
 
@@ -2921,7 +2921,7 @@ void DeviceAttribute::insert(const char *str,DevVarCharArray *array)
 
 	DevVarEncodedArray *enc_vararr = new(DevVarEncodedArray);
 	enc_vararr->length(1);
-	(*enc_vararr)[0].encoded_format = CORBA::string_dup(str);
+	(*enc_vararr)[0].encoded_format = Tango::string_dup(str);
 	(*enc_vararr)[0].encoded_data.replace(array->length(),array->length(),array->get_buffer());
 	EncodedSeq = enc_vararr;
 
@@ -4942,7 +4942,7 @@ bool DeviceAttribute::extract(char *&str,unsigned char *&data_ptr,unsigned int &
 	{
 		if (EncodedSeq->length() != 0)
 		{
-			str = CORBA::string_dup(EncodedSeq[0].encoded_format.in());
+			str = Tango::string_dup(EncodedSeq[0].encoded_format.in());
 			data_size = EncodedSeq[0].encoded_data.length();
 			data_ptr = EncodedSeq[0].encoded_data.get_buffer(true);
 		}

@@ -71,8 +71,8 @@ CORBA::Any *IOStrArray::execute(Tango::DeviceImpl *device,const CORBA::Any &in_a
     Tango::DevVarStringArray *argout = new Tango::DevVarStringArray();
 
     argout->length(2);
-    (*argout)[0] = CORBA::string_dup("First string from dev_string_array");
-    (*argout)[1] = CORBA::string_dup("Second string from dev_string_array");
+    (*argout)[0] = Tango::string_dup("First string from dev_string_array");
+    (*argout)[1] = Tango::string_dup("Second string from dev_string_array");
      
     return insert(argout);
   }
