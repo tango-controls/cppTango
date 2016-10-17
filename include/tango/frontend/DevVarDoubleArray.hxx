@@ -13,14 +13,16 @@ namespace Tango {
     public:
         inline DevVarDoubleArray() {}
 
-        inline DevVarDoubleArray(const DevVarDoubleArray &_s);
+        inline DevVarDoubleArray(const DevVarDoubleArray &_s) = default;
 
         inline DevVarDoubleArray(size_t _max);
 
         inline DevVarDoubleArray(size_t _max, size_t _len, double *_val, bool _rel = 0);
 
 
-        inline DevVarDoubleArray &operator=(const DevVarDoubleArray &_s);
+        inline DevVarDoubleArray &operator=(const DevVarDoubleArray &_s) = default;
+
+        ~DevVarDoubleArray();
 
     public://DeVarArray implementation
         virtual size_t length() const override;
@@ -40,6 +42,9 @@ namespace Tango {
         virtual double *get_buffer(bool b) override;
 
         virtual bool release() const override;
+
+    private:
+        void* impl;
     };
 
     class DevVarDoubleArray_var {

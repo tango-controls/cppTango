@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <cstdlib>
+
 namespace Tango {
     /**
      * Interface that mimics CORAB::UnboundedSequence
@@ -12,6 +14,8 @@ namespace Tango {
     //TODO copy or move
     template <typename T>
     struct DevVarArray {
+        virtual ~DevVarArray() = 0;
+
         virtual size_t length() const = 0;
 
         virtual void length(size_t) = 0;
