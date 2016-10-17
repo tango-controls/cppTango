@@ -42,8 +42,6 @@ namespace Tango {
         virtual bool release() const override;
     };
 
-    class DevVarDoubleArray_out;
-
     class DevVarDoubleArray_var {
     public:
         inline DevVarDoubleArray_var() : _pd_seq(0) {}
@@ -111,48 +109,8 @@ namespace Tango {
             return tmp;
         }
 
-        friend class DevVarDoubleArray_out;
-
     private:
         DevVarDoubleArray *_pd_seq;
-    };
-
-    class DevVarDoubleArray_out {
-    public:
-        inline DevVarDoubleArray_out(DevVarDoubleArray *&_s) : _data(_s) { _data = 0; }
-
-        inline DevVarDoubleArray_out(DevVarDoubleArray_var &_s)
-                : _data(_s._pd_seq) { _s = (DevVarDoubleArray *) 0; }
-
-        inline DevVarDoubleArray_out(const DevVarDoubleArray_out &_s) : _data(_s._data) {}
-
-        inline DevVarDoubleArray_out &operator=(const DevVarDoubleArray_out &_s) {
-            _data = _s._data;
-            return *this;
-        }
-
-        inline DevVarDoubleArray_out &operator=(DevVarDoubleArray *_s) {
-            _data = _s;
-            return *this;
-        }
-
-        inline operator DevVarDoubleArray *&() { return _data; }
-
-        inline DevVarDoubleArray *&ptr() { return _data; }
-
-        inline DevVarDoubleArray *operator->() { return _data; }
-
-        inline double &operator[](size_t _i) {
-            return (*_data)[_i];
-        }
-
-
-        DevVarDoubleArray *&_data;
-
-    private:
-        DevVarDoubleArray_out();
-
-        DevVarDoubleArray_out &operator=(const DevVarDoubleArray_var &);
     };
 
 }//Tango
