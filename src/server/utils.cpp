@@ -291,7 +291,7 @@ void Util::effective_job(int argc,char *argv[])
 //
 
         bool omni_42_compat = false;
-        CORBA::ULong omni_vers_hex = omniORB::versionHex();
+        DevULong omni_vers_hex = omniORB::versionHex();
         if (omni_vers_hex > 0x04020000)
             omni_42_compat = true;
 

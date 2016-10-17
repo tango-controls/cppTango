@@ -47,7 +47,7 @@ namespace Tango
 
 #define		IP_ADDR_BUFFER_SIZE		80
 
-CORBA::Boolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &);
+DevBoolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &);
 
 class client_addr: public omni_thread::value_t
 {

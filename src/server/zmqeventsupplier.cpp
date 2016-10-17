@@ -1183,7 +1183,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 // Marshall the event data
 //
 
-		CORBA::Long padding = 0XDEC0DEC0;
+		DevLong padding = 0XDEC0DEC0;
 		data_call_cdr.rewindPtrs();
 
 		padding >>= data_call_cdr;
@@ -1210,7 +1210,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 				*(ev_value.attr_val_4) >>= data_call_cdr;
 
 				mess_ptr = data_call_cdr.bufPtr();
-				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
+				mess_ptr = (char *)mess_ptr + (sizeof(DevLong) << 1);
 
 				int nb_data;
 				int data_discr = ((int *)mess_ptr)[0];
@@ -1239,7 +1239,7 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 				*(ev_value.attr_val_5) >>= data_call_cdr;
 
 				mess_ptr = data_call_cdr.bufPtr();
-				mess_ptr = (char *)mess_ptr + (sizeof(CORBA::Long) << 1);
+				mess_ptr = (char *)mess_ptr + (sizeof(DevLong) << 1);
 
 				int nb_data;
 				int data_discr = ((int *)mess_ptr)[0];
@@ -1299,8 +1299,8 @@ void ZmqEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 
 		if (pipe_event == false)
 		{
-			mess_size = data_call_cdr.bufSize() - sizeof(CORBA::Long);
-			mess_ptr = (char *)data_call_cdr.bufPtr() + sizeof(CORBA::Long);
+			mess_size = data_call_cdr.bufSize() - sizeof(DevLong);
+			mess_ptr = (char *)data_call_cdr.bufPtr() + sizeof(DevLong);
 		}
 		else
 		{

@@ -348,7 +348,7 @@ void EventConsumerKeepAliveThread::re_subscribe_event(EvCbIte &epos,EvChanIte &i
 	exp.length(1);
 	exp[0].event_types = evs;
 	exp[0].constraint_expr = Tango::string_dup(constraint_expr.c_str());
-	CORBA::Boolean res = 0; // OK
+	DevBoolean res = 0; // OK
 	try
 	{
 		CosNotifyFilter::ConstraintInfoSeq_var dummy = filter->add_constraints(exp);

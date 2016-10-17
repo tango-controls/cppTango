@@ -1628,16 +1628,16 @@ void Attribute::set_time()
 		struct _timeb t;
 		_ftime(&t);
 
-		when.tv_sec = (CORBA::Long)t.time;
-		when.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		when.tv_sec = (DevLong)t.time;
+		when.tv_usec = (DevLong)(t.millitm * 1000);
 		when.tv_nsec = 0;
 #else
 		struct timezone tz;
 		struct timeval tv;
 		gettimeofday(&tv,&tz);
 
-		when.tv_sec = (CORBA::Long)tv.tv_sec;
-		when.tv_usec = (CORBA::Long)tv.tv_usec;
+		when.tv_sec = (DevLong)tv.tv_sec;
+		when.tv_usec = (DevLong)tv.tv_usec;
 		when.tv_nsec = 0;
 #endif
 	}

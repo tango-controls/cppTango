@@ -2204,13 +2204,13 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 				{
 					if (data_type == PIPE)
 					{
-						data_ptr = data_ptr + (sizeof(CORBA::Long) << 1);
-						data_size = data_size - (sizeof(CORBA::Long) << 1);
+						data_ptr = data_ptr + (sizeof(DevLong) << 1);
+						data_size = data_size - (sizeof(DevLong) << 1);
 					}
 					else
 					{
-						data_ptr = data_ptr + sizeof(CORBA::Long);
-						data_size = data_size - sizeof(CORBA::Long);
+						data_ptr = data_ptr + sizeof(DevLong);
+						data_size = data_size - sizeof(DevLong);
 					}
 
 				}
@@ -2516,10 +2516,10 @@ void ZmqEventConsumer::push_zmq_event(string &ev_name,unsigned char endian,zmq::
 							dev_pipe = new DevicePipe(pipe_name,root_blob_name);
 							dev_pipe->set_time(zdpd.time);
 
-							CORBA::ULong max,len;
+							DevULong max,len;
 							max = zdpd.data_blob.blob_data.maximum();
 							len = zdpd.data_blob.blob_data.length();
-							DevPipeDataElt *buf = zdpd.data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+							DevPipeDataElt *buf = zdpd.data_blob.blob_data.get_buffer((DevBoolean)true);
 							DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 							dev_pipe->get_root_blob().set_extract_data(dvpdea);

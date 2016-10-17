@@ -236,7 +236,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistoryList_3 *read_attribute_history_3(const char* name,
-								  CORBA::Long n);
+								  DevLong n);
 
 /**
  * Get device info.

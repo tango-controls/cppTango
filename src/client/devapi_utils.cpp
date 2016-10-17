@@ -272,8 +272,8 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 
 			case Tango::DEVVAR_SHORTARRAY:
 			{
-				const CORBA::Short *c_seq_buff = tmp_sh->get_buffer();
-				CORBA::Short *seq_buff = const_cast<CORBA::Short*>(c_seq_buff);
+				const DevShort *c_seq_buff = tmp_sh->get_buffer();
+				DevShort *seq_buff = const_cast<DevShort*>(c_seq_buff);
 				Tango::DevVarShortArray ShortSeq = DevVarShortArray(data_length,data_length,&(seq_buff[base - data_length]),false);
 
 				CORBA::Any *any_ptr = new CORBA::Any();
@@ -293,8 +293,8 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 
 			case Tango::DEVVAR_LONGARRAY:
 			{
-				const CORBA::Long *c_seq_buff = tmp_lg->get_buffer();
-				CORBA::Long *seq_buff = const_cast<CORBA::Long*>(c_seq_buff);
+				const DevLong *c_seq_buff = tmp_lg->get_buffer();
+				DevLong *seq_buff = const_cast<DevLong*>(c_seq_buff);
 				Tango::DevVarLongArray LongSeq = DevVarLongArray(data_length,data_length,&(seq_buff[base - data_length]),false);
 
 				CORBA::Any *any_ptr = new CORBA::Any();
@@ -314,8 +314,8 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 
 			case Tango::DEVVAR_FLOATARRAY:
 			{
-				const CORBA::Float *c_seq_buff = tmp_fl->get_buffer();
-				CORBA::Float *seq_buff = const_cast<CORBA::Float*>(c_seq_buff);
+				const DevFloat *c_seq_buff = tmp_fl->get_buffer();
+				DevFloat *seq_buff = const_cast<DevFloat*>(c_seq_buff);
 				Tango::DevVarFloatArray FloatSeq = DevVarFloatArray(data_length,data_length,&(seq_buff[base - data_length]),false);
 
 				CORBA::Any *any_ptr = new CORBA::Any();
@@ -335,8 +335,8 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 
 			case Tango::DEVVAR_DOUBLEARRAY:
 			{
-				const CORBA::Double *c_seq_buff = tmp_db->get_buffer();
-				CORBA::Double *seq_buff = const_cast<CORBA::Double*>(c_seq_buff);
+				const DevDouble *c_seq_buff = tmp_db->get_buffer();
+				DevDouble *seq_buff = const_cast<DevDouble*>(c_seq_buff);
 				Tango::DevVarDoubleArray DoubleSeq = DevVarDoubleArray(data_length,data_length,&(seq_buff[base - data_length]),false);
 
 				CORBA::Any *any_ptr = new CORBA::Any();
@@ -356,8 +356,8 @@ void DeviceProxy::from_hist4_2_DataHistory(DevCmdHistory_4_var &hist_4,vector<De
 
 			case Tango::DEVVAR_LONG64ARRAY:
 			{
-				const CORBA::LongLong *c_seq_buff = tmp_lg64->get_buffer();
-				CORBA::LongLong *seq_buff = const_cast<CORBA::LongLong*>(c_seq_buff);
+				const DevLong64 *c_seq_buff = tmp_lg64->get_buffer();
+				DevLong64 *seq_buff = const_cast<DevLong64*>(c_seq_buff);
 				Tango::DevVarLong64Array Long64Seq = DevVarLong64Array(data_length,data_length,&(seq_buff[base - data_length]),false);
 
 				CORBA::Any *any_ptr = new CORBA::Any();

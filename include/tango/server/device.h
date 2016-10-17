@@ -3306,7 +3306,7 @@ public:
 	virtual Tango::DevState state();
 
 	virtual CORBA::Any *command_inout(const char *in_cmd,const CORBA::Any &in_data);
-	virtual Tango::DevVarStringArray *black_box(CORBA::Long n);
+	virtual Tango::DevVarStringArray *black_box(DevLong n);
 	virtual Tango::DevCmdInfoList *command_list_query();
 	virtual Tango::DevCmdInfo *command_query(const char *command);
 	virtual Tango::DevInfo *info();

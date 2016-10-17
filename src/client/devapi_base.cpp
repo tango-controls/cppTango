@@ -507,9 +507,9 @@ void Connection::connect(string &corba_name)
                 IIOP::ProfileBody pBody;
                 IIOP::unmarshalProfile(ior.profiles[0],pBody);
 
-                CORBA::ULong total = pBody.components.length();
+                DevULong total = pBody.components.length();
 
-                for (CORBA::ULong index=0; index < total; index++)
+                for (DevULong index=0; index < total; index++)
                 {
                     IOP::TaggedComponent& c = pBody.components[index];
                     if (c.tag == 3)
@@ -628,12 +628,12 @@ void Connection::toIOR(const char* iorstr,IOP::IOR& ior)
     s = (s-4)/2;  // how many octets are there in the string
     p += 4;
 
-    cdrMemoryStream buf((CORBA::ULong)s,0);
+    cdrMemoryStream buf((DevULong)s,0);
 
     for (int i=0; i<(int)s; i++)
     {
         int j = i*2;
-        CORBA::Octet v;
+        DevUChar v;
 
         if (p[j] >= '0' && p[j] <= '9')
         {
@@ -669,7 +669,7 @@ void Connection::toIOR(const char* iorstr,IOP::IOR& ior)
     }
 
     buf.rewindInputPtr();
-    CORBA::Boolean b = buf.unmarshalBoolean();
+    DevBoolean b = buf.unmarshalBoolean();
     buf.setByteSwapFlag(b);
 
     ior.type_id = IOP::IOR::unmarshaltype_id(buf);
@@ -5098,10 +5098,10 @@ DevicePipe DeviceProxy::read_pipe(const string& pipe_name)
 	dev_pipe.set_name(pipe_value_5->name.in());
 	dev_pipe.set_time(pipe_value_5->time);
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 	max = pipe_value_5->data_blob.blob_data.maximum();
 	len = pipe_value_5->data_blob.blob_data.length();
-	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+	DevPipeDataElt *buf = pipe_value_5->data_blob.blob_data.get_buffer((DevBoolean)true);
 	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 	dev_pipe.get_root_blob().reset_extract_ctr();
@@ -5153,10 +5153,10 @@ void DeviceProxy::write_pipe(DevicePipe& dev_pipe)
 		Except::throw_exception(API_PipeNoDataElement,"No data in pipe!","DeviceProxy::write_pipe()");
 	}
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 	max = tmp_ptr->maximum();
 	len = tmp_ptr->length();
-	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((DevBoolean)true),true);
 
 	while (ctr < 2)
 	{
@@ -5279,10 +5279,10 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
 		pipe_value_5.data_blob.name = bl_name.c_str();
 
 	DevVarPipeDataEltArray *tmp_ptr = pipe_data.get_root_blob().get_insert_data();
-	CORBA::ULong max,len;
+	DevULong max,len;
 	max = tmp_ptr->maximum();
 	len = tmp_ptr->length();
-	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+	pipe_value_5.data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((DevBoolean)true),true);
 
 	delete tmp_ptr;
 
@@ -5364,7 +5364,7 @@ DevicePipe DeviceProxy::write_read_pipe(DevicePipe &pipe_data)
 
 	max = r_pipe_value_5->data_blob.blob_data.maximum();
 	len = r_pipe_value_5->data_blob.blob_data.length();
-	DevPipeDataElt *buf = r_pipe_value_5->data_blob.blob_data.get_buffer((CORBA::Boolean)true);
+	DevPipeDataElt *buf = r_pipe_value_5->data_blob.blob_data.get_buffer((DevBoolean)true);
 	DevVarPipeDataEltArray *dvpdea = new DevVarPipeDataEltArray(max,len,buf,true);
 
 	r_dev_pipe.get_root_blob().reset_extract_ctr();

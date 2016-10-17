@@ -45,21 +45,21 @@ template <typename T>
 inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *dev_attr)
 {
 
-	CORBA::Long *tmp_lo;
-	CORBA::Short *tmp_sh;
-	CORBA::Double *tmp_db;
+	DevLong *tmp_lo;
+	DevShort *tmp_sh;
+	DevDouble *tmp_db;
 	char **tmp_str;
-	CORBA::Float *tmp_fl;
-	CORBA::Boolean *tmp_boo;
-	CORBA::UShort *tmp_ush;
-	CORBA::Octet *tmp_uch;
-	CORBA::LongLong *tmp_lolo;
-	CORBA::ULong *tmp_ulo;
-	CORBA::ULongLong *tmp_ulolo;
+	DevFloat *tmp_fl;
+	DevBoolean *tmp_boo;
+	DevUShort *tmp_ush;
+	DevUChar *tmp_uch;
+	DevLong64 *tmp_lolo;
+	DevULong *tmp_ulo;
+	DevULong64 *tmp_ulolo;
 	Tango::DevState *tmp_state;
 	Tango::DevEncoded *tmp_enc;
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 
 	dev_attr->name = attr_value->name;
 	dev_attr->quality = attr_value->quality;
@@ -82,12 +82,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
 				}
 				else
 				{
-					tmp_boo = const_cast<CORBA::Boolean *>(tmp_seq.get_buffer());
+					tmp_boo = const_cast<DevBoolean *>(tmp_seq.get_buffer());
 					dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,false);
 				}
 			}
@@ -100,12 +100,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
 				}
 				else
 				{
-					tmp_sh = const_cast<CORBA::Short *>(tmp_seq.get_buffer());
+					tmp_sh = const_cast<DevShort *>(tmp_seq.get_buffer());
 					dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
 				}
 			}
@@ -118,12 +118,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
 				}
 				else
 				{
-					tmp_lo = const_cast<CORBA::Long *>(tmp_seq.get_buffer());
+					tmp_lo = const_cast<DevLong *>(tmp_seq.get_buffer());
 					dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
 				}
 			}
@@ -136,12 +136,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
 				}
 				else
 				{
-					tmp_lolo = const_cast<CORBA::LongLong *>(tmp_seq.get_buffer());
+					tmp_lolo = const_cast<DevLong64 *>(tmp_seq.get_buffer());
 					dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,false);
 				}
 			}
@@ -154,12 +154,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
 				}
 				else
 				{
-					tmp_fl = const_cast<CORBA::Float *>(tmp_seq.get_buffer());
+					tmp_fl = const_cast<DevFloat *>(tmp_seq.get_buffer());
 					dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,false);
 				}
 			}
@@ -172,12 +172,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
 				}
 				else
 				{
-					tmp_db = const_cast<CORBA::Double *>(tmp_seq.get_buffer());
+					tmp_db = const_cast<DevDouble *>(tmp_seq.get_buffer());
 					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
 				}
 			}
@@ -190,12 +190,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
 				}
 				else
 				{
-					tmp_uch = const_cast<CORBA::Octet *>(tmp_seq.get_buffer());
+					tmp_uch = const_cast<DevUChar *>(tmp_seq.get_buffer());
 					dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,false);
 				}
 			}
@@ -208,12 +208,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
 				}
 				else
 				{
-					tmp_ush = const_cast<CORBA::UShort *>(tmp_seq.get_buffer());
+					tmp_ush = const_cast<DevUShort *>(tmp_seq.get_buffer());
 					dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,false);
 				}
 			}
@@ -226,12 +226,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
 				}
 				else
 				{
-					tmp_ulo = const_cast<CORBA::ULong *>(tmp_seq.get_buffer());
+					tmp_ulo = const_cast<DevULong *>(tmp_seq.get_buffer());
 					dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,false);
 				}
 			}
@@ -244,12 +244,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
 				}
 				else
 				{
-					tmp_ulolo = const_cast<CORBA::ULongLong *>(tmp_seq.get_buffer());
+					tmp_ulolo = const_cast<DevULong64 *>(tmp_seq.get_buffer());
 					dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,false);
 				}
 			}
@@ -262,7 +262,7 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,true);
 				}
 				else
@@ -280,7 +280,7 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 				}
 				else
@@ -305,7 +305,7 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				len = tmp_seq.length();
 				if (tmp_seq.release() == true)
 				{
-					tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+					tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((DevBoolean)true);
 					dev_attr->EncodedSeq = new DevVarEncodedArray(max,len,tmp_enc,true);
 				}
 				else

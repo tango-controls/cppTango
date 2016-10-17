@@ -77,7 +77,7 @@ namespace Tango
 inline void operator<<(DevVarCharArray &lval,const vector<unsigned char> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -116,7 +116,7 @@ inline void operator<<(vector<unsigned char> &lval,const DevVarCharArray &rval)
 inline void operator<<(DevVarShortArray &lval,const vector<short> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -154,7 +154,7 @@ inline void operator<<(vector<short> &lval,const DevVarShortArray &rval)
 inline void operator<<(DevVarLongArray &lval,const vector<DevLong> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -193,7 +193,7 @@ inline void operator<<(vector<DevLong> &lval,const DevVarLongArray &rval)
 inline void operator<<(DevVarLong64Array &lval,const vector<DevLong64> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -231,7 +231,7 @@ inline void operator<<(vector<DevLong64> &lval,const DevVarLong64Array &rval)
 inline void operator<<(DevVarFloatArray &lval,const vector<float> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -270,7 +270,7 @@ inline void operator<<(vector<float> &lval,const DevVarFloatArray &rval)
 inline void operator<<(DevVarDoubleArray &lval,const vector<double> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -310,7 +310,7 @@ inline void operator<<(vector<double> &lval,const DevVarDoubleArray &rval)
 inline void operator<<(DevVarBooleanArray &lval,const vector<bool> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -349,7 +349,7 @@ inline void operator<<(vector<bool> &lval,const DevVarBooleanArray &rval)
 inline void operator<<(DevVarUShortArray &lval,const vector<unsigned short> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -389,7 +389,7 @@ inline void operator<<(vector<unsigned short> &lval,const DevVarUShortArray &rva
 inline void operator<<(DevVarULongArray &lval,const vector<DevULong> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -429,7 +429,7 @@ inline void operator<<(vector<DevULong> &lval,const DevVarULongArray &rval)
 inline void operator<<(DevVarULong64Array &lval,const vector<DevULong64> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }
@@ -467,7 +467,7 @@ inline void operator<<(vector<DevULong64> &lval,const DevVarULong64Array &rval)
 inline void operator<<(DevVarStringArray &lval,const vector<string> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = Tango::string_dup(rval[i].c_str());
 }
@@ -509,7 +509,7 @@ inline void operator<<(vector<string> &lval,const DevVarStringArray &rval)
 inline void operator<<(DevVarStateArray &lval,const vector<DevState> &rval)
 {
 	size_t nb_elt = rval.size();
-	lval.length((CORBA::ULong)nb_elt);
+	lval.length((DevULong)nb_elt);
 	for (unsigned long i = 0;i < nb_elt;i++)
 		lval[i] = rval[i];
 }

@@ -219,8 +219,8 @@ void DServer::re_lock_devices(const Tango::DevVarStringArray *dev_name_list)
 	NoSyncModelTangoMonitor mon(this);
 
 	cout4 << "In re_lock_devices command" << endl;
-	CORBA::ULong loop;
-	CORBA::ULong nb_dev = dev_name_list->length();
+	DevULong loop;
+	DevULong nb_dev = dev_name_list->length();
 
 	for (loop = 0;loop < nb_dev;loop++)
 		cout4 << "Device to re-lock: " << (*dev_name_list)[loop] << endl;

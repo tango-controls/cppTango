@@ -1231,19 +1231,19 @@ DevicePipeBlob & DevicePipeBlob::operator<<(DevicePipeBlob &datum)
 			DevVarPipeDataEltArray *tmp_ptr = datum.get_insert_data();
 			if (tmp_ptr != Tango_nullptr)
 			{
-				CORBA::ULong max,len;
+				DevULong max,len;
 				max = tmp_ptr->maximum();
 				len = tmp_ptr->length();
 
 				if (insert_ind != -1)
 				{
-					(*insert_elt_array)[insert_ind].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+					(*insert_elt_array)[insert_ind].inner_blob.replace(max,len,tmp_ptr->get_buffer((DevBoolean)true),true);
 					(*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(datum.get_name().c_str());
 					insert_ind = -1;
 				}
 				else
 				{
-					(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+					(*insert_elt_array)[insert_ctr].inner_blob.replace(max,len,tmp_ptr->get_buffer((DevBoolean)true),true);
 					(*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(datum.get_name().c_str());
 					insert_ctr++;
 				}

@@ -1925,7 +1925,7 @@ void Device_3Impl::write_attributes_34(const Tango::AttributeValueList *values_3
 //--------------------------------------------------------------------------------------------------------------------
 
 Tango::DevAttrHistoryList_3 *Device_3Impl::read_attribute_history_3(const char* name,
-								    CORBA::Long n)
+								    DevLong n)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);

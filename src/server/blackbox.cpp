@@ -76,7 +76,7 @@ extern omni_thread::key_t key;
 // The function called by the interceptor
 //
 
-CORBA::Boolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &info)
+DevBoolean get_client_addr(omni::omniInterceptors::serverReceiveRequest_T::info_T &info)
 {
     omni_thread::self()->set_value(key,new client_addr(((omni::giopStrand &)info.giop_s.strand()).connection->peeraddress()));
 	return true;

@@ -187,7 +187,7 @@ public:
  * <b>DevFailed</b> exception specification
  */
 	virtual Tango::DevAttrHistory_4 *read_attribute_history_4(const char* name,
-								  CORBA::Long n);
+								  DevLong n);
 
 /**
  * Read command value history.
@@ -212,7 +212,7 @@ public:
  */
 
 	virtual Tango::DevCmdHistory_4 *command_inout_history_4(const char* command,
-								CORBA::Long n);
+								DevLong n);
 
 /**
  * Execute a command.

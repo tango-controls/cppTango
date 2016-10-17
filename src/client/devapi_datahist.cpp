@@ -363,31 +363,31 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 	name = seq[n].value.name;
 
 	const DevVarLongArray *tmp_seq_lo;
-	CORBA::Long *tmp_lo;
+	DevLong *tmp_lo;
 	const DevVarLong64Array *tmp_seq_lolo;
-	CORBA::LongLong *tmp_lolo;
+	DevLong64 *tmp_lolo;
 	const DevVarShortArray *tmp_seq_sh;
-	CORBA::Short *tmp_sh;
+	DevShort *tmp_sh;
 	const DevVarDoubleArray *tmp_seq_db;
-	CORBA::Double *tmp_db;
+	DevDouble *tmp_db;
 	const DevVarStringArray *tmp_seq_str;
 	char **tmp_str;
 	const DevVarFloatArray *tmp_seq_fl;
-	CORBA::Float *tmp_fl;
+	DevFloat *tmp_fl;
 	const DevVarBooleanArray *tmp_seq_boo;
-	CORBA::Boolean *tmp_boo;
+	DevBoolean *tmp_boo;
 	const DevVarUShortArray *tmp_seq_ush;
-	CORBA::UShort *tmp_ush;
+	DevUShort *tmp_ush;
 	const DevVarCharArray *tmp_seq_uch;
-	CORBA::Octet *tmp_uch;
+	DevUChar *tmp_uch;
 	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
+	DevULong *tmp_ulo;
 	const DevVarULong64Array *tmp_seq_ulolo;
-	CORBA::ULongLong *tmp_ulolo;
+	DevULong64 *tmp_ulolo;
 	const DevVarStateArray *tmp_seq_state;
 	Tango::DevState *tmp_state;
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 
 	if ((fail == false) && (quality != Tango::ATTR_INVALID))
 	{
@@ -400,7 +400,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_lo;
 			max = tmp_seq_lo->maximum();
 			len = tmp_seq_lo->length();
-			tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean)true);
+			tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((DevBoolean)true);
 			LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
 			break;
 
@@ -408,7 +408,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_lolo;
 			max = tmp_seq_lolo->maximum();
 			len = tmp_seq_lolo->length();
-			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean)true);
+			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((DevBoolean)true);
 			Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
 			break;
 
@@ -416,7 +416,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_sh;
 			max = tmp_seq_sh->maximum();
 			len = tmp_seq_sh->length();
-			tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean)true);
+			tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((DevBoolean)true);
 			ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
 			break;
 
@@ -424,7 +424,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_db;
 			max = tmp_seq_db->maximum();
 			len = tmp_seq_db->length();
-			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean)true);
+			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
 			DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
 			break;
 
@@ -432,7 +432,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_str;
 			max = tmp_seq_str->maximum();
 			len = tmp_seq_str->length();
-			tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean)true);
+			tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((DevBoolean)true);
 			StringSeq = new DevVarStringArray(max,len,tmp_str,true);
 			break;
 
@@ -440,7 +440,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_fl;
 			max = tmp_seq_fl->maximum();
 			len = tmp_seq_fl->length();
-			tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean)true);
+			tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((DevBoolean)true);
 			FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
 			break;
 
@@ -448,7 +448,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_boo;
 			max = tmp_seq_boo->maximum();
 			len = tmp_seq_boo->length();
-			tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean)true);
+			tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((DevBoolean)true);
 			BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
 			break;
 
@@ -456,7 +456,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_ush;
 			max = tmp_seq_ush->maximum();
 			len = tmp_seq_ush->length();
-			tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean)true);
+			tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((DevBoolean)true);
 			UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
 			break;
 
@@ -464,7 +464,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_uch;
 			max = tmp_seq_uch->maximum();
 			len = tmp_seq_uch->length();
-			tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean)true);
+			tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((DevBoolean)true);
 			UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
 			break;
 
@@ -472,7 +472,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_ulo;
 			max = tmp_seq_ulo->maximum();
 			len = tmp_seq_ulo->length();
-			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
+			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((DevBoolean)true);
 			ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
 			break;
 
@@ -480,7 +480,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_ulolo;
 			max = tmp_seq_ulolo->maximum();
 			len = tmp_seq_ulolo->length();
-			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
+			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((DevBoolean)true);
 			ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
 			break;
 
@@ -488,7 +488,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			seq[n].value.value >>= tmp_seq_state;
 			max = tmp_seq_state->maximum();
 			len = tmp_seq_state->length();
-			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
+			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((DevBoolean)true);
 			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 			break;
 
@@ -514,31 +514,31 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 	name = seq[n].value.name;
 
 	const DevVarLongArray *tmp_seq_lo;
-	CORBA::Long *tmp_lo;
+	DevLong *tmp_lo;
 	const DevVarLong64Array *tmp_seq_lolo;
-	CORBA::LongLong *tmp_lolo;
+	DevLong64 *tmp_lolo;
 	const DevVarShortArray *tmp_seq_sh;
-	CORBA::Short *tmp_sh;
+	DevShort *tmp_sh;
 	const DevVarDoubleArray *tmp_seq_db;
-	CORBA::Double *tmp_db;
+	DevDouble *tmp_db;
 	const DevVarStringArray *tmp_seq_str;
 	char **tmp_str;
 	const DevVarFloatArray *tmp_seq_fl;
-	CORBA::Float *tmp_fl;
+	DevFloat *tmp_fl;
 	const DevVarBooleanArray *tmp_seq_boo;
-	CORBA::Boolean *tmp_boo;
+	DevBoolean *tmp_boo;
 	const DevVarUShortArray *tmp_seq_ush;
-	CORBA::UShort *tmp_ush;
+	DevUShort *tmp_ush;
 	const DevVarCharArray *tmp_seq_uch;
-	CORBA::Octet *tmp_uch;
+	DevUChar *tmp_uch;
 	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
+	DevULong *tmp_ulo;
 	const DevVarULong64Array *tmp_seq_ulolo;
-	CORBA::ULongLong *tmp_ulolo;
+	DevULong64 *tmp_ulolo;
 	const DevVarStateArray *tmp_seq_state;
 	Tango::DevState *tmp_state;
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 
 	if ((fail == false) && (quality != Tango::ATTR_INVALID))
 	{
@@ -551,7 +551,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_lo;
 			max = tmp_seq_lo->maximum();
 			len = tmp_seq_lo->length();
-			tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean)true);
+			tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((DevBoolean)true);
 			LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
 			break;
 
@@ -559,7 +559,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_lolo;
 			max = tmp_seq_lolo->maximum();
 			len = tmp_seq_lolo->length();
-			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((CORBA::Boolean)true);
+			tmp_lolo = (const_cast<DevVarLong64Array *>(tmp_seq_lolo))->get_buffer((DevBoolean)true);
 			Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
 			break;
 
@@ -567,7 +567,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_sh;
 			max = tmp_seq_sh->maximum();
 			len = tmp_seq_sh->length();
-			tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean)true);
+			tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((DevBoolean)true);
 			ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
 			break;
 
@@ -575,7 +575,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_db;
 			max = tmp_seq_db->maximum();
 			len = tmp_seq_db->length();
-			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean)true);
+			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
 			DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
 			break;
 
@@ -583,7 +583,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_str;
 			max = tmp_seq_str->maximum();
 			len = tmp_seq_str->length();
-			tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean)true);
+			tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((DevBoolean)true);
 			StringSeq = new DevVarStringArray(max,len,tmp_str,true);
 			break;
 
@@ -591,7 +591,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_fl;
 			max = tmp_seq_fl->maximum();
 			len = tmp_seq_fl->length();
-			tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean)true);
+			tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((DevBoolean)true);
 			FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
 			break;
 
@@ -599,7 +599,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_boo;
 			max = tmp_seq_boo->maximum();
 			len = tmp_seq_boo->length();
-			tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean)true);
+			tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((DevBoolean)true);
 			BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
 			break;
 
@@ -607,7 +607,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_ush;
 			max = tmp_seq_ush->maximum();
 			len = tmp_seq_ush->length();
-			tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean)true);
+			tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((DevBoolean)true);
 			UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
 			break;
 
@@ -615,7 +615,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_uch;
 			max = tmp_seq_uch->maximum();
 			len = tmp_seq_uch->length();
-			tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean)true);
+			tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((DevBoolean)true);
 			UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
 			break;
 
@@ -623,7 +623,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_ulo;
 			max = tmp_seq_ulo->maximum();
 			len = tmp_seq_ulo->length();
-			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
+			tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((DevBoolean)true);
 			ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
 			break;
 
@@ -631,7 +631,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_ulolo;
 			max = tmp_seq_ulolo->maximum();
 			len = tmp_seq_ulolo->length();
-			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((CORBA::Boolean)true);
+			tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_ulolo))->get_buffer((DevBoolean)true);
 			ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
 			break;
 
@@ -639,7 +639,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			seq[n].value.value >>= tmp_seq_state;
 			max = tmp_seq_state->maximum();
 			len = tmp_seq_state->length();
-			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
+			tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((DevBoolean)true);
 			StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 			break;
 
