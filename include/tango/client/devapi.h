@@ -999,7 +999,7 @@ inline int DeviceProxy::subscribe_event (const string &attr_name, EventType even
 class AutoConnectTimeout
 {
 public:
-	AutoConnectTimeout(unsigned int to) {omniORB::setClientConnectTimeout((CORBA::ULong)to);}
+	AutoConnectTimeout(unsigned int to) {omniORB::setClientConnectTimeout((DevULong)to);}
 	~AutoConnectTimeout() {omniORB::setClientConnectTimeout(NARROW_CLNT_TIMEOUT);}
 };
 

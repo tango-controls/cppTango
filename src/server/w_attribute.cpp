@@ -299,7 +299,7 @@ void WAttribute::set_rvalue()
 
 void WAttribute::check_written_value(const CORBA::Any &any,unsigned long x,unsigned long y)
 {
-	CORBA::ULong nb_data;
+	DevULong nb_data;
 	unsigned long i;
 
 //
@@ -1817,7 +1817,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
                 {
                     for (i = 0;i < nb_data;i++)
                     {
-                        CORBA::ULong nb_data_elt = enc_seq[i].encoded_data.length();
+                        DevULong nb_data_elt = enc_seq[i].encoded_data.length();
                         for (j = 0;j < nb_data_elt;j++)
                         {
                             if (enc_seq[i].encoded_data[j] < min_value.uch)
@@ -1837,7 +1837,7 @@ void WAttribute::check_written_value(const Tango::AttrValUnion &att_union,unsign
                 {
                     for (i = 0;i < nb_data;i++)
                     {
-                        CORBA::ULong nb_data_elt = enc_seq[i].encoded_data.length();
+                        DevULong nb_data_elt = enc_seq[i].encoded_data.length();
                         for (j = 0;j < nb_data_elt;j++)
                         {
                             if (enc_seq[i].encoded_data[j] > max_value.uch)
@@ -2694,15 +2694,15 @@ void WAttribute::set_written_date()
 	struct _timeb t;
 	_ftime(&t);
 
-	write_date.tv_sec = (CORBA::Long)t.time;
-	write_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+	write_date.tv_sec = (DevLong)t.time;
+	write_date.tv_usec = (DevLong)(t.millitm * 1000);
 #else
 	struct timezone tz;
 	struct timeval tv;
 	gettimeofday(&tv,&tz);
 
-	write_date.tv_sec = (CORBA::Long)tv.tv_sec;
-	write_date.tv_usec = (CORBA::Long)tv.tv_usec;
+	write_date.tv_sec = (DevLong)tv.tv_sec;
+	write_date.tv_usec = (DevLong)tv.tv_usec;
 #endif
 }
 
@@ -2739,8 +2739,8 @@ bool WAttribute::check_rds_alarm()
 	struct _timeb t;
 	_ftime(&t);
 
-	tv.tv_sec = (CORBA::Long)t.time;
-	tv.tv_usec = (CORBA::Long)(t.millitm * 1000);
+	tv.tv_sec = (DevLong)t.time;
+	tv.tv_usec = (DevLong)(t.millitm * 1000);
 #else
 	struct timezone tz;
 	gettimeofday(&tv,&tz);

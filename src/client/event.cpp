@@ -476,31 +476,31 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 				   long vers,DeviceAttribute *dev_attr)
 {
 	const DevVarLongArray *tmp_seq_lo;
-	CORBA::Long *tmp_lo;
+	DevLong *tmp_lo;
 	const DevVarLong64Array *tmp_seq_64;
-	CORBA::LongLong *tmp_64;
+	DevLong64 *tmp_64;
 	const DevVarShortArray *tmp_seq_sh;
-	CORBA::Short *tmp_sh;
+	DevShort *tmp_sh;
 	const DevVarDoubleArray *tmp_seq_db;
-	CORBA::Double *tmp_db;
+	DevDouble *tmp_db;
 	const DevVarStringArray *tmp_seq_str;
 	char **tmp_str;
 	const DevVarFloatArray *tmp_seq_fl;
-	CORBA::Float *tmp_fl;
+	DevFloat *tmp_fl;
 	const DevVarBooleanArray *tmp_seq_boo;
-	CORBA::Boolean *tmp_boo;
+	DevBoolean *tmp_boo;
 	const DevVarUShortArray *tmp_seq_ush;
-	CORBA::UShort *tmp_ush;
+	DevUShort *tmp_ush;
 	const DevVarCharArray *tmp_seq_uch;
-	CORBA::Octet *tmp_uch;
+	DevUChar *tmp_uch;
 	const DevVarULongArray *tmp_seq_ulo;
-	CORBA::ULong *tmp_ulo;
+	DevULong *tmp_ulo;
 	const DevVarULong64Array *tmp_seq_u64;
-	CORBA::ULongLong *tmp_ulolo;
+	DevULong64 *tmp_ulolo;
 	const DevVarStateArray *tmp_seq_state;
 	Tango::DevState *tmp_state;
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 
 	if (vers == 3)
 	{
@@ -550,12 +550,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_lo->length();
 					if (tmp_seq_lo->release() == true)
 					{
-						tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((CORBA::Boolean)true);
+						tmp_lo = (const_cast<DevVarLongArray *>(tmp_seq_lo))->get_buffer((DevBoolean)true);
 						dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
 					}
 					else
 					{
-						tmp_lo = const_cast<CORBA::Long *>(tmp_seq_lo->get_buffer());
+						tmp_lo = const_cast<DevLong *>(tmp_seq_lo->get_buffer());
 						dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
 					}
 					break;
@@ -569,12 +569,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_64->length();
 					if (tmp_seq_64->release() == true)
 					{
-						tmp_64 = (const_cast<DevVarLong64Array *>(tmp_seq_64))->get_buffer((CORBA::Boolean)true);
+						tmp_64 = (const_cast<DevVarLong64Array *>(tmp_seq_64))->get_buffer((DevBoolean)true);
 						dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_64,true);
 					}
 					else
 					{
-						tmp_64 = const_cast<CORBA::LongLong *>(tmp_seq_64->get_buffer());
+						tmp_64 = const_cast<DevLong64 *>(tmp_seq_64->get_buffer());
 						dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_64,false);
 					}
 					break;
@@ -588,12 +588,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_sh->length();
 					if (tmp_seq_sh->release() == true)
 					{
-						tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((CORBA::Boolean)true);
+						tmp_sh = (const_cast<DevVarShortArray *>(tmp_seq_sh))->get_buffer((DevBoolean)true);
 						dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
 					}
 					else
 					{
-						tmp_sh = const_cast<CORBA::Short *>(tmp_seq_sh->get_buffer());
+						tmp_sh = const_cast<DevShort *>(tmp_seq_sh->get_buffer());
 						dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
 					}
 					break;
@@ -607,12 +607,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_db->length();
 					if (tmp_seq_db->release() == true)
 					{
-						tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((CORBA::Boolean)true);
+						tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
 						dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
 					}
 					else
 					{
-						tmp_db = const_cast<CORBA::Double *>(tmp_seq_db->get_buffer());
+						tmp_db = const_cast<DevDouble *>(tmp_seq_db->get_buffer());
 						dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
 					}
 					break;
@@ -626,7 +626,7 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_str->length();
 					if (tmp_seq_str->release() == true)
 					{
-						tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((CORBA::Boolean)true);
+						tmp_str = (const_cast<DevVarStringArray *>(tmp_seq_str))->get_buffer((DevBoolean)true);
 						dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,true);
 					}
 					else
@@ -645,12 +645,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_fl->length();
 					if (tmp_seq_fl->release() == true)
 					{
-						tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((CORBA::Boolean)true);
+						tmp_fl = (const_cast<DevVarFloatArray *>(tmp_seq_fl))->get_buffer((DevBoolean)true);
 						dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
 					}
 					else
 					{
-						tmp_fl = const_cast<CORBA::Float *>(tmp_seq_fl->get_buffer());
+						tmp_fl = const_cast<DevFloat *>(tmp_seq_fl->get_buffer());
 						dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,false);
 					}
 					break;
@@ -664,12 +664,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_boo->length();
 					if (tmp_seq_boo->release() == true)
 					{
-						tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((CORBA::Boolean)true);
+						tmp_boo = (const_cast<DevVarBooleanArray *>(tmp_seq_boo))->get_buffer((DevBoolean)true);
 						dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
 					}
 					else
 					{
-						tmp_boo = const_cast<CORBA::Boolean *>(tmp_seq_boo->get_buffer());
+						tmp_boo = const_cast<DevBoolean *>(tmp_seq_boo->get_buffer());
 						dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,false);
 					}
 					break;
@@ -683,12 +683,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_ush->length();
 					if (tmp_seq_ush->release() == true)
 					{
-						tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((CORBA::Boolean)true);
+						tmp_ush = (const_cast<DevVarUShortArray *>(tmp_seq_ush))->get_buffer((DevBoolean)true);
 						dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
 					}
 					else
 					{
-						tmp_ush = const_cast<CORBA::UShort *>(tmp_seq_ush->get_buffer());
+						tmp_ush = const_cast<DevUShort *>(tmp_seq_ush->get_buffer());
 						dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,false);
 					}
 					break;
@@ -702,12 +702,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_uch->length();
 					if (tmp_seq_uch->release() == true)
 					{
-						tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((CORBA::Boolean)true);
+						tmp_uch = (const_cast<DevVarCharArray *>(tmp_seq_uch))->get_buffer((DevBoolean)true);
 						dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
 					}
 					else
 					{
-						tmp_uch = const_cast<CORBA::Octet *>(tmp_seq_uch->get_buffer());
+						tmp_uch = const_cast<DevUChar *>(tmp_seq_uch->get_buffer());
 						dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,false);
 					}
 					break;
@@ -721,12 +721,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_ulo->length();
 					if (tmp_seq_ulo->release() == true)
 					{
-						tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((CORBA::Boolean)true);
+						tmp_ulo = (const_cast<DevVarULongArray *>(tmp_seq_ulo))->get_buffer((DevBoolean)true);
 						dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
 					}
 					else
 					{
-						tmp_ulo = const_cast<CORBA::ULong *>(tmp_seq_ulo->get_buffer());
+						tmp_ulo = const_cast<DevULong *>(tmp_seq_ulo->get_buffer());
 						dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,false);
 					}
 					break;
@@ -740,12 +740,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_u64->length();
 					if (tmp_seq_u64->release() == true)
 					{
-						tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_u64))->get_buffer((CORBA::Boolean)true);
+						tmp_ulolo = (const_cast<DevVarULong64Array *>(tmp_seq_u64))->get_buffer((DevBoolean)true);
 						dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
 					}
 					else
 					{
-						tmp_ulolo = const_cast<CORBA::ULongLong *>(tmp_seq_u64->get_buffer());
+						tmp_ulolo = const_cast<DevULong64 *>(tmp_seq_u64->get_buffer());
 						dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,false);
 					}
 					break;
@@ -759,7 +759,7 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					len = tmp_seq_state->length();
 					if (tmp_seq_state->release() == true)
 					{
-						tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((CORBA::Boolean)true);
+						tmp_state = (const_cast<DevVarStateArray *>(tmp_seq_state))->get_buffer((DevBoolean)true);
 						dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
 					}
 					else
@@ -832,22 +832,22 @@ void EventConsumer::attr_to_device(const ZmqAttributeValue_5 *attr_value_5,Devic
 
 void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttribute *dev_attr)
 {
-	CORBA::Long *tmp_lo;
-	CORBA::Short *tmp_sh;
-	CORBA::Double *tmp_db;
+	DevLong *tmp_lo;
+	DevShort *tmp_sh;
+	DevDouble *tmp_db;
 	char **tmp_str;
-	CORBA::Float *tmp_fl;
-	CORBA::Boolean *tmp_boo;
-	CORBA::UShort *tmp_ush;
-	CORBA::Octet *tmp_uch;
-	CORBA::LongLong *tmp_lolo;
-	CORBA::ULong *tmp_ulo;
-	CORBA::ULongLong *tmp_ulolo;
+	DevFloat *tmp_fl;
+	DevBoolean *tmp_boo;
+	DevUShort *tmp_ush;
+	DevUChar *tmp_uch;
+	DevLong64 *tmp_lolo;
+	DevULong *tmp_ulo;
+	DevULong64 *tmp_ulolo;
 	Tango::DevState *tmp_state;
 	Tango::DevState sta_dev;
 	Tango::DevEncoded *tmp_enc;
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 
     switch (union_ptr->_d())
     {
@@ -858,12 +858,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_boo = (const_cast<DevVarBooleanArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,true);
             }
             else
             {
-                tmp_boo = const_cast<CORBA::Boolean *>(tmp_seq.get_buffer());
+                tmp_boo = const_cast<DevBoolean *>(tmp_seq.get_buffer());
                 dev_attr->BooleanSeq = new DevVarBooleanArray(max,len,tmp_boo,false);
             }
         }
@@ -876,12 +876,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_sh = (const_cast<DevVarShortArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,true);
             }
             else
             {
-                tmp_sh = const_cast<CORBA::Short *>(tmp_seq.get_buffer());
+                tmp_sh = const_cast<DevShort *>(tmp_seq.get_buffer());
                 dev_attr->ShortSeq = new DevVarShortArray(max,len,tmp_sh,false);
             }
         }
@@ -894,12 +894,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_lo = (const_cast<DevVarLongArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,true);
             }
             else
             {
-                tmp_lo = const_cast<CORBA::Long *>(tmp_seq.get_buffer());
+                tmp_lo = const_cast<DevLong *>(tmp_seq.get_buffer());
                 dev_attr->LongSeq = new DevVarLongArray(max,len,tmp_lo,false);
             }
         }
@@ -912,12 +912,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_lolo = (const_cast<DevVarLong64Array &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,true);
             }
             else
             {
-                tmp_lolo = const_cast<CORBA::LongLong *>(tmp_seq.get_buffer());
+                tmp_lolo = const_cast<DevLong64 *>(tmp_seq.get_buffer());
                 dev_attr->Long64Seq = new DevVarLong64Array(max,len,tmp_lolo,false);
             }
         }
@@ -930,12 +930,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_fl = (const_cast<DevVarFloatArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,true);
             }
             else
             {
-                tmp_fl = const_cast<CORBA::Float *>(tmp_seq.get_buffer());
+                tmp_fl = const_cast<DevFloat *>(tmp_seq.get_buffer());
                 dev_attr->FloatSeq = new DevVarFloatArray(max,len,tmp_fl,false);
             }
         }
@@ -948,12 +948,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
             }
             else
             {
-                tmp_db = const_cast<CORBA::Double *>(tmp_seq.get_buffer());
+                tmp_db = const_cast<DevDouble *>(tmp_seq.get_buffer());
                 dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
             }
         }
@@ -966,12 +966,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_uch = (const_cast<DevVarCharArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,true);
             }
             else
             {
-                tmp_uch = const_cast<CORBA::Octet *>(tmp_seq.get_buffer());
+                tmp_uch = const_cast<DevUChar *>(tmp_seq.get_buffer());
                 dev_attr->UCharSeq = new DevVarCharArray(max,len,tmp_uch,false);
             }
         }
@@ -984,12 +984,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_ush = (const_cast<DevVarUShortArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,true);
             }
             else
             {
-                tmp_ush = const_cast<CORBA::UShort *>(tmp_seq.get_buffer());
+                tmp_ush = const_cast<DevUShort *>(tmp_seq.get_buffer());
                 dev_attr->UShortSeq = new DevVarUShortArray(max,len,tmp_ush,false);
             }
         }
@@ -1002,12 +1002,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_ulo = (const_cast<DevVarULongArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,true);
             }
             else
             {
-                tmp_ulo = const_cast<CORBA::ULong *>(tmp_seq.get_buffer());
+                tmp_ulo = const_cast<DevULong *>(tmp_seq.get_buffer());
                 dev_attr->ULongSeq = new DevVarULongArray(max,len,tmp_ulo,false);
             }
         }
@@ -1020,12 +1020,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_ulolo = (const_cast<DevVarULong64Array &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,true);
             }
             else
             {
-                tmp_ulolo = const_cast<CORBA::ULongLong *>(tmp_seq.get_buffer());
+                tmp_ulolo = const_cast<DevULong64 *>(tmp_seq.get_buffer());
                 dev_attr->ULong64Seq = new DevVarULong64Array(max,len,tmp_ulolo,false);
             }
         }
@@ -1038,7 +1038,7 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_str = (const_cast<DevVarStringArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->StringSeq = new DevVarStringArray(max,len,tmp_str,true);
             }
             else
@@ -1056,7 +1056,7 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_state = (const_cast<DevVarStateArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->StateSeq = new DevVarStateArray(max,len,tmp_state,true);
             }
             else
@@ -1083,7 +1083,7 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             len = tmp_seq.length();
             if (tmp_seq.release() == true)
             {
-                tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((CORBA::Boolean)true);
+                tmp_enc = (const_cast<DevVarEncodedArray &>(tmp_seq)).get_buffer((DevBoolean)true);
                 dev_attr->EncodedSeq = new DevVarEncodedArray(max,len,tmp_enc,true);
             }
             else
@@ -3582,16 +3582,16 @@ void EventData::set_time()
 		struct _timeb t;
 		_ftime(&t);
 
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_sec  = (DevLong)t.time;
+		reception_date.tv_usec = (DevLong)(t.millitm * 1000);
 		reception_date.tv_nsec = 0;
 #else
 		struct timezone tz;
 		struct timeval tv;
 		gettimeofday(&tv,&tz);
 
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_sec  = (DevLong)tv.tv_sec;
+		reception_date.tv_usec = (DevLong)tv.tv_usec;
 		reception_date.tv_nsec = 0;
 #endif
 }
@@ -3711,16 +3711,16 @@ void AttrConfEventData::set_time()
 		struct _timeb t;
 		_ftime(&t);
 
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_sec  = (DevLong)t.time;
+		reception_date.tv_usec = (DevLong)(t.millitm * 1000);
 		reception_date.tv_nsec = 0;
 #else
 		struct timezone tz;
 		struct timeval tv;
 		gettimeofday(&tv,&tz);
 
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_sec  = (DevLong)tv.tv_sec;
+		reception_date.tv_usec = (DevLong)tv.tv_usec;
 		reception_date.tv_nsec = 0;
 #endif
 }
@@ -3829,16 +3829,16 @@ void DataReadyEventData::set_time()
 		struct _timeb t;
 		_ftime(&t);
 
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_sec  = (DevLong)t.time;
+		reception_date.tv_usec = (DevLong)(t.millitm * 1000);
 		reception_date.tv_nsec = 0;
 #else
 		struct timezone tz;
 		struct timeval tv;
 		gettimeofday(&tv,&tz);
 
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_sec  = (DevLong)tv.tv_sec;
+		reception_date.tv_usec = (DevLong)tv.tv_usec;
 		reception_date.tv_nsec = 0;
 #endif
 }
@@ -3998,16 +3998,16 @@ void DevIntrChangeEventData::set_time()
 		struct _timeb t;
 		_ftime(&t);
 
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_sec  = (DevLong)t.time;
+		reception_date.tv_usec = (DevLong)(t.millitm * 1000);
 		reception_date.tv_nsec = 0;
 #else
 		struct timezone tz;
 		struct timeval tv;
 		gettimeofday(&tv,&tz);
 
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_sec  = (DevLong)tv.tv_sec;
+		reception_date.tv_usec = (DevLong)tv.tv_usec;
 		reception_date.tv_nsec = 0;
 #endif
 }
@@ -4108,16 +4108,16 @@ void PipeEventData::set_time()
 		struct _timeb t;
 		_ftime(&t);
 
-		reception_date.tv_sec  = (CORBA::Long)t.time;
-		reception_date.tv_usec = (CORBA::Long)(t.millitm * 1000);
+		reception_date.tv_sec  = (DevLong)t.time;
+		reception_date.tv_usec = (DevLong)(t.millitm * 1000);
 		reception_date.tv_nsec = 0;
 #else
 		struct timezone tz;
 		struct timeval tv;
 		gettimeofday(&tv,&tz);
 
-		reception_date.tv_sec  = (CORBA::Long)tv.tv_sec;
-		reception_date.tv_usec = (CORBA::Long)tv.tv_usec;
+		reception_date.tv_sec  = (DevLong)tv.tv_sec;
+		reception_date.tv_usec = (DevLong)tv.tv_usec;
 		reception_date.tv_nsec = 0;
 #endif
 }

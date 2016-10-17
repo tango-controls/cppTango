@@ -2862,7 +2862,7 @@ void DeviceAttribute::insert(char *&str,unsigned char *&ptr,unsigned int size)
 	DevVarEncodedArray *enc_vararr = new(DevVarEncodedArray);
 	enc_vararr->length(1);
 	(*enc_vararr)[0].encoded_format = Tango::string_dup(str);
-	(*enc_vararr)[0].encoded_data.replace(size,size,(CORBA::Octet *)ptr);
+	(*enc_vararr)[0].encoded_data.replace(size,size,(DevUChar *)ptr);
 	EncodedSeq = enc_vararr;
 
 	del_mem(Tango::DEV_ENCODED);
@@ -2880,7 +2880,7 @@ void DeviceAttribute::insert(const char *str,unsigned char *ptr,unsigned int siz
 	DevVarEncodedArray *enc_vararr = new(DevVarEncodedArray);
 	enc_vararr->length(1);
 	(*enc_vararr)[0].encoded_format = Tango::string_dup(str);
-	(*enc_vararr)[0].encoded_data.replace(size,size,(CORBA::Octet *)ptr);
+	(*enc_vararr)[0].encoded_data.replace(size,size,(DevUChar *)ptr);
 	EncodedSeq = enc_vararr;
 
 	del_mem(Tango::DEV_ENCODED);

@@ -681,7 +681,7 @@ void Device_5Impl::set_attribute_config_5(const Tango::AttributeConfigList_5& ne
 //
 //-------------------------------------------------------------------------------------------------------------------
 
-Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name,CORBA::Long n)
+Tango::DevAttrHistory_5 *Device_5Impl::read_attribute_history_5(const char* name,DevLong n)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -1186,10 +1186,10 @@ Tango::DevPipeData *Device_5Impl::read_pipe_5(const char* name,const Tango::Clnt
 		back->data_blob.name = Tango::string_dup(pi.get_blob().get_name().c_str());
 
 		DevVarPipeDataEltArray *dvpdea = pi.get_blob().get_insert_data();
-		CORBA::ULong max,len;
+		DevULong max,len;
 		max = dvpdea->maximum();
 		len = dvpdea->length();
-		back->data_blob.blob_data.replace(max,len,dvpdea->get_buffer((CORBA::Boolean)true),true);
+		back->data_blob.blob_data.replace(max,len,dvpdea->get_buffer((DevBoolean)true),true);
 
 		delete dvpdea;
 		pi.get_blob().reset_insert_data_ptr();

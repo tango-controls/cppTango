@@ -693,10 +693,10 @@ void NotifdEventSupplier::push_heartbeat_event()
   		struct_event.header.fixed_header.event_name  = Tango::string_dup("heartbeat");
   		struct_event.filterable_data.length(1);
   		struct_event.filterable_data[0].name = Tango::string_dup("heartbeat_counter");
-  		struct_event.filterable_data[0].value <<= (CORBA::Long) heartbeat_counter++;
+  		struct_event.filterable_data[0].value <<= (DevLong) heartbeat_counter++;
 		adm_dev->last_heartbeat = now_time;
 
-		struct_event.remainder_of_body <<= (CORBA::Long)adm_dev->last_heartbeat;
+		struct_event.remainder_of_body <<= (DevLong)adm_dev->last_heartbeat;
 
 //
 // Push the event
@@ -885,7 +885,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			for (unsigned long i = 0; i < nb_filter; i++)
 			{
 				struct_event.filterable_data[i].name = Tango::string_dup(filterable_names[i].c_str());
-				struct_event.filterable_data[i].value <<= (CORBA::Double) filterable_data[i];
+				struct_event.filterable_data[i].value <<= (DevDouble) filterable_data[i];
 			}
 		}
 	}
@@ -897,7 +897,7 @@ void NotifdEventSupplier::push_event(DeviceImpl *device_impl,string event_type,
 			for (unsigned long i = 0; i < nb_filter_lg; i++)
 			{
 				struct_event.filterable_data[i + nb_filter].name = Tango::string_dup(filterable_names_lg[i].c_str());
-	  			struct_event.filterable_data[i + nb_filter].value <<= (CORBA::Long) filterable_data_lg[i];
+	  			struct_event.filterable_data[i + nb_filter].value <<= (DevLong) filterable_data_lg[i];
 			}
 		}
 	}

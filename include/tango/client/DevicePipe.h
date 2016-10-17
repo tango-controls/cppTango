@@ -1369,10 +1369,10 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 		else \
 		{ \
 			C &dvsa = const_cast<C &>(uni_ptr->B()); \
-			CORBA::Long max,len; \
+			DevLong max,len; \
 			max = dvsa.maximum(); \
 			len = dvsa.length(); \
-			datum->replace(max,len,dvsa.get_buffer((CORBA::Boolean)true),true); \
+			datum->replace(max,len,dvsa.get_buffer((DevBoolean)true),true); \
 			if (extract_ind != -1) \
 				extract_ind = -1; \
 			else \
@@ -1522,7 +1522,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			ext_state.set(notenoughde_flag); \
 		else \
 		{ \
-			CORBA::Long max,len; \
+			DevLong max,len; \
 			max = datum.maximum(); \
 			len = datum.length(); \
 			A dvsa; \
@@ -1580,7 +1580,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 		else \
 		{ \
 			A dvsa; \
-			CORBA::Long max,len; \
+			DevLong max,len; \
 			max = datum->maximum(); \
 			len = datum->length(); \
 			bool rel = datum->release(); \
@@ -1592,7 +1592,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			{ \
 				(*insert_elt_array)[insert_ind].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
-				dvsb.replace(max,len,datum->get_buffer((CORBA::Boolean)true),true); \
+				dvsb.replace(max,len,datum->get_buffer((DevBoolean)true),true); \
                 (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
 				insert_ind = -1; \
 			} \
@@ -1600,7 +1600,7 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 			{\
 				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
 				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
-				dvsb.replace(max,len,datum->get_buffer((CORBA::Boolean)true),true); \
+				dvsb.replace(max,len,datum->get_buffer((DevBoolean)true),true); \
                 (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
 				insert_ctr++; \
 			} \

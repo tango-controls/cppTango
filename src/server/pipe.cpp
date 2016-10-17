@@ -642,16 +642,16 @@ void Pipe::set_time()
 	struct _timeb t;
 	_ftime(&t);
 
-	when.tv_sec = (CORBA::Long)t.time;
-	when.tv_usec = (CORBA::Long)(t.millitm * 1000);
+	when.tv_sec = (DevLong)t.time;
+	when.tv_usec = (DevLong)(t.millitm * 1000);
 	when.tv_nsec = 0;
 #else
 	struct timezone tz;
 	struct timeval tv;
 	gettimeofday(&tv,&tz);
 
-	when.tv_sec = (CORBA::Long)tv.tv_sec;
-	when.tv_usec = (CORBA::Long)tv.tv_usec;
+	when.tv_sec = (DevLong)tv.tv_sec;
+	when.tv_usec = (DevLong)tv.tv_usec;
 	when.tv_nsec = 0;
 #endif
 }
@@ -835,10 +835,10 @@ void Pipe::fire_event(DeviceImpl *dev,DevicePipeBlob *p_data,struct timeval &t,b
 		Except::throw_exception(API_PipeNoDataElement,"No data in DevicePipeBlob!","Pipe::fire_event()");
 	}
 
-	CORBA::ULong max,len;
+	DevULong max,len;
 	max = tmp_ptr->maximum();
 	len = tmp_ptr->length();
-	ad.pipe_val->data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((CORBA::Boolean)true),true);
+	ad.pipe_val->data_blob.blob_data.replace(max,len,tmp_ptr->get_buffer((DevBoolean)true),true);
 
 //
 // Fire event

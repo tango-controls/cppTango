@@ -1794,7 +1794,7 @@ char *DeviceImpl::status()
 //--------------------------------------------------------------------------
 
 
-Tango::DevVarStringArray* DeviceImpl::black_box(CORBA::Long n)
+Tango::DevVarStringArray* DeviceImpl::black_box(DevLong n)
 {
 	cout4 << "DeviceImpl::black_box arrived" << endl;
 

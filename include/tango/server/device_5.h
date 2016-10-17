@@ -273,7 +273,7 @@ public:
  * Click <a href="../../../tango_idl/idl_html/_Tango.html#DevFailed">here</a> to read
  * <b>DevFailed</b> exception specification
  */
-	virtual Tango::DevAttrHistory_5 *read_attribute_history_5(const char* name,CORBA::Long n);
+	virtual Tango::DevAttrHistory_5 *read_attribute_history_5(const char* name,DevLong n);
 
 /**
  * Get pipe(s) configuration.

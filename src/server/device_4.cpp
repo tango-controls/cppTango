@@ -112,7 +112,7 @@ Device_3Impl(device_class,dev_name,desc,dev_state,dev_status),ext_4(Tango_nullpt
 //
 //--------------------------------------------------------------------------
 
-Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name,CORBA::Long n)
+Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name,DevLong n)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);
@@ -233,7 +233,7 @@ Tango::DevAttrHistory_4 *Device_4Impl::read_attribute_history_4(const char* name
 //
 //--------------------------------------------------------------------------
 
-Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* command,CORBA::Long n)
+Tango::DevCmdHistory_4 *Device_4Impl::command_inout_history_4(const char* command,DevLong n)
 {
 	TangoMonitor &mon = get_poll_monitor();
 	AutoTangoMonitor sync(&mon);

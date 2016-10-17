@@ -310,7 +310,7 @@ void NotifdEventConsumer::connect_event_system(string &device_name,string &att_n
   	exp.length(1);
   	exp[0].event_types = evs;
   	exp[0].constraint_expr = Tango::string_dup(constraint_expr);
-  	CORBA::Boolean res = 0; // OK
+  	DevBoolean res = 0; // OK
 
   	try
 	{
@@ -644,7 +644,7 @@ void NotifdEventConsumer::connect_event_channel(string &channel_name,Database *d
     exp.length(1);
     exp[0].event_types = evs;
     exp[0].constraint_expr = Tango::string_dup(constraint_expr);
-    CORBA::Boolean res = 0; // OK
+    DevBoolean res = 0; // OK
     try
 	{
    		CosNotifyFilter::ConstraintInfoSeq_var dummy = filter->add_constraints(exp);
