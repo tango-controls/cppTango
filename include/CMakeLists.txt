@@ -140,7 +140,8 @@ set(SERVER_TEMPLATES
         tango/server/w_pipe.tpp)
 
 set(FRONTEND_HEADERS
-        tango/frontend/idl.h)
+        tango/frontend/idl.h
+        tango/frontend/DevVarDoubleArray.hxx)
 
 add_library(include_objects OBJECT tango.h ${FRONTEND_HEADERS} ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 

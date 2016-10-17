@@ -27,7 +27,7 @@ add_subdirectory(doxygen)
 #source code
 #add_subdirectory(generated/idl)
 add_subdirectory(src)
-add_subdirectory(test)
+#add_subdirectory(test)
 
 add_library(tango SHARED    $<TARGET_OBJECTS:log4tango_objects>
                             $<TARGET_OBJECTS:client_objects>
