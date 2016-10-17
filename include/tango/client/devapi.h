@@ -39,8 +39,7 @@
 
 using namespace std;
 
-namespace Tango
-{
+namespace Tango {
 
 /** @defgroup Client Client classes */
 
@@ -48,46 +47,54 @@ namespace Tango
 // forward declarations
 //
 
-class DeviceData;
-class DeviceAttribute;
-class DbDevice;
-class DbAttribute;
-class DbDatum;
-class DbDevImportInfo;
-class Database;
-class AsynReq;
-class NotifdEventConsumer;
-class ZmqEventConsumer;
-class CallBack;
-class AttributeProxy;
-class TangoMonitor;
+	class DeviceData;
+
+//class DeviceAttribute;
+	class DbDevice;
+
+	class DbAttribute;
+
+	class DbDatum;
+
+	class DbDevImportInfo;
+
+	class Database;
+
+	class AsynReq;
+
+	class NotifdEventConsumer;
+
+	class ZmqEventConsumer;
+
+	class CallBack;
+
+	class AttributeProxy;
+
+	class TangoMonitor;
 
 //
 // Some typedef
 //
 
-typedef vector<DbDatum> DbData;
+	typedef vector<DbDatum> DbData;
 
-typedef union
-{
-	TangoSys_Pid	LockerPid;
-	unsigned long	UUID[4];
-}LockerId;
+	typedef union {
+		TangoSys_Pid LockerPid;
+		unsigned long UUID[4];
+	} LockerId;
 
-struct LockerInfo
-{
-	LockerLanguage	ll;
-	LockerId		li;
-	string			locker_host;
-	string			locker_class;
-};
+	struct LockerInfo {
+		LockerLanguage ll;
+		LockerId li;
+		string locker_host;
+		string locker_class;
+	};
 
-struct LockingThread
-{
-	TangoMonitor	*mon;
-	LockThCmd		*shared;
-	LockThread		*l_thread;
-};
+	struct LockingThread {
+		TangoMonitor *mon;
+		LockThCmd *shared;
+		LockThread *l_thread;
+	};
 
 /**
  * Base structure for command information
@@ -95,28 +102,27 @@ struct LockingThread
  * @headerfile tango.h
  */
 #ifdef GEN_DOC
-typedef struct DevCommandInfo
+	typedef struct DevCommandInfo
 #else
-typedef struct _DevCommandInfo
+	typedef struct _DevCommandInfo
 #endif
-{
-	string 		cmd_name;           ///< The command name
-	long 		cmd_tag;            ///< The command tag
-	long 		in_type;            ///< Input parameter data type
-	long 		out_type;           ///< Output parameter data type
-	string 		in_type_desc;       ///< Input parameter description
-	string 		out_type_desc;      ///< Ouptput parameter description
+	{
+		string cmd_name;           ///< The command name
+		long cmd_tag;            ///< The command tag
+		long in_type;            ///< Input parameter data type
+		long out_type;           ///< Output parameter data type
+		string in_type_desc;       ///< Input parameter description
+		string out_type_desc;      ///< Ouptput parameter description
 
 ///@privatesection
-	bool operator==(const _DevCommandInfo &);
-}DevCommandInfo;
+		bool operator==(const _DevCommandInfo &);
+	} DevCommandInfo;
 
 
-struct AttributeDimension
-{
-	long dim_x;
-	long dim_y;
-};
+	struct AttributeDimension {
+		long dim_x;
+		long dim_y;
+	};
 
 /**
  * Command information data extension
@@ -125,17 +131,18 @@ struct AttributeDimension
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct CommandInfo : public DevCommandInfo
+	typedef struct CommandInfo : public DevCommandInfo
 #else
-typedef struct _CommandInfo : public DevCommandInfo
+	typedef struct _CommandInfo : public DevCommandInfo
 #endif
-{
-	Tango::DispLevel disp_level;    ///< The command display level
+	{
+		Tango::DispLevel disp_level;    ///< The command display level
 
 /// @privatesection
-	friend ostream &operator<<(ostream &,_CommandInfo &);
-	bool operator==(const _CommandInfo &);
-}CommandInfo;
+		friend ostream &operator<<(ostream &, _CommandInfo &);
+
+		bool operator==(const _CommandInfo &);
+	} CommandInfo;
 
 /**
  * A vector of CommandInfo structure
@@ -143,19 +150,18 @@ typedef struct _CommandInfo : public DevCommandInfo
  * @headerfile tango.h
  * @ingroup Client
  */
-typedef vector<CommandInfo> CommandInfoList;
+	typedef vector<CommandInfo> CommandInfoList;
 
-struct _DeviceInfo
-{
-	string 	dev_class;
-	string 	server_id;
-	string 	server_host;
-	long 	server_version;
-	string 	doc_url;
-	string 	dev_type;
-};
+	struct _DeviceInfo {
+		string dev_class;
+		string server_id;
+		string server_host;
+		long server_version;
+		string doc_url;
+		string dev_type;
+	};
 
-typedef _DeviceInfo DeviceInfo;
+	typedef _DeviceInfo DeviceInfo;
 
 /**
  * Base structure for Attribute configuration
@@ -163,33 +169,33 @@ typedef _DeviceInfo DeviceInfo;
  * @headerfile tango.h
  */
 #ifdef GEN_DOC
-typedef struct DeviceAttributeConfig
+	typedef struct DeviceAttributeConfig
 #else
-typedef struct _DeviceAttributeConfig
+	typedef struct _DeviceAttributeConfig
 #endif
-{
-	string 			name;               ///< Name
-	AttrWriteType 	writable;           ///< Writable type (Read, Write,...)
-	AttrDataFormat 	data_format;        ///< Data format (Scalar, Spectrum,...)
-	int 			data_type;          ///< Data type
-	int 			max_dim_x;          ///< Max dim X
-	int 			max_dim_y;          ///< Max dim Y
-	string 			description;        ///< Description
-	string 			label;              ///< Label
-	string 			unit;               ///< Unit
-	string 			standard_unit;      ///< Standard unit
-	string 			display_unit;       ///< Display unit
-	string 			format;             ///< Format
-	string 			min_value;          ///< Min value
-	string 			max_value;          ///< Max value
-	string 			min_alarm;          ///< Min alarm
-	string 			max_alarm;          ///< Max alarm
-	string 			writable_attr_name; ///< Writable att. name
-	vector<string> 	extensions;         ///< For future extensions
+	{
+		string name;               ///< Name
+		AttrWriteType writable;           ///< Writable type (Read, Write,...)
+		AttrDataFormat data_format;        ///< Data format (Scalar, Spectrum,...)
+		int data_type;          ///< Data type
+		int max_dim_x;          ///< Max dim X
+		int max_dim_y;          ///< Max dim Y
+		string description;        ///< Description
+		string label;              ///< Label
+		string unit;               ///< Unit
+		string standard_unit;      ///< Standard unit
+		string display_unit;       ///< Display unit
+		string format;             ///< Format
+		string min_value;          ///< Min value
+		string max_value;          ///< Max value
+		string min_alarm;          ///< Min alarm
+		string max_alarm;          ///< Max alarm
+		string writable_attr_name; ///< Writable att. name
+		vector<string> extensions;         ///< For future extensions
 
 /// @privatesection
-	bool operator==(const _DeviceAttributeConfig &);
-}DeviceAttributeConfig;
+		bool operator==(const _DeviceAttributeConfig &);
+	} DeviceAttributeConfig;
 
 /**
  * Attribute configuration data extension
@@ -198,17 +204,18 @@ typedef struct _DeviceAttributeConfig
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct AttributeInfo : public DeviceAttributeConfig
+	typedef struct AttributeInfo : public DeviceAttributeConfig
 #else
-typedef struct _AttributeInfo : public DeviceAttributeConfig
+	typedef struct _AttributeInfo : public DeviceAttributeConfig
 #endif
-{
-	Tango::DispLevel disp_level;        ///< Display level
+	{
+		Tango::DispLevel disp_level;        ///< Display level
 
 /// @privatesection
-	friend ostream &operator<<(ostream &,_AttributeInfo &);
-	bool operator==(const _AttributeInfo &);
-}AttributeInfo;
+		friend ostream &operator<<(ostream &, _AttributeInfo &);
+
+		bool operator==(const _AttributeInfo &);
+	} AttributeInfo;
 
 /**
  * Attribute alarms configuration
@@ -217,22 +224,22 @@ typedef struct _AttributeInfo : public DeviceAttributeConfig
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct AttributeAlarmInfo
+	typedef struct AttributeAlarmInfo
 #else
-typedef struct _AttributeAlarmInfo
+	typedef struct _AttributeAlarmInfo
 #endif
-{
-	string			min_alarm;      ///< Min alarm level
-	string			max_alarm;      ///< max alarm level
-	string 			min_warning;    ///< Min warning level
-	string			max_warning;    ///< Max warning level
-	string			delta_t;        ///< Delta t RDS
-	string			delta_val;      ///< Delta val RDS
-	vector<string>	extensions;     ///< Future extensions
+	{
+		string min_alarm;      ///< Min alarm level
+		string max_alarm;      ///< max alarm level
+		string min_warning;    ///< Min warning level
+		string max_warning;    ///< Max warning level
+		string delta_t;        ///< Delta t RDS
+		string delta_val;      ///< Delta val RDS
+		vector<string> extensions;     ///< Future extensions
 
 /// @privatesection
-	bool operator==(const _AttributeAlarmInfo &);
-}AttributeAlarmInfo;
+		bool operator==(const _AttributeAlarmInfo &);
+	} AttributeAlarmInfo;
 
 /**
  * Attribute change event configuration
@@ -241,15 +248,15 @@ typedef struct _AttributeAlarmInfo
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct ChangeEventInfo
+	typedef struct ChangeEventInfo
 #else
-typedef struct _ChangeEventInfo
+	typedef struct _ChangeEventInfo
 #endif
-{
-	string			rel_change;     ///< Relative change threshold
-	string			abs_change;     ///< Absolute change threshold
-	vector<string>	extensions;     ///< Future extensions
-}ChangeEventInfo;
+	{
+		string rel_change;     ///< Relative change threshold
+		string abs_change;     ///< Absolute change threshold
+		vector<string> extensions;     ///< Future extensions
+	} ChangeEventInfo;
 
 /**
  * Attribute periodic event configuration
@@ -258,14 +265,14 @@ typedef struct _ChangeEventInfo
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct PeriodicEventInfo
+	typedef struct PeriodicEventInfo
 #else
-typedef struct _PeriodicEventInfo
+	typedef struct _PeriodicEventInfo
 #endif
-{
-	string			period;         ///< Event period
-	vector<string>	extensions;     ///< Future extensions
-}PeriodicEventInfo;
+	{
+		string period;         ///< Event period
+		vector<string> extensions;     ///< Future extensions
+	} PeriodicEventInfo;
 
 /**
  * Attribute archive event configuration
@@ -274,16 +281,16 @@ typedef struct _PeriodicEventInfo
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct ArchiveEventInfo
+	typedef struct ArchiveEventInfo
 #else
-typedef struct _ArchiveEventInfo
+	typedef struct _ArchiveEventInfo
 #endif
-{
-	string			archive_rel_change;     ///< Archive relative change threshold
-	string			archive_abs_change;     ///< Archive abosolute change threshold
-	string			archive_period;         ///< Archive event period
-	vector<string>	extensions;             ///< Future exetnsions
-}ArchiveEventInfo;
+	{
+		string archive_rel_change;     ///< Archive relative change threshold
+		string archive_abs_change;     ///< Archive abosolute change threshold
+		string archive_period;         ///< Archive event period
+		vector<string> extensions;             ///< Future exetnsions
+	} ArchiveEventInfo;
 
 /**
  * Attribute event configuration
@@ -292,18 +299,18 @@ typedef struct _ArchiveEventInfo
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct AttributeEventInfo
+	typedef struct AttributeEventInfo
 #else
-typedef struct _AttributeEventInfo
+	typedef struct _AttributeEventInfo
 #endif
-{
-	ChangeEventInfo		ch_event;       ///< Attribute change event info
-	PeriodicEventInfo	per_event;      ///< Attribute periodic event info
-	ArchiveEventInfo	arch_event;     ///< Attribute archive event info
+	{
+		ChangeEventInfo ch_event;       ///< Attribute change event info
+		PeriodicEventInfo per_event;      ///< Attribute periodic event info
+		ArchiveEventInfo arch_event;     ///< Attribute archive event info
 
 /// @privatesection
-	bool operator==(const _AttributeEventInfo &);
-}AttributeEventInfo;
+		bool operator==(const _AttributeEventInfo &);
+	} AttributeEventInfo;
 
 /**
  * Possible memorized attribute type
@@ -311,13 +318,12 @@ typedef struct _AttributeEventInfo
  * @ingroup Client
  * @headerfile tango.h
  */
-typedef enum _AttrMemorizedType
-{
-	NOT_KNOWN,        		///< Device too old to  get this info
-	NONE,      				///< The attribute is not memorized
-	MEMORIZED,      		///< Memorized attribute
-	MEMORIZED_WRITE_INIT	///< Memorized attribute with memorized value writen at initialization
-}AttrMemorizedType;
+	typedef enum _AttrMemorizedType {
+		NOT_KNOWN,                ///< Device too old to  get this info
+		NONE,                    ///< The attribute is not memorized
+		MEMORIZED,            ///< Memorized attribute
+		MEMORIZED_WRITE_INIT    ///< Memorized attribute with memorized value writen at initialization
+	} AttrMemorizedType;
 
 
 /**
@@ -327,28 +333,31 @@ typedef enum _AttrMemorizedType
  * @ingroup Client
  */
 #ifdef GEN_DOC
-typedef struct AttributeInfoEx: public AttributeInfo
+	typedef struct AttributeInfoEx: public AttributeInfo
 #else
-typedef struct _AttributeInfoEx : public AttributeInfo
+	typedef struct _AttributeInfoEx : public AttributeInfo
 #endif
-{
-	string				root_attr_name;		///< Root attribute name (in case of forwarded attribute)
-	AttrMemorizedType	memorized;			///< The attribute memorization type
-	vector<string>		enum_labels;		///< Enumerated attribute labels
-	AttributeAlarmInfo 	alarms;             ///< The attribute alarms
-	AttributeEventInfo	events;             ///< The attribute events configuration
-	vector<string>		sys_extensions;     ///< Future extensions
+	{
+		string root_attr_name;        ///< Root attribute name (in case of forwarded attribute)
+		AttrMemorizedType memorized;            ///< The attribute memorization type
+		vector<string> enum_labels;        ///< Enumerated attribute labels
+		AttributeAlarmInfo alarms;             ///< The attribute alarms
+		AttributeEventInfo events;             ///< The attribute events configuration
+		vector<string> sys_extensions;     ///< Future extensions
 
 /// @privatesection
-	_AttributeInfoEx & operator=(const AttributeConfig_2 *);
-	_AttributeInfoEx & operator=(const AttributeConfig_3 *);
-	_AttributeInfoEx & operator=(const AttributeConfig_5 *);
+		_AttributeInfoEx &operator=(const AttributeConfig_2 *);
 
-	friend ostream &operator<<(ostream &,_AttributeInfoEx &);
-	bool operator==(const _AttributeInfoEx &);
-}AttributeInfoEx;
+		_AttributeInfoEx &operator=(const AttributeConfig_3 *);
 
-typedef vector<AttributeInfo> AttributeInfoList;
+		_AttributeInfoEx &operator=(const AttributeConfig_5 *);
+
+		friend ostream &operator<<(ostream &, _AttributeInfoEx &);
+
+		bool operator==(const _AttributeInfoEx &);
+	} AttributeInfoEx;
+
+	typedef vector<AttributeInfo> AttributeInfoList;
 
 /**
  * vector of AttributeInfoEx structure
@@ -356,7 +365,7 @@ typedef vector<AttributeInfo> AttributeInfoList;
  * @headerfile tango.h
  * @ingroup Client
  */
-typedef vector<AttributeInfoEx> AttributeInfoListEx;
+	typedef vector<AttributeInfoEx> AttributeInfoListEx;
 
 /**
  * Base structure for pipe information
@@ -364,26 +373,26 @@ typedef vector<AttributeInfoEx> AttributeInfoListEx;
  * @headerfile tango.h
  */
 #ifdef GEN_DOC
-typedef struct PipeInfo
+	typedef struct PipeInfo
 #else
-typedef struct _PipeInfo
+	typedef struct _PipeInfo
 #endif
-{
-	string 					name;          		///< Pipe name
-	string					description;		///< Pipe description
-	string 					label;       		///< Pipe label
-	Tango::DispLevel 		disp_level;        	///< Display level
-	Tango::PipeWriteType 	writable;           ///< Writable type (Read, Read-Write)
-	vector<string> 			extensions;         ///< For future extensions
+	{
+		string name;                ///< Pipe name
+		string description;        ///< Pipe description
+		string label;            ///< Pipe label
+		Tango::DispLevel disp_level;            ///< Display level
+		Tango::PipeWriteType writable;           ///< Writable type (Read, Read-Write)
+		vector<string> extensions;         ///< For future extensions
 
 ///@privatesection
-	friend ostream &operator<<(ostream &,_PipeInfo &);
+		friend ostream &operator<<(ostream &, _PipeInfo &);
 //	bool operator==(const _PipeInfo &);
-}PipeInfo;
+	} PipeInfo;
 
 // TODO: Pipe -> Change the type for writable to replace PIPE_READ, PIPE_READ_WRITE by READ, READ_WRITE (IDL limitation)
 
-typedef vector<PipeInfo> PipeInfoList;
+	typedef vector<PipeInfo> PipeInfoList;
 
 //
 // Can't use CALLBACK (without _) in the following enum because it's a
@@ -396,12 +405,11 @@ typedef vector<PipeInfo> PipeInfoList;
  * @ingroup Client
  * @headerfile tango.h
  */
-enum asyn_req_type
-{
-	POLLING,        ///< Polling mode request
-	CALL_BACK,      ///< Callback mode request
-	ALL_ASYNCH      ///< All request
-};
+	enum asyn_req_type {
+		POLLING,        ///< Polling mode request
+		CALL_BACK,      ///< Callback mode request
+		ALL_ASYNCH      ///< All request
+	};
 
 /**
  * Possible callback mode
@@ -409,37 +417,36 @@ enum asyn_req_type
  * @ingroup Client
  * @headerfile tango.h
  */
-enum cb_sub_model
-{
-	PUSH_CALLBACK,  ///< Callback push model
-	PULL_CALLBACK   ///< Callback pull model
-};
+	enum cb_sub_model {
+		PUSH_CALLBACK,  ///< Callback push model
+		PULL_CALLBACK   ///< Callback pull model
+	};
 
 //
 // Some define
 //
 
-#define 	CONNECTION_OK		1
-#define 	CONNECTION_NOTOK	0
+#define    CONNECTION_OK        1
+#define    CONNECTION_NOTOK    0
 
-#define		PROT_SEP			"://"
-#define		TACO_PROTOCOL		"taco"
-#define		TANGO_PROTOCOL		"tango"
+#define        PROT_SEP            "://"
+#define        TACO_PROTOCOL        "taco"
+#define        TANGO_PROTOCOL        "tango"
 
-#define		MODIFIER			'#'
-#define		DBASE_YES			"dbase=yes"
-#define		DBASE_NO			"dbase=no"
-#define		MODIFIER_DBASE_NO	"#dbase=no"
+#define        MODIFIER            '#'
+#define        DBASE_YES            "dbase=yes"
+#define        DBASE_NO            "dbase=no"
+#define        MODIFIER_DBASE_NO    "#dbase=no"
 
-#define		HOST_SEP			':'
-#define		PORT_SEP			'/'
-#define		DEV_NAME_FIELD_SEP	'/'
-#define		RES_SEP				"->"
-#define		DEVICE_SEP			'/'
+#define        HOST_SEP            ':'
+#define        PORT_SEP            '/'
+#define        DEV_NAME_FIELD_SEP    '/'
+#define        RES_SEP                "->"
+#define        DEVICE_SEP            '/'
 
-#define		FROM_IOR			"IOR"
-#define		NOT_USED			"Unused"
-
+#define        FROM_IOR            "IOR"
+#define        NOT_USED            "Unused"
+}//Tango
 
 /****************************************************************************************
  * 																						*
@@ -471,6 +478,7 @@ enum cb_sub_model
 
 #include "DevicePipe.h"
 
+
 /****************************************************************************************
  * 																						*
  * 					The DeviceAttribute class											*
@@ -482,6 +490,8 @@ enum cb_sub_model
 #include "DeviceAttribute.h"
 
 
+
+namespace Tango{
 /****************************************************************************************
  * 																						*
  * 					The xxxDataHistory classes											*
