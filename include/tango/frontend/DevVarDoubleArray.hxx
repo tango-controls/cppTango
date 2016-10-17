@@ -4,31 +4,42 @@
 
 #pragma once
 
-#include <omniORB4/CORBA.h>
+#include "DevVarArray.hxx"
 
 namespace Tango {
     class DevVarDoubleArray_var;
 
-    class DevVarDoubleArray : public _CORBA_Unbounded_Sequence_w_FixSizeElement<::CORBA::Double, 8, 8> {
+    class DevVarDoubleArray : public DevVarArray<double> {
     public:
-        typedef DevVarDoubleArray_var _var_type;
-
         inline DevVarDoubleArray() {}
 
-        inline DevVarDoubleArray(const DevVarDoubleArray &_s)
-                : _CORBA_Unbounded_Sequence_w_FixSizeElement<::CORBA::Double, 8, 8>(_s) {}
+        inline DevVarDoubleArray(const DevVarDoubleArray &_s);
 
-        inline DevVarDoubleArray(_CORBA_ULong _max)
-                : _CORBA_Unbounded_Sequence_w_FixSizeElement<::CORBA::Double, 8, 8>(_max) {}
+        inline DevVarDoubleArray(size_t _max);
 
-        inline DevVarDoubleArray(_CORBA_ULong _max, _CORBA_ULong _len, ::CORBA::Double *_val, _CORBA_Boolean _rel = 0)
-                : _CORBA_Unbounded_Sequence_w_FixSizeElement<::CORBA::Double, 8, 8>(_max, _len, _val, _rel) {}
+        inline DevVarDoubleArray(size_t _max, size_t _len, double *_val, bool _rel = 0);
 
 
-        inline DevVarDoubleArray &operator=(const DevVarDoubleArray &_s) {
-            _CORBA_Unbounded_Sequence_w_FixSizeElement<::CORBA::Double, 8, 8>::operator=(_s);
-            return *this;
-        }
+        inline DevVarDoubleArray &operator=(const DevVarDoubleArray &_s);
+
+    public://DeVarArray implementation
+        virtual size_t length() const override;
+
+        virtual void length(size_t size) override;
+
+        virtual size_t maximum() const override;
+
+        virtual double &operator[](size_t size) override;
+
+        virtual const double &operator[](size_t size) const override;
+
+        virtual void replace(size_t size, size_t size1, double *t, bool b) override;
+
+        virtual double *get_buffer() const override;
+
+        virtual double *get_buffer(bool b) override;
+
+        virtual bool release() const override;
     };
 
     class DevVarDoubleArray_out;
@@ -63,7 +74,7 @@ namespace Tango {
             return *this;
         }
 
-        inline ::CORBA::Double &operator[](_CORBA_ULong _s) {
+        inline double &operator[](size_t _s) {
             return (*_pd_seq)[_s];
         }
 
@@ -131,7 +142,7 @@ namespace Tango {
 
         inline DevVarDoubleArray *operator->() { return _data; }
 
-        inline ::CORBA::Double &operator[](_CORBA_ULong _i) {
+        inline double &operator[](size_t _i) {
             return (*_data)[_i];
         }
 
