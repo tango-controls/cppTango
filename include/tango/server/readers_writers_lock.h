@@ -32,7 +32,9 @@
 #include <mutex>
 #include <condition_variable>
 #include <thread>
+#include <atomic>
 
+//TODO current implementation may lead to writer thread starvation, a lot of quick readers will always sneak while writer will wait till htey all gone
 class ReadersWritersLock {
     using thread = std::thread;
     using Lock = unique_lock<mutex>;
@@ -43,7 +45,7 @@ public:
     // (-n times).
     thread::id writerId;
 
-    ReadersWritersLock(void) : n(0), writerId(0) {}
+    ReadersWritersLock(void) : n(0), writerId(nullptr) {}
 
     void readerIn(void) {
         thread::id threadId{this_thread::get_id()};
@@ -63,17 +65,20 @@ public:
     }
 
     void readerOut(void) {
-        Lock lock{mut};
-        if (n < 0) {
-            // this thread already had lock as writer, simply increment n
-            n++;
-            lock.unlock();
-            return;
-        }
-        n--;
-        if (n == 0)
-            cond.notify_one();
-    }//release lock
+        int _n;//local copy of n
+        {
+            Lock lock{mut};
+            if (n < 0) {
+                // this thread already had lock as writer, simply increment n
+                n++;
+                lock.unlock();
+                return;
+            }
+            _n = n--;
+        }//release lock
+        if (_n == 0)
+            cond.notify_all();
+    }
 
     void writerIn(void) {
         thread::id threadId{this_thread::get_id()};
@@ -86,7 +91,7 @@ public:
                 lock.unlock();
                 return;
             }
-            cond.wait(lock, [&]() { return n != 0; });
+            cond.wait(lock, [&]() { return n == 0; });//wait until there is no more readers
             n--;
 
             writerId = threadId;
@@ -94,12 +99,15 @@ public:
     }
 
     void writerOut(void) {
-        Lock lock{mut};
-        n++;
-        if (n == 0) {
+        int _n;//local copy of n
+        {
+            Lock lock{mut};
+            _n = n++;
+        }//release lock
+        if (_n == 0) {
             cond.notify_all();    // might as well wake up all readers
         }
-    }//release lock
+    }
 };
 
 
