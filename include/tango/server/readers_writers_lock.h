@@ -34,82 +34,56 @@
 #include <thread>
 #include <atomic>
 
+namespace {
+    thread_local bool isWriter = false;
+};
 //TODO current implementation may lead to writer thread starvation, a lot of quick readers will always sneak while writer will wait till htey all gone
 class ReadersWritersLock {
     using thread = std::thread;
     using Lock = unique_lock<mutex>;
-public:
-    mutex mut;
-    condition_variable cond{};
-    int n;    // 0 means no-one active, > 0 means n readers, < 0 means writer
-    // (-n times).
-    thread::id writerId;
 
-    ReadersWritersLock(void) : n(0), writerId(nullptr) {}
+    mutex readersLock;
+    mutex writerLock;
+    condition_variable readers;
+    condition_variable writers;
+    atomic_int totalReaders;
+    atomic_int totalWriters;
+public:
+    ReadersWritersLock(void) : totalReaders(0), totalWriters(0) {}
 
     void readerIn(void) {
-        thread::id threadId{this_thread::get_id()};
-
+        if(totalWriters.load() > 0 && !::isWriter)
         {
-            Lock lock{mut};
-            if ((n < 0) && (writerId == threadId)) {
-                // this thread already has lock as writer, simply decrement n
-                n--;
-                lock.unlock();
-                return;
-            }
-
-            cond.wait(lock, [&]() { return n < 0; });
-            n++;
+            Lock lock{readersLock};
+            readers.wait(lock, [&](){ return totalWriters.load() == 0;});
         }//release lock
+        //TODO prevent writer starvation by limiting number of readers
+        totalReaders++;
     }
 
     void readerOut(void) {
-        int _n;//local copy of n
-        {
-            Lock lock{mut};
-            if (n < 0) {
-                // this thread already had lock as writer, simply increment n
-                n++;
-                lock.unlock();
-                return;
-            }
-            _n = n--;
-        }//release lock
-        if (_n == 0)
-            cond.notify_all();
+        //if this is the last reader notify writers
+        if(totalReaders-- == 0 && !::isWriter){
+            writers.notify_all();
+        }
     }
 
     void writerIn(void) {
-        thread::id threadId{this_thread::get_id()};
-
-        {
-            Lock lock{mut};
-            if ((n < 0) && (writerId == threadId)) {
-                // this thread already has lock as writer, simply decrement n
-                n--;
-                lock.unlock();
-                return;
-            }
-            cond.wait(lock, [&]() { return n == 0; });//wait until there is no more readers
-            n--;
-
-            writerId = threadId;
+        if(totalReaders.load() > 0){
+            Lock lock{writerLock};
+            writers.wait(lock, [&](){ return totalReaders.load() == 0;});
         }//release lock
+        totalWriters++;
+        ::isWriter = true;
     }
 
     void writerOut(void) {
-        int _n;//local copy of n
-        {
-            Lock lock{mut};
-            _n = n++;
-        }//release lock
-        if (_n == 0) {
-            cond.notify_all();    // might as well wake up all readers
+        if (totalWriters-- == 0) {
+            ::isWriter = false;
+            readers.notify_all();    // might as well wake up all readers
         }
     }
 };
-
 
 //
 // As an alternative to:
