@@ -44,14 +44,9 @@ class ReadersWritersLock {
         {}
 
         void lock() {
-            //recursive mutex is required here to allow single thread that already has write lock to get read lock
-            //TODO this may introduce bottleneck for multiple readers trying to get this mutex simultaneously
-            if(parent.reader_mutex_.try_lock()){
-                parent.reader_mutex_.unlock();
-            } else {
-                Lock lock{parent.condition_mutex_};
-                parent.condition_.wait(lock,[&](){ return parent.reader_mutex_.try_lock();});
-                parent.reader_mutex_.unlock();
+            if(parent.is_writer_){
+                Lock lock{parent.condition_mutex_, try_to_lock};
+                parent.condition_.wait(lock,[&](){ return !parent.is_writer_;});
             }//release lock
             parent.readers_++;
         }
@@ -75,11 +70,11 @@ class ReadersWritersLock {
                 Lock lock{parent.condition_mutex_};
                 parent.condition_.wait(lock, [&]() { return parent.readers_ == 0;});
             }//release lock
-            parent.reader_mutex_.lock();
+            parent.is_writer_ = true;
         }
 
         void unlock() {
-            parent.reader_mutex_.unlock();
+            parent.is_writer_ = false;
             parent.condition_.notify_all();
         }
 
@@ -87,12 +82,12 @@ class ReadersWritersLock {
     };
 
     mutex condition_mutex_;
-    recursive_mutex reader_mutex_;
 
 
     condition_variable condition_;
 
     atomic_int readers_;
+    atomic_bool is_writer_;
 
     ReadLock reader_lock_;
     WriteLock writer_lock_;
