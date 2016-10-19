@@ -42,7 +42,7 @@
 
 namespace Tango
 {
-
+using Lock = std::unique_lock<std::mutex>;
 #ifndef _USRDLL
 extern "C"
 {

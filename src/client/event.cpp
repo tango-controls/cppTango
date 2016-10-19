@@ -373,16 +373,16 @@ void EventConsumer::shutdown_keep_alive_thread()
 // Shut-down the KeepAliveThread and wait for it to exit
 //
 
-    if (keep_alive_thread != NULL)
+    if (keep_alive_thread != nullptr)
     {
         {
-            omni_mutex_lock sync(cmd);
+            Lock sync(cmd.mut);
 
             cmd.cmd_pending = true;
             cmd.cmd_code = EXIT_TH;
 
-            cmd.cond.signal();
-        }
+            cmd.cond.notify_all();
+        }//release lock
 
         int *rv;
         keep_alive_thread->join((void **)&rv);
