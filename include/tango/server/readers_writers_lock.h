@@ -34,54 +34,87 @@
 #include <thread>
 #include <atomic>
 
-namespace {
-    thread_local bool isWriter = false;
-};
-//TODO current implementation may lead to writer thread starvation, a lot of quick readers will always sneak while writer will wait till htey all gone
 class ReadersWritersLock {
     using thread = std::thread;
     using Lock = unique_lock<mutex>;
 
-    mutex readersLock;
-    mutex writerLock;
-    condition_variable readers;
-    condition_variable writers;
-    atomic_int totalReaders;
-    atomic_int totalWriters;
+    struct ReadLock {
+        ReadLock(ReadersWritersLock& parent) noexcept
+                :parent(parent)
+        {}
+
+        void lock() {
+            //recursive mutex is required here to allow single thread that already has write lock to get read lock
+            //TODO this may introduce bottleneck for multiple readers trying to get this mutex simultaneously
+            if(parent.reader_mutex_.try_lock()){
+                parent.reader_mutex_.unlock();
+            } else {
+                Lock lock{parent.condition_mutex_};
+                parent.condition_.wait(lock,[&](){ return parent.reader_mutex_.try_lock();});
+                parent.reader_mutex_.unlock();
+            }//release lock
+            parent.readers_++;
+        }
+
+        void unlock() {
+            if(parent.readers_-- == 0){
+                parent.condition_.notify_all();
+            }
+        }
+
+        ReadersWritersLock& parent;
+    };
+
+    struct WriteLock {
+        WriteLock(ReadersWritersLock& parent) noexcept
+                :parent(parent)
+        {}
+
+        void lock() {
+            if(parent.readers_.load() > 0){
+                Lock lock{parent.condition_mutex_};
+                parent.condition_.wait(lock, [&]() { return parent.readers_ == 0;});
+            }//release lock
+            parent.reader_mutex_.lock();
+        }
+
+        void unlock() {
+            parent.reader_mutex_.unlock();
+            parent.condition_.notify_all();
+        }
+
+        ReadersWritersLock& parent;
+    };
+
+    mutex condition_mutex_;
+    recursive_mutex reader_mutex_;
+
+
+    condition_variable condition_;
+
+    atomic_int readers_;
+
+    ReadLock reader_lock_;
+    WriteLock writer_lock_;
 public:
-    ReadersWritersLock(void) : totalReaders(0), totalWriters(0) {}
+    ReadersWritersLock(void) noexcept
+            : readers_(0), reader_lock_(*this), writer_lock_(*this) {}
+
 
     void readerIn(void) {
-        if(totalWriters.load() > 0 && !::isWriter)
-        {
-            Lock lock{readersLock};
-            readers.wait(lock, [&](){ return totalWriters.load() == 0;});
-        }//release lock
-        //TODO prevent writer starvation by limiting number of readers
-        totalReaders++;
+        reader_lock_.lock();
     }
 
     void readerOut(void) {
-        //if this is the last reader notify writers
-        if(totalReaders-- == 0 && !::isWriter){
-            writers.notify_all();
-        }
+        reader_lock_.unlock();
     }
 
     void writerIn(void) {
-        if(totalReaders.load() > 0){
-            Lock lock{writerLock};
-            writers.wait(lock, [&](){ return totalReaders.load() == 0;});
-        }//release lock
-        totalWriters++;
-        ::isWriter = true;
+        writer_lock_.lock();
     }
 
     void writerOut(void) {
-        if (totalWriters-- == 0) {
-            ::isWriter = false;
-            readers.notify_all();    // might as well wake up all readers
-        }
+        writer_lock_.unlock();
     }
 };
 
