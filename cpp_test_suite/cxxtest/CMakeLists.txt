@@ -1,10 +1,14 @@
 macro(CXX_GENERATE_TEST name)
-    message("Generate ${name})")
+    message("Generate ${name}.cpp")
     execute_process(COMMAND python cxxtestgen.py --template=${CMAKE_CURRENT_SOURCE_DIR}/template/tango_template.tpl
             -o ${CMAKE_CURRENT_SOURCE_DIR}/${name}.cpp
             ../../new_tests/${name}.cpp
             ../../new_tests/cxx_nan_inf_in_prop.cpp
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
+    if(${FAILED})
+        message(SEND_ERROR " Failed to generate ${name}.cpp. rv=${FAILED}")
+    endif()
 
     add_executable(${name} $<TARGET_OBJECTS:compare_test_object> ${name}.cpp)
     target_include_directories(${name} PRIVATE include)
