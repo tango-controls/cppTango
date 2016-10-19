@@ -44,15 +44,19 @@ class ReadersWritersLock {
         {}
 
         void lock() {
-            //recursive mutex is required here to allow single thread that already has write lock to get read lock
-            //TODO this may introduce bottleneck for multiple readers trying to get this mutex simultaneously
-            if(parent.reader_mutex_.try_lock()){
-                parent.reader_mutex_.unlock();
-            } else {
-                Lock lock{parent.condition_mutex_};
-                parent.condition_.wait(lock,[&](){ return parent.reader_mutex_.try_lock();});
-                parent.reader_mutex_.unlock();
-            }//release lock
+            if(parent.is_writer_) {
+                //check if this thread has already writer lock
+                //TODO client code must fail if it gets readLock when holding writerLock
+                if (parent.writer_mutex_.try_lock()) {
+                    parent.writer_mutex_.unlock();
+                }
+                else
+                {
+                    //we are not the writer so wait when writer
+                    Lock lock{parent.condition_mutex_};
+                    parent.condition_.wait(lock, [&]() { return !parent.is_writer_; });
+                }//release lock
+            }
             parent.readers_++;
         }
 
@@ -75,11 +79,13 @@ class ReadersWritersLock {
                 Lock lock{parent.condition_mutex_};
                 parent.condition_.wait(lock, [&]() { return parent.readers_ == 0;});
             }//release lock
-            parent.reader_mutex_.lock();
+            parent.writer_mutex_.lock();
+            parent.is_writer_ = true;
         }
 
         void unlock() {
-            parent.reader_mutex_.unlock();
+            parent.is_writer_ = false;
+            parent.writer_mutex_.unlock();
             parent.condition_.notify_all();
         }
 
@@ -87,12 +93,13 @@ class ReadersWritersLock {
     };
 
     mutex condition_mutex_;
-    recursive_mutex reader_mutex_;
+    recursive_mutex writer_mutex_;
 
 
     condition_variable condition_;
 
     atomic_int readers_;
+    bool is_writer_;
 
     ReadLock reader_lock_;
     WriteLock writer_lock_;
