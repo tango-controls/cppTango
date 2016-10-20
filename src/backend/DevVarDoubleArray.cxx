@@ -7,18 +7,18 @@
 #include <idl/tango.h>
 
 Tango::DevVarDoubleArray::DevVarDoubleArray(size_t _max):
-        impl(new backend::Tango::DevVarDoubleArray((_CORBA_ULong)_max))
+        impl(new Tango::backend::DevVarDoubleArray((_CORBA_ULong)_max))
 {
 
 }
 
 Tango::DevVarDoubleArray::DevVarDoubleArray(size_t _max, size_t _len, double *_val, bool _rel):
-        impl(new backend::Tango::DevVarDoubleArray((_CORBA_ULong)_max, (_CORBA_ULong) _len, _val, (_CORBA_Boolean) _rel))
+        impl(new Tango::backend::DevVarDoubleArray((_CORBA_ULong)_max, (_CORBA_ULong) _len, _val, (_CORBA_Boolean) _rel))
 {
 
 }
 
-#define IMPL static_cast<backend::Tango::DevVarDoubleArray*>(impl)
+#define IMPL static_cast<Tango::backend::DevVarDoubleArray*>(impl)
 
 size_t Tango::DevVarDoubleArray::length() const {
     return IMPL->length();

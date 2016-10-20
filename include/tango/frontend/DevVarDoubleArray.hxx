@@ -4,10 +4,11 @@
 
 #pragma once
 
+#include <memory>
 #include "DevVarArray.hxx"
 
 namespace Tango {
-    class DevVarDoubleArray_var;
+
 
     class DevVarDoubleArray : public DevVarArray<double> {
     public:
@@ -19,6 +20,7 @@ namespace Tango {
 
         inline DevVarDoubleArray(size_t _max, size_t _len, double *_val, bool _rel = 0);
 
+        //TODO from vector
 
         inline DevVarDoubleArray &operator=(const DevVarDoubleArray &_s) = default;
 
@@ -47,75 +49,5 @@ namespace Tango {
         void* impl;
     };
 
-    class DevVarDoubleArray_var {
-    public:
-        inline DevVarDoubleArray_var() : _pd_seq(0) {}
-
-        inline DevVarDoubleArray_var(DevVarDoubleArray *_s) : _pd_seq(_s) {}
-
-        inline DevVarDoubleArray_var(const DevVarDoubleArray_var &_s) {
-            if (_s._pd_seq) _pd_seq = new DevVarDoubleArray(*_s._pd_seq);
-            else _pd_seq = 0;
-        }
-
-        inline ~DevVarDoubleArray_var() { if (_pd_seq) delete _pd_seq; }
-
-        inline DevVarDoubleArray_var &operator=(DevVarDoubleArray *_s) {
-            if (_pd_seq) delete _pd_seq;
-            _pd_seq = _s;
-            return *this;
-        }
-
-        inline DevVarDoubleArray_var &operator=(const DevVarDoubleArray_var &_s) {
-            if (_s._pd_seq) {
-                if (!_pd_seq) _pd_seq = new DevVarDoubleArray;
-                *_pd_seq = *_s._pd_seq;
-            } else if (_pd_seq) {
-                delete _pd_seq;
-                _pd_seq = 0;
-            }
-            return *this;
-        }
-
-        inline double &operator[](size_t _s) {
-            return (*_pd_seq)[_s];
-        }
-
-
-        inline DevVarDoubleArray *operator->() { return _pd_seq; }
-
-        inline const DevVarDoubleArray *operator->() const { return _pd_seq; }
-
-#if defined(__GNUG__)
-        inline operator DevVarDoubleArray& () const { return *_pd_seq; }
-#else
-
-        inline operator const DevVarDoubleArray &() const { return *_pd_seq; }
-
-        inline operator DevVarDoubleArray &() { return *_pd_seq; }
-
-#endif
-
-        inline const DevVarDoubleArray &in() const { return *_pd_seq; }
-
-        inline DevVarDoubleArray &inout() { return *_pd_seq; }
-
-        inline DevVarDoubleArray *&out() {
-            if (_pd_seq) {
-                delete _pd_seq;
-                _pd_seq = 0;
-            }
-            return _pd_seq;
-        }
-
-        inline DevVarDoubleArray *_retn() {
-            DevVarDoubleArray *tmp = _pd_seq;
-            _pd_seq = 0;
-            return tmp;
-        }
-
-    private:
-        DevVarDoubleArray *_pd_seq;
-    };
-
+    using DevVarDoubleArray_var = std::unique_ptr<DevVarDoubleArray>;
 }//Tango

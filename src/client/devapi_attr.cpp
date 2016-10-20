@@ -191,8 +191,9 @@ DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
 		LongSeq = source.LongSeq._retn();
 	if (source.ShortSeq.operator->() != NULL)
 		ShortSeq = source.ShortSeq._retn();
-	if (source.DoubleSeq.operator->() != NULL)
-		DoubleSeq = source.DoubleSeq._retn();
+	//TODO should we moved, i.e.
+	if (source.DoubleSeq != nullptr)
+		DoubleSeq = move(source.DoubleSeq);
 	if (source.StringSeq.operator->() != NULL)
 		StringSeq = source.StringSeq._retn();
 	if (source.FloatSeq.operator->() != NULL)
@@ -475,8 +476,8 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 	else
 		ShortSeq = Tango_nullptr;
 
-	if (rval.DoubleSeq.operator->() != NULL)
-		DoubleSeq = rval.DoubleSeq._retn();
+	if (rval.DoubleSeq != nullptr)
+		DoubleSeq = move(rval.DoubleSeq);
 	else
 		DoubleSeq = Tango_nullptr;
 
@@ -670,6 +671,25 @@ DeviceAttribute::DeviceAttribute(const char *new_name, DevLong64 datum):ext(new 
 //
 //-----------------------------------------------------------------------------
 
+    //TODO
+//template<class U, typename  T, typename V>
+//DeviceAttribute::DeviceAttribute(T new_name, V datum) {
+//    name = new_name;
+//    dim_x = 1;
+//    dim_y = 0;
+//    w_dim_x = 0;
+//    w_dim_y = 0;
+//    quality = Tango::ATTR_VALID;
+//    data_format = Tango::FMT_UNKNOWN;
+//    d_state_filled = false;
+//    exceptions_flags.set(failed_flag);
+//    exceptions_flags.set(isempty_flag);
+//    //TODO initialization list
+//    DoubleSeq  = make_shared<U>(/*{datum}*/);
+//    DoubleSeq->length(1);
+//    DoubleSeq->[0] = datum;
+//}
+
 DeviceAttribute::DeviceAttribute(string& new_name, double datum):ext(new DeviceAttributeExt)
 {
 	name = new_name;
@@ -682,9 +702,9 @@ DeviceAttribute::DeviceAttribute(string& new_name, double datum):ext(new DeviceA
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq  = new(DevVarDoubleArray);
-	DoubleSeq->length(1);
-	DoubleSeq[0] = datum;
+    //TODO initialization list
+	DoubleSeq  = make_shared<DevVarDoubleArray>(1);//calls DevVarDoubleArray(size_t)
+	DoubleSeq->operator[](0) = datum;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, double datum):ext(new DeviceAttributeExt)
@@ -699,9 +719,8 @@ DeviceAttribute::DeviceAttribute(const char *new_name, double datum):ext(new Dev
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq  = new(DevVarDoubleArray);
-	DoubleSeq->length(1);
-	DoubleSeq[0] = datum;
+	DoubleSeq  = make_shared<DevVarDoubleArray>(1);//calls DevVarDoubleArray(size_t)
+	DoubleSeq->operator[](0) = datum;
 }
 
 //-----------------------------------------------------------------------------
@@ -1326,8 +1345,8 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum):ext(ne
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	*DoubleSeq << datum;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum):ext(new DeviceAttributeExt)
@@ -1342,8 +1361,8 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum):ex
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	*DoubleSeq << datum;
 }
 
 DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum,int x,int y):ext(new DeviceAttributeExt)
@@ -1358,8 +1377,8 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum,int x,i
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	*DoubleSeq << datum;
 }
 
 DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum,int x,int y):ext(new DeviceAttributeExt)
@@ -1374,8 +1393,8 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum,int
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = new(DevVarDoubleArray);
-	DoubleSeq.inout() << datum;
+	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	*DoubleSeq << datum;
 }
 
 
@@ -2295,10 +2314,10 @@ bool DeviceAttribute::operator >> (double &datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq.operator->() != NULL)
+	if (DoubleSeq != nullptr)
 	{
 		if (DoubleSeq->length() != 0)
-			datum = DoubleSeq[0];
+			datum = (*DoubleSeq)[0];
 		else
 			ret = false;
 	}
@@ -3253,15 +3272,16 @@ bool DeviceAttribute::operator >> (vector<double>& datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq.operator->() != NULL)
+	if (DoubleSeq != nullptr)
 	{
 		if (DoubleSeq->length() != 0)
 		{
+            //TODO stl must have smth to simplify this
 			datum.resize(DoubleSeq->length());
 
 			for (unsigned int i=0; i<DoubleSeq->length(); i++)
 			{
-				datum[i] = DoubleSeq[i];
+				datum[i] = DoubleSeq->[i];
 			}
 		}
 		else
