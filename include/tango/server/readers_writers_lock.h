@@ -34,6 +34,10 @@
 #include <thread>
 #include <atomic>
 
+namespace {
+    thread_local bool kIsWriter = false;
+}
+
 class ReadersWritersLock {
     using thread = std::thread;
     using Lock = unique_lock<mutex>;
@@ -44,19 +48,11 @@ class ReadersWritersLock {
         {}
 
         void lock() {
-            if(parent.is_writer_) {
-                //check if this thread has already writer lock
-                //TODO client code must fail if it gets readLock when holding writerLock
-                if (parent.writer_mutex_.try_lock()) {
-                    parent.writer_mutex_.unlock();
-                }
-                else
-                {
+            if(parent.is_writer_ && !kIsWriter) {
                     //we are not the writer so wait when writer
                     Lock lock{parent.condition_mutex_};
                     parent.condition_.wait(lock, [&]() { return !parent.is_writer_; });
-                }//release lock
-            }
+            }//release lock
             parent.readers_++;
         }
 
@@ -79,14 +75,14 @@ class ReadersWritersLock {
                 Lock lock{parent.condition_mutex_};
                 parent.condition_.wait(lock, [&]() { return parent.readers_ == 0;});
             }//release lock
-            parent.writer_mutex_.lock();
             parent.is_writer_ = true;
+            kIsWriter = true;
         }
 
         void unlock() {
             parent.is_writer_ = false;
-            parent.writer_mutex_.unlock();
             parent.condition_.notify_all();
+            kIsWriter = false;
         }
 
         ReadersWritersLock& parent;
