@@ -56,7 +56,7 @@ class ReadersWritersLock {
             parent.readers_++;
         }
 
-        void unlock() {
+        void unlock() noexcept {
             if(parent.readers_-- == 0){
                 parent.condition_.notify_all();
             }
@@ -75,12 +75,12 @@ class ReadersWritersLock {
                 Lock lock{parent.condition_mutex_};
                 parent.condition_.wait(lock, [&]() { return parent.readers_ == 0;});
             }//release lock
-            parent.is_writer_ = true;
+            parent.is_writer_.store(true);
             kIsWriter = true;
         }
 
-        void unlock() {
-            parent.is_writer_ = false;
+        void unlock() noexcept {
+            parent.is_writer_.store(false);
             parent.condition_.notify_all();
             kIsWriter = false;
         }
@@ -89,13 +89,10 @@ class ReadersWritersLock {
     };
 
     mutex condition_mutex_;
-    recursive_mutex writer_mutex_;
-
-
     condition_variable condition_;
 
     atomic_int readers_;
-    bool is_writer_;
+    atomic_bool is_writer_{false};
 
     ReadLock reader_lock_;
     WriteLock writer_lock_;
@@ -108,7 +105,7 @@ public:
         reader_lock_.lock();
     }
 
-    void readerOut(void) {
+    void readerOut(void) noexcept {
         reader_lock_.unlock();
     }
 
@@ -116,7 +113,7 @@ public:
         writer_lock_.lock();
     }
 
-    void writerOut(void) {
+    void writerOut(void) noexcept {
         writer_lock_.unlock();
     }
 };
