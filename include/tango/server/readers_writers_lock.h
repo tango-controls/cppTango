@@ -34,62 +34,56 @@
 #include <thread>
 #include <atomic>
 
-namespace {
-    thread_local bool kIsWriter = false;
-}
-
 class ReadersWritersLock {
     using thread = std::thread;
-    using Lock = unique_lock<mutex>;
+    using Lock = unique_lock<recursive_mutex>;
 
     struct ReadLock {
-        ReadLock(ReadersWritersLock& parent) noexcept
-                :parent(parent)
-        {}
+        ReadLock(ReadersWritersLock &parent) noexcept
+                : parent(parent) {}
 
         void lock() {
-            if(parent.is_writer_ && !kIsWriter) {
-                    //we are not the writer so wait when writer
+            Lock self{parent.condition_mutex_, try_to_lock};
+            if (!self.owns_lock())
+                while (parent.is_writer_) {
+                    //we are not the writer so wait when writer notifies us
                     Lock lock{parent.condition_mutex_};
-                    parent.condition_.wait(lock, [&]() { return !parent.is_writer_; });
-            }//release lock
+                    parent.condition_.wait(lock);
+                }//release lock
             parent.readers_++;
         }
 
         void unlock() noexcept {
-            if(parent.readers_-- == 0){
-                parent.condition_.notify_all();
+            if (parent.readers_-- == 0) {
+                parent.condition_.notify_one();//notify one writer
             }
         }
 
-        ReadersWritersLock& parent;
+        ReadersWritersLock &parent;
     };
 
     struct WriteLock {
-        WriteLock(ReadersWritersLock& parent) noexcept
-                :parent(parent)
-        {}
+        WriteLock(ReadersWritersLock &parent) noexcept
+                : parent(parent) {}
 
         void lock() {
-            if(parent.readers_.load() > 0){
-                Lock lock{parent.condition_mutex_};
-                parent.condition_.wait(lock, [&]() { return parent.readers_ == 0;});
-            }//release lock
-            parent.is_writer_.store(true);
-            kIsWriter = true;
+            Lock lock{parent.condition_mutex_};
+            while (parent.readers_.load() > 0) {
+                parent.condition_.wait(lock);//unlock
+            }
+            parent.is_writer_ = true;
         }
 
         void unlock() noexcept {
-            parent.is_writer_.store(false);
+            parent.is_writer_ = false;
             parent.condition_.notify_all();
-            kIsWriter = false;
         }
 
-        ReadersWritersLock& parent;
+        ReadersWritersLock &parent;
     };
 
-    mutex condition_mutex_;
-    condition_variable condition_;
+    recursive_mutex condition_mutex_;
+    condition_variable_any condition_;
 
     atomic_int readers_;
     atomic_bool is_writer_{false};
