@@ -425,7 +425,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_var &seq
 			max = tmp_seq_db->maximum();
 			len = tmp_seq_db->length();
 			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
-			DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+			DoubleSeq = std::unique_ptr(new DevVarDoubleArray(max,len,tmp_db,true));
 			break;
 
 		case tk_string:
@@ -576,7 +576,7 @@ DeviceAttributeHistory::DeviceAttributeHistory(int n,DevAttrHistoryList_3_var &s
 			max = tmp_seq_db->maximum();
 			len = tmp_seq_db->length();
 			tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
-			DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+			DoubleSeq = std::unique_ptr(new DevVarDoubleArray(max,len,tmp_db,true));
 			break;
 
 		case tk_string:

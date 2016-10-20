@@ -328,7 +328,7 @@ void DeviceProxy::from_hist_2_AttHistory(T &hist,vector<DeviceAttributeHistory> 
 			(*ddh)[loop].DoubleSeq->length(data_length);
 
 			for (ll = 0;ll < data_length;ll++)
-				(*ddh)[loop].DoubleSeq[ll] = (*tmp_db)[(base - data_length) + ll];
+				(*(*ddh)[loop].DoubleSeq)[ll] = (*tmp_db)[(base - data_length) + ll];
 			break;
 
 			case DEV_STRING:

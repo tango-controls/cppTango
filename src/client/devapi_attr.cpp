@@ -105,7 +105,7 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 #ifdef HAS_RVALUE
     LongSeq = source.LongSeq;
     ShortSeq = source.ShortSeq;
-    DoubleSeq = source.DoubleSeq;
+    DoubleSeq.swap(source.DoubleSeq);
     StringSeq = source.StringSeq;
     FloatSeq = source.FloatSeq;
     BooleanSeq = source.BooleanSeq;
@@ -239,7 +239,7 @@ void DeviceAttribute::deep_copy(const DeviceAttribute & source)
 
 	LongSeq = source.LongSeq;
 	ShortSeq = source.ShortSeq;
-	DoubleSeq = source.DoubleSeq;
+	DoubleSeq.swap(source.DoubleSeq);
 	StringSeq = source.StringSeq;
 	FloatSeq = source.FloatSeq;
 	BooleanSeq = source.BooleanSeq;
@@ -339,7 +339,7 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
 #ifdef HAS_RVALUE
         LongSeq = rval.LongSeq;
         ShortSeq = rval.ShortSeq;
-        DoubleSeq = rval.DoubleSeq;
+        DoubleSeq.swap(rval.DoubleSeq);
         StringSeq = rval.StringSeq;
         FloatSeq = rval.FloatSeq;
         BooleanSeq = rval.BooleanSeq;
@@ -703,7 +703,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, double datum):ext(new DeviceA
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
     //TODO initialization list
-	DoubleSeq  = make_shared<DevVarDoubleArray>(1);//calls DevVarDoubleArray(size_t)
+	DoubleSeq  = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(1));//calls DevVarDoubleArray(size_t)
 	DoubleSeq->operator[](0) = datum;
 }
 
@@ -719,7 +719,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, double datum):ext(new Dev
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq  = make_shared<DevVarDoubleArray>(1);//calls DevVarDoubleArray(size_t)
+	DoubleSeq  = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(1));//calls DevVarDoubleArray(size_t)
 	DoubleSeq->operator[](0) = datum;
 }
 
@@ -1345,7 +1345,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum):ext(ne
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	DoubleSeq = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(datum.size()));
 	*DoubleSeq << datum;
 }
 
@@ -1361,7 +1361,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum):ex
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	DoubleSeq = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(datum.size()));
 	*DoubleSeq << datum;
 }
 
@@ -1377,7 +1377,7 @@ DeviceAttribute::DeviceAttribute(string& new_name, vector<double> &datum,int x,i
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	DoubleSeq = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(datum.size()));
 	*DoubleSeq << datum;
 }
 
@@ -1393,7 +1393,7 @@ DeviceAttribute::DeviceAttribute(const char *new_name, vector<double> &datum,int
 	d_state_filled = false;
 	exceptions_flags.set(failed_flag);
 	exceptions_flags.set(isempty_flag);
-	DoubleSeq = make_shared<DevVarDoubleArray>(datum.size());
+	DoubleSeq = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(datum.size()));
 	*DoubleSeq << datum;
 }
 
@@ -2347,7 +2347,7 @@ void DeviceAttribute::operator << (double datum)
     DevVarDoubleArray *double_vararr = new(DevVarDoubleArray);
     double_vararr->length(1);
     (*double_vararr)[0] = datum;
-    DoubleSeq = double_vararr;
+    DoubleSeq.reset(double_vararr);
 
 	del_mem(Tango::DEV_DOUBLE);
 }
@@ -3241,12 +3241,11 @@ void DeviceAttribute::operator << (vector<double> &datum)
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
 
-	if (DoubleSeq.operator->() == NULL)
+	if (DoubleSeq == nullptr)
 	{
-		DevVarDoubleArray *double_vararr = new(DevVarDoubleArray);
-		DoubleSeq = double_vararr;
+		DoubleSeq = std::unique_ptr<DevVarDoubleArray>(new DevVarDoubleArray(datum.size()));
 	}
-	DoubleSeq.inout() << datum;
+	*DoubleSeq << datum;
 
 	del_mem(Tango::DEV_DOUBLE);
 }
@@ -3281,7 +3280,7 @@ bool DeviceAttribute::operator >> (vector<double>& datum)
 
 			for (unsigned int i=0; i<DoubleSeq->length(); i++)
 			{
-				datum[i] = DoubleSeq->[i];
+				datum[i] = (*DoubleSeq)[i];
 			}
 		}
 		else
@@ -3861,11 +3860,12 @@ bool DeviceAttribute::operator >> (DevVarDoubleArray* &datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq.operator->() != NULL)
+	if (DoubleSeq != nullptr)
 	{
 		if (DoubleSeq->length() != 0)
 		{
-			datum = DoubleSeq._retn();
+			//TODO
+            throw std::logic_error{"Not yet implemented"};
 		}
 		else
 			ret = false;
@@ -4355,7 +4355,7 @@ void DeviceAttribute::operator << (const DevVarDoubleArray &datum)
 
 	DoubleSeq->length(datum.length());
 	for (unsigned int i = 0;i < datum.length();i++)
-		DoubleSeq[i] = datum[i];
+        (*DoubleSeq)[i] = datum[i];
 
 	del_mem(Tango::DEV_DOUBLE);
 }
@@ -5390,7 +5390,7 @@ bool DeviceAttribute::extract_set (vector<double>& datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq.operator->() != NULL)
+	if (DoubleSeq != nullptr)
 	{
 		if (DoubleSeq->length() != 0)
 		{
@@ -5402,7 +5402,7 @@ bool DeviceAttribute::extract_set (vector<double>& datum)
 			unsigned int k = 0;
          	for (unsigned int i=read_length; i<DoubleSeq->length(); i++, k++)
          	{
-         		datum[k] = DoubleSeq[i];
+         		datum[k] = (*DoubleSeq)[i];
          	}
 		}
 		else
@@ -6225,8 +6225,8 @@ void DeviceAttribute::del_mem(int _data_type)
 			delete LongSeq._retn();
 	if ((_data_type != Tango::DEV_SHORT) && (ShortSeq.operator->() != NULL))
 			delete ShortSeq._retn();
-	if ((_data_type != Tango::DEV_DOUBLE) && (DoubleSeq.operator->() != NULL))
-		delete DoubleSeq._retn();
+	if ((_data_type != Tango::DEV_DOUBLE) && (DoubleSeq != nullptr))
+		DoubleSeq.reset(nullptr);
 	if ((_data_type != Tango::DEV_FLOAT) && (FloatSeq.operator->() != NULL))
 		delete FloatSeq._retn();
 	if ((_data_type != Tango::DEV_BOOLEAN) && (BooleanSeq.operator->() != NULL))
