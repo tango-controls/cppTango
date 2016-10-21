@@ -608,12 +608,12 @@ void EventConsumer::attr_to_device(const AttributeValue *attr_value,
 					if (tmp_seq_db->release() == true)
 					{
 						tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
-						dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+						dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,true));
 					}
 					else
 					{
 						tmp_db = const_cast<DevDouble *>(tmp_seq_db->get_buffer());
-						dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+						dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,false));
 					}
 					break;
 
@@ -949,12 +949,12 @@ void EventConsumer::att_union_to_device(const AttrValUnion *union_ptr,DeviceAttr
             if (tmp_seq.release() == true)
             {
                 tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-                dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+                dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,true));
             }
             else
             {
                 tmp_db = const_cast<DevDouble *>(tmp_seq.get_buffer());
-                dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+                dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,false));
             }
         }
         break;

@@ -5967,9 +5967,9 @@ void DeviceProxy::write_attributes(vector<DeviceAttribute>& attr_list)
 		if (attr_list[i].DoubleSeq.operator->() != NULL)
 		{
 			if (version >= 4)
-				attr_value_list_4[i].value.double_att_value(attr_list[i].DoubleSeq.in());
+				attr_value_list_4[i].value.double_att_value(*attr_list[i].DoubleSeq);
 			else
-				attr_value_list[i].value <<= attr_list[i].DoubleSeq.in();
+				attr_value_list[i].value <<= attr_list[i].DoubleSeq.get();
 			continue;
 		}
 		if (attr_list[i].StringSeq.operator->() != NULL)
@@ -6209,8 +6209,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			attr_value_list_4[0].value.long64_att_value(dev_attr.Long64Seq.in());
 		else if (dev_attr.ShortSeq.operator->() != NULL)
 			attr_value_list_4[0].value.short_att_value(dev_attr.ShortSeq.in());
-		else if (dev_attr.DoubleSeq.operator->() != NULL)
-			attr_value_list_4[0].value.double_att_value(dev_attr.DoubleSeq.in());
+		else if (dev_attr.DoubleSeq)
+			attr_value_list_4[0].value.double_att_value(*dev_attr.DoubleSeq);
 		else if (dev_attr.StringSeq.operator->() != NULL)
 			attr_value_list_4[0].value.string_att_value(dev_attr.StringSeq.in());
 		else if (dev_attr.FloatSeq.operator->() != NULL)
@@ -6246,8 +6246,8 @@ void DeviceProxy::write_attribute(DeviceAttribute &dev_attr)
 			 attr_value_list[0].value <<= dev_attr.Long64Seq.in();
 		else if (dev_attr.ShortSeq.operator->() != NULL)
 			attr_value_list[0].value <<= dev_attr.ShortSeq.in();
-		else if (dev_attr.DoubleSeq.operator->() != NULL)
-			attr_value_list[0].value <<= dev_attr.DoubleSeq.in();
+		else if (dev_attr.DoubleSeq)
+			attr_value_list[0].value <<= dev_attr.DoubleSeq.get();
 		else if (dev_attr.StringSeq.operator->() != NULL)
 			attr_value_list[0].value  <<= dev_attr.StringSeq.in();
 		else if (dev_attr.FloatSeq.operator->() != NULL)
@@ -8995,8 +8995,8 @@ DeviceAttribute DeviceProxy::write_read_attribute(DeviceAttribute &dev_attr)
 		attr_value_list[0].value.long64_att_value(dev_attr.Long64Seq.in());
 	else if (dev_attr.ShortSeq.operator->() != NULL)
 		attr_value_list[0].value.short_att_value(dev_attr.ShortSeq.in());
-	else if (dev_attr.DoubleSeq.operator->() != NULL)
-		attr_value_list[0].value.double_att_value(dev_attr.DoubleSeq.in());
+	else if (dev_attr.DoubleSeq)
+		attr_value_list[0].value.double_att_value(*dev_attr.DoubleSeq);
 	else if (dev_attr.StringSeq.operator->() != NULL)
 		attr_value_list[0].value.string_att_value(dev_attr.StringSeq.in());
 	else if (dev_attr.FloatSeq.operator->() != NULL)
@@ -9239,8 +9239,8 @@ vector<DeviceAttribute> *DeviceProxy::write_read_attributes(vector<DeviceAttribu
 			attr_value_list[i].value.long64_att_value(attr_list[i].Long64Seq.in());
 		else if (attr_list[i].ShortSeq.operator->() != NULL)
 			attr_value_list[i].value.short_att_value(attr_list[i].ShortSeq.in());
-		else if (attr_list[i].DoubleSeq.operator->() != NULL)
-			attr_value_list[i].value.double_att_value(attr_list[i].DoubleSeq.in());
+		else if (attr_list[i].DoubleSeq)
+			attr_value_list[i].value.double_att_value(*attr_list[i].DoubleSeq);
 		else if (attr_list[i].StringSeq.operator->() != NULL)
 			attr_value_list[i].value.string_att_value(attr_list[i].StringSeq.in());
 		else if (attr_list[i].FloatSeq.operator->() != NULL)

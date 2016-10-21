@@ -1000,12 +1000,12 @@ void ApiUtil::attr_to_device(const AttributeValue *attr_value,const AttributeVal
 				if (tmp_seq_db->release() == true)
 				{
 					tmp_db = (const_cast<DevVarDoubleArray *>(tmp_seq_db))->get_buffer((DevBoolean)true);
-					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+					dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,true));
 				}
 				else
 				{
 					tmp_db = const_cast<DevDouble *>(tmp_seq_db->get_buffer());
-					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+					dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,false));
 				}
 				break;
 
@@ -1217,7 +1217,7 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue_4 &a
 	else if (dev_attr.ShortSeq.operator->() != NULL)
 		att.value.short_att_value(dev_attr.ShortSeq.in());
 	else if (dev_attr.DoubleSeq.operator->() != NULL)
-		att.value.double_att_value(dev_attr.DoubleSeq.in());
+		att.value.double_att_value(*dev_attr.DoubleSeq);
 	else if (dev_attr.StringSeq.operator->() != NULL)
 		att.value.string_att_value(dev_attr.StringSeq.in());
 	else if (dev_attr.FloatSeq.operator->() != NULL)
@@ -1254,7 +1254,7 @@ void ApiUtil::device_to_attr(const DeviceAttribute &dev_attr,AttributeValue &att
 	else if (dev_attr.ShortSeq.operator->() != NULL)
 		att.value <<= dev_attr.ShortSeq.in();
 	else if (dev_attr.DoubleSeq.operator->() != NULL)
-		att.value <<= dev_attr.DoubleSeq.in();
+		att.value <<= *dev_attr.DoubleSeq;
 	else if (dev_attr.StringSeq.operator->() != NULL)
 		att.value  <<= dev_attr.StringSeq.in();
 	else if (dev_attr.FloatSeq.operator->() != NULL)

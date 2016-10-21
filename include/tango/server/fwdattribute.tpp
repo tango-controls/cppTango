@@ -74,7 +74,7 @@ void FwdAttribute::set_local_attribute(DeviceAttribute &da,T* &seq_ptr)
     if (seq_ptr->release() == true)
         set_value_date_quality(seq_ptr->get_buffer(true),tv,qual,da.get_dim_x(),da.get_dim_y(),true);
     else
-        set_value_date_quality(seq_ptr->get_buffer(),tv,qual,da.get_dim_x(),da.get_dim_y());
+        set_value_date_quality(seq_ptr->get_buffer(true),tv,qual,da.get_dim_x(),da.get_dim_y());
 
 	delete seq_ptr;
 }

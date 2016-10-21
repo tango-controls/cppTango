@@ -3663,7 +3663,7 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 		{ \
 			(*aid.data_5)[index].value.D(C); \
 			A &the_seq = (*aid.data_5)[index].value.D(); \
-			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release()); \
+			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(true),ptr->release()); \
 			if (ptr->release() == true) \
 				ptr->get_buffer(true); \
 		} \
@@ -3671,7 +3671,7 @@ inline void DeviceImpl::set_state(const Tango::DevState &new_state)
 		{ \
 			(*aid.data_4)[index].value.D(C); \
 			A &the_seq = (*aid.data_4)[index].value.D(); \
-			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(),ptr->release()); \
+			the_seq.replace(ptr->length(),ptr->length(),ptr->get_buffer(true),ptr->release()); \
 			if (ptr->release() == true) \
 				ptr->get_buffer(true); \
 		} \

@@ -30,7 +30,7 @@
 #ifndef _APIUTIL_H
 #define _APIUTIL_H
 
-
+namespace Tango {
 /****************************************************************************************
  * 																						*
  * 					The ApiUtil class													*
@@ -51,9 +51,8 @@
  * @ingroup Client
  */
 
-class ApiUtil
-{
-public:
+	class ApiUtil {
+	public:
 /**
  * Retrieve the ApiUtil instance
  *
@@ -61,14 +60,18 @@ public:
  *
  * @return The singleton instance
  */
-	TANGO_IMP_EXP static ApiUtil *instance();
+		TANGO_IMP_EXP static ApiUtil *instance();
 /**
  * Destroy the ApiUtil instance
  *
  * Destroy the ApiUtil singleton instance.
  */
-	TANGO_IMP_EXP static inline void cleanup()
-	{if (_instance != NULL){delete _instance;_instance=NULL;}}
+		TANGO_IMP_EXP static inline void cleanup() {
+			if (_instance != NULL) {
+				delete _instance;
+				_instance = NULL;
+			}
+		}
 /**
  * Get environment variable
  *
@@ -81,7 +84,8 @@ public:
  * @param [out] value The environment variable value
  * @return Set to -1 if the environment varaibel is not found
  */
-	TANGO_IMP_EXP static int get_env_var(const char *name,string &value);
+		TANGO_IMP_EXP static int get_env_var(const char *name, string &value);
+
 /**
  * Get pending asynchronous requets number
  *
@@ -90,10 +94,12 @@ public:
  * @param [in] ty Asynchronous request type
  * @return Pending asynchronous request number
  */
-	size_t pending_asynch_call(asyn_req_type ty)
-	{if (ty==POLLING)return asyn_p_table->get_request_nb();
-	 else if (ty==CALL_BACK)return asyn_p_table->get_cb_request_nb();
-	 else return (asyn_p_table->get_request_nb()+asyn_p_table->get_cb_request_nb());}
+		size_t pending_asynch_call(asyn_req_type ty) {
+			if (ty == POLLING)return asyn_p_table->get_request_nb();
+			else if (ty == CALL_BACK)return asyn_p_table->get_cb_request_nb();
+			else return (asyn_p_table->get_request_nb() + asyn_p_table->get_cb_request_nb());
+		}
+
 /**
  * Fire callback methods for asynchronous request(s)
  *
@@ -101,7 +107,8 @@ public:
  * arrived replied. Returns immediately if there is no replies already arrived or if there is no asynchronous
  * requests.
  */
-	void get_asynch_replies();
+		void get_asynch_replies();
+
 /**
  * Fire callback methods for asynchronous request(s) with timeout
  *
@@ -112,7 +119,8 @@ public:
  *
  * @param [in] timeout The timeout value
  */
-	void get_asynch_replies(long timeout);
+		void get_asynch_replies(long timeout);
+
 /**
  * Set asynchronous callback sub-model
  *
@@ -124,7 +132,8 @@ public:
  *
  * @param [in] csm The asynchronous callback sub-model
  */
-	void set_asynch_cb_sub_model(cb_sub_model csm);
+		void set_asynch_cb_sub_model(cb_sub_model csm);
+
 /**
  * Get asynchronous callback sub-model
  *
@@ -132,134 +141,157 @@ public:
  *
  * @return The asynchronous callback sub-model
  */
-	cb_sub_model get_asynch_cb_sub_model() {return auto_cb;}
+		cb_sub_model get_asynch_cb_sub_model() { return auto_cb; }
 
 /// @privatesection
 
-	CORBA::ORB_ptr get_orb() {return CORBA::ORB::_duplicate(_orb);}
-	void set_orb(CORBA::ORB_ptr orb_in) {_orb = orb_in;}
-	void create_orb();
-	int	get_db_ind();
-	int	get_db_ind(string &host,int port);
-	vector<Database *> &get_db_vect() {return db_vect;}
-	bool in_server() {return in_serv;}
-	void in_server(bool serv) {in_serv = serv;}
+		CORBA::ORB_ptr get_orb() { return CORBA::ORB::_duplicate(_orb); }
 
-	TangoSys_Pid get_client_pid() {return cl_pid;}
-	void clean_locking_threads(bool clean=true);
+		void set_orb(CORBA::ORB_ptr orb_in) { _orb = orb_in; }
 
-	bool is_lock_exit_installed() {omni_mutex_lock guard(lock_th_map);return exit_lock_installed;}
-	void set_lock_exit_installed(bool in) {omni_mutex_lock guard(lock_th_map);exit_lock_installed = in;}
+		void create_orb();
 
-	bool need_reset_already_flag() {return reset_already_executed_flag;}
-	void need_reset_already_flag(bool in) {reset_already_executed_flag = in;}
+		int get_db_ind();
 
-	TANGO_IMP_EXP static inline bool _is_instance_null()
-	{return _instance == NULL;}
+		int get_db_ind(string &host, int port);
+
+		vector<Database *> &get_db_vect() { return db_vect; }
+
+		bool in_server() { return in_serv; }
+
+		void in_server(bool serv) { in_serv = serv; }
+
+		TangoSys_Pid get_client_pid() { return cl_pid; }
+
+		void clean_locking_threads(bool clean = true);
+
+		bool is_lock_exit_installed() {
+			omni_mutex_lock guard(lock_th_map);
+			return exit_lock_installed;
+		}
+
+		void set_lock_exit_installed(bool in) {
+			omni_mutex_lock guard(lock_th_map);
+			exit_lock_installed = in;
+		}
+
+		bool need_reset_already_flag() { return reset_already_executed_flag; }
+
+		void need_reset_already_flag(bool in) { reset_already_executed_flag = in; }
+
+		TANGO_IMP_EXP static inline bool _is_instance_null() { return _instance == NULL; }
 
 //
 // Utilities methods
 //
 
-	int get_user_connect_timeout() {return user_connect_timeout;}
+		int get_user_connect_timeout() { return user_connect_timeout; }
 
-	DevLong get_user_sub_hwm() {return user_sub_hwm;}
-	void set_event_buffer_hwm(DevLong val) {if (user_sub_hwm == -1)user_sub_hwm=val;}
+		DevLong get_user_sub_hwm() { return user_sub_hwm; }
 
-	void get_ip_from_if(vector<string> &);
-	void print_error_message(const char *);
+		void set_event_buffer_hwm(DevLong val) { if (user_sub_hwm == -1)user_sub_hwm = val; }
 
-	void set_sig_handler();
+		void get_ip_from_if(vector<string> &);
+
+		void print_error_message(const char *);
+
+		void set_sig_handler();
 
 //
 // EventConsumer related methods
 //
 
-	void create_notifd_event_consumer();
-	void create_zmq_event_consumer();
+		void create_notifd_event_consumer();
 
-	bool is_notifd_event_consumer_created() {return notifd_event_consumer != NULL;}
-	NotifdEventConsumer *get_notifd_event_consumer();
+		void create_zmq_event_consumer();
 
-	bool is_zmq_event_consumer_created() {return zmq_event_consumer != NULL;}
-	ZmqEventConsumer *get_zmq_event_consumer();
+		bool is_notifd_event_consumer_created() { return notifd_event_consumer != NULL; }
+
+		NotifdEventConsumer *get_notifd_event_consumer();
+
+		bool is_zmq_event_consumer_created() { return zmq_event_consumer != NULL; }
+
+		ZmqEventConsumer *get_zmq_event_consumer();
 
 //
 // Asynchronous methods
 //
 
-	AsynReq	*get_pasyn_table() {return asyn_p_table;}
+		AsynReq *get_pasyn_table() { return asyn_p_table; }
 
 //
 // Conv. between AttributeValuexxx and DeviceAttribute
 //
 
-	static void attr_to_device(const AttributeValue *,const AttributeValue_3 *,long,DeviceAttribute *);
-	static void attr_to_device(const AttributeValue_4 *,long,DeviceAttribute *);
-	static void attr_to_device(const AttributeValue_5 *,long,DeviceAttribute *);
+		static void attr_to_device(const AttributeValue *, const AttributeValue_3 *, long, DeviceAttribute *);
 
-	static void device_to_attr(const DeviceAttribute &,AttributeValue_4 &);
-	static void device_to_attr(const DeviceAttribute &,AttributeValue &,string &);
+		static void attr_to_device(const AttributeValue_4 *, long, DeviceAttribute *);
+
+		static void attr_to_device(const AttributeValue_5 *, long, DeviceAttribute *);
+
+		static void device_to_attr(const DeviceAttribute &, AttributeValue_4 &);
+
+		static void device_to_attr(const DeviceAttribute &, AttributeValue &, string &);
 
 //
 // Conv. between AttributeConfig and AttributeInfoEx
 //
 
-	static void AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *,AttributeConfig_5 *);
+		static void AttributeInfoEx_to_AttributeConfig(const AttributeInfoEx *, AttributeConfig_5 *);
 
-protected:
+	protected:
 /// @privatesection
-	ApiUtil();
-	virtual ~ApiUtil();
+		ApiUtil();
 
-	vector<Database *>			db_vect;
-	omni_mutex					the_mutex;
-	CORBA::ORB_ptr				_orb;
-	bool						in_serv;
+		virtual ~ApiUtil();
 
-	cb_sub_model				auto_cb;
-	CbThreadCmd					cb_thread_cmd;
-	CallBackThread				*cb_thread_ptr;
+		vector<Database *> db_vect;
+		omni_mutex the_mutex;
+		CORBA::ORB_ptr _orb;
+		bool in_serv;
 
-	AsynReq						*asyn_p_table;
+		cb_sub_model auto_cb;
+		CbThreadCmd cb_thread_cmd;
+		CallBackThread *cb_thread_ptr;
 
-public:
+		AsynReq *asyn_p_table;
+
+	public:
 /// @privatesection
-	omni_mutex					lock_th_map;
-	map<string,LockingThread>	lock_threads;
+		omni_mutex lock_th_map;
+		map<string, LockingThread> lock_threads;
 
-private:
-    class ApiUtilExt
-    {
-    public:
-        ApiUtilExt() {};
-    };
+	private:
+		class ApiUtilExt {
+		public:
+			ApiUtilExt() {};
+		};
 
-	TANGO_IMP static ApiUtil 	*_instance;
-	static omni_mutex			inst_mutex;
-	bool						exit_lock_installed;
-	bool						reset_already_executed_flag;
+		TANGO_IMP static ApiUtil *_instance;
+		static omni_mutex inst_mutex;
+		bool exit_lock_installed;
+		bool reset_already_executed_flag;
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<ApiUtilExt>      ext;
+		unique_ptr<ApiUtilExt> ext;
 #else
-	ApiUtilExt					*ext; 		// Class extension
+		ApiUtilExt					*ext; 		// Class extension
 #endif
 
-    NotifdEventConsumer         *notifd_event_consumer;
-    TangoSys_Pid		        cl_pid;
-    int					        user_connect_timeout;
-    ZmqEventConsumer            *zmq_event_consumer;
-    vector<string>              host_ip_adrs;
-    DevLong                     user_sub_hwm;
+		NotifdEventConsumer *notifd_event_consumer;
+		TangoSys_Pid cl_pid;
+		int user_connect_timeout;
+		ZmqEventConsumer *zmq_event_consumer;
+		vector<string> host_ip_adrs;
+		DevLong user_sub_hwm;
 
-    template <typename T> static void attr_to_device_base(const T *,DeviceAttribute *);
-};
+		template<typename T>
+		static void attr_to_device_base(const T *, DeviceAttribute *);
+	};
 
-class _KillProc_: public omni_thread
-{
-public:
-	void run(void *) {::exit(-1);}
-};
-
+	class _KillProc_ : public omni_thread {
+	public:
+		void run(void *) { ::exit(-1); }
+	};
+}//Tango
 #endif /* _APIUTIL_H */

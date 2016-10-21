@@ -198,7 +198,7 @@ void WAttribute::set_write_value(T val)
 template <typename T>
 void WAttribute::set_write_value(T *val, long x, long y)
 {
-	T dum;
+	T dum{};
 	check_type(dum,"WAttribute::set_write_value");
 
 	long nb_data;

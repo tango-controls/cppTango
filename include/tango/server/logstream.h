@@ -53,7 +53,6 @@ namespace Tango {
   class DevVarShortArray;
   class DevVarLongArray;
   class DevVarFloatArray;
-  class DevVarDoubleArray;
   class DevVarUShortArray;
   class DevVarULongArray;
   class DevVarStringArray;
