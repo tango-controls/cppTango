@@ -1,4 +1,4 @@
-add_subdirectory(backend)
+add_subdirectory(frontend)
 add_subdirectory(client)
 add_subdirectory(server)
 add_subdirectory(log4tango)
