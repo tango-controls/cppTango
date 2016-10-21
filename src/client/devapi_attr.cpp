@@ -105,7 +105,7 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 #ifdef HAS_RVALUE
     LongSeq = source.LongSeq;
     ShortSeq = source.ShortSeq;
-    DoubleSeq.swap(source.DoubleSeq);
+    DoubleSeq = move(source.DoubleSeq);
     StringSeq = source.StringSeq;
     FloatSeq = source.FloatSeq;
     BooleanSeq = source.BooleanSeq;
@@ -5360,7 +5360,7 @@ bool DeviceAttribute::extract_read (vector<double>& datum)
 
          	for (long i=0; i<length; i++)
          	{
-         		datum[i] = DoubleSeq[i];
+         		datum[i] = (*DoubleSeq)[i];
          	}
 		}
 		else

@@ -6,57 +6,61 @@
 //actual implementation
 #include <idl/tango.h>
 
-Tango::DevVarDoubleArray::DevVarDoubleArray(size_t _max):
-        impl(new Tango::backend::DevVarDoubleArray((_CORBA_ULong)_max))
-{
+namespace Tango {
+    template<>
+    DevVarArray::DevVarArray(size_t max):
+    delegate_ (new backend::DevVarDoubleArray(max))
+            {};
 
-}
 
-Tango::DevVarDoubleArray::DevVarDoubleArray(size_t _max, size_t _len, double *_val, bool _rel):
-        impl(new Tango::backend::DevVarDoubleArray((_CORBA_ULong)_max, (_CORBA_ULong) _len, _val, (_CORBA_Boolean) _rel))
-{
+    template<>
+    DevVarDoubleArray::DevVarArray(size_t  max,  size_t len,  double *data,  bool rel):
+    delegate_(new backend::DevVarDoubleArray(max, len, data, rel))
+            {};
 
-}
+    template<>
+    size_t DevVarDoubleArray::length() const {
+        return delegate_->length();
+    }
 
-#define IMPL static_cast<Tango::backend::DevVarDoubleArray*>(impl)
+    template<>
+    void DevVarDoubleArray::length(size_t size) {
+        delegate_->length((_CORBA_ULong) size);
+    }
 
-size_t Tango::DevVarDoubleArray::length() const {
-    return IMPL->length();
-}
+    template<>
+    size_t DevVarDoubleArray::maximum() const {
+        return delegate_->maximum();
+    }
 
-void Tango::DevVarDoubleArray::length(size_t size) {
-    IMPL->length((_CORBA_ULong)size);
-}
+    template<>
+    double &DevVarDoubleArray::operator[](size_t size) {
+        return (*delegate_)[(_CORBA_ULong) size];
+    }
 
-size_t Tango::DevVarDoubleArray::maximum() const {
-    return IMPL->maximum();
-}
+    template<>
+    const double &DevVarDoubleArray::operator[](size_t size) const {
+        return (*delegate_)[(_CORBA_ULong) size];
+    }
 
-double &Tango::DevVarDoubleArray::operator[](size_t size) {
-    return IMPL->operator[]((_CORBA_ULong) size);
-}
+    template<>
+    void DevVarDoubleArray::replace(size_t size, size_t size1, double *t, bool b) {
+        delegate_->replace((_CORBA_ULong) size, (_CORBA_ULong) size1, t, b);
+    }
 
-const double &Tango::DevVarDoubleArray::operator[](size_t size) const {
-    return IMPL->operator[]((_CORBA_ULong)size);
-}
+    template<>
+    const double *DevVarDoubleArray::get_buffer() const {
+        return delegate_->get_buffer();
+    }
 
-void Tango::DevVarDoubleArray::replace(size_t size, size_t size1, double *t, bool b) {
-    IMPL->replace((_CORBA_ULong) size, (_CORBA_ULong) size1, t, b);
-}
+    template<>
+    double *DevVarDoubleArray::get_buffer(bool b) {
+        return delegate_->get_buffer(b);
+    }
 
-double *Tango::DevVarDoubleArray::get_buffer() const {
-    return IMPL->get_buffer();
-}
-
-double *Tango::DevVarDoubleArray::get_buffer(bool b) {
-    return IMPL->get_buffer(b);
-}
-
-bool Tango::DevVarDoubleArray::release() const {
-    return IMPL->release();
-}
-
-Tango::DevVarDoubleArray::~DevVarDoubleArray(){
-    delete impl;
-}
+    template<>
+    bool DevVarDoubleArray::release() const {
+        return delegate_->release();
+    }
+}//Tango
 

@@ -8,32 +8,51 @@
 
 namespace Tango {
     /**
-     * Interface that mimics CORAB::UnboundedSequence
+     * Interface that mimics CORBA::UnboundedSequence
      *
      */
     //TODO copy or move
-    template <typename T>
-    struct DevVarArray {
-        virtual ~DevVarArray() = 0;
+    template <typename T, typename DELEGATE>
+    class DevVarArray {
+    public://ctrs, dtrs etc
+        ~DevVarArray(){
+            delete delegate_;
+        };
 
-        virtual size_t length() const = 0;
+        DevVarArray() = default;
 
-        virtual void length(size_t) = 0;
+        DevVarArray(const DevVarArray &_s) = default;
 
-        virtual size_t maximum() const = 0;
+        //TODO perfect forwarding ctrs
+        DevVarArray(size_t);
 
-        virtual T&operator[](size_t) = 0;
-        virtual const T&operator[](size_t) const = 0;
+        DevVarArray(size_t, size_t, T*, bool);
 
-        virtual void replace(size_t, size_t, T*,bool) = 0;
+        //TODO from vector
+
+        DevVarArray &operator=(const DevVarArray &_s) = default;
+    public://methods
+
+        size_t length() const;
+
+        void length(size_t);
+
+        size_t maximum() const;
+
+        T&operator[](size_t);
+        const T&operator[](size_t) const;
+
+        void replace(size_t, size_t, T*, bool);
 
         //TODO Buffer related stuff must be hidden from client/server code, but can be useful in the library
         static T* allocbuf(size_t);
         static void freebuf(T*);
 
-        virtual T* get_buffer() const = 0;
-        virtual T* get_buffer(bool) = 0;
+        const T* get_buffer() const;
+        T* get_buffer(bool);
 
-        virtual bool release() const = 0;
+        bool release() const;
+    private:
+        DELEGATE* delegate_;
     };
 }//Tango
