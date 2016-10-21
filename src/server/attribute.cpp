@@ -3273,7 +3273,7 @@ void Attribute::Attribute_2_AttributeValue(Tango::AttributeValue_3 *ptr,Tango::D
 				break;
 
 			case Tango::DEV_DOUBLE :
-				db_tmp_ptr = get_double_value()->get_buffer();
+				db_tmp_ptr = get_double_value()->get_buffer(true);
 				db_seq = new Tango::DevVarDoubleArray(seq_length,seq_length,db_tmp_ptr,false);
 				a <<= *db_seq;
 				delete db_seq;

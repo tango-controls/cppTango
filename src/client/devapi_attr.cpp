@@ -88,7 +88,9 @@ DeviceAttribute::DeviceAttribute():ext(new DeviceAttributeExt)
 //
 //-----------------------------------------------------------------------------
 
-DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullptr)
+DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):
+    DoubleSeq(source.DoubleSeq),
+    ext()
 {
 	name = source.name;
 	exceptions_flags = source.exceptions_flags;
@@ -105,7 +107,6 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 #ifdef HAS_RVALUE
     LongSeq = source.LongSeq;
     ShortSeq = source.ShortSeq;
-    DoubleSeq = move(source.DoubleSeq);
     StringSeq = source.StringSeq;
     FloatSeq = source.FloatSeq;
     BooleanSeq = source.BooleanSeq;
@@ -173,7 +174,9 @@ DeviceAttribute::DeviceAttribute(const DeviceAttribute & source):ext(Tango_nullp
 //-----------------------------------------------------------------------------
 
 #ifdef HAS_RVALUE
-DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
+DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):
+    DoubleSeq(move(source.DoubleSeq)),
+    ext(Tango_nullptr)
 {
 	name = move(source.name);
 	exceptions_flags = source.exceptions_flags;
@@ -191,9 +194,6 @@ DeviceAttribute::DeviceAttribute(DeviceAttribute &&source):ext(Tango_nullptr)
 		LongSeq = source.LongSeq._retn();
 	if (source.ShortSeq.operator->() != NULL)
 		ShortSeq = source.ShortSeq._retn();
-	//TODO should we moved, i.e.
-	if (source.DoubleSeq != nullptr)
-		DoubleSeq = move(source.DoubleSeq);
 	if (source.StringSeq.operator->() != NULL)
 		StringSeq = source.StringSeq._retn();
 	if (source.FloatSeq.operator->() != NULL)
@@ -239,7 +239,7 @@ void DeviceAttribute::deep_copy(const DeviceAttribute & source)
 
 	LongSeq = source.LongSeq;
 	ShortSeq = source.ShortSeq;
-	DoubleSeq.swap(source.DoubleSeq);
+	DoubleSeq = move(source.DoubleSeq);
 	StringSeq = source.StringSeq;
 	FloatSeq = source.FloatSeq;
 	BooleanSeq = source.BooleanSeq;
@@ -339,7 +339,7 @@ DeviceAttribute & DeviceAttribute::operator=(const DeviceAttribute &rval)
 #ifdef HAS_RVALUE
         LongSeq = rval.LongSeq;
         ShortSeq = rval.ShortSeq;
-        DoubleSeq.swap(rval.DoubleSeq);
+        DoubleSeq = rval.DoubleSeq;
         StringSeq = rval.StringSeq;
         FloatSeq = rval.FloatSeq;
         BooleanSeq = rval.BooleanSeq;
@@ -476,10 +476,8 @@ DeviceAttribute & DeviceAttribute::operator=(DeviceAttribute &&rval)
 	else
 		ShortSeq = Tango_nullptr;
 
-	if (rval.DoubleSeq != nullptr)
+	if (rval.DoubleSeq)
 		DoubleSeq = move(rval.DoubleSeq);
-	else
-		DoubleSeq = Tango_nullptr;
 
 	if (rval.StringSeq.operator->() != NULL)
 		StringSeq = rval.StringSeq._retn();
@@ -2314,7 +2312,7 @@ bool DeviceAttribute::operator >> (double &datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq != nullptr)
+	if (DoubleSeq)
 	{
 		if (DoubleSeq->length() != 0)
 			datum = (*DoubleSeq)[0];
@@ -3271,7 +3269,7 @@ bool DeviceAttribute::operator >> (vector<double>& datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq != nullptr)
+	if (DoubleSeq)
 	{
 		if (DoubleSeq->length() != 0)
 		{
@@ -3860,7 +3858,7 @@ bool DeviceAttribute::operator >> (DevVarDoubleArray* &datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq != nullptr)
+	if (DoubleSeq)
 	{
 		if (DoubleSeq->length() != 0)
 		{
@@ -4384,7 +4382,7 @@ void DeviceAttribute::operator << (DevVarDoubleArray *datum)
 	quality = Tango::ATTR_VALID;
 	data_format = Tango::FMT_UNKNOWN;
 
-	DoubleSeq = datum;
+	DoubleSeq.reset(datum);
 
 	del_mem(Tango::DEV_DOUBLE);
 }
@@ -5390,7 +5388,7 @@ bool DeviceAttribute::extract_set (vector<double>& datum)
 	if ( ret == false)
 		return false;
 
-	if (DoubleSeq != nullptr)
+	if (DoubleSeq)
 	{
 		if (DoubleSeq->length() != 0)
 		{
@@ -6225,8 +6223,8 @@ void DeviceAttribute::del_mem(int _data_type)
 			delete LongSeq._retn();
 	if ((_data_type != Tango::DEV_SHORT) && (ShortSeq.operator->() != NULL))
 			delete ShortSeq._retn();
-	if ((_data_type != Tango::DEV_DOUBLE) && (DoubleSeq != nullptr))
-		DoubleSeq.reset(nullptr);
+	if ((_data_type != Tango::DEV_DOUBLE) && (DoubleSeq))
+		DoubleSeq.reset();
 	if ((_data_type != Tango::DEV_FLOAT) && (FloatSeq.operator->() != NULL))
 		delete FloatSeq._retn();
 	if ((_data_type != Tango::DEV_BOOLEAN) && (BooleanSeq.operator->() != NULL))

@@ -324,9 +324,10 @@ void DeviceProxy::from_hist_2_AttHistory(T &hist,vector<DeviceAttributeHistory> 
 			break;
 
 			case DEV_DOUBLE:
-			(*ddh)[loop].DoubleSeq = new DevVarDoubleArray();
+			(*ddh)[loop].DoubleSeq.reset(new DevVarDoubleArray());
 			(*ddh)[loop].DoubleSeq->length(data_length);
 
+			//TODO avoid copying, use move instead
 			for (ll = 0;ll < data_length;ll++)
 				(*(*ddh)[loop].DoubleSeq)[ll] = (*tmp_db)[(base - data_length) + ll];
 			break;

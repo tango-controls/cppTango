@@ -1658,7 +1658,7 @@ namespace Tango {
             { \
                 (*insert_elt_array)[insert_ind].value.B(dvsa); \
                 A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
-                dvsb.replace(max,len,datum.get_buffer(),false); \
+                dvsb.replace(max,len,datum.get_buffer(true),false); \
                 (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
                 insert_ind = -1; \
             } \
@@ -1666,7 +1666,7 @@ namespace Tango {
             { \
                 (*insert_elt_array)[insert_ctr].value.B(dvsa); \
                 A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
-                dvsb.replace(max,len,datum.get_buffer(),false); \
+                dvsb.replace(max,len,datum.get_buffer(true),false); \
                 (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
                 insert_ctr++; \
             } \
@@ -1714,7 +1714,7 @@ namespace Tango {
             bool rel = datum->release(); \
             if (rel == false) \
             { \
-                datum->replace(max,len,datum->get_buffer(),true); \
+                datum->replace(max,len,datum->get_buffer(true),true); \
             } \
             if (insert_ind != -1) \
             { \

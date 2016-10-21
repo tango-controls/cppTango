@@ -8,15 +8,19 @@
 
 namespace Tango {
     template<>
-    DevVarArray::DevVarArray(size_t max):
+    DevVarArray<double*, backend::DevVarDoubleArray>::DevVarArray(size_t max):
     delegate_ (new backend::DevVarDoubleArray(max))
             {};
 
-
     template<>
-    DevVarDoubleArray::DevVarArray(size_t  max,  size_t len,  double *data,  bool rel):
+    DevVarArray<double*, backend::DevVarDoubleArray>::DevVarArray(size_t  max,  size_t len,  double* data,  bool rel):
     delegate_(new backend::DevVarDoubleArray(max, len, data, rel))
             {};
+
+    template<>
+    DevVarArray<double*, backend::DevVarDoubleArray>::~DevVarArray(){
+        delete delegate_;
+    }
 
     template<>
     size_t DevVarDoubleArray::length() const {
@@ -34,10 +38,12 @@ namespace Tango {
     }
 
     template<>
+    template<>
     double &DevVarDoubleArray::operator[](size_t size) {
         return (*delegate_)[(_CORBA_ULong) size];
     }
 
+    template<>
     template<>
     const double &DevVarDoubleArray::operator[](size_t size) const {
         return (*delegate_)[(_CORBA_ULong) size];
@@ -49,7 +55,8 @@ namespace Tango {
     }
 
     template<>
-    const double *DevVarDoubleArray::get_buffer() const {
+    template<>
+    const double* DevVarDoubleArray::get_buffer() const {
         return delegate_->get_buffer();
     }
 

@@ -13,7 +13,7 @@ namespace Tango {
         class DevVarDoubleArray;
     }
 
-    typedef DevVarArray<double, backend::DevVarDoubleArray> DevVarDoubleArray;
+    typedef DevVarArray<double*, backend::DevVarDoubleArray> DevVarDoubleArray;
 
-    typedef std::unique_ptr<DevVarDoubleArray> DevVarDoubleArray_var;
+    typedef std::shared_ptr<DevVarDoubleArray> DevVarDoubleArray_var;
 }//Tango

@@ -15,9 +15,7 @@ namespace Tango {
     template <typename T, typename DELEGATE>
     class DevVarArray {
     public://ctrs, dtrs etc
-        ~DevVarArray(){
-            delete delegate_;
-        };
+        ~DevVarArray();
 
         DevVarArray() = default;
 
@@ -26,7 +24,7 @@ namespace Tango {
         //TODO perfect forwarding ctrs
         DevVarArray(size_t);
 
-        DevVarArray(size_t, size_t, T*, bool);
+        DevVarArray(size_t, size_t, T, bool);
 
         //TODO from vector
 
@@ -39,17 +37,20 @@ namespace Tango {
 
         size_t maximum() const;
 
-        T&operator[](size_t);
-        const T&operator[](size_t) const;
+        template <typename U = typename std::remove_pointer<T>::type>
+        U&operator[](size_t);
+        template <typename U = typename std::remove_pointer<T>::type>
+        const U&operator[](size_t) const;
 
-        void replace(size_t, size_t, T*, bool);
+        void replace(size_t, size_t, T, bool);
 
         //TODO Buffer related stuff must be hidden from client/server code, but can be useful in the library
-        static T* allocbuf(size_t);
-        static void freebuf(T*);
+        static T allocbuf(size_t);
+        static void freebuf(T);
 
-        const T* get_buffer() const;
-        T* get_buffer(bool);
+        template <typename U = typename std::add_const<T>::type>
+        U get_buffer() const;
+        T get_buffer(bool);
 
         bool release() const;
     private:

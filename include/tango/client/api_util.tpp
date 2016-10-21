@@ -173,12 +173,12 @@ inline void ApiUtil::attr_to_device_base(const T *attr_value,DeviceAttribute *de
 				if (tmp_seq.release() == true)
 				{
 					tmp_db = (const_cast<DevVarDoubleArray &>(tmp_seq)).get_buffer((DevBoolean)true);
-					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,true);
+					dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,true));
 				}
 				else
 				{
 					tmp_db = const_cast<DevDouble *>(tmp_seq.get_buffer());
-					dev_attr->DoubleSeq = new DevVarDoubleArray(max,len,tmp_db,false);
+					dev_attr->DoubleSeq.reset(new DevVarDoubleArray(max,len,tmp_db,false));
 				}
 			}
 			break;
