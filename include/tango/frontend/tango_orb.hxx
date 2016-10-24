@@ -4,8 +4,11 @@
 
 #pragma once
 
+#include <omniORB4/CORBA.h>
+
 namespace Tango {
     using TangORB = CORBA::ORB;
+    using TangORB_ptr = std::unique_ptr<TangORB>;
     using TangORB_var = std::shared_ptr<TangORB>;
 
     template<typename OPTIONS>
@@ -15,4 +18,6 @@ namespace Tango {
         auto orb = CORBA::ORB_init(argc, argv, orb_id, options);
         return TangORB_var(orb);
     }
+
+    auto TangORB_init() -> TangORB_var;
 }//Tango

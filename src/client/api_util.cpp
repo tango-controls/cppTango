@@ -1583,6 +1583,53 @@ void ApiUtil::print_error_message(const char *mess)
 	cerr << tmp_date << ": " << mess << endl;
 }
 
+    auto ApiUtil::get_orb_factory(TangORB_ptr pORB) -> TangORBFactory_ptr
+    {
+        if(this->get_orb()) {
+            struct AlreadyExistsFactory : public TangORBFactory {
+                auto create() -> TangORB_var {
+                    return ApiUtil::instance()->get_orb();
+                };
+            };
+            return TangORBFactory_ptr(new AlreadyExistsFactory);
+        }
+
+        if(this->in_serv){
+            struct InServerFactory : public TangORBFactory {
+                auto create() -> TangORB_var {
+                    return Util::instance()->get_orb();
+                }
+            };
+
+            return TangORBFactory_ptr(new InServerFactory);
+        }
+
+
+        if(pORB != nullptr) {
+            struct UseProvidedFactory : public TangORBFactory {
+                UseProvidedFactory(TangORB_ptr&& pORB) : pORB(move(pORB)) {}
+
+                TangORB_ptr pORB;
+
+                auto create() -> TangORB_var  {
+                    ApiUtil::instance()->set_orb(TangORB_var(move(pORB)));
+                    return ApiUtil::instance()->get_orb();
+                };
+            };
+
+            return TangORBFactory_ptr(new UseProvidedFactory(move(pORB)));
+        }
+
+        struct CreateNewFactory : public TangORBFactory {
+            auto create() -> TangORB_var  {
+                ApiUtil::instance()->set_orb(TangORB_init());
+                return ApiUtil::instance()->get_orb();
+            };
+        };
+
+        return TangORBFactory_ptr(new CreateNewFactory);
+    }
+
 //+-----------------------------------------------------------------------------------------------------------------
 //
 // function

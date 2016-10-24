@@ -218,7 +218,7 @@ public:
  *
  * @return The CORBA ORB
  */
-	TangORB_var get_orb() {return orb;}
+	TangORB_var get_orb() noexcept {return orb;}
 
 /**
  * Get a reference to the CORBA Portable Object Adapter (POA)

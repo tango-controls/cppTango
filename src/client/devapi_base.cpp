@@ -97,27 +97,15 @@ Connection::Connection(TangORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 // If the proxy is created from inside a device server, use the server orb
 //
 
-	ApiUtil *au = ApiUtil::instance();
-	if ((orb_in == NULL) && (au->get_orb() != nullptr))
-	{
-		if (au->in_server() == true)
-			ApiUtil::instance()->set_orb(Util::instance()->get_orb());
-		else
-			ApiUtil::instance()->create_orb();
-	}
-	else
-	{
-		if (orb_in != NULL)
-			au->set_orb(TangORB_var(orb_in));
-	}
+    ApiUtil::instance()->get_orb_factory(TangORB_ptr(orb_in))->create();
 
 //
 // Get user connect timeout if one is defined
 //
 
-	int ucto = au->get_user_connect_timeout();
-	if (ucto != -1)
-		user_connect_timeout = ucto;
+	int userConnectTimeout = ApiUtil::instance()->get_user_connect_timeout();
+	if (userConnectTimeout != -1)
+		user_connect_timeout = userConnectTimeout;
 }
 
 
