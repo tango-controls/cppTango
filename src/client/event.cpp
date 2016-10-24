@@ -127,7 +127,7 @@ void leavefunc()
 	{
 		if (notifd_ec == NULL)
 		{
-			CORBA::ORB_ptr orb = au->get_orb();
+			TangORB_ptr orb = au->get_orb();
 			orb->shutdown(true);
 			orb->destroy();
 		}

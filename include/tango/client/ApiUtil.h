@@ -31,6 +31,8 @@
 #define _APIUTIL_H
 
 
+#include <tango/frontend/tango_orb.hxx>
+
 /****************************************************************************************
  * 																						*
  * 					The ApiUtil class													*
@@ -150,9 +152,9 @@ namespace Tango {
 
 /// @privatesection
 
-		CORBA::ORB_ptr get_orb() { return CORBA::ORB::_duplicate(_orb); }
+		TangORB_ptr get_orb() { return TangORB::_duplicate(_orb); }
 
-		void set_orb(CORBA::ORB_ptr orb_in) { _orb = orb_in; }
+		void set_orb(TangORB_ptr orb_in) { _orb = orb_in; }
 
 		void create_orb();
 
@@ -252,7 +254,7 @@ namespace Tango {
 
 		vector<Database *> db_vect;
 		omni_mutex the_mutex;
-		CORBA::ORB_ptr _orb;
+		TangORB_ptr _orb;
 		bool in_serv;
 
 		cb_sub_model auto_cb;

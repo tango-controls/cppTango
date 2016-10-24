@@ -251,12 +251,12 @@ void Util::effective_job(int argc,char *argv[])
 //
 
 		ApiUtil *au = Tango::ApiUtil::instance();
-		CORBA::ORB_ptr orb_clnt  = au->get_orb();
+		TangORB_ptr orb_clnt  = au->get_orb();
 		if (CORBA::is_nil(orb_clnt) == false)
 		{
 			orb_clnt->destroy();
 			CORBA::release(orb_clnt);
-			au->set_orb(CORBA::ORB::_nil());
+			au->set_orb(TangORB::_nil());
 
 			size_t nb_db = au->get_db_vect().size();
 			for (size_t ctr = 0;ctr < nb_db;ctr++)

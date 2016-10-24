@@ -1575,7 +1575,7 @@ CORBA::Any_var Connection::command_inout(string &command, CORBA::Any &any)
 //
 //-----------------------------------------------------------------------------
 
-DeviceProxy::DeviceProxy (string &name, CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (string &name, TangORB*orb) : Connection(orb),
 							   db_dev(NULL),
 							   is_alias(false),
 							   adm_device(NULL),
@@ -1585,7 +1585,7 @@ DeviceProxy::DeviceProxy (string &name, CORBA::ORB *orb) : Connection(orb),
 	real_constructor(name,true);
 }
 
-DeviceProxy::DeviceProxy (const char *na, CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (const char *na, TangORB*orb) : Connection(orb),
 							     db_dev(NULL),
 								 is_alias(false),
 							     adm_device(NULL),
@@ -1596,7 +1596,7 @@ DeviceProxy::DeviceProxy (const char *na, CORBA::ORB *orb) : Connection(orb),
 	real_constructor(name,true);
 }
 
-DeviceProxy::DeviceProxy (string &name, bool need_check_acc,CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (string &name, bool need_check_acc,TangORB*orb) : Connection(orb),
 								 db_dev(NULL),
 								 is_alias(false),
 								 adm_device(NULL),
@@ -1606,7 +1606,7 @@ DeviceProxy::DeviceProxy (string &name, bool need_check_acc,CORBA::ORB *orb) : C
 	real_constructor(name,need_check_acc);
 }
 
-DeviceProxy::DeviceProxy (const char *na, bool need_check_acc,CORBA::ORB *orb) : Connection(orb),
+DeviceProxy::DeviceProxy (const char *na, bool need_check_acc,TangORB*orb) : Connection(orb),
 								 db_dev(NULL),
 								 is_alias(false),
 								 adm_device(NULL),
@@ -9536,7 +9536,7 @@ void DeviceProxy::local_import(string &local_ior)
                 }
 
 				Tango::Device_var d_var = dev_list[lo]->get_d_var();
-				CORBA::ORB_ptr orb_ptr = tg->get_orb();
+				TangORB_ptr orb_ptr = tg->get_orb();
 
 				char *s = orb_ptr->object_to_string(d_var);
 				local_ior = s;

@@ -1046,7 +1046,7 @@ void DeviceClass::export_device(DeviceImpl *dev,const char *corba_obj_name)
 	if ((Tango::Util::_UseDb == true) && (Tango::Util::_FileDb == false))
 	{
 		Tango::Util *tg = Tango::Util::instance();
-		CORBA::ORB_ptr orb_ptr = tg->get_orb();
+		TangORB_ptr orb_ptr = tg->get_orb();
 
 		char *s = orb_ptr->object_to_string(d);
 		string ior_string(s);

@@ -93,7 +93,7 @@ void _t_handler (TANGO_UNUSED(int signum))
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
 notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
 {
-	_orb = CORBA::ORB::_nil();
+	_orb = TangORB::_nil();
 
 //
 // Check if it is created from a device server

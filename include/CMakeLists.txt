@@ -139,7 +139,9 @@ set(SERVER_TEMPLATES
         tango/server/w_attribute_spec.tpp
         tango/server/w_pipe.tpp)
 
-add_library(include_objects OBJECT tango.h ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
+set(FRONTEND_HEADERS tango/frontend/tango_orb.hxx)
+
+add_library(include_objects OBJECT tango.h ${FRONTEND_HEADERS} ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 install(FILES ${SERVER_HEADERS} ${SERVER_TEMPLATES} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server")
