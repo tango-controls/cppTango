@@ -6,7 +6,6 @@
 
 namespace Tango {
     using TangORB = CORBA::ORB;
-    using TangORB_ptr = CORBA::ORB_ptr;
     using TangORB_var = std::shared_ptr<TangORB>;
 
     template<typename OPTIONS>
