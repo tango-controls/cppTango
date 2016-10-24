@@ -97,21 +97,6 @@ void leavefunc()
 // Manage event stuff
 //
 
-	NotifdEventConsumer *notifd_ec = au->get_notifd_event_consumer();
-
-	if (notifd_ec != NULL && already_executed == false)
-	{
-		notifd_ec->shutdown();
-
-//
-// Shut-down the notifd ORB and wait for the thread to exit
-//
-
-		int *rv;
-		notifd_ec->orb_->shutdown(true);
-		notifd_ec->join((void **)&rv);
-	}
-
 	ZmqEventConsumer *zmq_ec = au->get_zmq_event_consumer();
 
 	if (zmq_ec != NULL && already_executed == false)
@@ -125,12 +110,9 @@ void leavefunc()
 
 	if (already_executed == false)
 	{
-		if (notifd_ec == NULL)
-		{
-			TangORB_ptr orb = au->get_orb();
+            TangORB_ptr orb = au->get_orb();
 			orb->shutdown(true);
 			orb->destroy();
-		}
 		already_executed = true;
 		au->need_reset_already_flag(false);
 	}

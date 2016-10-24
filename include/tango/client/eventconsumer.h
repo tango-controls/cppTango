@@ -483,61 +483,13 @@ protected :
 	void get_fire_sync_event(DeviceProxy *,CallBack *,EventQueue *,EventType,string &,const string &,EventCallBackStruct &,string &);
 
 	virtual void connect_event_channel(string &,Database *,bool,DeviceData &) = 0;
-    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint),TANGO_UNUSED(string &endpoint_event)) {}
+    virtual void disconnect_event_channel(TANGO_UNUSED(string &channel_name),TANGO_UNUSED(string &endpoint),TANGO_UNUSED(string &endpoint_event)) = 0;
     virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t) = 0;
     virtual void disconnect_event(string &,string &) {}
 
     virtual void set_channel_type(EventChannelStruct &) = 0;
     virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) = 0;
 };
-
-/********************************************************************************
- * 																				*
- * 						NotifdEventConsumer class								*
- * 																				*
- *******************************************************************************/
-
-
-class NotifdEventConsumer : public POA_CosNotifyComm::StructuredPushConsumer ,
-                            public EventConsumer ,
-                            public omni_thread
-{
-public :
-	static NotifdEventConsumer *create();
-    TANGO_IMP_EXP static void cleanup() {if (_instance != NULL){_instance=NULL;}}
-
-	void push_structured_event(const CosNotification::StructuredEvent&);
-	virtual void cleanup_EventChannel_map();
-
-	void disconnect_structured_push_consumer();
-	void offer_change(const CosNotification::EventTypeSeq &,const CosNotification::EventTypeSeq &);
-
-    virtual void get_subscription_command_name(string &cmd) {cmd="EventSubscriptionChange";}
-
-	TangORB_var 					orb_;
-
-protected :
-	NotifdEventConsumer(ApiUtil *ptr);
-	virtual void connect_event_channel(string &,Database *,bool,DeviceData &);
-    virtual void connect_event_system(string &,string &,string &e,const vector<string> &,EvChanIte &,EventCallBackStruct &,DeviceData &,size_t);
-
-    virtual void set_channel_type(EventChannelStruct &ecs) {ecs.channel_type = NOTIFD;}
-	virtual void zmq_specific(DeviceData &,string &,DeviceProxy *,const string &) {}
-
-private :
-
-	TANGO_IMP static NotifdEventConsumer 					*_instance;
-
-	CosNotifyChannelAdmin::EventChannel_var 				eventChannel;
-	CosNotifyChannelAdmin::ConsumerAdmin_var 				consumerAdmin;
-	CosNotifyChannelAdmin::ProxyID 							proxyId;
-	CosNotifyChannelAdmin::ProxySupplier_var 				proxySupplier;
-	CosNotifyChannelAdmin::StructuredProxyPushSupplier_var	structuredProxyPushSupplier;
-	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
-
-	void *run_undetached(void *arg);
-};
-
 
 /********************************************************************************
  * 																				*
@@ -669,10 +621,10 @@ private :
 
     bool reconnect_to_zmq_channel(EvChanIte &,EventConsumer *,DeviceData &);
 	void reconnect_to_zmq_event(EvChanIte &,EventConsumer *,DeviceData &);
-	void not_conected_event(ZmqEventConsumer *,time_t,NotifdEventConsumer *);
+	void not_conected_event(ZmqEventConsumer *,time_t);
 	void confirm_subscription(ZmqEventConsumer *,map<string,EventChannelStruct>::iterator &);
-	void main_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &);
-	void re_subscribe_after_reconnect(ZmqEventConsumer *,NotifdEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &,string &);
+	void main_reconnect(ZmqEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &);
+	void re_subscribe_after_reconnect(ZmqEventConsumer *,map<string,EventCallBackStruct>::iterator &,map<string,EventChannelStruct>::iterator &,string &);
 };
 
 /********************************************************************************

@@ -27,7 +27,7 @@ set(SOURCES dbapi_class.cpp
         event.cpp
         eventkeepalive.cpp
         eventqueue.cpp
-        notifdeventconsumer.cpp
+        event_consumer.cxx
         zmqeventconsumer.cpp)
 
 add_library(client_objects OBJECT ${SOURCES})

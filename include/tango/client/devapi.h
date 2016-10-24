@@ -63,8 +63,6 @@ namespace Tango {
 
 	class AsynReq;
 
-	class NotifdEventConsumer;
-
 	class ZmqEventConsumer;
 
 	class CallBack;
