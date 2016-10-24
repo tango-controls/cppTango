@@ -56,7 +56,6 @@ set(CLIENT_HELPERS
         tango/client/helpers/Xstring.h)
 
 set(CLIENT_TEMPLATES
-        tango/client/event.tpp
         tango/client/devapi_attr.tpp
         tango/client/devapi_utils.tpp
         tango/client/api_util.tpp
