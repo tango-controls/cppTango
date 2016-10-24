@@ -37,7 +37,6 @@ set(SOURCES attrdesc.cpp
         logging.cpp
         logstream.cpp
         multiattribute.cpp
-        notifdeventsupplier.cpp
         pipe.cpp
         pollcmds.cpp
         pollobj.cpp

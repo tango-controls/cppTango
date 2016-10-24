@@ -121,14 +121,6 @@ void Util::shutdown_ds()
 	}
 
 //
-// Disconnect the server from the notifd, when it was connected
-//
-
-	NotifdEventSupplier *ev = get_notifd_event_supplier();
-	if (ev != NULL)
-		ev->disconnect_from_notifd();
-
-//
 // Delete ZmqEventSupplier
 //
 
