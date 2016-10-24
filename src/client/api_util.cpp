@@ -89,7 +89,7 @@ void _t_handler (TANGO_UNUSED(int signum))
 //------------------------------------------------------------------------------------------------------------------
 
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
-notifd_event_consumer(NULL),cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
+cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
 {
 	_orb = CORBA::ORB::_nil();
 
@@ -203,11 +203,10 @@ ApiUtil::~ApiUtil()
 	if (ext != NULL)
 #endif
 	{
-		if ((notifd_event_consumer != NULL) || (zmq_event_consumer != NULL))
+		if ((zmq_event_consumer != NULL))
 		{
 			event_was_used = true;
 			leavefunc();
-			NotifdEventConsumer::cleanup();
 			ZmqEventConsumer::cleanup();
 		}
 #ifndef HAS_UNIQUE_PTR
@@ -775,19 +774,9 @@ void ApiUtil::set_asynch_cb_sub_model(cb_sub_model mode)
 //
 //----------------------------------------------------------------------------------------------------------------
 
-void ApiUtil::create_notifd_event_consumer()
-{
-    notifd_event_consumer = NotifdEventConsumer::create();
-}
-
 void ApiUtil::create_zmq_event_consumer()
 {
     zmq_event_consumer = ZmqEventConsumer::create();
-}
-
-NotifdEventConsumer *ApiUtil::get_notifd_event_consumer()
-{
-	return notifd_event_consumer;
 }
 
 ZmqEventConsumer *ApiUtil::get_zmq_event_consumer()
