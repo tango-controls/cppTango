@@ -78,8 +78,8 @@ Connection::ConnectionExt &Connection::ConnectionExt::operator=(TANGO_UNUSED(con
 // Connection::Connection() - constructor to manage a connection to a device
 //
 //-----------------------------------------------------------------------------
-
-Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
+//TODO replace raw ptr
+Connection::Connection(TangORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 				    timeout(CLNT_TIMEOUT),
 				    version(0),source(Tango::CACHE_DEV),ext(new ConnectionExt()),
 				    tr_reco(true),prev_failed(false),prev_failed_t0(0.0),
@@ -98,7 +98,7 @@ Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 //
 
 	ApiUtil *au = ApiUtil::instance();
-	if ((orb_in == NULL) && (CORBA::is_nil(au->get_orb()) == true))
+	if ((orb_in == NULL) && (au->get_orb() != nullptr))
 	{
 		if (au->in_server() == true)
 			ApiUtil::instance()->set_orb(Util::instance()->get_orb());
@@ -108,7 +108,7 @@ Connection::Connection(ORB *orb_in):pasyn_ctr(0),pasyn_cb_ctr(0),
 	else
 	{
 		if (orb_in != NULL)
-			au->set_orb(orb_in);
+			au->set_orb(TangORB_var(orb_in));
 	}
 
 //
@@ -9463,12 +9463,11 @@ void DeviceProxy::local_import(string &local_ior)
                 }
 
 				Tango::Device_var d_var = dev_list[lo]->get_d_var();
-				TangORB_ptr orb_ptr = tg->get_orb();
+				TangORB_var orb_ptr = tg->get_orb();
 
 				char *s = orb_ptr->object_to_string(d_var);
 				local_ior = s;
 
-				CORBA::release(orb_ptr);
 				CORBA::string_free(s);
 
 				return;

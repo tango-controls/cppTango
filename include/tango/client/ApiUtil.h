@@ -152,9 +152,9 @@ namespace Tango {
 
 /// @privatesection
 
-		TangORB_ptr get_orb() { return TangORB::_duplicate(_orb); }
+		TangORB_var get_orb() { return _orb; }
 
-		void set_orb(TangORB_ptr orb_in) { _orb = orb_in; }
+		void set_orb(TangORB_var orb_in) { _orb = orb_in; }
 
 		void create_orb();
 
@@ -248,7 +248,7 @@ namespace Tango {
 
 		vector<Database *> db_vect;
 		omni_mutex the_mutex;
-		TangORB_ptr _orb;
+		TangORB_var _orb;
 		bool in_serv;
 
 		cb_sub_model auto_cb;

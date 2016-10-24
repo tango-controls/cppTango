@@ -55,7 +55,7 @@ DeviceData::DeviceData():ext(new DeviceDataExt)
 //
 
 	ApiUtil *au = ApiUtil::instance();
-	if (CORBA::is_nil(au->get_orb()) == true)
+	if (au->get_orb() == nullptr)
 		au->create_orb();
 
 	any = new CORBA::Any();

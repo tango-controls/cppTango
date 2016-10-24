@@ -153,7 +153,7 @@ void Util::shutdown_ds()
 //
 
 	cout4 << "Going to shutdown ORB" << endl;
-	TangORB_ptr loc_orb = get_orb();
+	TangORB_var loc_orb = get_orb();
 	loc_orb->shutdown(true);
 
 	cout4 << "ORB shutdown" << endl;

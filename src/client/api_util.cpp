@@ -93,7 +93,7 @@ void _t_handler (TANGO_UNUSED(int signum))
 ApiUtil::ApiUtil():exit_lock_installed(false),reset_already_executed_flag(false),ext(new ApiUtilExt),
 cl_pid(0),user_connect_timeout(-1),zmq_event_consumer(NULL),user_sub_hwm(-1)
 {
-	_orb = TangORB::_nil();
+	_orb = nullptr;//TODO replace with empty shared
 
 //
 // Check if it is created from a device server
@@ -229,7 +229,7 @@ ApiUtil::~ApiUtil()
 // Properly shutdown the ORB
 //
 
-	if ((in_serv == false) && (CORBA::is_nil(_orb) == false))
+	if ((in_serv == false) && (_orb == nullptr))
 	{
 		if (event_was_used == false)
 		{
@@ -239,7 +239,6 @@ ApiUtil::~ApiUtil()
 			}
 			catch (...) {}
 		}
-		CORBA::release(_orb);
 	}
 
 }
@@ -290,8 +289,12 @@ void ApiUtil::set_sig_handler()
 //
 //-------------------------------------------------------------------------------------------------------------------
 
+
+//TODO remove preconditions check in client code
 void ApiUtil::create_orb()
 {
+	if(_orb != nullptr) return;
+
 	int _argc;
 	char **_argv;
 

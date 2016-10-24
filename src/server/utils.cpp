@@ -251,12 +251,11 @@ void Util::effective_job(int argc,char *argv[])
 //
 
 		ApiUtil *au = Tango::ApiUtil::instance();
-		TangORB_ptr orb_clnt  = au->get_orb();
-		if (CORBA::is_nil(orb_clnt) == false)
+		TangORB_var orb_clnt  = au->get_orb();
+		if (orb_clnt == nullptr)
 		{
 			orb_clnt->destroy();
-			CORBA::release(orb_clnt);
-			au->set_orb(TangORB::_nil());
+			au->set_orb(nullptr);//TODO replace nullptr
 
 			size_t nb_db = au->get_db_vect().size();
 			for (size_t ctr = 0;ctr < nb_db;ctr++)
@@ -1116,7 +1115,7 @@ void Util::connect_db()
 				}
 #else
 				if (_FileDb == false)
-					db = new Database(orb.in());
+					db = new Database(orb.get());
 				else
 					db = new Database(database_file_name);
 #endif
@@ -1161,7 +1160,7 @@ void Util::connect_db()
 			}
 #else
 			if (_FileDb == false)
-				db = new Database(orb.in());
+				db = new Database(orb.get());
 			else
 				db = new Database(database_file_name);
 #endif
