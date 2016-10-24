@@ -316,3 +316,93 @@ void Tango::EventConsumer::get_fire_sync_event(DeviceProxy *device, CallBack *ca
         }
     }
 }
+
+//+------------------------------------------------------------------------------------------------------------------
+//
+// method :
+//		EventConsumer::get_event_system_for_event_id()
+//
+// description :
+//		Get which event system is used by one event from its id
+//
+// argument :
+//		in :
+//			- event_id : The event id
+//
+// returns :
+//		Event system type used by the event with the specified event id
+//
+//--------------------------------------------------------------------------------------------------------------------
+
+Tango::ChannelType Tango::EventConsumer::get_event_system_for_event_id(int event_id)
+{
+    ChannelType ret = Tango::ZMQ;
+    EvCbIte epos;
+    vector<EventSubscribeStruct>::iterator esspos;
+
+    if (event_id == 0)
+    {
+        EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+                                           (const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
+                                           (const char*)"EventConsumer::get_event_system_for_event_id()");
+    }
+
+    bool found = false;
+    ReaderLock r(map_modification_lock);
+    for (epos = event_callback_map.begin(); epos != event_callback_map.end(); ++epos)
+    {
+        EventCallBackStruct &ecs = epos->second;
+        for (esspos = ecs.callback_list.begin(); esspos != ecs.callback_list.end(); ++esspos)
+        {
+            if(esspos->id == event_id)
+            {
+                found = true;
+                EvChanIte evt_it = channel_map.find(ecs.channel_name);
+                if (evt_it == channel_map.end())
+                {
+                    TangoSys_OMemStream o;
+                    o << "Can't unsubscribe to event with id " << event_id << "\n";
+                    o << "Corrupted internal map. Please report bug" << ends;
+                    Except::throw_exception((const char *)API_BadConfigurationProperty,
+                                            o.str(),
+                                            (const char *)"EventConsumer::get_event_system_for_event_id()");
+                }
+                EventChannelStruct &evt_ch = evt_it->second;
+                ret = evt_ch.channel_type;
+                break;
+            }
+            if (found == true)
+                break;
+        }
+    }
+
+//
+// Also search in the not connected event vector. The returned value in this case is not relevant
+//
+
+    if (found == false && event_not_connected.empty() == false)
+    {
+        std::vector<EventNotConnected>::iterator vpos;
+        for (vpos = event_not_connected.begin();vpos != event_not_connected.end();++vpos)
+        {
+            if (vpos->event_id == event_id)
+            {
+                found = true;
+                break;
+            }
+        }
+    }
+
+//
+// Throw exception if the event_id has not been found in maps
+//
+
+    if (found == false)
+    {
+        EventSystemExcept::throw_exception((const char*)"API_EventNotFound",
+                                           (const char*)"Failed to unsubscribe event, the event id specified does not correspond with any known one",
+                                           (const char*)"EventConsumer::get_event_system_for_event_id()");
+    }
+
+    return ret;
+}
