@@ -27,7 +27,7 @@ set(SOURCES dbapi_class.cpp
         event.cpp
         eventkeepalive.cpp
         eventqueue.cpp
-        event_consumer.hxx
+        event_consumer.txx
         event_consumer.cxx
         zmqeventconsumer.cpp)
 
