@@ -39,10 +39,9 @@
  * @headerfile tango.h
  * @ingroup Client
  */
-
-template <typename T>
-struct DataElement
-{
+namespace Tango {
+	template<typename T>
+	struct DataElement {
 /**
  * Create a DataElement object.
  *
@@ -51,7 +50,8 @@ struct DataElement
  * @param [in] name The data element name
  * @param [in] value The data element value
  */
-	DataElement(const string &name,T value);
+		DataElement(const string &name, T value);
+
 /**
  * Create a DataElement object.
  *
@@ -59,7 +59,8 @@ struct DataElement
  *
  * @param [in] name The data element name
  */
-	DataElement(const string &name);
+		DataElement(const string &name);
+
 /**
  * Create a DataElement object.
  *
@@ -68,33 +69,29 @@ struct DataElement
  *
  * @param [in] value The data element value
  */
-	DataElement(T value);
+		DataElement(T value);
 
-	DataElement();
+		DataElement();
 
-	string		name;		///< The data element name
-	T			value;		///< The data element value
-};
+		string name;        ///< The data element name
+		T value;        ///< The data element value
+	};
 
-template <typename T>
-DataElement<T>::DataElement(const string &_na,T _val):name(_na),value(_val)
-{
-}
+	template<typename T>
+	DataElement<T>::DataElement(const string &_na, T _val):name(_na), value(_val) {
+	}
 
-template <typename T>
-DataElement<T>::DataElement(const string &_na):name(_na)
-{
-}
+	template<typename T>
+	DataElement<T>::DataElement(const string &_na):name(_na) {
+	}
 
-template <typename T>
-DataElement<T>::DataElement(T _val):value(_val)
-{
-}
+	template<typename T>
+	DataElement<T>::DataElement(T _val):value(_val) {
+	}
 
-template <typename T>
-DataElement<T>::DataElement()
-{
-}
+	template<typename T>
+	DataElement<T>::DataElement() {
+	}
 
 /**
  * A device pipe blob
@@ -108,20 +105,18 @@ DataElement<T>::DataElement()
  * @ingroup Client
  */
 
-class DevicePipeBlob
-{
-public:
+	class DevicePipeBlob {
+	public:
 ///@privatesection
 
-	enum except_flags
-	{
-		isempty_flag,
-		wrongtype_flag,
-		notenoughde_flag,
-		blobdenamenotset_flag,
-		mixing_flag,
-		numFlags
-	};
+		enum except_flags {
+			isempty_flag,
+			wrongtype_flag,
+			notenoughde_flag,
+			blobdenamenotset_flag,
+			mixing_flag,
+			numFlags
+		};
 
 ///@publicsection
 /**@name Constructors */
@@ -132,7 +127,8 @@ public:
  * Default constructor.
  *
  */
-	DevicePipeBlob();
+		DevicePipeBlob();
+
 /**
  * Create a DevicePipeBlob object with name
  *
@@ -140,7 +136,7 @@ public:
  *
  * @param [in] blob_name The blob name
  */
-	DevicePipeBlob(const string &blob_name);
+		DevicePipeBlob(const string &blob_name);
 //@}
 
 /**@name Get/Set methods */
@@ -152,7 +148,8 @@ public:
  *
  * @param [in] blob_name The blob name
  */
-	void set_name(const string &blob_name) {name=blob_name;}
+		void set_name(const string &blob_name) { name = blob_name; }
+
 /**
  * Get blob name
  *
@@ -160,7 +157,7 @@ public:
  *
  * @return The blob name
  */
-	const string &get_name() {return name;}
+		const string &get_name() { return name; }
 //@}
 
 
@@ -316,7 +313,8 @@ public:
  * @param [in] datum The data to be inserted into the DevicePipeBlob
  * @exception WrongData if requested
  */
-	DevicePipeBlob & operator << (short &datum);
+		DevicePipeBlob &operator<<(short &datum);
+
 /**
  * Set blob data element number
  *
@@ -324,7 +322,8 @@ public:
  *
  * @param [in] nb The blob data element number
  */
-	void set_data_elt_nb(size_t nb);
+		void set_data_elt_nb(size_t nb);
+
 /**
  * Set blob data element number and names
  *
@@ -333,7 +332,7 @@ public:
  *
  * @param [in] names The blob data element names
  */
-	void set_data_elt_names(vector<string> &names);
+		void set_data_elt_names(vector <string> &names);
 //@}
 
 /**@name Extracting data from a DevicePipeBlob
@@ -477,7 +476,8 @@ public:
  * @param [out] datum The blob data
  * @exception WrongData if requested
  */
-	DevicePipeBlob & operator >> (short &datum);
+		DevicePipeBlob &operator>>(short &datum);
+
 /**
  * Get blob data element number
  *
@@ -485,7 +485,8 @@ public:
  *
  * @return The blob data element number
  */
-	size_t get_data_elt_nb();
+		size_t get_data_elt_nb();
+
 /**
  * Get blob data elements name
  *
@@ -493,7 +494,8 @@ public:
  *
  * @return The blob data elements name
  */
-	vector<string> get_data_elt_names();
+		vector <string> get_data_elt_names();
+
 /**
  * Get blob data element name
  *
@@ -502,7 +504,8 @@ public:
  * @param [in] ind The data element index within the blob
  * @return The blob data element name
  */
-	string get_data_elt_name(size_t ind);
+		string get_data_elt_name(size_t ind);
+
 /**
  * Get blob data element value type
  *
@@ -511,7 +514,7 @@ public:
  * @param [in] ind The data element index within the blob
  * @return The blob data element value type
  */
-	int get_data_elt_type(size_t ind);
+		int get_data_elt_type(size_t ind);
 //@}
 
 /**@name Exception and error related methods methods
@@ -539,7 +542,8 @@ public:
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<numFlags> fl) {exceptions_flags = fl;}
+		void exceptions(bitset <numFlags> fl) { exceptions_flags = fl; }
+
 /**
  * Get exception flag
  *
@@ -559,7 +563,8 @@ public:
  *
  * @return The exception flag
  */
-	bitset<numFlags> exceptions() {return exceptions_flags;}
+		bitset <numFlags> exceptions() { return exceptions_flags; }
+
 /**
  * Reset one exception flag
  *
@@ -567,7 +572,8 @@ public:
  *
  * @param [in] fl The exception flag
  */
-	void reset_exceptions(except_flags fl) {exceptions_flags.reset((size_t)fl);}
+		void reset_exceptions(except_flags fl) { exceptions_flags.reset((size_t) fl); }
+
 /**
  * Set one exception flag
  *
@@ -575,7 +581,8 @@ public:
  *
  * @param [in] fl The exception flag
  */
-	void set_exceptions(except_flags fl) {exceptions_flags.set((size_t)fl);}
+		void set_exceptions(except_flags fl) { exceptions_flags.set((size_t) fl); }
+
 /**
  * Check insertion/extraction success
  *
@@ -584,7 +591,8 @@ public:
  *
  * @return True if insertion/extraction has failed
  */
-	bool has_failed();
+		bool has_failed();
+
 /**
  * Get instance insertion/extraction state
  *
@@ -611,180 +619,276 @@ public:
  *
  * @return The error bit set.
  */
-	bitset<numFlags> state() {return ext_state;}
+		bitset <numFlags> state() { return ext_state; }
 //@}
 
 ///@privatesection
-	~DevicePipeBlob();
-	DevicePipeBlob(const DevicePipeBlob &);
-	DevicePipeBlob & operator=(const DevicePipeBlob &);
+		~DevicePipeBlob();
+
+		DevicePipeBlob(const DevicePipeBlob &);
+
+		DevicePipeBlob &operator=(const DevicePipeBlob &);
+
 #ifdef HAS_RVALUE
-	DevicePipeBlob(DevicePipeBlob &&);
-	DevicePipeBlob & operator=(DevicePipeBlob &&);
+        DevicePipeBlob(DevicePipeBlob &&);
+        DevicePipeBlob & operator=(DevicePipeBlob &&);
 #endif
 
-	DevicePipeBlob & operator << (DevBoolean &);
+		DevicePipeBlob &operator<<(DevBoolean &);
+
 //	DevicePipeBlob & operator << (short &);
-	DevicePipeBlob & operator << (DevLong &);
-	DevicePipeBlob & operator << (DevLong64 &);
-	DevicePipeBlob & operator << (float &);
-	DevicePipeBlob & operator << (double &);
-	DevicePipeBlob & operator << (DevUChar &);
-	DevicePipeBlob & operator << (DevUShort &);
-	DevicePipeBlob & operator << (DevULong &);
-	DevicePipeBlob & operator << (DevULong64 &);
-	DevicePipeBlob & operator << (DevString &);
-	DevicePipeBlob & operator << (DevState &);
-	DevicePipeBlob & operator << (DevEncoded &);
-	DevicePipeBlob & operator << (const string &);
+		DevicePipeBlob &operator<<(DevLong &);
 
-	DevicePipeBlob & operator << (DevicePipeBlob &);
+		DevicePipeBlob &operator<<(DevLong64 &);
 
-	DevicePipeBlob & operator << (vector<DevBoolean> &);
-	DevicePipeBlob & operator << (vector<short> &);
-	DevicePipeBlob & operator << (vector<DevLong> &);
-	DevicePipeBlob & operator << (vector<DevLong64> &);
-	DevicePipeBlob & operator << (vector<float> &);
-	DevicePipeBlob & operator << (vector<double> &);
-	DevicePipeBlob & operator << (vector<DevUChar> &);
-	DevicePipeBlob & operator << (vector<DevUShort> &);
-	DevicePipeBlob & operator << (vector<DevULong> &);
-	DevicePipeBlob & operator << (vector<DevULong64> &);
-	DevicePipeBlob & operator << (vector<DevString> &);
-	DevicePipeBlob & operator << (vector<DevState> &);
-	DevicePipeBlob & operator << (vector<DevEncoded> &);
-	DevicePipeBlob & operator << (vector<string> &);
+		DevicePipeBlob &operator<<(float &);
 
-	DevicePipeBlob & operator << (DevVarBooleanArray &);
-	DevicePipeBlob & operator << (DevVarShortArray &);
-	DevicePipeBlob & operator << (DevVarLongArray &);
-	DevicePipeBlob & operator << (DevVarLong64Array &);
-	DevicePipeBlob & operator << (DevVarFloatArray &);
-	DevicePipeBlob & operator << (DevVarDoubleArray &);
-	DevicePipeBlob & operator << (DevVarUCharArray &);
-	DevicePipeBlob & operator << (DevVarUShortArray &);
-	DevicePipeBlob & operator << (DevVarULongArray &);
-	DevicePipeBlob & operator << (DevVarULong64Array &);
-	DevicePipeBlob & operator << (DevVarStringArray &);
-	DevicePipeBlob & operator << (DevVarStateArray &);
-	DevicePipeBlob & operator << (DevVarEncodedArray &);
+		DevicePipeBlob &operator<<(double &);
 
-	DevicePipeBlob & operator << (DevVarBooleanArray *);
-	DevicePipeBlob & operator << (DevVarShortArray *);
-	DevicePipeBlob & operator << (DevVarLongArray *);
-	DevicePipeBlob & operator << (DevVarLong64Array *);
-	DevicePipeBlob & operator << (DevVarFloatArray *);
-	DevicePipeBlob & operator << (DevVarDoubleArray *);
-	DevicePipeBlob & operator << (DevVarUCharArray *);
-	DevicePipeBlob & operator << (DevVarUShortArray *);
-	DevicePipeBlob & operator << (DevVarULongArray *);
-	DevicePipeBlob & operator << (DevVarULong64Array *);
-	DevicePipeBlob & operator << (DevVarStringArray *);
-	DevicePipeBlob & operator << (DevVarStateArray *);
-	DevicePipeBlob & operator << (DevVarEncodedArray *);
+		DevicePipeBlob &operator<<(DevUChar &);
+
+		DevicePipeBlob &operator<<(DevUShort &);
+
+		DevicePipeBlob &operator<<(DevULong &);
+
+		DevicePipeBlob &operator<<(DevULong64 &);
+
+		DevicePipeBlob &operator<<(DevString &);
+
+		DevicePipeBlob &operator<<(DevState &);
+
+		DevicePipeBlob &operator<<(DevEncoded &);
+
+		DevicePipeBlob &operator<<(const string &);
+
+		DevicePipeBlob &operator<<(DevicePipeBlob &);
+
+		DevicePipeBlob &operator<<(vector <DevBoolean> &);
+
+		DevicePipeBlob &operator<<(vector<short> &);
+
+		DevicePipeBlob &operator<<(vector <DevLong> &);
+
+		DevicePipeBlob &operator<<(vector <DevLong64> &);
+
+		DevicePipeBlob &operator<<(vector<float> &);
+
+		DevicePipeBlob &operator<<(vector<double> &);
+
+		DevicePipeBlob &operator<<(vector <DevUChar> &);
+
+		DevicePipeBlob &operator<<(vector <DevUShort> &);
+
+		DevicePipeBlob &operator<<(vector <DevULong> &);
+
+		DevicePipeBlob &operator<<(vector <DevULong64> &);
+
+		DevicePipeBlob &operator<<(vector <DevString> &);
+
+		DevicePipeBlob &operator<<(vector <DevState> &);
+
+		DevicePipeBlob &operator<<(vector <DevEncoded> &);
+
+		DevicePipeBlob &operator<<(vector <string> &);
+
+		DevicePipeBlob &operator<<(DevVarBooleanArray &);
+
+		DevicePipeBlob &operator<<(DevVarShortArray &);
+
+		DevicePipeBlob &operator<<(DevVarLongArray &);
+
+		DevicePipeBlob &operator<<(DevVarLong64Array &);
+
+		DevicePipeBlob &operator<<(DevVarFloatArray &);
+
+		DevicePipeBlob &operator<<(DevVarDoubleArray &);
+
+		DevicePipeBlob &operator<<(DevVarUCharArray &);
+
+		DevicePipeBlob &operator<<(DevVarUShortArray &);
+
+		DevicePipeBlob &operator<<(DevVarULongArray &);
+
+		DevicePipeBlob &operator<<(DevVarULong64Array &);
+
+		DevicePipeBlob &operator<<(DevVarStringArray &);
+
+		DevicePipeBlob &operator<<(DevVarStateArray &);
+
+		DevicePipeBlob &operator<<(DevVarEncodedArray &);
+
+		DevicePipeBlob &operator<<(DevVarBooleanArray *);
+
+		DevicePipeBlob &operator<<(DevVarShortArray *);
+
+		DevicePipeBlob &operator<<(DevVarLongArray *);
+
+		DevicePipeBlob &operator<<(DevVarLong64Array *);
+
+		DevicePipeBlob &operator<<(DevVarFloatArray *);
+
+		DevicePipeBlob &operator<<(DevVarDoubleArray *);
+
+		DevicePipeBlob &operator<<(DevVarUCharArray *);
+
+		DevicePipeBlob &operator<<(DevVarUShortArray *);
+
+		DevicePipeBlob &operator<<(DevVarULongArray *);
+
+		DevicePipeBlob &operator<<(DevVarULong64Array *);
+
+		DevicePipeBlob &operator<<(DevVarStringArray *);
+
+		DevicePipeBlob &operator<<(DevVarStateArray *);
+
+		DevicePipeBlob &operator<<(DevVarEncodedArray *);
 
 //-------------------------------------------------------------------------------------------------
 
-	DevicePipeBlob & operator >> (DevBoolean &);
+		DevicePipeBlob &operator>>(DevBoolean &);
+
 //	DevicePipeBlob & operator >> (short &);
-	DevicePipeBlob & operator >> (DevLong &);
-	DevicePipeBlob & operator >> (DevLong64 &);
-	DevicePipeBlob & operator >> (float &);
-	DevicePipeBlob & operator >> (double &);
-	DevicePipeBlob & operator >> (DevUChar &);
-	DevicePipeBlob & operator >> (DevUShort &);
-	DevicePipeBlob & operator >> (DevULong &);
-	DevicePipeBlob & operator >> (DevULong64 &);
-	DevicePipeBlob & operator >> (DevString &);
-	DevicePipeBlob & operator >> (DevState &);
-	DevicePipeBlob & operator >> (DevEncoded &);
-	DevicePipeBlob & operator >> (string &);
+		DevicePipeBlob &operator>>(DevLong &);
 
-	DevicePipeBlob & operator >> (DevicePipeBlob &);
+		DevicePipeBlob &operator>>(DevLong64 &);
 
-	DevicePipeBlob & operator >> (vector<DevBoolean> &);
-	DevicePipeBlob & operator >> (vector<short> &);
-	DevicePipeBlob & operator >> (vector<DevLong> &);
-	DevicePipeBlob & operator >> (vector<DevLong64> &);
-	DevicePipeBlob & operator >> (vector<float> &);
-	DevicePipeBlob & operator >> (vector<double> &);
-	DevicePipeBlob & operator >> (vector<DevUChar> &);
-	DevicePipeBlob & operator >> (vector<DevUShort> &);
-	DevicePipeBlob & operator >> (vector<DevULong> &);
-	DevicePipeBlob & operator >> (vector<DevULong64> &);
-	DevicePipeBlob & operator >> (vector<string> &);
-	DevicePipeBlob & operator >> (vector<DevState> &);
+		DevicePipeBlob &operator>>(float &);
+
+		DevicePipeBlob &operator>>(double &);
+
+		DevicePipeBlob &operator>>(DevUChar &);
+
+		DevicePipeBlob &operator>>(DevUShort &);
+
+		DevicePipeBlob &operator>>(DevULong &);
+
+		DevicePipeBlob &operator>>(DevULong64 &);
+
+		DevicePipeBlob &operator>>(DevString &);
+
+		DevicePipeBlob &operator>>(DevState &);
+
+		DevicePipeBlob &operator>>(DevEncoded &);
+
+		DevicePipeBlob &operator>>(string &);
+
+		DevicePipeBlob &operator>>(DevicePipeBlob &);
+
+		DevicePipeBlob &operator>>(vector <DevBoolean> &);
+
+		DevicePipeBlob &operator>>(vector<short> &);
+
+		DevicePipeBlob &operator>>(vector <DevLong> &);
+
+		DevicePipeBlob &operator>>(vector <DevLong64> &);
+
+		DevicePipeBlob &operator>>(vector<float> &);
+
+		DevicePipeBlob &operator>>(vector<double> &);
+
+		DevicePipeBlob &operator>>(vector <DevUChar> &);
+
+		DevicePipeBlob &operator>>(vector <DevUShort> &);
+
+		DevicePipeBlob &operator>>(vector <DevULong> &);
+
+		DevicePipeBlob &operator>>(vector <DevULong64> &);
+
+		DevicePipeBlob &operator>>(vector <string> &);
+
+		DevicePipeBlob &operator>>(vector <DevState> &);
 //	DevicePipeBlob & operator >> (vector<DevEncoded> &);
 
-	DevicePipeBlob & operator >> (DevVarBooleanArray *);
-	DevicePipeBlob & operator >> (DevVarShortArray *);
-	DevicePipeBlob & operator >> (DevVarLongArray *);
-	DevicePipeBlob & operator >> (DevVarLong64Array *);
-	DevicePipeBlob & operator >> (DevVarFloatArray *);
-	DevicePipeBlob & operator >> (DevVarDoubleArray *);
-	DevicePipeBlob & operator >> (DevVarUCharArray *);
-	DevicePipeBlob & operator >> (DevVarUShortArray *);
-	DevicePipeBlob & operator >> (DevVarULongArray *);
-	DevicePipeBlob & operator >> (DevVarULong64Array *);
-	DevicePipeBlob & operator >> (DevVarStringArray *);
-	DevicePipeBlob & operator >> (DevVarStateArray *);
-	DevicePipeBlob & operator >> (DevVarEncodedArray *);
+		DevicePipeBlob &operator>>(DevVarBooleanArray *);
 
-	DevicePipeBlob &operator[](const string &);
+		DevicePipeBlob &operator>>(DevVarShortArray *);
 
-	const char *get_current_delt_name() {return (*extract_elt_array)[extract_ctr].name.in();}
-	void set_current_delt_name(const string &);
+		DevicePipeBlob &operator>>(DevVarLongArray *);
 
-	size_t get_extract_ind_from_name(const string &);
-	size_t get_insert_ind_from_name(const string &);
+		DevicePipeBlob &operator>>(DevVarLong64Array *);
 
-	void reset_insert_ctr() {insert_ctr=0;}
-	DevVarPipeDataEltArray *get_insert_data() {return insert_elt_array;}
-	const DevVarPipeDataEltArray *get_extract_data() {return extract_elt_array;}
+		DevicePipeBlob &operator>>(DevVarFloatArray *);
 
-	void set_extract_data(const DevVarPipeDataEltArray *_ptr) {extract_elt_array=_ptr;}
-	void reset_insert_data_ptr() {insert_elt_array=Tango_nullptr;}
+		DevicePipeBlob &operator>>(DevVarDoubleArray *);
 
-	void reset_extract_ctr() {extract_ctr=0;}
-	void set_extract_delete(bool _b) {extract_delete=_b;}
+		DevicePipeBlob &operator>>(DevVarUCharArray *);
 
-	void print(ostream &,int,bool);
+		DevicePipeBlob &operator>>(DevVarUShortArray *);
 
-protected:
+		DevicePipeBlob &operator>>(DevVarULongArray *);
+
+		DevicePipeBlob &operator>>(DevVarULong64Array *);
+
+		DevicePipeBlob &operator>>(DevVarStringArray *);
+
+		DevicePipeBlob &operator>>(DevVarStateArray *);
+
+		DevicePipeBlob &operator>>(DevVarEncodedArray *);
+
+		DevicePipeBlob &operator[](const string &);
+
+		const char *get_current_delt_name() { return (*extract_elt_array)[extract_ctr].name.in(); }
+
+		void set_current_delt_name(const string &);
+
+		size_t get_extract_ind_from_name(const string &);
+
+		size_t get_insert_ind_from_name(const string &);
+
+		void reset_insert_ctr() { insert_ctr = 0; }
+
+		DevVarPipeDataEltArray *get_insert_data() { return insert_elt_array; }
+
+		const DevVarPipeDataEltArray *get_extract_data() { return extract_elt_array; }
+
+		void set_extract_data(const DevVarPipeDataEltArray *_ptr) { extract_elt_array = _ptr; }
+
+		void reset_insert_data_ptr() { insert_elt_array = Tango_nullptr; }
+
+		void reset_extract_ctr() { extract_ctr = 0; }
+
+		void set_extract_delete(bool _b) { extract_delete = _b; }
+
+		void print(ostream &, int, bool);
+
+	protected:
 ///@privatesection
-	void throw_type_except(const string &,const string &);
-	void throw_too_many(const string &,bool);
-	void throw_is_empty(const string &);
-	void throw_name_not_set(const string &);
-	void throw_mixing(const string &);
+		void throw_type_except(const string &, const string &);
 
-private:
-	string							name;					// The blob name
-	bitset<numFlags> 				exceptions_flags;		// Exception flag
-	bitset<numFlags> 				ext_state;				// Extraction state
-	bool							failed;					// Failed flag
+		void throw_too_many(const string &, bool);
 
-	DevVarPipeDataEltArray			*insert_elt_array;		// Ptr for data to be inserted (client write/Server read)
-	int								insert_ctr;				// Ctr for inserting data elt
-	int								insert_ind;
+		void throw_is_empty(const string &);
 
-	const DevVarPipeDataEltArray	*extract_elt_array;		// Ptr for data to be extracted (client read/Server write)
-	int								extract_ctr;			// Ctr for extracting data elt
-	bool							extract_delete;			// Flag to force extract ptr delete
-	int								extract_ind;
+		void throw_name_not_set(const string &);
 
-    class DevicePipeBlobExt
-    {
-    public:
-        DevicePipeBlobExt() {};
-    };
+		void throw_mixing(const string &);
+
+	private:
+		string name;                    // The blob name
+		bitset <numFlags> exceptions_flags;        // Exception flag
+		bitset <numFlags> ext_state;                // Extraction state
+		bool failed;                    // Failed flag
+
+		DevVarPipeDataEltArray *insert_elt_array;        // Ptr for data to be inserted (client write/Server read)
+		int insert_ctr;                // Ctr for inserting data elt
+		int insert_ind;
+
+		const DevVarPipeDataEltArray *extract_elt_array;        // Ptr for data to be extracted (client read/Server write)
+		int extract_ctr;            // Ctr for extracting data elt
+		bool extract_delete;            // Flag to force extract ptr delete
+		int extract_ind;
+
+		class DevicePipeBlobExt {
+		public:
+			DevicePipeBlobExt() {};
+		};
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DevicePipeBlobExt>   	ext;
+		unique_ptr<DevicePipeBlobExt>   	ext;
 #else
-	DevicePipeBlobExt		        	*ext;				// Class extension
+		DevicePipeBlobExt *ext;                // Class extension
 #endif
-};
+	};
 
 
 /****************************************************************************************
@@ -807,10 +911,9 @@ private:
  * @ingroup Client
  */
 
-class DevicePipe
-{
+	class DevicePipe {
 
-public :
+	public :
 
 ///@publicsection
 /**@name Constructors */
@@ -821,7 +924,8 @@ public :
  * Default constructor. The instance is empty
  *
  */
-    DevicePipe();
+		DevicePipe();
+
 /**
  * Create a DevicePipe object with name
  *
@@ -829,7 +933,8 @@ public :
  *
  * @param [in] pipe_name The pipe name
  */
-    DevicePipe(const string &pipe_name);
+		DevicePipe(const string &pipe_name);
+
 /**
  * Create a DevicePipe object with name and root blob name.
  *
@@ -838,7 +943,7 @@ public :
  * @param [in] pipe_name The pipe name
  * @param [in] root_blob_name The root blob name
  */
-    DevicePipe(const string &pipe_name,const string &root_blob_name);
+		DevicePipe(const string &pipe_name, const string &root_blob_name);
 //@}
 
 /**@name Get/Set methods */
@@ -850,7 +955,8 @@ public :
  *
  * @param [in] pipe_name The pipe name
  */
-	void set_name(const string &pipe_name) {name=pipe_name;}
+		void set_name(const string &pipe_name) { name = pipe_name; }
+
 /**
  * Get pipe name
  *
@@ -858,7 +964,7 @@ public :
  *
  * @return The pipe name
  */
-	const string &get_name() {return name;}
+		const string &get_name() { return name; }
 
 /**
  * Set root blob name
@@ -867,7 +973,8 @@ public :
  *
  * @param [in] root_blob_name The root blob name
  */
-	void set_root_blob_name(const string &root_blob_name) {the_root_blob.set_name(root_blob_name);}
+		void set_root_blob_name(const string &root_blob_name) { the_root_blob.set_name(root_blob_name); }
+
 /**
  * Get root blob name
  *
@@ -875,25 +982,26 @@ public :
  *
  * @return The root blob name
  */
-	const string &get_root_blob_name() {return the_root_blob.get_name();}
+		const string &get_root_blob_name() { return the_root_blob.get_name(); }
 //@}
 
 /**@name Inserting data into a DevicePipe
  */
 //@{
 #ifdef GEN_DOC
-/**
- * Insert data into a device pipe
- *
- * Inserting data into a DevicePipe instance is simlar to inserting data into a DevicePipeBlob class instance.
- * See doc of DevicePipeBlob class insertion methods (DevicePipeBlob::operator<<) to get a complete documentation on
- * how to insert data into a DevicePipe
- *
- * @param [in] datum The data to be inserted into the DevicePipe
- * @exception WrongData if requested
- */
-	DevicePipe & operator << (short &datum);
+        /**
+         * Insert data into a device pipe
+         *
+         * Inserting data into a DevicePipe instance is simlar to inserting data into a DevicePipeBlob class instance.
+         * See doc of DevicePipeBlob class insertion methods (DevicePipeBlob::operator<<) to get a complete documentation on
+         * how to insert data into a DevicePipe
+         *
+         * @param [in] datum The data to be inserted into the DevicePipe
+         * @exception WrongData if requested
+         */
+            DevicePipe & operator << (short &datum);
 #endif
+
 /**
  * Set blob data element number
  *
@@ -901,7 +1009,8 @@ public :
  *
  * @param [in] nb The blob data element number
  */
-	void set_data_elt_nb(size_t nb) {the_root_blob.set_data_elt_nb(nb);}
+		void set_data_elt_nb(size_t nb) { the_root_blob.set_data_elt_nb(nb); }
+
 /**
  * Set blob data element number and names
  *
@@ -910,25 +1019,26 @@ public :
  *
  * @param [in] names The blob data element names
  */
-	void set_data_elt_names(vector<string> &names) {the_root_blob.set_data_elt_names(names);}
+		void set_data_elt_names(vector <string> &names) { the_root_blob.set_data_elt_names(names); }
 //@}
 
 /**@name Extracting data from a DevicePipe
  */
 //@{
 #ifdef GEN_DOC
-/**
- * Extract data from a device pipe
- *
- * Extracting data from a DevicePipe instance is simlar to extracting data from a DevicePipeBlob class instance.
- * See doc of DevicePipeBlob class extraction methods (DevicePipeBlob::operator>>) to get a complete documentation on
- * how to extract data from a DevicePipe
- *
- * @param [in] datum The pipe data
- * @exception WrongData if requested
- */
-	DevicePipe & operator >> (short &datum);
+        /**
+         * Extract data from a device pipe
+         *
+         * Extracting data from a DevicePipe instance is simlar to extracting data from a DevicePipeBlob class instance.
+         * See doc of DevicePipeBlob class extraction methods (DevicePipeBlob::operator>>) to get a complete documentation on
+         * how to extract data from a DevicePipe
+         *
+         * @param [in] datum The pipe data
+         * @exception WrongData if requested
+         */
+            DevicePipe & operator >> (short &datum);
 #endif
+
 /**
  * Get root blob data element number
  *
@@ -936,7 +1046,8 @@ public :
  *
  * @return The root blob data element number
  */
-	size_t get_data_elt_nb() {return the_root_blob.get_data_elt_nb();}
+		size_t get_data_elt_nb() { return the_root_blob.get_data_elt_nb(); }
+
 /**
  * Get root blob data elements name
  *
@@ -944,7 +1055,8 @@ public :
  *
  * @return The root blob data elements name
  */
-	vector<string> get_data_elt_names() {return the_root_blob.get_data_elt_names();}
+		vector <string> get_data_elt_names() { return the_root_blob.get_data_elt_names(); }
+
 /**
  * Get root blob data element name
  *
@@ -953,7 +1065,8 @@ public :
  * @param [in] ind The data element index within the root blob
  * @return The root blob data element name
  */
-	string get_data_elt_name(size_t ind) {return the_root_blob.get_data_elt_name(ind);}
+		string get_data_elt_name(size_t ind) { return the_root_blob.get_data_elt_name(ind); }
+
 /**
  * Get root blob data element value type
  *
@@ -962,7 +1075,7 @@ public :
  * @param [in] ind The data element index within the root blob
  * @return The root blob data element value type
  */
-	int get_data_elt_type(size_t ind) {return the_root_blob.get_data_elt_type(ind);}
+		int get_data_elt_type(size_t ind) { return the_root_blob.get_data_elt_type(ind); }
 //@}
 
 
@@ -991,7 +1104,8 @@ public :
  *
  * @param [in] fl The exception flag
  */
-	void exceptions(bitset<DevicePipeBlob::numFlags> fl) {the_root_blob.exceptions(fl);}
+		void exceptions(bitset <DevicePipeBlob::numFlags> fl) { the_root_blob.exceptions(fl); }
+
 /**
  * Get exception flag
  *
@@ -1011,7 +1125,8 @@ public :
  *
  * @return The exception flag
  */
-	bitset<DevicePipeBlob::numFlags> exceptions() {return the_root_blob.exceptions();}
+		bitset <DevicePipeBlob::numFlags> exceptions() { return the_root_blob.exceptions(); }
+
 /**
  * Reset one exception flag
  *
@@ -1019,7 +1134,8 @@ public :
  *
  * @param [in] fl The exception flag
  */
-	void reset_exceptions(DevicePipeBlob::except_flags fl) {the_root_blob.reset_exceptions(fl);}
+		void reset_exceptions(DevicePipeBlob::except_flags fl) { the_root_blob.reset_exceptions(fl); }
+
 /**
  * Set one exception flag
  *
@@ -1027,7 +1143,8 @@ public :
  *
  * @param [in] fl The exception flag
  */
-	void set_exceptions(DevicePipeBlob::except_flags fl) {the_root_blob.set_exceptions(fl);}
+		void set_exceptions(DevicePipeBlob::except_flags fl) { the_root_blob.set_exceptions(fl); }
+
 /**
  * Check insertion/extraction success
  *
@@ -1036,7 +1153,8 @@ public :
  *
  * @return True if insertion/extraction has failed
  */
-	bool has_failed() {return the_root_blob.has_failed();}
+		bool has_failed() { return the_root_blob.has_failed(); }
+
 /**
  * Get instance insertion/extraction state
  *
@@ -1063,7 +1181,7 @@ public :
  *
  * @return The error bit set.
  */
-	bitset<DevicePipeBlob::numFlags> state() {return the_root_blob.state();}
+		bitset <DevicePipeBlob::numFlags> state() { return the_root_blob.state(); }
 //@}
 
 /**
@@ -1083,40 +1201,43 @@ public :
  * @param [in] str The printing stream
  * @param [in] dd The instance to be printed
  */
-	friend ostream &operator<<(ostream &str,DevicePipe &dd);
+		friend ostream &operator<<(ostream &str, DevicePipe &dd);
 
-public :
+	public :
 ///@privatesection
-	DevicePipe(const DevicePipe &);
-	DevicePipe & operator=(const DevicePipe &);
+		DevicePipe(const DevicePipe &);
+
+		DevicePipe &operator=(const DevicePipe &);
+
 #ifdef HAS_RVALUE
-	DevicePipe(DevicePipe &&);
-	DevicePipe & operator=(DevicePipe &&);
+        DevicePipe(DevicePipe &&);
+        DevicePipe & operator=(DevicePipe &&);
 #endif
-	~DevicePipe();
 
-	void set_time(TimeVal &_ti) {time=_ti;}
-	DevicePipeBlob &get_root_blob() {return the_root_blob;}
+		~DevicePipe();
 
-	DevicePipe &operator[](const string &);
+		void set_time(TimeVal &_ti) { time = _ti; }
 
-private:
-	DevicePipeBlob			the_root_blob;			// Root blob
-	string 					name;					// Pipe name
-	TimeVal 				time;					// When pipe has been read
+		DevicePipeBlob &get_root_blob() { return the_root_blob; }
 
-    class DevicePipeExt
-    {
-    public:
-        DevicePipeExt() {};
-    };
+		DevicePipe &operator[](const string &);
+
+	private:
+		DevicePipeBlob the_root_blob;            // Root blob
+		string name;                    // Pipe name
+		TimeVal time;                    // When pipe has been read
+
+		class DevicePipeExt {
+		public:
+			DevicePipeExt() {};
+		};
 
 #ifdef HAS_UNIQUE_PTR
-    unique_ptr<DevicePipeExt>   ext;
+		unique_ptr<DevicePipeExt>   ext;
 #else
-	DevicePipeExt		        *ext;				// Class extension
+		DevicePipeExt *ext;                // Class extension
 #endif
-};
+	};
 
 /****************************************************************************************
  * 																						*
@@ -1125,72 +1246,74 @@ private:
  * 																						*
  ***************************************************************************************/
 
-DevicePipe &operator>>(DevicePipe &_dp,char *&datum);
+	DevicePipe &operator>>(DevicePipe &_dp, char *&datum);
 
 //
 // For DataElement printing
 //
 
-template <typename T>
-ostream &operator<<(ostream &,DataElement<T> &);
+	template<typename T>
+	ostream &operator<<(ostream &, DataElement<T> &);
 
-template <typename T>
-ostream &operator<<(ostream &,DataElement<vector<T> > &);
+	template<typename T>
+	ostream &operator<<(ostream &, DataElement<vector < T>
 
-template <typename T>
-ostream &operator<<(ostream &,DataElement<T *> &);
+	> &);
+
+	template<typename T>
+	ostream &operator<<(ostream &, DataElement<T *> &);
 
 //
 // For DevicePipe insertion
 //
 
-template <typename T>
-DevicePipe &operator<<(DevicePipe &,T &);
+	template<typename T>
+	DevicePipe &operator<<(DevicePipe &, T &);
 
-template <typename T>
-DevicePipe &operator<<(DevicePipe &,T *);
+	template<typename T>
+	DevicePipe &operator<<(DevicePipe &, T *);
 
-template <typename T>
-DevicePipe &operator<<(DevicePipe &, DataElement<T> &);
+	template<typename T>
+	DevicePipe &operator<<(DevicePipe &, DataElement<T> &);
 
 //
 // For DevicePipe extraction
 //
 
-template <typename T>
-DevicePipe &operator>>(DevicePipe &,T &);
+	template<typename T>
+	DevicePipe &operator>>(DevicePipe &, T &);
 
-template <typename T>
-DevicePipe &operator>>(DevicePipe &,T *);
+	template<typename T>
+	DevicePipe &operator>>(DevicePipe &, T *);
 
-template <typename T>
-DevicePipe &operator>>(DevicePipe &, DataElement<T> &);
+	template<typename T>
+	DevicePipe &operator>>(DevicePipe &, DataElement<T> &);
 
 //
 // For DevicePipeBlob insertion
 //
 
-template <typename T>
-DevicePipeBlob &operator<<(DevicePipeBlob &,T &);
+	template<typename T>
+	DevicePipeBlob &operator<<(DevicePipeBlob &, T &);
 
-template <typename T>
-DevicePipeBlob &operator<<(DevicePipeBlob &,T *);
+	template<typename T>
+	DevicePipeBlob &operator<<(DevicePipeBlob &, T *);
 
-template <typename T>
-DevicePipeBlob &operator<<(DevicePipeBlob &,DataElement<T> &);
+	template<typename T>
+	DevicePipeBlob &operator<<(DevicePipeBlob &, DataElement<T> &);
 
 //
 // For DevicePipeBlob extraction
 //
 
-template <typename T>
-DevicePipeBlob &operator>>(DevicePipeBlob &,T &);
+	template<typename T>
+	DevicePipeBlob &operator>>(DevicePipeBlob &, T &);
 
-template <typename T>
-DevicePipeBlob &operator>>(DevicePipeBlob &,T *);
+	template<typename T>
+	DevicePipeBlob &operator>>(DevicePipeBlob &, T *);
 
-template <typename T>
-DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
+	template<typename T>
+	DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 
 
 
@@ -1207,61 +1330,61 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 // C is data type name
 //
 
-#define EXTRACT_BASIC_TYPE(A,B,C) \
-	failed = false; \
-	ext_state.reset(); \
+#define EXTRACT_BASIC_TYPE(A, B, C) \
+    failed = false; \
+    ext_state.reset(); \
 \
     if (extract_elt_array == Tango_nullptr) \
         ext_state.set(isempty_flag); \
-	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
-		ext_state.set(notenoughde_flag); \
-	else if (extract_ctr == -1 && extract_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		int ind; \
-		if (extract_ind != -1) \
-			ind = extract_ind; \
-		else \
-			ind = extract_ctr; \
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value); \
-		AttributeDataType adt = uni_ptr->_d(); \
-		if (adt != A) \
-		{ \
-			if (adt == ATT_NO_DATA) \
-			{ \
-				if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
-					ext_state.set(isempty_flag); \
-				else \
-					ext_state.set(wrongtype_flag); \
-			} \
-			else \
-				ext_state.set(wrongtype_flag); \
-		} \
-		else \
-		{ \
-			datum = (uni_ptr->B())[0]; \
-			if (extract_ind != -1) \
-				extract_ind = -1; \
-			else \
-				extract_ctr++; \
-		} \
-	} \
+    else if (extract_ctr > (int)extract_elt_array->length() - 1) \
+        ext_state.set(notenoughde_flag); \
+    else if (extract_ctr == -1 && extract_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        int ind; \
+        if (extract_ind != -1) \
+            ind = extract_ind; \
+        else \
+            ind = extract_ctr; \
+        const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value); \
+        AttributeDataType adt = uni_ptr->_d(); \
+        if (adt != A) \
+        { \
+            if (adt == ATT_NO_DATA) \
+            { \
+                if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
+                    ext_state.set(isempty_flag); \
+                else \
+                    ext_state.set(wrongtype_flag); \
+            } \
+            else \
+                ext_state.set(wrongtype_flag); \
+        } \
+        else \
+        { \
+            datum = (uni_ptr->B())[0]; \
+            if (extract_ind != -1) \
+                extract_ind = -1; \
+            else \
+                extract_ctr++; \
+        } \
+    } \
 \
-	if (ext_state.any() == true) \
-		failed = true; \
+    if (ext_state.any() == true) \
+        failed = true; \
 \
-	if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
-		throw_is_empty("operator>>"); \
+    if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
+        throw_is_empty("operator>>"); \
 \
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator>>",true); \
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator>>",true); \
 \
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
 \
-	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
-		throw_type_except(C,"operator>>");
+    if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
+        throw_type_except(C,"operator>>");
 
 
 //
@@ -1271,62 +1394,62 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 // D is data type name
 //
 
-#define EXTRACT_VECTOR_TYPE(A,B,C,D) \
-	failed = false; \
-	ext_state.reset(); \
+#define EXTRACT_VECTOR_TYPE(A, B, C, D) \
+    failed = false; \
+    ext_state.reset(); \
 \
     if (extract_elt_array == Tango_nullptr) \
         ext_state.set(isempty_flag); \
-	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
-		ext_state.set(notenoughde_flag); \
-	else if (extract_ctr == -1 && extract_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		int ind; \
-		if (extract_ind != -1) \
-			ind = extract_ind; \
-		else \
-			ind = extract_ctr; \
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value); \
-		AttributeDataType adt = uni_ptr->_d(); \
-		if (adt != A) \
-		{ \
-			if (adt == ATT_NO_DATA) \
-			{ \
-				if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
-					ext_state.set(isempty_flag); \
-				else \
-					ext_state.set(wrongtype_flag); \
-			} \
-			else \
-				ext_state.set(wrongtype_flag); \
-		} \
-		else \
-		{ \
-			const C &dvsa = uni_ptr->B(); \
-			datum << dvsa; \
-			if (extract_ind != -1) \
-				extract_ind = -1; \
-			else \
-				extract_ctr++; \
-		} \
-	} \
+    else if (extract_ctr > (int)extract_elt_array->length() - 1) \
+        ext_state.set(notenoughde_flag); \
+    else if (extract_ctr == -1 && extract_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        int ind; \
+        if (extract_ind != -1) \
+            ind = extract_ind; \
+        else \
+            ind = extract_ctr; \
+        const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value); \
+        AttributeDataType adt = uni_ptr->_d(); \
+        if (adt != A) \
+        { \
+            if (adt == ATT_NO_DATA) \
+            { \
+                if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
+                    ext_state.set(isempty_flag); \
+                else \
+                    ext_state.set(wrongtype_flag); \
+            } \
+            else \
+                ext_state.set(wrongtype_flag); \
+        } \
+        else \
+        { \
+            const C &dvsa = uni_ptr->B(); \
+            datum << dvsa; \
+            if (extract_ind != -1) \
+                extract_ind = -1; \
+            else \
+                extract_ctr++; \
+        } \
+    } \
 \
-	if (ext_state.any() == true) \
-		failed = true; \
+    if (ext_state.any() == true) \
+        failed = true; \
 \
-	if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
-		throw_is_empty("operator>>"); \
+    if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
+        throw_is_empty("operator>>"); \
 \
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator>>",true); \
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator>>",true); \
 \
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
 \
-	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
-		throw_type_except(D,"operator>>");
+    if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
+        throw_type_except(D,"operator>>");
 
 //
 // A is the required value for the IDL enum descriminator
@@ -1335,65 +1458,65 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 // D is data type name
 //
 
-#define EXTRACT_SEQ_PTR_TYPE(A,B,C,D) \
-	failed = false; \
-	ext_state.reset(); \
+#define EXTRACT_SEQ_PTR_TYPE(A, B, C, D) \
+    failed = false; \
+    ext_state.reset(); \
 \
     if (extract_elt_array == Tango_nullptr) \
         ext_state.set(isempty_flag); \
-	else if (extract_ctr > (int)extract_elt_array->length() - 1) \
-		ext_state.set(notenoughde_flag); \
-	else if (extract_ctr == -1 && extract_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		int ind; \
-		if (extract_ind != -1) \
-			ind = extract_ind; \
-		else \
-			ind = extract_ctr; \
-		const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value); \
-		AttributeDataType adt = uni_ptr->_d(); \
-		if (adt != A) \
-		{ \
-			if (adt == ATT_NO_DATA) \
-			{ \
-				if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
-					ext_state.set(isempty_flag); \
-				else \
-					ext_state.set(wrongtype_flag); \
-			} \
-			else \
-				ext_state.set(wrongtype_flag); \
-		} \
-		else \
-		{ \
-			C &dvsa = const_cast<C &>(uni_ptr->B()); \
-			DevLong max,len; \
-			max = dvsa.maximum(); \
-			len = dvsa.length(); \
-			datum->replace(max,len,dvsa.get_buffer((DevBoolean)true),true); \
-			if (extract_ind != -1) \
-				extract_ind = -1; \
-			else \
-				extract_ctr++; \
-		} \
-	} \
+    else if (extract_ctr > (int)extract_elt_array->length() - 1) \
+        ext_state.set(notenoughde_flag); \
+    else if (extract_ctr == -1 && extract_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        int ind; \
+        if (extract_ind != -1) \
+            ind = extract_ind; \
+        else \
+            ind = extract_ctr; \
+        const AttrValUnion *uni_ptr = &((*extract_elt_array)[ind].value); \
+        AttributeDataType adt = uni_ptr->_d(); \
+        if (adt != A) \
+        { \
+            if (adt == ATT_NO_DATA) \
+            { \
+                if ((*extract_elt_array)[ind].inner_blob.length() == 0) \
+                    ext_state.set(isempty_flag); \
+                else \
+                    ext_state.set(wrongtype_flag); \
+            } \
+            else \
+                ext_state.set(wrongtype_flag); \
+        } \
+        else \
+        { \
+            C &dvsa = const_cast<C &>(uni_ptr->B()); \
+            DevLong max,len; \
+            max = dvsa.maximum(); \
+            len = dvsa.length(); \
+            datum->replace(max,len,dvsa.get_buffer((DevBoolean)true),true); \
+            if (extract_ind != -1) \
+                extract_ind = -1; \
+            else \
+                extract_ctr++; \
+        } \
+    } \
 \
-	if (ext_state.any() == true) \
-		failed = true; \
+    if (ext_state.any() == true) \
+        failed = true; \
 \
-	if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
-		throw_is_empty("operator>>"); \
+    if (ext_state.test(isempty_flag) == true && exceptions_flags.test(isempty_flag) == true) \
+        throw_is_empty("operator>>"); \
 \
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator>>",true); \
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator>>",true); \
 \
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
 \
-	if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
-		throw_type_except(D,"operator>>");
+    if (ext_state.test(wrongtype_flag) == true && exceptions_flags.test(wrongtype_flag) == true) \
+        throw_type_except(D,"operator>>");
 
 
 //
@@ -1401,51 +1524,51 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 // B is the IDL enum method to set data
 //
 
-#define INSERT_BASIC_TYPE(A,B) \
-	failed = false; \
-	ext_state.reset(); \
+#define INSERT_BASIC_TYPE(A, B) \
+    failed = false; \
+    ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
-		ext_state.set(blobdenamenotset_flag); \
-	else if (insert_ctr == -1 && insert_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
-			ext_state.set(notenoughde_flag); \
-		else \
-		{ \
-			A dvsa; \
-			dvsa.length(1); \
-			dvsa[0] = datum; \
+    if (insert_elt_array == Tango_nullptr) \
+        ext_state.set(blobdenamenotset_flag); \
+    else if (insert_ctr == -1 && insert_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        size_t nb_insert = insert_elt_array->length(); \
+        if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
+            ext_state.set(notenoughde_flag); \
+        else \
+        { \
+            A dvsa; \
+            dvsa.length(1); \
+            dvsa[0] = datum; \
 \
-			if (insert_ind != -1) \
-			{ \
-				(*insert_elt_array)[insert_ind].value.B(dvsa); \
+            if (insert_ind != -1) \
+            { \
+                (*insert_elt_array)[insert_ind].value.B(dvsa); \
                 (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(SCALAR_PIPE); \
-				insert_ind = -1; \
-			} \
-			else \
-			{ \
-				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
+                insert_ind = -1; \
+            } \
+            else \
+            { \
+                (*insert_elt_array)[insert_ctr].value.B(dvsa); \
                 (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(SCALAR_PIPE); \
-				insert_ctr++; \
-			} \
-		} \
-	} \
+                insert_ctr++; \
+            } \
+        } \
+    } \
 \
-	if (ext_state.any() == true) \
-		failed = true; \
+    if (ext_state.any() == true) \
+        failed = true; \
 \
-	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
-		throw_name_not_set("operator<<"); \
+    if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
+        throw_name_not_set("operator<<"); \
 \
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
 \
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator<<",false);
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator<<",false);
 
 
 //
@@ -1453,109 +1576,52 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 // B is the IDL enum method to set data
 //
 
-#define INSERT_VECTOR_TYPE(A,B) \
-	failed = false; \
-	ext_state.reset(); \
+#define INSERT_VECTOR_TYPE(A, B) \
+    failed = false; \
+    ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
-		ext_state.set(blobdenamenotset_flag); \
-	else if (insert_ctr == -1 && insert_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
-			ext_state.set(notenoughde_flag); \
-		else \
-		{ \
-			A dvsa; \
-			if (insert_ind != -1) \
-			{ \
-				(*insert_elt_array)[insert_ind].value.B(dvsa); \
-				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
-				dvsb.replace(datum.size(),datum.size(),&datum[0],false); \
+    if (insert_elt_array == Tango_nullptr) \
+        ext_state.set(blobdenamenotset_flag); \
+    else if (insert_ctr == -1 && insert_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        size_t nb_insert = insert_elt_array->length(); \
+        if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
+            ext_state.set(notenoughde_flag); \
+        else \
+        { \
+            A dvsa; \
+            if (insert_ind != -1) \
+            { \
+                (*insert_elt_array)[insert_ind].value.B(dvsa); \
+                A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
+                dvsb.replace(datum.size(),datum.size(),&datum[0],false); \
                 (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
-				insert_ind = -1; \
-			} \
-			else \
-			{ \
-				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
-				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
-				dvsb.replace(datum.size(),datum.size(),&datum[0],false); \
+                insert_ind = -1; \
+            } \
+            else \
+            { \
+                (*insert_elt_array)[insert_ctr].value.B(dvsa); \
+                A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
+                dvsb.replace(datum.size(),datum.size(),&datum[0],false); \
                 (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
-				insert_ctr++; \
-			} \
-		} \
-	} \
+                insert_ctr++; \
+            } \
+        } \
+    } \
 \
-	if (ext_state.any() == true) \
-		failed = true; \
+    if (ext_state.any() == true) \
+        failed = true; \
 \
-	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
-		throw_name_not_set("operator<<"); \
+    if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
+        throw_name_not_set("operator<<"); \
 \
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
 \
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator<<",false);
-
-
-
-//
-// A is the sequence CORBA name
-// B is the IDL enum method to set data
-//
-
-#define INSERT_SEQ_TYPE(A,B) \
-	failed = false; \
-	ext_state.reset(); \
-\
-	if (insert_elt_array == Tango_nullptr) \
-		ext_state.set(blobdenamenotset_flag); \
-	else if (insert_ctr == -1 && insert_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
-			ext_state.set(notenoughde_flag); \
-		else \
-		{ \
-			DevLong max,len; \
-			max = datum.maximum(); \
-			len = datum.length(); \
-			A dvsa; \
-			if (insert_ind != -1) \
-			{ \
-				(*insert_elt_array)[insert_ind].value.B(dvsa); \
-				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
-				dvsb.replace(max,len,datum.get_buffer(),false); \
-                (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
-				insert_ind = -1; \
-			} \
-			else \
-			{ \
-				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
-				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
-				dvsb.replace(max,len,datum.get_buffer(),false); \
-                (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
-				insert_ctr++; \
-			} \
-		} \
-	} \
-\
-	if (ext_state.any() == true) \
-		failed = true; \
-\
-	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
-		throw_name_not_set("operator<<"); \
-\
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
-\
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator<<",false);
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator<<",false);
 
 
 
@@ -1564,62 +1630,119 @@ DevicePipeBlob &operator>>(DevicePipeBlob &, DataElement<T> &);
 // B is the IDL enum method to set data
 //
 
-#define INSERT_SEQ_PTR_TYPE(A,B) \
-	failed = false; \
-	ext_state.reset(); \
+#define INSERT_SEQ_TYPE(A, B) \
+    failed = false; \
+    ext_state.reset(); \
 \
-	if (insert_elt_array == Tango_nullptr) \
-		ext_state.set(blobdenamenotset_flag); \
-	else if (insert_ctr == -1 && insert_ind == -1) \
-		ext_state.set(mixing_flag); \
-	else \
-	{ \
-		size_t nb_insert = insert_elt_array->length(); \
-		if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
-			ext_state.set(notenoughde_flag); \
-		else \
-		{ \
-			A dvsa; \
-			DevLong max,len; \
-			max = datum->maximum(); \
-			len = datum->length(); \
-			bool rel = datum->release(); \
-			if (rel == false) \
-			{ \
-				datum->replace(max,len,datum->get_buffer(),true); \
-			} \
-			if (insert_ind != -1) \
-			{ \
-				(*insert_elt_array)[insert_ind].value.B(dvsa); \
-				A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
-				dvsb.replace(max,len,datum->get_buffer((DevBoolean)true),true); \
+    if (insert_elt_array == Tango_nullptr) \
+        ext_state.set(blobdenamenotset_flag); \
+    else if (insert_ctr == -1 && insert_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        size_t nb_insert = insert_elt_array->length(); \
+        if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
+            ext_state.set(notenoughde_flag); \
+        else \
+        { \
+            DevLong max,len; \
+            max = datum.maximum(); \
+            len = datum.length(); \
+            A dvsa; \
+            if (insert_ind != -1) \
+            { \
+                (*insert_elt_array)[insert_ind].value.B(dvsa); \
+                A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
+                dvsb.replace(max,len,datum.get_buffer(),false); \
                 (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
-				insert_ind = -1; \
-			} \
-			else \
-			{\
-				(*insert_elt_array)[insert_ctr].value.B(dvsa); \
-				A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
-				dvsb.replace(max,len,datum->get_buffer((DevBoolean)true),true); \
+                insert_ind = -1; \
+            } \
+            else \
+            { \
+                (*insert_elt_array)[insert_ctr].value.B(dvsa); \
+                A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
+                dvsb.replace(max,len,datum.get_buffer(),false); \
                 (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
-				insert_ctr++; \
-			} \
-	\
-			delete datum; \
-		} \
-	} \
+                insert_ctr++; \
+            } \
+        } \
+    } \
 \
-	if (ext_state.any() == true) \
-		failed = true; \
+    if (ext_state.any() == true) \
+        failed = true; \
 \
-	if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
-		throw_name_not_set("operator<<"); \
+    if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
+        throw_name_not_set("operator<<"); \
 \
-	if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
-		throw_mixing("operator>>"); \
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
 \
-	if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
-		throw_too_many("operator<<",false);
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator<<",false);
 
 
+
+//
+// A is the sequence CORBA name
+// B is the IDL enum method to set data
+//
+
+#define INSERT_SEQ_PTR_TYPE(A, B) \
+    failed = false; \
+    ext_state.reset(); \
+\
+    if (insert_elt_array == Tango_nullptr) \
+        ext_state.set(blobdenamenotset_flag); \
+    else if (insert_ctr == -1 && insert_ind == -1) \
+        ext_state.set(mixing_flag); \
+    else \
+    { \
+        size_t nb_insert = insert_elt_array->length(); \
+        if (nb_insert == 0 || insert_ctr > (int)nb_insert - 1) \
+            ext_state.set(notenoughde_flag); \
+        else \
+        { \
+            A dvsa; \
+            DevLong max,len; \
+            max = datum->maximum(); \
+            len = datum->length(); \
+            bool rel = datum->release(); \
+            if (rel == false) \
+            { \
+                datum->replace(max,len,datum->get_buffer(),true); \
+            } \
+            if (insert_ind != -1) \
+            { \
+                (*insert_elt_array)[insert_ind].value.B(dvsa); \
+                A &dvsb = (*insert_elt_array)[insert_ind].value.B(); \
+                dvsb.replace(max,len,datum->get_buffer((DevBoolean)true),true); \
+                (*insert_elt_array)[insert_ind].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
+                insert_ind = -1; \
+            } \
+            else \
+            {\
+                (*insert_elt_array)[insert_ctr].value.B(dvsa); \
+                A &dvsb = (*insert_elt_array)[insert_ctr].value.B(); \
+                dvsb.replace(max,len,datum->get_buffer((DevBoolean)true),true); \
+                (*insert_elt_array)[insert_ctr].inner_blob_name = Tango::string_dup(ARRAY_PIPE); \
+                insert_ctr++; \
+            } \
+    \
+            delete datum; \
+        } \
+    } \
+\
+    if (ext_state.any() == true) \
+        failed = true; \
+\
+    if (ext_state.test(blobdenamenotset_flag) == true && exceptions_flags.test(blobdenamenotset_flag) == true) \
+        throw_name_not_set("operator<<"); \
+\
+    if (ext_state.test(mixing_flag) == true && exceptions_flags.test(mixing_flag) == true) \
+        throw_mixing("operator>>"); \
+\
+    if (ext_state.test(notenoughde_flag) == true && exceptions_flags.test(notenoughde_flag) == true) \
+        throw_too_many("operator<<",false);
+
+}//Tango
 #endif /* _DEVICEPIPE_H */
