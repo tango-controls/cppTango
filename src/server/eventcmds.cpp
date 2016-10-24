@@ -93,27 +93,8 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 									   (const char *)"DServer::event_subscription_change");
 	}
 
-//
-// If the EventSupplier object is not created, create it right now
-//
 
-	NotifdEventSupplier *ev;
-	if ((ev = tg->get_notifd_event_supplier()) == NULL)
-	{
-		tg->create_notifd_event_supplier();
-		ev = tg->get_notifd_event_supplier();
-	}
-
-//
-// If we are using a file as database, gives port number to event supplier
-//
-
-	if (Util::_FileDb == true && ev != NULL)
-	{
-		ev->file_db_svr();
-	}
-
-    string mcast;
+	string mcast;
     int rate,ivl;
 
 //
@@ -137,13 +118,6 @@ DevLong DServer::event_subscription_change(const Tango::DevVarStringArray *argin
 	}
 
     event_subscription(dev_name,attr_name,action,event,attr_name_lower,NOTIFD,mcast,rate,ivl,NULL,client_release);
-
-//
-// Init one subscription command flag in Eventsupplier
-//
-
-    if (ev != NULL && ev->get_one_subscription_cmd() == false)
-        ev->set_one_subscription_cmd(true);
 
 //
 // Return to caller

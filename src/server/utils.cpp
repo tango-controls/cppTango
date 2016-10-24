@@ -174,7 +174,7 @@ polling_bef_9_def(false)
 #else
 Util::Util(int argc,char *argv[]):cl_list_ptr(NULL),ext(new UtilExt),
 heartbeat_th(NULL),heartbeat_th_id(0),poll_mon("utils_poll"),poll_on(false),ser_model(BY_DEVICE),
-only_one("process"),nd_event_supplier(NULL),py_interp(NULL),py_ds(false),py_dbg(false),
+only_one("process"),py_interp(NULL),py_ds(false),py_dbg(false),
 db_cache(NULL),inter(NULL),svr_starting(true),svr_stopping(false),poll_pool_size(ULONG_MAX),
 conf_needs_db_upd(false),ev_loop_func(NULL),shutdown_server(false),_dummy_thread(false),
 zmq_event_supplier(NULL),endpoint_specified(false),user_pub_hwm(-1),wattr_nan_allowed(false),
@@ -438,7 +438,6 @@ void Util::effective_job(int argc,char *argv[])
 // first event is fired ...
 //
 
-		create_notifd_event_supplier();
 		create_zmq_event_supplier();
 
 //
@@ -1513,38 +1512,6 @@ void Util::init_host_name()
 	else
 	{
 		print_err_message("Cant retrieve server host name");
-	}
-}
-
-//+------------------------------------------------------------------------------------------------------------------
-//
-// method :
-//		Util::create_notifd_event_supplier()
-//
-// description :
-//		This method create the notifd event_supplier if possible
-//
-//-------------------------------------------------------------------------------------------------------------------
-
-void Util::create_notifd_event_supplier()
-{
-	if (_UseDb == true)
-	{
-		try
-		{
-			nd_event_supplier = NotifdEventSupplier::create(orb,ds_name,this);
-			nd_event_supplier->connect();
-		}
-		catch (...)
-		{
-			nd_event_supplier = NULL;
-			if (_FileDb == true)
-				cerr << "Can't create notifd event supplier. Notifd event not available" << endl;
-		}
-	}
-	else
-	{
-		nd_event_supplier = NULL;
 	}
 }
 
