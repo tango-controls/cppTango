@@ -514,7 +514,7 @@ public :
 
     virtual void get_subscription_command_name(string &cmd) {cmd="EventSubscriptionChange";}
 
-	CORBA::ORB_var 					orb_;
+	TangORB_var 					orb_;
 
 protected :
 	NotifdEventConsumer(ApiUtil *ptr);

@@ -46,14 +46,6 @@
 #include <idl/tango.h>
 
 //
-// A short inline function to hide the CORBA::string_dup function
-//
-namespace Tango {
-	inline char *string_dup(char *s) { return CORBA::string_dup(s); }
-
-	inline char *string_dup(const char *s) { return CORBA::string_dup(s); }
-}
-//
 // Some Windows specific include (necessary when used with MFC)
 //
 

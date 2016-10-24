@@ -342,7 +342,7 @@ void ApiUtil::create_orb()
         options[nb_opt - 2][1] = NULL;
     }
 
-	_orb = CORBA::ORB_init(_argc,_argv,"omniORB4",options);
+	_orb = TangORB_init(_argc,_argv,"omniORB4",options);
 
 	free(_argv);
 

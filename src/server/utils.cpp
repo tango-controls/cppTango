@@ -321,7 +321,7 @@ void Util::effective_job(int argc,char *argv[])
                 options[nb_opt - 2][1] = NULL;
             }
 
-			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
+			orb = TangORB_init(argc,argv,"omniORB4",options);
 		}
 		else
 		{
@@ -351,7 +351,7 @@ void Util::effective_job(int argc,char *argv[])
                 options[nb_opt - 2][1] = NULL;
             }
 
-			orb = CORBA::ORB_init(argc,argv,"omniORB4",options);
+			orb = TangORB_init(argc,argv,"omniORB4",options);
 		}
 
 #ifndef TANGO_HAS_LOG4TANGO

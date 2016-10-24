@@ -940,7 +940,7 @@ private:
 	ORBWin32Loop *loop_th;
 #endif
 
-	CORBA::ORB_var 			orb;
+	TangORB_var 			orb;
 	PortableServer::POA_var _poa;
 
 	string					ds_instance_name;	// The instance name

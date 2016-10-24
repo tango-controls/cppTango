@@ -193,7 +193,7 @@ class NotifdEventSupplier : public EventSupplier, public POA_CosNotifyComm::Stru
 {
 public :
 
-	TANGO_IMP_EXP static NotifdEventSupplier *create(CORBA::ORB_var,string,Util *);
+	TANGO_IMP_EXP static NotifdEventSupplier *create(TangORB_var,string,Util *);
 	void connect();
 	void disconnect_structured_push_supplier();
 	void disconnect_from_notifd();
@@ -210,7 +210,7 @@ public :
 
 protected :
 
-	NotifdEventSupplier(CORBA::ORB_var,
+	NotifdEventSupplier(TangORB_var,
 		CosNotifyChannelAdmin::SupplierAdmin_var,
 		CosNotifyChannelAdmin::ProxyID,
 		CosNotifyChannelAdmin::ProxyConsumer_var,
@@ -228,12 +228,12 @@ private :
 	CosNotifyChannelAdmin::ProxyConsumer_var 				proxyConsumer;
 	CosNotifyChannelAdmin::StructuredProxyPushConsumer_var 	structuredProxyPushConsumer;
 	CosNotifyChannelAdmin::EventChannelFactory_var 			eventChannelFactory;
-	CORBA::ORB_var 											orb_;
+	TangORB_var 											orb_;
 
 	string 		event_channel_ior;
 
 	void reconnect_notifd();
-	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,CORBA::ORB_var &,string &,Util *);
+	TANGO_IMP_EXP static void connect_to_notifd(NotifService &,TangORB_var &,string &,Util *);
 };
 
 

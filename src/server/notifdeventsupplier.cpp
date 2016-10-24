@@ -69,7 +69,7 @@ NotifdEventSupplier *NotifdEventSupplier::_instance = NULL;
 /************************************************************************/
 
 
-NotifdEventSupplier::NotifdEventSupplier(CORBA::ORB_var _orb,
+NotifdEventSupplier::NotifdEventSupplier(TangORB_var _orb,
 	CosNotifyChannelAdmin::SupplierAdmin_var _supplierAdmin,
 	CosNotifyChannelAdmin::ProxyID _proxId,
 	CosNotifyChannelAdmin::ProxyConsumer_var _proxyConsumer,
@@ -91,7 +91,7 @@ NotifdEventSupplier::NotifdEventSupplier(CORBA::ORB_var _orb,
 	_instance = this;
 }
 
-NotifdEventSupplier *NotifdEventSupplier::create(CORBA::ORB_var _orb,
+NotifdEventSupplier *NotifdEventSupplier::create(TangORB_var _orb,
 				     string server_name,
 				     Util *tg)
 {
@@ -160,7 +160,7 @@ void NotifdEventSupplier::subscription_change(TANGO_UNUSED(const CosNotification
 //
 //-----------------------------------------------------------------------------
 
-void NotifdEventSupplier::connect_to_notifd(NotifService &ns,CORBA::ORB_var &_orb,
+void NotifdEventSupplier::connect_to_notifd(NotifService &ns,TangORB_var &_orb,
 				      string &server_name,
 				      Util *tg)
 {
