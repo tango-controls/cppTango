@@ -182,7 +182,7 @@ namespace Tango {
  * @throws WrongNameSyntax, ConnectionFailed
  *
  */
-		DeviceProxy(string &name, CORBA::ORB *orb = NULL);
+		DeviceProxy(string &name, TangORB *orb = NULL);
 
 /**
  * Create a DeviceProxy instance.
@@ -208,13 +208,13 @@ namespace Tango {
  * @throws WrongNameSyntax, ConnectionFailed
  *
  */
-		DeviceProxy(const char *name, CORBA::ORB *orb = NULL);
+		DeviceProxy(const char *name, TangORB *orb = NULL);
 
 //@}
 /// @privatesection
-		DeviceProxy(string &name, bool ch_access, CORBA::ORB *orb = NULL);
+		DeviceProxy(string &name, bool ch_access, TangORB *orb = NULL);
 
-		DeviceProxy(const char *, bool ch_access, CORBA::ORB *orb = NULL);
+		DeviceProxy(const char *, bool ch_access, TangORB *orb = NULL);
 
 		DeviceProxy(const DeviceProxy &);
 
@@ -222,7 +222,7 @@ namespace Tango {
 
 		virtual ~DeviceProxy();
 
-		DeviceProxy() : Connection((CORBA::ORB *) NULL), db_dev(NULL), adm_device(NULL), lock_ctr(0),
+		DeviceProxy() : Connection((TangORB *) NULL), db_dev(NULL), adm_device(NULL), lock_ctr(0),
 						ext_proxy(Tango_nullptr) { dbase_used = false; }
 /// @publicsection
 

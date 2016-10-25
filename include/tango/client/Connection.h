@@ -555,7 +555,7 @@ namespace Tango {
 ///@privatesection
 		virtual string dev_name()=0;
 
-		Connection(CORBA::ORB *orb = NULL);
+		Connection(TangORB *orb = NULL);
 
 		Connection(bool dummy);
 
