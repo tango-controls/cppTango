@@ -90,9 +90,9 @@ namespace Tango {
 			MULTIPLE
 		};
 
-		void read_attr_except(CORBA::Request_ptr, long, read_attr_type);
+		void read_attr_except(TangoRequest_ptr, long, read_attr_type);
 
-		void write_attr_except(CORBA::Request_ptr, long, TgRequest::ReqType);
+		void write_attr_except(TangoRequest_ptr, long, TgRequest::ReqType);
 
 		void check_connect_adm_device();
 

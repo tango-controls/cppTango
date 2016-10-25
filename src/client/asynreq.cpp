@@ -33,6 +33,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
+#include <tango/frontend/tango_request.hxx>
 
 
 namespace Tango
@@ -51,7 +52,7 @@ namespace Tango
 //
 //-----------------------------------------------------------------------------
 
-long AsynReq::store_request(CORBA::Request_ptr req,TgRequest::ReqType type)
+long AsynReq::store_request(TangoRequest_ptr req,TgRequest::ReqType type)
 {
 //
 // If they are some cancelled requests, remove them
@@ -110,7 +111,7 @@ long AsynReq::store_request(CORBA::Request_ptr req,TgRequest::ReqType type)
 //-----------------------------------------------------------------------------
 
 
-void AsynReq::store_request(CORBA::Request_ptr req,
+void AsynReq::store_request(TangoRequest_ptr req,
 		   	    CallBack *cb,
 		   	    Connection *dev,
 		   	    TgRequest::ReqType type)
@@ -124,7 +125,7 @@ void AsynReq::store_request(CORBA::Request_ptr req,
 
 	omni_mutex_lock sync(*this);
 	cb_dev_table.insert(map<Connection *,TgRequest>::value_type(dev,tmp_req_dev));
-	cb_req_table.insert(map<CORBA::Request_ptr,TgRequest>::value_type(req,tmp_req));
+	cb_req_table.insert(map<TangoRequest_ptr,TgRequest>::value_type(req,tmp_req));
 
 }
 
@@ -176,9 +177,9 @@ Tango::TgRequest &AsynReq::get_request(long req_id)
 //
 //-----------------------------------------------------------------------------
 
-Tango::TgRequest &AsynReq::get_request(CORBA::Request_ptr req)
+Tango::TgRequest &AsynReq::get_request(TangoRequest_ptr req)
 {
-	map<CORBA::Request_ptr,TgRequest>::iterator pos;
+	map<TangoRequest_ptr,TgRequest>::iterator pos;
 
 	omni_mutex_lock sync(*this);
 	pos = cb_req_table.find(req);
@@ -241,7 +242,7 @@ Tango::TgRequest *AsynReq::get_request(Tango::Connection *dev)
 //
 //-----------------------------------------------------------------------------
 
-void AsynReq::mark_as_arrived(CORBA::Request_ptr req)
+void AsynReq::mark_as_arrived(TangoRequest_ptr req)
 {
 	multimap<Connection *,TgRequest>::iterator pos;
 
@@ -340,10 +341,10 @@ bool AsynReq::remove_cancelled_request(long req_id)
 //
 //-----------------------------------------------------------------------------
 
-void AsynReq::remove_request(Connection *dev,CORBA::Request_ptr req)
+void AsynReq::remove_request(Connection *dev,TangoRequest_ptr req)
 {
 	multimap<Connection *,TgRequest>::iterator pos;
-	map<CORBA::Request_ptr,TgRequest>::iterator pos_req;
+	map<TangoRequest_ptr,TgRequest>::iterator pos_req;
 
 	omni_mutex_lock sync(*this);
 	for (pos = cb_dev_table.lower_bound(dev);pos != cb_dev_table.upper_bound(dev);++pos)

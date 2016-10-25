@@ -29,6 +29,7 @@
 #include <tango.h>
 
 #include <map>
+#include <tango/frontend/tango_request.hxx>
 
 using namespace std;
 
@@ -365,11 +366,11 @@ public:
 		WRITE_ATTR
 	};
 
-	TgRequest(CORBA::Request_ptr re,ReqType ty):request(re),req_type(ty),cb_ptr(NULL),
+	TgRequest(TangoRequest_ptr re,ReqType ty):request(re),req_type(ty),cb_ptr(NULL),
 						    					arrived(false),dev(NULL)
 	{};
 
-	TgRequest(CORBA::Request_ptr re,ReqType ty,CallBack *cb):request(re),req_type(ty),cb_ptr(cb),
+	TgRequest(TangoRequest_ptr re,ReqType ty,CallBack *cb):request(re),req_type(ty),cb_ptr(cb),
 							 								 arrived(false),dev(NULL)
 	{};
 
@@ -377,7 +378,7 @@ public:
 							 								  arrived(false),dev(con)
 	{};
 
-	CORBA::Request_ptr	request;
+	TangoRequest_ptr	request;
 	ReqType				req_type;
 	CallBack			*cb_ptr;
 	bool				arrived;
@@ -391,20 +392,20 @@ public:
 	~AsynReq() {delete ui_ptr;}
 
 	TgRequest &get_request(long);
-	TgRequest &get_request(CORBA::Request_ptr);
+	TgRequest &get_request(TangoRequest_ptr);
 	TgRequest *get_request(Tango::Connection *);
 
-	long store_request(CORBA::Request_ptr,TgRequest::ReqType);
-	void store_request(CORBA::Request_ptr,CallBack *,Connection *,TgRequest::ReqType);
+	long store_request(TangoRequest_ptr,TgRequest::ReqType);
+	void store_request(TangoRequest_ptr,CallBack *,Connection *,TgRequest::ReqType);
 
 	void remove_request(long);
-	void remove_request(Connection *,CORBA::Request_ptr);
+	void remove_request(Connection *,TangoRequest_ptr);
 
 	size_t get_request_nb() {omni_mutex_lock sync(*this);return asyn_poll_req_table.size();}
 	size_t get_cb_request_nb() {omni_mutex_lock sync(*this);return cb_req_table.size();}
 	size_t get_cb_request_nb_i() {return cb_req_table.size();}
 
-	void mark_as_arrived(CORBA::Request_ptr req);
+	void mark_as_arrived(TangoRequest_ptr req);
 	multimap<Connection *,TgRequest> &get_cb_dev_table() {return cb_dev_table;}
 
 	void mark_as_cancelled(long);
@@ -417,7 +418,7 @@ protected:
 	UniqIdent 					*ui_ptr;
 
 	multimap<Connection *,TgRequest>	cb_dev_table;
-	map<CORBA::Request_ptr,TgRequest>	cb_req_table;
+	map<TangoRequest_ptr,TgRequest>	cb_req_table;
 
 	vector<long>				cancelled_request;
 

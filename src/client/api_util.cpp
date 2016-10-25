@@ -36,6 +36,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #include <tango.h>
 #include <tango/client/eventconsumer.h>
 #include <tango/client/api_util.tpp>
+#include <tango/frontend/tango_request.hxx>
 
 #ifndef _TG_WINDOWS_
 	#include <sys/types.h>
@@ -344,7 +345,7 @@ void ApiUtil::get_asynch_replies()
         auto orb = this->tango_orb_provider_ptr_->get();
 		while (orb->poll_next_response() == true)
 		{
-			CORBA::Request_ptr req;
+			TangoRequest_ptr req;
 			orb->get_next_response(req);
 
 //
@@ -476,7 +477,7 @@ void ApiUtil::get_asynch_replies(long call_timeout)
 
 	if (asyn_p_table->get_cb_request_nb() != 0)
 	{
-		CORBA::Request_ptr req;
+		TangoRequest_ptr req;
 
 		if (call_timeout != 0)
 		{

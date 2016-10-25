@@ -807,7 +807,7 @@ inline ApiUtil *ApiUtil::instance()
 	return _instance;
 }
 
-inline long Connection::add_asyn_request(CORBA::Request_ptr req,TgRequest::ReqType req_type)
+inline long Connection::add_asyn_request(TangoRequest_ptr req,TgRequest::ReqType req_type)
 {
 	omni_mutex_lock guard(asyn_mutex);
 	long id = ApiUtil::instance()->get_pasyn_table()->store_request(req,req_type);
@@ -823,14 +823,14 @@ inline void Connection::remove_asyn_request(long id)
 	pasyn_ctr--;
 }
 
-inline void Connection::add_asyn_cb_request(CORBA::Request_ptr req,CallBack *cb,Connection *con,TgRequest::ReqType req_type)
+inline void Connection::add_asyn_cb_request(TangoRequest_ptr req,CallBack *cb,Connection *con,TgRequest::ReqType req_type)
 {
 	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->store_request(req,cb,con,req_type);
 	pasyn_cb_ctr++;
 }
 
-inline void Connection::remove_asyn_cb_request(Connection *con,CORBA::Request_ptr req)
+inline void Connection::remove_asyn_cb_request(Connection *con,TangoRequest_ptr req)
 {
 	omni_mutex_lock guard(asyn_mutex);
 	ApiUtil::instance()->get_pasyn_table()->remove_request(con,req);

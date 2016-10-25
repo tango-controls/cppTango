@@ -39,6 +39,7 @@ static const char *RcsId = "$Id$\n$Name$";
 
 
 #include <tango.h>
+#include <tango/frontend/tango_request.hxx>
 
 #define _dyn_attr
 #ifdef _TG_WINDOWS_
@@ -133,7 +134,7 @@ long Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 // Create the request object
 //
 
-	CORBA::Request_ptr request;
+	TangoRequest_ptr request;
 
 	if (version >= 4)
 		request = device_4->_request("command_inout_4");
@@ -863,7 +864,7 @@ long DeviceProxy::read_attributes_asynch(vector<string> &attr_names)
 	for (int i = 0;i < nb_names;i++)
 		names[i] = attr_names[i].c_str();
 
-	CORBA::Request_ptr request;
+	TangoRequest_ptr request;
 	if (version >= 5)
     {
 		ClntIdent ci;
@@ -1814,7 +1815,7 @@ DeviceAttribute *DeviceProxy::read_attribute_reply(long id,long call_timeout)
 //-----------------------------------------------------------------------------
 
 
-void DeviceProxy::read_attr_except(CORBA::Request_ptr req,long id,read_attr_type type)
+void DeviceProxy::read_attr_except(TangoRequest_ptr req,long id,read_attr_type type)
 {
 	CORBA::Environment_ptr env = req->env();
 	CORBA::Exception *ex_ptr = env->exception();
@@ -2061,7 +2062,7 @@ long DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list)
 			ApiUtil::device_to_attr(attr_list[i],att[i],device_name);
 	}
 
-	CORBA::Request_ptr request;
+	TangoRequest_ptr request;
 	if (version >= 4)
 	{
 		ClntIdent ci;
@@ -2147,7 +2148,7 @@ long DeviceProxy::write_attribute_asynch(DeviceAttribute &attr)
 		ApiUtil::device_to_attr(attr,att_4[0]);
 	}
 
-	CORBA::Request_ptr request;
+	TangoRequest_ptr request;
 
 	if (version >= 4)
 	{
@@ -2452,7 +2453,7 @@ void DeviceProxy::write_attributes_reply(long id)
 //-----------------------------------------------------------------------------
 
 
-void DeviceProxy::write_attr_except(CORBA::Request_ptr req,long id,TgRequest::ReqType req_type)
+void DeviceProxy::write_attr_except(TangoRequest_ptr req,long id,TgRequest::ReqType req_type)
 {
 	CORBA::Environment_ptr env = req->env();
 	CORBA::Exception *ex_ptr = env->exception();

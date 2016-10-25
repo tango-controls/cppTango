@@ -35,6 +35,7 @@ static const char *RcsId = "$Id$\n$Name$";
 #endif
 
 #include <tango.h>
+#include <tango/frontend/tango_request.hxx>
 
 
 #ifdef _TG_WINDOWS_
@@ -183,7 +184,7 @@ void Connection::get_asynch_replies()
 	{
 		while (orb->poll_next_response() == true)
 		{
-			CORBA::Request_ptr req;
+			TangoRequest_ptr req;
 			orb->get_next_response(req);
 
 //
@@ -269,7 +270,7 @@ void Connection::get_asynch_replies()
 //
 //-----------------------------------------------------------------------------
 
-void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
+void Connection::Cb_Cmd_Request(TangoRequest_ptr req,Tango::CallBack *cb_ptr)
 {
 
 	DeviceData data_out;
@@ -438,7 +439,7 @@ void Connection::Cb_Cmd_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
 //
 //-----------------------------------------------------------------------------
 
-void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
+void Connection::Cb_ReadAttr_Request(TangoRequest_ptr req,Tango::CallBack *cb_ptr)
 {
 	vector<DeviceAttribute> *dev_attr = NULL;
 	Tango::DevErrorList errors(2);
@@ -688,7 +689,7 @@ void Connection::Cb_ReadAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_
 //
 //-----------------------------------------------------------------------------
 
-void Connection::Cb_WriteAttr_Request(CORBA::Request_ptr req,Tango::CallBack *cb_ptr)
+void Connection::Cb_WriteAttr_Request(TangoRequest_ptr req,Tango::CallBack *cb_ptr)
 {
 	Tango::NamedDevFailedList err_3;
 
@@ -970,7 +971,7 @@ void Connection::get_asynch_replies(long call_timeout)
 	if (get_pasyn_cb_ctr() != 0)
 	{
 		TangORB_var orb = ApiUtil::instance()->orb_provider()->get();
-		CORBA::Request_ptr req;
+		TangoRequest_ptr req;
 
 		if (call_timeout != 0)
 		{
