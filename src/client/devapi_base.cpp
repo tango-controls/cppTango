@@ -9453,10 +9453,7 @@ void DeviceProxy::local_import(string &local_ior)
 				Tango::Device_var d_var = dev_list[lo]->get_d_var();
 				TangORB_var orb_ptr = tg->get_orb();
 
-				char *s = orb_ptr->object_to_string(d_var);
-				local_ior = s;
-
-				CORBA::string_free(s);
+//TODO				local_ior = orb_ptr->object_to_string(d_var);
 
 				return;
 			}

@@ -1639,7 +1639,7 @@ void Util::server_already_running()
 			return;
 		}
 
-		CORBA::Object_var obj = orb->string_to_object((db_dev->svalue)[1]);
+		CORBA::Object_var obj = orb->string_to_object((db_dev->svalue)[1].pd_data);
 
 //
 // Try to narrow the reference to a Tango::Device object

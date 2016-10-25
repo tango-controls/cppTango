@@ -143,9 +143,13 @@ set(FRONTEND_HEADERS
         tango/frontend/orb_provider.hxx
         tango/frontend/orb_const.hxx
         tango/frontend/request.hxx
+        tango/frontend/object.hxx
         tango/frontend/helpers.hxx)
 
-add_library(include_objects OBJECT tango.h ${FRONTEND_HEADERS} ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
+set(BACKEND_HEADERS
+        tango/backend/orb.hxx)
+
+add_library(include_objects OBJECT tango.h ${FRONTEND_HEADERS} ${BACKEND_HEADERS} ${SERVER_HEADERS} ${CLIENT_HEADERS} ${CLIENT_HELPERS} ${LOG4TANGO_HEADERS} ${LOG4TANGO_THREADING})
 
 install(FILES tango.h DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}")
 install(FILES ${SERVER_HEADERS} ${SERVER_TEMPLATES} DESTINATION "${CMAKE_INSTALL_FULL_INCLUDEDIR}/tango/server")

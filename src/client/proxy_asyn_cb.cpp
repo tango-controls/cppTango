@@ -85,8 +85,7 @@ void Connection::command_inout_asynch(const char *command, DeviceData &data_in, 
 // Create the request object
 //
 
-	TangORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 	if (version >= 4)
 		req_seq[0] = device_4->_request("command_inout_4");
@@ -1144,8 +1143,7 @@ void DeviceProxy::read_attributes_asynch(vector<string> &attr_names,CallBack &cb
 // Create the request object
 //
 
-	TangORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 	Tango::DevVarStringArray names;
 	long nb_names = attr_names.size();
@@ -1255,8 +1253,7 @@ void DeviceProxy::write_attributes_asynch(vector<DeviceAttribute> &attr_list,
 // Create the request object
 //
 
-	TangORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 
 	Tango::AttributeValueList att;
@@ -1357,8 +1354,7 @@ void DeviceProxy::write_attribute_asynch(DeviceAttribute &attr,CallBack &cb)
 // Create the request object
 //
 
-	TangORB::RequestSeq req_seq;
-	req_seq.length(1);
+	TangORB::RequestSeq req_seq{1};
 
 
 	Tango::AttributeValueList att;

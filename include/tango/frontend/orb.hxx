@@ -6,19 +6,46 @@
 
 #include <memory>
 #include <omniORB4/CORBA.h>
+#include <tango/frontend/request.hxx>
+#include <tango/frontend/object.hxx>
+#include <vector>
 
 namespace Tango {
-    using TangORB = CORBA::ORB;
+    namespace frontend {
+        struct ORB {
+            using RequestSeq = std::vector<TangoRequest_ptr>;
+            virtual ~ORB() = 0;
+
+            virtual bool poll_next_response() = 0;
+
+            virtual void get_next_response(TangoRequest_ptr) = 0;
+
+            virtual void send_multiple_requests_deferred(RequestSeq) = 0;
+
+            virtual TangoObject_var string_to_object(std::string) = 0;
+
+            virtual std::string object_to_string(TangoObject_var&) = 0;
+
+            virtual TangoObject_var resolve_initial_references(std::string) = 0;
+
+            virtual bool work_pending() = 0;
+
+            virtual void perform_work() = 0;
+
+            virtual void run() = 0;
+
+            virtual void shutdown(bool) = 0;
+
+            virtual void destroy() = 0;
+        };
+    }
+
+    using TangORB = frontend::ORB;
+
     using TangORB_ptr = std::unique_ptr<TangORB>;
     using TangORB_var = std::shared_ptr<TangORB>;
 
-    template<typename OPTIONS>
-    inline auto TangORB_init(int& argc, char** argv, char* orb_id, OPTIONS options)
-        -> TangORB_var
-    {
-        auto orb = CORBA::ORB_init(argc, argv, orb_id, options);
-        return TangORB_var(orb);
-    }
+    auto TangORB_init(int&, char**, char*, const char *[][2])-> TangORB_ptr;
 
-    auto TangORB_init() -> TangORB_var;
+    auto TangORB_init() -> TangORB_ptr;
 }//Tango
